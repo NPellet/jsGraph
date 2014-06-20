@@ -80,7 +80,7 @@ define( [], function() {
 				( function( j ) {
 
 					var g, line, text;
-					
+
 					g = document.createElementNS(self.graph.ns, 'g');
 					g.setAttribute('transform', "translate(0, " + (i * 20 + 10 + self.options.paddingTop) + ")" );
 
@@ -99,7 +99,7 @@ define( [], function() {
 					if( series[ j ].markersShown() ) {
 						var marker = document.createElementNS(self.graph.ns, 'path');
 						series[ j ].setMarkerStyleTo( marker , true);
-						marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ i ].options.markers.zoom + 1).join(" "));
+						marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ j ].options.markers.zoom + 1).join(" "));
 					}
 
 					text = document.createElementNS(self.graph.ns, 'text');
