@@ -94,9 +94,9 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 			this.groupMain.insertBefore(this.groupLines, next);
 		},
 
-		handleMouseWheel: function(delta, e) {
+		onMouseWheel: function( delta, e ) {
 
-			this.accumulatedDelta = Math.min(1, Math.max(-1, this.accumulatedDelta + Math.min(0.1, Math.max(-0.1, delta))));
+			this.accumulatedDelta = Math.min( 1, Math.max( -1, this.accumulatedDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
 			this.threshold = Math.max(-this.minZ, this.maxZ) * (Math.pow(this.accumulatedDelta, 3));
 
 			for(var i in this.zValues) {

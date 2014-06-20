@@ -141,8 +141,9 @@ define( [] , function() {
 
 				e.stopPropagation();
 				e.preventDefault();
-				if(e.which == 3 || e.ctrlKey)
+				if(e.which == 3 || e.ctrlKey) {
 					return;
+				}
 				var coords = self.graph.getXY(e);
 
 				self.graph.currentAction = 'zooming';
@@ -154,7 +155,7 @@ define( [] , function() {
 				self.this._zoomingSquare.setAttribute('width', 0);
 				self.this._zoomingSquare.setAttribute('height', 0);
 
-				switch(self.graph._zoomingMode) {
+				switch( self.graph._zoomingMode ) {
 					case 'x': 
 						self.this._zoomingSquare.setAttribute('y', self.graph.getPaddingTop() + self.shift - self.totalDimension);
 						self.this._zoomingSquare.setAttribute('height', self.totalDimension);
@@ -169,14 +170,17 @@ define( [] , function() {
 			});
 		},
 
-		addLabel: function(x) {
-			for(var i = 0, l = this.series.length; i < l; i++) {
-				if(this.series[i].currentAction !== false)
+		addLabel: function( x ) {
+
+			for( var i = 0, l = this.series.length; i < l; i ++ ) {
+
+				if( this.series[ i ].currentAction !== false ) {
 					continue;
-				this.series[i].addLabelObj({x: x});
+				}
+
+				this.series[ i ].addLabelObj( { x: x } );
 			}
 		},
-
 
 		setDisplay: function(bool) {
 			this.options.display = !!bool;
@@ -205,17 +209,18 @@ define( [] , function() {
 		getMaxPx: function(px) { return this.options.flipped ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
-		// Returns the true minimum of the axis. Either forced in options
+		// Returns the true minimum of the axis. Either forced in options or the one from the data
 		getMinValue: function() {
-			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.realMin);
+			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.dataMin);
 		},
 
 		getMaxValue: function() {
-			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.realMax);
+			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.dataMax);
 		},
 
-		setMinValue: function(min) { this.realMin = min; },
-		setMaxValue: function(max) { this.realMax = max; },
+		setMinValueData: function( min ) { this.dataMin = min; },
+		setMaxValueData: function( max ) { this.dataMax = max; },
+
 		forceMin: function(val) {    this.options.forcedMin = val; },
 		forceMax: function(val) {   this.options.forcedMax = val; },
 
@@ -232,6 +237,7 @@ define( [] , function() {
 		},
 
 		handleMouseWheel: function(delta, e) {
+
 			delta = Math.min(0.2, Math.max(-0.2, delta));
 
 			this._doZoomVal(
@@ -271,7 +277,7 @@ define( [] , function() {
 			this.setCurrentMax(Math.max(val1, val2));
 			this._hasChanged = true;
 			if(this.options.onZoom && !mute)
-				this.options.onZoom(this._realMin, this._realMax);
+				this.options.onZoom(this.currentAxisMin, this.currentAxisMax);
 		//	}
 		},
 
@@ -387,12 +393,13 @@ define( [] , function() {
 		setMinMaxToFitSeries: function() {
 
 			var interval = this.getMaxValue() - this.getMinValue();
-			this._realMin = this.getMinValue() - (this.options.axisDataSpacing.min * interval);
-			this._realMax = this.getMaxValue() + (this.options.axisDataSpacing.max * interval);
+			
+			this.currentAxisMin = this.getMinValue() - (this.options.axisDataSpacing.min * interval);
+			this.currentAxisMax = this.getMaxValue() + (this.options.axisDataSpacing.max * interval);
 
-			if(this.options.logScale) {
-				this._realMin = Math.max(1e-50, this._realMin);
-				this._realMax = Math.max(1e-50, this._realMax);
+			if( this.options.logScale ) {
+				this.currentAxisMin = Math.max( 1e-50, this.currentAxisMin );
+				this.currentAxisMax = Math.max( 1e-50, this.currentAxisMax );
 			}
 
 		},
@@ -402,24 +409,25 @@ define( [] , function() {
 		},
 
 		getActualMin: function() {
-			return this._realMin == this._realMax ? this._realMin - 1 : this._realMin;
+			return this.currentAxisMin == this.currentAxisMax ? this.currentAxisMin - 1 : this.currentAxisMin;
 		},
 
 		getActualMax: function() {
-			return this._realMax == this._realMin ? this._realMax + 1 : this._realMax;
+			return this.currentAxisMax == this.currentAxisMin ? this.currentAxisMax + 1 : this.currentAxisMax;
 		},
 
 		setCurrentMin: function(val) {
-			this._realMin = val;
-			if(this.options.logScale)
-				this._realMin = Math.max(1e-50, val);
+			this.currentAxisMin = val;
+			if(this.options.logScale) {
+				this.currentAxisMin = Math.max(1e-50, val);
+			}
 		},
 
 		setCurrentMax: function(val) {
-			this._realMax = val;
+			this.currentAxisMax = val;
 
 			if(this.options.logScale)
-				this._realMax = Math.max(1e-50, val);
+				this.currentAxisMax = Math.max(1e-50, val);
 		},
 
 		flip: function(bool) {
@@ -429,7 +437,7 @@ define( [] , function() {
 		/**
 		 *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
 		 */
-		_draw: function( doNotResetMinMax ) { // Redrawing of the axis
+		_draw: function( ) { // Redrawing of the axis
 			var visible;
 
 			switch(this.options.tickPosition) {
@@ -439,7 +447,7 @@ define( [] , function() {
 				break;
 
 				case 2:
-					this.tickPx1 = 1;
+					this.tickPx1 = -1;
 					this.tickPx2 = 1;
 				break;
 
@@ -462,11 +470,11 @@ define( [] , function() {
 			while(this.groupGrids.firstChild)
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
-			if( ! doNotResetMinMax || this._realMin == undefined || ! this._realMax == undefined ) {
+			if( this.currentAxisMin == undefined || ! this.currentAxisMax == undefined ) {
 				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
 			}
 
-			// The data min max is stored in this.realMin, this.realMax
+			// The data min max is stored in this.dataMin, this.dataMax
 
 			var widthPx = this.maxPx - this.minPx;
 			var valrange = this._getActualInterval();
@@ -486,17 +494,20 @@ define( [] , function() {
 
 			this.line.setAttribute('display', 'block');
 
-			if(!this.options.logScale) {
+			if( ! this.options.logScale ) {
 				// So the setting is: How many ticks in total ? Then we have to separate it
-				if(this.options.scientificTicks)
-					this.scientificExp = Math.floor(Math.log(Math.max(Math.abs(this.getActualMax()), Math.abs(this.getActualMin()))) / Math.log(10));
+				
+				if( this.options.scientificTicks ) {
+					this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
+				}
 
 				var nbTicks1 = this.getNbTicksPrimary();
 
 				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
 				var nbSecondaryTicks = this.secondaryTicks();
-				if(nbSecondaryTicks)
+				if(nbSecondaryTicks) {
 					var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+				}
 
 				// We need to get here the width of the ticks to display the axis properly, with the correct shift
 				var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
@@ -541,12 +552,12 @@ define( [] , function() {
 			this.options.ticklabelratio = tickRatio;
 		},
 
-		draw: function( doNotResetMinMax ) {
+		draw: function( ) {
+			
 			this._widthLabels = 0;
-			var drawn = this._draw( doNotResetMinMax );
+			var drawn = this._draw( );
 			this._widthLabels += drawn;
-
-			return this.series.length > 0 ? 100 : drawn;
+			return drawn; // ??? this.series.length > 0 ? 100 : drawn;
 		},
 
 		drawTicks: function(primary, secondary) {
@@ -565,9 +576,10 @@ define( [] , function() {
 				secondaryIncr = unitPerTick / secondary;
 			}
 
-			incrTick = this.options.shiftToZero ? this.realMin - Math.ceil((this.realMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
+			incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil((this.dataMin - min) / unitPerTick) * unitPerTick : Math.floor(min / unitPerTick) * unitPerTick;
 			this.incrTick = primary[0];
 			this.resetTicks();
+
 			while(incrTick < max) {
 				loop++;
 				if(loop > 200)
@@ -682,7 +694,7 @@ define( [] , function() {
 
 				value = value * Math.pow(10, this.getExponentialFactor()) * Math.pow(10, this.getExponentialLabelFactor());
 				if(this.options.shiftToZero)
-					value -= this.realMin;
+					value -= this.dataMin;
 				if(this.options.ticklabelratio)
 					value *= this.options.ticklabelratio;
 				if(this.options.unitModification) {
@@ -847,8 +859,9 @@ define( [] , function() {
 				dom.appendChild(tspan);
 			}
 
-			if(options.fontSize)
+			if( options.fontSize ) {
 				dom.setAttribute('font-size', options.fontSize);
+			}
 		},
 
 		removeSerie: function(serie) {

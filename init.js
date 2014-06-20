@@ -9,7 +9,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	var functions = [
 
-function( domGraph ) {
+[ function( domGraph ) {
 
 	var graph = new Graph( domGraph );
 	
@@ -36,19 +36,34 @@ function( domGraph ) {
 
 	graph.redraw( );
 	graph.drawSeries();	
-},
+}, "Default functionnality", "" ],
 
-
-function( domGraph ) {
+[ function( domGraph ) {
 
 	var graph = new Graph( domGraph, {
+
+		wheel: {
+			type: 'plugin',
+			plugin: './graph.plugin.zoom',
+			options: {
+				direction: 'y'
+			}
+		},
+
+		dblclick: {
+			type: 'plugin',
+			plugin: './graph.plugin.zoom',
+			options: {
+				mode: 'total'
+			}
+		},
 
 		plugins: {
 			'./graph.plugin.zoom': { zoomMode: 'x' },
 			'./graph.plugin.drag': {}
 		},
 
-		keyCombinations: {
+		pluginAction: {
 			'./graph.plugin.drag': { shift: true, ctrl: false },
 			'./graph.plugin.zoom': { shift: false, ctrl: false }
 		}
@@ -62,18 +77,50 @@ function( domGraph ) {
 
 	graph.redraw( );
 	graph.drawSeries();	
-}
+}, "Plugin loading", "" ],
 
 
 
-	]
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { }, {
+
+		top: [ {
+			flipped: true,
+			axisDataSpacing: { min: 0, max: 0.5 },
+			primaryGrid: true,
+			secondaryGrid: false,			
+			labelValue: "Top axis"
+		} ],
+
+		right: [ {
+			forcedMin: -100,
+			tickPosition: 2
+		} ]
+
+	} );
+
+	graph.newSerie("serieTest_4")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setLineColor('red');
+
+	graph.autoscaleAxes();
+	graph.redraw( );
+	graph.drawSeries( );
+
+
+}, "Pimp the axis", "" ] ]
 
 
 
 	for( var i = 0, l = functions.length ; i < l ; i ++ ) {
 
-		functions[ i ]("example-" + ( i + 1 ) + "-graph");
-		$("#example-" + ( i + 1 ) + "-source").html( functions[ i ].toString() );
+		$('#graph-examples').append('<tr class="title"><td>' + functions[ i ][ 1 ] + '</td><td></td></tr>').append('<tr><td class="Graph"><div id="example-' + i + '-graph"></div></td><td class="Source">Source code: <pre id="example-' + i + '-source"></pre></td><td>' + functions[ i ][ 2 ] + '</tr>');
+
+		functions[ i ][ 0 ]("example-" + ( i ) + "-graph");
+		$("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() );
 
 	}
 

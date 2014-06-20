@@ -318,24 +318,25 @@ define( [], function() {
 					e.preventDefault();
 					e.stopPropagation();
 
-					$('<input type="text" />').attr('value', e.target.textContent).prependTo(self.graph._dom).css({
+					$('<input type="text" />').attr('value', e.target.textContent).prependTo( self.graph._dom ).css( {
+
 						position: 'absolute',
 						'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
 						'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
 						textAlign: 'center',
 						width: '100px'
-					}).on('blur', function() {
+					} ).on( 'blur', function() {
 
 						$( this ).remove();
 						self.data.label.text = $ ( this ).attr( 'value' );
 						self.triggerChange();
 
-					}).on('keyup', function(e) {
+					} ).on( 'keyup', function(e) {
 
 						if ( e.keyCode == 13 )
 							$( this ).trigger( 'blur' );
 						
-					}).focus();
+					} ).focus( );
 
 				});
 

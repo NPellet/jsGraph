@@ -1,6 +1,8 @@
 
 define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
+	"use strict";
+	
 	var GraphXAxis = function(graph, topbottom, options) {
 		this.init(graph, options);
 		this.top = topbottom == 'top';
@@ -54,7 +56,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 				var groupLabel = this.groupTickLabels;
 				var tickLabel = document.createElementNS(this.graph.ns, 'text');
 				tickLabel.setAttribute('x', val);
-				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 8 : 25));
+				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ( ( this.options.tickPosition == 1 ? 8 : 25) + ( this.top ? 10 : 0 ) ) );
 				tickLabel.setAttribute('text-anchor', 'middle');
 				tickLabel.style.dominantBaseline = 'hanging';
 
@@ -87,8 +89,9 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
 		drawSeries: function() {
 
-			if(!this.shift)
+			if(!this.shift) {
 				return;
+			}
 
 			this.rectEvent.setAttribute('y', !this.top ? 0 : -this.shift);
 			this.rectEvent.setAttribute('height', this.totalDimension);
@@ -102,8 +105,9 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
 
 
-			for(var i = 0, l = this.series.length; i < l; i++)
+			for(var i = 0, l = this.series.length; i < l; i++) { // These are the series on the axis itself !!
 				this.series[i].draw();	
+			}
 		},
 
 		_draw0Line: function(px) {

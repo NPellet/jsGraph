@@ -40,7 +40,7 @@ define([
 		},
 
 		title: '',
-		defaultWheelAction: 'none',
+		
 		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
@@ -52,14 +52,9 @@ define([
 		unZoomMode: 'total',
 
 		plugins: [],
-		keyCombinations: {}
-
-		//plugins: ['./graph.plugin.zoom', './graph.plugin.drag'],
-
-		/*keyCombinations: {
-			'./graph.plugin.drag': { shift: true, ctrl: false },
-			'./graph.plugin.zoom': { shift: false, ctrl: false }
-		}*/
+		pluginAction: {},
+		wheel: {},
+		dblclick: {}
 	};
 
 
@@ -122,7 +117,6 @@ define([
 			}
 		}
 
-		this._resize();
 		this._pluginsInit();
 	}
 
@@ -374,9 +368,11 @@ define([
 			});
 
 			this.rectEvent.addEventListener('wheel', function(e) {
-				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-				self.handleMouseWheel(deltaY,e);	
+				e.stopPropagation();
 				e.preventDefault();
+				var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
+				self.handleMouseWheel( deltaY, e );	
+				
 				return false;
 			});
 		},
@@ -388,7 +384,7 @@ define([
 				$target = $(e.target), 
 				shift = e.shiftKey, 
 				ctrl = e.ctrlKey, 
-				keyComb = this.options.keyCombinations,
+				keyComb = this.options.pluginAction,
 				i;
 
 			for(i in keyComb) {
@@ -414,19 +410,29 @@ define([
 				return;
 			}
 			
+			if( this._pluginExecute(this.mouseLease, 'onMouseMove', [x, y, e, $target = $(e.target)]) ) {
+				return;
+			};
+
+
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
 
 			if(!this.mouseLease) {
 				var results = {};
-				for(var i = 0; i < this.series.length; i++)
-					results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
-				if(this.options.onMouseMoveData)
+				
+				if(this.options.onMouseMoveData) {
+
+					for(var i = 0; i < this.series.length; i++) {
+						results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
+					}
+
 					this.options.onMouseMoveData(e, results);
+				}
 				return;
 			}
 
-			this._pluginExecute(this.mouseLease, 'onMouseMove', [x, y, e, $target = $(e.target)]);
+
 		},
 
 
@@ -450,25 +456,44 @@ define([
 
 		handleMouseWheel: function(delta, e) {
 
-			if(this.options.defaultWheelAction == 'zoomY' || this.options.defaultWheelAction == 'zoomX') {
 
-				this.applyToAxes('handleMouseWheel', [delta, e], false, true);
+			e.preventDefault();
+			e.stopPropagation();
 
-			} else if(this.options.defaultWheelAction == 'toSeries') {
+			if( ! this.options.wheel.type ) {
+				return;
+			}
 
-				for(var i = 0, l = this.series.length; i < l; i++) {
-					this.series[i].handleMouseWheel(delta, e);
-				}
+			switch( this.options.wheel.type ) {
+
+				case 'plugin':
+
+					var plugin;
+
+					if( plugin = this._plugins[ this.options.wheel.plugin ] ) {
+						plugin.onMouseWheel( delta, e );
+					}
+
+				break;
+
+
+				case 'toSeries':
+
+					for(var i = 0, l = this.series.length; i < l; i++) {
+						this.series[ i ].onMouseWheel(delta, e);
+					}
+
+				break;
 
 			}
 
-			this.redraw( true );
+			this.redraw( );
 			this.drawSeries( true );
 		},
 
 		handleClick: function(x, y, e) {
 			
-			if(!this.options.addLabelOnClick){
+			if( ! this.options.addLabelOnClick ) {
 				return;
 			}
 
@@ -489,73 +514,28 @@ define([
 			this.bypassHandleMouse = false;
 		},
 
-		handleDblClick: function(x,y,e) {
+		handleDblClick: function( x, y, e) {
 		//	var _x = x - this.options.paddingLeft;
 		//	var _y = y - this.options.paddingTop;
-			var pref = this.options.unZoomMode;
+			var pref = this.options.dblclick;
 
-			var	
-				xAxis = this.getXAxis(),
-				yAxis = this.getYAxis();
-
-
-			if(pref == 'total') {
-				this.redraw();
-				this.drawSeries();
-
-				if( yAxis.options.onZoom ) {
-					yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
-				}
-
-
-				if( xAxis.options.onZoom ) {
-					xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
-				}
-
+			if( ! pref || ! pref.type ) {
 				return;
 			}
 
- 			x -= this.options.paddingLeft;
- 			y -= this.options.paddingTop;
+			switch( pref.type ) {
 
-			var
-				xMin = xAxis.getActualMin(),
-				xMax = xAxis.getActualMax(),
-				xActual = xAxis.getVal(x),
-				diffX = xMax - xMin,
+				case 'plugin':
 
-				yMin = yAxis.getActualMin(),
-				yMax = yAxis.getActualMax(),
-				yActual = yAxis.getVal(y),
-				diffY = yMax - yMin;
+					var plugin;
 
-			if(pref == 'gradualXY' || pref == 'gradualX') {
-				var ratio = (xActual - xMin) / (xMax - xMin);
-				xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-				xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
-				xAxis.setCurrentMin(xMin);
-				xAxis.setCurrentMax(xMax);
+					if( ( plugin = this._plugins[ pref.plugin ] ) ) {
 
-				if( xAxis.options.onZoom ) {
-					xAxis.options.onZoom( xMin, xMax );
-				}
+						plugin.onDblClick( x, y, pref.options, e );
+					}
+
+				break;
 			}
-
-			if(pref == 'gradualXY' || pref == 'gradualY') {
-				var ratio = (yActual - yMin) / (yMax - yMin);
-				yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-				yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
-				yAxis.setCurrentMin(yMin);
-				yAxis.setCurrentMax(yMax);
-
-
-				if( yAxis.options.onZoom ) {
-					yAxis.options.onZoom( yMin, yMax );
-				}
-			}
-
-			this.redraw( true );
-			this.drawSeries( true );
 		},
 
 		resetAxis: function() {
@@ -642,6 +622,7 @@ define([
 
 			this.getDrawingHeight();
 			this.getDrawingWidth();
+
 		},
 
 		getDom: function() { 
@@ -654,13 +635,19 @@ define([
 		},
 
 		getXAxis: function(num, options) {
-			if(this.axis.top.length > 0 && this.axis.bottom.length == 0)
+			if(this.axis.top.length > 0 && this.axis.bottom.length == 0) {
 				return this.getTopAxis(num, options);
+			}
 
 			return this.getBottomAxis(num, options);
 		},
 
 		getYAxis: function(num, options) {
+
+			if(this.axis.right.length > 0 && this.axis.left.length == 0) {
+				return this.getRightAxis(num, options);
+			}
+
 			return this.getLeftAxis(num, options);
 		},
 
@@ -779,10 +766,12 @@ define([
 
 			val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
 			series = this.getSeriesFromAxis(axis, true);
+			
 			for(i = 0, l = series.length; i < l; i++) {
 
 				serie = series[i];
 				serieValue = serie[func2use]();
+
 				val = Math[minmax](val, serieValue);
 
 				if(val == serieValue && currentSerie) {
@@ -812,13 +801,15 @@ define([
 
 		_resize: function() {
 
-			if(!this.width || !this.height) {
+			if( ! this.width || ! this.height) {
 				return;
 			}
 
+			this.sizeSet = true;
 			this.dom.setAttribute('width', this.width);
 			this.dom.setAttribute('height', this.height);
 			this.domTitle.setAttribute('x', this.width / 2);
+
 			this.refreshDrawingZone();
 		},
 
@@ -826,86 +817,117 @@ define([
 			return (this.width && this.height);
 		},
 
-		redraw: function( doNotResetMinMax, noX, noY) {
+		redraw: function( noX, noY ) {
 
-			if( ! this.canRedraw() ) {
+			if( ! this.canRedraw( ) ) {
 				return;
 			}
 
-			this.refreshDrawingZone( doNotResetMinMax, noX, noY);
+			if( ! this.sizeSet ) {
+
+				this._resize( );
+
+			} else {
+
+				this.refreshDrawingZone( noX, noY );
+			}
 
 			return true;
 		},
 
+		updateAxes: function() {
+
+			var axisvars = ['bottom', 'top', 'left', 'right'],
+				axis,
+				j,
+				l,
+				i,
+				xy;
+
+			this.refreshMinOrMax();
+
+			for( j = 0, l = axisvars.length; j < l; j++) {
+
+				for(i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
+
+					axis = this.axis[ axisvars[ j ] ][ i ];
+					xy = j < 2 ? 'x' : 'y';
+
+					if( axis.disabled ) {
+						continue;
+					}
+//console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+					axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min') );
+					axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
+				}
+			}
+		},
+
 		// Repaints the axis and series
-		refreshDrawingZone: function(doNotRecalculateMinMax, noX, noY) {
+		refreshDrawingZone: function( noX, noY ) {
 
 			var i, j, l, xy, min, max;
 			var axisvars = ['bottom', 'top', 'left', 'right'], shift = [0, 0, 0, 0], axis;
+
 			this._painted = true;
 			this.refreshMinOrMax();
 
-			for(j = 0, l = axisvars.length; j < l; j++) {
-				xy = j < 2 ? 'x' : 'y';
-				if(noX && j < 2) {
-					continue;
-				} else if(noY && j > 1) {
-					continue;
-				}
-
-				for(i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
-					axis = this.axis[axisvars[j]][i];
-					if(axis.disabled)
-						continue;
-
-					// Sets the values from the raw data
-					// Does not go through here if noX or noY is true and xy == 'x' || 'y', respectively
-					axis.setMinValue( this.getBoundaryAxisFromSeries(this.axis[ axisvars[ j ] ][ i ], xy, 'min') );
-					axis.setMaxValue( this.getBoundaryAxisFromSeries(this.axis[ axisvars[j]][i], xy, 'max') );
-				}
-			}
-		
 			// Apply to top and bottom
-			this.applyToAxes(function(axis) {
-				if(axis.disabled) {
+			this.applyToAxes( function( axis ) {
+
+				if( axis.disabled ) {
 					return;
 				}
-				var axisIndex = axisvars.indexOf(arguments[1]);
-				axis.setShift(shift[axisIndex] + axis.getAxisPosition(), axis.getAxisPosition()); 
-				shift[axisIndex] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-			}, false, true, false);
+
+				var axisIndex = axisvars.indexOf( arguments[ 1 ] );
+				axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
+				shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+
+			}, false, true, false );
 	
 	
 			// Applied to left and right
 			this.applyToAxes(function(axis) {
-				if(axis.disabled)
-					return;
 
-				axis.setMinPx(shift[1]);
-				axis.setMaxPx(this.getDrawingHeight(true) - shift[0]);
+				if( axis.disabled ) {
+					return;
+				}
+
+				axis.setMinPx( shift[ 1 ] );
+				axis.setMaxPx( this.getDrawingHeight( true ) - shift[ 0 ] );
 
 				// First we need to draw it in order to determine the width to allocate
 				// This is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-				var drawn = axis.draw(doNotRecalculateMinMax) || 0,
-					axisIndex = axisvars.indexOf(arguments[1]),
-					axisDim = axis.getAxisPosition();
+				var drawn = axis.draw( ) || 0,
+					axisIndex = axisvars.indexOf( arguments[ 1 ] ),
+					axisDim = axis.getAxisPosition( );
 
 				// Get axis position gives the extra shift that is common
 				axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
-				shift[axisIndex] += drawn + axisDim;
+				shift[ axisIndex ] += drawn + axisDim;
+
 				axis.drawSeries();
+
 			}, false, false, true);
 
 		
 			// Apply to top and bottom
 			this.applyToAxes(function(axis) {
-				if(axis.disabled)
+				
+				if( axis.disabled ) {
 					return;
-				axis.setMinPx(shift[2]);
-				axis.setMaxPx(this.getDrawingWidth(true) - shift[3]);
-				axis.draw(doNotRecalculateMinMax);
+				}
+
+				axis.setMinPx( shift[ 2 ] );
+				axis.setMaxPx( this.getDrawingWidth(true) - shift[ 3 ] );
+				axis.draw( );
+
+
+
 				axis.drawSeries();
+
 			}, false, true, false);
 
 			// Apply to all axis
@@ -937,6 +959,12 @@ define([
 */
 			this.shift = shift;
 			this.redrawShapes();
+		},
+
+
+		autoscaleAxes: function() {
+
+			this.applyToAxes( "setMinMaxToFitSeries", null, true, true );
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	

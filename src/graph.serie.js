@@ -1,6 +1,7 @@
 
 define( [], function() {
 
+	"use strict";
 
 	var GraphSerie = function() { }
 	GraphSerie.prototype = {
@@ -23,7 +24,6 @@ define( [], function() {
 			trackMouse: false,
 			trackMouseLabel: false,
 			trackMouseLabelRouding: 1,
-			label: '',
 			lineToZero: false,
 
 			autoPeakPicking: false,
@@ -236,6 +236,8 @@ define( [], function() {
 				}
 			}
 
+			this.graph.updateAxes();
+
 			return this;
 		},
 
@@ -409,7 +411,7 @@ define( [], function() {
 			this.infos = infos;
 		},
 
-		handleMouseWheel: function() {},
+		onMouseWheel: function() {},
 
 		getName: function() {
 			return this.name;
@@ -827,6 +829,9 @@ define( [], function() {
 		autoAxis: function() {
 			this.setXAxis(this.graph.getXAxis());
 			this.setYAxis(this.graph.getYAxis());
+
+			this.graph.updateAxes();
+			
 			return this;
 		},
 

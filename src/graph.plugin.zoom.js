@@ -21,6 +21,7 @@ define([], function() {
 			});
 
 			this.options = options;
+			this.graph = graph;
 			graph.dom.appendChild(this._zoomingSquare);
 		},
 
@@ -97,6 +98,79 @@ define([], function() {
 			
 			graph.redraw(true);
 			graph.drawSeries();
+		},
+
+		onMouseWheel: function( delta, e ) {
+			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);
+		},
+
+		onDblClick: function( x, y, pref, e ) {
+
+			var	xAxis = this.graph.getXAxis(),
+				yAxis = this.graph.getYAxis();
+
+
+			if( pref.mode == 'total' ) {
+
+				this.graph.autoScaleAxis();
+				this.graph.redraw();
+				this.graph.drawSeries();
+
+				if( yAxis.options.onZoom ) {
+					yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
+				}
+
+				if( xAxis.options.onZoom ) {
+					xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
+				}
+
+				return;
+			}
+
+ 			x -= this.graph.options.paddingLeft;
+ 			y -= this.graph.options.paddingTop;
+
+			var
+				xMin = xAxis.getActualMin(),
+				xMax = xAxis.getActualMax(),
+				xActual = xAxis.getVal(x),
+				diffX = xMax - xMin,
+
+				yMin = yAxis.getActualMin(),
+				yMax = yAxis.getActualMax(),
+				yActual = yAxis.getVal(y),
+				diffY = yMax - yMin;
+
+			if(pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
+				var ratio = (xActual - xMin) / (xMax - xMin);
+				xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
+				xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+				xAxis.setCurrentMin(xMin);
+				xAxis.setCurrentMax(xMax);
+
+				if( xAxis.options.onZoom ) {
+					xAxis.options.onZoom( xMin, xMax );
+				}
+			}
+
+			if(pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
+
+				var ratio = (yActual - yMin) / (yMax - yMin);
+				yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
+				yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+				yAxis.setCurrentMin(yMin);
+				yAxis.setCurrentMax(yMax);
+
+
+				if( yAxis.options.onZoom ) {
+					yAxis.options.onZoom( yMin, yMax );
+				}
+			}
+
+			this.graph.redraw( );
+			this.graph.drawSeries( );
+
+
 		}
 	}
 

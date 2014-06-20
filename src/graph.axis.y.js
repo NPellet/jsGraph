@@ -2,6 +2,8 @@
 
 define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
+	"use strict";
+	
 	var GraphYAxis = function(graph, leftright, options) {
 		this.init(graph, options, { flipped: true });
 		this.leftright = leftright;
@@ -23,12 +25,12 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 		},
 
 		resetTicks: function() {
-			this.longestTick = [false, 0];
+			this.longestTick = [ false, 0 ];
 		},
 
 		getMaxSizeTick: function() {
 
-			return (this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0) + (this.left ? 10 : 0);
+			return (this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0) + 10;//(this.left ? 10 : 0);
 		},
 
 		drawTick: function(value, label, scaling, options) {
@@ -44,8 +46,11 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			tick.setAttribute('shape-rendering', 'crispEdges');	
 			tick.setAttribute('y1', pos);
 			tick.setAttribute('y2', pos);
-			tick.setAttribute('x1', this.tickPx1 * scaling);
-			tick.setAttribute('x2', this.tickPx2 * scaling);
+
+			tick.setAttribute('x1', (this.left ? 1 : -1) * this.tickPx1 * scaling);
+			tick.setAttribute('x2', (this.left ? 1 : -1) * this.tickPx2 * scaling);
+
+
 			tick.setAttribute('stroke', 'black');
 		
 			if(label && this.options.primaryGrid)
@@ -58,7 +63,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			if(label) {
 				var groupLabel = this.groupTickLabels;
 				tickLabel = document.createElementNS(this.graph.ns, 'text');
-				tickLabel.setAttribute('y', pos);
+				tickLabel.setAttribute('y', pos );
 				tickLabel.setAttribute('x', this.left ? -10 : 10);
 
 				if(this.left) {				
@@ -68,10 +73,12 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 				}
 				tickLabel.style.dominantBaseline = 'central';
 				this.graph.applyStyleText(tickLabel);
+
 				this.setTickContent(tickLabel, value, options);
+
 				this.groupTickLabels.appendChild(tickLabel);
 				
-				if(String(tickLabel).length >= this.longestTick[1]) {
+				if( String( tickLabel ).length >= this.longestTick[1]) {
 					this.longestTick[0] = tickLabel;
 					this.longestTick[1] = String(tickLabel.textContent).length;
 
@@ -109,8 +116,9 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			this.clipRect.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
 
 
-			for(var i = 0, l = this.series.length; i < l; i++)
+			for( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
 				this.series[i].draw();	
+			}
 			
 		},
 

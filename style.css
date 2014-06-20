@@ -1,9 +1,29 @@
 
+body {
+
+	font-family: "Helvetica Neue", Arial, "Sans Serif";
+	font-size: 11px;
+}
+
 td.Graph div {
 	width: 300px;
 	height: 300px;
 }
 
+
 td {
 	vertical-align: top;
+	border-bottom: 1px solid black;
+}
+
+tr.title td {
+	border-bottom: none;
+	padding-top: 30px;
+	font-size: 15px;
+}
+
+pre {
+	background-color: #feeef0;
+	border: 1px solid #aeee3d;
+	padding: 10px;
 }
