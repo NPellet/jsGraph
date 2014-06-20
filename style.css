@@ -1,29 +1,21 @@
-
 body {
-
-	font-family: "Helvetica Neue", Arial, "Sans Serif";
-	font-size: 11px;
-}
-
-td.Graph div {
-	width: 300px;
-	height: 300px;
-}
-
+  font-family: "Helvetica Neue", Arial, "Sans Serif";
+  font-size: 11px; }
 
 td {
-	vertical-align: top;
-	border-bottom: 1px solid black;
-}
+  vertical-align: top;
+  border-bottom: 1px solid black; }
+  td pre {
+    border: 1px solid #757C66;
+    background: linear-gradient(to bottom, #fcfff7 0%, #d5ddb5 100%);
+    /* W3C */
+    padding: 10px; }
+
+td.Graph div {
+  width: 300px;
+  height: 300px; }
 
 tr.title td {
-	border-bottom: none;
-	padding-top: 30px;
-	font-size: 15px;
-}
-
-pre {
-	background-color: #feeef0;
-	border: 1px solid #aeee3d;
-	padding: 10px;
-}
+  border-bottom: none;
+  padding-top: 30px;
+  font-size: 15px; }

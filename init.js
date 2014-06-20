@@ -1,11 +1,12 @@
 
 requirejs.config({
 	paths: {
-		'jquery': './lib/components/jquery/dist/jquery.min'
+		'jquery': './lib/components/jquery/dist/jquery.min',
+		'highlightjs': './lib/lib/highlight/highlight.pack'
 	}
 });
 
-require( [ 'src/graph' ] , function( Graph ) {
+require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	var functions = [
 
@@ -118,13 +119,9 @@ require( [ 'src/graph' ] , function( Graph ) {
 	for( var i = 0, l = functions.length ; i < l ; i ++ ) {
 
 		$('#graph-examples').append('<tr class="title"><td>' + functions[ i ][ 1 ] + '</td><td></td></tr>').append('<tr><td class="Graph"><div id="example-' + i + '-graph"></div></td><td class="Source">Source code: <pre id="example-' + i + '-source"></pre></td><td>' + functions[ i ][ 2 ] + '</tr>');
-
 		functions[ i ][ 0 ]("example-" + ( i ) + "-graph");
-		$("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() );
 
+		hljs.highlightBlock( $("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() ).get(0) );
 	}
-
-
-
 
 } );
