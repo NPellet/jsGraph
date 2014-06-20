@@ -23,10 +23,23 @@ define( [], function() {
 		this.rectBottom.setAttribute( 'y', 0 );
 
 		this.pos = { x: undefined, y: undefined, transformX: 0, transformY: 0 }
+
 		this.setEvents();
 	};
 
 	Legend.prototype = {
+
+		setPosition: function( position ) {
+
+			if( position ) {
+				var pos = this.graph.getPosition( position );
+				
+				this.pos.transformX = pos.x;
+				this.pos.transformY = pos.y;
+			}
+
+			this._setPosition();
+		},
 
 		update: function() {
 
@@ -80,15 +93,17 @@ define( [], function() {
 				g.appendChild( text );
 			}
 
-			this.rect.setAttribute('width', 200);
-			this.rect.setAttribute('height', series.length * 20 );
+			var bbox = this.svg.getBBox();
+
+			this.rect.setAttribute('width', bbox.width );
+			this.rect.setAttribute('height', bbox.height);
 			this.rect.setAttribute('fill', 'none');
 			this.rect.setAttribute('pointer-events', 'fill');
 			this.rect.style.cursor = "move";
 
 
-			this.rectBottom.setAttribute('width', 200);
-			this.rectBottom.setAttribute('height', series.length * 20 );
+			this.rectBottom.setAttribute('width', bbox.width);
+			this.rectBottom.setAttribute('height', bbox.height );
 			
 
 			this.svg.appendChild( this.rect );
@@ -151,6 +166,12 @@ define( [], function() {
 			e.stopPropagation();
 			e.preventDefault();
 
+			this._setPosition();
+		},
+
+		_setPosition: function() {
+
+			var pos = this.pos;
 			this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
 		},
 
