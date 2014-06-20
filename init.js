@@ -12,7 +12,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 [ function( domGraph ) {
 
-	var graph = new Graph( domGraph );
+	var graph = new Graph( domGraph, { title: "Graph title" } );
 	
 	graph.newSerie("serieTest")
 		.setLabel( "My serie" )

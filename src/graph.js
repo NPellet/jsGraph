@@ -49,7 +49,6 @@ define([
 		onHorizontalTracking: false,
 		rangeLimitX: 10,
 		rangeLimitY: 0,		
-		unZoomMode: 'total',
 
 		plugins: [],
 		pluginAction: {},
