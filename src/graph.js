@@ -1302,7 +1302,7 @@ define([
 
 		makeLegend: function( options ) {
 			this.legend = new GraphLegend( this, options );
-			this.dom.appendChild( this.legend.getDom() );
+			this.graphingZone.appendChild( this.legend.getDom() );
 			this.legend.update();
 
 			return this.legend;

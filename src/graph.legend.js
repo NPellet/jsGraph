@@ -33,15 +33,25 @@ define( [], function() {
 
 	Legend.prototype = {
 
-		setPosition: function( position ) {
+		setPosition: function( position, alignToX, alignToY ) {
 
-			if( position ) {
-				var pos = this.graph.getPosition( position );
-				
-				this.pos.transformX = pos.x;
-				this.pos.transformY = pos.y;
+			if( ! position ) {
+				return;
+			}
+	
+			var pos = this.graph.getPosition( position );
+	
+			if( alignToX == "right" ) {
+				pos.x -= this.width;
 			}
 
+			if( alignToY == "bottom" ) {
+				pos.y -= this.height;
+			}
+		
+			this.pos.transformX = pos.x;
+			this.pos.transformY = pos.y;
+	
 			this._setPosition();
 		},
 
@@ -123,8 +133,6 @@ define( [], function() {
 			var pos = this.pos;
 
 			this.rect.addEventListener('mousedown', function( e ) {
-
-				console.log( e );
 
 				pos.x = e.clientX;
 				pos.y = e.clientY;
