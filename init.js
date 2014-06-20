@@ -30,8 +30,8 @@ function( domGraph ) {
 	graph.makeLegend({
 		frame: true,
 		frameWidth: 1,
-		frameColor: "green",
-		backgroundColor: "blue"
+		frameColor: "black",
+		backgroundColor: "rgba(100, 100, 100, 0.5)"
 	});
 
 	graph.redraw( );
