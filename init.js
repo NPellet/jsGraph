@@ -29,11 +29,11 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
 	var legend = graph.makeLegend({
-
+		movable: true,
 		frame: true,
 		frameWidth: 1,
-		frameColor: "black",
-		backgroundColor: "rgba(100, 100, 100, 0.5)"
+		frameColor: "#c0c0c0",
+		backgroundColor: "rgba(255, 255, 255, 0.8)"
 	});
 
 	graph.redraw( );

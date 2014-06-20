@@ -8,7 +8,9 @@ define( [], function() {
 		paddingTop: 10,
 		paddingLeft: 10,
 		paddingBottom: 10,
-		paddingRight: 10
+		paddingRight: 10,
+
+		movable: false
 	}
 
 	var Legend = function( graph, options ) {
@@ -82,7 +84,7 @@ define( [], function() {
 					var g, line, text;
 
 					g = document.createElementNS(self.graph.ns, 'g');
-					g.setAttribute('transform', "translate(0, " + (i * 20 + 10 + self.options.paddingTop) + ")" );
+					g.setAttribute('transform', "translate(0, " + (i * 16 + 10 + self.options.paddingTop) + ")" );
 
 					self.svg.appendChild( g );
 
@@ -133,7 +135,10 @@ define( [], function() {
 			this.rect.setAttribute('pointer-events', 'fill');
 
 			this.rect.setAttribute('display', 'none');
-			this.rectBottom.style.cursor = "move";
+
+			if( this.options.movable ) {
+				this.rectBottom.style.cursor = "move";
+			}
 
 			this.rectBottom.setAttribute('width', this.width );
 			this.rectBottom.setAttribute('height', this.height );
@@ -154,14 +159,16 @@ define( [], function() {
 
 			var mousedown = function( e ) {
 
-				pos.x = e.clientX;
-				pos.y = e.clientY;
-				e.stopPropagation();
-				e.preventDefault();
-				self.mousedown = true;
-				self.graph.annotationMoving( self );
+				if( self.options.movable ) {
+					pos.x = e.clientX;
+					pos.y = e.clientY;
+					e.stopPropagation();
+					e.preventDefault();
+					self.mousedown = true;
+					self.graph.annotationMoving( self );
 
-				self.rect.setAttribute('display', 'block');
+					self.rect.setAttribute('display', 'block');
+				}
 			};
 
 			var mousemove = function( e ) {	

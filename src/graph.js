@@ -935,10 +935,12 @@ define([
 				axis.drawSeries();
 			}, false, true, true);
 	*/		
-			this.closeLine('right', this.getDrawingWidth(true), this.getDrawingWidth(true), 0, this.getDrawingHeight(true) - shift[0]);
-			this.closeLine('left', shift[1], shift[1], 0, this.getHeight(true) - shift[0]);
-			this.closeLine('top', shift[1], this.getDrawingWidth(true) - shift[2], 0, 0);
-			this.closeLine('bottom', shift[1], this.getDrawingWidth(true) - shift[2], this.getDrawingHeight(true) - shift[0], this.getDrawingHeight(true) - shift[0]);
+
+	
+			this.closeLine('right', this.getDrawingWidth(true), this.getDrawingWidth(true), shift[ 1 ], this.getDrawingHeight(true) - shift[0]);
+			this.closeLine('left', 0, 0, shift[ 1 ], this.getDrawingHeight(true) - shift[0]);
+			this.closeLine('top', shift[2], this.getDrawingWidth(true) - shift[3], 0, 0);
+			this.closeLine('bottom', shift[2], this.getDrawingWidth(true) - shift[3], this.getDrawingHeight(true) - shift[0], this.getDrawingHeight(true) - shift[0]);
 
 			this.clipRect.setAttribute('y', shift[1]);
 			this.clipRect.setAttribute('x', shift[2]);
@@ -970,14 +972,19 @@ define([
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	
-			if(this.options.close[close] && this.options.axis[mode].length == 0) {
-				this.closingLines[mode].setAttribute('display', 'block');
-				this.closingLines[mode].setAttribute('x1', x1);
-				this.closingLines[mode].setAttribute('x2', x2);
-				this.closingLines[mode].setAttribute('y1', y1);
-				this.closingLines[mode].setAttribute('y2', y2);
+			
+			if( this.options.close[ mode ] && this.axis[ mode ].length == 0 ) {
+console.log( mode, x1, x2, y1, y2);
+				this.closingLines[ mode ].setAttribute('display', 'block');
+				this.closingLines[ mode ].setAttribute('x1', x1);
+				this.closingLines[ mode ].setAttribute('x2', x2);
+				this.closingLines[ mode ].setAttribute('y1', y1);
+				this.closingLines[ mode ].setAttribute('y2', y2);
+
 			} else {
-				this.closingLines[mode].setAttribute('display', 'none');
+
+				this.closingLines[ mode ].setAttribute('display', 'none');
+
 			}
 		},
 

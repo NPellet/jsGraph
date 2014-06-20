@@ -499,7 +499,6 @@ define( [], function() {
 			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
 
 				this.applyLineStyle( this.lines[ i ] );
-
 			}
 
 			this.applyLineStyle( this.getLineForLegend() );
@@ -510,12 +509,11 @@ define( [], function() {
 			this.selected = false;
 
 			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
+
 				this.applyLineStyle( this.lines[ i ] );
 			}
 
-			
 			this.applyLineStyle( this.getLineForLegend() );
-
 		},
 
 		isSelected: function() {
@@ -1454,7 +1452,7 @@ define( [], function() {
 				this.applyLineStyle( line );
 
 				line.setAttribute('x1', 5);
-				line.setAttribute('x2', 20);
+				line.setAttribute('x2', 25);
 				line.setAttribute('y1', 0);
 				line.setAttribute('y2', 0);
 
@@ -1477,7 +1475,7 @@ define( [], function() {
 
 				var marker = document.createElementNS( this.graph.ns, 'path');
 				this.setMarkerStyleTo( marker , true);
-				marker.setAttribute('d', "M 15 0 " + this.getMarkerPath( this.options.markers.zoom + 1 ).join(" ") );
+				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.options.markers.zoom + 1 ).join(" ") );
 
 				this.markerForLegend = marker;
 			}
