@@ -9,34 +9,36 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	var functions = [
 
-function( domGraph, domSource ) {
+function( domGraph ) {
 
-	var g1 = new Graph( domGraph );
+	var graph = new Graph( domGraph );
 	
-	var serie = g1.newSerie("serieTest")
-					.setLabel( "My serie" )
-					.autoAxis()
-					.setData( [ [1, 2], [2, 5], [3, 10] ] )
-					.showMarkers( true )
-					.setMarkerType( 1 );
+	graph.newSerie("serieTest")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [1, 2], [2, 5], [3, 10] ] )
+		.showMarkers( true )
+		.setMarkerType( 1 );
 
-	var serie = g1.newSerie("serieTest")
-					.setLabel( "My serie 2" )
-					.autoAxis()
-					.setData( [ [2, 4], [3, 1], [5, 20] ] )
-					.setLineColor('red');
+	graph.newSerie("serieTest")
+		.setLabel( "My serie 2" )
+		.autoAxis()
+		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setLineColor('red');
 
 
-	var legend = g1.makeLegend({
+	graph.makeLegend({
 		frame: true,
 		frameWidth: 1,
 		frameColor: "green",
 		backgroundColor: "blue"
 	});
 
-	g1.redraw( );
-	g1.drawSeries();	
+	graph.redraw( );
+	graph.drawSeries();	
 }
+
+
 
 	]
 
