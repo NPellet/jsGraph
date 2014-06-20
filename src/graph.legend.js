@@ -4,7 +4,11 @@ define( [], function() {
 		frame: false,
 		backgroundColor: 'transparent',
 		frameWidth: 0,
-		frameColor: 'transparent'
+		frameColor: 'transparent',
+		paddingTop: 10,
+		paddingLeft: 10,
+		paddingBottom: 10,
+		paddingRight: 10
 	}
 
 	var Legend = function( graph, options ) {
@@ -61,7 +65,7 @@ define( [], function() {
 			for( var i = 0, l = series.length ; i < l ; i ++ ) {
 
 				g = document.createElementNS(this.graph.ns, 'g');
-				g.setAttribute('transform', "translate(0, " + (i * 20 + 10) + ")" );
+				g.setAttribute('transform', "translate(" + this.options.paddingLeft + ", " + (i * 20 + 10 + this.options.paddingTop) + ")" );
 
 				this.svg.appendChild( g );
 
@@ -72,7 +76,6 @@ define( [], function() {
 				line.setAttribute('x2', 30);
 				line.setAttribute('y1', 0);
 				line.setAttribute('y2', 0);
-
 
 				if( series[ i ].markersShown() ) {
 					var marker = document.createElementNS(this.graph.ns, 'path');
@@ -95,16 +98,17 @@ define( [], function() {
 
 			var bbox = this.svg.getBBox();
 
-			this.rect.setAttribute('width', bbox.width );
-			this.rect.setAttribute('height', bbox.height);
+			this.width = bbox.width + this.options.paddingRight;
+			this.height = bbox.height + this.options.paddingBottom;
+
+			this.rect.setAttribute('width', this.width );
+			this.rect.setAttribute('height', this.height);
 			this.rect.setAttribute('fill', 'none');
 			this.rect.setAttribute('pointer-events', 'fill');
 			this.rect.style.cursor = "move";
 
-
-			this.rectBottom.setAttribute('width', bbox.width);
-			this.rectBottom.setAttribute('height', bbox.height );
-			
+			this.rectBottom.setAttribute('width', this.width);
+			this.rectBottom.setAttribute('height', this.height );
 
 			this.svg.appendChild( this.rect );
 		},
