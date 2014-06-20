@@ -7,8 +7,11 @@ requirejs.config({
 
 require( [ 'src/graph' ] , function( Graph ) {
 
-	var g1 = new Graph( "example-1" );
-	
+	var functions = [
+
+function( domGraph, domSource ) {
+
+	var g1 = new Graph( domGraph );
 	
 	var serie = g1.newSerie("serieTest")
 					.setLabel( "My serie" )
@@ -24,10 +27,31 @@ require( [ 'src/graph' ] , function( Graph ) {
 					.setLineColor('red');
 
 
-	var legend = g1.makeLegend();
+	var legend = g1.makeLegend({
+		frame: true,
+		frameWidth: 1,
+		frameColor: "green",
+		backgroundColor: "blue"
+	});
 
 	g1.redraw( );
 	g1.drawSeries();	
+}
+
+	]
+
+
+
+	for( var i = 0, l = functions.length ; i < l ; i ++ ) {
+
+		functions[ i ]("example-1-graph");
+		$("#example-1-source").html( functions[ i ].toString() );
+
+
+
+	}
+
+
 
 
 } );

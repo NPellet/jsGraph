@@ -1252,8 +1252,8 @@ define([
 			this.triggerEvent('onAnnotationUnselect', annot.data);
 		},
 
-		makeLegend: function() {
-			this.legend = new GraphLegend( this );
+		makeLegend: function( options ) {
+			this.legend = new GraphLegend( this, options );
 			this.dom.appendChild( this.legend.getDom() );
 			this.legend.update();
 
