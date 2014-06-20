@@ -1,9 +1,11 @@
 
 define([], function() {
 
-	return {
+	var plugin =  function() { };
 
-		init: function(graph) {
+	plugin.prototype = {
+
+		init: function( graph, options ) {
 
 			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
 
@@ -18,15 +20,17 @@ define([], function() {
 				'width': 0
 			});
 
+			this.options = options;
 			graph.dom.appendChild(this._zoomingSquare);
 		},
 
 		onMouseDown: function(graph, x, y, e, target) {
 
-			var zoomMode = graph.getZoomMode();
+			var zoomMode = this.options.zoomMode;
 
-			if(!zoomMode)
+			if( ! zoomMode ) {
 				return;
+			}
 
 			this._zoomingMode = zoomMode;
 			this._zoomingXStart = x;
@@ -95,4 +99,6 @@ define([], function() {
 			graph.drawSeries();
 		}
 	}
+
+	return plugin;
 });

@@ -1,6 +1,8 @@
 define([], function() {
 
-	return {
+	var plugin = function() {};
+
+	plugin.prototype = {
 
 		init: function() {},
 	
@@ -9,7 +11,8 @@ define([], function() {
 			this.count = this.count || 0;
 			if(this.count == graph.options.rangeLimitX)
 				return;
-			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal(x);
+			x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal( x );
+
 			var shape = graph.makeShape({type: 'rangeX', pos: {x: xVal, y: 0}, pos2: {x: xVal, y: 0}}, {
 				onChange: function(newData) {
 					self.triggerEvent('onAnnotationChange', newData);
@@ -19,10 +22,10 @@ define([], function() {
 			if(require) {
 				require(['src/util/context'], function(Context) {
 					Context.listen(shape._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
+						[ '<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>', 
 						function(e) {
 							shape.kill();
-						}]
+						} ]
 					]);
 				});
 			}
@@ -36,4 +39,7 @@ define([], function() {
 			shape.draw();
 		}
 	}
+
+
+	return plugin;
 });

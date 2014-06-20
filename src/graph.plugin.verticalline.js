@@ -1,7 +1,7 @@
 
 define( [], function() {
 
-	return {
+	return function() {
 
 		init: function(graph) {
 			var self = this;

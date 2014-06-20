@@ -40,9 +40,6 @@ define([
 		},
 
 		title: '',
-		zoomMode: false,
-		defaultMouseAction: 'drag', // rangeX, rangeY
-		shiftMouseAction: 'zoomXY', // rangeX, rangeY
 		defaultWheelAction: 'none',
 		lineToZero: false,
 		fontSize: 12,
@@ -54,12 +51,15 @@ define([
 		rangeLimitY: 0,		
 		unZoomMode: 'total',
 
-		plugins: ['./graph.plugin.zoom', './graph.plugin.drag'],
+		plugins: [],
+		keyCombinations: {}
 
-		keyCombinations: {
+		//plugins: ['./graph.plugin.zoom', './graph.plugin.drag'],
+
+		/*keyCombinations: {
 			'./graph.plugin.drag': { shift: true, ctrl: false },
 			'./graph.plugin.zoom': { shift: false, ctrl: false }
-		}
+		}*/
 	};
 
 
@@ -1186,33 +1186,53 @@ define([
 		},
 
 		_pluginsExecute: function(funcName, args) {
+
 			Array.prototype.splice.apply(args, [0, 0, this]);
+
 			for(var i in this._plugins) {
-				if(this._plugins[i] && this._plugins[i][funcName])
-					this._plugins[i][funcName].apply(this._plugins[i], args);
+
+				if( this._plugins[ i ] && this._plugins[ i ][ funcName ] ) {
+
+					this._plugins[ i ][ funcName ].apply( this._plugins[ i ], args );
+
+				}
 			}
 		},
 
 		_pluginExecute: function(which, func, args) {
-			Array.prototype.splice.apply(args, [0, 0, this]);
-			if(this._plugins[which] && this._plugins[which][func])
-				this._plugins[which][func].apply(this._plugins[which], args);
-			else
-				return;
+			
+			Array.prototype.splice.apply( args, [ 0, 0, this ] );
+
+			if( this._plugins[ which ] && this._plugins[ which ][ func ] ) {
+
+				this._plugins[ which ][ func ].apply( this._plugins[ which ], args );
+			}
 		},
 
 		_pluginsInit: function() {
 
-			var self = this;
+			var self = this,
+				pluginsToLoad;
 
 			this._plugins = this._plugins || {};
+			
 
-			require( this.options.plugins, function() {
+			if( Array.isArray( this.options.plugins ) ) {
+				pluginsToLoad = this.options.plugins
+			} else {
+				pluginsToLoad = [];
 
-				for(var i = 0, l = self.options.plugins.length; i < l; i++) {
+				for( var i in this.options.plugins ) {
+					pluginsToLoad.push( i );
+				}
+			}
 
-					self._plugins[ self.options.plugins[ i ] ] = arguments[ i ];
-					self._plugins[ self.options.plugins[ i ] ].init( self );
+			require( pluginsToLoad, function() {
+
+				for(var i = 0, l = pluginsToLoad.length; i < l; i++) {
+
+					self._plugins[ pluginsToLoad[ i ] ] = new arguments[ i ]();
+					self._plugins[ pluginsToLoad[ i ] ].init( self, self.options.plugins[ pluginsToLoad[ i ] ] || { } );
 				}
 
 				self._pluginsReady();

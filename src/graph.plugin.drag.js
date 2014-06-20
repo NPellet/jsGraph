@@ -1,7 +1,9 @@
 define([], function() {
 
 
-	return {
+	var plugin = function() {};
+
+	plugin.prototype = {
 
 		init: function() {},
 
@@ -33,4 +35,6 @@ define([], function() {
 			graph.drawSeries();
 		}
 	}
+
+	return plugin;
 });

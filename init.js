@@ -20,7 +20,7 @@ function( domGraph ) {
 		.showMarkers( true )
 		.setMarkerType( 1 );
 
-	graph.newSerie("serieTest")
+	graph.newSerie("serieTest_2")
 		.setLabel( "My serie 2" )
 		.autoAxis()
 		.setData( [ [2, 4], [3, 1], [5, 20] ] )
@@ -36,6 +36,32 @@ function( domGraph ) {
 
 	graph.redraw( );
 	graph.drawSeries();	
+},
+
+
+function( domGraph ) {
+
+	var graph = new Graph( domGraph, {
+
+		plugins: {
+			'./graph.plugin.zoom': { zoomMode: 'x' },
+			'./graph.plugin.drag': {}
+		},
+
+		keyCombinations: {
+			'./graph.plugin.drag': { shift: true, ctrl: false },
+			'./graph.plugin.zoom': { shift: false, ctrl: false }
+		}
+	} );
+	
+	graph.newSerie("serieTest_2")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setLineColor('red');
+
+	graph.redraw( );
+	graph.drawSeries();	
 }
 
 
@@ -46,10 +72,8 @@ function( domGraph ) {
 
 	for( var i = 0, l = functions.length ; i < l ; i ++ ) {
 
-		functions[ i ]("example-1-graph");
-		$("#example-1-source").html( functions[ i ].toString() );
-
-
+		functions[ i ]("example-" + ( i + 1 ) + "-graph");
+		$("#example-" + ( i + 1 ) + "-source").html( functions[ i ].toString() );
 
 	}
 
