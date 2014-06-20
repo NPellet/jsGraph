@@ -1169,26 +1169,37 @@ define( [], function() {
 		},
 
 		hideMarkers: function(skipRedraw) {
-			this.options.markers.hide = true;
+			this.options.markers.show = false;
 
-			if(!skipRedraw && this._drawn) {
+			if( ! skipRedraw && this._drawn ) {
 				this.draw();
 			}
+
 			return this;
+		},
+
+		markersShown: function() {
+			return this.options.markers.show;
 		},
 
 		setMarkerType: function(type, skipRedraw) {
 			this.options.markers.type = type;
 			
-			if(!skipRedraw && this._drawn)
+			if(!skipRedraw && this._drawn) {
 				this.draw();
+			}
+
+			return this;
 		},
 
 		setMarkerZoom: function(zoom, skipRedraw) {
 			this.options.markers.zoom = zoom;
 
-			if(!skipRedraw && this._drawn)
+			if(!skipRedraw && this._drawn) {
 				this.draw();
+			}
+
+			return this;
 		},
 
 		setMarkerStrokeColor: function(color, skipRedraw) {
@@ -1360,9 +1371,13 @@ define( [], function() {
 
 		getLabel: function() {
 			return this.options.label || this.name;
+		},
+
+		setLabel: function( label ) {
+			this.options.label = label;
+			return this;
 		}
 	}
 
 	return GraphSerie;
-
 });

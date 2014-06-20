@@ -21,7 +21,8 @@ define( [], function() {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
-			if(this._dom) {
+			if( this._dom ) {
+
 				this.group.appendChild(this._dom);
 
 				this._dom.addEventListener('mouseover', function (e) {

@@ -27,7 +27,6 @@ define( [], function() {
 				text,
 				g;
 
-				console.log( series );
 
 			for( var i = 0, l = series.length ; i < l ; i ++ ) {
 
@@ -38,17 +37,29 @@ define( [], function() {
 
 				line = document.createElementNS(this.graph.ns, 'line');
 				series[ i ].applyLineStyle( line );
+
 				line.setAttribute('x1', 0);
 				line.setAttribute('x2', 30);
 				line.setAttribute('y1', 0);
 				line.setAttribute('y2', 0);
 
-				
+
+				if( series[ i ].markersShown() ) {
+					var marker = document.createElementNS(this.graph.ns, 'path');
+					series[ i ].setMarkerStyleTo( marker , true);
+					marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ i ].options.markers.zoom + 1).join(" "));
+				}
+
 				text = document.createElementNS(this.graph.ns, 'text');
 				text.setAttribute('transform', 'translate(35, 3)');
 				text.textContent = series[ i ].getLabel();
 				
 				g.appendChild( line );
+
+				if( series[ i ].markersShown() ) {
+					g.appendChild( marker );	
+				}
+				
 				g.appendChild( text );
 			}
 
