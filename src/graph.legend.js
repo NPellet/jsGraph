@@ -79,8 +79,10 @@ define( [], function() {
 
 				( function( j ) {
 
+					var g, line, text;
+					
 					g = document.createElementNS(self.graph.ns, 'g');
-					g.setAttribute('transform', "translate(0, " + (i * 20 + 10 + this.options.paddingTop) + ")" );
+					g.setAttribute('transform', "translate(0, " + (i * 20 + 10 + self.options.paddingTop) + ")" );
 
 					self.svg.appendChild( g );
 
@@ -159,8 +161,8 @@ define( [], function() {
 			this.rect.setAttribute('display', 'none');
 			this.rectBottom.style.cursor = "move";
 
-			this.rectBottom.setAttribute('width', 200);
-			this.rectBottom.setAttribute('height', series.length * 20 );
+			this.rectBottom.setAttribute('width', this.width );
+			this.rectBottom.setAttribute('height', this.height );
 			
 
 			this.svg.appendChild( this.rect );
