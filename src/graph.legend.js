@@ -86,33 +86,15 @@ define( [], function() {
 
 					self.svg.appendChild( g );
 
-					line = document.createElementNS(self.graph.ns, 'line');
-					series[ j ].applyLineStyle( line );
+					var line = series[ j ].getLineForLegend();
+					var marker = series[ j ].getMarkerForLegend();
+					var text = series[ j ].getTextForLegend();
 
-					line.setAttribute('x1', 0);
-					line.setAttribute('x2', 30);
-					line.setAttribute('y1', 0);
-					line.setAttribute('y2', 0);
-
-					line.setAttribute('cursor', 'pointer');
-
-					if( series[ j ].markersShown() ) {
-						var marker = document.createElementNS(self.graph.ns, 'path');
-						series[ j ].setMarkerStyleTo( marker , true);
-						marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ j ].options.markers.zoom + 1).join(" "));
-					}
-
-					text = document.createElementNS(self.graph.ns, 'text');
-					text.setAttribute('transform', 'translate(35, 3)');
-					text.setAttribute('cursor', 'pointer');
-					text.textContent = series[ j ].getLabel();
-					
 					g.appendChild( line );
-
-					if( series[ j ].markersShown() ) {
+					if( marker ) {
 						g.appendChild( marker );	
 					}
-					
+	
 					g.appendChild( text );
 
 
@@ -123,24 +105,16 @@ define( [], function() {
 						if( serie.isSelected() ) {
 							
 							serie.hide();
-
-							line.setAttribute('opacity', 0.5);
-							text.setAttribute('opacity', 0.5);
-
 							self.graph.unselectSerie( serie );
-							series[ j ].applyLineStyle( line );
 
 						} else if( serie.isShown() ) {
 
 							self.graph.selectSerie( serie );
-							series[ j ].applyLineStyle( line );
+
 
 						} else {
 							serie.show();
-
-							line.setAttribute('opacity', 1);
-							text.setAttribute('opacity', 1);
-							
+	
 						}
 						
 					} );

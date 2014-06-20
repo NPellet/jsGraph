@@ -466,11 +466,17 @@ define( [], function() {
 		hide: function() {
 			this.shown = false;
 			this.groupMain.setAttribute('display', 'none');
+
+			this.getLineForLegend().setAttribute('opacity', 0.5);
+			this.getTextForLegend().setAttribute('opacity', 0.5);
 		},
 
 		show: function() {
 			this.shown = true;
 			this.groupMain.setAttribute('display', 'block');
+
+			this.getLineForLegend().setAttribute('opacity', 1);
+			this.getTextForLegend().setAttribute('opacity', 1);
 		},
 
 		toggleShow: function() {
@@ -478,6 +484,7 @@ define( [], function() {
 				this.show();
 				return;
 			}
+
 
 			this.hide();
 		},
@@ -494,6 +501,8 @@ define( [], function() {
 				this.applyLineStyle( this.lines[ i ] );
 
 			}
+
+			this.applyLineStyle( this.getLineForLegend() );
 		},
 
 		unselect: function() {
@@ -503,6 +512,9 @@ define( [], function() {
 			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
 				this.applyLineStyle( this.lines[ i ] );
 			}
+
+			
+			this.applyLineStyle( this.getLineForLegend() );
 
 		},
 
@@ -1432,7 +1444,63 @@ define( [], function() {
 		setLabel: function( label ) {
 			this.options.label = label;
 			return this;
+		},
+
+		getLineForLegend: function() {
+
+			if( ! this.lineForLegend ) {
+
+				var line = document.createElementNS( this.graph.ns, 'line' );
+				this.applyLineStyle( line );
+
+				line.setAttribute('x1', 5);
+				line.setAttribute('x2', 20);
+				line.setAttribute('y1', 0);
+				line.setAttribute('y2', 0);
+
+				line.setAttribute('cursor', 'pointer');
+
+				this.lineForLegend = line;
+			}
+
+			return this.lineForLegend;
+
+		},
+
+		getMarkerForLegend: function() {
+
+			if( ! this.markersShown() ) {
+				return;
+			}
+
+			if( ! this.markerForLegend ) {
+
+				var marker = document.createElementNS( this.graph.ns, 'path');
+				this.setMarkerStyleTo( marker , true);
+				marker.setAttribute('d', "M 15 0 " + this.getMarkerPath( this.options.markers.zoom + 1 ).join(" ") );
+
+				this.markerForLegend = marker;
+			}
+
+			return this.markerForLegend;
+
+		},
+
+		getTextForLegend: function() {
+
+			if( ! this.textForLegend ) {
+
+				var text = document.createElementNS( this.graph.ns, 'text' );
+				text.setAttribute('transform', 'translate(35, 3)');
+				text.setAttribute('cursor', 'pointer');
+				text.textContent = this.getLabel( );
+
+				this.textForLegend = text;	
+			}
+
+			return this.textForLegend;
 		}
+					
 	}
 
 	return GraphSerie;
