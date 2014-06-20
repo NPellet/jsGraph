@@ -1254,9 +1254,19 @@ define([
 
 		makeLegend: function() {
 			this.legend = new GraphLegend( this );
-
 			this.dom.appendChild( this.legend.getDom() );
+			this.legend.update();
+
 			return this.legend;
+		},
+
+		updateLegend: function() {
+
+			if( ! this.legend ) {
+				return;
+			}
+
+			this.legend.update();
 		}
 	}
 

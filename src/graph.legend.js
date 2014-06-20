@@ -32,7 +32,7 @@ define( [], function() {
 			for( var i = 0, l = series.length ; i < l ; i ++ ) {
 
 				g = document.createElementNS(this.graph.ns, 'g');
-				g.setAttribute('transform', "translate(0, " + i * 20 + 10 + ")" );
+				g.setAttribute('transform', "translate(0, " + (i * 20 + 10) + ")" );
 
 				this.svg.appendChild( g );
 
@@ -46,7 +46,7 @@ define( [], function() {
 				
 				text = document.createElementNS(this.graph.ns, 'text');
 				text.setAttribute('transform', 'translate(35, 3)');
-				text.textContent = 'sdfsdf';
+				text.textContent = series[ i ].getLabel();
 				
 				g.appendChild( line );
 				g.appendChild( text );

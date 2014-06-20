@@ -9,6 +9,7 @@ define( [], function() {
 			lineColor: 'black',
 			lineStyle: 1,
 			flip: false,
+			label: "",
 
 			markers: {
 				show: false,
@@ -31,7 +32,7 @@ define( [], function() {
 		},
 
 
-		init: function(graph, name, options) {
+		init: function( graph, name, options ) {
 
 			var self = this;
 			this.graph = graph;
@@ -1132,6 +1133,7 @@ define( [], function() {
 
 		setLineWidth: function(width) {
 			this.options.lineWidth = width;
+			return this;
 		},
 
 		getLineWidth: function() {
@@ -1143,6 +1145,7 @@ define( [], function() {
 
 		setLineColor: function(color) {
 			this.options.lineColor = color;
+			return this;
 		},
 
 		getLineColor: function() {
@@ -1158,15 +1161,20 @@ define( [], function() {
 		showMarkers: function(skipRedraw) {
 			this.options.markers.show = true;
 
-			if(!skipRedraw && this._drawn)
+			if(!skipRedraw && this._drawn) {
 				this.draw();
+			}
+
+			return this;
 		},
 
-		hideMarkes: function(skipRedraw) {
+		hideMarkers: function(skipRedraw) {
 			this.options.markers.hide = true;
 
-			if(!skipRedraw && this._drawn)
+			if(!skipRedraw && this._drawn) {
 				this.draw();
+			}
+			return this;
 		},
 
 		setMarkerType: function(type, skipRedraw) {
@@ -1348,6 +1356,10 @@ define( [], function() {
 				e.preventDefault();
 				e.stopPropagation();
 			});
+		},
+
+		getLabel: function() {
+			return this.options.label || this.name;
 		}
 	}
 
