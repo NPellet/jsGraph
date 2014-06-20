@@ -28,7 +28,8 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		.setLineColor('red');
 
 
-	graph.makeLegend({
+	var legend = graph.makeLegend({
+
 		frame: true,
 		frameWidth: 1,
 		frameColor: "black",
@@ -37,6 +38,10 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	graph.redraw( );
 	graph.drawSeries();	
+
+	legend.setPosition( { dx: "-0px", dy: "0px", x: "max", y: "max" }, "right", "top" );
+
+
 }, "Default functionnality", "" ],
 
 [ function( domGraph ) {

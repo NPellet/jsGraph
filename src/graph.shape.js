@@ -209,66 +209,15 @@ define( [], function() {
 		unHighlightImpl: function() {},
 
 		_getPosition: function(value, relTo) {
-			var parsed, pos = {x: false, y: false};
-			if(!value)
-				return;
 
-			for(var i in pos) {
-				if(value[i] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
-					if(i == 'x') {
-						pos[i] = relTo ? relTo[i] : this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(0);
-					} else if(value.x && this.serie) {
-						var closest = this.serie.searchClosestValue(value.x);
-						if(!closest)
-							return;
-						pos[i] = this.serie.getY(closest.yMin);
-					}
-				} else if(value[i] !== undefined) {
+			var xAxis = yAxis = false;
 
-					if((parsed = this._parsePx(value[i])) !== false) {
-						pos[i] = parsed; // return integer (will be interpreted as px)
-					} else if(parsed = this._parsePercent(value[i])) {
-						pos[i] = parsed; // returns xx%
-					} else if(this.serie) {
-						pos[i] = this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getPos(value[i]);
-					}
-				}
-
-				if(value['d' + i] !== undefined) {
-					var def = (value[i] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true) || 0);
-					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
-						pos[i] = def + parsed;  // return integer (will be interpreted as px)
-					} else if(parsed = this._parsePercent(value['d' + i])) {
-						pos[i] = def + this._getPositionPx(parsed, true); // returns xx%
-					} else if(this.serie) {
-						pos[i] = def + this.serie[i == 'x' ? 'getXAxis' : 'getYAxis']().getRelPx(value['d' + i]); // px + unittopx
-					}
-				}
+			if( this.serie ) {
+				xAxis = this.serie.getXAxis();
+				yAxis = this.serie.getYAxis();
 			}
-			return pos;
-		},
 
-		_getPositionPx: function(value, x) {
-			if(parsed = this._parsePx(value))
-				return parsed; // return integer (will be interpreted as px)
-			if(parsed = this._parsePercent(value))
-				return parsed / 100 * (x ? this.graph.getDrawingWidth() : this.graph.getDrawingHeight());
-			else if(this.serie)
-				return this.serie[x ? 'getXAxis' : 'getYAxis']().getPos(value);
-		},
-
-
-		_parsePx: function(px) {
-			if(px && px.indexOf && px.indexOf('px') > -1)
-				return parseInt(px.replace('px', ''));
-			return false;
-		},
-
-		_parsePercent: function(percent) {
-			if(percent && percent.indexOf && percent.indexOf('px') > -1) {
-				return percent;
-			}
-			return false;	
+			return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
 		},
 
 		setLabelNumber: function(nb) {

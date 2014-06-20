@@ -965,6 +965,8 @@ define([
 		autoscaleAxes: function() {
 
 			this.applyToAxes( "setMinMaxToFitSeries", null, true, true );
+			this.redraw();
+			
 		},
 
 		closeLine: function(mode, x1, x2, y1, y2) {	
@@ -1324,7 +1326,7 @@ define([
 
 		makeLegend: function( options ) {
 			this.legend = new GraphLegend( this, options );
-			this.dom.appendChild( this.legend.getDom() );
+			this.graphingZone.appendChild( this.legend.getDom() );
 			this.legend.update();
 
 			return this.legend;
@@ -1337,6 +1339,131 @@ define([
 			}
 
 			this.legend.update();
+		},
+
+
+		getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
+
+			var parsed,
+				pos = { x: false, y: false };
+
+			if( ! xAxis ) {
+				xAxis = this.getXAxis();
+			}
+
+			if( ! yAxis ) {
+				yAxis = this.getYAxis();
+			}
+
+			if( ! value ) {
+				return;
+			}
+
+			for(var i in pos) {
+
+				var axis = i == 'x' ? xAxis : yAxis;
+
+				if( value[ i ] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
+					
+					if(i == 'x') {
+
+						pos[i] = relTo ? relTo[i] : axis.getPos(0);
+
+					} else if( value.x && onSerie) {
+
+						var closest = onSerie.searchClosestValue( value.x );
+
+						if( ! closest ) {
+							return;
+						}
+
+						pos[ i ] = onSerie.getY( closest.yMin );
+
+					}
+
+				} else if( value[ i ] !== undefined ) {
+
+					if( ( parsed = this._parsePx( value[ i ] ) ) !== false ) {
+
+						pos[i] = parsed; // return integer (will be interpreted as px)
+
+					} else if( parsed = this._parsePercent( value[ i ] ) ) {
+
+						pos[i] = parsed; // returns xx%
+
+					} else if( axis ) {
+
+						if( value[ i ] == "min" ) {
+
+							pos[ i ] = axis.getMinPx();
+
+						} else if( value[ i ] == "max" ) {
+
+							pos[ i ] = axis.getMaxPx();
+						
+						} else {
+
+							pos[i] = axis.getPos( value[ i ] );
+
+						}
+					}
+				}
+
+				if(value['d' + i] !== undefined) {
+
+					var def = (value[ i ] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true, axis) || 0);
+
+					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
+
+						pos[i] = def + parsed;  // return integer (will be interpreted as px)
+
+					} else if(parsed = this._parsePercent(value['d' + i])) {
+
+						pos[i] = def + this._getPositionPx(parsed, true, axis); // returns xx%
+
+					} else if( axis ) {
+
+						pos[i] = def + axis.getRelPx(value['d' + i]); // px + unittopx
+
+					}
+				}
+			}
+
+			return pos;
+		},
+
+		_getPositionPx: function(value, x, axis) {
+
+			if(parsed = this._parsePx(value)) {
+
+				return parsed; // return integer (will be interpreted as px)
+
+			}
+
+			if( parsed = this._parsePercent( value ) ) {
+
+				return parsed / 100 * ( x ? this.graph.getDrawingWidth( ) : this.graph.getDrawingHeight( ) );
+
+			} else if( axis ) {
+
+				return axis.getPos(value);
+
+			}
+		},
+
+
+		_parsePx: function( px ) {
+			if( px && px.indexOf && px.indexOf('px') > -1) {
+				return parseInt(px.replace('px', ''));
+			}
+			return false;
+		},
+
+		_parsePercent: function(percent) {
+			if(percent && percent.indexOf && percent.indexOf('%') > -1) {
+				return percent;
+			}
+			return false;	
 		}
 	}
 
