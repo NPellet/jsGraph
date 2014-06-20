@@ -26,6 +26,8 @@ define( [], function() {
 			trackMouseLabelRouding: 1,
 			lineToZero: false,
 
+			lineWidth: 1,
+
 			autoPeakPicking: false,
 			autoPeakPickingNb: 4,
 			autoPeakPickingMinDistance: 10
@@ -39,6 +41,7 @@ define( [], function() {
 			this.name = name;
 			this.id = Math.random() + Date.now();
 
+			this.shown = true;
 			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
 			this.data = [];
 			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
@@ -460,7 +463,55 @@ define( [], function() {
 		},
 
 
+		hide: function() {
+			this.shown = false;
+			this.groupMain.setAttribute('display', 'none');
+		},
+
+		show: function() {
+			this.shown = true;
+			this.groupMain.setAttribute('display', 'block');
+		},
+
+		toggleShow: function() {
+			if( ! this.shown ) {
+				this.show();
+				return;
+			}
+
+			this.hide();
+		},
+
+		isShown: function() {
+			return this.shown;
+		},
+
+		select: function() {
+			this.selected = true;
+
+			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
+
+				this.applyLineStyle( this.lines[ i ] );
+
+			}
+		},
+
+		unselect: function() {
+
+			this.selected = false;
+
+			for( var i = 0, l = this.lines.length ; i < l ; i ++ ) {
+				this.applyLineStyle( this.lines[ i ] );
+			}
+
+		},
+
+		isSelected: function() {
+			return this.selected;
+		},
+
 		draw: function() { // Serie redrawing
+
 
 			var x, 
 				y, 
@@ -773,7 +824,7 @@ define( [], function() {
 
 		applyLineStyle: function( line ) {
 			line.setAttribute('stroke', this.getLineColor());
-			line.setAttribute('stroke-width', this.getLineWidth());
+			line.setAttribute('stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
 			if(this.getLineDashArray())
 				line.setAttribute('stroke-dasharray', this.getLineDashArray());
 			line.setAttribute('fill', 'none');

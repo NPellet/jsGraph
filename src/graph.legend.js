@@ -30,6 +30,7 @@ define( [], function() {
 
 		update: function() {
 
+			var self = this;
 			this.applyStyle();
 
 			while( this.svg.hasChildNodes( ) ) {
@@ -44,53 +45,89 @@ define( [], function() {
 				text,
 				g;
 
+			
 
 			for( var i = 0, l = series.length ; i < l ; i ++ ) {
 
-				g = document.createElementNS(this.graph.ns, 'g');
-				g.setAttribute('transform', "translate(0, " + (i * 20 + 10) + ")" );
+				( function( j ) {
 
-				this.svg.appendChild( g );
+					g = document.createElementNS(self.graph.ns, 'g');
+					g.setAttribute('transform', "translate(0, " + (i * 20 + 10) + ")" );
 
-				line = document.createElementNS(this.graph.ns, 'line');
-				series[ i ].applyLineStyle( line );
+					self.svg.appendChild( g );
 
-				line.setAttribute('x1', 0);
-				line.setAttribute('x2', 30);
-				line.setAttribute('y1', 0);
-				line.setAttribute('y2', 0);
+					line = document.createElementNS(self.graph.ns, 'line');
+					series[ j ].applyLineStyle( line );
+
+					line.setAttribute('x1', 0);
+					line.setAttribute('x2', 30);
+					line.setAttribute('y1', 0);
+					line.setAttribute('y2', 0);
+
+					line.setAttribute('cursor', 'pointer');
+
+					if( series[ j ].markersShown() ) {
+						var marker = document.createElementNS(self.graph.ns, 'path');
+						series[ j ].setMarkerStyleTo( marker , true);
+						marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ i ].options.markers.zoom + 1).join(" "));
+					}
+
+					text = document.createElementNS(self.graph.ns, 'text');
+					text.setAttribute('transform', 'translate(35, 3)');
+					text.setAttribute('cursor', 'pointer');
+					text.textContent = series[ j ].getLabel();
+					
+					g.appendChild( line );
+
+					if( series[ j ].markersShown() ) {
+						g.appendChild( marker );	
+					}
+					
+					g.appendChild( text );
 
 
-				if( series[ i ].markersShown() ) {
-					var marker = document.createElementNS(this.graph.ns, 'path');
-					series[ i ].setMarkerStyleTo( marker , true);
-					marker.setAttribute('d', "M 15 0 " + series[ i ].getMarkerPath(series[ i ].options.markers.zoom + 1).join(" "));
-				}
+					g.addEventListener('click', function( e ) {
 
-				text = document.createElementNS(this.graph.ns, 'text');
-				text.setAttribute('transform', 'translate(35, 3)');
-				text.textContent = series[ i ].getLabel();
-				
-				g.appendChild( line );
+						var serie = series[ j ];
 
-				if( series[ i ].markersShown() ) {
-					g.appendChild( marker );	
-				}
-				
-				g.appendChild( text );
+						if( serie.isSelected() ) {
+							
+							serie.hide();
+
+							line.setAttribute('opacity', 0.5);
+							text.setAttribute('opacity', 0.5);
+
+							self.graph.unselectSerie( serie );
+							series[ j ].applyLineStyle( line );
+
+						} else if( serie.isShown() ) {
+
+							self.graph.selectSerie( serie );
+							series[ j ].applyLineStyle( line );
+
+						} else {
+							serie.show();
+
+							line.setAttribute('opacity', 1);
+							text.setAttribute('opacity', 1);
+							
+						}
+						
+					} );
+
+				}) ( i );
 			}
 
 			this.rect.setAttribute('width', 200);
 			this.rect.setAttribute('height', series.length * 20 );
 			this.rect.setAttribute('fill', 'none');
 			this.rect.setAttribute('pointer-events', 'fill');
-			this.rect.style.cursor = "move";
-
+			this.rect.setAttribute('display', 'none');
+			this.rectBottom.style.cursor = "move";
 
 			this.rectBottom.setAttribute('width', 200);
 			this.rectBottom.setAttribute('height', series.length * 20 );
 			
-
 			this.svg.appendChild( this.rect );
 		},
 
@@ -103,23 +140,24 @@ define( [], function() {
 			var self = this;
 			var pos = this.pos;
 
-			this.rect.addEventListener('mousedown', function( e ) {
-
-				console.log( e );
-
+			var mousedown = function( e ) {
 				pos.x = e.clientX;
 				pos.y = e.clientY;
 				e.stopPropagation();
 				e.preventDefault();
 				self.mousedown = true;
 				self.graph.annotationMoving( self );
-			});
 
-			this.rect.addEventListener('mousemove', function( e ) {
-				
+				self.rect.setAttribute('display', 'block');
+			};
+
+			var mousemove = function( e ) {	
 				self.handleMouseMove( e );
-			});
+			}
 
+			this.rectBottom.addEventListener('mousedown', mousedown);
+			this.rectBottom.addEventListener('mousemove', mousemove);
+			this.rect.addEventListener('mousemove', mousemove);
 		},
 
 		handleMouseUp: function( e ) {
@@ -127,6 +165,8 @@ define( [], function() {
 			e.stopPropagation();
 			e.preventDefault();
 			this.mousedown = false;
+
+			this.rect.setAttribute('display', 'none');
 
 			this.graph.annotationStopMoving();
 		},

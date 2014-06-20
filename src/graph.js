@@ -1300,6 +1300,28 @@ define([
 			this.triggerEvent('onAnnotationUnselect', annot.data);
 		},
 
+
+		selectSerie: function( serie ) {
+
+			if( this.selectedSerie == serie ) {
+				return;
+			}
+
+			if( this.selectedSerie ) {
+
+				this.selectedSerie.unselect();
+			}
+
+			this.selectedSerie = serie;
+			serie.select();
+		},
+
+		unselectSerie: function( serie ) {
+
+			serie.unselect();
+			this.selectedSerie = false;
+		},
+
 		makeLegend: function( options ) {
 			this.legend = new GraphLegend( this, options );
 			this.dom.appendChild( this.legend.getDom() );
