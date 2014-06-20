@@ -973,7 +973,7 @@ define([
 		closeLine: function(mode, x1, x2, y1, y2) {	
 			
 			if( this.options.close[ mode ] && this.axis[ mode ].length == 0 ) {
-console.log( mode, x1, x2, y1, y2);
+
 				this.closingLines[ mode ].setAttribute('display', 'block');
 				this.closingLines[ mode ].setAttribute('x1', x1);
 				this.closingLines[ mode ].setAttribute('x2', x2);

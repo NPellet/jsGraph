@@ -112,7 +112,7 @@ define([], function() {
 
 			if( pref.mode == 'total' ) {
 
-				this.graph.autoScaleAxis();
+				this.graph.autoscaleAxes();
 				this.graph.redraw();
 				this.graph.drawSeries();
 
