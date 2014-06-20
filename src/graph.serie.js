@@ -1179,7 +1179,7 @@ define( [], function() {
 		},
 
 		markersShown: function() {
-			return this.options.markers.show;
+			return this.options.markers.show;	
 		},
 
 		setMarkerType: function(type, skipRedraw) {
