@@ -182,7 +182,12 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 				max = Math.max(max, this.graph.series[i].getMax(start, end));
 			}
 			this._doZoomVal(0, max);
+		},
+
+		isXY: function() {
+			return 'y';
 		}
+		
 	});
 
 	return GraphYAxis;

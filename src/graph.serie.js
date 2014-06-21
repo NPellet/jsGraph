@@ -921,6 +921,18 @@ define( [], function() {
 			return this.yaxis;
 		},
 
+		setAxes: function() {
+
+			for( var i = 0 ; i < 2 ; i ++ ) {
+
+				if( arguments[ i ] ) {
+					this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis') ]( arguments[ i ] );
+				}
+			}
+
+			return this;
+		},
+
 		/* */
 		
 

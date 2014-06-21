@@ -101,7 +101,15 @@ define([], function() {
 		},
 
 		onMouseWheel: function( delta, e ) {
-			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);
+
+			var serie;
+			if( ( serie = this.graph.getSelectedSerie() ) ) {
+
+				serie.getYAxis().handleMouseWheel( delta, e );
+				return;	
+			} 
+
+			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
 		},
 
 		onDblClick: function( x, y, pref, e ) {

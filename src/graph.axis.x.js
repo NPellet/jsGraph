@@ -8,7 +8,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 		this.top = topbottom == 'top';
 	}
 
-	$.extend(GraphXAxis.prototype, GraphAxis.prototype, {
+	$.extend( GraphXAxis.prototype, GraphAxis.prototype, {
 
 		getAxisPosition: function() {
 			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
@@ -140,7 +140,12 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 		handleMouseMoveLocal: function(x, y, e) {
 			x -= this.graph.getPaddingLeft();
 			this.mouseVal = this.getVal(x);
+		},
+
+		isXY: function() {
+			return 'x';
 		}
+
 	});
 
 	

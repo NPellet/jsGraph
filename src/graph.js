@@ -28,7 +28,7 @@ define([
 	var graphDefaults = {
 
 		paddingTop: 30,
-		paddingBottom: 0,
+		paddingBottom: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
 
@@ -1328,6 +1328,10 @@ define([
 
 			serie.unselect();
 			this.selectedSerie = false;
+		},
+
+		getSelectedSerie: function() {
+			return this.selectedSerie;
 		},
 
 		makeLegend: function( options ) {

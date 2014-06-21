@@ -122,7 +122,56 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.drawSeries( );
 
 
-}, "Pimp the axis", "" ] ]
+}, "Pimp the axis", "" ],
+
+
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { 
+
+
+		wheel: {
+			type: 'plugin',
+			plugin: './graph.plugin.zoom',
+			options: {
+				direction: 'y'
+			}
+		},
+
+		plugins: {
+			'./graph.plugin.zoom': { }
+		}
+
+	 } );
+	
+	var xAxis = graph.getXAxis();
+	var leftAxis = graph.getLeftAxis();
+	var rightAxis = graph.getRightAxis();
+
+	graph.newSerie( "serieTest" )
+		.setLabel( "My serie" )
+		.setAxes( xAxis, leftAxis )
+		.setData( [ [1, 2], [2, 5], [3, 10] ] )
+		.showMarkers( true )
+		.setMarkerType( 1 );
+
+	graph.newSerie( "serieTest_2" )
+		.setLabel( "My serie 2" )
+		.setAxes( xAxis, rightAxis )
+		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setLineColor('red');
+
+	var legend = graph.makeLegend();
+
+	graph.redraw( );
+	graph.drawSeries();	
+	legend.setPosition( { dx: "-10px", dy: "10px", x: "max", y: "max" }, "right", "top" );
+
+}, "Scaling different axis", "" ],
+
+
+
+ ]
 
 
 
