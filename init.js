@@ -39,7 +39,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.redraw( );
 	graph.drawSeries();	
 
-	legend.setPosition( { dx: "-0px", dy: "0px", x: "max", y: "max" }, "right", "top" );
+	legend.setPosition( { dx: "-10px", dy: "10px", x: "max", y: "max" }, "right", "top" );
 
 
 }, "Default functionnality", "" ],
@@ -75,10 +75,15 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		}
 	} );
 	
+	var data = [];
+	for( var i = 0; i < Math.PI * 10; i += 0.01 ) {
+		data.push( [ i , Math.sin( i ) * i ] );
+	}
+
 	graph.newSerie("serieTest_2")
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setData( data )
 		.setLineColor('red');
 
 	graph.redraw( );
