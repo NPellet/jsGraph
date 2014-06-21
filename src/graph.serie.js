@@ -998,7 +998,8 @@ define( [], function() {
 		searchIndexByPxXY: function(x,y) {
 
 			var oldDist = false,
-				xyindex = false;
+				xyindex = false,
+				dist;
 
 			for(var i = 0, l = this.data.length; i < l; i++) {
 				for(var k = 0, m = this.data[i].length; k < m; k+=2) {
@@ -1018,6 +1019,8 @@ define( [], function() {
 
 		searchClosestValue: function(valX) {
 
+			var xMinIndex;
+			
 			for(var i = 0; i < this.data.length; i++) {
 
 				if((valX <= this.data[i][this.data[i].length - 2] && valX > this.data[i][0])) {

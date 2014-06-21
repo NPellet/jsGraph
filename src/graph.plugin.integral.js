@@ -1,22 +1,26 @@
 define([], function() {
 
-	return function() {
+	var plugin = function() { };
+
+	plugin.prototype = {
 
 		init: function() {},
 		
 		onMouseDown: function(graph, x, y, e, target) {
 			
-			var self = graph;
+			var self = graph,
+				selfPlugin = this;
 			
 			this.count = this.count || 0;
 
 			x -= graph.getPaddingLeft( ),
 			xVal = graph.getXAxis().getVal( x );
 
-			var color = Util.getNextColorRGB(this.count, 100);
+			//var color = Util.getNextColorRGB(this.count, 100);
+			var color = [100, 100, 100];
 
 			var shape = graph.makeShape( {
-				type: 'surfaceUnderCurve', 
+				type: 'areaundercurve',
 				pos: {
 					x: xVal, 
 					y: 0
@@ -32,15 +36,23 @@ define([], function() {
 					self.triggerEvent('onAnnotationChange', newData);
 				}
 
-			}, {}, true );
+			}, {}, true ).then( function( shape ) {
 
-			if( ! shape ) {
-				return;
-			}
+				if( ! shape ) {
+					return;
+				}
 
-			this.count ++;
-			shape.handleMouseDown( e, true );
-			shape.draw( );
+				self.count ++;
+				shape.handleMouseDown( e, true );
+				shape.draw( );
+
+			});
+
 		}
+	
+
 	}
+
+	return plugin;
+
 });

@@ -42,7 +42,7 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
 		handleMouseDown: function(e) {
 			this.moving = true;
-			this.graph.annotationMoving(this);
+			this.graph.shapeMoving(this);
 			this.coordsI = this.graph.getXY(e);
 		},
 

@@ -57,7 +57,7 @@ define([
 	};
 
 
-	var Graph = function(dom, options, axis) {
+	var Graph = function( dom, options, axis ) {
 
 		this._creation = Date.now() + Math.random();
 
@@ -177,9 +177,7 @@ define([
 			});
 			this.dom.appendChild(this.graphingZone);
 
-			this.shapeZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.shapeZone);
-
+	
 		/*	this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
 			//this.shapeZoneRect.setAttribute('pointer-events', 'fill');
 			this.shapeZoneRect.setAttribute('fill', 'transparent');
@@ -187,6 +185,9 @@ define([
 		*/
 			this.axisGroup = document.createElementNS(this.ns, 'g');
 			this.graphingZone.appendChild(this.axisGroup);
+
+			this.shapeZone = document.createElementNS(this.ns, 'g');
+			this.graphingZone.appendChild(this.shapeZone);
 
 
 			this.plotGroup = document.createElementNS(this.ns, 'g');
@@ -505,11 +506,11 @@ define([
 			}
 		},
 
-		annotationMoving: function( movingElement ) {
+		shapeMoving: function( movingElement ) {
 			this.bypassHandleMouse = movingElement;
 		},
 
-		annotationStopMoving: function() {
+		shapeStopMoving: function() {
 			this.bypassHandleMouse = false;
 		},
 
@@ -1118,75 +1119,91 @@ define([
 			return this.options.zoomMode;
 		},
 
-		makeShape: function(annotation, events, notify) {
-			var response;
-			annotation.id = Math.random();
+		makeShape: function(shapeData, events, notify) {
+
+			var self = this,
+				response,
+				deferred = $.Deferred();
+			
+			shapeData.id = Math.random();
 
 			if(notify) {
-				if(false === (response = this.triggerEvent('onAnnotationBeforeMake', annotation))) {
+				if(false === (response = this.triggerEvent('onShapeBeforeMake', shapeData))) {
 					return;
 				}
 			}
 
 			if(response) {
-				annotation = response;
+				shapeData = response;
 			}
 
 
-			var shapeConstructor = require( './graph.shape.' + annotation.type );
-			var shape = new shapeConstructor( this );
+			var shapeConstructor = require( [ './graph.shape.' + shapeData.type ], function( shapeConstructor ) {
 
+				var shape = new shapeConstructor( self );
 
-			shape.setSerie( this.getSerie( 0 ) );
+				shape.setSerie( self.getSerie( 0 ) );
 
-			if(!shape) {
-				return;
-			}
-
-			shape.setOriginalData( annotation, events );
-			if( annotation.data ) {
-				annotation.data.id = this.id;
-			}
-
-			
-			if(annotation.fillColor)	shape.set('fillColor', annotation.fillColor);
-			if(annotation.strokeColor)	shape.set('strokeColor', annotation.strokeColor);
-			if(annotation.strokeWidth)	shape.set('strokeWidth', annotation.strokeWidth || (annotation.strokeColor ? 1 : 0));
-
-			if(annotation.label) {
-
-				if ( ! ( annotation.label instanceof Array ) ) {
-					annotation.label = [ annotation.label ];
+				if(!shape) {
+					return;
 				}
 
-				for ( var i = 0, l = annotation.label.length ; i < l ; i++) {
-
-					shape.set('labelPosition', annotation.label[i].position, i);
-					shape.set('labelColor', annotation.label[i].color || 'black', i);
-					shape.set('labelSize', annotation.label[i].size, i);
-					shape.set('labelAngle', annotation.label[i].angle || 0, i);
-
-
-					if(annotation.label[i].anchor)
-						shape.set('labelAnchor', annotation.label[i].anchor, i);
+				shape.setOriginalData( shapeData, events );
+				if( shape.data ) {
+					shape.data.id = self.id;
 				}
 
-				shape.setLabelNumber(l);
-			}
+				
+				if( shapeData.fillColor ) {
+					shape.set( 'fillColor', shapeData.fillColor );
+				}	
 
-			/*switch(annotation.type) {
-				case 'rect':
-				case 'rectangle':
-					shape.set('width', annotation.width);
-					shape.set('height', annotation.height);
-				break;
-			}*/
-			this.shapes.push(shape);
+				if( shapeData.strokeColor ) {
+					shape.set( 'strokeColor', shapeData.strokeColor );
+				}
 
-			this.triggerEvent('onAnnotationMake', annotation, shape);
+				if( shapeData.strokeWidth ) {
+					shape.set( 'strokeWidth', shapeData.strokeWidth || (shapeData.strokeColor ? 1 : 0));
+				}	
+
+				if(shapeData.label) {
+
+					if ( ! ( shapeData.label instanceof Array ) ) {
+						shapeData.label = [ shapeData.label ];
+					}
+
+					for ( var i = 0, l = shapeData.label.length ; i < l ; i++) {
+
+						shape.set('labelPosition', shapeData.label[i].position, i);
+						shape.set('labelColor', shapeData.label[i].color || 'black', i);
+						shape.set('labelSize', shapeData.label[i].size, i);
+						shape.set('labelAngle', shapeData.label[i].angle || 0, i);
 
 
-			return shape;
+						if(shapeData.label[i].anchor) {
+							shape.set('labelAnchor', shapeData.label[i].anchor, i);
+						}
+					}
+
+					shape.setLabelNumber(l);
+				}
+
+				/*switch(shape.type) {
+					case 'rect':
+					case 'rectangle':
+						shape.set('width', shape.width);
+						shape.set('height', shape.height);
+					break;
+				}*/
+				self.shapes.push(shape);
+
+				self.triggerEvent('onShapeMake', shape, shapeData);
+
+				deferred.resolve( shape );
+
+			} );
+
+			return deferred;
 		},
 
 		redrawShapes: function() {
@@ -1198,7 +1215,7 @@ define([
 			//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 		},
 
-		removeAnnotations: function() {
+		removeShapes: function() {
 			for(var i = 0, l = this.shapes.length; i < l; i++) {
 				this.shapes[i].kill();
 			}
@@ -1291,21 +1308,21 @@ define([
 			return;
 		},
 
-		selectAnnotation: function(annot) {
-			if(this.selectedAnnotation == annot)
+		selectShape: function(annot) {
+			if(this.selectedShape == annot)
 				return;
 
-			if( this.selectedAnnotation ) { // Only one selected annotation at the time
-				this.selectedAnnotation.unselect( );
+			if( this.selectedShape ) { // Only one selected shape at the time
+				this.selectedShape.unselect( );
 			}
 
-			this.selectedAnnotation = annot;
-			this.triggerEvent('onAnnotationSelect', annot.data);
+			this.selectedShape = annot;
+			this.triggerEvent('onShapeSelect', annot.data);
 		},
 
-		unselectAnnotation: function(annot) {
-			this.selectedAnnotation = false;
-			this.triggerEvent('onAnnotationUnselect', annot.data);
+		unselectShape: function(annot) {
+			this.selectedShape = false;
+			this.triggerEvent('onShapeUnselect', annot.data);
 		},
 
 
@@ -1474,6 +1491,34 @@ define([
 				return percent;
 			}
 			return false;	
+		},
+
+
+		contextListen: function( target, menuElements, callback ) {
+
+			var self = this;
+
+			if( this.options.onContextMenuListen ) {
+				return this.options.onContextMenuListen( target, menuElements, callback );
+			}
+
+
+			if( ! this.context ) {
+
+				require( [ './util/context' ], function( Context ) {
+
+					var instContext = new Context();
+
+					instContext.init( self._dom );
+					instContext.listen( target, menuElements, callback );
+
+					self.context = instContext;
+				});	
+
+			} else {
+				this.context.listen( target, menuElements, callback );
+			}
+			
 		}
 	}
 

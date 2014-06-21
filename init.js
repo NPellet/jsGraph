@@ -2,14 +2,56 @@
 requirejs.config({
 	paths: {
 		'jquery': './lib/components/jquery/dist/jquery.min',
+		'jquery-ui': './lib/components/jquery-ui/ui/minified/jquery-ui.min',
 		'highlightjs': './lib/lib/highlight/highlight.pack'
 	}
 });
 
 require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
+
+	var data1 = [];
+	for( var i = 0; i < Math.PI * 10; i += 0.05 ) {
+		data1.push( [ i , Math.sin( i ) * i ] );
+	}
+
+
+	var data2 = [];
+	for( var i = 0.01; i < Math.PI * 10; i += 0.05 ) {
+		data2.push( [ i , Math.sin( i ) * Math.log( i ) ] );
+	}
+
+
+
 	var functions = [
 
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { 
+
+
+		plugins: {
+			'./graph.plugin.integral': {},
+		},
+
+		pluginAction: {
+			'./graph.plugin.integral': { shift: false, ctrl: false }
+		}
+
+	} );
+	
+	graph.newSerie("serieTest")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( data1 );
+
+	graph.redraw( );
+	graph.drawSeries();	
+
+}, "DEV", "" ],
+
+
+/*
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { title: "Graph title" } );
@@ -17,14 +59,12 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.newSerie("serieTest")
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( [ [1, 2], [2, 5], [3, 10] ] )
-		.showMarkers( true )
-		.setMarkerType( 1 );
+		.setData( data1 );
 
 	graph.newSerie("serieTest_2")
 		.setLabel( "My serie 2" )
 		.autoAxis()
-		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setData( data2 )
 		.setLineColor('red');
 
 
@@ -43,6 +83,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
 }, "Default functionnality", "" ],
+
 
 [ function( domGraph ) {
 
@@ -75,15 +116,11 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		}
 	} );
 	
-	var data = [];
-	for( var i = 0; i < Math.PI * 10; i += 0.01 ) {
-		data.push( [ i , Math.sin( i ) * i ] );
-	}
 
 	graph.newSerie("serieTest_2")
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( data )
+		.setData( data1 )
 		.setLineColor('red');
 
 	graph.redraw( );
@@ -114,7 +151,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.newSerie("serieTest_4")
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setData( data1 )
 		.setLineColor('red');
 
 	graph.autoscaleAxes();
@@ -149,14 +186,12 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.newSerie( "serieTest" )
 		.setLabel( "My serie" )
 		.setAxes( xAxis, leftAxis )
-		.setData( [ [1, 2], [2, 5], [3, 10] ] )
-		.showMarkers( true )
-		.setMarkerType( 1 );
-
+		.setData( data1 );
+		
 	graph.newSerie( "serieTest_2" )
 		.setLabel( "My serie 2" )
 		.setAxes( xAxis, rightAxis )
-		.setData( [ [2, 4], [3, 1], [5, 20] ] )
+		.setData( data2 )
 		.setLineColor('red');
 
 	var legend = graph.makeLegend();
@@ -167,7 +202,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 }, "Scaling different axis", "" ],
 
-
+*/
 
  ]
 

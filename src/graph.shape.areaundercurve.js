@@ -9,6 +9,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 	$.extend(GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {
 		createDom: function() {
 
+			var self = this;
 			this._dom = document.createElementNS(this.graph.ns, 'path');
 
 			this.handle1 = document.createElementNS(this.graph.ns, 'line');
@@ -26,18 +27,17 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			this.setDom('cursor', 'move');
 			this.doDraw = undefined;
 
-			if(require) {
-				var self = this;
-				require(['src/util/context'], function(Context) {
-					Context.listen(self._dom, [
-						['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
-						function(e) {
-							self.kill();
-							self.graph.triggerEvent('onAnnotationRemove', self.data);
-						}]
-					]);
-				});
-			}
+
+			this.graph.contextListen( this._dom, [
+				
+				['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
+				function(e) {
+					self.kill();
+					self.graph.triggerEvent('onAnnotationRemove', self.data);
+				}]
+
+			]);
+
 			
 		},
 
@@ -89,7 +89,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			}
 
 			var self = this;
-			this.graph.annotationMoving(this);
+			this.graph.shapeMoving(this);
 
 			if( ! this._selected ) {
 
@@ -104,7 +104,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		handleMouseUp: function() {
 			this.moving = false;
 			this.resize = false;
-			this.graph.annotationMoving(false);
+			this.graph.shapeMoving(false);
 
 			if( this.preventUnselect ) {
 
@@ -261,7 +261,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			this.selectStyle();
 			
-			this.graph.selectAnnotation(this);
+			this.graph.selectShape(this);
 		},
 
 
@@ -282,7 +282,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		selectStyle: function() {
 			this.setDom('stroke', 'red');
 			this.setDom('stroke-width', '2');
-			this.setDom('stroke-dasharray', '10 10');
+			this.setDom('fill', 'rgba(255, 0, 0, 0.1)');
 		},
 
 		unselect: function() {
@@ -295,6 +295,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			this.setStrokeWidth();
 			this.setStrokeColor();
 			this.setDashArray();
+			this.setFillColor();
 
 			this.graph.unselectAnnotation(this);
 		},

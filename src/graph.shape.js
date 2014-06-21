@@ -52,6 +52,7 @@ define( [], function() {
 		setOriginalData: function(data, events) {
 			this.data = data;
 			this.events = events;
+
 		},
 
 		triggerChange: function() {

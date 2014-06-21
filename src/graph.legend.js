@@ -165,7 +165,7 @@ define( [], function() {
 					e.stopPropagation();
 					e.preventDefault();
 					self.mousedown = true;
-					self.graph.annotationMoving( self );
+					self.graph.shapeMoving( self );
 
 					self.rect.setAttribute('display', 'block');
 				}
@@ -188,7 +188,7 @@ define( [], function() {
 
 			this.rect.setAttribute('display', 'none');
 
-			this.graph.annotationStopMoving();
+			this.graph.shapeStopMoving();
 		},
 
 		handleMouseMove: function( e ) {
