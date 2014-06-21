@@ -128,8 +128,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { 
-
-
 		wheel: {
 			type: 'plugin',
 			plugin: './graph.plugin.zoom',
@@ -144,9 +142,9 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	 } );
 	
-	var xAxis = graph.getXAxis();
-	var leftAxis = graph.getLeftAxis();
-	var rightAxis = graph.getRightAxis();
+	var xAxis = graph.getXAxis( 0 , { primaryGrid: false, secondaryGrid: false } );
+	var leftAxis = graph.getLeftAxis( 0 , { primaryGrid: false, secondaryGrid: false } );
+	var rightAxis = graph.getRightAxis( 0 , { primaryGrid: false, secondaryGrid: false } );
 
 	graph.newSerie( "serieTest" )
 		.setLabel( "My serie" )
