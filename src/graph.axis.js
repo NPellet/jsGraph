@@ -23,7 +23,7 @@ define( [] , function() {
 			ticklabelratio: 1,
 			exponentialFactor: 0,
 			exponentialLabelFactor: 0,
-			wheelBaseline: 0,
+			wheelBaseline: "min",
 			logScale: false,
 			allowedPxSerie: 100,
 			forcedMin: false,
@@ -239,10 +239,19 @@ define( [] , function() {
 		handleMouseWheel: function(delta, e) {
 
 			delta = Math.min(0.2, Math.max(-0.2, delta));
+			var baseline;
+
+			if( this.options.wheelBaseline == "min" ) {
+				baseline = this.getActualMin();
+			} else if( this.options.wheelBaseline == "max" ) {
+				baseline = this.getActualMax();
+			} else {
+				baseline = this.options.wheelBaseline;
+			}
 
 			this._doZoomVal(
-				((this.getActualMax() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline,
-				((this.getActualMin() - this.options.wheelBaseline) * (1 + delta)) + this.options.wheelBaseline
+				( ( this.getActualMax() - baseline ) * (1 + delta)) + baseline,
+				( ( this.getActualMin() - baseline ) * (1 + delta)) + baseline
 			);
 
 			this.graph.redraw(true);
