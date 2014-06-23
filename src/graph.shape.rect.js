@@ -77,8 +77,8 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 				height = this.getFromData('height');
 
 			var pos = this._getPosition( this.getFromData('pos') ),
-				x = pos.x,
-				y = pos.y;
+							x = pos.x,
+			y = pos.y;
 
 
 			if(width == undefined || height == undefined) {
@@ -92,15 +92,19 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			// At this stage, x and y are in px
 
-			if(width < 0) {
-				x = x + width;
-				width = - width;
+			x = pos.x,
+			y = pos.y;
+
+			if( width < 0 ) {		
+				x += width;
+				width *= -1;
 			}
 
-			if(height < 0) {
-				y = y + height;
-				height = - height;
+			if( height < 0 ) {		
+				y += height;
+				height *= -1;
 			}
+
 
 			if( x !== NaN && x !== false && y !== NaN && y !== false) {
 				this.setDom('width', width);
@@ -171,6 +175,8 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 				w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
 				h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+
+
 			}
 
 
@@ -180,6 +186,35 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 				w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis() );
 				h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
 			}
+
+			var wpx = this.graph.getPxRel( w, this.serie.getXAxis( ) );
+			var hpx = this.graph.getPxRel( h, this.serie.getYAxis( ) );
+
+
+			if( wpx < 0 ) {
+				
+				pos.x = this.graph.deltaPosition( pos.x, w );
+				w = - w;
+
+				if( this.handleSelected == 1 ) this.handleSelected = 2;
+				else if( this.handleSelected == 2 ) this.handleSelected = 1;
+				else if( this.handleSelected == 3 ) this.handleSelected = 4;
+				else if( this.handleSelected == 4 ) this.handleSelected = 3;
+
+
+			}
+
+
+			if( hpx < 0 ) {
+				pos.y = this.graph.deltaPosition( pos.y, h );
+				h = - h;
+			
+				if( this.handleSelected == 1 ) this.handleSelected = 4;
+				else if( this.handleSelected == 2 ) this.handleSelected = 3;
+				else if( this.handleSelected == 3 ) this.handleSelected = 2;
+				else if( this.handleSelected == 4 ) this.handleSelected = 1;	
+			}
+
 
 			this.setData('width', w);
 			this.setData('height', h);
