@@ -11,8 +11,9 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
 	var data1 = [];
-	for( var i = 0; i < Math.PI * 10; i += 0.05 ) {
-		data1.push( [ i , Math.sin( i ) * i ] );
+	for( var i = 0; i < 6; i += 0.05 ) {
+		console.log('sdf');
+		data1.push( [ i , Math.pow(2.71, ( - Math.pow(( i - 3 ), 2)) ) ] );
 	}
 
 

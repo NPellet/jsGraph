@@ -2,7 +2,7 @@ define( [], function() {
 
 	var toolbarDefaults = {
 		
-		buttons: [ 'none', 'rect', 'line' ]
+		buttons: [ 'none', 'rect', 'line', 'areaundercurve' ]
 	
 
 	}
@@ -55,6 +55,30 @@ define( [], function() {
 
 		dom.appendChild( line );
 		return dom;
+	}
+
+
+	function makeSvgAUC() {
+
+		var pathD = "M 4,18 C 8,10 14,1 18,18";
+
+		var dom = makeSvg();
+		var path1 = document.createElementNS( ns, 'path' );
+		path1.setAttribute('d', pathD);
+		path1.setAttribute('stroke', "black");
+		path1.setAttribute('fill', "transparent");
+
+		var path2 = document.createElementNS( ns, 'path' );
+		path2.setAttribute('d', pathD + " Z");
+		path2.setAttribute('stroke', "red");
+		path2.setAttribute('fill', "rgba(255, 0, 0, 0.1)");
+
+
+		dom.appendChild( path2 );
+		dom.appendChild( path1 );
+
+		return dom;
+
 	}
 
 
@@ -114,6 +138,13 @@ define( [], function() {
 					div
 						.html( makeSvgRect( ) )
 						.attr('data-shape', 'rect');
+				break;
+
+
+				case 'areaundercurve':
+					div
+						.html( makeSvgAUC( ) )
+						.attr('data-shape', 'areaundercurve');
 				break;
 			}
 
