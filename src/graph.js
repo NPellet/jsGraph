@@ -1136,6 +1136,20 @@ define([
 			return this.options.zoomMode;
 		},
 
+		makeToolbar: function( toolbarData ) {
+
+			var self = this,
+				deferred = $.Deferred();
+
+			require( [ './graph.toolbar' ], function( toolbar ) {
+
+				self.toolbar = new toolbar( self, toolbarData );
+				deferred.resolve( self.toolbar );
+			})
+
+			return deferred;
+		},
+
 		makeShape: function(shapeData, events, notify) {
 
 			var self = this,
@@ -1311,6 +1325,14 @@ define([
 				self._pluginsReady();
 			} );
 			//this._pluginsExecute('init', arguments);
+		},
+
+		getPlugin: function( pluginName ) {
+			var self = this;
+			return this.pluginsReady.then( function() {
+console.log( self._plugins, pluginName );
+				return self._plugins[ pluginName ] || false;
+			} );
 		},
 
 		_pluginsReady: function() {

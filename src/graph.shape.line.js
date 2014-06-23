@@ -11,7 +11,8 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 									width: 6, 
 									height: 6, 
 									stroke: "black", 
-									fill: "white"
+									fill: "white",
+									cursor: 'nwse-resize'
 								} );
 
 	}

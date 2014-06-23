@@ -12,8 +12,16 @@ define([], function() {
 			this.shapeType = options.shapeType;
 
 		},
+
+		setShape: function( shapeType ) {
+			this.shapeType = shapeType;
+		},
 		
 		onMouseDown: function(graph, x, y, e, target) {
+				
+			if( ! this.shapeType ) {
+				return;
+			}
 			
 			var self = this,
 				selfPlugin = this;

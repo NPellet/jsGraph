@@ -181,7 +181,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	var graph = new Graph( domGraph, { 
 
 		plugins: {
-			'./graph.plugin.shape': { shapeType: 'line' },
+			'./graph.plugin.shape': { },
 		},
 
 		pluginAction: {
@@ -197,6 +197,16 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	graph.redraw( );
 	graph.drawSeries();	
+
+
+	graph.pluginsReady.then( function() {
+
+		graph.makeToolbar( {} ).then( function( toolbar ) {
+
+			$("#" + domGraph).prepend( toolbar.getDom( ).css( 'position', 'absolute') );
+		} );
+
+	})
 
 }, "Allow rectangle drawing", "" ],
 

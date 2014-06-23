@@ -9,6 +9,12 @@ module.exports = function(grunt) {
                 files: {
                     'style.css': 'style.scss'
                 }
+            },
+
+            lib: {                                
+                files: {
+                    './src/style/style.css': './src/style/style.scss'
+                }
             }
         }
     });
