@@ -47,22 +47,37 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			
 				e.preventDefault();
 				e.stopPropagation();
+				self.resizingElement = false;
+				self.moving = true;
+				self.resize = false;
 				self.handleMouseDown(e);
+
 			});
 
 			this.handle1.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				self.handleMouseDown(e, 1);
+
+				self.moving = false;
+				self.resize = true;
+				self.resizingElement = 1;
+				self.handleMouseDown( e );
 			});
 
 			this.handle2.addEventListener('mousedown', function(e) {
 				e.preventDefault();
 				e.stopPropagation();
-				self.handleMouseDown(e, 2);
+				
+				self.moving = false;
+				self.resize = true;
+				self.resizingElement = 2;
+				self.handleMouseDown(e);
+				
+
 			});
 
 			this._dom.addEventListener('mousemove', function(e) {
+
 				e.preventDefault();
 				e.stopPropagation();
 				self.handleMouseMove(e);
@@ -77,70 +92,48 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		//	this.setSelectableOnClick();
 		},
 
-		handleMouseDown: function(e, resize) {
-
-			this.graph.shapeZone.appendChild(this.group);
-			if(!resize) {
-				this.coordsI = this.graph.getXY(e);
-				this.moving = true;
-			} else {
-				this.resize = resize;
-				this.resizingPosition = ((this.reversed && resize == 2) || (!this.reversed && resize == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
-			}
-
-			var self = this;
-			this.graph.shapeMoving(this);
-
-			if( ! this._selected ) {
-
-				self.preventUnselect = true;
-				self.timeoutSelect = window.setTimeout(function() {
-					self.select();
-					self.timeoutSelect = false;
-				}, 100);
-			}
+		handleCreateImpl: function() {
+			this.resize = true;
+			this.resizingElement = 2;
 		},
 
-		handleMouseUp: function() {
-			this.moving = false;
-			this.resize = false;
-			this.graph.shapeMoving(false);
+		handleMouseDownImpl: function( e ) {
 
-			if( this.preventUnselect ) {
 
-				this.preventUnselect = false;
-
-			} else if( this._selected ) {
-
-				this.unselect();
+			if( ! this.moving ) {
+				this.resizingPosition = ((this.reversed && this.resizingElement == 2) || (!this.reversed && this.resizingElement == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
 			}
 
-			this.triggerChange();
 		},
 
-		handleMouseMove: function(e) {
+		handleMouseUpImpl: function() {
 
-			if(this.moving) {
-				var coords = this.graph.getXY(e);
-				var delta = this.serie.getXAxis().getRelPx(coords.x - this.coordsI.x);
+		},
+
+		handleMouseMoveImpl: function(e, deltaX, deltaY) {
+
+			if( this.moving ) {
+				
 				var pos1 = this.getFromData('pos');
 				var pos2 = this.getFromData('pos2');
-				pos1.x += delta;
-				pos2.x += delta;
 				
-				if(delta != 0)
+				pos1.x += deltaX;
+				pos2.x += deltaX;
+				
+				if( deltaX != 0 ) {
 					this.preventUnselect = true;
+				}
 
-				this.coordsI = coords;
 				this.position = this.setPosition();
-				
 				this.redrawImpl();
 
 			} else if(this.resize) {
 
 				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
-				if(!value)
+
+				if(!value) {
 					return;
+				}
 
 				this.position = this.setPosition();
 

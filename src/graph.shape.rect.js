@@ -32,21 +32,28 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			var pos = this._getPosition( this.getFromData('pos') ),
 				x = pos.x,
 				y = pos.y;
-				
+
 
 			if(width == undefined || height == undefined) {
 				var position2 = this._getPosition(this.getFromData('pos2'));
 				width = position2.x - pos.x;
 				height = position2.y - pos.y;
+			} else {
+				width = this.graph.getPxRel( width, this.serie.getXAxis( ) );
+				height = this.graph.getPxRel( height, this.serie.getYAxis( ) );
 			}
 
+			// At this stage, x and y are in px
+
 			if(width < 0) {
-				x = x - width;
+				x = x + width;
 				width = - width;
 			}
 
+
+
 			if(height < 0) {
-				y = y - height;
+				y = y + height;
 				height = - height;
 			}
 
@@ -64,7 +71,71 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		redrawImpl: function() {
 
+		},
+
+		handleCreateImpl: function() {
+			this.resize = true;
+			this.resizingElement = 3;
+
+			
+		},
+
+		handleMouseDownImpl: function( e ) {
+
+		},
+
+		handleMouseUpImpl: function() {
+
+		},
+
+		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+
+			var w = this.getFromData('width') || 0;
+			var h = this.getFromData('height') || 0;
+			var pos = this.getFromData('pos');
+
+
+			if( this.resizingElement == 3 ) {
+
+				w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+				h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+			}
+
+			this.setData('width', w);
+			this.setData('height', h);
+			this.setData('pos', pos);
+			
+			this.setPosition();
+
 		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	});
 
 	return GraphRect;

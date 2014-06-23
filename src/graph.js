@@ -24,6 +24,14 @@ define([
 
 	"use strict";
 
+
+	function _parsePx( px ) {
+		if( px && px.indexOf && px.indexOf('px') > -1) {
+			return parseInt(px.replace('px', ''));
+		}
+		return false;
+	};
+
 	var _scope = this;
 	var graphDefaults = {
 
@@ -387,15 +395,21 @@ define([
 				keyComb = this.options.pluginAction,
 				i;
 
-			for(i in keyComb) {
-				if(!keyComb[i]._forced) {
-					if(shift !== keyComb[i].shift)
+			for( i in keyComb ) {
+				if( ! keyComb[i]._forced ) {
+
+					if(shift !== keyComb[i].shift) {
 						continue;
-					if(ctrl !== keyComb[i].ctrl)
+					}
+
+					if(ctrl !== keyComb[i].ctrl) {
 						continue;
+					}
 				}
+
 				this.mouseLease = i; // Lease the mouse action to the current action
 				this._pluginExecute(i, 'onMouseDown', [x, y, e]);
+
 				break;
 			}
 		},
@@ -405,7 +419,7 @@ define([
 
 			var $target;
 			
-			if(this.bypassHandleMouse) {
+			if( this.bypassHandleMouse ) {
 				this.bypassHandleMouse.handleMouseMove(e);
 				return;
 			}
@@ -507,6 +521,7 @@ define([
 		},
 
 		shapeMoving: function( movingElement ) {
+		
 			this.bypassHandleMouse = movingElement;
 		},
 
@@ -1410,37 +1425,14 @@ define([
 
 				} else if( value[ i ] !== undefined ) {
 
-					if( ( parsed = this._parsePx( value[ i ] ) ) !== false ) {
-
-						pos[i] = parsed; // return integer (will be interpreted as px)
-
-					} else if( parsed = this._parsePercent( value[ i ] ) ) {
-
-						pos[i] = parsed; // returns xx%
-
-					} else if( axis ) {
-
-						if( value[ i ] == "min" ) {
-
-							pos[ i ] = axis.getMinPx();
-
-						} else if( value[ i ] == "max" ) {
-
-							pos[ i ] = axis.getMaxPx();
-						
-						} else {
-
-							pos[i] = axis.getPos( value[ i ] );
-
-						}
-					}
+					pos[ i ] = this.getPx( value[ i ], axis );
 				}
 
 				if(value['d' + i] !== undefined) {
 
 					var def = (value[ i ] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true, axis) || 0);
 
-					if((parsed = this._parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
+					if((parsed = _parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 
 						pos[i] = def + parsed;  // return integer (will be interpreted as px)
 
@@ -1461,7 +1453,7 @@ define([
 
 		_getPositionPx: function(value, x, axis) {
 
-			if(parsed = this._parsePx(value)) {
+			if(parsed = _parsePx(value)) {
 
 				return parsed; // return integer (will be interpreted as px)
 
@@ -1479,12 +1471,7 @@ define([
 		},
 
 
-		_parsePx: function( px ) {
-			if( px && px.indexOf && px.indexOf('px') > -1) {
-				return parseInt(px.replace('px', ''));
-			}
-			return false;
-		},
+		
 
 		_parsePercent: function(percent) {
 			if(percent && percent.indexOf && percent.indexOf('%') > -1) {
@@ -1493,6 +1480,64 @@ define([
 			return false;	
 		},
 
+		deltaPosition: function( ref, delta, axis ) {
+			
+			var refPx, deltaPx;
+
+			if( refPx = _parsePx( ref ) ) {
+
+				if( deltaPx = _parsePx( delta ) ) {
+					return ( refPx + deltaPx ) + "px";	
+				} else {
+					return ( refPx + axis.getRelPx( delta ) ) + "px";
+				}
+			} else {
+
+				if( deltaPx = _parsePx( delta ) ) {
+					return ( ref + axis.getRelVal( deltaPx ) );
+				} else {
+					return ( ref + delta );
+				}
+			}
+		},
+
+		getPx: function( value, axis, rel ) {
+
+
+			var parsed;
+
+			if( ( parsed = _parsePx( value ) ) !== false ) {
+
+				return parsed; // return integer (will be interpreted as px)
+
+			} else if( parsed = this._parsePercent( value ) ) {
+
+				return parsed; // returns xx%
+
+			} else if( axis ) {
+
+				if( value == "min" ) {
+
+					return axis.getMinPx();
+
+				} else if( value == "max" ) {
+
+					return axis.getMaxPx();
+				
+				} else if( rel ) {
+
+					return axis.getRelPx( value );
+				} else {
+
+					return axis.getPos( value );
+				}
+			}
+		},
+
+		getPxRel: function( value, axis ) {
+
+			return this.getPx( value, axis, true );
+		},
 
 		contextListen: function( target, menuElements, callback ) {
 
@@ -1501,7 +1546,6 @@ define([
 			if( this.options.onContextMenuListen ) {
 				return this.options.onContextMenuListen( target, menuElements, callback );
 			}
-
 
 			if( ! this.context ) {
 

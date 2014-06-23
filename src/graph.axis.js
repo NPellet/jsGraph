@@ -686,7 +686,13 @@ define( [] , function() {
 		},
 
 		getRelPx: function(value) {
-			return value / (this.getMaxPx() - this.getMinPx()) * this._getActualInterval();
+			return ( value / this._getActualInterval() ) * (this.getMaxPx() - this.getMinPx());
+		},
+
+
+		getRelVal: function( px ) {
+			
+			return px / (this.getMaxPx() - this.getMinPx()) * this._getActualInterval();
 		},
 
 		getVal: function(px) {

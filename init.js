@@ -27,33 +27,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 [ function( domGraph ) {
 
-	var graph = new Graph( domGraph, { 
-
-
-		plugins: {
-			'./graph.plugin.integral': {},
-		},
-
-		pluginAction: {
-			'./graph.plugin.integral': { shift: false, ctrl: false }
-		}
-
-	} );
-	
-	graph.newSerie("serieTest")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( data1 );
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-}, "DEV", "" ],
-
-
-/*
-[ function( domGraph ) {
-
 	var graph = new Graph( domGraph, { title: "Graph title" } );
 	
 	graph.newSerie("serieTest")
@@ -202,7 +175,33 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 }, "Scaling different axis", "" ],
 
-*/
+
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { 
+
+
+		plugins: {
+			'./graph.plugin.shape': { shapeType: 'rect' },
+		},
+
+		pluginAction: {
+			'./graph.plugin.shape': { shift: false, ctrl: false }
+		}
+
+	} );
+	
+	graph.newSerie("serieTest")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( data1 );
+
+	graph.redraw( );
+	graph.drawSeries();	
+
+}, "Allow rectangle drawing", "" ],
+
+
 
  ]
 

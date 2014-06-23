@@ -175,6 +175,7 @@ define( [], function() {
 
 
 		getFromData: function(prop)			{ return this.data[prop]; 						},
+		setData: function(prop, val)			{ return this.data[prop] = val; 						},
 		setDom: function(prop, val) {		if(this._dom) this._dom.setAttribute(prop, val);				},
 
 		setPosition: function() {
@@ -366,6 +367,72 @@ define( [], function() {
 			if( !(clbks = this[ bln ? '_mouseOverCallbacks' : '_mouseOutCallbacks' ] ) )
 				return;
 			clbks.fireWith( this, [ this.data, this.parameters ] );
+		},
+
+		handleMouseDownImpl: function() {},
+		handleMouseMoveImpl: function() {},
+		handleMouseUpImpl: function() {},
+		handleCreateImpl: function() {},
+
+		handleMouseDown: function( e ) {
+
+			var self = this;
+
+			this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
+			this.graph.shapeMoving( this );
+
+			if( ! this._selected ) {
+
+				self.preventUnselect = true;
+				self.timeoutSelect = window.setTimeout(function() { // Tweak needed to select the shape.
+					self.select();
+					self.timeoutSelect = false;
+				}, 100);
+			}
+
+			this.mouseCoords = this.graph.getXY( e );
+
+			this.handleMouseDownImpl( e );
+		},
+
+
+		handleMouseMove: function( e ) {
+			
+			var coords = this.graph.getXY( e ),
+				deltaX = this.serie.getXAxis( ).getRelVal( coords.x - this.mouseCoords.x ),
+				deltaY = this.serie.getYAxis( ).getRelVal( coords.y - this.mouseCoords.y );
+
+			if( deltaX != 0 || deltaY !== 0) {
+				this.preventUnselect = true;
+			}
+
+			
+			this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
+			this.mouseCoords = coords;
+			this.redrawImpl();
+	
+		},
+
+
+		handleMouseUp: function( e ) {
+
+			this.moving = false;
+			this.resize = false;
+
+			this.graph.shapeMoving(false);
+			
+			this.handleMouseUpImpl( e );
+
+			if( this.preventUnselect ) {
+
+				this.preventUnselect = false;
+
+			} else if( this._selected ) {
+
+				this.unselect();
+			}
+
+			this.triggerChange();
 		}
 	}
 
