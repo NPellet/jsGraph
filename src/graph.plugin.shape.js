@@ -1,8 +1,11 @@
 define([], function() {
 
+	"use strict";
+
 	var plugin = function() { };
 
 	plugin.prototype = {
+
 
 		init: function( graph, options ) {
 
@@ -12,7 +15,7 @@ define([], function() {
 		
 		onMouseDown: function(graph, x, y, e, target) {
 			
-			var self = graph,
+			var self = this,
 				selfPlugin = this;
 				
 			var xVal, yVal;
@@ -43,25 +46,50 @@ define([], function() {
 				strokeColor: 'rgba(' + color + ', 0.9)',
 			
 				onChange: function(newData) {
-					self.triggerEvent('onAnnotationChange', newData);
+					graph.triggerEvent('onAnnotationChange', newData);
 				}
 
 			}, {}, true ).then( function( shape ) {
-
-				shape.handleCreateImpl();
-				shape.select();
 
 				if( ! shape ) {
 					return;
 				}
 
-				self.count ++;
-				shape.handleMouseDown( e, true );
-				shape.draw( );
+				self.currentShape = shape;
+				console.log(self.currentShape);
+				self.currentShapeEvent = e;
+				
 			} );
 
+		},
+
+		onMouseMove: function( graph, x, y, e ) {
+
+			var self = this;
+
+			if( self.currentShape ) {
+
+				self.count ++;
+				
+				var shape = self.currentShape;
+				self.currentShape = false;
+
+				shape.draw( );				
+				shape.handleCreateImpl();
+				shape.select();
+
+				shape.handleMouseDown( self.currentShapeEvent, true );
+				shape.handleMouseMove( e, true );
+			}
+		},
+
+		onMouseUp: function( ) {
+			var self = this;
+			if( self.currentShape ) {
+				self.currentShape.kill();
+				self.currentShape = false;
+			}
 		}
-	
 
 	}
 

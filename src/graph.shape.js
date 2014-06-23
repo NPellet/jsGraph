@@ -39,6 +39,17 @@ define( [], function() {
 					e.stopPropagation();
 
 				});
+
+				this._dom.addEventListener('mousedown', function(e) {
+			
+					e.preventDefault();
+					e.stopPropagation();
+					
+					self.handleMouseDown(e);
+
+				});
+
+
 			}
 
 //			this.group.appendChild(this.rectEvent);
@@ -90,6 +101,7 @@ define( [], function() {
 
 		kill: function() {
 			this.graph.shapeZone.removeChild(this.group);
+			this.graph.removeShape( this );
 		},
 
 	/*	applyAll: function() {
@@ -378,6 +390,9 @@ define( [], function() {
 
 			var self = this;
 
+			e.stopPropagation();
+			e.preventDefault();
+
 			this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
 			this.graph.shapeMoving( this );
 
@@ -385,6 +400,7 @@ define( [], function() {
 
 				self.preventUnselect = true;
 				self.timeoutSelect = window.setTimeout(function() { // Tweak needed to select the shape.
+
 					self.select();
 					self.timeoutSelect = false;
 				}, 100);
@@ -422,7 +438,7 @@ define( [], function() {
 			this.graph.shapeMoving(false);
 			
 			this.handleMouseUpImpl( e );
-
+/*
 			if( this.preventUnselect ) {
 
 				this.preventUnselect = false;
@@ -431,7 +447,7 @@ define( [], function() {
 
 				this.unselect();
 			}
-
+*/
 			this.triggerChange();
 		}
 	}

@@ -395,6 +395,8 @@ define([
 				keyComb = this.options.pluginAction,
 				i;
 
+			this.unselectShape();
+
 			for( i in keyComb ) {
 				if( ! keyComb[i]._forced ) {
 
@@ -1237,6 +1239,9 @@ define([
 			this.shapes = [];
 		},
 
+		removeShape: function( shape ) {
+			this.shapes.splice( this.shapes.indexOf( shape ), 1 );
+		},
 
 		_makeClosingLines: function() {
 
@@ -1328,6 +1333,8 @@ define([
 				return;
 
 			if( this.selectedShape ) { // Only one selected shape at the time
+
+				console.log('Unselect shape');
 				this.selectedShape.unselect( );
 			}
 
@@ -1335,9 +1342,17 @@ define([
 			this.triggerEvent('onShapeSelect', annot.data);
 		},
 
-		unselectShape: function(annot) {
+		unselectShape: function( ) {
+
+			if( ! this.selectedShape ) {
+				return;
+			}
+
+			this.selectedShape.unselect();
+			
+			
+			this.triggerEvent('onShapeUnselect', this.selectedShape.data);
 			this.selectedShape = false;
-			this.triggerEvent('onShapeUnselect', annot.data);
 		},
 
 

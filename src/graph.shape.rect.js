@@ -189,25 +189,30 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		},
 
-
-
-
 		select: function() {
 
 			this._selected = true;
 			this.selectStyle();
+			this.setHandles();
 			this.graph.selectShape(this);
 		},
 
 		unselect: function() {
 
+			this._selected = false;
+
+			this.setStrokeWidth();
+			this.setStrokeColor();
+			this.setDashArray();
+			this.setFillColor();
+
 			if( this.handlesInDom ) {
 
 				this.handlesInDom = false;
-				this.group.removeChild(this.handle1);
-				this.group.removeChild(this.handle2);
-				this.group.removeChild(this.handle3);
-				this.group.removeChild(this.handle4);
+				this.group.removeChild( this.handle1 );
+				this.group.removeChild( this.handle2 );
+				this.group.removeChild( this.handle3 );
+				this.group.removeChild( this.handle4 );
 			}
 			
 		},
@@ -221,10 +226,10 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			if( ! this.handlesInDom ) {
 
 				this.handlesInDom = true;
-				this.group.appendChild(this.handle1);
-				this.group.appendChild(this.handle2);
-				this.group.appendChild(this.handle3);
-				this.group.appendChild(this.handle4);
+				this.group.appendChild(this.handle1 );
+				this.group.appendChild(this.handle2 );
+				this.group.appendChild(this.handle3 );
+				this.group.appendChild(this.handle4 );
 			}
 
 
