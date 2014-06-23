@@ -181,7 +181,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	var graph = new Graph( domGraph, { 
 
 		plugins: {
-			'./graph.plugin.shape': { shapeType: 'rect' },
+			'./graph.plugin.shape': { shapeType: 'line' },
 		},
 
 		pluginAction: {

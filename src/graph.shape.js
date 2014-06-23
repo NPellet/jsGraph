@@ -361,8 +361,59 @@ define( [], function() {
 			this._selectable = bln;
 		},
 
-		select: function() {},
-		unselect: function() {},
+
+		select: function() {
+
+			this._selected = true;
+			this.selectStyle();
+			this.setHandles();
+			this.graph.selectShape(this);
+		},
+
+		unselect: function() {
+
+			this._selected = false;
+
+			this.setStrokeWidth();
+			this.setStrokeColor();
+			this.setDashArray();
+			this.setFillColor();
+
+			if( this.handlesInDom ) {
+				this.handlesInDom = false;
+				this.removeHandles();
+			}
+			
+		},
+
+		createHandles: function( nb, type, attr ) {
+
+			var self = this;
+
+			for( var i = 1; i <= nb; i ++ ) {
+
+				( function( j ) {
+
+					self['handle' + j ] = document.createElementNS(self.graph.ns, type);
+
+					for( var k in attr ) {
+						self['handle' + j ].setAttribute( k, attr[ k ] );
+					}
+
+					self[ 'handle' + j ].addEventListener( 'mousedown', function(e) {
+
+						e.preventDefault();
+						e.stopPropagation();
+						
+						self.handleSelected = j;
+						self.handleMouseDown( e );
+					} );
+
+				} ) ( i );
+				
+			}
+		},
+
 
 		onMouseOver: function (clbk) {
 			var callbacks = (this._mouseOverCallbacks = this._mouseOverCallbacks || $.Callbacks());
@@ -429,6 +480,21 @@ define( [], function() {
 	
 		},
 
+		removeHandles: function() {
+			for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
+				this.group.removeChild( this['handle' + i ] );
+			}
+		},
+
+		addHandles: function() {
+			if( ! this.handlesInDom ) {
+				this.handlesInDom = true;
+
+				for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
+					this.group.appendChild( this['handle' + i ] );
+				}
+			}
+		},
 
 		handleMouseUp: function( e ) {
 

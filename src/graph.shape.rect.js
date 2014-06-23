@@ -6,8 +6,9 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		this.init(graph);
 
 		this.graph = graph;
+		this.nbHandles = 4;
 
-		this.createHandles( 4, 'rect', { 
+		this.createHandles( this.nbHandles, 'rect', { 
 										transform: "translate(-3 -3)", 
 										width: 6, 
 										height: 6, 
@@ -25,36 +26,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 	$.extend(GraphRect.prototype, GraphShape.prototype, {
 		
-		createHandles: function( nb, type, attr ) {
-
-			var self = this;
-
-			for( var i = 1; i <= nb; i ++ ) {
-
-				( function( j ) {
-
-					self['handle' + j ] = document.createElementNS(self.graph.ns, type);
-
-					for( var k in attr ) {
-						self['handle' + j ].setAttribute( k, attr[ k ] );
-					}
-
-					self[ 'handle' + j ].addEventListener( 'mousedown', function(e) {
-
-						console.log( e );
-
-						e.preventDefault();
-						e.stopPropagation();
-						
-						self.handleSelected = j;
-						self.handleMouseDown( e );
-					} );
-
-				} ) ( i );
-				
-			}
-		},
-
+	
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'rect');
 		},
@@ -133,9 +105,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		handleCreateImpl: function() {
 			this.resize = true;
-			this.handleSelected = 3;
-
-			
+			this.handleSelected = 3;	
 		},
 
 		handleMouseDownImpl: function( e ) {
@@ -224,49 +194,15 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		},
 
-		select: function() {
-
-			this._selected = true;
-			this.selectStyle();
-			this.setHandles();
-			this.graph.selectShape(this);
-		},
-
-		unselect: function() {
-
-			this._selected = false;
-
-			this.setStrokeWidth();
-			this.setStrokeColor();
-			this.setDashArray();
-			this.setFillColor();
-
-			if( this.handlesInDom ) {
-
-				this.handlesInDom = false;
-				this.group.removeChild( this.handle1 );
-				this.group.removeChild( this.handle2 );
-				this.group.removeChild( this.handle3 );
-				this.group.removeChild( this.handle4 );
-			}
-			
-		},
-
 		setHandles: function() {
 
 			if( ! this._selected || this.currentX == undefined ) {
 				return;
 			}
 
-			if( ! this.handlesInDom ) {
 
-				this.handlesInDom = true;
-				this.group.appendChild(this.handle1 );
-				this.group.appendChild(this.handle2 );
-				this.group.appendChild(this.handle3 );
-				this.group.appendChild(this.handle4 );
-			}
-
+			this.addHandles();
+			
 
 			this.handle1.setAttribute('x', this.currentX);
 			this.handle1.setAttribute('y', this.currentY);
