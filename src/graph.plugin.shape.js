@@ -49,6 +49,7 @@ define([], function() {
 			}, {}, true ).then( function( shape ) {
 
 				shape.handleCreateImpl();
+				shape.select();
 
 				if( ! shape ) {
 					return;
