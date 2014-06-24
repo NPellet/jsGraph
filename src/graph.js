@@ -21,9 +21,7 @@ define([
 
 	) {
 
-
 	"use strict";
-
 
 	function _parsePx( px ) {
 		if( px && px.indexOf && px.indexOf('px') > -1) {
@@ -157,6 +155,9 @@ define([
 			
 			this._dom.appendChild(this.dom);
 			
+			this._dom.setAttribute('tabindex', 0);
+			this._dom.style.outline = "none";
+
 			this.defs = document.createElementNS(this.ns, 'defs');
 			this.dom.appendChild(this.defs);
 
@@ -281,6 +282,17 @@ define([
 
 		registerEvents: function() {
 			var self = this;
+
+			this._dom.addEventListener( 'keydown', function( e ) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				if( e.keyCode == 8 && self.selectedShape ) {
+					self.selectedShape.kill();
+				}
+			});
+
+
 			this.dom.addEventListener('mousemove', function(e) {
 				e.preventDefault();
 				var coords = self.getXY(e);
