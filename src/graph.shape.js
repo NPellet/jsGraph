@@ -1,6 +1,25 @@
 
 define( [ 'require' ], function( require ) {
-console.log( require );
+
+	function getColor( color ) {
+
+		if (Array.isArray(color)) {
+			switch (color.length) {
+				case 3:
+					return 'rgb(' + color.join(',') + ')';
+					break;
+				case 4:
+					return 'rgba(' + color.join(',') + ')';
+					break;
+			}
+		} else if( typeof(color) == "object") {
+			return "rgb(" + Math.round( color.r * 255 ) + ", " + Math.round( color.g * 255 ) + ", " + Math.round( color.b * 255 ) + ")";
+		}
+
+		return color;
+	}
+	
+
 	var GraphShape = function() { };
 
 	GraphShape.prototype = {
@@ -191,10 +210,13 @@ console.log( require );
 
 			this.properties[prop] = this.properties[prop] || [];
 			this.properties[prop][index || 0] = val;
+
+			this.configuration = this.configuration || { sections: { shape_cfg: [ { groups: { shape_cfg: [ {} ] }} ]}};
+			this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
 		},
 
 		get: function(prop, index) {
-			return ( this.properties[ prop ] || [] ) [ index || 0 ];
+			return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [])[ 0 ];
 		},
 
 
@@ -209,8 +231,8 @@ console.log( require );
 			return true;
 		},
 
-		setFillColor: function() {			this.setDom('fill', this.get('fillColor'));					},
-		setStrokeColor: function() {		this.setDom('stroke', this.get('strokeColor'));				},
+		setFillColor: function() {			this.setDom('fill', getColor( this.get('fillColor')) );					},
+		setStrokeColor: function() {		this.setDom('stroke', getColor( this.get('strokeColor')) );				},
 		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
 		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
 
@@ -593,8 +615,8 @@ console.log( require );
 		},
 
 		setConfiguration: function( configuration ) {
-			this.processConfig( configuration );
-			return this.configuration = configuration;
+
+			this.configuration = $.extend( true, this.configuration, configuration );
 		}
 	}
 

@@ -1,6 +1,6 @@
 
 // Context menu
-define( [ 'jquery', 'jquery-ui' ], function( $ ) {
+define( [ 'jquery', 'jqueryui' ], function( $ ) {
 
 	var contextMenu;
 

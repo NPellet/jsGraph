@@ -50,8 +50,8 @@ define([], function() {
 					x: xVal,
 					y: yVal
 				},
-				fillColor: 'rgba(' + color + ', 0.3)',
-				strokeColor: 'rgba(' + color + ', 0.9)',
+				fillColor: color.concat([ 0.3 ]),
+				strokeColor: color.concat([ 0.9 ]),
 			
 				onChange: function(newData) {
 					graph.triggerEvent('onAnnotationChange', newData);

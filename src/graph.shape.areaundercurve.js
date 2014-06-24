@@ -282,15 +282,11 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			this._selected = false;
 
-			this.group.removeChild(this.handle1);
-			this.group.removeChild(this.handle2);
-
 			this.setStrokeWidth();
 			this.setStrokeColor();
 			this.setDashArray();
 			this.setFillColor();
 
-			this.graph.unselectAnnotation(this);
 		},
 
 		setLabelPosition: function(labelIndex) {
@@ -309,17 +305,19 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 					type: 'float',
 					default: 1,
 					title: "Stroke width"
+				},
+
+				'strokeColor': {
+					type: 'color',
+					title: "Stroke color"
+				},
+
+				'fillColor': {
+					type: 'color',
+					title: "Fill color"
 				}
 			}
-		},
-
-		processConfig: function( config ) {
-
-			this.set( 'strokeWidth', config.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ].strokeWidth || this.data.strokeWidth || (shapeData.strokeColor ? 1 : 0));
-
-			this.setStrokeWidth();
 		}
-
 	});
 
 
