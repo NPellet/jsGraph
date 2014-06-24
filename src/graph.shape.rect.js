@@ -49,9 +49,8 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 				height = this.getFromData('height');
 
 			var pos = this._getPosition( this.getFromData('pos') ),
-							x = pos.x,
-			y = pos.y;
-
+				x = pos.x,
+				y = pos.y;
 
 			if(width == undefined || height == undefined) {
 				var position2 = this._getPosition(this.getFromData('pos2'));
@@ -122,6 +121,15 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			var h = this.getFromData('height') || 0;
 			var pos = this.getFromData('pos');
 
+			if( this.moving ) {
+
+				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+				this.setData('pos', pos);
+				this.setPosition();
+				return;
+			}
 
 			if( this.handleSelected == 1 ) {
 

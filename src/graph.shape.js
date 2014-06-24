@@ -18,7 +18,7 @@ define( [ 'require' ], function( require ) {
 
 		return color;
 	}
-	
+
 
 	var GraphShape = function() { };
 
@@ -52,35 +52,30 @@ define( [ 'require' ], function( require ) {
 				});
 
 
-				this._dom.addEventListener('mouseout', function (e) {
+				this._dom.addEventListener( 'mouseout', function (e) {
 
 					self.doHover(false);
 					e.stopPropagation();
 
 				});
 
-				this._dom.addEventListener('mousedown', function(e) {
+				this._dom.addEventListener( 'mousedown', function(e) {
 			
 					e.preventDefault();
 					e.stopPropagation();
+					self.handleSelected = false;
+					self.moving = true;
 					
 					self.handleMouseDown(e);
+				} );
 
-				});
-
-
-
-				this._dom.addEventListener('dblclick', function(e) {
+				this._dom.addEventListener( 'dblclick', function(e) {
 			
 					e.preventDefault();
 					e.stopPropagation();
 					
 					self.handleDblClick(e);
-
-				});
-
-
-
+				} );
 			}
 
 //			this.group.appendChild(this.rectEvent);
