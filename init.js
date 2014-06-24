@@ -3,7 +3,8 @@ requirejs.config({
 	paths: {
 		'jquery': './lib/components/jquery/dist/jquery.min',
 		'jquery-ui': './lib/components/jquery-ui/ui/minified/jquery-ui.min',
-		'highlightjs': './lib/lib/highlight/highlight.pack'
+		'highlightjs': './lib/lib/highlight/highlight.pack',
+		'forms': './lib/lib/forms/form'
 	}
 });
 
@@ -25,7 +26,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
 	var functions = [
-
+/*
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { title: "Graph title" } );
@@ -176,7 +177,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 }, "Scaling different axis", "" ],
 
-
+*/
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { 

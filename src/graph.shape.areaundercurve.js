@@ -299,6 +299,25 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
+		},
+
+		getFieldsConfig: function() {
+
+			return {
+
+				'strokeWidth': {
+					type: 'float',
+					default: 1,
+					title: "Stroke width"
+				}
+			}
+		},
+
+		processConfig: function( config ) {
+
+			this.set( 'strokeWidth', config.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ].strokeWidth || this.data.strokeWidth || (shapeData.strokeColor ? 1 : 0));
+
+			this.setStrokeWidth();
 		}
 
 	});

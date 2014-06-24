@@ -1,6 +1,6 @@
 
-define( [], function() {
-
+define( [ 'require' ], function( require ) {
+console.log( require );
 	var GraphShape = function() { };
 
 	GraphShape.prototype = {
@@ -48,6 +48,18 @@ define( [], function() {
 					self.handleMouseDown(e);
 
 				});
+
+
+
+				this._dom.addEventListener('dblclick', function(e) {
+			
+					e.preventDefault();
+					e.stopPropagation();
+					
+					self.handleDblClick(e);
+
+				});
+
 
 
 			}
@@ -487,11 +499,15 @@ define( [], function() {
 		},
 
 		addHandles: function() {
+
 			if( ! this.handlesInDom ) {
+
 				this.handlesInDom = true;
 
 				for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
-					this.group.appendChild( this['handle' + i ] );
+
+					this.group.appendChild( this[ 'handle' + i ] );
+
 				}
 			}
 		},
@@ -500,21 +516,85 @@ define( [], function() {
 
 			this.moving = false;
 			this.resize = false;
-
 			this.graph.shapeMoving(false);
-			
 			this.handleMouseUpImpl( e );
-/*
-			if( this.preventUnselect ) {
-
-				this.preventUnselect = false;
-
-			} else if( this._selected ) {
-
-				this.unselect();
-			}
-*/
 			this.triggerChange();
+		},
+
+		handleDblClick: function() {
+
+			this.configure();
+		},
+
+		configure: function() {
+
+			var self = this;
+			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' } );
+			div.prev().remove();
+			div.parent().css('z-index', 1000);
+
+			require( [ 'require', 'lib/lib/forms/form' ], function( require,Form ) {
+
+					
+				var form = new Form({ });
+				form.init();
+
+				var structure = {
+
+					sections: {
+
+						shape_cfg: {
+
+							options: {
+								title: 'Shape',
+								icon: 'info_rhombus'
+							},
+
+							groups: {
+
+								shape_cfg: {
+									options: {
+										type: 'list'
+									},
+
+									fields: self.getFieldsConfig()
+								}
+							}
+						}
+					}
+				};
+
+				form.setStructure( structure );
+
+				form.onStructureLoaded().done(function() {
+					form.fill( self.getConfiguration() );
+				});
+
+				form.addButton('Cancel', { color: 'blue' }, function() {
+					div.dialog( 'close' );
+				});
+
+				form.addButton('Save', { color: 'green' }, function() {
+					self.setConfiguration( form.getValue( ) );
+					div.dialog('close');
+
+				});
+
+				form.onLoaded().done(function() {
+
+					div.html(form.makeDom());
+					form.inDom();
+				});
+			});
+		},
+
+		getConfiguration: function() {
+			return this.configuration = this.configuration || {};
+		},
+
+		setConfiguration: function( configuration ) {
+			this.processConfig( configuration );
+			return this.configuration = configuration;
 		}
 	}
 

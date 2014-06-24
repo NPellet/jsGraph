@@ -22,7 +22,7 @@ define([], function() {
 			if( ! this.shapeType ) {
 				return;
 			}
-			
+
 			var self = this,
 				selfPlugin = this;
 				
@@ -64,9 +64,8 @@ define([], function() {
 				}
 
 				self.currentShape = shape;
-				console.log(self.currentShape);
 				self.currentShapeEvent = e;
-				
+			
 			} );
 
 		},
