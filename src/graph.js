@@ -316,7 +316,9 @@ define([
 			});
 
 			this.dom.addEventListener('mousedown', function(e) {
-				self._dom.focus();
+				
+				self.focus();
+
 				e.preventDefault( );
 				if( e.which == 3 || e.ctrlKey ) {
 					return;
@@ -413,7 +415,9 @@ define([
 			});
 		},
 
-
+		focus: function() {
+			this._dom.focus();
+		},
 
 		handleMouseDown: function(x,y,e) {
 			var self = this,
@@ -1676,7 +1680,7 @@ console.log( self._plugins, pluginName );
 
 				this.shapeZone.removeChild( this.linking.current.line );
 				this.linking.current = {};
-				 
+
 				return;
 			}
 
