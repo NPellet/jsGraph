@@ -46,7 +46,7 @@ define( [ 'require' ], function( require ) {
 
 				this._dom.addEventListener('mouseover', function (e) {
 
-					self.doHover(true);
+					self.doHover( true, e );
 					e.stopPropagation();
 
 				});
@@ -54,7 +54,7 @@ define( [ 'require' ], function( require ) {
 
 				this._dom.addEventListener( 'mouseout', function (e) {
 
-					self.doHover(false);
+					self.doHover( false, e );
 					e.stopPropagation();
 
 				});
@@ -65,7 +65,7 @@ define( [ 'require' ], function( require ) {
 					e.stopPropagation();
 					self.handleSelected = false;
 					self.moving = true;
-					
+
 					self.handleMouseDown(e);
 				} );
 
@@ -445,6 +445,9 @@ define( [ 'require' ], function( require ) {
 
 
 		onMouseOver: function (clbk) {
+
+		//	this.linking( e, false );
+			
 			var callbacks = (this._mouseOverCallbacks = this._mouseOverCallbacks || $.Callbacks());
 			callbacks.add(clbk);
 		},
@@ -454,8 +457,17 @@ define( [ 'require' ], function( require ) {
 			callbacks.add(clbk);
 		},
 
-		doHover: function(bln) {
+		doHover: function( bln, e ) {
 			var clbks;
+
+			if( bln ) {
+				this.linkingOn( e );	
+			} else {
+				this.linkingOut( e );
+			}
+
+			this._dom.setAttribute('class', bln ? 'hover' : '');
+
 			if( !(clbks = this[ bln ? '_mouseOverCallbacks' : '_mouseOutCallbacks' ] ) )
 				return;
 			clbks.fireWith( this, [ this.data, this.parameters ] );
@@ -486,15 +498,27 @@ define( [ 'require' ], function( require ) {
 				}, 100);
 			}
 
+
 			this.mouseCoords = this.graph.getXY( e );
 
-			this.handleMouseDownImpl( e );
+			if( e.shiftKey ) {
+
+				self.linkingStart( e, true );
+			}
+
+
+			this.handleMouseDownImpl( e, this.mouseCoords );
 		},
 
 
 		handleMouseMove: function( e ) {
 			
-			var coords = this.graph.getXY( e ),
+			var coords = this.graph.getXY( e );
+			this.mouseCoords = coords;
+
+			this.linkingMove( e );
+
+			var
 				deltaX = this.serie.getXAxis( ).getRelVal( coords.x - this.mouseCoords.x ),
 				deltaY = this.serie.getYAxis( ).getRelVal( coords.y - this.mouseCoords.y );
 
@@ -504,7 +528,7 @@ define( [ 'require' ], function( require ) {
 
 			
 			this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
-			this.mouseCoords = coords;
+			
 			this.redrawImpl();
 	
 		},
@@ -534,6 +558,8 @@ define( [ 'require' ], function( require ) {
 			this.moving = false;
 			this.resize = false;
 			this.graph.shapeMoving(false);
+
+			this.linkingFinalize();
 			this.handleMouseUpImpl( e );
 			this.triggerChange();
 		},
@@ -612,6 +638,93 @@ define( [ 'require' ], function( require ) {
 		setConfiguration: function( configuration ) {
 
 			this.configuration = $.extend( true, this.configuration, configuration );
+		},
+
+
+		linkingStart: function( e, clicked ) {
+
+			var linking = this.graph.isLinking();
+
+			if( linking ) {
+				return;
+			}
+
+			var line = this.graph.newLinkingLine( );
+
+			var coords = this.getLinkingCoords();
+
+			line.setAttribute('x1', coords.x );
+			line.setAttribute('y1', coords.y );
+			line.setAttribute('x2', coords.x );
+			line.setAttribute('y2', coords.y );
+
+			this.graph.linkA( this, line );
+		},
+
+		linkingMove: function( e ) {
+
+
+			var linking = this.graph.isLinking();
+
+			if( ! linking ) {
+				return;
+			}
+
+			if( this.graph.getLinkingB( ) ) { // Hover something else
+				return;
+			}
+
+			var line = this.graph.getLinkingLine();
+
+			var coords = this.graph.getXY( e );
+
+			line.setAttribute('x2', coords.x - this.graph.getPaddingLeft( ) );
+			line.setAttribute('y2', coords.y - this.graph.getPaddingTop( ) );
+		},
+
+		linkingOn: function( e ) {
+
+			var linking = this.graph.isLinking();
+			if( ! linking ) {
+				return;
+			}
+
+			var linkingA = this.graph.getLinkingA( );
+
+			if( linkingA == this ) {
+				return;
+			}
+
+			this.graph.linkB( this ); // Update B element
+
+	
+			var coords = this.getLinkingCoords();
+
+			var line = this.graph.getLinkingLine();
+			line.setAttribute('x2', coords.x );
+			line.setAttribute('y2', coords.y );
+		},
+
+		linkingOut: function( e ) {
+
+
+			var linking = this.graph.isLinking();
+			if( ! linking ) {
+				return;
+			}
+
+
+			this.graph.linkB( undefined ); // Remove B element
+
+//			line.setAttribute('x2', coords.x - this.graph.getPaddingLeft( ) );
+			//line.setAttribute('y2', coords.y - this.graph.getPaddingTop( ) );
+		},
+
+
+		linkingFinalize: function() {
+
+			this.graph.endLinking();
+
 		}
 	}
 

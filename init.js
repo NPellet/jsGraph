@@ -14,7 +14,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	var data1 = [];
 	for( var i = 0; i < 6; i += 0.05 ) {
-		console.log('sdf');
 		data1.push( [ i , Math.pow(2.71, ( - Math.pow(( i - 3 ), 2)) ) ] );
 	}
 
@@ -209,7 +208,54 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 			$("#" + domGraph).prepend( toolbar.getDom( ).css( 'position', 'absolute') );
 		} );
 
-	})
+	});
+
+	graph.makeShape({ 
+		type: 'rect',
+		pos: {
+			x: 1, 
+			y: 0
+		}, 
+		pos2: {
+			x: 2,
+			y: 0.5
+		},
+		fillColor: [ 100, 100, 100, 0.3 ],
+		strokeColor: [ 100, 100, 100, 0.9 ],
+		strokeWidth: 1
+	}).then( function( shape ) { shape.draw( ); shape.redraw(); });				
+
+	graph.makeShape({ 
+		type: 'rect',
+		pos: {
+			x: 3, 
+			y: 0.5
+		}, 
+		pos2: {
+			x: 4,
+			y: 1
+		},
+		fillColor: [ 100, 100, 100, 0.3 ],
+		strokeColor: [ 100, 100, 100, 0.9 ],
+		strokeWidth: 1
+	}).then( function( shape ) { shape.draw( ); shape.redraw(); });				
+
+
+	graph.makeShape({ 
+		type: 'rect',
+		pos: {
+			x: 4.2, 
+			y: 0.2
+		}, 
+		pos2: {
+			x: 6,
+			y: 0.7
+		},
+		fillColor: [ 100, 100, 100, 0.3 ],
+		strokeColor: [ 100, 100, 100, 0.9 ],
+		strokeWidth: 1
+	}).then( function( shape ) { shape.draw( ); shape.redraw(); });				
+
 
 }, "Allow rectangle drawing", "" ],
 

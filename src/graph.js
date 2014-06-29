@@ -95,12 +95,10 @@ define([
 			horizontal: []
 		};
 
-		this.ranges = {
-			current: undefined,
-			x: [],
-			y: [],
-			countX: 0,
-			countY: 0
+
+		this.linking = {
+			current: {},
+			links: []
 		};
 		
 		this.pluginsReady = $.Deferred();
@@ -155,7 +153,8 @@ define([
 			
 			this._dom.appendChild(this.dom);
 			
-			this._dom.setAttribute('tabindex', 0);
+			this._dom.setAttribute('tabindex', 1);
+
 			this._dom.style.outline = "none";
 
 			this.defs = document.createElementNS(this.ns, 'defs');
@@ -284,13 +283,30 @@ define([
 			var self = this;
 
 			this._dom.addEventListener( 'keydown', function( e ) {
+
+				
 				e.preventDefault();
 				e.stopPropagation();
 				
 				if( e.keyCode == 8 && self.selectedShape ) {
 					self.selectedShape.kill();
 				}
+
+				if( e.keyCode == 16 && e.ctrlKey ) {
+					self.linkingReveal();
+				}
+
+
 			});
+
+
+			this._dom.addEventListener( 'keyup', function( e ) {
+
+				e.preventDefault();
+				e.stopPropagation();
+				self.linkingHide();
+			});
+
 
 
 			this.dom.addEventListener('mousemove', function(e) {
@@ -300,7 +316,7 @@ define([
 			});
 
 			this.dom.addEventListener('mousedown', function(e) {
-
+				self._dom.focus();
 				e.preventDefault( );
 				if( e.which == 3 || e.ctrlKey ) {
 					return;
@@ -1612,7 +1628,81 @@ console.log( self._plugins, pluginName );
 				this.context.listen( target, menuElements, callback );
 			}
 			
+		},
+
+
+		/* Linking shapes */
+
+		linkA: function( shapeA, line ) {
+			this.linking.current.a = shapeA;
+			this.linking.current.line = line;
+		},
+
+		linkB: function( shapeB ) {
+			this.linking.current.b = shapeB;
+		},
+
+
+		getLinkingA: function() {
+			return this.linking.current.a;
+		},
+
+
+		getLinkingB: function() {
+			return this.linking.current.b;
+		},
+
+
+
+		isLinking: function( set ) {
+			return ! ! this.linking.current.a;
+		},
+
+		newLinkingLine: function() {
+			var line = document.createElementNS( this.ns, 'line');
+			line.setAttribute('stroke-width', 1);
+			line.setAttribute('stroke', 'black');
+			this.shapeZone.appendChild( line );
+			return line;
+		},
+
+		getLinkingLine: function( add ) {
+			return this.linking.current.line;
+		},
+
+		endLinking: function() {
+
+			if( this.linking.current.a == this.linking.current.b || ! this.linking.current.b ) {
+
+				this.shapeZone.removeChild( this.linking.current.line );
+				this.linking.current = {};
+				 
+				return;
+			}
+
+			if( this.linking.current.line ) {
+				this.linking.current.line.style.display = "none";
+			}
+
+			this.linking.links.push( this.linking.current );
+			this.linking.current = {};
+		},
+
+		linkingReveal: function() {
+
+
+			for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+				this.linking.links[ i ].line.style.display = "block";
+			}
+		},
+
+		linkingHide: function() {
+
+			for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+				this.linking.links[ i ].line.style.display = "none";
+			}
 		}
+
 	}
 
 

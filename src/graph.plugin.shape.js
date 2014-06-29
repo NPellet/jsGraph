@@ -6,18 +6,16 @@ define([], function() {
 
 	plugin.prototype = {
 
-
 		init: function( graph, options ) {
-
 			this.shapeType = options.shapeType;
-
 		},
 
-		setShape: function( shapeType ) {
+		setShape: function( shapeType, linkable ) {
 			this.shapeType = shapeType;
+			this.shapeLinkable = linkable || false;
 		},
-		
-		onMouseDown: function(graph, x, y, e, target) {
+
+		onMouseDown: function( graph, x, y, e, target ) {
 				
 			if( ! this.shapeType ) {
 				return;
@@ -50,12 +48,15 @@ define([], function() {
 					x: xVal,
 					y: yVal
 				},
+
 				fillColor: color.concat([ 0.3 ]),
 				strokeColor: color.concat([ 0.9 ]),
 			
 				onChange: function(newData) {
 					graph.triggerEvent('onAnnotationChange', newData);
-				}
+				},
+
+				linkable: self.shapeLinkable
 
 			}, {}, true ).then( function( shape ) {
 

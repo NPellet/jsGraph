@@ -98,6 +98,11 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			return false;
 		},
 
+		getLinkingCoords: function() {
+
+			return { x: this.currentX + this.currentW / 2, y: this.currentY + this.currentH / 2 };
+		},
+
 		redrawImpl: function() {
 
 		},
