@@ -45,7 +45,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 				endLinking: function() {
 
-					if( this.linking.current.a == this.linking.current.b || ! this.linking.current.b ) {
+					if( ( this.linking.current.a == this.linking.current.b && this.linking.current.a ) || ( ! this.linking.current.b && this.linking.current.a )  ) {
 
 						this.shapeZone.removeChild( this.linking.current.line );
 						this.linking.current = {};
@@ -56,10 +56,11 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 					if( this.linking.current.line ) {
 
 						this.linking.current.line.style.display = "none";
+						this.linking.links.push( this.linking.current );
+						this.linking.current = {};
 					}
 
-					this.linking.links.push( this.linking.current );
-					this.linking.current = {};
+					
 				},
 
 				linkingReveal: function() {
@@ -73,6 +74,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 				linkingHide: function() {
 
 					for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+
 						this.linking.links[ i ].line.style.display = "none";
 					}
 				}
