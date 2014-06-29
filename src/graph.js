@@ -419,7 +419,7 @@ define([
 			this._dom.focus();
 		},
 
-		handleMouseDown: function(x,y,e) {
+		handleMouseDown: function( x, y, e ) {
 			var self = this,
 				$target = $(e.target), 
 				shift = e.shiftKey, 
@@ -449,7 +449,7 @@ define([
 		},
 
 
-		handleMouseMove: function(x, y, e) {
+		handleMouseMove: function( x, y, e ) {
 
 			var $target;
 			
@@ -461,7 +461,6 @@ define([
 			if( this._pluginExecute(this.mouseLease, 'onMouseMove', [x, y, e, $target = $(e.target)]) ) {
 				return;
 			};
-
 
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
@@ -1664,9 +1663,8 @@ console.log( self._plugins, pluginName );
 
 		newLinkingLine: function() {
 			var line = document.createElementNS( this.ns, 'line');
-			line.setAttribute('stroke-width', 1);
-			line.setAttribute('stroke', 'black');
-			this.shapeZone.appendChild( line );
+			line.setAttribute('class', 'graph-linkingline');
+			this.shapeZone.insertBefore( line, this.shapeZone.firstChild );
 			return line;
 		},
 

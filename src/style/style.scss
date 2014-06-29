@@ -34,7 +34,13 @@ ul.graph-toolbar {
 	}
 }
 
+.graph-linkingline {
+	stroke: rgba(51, 156, 48, 1);
+	stroke-width: 2px;
+}
+
 
 .hover {
-	fill: red;
+	fill: rgba(51, 156, 48, 0.4);
+	stroke: rgba(51, 156, 48, 0.8);
 }

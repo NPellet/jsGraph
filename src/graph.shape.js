@@ -51,7 +51,6 @@ define( [ 'require' ], function( require ) {
 
 				});
 
-
 				this._dom.addEventListener( 'mouseout', function (e) {
 
 					self.doHover( false, e );
@@ -62,7 +61,7 @@ define( [ 'require' ], function( require ) {
 				this._dom.addEventListener( 'mousedown', function(e) {
 					
 					self.graph.focus();
-					
+
 					e.preventDefault();
 					e.stopPropagation();
 					self.handleSelected = false;

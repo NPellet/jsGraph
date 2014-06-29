@@ -21,5 +21,10 @@ ul.graph-toolbar {
   ul.graph-toolbar li.selected {
     background-color: #f0f0f0; }
 
+.graph-linkingline {
+  stroke: #339c30;
+  stroke-width: 2px; }
+
 .hover {
-  fill: red; }
+  fill: rgba(51, 156, 48, 0.4);
+  stroke: rgba(51, 156, 48, 0.8); }
