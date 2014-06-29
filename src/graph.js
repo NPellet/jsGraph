@@ -96,11 +96,14 @@ define([
 		};
 
 
-		this.linking = {
-			current: {},
-			links: []
+		this.shapeHandlers = {
+			mouseDown: [],
+			mouseUp: [],
+			mouseMove: [],
+			mouseOver: [],
+			mouseOut: []
 		};
-		
+
 		this.pluginsReady = $.Deferred();
 
 		this.currentAction = false;
@@ -283,29 +286,28 @@ define([
 			var self = this;
 
 			this._dom.addEventListener( 'keydown', function( e ) {
-
-				
+		
 				e.preventDefault();
 				e.stopPropagation();
 				
 				if( e.keyCode == 8 && self.selectedShape ) {
 					self.selectedShape.kill();
 				}
-
+/*
 				if( e.keyCode == 16 && e.ctrlKey ) {
 					self.linkingReveal();
 				}
-
+*/
 
 			});
 
-
+/*
 			this._dom.addEventListener( 'keyup', function( e ) {
 
 				e.preventDefault();
 				e.stopPropagation();
 				self.linkingHide();
-			});
+			});*/
 
 
 
@@ -1631,80 +1633,7 @@ console.log( self._plugins, pluginName );
 				this.context.listen( target, menuElements, callback );
 			}
 			
-		},
-
-
-		/* Linking shapes */
-
-		linkA: function( shapeA, line ) {
-			this.linking.current.a = shapeA;
-			this.linking.current.line = line;
-		},
-
-		linkB: function( shapeB ) {
-			this.linking.current.b = shapeB;
-		},
-
-
-		getLinkingA: function() {
-			return this.linking.current.a;
-		},
-
-
-		getLinkingB: function() {
-			return this.linking.current.b;
-		},
-
-
-
-		isLinking: function( set ) {
-			return ! ! this.linking.current.a;
-		},
-
-		newLinkingLine: function() {
-			var line = document.createElementNS( this.ns, 'line');
-			line.setAttribute('class', 'graph-linkingline');
-			this.shapeZone.insertBefore( line, this.shapeZone.firstChild );
-			return line;
-		},
-
-		getLinkingLine: function( add ) {
-			return this.linking.current.line;
-		},
-
-		endLinking: function() {
-
-			if( this.linking.current.a == this.linking.current.b || ! this.linking.current.b ) {
-
-				this.shapeZone.removeChild( this.linking.current.line );
-				this.linking.current = {};
-
-				return;
-			}
-
-			if( this.linking.current.line ) {
-				this.linking.current.line.style.display = "none";
-			}
-
-			this.linking.links.push( this.linking.current );
-			this.linking.current = {};
-		},
-
-		linkingReveal: function() {
-
-
-			for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
-				this.linking.links[ i ].line.style.display = "block";
-			}
-		},
-
-		linkingHide: function() {
-
-			for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
-				this.linking.links[ i ].line.style.display = "none";
-			}
 		}
-
 	}
 
 

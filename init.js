@@ -184,6 +184,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 		plugins: {
 			'./graph.plugin.shape': { },
+			'./graph.plugin.linking': { },
 		},
 
 		pluginAction: {
