@@ -51,7 +51,7 @@ define( [], function() {
 			this.domMarker.style.cursor = 'pointer';
 
 			this.groupMain = document.createElementNS(this.graph.ns, 'g');
-			
+			this.additionalData = {};
 
 			this.domMarker.addEventListener('mouseover', function(e) {
 				var closest = self._getMarkerIndexFromEvent(e);
@@ -286,6 +286,14 @@ define( [], function() {
 					return new Float64Array(arr);
 				break;
 			}
+		},
+
+		setAdditionalData: function( data ) {
+			this.additionalData = data;
+		},
+
+		getAdditionalData: function( ) {
+			return this.additionalData;
 		},
 
 		calculateSlots: function( ) {

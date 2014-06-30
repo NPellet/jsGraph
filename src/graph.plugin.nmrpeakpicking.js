@@ -14,6 +14,7 @@ define([], function() {
 
 			var series = arguments;
 			console.log( series[ 0 ].data );
+			console.log( series[ 0 ].getAdditionalData() );
 
 			this.graph.makeShape( {
 
