@@ -179,7 +179,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 */
 
-/*
+
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { 
@@ -260,9 +260,9 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	}).then( function( shape ) { shape.draw( ); shape.redraw(); });				
 
 
-}, "Allow rectangle drawing", "" ],
+}, "Allow shape linking", "" ],
 
-*/
+
 
 
 [ function( domGraph ) {
@@ -281,7 +281,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	
 	var data = { x: 0.5, dx: 0.01, y: [] };
 	for( var i = 1, l = 1000; i < l ; i ++ ) {
-		data.y.push( Math.log( i ) * Math.random() );
+		data.y.push( Math.log( i ) * ( Math.random() + 3 ) );
 	}
 
 	graph.newSerie("serieTest")
@@ -293,7 +293,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	graph.drawSeries();	
 
 
-}, "Allow rectangle drawing", "" ],
+}, "Other way to set data", "" ],
 
 
 
