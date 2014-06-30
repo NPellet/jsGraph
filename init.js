@@ -178,6 +178,8 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 }, "Scaling different axis", "" ],
 
 */
+
+/*
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { 
@@ -256,6 +258,39 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		strokeColor: [ 100, 100, 100, 0.9 ],
 		strokeWidth: 1
 	}).then( function( shape ) { shape.draw( ); shape.redraw(); });				
+
+
+}, "Allow rectangle drawing", "" ],
+
+*/
+
+
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { 
+
+		plugins: {
+			'./graph.plugin.shape': { },
+		},
+
+		pluginAction: {
+			'./graph.plugin.shape': { shift: false, ctrl: false }
+		}
+
+	} );
+	
+	var data = { x: 0.5, dx: 0.01, y: [] };
+	for( var i = 1, l = 1000; i < l ; i ++ ) {
+		data.y.push( Math.log( i ) * Math.random() );
+	}
+
+	graph.newSerie("serieTest")
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( data );
+
+	graph.redraw( );
+	graph.drawSeries();	
 
 
 }, "Allow rectangle drawing", "" ],
