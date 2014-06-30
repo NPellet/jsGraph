@@ -12,8 +12,6 @@ requirejs.config({
 
 require( [ 'src/graph' ] , function( Graph ) {
 
-
-
 	var data = {
 	    "dx": -0.00031,
 	    "y": [
@@ -21,30 +19,29 @@ require( [ 'src/graph' ] , function( Graph ) {
 	    ],
 	    "x": 16.45296
 	  };
-
 	
 	var graph = new Graph( $( "#nmr" ).get( 0 ), { 
 
 		plugins: {
-			'./graph.plugin.shape': { },
-		},
-
-		pluginAction: {
-			'./graph.plugin.shape': { shift: false, ctrl: false }
+			'./graph.plugin.nmrpeakpicking': { },
 		}
 
 	} );
 	
-
 	graph.newSerie("serieTest")
 		.setLabel( "My serie" )
 		.autoAxis()
 		.setData( data );
+	
+	graph.getPlugin( './graph.plugin.nmrpeakpicking' ).then( function( plugin ) {
+
+		var series = graph.getSeries();
+		plugin.process.apply( plugin, series );
+
+	} );
 
 	graph.redraw( );
 	graph.drawSeries();	
-
-
 });
 
 
