@@ -175,7 +175,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 				e.preventDefault();
 				e.stopPropagation();
 
-				if( e.keyCode == 16 && e.ctrlKey ) {
+				if( ( e.keyCode == 16 && e.ctrlKey ) || ( e.keyCode == 17 && e.shiftKey )) {
 					graph.linkingReveal();
 				}
 			});
