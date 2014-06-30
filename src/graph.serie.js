@@ -290,6 +290,7 @@ define( [], function() {
 
 		setAdditionalData: function( data ) {
 			this.additionalData = data;
+			return this;
 		},
 
 		getAdditionalData: function( ) {
