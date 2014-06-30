@@ -218,6 +218,21 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 					pos2Y = pos2.y
 
 
+	
+				if( this.moving ) {
+
+					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+					pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis( ) );
+					pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis( ) );
+
+					this.setData('pos', pos);
+					this.setData('pos2', pos2);
+					this.setPosition();
+					return;
+				}
+
 
 				if( this.handleSelected == 1 || this.handleSelected == 4 ) {
 					var inv = ! invX;
@@ -283,13 +298,10 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 				return;
 			}
 
-
 			this.addHandles();
-			
 
 			this.handle1.setAttribute('x', this.currentX);
 			this.handle1.setAttribute('y', this.currentY);
-
 
 			this.handle2.setAttribute('x', this.currentX + this.currentW);
 			this.handle2.setAttribute('y', this.currentY);
