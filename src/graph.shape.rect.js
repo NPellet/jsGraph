@@ -125,85 +125,155 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			var w = this.getFromData('width') || 0;
 			var h = this.getFromData('height') || 0;
 			var pos = this.getFromData('pos');
+			var pos2 = this.getFromData('pos2');
 
-			if( this.moving ) {
-
-				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
-				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
-
-				this.setData('pos', pos);
-				this.setPosition();
-				return;
-			}
-
-			if( this.handleSelected == 1 ) {
-
-				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
-				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
-
-				w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis( ) );
-				h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis( ) );
-			}
-
-
-			if( this.handleSelected == 2 ) {
-
-				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
-				w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-				h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis() );
-			}
-
-
-			if( this.handleSelected == 3 ) {
-
-				w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
-				h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
-
-
-			}
-
-
-			if( this.handleSelected == 4 ) {
-
-				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
-				w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis() );
-				h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
-			}
-
-			var wpx = this.graph.getPxRel( w, this.serie.getXAxis( ) );
-			var hpx = this.graph.getPxRel( h, this.serie.getYAxis( ) );
-
-
-			if( wpx < 0 ) {
+			if( ! pos2 ) {
 				
-				pos.x = this.graph.deltaPosition( pos.x, w );
-				w = - w;
+				if( this.moving ) {
 
-				if( this.handleSelected == 1 ) this.handleSelected = 2;
-				else if( this.handleSelected == 2 ) this.handleSelected = 1;
-				else if( this.handleSelected == 3 ) this.handleSelected = 4;
-				else if( this.handleSelected == 4 ) this.handleSelected = 3;
+					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+					this.setData('pos', pos);
+					this.setPosition();
+					return;
+				}
 
 
-			}
+				if( this.handleSelected == 1 ) {
+
+					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+					w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis( ) );
+					h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis( ) );
+				
+				}
 
 
-			if( hpx < 0 ) {
-				pos.y = this.graph.deltaPosition( pos.y, h );
-				h = - h;
+				if( this.handleSelected == 2 ) {
+
+					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+
+					w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+					h = this.graph.deltaPosition( h, - deltaY, this.serie.getYAxis() );	
+					
+					
+				}
+
+
+				if( this.handleSelected == 3 ) {
+
+					w = this.graph.deltaPosition( w, deltaX, this.serie.getXAxis() );
+					h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );	
+					
+				}
+
+
+				if( this.handleSelected == 4 ) {
+
+					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+
+					w = this.graph.deltaPosition( w, - deltaX, this.serie.getXAxis() );
+					h = this.graph.deltaPosition( h, deltaY, this.serie.getYAxis() );
+				}
+
+				var wpx = this.graph.getPxRel( w, this.serie.getXAxis( ) );
+				var hpx = this.graph.getPxRel( h, this.serie.getYAxis( ) );
+
+
+				if( wpx < 0 ) {
+					
+					pos.x = this.graph.deltaPosition( pos.x, w );
+					w = - w;	
+
+					if( this.handleSelected == 1 ) this.handleSelected = 2;
+					else if( this.handleSelected == 2 ) this.handleSelected = 1;
+					else if( this.handleSelected == 3 ) this.handleSelected = 4;
+					else if( this.handleSelected == 4 ) this.handleSelected = 3;	
+				}
+
+
+				if( hpx < 0 ) {
+					
+					pos.y = this.graph.deltaPosition( pos.y, h );
+					h = - h;
 			
-				if( this.handleSelected == 1 ) this.handleSelected = 4;
-				else if( this.handleSelected == 2 ) this.handleSelected = 3;
-				else if( this.handleSelected == 3 ) this.handleSelected = 2;
-				else if( this.handleSelected == 4 ) this.handleSelected = 1;	
+					if( this.handleSelected == 1 ) this.handleSelected = 4;
+					else if( this.handleSelected == 2 ) this.handleSelected = 3;
+					else if( this.handleSelected == 3 ) this.handleSelected = 2;
+					else if( this.handleSelected == 4 ) this.handleSelected = 1;	
+				}
+
+				this.setData('width', w);
+				this.setData('height', h);
+
+			} else {
+
+				var invX = this.serie.getXAxis().isFlipped(),
+					invY = this.serie.getYAxis().isFlipped(),
+					posX = pos.x,
+					posY = pos.y,
+					pos2X = pos2.x,
+					pos2Y = pos2.y
+
+
+
+				if( this.handleSelected == 1 || this.handleSelected == 4 ) {
+					var inv = ! invX;
+				} else {
+					var inv = invX;
+				}
+
+				if( ( posX < pos2X && inv ) || ( ( posX >= pos2X && ! inv ) ) ) {
+					posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
+				} else {
+					pos2X = this.graph.deltaPosition( pos2X, deltaX, this.serie.getXAxis( ) );	
+				}
+
+
+				if( this.handleSelected == 1 || this.handleSelected == 2 ) {
+					var inv = ! invY;
+				} else {
+					var inv = invY;
+				}
+
+				if( ( posY < pos2Y && inv ) || ( ( posY >= pos2Y && ! inv ) ) ) {
+					posY = this.graph.deltaPosition( posY, deltaY, this.serie.getYAxis( ) );	
+				} else {
+					pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.serie.getYAxis( ) );	
+				}
+
+				if( ( pos2Y > posY && pos2.y < pos.y ) || ( pos2Y < posY && pos2.y > pos.y) ) {
+					
+					if( this.handleSelected == 1 ) this.handleSelected = 4;
+					else if( this.handleSelected == 2 ) this.handleSelected = 3;
+					else if( this.handleSelected == 3 ) this.handleSelected = 2;
+					else if( this.handleSelected == 4 ) this.handleSelected = 1;	
+				}
+
+				if( ( pos2X > posX && pos2.x < pos.x ) || ( pos2X < posX && pos2.x > pos.x) ) {
+
+					if( this.handleSelected == 1 ) this.handleSelected = 2;
+					else if( this.handleSelected == 2 ) this.handleSelected = 1;
+					else if( this.handleSelected == 3 ) this.handleSelected = 4;
+					else if( this.handleSelected == 4 ) this.handleSelected = 3;		
+				}
+
+				pos2.x = pos2X;
+				pos2.y = pos2Y;
+				
+				pos.x = posX;
+				pos.y = posY;
+
+				this.setData( 'pos2', pos2 );
 			}
 
-
-			this.setData('width', w);
-			this.setData('height', h);
 			this.setData('pos', pos);
-			
+
 			this.setPosition();
+
+
 
 		},
 
