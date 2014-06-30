@@ -190,7 +190,12 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 			graph.shapeHandlers.mouseDown.push( function( e ) {
 				
+
 				if( e.shiftKey ) {
+
+					this.moving = false;
+					this.handleSelected = false;
+				
 					linkingStart( this, e, true );
 				}
 			});

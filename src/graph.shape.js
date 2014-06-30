@@ -493,7 +493,7 @@ define( [ 'require' ], function( require ) {
 					}		
 
 					this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
-					this.mouseCoords = coords;
+					this.mouseCoords = coords;	
 				}
 			],
 

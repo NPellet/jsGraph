@@ -122,6 +122,10 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {
 
+			if( ! this.moving && ! this.handleSelected ) {
+				return;
+			}
+			
 			var w = this.getFromData('width') || 0;
 			var h = this.getFromData('height') || 0;
 			var pos = this.getFromData('pos');
