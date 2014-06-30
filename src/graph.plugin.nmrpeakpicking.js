@@ -12,6 +12,9 @@ define([], function() {
 			
 			console.log( arguments );
 
+			var series = arguments;
+			console.log( series[ 0 ].data );
+
 			this.graph.makeShape( {
 
 				type: 'rect',
