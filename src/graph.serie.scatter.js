@@ -28,6 +28,13 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 			this.groupPoints = document.createElementNS(this.graph.ns, 'g');
 			this.groupMain = document.createElementNS(this.graph.ns, 'g');
+			
+			this.errorPath = document.createElementNS(this.graph.ns, 'path');
+			this.errorPath.setAttribute('stroke', 'black');
+			this.errorPath.setAttribute('fill', 'transparent');
+			this.errorPath.setAttribute('stroke-width', '1px');
+
+			this.groupMain.appendChild( this.errorPath );
 
 			this.additionalData = {};
 
@@ -93,8 +100,6 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			}
 
 			var _2d = ( arg == "2D" );
-
-
 
 			arr = this._addData( type, _2d ? data.length * 2 : data.length );
 			
@@ -203,26 +208,109 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 			var totalLength = this.data.length / 2;
 			
-			var allY = [ ],
-				slotToUse,
-				y = 0;
-		
 			j = 0, k = 0, m = this.data.length;
+
+			var error;
+			var pathError = "";
 
 			for( ; j < m ; j += 2 ) {
 
 				xpx = this.getX( this.data[ j + incrXFlip ] );
 				ypx = this.getY( this.data[ j + incrYFlip ] );
 
-				if(this.options.autoPeakPicking) {
-					allY.push( [ ( this.data[ j + incrYFlip ] ), this.data[ j + incrXFlip ] ] );
+				var valY = this.data[ j + incrYFlip ],
+					coordY;
+
+				if( ( error = this.error[ j / 2 ] ) ) {
+
+					pathError += "M " + xpx + " " + ypx;
+
+					if( error[ 0 ] ) {
+						pathError += this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
+					}
+
+					if( error[ 1 ] ) {
+						pathError += this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
+					}
+
 				}
 
+				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
 
+			this.errorPath.setAttribute( 'd', pathError );
 			this.groupMain.appendChild( this.groupPoints );
 		},
+
+
+		doErrorDraw: function( orientation, error, originVal, originPx, pathError ) {
+
+			if( ! ( error instanceof Array ) ) {
+				error = [ error ]; 
+			}
+
+			var functionName = orientation == 'y' ? 'getY' : 'getX';
+
+			for( var i = 0 , l = error.length ; i < l ; i ++ ) {
+
+				if( error[ i ] instanceof Array ) { // TOP
+
+					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+
+				} else {
+			
+					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal + error[ i ] ), originPx );
+					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal - error[ i ] ), originPx );
+				}
+			}	
+
+			return pathError;
+		},
+
+
+		setMaxErrorLevel: function( maxErrorLevel ) {
+			this.maxLevel = maxErrorLevel;
+			return this;
+		},
+
+		makeError: function( orientation, level, path, coord, origin ) {
+
+			if( level >= this.maxLevel ) {
+				return path;
+			}
+
+			var diff = this.maxLevel - level;
+
+			if( diff == 2 ) { // bars
+				return this["makeBar" + orientation.toUpperCase() ]( path, coord, origin );
+			}
+
+			if( diff == 1 ) {
+				return this["makeBox" + orientation.toUpperCase() ]( path, coord, origin );
+			}
+		},
+
+		makeBarY: function( path, coordY, origin ) {
+			return path + " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
+		},
+
+
+		makeBoxY: function( path, coordY, origin ) {
+			return path + " h 5 V " + coordY + " h -10 V " + origin + " h 5 ";
+		},
+
+
+		makeBarX: function( path, coordY, origin ) {
+			return path + " H " + coordY + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
+		},
+
+
+		makeBoxX: function( path, coordY, origin ) {
+			return path + " v 5 H " + coordY + " v -10 H " + origin + " v 5 ";
+		},
+
 
 		_addPoint: function( xpx, ypx, k ) {
 
@@ -255,6 +343,10 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			}
 
 			group.appendChild( el );
+		},
+
+		setDataError: function( error ) {
+			this.error = error;
 		}
 	} );
 

@@ -188,6 +188,35 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		.setLabel( "My serie" )
 		.autoAxis()
 		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ], [ 8, 4.2 ], [ 12, -1.2 ] ] )
+		.setMaxErrorLevel( 2 )
+		.setDataError( 
+			[
+
+				[ /* y */[ /* 1st */ [ /* top */ 5, /* bottom */ 10 ],  /* 2nd */ 2 ] ],
+				,
+				[ , /* y */[ /* 1st */ [ /* top */ 5, /* bottom */ 1 ],  /* 2nd */ 0.2 ] ]
+
+			]
+		);
+
+
+
+	graph.redraw( );
+	graph.drawSeries();	
+
+}, "Scatter serie", "" ],
+
+
+/*
+
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { } );
+	
+	var serie = graph.newSerie("serieTest", { }, 'scatter')
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ], [ 8, 4.2 ], [ 12, -1.2 ] ] )
 		.setDataStyle( 
 
 			{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
@@ -208,7 +237,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 }, "Scatter serie", "" ],
 
 
-
+*/
 
 [ function( domGraph ) {
 
