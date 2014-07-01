@@ -7,6 +7,9 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 		init: function( graph, options ) {
 
+			this.options = options;
+			var self = this;
+
 			var funcs = {
 
 				/* Linking shapes */
@@ -60,6 +63,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 						this.linking.current = {};
 					}
 
+					return this.linking.links[ this.linking.links.length - 1 ];
 					
 				},
 
@@ -159,8 +163,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 			function linkingFinalize( shape ) {
 
-				shape.graph.endLinking();
-
+				return shape.graph.endLinking();
 			}
 			
 
@@ -203,7 +206,28 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 			graph.shapeHandlers.mouseUp.push( function( e ) {
 				
-				linkingFinalize( this );
+				var link;
+				if( ( link = linkingFinalize( this ) ) ) {
+
+					link.a.linking = link.a.linking || 0;
+					link.a.linking++;
+					
+					link.b.linking = link.b.linking || 0;
+					link.b.linking++;
+
+					link.a.addClass('linking');
+					link.b.addClass('linking');
+
+					link.a.addClass('linking' + link.a.linking );
+					link.a.removeClass('linking' + ( link.a.linking - 1 ) );
+
+					link.b.addClass('linking' + link.a.linking );
+					link.b.removeClass('linking' + ( link.a.linking - 1 ) );
+
+					if( self.options.onLinkCreate ) {
+						self.options.onLinkCreate( link.a, link.b );
+					}
+				}
 			});
 
 

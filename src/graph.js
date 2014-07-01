@@ -6,6 +6,7 @@ define([
 	'./graph.axis.y',
 	'./graph.serie',
 	'./graph.serie.contour',
+	'./graph.serie.scatter',
 	'./graph.legend'
 
 
@@ -17,6 +18,7 @@ define([
 		GraphYAxis,
 		GraphSerie,
 		GraphSerieContour,
+		GraphSerieScatter,
 		GraphLegend
 
 	) {
@@ -1051,12 +1053,17 @@ define([
 					var serie = new GraphSerieContour();
 				break;
 
+				case 'scatter':
+					var serie = new GraphSerieScatter();
+				break;
+
 				case 'line':
 				default:
 					var serie = new GraphSerie();
 				break;	
 			}
 			serie.init(this, name, options);
+			
 			this.plotGroup.appendChild(serie.groupMain);
 
 			

@@ -36,6 +36,8 @@ define( [ 'require' ], function( require ) {
 			this.createDom();
 			this.setEvents();
 			
+			this.classes = [];
+
 			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
@@ -86,6 +88,25 @@ define( [ 'require' ], function( require ) {
 			
 			this.graph.shapeZone.appendChild(this.group);
 			this.initImpl();
+		},
+
+		addClass: function( className ) {
+			if( this.classes.indexOf( className ) == -1 ) {
+				this.classes.push( className );
+			}
+
+			this.makeClasses();
+		},
+
+		removeClass: function( className ) {
+
+			this.classes.splice( this.classes.indexOf( className ), 1 );
+			this.makeClasses();
+		},
+
+		makeClasses: function() {
+
+			this._dom.setAttribute( 'class', this.classes.join(" ") );
 		},
 
 		initImpl: function() {},
@@ -524,7 +545,9 @@ define( [ 'require' ], function( require ) {
 			mouseOver: [
 				function( e ) {
 					var clbks;
-					this._dom.setAttribute('class', 'hover');
+
+					this.addClass('hover');
+
 					if( ! ( clbks = this._mouseOverCallbacks ) ) {
 						return;
 					}
@@ -535,7 +558,9 @@ define( [ 'require' ], function( require ) {
 			mouseOut: [
 				function( e ) {
 					var clbks;
-					this._dom.setAttribute('class', '');
+
+					this.removeClass('hover');
+					
 					if( ! ( clbks = this._mouseOutCallbacks ) ) {
 						return;
 					}

@@ -1,10 +1,10 @@
 
-define( [], function() {
+define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 	"use strict";
 
 	var GraphSerie = function() { }
-	GraphSerie.prototype = {
+	$.extend( GraphSerie.prototype, SerieStatic.prototype, {
 
 		defaults: {
 			lineColor: 'black',
@@ -437,27 +437,7 @@ define( [], function() {
 
 		},
 
-		setInfos: function(infos) {
-			this.infos = infos;
-		},
-
 		onMouseWheel: function() {},
-
-		getName: function() {
-			return this.name;
-		},
-
-		_checkX: function(val) {
-			this.minX = Math.min(this.minX, val);
-			this.maxX = Math.max(this.maxX, val);
-		},
-
-
-		_checkY: function(val) {
-			this.minY = Math.min(this.minY, val);
-			this.maxY = Math.max(this.maxY, val);
-		},
-
 
 		empty: function() {
 
@@ -469,55 +449,6 @@ define( [], function() {
 			while(this.groupMarkers.firstChild) {
 				this.groupMarkers.removeChild(this.groupMarkers.firstChild);
 			}
-		},
-
-
-		isMinOrMax: function(bool, xy, minmax) {
-
-			if( bool == undefined ) {
-				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
-			}
-
-			if( minmax == undefined && xy != undefined ) {
-				this._isMinOrMax[ xy ].min = bool;
-				this._isMinOrMax[ xy ].max = bool;
-				return;
-			}
-
-			if( xy != undefined && minmax != undefined ) {
-				this._isMinOrMax[ xy ][ minmax ] = bool;
-			}
-		},
-
-
-		hide: function() {
-			this.shown = false;
-			this.groupMain.setAttribute('display', 'none');
-
-			this.getLineForLegend().setAttribute('opacity', 0.5);
-			this.getTextForLegend().setAttribute('opacity', 0.5);
-		},
-
-		show: function() {
-			this.shown = true;
-			this.groupMain.setAttribute('display', 'block');
-
-			this.getLineForLegend().setAttribute('opacity', 1);
-			this.getTextForLegend().setAttribute('opacity', 1);
-		},
-
-		toggleShow: function() {
-			if( ! this.shown ) {
-				this.show();
-				return;
-			}
-
-
-			this.hide();
-		},
-
-		isShown: function() {
-			return this.shown;
 		},
 
 		select: function() {
@@ -543,9 +474,6 @@ define( [], function() {
 			this.applyLineStyle( this.getLineForLegend() );
 		},
 
-		isSelected: function() {
-			return this.selected;
-		},
 
 		draw: function() { // Serie redrawing
 
@@ -641,7 +569,7 @@ define( [], function() {
 						
 						currentLine = "M ";
 						j = 0, k = 0, m = this.data[ i ].length;
-console.log( this.xData[ i ] );
+
 						for( ; j < m ; j += 1 ) {
 
 							xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
@@ -816,14 +744,7 @@ console.log( this.xData[ i ] );
 			this.markerLabelSquare.setAttribute('display', 'none');
 		},
 
-		getX: function(val) {
-			return Math.round(this.getXAxis().getPx(val) * 1000) / 1000;
-		},
-
-		getY: function(val) {
-			return Math.round(this.getYAxis().getPx(val) * 1000) / 1000;
-		},
-
+		
 		_addPoint: function(currentLine, xpx, ypx, k, move) {
 			var pos;
 			
@@ -939,73 +860,7 @@ console.log( this.xData[ i ] );
 			//this.groupMarkers.appendChild(shape);*/
 		},
 
-		autoAxis: function() {
-			this.setXAxis(this.graph.getXAxis());
-			this.setYAxis(this.graph.getYAxis());
-
-			this.graph.updateAxes();
-			
-			return this;
-		},
-
-
-		/* AXIS */
-
-		setXAxis: function(axis) {
-			if(typeof axis == "Number")
-				this.xaxis = this.graph.getXAxis(axis);
-			else
-				this.xaxis = axis;
-		},
-
-		setYAxis: function(axis) {
-			if(typeof axis == "Number")
-				this.yaxis = this.graph.getYAxis(axis);
-			else
-				this.yaxis = axis;
-		},
-
-		getXAxis: function() {
-			return this.xaxis;
-		},
-
-		getYAxis: function() {
-			return this.yaxis;
-		},
-
-		setAxes: function() {
-
-			for( var i = 0 ; i < 2 ; i ++ ) {
-
-				if( arguments[ i ] ) {
-					this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis') ]( arguments[ i ] );
-				}
-			}
-
-			return this;
-		},
-
-		/* */
-		
-
-		/* DATA MIN MAX */
-
-		getMinX: function() {
-			return this.minX;
-		},
-
-		getMaxX: function() {
-			return this.maxX;
-		},
-
-		getMinY: function() {
-			return this.minY;
-		},
-
-		getMaxY: function() {
-			return this.maxY;
-		},
-
+	
 		/* */
 		handleLabelMove: function(x, y) {
 
@@ -1218,16 +1073,6 @@ console.log( this.xData[ i ] );
 			}
 
 			return max;
-		},
-
-		/* FLIP */
-
-		setFlip: function(bol) {
-			this.options.flip = bol;
-		},
-
-		getFlip: function() {
-			return this.options.flip;
 		},
 
 
@@ -1502,36 +1347,6 @@ console.log( this.xData[ i ] );
 			});
 		},
 
-		getLabel: function() {
-			return this.options.label || this.name;
-		},
-
-		setLabel: function( label ) {
-			this.options.label = label;
-			return this;
-		},
-
-		getLineForLegend: function() {
-
-			if( ! this.lineForLegend ) {
-
-				var line = document.createElementNS( this.graph.ns, 'line' );
-				this.applyLineStyle( line );
-
-				line.setAttribute('x1', 5);
-				line.setAttribute('x2', 25);
-				line.setAttribute('y1', 0);
-				line.setAttribute('y2', 0);
-
-				line.setAttribute('cursor', 'pointer');
-
-				this.lineForLegend = line;
-			}
-
-			return this.lineForLegend;
-
-		},
-
 		getMarkerForLegend: function() {
 
 			if( ! this.markersShown() ) {
@@ -1549,24 +1364,8 @@ console.log( this.xData[ i ] );
 
 			return this.markerForLegend;
 
-		},
-
-		getTextForLegend: function() {
-
-			if( ! this.textForLegend ) {
-
-				var text = document.createElementNS( this.graph.ns, 'text' );
-				text.setAttribute('transform', 'translate(35, 3)');
-				text.setAttribute('cursor', 'pointer');
-				text.textContent = this.getLabel( );
-
-				this.textForLegend = text;	
-			}
-
-			return this.textForLegend;
-		}
-					
-	}
+		}			
+	} );
 
 	return GraphSerie;
 });

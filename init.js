@@ -182,6 +182,31 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 [ function( domGraph ) {
 
+	var graph = new Graph( domGraph, { } );
+	
+	var serie = graph.newSerie("serieTest", { }, 'scatter')
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ] ] )
+		.setDataStyle( 
+			{ shape: 'circle', r: 5, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
+			[ , , { shape: 'circle', r: 12, fill: 'rgba(0, 40, 255, 0.3)', stroke: 'rgb(0, 100, 255)' } ]
+
+
+			);
+
+
+
+	graph.redraw( );
+	graph.drawSeries();	
+
+}, "Scatter serie", "" ],
+
+
+
+
+[ function( domGraph ) {
+
 	var graph = new Graph( domGraph, { 
 
 		plugins: {
