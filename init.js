@@ -194,7 +194,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 				[ /* y */[ /* 1st */ [ /* top */ 5, /* bottom */ 10 ],  /* 2nd */ 2 ] ],
 				,
-				[ , /* y */[ /* 1st */ [ /* top */ 5, /* bottom */ 1 ],  /* 2nd */ 0.2 ] ]
+				[ , /* x */[ /* 1st */ [ /* top */ 5, /* bottom */ 1 ],  /* 2nd */ 0.2 ] ]
 
 			]
 		);
