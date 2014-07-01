@@ -183,15 +183,34 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { } );
-	
+		
+	var data = [];
+	var data2 = [];
+
+	for( var i = 0; i < 40 ; i ++ ) {
+
+		data.push( [ i, Math.pow( i, 2 ) ] );
+		
+		data2.push( i );
+		data2.push( Math.pow( i, 2 ) - ( Math.random() * 100 ) );
+		data2.push( Math.pow( i, 2 ) + ( Math.random() * 100 ) );
+	}
+
 	var serie = graph.newSerie("serieTest", { }, 'zone')
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( [ [ 1, [ 20, 10 ] ], [ 2, [ 30, 5 ] ], [ 5, [ 25, 8 ] ], [ 8, [ 20, 1 ] ], [ 12, [ 10, -5 ] ] ] )
-		.setFillColor('rgba(255, 0, 0, 0.2)')
-		.setLineColor('rgba(255, 100, 0, 0.9)')
-		.setLineWidth('4px')
+		.setData( data2 )
+		.setFillColor('rgba(200, 100, 100, 0.2)')
+		.setLineColor('rgba(200, 100, 100, 0.9)')
+		.setLineWidth('2px');
 
+
+	var serie = graph.newSerie("serieTest", { }, 'line')
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( data )
+		.setLineColor('rgba(50, 50, 50, 1)')
+		
 	graph.redraw( );
 	graph.drawSeries();	
 

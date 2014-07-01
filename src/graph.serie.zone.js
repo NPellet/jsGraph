@@ -154,7 +154,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 					}
 
 					arr[ z ] = data[ j ];
-					this_checkY( arr[ z ] );
+					this._checkY( arr[ z ] );
 					z ++;
 					total ++;
 
