@@ -184,6 +184,26 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 	var graph = new Graph( domGraph, { } );
 	
+	var serie = graph.newSerie("serieTest", { }, 'zone')
+		.setLabel( "My serie" )
+		.autoAxis()
+		.setData( [ [ 1, [ 20, 10 ] ], [ 2, [ 30, 5 ] ], [ 5, [ 25, 8 ] ], [ 8, [ 20, 1 ] ], [ 12, [ 10, -5 ] ] ] )
+		.setFillColor('rgba(255, 0, 0, 0.2)')
+		.setLineColor('rgba(255, 100, 0, 0.9)')
+		.setLineWidth('4px')
+
+	graph.redraw( );
+	graph.drawSeries();	
+
+}, "Scatter serie", "" ],
+
+
+
+
+[ function( domGraph ) {
+
+	var graph = new Graph( domGraph, { } );
+	
 	var serie = graph.newSerie("serieTest", { }, 'scatter')
 		.setLabel( "My serie" )
 		.autoAxis()
