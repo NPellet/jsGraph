@@ -283,11 +283,11 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 			var diff = this.maxLevel - level;
 
-			if( diff == 2 ) { // bars
+			if( diff == 1 ) { // bars
 				return this["makeBar" + orientation.toUpperCase() ]( path, coord, origin );
 			}
 
-			if( diff == 1 ) {
+			if( diff == 2 ) {
 				return this["makeBox" + orientation.toUpperCase() ]( path, coord, origin );
 			}
 		},

@@ -192,9 +192,9 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		.setDataError( 
 			[
 
-				[ /* y */[ /* 1st */ [ /* top */ 5, /* bottom */ 10 ],  /* 2nd */ 2 ] ],
+				[ /* y */[ /* 1st */ [ /* top */ 1, /* bottom */ 0.4 ],  /* 2nd */ 5 ] ],
 				,
-				[ , /* x */[ /* 1st */ [ /* top */ 5, /* bottom */ 1 ],  /* 2nd */ 0.2 ] ]
+				[ , /* x */[ /* 1st */ [ /* top */ 0.2, /* bottom */ 1 ],  /* 2nd */ 4 ] ]
 
 			]
 		);
