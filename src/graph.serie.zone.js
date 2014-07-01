@@ -276,8 +276,13 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				ypx1 = this.getY( this.data[ j + 1 ] );
 				ypx2 = this.getY( this.data[ j + 2 ] );
 
-				lineTop.push( [ xpx, ypx1 ] );
-				lineBottom.push( [ xpx, ypx2 ] );
+				if( ypx2 > ypx1 ) {
+					lineTop.push( [ xpx, ypx1 ] );
+					lineBottom.push( [ xpx, ypx2 ] );
+				} else {
+					lineTop.push( [ xpx, ypx2 ] );
+					lineBottom.push( [ xpx, ypx1 ] );
+				}
 			}
 
 			lineBottom.reverse();
