@@ -187,13 +187,18 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 	var serie = graph.newSerie("serieTest", { }, 'scatter')
 		.setLabel( "My serie" )
 		.autoAxis()
-		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ] ] )
+		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ], [ 8, 4.2 ], [ 12, -1.2 ] ] )
 		.setDataStyle( 
-			{ shape: 'circle', r: 5, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
-			[ , , { shape: 'circle', r: 12, fill: 'rgba(0, 40, 255, 0.3)', stroke: 'rgb(0, 100, 255)' } ]
 
+			{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
 
-			);
+			[ 
+				,
+				{ shape: 'rect', width: 20, height: 10, x: -10, y: -5, fill: 'rgba(100, 255, 145, 0.3)', stroke: 'rgb(120, 255, 150)' },
+				{ shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' }
+
+			]
+		);
 
 
 

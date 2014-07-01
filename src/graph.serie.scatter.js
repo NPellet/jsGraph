@@ -218,7 +218,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 					allY.push( [ ( this.data[ j + incrYFlip ] ), this.data[ j + incrXFlip ] ] );
 				}
 
-				this._addPoint( xpx, ypx, j );
+				this._addPoint( xpx, ypx, j / 2 );
 			}
 
 			this.groupMain.appendChild( this.groupPoints );
