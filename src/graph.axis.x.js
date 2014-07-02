@@ -11,6 +11,11 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 	$.extend( GraphXAxis.prototype, GraphAxis.prototype, {
 
 		getAxisPosition: function() {
+
+			if( ! this.options.display ) {
+				return 0;
+			}
+			
 			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
 			if(this.options.allowedPxSerie && this.series.length > 0)
 				size += this.options.allowedPxSerie;

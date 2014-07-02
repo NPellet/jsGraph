@@ -79,7 +79,9 @@ define([
 		this.axis = {left: [], top: [], bottom: [], right: []};
 		this.title = false;
 
-		this.setSize( $(dom).width(), $(dom).height() );
+console.log( $( dom ).width(), $( dom ).height() );
+		this.shapes = [];
+
 
 		this.ns = 'http://www.w3.org/2000/svg';
 		this.nsxlink = "http://www.w3.org/1999/xlink";
@@ -87,8 +89,12 @@ define([
 		this._dom = dom;
 		// DOM
 		this.doDom();
+
+		this.setSize( $(dom).width(), $(dom).height() );
+		this._resize();
+
 		this.registerEvents();
-		this.shapes = [];
+		
 
 		this.trackingLines = {
 			id: 0,
@@ -937,7 +943,7 @@ define([
 				var axisIndex = axisvars.indexOf( arguments[ 1 ] );
 				axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
 				shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-
+console.log( axisIndex, shift[ axisIndex ]);
 			}, false, true, false );
 	
 	
@@ -1285,6 +1291,7 @@ define([
 
 		redrawShapes: function() {
 
+
 			//this.graphingZone.removeChild(this.shapeZone);
 			for(var i = 0, l = this.shapes.length; i < l; i++) {
 				this.shapes[i].redraw();
@@ -1376,7 +1383,7 @@ define([
 		getPlugin: function( pluginName ) {
 			var self = this;
 			return this.pluginsReady.then( function() {
-console.log( self._plugins, pluginName );
+
 				return self._plugins[ pluginName ] || false;
 			} );
 		},

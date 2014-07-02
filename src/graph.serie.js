@@ -43,6 +43,8 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 			this.shown = true;
 			this.options = $.extend(true, {}, GraphSerie.prototype.defaults, options);
+
+
 			this.data = [];
 			this._isMinOrMax = { x: { min: false, max: false}, y: { min: false, max: false} };
 
@@ -257,7 +259,22 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				}
 			}
 
+			if( this.isFlipped() ) {
+
+				var maxX = this.maxX;
+				var maxY = this.maxY;
+				var minX = this.minX;
+				var minY = this.minY;
+
+				this.maxX = maxY;
+				this.maxY = maxX;
+
+				this.minX = minY;
+				this.minY = minX;
+			}
+
 			this.graph.updateAxes();
+
 
 			return this;
 		},
@@ -520,10 +537,11 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			var incrXFlip = 0;
 			var incrYFlip = 1;
 
-			if( this.getFlip( ) ) {
+			if( this.isFlipped( ) ) {
 				incrXFlip = 1;
 				incrYFlip = 0;
 			}
+
 
 			var totalLength = 0;
 			for( ; i < l ; i ++ ) {
@@ -572,13 +590,15 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 						for( ; j < m ; j += 1 ) {
 
-							xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
-
-							ypx = this.getY( this.data[ i ][ j ] );
-
-							if(this.options.autoPeakPicking) {
-								allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+							if( ! this.isFlipped() ) {
+							
+								xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								ypx = this.getY( this.data[ i ][ j ] );								
+							} else {
+								ypx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								xpx = this.getY( this.data[ i ][ j ] );								
 							}
+
 							currentLine = this._addPoint( currentLine, xpx, ypx, k );
 							k++;
 						}

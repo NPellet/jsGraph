@@ -184,6 +184,7 @@ define( [] , function() {
 
 		setDisplay: function(bool) {
 			this.options.display = !!bool;
+			return this;
 		},
 		
 		setLineAt0: function(bool) {
@@ -441,6 +442,7 @@ define( [] , function() {
 
 		flip: function(bool) {
 			this.options.flipped = bool;
+			return this;
 		},
 
 		/**
@@ -451,7 +453,7 @@ define( [] , function() {
 
 			switch(this.options.tickPosition) {
 				case 1:
-					this.tickPx1 = 2;
+					this.tickPx1 = -2;
 					this.tickPx2 = 0;
 				break;
 
@@ -465,6 +467,7 @@ define( [] , function() {
 					this.tickPx2 = 2;
 				break;
 			}
+
 
 			// Remove all ticks
 			while(this.groupTicks.firstChild)
@@ -791,6 +794,7 @@ define( [] , function() {
 
 		setLabel: function(value) {
 			this.options.labelValue = value;
+			return this;
 		},
 
 		getLabel: function() {
@@ -811,7 +815,7 @@ define( [] , function() {
 			switch(pos) {
 				case 3:
 				case 'outside':
-					pos = 3;
+					pos = 1;
 				break;
 				
 				case 2:
@@ -822,20 +826,24 @@ define( [] , function() {
 				default:
 				case 1:
 				case 'inside':
-					pos = 1;
+					pos = 3;
 				break;
 			}
 
 			this.options.tickPosition = pos;
+			return this;
 		},
 
 		togglePrimaryGrid: function(bool) {
 			this.options.primaryGrid = bool;
+			return this;
 		},
 
 		toggleSecondaryGrid: function(bool) {
 			this.options.secondaryGrid = bool;
+			return this;
 		},
+
 
 		doGridLine: function(primary, x1, x2, y1, y2) {
 			var gridLine = document.createElementNS(this.graph.ns, 'line');

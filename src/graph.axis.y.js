@@ -15,6 +15,11 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
 		getAxisPosition: function() {
 			var size = 0;
+			
+			if( ! this.options.display ) {
+				return 0;
+			}
+			
 			if(this.options.allowedPxSerie && this.series.length > 0)
 				size = this.options.allowedPxSerie;
 			return size;
@@ -92,7 +97,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + (-this.widthHeightTick - 8) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 8) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());
@@ -104,7 +109,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			if(!this.shift)
 				return;
 
-			this.rectEvent.setAttribute('x', - this.shift);
+			this.rectEvent.setAttribute('x', ( this.left ? -this.shift : 0 ) );
 			this.rectEvent.setAttribute('width', this.totalDimension);
 			this.rectEvent.setAttribute('y', Math.min(this.getMinPx(), this.getMaxPx()));
 			this.rectEvent.setAttribute('height', Math.abs(this.getMinPx() - this.getMaxPx()));
@@ -139,6 +144,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 
 		flip: function(bool) {
 			this.options.flipped = !bool;
+			return this;
 		},
 
 		_draw0Line: function(px) {

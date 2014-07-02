@@ -123,26 +123,30 @@ define( [], function() {
 
 
 		autoAxis: function() {
-			this.setXAxis(this.graph.getXAxis());
-			this.setYAxis(this.graph.getYAxis());
+			this.setXAxis( ! this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
+			this.setYAxis( ! this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
 			this.graph.updateAxes();
 			
 			return this;
 		},
 
-		setXAxis: function(axis) {
+		setXAxis: function( axis ) {
 			if(typeof axis == "Number")
-				this.xaxis = this.graph.getXAxis(axis);
+				this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
 			else
 				this.xaxis = axis;
+
+			return this;
 		},
 
 		setYAxis: function(axis) {
 			if(typeof axis == "Number")
-				this.yaxis = this.graph.getYAxis(axis);
+				this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
 			else
 				this.yaxis = axis;
+
+			return this;
 		},
 
 		getXAxis: function() {
@@ -242,6 +246,10 @@ define( [], function() {
 		getFlip: function() {
 			return this.options.flip;
 		},
+
+		isFlipped: function() {
+			return this.options.flip;
+		}
 
 
 
