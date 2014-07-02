@@ -273,6 +273,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				this.minY = minX;
 			}
 
+
 			this.graph.updateAxes();
 
 

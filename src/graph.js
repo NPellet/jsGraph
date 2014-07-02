@@ -943,7 +943,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 				var axisIndex = axisvars.indexOf( arguments[ 1 ] );
 				axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
 				shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
-console.log( axisIndex, shift[ axisIndex ]);
+
 			}, false, true, false );
 	
 	

@@ -6,13 +6,13 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 		this.threshold = 0;
 	};
 
-	$.extend(GraphSerieContour.prototype, GraphSerie.prototype, {
+	$.extend( GraphSerieContour.prototype, GraphSerie.prototype, {
 
 		setData: function(data, arg, type) {
 
 			var z = 0;
 			var x, dx, arg = arg || "2D", type = type || 'float', i, l = data.length, arr, datas = [];
-			
+		
 			if( ! data instanceof Array ) {
 				return;
 			}
@@ -32,6 +32,8 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 				datas.push({lines: arr, zValue: data[i].zValue});
 			}
 			this.data = datas;
+
+			return this;
 		},
 
 
@@ -56,8 +58,8 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 			for(; i < l ; i++) {
 
 				j = 0, k = 0, currentLine = "";
-				for(arr = this.data[i].lines, m = arr.length; j < m; j+=4) {
 
+				for( arr = this.data[i].lines, m = arr.length; j < m; j += 4 ) {
 				
 					xpx = this.getX(arr[j + incrXFlip]);
 					ypx = this.getY(arr[j + incrYFlip]);
@@ -104,5 +106,7 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 			}
 		}
 	});
+
+	return GraphSerieContour;
 
 });

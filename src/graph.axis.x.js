@@ -15,7 +15,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 			if( ! this.options.display ) {
 				return 0;
 			}
-			
+
 			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
 			if(this.options.allowedPxSerie && this.series.length > 0)
 				size += this.options.allowedPxSerie;
@@ -31,7 +31,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 		},
 
 		getMaxSizeTick: function() {
-			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 15 : 25)
+			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 10 : 10)
 		},
 
 		drawTick: function(value, label, scaling, options) {
@@ -61,7 +61,7 @@ define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
 				var groupLabel = this.groupTickLabels;
 				var tickLabel = document.createElementNS(this.graph.ns, 'text');
 				tickLabel.setAttribute('x', val);
-				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ( ( this.options.tickPosition == 1 ? 8 : 25) + ( this.top ? 10 : 0 ) ) );
+				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ( ( this.options.tickPosition == 1 ? 8 : 20) + ( this.top ? 10 : 0 ) ) );
 				tickLabel.setAttribute('text-anchor', 'middle');
 				tickLabel.style.dominantBaseline = 'hanging';
 

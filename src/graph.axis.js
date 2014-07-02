@@ -452,7 +452,7 @@ define( [] , function() {
 			var visible;
 
 			switch(this.options.tickPosition) {
-				case 1:
+				case 3:
 					this.tickPx1 = -2;
 					this.tickPx2 = 0;
 				break;
@@ -462,7 +462,7 @@ define( [] , function() {
 					this.tickPx2 = 1;
 				break;
 
-				case 3:
+				case 1:
 					this.tickPx1 = 0;
 					this.tickPx2 = 2;
 				break;
@@ -506,26 +506,30 @@ define( [] , function() {
 
 			this.line.setAttribute('display', 'block');
 
-			if( ! this.options.logScale ) {
-				// So the setting is: How many ticks in total ? Then we have to separate it
-				
-				if( this.options.scientificTicks ) {
-					this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
+			if( ! this.options.hideTicks ) {
+				if( ! this.options.logScale ) {
+					// So the setting is: How many ticks in total ? Then we have to separate it
+					
+					if( this.options.scientificTicks ) {
+						this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
+					}
+
+					var nbTicks1 = this.getNbTicksPrimary();
+
+					var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
+					var nbSecondaryTicks = this.secondaryTicks();
+					if(nbSecondaryTicks) {
+						var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
+					}
+
+					// We need to get here the width of the ticks to display the axis properly, with the correct shift
+					var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
+
+				} else {
+					var widthHeight = this.drawLogTicks();
 				}
-
-				var nbTicks1 = this.getNbTicksPrimary();
-
-				var primaryTicks = this.getUnitPerTick(widthPx, nbTicks1, valrange, this.getActualMax());
-				var nbSecondaryTicks = this.secondaryTicks();
-				if(nbSecondaryTicks) {
-					var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-				}
-
-				// We need to get here the width of the ticks to display the axis properly, with the correct shift
-				var widthHeight = this.drawTicks(primaryTicks, nbSecondaryTicks);
-
 			} else {
-				var widthHeight = this.drawLogTicks();
+				var widthHeight = 0;
 			}
 
 			/************************************/
@@ -815,7 +819,7 @@ define( [] , function() {
 			switch(pos) {
 				case 3:
 				case 'outside':
-					pos = 1;
+					pos = 3;
 				break;
 				
 				case 2:
@@ -826,7 +830,7 @@ define( [] , function() {
 				default:
 				case 1:
 				case 'inside':
-					pos = 3;
+					pos = 1;
 				break;
 			}
 
