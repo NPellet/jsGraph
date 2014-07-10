@@ -87,11 +87,11 @@ define( [], function() {
 		},
 
 		getX: function(val) {
-			return Math.round(this.getXAxis().getPx(val) * 1000) / 1000;
+			return Math.round(this.getXAxis().getPx(val) * 5) / 5;
 		},
 
 		getY: function(val) {
-			return Math.round(this.getYAxis().getPx(val) * 1000) / 1000;
+			return Math.round(this.getYAxis().getPx(val) * 5) / 5;
 		},
 
 

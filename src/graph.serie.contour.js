@@ -40,7 +40,7 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 		draw: function(doNotRedrawZone) {
 
 
-			var x, y, xpx, ypx, i = 0, l = this.data.length, j = 0, k, m, currentLine, domLine, arr;
+			var x, y, xpx, ypx, xpx2, ypx2, i = 0, l = this.data.length, j = 0, k, m, currentLine, domLine, arr;
 			this.minZ = -Number.MAX_VALUE;
 			this.maxZ = Number.MAX_VALUE;
 
@@ -61,19 +61,19 @@ define( [ 'require', './graph.serie' ], function( require, GraphSerie ) {
 
 				for( arr = this.data[i].lines, m = arr.length; j < m; j += 4 ) {
 				
-					xpx = this.getX(arr[j + incrXFlip]);
-					ypx = this.getY(arr[j + incrYFlip]);
+					xpx2 = Math.round( this.getX(arr[j + incrXFlip]) );
+					ypx2 = Math.round( this.getY(arr[j + incrYFlip]) );
 				
 					
 					currentLine += "M";
-					currentLine += xpx;
+					currentLine += xpx2;
 					currentLine += " ";
-					currentLine += ypx;
+					currentLine += ypx2;
 
 
 					
-					xpx = this.getX(arr[j + 2 + incrXFlip]);
-					ypx = this.getY(arr[j + 2 + incrYFlip]);
+					xpx = Math.round( this.getX(arr[j + 2 + incrXFlip]) );
+					ypx = Math.round( this.getY(arr[j + 2 + incrYFlip]) );
 					
 					currentLine += "L";
 					currentLine += xpx;

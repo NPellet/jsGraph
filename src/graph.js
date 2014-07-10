@@ -79,7 +79,6 @@ define([
 		this.axis = {left: [], top: [], bottom: [], right: []};
 		this.title = false;
 
-console.log( $( dom ).width(), $( dom ).height() );
 		this.shapes = [];
 
 
@@ -454,7 +453,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 				}
 
 				this.mouseLease = i; // Lease the mouse action to the current action
-				this._pluginExecute(i, 'onMouseDown', [x, y, e]);
+				this._pluginExecute(i, 'onMouseDown', [ this, x, y, e]);
 
 				break;
 			}
@@ -463,16 +462,16 @@ console.log( $( dom ).width(), $( dom ).height() );
 
 		handleMouseMove: function( x, y, e ) {
 
-			var $target;
-			
 			if( this.bypassHandleMouse ) {
 				this.bypassHandleMouse.handleMouseMove(e);
 				return;
 			}
 			
-			if( this._pluginExecute(this.mouseLease, 'onMouseMove', [x, y, e, $target = $(e.target)]) ) {
+			if( this._pluginExecute(this.mouseLease, 'onMouseMove', [ this, x, y, e ]) ) {
 				return;
 			};
+
+			return;
 
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
@@ -502,7 +501,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 				return;
 			}
 
-			this._pluginExecute(this.mouseLease, 'onMouseUp', [x, y, e, $(e.target)]);
+			this._pluginExecute(this.mouseLease, 'onMouseUp', [ this, x, y, e ]);
 			this.mouseLease = false;
 
 		},
@@ -574,7 +573,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 			this.bypassHandleMouse = false;
 		},
 
-		handleDblClick: function( x, y, e) {
+		handleDblClick: function( x, y, e ) {
 		//	var _x = x - this.options.paddingLeft;
 		//	var _y = y - this.options.paddingTop;
 			var pref = this.options.dblclick;
@@ -591,7 +590,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 
 					if( ( plugin = this._plugins[ pref.plugin ] ) ) {
 
-						plugin.onDblClick( x, y, pref.options, e );
+						plugin.onDblClick( this, x, y, pref.options, e );
 					}
 
 				break;
@@ -1327,7 +1326,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 
 		_pluginsExecute: function(funcName, args) {
 
-			Array.prototype.splice.apply(args, [0, 0, this]);
+//			Array.prototype.splice.apply(args, [0, 0, this]);
 
 			for(var i in this._plugins) {
 
@@ -1341,7 +1340,7 @@ console.log( $( dom ).width(), $( dom ).height() );
 
 		_pluginExecute: function(which, func, args) {
 			
-			Array.prototype.splice.apply( args, [ 0, 0, this ] );
+			//Array.prototype.splice.apply( args, [ 0, 0, this ] );
 
 			if( this._plugins[ which ] && this._plugins[ which ][ func ] ) {
 

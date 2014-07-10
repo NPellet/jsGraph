@@ -7,7 +7,9 @@ define([], function() {
 
 		init: function( graph, options ) {
 
+			this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
 			this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
+			this._zoomingSquare.setAttribute('display', 'none');
 
 			graph.setAttributeTo(this._zoomingSquare, {
 				'display': 'none',
@@ -20,12 +22,16 @@ define([], function() {
 				'width': 0
 			});
 
+
+
+
 			this.options = options;
 			this.graph = graph;
-			graph.dom.appendChild(this._zoomingSquare);
+			graph.dom.appendChild(this._zoomingGroup);
+			this._zoomingGroup.appendChild(this._zoomingSquare);
 		},
 
-		onMouseDown: function(graph, x, y, e, target) {
+		onMouseDown: function( graph, x, y, e, mute ) {
 
 			var zoomMode = this.options.zoomMode;
 
@@ -34,6 +40,20 @@ define([], function() {
 			}
 
 			this._zoomingMode = zoomMode;
+
+
+			if( x === undefined ) {
+				this._backedUpZoomMode = this._zoomingMode;
+				this._zoomingMode = 'y';	
+				x = 0;
+			}
+
+			if( y === undefined ) {
+				this._backedUpZoomMode = this._zoomingMode;
+				this._zoomingMode = 'x';	
+				y = 0;
+			}
+
 			this._zoomingXStart = x;
 			this._zoomingYStart = y;
 			this.x1 = x - graph.getPaddingLeft();
@@ -43,38 +63,72 @@ define([], function() {
 			this._zoomingSquare.setAttribute('height', 0);
 			this._zoomingSquare.setAttribute('display', 'block');
 
-			switch(zoomMode) {
+
+
+			switch( this._zoomingMode ) {
+
 				case 'x': 
 					this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
+					console.log( graph.getDrawingHeight() - graph.shift[0] );
 					this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
 				break;
+
 				case 'y':
 					this._zoomingSquare.setAttribute('x', graph.options.paddingLeft/* + this.shift[1]*/);
 					this._zoomingSquare.setAttribute('width', graph.getDrawingWidth()/* - this.shift[1] - this.shift[2]*/);
 				break;
+
+			}
+
+			if( this.options.onZoomStart && ! mute ) {
+				this.options.onZoomStart( graph, x, y, e, mute );
 			}
 		},
 
-		onMouseMove: function(graph, x, y, e, target) {
+		onMouseMove: function(graph, x, y, e, mute) {
+			
+		//	this._zoomingSquare.setAttribute('display', 'none');
+
+	//	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
+
 			switch(this._zoomingMode) {
+
 				case 'xy':
 					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
 					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
 					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
 					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+
+
 				break;
+
 				case 'x': 
 					this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
 					this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+
+
 				break;
+
 				case 'y':
 					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
 					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+
+
+					
 				break;
 			}	
+
+
+			if( this.options.onZoomMove && ! mute ) {
+
+				this.options.onZoomMove( graph, x, y, e, mute );
+			}
+	//		this._zoomingSquare.setAttribute('display', 'block');
+
 		},
 
-		onMouseUp: function(graph, x, y, e, target) {
+		onMouseUp: function(graph, x, y, e, mute ) {
+
 			this._zoomingSquare.setAttribute('display', 'none');
 			var _x = x - graph.options.paddingLeft;
 			var _y = y - graph.options.paddingTop;
@@ -98,6 +152,14 @@ define([], function() {
 			
 			graph.redraw(true);
 			graph.drawSeries();
+
+			if( this.options.onZoomEnd && ! mute ) {
+				this.options.onZoomEnd( graph, x, y, e, mute );
+			}
+
+			if( this._backedUpZoomMode ) {
+				this._zoomingMode = this._backedUpZoomMode;
+			}
 		},
 
 		onMouseWheel: function( delta, e ) {
@@ -112,16 +174,32 @@ define([], function() {
 			this.graph.applyToAxes('handleMouseWheel', [ delta, e ], false, true);	
 		},
 
-		onDblClick: function( x, y, pref, e ) {
+		onDblClick: function( graph, x, y, pref, e, mute ) {
 
 			var	xAxis = this.graph.getXAxis(),
 				yAxis = this.graph.getYAxis();
 
+			if( pref.mode == 'xtotal' ) {
 
-			if( pref.mode == 'total' ) {
+				this.graph.applyToAxes( "setMinMaxToFitSeries", null, true, false );
+				this.graph.drawSeries();
+				
+				
+			}
+
+
+			else if( pref.mode == 'ytotal' ) {
+
+				this.graph.applyToAxes( "setMinMaxToFitSeries", null, false, true );
+				this.graph.drawSeries();
+				
+				
+			}
+
+
+			else if( pref.mode == 'total' ) {
 
 				this.graph.autoscaleAxes();
-				this.graph.redraw();
 				this.graph.drawSeries();
 
 				if( yAxis.options.onZoom ) {
@@ -132,53 +210,58 @@ define([], function() {
 					xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
 				}
 
-				return;
-			}
+				
+			} else {
 
- 			x -= this.graph.options.paddingLeft;
- 			y -= this.graph.options.paddingTop;
+	 			x -= this.graph.options.paddingLeft;
+	 			y -= this.graph.options.paddingTop;
 
-			var
-				xMin = xAxis.getActualMin(),
-				xMax = xAxis.getActualMax(),
-				xActual = xAxis.getVal(x),
-				diffX = xMax - xMin,
+				var
+					xMin = xAxis.getActualMin(),
+					xMax = xAxis.getActualMax(),
+					xActual = xAxis.getVal(x),
+					diffX = xMax - xMin,
 
-				yMin = yAxis.getActualMin(),
-				yMax = yAxis.getActualMax(),
-				yActual = yAxis.getVal(y),
-				diffY = yMax - yMin;
+					yMin = yAxis.getActualMin(),
+					yMax = yAxis.getActualMax(),
+					yActual = yAxis.getVal(y),
+					diffY = yMax - yMin;
 
-			if(pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
-				var ratio = (xActual - xMin) / (xMax - xMin);
-				xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-				xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
-				xAxis.setCurrentMin(xMin);
-				xAxis.setCurrentMax(xMax);
+				if(pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
 
-				if( xAxis.options.onZoom ) {
-					xAxis.options.onZoom( xMin, xMax );
+					var ratio = (xActual - xMin) / (xMax - xMin);
+					xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
+					xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+					xAxis.setCurrentMin(xMin);
+					xAxis.setCurrentMax(xMax);
+
+					if( xAxis.options.onZoom ) {
+						xAxis.options.onZoom( xMin, xMax );
+					}
 				}
-			}
 
-			if(pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
+				if(pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
 
-				var ratio = (yActual - yMin) / (yMax - yMin);
-				yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-				yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
-				yAxis.setCurrentMin(yMin);
-				yAxis.setCurrentMax(yMax);
+					var ratio = (yActual - yMin) / (yMax - yMin);
+					yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
+					yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+					yAxis.setCurrentMin(yMin);
+					yAxis.setCurrentMax(yMax);
 
 
-				if( yAxis.options.onZoom ) {
-					yAxis.options.onZoom( yMin, yMax );
+					if( yAxis.options.onZoom ) {
+						yAxis.options.onZoom( yMin, yMax );
+					}
 				}
+
+				this.graph.redraw( );
+				this.graph.drawSeries( );
 			}
 
-			this.graph.redraw( );
-			this.graph.drawSeries( );
+			if( this.options.onDblClick && ! mute ) {
 
-
+				this.options.onDblClick( x, y, pref, e );
+			}
 		}
 	}
 

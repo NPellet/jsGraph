@@ -319,7 +319,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 			var self = this;
 			this.slotsData = {};
-			this.slotWorker = new Worker('./lib/plot/slotworker.js');
+			this.slotWorker = new Worker('./src/slotworker.js');
 
 			this.slotWorker.onmessage = function( e ) {
 				self.slotsData[ e.data.slot ].resolve( e.data.data );
@@ -500,6 +500,8 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				y, 
 				xpx, 
 				ypx, 
+				xpx2,
+				ypx2,
 				i = 0, 
 				l = this.data.length, 
 				j = 0, 
@@ -616,15 +618,23 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 
 						for( ; j < m ; j += 2 ) {
 
+							xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
+							ypx2 = this.getY( this.data[ i ][ j + incrYFlip ] );
 
-							xpx = this.getX( this.data[ i ][ j + incrXFlip ] );
-							ypx = this.getY( this.data[ i ][ j + incrYFlip ] );
+							if( xpx2 == xpx && ypx2 == ypx ) {
+								continue;
+							}
 
 							if(this.options.autoPeakPicking) {
 								allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
 							}
-							currentLine = this._addPoint( currentLine, xpx, ypx, k );
+							
+							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
+							
 							k++;
+
+							xpx = xpx2;
+							ypx = ypx2;
 						}
 						
 						this._createLine(currentLine, i, k);
@@ -662,10 +672,10 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			var dataPerSlot = this.slots[ y ] / (this.maxX - this.minX);
 
 			//console.log(slotToUse, y, this.slots[ y ]);
-			console.time('Slot');
-			currentLine = "M ";
+			
+			var currentLine = "M ";
 			k = 0;
-			var i = 0;
+			var i = 0, xpx, max;
 			var j;
 
 			var slotInit = Math.floor( ( this.getXAxis( ).getActualMin( ) - this.minX ) * dataPerSlot );
@@ -832,6 +842,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			if(this.getLineDashArray())
 				line.setAttribute('stroke-dasharray', this.getLineDashArray());
 			line.setAttribute('fill', 'none');
+		//	line.setAttribute('shape-rendering', 'optimizeSpeed');
 		},
 
 		getMarkerPath: function(zoom, add) {

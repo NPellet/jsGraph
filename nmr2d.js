@@ -14,7 +14,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	$.getJSON('./spectra.json', function ( data ) {
 
-console.log( data );
 		var nmr = $( "#nmr" );
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
 
@@ -26,7 +25,48 @@ console.log( data );
 			paddingBottom: 0,
 			paddingTop: 0,
 			paddingLeft: 0,
-			paddingRight: 0
+			paddingRight: 0,
+
+
+			plugins: {
+				'./graph.plugin.zoom': { 
+					zoomMode: 'xy',
+					onZoomStart: function( graph, x, y, e, target ) {
+						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_x, x, y, e, true ] );
+						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_y, x, y, e, true ] );
+					},
+
+					onZoomMove: function( graph, x, y, e, target ) {
+						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_x, x, y, e, true ] );
+						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_y, x, y, e, true ] );
+					},
+
+					onZoomEnd: function( graph, x, y, e, target ) {
+						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_x, x, y, e, true ] );
+						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_y, x, y, e, true ] );
+					},
+
+					onDblClick: function( x, y, prefs, e ) {
+						
+						graph_y._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_y, x, y, { mode: 'total' }, e, true ] );
+						graph_x._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_x, x, y, { mode: 'total' }, e, true ] );
+					}
+				}
+			},
+
+
+			dblclick: {
+				type: 'plugin',
+				plugin: './graph.plugin.zoom',
+				options: {
+					mode: 'total'
+				}
+			},
+
+			pluginAction: {
+				'./graph.plugin.zoom': { shift: false, ctrl: false }
+			},
+
 
 		} );
 
@@ -37,7 +77,50 @@ console.log( data );
 			paddingBottom: 0,
 			paddingTop: 0,
 			paddingLeft: 0,
-			paddingRight: 0
+			paddingRight: 0,
+
+			plugins: {
+				'./graph.plugin.zoom': { 
+					zoomMode: 'x',
+					onZoomStart: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_2d, x, undefined, e, true ] );
+
+					},
+
+					onZoomMove: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_2d, x, undefined, e, true ] );
+
+					},
+
+					onZoomEnd: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_2d, x, undefined, e, true ] );
+
+					},
+
+					onDblClick: function( x, y, prefs, e ) {
+						
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_2d, x, y, { mode: 'xtotal' }, e, true ] );
+						
+					}
+
+				}
+			},
+
+
+			dblclick: {
+				type: 'plugin',
+				plugin: './graph.plugin.zoom',
+				options: {
+					mode: 'total'
+				}
+			},
+
+			pluginAction: {
+				'./graph.plugin.zoom': { shift: false, ctrl: false }
+			}
 
 		} );
 
@@ -46,12 +129,36 @@ console.log( data );
 			close: { left: false, top: false, right: false },
 
 			plugins: {
-				'./graph.plugin.zoom': { zoomMode: 'y' },
-				'./graph.plugin.drag': {}
+				'./graph.plugin.zoom': { 
+					zoomMode: 'y',
+					onZoomStart: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [  graph_2d, undefined , y, e, true ] );
+
+					},
+
+					onZoomMove: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_2d, undefined , y, e, true ] );
+
+					},
+
+					onZoomEnd: function( graph, x, y, e, target ) {
+
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_2d, undefined, y, e, true ] );
+
+					},
+
+					onDblClick: function( x, y, prefs, e ) {
+						
+						graph_2d._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_2d, x, y, { mode: 'ytotal' }, e, true ] );
+						
+					}
+
+				}
 			},
 
 			pluginAction: {
-				'./graph.plugin.drag': { shift: true, ctrl: false },
 				'./graph.plugin.zoom': { shift: false, ctrl: false }
 			},
 
@@ -85,7 +192,7 @@ console.log( data );
 	*/
 
 
-		var serie_x = graph_x.newSerie("serieTest")
+		var serie_x = graph_x.newSerie("serieTest" )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
@@ -106,7 +213,7 @@ console.log( data );
 		serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
 
-		var serie_2d = graph_2d.newSerie("serieTestasd", {}, 'contour' )
+		var serie_2d = graph_2d.newSerie("serieTestasd", { }, 'contour' )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data.cosy.contourLines )
