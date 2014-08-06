@@ -44,3 +44,7 @@ ul.graph-toolbar {
 	fill: rgba(51, 156, 48, 0.4);
 	stroke: rgba(51, 156, 48, 0.8);
 }
+
+g[data-groupname="nmrintegral"] .hover {
+	fill: transparent;
+}

@@ -5,10 +5,12 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 	plugin.prototype = {
 
-		init: function( graph, options ) {
+		init: function( graph, options, plugin ) {
 
 			this.options = options;
 			var self = this;
+			this.graph = graph;
+			this.plugin = plugin;
 
 			var funcs = {
 
@@ -64,13 +66,12 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 					}
 
 					return this.linking.links[ this.linking.links.length - 1 ];
-					
 				},
 
 				linkingReveal: function() {
 
-
 					for( var i = 0, l = this.linking.links.length ; i < l ; i ++ ) {
+
 						this.linking.links[ i ].line.style.display = "block";
 					}
 				},
@@ -91,6 +92,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 
 			function linkingStart( shape, e, clicked ) {
 
+				self.islinking = true;
 				var linking = shape.graph.isLinking();
 
 				if( linking ) {
@@ -109,7 +111,6 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 			}
 
 			function linkingMove( shape, e ) {
-
 
 				var linking = shape.graph.isLinking();
 
@@ -162,7 +163,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 			}
 
 			function linkingFinalize( shape ) {
-
+				
 				return shape.graph.endLinking();
 			}
 			
@@ -192,9 +193,8 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 			});
 
 			graph.shapeHandlers.mouseDown.push( function( e ) {
-				
-
-				if( e.shiftKey ) {
+			
+				if( self.graph.allowPlugin( e, self.plugin ) ) {
 
 					this.moving = false;
 					this.handleSelected = false;

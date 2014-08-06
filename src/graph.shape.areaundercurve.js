@@ -12,7 +12,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			var self = this;
 			this._dom = document.createElementNS(this.graph.ns, 'path');
 
-			this.handle1 = document.createElementNS(this.graph.ns, 'line');
+/*			this.handle1 = document.createElementNS(this.graph.ns, 'line');
 			this.handle1.setAttribute('stroke-width', '3');
 			this.handle1.setAttribute('stroke', 'transparent');
 			this.handle1.setAttribute('pointer-events', 'stroke');
@@ -22,13 +22,13 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			this.handle2.setAttribute('stroke-width', '3');
 			this.handle2.setAttribute('stroke', 'transparent');
 			this.handle2.setAttribute('pointer-events', 'stroke');
-			this.handle2.setAttribute('cursor', 'ew-resize');
+			this.handle2.setAttribute('cursor', 'ew-resize');*/
 
-			this.setDom('cursor', 'move');
-			this.doDraw = undefined;
+//			this.setDom('cursor', 'move');
+//			this.doDraw = undefined;
 
 
-			this.graph.contextListen( this._dom, [
+/*			this.graph.contextListen( this._dom, [
 				
 				['<li><a><span class="ui-icon ui-icon-cross"></span> Remove integral</a></li>', 
 				function(e) {
@@ -36,62 +36,12 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 					self.graph.triggerEvent('onAnnotationRemove', self.data);
 				}]
 
-			]);
+			]);*/
 
 			
 		},
 
-		setEvents: function() {
-			var self = this;
-			this._dom.addEventListener('mousedown', function(e) {
-			
-				e.preventDefault();
-				e.stopPropagation();
-				self.resizingElement = false;
-				self.moving = true;
-				self.resize = false;
-				self.handleMouseDown(e);
-
-			});
-
-			this.handle1.addEventListener('mousedown', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-
-				self.moving = false;
-				self.resize = true;
-				self.resizingElement = 1;
-				self.handleMouseDown( e );
-			});
-
-			this.handle2.addEventListener('mousedown', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				
-				self.moving = false;
-				self.resize = true;
-				self.resizingElement = 2;
-				self.handleMouseDown(e);
-				
-
-			});
-
-			this._dom.addEventListener('mousemove', function(e) {
-
-				e.preventDefault();
-				e.stopPropagation();
-				self.handleMouseMove(e);
-			});
-
-			this._dom.addEventListener('mouseup', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				self.handleMouseUp(e);
-			});
-			
-		//	this.setSelectableOnClick();
-		},
-
+		
 		handleCreateImpl: function() {
 			this.resize = true;
 			this.resizingElement = 2;
@@ -100,9 +50,6 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		handleMouseDownImpl: function( e ) {
 
 
-			if( ! this.moving ) {
-				this.resizingPosition = ((this.reversed && this.resizingElement == 2) || (!this.reversed && this.resizingElement == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
-			}
 
 		},
 
@@ -112,22 +59,20 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY) {
 
+
+			var pos = this.getFromData('pos');
+			var pos2 = this.getFromData('pos2');
+
 			if( this.moving ) {
-				
-				var pos1 = this.getFromData('pos');
-				var pos2 = this.getFromData('pos2');
-				
-				pos1.x += deltaX;
-				pos2.x += deltaX;
-				
-				if( deltaX != 0 ) {
-					this.preventUnselect = true;
-				}
 
-				this.position = this.setPosition();
-				this.redrawImpl();
+				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+				pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis( ) );
+				pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis( ) );
 
-			} else if(this.resize) {
+			} else {
+
+				this.resizingPosition = ((this.reversed && this.handleSelected == 2) || (!this.reversed && this.handleSelected == 1)) ? this.getFromData('pos') : this.getFromData('pos2');
 
 				var value = this.serie.searchClosestValue(this.serie.getXAxis().getVal(this.graph.getXY(e).x - this.graph.getPaddingLeft()));
 
@@ -135,14 +80,14 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 					return;
 				}
 
-				this.position = this.setPosition();
-
 				if(this.resizingPosition.x != value.xMin)
 					this.preventUnselect = true;
 
 				this.resizingPosition.x = value.xMin;
-				this.redrawImpl();
 			}
+
+			this.position = this.setPosition();
+			this.setHandles();
 		},
 
 		redrawImpl: function() {
@@ -272,21 +217,11 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			this.handle2.setAttribute('y2', this.serie.getY(0));
 		},
 
+	
 		selectStyle: function() {
 			this.setDom('stroke', 'red');
 			this.setDom('stroke-width', '2');
 			this.setDom('fill', 'rgba(255, 0, 0, 0.1)');
-		},
-
-		unselect: function() {
-
-			this._selected = false;
-
-			this.setStrokeWidth();
-			this.setStrokeColor();
-			this.setDashArray();
-			this.setFillColor();
-
 		},
 
 		setLabelPosition: function(labelIndex) {

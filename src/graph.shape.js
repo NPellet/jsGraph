@@ -24,7 +24,7 @@ define( [ 'require' ], function( require ) {
 
 	GraphShape.prototype = {
 
-		init: function(graph) {
+		init: function( graph, groupName ) {
 
 			var self = this;
 
@@ -32,13 +32,17 @@ define( [ 'require' ], function( require ) {
 			this.properties = {};
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
+			if( groupName ) {
+				this.group.setAttribute( 'data-groupname', groupName );
+			}
+
 			this._selected = false;
 			this.createDom();
 			this.setEvents();
 			
 			this.classes = [];
 
-			this.rectEvent = document.createElementNS(this.graph.ns, 'rect');
+			this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
@@ -69,6 +73,7 @@ define( [ 'require' ], function( require ) {
 
 					e.preventDefault();
 					e.stopPropagation();
+
 					self.handleSelected = false;
 					self.moving = true;
 
@@ -153,6 +158,10 @@ define( [ 'require' ], function( require ) {
 		kill: function() {
 			this.graph.shapeZone.removeChild(this.group);
 			this.graph.removeShape( this );
+
+			if( this.options.onRemove ) {
+				this.options.onRemove.call( this );
+			}
 		},
 
 	/*	applyAll: function() {
@@ -362,6 +371,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		_setLabelPosition: function(labelIndex, pos) {
+
 			var currPos = this.getFromData('pos');
 			var parsedCurrPos = this._getPosition(currPos);
 			if( !pos ) {
@@ -371,6 +381,7 @@ define( [ 'require' ], function( require ) {
 			this.label[labelIndex].setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 			this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+
 		},
 
 		_setLabelAngle: function(labelIndex, angle) {
@@ -496,7 +507,7 @@ define( [ 'require' ], function( require ) {
 					this.resize = false;
 					this.graph.shapeMoving(false);
 
-					this.handleMouseUpImpl( e );
+					return this.handleMouseUpImpl( e );
 				}  
 			],
 
@@ -513,8 +524,26 @@ define( [ 'require' ], function( require ) {
 						this.preventUnselect = true;
 					}		
 
-					this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
 					this.mouseCoords = coords;	
+					var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
+
+					if( this.options ) {
+						
+						if( this.moving ) {
+
+							if( this.options.onMove ) {
+								this.options.onMove.call( this );
+							}
+
+						} else  {
+
+							if( this.options.onResize ) {
+								this.options.onResize.call( this );	
+							}
+						}
+					}
+
+					return ret;
 				}
 			],
 
@@ -537,7 +566,7 @@ define( [ 'require' ], function( require ) {
 					}
 					this.mouseCoords = this.graph.getXY( e );	
 
-					this.handleMouseDownImpl( e, this.mouseCoords );
+					return this.handleMouseDownImpl( e, this.mouseCoords );
 				}
 			],
 
@@ -592,6 +621,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		removeHandles: function() {
+
 			for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
 				this.group.removeChild( this['handle' + i ] );
 			}
@@ -604,7 +634,9 @@ define( [ 'require' ], function( require ) {
 			var handlers;
 			if( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
 				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
-					handlers[ i ].apply( this, arguments );
+					if( handlers[ i ].apply( this, arguments ) ) {
+					//	return;
+					}
 				}
 			}
 
@@ -612,7 +644,9 @@ define( [ 'require' ], function( require ) {
 			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
 				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
 					
-					handlers[ i ].apply( this, arguments );
+					if( handlers[ i ].apply( this, arguments ) ) {
+					//	return;
+					}
 				}
 			}
 

@@ -430,7 +430,29 @@ define([
 			this._dom.focus();
 		},
 
+		allowPlugin: function( e, plugin ) {
+
+			if( this.forcedPlugin == plugin ) {
+				return true;
+			}
+
+			var act = this.options.pluginAction[ plugin ] || {},
+				shift = e.shiftKey, 
+				ctrl = e.ctrlKey;
+
+			if(shift !== act.shift) {
+				return false;
+			}
+
+			if(ctrl !== act.ctrl) {
+				return false;
+			}
+
+			return true;
+		},
+
 		handleMouseDown: function( x, y, e ) {
+
 			var self = this,
 				$target = $(e.target), 
 				shift = e.shiftKey, 
@@ -439,6 +461,15 @@ define([
 				i;
 
 			this.unselectShape();
+
+			if( this.forcedPlugin ) {
+
+				this.activePlugin = this.forcedPlugin;
+				console.log( this.activePlugin );
+				this._pluginExecute( this.activePlugin, 'onMouseDown', [ this, x, y, e]);
+				return;
+			}
+
 
 			for( i in keyComb ) {
 				if( ! keyComb[i]._forced ) {
@@ -452,7 +483,8 @@ define([
 					}
 				}
 
-				this.mouseLease = i; // Lease the mouse action to the current action
+				this.activePlugin = i; // Lease the mouse action to the current action
+
 				this._pluginExecute(i, 'onMouseDown', [ this, x, y, e]);
 
 				break;
@@ -467,7 +499,7 @@ define([
 				return;
 			}
 			
-			if( this._pluginExecute(this.mouseLease, 'onMouseMove', [ this, x, y, e ]) ) {
+			if( this._pluginExecute(this.activePlugin, 'onMouseMove', [ this, x, y, e ]) ) {
 				return;
 			};
 
@@ -476,7 +508,7 @@ define([
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
 
-			if(!this.mouseLease) {
+			if(!this.activePlugin) {
 				var results = {};
 				
 				if(this.options.onMouseMoveData) {
@@ -489,20 +521,27 @@ define([
 				}
 				return;
 			}
-
-
 		},
 
+		forcePlugin: function( plugin ) {
+			
+			this.forcedPlugin = plugin;
+		},
+
+		unforcePlugin: function( ) {
+			this.forcedPlugin = false;
+		},
 
 		handleMouseUp: function(x, y, e) {
 
 			if(this.bypassHandleMouse) {
 				this.bypassHandleMouse.handleMouseUp(e);
+				this.activePlugin = false;
 				return;
 			}
 
-			this._pluginExecute(this.mouseLease, 'onMouseUp', [ this, x, y, e ]);
-			this.mouseLease = false;
+			this._pluginExecute(this.activePlugin, 'onMouseUp', [ this, x, y, e ]);
+			this.activePlugin = false;
 
 		},
 
@@ -619,13 +658,15 @@ define([
 			'string': function(type, func, params) {
 		//		params.splice(1, 0, type);
 
-				for(var i = 0; i < this.axis[type].length; i++)
+				for(var i = 0; i < this.axis[type].length; i++) {
 					this.axis[type][i][func].apply(this.axis[type][i], params);	
+				}
 			},
 
 			'function': function(type, func, params) {
-				for(var i = 0; i < this.axis[type].length; i++)
+				for(var i = 0; i < this.axis[type].length; i++) {
 					func.call(this, this.axis[type][i], type);
+				}
 			}
 		},
 		
@@ -1201,7 +1242,7 @@ define([
 			return deferred;
 		},
 
-		makeShape: function(shapeData, events, notify) {
+		makeShape: function( shapeData, events, notify) {
 
 			var self = this,
 				response,
@@ -1222,7 +1263,7 @@ define([
 
 			var shapeConstructor = require( [ './graph.shape.' + shapeData.type ], function( shapeConstructor ) {
 
-				var shape = new shapeConstructor( self );
+				var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
 				shape.setSerie( self.getSerie( 0 ) );
 
@@ -1371,7 +1412,7 @@ define([
 				for(var i = 0, l = pluginsToLoad.length; i < l; i++) {
 
 					self._plugins[ pluginsToLoad[ i ] ] = new arguments[ i ]();
-					self._plugins[ pluginsToLoad[ i ] ].init( self, self.options.plugins[ pluginsToLoad[ i ] ] || { } );
+					self._plugins[ pluginsToLoad[ i ] ].init( self, self.options.plugins[ pluginsToLoad[ i ] ] || { }, pluginsToLoad[ i ] );
 				}
 
 				self._pluginsReady();
@@ -1497,6 +1538,10 @@ define([
 				if( value[ i ] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
 					
 					if(i == 'x') {
+
+						if( value['d' + i] === undefined ) {
+							continue;
+						}
 
 						pos[i] = relTo ? relTo[i] : axis.getPos(0);
 

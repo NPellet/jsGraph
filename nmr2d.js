@@ -12,13 +12,17 @@ requirejs.config({
 
 require( [ 'src/graph' ] , function( Graph ) {
 
+	var graph_y, graph_y, graph_2d;
+
+	setTools();
+
 	$.getJSON('./spectra.json', function ( data ) {
 
 		var nmr = $( "#nmr" );
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
 
 
-		var graph_2d = new Graph( nmr.find('.nmr-2d').get(0), {
+		graph_2d = new Graph( nmr.find('.nmr-2d').get(0), {
 
 			close: { left: false, top: false, right: false },
 
@@ -70,8 +74,39 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
-		
-		var graph_x = new Graph( nmr.find('.nmr-1d-x').get(0), {
+
+		var integrals_x = [];
+		function integral_x_resizemove( ) {
+
+			var sumMax = 0;
+			for( var i = 0, l = integrals_x.length; i < l ; i ++ ) {
+				sumMax = Math.max( sumMax, integrals_x[ i ].lastSum );
+			}
+
+			for( var i = 0, l = integrals_x.length; i < l ; i ++ ) {
+				integrals_x[ i ].ratio = integrals_x[ i ].lastSum / sumMax;
+				integrals_x[ i ].setPosition();
+			}
+		}
+
+
+
+		var integrals_y = [];
+		function integral_y_resizemove( ) {
+
+			var sumMax = 0;
+			for( var i = 0, l = integrals_y.length; i < l ; i ++ ) {
+				sumMax = Math.max( sumMax, integrals_y[ i ].lastSum );
+			}
+
+			for( var i = 0, l = integrals_y.length; i < l ; i ++ ) {
+				integrals_y[ i ].ratio = integrals_y[ i ].lastSum / sumMax;
+				integrals_y[ i ].setPosition();
+			}
+		}
+
+
+		graph_x = new Graph( nmr.find('.nmr-1d-x').get(0), {
 
 			close: { left: false, top: false, right: false },
 			paddingBottom: 0,
@@ -82,6 +117,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			plugins: {
 				'./graph.plugin.zoom': { 
 					zoomMode: 'x',
+
 					onZoomStart: function( graph, x, y, e, target ) {
 
 						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_2d, x, undefined, e, true ] );
@@ -106,7 +142,63 @@ require( [ 'src/graph' ] , function( Graph ) {
 						
 					}
 
-				}
+				},
+
+
+				'./graph.plugin.shape': { shapeType: 'peakinterval2', shapeOptions: { 
+
+					horizontal: true, 
+					forcedCoords: { y: "20px" },
+
+					onCreate: function() {
+
+						var self = this;
+						graph_x.makeShape( { type: 'nmrintegral', fillColor: 'transparent', strokeColor: 'rgba(100, 0, 0, 0.5)', strokeWidth: '1px' }, {} ).then( function( nmrint ) {
+
+							self.integral = nmrint;
+							integrals_x.push( self.integral );
+							nmrint.draw();
+							self.integral.data.pos = self.getFromData( 'pos' );
+							self.integral.data.pos2 = self.getFromData( 'pos2' );
+
+						} );
+
+					},
+
+					onResize: function() {
+
+						if( ! this.integral ) {
+							return;
+						}
+						
+						this.integral.setPosition();
+						integral_x_resizemove( );
+					},
+
+					onMove: function() {
+
+
+						if( ! this.integral ) {
+							return;
+						}
+
+						this.integral.setPosition();
+						integral_x_resizemove( );
+					},
+
+					onRemove: function() {
+
+						if( this.integral ) {
+							this.integral.kill();
+							integrals_x.splice( integrals_x.indexOf( this.integral ), 1 );
+						}
+
+						integral_x_resizemove( );
+					}
+
+				} },
+
+				'./graph.plugin.linking': { },
 			},
 
 
@@ -119,12 +211,13 @@ require( [ 'src/graph' ] , function( Graph ) {
 			},
 
 			pluginAction: {
-				'./graph.plugin.zoom': { shift: false, ctrl: false }
+				'./graph.plugin.zoom': { shift: false, ctrl: false },
+				'./graph.plugin.shape': { shift: true, ctrl: false }
 			}
 
 		} );
 
-		var graph_y = new Graph( nmr.find('.nmr-1d-y').get(0), { 
+		graph_y = new Graph( nmr.find('.nmr-1d-y').get(0), { 
 
 			close: { left: false, top: false, right: false },
 
@@ -154,13 +247,79 @@ require( [ 'src/graph' ] , function( Graph ) {
 						graph_2d._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_2d, x, y, { mode: 'ytotal' }, e, true ] );
 						
 					}
+				},
 
+				'./graph.plugin.shape': { shapeType: 'peakinterval2', shapeOptions: { 
+
+					vertical: true, 
+					forcedCoords: { x: "20px" },
+
+					onCreate: function() {
+
+						var self = this;
+						graph_y.makeShape( { type: 'nmrintegral', fillColor: 'transparent', strokeColor: 'rgba(100, 0, 0, 0.5)', strokeWidth: '1px', shapeOptions: { axis: 'y' } }, {} ).then( function( nmrint ) {
+
+							self.integral = nmrint;
+							integrals_y.push( self.integral );
+							nmrint.draw();
+							self.integral.data.pos = self.getFromData( 'pos' );
+							self.integral.data.pos2 = self.getFromData( 'pos2' );
+
+						} );
+
+					},
+
+					onResize: function() {
+
+						if( ! this.integral ) {
+							return;
+						}
+						
+						this.integral.setPosition();
+						integral_y_resizemove( );
+					},
+
+					onMove: function() {
+
+
+						if( ! this.integral ) {
+							return;
+						}
+
+						this.integral.setPosition();
+						integral_y_resizemove( );
+					},
+
+					onRemove: function() {
+
+						if( this.integral ) {
+							this.integral.kill();
+							integrals_y.splice( integrals_x.indexOf( this.integral ), 1 );
+						}
+
+						integral_y_resizemove( );
+					}
+
+				} },
+
+				'./graph.plugin.linking': { },
+			},
+
+
+			dblclick: {
+				type: 'plugin',
+				plugin: './graph.plugin.zoom',
+				options: {
+					mode: 'total'
 				}
 			},
 
 			pluginAction: {
-				'./graph.plugin.zoom': { shift: false, ctrl: false }
+				'./graph.plugin.zoom': { shift: false, ctrl: false },
+				'./graph.plugin.shape': { shift: true, ctrl: false }
 			},
+
+
 
 			wheel: {
 				type: 'plugin',
@@ -198,7 +357,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
 
 		serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
-		serie_x.getXAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
+		serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
 
 
 
@@ -245,7 +404,52 @@ require( [ 'src/graph' ] , function( Graph ) {
 	});
 
 
+		
+	function setTools() {
 
+		var ul = $("<ul />");
+		var toolbox = [
+			{
+				id: 'peakpicking',
+				label: 'Peak picking',
+				icon: ''
+			},
+
+			{
+				id: 'assign',
+				label: 'Manual assignment',
+				icon: ''
+			}
+		];
+
+		for( var i = 0, l = toolbox.length; i < l ; i ++ ) {
+			ul.append('<li data-tool="' + toolbox[ i ].id + '">' + toolbox[ i ].label + '</li>');
+		}
+
+		$( "#tools" ).html( ul ).on('click', 'li', function( ) {
+
+			var data = $( this ).data('tool');
+	console.log( data );
+			switch( data ) {
+
+				case 'peakpicking':
+					graph_y.forcePlugin("./graph.plugin.shape");
+					graph_x.forcePlugin("./graph.plugin.shape");
+				break;
+
+
+				case 'assign':
+					graph_y.forcePlugin("./graph.plugin.linking");
+					graph_x.forcePlugin("./graph.plugin.linking");
+				break;
+
+
+			}
+
+		} );
+
+
+	}
 });
 
 

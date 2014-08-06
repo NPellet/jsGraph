@@ -8,6 +8,7 @@ define([], function() {
 
 		init: function( graph, options ) {
 			this.shapeType = options.shapeType;
+			this.shapeOptions = options.shapeOptions;
 		},
 
 		setShape: function( shapeType, linkable ) {
@@ -49,14 +50,15 @@ define([], function() {
 					y: yVal
 				},
 
-				fillColor: color.concat([ 0.3 ]),
+				fillColor: "transparent",//color.concat([ 0.3 ]),
 				strokeColor: color.concat([ 0.9 ]),
 			
 				onChange: function(newData) {
 					graph.triggerEvent('onAnnotationChange', newData);
 				},
 
-				linkable: self.shapeLinkable
+				linkable: self.shapeLinkable,
+				shapeOptions: self.shapeOptions
 
 			}, {}, true ).then( function( shape ) {
 
@@ -82,8 +84,13 @@ define([], function() {
 				var shape = self.currentShape;
 				self.currentShape = false;
 
-				shape.draw( );				
-				shape.handleCreateImpl();
+
+				shape.handleCreateImpl( );
+
+				if( shape.options && shape.options.onCreate ) {
+					shape.options.onCreate.call( shape );
+				}
+				shape.draw( );
 				shape.select();
 
 				shape.handleMouseDown( self.currentShapeEvent, true );

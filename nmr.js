@@ -34,6 +34,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 		.setData( data )
 		.setAdditionalData( { solvent: 'd-DMSO', frequency: '800' } );
 	
+
+
 	graph.getPlugin( './graph.plugin.nmrpeakpicking' ).then( function( plugin ) {
 
 		var series = graph.getSeries();

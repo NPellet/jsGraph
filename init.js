@@ -12,21 +12,48 @@ requirejs.config({
 require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
+	var t = 0;
+
+
+	var funcX = function( t ) {
+
+		return 6 * Math.sin( t * 1 ) - 1* Math.sin( t * 6);
+	}
+
+
+	var funcY = function( t ) {
+		return 6 * Math.cos( t * 1 ) - 1*Math.cos( t * 6 ) ;
+	}
+
+
+	var funcX2 = function( t ) {
+
+		return  Math.sin( t ) * 5;
+	}
+
+
+	var funcY2 = function( t ) {
+		return Math.cos( t ) * 5;
+	}
+
+
 	var data1 = [];
-	for( var i = 0; i < 6; i += 0.05 ) {
-		data1.push( [ i , Math.pow(2.71, ( - Math.pow(( i - 3 ), 2)) ) ] );
+	for( var t = 0; t < 4 * Math.PI; t += 0.01 ) {
+		data1.push( funcX( t ) );
+		data1.push( funcY( t ) );
 	}
 
 
 	var data2 = [];
-	for( var i = 0.01; i < Math.PI * 10; i += 0.05 ) {
-		data2.push( [ i , Math.sin( i ) * Math.log( i ) ] );
+	for( var t = 0; t < 4 * Math.PI; t += 0.01 ) {
+		data2.push( funcX2( t ) );
+		data2.push( funcY2( t ) );
 	}
 
 
 
 	var functions = [
-/*
+
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, { title: "Graph title" } );
@@ -42,7 +69,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		.setData( data2 )
 		.setLineColor('red');
 
-
+/*
 	var legend = graph.makeLegend({
 		movable: true,
 		frame: true,
@@ -50,16 +77,16 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		frameColor: "#c0c0c0",
 		backgroundColor: "rgba(255, 255, 255, 0.8)"
 	});
-
+*/
 	graph.redraw( );
 	graph.drawSeries();	
 
-	legend.setPosition( { dx: "-10px", dy: "10px", x: "max", y: "max" }, "right", "top" );
+//	legend.setPosition( { dx: "-10px", dy: "10px", x: "max", y: "max" }, "right", "top" );
 
 
 }, "Default functionnality", "" ],
 
-
+/*
 [ function( domGraph ) {
 
 	var graph = new Graph( domGraph, {
@@ -177,7 +204,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 }, "Scaling different axis", "" ],
 
-*/
 
 
 [ function( domGraph ) {
@@ -216,35 +242,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 }, "Scatter serie", "" ],
 
 
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, { } );
-	
-	var serie = graph.newSerie("serieTest", { }, 'scatter')
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( [ [ 1, 20 ], [ 2, 30 ], [ 5, 4 ], [ 8, 4.2 ], [ 12, -1.2 ] ] )
-		.setMaxErrorLevel( 2 )
-		.setDataError( 
-			[
-
-				[ /* y */[ /* 1st */ [ /* top */ 1, /* bottom */ 0.4 ],  /* 2nd */ 5 ] ],
-				,
-				[ , /* x */[ /* 1st */ [ /* top */ 0.2, /* bottom */ 1 ],  /* 2nd */ 4 ] ]
-
-			]
-		);
-
-
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-}, "Scatter serie", "" ],
-
-
 /*
 
 [ function( domGraph ) {
@@ -275,7 +272,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 }, "Scatter serie", "" ],
 
 
-*/
 
 [ function( domGraph ) {
 
@@ -391,7 +387,7 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
 
 }, "Other way to set data", "" ],
-
+*/
 
 
  ]

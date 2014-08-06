@@ -2,8 +2,10 @@
 define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 
-	var GraphLine = function(graph) {
-		this.init(graph);
+	var GraphLine = function( graph, options ) {
+
+		this.init( graph );
+		this.options = options || {};
 		this.nbHandles = 2;
 
 		this.createHandles( this.nbHandles, 'rect', { 
@@ -22,9 +24,12 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		},
 
 		setPosition: function() {
-			var position = this._getPosition(this.getFromData('pos'));
-			if(!position.x || !position.y)
+			var position = this._getPosition( this.getFromData('pos') );
+
+			if( ! position.x || ! position.y) {
 				return;
+			}
+
 			this.setDom('x2', position.x);
 			this.setDom('y2', position.y);
 
@@ -36,12 +41,16 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		},
 
 		setPosition2: function() {
-			var position = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
-			if(!position.x || !position.y)
-				return;
-			this.setDom('x1', position.x);
-			this.setDom('y1', position.y);
 
+			var position = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
+
+			if( ! position.x || ! position.y ) {
+				return;
+			}
+
+			this.setDom( 'y1', position.y );
+			this.setDom( 'x1', position.x );
+			
 			this.currentPos2x = position.x;
 			this.currentPos2y = position.y;
 		},
@@ -49,24 +58,34 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		redrawImpl: function() {
 			this.setPosition();
 			this.setPosition2();
+			this.setHandles();
+
 		},
 
+		getLinkingCoords: function() {
 
+			return { x:  ( this.currentPos2x + this.currentPos1x ) / 2, y: ( this.currentPos2y + this.currentPos1y ) / 2 };
+		},
 
 		handleCreateImpl: function() {
+			
 			this.resize = true;
 			this.handleSelected = 2;	
+		
 		},
 
 		handleMouseDownImpl: function( e ) {
 
+			return true;
 		},
 
 		handleMouseUpImpl: function() {
 
+			return true;
 		},
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+
 
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
@@ -74,14 +93,47 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			if( this.handleSelected == 1 ) {
 
-				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
-				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+				if( ! this.options.vertical ) {
+					pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+				}
+
+				if( ! this.options.horizontal ) {
+					pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
+				}
 
 			}
 
 
 			if( this.handleSelected == 2 ) {
 
+				if( ! this.options.vertical ) {
+					pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis( ) );
+				}
+
+				if( ! this.options.horizontal ) {
+					pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis( ) );
+				}
+			}
+
+			if( this.options.forcedCoords ) {
+
+				var forced = this.options.forcedCoords;	
+
+				if( forced.y !== undefined ) {
+					pos2.y = forced.y;
+					pos.y = forced.y;
+				}
+
+				if( forced.x !== undefined ) {
+					pos2.x = forced.x;
+					pos.x = forced.x;
+				}
+			}
+
+			if( this.moving ) {
+
+				pos.x = this.graph.deltaPosition( pos.x, deltaX, this.serie.getXAxis( ) );
+				pos.y = this.graph.deltaPosition( pos.y, deltaY, this.serie.getYAxis( ) );
 				pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.serie.getXAxis( ) );
 				pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.serie.getYAxis( ) );
 
@@ -90,9 +142,9 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 			this.setData('pos2', pos2);
 			this.setData('pos', pos);
 			
-			this.setPosition();
-			this.setPosition2();
-			this.setHandles();
+			this.redrawImpl();
+			
+			return true;
 
 		},
 
