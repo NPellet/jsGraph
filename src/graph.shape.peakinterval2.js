@@ -4,10 +4,9 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
 	var GraphPeakInterval2 = function( graph, options ) {
 
-		this.init( graph );
 		this.options = options || {};
+		this.init( graph );
 		this.nbHandles = 2;
-
 		this.createHandles( this.nbHandles, 'rect', { 
 									transform: "translate(-3 -3)", 
 									width: 6, 
@@ -57,6 +56,9 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 				this.line2.setAttribute('y1', this.currentPos1y - 5 );
 				this.line2.setAttribute('y2', this.currentPos1y + 5 );
 			}
+
+
+			this.setBindableToDom( this._dom );
 		},
 
 

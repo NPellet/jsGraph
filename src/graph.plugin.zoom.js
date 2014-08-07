@@ -69,7 +69,6 @@ define([], function() {
 
 				case 'x': 
 					this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
-					console.log( graph.getDrawingHeight() - graph.shift[0] );
 					this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift[0]);
 				break;
 
@@ -86,7 +85,7 @@ define([], function() {
 		},
 
 		onMouseMove: function(graph, x, y, e, mute) {
-			
+			console.log('thisone');
 		//	this._zoomingSquare.setAttribute('display', 'none');
 
 	//	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');

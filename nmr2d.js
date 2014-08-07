@@ -12,7 +12,7 @@ requirejs.config({
 
 require( [ 'src/graph' ] , function( Graph ) {
 
-	var graph_y, graph_y, graph_2d;
+	var graph_x, graph_y, graph_2d;
 	var nmr;
 
 	setTools();
@@ -21,6 +21,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		nmr = $( "#nmr" );
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
+
+		
 
 
 		graph_2d = new Graph( nmr.find('.nmr-2d').get(0), {
@@ -181,75 +183,86 @@ require( [ 'src/graph' ] , function( Graph ) {
 				},
 
 
-				'./graph.plugin.shape': { shapeType: 'peakinterval2', shapeOptions: { 
+				'./graph.plugin.shape': { 
 
-					horizontal: true, 
-					forcedCoords: { y: "20px" },
+					shapeType: 'peakinterval2',
+					
+					shapeOptions: { 
 
-					onCreate: function() {
+						horizontal: true, 
+						forcedCoords: { y: "20px" },
+						bindable: true,
 
-						var self = this;
-						graph_x.makeShape( { 
+						onCreate: function() {
 
-							type: 'nmrintegral', 
-							fillColor: 'transparent', 
-							strokeColor: 'rgba(100, 0, 0, 0.5)', 
-							strokeWidth: '1px',
-							label: {
-								position: { x: "100px", y: "20px"},
-								text: 1,
-								color: 'red',
-								anchor: 'middle'
-							},
+							var self = this;
+
+							this.set('strokeWidth', 2);
+							this.setStrokeWidth();
+
+							graph_x.makeShape( { 
+
+								type: 'nmrintegral', 
+								fillColor: 'transparent', 
+								strokeColor: 'rgba(100, 0, 0, 0.5)', 
+								strokeWidth: '1px',
+								label: {
+									position: { x: "100px", y: "20px"},
+									text: 1,
+									color: 'red',
+									anchor: 'middle'
+								},
+
+								shapeOptions: {
+									locked: true
+								}
+
+							 }, {} ).then( function( nmrint ) {
+
+							 	
+								self.integral = nmrint;
+								integrals_x.push( self.integral );
+								nmrint.draw();
+								self.integral.data.pos = self.getFromData( 'pos' );
+								self.integral.data.pos2 = self.getFromData( 'pos2' );
+
+							} );
+
+						},
+
+						onResize: function() {
+
+							if( ! this.integral ) {
+								return;
+							}
+							
+							this.integral.setPosition();
+							integral_x_resizemove( );
+						},
+
+						onMove: function() {
 
 
+							if( ! this.integral ) {
+								return;
+							}
 
+							this.integral.setPosition();
+							integral_x_resizemove( );
+						},
 
-						 }, {} ).then( function( nmrint ) {
+						onRemove: function() {
 
-						 	
-							self.integral = nmrint;
-							integrals_x.push( self.integral );
-							nmrint.draw();
-							self.integral.data.pos = self.getFromData( 'pos' );
-							self.integral.data.pos2 = self.getFromData( 'pos2' );
+							if( this.integral ) {
+								this.integral.kill();
+								integrals_x.splice( integrals_x.indexOf( this.integral ), 1 );
+							}
 
-						} );
-
-					},
-
-					onResize: function() {
-
-						if( ! this.integral ) {
-							return;
+							integral_x_resizemove( );
 						}
-						
-						this.integral.setPosition();
-						integral_x_resizemove( );
-					},
 
-					onMove: function() {
-
-
-						if( ! this.integral ) {
-							return;
-						}
-
-						this.integral.setPosition();
-						integral_x_resizemove( );
-					},
-
-					onRemove: function() {
-
-						if( this.integral ) {
-							this.integral.kill();
-							integrals_x.splice( integrals_x.indexOf( this.integral ), 1 );
-						}
-
-						integral_x_resizemove( );
 					}
-
-				} },
+				},
 
 				'./graph.plugin.linking': { },
 			},
@@ -454,6 +467,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 		
 		graph_x.drawSeries();	
 
+		startAttribution();
+
 	});
 
 
@@ -500,7 +515,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
-	//	startMolecule();
+		startMolecule();
 
 
 	}
@@ -508,32 +523,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	function startAssign() {
 
-		var ns = 'http://www.w3.org/2000/svg';
-
-		var dom = document.createElementNS( ns, 'svg' );
-		dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
 	
-		dom.setAttribute('xmlns', ns );
-	
-		dom.setAttribute('style', 'position: absolute');
-		dom.setAttribute('width', nmr.width( ) )
-		dom.setAttribute('height', nmr.height( ) )
-		dom.setAttribute('pointer-events', 'none');
-
-
-		var line = document.createElementNS( ns, 'line' );
-		line.setAttribute('x1', '100');
-		line.setAttribute('x2', '600');
-		line.setAttribute('y1', '300');
-		line.setAttribute('y2', '600');
-		line.setAttribute('stroke', 'black');
-		line.setAttribute('stroke-width', '1px');
-
-		
-
-		nmr.prepend( dom );
-
-		dom.appendChild( line );
 		
 	}
 
@@ -545,9 +535,9 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 			var dom = document.createElement("div");
-
+			dom.setAttribute('style', 'position: absolute;');
 			// Create a new molecule
-			var molecule = new Molecule( {    maxBondLengthAverage: 40 } );
+			var molecule = new Molecule( { maxBondLengthAverage: 40 } );
 
 			// Adds the molecule somewhere in the DOM
 			dom.appendChild( molecule.getDom() );
@@ -566,6 +556,108 @@ require( [ 'src/graph' ] , function( Graph ) {
 		} );
 
 
+	}
+
+	function startAttribution() {
+
+		var binding = false;
+		var bindingA = false;
+		var bindingLine;
+
+		var mousedown = function( el, event ) {
+
+
+			if( event.shiftKey ) {
+
+				graph_x.lockShapes();
+			
+				binding = true;
+				bindingA = el;
+				event.preventDefault();
+				event.stopPropagation();
+			}
+
+
+			var pos = $( el ).position();
+
+			bindingLine.setAttribute('x1', pos.left );
+			bindingLine.setAttribute('y1', pos.top );
+
+		}
+
+		var mouseup = function( el, event ) {
+
+			if( ! binding ) {
+				return;
+			}
+
+			self.handleSelected = false;
+			self.moving = true;
+
+			var target = event.target;
+
+			if( ! target.classList.contains( 'bindable' ) ) {
+				binding = false;
+			} else {
+				bindingB = event.target;
+				binding = false;
+
+				bindSave();
+			}
+
+
+			graph_x.unlockShapes();
+			
+		}
+
+		var mousemove = function( e ) {
+
+			if( ! binding ) {
+				return;
+			}
+
+			bindingLine.setAttribute('x2', e.clientX );
+			bindingLine.setAttribute('y2', e.clientY );
+		}
+
+		function bindSave() {
+
+			console.log( bindingA, bindingB );
+		}
+
+		function setEvents() {
+
+			nmr.on('mousedown', '.bindable', function( e ) {
+				mousedown( this, e );
+			});
+
+			nmr.on('mouseup', function( e ) {
+				mouseup( this, e );
+			});
+
+			nmr.on('mousemove', function( e ) {
+				mousemove( e );
+			})
+		}	
+
+		var ns = 'http://www.w3.org/2000/svg';
+
+		var dom = document.createElementNS( ns, 'svg' );
+		dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	
+		dom.setAttribute('xmlns', ns );
+	
+		dom.setAttribute('style', 'position: absolute');
+		dom.setAttribute('width', nmr.width( ) )
+		dom.setAttribute('height', nmr.height( ) )
+		dom.setAttribute('pointer-events', 'none');
+
+		bindingLine = document.createElementNS( ns, 'line');
+		bindingLine.setAttribute('stroke', 'black');
+
+		dom.appendChild( bindingLine );
+		nmr.prepend( dom );
+		setEvents();	
 	}
 });
 

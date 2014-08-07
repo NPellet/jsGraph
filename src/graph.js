@@ -80,7 +80,7 @@ define([
 		this.title = false;
 
 		this.shapes = [];
-
+		this.shapesLocked = false;
 
 		this.ns = 'http://www.w3.org/2000/svg';
 		this.nsxlink = "http://www.w3.org/1999/xlink";
@@ -465,7 +465,6 @@ define([
 			if( this.forcedPlugin ) {
 
 				this.activePlugin = this.forcedPlugin;
-				console.log( this.activePlugin );
 				this._pluginExecute( this.activePlugin, 'onMouseDown', [ this, x, y, e]);
 				return;
 			}
@@ -1289,7 +1288,7 @@ define([
 					shape.set( 'strokeWidth', shapeData.strokeWidth || (shapeData.strokeColor ? 1 : 0));
 				}	
 
-				if(shapeData.label) {
+				if( shapeData.label ) {
 
 					if ( ! ( shapeData.label instanceof Array ) ) {
 						shapeData.label = [ shapeData.label ];
@@ -1697,6 +1696,15 @@ define([
 				this.context.listen( target, menuElements, callback );
 			}
 			
+		},
+
+		lockShapes: function() {
+			this.shapesLocked = true;
+		},
+
+		unlockShapes: function() {
+			console.log('unlock');
+			this.shapesLocked = false;
 		}
 	}
 

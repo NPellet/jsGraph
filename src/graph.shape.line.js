@@ -87,6 +87,10 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {
 
+			if( this.isLocked() ) {
+				return;
+			}
+
 
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
@@ -150,6 +154,11 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		},
 
 		setHandles: function() {
+
+			if( this.isLocked() ) {
+				return;
+			}
+			
 
 			if( ! this._selected || this.currentPos1x == undefined ) {
 				return;

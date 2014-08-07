@@ -1,6 +1,7 @@
 
 define( [ 'require' ], function( require ) {
 
+	"use strict";
 	function getColor( color ) {
 
 		if (Array.isArray(color)) {
@@ -72,7 +73,7 @@ define( [ 'require' ], function( require ) {
 					self.graph.focus();
 
 					e.preventDefault();
-					e.stopPropagation();
+			//		e.stopPropagation();
 
 					self.handleSelected = false;
 					self.moving = true;
@@ -96,6 +97,9 @@ define( [ 'require' ], function( require ) {
 		},
 
 		addClass: function( className ) {
+
+			this.classes = this.classes || [];
+
 			if( this.classes.indexOf( className ) == -1 ) {
 				this.classes.push( className );
 			}
@@ -106,6 +110,7 @@ define( [ 'require' ], function( require ) {
 		removeClass: function( className ) {
 
 			this.classes.splice( this.classes.indexOf( className ), 1 );
+
 			this.makeClasses();
 		},
 
@@ -244,6 +249,8 @@ define( [ 'require' ], function( require ) {
 
 			this.configuration = this.configuration || { sections: { shape_cfg: [ { groups: { shape_cfg: [ {} ] }} ]}};
 			this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
+
+
 		},
 
 		get: function(prop, index) {
@@ -270,7 +277,7 @@ define( [ 'require' ], function( require ) {
 		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
 		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('fill', this.get('labelColor'));				},
 		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'));		},
-		setLabelPosition: function(index) {console.log('pos');	if(this.label) this._setLabelPosition(index);											},
+		setLabelPosition: function(index) { if(this.label) this._setLabelPosition(index);											},
 		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
 		
 		highlight: function() {
@@ -288,7 +295,7 @@ define( [ 'require' ], function( require ) {
 		unHighlightImpl: function() {},
 
 		_getPosition: function(value, relTo) {
-
+			var yAxis;
 			var xAxis = yAxis = false;
 
 			if( this.serie ) {
@@ -472,6 +479,10 @@ define( [ 'require' ], function( require ) {
 
 		createHandles: function( nb, type, attr ) {
 
+			if( this.isLocked() ) {
+				return;
+			}
+
 			var self = this;
 
 			for( var i = 1; i <= nb; i ++ ) {
@@ -570,7 +581,7 @@ define( [ 'require' ], function( require ) {
 				function ( e ) {
 
 					var self = this;
-					e.stopPropagation();
+				//	e.stopPropagation();
 					e.preventDefault();
 
 					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
@@ -622,6 +633,15 @@ define( [ 'require' ], function( require ) {
 		},
 
 		handleMouseMove: function( e ) {
+
+			if( this.isLocked() ) {
+				
+				this.graph.shapeMoving( false );
+				this.handleSelected = false;
+				this.moving = true;
+				return;
+
+			}
 			this.callHandler( 'mouseMove', e );
 		},
 
@@ -673,6 +693,11 @@ define( [ 'require' ], function( require ) {
 
 
 		addHandles: function() {
+
+			if( this.isLocked() ) {
+				return;
+			}
+			
 
 			if( ! this.handlesInDom ) {
 
@@ -762,7 +787,33 @@ define( [ 'require' ], function( require ) {
 		setConfiguration: function( configuration ) {
 
 			this.configuration = $.extend( true, this.configuration, configuration );
+		},
+
+		isLocked: function() {
+
+			return this.options.locked || this.graph.shapesLocked;
+		},
+
+		lock: function() {
+			this.options.locked = true;
+		},
+
+		unlock: function() {
+			this.options.locked = false;
+		},
+
+		isBindable: function() {
+			
+			return this.options.bindable;
+		},
+
+		setBindableToDom: function() {
+
+			if( this.isBindable() ) {
+				this.addClass('bindable');
+			}	
 		}
+
 	}
 
 	return GraphShape;

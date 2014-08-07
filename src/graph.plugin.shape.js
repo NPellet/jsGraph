@@ -9,6 +9,7 @@ define([], function() {
 		init: function( graph, options ) {
 			this.shapeType = options.shapeType;
 			this.shapeOptions = options.shapeOptions;
+			this.bindable = options.bindable;
 		},
 
 		setShape: function( shapeType, linkable ) {
@@ -52,7 +53,8 @@ define([], function() {
 
 				fillColor: "transparent",//color.concat([ 0.3 ]),
 				strokeColor: color.concat([ 0.9 ]),
-			
+				
+
 				onChange: function(newData) {
 					graph.triggerEvent('onAnnotationChange', newData);
 				},
