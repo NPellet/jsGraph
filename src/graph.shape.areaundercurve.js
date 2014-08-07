@@ -11,6 +11,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			var self = this;
 			this._dom = document.createElementNS(this.graph.ns, 'path');
+			this._dom.setAttribute('pointer-events', 'stroke');
 
 /*			this.handle1 = document.createElementNS(this.graph.ns, 'line');
 			this.handle1.setAttribute('stroke-width', '3');
@@ -58,9 +59,8 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		},
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY) {
-console.log( this.isLocked()  );
-			if( this.isLocked() ) {
 
+			if( this.isLocked() ) {
 				return;
 			}
 			

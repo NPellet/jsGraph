@@ -577,11 +577,15 @@ require( [ 'src/graph' ] , function( Graph ) {
 				event.stopPropagation();
 			}
 
-
 			var pos = $( el ).position();
+	
+			var w = parseFloat( el.getAttribute('width') || 0 );
+			var h = parseFloat( el.getAttribute('height') || 0 );
 
-			bindingLine.setAttribute('x1', pos.left );
-			bindingLine.setAttribute('y1', pos.top );
+			bindingLine.setAttribute('display', 'block');
+
+			bindingLine.setAttribute('x1', pos.left + ( w / 2 ) );
+			bindingLine.setAttribute('y1', pos.top  + ( h / 2 ) );
 
 		}
 
@@ -594,14 +598,18 @@ require( [ 'src/graph' ] , function( Graph ) {
 			self.handleSelected = false;
 			self.moving = true;
 
+			bindingLine.setAttribute('display', 'none');
+
 			var target = event.target;
 
 			if( ! target.classList.contains( 'bindable' ) ) {
-				binding = false;
-			} else {
-				bindingB = event.target;
+
 				binding = false;
 
+			} else {
+
+				bindingB = event.target;
+				binding = false;
 				bindSave();
 			}
 
