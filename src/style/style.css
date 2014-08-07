@@ -25,9 +25,10 @@ ul.graph-toolbar {
   stroke: #339c30;
   stroke-width: 2px; }
 
-.hover {
-  fill: rgba(51, 156, 48, 0.4);
-  stroke: rgba(51, 156, 48, 0.8); }
-
+/*.hover {
+	fill: rgba(51, 156, 48, 0.4);
+	stroke: rgba(51, 156, 48, 0.8);
+}
+*/
 g[data-groupname="nmrintegral"] .hover {
   fill: transparent; }

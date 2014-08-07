@@ -1,6 +1,7 @@
 
 define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
+	var lineHeight = 5;
 
 	var GraphPeakInterval2 = function( graph, options ) {
 
@@ -29,16 +30,27 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
 			this.line1.setAttribute('stroke', 'black');
 			this.line2.setAttribute('stroke', 'black');
+
+			this._dom.element = this;
 		},
 
 
 		redrawImpl: function() {
 
-			var xs = this.findxs();
-
 			this.setPosition();
 			this.setPosition2();
 			this.setHandles();
+
+			this.redrawLines( lineHeight );
+			
+
+			this.setBindableToDom( this._dom );
+		},
+
+		redrawLines: function( height ) {
+
+
+			var xs = this.findxs();
 
 			var x1 = this._getPosition( { x: xs[ 0 ] } );
 			var x2 = this._getPosition( { x: xs[ 1 ] } );
@@ -50,15 +62,20 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 				this.line2.setAttribute('x1', x2.x );
 				this.line2.setAttribute('x2', x2.x );
 
-				this.line1.setAttribute('y1', this.currentPos2y - 5 );
-				this.line1.setAttribute('y2', this.currentPos2y + 5 );
-
-				this.line2.setAttribute('y1', this.currentPos1y - 5 );
-				this.line2.setAttribute('y2', this.currentPos1y + 5 );
+				this.setLinesY( height );
 			}
 
 
-			this.setBindableToDom( this._dom );
+		},
+
+		setLinesY: function( height ) {
+
+			this.line1.setAttribute('y1', this.currentPos2y - height );
+			this.line1.setAttribute('y2', this.currentPos2y + height );
+
+			this.line2.setAttribute('y1', this.currentPos1y - height );
+			this.line2.setAttribute('y2', this.currentPos1y + height );
+
 		},
 
 
@@ -176,6 +193,23 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 			}
 
 			return [ xs[ xinf ], xs[ xsup ] ];
+		},
+
+		highlight: function() {
+
+			this._dom.setAttribute('stroke-width', '5');
+			
+			this.setLinesY( lineHeight + 2 );
+
+		},
+
+
+		unhighlight: function() {
+
+			this.setStrokeWidth();
+			
+			this.setLinesY( lineHeight );
+
 		}
 
 

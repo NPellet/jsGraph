@@ -2,12 +2,13 @@
 define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 
-	var GraphRect = function(graph) {
+	var GraphRect = function( graph, options ) {
 		this.init(graph);
 
 		this.graph = graph;
 		this.nbHandles = 4;
-
+		this.options = options;
+		
 		this.createHandles( this.nbHandles, 'rect', { 
 										transform: "translate(-3 -3)", 
 										width: 6, 

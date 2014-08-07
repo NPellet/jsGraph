@@ -85,7 +85,7 @@ define([], function() {
 		},
 
 		onMouseMove: function(graph, x, y, e, mute) {
-			console.log('thisone');
+			
 		//	this._zoomingSquare.setAttribute('display', 'none');
 
 	//	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
@@ -111,9 +111,6 @@ define([], function() {
 				case 'y':
 					this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
 					this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-
-
-					
 				break;
 			}	
 

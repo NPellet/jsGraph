@@ -22,9 +22,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 		nmr = $( "#nmr" );
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
 
-		
-
-
 		graph_2d = new Graph( nmr.find('.nmr-2d').get(0), {
 
 			close: { left: false, top: false, right: false },
@@ -58,6 +55,16 @@ require( [ 'src/graph' ] , function( Graph ) {
 						graph_y._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_y, x, y, { mode: 'total' }, e, true ] );
 						graph_x._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_x, x, y, { mode: 'total' }, e, true ] );
 					}
+				},
+
+				'./graph.plugin.shape': { 
+
+					shapeType: 'peakintegration2d',
+					
+					shapeOptions: { 
+						bindable: false
+					}
+					
 				}
 			},
 
@@ -71,12 +78,22 @@ require( [ 'src/graph' ] , function( Graph ) {
 			},
 
 			pluginAction: {
-				'./graph.plugin.zoom': { shift: false, ctrl: false }
+				'./graph.plugin.zoom': { shift: false, ctrl: false },
+				'./graph.plugin.shape': { shift: true, ctrl: false }
 			},
 
 
 		} );
 
+
+		graph_2d.shapeHandlers.mouseUp.push( function() {
+
+			var pos1 = this.getFromData('pos');
+			var pos2 = this.getFromData('pos2');
+			
+			console.log( graph_2d.getSeries() );
+			
+		} );
 
 		var integrals_x = [];
 		var integralXBasis = undefined;
@@ -262,9 +279,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 						}
 
 					}
-				},
-
-				'./graph.plugin.linking': { },
+				}
 			},
 
 
@@ -417,7 +432,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 	*/
 
 
-		var serie_x = graph_x.newSerie("serieTest" )
+		var serie_x = graph_x.newSerie("seriex" )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
@@ -428,7 +443,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 
-		var serie_y = graph_y.newSerie("serieTestasd", { flip: true } )
+		var serie_y = graph_y.newSerie("seriey", { flip: true } )
 			.setLabel( "My serie" )
 			.setXAxis( graph_y.getBottomAxis( ) )
 			.setYAxis( graph_y.getRightAxis( ) )
@@ -438,11 +453,14 @@ require( [ 'src/graph' ] , function( Graph ) {
 		serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
 
-		var serie_2d = graph_2d.newSerie("serieTestasd", { }, 'contour' )
+		var serie_2d = graph_2d.newSerie("serie2d", { }, 'contour' )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data.cosy.contourLines )
 
+
+			console.log( data.cosy );
+			
 		serie_2d.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 		serie_2d.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
 
@@ -451,8 +469,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 		serie_2d.getYAxis().forceMax( serie_y.getYAxis().getMaxValue( ) );
 
 
-		serie_2d.getXAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false );
-		serie_2d.getYAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false );
+		serie_2d.getXAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
+		serie_2d.getYAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
 
 
@@ -563,6 +581,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 		var binding = false;
 		var bindingA = false;
 		var bindingLine;
+		var bindingPairs = [];
 
 		var mousedown = function( el, event ) {
 
@@ -582,11 +601,22 @@ require( [ 'src/graph' ] , function( Graph ) {
 			var w = parseFloat( el.getAttribute('width') || 0 );
 			var h = parseFloat( el.getAttribute('height') || 0 );
 
+			var x2 = parseFloat( el.getAttribute('x2') || 0 );
+			var y2 = parseFloat( el.getAttribute('y2') || 0 );
+
+			var x1 = parseFloat( el.getAttribute('x1') || 0 );
+			var y1 = parseFloat( el.getAttribute('y1') || 0 );
+
 			bindingLine.setAttribute('display', 'block');
 
-			bindingLine.setAttribute('x1', pos.left + ( w / 2 ) );
-			bindingLine.setAttribute('y1', pos.top  + ( h / 2 ) );
+			var x = pos.left + ( w / 2 ) + ( Math.abs( x2 - x1 ) / 2 );
+			var y = pos.top  + ( h / 2 ) + ( Math.abs( y2 - y1 ) / 2 );
 
+			bindingLine.setAttribute('x1', x );
+			bindingLine.setAttribute('y1', y );
+
+			bindingLine.setAttribute('x2', x );
+			bindingLine.setAttribute('y2', y );
 		}
 
 		var mouseup = function( el, event ) {
@@ -628,9 +658,43 @@ require( [ 'src/graph' ] , function( Graph ) {
 			bindingLine.setAttribute('y2', e.clientY );
 		}
 
+		var highlight = function( element ) {
+			all( 'highlight', element );
+		}
+
+		var unhighlight = function( element ) {
+			all( 'unhighlight', element );
+		}
+
+		function all( fct, element ) {
+
+			for( var i = 0, l = bindingPairs.length ; i < l ; i ++ ) {
+
+				if( bindingPairs[ i ][ 0 ] == element || bindingPairs[ i ][ 1 ] == element ) {
+
+					if( bindingPairs[ i ][ 0 ].element ) {
+						bindingPairs[ i ][ 0 ].element[ fct ]();
+					} else {
+						console.log( "Manual" );
+					}
+
+					if( bindingPairs[ i ][ 1 ].element ) {
+						bindingPairs[ i ][ 1 ].element[ fct ]();
+					} else {
+						console.log( "Manual" );
+					}
+				}
+			}
+
+		}
+
+
 		function bindSave() {
 
-			console.log( bindingA, bindingB );
+			bindingPairs.push( [ bindingA, bindingB ] );
+			bindingA = null;
+			bindingB = null;
+
 		}
 
 		function setEvents() {
@@ -638,6 +702,17 @@ require( [ 'src/graph' ] , function( Graph ) {
 			nmr.on('mousedown', '.bindable', function( e ) {
 				mousedown( this, e );
 			});
+
+
+			nmr.on('mouseover', '.bindable', function( e ) {
+				highlight( this );
+			});
+
+
+			nmr.on('mouseout', '.bindable', function( e ) {
+				unhighlight( this );
+			});
+
 
 			nmr.on('mouseup', function( e ) {
 				mouseup( this, e );
@@ -665,6 +740,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		dom.appendChild( bindingLine );
 		nmr.prepend( dom );
+
 		setEvents();	
 	}
 });

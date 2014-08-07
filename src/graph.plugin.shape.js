@@ -88,7 +88,7 @@ define([], function() {
 
 
 				shape.handleCreateImpl( );
-
+console.log( shape.options );
 				if( shape.options && shape.options.onCreate ) {
 					shape.options.onCreate.call( shape );
 				}

@@ -55,7 +55,7 @@ define( [ 'require' ], function( require ) {
 
 					self.handleMouseOver( e );
 					//self.doHover( true, e );
-					e.stopPropagation();
+				//	e.stopPropagation();
 
 				});
 
@@ -64,7 +64,7 @@ define( [ 'require' ], function( require ) {
 					self.handleMouseOut( e );
 
 					//self.doHover( false, e );
-					e.stopPropagation();
+					//e.stopPropagation();
 
 				});
 
@@ -161,6 +161,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		kill: function() {
+
 			this.graph.shapeZone.removeChild(this.group);
 			this.graph.removeShape( this );
 
@@ -691,13 +692,11 @@ define( [ 'require' ], function( require ) {
 
 		},
 
-
 		addHandles: function() {
 
 			if( this.isLocked() ) {
 				return;
 			}
-			
 
 			if( ! this.handlesInDom ) {
 
@@ -706,12 +705,9 @@ define( [ 'require' ], function( require ) {
 				for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
 
 					this.group.appendChild( this[ 'handle' + i ] );
-
 				}
 			}
 		},
-
-		
 
 		handleDblClick: function() {
 
