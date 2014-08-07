@@ -81,6 +81,7 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		handleMouseUpImpl: function() {
 
+			this.triggerChange();
 			return true;
 		},
 

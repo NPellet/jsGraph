@@ -188,6 +188,7 @@ define( [ 'require' ], function( require ) {
 					this.setLabelSize(i);
 					//this.setLabelAngle(i);
 					this.setLabelColor(i);
+					this.setLabelPosition(i);
 
 				}
 
@@ -205,6 +206,7 @@ define( [ 'require' ], function( require ) {
 			this.position = this.setPosition();
 			
 			this.redrawImpl();
+
 			if(!this.position)
 				return;
 
@@ -268,7 +270,7 @@ define( [ 'require' ], function( require ) {
 		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
 		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('fill', this.get('labelColor'));				},
 		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'));		},
-		setLabelPosition: function(index) {	if(this.label) this._setLabelPosition(index);											},
+		setLabelPosition: function(index) {console.log('pos');	if(this.label) this._setLabelPosition(index);											},
 		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
 		
 		highlight: function() {
@@ -325,7 +327,8 @@ define( [ 'require' ], function( require ) {
 
 				this.label[i].addEventListener( 'mouseover', function ( e ) {
 
-					self.doHover( true );
+
+					//self.doHover( true );
 					e.stopPropagation();
 					
 				});
@@ -333,7 +336,7 @@ define( [ 'require' ], function( require ) {
 
 				this.label[i].addEventListener( 'mouseout', function ( e ) {
 
-					self.doHover( false );
+					//self.doHover( false );
 					e.stopPropagation();
 
 				});
@@ -344,25 +347,39 @@ define( [ 'require' ], function( require ) {
 					e.preventDefault();
 					e.stopPropagation();
 
-					$('<input type="text" />').attr('value', e.target.textContent).prependTo( self.graph._dom ).css( {
+					$('<input type="text" />').attr('value', e.target.textContent ).prependTo( self.graph._dom ).css( {
 
 						position: 'absolute',
 						'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
 						'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
 						textAlign: 'center',
 						width: '100px'
-					} ).on( 'blur', function() {
+
+					} ).bind( 'blur', function() {
 
 						$( this ).remove();
-						self.data.label.text = $ ( this ).attr( 'value' );
+						self.data.label[ i ].text = $ ( this ).prop( 'value' );
+						self.label[ i ].textContent = $ ( this ).prop( 'value' );
+
 						self.triggerChange();
 
-					} ).on( 'keyup', function(e) {
+					} ).bind( 'keyup', function(e) {
 
-						if ( e.keyCode == 13 )
+						e.stopPropagation();
+						e.preventDefault();
+
+						if ( e.keyCode == 13 ) {
 							$( this ).trigger( 'blur' );
+						}
 						
-					} ).focus( );
+					} ).bind('keypress', function(e) {
+					
+						e.stopPropagation();
+					}).bind('keydown', function(e) {
+					
+						e.stopPropagation();
+
+					}).focus( ).get(0).select();
 
 				});
 
@@ -370,17 +387,19 @@ define( [ 'require' ], function( require ) {
 			});
 		},
 
-		_setLabelPosition: function(labelIndex, pos) {
+		_setLabelPosition: function( labelIndex, pos ) {
 
 			var currPos = this.getFromData('pos');
 			var parsedCurrPos = this._getPosition(currPos);
+
 			if( !pos ) {
 				var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
 			}
+			
 			this.label[labelIndex].setAttribute('x', pos.x);
 			this.label[labelIndex].setAttribute('y', pos.y);
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-			this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+			//this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 
 		},
 

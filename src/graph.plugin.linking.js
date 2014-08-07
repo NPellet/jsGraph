@@ -173,7 +173,7 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 				current: {},
 				links: []
 			};
-
+/*
 			graph._dom.addEventListener('keydown', function( e ) {
 
 				e.preventDefault();
@@ -182,16 +182,16 @@ define( [ require, './graph', './graph.shape' ], function( require, Graph, Graph
 				if( ( e.keyCode == 16 && e.ctrlKey ) || ( e.keyCode == 17 && e.shiftKey )) {
 					graph.linkingReveal();
 				}
-			});
+			});*/
 
 
-			graph._dom.addEventListener( 'keyup', function( e ) {
+/*			graph._dom.addEventListener( 'keyup', function( e ) {
 
 				e.preventDefault();
 				e.stopPropagation();
 				graph.linkingHide();
 			});
-
+*/
 			graph.shapeHandlers.mouseDown.push( function( e ) {
 			
 				if( self.graph.allowPlugin( e, self.plugin ) ) {

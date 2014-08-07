@@ -225,11 +225,9 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 		},
 
 		setLabelPosition: function(labelIndex) {
-			var pos1 = this._getPosition(this.getFromData('pos')),
-				pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
 
 
-			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));			
+			this._setLabelPosition( labelIndex, { x: (this.firstX + this.lastX) / 2 + "px", y: (this.lastPointY + this.firstPointY) / 2 + "px" });			
 		},
 
 		getFieldsConfig: function() {

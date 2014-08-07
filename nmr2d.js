@@ -13,12 +13,13 @@ requirejs.config({
 require( [ 'src/graph' ] , function( Graph ) {
 
 	var graph_y, graph_y, graph_2d;
+	var nmr;
 
 	setTools();
 
 	$.getJSON('./spectra.json', function ( data ) {
 
-		var nmr = $( "#nmr" );
+		nmr = $( "#nmr" );
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
 
 
@@ -76,6 +77,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 		var integrals_x = [];
+		var integralXBasis = undefined;
+
 		function integral_x_resizemove( ) {
 
 			var sumMax = 0;
@@ -86,6 +89,15 @@ require( [ 'src/graph' ] , function( Graph ) {
 			for( var i = 0, l = integrals_x.length; i < l ; i ++ ) {
 				integrals_x[ i ].ratio = integrals_x[ i ].lastSum / sumMax;
 				integrals_x[ i ].setPosition();
+
+				if( integralXBasis ) {
+					integrals_x[ i ].data.label[ 0 ].text = Math.round( integrals_x[ i ].lastSum / integralXBasis * 100 ) / 100;	
+				} else {
+					integrals_x[ i ].data.label[ 0 ].text = 1;	
+				}
+				
+				integrals_x[ i ].setLabelPosition( 0 );
+				integrals_x[ i ].setLabelText( 0 );
 			}
 		}
 
@@ -113,6 +125,30 @@ require( [ 'src/graph' ] , function( Graph ) {
 			paddingTop: 0,
 			paddingLeft: 0,
 			paddingRight: 0,
+
+			onAnnotationChange: function( data, shape ) {
+				if( data.type == "peakinterval2" ) {
+
+					if( ! integralXBasis ) {
+						integralXBasis = shape.integral.lastSum;
+					}
+
+				} else if( data.type == "nmrintegral" ) {
+
+					if( integralXBasis ) {
+
+						var fl = parseFloat( shape.data.label[ 0 ].text );
+						
+						if( fl != 0 ) {
+							integralXBasis = shape.lastSum / fl;
+						}
+
+					}
+					
+				}
+
+				integral_x_resizemove();
+			},
 
 			plugins: {
 				'./graph.plugin.zoom': { 
@@ -153,8 +189,25 @@ require( [ 'src/graph' ] , function( Graph ) {
 					onCreate: function() {
 
 						var self = this;
-						graph_x.makeShape( { type: 'nmrintegral', fillColor: 'transparent', strokeColor: 'rgba(100, 0, 0, 0.5)', strokeWidth: '1px' }, {} ).then( function( nmrint ) {
+						graph_x.makeShape( { 
 
+							type: 'nmrintegral', 
+							fillColor: 'transparent', 
+							strokeColor: 'rgba(100, 0, 0, 0.5)', 
+							strokeWidth: '1px',
+							label: {
+								position: { x: "100px", y: "20px"},
+								text: 1,
+								color: 'red',
+								anchor: 'middle'
+							},
+
+
+
+
+						 }, {} ).then( function( nmrint ) {
+
+						 	
 							self.integral = nmrint;
 							integrals_x.push( self.integral );
 							nmrint.draw();
@@ -429,7 +482,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 		$( "#tools" ).html( ul ).on('click', 'li', function( ) {
 
 			var data = $( this ).data('tool');
-	console.log( data );
+	
 			switch( data ) {
 
 				case 'peakpicking':
@@ -439,13 +492,77 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 				case 'assign':
-					graph_y.forcePlugin("./graph.plugin.linking");
-					graph_x.forcePlugin("./graph.plugin.linking");
+					startAssign();
 				break;
 
 
 			}
 
+		} );
+
+	//	startMolecule();
+
+
+	}
+
+
+	function startAssign() {
+
+		var ns = 'http://www.w3.org/2000/svg';
+
+		var dom = document.createElementNS( ns, 'svg' );
+		dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	
+		dom.setAttribute('xmlns', ns );
+	
+		dom.setAttribute('style', 'position: absolute');
+		dom.setAttribute('width', nmr.width( ) )
+		dom.setAttribute('height', nmr.height( ) )
+		dom.setAttribute('pointer-events', 'none');
+
+
+		var line = document.createElementNS( ns, 'line' );
+		line.setAttribute('x1', '100');
+		line.setAttribute('x2', '600');
+		line.setAttribute('y1', '300');
+		line.setAttribute('y2', '600');
+		line.setAttribute('stroke', 'black');
+		line.setAttribute('stroke-width', '1px');
+
+		
+
+		nmr.prepend( dom );
+
+		dom.appendChild( line );
+		
+	}
+
+
+	function startMolecule() {
+
+
+		require( [ './lib/lib/molecule/src/molecule' ], function( Molecule ) {
+
+
+			var dom = document.createElement("div");
+
+			// Create a new molecule
+			var molecule = new Molecule( {    maxBondLengthAverage: 40 } );
+
+			// Adds the molecule somewhere in the DOM
+			dom.appendChild( molecule.getDom() );
+
+			// Set the size of the canvas
+			molecule.resize( 300, 200 );
+
+			// Fetches the JSON and uses it as the source data
+			molecule.setDataFromJSONFile( './lib/lib/molecule/moleculeA.json' ).then( function() {
+
+				molecule.render();
+
+			});
+
+			$("#nmr").prepend( dom );
 		} );
 
 

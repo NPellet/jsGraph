@@ -175,8 +175,15 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 			
 			for( var i = 0, l = points.length ; i < l ; i ++ ) {
 
+
 				points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
+
+				if( i == 0 ) {
+					this.firstPointY = points[ i ][ 1 ];
+				}
 				currentLine += " L " + points[ i ][ incrXFlip ] + ", " + points[ i ][ incrYFlip ] + " ";
+
+				this.lastPointY = points[ i ][ 1 ];
 			}
 
 			this.points = points;
