@@ -15,8 +15,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 	var graph_x, graph_y, graph_2d;
 	var nmr;
 
-	setTools();
-
 	$.getJSON('./spectra.json', function ( data ) {
 
 		nmr = $( "#nmr" );
@@ -460,7 +458,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 			console.log( data.cosy );
-			
+
 		serie_2d.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 		serie_2d.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
 
@@ -488,62 +486,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 		startAttribution();
 
 	});
-
-
-		
-	function setTools() {
-
-		var ul = $("<ul />");
-		var toolbox = [
-			{
-				id: 'peakpicking',
-				label: 'Peak picking',
-				icon: ''
-			},
-
-			{
-				id: 'assign',
-				label: 'Manual assignment',
-				icon: ''
-			}
-		];
-
-		for( var i = 0, l = toolbox.length; i < l ; i ++ ) {
-			ul.append('<li data-tool="' + toolbox[ i ].id + '">' + toolbox[ i ].label + '</li>');
-		}
-
-		$( "#tools" ).html( ul ).on('click', 'li', function( ) {
-
-			var data = $( this ).data('tool');
-	
-			switch( data ) {
-
-				case 'peakpicking':
-					graph_y.forcePlugin("./graph.plugin.shape");
-					graph_x.forcePlugin("./graph.plugin.shape");
-				break;
-
-
-				case 'assign':
-					startAssign();
-				break;
-
-
-			}
-
-		} );
-
-		startMolecule();
-
-
-	}
-
-
-	function startAssign() {
-
-	
-		
-	}
 
 
 	function startMolecule() {
