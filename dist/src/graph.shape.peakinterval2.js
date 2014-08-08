@@ -1,3 +1,4 @@
+/*Copyright by Norman Pellet @2013*/
 
 define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 

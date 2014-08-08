@@ -10,7 +10,7 @@ requirejs.config({
 	}
 });
 
-require( [ 'src/graph' ] , function( Graph ) {
+require( [ 'src/graph', 'nmr/assignation' ] , function( Graph, Attribution ) {
 
 	"use strict";
 
@@ -550,11 +550,10 @@ require( [ 'src/graph' ] , function( Graph ) {
 		/** INIT ASSIGN *****************************/
 		/********************************************/
 
-		startAttribution();
+		Attribution( nmr, graphs );
 		loadMolecule( './lib/lib/molecule/moleculeA.json' );
 
 	});
-
 
 
 	
@@ -584,176 +583,5 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 			$("#nmr").prepend( dom );
 		} );
-
-
-	}
-
-	function startAttribution() {
-
-		var binding = false,
-			bindingA = false,
-			bindingB = false,
-			bindingLine,
-			bindingPairs = [],
-
-			mousedown = function( el, event ) {
-
-
-				if( event.shiftKey ) {
-
-					graphs['x'].lockShapes();
-				
-					binding = true;
-					bindingA = el;
-					event.preventDefault();
-					event.stopPropagation();
-				}
-
-				var pos = $( el ).position();
-		
-				var w = parseFloat( el.getAttribute('width') || 0 );
-				var h = parseFloat( el.getAttribute('height') || 0 );
-
-				var x2 = parseFloat( el.getAttribute('x2') || 0 );
-				var y2 = parseFloat( el.getAttribute('y2') || 0 );
-
-				var x1 = parseFloat( el.getAttribute('x1') || 0 );
-				var y1 = parseFloat( el.getAttribute('y1') || 0 );
-
-				bindingLine.setAttribute('display', 'block');
-
-				var x = pos.left + ( w / 2 ) + ( Math.abs( x2 - x1 ) / 2 );
-				var y = pos.top  + ( h / 2 ) + ( Math.abs( y2 - y1 ) / 2 );
-
-				bindingLine.setAttribute('x1', x );
-				bindingLine.setAttribute('y1', y );
-
-				bindingLine.setAttribute('x2', x );
-				bindingLine.setAttribute('y2', y );
-			},
-
-			mouseup = function( el, event ) {
-
-				if( ! binding ) {
-					return;
-				}
-
-				self.handleSelected = false;
-				self.moving = true;
-
-				bindingLine.setAttribute('display', 'none');
-
-				var target = event.target;
-
-				if( ! target.classList.contains( 'bindable' ) ) {
-
-					binding = false;
-
-				} else {
-
-					bindingB = event.target;
-					binding = false;
-					bindSave();
-				}
-
-
-				graphs['x'].unlockShapes();
-				
-			},
-
-			mousemove = function( e ) {
-
-				if( ! binding ) {
-					return;
-				}
-
-				bindingLine.setAttribute('x2', e.clientX );
-				bindingLine.setAttribute('y2', e.clientY );
-			},
-
-			highlight = function( element ) {
-				all( 'highlight', element );
-			},
-
-			unhighlight = function( element ) {
-				all( 'unhighlight', element );
-			},
-
-			all = function( fct, element ) {
-
-				for( var i = 0, l = bindingPairs.length ; i < l ; i ++ ) {
-
-					if( bindingPairs[ i ][ 0 ] == element || bindingPairs[ i ][ 1 ] == element ) {
-
-						if( bindingPairs[ i ][ 0 ].element ) {
-							bindingPairs[ i ][ 0 ].element[ fct ]();
-						} else {
-							console.log( "Manual" );
-						}
-
-						if( bindingPairs[ i ][ 1 ].element ) {
-							bindingPairs[ i ][ 1 ].element[ fct ]();
-						} else {
-							console.log( "Manual" );
-						}
-					}
-				}
-			},
-
-			bindSave = function() {
-
-				bindingPairs.push( [ bindingA, bindingB ] );
-				bindingA = null;
-				bindingB = null;
-
-			},
-
-			setEvents = function() {
-
-			
-				nmr.on('mousedown', '.bindable', function( e ) {
-					mousedown( this, e );
-				});
-
-
-				nmr.on('mouseover', '.bindable', function( e ) {
-					highlight( this );
-				});
-
-
-				nmr.on('mouseout', '.bindable', function( e ) {
-					unhighlight( this );
-				});
-
-
-				nmr.on('mouseup', function( e ) {
-					mouseup( this, e );
-				});
-
-				nmr.on('mousemove', function( e ) {
-					mousemove( e );
-				})
-			},
-
-			ns = 'http://www.w3.org/2000/svg',
-			dom = document.createElementNS( ns, 'svg' );
-
-
-		dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-	
-		dom.setAttribute('xmlns', ns );
-	
-		dom.setAttribute('style', 'position: absolute');
-		dom.setAttribute('width', nmr.width( ) )
-		dom.setAttribute('height', nmr.height( ) )
-		dom.setAttribute('pointer-events', 'none');
-
-		bindingLine = document.createElementNS( ns, 'line');
-		bindingLine.setAttribute('stroke', 'black');
-
-		dom.appendChild( bindingLine );
-		nmr.prepend( dom );
-
-		setEvents();	
 	}
 });
