@@ -398,14 +398,25 @@ define( [ 'require' ], function( require ) {
 		_setLabelPosition: function( labelIndex, pos ) {
 
 			var currPos = this.getFromData('pos');
-			var parsedCurrPos = this._getPosition(currPos);
 
-			if( !pos ) {
-				var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+			if( ! currPos ) {
+				pos = { x: -1000, y: -1000 };
+			} else {
+
+				var parsedCurrPos = this._getPosition(currPos);
+
+				if( !pos ) {
+					var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+				}
 			}
-			
+
+			/*if( pos.x || isNaN( pos.y ) ) {
+				pos.x = -10000;
+				pos.y = -10000;
+			}*/
+
 			this.label[labelIndex].setAttribute('x', pos.x);
-			this.label[labelIndex].setAttribute('y', pos.y);
+			this.label[labelIndex].setAttribute('y', pos.y);	
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 			//this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 

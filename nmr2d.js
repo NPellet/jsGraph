@@ -29,7 +29,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 			paddingLeft: 0,
 			paddingRight: 0,
 
-
 			plugins: {
 				'./graph.plugin.zoom': { 
 					zoomMode: 'xy',
@@ -66,7 +65,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 				}
 			},
 
-
 			dblclick: {
 				type: 'plugin',
 				plugin: './graph.plugin.zoom',
@@ -78,8 +76,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			pluginAction: {
 				'./graph.plugin.zoom': { shift: false, ctrl: false },
 				'./graph.plugin.shape': { shift: true, ctrl: false }
-			},
-
+			}
 
 		} );
 
@@ -88,8 +85,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 			var pos1 = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
-			
-			console.log( graph_2d.getSeries() );
 			
 		} );
 
@@ -237,6 +232,34 @@ require( [ 'src/graph' ] , function( Graph ) {
 							 	
 								self.integral = nmrint;
 								integrals_x.push( self.integral );
+								nmrint.draw();
+								self.integral.data.pos = self.getFromData( 'pos' );
+								self.integral.data.pos2 = self.getFromData( 'pos2' );
+
+							} );
+
+
+							 graph_y.makeShape( { 
+
+								type: 'nmrintegral', 
+								fillColor: 'transparent', 
+								strokeColor: 'rgba(100, 0, 0, 0.5)', 
+								strokeWidth: '1px',
+								label: {
+									position: { x: "100px", y: "20px"},
+									text: 1,
+									color: 'red',
+									anchor: 'middle'
+								},
+
+								shapeOptions: {
+									locked: true
+								}
+
+							 }, {} ).then( function( nmrint ) {
+
+								self.integral = nmrint;
+								integrals_y.push( self.integral );
 								nmrint.draw();
 								self.integral.data.pos = self.getFromData( 'pos' );
 								self.integral.data.pos2 = self.getFromData( 'pos2' );
@@ -484,6 +507,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 		graph_x.drawSeries();	
 
 		startAttribution();
+		startMolecule();
 
 	});
 
