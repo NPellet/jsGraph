@@ -6,12 +6,13 @@ requirejs.config({
 		'jqueryui': './lib/components/jquery-ui/ui/minified/jquery-ui.min',
 		'highlightjs': './lib/lib/highlight/highlight.pack',
 		'forms': './lib/lib/forms/form',
-		'components': './lib/components'
+		'components': './lib/components',
+		'graph': './dist/final/graph'
 	}
 });
 
-require( [ 'src/graph', 'nmr/assignation' ] , function( Graph, Attribution ) {
-
+require( [ 'graph', 'nmr/assignation' ] , function( Graph, Attribution ) {
+console.log(Graph);
 	"use strict";
 
 	var graphs = { x: null, y: null, _2d: null };

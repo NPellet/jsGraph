@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [ 'require', './graph.axis' ], function( require, GraphAxis ) {
+define( [ 'require', 'jquery', './graph.axis' ], function( require, $, GraphAxis ) {
 
 	"use strict";
 	

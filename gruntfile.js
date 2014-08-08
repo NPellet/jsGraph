@@ -2,6 +2,11 @@
 
 module.exports = function(grunt) {
 
+    var allFiles;
+    allFiles = grunt.file.expand( { filter: 'isFile', cwd: './src/' }, ["*.js" ] ).map( function( val ) { if( val == 'graph.js') return; return val.replace('.js', '');  })
+    grunt.log.writeln( allFiles );
+
+
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
@@ -23,13 +28,13 @@ module.exports = function(grunt) {
 
 
         requirejs: {
-            compile: {
+            min: {
                 options: {
-
-                    name: "graph", // assumes a production build using almond
-                    exclude: [ 'jquery' ],
-                    out: "dist/dist/graph-minimal.min.js",
-
+                    appDir: "./src/",
+                    baseUrl: "./",
+                    dir: "./dist/minimal",
+                    removeCombined: true,
+                    optimize: "uglify2",
                     paths: {
                         'jquery': 'empty:',
                         'jqueryui': 'empty:',
@@ -37,12 +42,35 @@ module.exports = function(grunt) {
                         'forms': 'empty:',
                         'components': 'empty:'
                     },
+                    modules: [ 
+                        {
+                            name: "graph"
+                        }
+                    ]
+                }
+            },
 
-                    baseUrl: "./src/",
-                    //mainConfigFile: "path/to/config.js",
+            max: {
 
-
-
+                options: {
+                    appDir: "./src/",
+                    baseUrl: "./",
+                    dir: "./dist/maximal",
+                    removeCombined: true,
+                    optimize: "uglify2",
+                    paths: {
+                        'jquery': 'empty:',
+                        'jqueryui': 'empty:',
+                        'highlightjs': 'empty:',
+                        'forms': 'empty:',
+                        'components': 'empty:'
+                    },
+                    modules: [ 
+                        {
+                            name: "graph",
+                            include: allFiles,
+                        }
+                    ]
                 }
             }
         },
@@ -67,6 +95,10 @@ module.exports = function(grunt) {
 
             build: {
                 src: './dist/**'
+            },
+
+            dist: {
+                src: './dist/**/build.txt'
             }
         },
 
@@ -78,16 +110,31 @@ module.exports = function(grunt) {
                 push: false
             }
     
-        }
+        },
+
+        sloc: {
+           'graphs': {
+                files: {
+                    './src/': [ '**.js' ],
+                   
+                }
+            }
+        },
+
+
     });
 
+
+
+
     grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-bump');
 
-    grunt.registerTask('default', ['clean:build', 'sass', 'requirejs', 'copy:sourcefiles', 'addcopyright']);
+    grunt.registerTask('default', ['sloc:graphs', 'clean:build', 'sass', 'requirejs', 'clean:dist', 'copy:sourcefiles', 'addcopyright']);
 
 
     grunt.registerTask('addcopyright', function () {

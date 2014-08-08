@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [] , function() {
+define( [ 'jquery' ] , function( $ ) {
 
 	var GraphAxis = function() {
 
