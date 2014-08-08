@@ -99,7 +99,7 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 				v2 = v3;
 			}
 
-			var firstX, firstY, lastX, lastY, sum = 0, diff;
+			var firstX, firstY, lastX, lastY, firstXVal, firstYVal, lastXVal, lastYVal, sum = 0, diff;
 			var ratio = this.scaling;
 			var points = [];
 
@@ -130,17 +130,24 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 					if( ! firstX ) {
 						firstX = x;
 						firstY = y;
+						firstXVal = this.serie.data[ i ][ j + incrXFlip ];
+						firstYVal = this.serie.data[ i ][ j + incrYFlip ];
 					}
 					
 
 					if( lastX == undefined ) {
 						lastX = x;
 						lastY = y;
+
+						lastXVal = this.serie.data[ i ][ j + incrXFlip ];
+						lastYVal = this.serie.data[ i ][ j + incrYFlip ];
+
 						continue;
 					}
 
 
-					sum += Math.abs( ( x - lastX ) * ( y - lastY ) * 0.5 );
+					sum += Math.abs( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] - firstYVal ) * 0.5 );
+					
 
 					if( x == lastX && y == lastY ) {
 						continue;	

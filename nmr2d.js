@@ -141,7 +141,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 			pos2t.x = pos2.y;
 			pos2t.y = pos2.x;
 
-			console.log( pos1, pos2, pos1t, pos2t );
 		} 
 
 		function integralCreated( mode, integral ) {
