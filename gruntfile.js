@@ -139,8 +139,25 @@ module.exports = function(grunt) {
 
     grunt.registerTask('addcopyright', function () {
 
-        var fileRead, firstLine, counter = 0, fileExtension, commentWrapper;
-        copyright = '/*Copyright by Norman Pellet @2013*/';
+        var fileRead;
+
+        function addCopyright( cwd ) {
+
+            grunt.file.expand( { filter: 'isFile', cwd: cwd }, ["**/*.js" ] ).forEach( function( dir ) {
+
+                fileRead = grunt.file.read( cwd + dir ).split( '\n' );
+
+                fileRead.unshift('*/');
+                for( var l = copyright.length, i = l - 1 ; i >= 0 ; i -- ) {
+                    fileRead.unshift( ( i == 0 ? '/* ' : '* ' ) + copyright[ i ] );
+                }
+
+                
+                fileRead = fileRead.join('\n');
+                grunt.file.write( cwd + dir, fileRead );
+            
+            });
+        }
 
         grunt.config('pkg.version');
         copyright = [ 
@@ -170,20 +187,9 @@ module.exports = function(grunt) {
                 'Date: ' + grunt.template.date( Date.now(), 'dd-mm-yyyy')
             ];
 
+        addCopyright( 'dist/src/' );
+        addCopyright( 'dist/maximal/' );
+        addCopyright( 'dist/minimal/' );
 
-        grunt.file.expand( { filter: 'isFile', cwd: 'dist/src/' }, ["**/*.js" ] ).forEach( function( dir ) {
-
-            fileRead = grunt.file.read( 'dist/src/' + dir ).split( '\n' );
-
-            fileRead.unshift('*/');
-            for( var l = copyright.length, i = l - 1 ; i >= 0 ; i -- ) {
-                fileRead.unshift( ( i == 0 ? '/* ' : '* ' ) + copyright[ i ] );
-            }
-
-            
-            fileRead = fileRead.join('\n');
-            grunt.file.write( 'dist/src/' + dir, fileRead );
-        
-        });
     })
 };

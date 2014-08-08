@@ -11,31 +11,23 @@ requirejs.config({
 
 require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 
-
 	var t = 0;
 
-
 	var funcX = function( t ) {
-
 		return 6 * Math.sin( t * 1 ) - 1* Math.sin( t * 6);
 	}
-
 
 	var funcY = function( t ) {
 		return 6 * Math.cos( t * 1 ) - 1*Math.cos( t * 6 ) ;
 	}
 
-
 	var funcX2 = function( t ) {
-
 		return  Math.sin( t ) * 5;
 	}
-
 
 	var funcY2 = function( t ) {
 		return Math.cos( t ) * 5;
 	}
-
 
 	var data1 = [];
 	for( var t = 0; t < 4 * Math.PI; t += 0.01 ) {
@@ -49,7 +41,6 @@ require( [ 'src/graph', 'highlightjs' ] , function( Graph ) {
 		data2.push( funcX2( t ) );
 		data2.push( funcY2( t ) );
 	}
-
 
 
 	var functions = [
