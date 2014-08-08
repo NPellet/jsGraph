@@ -14,90 +14,19 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	"use strict";
 
-	var graphs = { x: null, y: null };
-	var graph_2d;
-	var nmr;
-
+	var graphs = { x: null, y: null, _2d: null };
+	var nmr = $( "#nmr" );
 	var symmetric = true;
+
+	var integralBasis = undefined;
+	var integrals = { x: [], y: [] };
+
 
 	$.getJSON('./spectra.json', function ( data ) {
 
-		nmr = $( "#nmr" );
+		// Create DOM
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
 
-		graph_2d = new Graph( nmr.find('.nmr-2d').get(0), {
-
-			close: { left: false, top: false, right: false },
-
-			paddingBottom: 0,
-			paddingTop: 0,
-			paddingLeft: 0,
-			paddingRight: 0,
-
-			plugins: {
-				'./graph.plugin.zoom': { 
-					zoomMode: 'xy',
-					onZoomStart: function( graph, x, y, e, target ) {
-						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['x'], x, y, e, true ] );
-						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['y'], x, y, e, true ] );
-					},
-
-					onZoomMove: function( graph, x, y, e, target ) {
-						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['x'], x, y, e, true ] );
-						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['y'], x, y, e, true ] );
-					},
-
-					onZoomEnd: function( graph, x, y, e, target ) {
-						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['x'], x, y, e, true ] );
-						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['y'], x, y, e, true ] );
-					},
-
-					onDblClick: function( x, y, prefs, e ) {
-						
-						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['y'], x, y, { mode: 'total' }, e, true ] );
-						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['x'], x, y, { mode: 'total' }, e, true ] );
-					}
-				},
-
-				'./graph.plugin.shape': {
-					type: 'peakintegration2d',
-					shapeOptions: { 
-						bindable: false
-					}
-					
-				},
-			},
-
-			dblclick: {
-				type: 'plugin',
-				plugin: './graph.plugin.zoom',
-				options: {
-					mode: 'total'
-				}
-			},
-
-			pluginAction: {
-				'./graph.plugin.zoom': { shift: false, ctrl: false },
-				'./graph.plugin.shape': { shift: true, ctrl: false }
-			}
-
-		} );
-
-/*
-		graph_2d.shapeHandlers.mouseUp.push( function() {
-
-			var pos1 = this.getFromData('pos');
-			var pos2 = this.getFromData('pos2');
-			
-		} );
-*/
-
-
-		var integrals_x = [];
-		var integralBasis = undefined;
-
-
-		var integrals = { x: [], y: [] };
 		function integral_resizemove( mode, noLoop ) {
 
 			var sumMax = 0;
@@ -335,6 +264,79 @@ require( [ 'src/graph' ] , function( Graph ) {
 		
 
 
+
+
+		/********************************************/
+		/** LOAD GRAPHS *****************************/
+		/********************************************/
+
+
+		/** LOAD 2D *********************************/
+		
+		graphs[ '_2d' ] = new Graph( nmr.find('.nmr-2d').get(0), {
+
+			close: { left: false, top: false, right: false },
+
+			paddingBottom: 0,
+			paddingTop: 0,
+			paddingLeft: 0,
+			paddingRight: 0,
+
+			plugins: {
+
+				'./graph.plugin.zoom': { 
+
+					zoomMode: 'xy',
+					onZoomStart: function( graph, x, y, e, target ) {
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['y'], x, y, e, true ] );
+					},
+
+					onZoomMove: function( graph, x, y, e, target ) {
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['y'], x, y, e, true ] );
+					},
+
+					onZoomEnd: function( graph, x, y, e, target ) {
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['y'], x, y, e, true ] );
+					},
+
+					onDblClick: function( x, y, prefs, e ) {
+						
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['y'], x, y, { mode: 'total' }, e, true ] );
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['x'], x, y, { mode: 'total' }, e, true ] );
+					}
+				},
+
+				'./graph.plugin.shape': {
+					type: 'peakintegration2d',
+					shapeOptions: { 
+						bindable: false
+					}
+					
+				},
+			},
+
+			dblclick: {
+				type: 'plugin',
+				plugin: './graph.plugin.zoom',
+				options: {
+					mode: 'total'
+				}
+			},
+
+			pluginAction: {
+				'./graph.plugin.zoom': { shift: false, ctrl: false },
+				'./graph.plugin.shape': { shift: true, ctrl: false }
+			}
+
+		} );
+
+
+
+		/** LOAD X **********************************/	
+
 		graphs['x'] = new Graph( nmr.find('.nmr-1d-x').get(0), {
 
 			close: { left: false, top: false, right: false },
@@ -374,25 +376,25 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 					onZoomStart: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_2d, x, undefined, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs[ '_2d' ], x, undefined, e, true ] );
 
 					},
 
 					onZoomMove: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_2d, x, undefined, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs[ '_2d' ], x, undefined, e, true ] );
 
 					},
 
 					onZoomEnd: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_2d, x, undefined, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs[ '_2d' ], x, undefined, e, true ] );
 
 					},
 
 					onDblClick: function( x, y, prefs, e ) {
 						
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_2d, x, y, { mode: 'xtotal' }, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs[ '_2d' ], x, y, { mode: 'xtotal' }, e, true ] );
 						
 					}
 
@@ -417,6 +419,9 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
+
+		/** LOAD Y **********************************/
+		
 		graphs['y'] = new Graph( nmr.find('.nmr-1d-y').get(0), { 
 
 			close: { left: false, top: false, right: false },
@@ -426,25 +431,25 @@ require( [ 'src/graph' ] , function( Graph ) {
 					zoomMode: 'y',
 					onZoomStart: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [  graph_2d, undefined , y, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [  graphs[ '_2d' ], undefined , y, e, true ] );
 
 					},
 
 					onZoomMove: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_2d, undefined , y, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs[ '_2d' ], undefined , y, e, true ] );
 
 					},
 
 					onZoomEnd: function( graph, x, y, e, target ) {
 
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_2d, undefined, y, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs[ '_2d' ], undefined, y, e, true ] );
 
 					},
 
 					onDblClick: function( x, y, prefs, e ) {
 						
-						graph_2d._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_2d, x, y, { mode: 'ytotal' }, e, true ] );
+						graphs[ '_2d' ]._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs[ '_2d' ], x, y, { mode: 'ytotal' }, e, true ] );
 						
 					}
 				},
@@ -486,11 +491,9 @@ require( [ 'src/graph' ] , function( Graph ) {
 		} );
 		
 
-	/*
-		graphs['x'].getYAxis().setDisplay( false );
-		graph_2d.getYAxis().setDisplay( false );
-	*/
-
+		/********************************************/
+		/** LOAD SERIES *****************************/
+		/********************************************/
 
 		var serie_x = graphs['x'].newSerie("seriex" )
 			.setLabel( "My serie" )
@@ -499,9 +502,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 		serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
-
-
-
 
 		var serie_y = graphs['y'].newSerie("seriey", { flip: true } )
 			.setLabel( "My serie" )
@@ -513,13 +513,10 @@ require( [ 'src/graph' ] , function( Graph ) {
 		serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
 
-		var serie_2d = graph_2d.newSerie("serie2d", { }, 'contour' )
+		var serie_2d = graphs[ '_2d' ].newSerie("serie2d", { }, 'contour' )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data.cosy.contourLines )
-
-
-			console.log( data.cosy );
 
 		serie_2d.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 		serie_2d.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
@@ -533,17 +530,25 @@ require( [ 'src/graph' ] , function( Graph ) {
 		serie_2d.getYAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
 
 
+		/********************************************/
+		/** DRAW ALL ********************************/
+		/********************************************/
 
 		graphs['y'].redraw( );
 		graphs['y'].drawSeries();	
 
-		graph_2d.redraw( );
-		graph_2d.drawSeries();		
-
-
 		graphs['x'].redraw( );	
-		
 		graphs['x'].drawSeries();	
+
+		graphs[ '_2d' ].redraw( );
+		graphs[ '_2d' ].drawSeries();		
+
+
+
+		/********************************************/
+		/** DRAW MOLECULE ***************************/
+		/** INIT ASSIGN *****************************/
+		/********************************************/
 
 		startAttribution();
 		loadMolecule( './lib/lib/molecule/moleculeA.json' );
@@ -551,6 +556,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 	});
 
 
+
+	
 	function loadMolecule( molUrl ) {
 
 
