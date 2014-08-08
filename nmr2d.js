@@ -546,12 +546,12 @@ require( [ 'src/graph' ] , function( Graph ) {
 		graphs['x'].drawSeries();	
 
 		startAttribution();
-		startMolecule();
+		loadMolecule( './lib/lib/molecule/moleculeA.json' );
 
 	});
 
 
-	function startMolecule() {
+	function loadMolecule( molUrl ) {
 
 
 		require( [ './lib/lib/molecule/src/molecule' ], function( Molecule ) {
@@ -569,7 +569,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			molecule.resize( 300, 200 );
 
 			// Fetches the JSON and uses it as the source data
-			molecule.setDataFromJSONFile( './lib/lib/molecule/moleculeA.json' ).then( function() {
+			molecule.setDataFromJSONFile( molUrl ).then( function() {
 
 				molecule.render();
 
