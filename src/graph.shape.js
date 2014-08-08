@@ -255,6 +255,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		get: function(prop, index) {
+			this.configuration = this.configuration || { sections: { shape_cfg: [ { groups: { shape_cfg: [ {} ] }} ]}};
 			return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [])[ 0 ];
 		},
 

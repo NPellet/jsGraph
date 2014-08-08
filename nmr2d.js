@@ -14,7 +14,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 	"use strict";
 
-	var graph = { x: null, y: null };
+	var graphs = { x: null, y: null };
 	var graph_2d;
 	var nmr;
 
@@ -38,24 +38,24 @@ require( [ 'src/graph' ] , function( Graph ) {
 				'./graph.plugin.zoom': { 
 					zoomMode: 'xy',
 					onZoomStart: function( graph, x, y, e, target ) {
-						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph['x'], x, y, e, true ] );
-						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph['y'], x, y, e, true ] );
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graphs['y'], x, y, e, true ] );
 					},
 
 					onZoomMove: function( graph, x, y, e, target ) {
-						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph['x'], x, y, e, true ] );
-						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph['y'], x, y, e, true ] );
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graphs['y'], x, y, e, true ] );
 					},
 
 					onZoomEnd: function( graph, x, y, e, target ) {
-						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph['x'], x, y, e, true ] );
-						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph['y'], x, y, e, true ] );
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['x'], x, y, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graphs['y'], x, y, e, true ] );
 					},
 
 					onDblClick: function( x, y, prefs, e ) {
 						
-						graph['y']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph['y'], x, y, { mode: 'total' }, e, true ] );
-						graph['x']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph['x'], x, y, { mode: 'total' }, e, true ] );
+						graphs['y']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['y'], x, y, { mode: 'total' }, e, true ] );
+						graphs['x']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graphs['x'], x, y, { mode: 'total' }, e, true ] );
 					}
 				},
 
@@ -321,12 +321,12 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		function makePeakPosition( mode ) {
 
-			return graph[ mode ].makeShape( $.extend( true, {}, peakIntervalOptions[ mode ] ), {} );
+			return graphs[ mode ].makeShape( $.extend( true, {}, peakIntervalOptions[ mode ] ), {} );
 		}
 
 		function makeNMRIntegral( mode, integral ) {
 
-			return graph[ mode ].makeShape( $.extend( true, {}, nmrIntegralOptions[ mode ] ), {} ).then( function( nmrint ) {
+			return graphs[ mode ].makeShape( $.extend( true, {}, nmrIntegralOptions[ mode ] ), {} ).then( function( nmrint ) {
 
 				integrals[ mode ].push( nmrint );
 				nmrint.draw();
@@ -336,7 +336,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 		
 
 
-		graph['x'] = new Graph( nmr.find('.nmr-1d-x').get(0), {
+		graphs['x'] = new Graph( nmr.find('.nmr-1d-x').get(0), {
 
 			close: { left: false, top: false, right: false },
 			paddingBottom: 0,
@@ -418,7 +418,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
-		graph['y'] = new Graph( nmr.find('.nmr-1d-y').get(0), { 
+		graphs['y'] = new Graph( nmr.find('.nmr-1d-y').get(0), { 
 
 			close: { left: false, top: false, right: false },
 
@@ -488,12 +488,12 @@ require( [ 'src/graph' ] , function( Graph ) {
 		
 
 	/*
-		graph['x'].getYAxis().setDisplay( false );
+		graphs['x'].getYAxis().setDisplay( false );
 		graph_2d.getYAxis().setDisplay( false );
 	*/
 
 
-		var serie_x = graph['x'].newSerie("seriex" )
+		var serie_x = graphs['x'].newSerie("seriex" )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
@@ -504,10 +504,10 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 
-		var serie_y = graph['y'].newSerie("seriey", { flip: true } )
+		var serie_y = graphs['y'].newSerie("seriey", { flip: true } )
 			.setLabel( "My serie" )
-			.setXAxis( graph['y'].getBottomAxis( ) )
-			.setYAxis( graph['y'].getRightAxis( ) )
+			.setXAxis( graphs['y'].getBottomAxis( ) )
+			.setYAxis( graphs['y'].getRightAxis( ) )
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
 
 		serie_y.getYAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).flip( true ).setTickPosition( 'outside' );
@@ -535,16 +535,16 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 
-		graph['y'].redraw( );
-		graph['y'].drawSeries();	
+		graphs['y'].redraw( );
+		graphs['y'].drawSeries();	
 
 		graph_2d.redraw( );
 		graph_2d.drawSeries();		
 
 
-		graph['x'].redraw( );	
+		graphs['x'].redraw( );	
 		
-		graph['x'].drawSeries();	
+		graphs['x'].drawSeries();	
 
 		startAttribution();
 		startMolecule();
@@ -595,7 +595,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 			if( event.shiftKey ) {
 
-				graph['x'].lockShapes();
+				graphs['x'].lockShapes();
 			
 				binding = true;
 				bindingA = el;
@@ -651,7 +651,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			}
 
 
-			graph['x'].unlockShapes();
+			graphs['x'].unlockShapes();
 			
 		}
 
