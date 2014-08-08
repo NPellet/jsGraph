@@ -114,7 +114,7 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 				max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
 				k = 0;
 				
-				
+			
 
 				for(j = init; j <= max; j+=2) {
 
@@ -153,7 +153,7 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 					points.push([ x, sum ]);
 					k++;
 				}
-console.log( this.serie.isFlipped(), lastX );
+
 				this.lastX = x;
 				this.lastY = y;
 				
