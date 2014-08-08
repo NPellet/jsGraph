@@ -717,8 +717,9 @@ define( [ 'require' ], function( require ) {
 				this.handlesInDom = true;
 
 				for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
-
-					this.group.appendChild( this[ 'handle' + i ] );
+					if( this[ 'handle' + i ] ) {
+						this.group.appendChild( this[ 'handle' + i ] );
+					}
 				}
 			}
 		},
