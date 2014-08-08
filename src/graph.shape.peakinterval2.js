@@ -198,19 +198,21 @@ define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
 		highlight: function() {
 
-			this._dom.setAttribute('stroke-width', '5');
-			
-			this.setLinesY( lineHeight + 2 );
+console.log( this.isBindable() );
+			if( this.isBindable() ) {
+				this._dom.setAttribute('stroke-width', '5');
+				this.setLinesY( lineHeight + 2 );
+			}
 
 		},
 
 
 		unhighlight: function() {
 
-			this.setStrokeWidth();
-			
-			this.setLinesY( lineHeight );
-
+			if( this.isBindable() ) {
+				this.setStrokeWidth();
+				this.setLinesY( lineHeight );
+			}
 		}
 
 

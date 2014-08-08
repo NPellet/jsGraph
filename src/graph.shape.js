@@ -282,20 +282,6 @@ define( [ 'require' ], function( require ) {
 		setLabelPosition: function(index) { if(this.label) this._setLabelPosition(index);											},
 		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
 		
-		highlight: function() {
-			this.tempStrokeWidth = parseInt(this._dom.getAttribute('stroke-width').replace('px', ''));
-			this.setDom('stroke-width', this.tempStrokeWidth + 2);
-			this.highlightImpl();
-		},
-
-		unHighlight: function() {
-			this.setDom('stroke-width', this.tempStrokeWidth);
-			this.unHighlightImpl();
-		},
-
-		highlightImpl: function() {},
-		unHighlightImpl: function() {},
-
 		_getPosition: function(value, relTo) {
 			var yAxis;
 			var xAxis = yAxis = false;
@@ -523,26 +509,11 @@ define( [ 'require' ], function( require ) {
 				
 			}
 		},
-
-
-		onMouseOver: function (clbk) {
-
-		//	this.linking( e, false );
-			
-			var callbacks = (this._mouseOverCallbacks = this._mouseOverCallbacks || $.Callbacks());
-			callbacks.add(clbk);
-		},
-
-		onMouseOut: function (clbk) {
-			var callbacks = (this._mouseOutCallbacks = this._mouseOutCallbacks || $.Callbacks());
-			callbacks.add(clbk);
-		},
 	
 		handleMouseDownImpl: function() {},
 		handleMouseMoveImpl: function() {},
 		handleMouseUpImpl: function() {},
 		handleCreateImpl: function() {},
-
 
 		handlers: {
 
@@ -620,6 +591,8 @@ define( [ 'require' ], function( require ) {
 				function( e ) {
 					var clbks;
 
+
+					this.highlight();
 					this.addClass('hover');
 
 					if( ! ( clbks = this._mouseOverCallbacks ) ) {
@@ -633,6 +606,7 @@ define( [ 'require' ], function( require ) {
 				function( e ) {
 					var clbks;
 
+					this.unhighlight();
 					this.removeClass('hover');
 					
 					if( ! ( clbks = this._mouseOutCallbacks ) ) {
@@ -667,6 +641,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		handleMouseOver: function() {
+
 			this.callHandler( 'mouseOver' );
 		},
 
@@ -823,7 +798,10 @@ define( [ 'require' ], function( require ) {
 			if( this.isBindable() ) {
 				this.addClass('bindable');
 			}	
-		}
+		},
+
+		highlight: function() {},
+		unhighlight: function() {}
 
 	}
 
