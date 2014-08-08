@@ -264,6 +264,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 								self.integral.data.pos = self.getFromData( 'pos' );
 								self.integral.data.pos2 = self.getFromData( 'pos2' );
 
+								integral_y_resizemove( );
 							} );
 
 						},
