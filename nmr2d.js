@@ -586,6 +586,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		var binding = false;
 		var bindingA = false;
+		var bindingB;
 		var bindingLine;
 		var bindingPairs = [];
 
