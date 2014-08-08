@@ -235,7 +235,6 @@ define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 					}
 
 				}
-
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
