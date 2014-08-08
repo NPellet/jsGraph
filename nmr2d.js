@@ -12,8 +12,13 @@ requirejs.config({
 
 require( [ 'src/graph' ] , function( Graph ) {
 
-	var graph_x, graph_y, graph_2d;
+	"use strict";
+
+	var graph = { x: null, y: null };
+	var graph_2d;
 	var nmr;
+
+	var symmetric = true;
 
 	$.getJSON('./spectra.json', function ( data ) {
 
@@ -33,36 +38,34 @@ require( [ 'src/graph' ] , function( Graph ) {
 				'./graph.plugin.zoom': { 
 					zoomMode: 'xy',
 					onZoomStart: function( graph, x, y, e, target ) {
-						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_x, x, y, e, true ] );
-						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph_y, x, y, e, true ] );
+						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph['x'], x, y, e, true ] );
+						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseDown', [ graph['y'], x, y, e, true ] );
 					},
 
 					onZoomMove: function( graph, x, y, e, target ) {
-						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_x, x, y, e, true ] );
-						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph_y, x, y, e, true ] );
+						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph['x'], x, y, e, true ] );
+						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseMove', [ graph['y'], x, y, e, true ] );
 					},
 
 					onZoomEnd: function( graph, x, y, e, target ) {
-						graph_x._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_x, x, y, e, true ] );
-						graph_y._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph_y, x, y, e, true ] );
+						graph['x']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph['x'], x, y, e, true ] );
+						graph['y']._pluginExecute( './graph.plugin.zoom', 'onMouseUp', [ graph['y'], x, y, e, true ] );
 					},
 
 					onDblClick: function( x, y, prefs, e ) {
 						
-						graph_y._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_y, x, y, { mode: 'total' }, e, true ] );
-						graph_x._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph_x, x, y, { mode: 'total' }, e, true ] );
+						graph['y']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph['y'], x, y, { mode: 'total' }, e, true ] );
+						graph['x']._pluginExecute( './graph.plugin.zoom', 'onDblClick', [ graph['x'], x, y, { mode: 'total' }, e, true ] );
 					}
 				},
 
-				'./graph.plugin.shape': { 
-
-					shapeType: 'peakintegration2d',
-					
+				'./graph.plugin.shape': {
+					type: 'peakintegration2d',
 					shapeOptions: { 
 						bindable: false
 					}
 					
-				}
+				},
 			},
 
 			dblclick: {
@@ -80,57 +83,234 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
-
+/*
 		graph_2d.shapeHandlers.mouseUp.push( function() {
 
 			var pos1 = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
 			
 		} );
+*/
+
 
 		var integrals_x = [];
 		var integralXBasis = undefined;
 
-		function integral_x_resizemove( ) {
+
+		var integrals = { x: [], y: [] };
+		function integral_resizemove( mode, noLoop ) {
 
 			var sumMax = 0;
-			for( var i = 0, l = integrals_x.length; i < l ; i ++ ) {
-				sumMax = Math.max( sumMax, integrals_x[ i ].lastSum );
+
+			for( var i = 0, l = integrals[ mode ].length; i < l ; i ++ ) {
+				sumMax = Math.max( sumMax, integrals[ mode ][ i ].lastSum );
 			}
 
-			for( var i = 0, l = integrals_x.length; i < l ; i ++ ) {
-				integrals_x[ i ].ratio = integrals_x[ i ].lastSum / sumMax;
-				integrals_x[ i ].setPosition();
+			for( var i = 0, l = integrals[ mode ].length; i < l ; i ++ ) {
+
+				integrals[ mode ][ i ].ratio = integrals[ mode ][ i ].lastSum / sumMax;
+				integrals[ mode ][ i ].setPosition();
+
 
 				if( integralXBasis ) {
-					integrals_x[ i ].data.label[ 0 ].text = Math.round( integrals_x[ i ].lastSum / integralXBasis * 100 ) / 100;	
+					integrals[ mode ][ i ].data.label[ 0 ].text = Math.round( integrals[ mode ][ i ].lastSum / integralXBasis * 100 ) / 100;	
 				} else {
-					integrals_x[ i ].data.label[ 0 ].text = 1;	
+					integrals[ mode ][ i ].data.label[ 0 ].text = 1;	
 				}
 				
-				integrals_x[ i ].setLabelPosition( 0 );
-				integrals_x[ i ].setLabelText( 0 );
+				integrals[ mode ][ i ].setLabelPosition( 0 );
+				integrals[ mode ][ i ].setLabelText( 0 );
+			}
+
+
+			if( symmetric && ! noLoop ) {
+				integral_resizemove( getOtherMode( mode ), true );
 			}
 		}
 
 
+		function integralCreated( mode, integral ) {
 
-		var integrals_y = [];
-		function integral_y_resizemove( ) {
+			makeNMRIntegral( mode, integral ).then( function( nmrint ) {
 
-			var sumMax = 0;
-			for( var i = 0, l = integrals_y.length; i < l ; i ++ ) {
-				sumMax = Math.max( sumMax, integrals_y[ i ].lastSum );
+				integral.integral = nmrint;
+				nmrint.data.pos = integral.getFromData( 'pos' );
+				nmrint.data.pos2 = integral.getFromData( 'pos2' );//integral.getFromData( 'pos2' );
+			
+			} );
+
+		//	 poses.push( integral.getFromData('pos') );
+
+			if( symmetric ) {
+
+				var otherMode = getOtherMode( mode );
+
+				makePeakPosition( otherMode ).then( function( shape ) {
+
+					integral.syncTo = shape;
+					shape.syncTo = integral;
+
+					shape.data.pos = integral.getFromData( 'pos' );
+					shape.data.pos2 = integral.getFromData( 'pos2' );
+
+					makeNMRIntegral( otherMode ).then( function( nmrint ) {
+
+						shape.integral = nmrint;
+
+						nmrint.data.pos = integral.getFromData( 'pos' );
+						nmrint.data.pos2 = integral.getFromData( 'pos2' );
+					});	
+				});
+			}
+		}
+
+		function integralResized( mode, peak ) {
+
+			if( ! peak.integral ) {
+				return;
 			}
 
-			for( var i = 0, l = integrals_y.length; i < l ; i ++ ) {
-				integrals_y[ i ].ratio = integrals_y[ i ].lastSum / sumMax;
-				integrals_y[ i ].setPosition();
+			peak.integral.setPosition();
+			if( peak.syncTo ) {
+				peak.setPosition();
+				peak.syncTo.integral.setPosition();
+			}
+		
+
+			integral_resizemove( mode );
+		}
+
+
+		function integralMoved( mode, peak ) {
+
+			if( ! peak.integral ) {
+				return;
+			}
+
+			peak.integral.setPosition();
+
+			if( peak.syncTo ) {
+				peak.setPosition();
+				peak.syncTo.integral.setPosition();
+			}
+
+			integral_resizemove( mode );
+		}
+
+		function integralRemoved( mode, peak ) {
+
+			if( peak.integral ) {
+				peak.integral.kill();
+				integrals[ mode ].splice( integrals[ mode ].indexOf( peak.integral ), 1 );
+			}
+
+			if( peak.syncTo ) {
+
+				peak.syncTo.kill();
+				integrals[ getOtherMode( mode ) ].splice( integrals[ getOtherMode( mode ) ].indexOf( peak.syncTo.integral ), 1 );
+			}
+
+			integral_resizemove( mode );
+
+		}
+
+		function getOtherMode( mode ) {
+			return mode == 'x' ? 'y' : ( mode == 'y' ? 'x' : ( console.error( "Mode not recognized") ) );
+		}
+
+		var nmrIntegralOptions = {
+			 x: { 
+				type: 'nmrintegral', 
+				fillColor: 'transparent', 
+				strokeColor: 'rgba(100, 0, 0, 0.5)', 
+				strokeWidth: '1px',
+				label: {
+					position: { x: "100px", y: "20px"},
+					text: 1,
+					color: 'red',
+					anchor: 'middle'
+				},
+
+				shapeOptions: {
+					locked: true
+				}
+			 }
+		}
+		nmrIntegralOptions.y = nmrIntegralOptions.x;
+
+
+		var peakIntervalOptions = {
+
+			x: { 
+				type: 'peakinterval2',
+				strokeColor: 'black',
+				strokeWidth: 2,
+				shapeOptions: {
+
+					horizontal: true, 
+					forcedCoords: { y: "20px" },
+					bindable: true,
+				}
+			},
+
+			y: { 
+				type: 'peakinterval2',
+				strokeColor: 'black',
+				strokeWidth: 2,
+				shapeOptions: {
+					horizontal: true, 
+					forcedCoords: { y: "20px" },
+					bindable: true,
+				}
 			}
 		}
 
 
-		graph_x = new Graph( nmr.find('.nmr-1d-x').get(0), {
+		function getPeakIntervalHandlers( mode ) {
+
+			return { 
+
+				shapeOptions: {
+					onCreate: function() {
+						integralCreated( mode, this );
+					},
+
+					onResize: function() {
+						integralResized( mode, this );
+					},
+
+					onMove: function() {
+						integralMoved( mode, this );
+					},
+
+					onRemove: function() {
+						integralRemoved( mode, this );
+					}
+				}
+			}
+		}
+
+		peakIntervalOptions.x = $.extend( true, {}, peakIntervalOptions.x, getPeakIntervalHandlers( 'x' ) );
+		$.extend( true, {}, peakIntervalOptions.y, getPeakIntervalHandlers( 'y' ) );
+
+
+		function makePeakPosition( mode ) {
+			return graph[ mode ].makeShape( peakIntervalOptions[ mode ], {} );
+		}
+
+		function makeNMRIntegral( mode, integral ) {
+
+			return graph[ mode ].makeShape( $.extend( true, {}, nmrIntegralOptions[ mode ] ), {} ).then( function( nmrint ) {
+
+				integrals[ mode ].push( nmrint );
+				nmrint.draw();
+				return nmrint;
+			} );
+		}
+		
+
+
+		graph['x'] = new Graph( nmr.find('.nmr-1d-x').get(0), {
 
 			close: { left: false, top: false, right: false },
 			paddingBottom: 0,
@@ -159,7 +339,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 					
 				}
 
-				integral_x_resizemove();
+				integral_resizemove('x');
 			},
 
 			plugins: {
@@ -192,116 +372,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 				},
 
-
-				'./graph.plugin.shape': { 
-
-					shapeType: 'peakinterval2',
-					
-					shapeOptions: { 
-
-						horizontal: true, 
-						forcedCoords: { y: "20px" },
-						bindable: true,
-
-						onCreate: function() {
-
-							var self = this;
-
-							this.set('strokeWidth', 2);
-							this.setStrokeWidth();
-
-							graph_x.makeShape( { 
-
-								type: 'nmrintegral', 
-								fillColor: 'transparent', 
-								strokeColor: 'rgba(100, 0, 0, 0.5)', 
-								strokeWidth: '1px',
-								label: {
-									position: { x: "100px", y: "20px"},
-									text: 1,
-									color: 'red',
-									anchor: 'middle'
-								},
-
-								shapeOptions: {
-									locked: true
-								}
-
-							 }, {} ).then( function( nmrint ) {
-
-							 	
-								self.integral = nmrint;
-								integrals_x.push( self.integral );
-								nmrint.draw();
-								self.integral.data.pos = self.getFromData( 'pos' );
-								self.integral.data.pos2 = self.getFromData( 'pos2' );
-
-							} );
-
-
-							 graph_y.makeShape( { 
-
-								type: 'nmrintegral', 
-								fillColor: 'transparent', 
-								strokeColor: 'rgba(100, 0, 0, 0.5)', 
-								strokeWidth: '1px',
-								label: {
-									position: { x: "100px", y: "20px"},
-									text: 1,
-									color: 'red',
-									anchor: 'middle'
-								},
-
-								shapeOptions: {
-									locked: true
-								}
-
-							 }, {} ).then( function( nmrint ) {
-
-								self.integral = nmrint;
-								integrals_y.push( self.integral );
-								nmrint.draw();
-								self.integral.data.pos = self.getFromData( 'pos' );
-								self.integral.data.pos2 = self.getFromData( 'pos2' );
-
-								integral_y_resizemove( );
-							} );
-
-						},
-
-						onResize: function() {
-
-							if( ! this.integral ) {
-								return;
-							}
-							
-							this.integral.setPosition();
-							integral_x_resizemove( );
-						},
-
-						onMove: function() {
-
-
-							if( ! this.integral ) {
-								return;
-							}
-
-							this.integral.setPosition();
-							integral_x_resizemove( );
-						},
-
-						onRemove: function() {
-
-							if( this.integral ) {
-								this.integral.kill();
-								integrals_x.splice( integrals_x.indexOf( this.integral ), 1 );
-							}
-
-							integral_x_resizemove( );
-						}
-
-					}
-				}
+				'./graph.plugin.shape': peakIntervalOptions[ 'x' ],
 			},
 
 
@@ -320,7 +391,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 		} );
 
-		graph_y = new Graph( nmr.find('.nmr-1d-y').get(0), { 
+		graph['y'] = new Graph( nmr.find('.nmr-1d-y').get(0), { 
 
 			close: { left: false, top: false, right: false },
 
@@ -352,58 +423,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 					}
 				},
 
-				'./graph.plugin.shape': { shapeType: 'peakinterval2', shapeOptions: { 
-
-					vertical: true, 
-					forcedCoords: { x: "20px" },
-
-					onCreate: function() {
-
-						var self = this;
-						graph_y.makeShape( { type: 'nmrintegral', fillColor: 'transparent', strokeColor: 'rgba(100, 0, 0, 0.5)', strokeWidth: '1px', shapeOptions: { axis: 'y' } }, {} ).then( function( nmrint ) {
-
-							self.integral = nmrint;
-							integrals_y.push( self.integral );
-							nmrint.draw();
-							self.integral.data.pos = self.getFromData( 'pos' );
-							self.integral.data.pos2 = self.getFromData( 'pos2' );
-
-						} );
-
-					},
-
-					onResize: function() {
-
-						if( ! this.integral ) {
-							return;
-						}
-						
-						this.integral.setPosition();
-						integral_y_resizemove( );
-					},
-
-					onMove: function() {
-
-
-						if( ! this.integral ) {
-							return;
-						}
-
-						this.integral.setPosition();
-						integral_y_resizemove( );
-					},
-
-					onRemove: function() {
-
-						if( this.integral ) {
-							this.integral.kill();
-							integrals_y.splice( integrals_x.indexOf( this.integral ), 1 );
-						}
-
-						integral_y_resizemove( );
-					}
-
-				} },
+				'./graph.plugin.shape': {  },
 
 				'./graph.plugin.linking': { },
 			},
@@ -432,14 +452,6 @@ require( [ 'src/graph' ] , function( Graph ) {
 				}
 			},
 
-			dblclick: {
-				type: 'plugin',
-				plugin: './graph.plugin.zoom',
-				options: {
-					mode: 'total'
-				}
-			},
-
 			paddingBottom: 0,
 			paddingTop: 0,
 			paddingLeft: 0,
@@ -449,12 +461,12 @@ require( [ 'src/graph' ] , function( Graph ) {
 		
 
 	/*
-		graph_x.getYAxis().setDisplay( false );
+		graph['x'].getYAxis().setDisplay( false );
 		graph_2d.getYAxis().setDisplay( false );
 	*/
 
 
-		var serie_x = graph_x.newSerie("seriex" )
+		var serie_x = graph['x'].newSerie("seriex" )
 			.setLabel( "My serie" )
 			.autoAxis()
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
@@ -465,10 +477,10 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 
-		var serie_y = graph_y.newSerie("seriey", { flip: true } )
+		var serie_y = graph['y'].newSerie("seriey", { flip: true } )
 			.setLabel( "My serie" )
-			.setXAxis( graph_y.getBottomAxis( ) )
-			.setYAxis( graph_y.getRightAxis( ) )
+			.setXAxis( graph['y'].getBottomAxis( ) )
+			.setYAxis( graph['y'].getRightAxis( ) )
 			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
 
 		serie_y.getYAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).flip( true ).setTickPosition( 'outside' );
@@ -496,16 +508,16 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 
-		graph_y.redraw( );
-		graph_y.drawSeries();	
+		graph['y'].redraw( );
+		graph['y'].drawSeries();	
 
 		graph_2d.redraw( );
 		graph_2d.drawSeries();		
 
 
-		graph_x.redraw( );	
+		graph['x'].redraw( );	
 		
-		graph_x.drawSeries();	
+		graph['x'].drawSeries();	
 
 		startAttribution();
 		startMolecule();
@@ -555,7 +567,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 			if( event.shiftKey ) {
 
-				graph_x.lockShapes();
+				graph['x'].lockShapes();
 			
 				binding = true;
 				bindingA = el;
@@ -611,7 +623,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 			}
 
 
-			graph_x.unlockShapes();
+			graph['x'].unlockShapes();
 			
 		}
 

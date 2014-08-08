@@ -37,6 +37,10 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 				axis = this.options.axis;
 
 
+			if( ! posXY || ! posXY2 ) {
+				return;
+			}
+
 			if( ! this.serie.isFlipped() ) {
 
 				baseLine = this.serie.getYAxis().getPx(0) - baseLine;

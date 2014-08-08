@@ -144,8 +144,6 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 			}
 
-			this.setData('pos2', pos2);
-			this.setData('pos', pos);
 			
 			this.redrawImpl();
 			

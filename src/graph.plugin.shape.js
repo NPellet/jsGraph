@@ -7,14 +7,14 @@ define([], function() {
 	plugin.prototype = {
 
 		init: function( graph, options ) {
-			this.shapeType = options.shapeType;
-			this.shapeOptions = options.shapeOptions;
-			this.bindable = options.bindable;
+			
+			this.options = options;
+			this.shapeType = options.type;
+			
 		},
 
-		setShape: function( shapeType, linkable ) {
-			this.shapeType = shapeType;
-			this.shapeLinkable = linkable || false;
+		setShape: function( shapeType ) {
+			this.shapeInfo.shapeType = shapeType;
 		},
 
 		onMouseDown: function( graph, x, y, e, target ) {
@@ -36,33 +36,25 @@ define([], function() {
 			xVal = graph.getXAxis().getVal( x );
 			yVal = graph.getYAxis().getVal( y );
 
-			//var color = Util.getNextColorRGB(this.count, 100);
-			var color = [100, 100, 100];
+			var shapeInfo = {
 
-			var shape = graph.makeShape( {
-
-				type: this.shapeType,
 				pos: {
 					x: xVal, 
 					y: yVal
 				}, 
+
 				pos2: {
 					x: xVal,
 					y: yVal
 				},
 
-				fillColor: "transparent",//color.concat([ 0.3 ]),
-				strokeColor: color.concat([ 0.9 ]),
-				
-
 				onChange: function(newData) {
 					graph.triggerEvent('onAnnotationChange', newData);
-				},
+				}
+			};
 
-				linkable: self.shapeLinkable,
-				shapeOptions: self.shapeOptions
 
-			}, {}, true ).then( function( shape ) {
+			var shape = graph.makeShape( $.extend( true, {}, this.options, shapeInfo ), {}, true ).then( function( shape ) {
 
 				if( ! shape ) {
 					return;
@@ -88,7 +80,7 @@ define([], function() {
 
 
 				shape.handleCreateImpl( );
-console.log( shape.options );
+
 				if( shape.options && shape.options.onCreate ) {
 					shape.options.onCreate.call( shape );
 				}

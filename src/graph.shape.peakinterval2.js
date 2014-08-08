@@ -1,6 +1,7 @@
 
 define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
 
+	"use strict";
 	var lineHeight = 5;
 
 	var GraphPeakInterval2 = function( graph, options ) {

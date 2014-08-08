@@ -2,6 +2,8 @@
 
 define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
+	"use strict";
+	
 	var GraphSurfaceUnderCurve = function(graph) {
 		this.init(graph);
 	}
