@@ -1247,6 +1247,8 @@ define([
 				response,
 				deferred = $.Deferred();
 			
+
+			
 			shapeData.id = Math.random();
 
 			if(notify) {

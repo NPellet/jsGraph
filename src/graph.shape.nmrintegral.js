@@ -59,7 +59,7 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 
 			this.computedBaseline = baseLine;
 			this.reversed = x == posXY2.x;
-	
+
 			if( axis == 'x' ) {		
 				if( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth( ) ) {
 					return false;
@@ -153,13 +153,15 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 					points.push([ x, sum ]);
 					k++;
 				}
-
+console.log( this.serie.isFlipped(), lastX );
 				this.lastX = x;
 				this.lastY = y;
 				
 				if(! firstX || ! firstY || ! this.lastX || ! this.lastY) {
 					return;
 				}								
+
+			
 			}
 
 			if( sum == 0 ) {
@@ -250,9 +252,7 @@ define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphS
 			this.handle2.setAttribute('x', this.points[ this.points.length - 1 ][ 0 ] - 1);
 			this.handle2.setAttribute('y', this.points[ this.points.length - 1 ][ 1 ] );
 
-		},
-
-
+		}
 
 	});
 

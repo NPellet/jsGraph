@@ -415,9 +415,10 @@ define( [ 'require' ], function( require ) {
 				pos.y = -10000;
 			}*/
 
-
-			this.label[labelIndex].setAttribute('x', pos.x);
-			this.label[labelIndex].setAttribute('y', pos.y);	
+			if( pos.x != "NaNpx") {
+				this.label[labelIndex].setAttribute('x', pos.x);
+				this.label[labelIndex].setAttribute('y', pos.y);	
+			}
 			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 			//this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 

@@ -94,7 +94,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 		var integrals_x = [];
-		var integralXBasis = undefined;
+		var integralBasis = undefined;
 
 
 		var integrals = { x: [], y: [] };
@@ -111,9 +111,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 				integrals[ mode ][ i ].ratio = integrals[ mode ][ i ].lastSum / sumMax;
 				integrals[ mode ][ i ].setPosition();
 
-
-				if( integralXBasis ) {
-					integrals[ mode ][ i ].data.label[ 0 ].text = Math.round( integrals[ mode ][ i ].lastSum / integralXBasis * 100 ) / 100;	
+				if( integralBasis ) {
+					integrals[ mode ][ i ].data.label[ 0 ].text = Math.round( integrals[ mode ][ i ].lastSum / integralBasis * 100 ) / 100;	
 				} else {
 					integrals[ mode ][ i ].data.label[ 0 ].text = 1;	
 				}
@@ -128,6 +127,22 @@ require( [ 'src/graph' ] , function( Graph ) {
 			}
 		}
 
+		function setSyncPos( from, to ) {
+
+			var pos1 = from.getFromData( 'pos' ),
+				pos2 = from.getFromData( 'pos2' );
+
+			var pos1t = to.getFromData( 'pos' ),
+				pos2t = to.getFromData( 'pos2' );
+
+			pos1t.x = pos1.y;
+			pos1t.y = pos1.x;
+
+			pos2t.x = pos2.y;
+			pos2t.y = pos2.x;
+
+			console.log( pos1, pos2, pos1t, pos2t );
+		} 
 
 		function integralCreated( mode, integral ) {
 
@@ -150,15 +165,20 @@ require( [ 'src/graph' ] , function( Graph ) {
 					integral.syncTo = shape;
 					shape.syncTo = integral;
 
-					shape.data.pos = integral.getFromData( 'pos' );
-					shape.data.pos2 = integral.getFromData( 'pos2' );
+					shape.data.pos = {};
+					shape.data.pos2 = {};
+					shape.draw();
+
+					setSyncPos( integral, integral.syncTo );
+
+					shape.redrawImpl();
 
 					makeNMRIntegral( otherMode ).then( function( nmrint ) {
 
 						shape.integral = nmrint;
 
-						nmrint.data.pos = integral.getFromData( 'pos' );
-						nmrint.data.pos2 = integral.getFromData( 'pos2' );
+						nmrint.data.pos = shape.getFromData( 'pos' );
+						nmrint.data.pos2 = shape.getFromData( 'pos2' );
 					});	
 				});
 			}
@@ -172,7 +192,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 			peak.integral.setPosition();
 			if( peak.syncTo ) {
-				peak.setPosition();
+				setSyncPos( peak, peak.syncTo );
+				peak.syncTo.redrawImpl();
 				peak.syncTo.integral.setPosition();
 			}
 		
@@ -190,7 +211,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 			peak.integral.setPosition();
 
 			if( peak.syncTo ) {
-				peak.setPosition();
+				setSyncPos( peak, peak.syncTo );
+				peak.syncTo.redrawImpl();
 				peak.syncTo.integral.setPosition();
 			}
 
@@ -236,8 +258,9 @@ require( [ 'src/graph' ] , function( Graph ) {
 				}
 			 }
 		}
-		nmrIntegralOptions.y = nmrIntegralOptions.x;
 
+		nmrIntegralOptions.y = $.extend(true, {}, nmrIntegralOptions.x );
+		nmrIntegralOptions.y.shapeOptions.axis = 'y';
 
 		var peakIntervalOptions = {
 
@@ -250,17 +273,19 @@ require( [ 'src/graph' ] , function( Graph ) {
 					horizontal: true, 
 					forcedCoords: { y: "20px" },
 					bindable: true,
+					axis: 'x'
 				}
 			},
 
 			y: { 
+
 				type: 'peakinterval2',
 				strokeColor: 'black',
 				strokeWidth: 2,
 				shapeOptions: {
-					horizontal: true, 
-					forcedCoords: { y: "20px" },
-					bindable: true,
+					vertical: true, 
+					forcedCoords: { x: "30px" },
+					bindable: true
 				}
 			}
 		}
@@ -295,7 +320,8 @@ require( [ 'src/graph' ] , function( Graph ) {
 
 
 		function makePeakPosition( mode ) {
-			return graph[ mode ].makeShape( peakIntervalOptions[ mode ], {} );
+
+			return graph[ mode ].makeShape( $.extend( true, {}, peakIntervalOptions[ mode ] ), {} );
 		}
 
 		function makeNMRIntegral( mode, integral ) {
@@ -321,18 +347,18 @@ require( [ 'src/graph' ] , function( Graph ) {
 			onAnnotationChange: function( data, shape ) {
 				if( data.type == "peakinterval2" ) {
 
-					if( ! integralXBasis ) {
-						integralXBasis = shape.integral.lastSum;
+					if( ! integralBasis ) {
+						integralBasis = shape.integral.lastSum;
 					}
 
 				} else if( data.type == "nmrintegral" ) {
 
-					if( integralXBasis ) {
+					if( integralBasis ) {
 
 						var fl = parseFloat( shape.data.label[ 0 ].text );
 						
 						if( fl != 0 ) {
-							integralXBasis = shape.lastSum / fl;
+							integralBasis = shape.lastSum / fl;
 						}
 
 					}
@@ -340,6 +366,7 @@ require( [ 'src/graph' ] , function( Graph ) {
 				}
 
 				integral_resizemove('x');
+				integral_resizemove('y');
 			},
 
 			plugins: {

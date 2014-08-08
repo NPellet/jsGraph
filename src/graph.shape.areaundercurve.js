@@ -3,7 +3,7 @@
 define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 	"use strict";
-	
+
 	var GraphSurfaceUnderCurve = function(graph) {
 		this.init(graph);
 	}
@@ -236,8 +236,11 @@ define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
 
 		setLabelPosition: function(labelIndex) {
 
+			var x = (this.firstX + this.lastX) / 2 + "px";
+			var y = (this.lastPointY + this.firstPointY) / 2 + "px";
+			var flip = this.serie.isFlipped();
 
-			this._setLabelPosition( labelIndex, { x: (this.firstX + this.lastX) / 2 + "px", y: (this.lastPointY + this.firstPointY) / 2 + "px" });			
+			this._setLabelPosition( labelIndex, { x: flip ? y : x, y: flip ? x : y } );
 		},
 
 		getFieldsConfig: function() {
