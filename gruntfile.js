@@ -95,29 +95,45 @@ module.exports = function(grunt) {
         var fileRead, firstLine, counter = 0, fileExtension, commentWrapper;
         copyright = '/*Copyright by Norman Pellet @2013*/';
 
-
-        grunt.log.writeln( grunt.config('pkg.version') );
-//copyright = [ '!', 'Graphing JavaScript Library v' + 
-/*!
- * jQuery JavaScript Library v1.11.1
- * http://jquery.com/
- *
- * Includes Sizzle.js
- * http://sizzlejs.com/
- *
- * Copyright 2005, 2014 jQuery Foundation, Inc. and other contributors
- * Released under the MIT license
- * http://jquery.org/license
- *
- * Date: 2014-05-01T17:42Z
- */
-
+        grunt.config('pkg.version');
+        copyright = [ 
+                '!', 
+                'Graphing JavaScript Library v' + grunt.config('pkg.version'), 
+                'https://github.com/NPellet/graph',
+                '',
+                'Copyright (c) 2014 Norman Pellet',
+                'Permission is hereby granted, free of charge, to any person obtaining a copy',
+                'of this software and associated documentation files (the "Software"), to deal',
+                'in the Software without restriction, including without limitation the rights',
+                'to use, copy, modify, merge, publish, distribute, sublicense, and/or sell',
+                'copies of the Software, and to permit persons to whom the Software is',
+                'furnished to do so, subject to the following conditions:',
+                '', 
+                'The above copyright notice and this permission notice shall be included in',
+                'all copies or substantial portions of the Software.',
+                '',
+                'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR',
+                'IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,',
+                'FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE',
+                'AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER',
+                'LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,',
+                'OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN',
+                'THE SOFTWARE.',
+                '',
+                'Date: ' + grunt.template.date( Date.now(), 'dd-mm-yyyy')
+            ];
 
 
         grunt.file.expand( { filter: 'isFile', cwd: 'dist/src/' }, ["**/*.js" ] ).forEach( function( dir ) {
 
             fileRead = grunt.file.read( 'dist/src/' + dir ).split( '\n' );
-            fileRead.unshift( copyright );
+
+            fileRead.unshift('*/');
+            for( var l = copyright.length, i = l - 1 ; i >= 0 ; i -- ) {
+                fileRead.unshift( ( i == 0 ? '/* ' : '* ' ) + copyright[ i ] );
+            }
+
+            
             fileRead = fileRead.join('\n');
             grunt.file.write( 'dist/src/' + dir, fileRead );
         
