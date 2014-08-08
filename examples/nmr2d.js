@@ -1,18 +1,20 @@
 
 
 requirejs.config({
+
+	baseUrl: '../',
 	paths: {
 		'jquery': './lib/components/jquery/dist/jquery.min',
 		'jqueryui': './lib/components/jquery-ui/ui/minified/jquery-ui.min',
 		'highlightjs': './lib/lib/highlight/highlight.pack',
 		'forms': './lib/lib/forms/form',
 		'components': './lib/components',
-		'graph': './dist/final/graph'
+		'graphs': './dist/maximal/'
 	}
 });
 
-require( [ 'graph', 'nmr/assignation' ] , function( Graph, Attribution ) {
-console.log(Graph);
+require( [ 'graphs/graph.maximal', 'nmr/assignation', './lib/components/jcampconverter/src/jcampconverter' ] , function( Graph, Attribution, JcampConverter ) {
+
 	"use strict";
 
 	var graphs = { x: null, y: null, _2d: null };
@@ -22,8 +24,30 @@ console.log(Graph);
 	var integralBasis = undefined;
 	var integrals = { x: [], y: [] };
 
+	var ajaxes = [ $.get("../lib/components/jcampconverter/data/indometacin/cosy.dx"), $.get('../lib/components/jcampconverter/data/indometacin/1h.dx') ];
+	var deferreds = [];
 
-	$.getJSON('./spectra.json', function ( data ) {
+	ajaxes[ 0 ].then( function( data ) {
+		deferreds[ 0 ] = JcampConverter( data );
+	} );
+
+	ajaxes[ 1 ].then( function( data ) {
+		deferreds[ 1 ] = JcampConverter( data );
+	} );
+
+	$.when.apply( $, ajaxes ).then( function() {
+
+		$.when.apply( $, deferreds ).then( function() {
+
+			doNMR( arguments[ 0 ], arguments[ 1 ] );
+		})
+
+	} );
+
+	
+	function doNMR( _2d, _1d ) { 
+
+		
 
 		// Create DOM
 		nmr.append('<table cellpadding="0" cellspacing="0" class="nmr-wrapper"><tr><td></td><td class="nmr-1d nmr-1d-x nmr-main"></td></tr><tr class="nmr-main"><td class="nmr-1d nmr-1d-y"></td><td class="nmr-2d"></td></tr></table>');
@@ -499,7 +523,7 @@ console.log(Graph);
 		var serie_x = graphs['x'].newSerie("seriex" )
 			.setLabel( "My serie" )
 			.autoAxis()
-			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
+			.setData( _1d.spectra[ 0 ].data[ 0 ] );
 
 		serie_x.getYAxis().setDisplay( false ).togglePrimaryGrid( false ).toggleSecondaryGrid( false );
 		serie_x.getXAxis().flip(true).setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setTickPosition( 'outside' )
@@ -508,7 +532,7 @@ console.log(Graph);
 			.setLabel( "My serie" )
 			.setXAxis( graphs['y'].getBottomAxis( ) )
 			.setYAxis( graphs['y'].getRightAxis( ) )
-			.setData( data[ '1H' ].spectra[ 0 ].data[ 0 ] );
+			.setData( _1d.spectra[ 0 ].data[ 0 ] );
 
 		serie_y.getYAxis().setLabel('ppm').togglePrimaryGrid( false ).toggleSecondaryGrid( false ).flip( true ).setTickPosition( 'outside' );
 		serie_y.getXAxis().togglePrimaryGrid( false ).toggleSecondaryGrid( false ).setDisplay( false ).flip( true );
@@ -517,7 +541,7 @@ console.log(Graph);
 		var serie_2d = graphs[ '_2d' ].newSerie("serie2d", { }, 'contour' )
 			.setLabel( "My serie" )
 			.autoAxis()
-			.setData( data.cosy.contourLines )
+			.setData( _2d.contourLines )
 
 		serie_2d.getXAxis().forceMin( serie_x.getXAxis().getMinValue( ) );
 		serie_2d.getXAxis().forceMax( serie_x.getXAxis().getMaxValue( ) );
@@ -553,8 +577,7 @@ console.log(Graph);
 
 		Attribution( nmr, graphs );
 		loadMolecule( './lib/lib/molecule/moleculeA.json' );
-
-	});
+	}
 
 
 	

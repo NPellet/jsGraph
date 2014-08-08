@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.2.0
+* Graphing JavaScript Library v0.3.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -56,6 +56,8 @@ define( [], function() {
 		this.pos = { x: undefined, y: undefined, transformX: 0, transformY: 0 }
 
 		this.setEvents();
+
+		this.applyStyle();
 	};
 
 	Legend.prototype = {
@@ -151,8 +153,8 @@ define( [], function() {
 
 			var bbox = this.svg.getBBox();
 
-			this.width = bbox.width + this.options.paddingRight;
-			this.height = bbox.height + this.options.paddingBottom;
+			this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
+			this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
 
 			this.rect.setAttribute('width', this.width );
 			this.rect.setAttribute('height', this.height);
@@ -168,6 +170,10 @@ define( [], function() {
 			this.rectBottom.setAttribute('width', this.width );
 			this.rectBottom.setAttribute('height', this.height );
 			
+			this.rectBottom.setAttribute('x', bbox.x - this.options.paddingLeft );
+			this.rectBottom.setAttribute('y', bbox.y - this.options.paddingTop );
+			
+
 
 			this.svg.appendChild( this.rect );
 		},

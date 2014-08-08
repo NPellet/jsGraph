@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.2.0
+* Graphing JavaScript Library v0.3.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
