@@ -33,6 +33,8 @@ define( [ 'require' ], function( require ) {
 			this.properties = {};
 			this.group = document.createElementNS(this.graph.ns, 'g');
 
+			this.options = this.options || {};
+
 			if( groupName ) {
 				this.group.setAttribute( 'data-groupname', groupName );
 			}
@@ -506,7 +508,7 @@ define( [ 'require' ], function( require ) {
 					} );
 
 				} ) ( i );
-				
+
 			}
 		},
 	
@@ -776,7 +778,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		isLocked: function() {
-
+console.log( this );
 			return this.options.locked || this.graph.shapesLocked;
 		},
 

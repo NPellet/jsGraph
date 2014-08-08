@@ -23,4 +23,4 @@
 * 
 * Date: 08-08-2014
 */
-define(["require","./graph.shape"],function(t,e){var i=function(t){this.init(t)};return $.extend(i.prototype,e.prototype,{createDom:function(){this._dom=!1},setPosition:function(){var t=this._getPosition(this.get("labelPosition"));t&&this.everyLabel(function(e){this.label[e].setAttribute("x",t.x),this.label[e].setAttribute("y",t.y)})},redrawImpl:function(){this.draw()}}),i});
+define(["require","graphs/graph.shape"],function(t,e){var i=function(t){this.init(t)};return $.extend(i.prototype,e.prototype,{createDom:function(){this._dom=!1},setPosition:function(){var t=this._getPosition(this.get("labelPosition"));t&&this.everyLabel(function(e){this.label[e].setAttribute("x",t.x),this.label[e].setAttribute("y",t.y)})},redrawImpl:function(){this.draw()}}),i});

@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [ require, './graph', './graph.shape' ], function( require, Graph, GraphShape ) {
+define( [ require, 'graphs/graph.shape' ], function( require, GraphShape ) {
 
 	var plugin =  function() { };
 

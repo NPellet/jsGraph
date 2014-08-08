@@ -90,7 +90,7 @@ define( [], function() {
 		this.graph = graph;
 		this.div = $("<ul />").addClass('graph-toolbar');
 
-		this.graph.getPlugin( './graph.plugin.shape').then( function( plugin ) {
+		this.graph.getPlugin( 'graphs/graph.plugin.shape').then( function( plugin ) {
 
 			self.plugin = plugin;
 

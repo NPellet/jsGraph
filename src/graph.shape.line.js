@@ -1,5 +1,5 @@
 
-define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
+define( [ 'require', 'graphs/graph.shape' ], function( require, GraphShape ) {
 
 
 	var GraphLine = function( graph, options ) {

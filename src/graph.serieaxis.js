@@ -1,6 +1,6 @@
 
 
-define(['require', './graph.serie'], function( require, GraphSerie ) {
+define(['require', 'graphs/graph.serie'], function( require, GraphSerie ) {
 
 	var GraphSerieAxis = function() {};
 

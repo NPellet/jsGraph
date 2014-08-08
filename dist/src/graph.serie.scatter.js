@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [ require, './graph._serie'], function( require, SerieStatic ) {
+define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 
 	"use strict";
 
@@ -238,6 +238,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 			var error;
 			var pathError = "";
 
+
 			for( ; j < m ; j += 2 ) {
 
 				xpx = this.getX( this.data[ j + incrXFlip ] );
@@ -246,7 +247,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				var valY = this.data[ j + incrYFlip ],
 					coordY;
 
-				if( ( error = this.error[ j / 2 ] ) ) {
+				if( this.error && ( error = this.error[ j / 2 ] ) ) {
 
 					pathError += "M " + xpx + " " + ypx;
 

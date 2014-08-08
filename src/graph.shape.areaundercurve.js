@@ -1,6 +1,6 @@
 
 
-define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
+define( [ 'require', 'graphs/graph.shape' ], function( require, GraphShape ) {
 
 	"use strict";
 

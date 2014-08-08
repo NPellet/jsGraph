@@ -1,14 +1,16 @@
 
-define( [ 'require', './graph.shape' ], function( require, GraphShape ) {
+define( [ 'require', 'graphs/graph.shape' ], function( require, GraphShape ) {
 
 
 	var GraphRect = function( graph, options ) {
+
+		this.options = options;
 		this.init(graph);
 
 		this.graph = graph;
 		this.nbHandles = 4;
-		this.options = options;
 		
+
 		this.createHandles( this.nbHandles, 'rect', { 
 										transform: "translate(-3 -3)", 
 										width: 6, 

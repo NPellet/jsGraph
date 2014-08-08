@@ -1,5 +1,5 @@
 
-define( [ require, './graph._serie'], function( require, SerieStatic ) {
+define( [ require, 'jquery', 'graphs/graph._serie'], function( require, $, SerieStatic ) {
 
 	"use strict";
 
@@ -477,7 +477,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				this.applyLineStyle( this.lines[ i ] );
 			}
 
-			this.applyLineStyle( this.getLineForLegend() );
+			this.applyLineStyle( this.getSymbolForLegend() );
 		},
 
 		unselect: function() {
@@ -489,7 +489,7 @@ define( [ require, './graph._serie'], function( require, SerieStatic ) {
 				this.applyLineStyle( this.lines[ i ] );
 			}
 
-			this.applyLineStyle( this.getLineForLegend() );
+			this.applyLineStyle( this.getSymbolForLegend() );
 		},
 
 

@@ -1,5 +1,5 @@
 
-define( [ require, './graph._serie'], function( require, SerieStatic ) {
+define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 
 	"use strict";
 

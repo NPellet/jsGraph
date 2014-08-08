@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( ['require', './graph.serieaxis'], function( require, GraphSerieAxis ) {
+define( ['require', 'graphs/graph.serieaxis'], function( require, GraphSerieAxis ) {
 
 	var GraphSerieAxisX = function() {};
 	$.extend(GraphSerieAxisX.prototype, GraphSerieAxis.prototype, {	

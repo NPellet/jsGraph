@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [ 'require', './graph.shape.areaundercurve' ], function( require, GraphSurfaceUnderCurve ) {
+define( [ 'require', 'graphs/graph.shape.areaundercurve' ], function( require, GraphSurfaceUnderCurve ) {
 
 
 	"use strict";

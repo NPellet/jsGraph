@@ -24,7 +24,7 @@
 * Date: 08-08-2014
 */
 
-define( [ 'require', './graph.shape.line' ], function( require, GraphLine ) {
+define( [ 'require', 'graphs/graph.shape.line' ], function( require, GraphLine ) {
 
 	var GraphArrow = function(graph) {
 		this.init(graph);

@@ -23,45 +23,51 @@
 * 
 * Date: 08-08-2014
 */
-define( [ 'require', 'graphs/graph.serieaxis' ], function( require, GraphSerieAxis ) {
 
-	var GraphSerieAxisY = function() {};
-	$.extend(GraphSerieAxisY.prototype, GraphSerieAxis.prototype, {
-		
-		getX: function(value) {
-			
-			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels - 5;
-			return x;
-		},
+define([ 
 
-		getY: function(value) {
-			
-			var y = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;
-			//if((this.axis.isFlipped() && y < this.axis.getMaxPx() || y > this.axis.getMinPx()) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
-		//		return;
-			return y;
-		},
+	'require',
+	'graphs/graph.core',
+	'graphs/graph._serie',
+	'graphs/graph.axis',
+	'graphs/graph.axis.x',
+	'graphs/graph.axis.y',
+	'graphs/graph.legend',
+	'graphs/graph.plugin.drag',
+	'graphs/graph.plugin.linking',
+	'graphs/graph.plugin.nmrpeakpicking',
+	'graphs/graph.plugin.range',
+	'graphs/graph.plugin.shape',
+	'graphs/graph.plugin.zoom',
+	'graphs/graph.serie.contour',
+	'graphs/graph.serie',
+	'graphs/graph.serie.scatter',
+	'graphs/graph.serie.zone',
+	'graphs/graph.serieaxis',
+	'graphs/graph.serieaxisx',
+	'graphs/graph.serieaxisy',
+	'graphs/graph.shape.areaundercurve',
+	'graphs/graph.shape.arrow',
+	'graphs/graph.shape',
+	'graphs/graph.shape.label',
+	'graphs/graph.shape.line',
+	'graphs/graph.shape.nmrintegral',
+	'graphs/graph.shape.peakintegration2d',
+	'graphs/graph.shape.peakinterval',
+	'graphs/graph.shape.peakinterval2',
+	'graphs/graph.shape.rangex',
+	'graphs/graph.shape.rect',
+	'graphs/graph.toolbar',
+	'graphs/graph.xaxis.time',
+	'graphs/plugin.integral',
+	'graphs/slotworker'
+
+	],
+
+ function( require, graph ) {
+
+	return graph;
+	
+} );
 
 
-		getMinX: function() {
-			return this.minY;
-		},
-
-		getMaxX: function() {
-			return this.maxY;
-		},
-
-		getMinY: function() {
-			return this.minX;
-		},
-
-		getMaxY: function() {
-			return this.maxX;
-		}
-
-	});
-
-
-	return GraphSerieAxisY;
-
-});

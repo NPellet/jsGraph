@@ -2,10 +2,6 @@
 
 module.exports = function(grunt) {
 
-    var allFiles;
-    allFiles = grunt.file.expand( { filter: 'isFile', cwd: './src/' }, ["*.js" ] ).map( function( val ) { if( val == 'graph.js') return; return val.replace('.js', '');  })
-    grunt.log.writeln( allFiles );
-
 
     grunt.initConfig({
 
@@ -30,21 +26,25 @@ module.exports = function(grunt) {
         requirejs: {
             min: {
                 options: {
-                    appDir: "./src/",
-                    baseUrl: "./",
-                    dir: "./dist/minimal",
-                    removeCombined: true,
-                    optimize: "uglify2",
+                  
                     paths: {
                         'jquery': 'empty:',
                         'jqueryui': 'empty:',
                         'highlightjs': 'empty:',
                         'forms': 'empty:',
-                        'components': 'empty:'
+                        'components': 'empty:',
+                        'graphs':'./'
                     },
+
+                    appDir: "./src/",
+                    baseUrl: "./",
+                    dir: "./dist/minimal",
+                    removeCombined: true,
+                    optimize: "uglify2",
+
                     modules: [ 
                         {
-                            name: "graph"
+                            name: "graphs/graph.minimal"
                         }
                     ]
                 }
@@ -53,22 +53,26 @@ module.exports = function(grunt) {
             max: {
 
                 options: {
-                    appDir: "./src/",
-                    baseUrl: "./",
-                    dir: "./dist/maximal",
-                    removeCombined: true,
-                    optimize: "uglify2",
+
+
                     paths: {
                         'jquery': 'empty:',
                         'jqueryui': 'empty:',
                         'highlightjs': 'empty:',
                         'forms': 'empty:',
-                        'components': 'empty:'
+                        'components': 'empty:',
+                        'graphs':'./'
                     },
+
+                    appDir: "./src/",
+                    baseUrl: "./",
+                    dir: "./dist/maximal",
+                    removeCombined: true,
+                    optimize: "uglify2",
+                    
                     modules: [ 
                         {
-                            name: "graph",
-                            include: allFiles,
+                            name: "graphs/graph.maximal"
                         }
                     ]
                 }

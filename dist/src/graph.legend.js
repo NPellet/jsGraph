@@ -113,7 +113,7 @@ define( [], function() {
 
 					self.svg.appendChild( g );
 
-					var line = series[ j ].getLineForLegend();
+					var line = series[ j ].getSymbolForLegend();
 					var marker = series[ j ].getMarkerForLegend();
 					var text = series[ j ].getTextForLegend();
 
