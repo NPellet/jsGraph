@@ -74,7 +74,8 @@ module.exports = function(grunt) {
 
             options: {
                 files: ['package.json'],
-                updateConfigs: [ 'pkg' ]
+                updateConfigs: [ 'pkg' ],
+                push: false
             }
     
         }
