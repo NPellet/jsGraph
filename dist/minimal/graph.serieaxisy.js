@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 define(["require","graphs/graph.serieaxis"],function(t,i){var n=function(){};return $.extend(n.prototype,i.prototype,{getX:function(t){var i=-Math.round(1e3*((t-this.minY)/(this.maxY-this.minY)))/1e3*(this.axis.totalDimension-this.axis._widthLabels)-this.axis._widthLabels-5;return i},getY:function(t){var i=Math.round(1e3*((t-this.axis.getActualMin())/this.axis._getActualInterval()*(this.axis.getMaxPx()-this.axis.getMinPx())+this.axis.getMinPx()))/1e3;return i},getMinX:function(){return this.minY},getMaxX:function(){return this.maxY},getMinY:function(){return this.minX},getMaxY:function(){return this.maxX}}),n});

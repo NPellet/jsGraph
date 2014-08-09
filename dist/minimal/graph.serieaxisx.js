@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 define(["require","graphs/graph.serieaxis"],function(t,n){var i=function(){};return $.extend(i.prototype,n.prototype,{getY:function(t){var n=-Math.round(1e3*((t-this.minY)/(this.maxY-this.minY)))/1e3*(this.axis.totalDimension-this.axis._widthLabels)-this.axis._widthLabels;return n},getX:function(t){var n=Math.round(1e3*((t-this.axis.getActualMin())/this.axis._getActualInterval()*(this.axis.getMaxPx()-this.axis.getMinPx())+this.axis.getMinPx()))/1e3;return n},bindLabelHandlers:function(t){function n(n){if(e.axis.currentAction===!1){e.axis.currentAction="labelDragging",n.stopPropagation(),t.dragging=!0;var i=e.graph.getXY(n);t.draggingIniX=i.x,t.draggingIniY=i.y,e.labelDragging=t}}function i(n){e.axis.currentAction===!1&&(e.axis.currentAction="labelDraggingMain",n.preventDefault(),n.stopPropagation(),e.labelDragging=t)}var e=this;t.labelDom.addEventListener("mousedown",n),t.rect.addEventListener("mousedown",n),t.rect.addEventListener("click",function(t){t.preventDefault(),t.stopPropagation()}),t.labelDom.addEventListener("click",function(t){t.preventDefault(),t.stopPropagation()}),t.path.addEventListener("click",function(t){t.preventDefault(),t.stopPropagation()}),t.path.addEventListener("mousedown",i)}}),i});

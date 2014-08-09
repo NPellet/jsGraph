@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 define([],function(){return{init:function(){},onMouseDown:function(n,t,o,e){var a=n;this.count=this.count||0,t-=n.getPaddingLeft(),xVal=n.getXAxis().getVal(t);var i=Util.getNextColorRGB(this.count,100),r=n.makeShape({type:"surfaceUnderCurve",pos:{x:xVal,y:0},pos2:{x:xVal,y:0},fillColor:"rgba("+i+", 0.3)",strokeColor:"rgba("+i+", 0.9)",onChange:function(n){a.triggerEvent("onAnnotationChange",n)}},{},!0);r&&(this.count++,r.handleMouseDown(e,!0),r.draw())}}});

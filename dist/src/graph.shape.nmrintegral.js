@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,7 +21,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 
 define( [ 'require', 'graphs/graph.shape.areaundercurve' ], function( require, GraphSurfaceUnderCurve ) {
@@ -200,10 +200,9 @@ define( [ 'require', 'graphs/graph.shape.areaundercurve' ], function( require, G
 				sum = 1; // Will look line a line anyway
 			}
 
-			if( ! this.maxPx ) {
-				this.maxPx = 50;
-			}
 
+			this.maxPx = this.options.maxPx || 50;
+			
 			if( ! this.ratio ) {
 				this.ratio = 1;
 			}

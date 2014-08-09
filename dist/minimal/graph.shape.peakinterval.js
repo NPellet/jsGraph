@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 define(["require","./graph.shape.line"],function(t,e){var i=function(t){this.init(t)};return $.extend(i.prototype,e.prototype,{createDom:function(){this._dom=document.createElementNS(this.graph.ns,"line"),this._dom.setAttribute("marker-end","url(#verticalline"+this.graph._creation+")"),this._dom.setAttribute("marker-start","url(#verticalline"+this.graph._creation+")")},setLabelPosition:function(t){var e=this._getPosition(this.getFromData("pos")),i=this._getPosition(this.getFromData("pos2"),this.getFromData("pos"));this._setLabelPosition(t,this._getPosition(this.get("labelPosition",t),{x:(e.x+i.x)/2+"px",y:(e.y+i.y)/2+"px"}))},afterDone:function(){}}),i});

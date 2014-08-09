@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 onmessage=function(t){var a=t.data.data,s=t.data.slotNumber,o=t.data.slot,l=t.data.flip,m=t.data.max,r=t.data.min,e=o/(m-r),i=0,h=1;l&&(i=1,h=0),this.slotsData=[];for(var u=0,b=a.length;b>u;u++)for(var n=0,N=a[u].length;N>n;n+=2)slotNumber=Math.floor((a[u][n]-r)*e),this.slotsData[slotNumber]=this.slotsData[slotNumber]||{min:a[u][n+h],max:a[u][n+h],start:a[u][n+h],stop:!1,x:a[u][n+i]},this.slotsData[slotNumber].stop=a[u][n+h],this.slotsData[slotNumber].min=Math.min(a[u][n+h],this.slotsData[slotNumber].min),this.slotsData[slotNumber].max=Math.max(a[u][n+h],this.slotsData[slotNumber].max);postMessage({slotNumber:s,slot:o,data:this.slotsData})};

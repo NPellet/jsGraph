@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.1
+* Graphing JavaScript Library v0.4.0
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -21,6 +21,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
 * 
-* Date: 08-08-2014
+* Date: 09-08-2014
 */
 define(["require","./graph.shape.rect"],function(t,e){var i=5,s=function(t,e){this.options=e||{},this.init(t),this.nbHandles=4,this.createHandles(this.nbHandles,"rect",{transform:"translate(-3 -3)",width:6,height:6,stroke:"black",fill:"white",cursor:"nwse-resize"})};return $.extend(s.prototype,e.prototype,{createDom:function(){this._dom=document.createElementNS(this.graph.ns,"rect"),this._dom.element=this},redrawImpl:function(){this.setPosition(),this.setHandles(),this.setBindableToDom(this._dom)},highlight:function(){this._dom.setAttribute("stroke-width","5"),this.setLinesY(i+2)},unhighlight:function(){this.setStrokeWidth(),this.setLinesY(i)}}),s});
