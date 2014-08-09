@@ -1,5 +1,5 @@
 /* !
-* Graphing JavaScript Library v0.3.0
+* Graphing JavaScript Library v0.3.1
 * https://github.com/NPellet/graph
 * 
 * Copyright (c) 2014 Norman Pellet
@@ -803,7 +803,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		isLocked: function() {
-console.log( this );
+
 			return this.options.locked || this.graph.shapesLocked;
 		},
 

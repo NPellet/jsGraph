@@ -778,7 +778,7 @@ define( [ 'require' ], function( require ) {
 		},
 
 		isLocked: function() {
-console.log( this );
+
 			return this.options.locked || this.graph.shapesLocked;
 		},
 
