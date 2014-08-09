@@ -266,6 +266,8 @@ define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 				}
 			}	
 
+
+
 			return pathError;
 		},
 
@@ -282,7 +284,7 @@ define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 			}
 
 			var diff = this.maxLevel - level;
-
+console.log( diff, this.maxLevel, level );
 			if( diff == 1 ) { // bars
 				return this["makeBar" + orientation.toUpperCase() ]( path, coord, origin );
 			}
