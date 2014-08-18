@@ -151,7 +151,7 @@ module.exports = function(grunt) {
                     contents = "build['" + defineName + "'] = ( function( " + objects + ") { " + contents + " } ) ( " + dependencies.join() + " );\n"; 
                 } else {
 
-                    contents = "return build[ 'graph.core' ];\n";
+                    contents = "return build[ './graph.core' ];\n";
                    
                 }
 

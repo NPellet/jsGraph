@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T23:16Z
+ * Date: 2014-08-18T23:20Z
  */
 
 (function( global, factory ) {
@@ -9950,7 +9950,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
  */
 
-return build[ 'graph.core' ];
+return build[ './graph.core' ];
 
 
 // Build: End source file (graph) 
