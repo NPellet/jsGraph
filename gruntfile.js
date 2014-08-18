@@ -6,6 +6,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
 
 
+        pkg: grunt.file.readJSON('package.json'),
 
         build: {
 
@@ -35,6 +36,9 @@ module.exports = function(grunt) {
         var done = this.async();
         var targetOutput = this.data.output;
         var rdefineEnd = /\}\s*\)\s*;[^}\w]*$/;
+
+        var version = grunt.config('pkg').version;
+        grunt.log.writeln( version );
 
         var buildConvert = function( name, path, contents ) {
 //            return contents;
@@ -190,7 +194,19 @@ module.exports = function(grunt) {
                 exclude: [ 'jquery' ],
                 //useStrict: true,
 
-                out: targetOutput || './dist/graphs.js'
+                out: function( compiled ) {
+
+                    compiled = compiled
+                        .replace( /@VERSION/g, version )
+                        .replace( /@DATE/g, ( new Date() ).toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+
+                    // Write concatenated source to file
+                    grunt.file.write( targetOutput, compiled );
+                 }
+
+
+
+        //targetOutput || './dist/graphs.js'
             };
 
 
