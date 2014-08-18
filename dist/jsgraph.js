@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v0.4.0
+ * jsGraphs JavaScript Graphing Library v1.0.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T18:23Z
+ * Date: 2014-08-18T19:41Z
  */
 
 (function( global, factory ) {
@@ -36,7 +36,7 @@
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
  */
 
-build['graph.axis'] = ( function( $ ) { 
+build['./graph.axis'] = ( function( $ ) { 
 
 
 	var GraphAxis = function() { }
@@ -949,7 +949,7 @@ build['graph.axis'] = ( function( $ ) {
 
 	return GraphAxis;
 
- } ) ( build["jquery"] );
+ } ) ( build["./jquery"] );
 
 
 // Build: End source file (graph.axis) 
@@ -963,7 +963,7 @@ build['graph.axis'] = ( function( $ ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
  */
 
-build['graph.axis.x'] = ( function( $, GraphAxis ) { 
+build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
 
 
 	
@@ -1120,7 +1120,7 @@ build['graph.axis.x'] = ( function( $, GraphAxis ) {
 
 	
 	return GraphXAxis;
- } ) ( build["jquery"],build["graph.axis"] );
+ } ) ( build["./jquery"],build["./graph.axis"] );
 
 
 // Build: End source file (graph.axis.x) 
@@ -1134,7 +1134,7 @@ build['graph.axis.x'] = ( function( $, GraphAxis ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
  */
 
-build['graph.axis.y'] = ( function( GraphAxis ) { 
+build['./graph.axis.y'] = ( function( GraphAxis ) { 
 
 
 
@@ -1334,7 +1334,7 @@ build['graph.axis.y'] = ( function( GraphAxis ) {
 
 	return GraphYAxis;
 	
- } ) ( build["graph.axis"] );
+ } ) ( build["./graph.axis"] );
 
 
 // Build: End source file (graph.axis.y) 
@@ -1348,7 +1348,7 @@ build['graph.axis.y'] = ( function( GraphAxis ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
  */
 
-build['graph.legend'] = ( function( ) { 
+build['./graph.legend'] = ( function( ) { 
 
 	var legendDefaults = {
 		frame: false,
@@ -1604,7 +1604,7 @@ build['graph.legend'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/dynamicdepencies.js
  */
 
-build['dynamicdepencies'] = ( function( ) { 
+build['./dynamicdepencies'] = ( function( ) { 
 	
 	return function() {
 
@@ -1679,7 +1679,7 @@ build['dynamicdepencies'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
  */
 
-build['graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDepencies) { 
+build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDepencies) { 
 
 	
 
@@ -1715,9 +1715,9 @@ build['graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDe
 		dblclick: {},
 
 		dynamicDependencies: {
-			'plugin': 'plugins/',
-			'serie': 'series/',
-			'shapes': 'shapes/'
+			'plugin': './plugins/',
+			'serie': './series/',
+			'shapes': './shapes/'
 		},
 
 		series: [ 'line' ]
@@ -3443,7 +3443,7 @@ build['graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDe
 
 
 	return Graph;
- } ) ( build["jquery"],build["graph.axis.x"],build["graph.axis.y"],build["graph.legend"],build["dynamicdepencies"] );
+ } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.legend"],build["./dynamicdepencies"] );
 
 
 // Build: End source file (graph.core) 
@@ -3457,7 +3457,7 @@ build['graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDe
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
  */
 
-build['graph._serie'] = ( function( ) { 
+build['./graph._serie'] = ( function( ) { 
 
 
 	
@@ -3729,7 +3729,7 @@ build['graph._serie'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
  */
 
-build['plugins/graph.plugin.drag'] = ( function( ) { 
+build['./plugins/graph.plugin.drag'] = ( function( ) { 
 
 
 	var plugin = function() {};
@@ -3782,7 +3782,7 @@ build['plugins/graph.plugin.drag'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.linking.js
  */
 
-build['plugins/graph.plugin.linking'] = ( function( ) { 
+build['./plugins/graph.plugin.linking'] = ( function( ) { 
 
 
 	var plugin =  function() { };
@@ -4049,7 +4049,7 @@ build['plugins/graph.plugin.linking'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.nmrpeakpicking.js
  */
 
-build['plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
+build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
 
 	var plugin = function() {};
 
@@ -4109,7 +4109,7 @@ build['plugins/graph.plugin.nmrpeakpicking'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.range.js
  */
 
-build['plugins/graph.plugin.range'] = ( function( ) { 
+build['./plugins/graph.plugin.range'] = ( function( ) { 
 
 	var plugin = function() {};
 
@@ -4167,7 +4167,7 @@ build['plugins/graph.plugin.range'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
  */
 
-build['plugins/graph.plugin.shape'] = ( function( ) { 
+build['./plugins/graph.plugin.shape'] = ( function( ) { 
 
 	
 
@@ -4287,7 +4287,7 @@ build['plugins/graph.plugin.shape'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
  */
 
-build['plugins/graph.plugin.zoom'] = ( function( ) { 
+build['./plugins/graph.plugin.zoom'] = ( function( ) { 
 
 
 	var plugin =  function() { };
@@ -4565,7 +4565,7 @@ build['plugins/graph.plugin.zoom'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
  */
 
-build['series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) { 
+build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) { 
 
 
 	
@@ -5967,7 +5967,7 @@ build['series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 	} );
 
 	return GraphSerie;
- } ) ( build["graph._serie"] );
+ } ) ( build["./graph._serie"] );
 
 
 // Build: End source file (series/graph.serie.line) 
@@ -5981,7 +5981,7 @@ build['series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
  */
 
-build['series/graph.serie.contour'] = ( function( GraphSerie ) { 
+build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
 
 
 	var GraphSerieContour = function() {
@@ -6122,7 +6122,7 @@ build['series/graph.serie.contour'] = ( function( GraphSerie ) {
 
 	return GraphSerieContour;
 
- } ) ( build["series/graph.serie.line"] );
+ } ) ( build["./series/graph.serie.line"] );
 
 
 // Build: End source file (series/graph.serie.contour) 
@@ -6136,7 +6136,7 @@ build['series/graph.serie.contour'] = ( function( GraphSerie ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
  */
 
-build['series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
+build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
 
 
 	
@@ -6491,7 +6491,7 @@ build['series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) {
 	} );
 
 	return GraphSerieScatter;
- } ) ( build["graph._serie"] );
+ } ) ( build["./graph._serie"] );
 
 
 // Build: End source file (series/graph.serie.scatter) 
@@ -6505,7 +6505,7 @@ build['series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
  */
 
-build['series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
+build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
 
 
 	
@@ -6852,7 +6852,7 @@ build['series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 	} );
 
 	return GraphSerieScatter;
- } ) ( build["graph._serie"] );
+ } ) ( build["./graph._serie"] );
 
 
 // Build: End source file (series/graph.serie.zone) 
@@ -6866,7 +6866,7 @@ build['series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxis.js
  */
 
-build['graph.serieaxis'] = ( function( GraphSerie ) { 
+build['./graph.serieaxis'] = ( function( GraphSerie ) { 
 
 
 
@@ -6907,7 +6907,7 @@ build['graph.serieaxis'] = ( function( GraphSerie ) {
 	});
 
 	return GraphSerieAxis;
- } ) ( build["series/graph.serie.line"] );
+ } ) ( build["./series/graph.serie.line"] );
 
 
 // Build: End source file (graph.serieaxis) 
@@ -6921,7 +6921,7 @@ build['graph.serieaxis'] = ( function( GraphSerie ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisx.js
  */
 
-build['graph.serieaxisx'] = ( function( GraphSerieAxis ) { 
+build['./graph.serieaxisx'] = ( function( GraphSerieAxis ) { 
 
 
 	var GraphSerieAxisX = function() {};
@@ -6989,7 +6989,7 @@ build['graph.serieaxisx'] = ( function( GraphSerieAxis ) {
 
 	return GraphSerieAxisX;
 
- } ) ( build["graph.serieaxis"] );
+ } ) ( build["./graph.serieaxis"] );
 
 
 // Build: End source file (graph.serieaxisx) 
@@ -7003,7 +7003,7 @@ build['graph.serieaxisx'] = ( function( GraphSerieAxis ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisy.js
  */
 
-build['graph.serieaxisy'] = ( function( GraphSerieAxis ) { 
+build['./graph.serieaxisy'] = ( function( GraphSerieAxis ) { 
 
 
 	var GraphSerieAxisY = function() {};
@@ -7045,7 +7045,7 @@ build['graph.serieaxisy'] = ( function( GraphSerieAxis ) {
 
 	return GraphSerieAxisY;
 
- } ) ( build["graph.serieaxis"] );
+ } ) ( build["./graph.serieaxis"] );
 
 
 // Build: End source file (graph.serieaxisy) 
@@ -7059,7 +7059,7 @@ build['graph.serieaxisy'] = ( function( GraphSerieAxis ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
  */
 
-build['shapes/graph.shape'] = ( function( ) { 
+build['./shapes/graph.shape'] = ( function( ) { 
 
 
 	
@@ -7884,7 +7884,7 @@ build['shapes/graph.shape'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
  */
 
-build['shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
+build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
 
 
 
@@ -8154,7 +8154,7 @@ build['shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
 
 	return GraphSurfaceUnderCurve;
- } ) ( build["shapes/graph.shape"] );
+ } ) ( build["./shapes/graph.shape"] );
 
 
 // Build: End source file (shapes/graph.shape.areaundercurve) 
@@ -8168,7 +8168,7 @@ build['shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
  */
 
-build['shapes/graph.shape.line'] = ( function( GraphShape ) { 
+build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
 
 
 
@@ -8353,7 +8353,7 @@ build['shapes/graph.shape.line'] = ( function( GraphShape ) {
 
 	return GraphLine;
 
- } ) ( build["shapes/graph.shape"] );
+ } ) ( build["./shapes/graph.shape"] );
 
 
 // Build: End source file (shapes/graph.shape.line) 
@@ -8367,7 +8367,7 @@ build['shapes/graph.shape.line'] = ( function( GraphShape ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
  */
 
-build['shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
+build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
 
 
 	var GraphArrow = function(graph) {
@@ -8449,7 +8449,7 @@ build['shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 
 	return GraphArrow;
 
- } ) ( build["shapes/graph.shape.line"] );
+ } ) ( build["./shapes/graph.shape.line"] );
 
 
 // Build: End source file (shapes/graph.shape.arrow) 
@@ -8463,7 +8463,7 @@ build['shapes/graph.shape.arrow'] = ( function( GraphLine ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
  */
 
-build['shapes/graph.shape.label'] = ( function( GraphShape ) { 
+build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
 
 
 
@@ -8496,7 +8496,7 @@ build['shapes/graph.shape.label'] = ( function( GraphShape ) {
 
 	return GraphLabel;
 
- } ) ( build["shapes/graph.shape"] );
+ } ) ( build["./shapes/graph.shape"] );
 
 
 // Build: End source file (shapes/graph.shape.label) 
@@ -8510,7 +8510,7 @@ build['shapes/graph.shape.label'] = ( function( GraphShape ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
  */
 
-build['shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
+build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
 
 
 
@@ -8776,7 +8776,7 @@ build['shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) {
 
 
 	return GraphNMRIntegral;
- } ) ( build["shapes/graph.shape.areaundercurve"] );
+ } ) ( build["./shapes/graph.shape.areaundercurve"] );
 
 
 // Build: End source file (shapes/graph.shape.nmrintegral) 
@@ -8790,7 +8790,7 @@ build['shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
  */
 
-build['shapes/graph.shape.rect'] = ( function( GraphShape ) { 
+build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
 
 
 
@@ -9142,7 +9142,7 @@ build['shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
 	return GraphRect;
 
- } ) ( build["shapes/graph.shape"] );
+ } ) ( build["./shapes/graph.shape"] );
 
 
 // Build: End source file (shapes/graph.shape.rect) 
@@ -9156,7 +9156,7 @@ build['shapes/graph.shape.rect'] = ( function( GraphShape ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
  */
 
-build['shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
+build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
 
 
 	var lineHeight = 5;
@@ -9214,7 +9214,7 @@ build['shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 
 	return GraphPeakIntegration2D;
 
- } ) ( build["shapes/graph.shape.rect"] );
+ } ) ( build["./shapes/graph.shape.rect"] );
 
 
 // Build: End source file (shapes/graph.shape.peakintegration2d) 
@@ -9228,7 +9228,7 @@ build['shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
  */
 
-build['shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
+build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
 
 
 	
@@ -9257,7 +9257,7 @@ build['shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 
 	return GraphPeakInterval;
 
- } ) ( build["shapes/graph.shape.line"] );
+ } ) ( build["./shapes/graph.shape.line"] );
 
 
 // Build: End source file (shapes/graph.shape.peakinterval) 
@@ -9271,7 +9271,7 @@ build['shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
  */
 
-build['shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
+build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
 
 
 	
@@ -9488,7 +9488,7 @@ build['shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 	});
 
 	return GraphPeakInterval2;
- } ) ( build["shapes/graph.shape.line"] );
+ } ) ( build["./shapes/graph.shape.line"] );
 
 
 // Build: End source file (shapes/graph.shape.peakinterval2) 
@@ -9502,7 +9502,7 @@ build['shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
  */
 
-build['shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
+build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
 
 
 
@@ -9588,7 +9588,7 @@ build['shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 	});
 
 	return GraphRangeX;
- } ) ( build["shapes/graph.shape.areaundercurve"] );
+ } ) ( build["./shapes/graph.shape.areaundercurve"] );
 
 
 // Build: End source file (shapes/graph.shape.rangex) 
@@ -9602,7 +9602,7 @@ build['shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
  */
 
-build['graph.toolbar'] = ( function( ) { 
+build['./graph.toolbar'] = ( function( ) { 
 
 	var toolbarDefaults = {
 		
@@ -9777,7 +9777,7 @@ build['graph.toolbar'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
  */
 
-build['graph.xaxis.time'] = ( function( GraphAxis ) { 
+build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
 
 
 	
@@ -9929,7 +9929,7 @@ build['graph.xaxis.time'] = ( function( GraphAxis ) {
 
 	
 	return GraphXAxis;
- } ) ( build["graph.axis"] );
+ } ) ( build["./graph.axis"] );
 
 
 // Build: End source file (graph.xaxis.time) 

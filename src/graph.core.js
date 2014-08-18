@@ -34,9 +34,9 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 		dblclick: {},
 
 		dynamicDependencies: {
-			'plugin': 'plugins/',
-			'serie': 'series/',
-			'shapes': 'shapes/'
+			'plugin': './plugins/',
+			'serie': './series/',
+			'shapes': './shapes/'
 		},
 
 		series: [ 'line' ]

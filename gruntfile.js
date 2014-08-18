@@ -128,7 +128,7 @@ module.exports = function(grunt) {
                     var basePath = npmpath.resolve('.') + "/";
                     var defineName = npmpath.resolve( defineName );
 
-                    defineName = defineName.replace( basePath, "" );
+                    defineName = "./" + defineName.replace( basePath, "" );
 
                     dependencies = dependencies.map( function( val ) { 
 
@@ -140,7 +140,7 @@ module.exports = function(grunt) {
                         val = npmpath.resolve( npmpath.dirname( path ), val );
     
 
-                        val = val.replace( basePath, "" ).replace( /^src\//, "" );
+                        val = "./" + val.replace( basePath, "" ).replace( /^src\//, "" );
 
                         return 'build["' + val + '"]';J
 
