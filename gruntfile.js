@@ -39,9 +39,15 @@ module.exports = function(grunt) {
                    
                 }
             }
+        },
+
+        uglify: {
+            dist: {
+              files: {
+                'dist/jsgraph.min.js': ['dist/jsgraph.js']
+              }
+            }
         }
-
-
 
     });
 
@@ -49,7 +55,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-bump');
-
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
     function convert() {
 
