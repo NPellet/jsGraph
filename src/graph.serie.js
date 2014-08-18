@@ -1,10 +1,10 @@
 
-define( [ require, 'jquery', 'graphs/graph._serie'], function( require, $, SerieStatic ) {
+define( [ 'jquery', './graph._serie'], function( $, GraphSerieNonInstanciable ) {
 
 	"use strict";
 
 	var GraphSerie = function() { }
-	$.extend( GraphSerie.prototype, SerieStatic.prototype, {
+	$.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
 
 		defaults: {
 			lineColor: 'black',

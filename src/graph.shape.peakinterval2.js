@@ -1,5 +1,5 @@
 
-define( [ 'require', 'graphs/graph.shape.line' ], function( require, GraphLine ) {
+define( [ './graph.shape.line' ], function( GraphLine ) {
 
 	"use strict";
 	var lineHeight = 5;

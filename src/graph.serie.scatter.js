@@ -1,10 +1,10 @@
 
-define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
+define( [ './graph._serie'], function( GraphSerieNonInstanciable ) {
 
 	"use strict";
 
 	var GraphSerieScatter = function() { }
-	$.extend( GraphSerieScatter.prototype, SerieStatic.prototype, {
+	$.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
 		defaults: {
 			label: ""

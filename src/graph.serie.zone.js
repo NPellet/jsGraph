@@ -1,10 +1,10 @@
 
-define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
+define( [  './graph._serie'], function( GraphSerieNonInstanciable ) {
 
 	"use strict";
 
 	var GraphSerieScatter = function() { }
-	$.extend( GraphSerieScatter.prototype, SerieStatic.prototype, {
+	$.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
 		defaults: {
 			label: "",
@@ -288,6 +288,7 @@ define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 			lineBottom.reverse();
 
 			this.lineZone.setAttribute('d', "M " + lineTop[ 0 ] + " L " + lineTop.join(" L ") + " L " + lineBottom.join(" L ") + " z" );
+
 			this.applyLineStyle( this.lineZone );
 			this.groupMain.appendChild( this.groupZones );
 		},
@@ -339,8 +340,6 @@ define( [ require, 'graphs/graph._serie'], function( require, SerieStatic ) {
 		},
 
 		/* */
-
-
 
 
 	} );

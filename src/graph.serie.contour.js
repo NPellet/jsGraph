@@ -1,5 +1,5 @@
 
-define( [ 'require', 'graphs/graph.serie' ], function( require, GraphSerie ) {
+define( [ './graph.serie' ], function( GraphSerie ) {
 
 	var GraphSerieContour = function() {
 		this.accumulatedDelta = 0;
@@ -82,17 +82,30 @@ define( [ 'require', 'graphs/graph.serie' ], function( require, GraphSerie ) {
 
 					k++;
 				}
+				
 				domLine = this._createLine(currentLine, i, k);
 				domLine.setAttribute('data-zvalue', this.data[i].zValue);
-				this.zValues[this.data[i].zValue] = {dom: domLine};
-				this.minZ = Math.max(this.minZ, this.data[i].zValue);
-				this.maxZ = Math.min(this.maxZ, this.data[i].zValue);
+				
+				if( this.zoneColors && this.zoneColors[ i ] ) {
+
+					domLine.setAttribute( 'fill', this.zoneColors[ i ] );
+				}
+
+				this.zValues[ this.data[ i ].zValue ] = { dom: domLine };
+
+				this.minZ = Math.max( this.minZ, this.data[ i ].zValue );
+				this.maxZ = Math.min( this.maxZ, this.data[ i ].zValue );
 			}
+
 			i++;
+
 			for(; i < this.lines.length; i++) {
+
 				this.groupLines.removeChild(this.lines[i]);
 				this.lines.splice(i, 1);
+
 			}
+
 			this.groupMain.insertBefore(this.groupLines, next);
 		},
 
@@ -104,6 +117,11 @@ define( [ 'require', 'graphs/graph.serie' ], function( require, GraphSerie ) {
 			for(var i in this.zValues) {
 				this.zValues[i].dom.setAttribute('display', Math.abs(i) < this.threshold ? 'none' : 'block');
 			}
+		},
+
+
+		setColors: function( colors ) {
+			this.zoneColors = colors;
 		}
 	});
 

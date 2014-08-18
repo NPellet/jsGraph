@@ -1,6 +1,6 @@
 
 
-define( [ 'require', 'graphs/graph.shape.areaundercurve' ], function( require, GraphSurfaceUnderCurve ) {
+define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
 
 	var GraphRangeX = function(graph) { this.init(graph); };
 	$.extend(GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {

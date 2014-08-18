@@ -1,5 +1,5 @@
 
-define( [ 'require', 'graphs/graph.shape.line' ], function( require, GraphLine ) {
+define( [ './graph.shape.line' ], function( GraphLine ) {
 
 	var GraphArrow = function(graph) {
 		this.init(graph);

@@ -1,5 +1,5 @@
 
-define( [ 'require' ], function( require ) {
+define( [ ], function( ) {
 
 	"use strict";
 	function getColor( color ) {

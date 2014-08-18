@@ -1,29 +1,4 @@
-define([
-
-	'jquery', 
-	'require',
-	'graphs/graph.axis.x',
-	'graphs/graph.axis.y',
-	'graphs/graph.serie',
-	'graphs/graph.serie.contour',
-	'graphs/graph.serie.scatter',
-	'graphs/graph.serie.zone',
-	'graphs/graph.legend'
-
-
-	], function(
-		$,
-		require,
-
-		GraphXAxis,
-		GraphYAxis,
-		GraphSerie,
-		GraphSerieContour,
-		GraphSerieScatter,
-		GraphSerieZone,
-		GraphLegend
-
-	) {
+define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.serie.contour','./graph.serie.scatter','./graph.serie.zone','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphSerie,GraphSerieContour,GraphSerieScatter,GraphSerieZone,GraphLegend, DynamicDepencies) {
 
 	"use strict";
 
@@ -63,16 +38,25 @@ define([
 		plugins: [],
 		pluginAction: {},
 		wheel: {},
-		dblclick: {}
+		dblclick: {},
+
+		dynamicDependencies: {
+			'plugin': './plugins/'
+		}
 	};
 
 
 	var Graph = function( dom, options, axis ) {
 
+
 		this._creation = Date.now() + Math.random();
 
 		if( typeof dom == "string" ) {
 			dom = document.getElementById( dom );
+		}
+
+		if( ! dom || ! dom.appendChild ) {
+			throw "The DOM has not been defined";
 		}
 
 		this.options = $.extend({}, graphDefaults, options);
@@ -94,6 +78,8 @@ define([
 
 		this.registerEvents();
 		
+		this.dynamicLoader = new DynamicDepencies();
+		this.dynamicLoader.configure( this.options.dynamicDependencies );
 
 		this.trackingLines = {
 			id: 0,
@@ -1232,11 +1218,11 @@ define([
 			var self = this,
 				deferred = $.Deferred();
 
-			require( [ 'graphs/graph.toolbar' ], function( toolbar ) {
+			this.dynamicLoader.load( 'util', './graph.toolbar', function( toolbar ) {
 
 				self.toolbar = new toolbar( self, toolbarData );
 				deferred.resolve( self.toolbar );
-			})
+			});
 
 			return deferred;
 		},
@@ -1262,7 +1248,7 @@ define([
 			}
 
 
-			var shapeConstructor = require( [ 'graphs/graph.shape.' + shapeData.type ], function( shapeConstructor ) {
+			var shapeConstructor = this.dynamicLoader.load( 'shape', './graph.shape.' + shapeData.type, function( shapeConstructor ) {
 
 				var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
@@ -1412,15 +1398,14 @@ define([
 				return;
 			}
 
-			require( pluginsToLoad, function() {
+			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, filename ) {
 
-				for(var i = 0, l = pluginsToLoad.length; i < l; i++) {
+				self._plugins[ filename ] = new plugin();
+				self._plugins[ filename ].init( self, self.options.plugins[ filename ] || { }, filename );
+			
 
-					self._plugins[ pluginsToLoad[ i ] ] = new arguments[ i ]();
-					self._plugins[ pluginsToLoad[ i ] ].init( self, self.options.plugins[ pluginsToLoad[ i ] ] || { }, pluginsToLoad[ i ] );
-				}
-
-				self._pluginsReady();
+				console.warn("Warning. plugin ready is disabled");
+				//self._pluginsReady();
 			} );
 			//this._pluginsExecute('init', arguments);
 		},
@@ -1454,7 +1439,7 @@ define([
 
 			if( this.selectedShape ) { // Only one selected shape at the time
 
-				console.log('Unselect shape');
+				//console.log('Unselect shape');
 				this.selectedShape.unselect( );
 			}
 
@@ -1688,7 +1673,7 @@ define([
 
 			if( ! this.context ) {
 
-				require( [ './util/context' ], function( Context ) {
+				this.dynamicLoader.load( 'util', './util/context', function( Context ) {
 
 					var instContext = new Context();
 
@@ -1709,7 +1694,7 @@ define([
 		},
 
 		unlockShapes: function() {
-			console.log('unlock');
+	//		console.log('unlock');
 			this.shapesLocked = false;
 		}
 	}

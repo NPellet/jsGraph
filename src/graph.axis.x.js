@@ -1,5 +1,5 @@
 
-define( [ 'require', 'jquery', './graph.axis' ], function( require, $, GraphAxis ) {
+define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
 	"use strict";
 	

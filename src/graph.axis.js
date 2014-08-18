@@ -1,10 +1,7 @@
 
 define( [ 'jquery' ] , function( $ ) {
 
-	var GraphAxis = function() {
-
-
-	}
+	var GraphAxis = function() { }
 
 	GraphAxis.prototype = {
 
@@ -482,7 +479,7 @@ define( [ 'jquery' ] , function( $ ) {
 			while(this.groupGrids.firstChild)
 				this.groupGrids.removeChild(this.groupGrids.firstChild);
 
-			if( this.currentAxisMin == undefined || ! this.currentAxisMax == undefined ) {
+			if( this.currentAxisMin == undefined || ! this.currentAxisMax == undefined ) {
 				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
 			}
 

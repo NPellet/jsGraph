@@ -166,351 +166,65 @@ obj.maxY = 5;
 var cont = generateContourLines( obj );
 
 
-require( [ require, 'graphs/graph.maximal', 'highlightjs' ] , function( require, Graph ) {
+require( [ 'graphs/graph.core', 'highlightjs' ] , function( Graph ) {
 
-	var t = 0;
-	var functions = [
+	window.Graph = Graph;
 
-[ function( domGraph ) {
+	var options = {};
 
-	var graph = new Graph( domGraph );
-	
-	graph.setHeight( 240 );
-	graph.setWidth( 200 );
-
-	graph.newSerie("temp_nh")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( series[ 0 ] );
-
-	graph.getYAxis().setLabel( "Anomaly (°C)");
-	graph.getXAxis().setLabel( "Years");
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-}, "Default functionnality", [ 'Basic chart', 'Axis labels', 'Set graph dimension'] ],
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, {
-
-		wheel: {
-			type: 'plugin',
-			plugin: './graph.plugin.zoom',
-			options: {
-				direction: 'y'
-			}
-		},
-
-		dblclick: {
-			type: 'plugin',
-			plugin: './graph.plugin.zoom',
-			options: {
-				mode: 'total'
-			}
-		},
-
-		plugins: {
-			'./graph.plugin.zoom': { zoomMode: 'x' },
-			'./graph.plugin.drag': {}
-		},
-
-		pluginAction: {
-			'./graph.plugin.drag': { shift: true, ctrl: false },
-			'./graph.plugin.zoom': { shift: false, ctrl: false }
-		}
-	} );
-	
-
-	graph.newSerie("temp_nh")
-		.autoAxis()
-		.setData( series[ 3 ] );
-		
-
-	graph.redraw( );
-	graph.drawSeries();	
-}, "Plugin loading", [ "Loading plugins dynamically", "Mouse wheel interaction", "Double click interaction" ] ],
-
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, { }, {
-
-		top: [ {
-			flipped: true,
-			axisDataSpacing: { min: 0, max: 0 },
-			primaryGrid: false,
-			secondaryGrid: false,			
-			labelValue: "Top axis"
-		} ],
-
-		right: [ {
-			forcedMin: 0,
-			axisDataSpacing: { min: 0 },
-			tickPosition: 2,
-			secondaryGrid: false
-		} ]
-
-	} );
-
-	graph.newSerie("temperatures")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( series[ 5 ] )
-		.setLineColor('red');
-
-	graph.autoscaleAxes();
-	graph.redraw( );
-	graph.drawSeries( );
-
-
-}, "Axis/Grid tuning", [ "Loading on other axis", "Changing grid properties", "Force axis boundaries", "Adjust data padding"] ],
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, { 
-		wheel: {
-			type: 'plugin',
-			plugin: './graph.plugin.zoom',
-			options: {
-				direction: 'y'
-			}
-		},
-
-		plugins: {
-			'./graph.plugin.zoom': { }
-		}
-
-	 } );
-	
-	var axisProperties = { primaryGrid: false, secondaryGrid: false },
-
-		xAxis = graph.getXAxis( 0, axisProperties ),
-		leftAxis = graph.getLeftAxis( 0, axisProperties ),
-		rightAxis = graph.getRightAxis( 0, axisProperties );
-
-	graph.newSerie( "serieTest" )
-		.setLabel( "My serie" )
-		.setAxes( xAxis, leftAxis )
-		.setData( series[ 0 ] );
-		
-	graph.newSerie( "serieTest_2" )
-		.setLabel( "My serie 2" )
-		.setAxes( xAxis, rightAxis )
-		.setData( series[ 1 ] )
-		.setLineColor('red');
-
-	graph.setHeight( 250 );
-
-	var legend = graph.makeLegend( {
-
-		backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
-		frame: true,
-		frameWidth: '1',
-		frameColor: 'rgba( 100, 100, 100, 0.5 )',
-
-		movable: true
-
+	var hashtag = (document.location.href.split("#")[ 1 ] || "").split(';').map( function( val ) {
+		val = val.split(':');
+		options[ val[ 0 ] ] = val[ 1 ];
 	});
 
-	graph.redraw( );
-	graph.drawSeries();	
-	
-	legend.setPosition(
 
-		{ dx: "-10px", dy: "10px", x: "max", y: "max" }, 
-		"right", // Reference point
-		"top" // Reference point
+	var examples;
+	if( options.examples ) {
 
-	);
+		examples = options.examples.split(',');
 
-}, "Scaling different axis", [ 'Displaying a legend', "Legend in movable", "Wheel scales the selected serie"] ],
+	} else {
 
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, { } );
-	
-	graph.setHeight( 250 );	
-
-	var data = [];
-	var data2 = [];
-	
-
-	for( var i = 0; i < 40 ; i += 2 ) {
-
-		data.push( [ i, Math.pow( i, 2 ) ] );
-		
-		data2.push( i );
-		data2.push( Math.pow( i, 2 ) - ( ( 0.2 + Math.random() ) * 300 ) );
-		data2.push( Math.pow( i, 2 ) + ( ( 0.2 + Math.random() ) * 300 ) );
+		var examples = [
+			'basic',
+			'axis',
+			'contour',
+			'errorbars',
+			'legend',
+			'minmax',
+			'plugins',
+			'scatter',
+			'xinterval'
+		];
 	}
 
-	var serie = graph.newSerie("serieTest", { }, 'zone')
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( data2 )
-		.setFillColor('rgba(200, 100, 100, 0.2)')
-		.setLineColor('rgba(200, 100, 100, 0.9)');
-
-
-	var serie = graph.newSerie("serieTest", { }, 'line')
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( data )
-		.setLineColor('rgba(150, 70, 50, 1)')
-
-		
-	graph.redraw( );
-	graph.drawSeries();	
-
-}, "Min/Max serie", [ "Display a \"Zone\" serie" ] ],
-
-
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph, { } );
-	
-	var modificators = [];
-	modificators[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
-	
-	var serie = graph.newSerie("serieTest", { }, 'scatter')
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( series[ 0 ] )
-		.setDataStyle( 
-			{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
-			modificators
-		);
-
-	var shape = { type: 'line', strokeColor: 'black', strokeWidth: 1, pos: { x: series[ 0 ][ 40 ], y: series[ 0 ][ 41 ] }, pos2: { x: 2000, y: "20px" } };
-	graph.makeShape( shape ).then( function( shape ) {
-		shape.draw();
-		shape.redrawImpl();
+	examples = examples.map( function( val ) {
+		return './examples/examples/' + val;
 	});
 
-	graph.redraw( );
-	graph.drawSeries();	
-
-}, "Scatter serie", [ "Display a scatter plot", "Add an annotation onto it"] ],
+	require( examples, function() {
 
 
+		var t = 0;
+		var functions = arguments;
 
-[ function( domGraph ) {
+		for( var i = 0, l = functions.length ; i < l ; i ++ ) {
 
-	var graph = new Graph( domGraph, { 
+			$('#graph-examples').append('<div class="graph-example"><ul id="example-' + i + '-details"></ul><h1>' + functions[ i ][ 1 ] + '</h1><div class="graph" id="example-' + i + '-graph"></div></div>');
 
-		plugins: {
-			'./graph.plugin.shape': { },
-		},
+			functions[ i ][ 0 ]("example-" + ( i ) + "-graph");
 
-		pluginAction: {
-			'./graph.plugin.shape': { shift: false, ctrl: false }
+			$("#example-" + ( i ) + "-details").html(
+
+				functions[ i ][ 2 ].map( function( val ) {
+					return '<li>' + val + '</li>';
+				} ).join("")
+
+			);
+
+			//hljs.highlightBlock( $("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() ).get(0) );
 		}
 
-	} );
-	
-	var data = { x: 0.5, dx: 0.01, y: [] };
-
-	for( var i = 1, l = 1000; i < l ; i ++ ) {
-		data.y.push( Math.log( i ) * ( Math.random() + 3 ) );
-	}
-
-	graph.newSerie("serieTest")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( data );
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-
-}, "Display x interval data", [ "Use dx series"] ],
-
-
-
-
-[ function( domGraph ) {
-
-	var graph = new Graph( domGraph );
-	
-	graph.newSerie("serieTest", {}, "contour")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( cont );
-
-
-	graph.getXAxis().forceMin( -5 );
-	graph.getXAxis().forceMax( 5 );
-
-
-	graph.getYAxis().forceMin( -5 );
-	graph.getYAxis().forceMax( 5 );
-
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-
-}, "Contour lines", [ "Display contour lines"] ],
-
-
-
-
-
-[ function( domGraph ) {
-
-	var serie = [],
-		error = [];
-	for( var i = 0; i < 1; i += 0.2  ) {
-		serie.push([ i , Math.pow( i, 2 ) ]);
-		error.push( [ [ [ Math.random() / 5, Math.random() / 5 ] ] ] );
-	}
-	var graph = new Graph( domGraph );
-	
-	graph.newSerie("serieTest", {}, "scatter")
-		.setLabel( "My serie" )
-		.autoAxis()
-		.setData( serie )
-		.setMaxErrorLevel( 1 )
-		.setDataError( error );
-
-
-
-	graph.redraw( );
-	graph.drawSeries();	
-
-
-}, "Error bars", [ "Display error bars"] ],
-
-
-
-
-
- ]
-
-	for( var i = 0, l = functions.length ; i < l ; i ++ ) {
-
-		$('#graph-examples').append('<div class="graph-example"><ul id="example-' + i + '-details"></ul><h1>' + functions[ i ][ 1 ] + '</h1><div class="graph" id="example-' + i + '-graph"></div></div>');
-
-		functions[ i ][ 0 ]("example-" + ( i ) + "-graph");
-
-		$("#example-" + ( i ) + "-details").html(
-
-			functions[ i ][ 2 ].map( function( val ) {
-				return '<li>' + val + '</li>';
-			} ).join("")
-
-		);
-
-		//hljs.highlightBlock( $("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() ).get(0) );
-	}
+	});
 
 } );

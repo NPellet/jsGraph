@@ -1,5 +1,5 @@
 
-define( [ 'require', './graph.shape.rect' ], function( require, GraphRect ) {
+define( [ './graph.shape.rect' ], function( GraphRect ) {
 
 	var lineHeight = 5;
 

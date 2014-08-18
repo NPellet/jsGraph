@@ -1,5 +1,5 @@
 
-define([ 'require', 'graphs/graph.core' ], function( require, graph ) {
+define([ './graph.core' ], function( graph ) {
 	
 	return graph;
 	

@@ -1,6 +1,6 @@
 
 
-define( [ 'require', 'graphs/graph.axis' ], function( require, GraphAxis ) {
+define( [ './graph.axis' ], function( GraphAxis ) {
 
 	"use strict";
 	

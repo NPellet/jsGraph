@@ -1,5 +1,5 @@
 
-define( [ 'require', 'graphs/graph.shape.areaundercurve' ], function( require, GraphSurfaceUnderCurve ) {
+define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
 
 
 	"use strict";

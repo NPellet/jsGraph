@@ -10,6 +10,7 @@
     "grunt-contrib-requirejs": "^0.4.4",
     "grunt-requirejs": "^0.4.2",
     "grunt-sass": "^0.14.0",
-    "grunt-sloc": "^0.5.2"
+    "grunt-sloc": "^0.5.2",
+    "requirejs": "2.1.14"
   }
 }

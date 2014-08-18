@@ -240,4 +240,4 @@ define( [], function() {
 
 	return Legend;
 
-} );
+});

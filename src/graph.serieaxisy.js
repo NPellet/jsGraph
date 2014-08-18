@@ -1,4 +1,4 @@
-define( [ 'require', 'graphs/graph.serieaxis' ], function( require, GraphSerieAxis ) {
+define( [ './graph.serieaxis' ], function( GraphSerieAxis ) {
 
 	var GraphSerieAxisY = function() {};
 	$.extend(GraphSerieAxisY.prototype, GraphSerieAxis.prototype, {
