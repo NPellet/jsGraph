@@ -22,8 +22,33 @@ module.exports = function(grunt) {
         },
 
 
+        bump: {
+
+            options: {
+                files: ['package.json'],
+                updateConfigs: [ 'pkg' ],
+                push: false
+            }
+    
+        },
+
+        sloc: {
+           'graphs': {
+                files: {
+                    './src/': [ '**.js' ],
+                   
+                }
+            }
+        }
+
+
 
     });
+
+
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-sloc');
+    grunt.loadNpmTasks('grunt-bump');
 
 
     function convert() {
