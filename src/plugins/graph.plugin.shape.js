@@ -19,7 +19,7 @@ define([], function() {
 
 		onMouseDown: function( graph, x, y, e, target ) {
 				
-			if( ! this.shapeType ) {
+			if( ! this.shapeType && ! this.options.url ) {
 				return;
 			}
 

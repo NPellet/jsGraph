@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T23:20Z
+ * Date: 2014-08-18T23:24Z
  */
 
 (function( global, factory ) {
@@ -4195,7 +4195,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 
 		onMouseDown: function( graph, x, y, e, target ) {
 				
-			if( ! this.shapeType ) {
+			if( ! this.shapeType && ! this.options.url ) {
 				return;
 			}
 
