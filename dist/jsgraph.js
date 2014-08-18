@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.0.0
+ * jsGraphs JavaScript Graphing Library v1.1.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T20:28Z
+ * Date: 2014-08-18T23:16Z
  */
 
 (function( global, factory ) {
@@ -29,7 +29,7 @@
 
 		var build = [ ];
 
-		build[ 'jquery' ] = $;
+		build[ './jquery' ] = $;
 /* 
  * Build: new source file 
  * File name : graph.axis

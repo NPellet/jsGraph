@@ -29,4 +29,4 @@
 
 		var build = [ ];
 
-		build[ 'jquery' ] = $;
+		build[ './jquery' ] = $;
