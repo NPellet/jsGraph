@@ -30,36 +30,32 @@ define( function() {
 		}
 
 
-		var graphinstance = new Graph( domGraph );
+		var graphinstance = new Graph( domGraph, { series: [ 'contour' ] }, function( graphinstance ) {
+
+			var serie = graphinstance.newSerie("serieTest", {}, "contour")
+				.setLabel( "My serie" )
+				.autoAxis()
+				.setData( cont );
+				
+
+			var colors = [];
+			for( var i = 0, l = cont.length ; i < l ; i ++ ) {
+				colors.push( hslToRgb(0 + i / l, 1, 0.5) );
+			}
+
+			serie.setColors( colors );
+
+			graphinstance.getXAxis().forceMin( -5 );
+			graphinstance.getXAxis().forceMax( 5 );
+
+			graphinstance.getYAxis().forceMin( -5 );
+			graphinstance.getYAxis().forceMax( 5 );
+
+			graphinstance.redraw( );
+			graphinstance.drawSeries();	
+
+		} );
 		
-		var serie = graphinstance.newSerie("serieTest", {}, "contour")
-			.setLabel( "My serie" )
-			.autoAxis()
-			.setData( cont );
-			
-
-		var colors = [];
-		for( var i = 0, l = cont.length ; i < l ; i ++ ) {
-
-			colors.push( hslToRgb(0 + i / l, 1, 0.5) );
-
-		}
-
-		serie.setColors( colors );
-
-
-		graphinstance.getXAxis().forceMin( -5 );
-		graphinstance.getXAxis().forceMax( 5 );
-
-
-		graphinstance.getYAxis().forceMin( -5 );
-		graphinstance.getYAxis().forceMax( 5 );
-
-
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
-
 	}, "Contour lines", [ "Display contour lines"] ];
 
 });

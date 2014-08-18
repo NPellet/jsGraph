@@ -1,5 +1,5 @@
 
-define( [ '../graph.shape' ], function( GraphShape ) {
+define( [  ], function( ) {
 
 	var plugin =  function() { };
 

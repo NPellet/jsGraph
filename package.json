@@ -11,6 +11,7 @@
     "grunt-requirejs": "^0.4.2",
     "grunt-sass": "^0.14.0",
     "grunt-sloc": "^0.5.2",
+    "path": "^0.4.9",
     "requirejs": "2.1.14"
   }
 }

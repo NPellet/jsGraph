@@ -1,6 +1,6 @@
 
 
-define([ './graph.serie'], function( GraphSerie ) {
+define([ './series/graph.serie.line'], function( GraphSerie ) {
 
 	var GraphSerieAxis = function() {};
 

@@ -31,16 +31,20 @@ define( function() {
 				'graph.plugin.drag': { shift: true, ctrl: false },
 				'graph.plugin.zoom': { shift: false, ctrl: false }
 			}
+			
+		}, function( graphinstance) {
+	
+			graphinstance.newSerie("temp_nh")
+				.autoAxis()
+				.setData( series[ 3 ] );
+				
+
+			graphinstance.redraw( );
+			graphinstance.drawSeries();	
+
 		} );
 		
 
-		graphinstance.newSerie("temp_nh")
-			.autoAxis()
-			.setData( series[ 3 ] );
-			
-
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
 	}, "Plugin loading", [ "Loading plugins dynamically", "Mouse wheel interaction", "Double click interaction" ] ];
 
 } );

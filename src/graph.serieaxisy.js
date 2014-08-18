@@ -1,3 +1,4 @@
+
 define( [ './graph.serieaxis' ], function( GraphSerieAxis ) {
 
 	var GraphSerieAxisY = function() {};

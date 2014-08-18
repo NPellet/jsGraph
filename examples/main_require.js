@@ -130,7 +130,7 @@ function generateContourLines(zData) {
 
 
 var func = function( x, y, obj ) {
-	var val = (x * Math.sin(x) + y * Math.sin( y ) );
+	var val = (x * x + y * y );
 	obj.minZ = Math.min( val, obj.minZ );
 	obj.maxZ = Math.max( val, obj.maxZ );
 

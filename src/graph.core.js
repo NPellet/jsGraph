@@ -1,17 +1,11 @@
-define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.serie.contour','./graph.serie.scatter','./graph.serie.zone','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphSerie,GraphSerieContour,GraphSerieScatter,GraphSerieZone,GraphLegend, DynamicDepencies) {
+define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphLegend, DynamicDepencies) {
 
 	"use strict";
 
-	function _parsePx( px ) {
-		if( px && px.indexOf && px.indexOf('px') > -1) {
-			return parseInt(px.replace('px', ''));
-		}
-		return false;
-	};
-
-	var _scope = this;
 	var graphDefaults = {
 
+		title: '',
+	
 		paddingTop: 30,
 		paddingBottom: 5,
 		paddingLeft: 20,
@@ -24,7 +18,6 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 			bottom: true
 		},
 
-		title: '',
 		
 		lineToZero: false,
 		fontSize: 12,
@@ -41,14 +34,18 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 		dblclick: {},
 
 		dynamicDependencies: {
-			'plugin': './plugins/'
-		}
+			'plugin': 'plugins/',
+			'serie': 'series/',
+			'shapes': 'shapes/'
+		},
+
+		series: [ 'line' ]
 	};
 
 
-	var Graph = function( dom, options, axis ) {
+	var Graph = function( dom, options, axis, callback ) {
 
-
+		var self = this;
 		this._creation = Date.now() + Math.random();
 
 		if( typeof dom == "string" ) {
@@ -59,9 +56,21 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 			throw "The DOM has not been defined";
 		}
 
+
+		if( typeof axis == "function" ) {
+			callback = axis;
+			axis = false;
+		}
+
+		if( typeof options == "function" ) {
+			callback = options;
+			options = {};
+			
+		}
+
+		
 		this.options = $.extend({}, graphDefaults, options);
 		this.axis = {left: [], top: [], bottom: [], right: []};
-		this.title = false;
 
 		this.shapes = [];
 		this.shapesLocked = false;
@@ -100,11 +109,17 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 		};
 
 		this.pluginsReady = $.Deferred();
+		this.seriesReady = $.Deferred();
 
 		this.currentAction = false;
 
+
+		if( callback ) {
+			$.when( this.pluginsReady, this.seriesReady ).then( function( ) { callback( self ) } );
+		}
+
 		var funcName;
-		if(axis) {
+		if( axis ) {
 			for(var i in axis) {
 				for(var j = 0, l = axis[i].length; j < l; j++) {
 					switch(i) {
@@ -119,6 +134,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 		}
 
 		this._pluginsInit();
+		this._seriesInit();
 	}
 
 	Graph.prototype = {
@@ -530,12 +546,6 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 
 		},
 
-
-
-		isZooming: function() {
-			return this.currentAction == 'zooming';
-		},
-
 		handleMouseWheel: function(delta, e) {
 
 
@@ -805,7 +815,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 
 		// Title
 		setTitle: function(title) {
-			this.title = title;
+			this.options.title = title;
 			this.domTitle.textContent = title;
 		},
 
@@ -1080,41 +1090,32 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 			}
 		},
 
-		_makeSerie: function(name, options, type) {
-			switch(type) {
-				case 'contour':
-					var serie = new GraphSerieContour();
-				break;
+		newSerie: function( name, options, type, callback ) {
 
-				case 'scatter':
-					var serie = new GraphSerieScatter();
-				break;
 
-				case 'zone':
-					var serie = new GraphSerieZone();
-				break;
+			var self = this;
 
-				case 'line':
-				default:
-					var serie = new GraphSerie();
-				break;	
-			}
-			serie.init(this, name, options);
-
-			this.plotGroup.appendChild(serie.groupMain);
-
-			
-			return serie;
-		},
-
-		newSerie: function( name, options, type ) {
-			var serie = this._makeSerie(name, options, type);
-			this.series.push(serie);
-
-			if( this.legend ) {
-				this.legend.update();
+			if( typeof type == "function" ) {
+				type = "line";
+				callback = type;
 			}
 
+			if( ! type ) {
+				type = "line";
+			}
+
+			var serie = makeSerie( this, name, options, type, function( serie ) {
+
+				self.series.push(serie);
+
+				if( self.legend ) {
+					self.legend.update();
+				}
+
+				if( callback ) {
+					callback( serie );
+				}
+			} );
 
 			return serie;
 		},
@@ -1248,7 +1249,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 			}
 
 
-			var shapeConstructor = this.dynamicLoader.load( 'shape', './graph.shape.' + shapeData.type, function( shapeConstructor ) {
+			var shapeConstructor = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, function( shapeConstructor ) {
 
 				var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
@@ -1352,6 +1353,33 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 			}
 		},
 
+		_seriesInit: function( ) {
+
+			var self = this,
+				series = this.options.series,
+				nb = series.length;
+
+			if( nb == 0 ) {
+				return self._seriesReady();
+			}
+
+			series.map( function( serie ) {
+				
+				self.dynamicLoader.load( 'serie', 'graph.serie.' + serie, function() {
+
+					if( ( -- nb ) == 0 ) {
+
+						self._seriesReady();
+					}
+				} );
+			} )
+		},
+
+		_seriesReady: function() {
+
+			this.seriesReady.resolve();
+		},
+
 		_pluginsExecute: function(funcName, args) {
 
 //			Array.prototype.splice.apply(args, [0, 0, this]);
@@ -1379,7 +1407,8 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 		_pluginsInit: function() {
 
 			var self = this,
-				pluginsToLoad;
+				pluginsToLoad,
+				nb;
 
 			this._plugins = this._plugins || {};
 			
@@ -1394,18 +1423,24 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 				}
 			}
 
-			if( pluginsToLoad.length == 0 ) {
-				return;
+			if( ( nb = pluginsToLoad.length ) == 0 ) {
+				return self._pluginsReady();
 			}
+
+			this.pluginsToLoad = pluginsToLoad.length;
 
 			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, filename ) {
 
 				self._plugins[ filename ] = new plugin();
 				self._plugins[ filename ].init( self, self.options.plugins[ filename ] || { }, filename );
 			
+		
+				if( ( -- nb ) == 0 ) {
 
-				console.warn("Warning. plugin ready is disabled");
-				//self._pluginsReady();
+					self._pluginsReady();
+
+				}
+		
 			} );
 			//this._pluginsExecute('init', arguments);
 		},
@@ -1702,6 +1737,28 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.serie','./graph.se
 
 
 	Graph.prototype.plugins = {};
+
+
+	function makeSerie( graph, name, options, type, callback ) {
+
+		return graph.dynamicLoader.load( 'serie', 'graph.serie.' + type, function( Serie ) {
+
+			var serie = new Serie();
+			serie.init( graph, name, options );
+			graph.plotGroup.appendChild( serie.groupMain );
+			callback( serie );
+			return serie;
+			
+		} );		
+	};
+
+
+	function _parsePx( px ) {
+		if( px && px.indexOf && px.indexOf('px') > -1) {
+			return parseInt(px.replace('px', ''));
+		}
+		return false;
+	};
 
 
 	return Graph;

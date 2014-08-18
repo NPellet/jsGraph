@@ -23,6 +23,7 @@ define([ 'require' ], function( require ) {
 				return;
 			}
 			
+
 			if( this.folderMap[ type ] ) {
 
 				file = this.folderMap[ type ] + file;
@@ -30,11 +31,14 @@ define([ 'require' ], function( require ) {
 
 			if( this.caching[ type ][ file ] ) {
 
-				callback( this.caching[ type ][ file ], file );
+			//	console.log( "Found element " + file + " of type " + type + " in cache" );
+
+				return ( callback( this.caching[ type ][ file ], file ) || this.caching[ type ][ file ] );
+				
 
 			} else if( typeof build !== "undefined" && build[ file ]) {
 
-				callback( this.caching[ type ][ file ] = build[ file ], file );
+				return ( callback( this.caching[ type ][ file ] = build[ file ], file ) || this.caching[ type ][ file ] );
 
 			} else if( typeof require !== "undefined" ) {
 				//console.log( "Trying to load file " + file + " of type " + type, this.folderMap );

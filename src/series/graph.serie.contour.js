@@ -1,5 +1,5 @@
 
-define( [ './graph.serie' ], function( GraphSerie ) {
+define( [ './graph.serie.line' ], function( GraphSerie ) {
 
 	var GraphSerieContour = function() {
 		this.accumulatedDelta = 0;
@@ -55,35 +55,47 @@ define( [ './graph.serie' ], function( GraphSerie ) {
 				incrYFlip = 1;
 			}
 
+
 			for(; i < l ; i++) {
 
 				j = 0, k = 0, currentLine = "";
 
 				for( arr = this.data[i].lines, m = arr.length; j < m; j += 4 ) {
 				
-					xpx2 = Math.round( this.getX(arr[j + incrXFlip]) );
-					ypx2 = Math.round( this.getY(arr[j + incrYFlip]) );
+					var lastxpx, lastypx;
+
+					xpx2 = this.getX(arr[j + incrXFlip]);
+					ypx2 = this.getY(arr[j + incrYFlip]);
 				
+					xpx = this.getX(arr[j + 2 + incrXFlip]);
+					ypx = this.getY(arr[j + 2 + incrYFlip]);
 					
-					currentLine += "M";
+					if( xpx == xpx2 && ypx == ypx2 ) {
+						continue;
+					}
+
+					if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
+						currentLine += "L";
+					} else {
+						currentLine += "M";	
+					}
+
 					currentLine += xpx2;
 					currentLine += " ";
 					currentLine += ypx2;
 
-
-					
-					xpx = Math.round( this.getX(arr[j + 2 + incrXFlip]) );
-					ypx = Math.round( this.getY(arr[j + 2 + incrYFlip]) );
-					
 					currentLine += "L";
 					currentLine += xpx;
 					currentLine += " ";
 					currentLine += ypx;
 
+					lastxpx = xpx;
+					lastypx = ypx;
+
 					k++;
 				}
 				
-				domLine = this._createLine(currentLine, i, k);
+				domLine = this._createLine(currentLine + " z", i, k);
 				domLine.setAttribute('data-zvalue', this.data[i].zValue);
 				
 				if( this.zoneColors && this.zoneColors[ i ] ) {

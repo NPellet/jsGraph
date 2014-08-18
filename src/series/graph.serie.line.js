@@ -1,5 +1,5 @@
 
-define( [ 'jquery', './graph._serie'], function( $, GraphSerieNonInstanciable ) {
+define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 	"use strict";
 
