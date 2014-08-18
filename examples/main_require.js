@@ -1,14 +1,13 @@
 
 requirejs.config({
 
-	baseUrl: '../',
+	baseUrl: '../src/',
 	paths: {
-		'jquery': './lib/components/jquery/dist/jquery.min',
-		'jqueryui': './lib/components/jquery-ui/ui/minified/jquery-ui.min',
-		'highlightjs': './lib/lib/highlight/highlight.pack',
-		'forms': './lib/lib/forms/form',
-		'components': './lib/components',
-		'graphs': './src/'
+		'jquery': '../lib/components/jquery/dist/jquery.min',
+		'jqueryui': '../lib/components/jquery-ui/ui/minified/jquery-ui.min',
+		'highlightjs': '../lib/lib/highlight/highlight.pack',
+		'forms': '../lib/lib/forms/form',
+		'components': '../lib/components'
 	}
 });
 
@@ -166,7 +165,7 @@ obj.maxY = 5;
 var cont = generateContourLines( obj );
 
 
-require( [ 'graphs/graph.core', 'highlightjs' ] , function( Graph ) {
+require( [ 'graph.core', 'highlightjs' ] , function( Graph ) {
 
 	window.Graph = Graph;
 
@@ -199,7 +198,7 @@ require( [ 'graphs/graph.core', 'highlightjs' ] , function( Graph ) {
 	}
 
 	examples = examples.map( function( val ) {
-		return './examples/examples/' + val;
+		return '../examples/examples/' + val;
 	});
 
 	require( examples, function() {
