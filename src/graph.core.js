@@ -1238,18 +1238,18 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 			
 			shapeData.id = Math.random();
 
-			if(notify) {
-				if(false === (response = this.triggerEvent('onShapeBeforeMake', shapeData))) {
+			if( notify ) {
+
+				if( false === ( response = this.triggerEvent('onShapeBeforeMake', shapeData ) ) ) {
 					return;
 				}
 			}
 
-			if(response) {
+			if( response ) {
 				shapeData = response;
 			}
 
-
-			var shapeConstructor = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, function( shapeConstructor ) {
+			var callback = function( shapeConstructor ) {
 
 				var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
@@ -1312,7 +1312,13 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 
 				deferred.resolve( shape );
 
-			} );
+			}
+
+			if( shapeData.url ) {
+				this.dynamicLoader.load( 'external', shapeData.url, callback );
+			} else {
+				this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+			}
 
 			return deferred;
 		},
@@ -1429,7 +1435,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 
 			this.pluginsToLoad = pluginsToLoad.length;
 
-			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, filename ) {
+			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, smth, filename ) {
 
 				self._plugins[ filename ] = new plugin();
 				self._plugins[ filename ].init( self, self.options.plugins[ filename ] || { }, filename );

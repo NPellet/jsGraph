@@ -142,7 +142,7 @@ module.exports = function(grunt) {
 
                         val = "./" + val.replace( basePath, "" ).replace( /^src\//, "" );
 
-                        return 'build["' + val + '"]';J
+                        return 'build["' + val + '"]';
 
                     } );
 
