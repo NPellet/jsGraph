@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T19:41Z
+ * Date: 2014-08-18T20:28Z
  */
 
 (function( global, factory ) {
@@ -1629,6 +1629,7 @@ build['./dynamicdepencies'] = ( function( ) {
 				return;
 			}
 			
+			var origFile = file;
 
 			if( this.folderMap[ type ] ) {
 
@@ -1639,18 +1640,18 @@ build['./dynamicdepencies'] = ( function( ) {
 
 			//	console.log( "Found element " + file + " of type " + type + " in cache" );
 
-				return ( callback( this.caching[ type ][ file ], file ) || this.caching[ type ][ file ] );
+				return ( callback( this.caching[ type ][ file ], file, origFile ) || this.caching[ type ][ file ] );
 				
 
 			} else if( typeof build !== "undefined" && build[ file ]) {
 
-				return ( callback( this.caching[ type ][ file ] = build[ file ], file ) || this.caching[ type ][ file ] );
+				return ( callback( this.caching[ type ][ file ] = build[ file ], file, origFile ) || this.caching[ type ][ file ] );
 
 			} else if( typeof require !== "undefined" ) {
 				//console.log( "Trying to load file " + file + " of type " + type, this.folderMap );
 				require( [ file ], function( instance ) {
 
-					callback( self.caching[ type ][ file ] = instance, file );
+					callback( self.caching[ type ][ file ] = instance, file, origFile );
 				} );
 			} else {
 				console.warn("Could not load file " + file + " of type " + type );
@@ -2919,18 +2920,18 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 			
 			shapeData.id = Math.random();
 
-			if(notify) {
-				if(false === (response = this.triggerEvent('onShapeBeforeMake', shapeData))) {
+			if( notify ) {
+
+				if( false === ( response = this.triggerEvent('onShapeBeforeMake', shapeData ) ) ) {
 					return;
 				}
 			}
 
-			if(response) {
+			if( response ) {
 				shapeData = response;
 			}
 
-
-			var shapeConstructor = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, function( shapeConstructor ) {
+			var callback = function( shapeConstructor ) {
 
 				var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
@@ -2993,7 +2994,13 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 
 				deferred.resolve( shape );
 
-			} );
+			}
+
+			if( shapeData.url ) {
+				this.dynamicLoader.load( 'external', shapeData.url, callback );
+			} else {
+				this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+			}
 
 			return deferred;
 		},
@@ -3110,7 +3117,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 
 			this.pluginsToLoad = pluginsToLoad.length;
 
-			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, filename ) {
+			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, smth, filename ) {
 
 				self._plugins[ filename ] = new plugin();
 				self._plugins[ filename ].init( self, self.options.plugins[ filename ] || { }, filename );
