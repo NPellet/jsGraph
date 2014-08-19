@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.2.1
+ * jsGraphs JavaScript Graphing Library v1.2.2
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-19T03:26Z
+ * Date: 2014-08-19T05:58Z
  */
 
 (function( global, factory ) {
@@ -9618,7 +9618,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 	var GraphCross = function( graph, options ) {
 
 		this.options = options || {};
-		
+
 		this.init( graph );
 	
 		this.nbHandles = 1;
@@ -9642,7 +9642,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 		},
 
 		createDom: function() {
-console.log( this.options );
+
 			this._dom = document.createElementNS(this.graph.ns, 'path');
 			this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '');
 			
@@ -9677,6 +9677,8 @@ console.log( this.options );
 		},
 
 		handleMouseDownImpl: function( e ) {
+
+			this.moving = true;
 
 			return true;
 		},

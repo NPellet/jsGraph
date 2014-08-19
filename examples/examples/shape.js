@@ -15,7 +15,7 @@ define( function() {
 					.setData( series[ 0 ] );
 
 
-				var shape = { type: 'cross', strokeColor: 'red', strokeWidth: 1, pos: { x: 1900, y: 0 } };
+				var shape = { type: 'cross', strokeColor: 'red', strokeWidth: 1, pos: { x: 1900, y: 2 } };
 
 				graphinstance.makeShape( shape ).then( function( shape ) {
 					shape.draw();

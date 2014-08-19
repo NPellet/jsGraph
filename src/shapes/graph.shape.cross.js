@@ -5,7 +5,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 	var GraphCross = function( graph, options ) {
 
 		this.options = options || {};
-		
+
 		this.init( graph );
 	
 		this.nbHandles = 1;
@@ -29,7 +29,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 		},
 
 		createDom: function() {
-console.log( this.options );
+
 			this._dom = document.createElementNS(this.graph.ns, 'path');
 			this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '');
 			
@@ -64,6 +64,8 @@ console.log( this.options );
 		},
 
 		handleMouseDownImpl: function( e ) {
+
+			this.moving = true;
 
 			return true;
 		},
