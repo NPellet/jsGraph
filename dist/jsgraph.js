@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.1.3
+ * jsGraphs JavaScript Graphing Library v1.2.1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-19T03:03Z
+ * Date: 2014-08-19T03:26Z
  */
 
 (function( global, factory ) {
@@ -6064,12 +6064,14 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 						continue;
 					}
 
-					if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
+				/*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
 					} else {
 						currentLine += "M";	
 					}
+*/
 
+					currentLine += "M";	
 					currentLine += xpx2;
 					currentLine += " ";
 					currentLine += ypx2;
@@ -9615,8 +9617,10 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 
 	var GraphCross = function( graph, options ) {
 
-		this.init( graph );
 		this.options = options || {};
+		
+		this.init( graph );
+	
 		this.nbHandles = 1;
 
 		this.createHandles( this.nbHandles, 'rect', { 
@@ -9633,10 +9637,14 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 
 	$.extend( GraphCross.prototype, GraphShape.prototype, {
 
-		createDom: function() {
+		getLength: function() {
+			return this.options.length || 10;
+		},
 
+		createDom: function() {
+console.log( this.options );
 			this._dom = document.createElementNS(this.graph.ns, 'path');
-			this._dom.setAttribute( 'd', 'M -5 0 h 10 m -5 -5 v 10');
+			this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '');
 			
 		},
 

@@ -4,8 +4,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
 	var GraphCross = function( graph, options ) {
 
-		this.init( graph );
 		this.options = options || {};
+		
+		this.init( graph );
+	
 		this.nbHandles = 1;
 
 		this.createHandles( this.nbHandles, 'rect', { 
@@ -22,10 +24,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
 	$.extend( GraphCross.prototype, GraphShape.prototype, {
 
-		createDom: function() {
+		getLength: function() {
+			return this.options.length || 10;
+		},
 
+		createDom: function() {
+console.log( this.options );
 			this._dom = document.createElementNS(this.graph.ns, 'path');
-			this._dom.setAttribute( 'd', 'M -5 0 h 10 m -5 -5 v 10');
+			this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '');
 			
 		},
 

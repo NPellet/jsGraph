@@ -47,20 +47,36 @@ module.exports = function(grunt) {
                 'dist/jsgraph.min.js': ['dist/jsgraph.js']
               }
             }
+        },
+
+        copy: {
+            exportToNMR: {
+
+                files: {
+                    '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js'
+                }
+            }
         }
 
     });
 
 
+    var fs = require('fs');
+
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
     function convert() {
 
         grunt.log.writeln( arguments );
     }
+
+    grunt.registerTask( 'default', [ 'build', 'copy:exportToNMR'] );
+
+
 
     grunt.registerMultiTask( 'build', 'Build jsGraphs distributions', function() {
 
@@ -195,7 +211,6 @@ module.exports = function(grunt) {
 
 
         var requirejs = require('requirejs'),
-            fs = require('fs'),
             npmpath = require('path'),
             requirejsConfig = {
 

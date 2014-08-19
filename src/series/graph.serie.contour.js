@@ -74,12 +74,14 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 						continue;
 					}
 
-					if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
+				/*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
 					} else {
 						currentLine += "M";	
 					}
+*/
 
+					currentLine += "M";	
 					currentLine += xpx2;
 					currentLine += " ";
 					currentLine += ypx2;
