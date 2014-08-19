@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.1.0
+ * jsGraphs JavaScript Graphing Library v1.1.2
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-18T23:24Z
+ * Date: 2014-08-19T01:43Z
  */
 
 (function( global, factory ) {
@@ -8919,7 +8919,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 		},
 
 		handleMouseUpImpl: function() {
-
+			this.triggerChange();
 		},
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {

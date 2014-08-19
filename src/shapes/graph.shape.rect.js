@@ -120,7 +120,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 		},
 
 		handleMouseUpImpl: function() {
-
+			this.triggerChange();
 		},
 
 		handleMouseMoveImpl: function(e, deltaX, deltaY, deltaXPx, deltaYPx) {
