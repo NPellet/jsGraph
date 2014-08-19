@@ -996,6 +996,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				yMax;
  			
  			var value = this.searchClosestValue(valX);
+
+
  			if(!value)
  				return;
 
@@ -1003,9 +1005,12 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var intY = ((1 - ratio) * value.yMin + ratio * value.yMax);
 
 			if(doMarker && this.options.trackMouse) {
-				if(!xMin)
+
+				if( value.xMin == undefined ) {
+
 					return false;
-				else {
+
+				} else {
 					
 					var x = this.getX(this.getFlip() ? intY : valX);
 					var y = this.getY(this.getFlip() ? valX : intY);

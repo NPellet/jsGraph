@@ -265,8 +265,8 @@ define( [ 'jquery' ] , function( $ ) {
 				}
 				this.currentAction = false;
 
-			} else if(this.graph.isZooming())
-				this._handleZoom(px);
+			}/* else if(this.graph.isZooming())
+				this._handleZoom(px);*/
 			
 		},
 

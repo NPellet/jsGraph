@@ -504,7 +504,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 				return;
 			};
 
-			return;
+//			return;
 
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
@@ -518,7 +518,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 						results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
 					}
 
-					this.options.onMouseMoveData(e, results);
+					this.options.onMouseMoveData.call( this, e, results);
 				}
 				return;
 			}
