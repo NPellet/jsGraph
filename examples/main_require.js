@@ -193,7 +193,8 @@ require( [ 'graph.core', 'highlightjs' ] , function( Graph ) {
 			'minmax',
 			'plugins',
 			'scatter',
-			'xinterval'
+			'xinterval',
+			'shape'
 		];
 	}
 

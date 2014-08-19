@@ -35,6 +35,7 @@ define([
 	'./shapes/graph.shape.peakinterval2',
 	'./shapes/graph.shape.rangex',
 	'./shapes/graph.shape.rect',
+	'./shapes/graph.shape.cross',
 	
 	'./graph.toolbar',
 	'./graph.xaxis.time',
