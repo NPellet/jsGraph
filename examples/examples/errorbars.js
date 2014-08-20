@@ -5,9 +5,9 @@ define( function() {
 		var seriedata = [],
 			error = [];
 
-		for( var i = 0; i < 1; i += 0.2  ) {
-			seriedata.push([ i , Math.pow( i, 2 ) ]);
-			error.push( [ [ [ Math.random() / 5, Math.random() / 5 ] ] ] );
+		for( var i = 0; i < 5; i += 0.5  ) {
+			seriedata.push([ i , Math.sin( i ) ]);
+			error.push( [ [ [ Math.random() / 10, Math.random() / 10 ], [  ( 1 + Math.random() ) / 5, ( 1 + Math.random() )  / 5 ] ] ] );
 		}
 
 		var graphinstance = new Graph( domGraph );
@@ -18,14 +18,13 @@ define( function() {
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( seriedata )
-				.setMaxErrorLevel( 1 )
+				.setMaxErrorLevel( 2 )
 				.setDataError( error );
 
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 		});
-			
-
+		
 
 	}, "Error bars", [ "Display error bars"] ];
 

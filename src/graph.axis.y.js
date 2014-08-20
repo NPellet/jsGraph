@@ -94,10 +94,16 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 		},
 
 		drawSpecifics: function() {
-
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 8) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 10 - 5) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+
+			if( ! this.left ) {
+				this.labelTspan.style.dominantBaseline = 'hanging';	
+				this.expTspan.style.dominantBaseline = 'hanging';	
+				this.expTspanExp.style.dominantBaseline = 'hanging';	
+			}
+			
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());

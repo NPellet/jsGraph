@@ -24,9 +24,6 @@ define( function() {
 				$( graphinstance._dom ).append("<div class='data'></div>");
 
 
-				graphinstance.setHeight( 200 );
-				graphinstance.setWidth( 260 );
-
 				graphinstance.newSerie("square", { trackMouse: true } )
 					.setLabel( "My serie" )
 					.autoAxis()

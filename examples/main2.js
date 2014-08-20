@@ -203,7 +203,19 @@ $( document ).ready( function() {
 			//hljs.highlightBlock( $("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() ).get(0) );
 		}
 
+
+		window.setTimeout( function() {
+
+
+			for( var i = 0, l = functions.length ; i < l ; i ++ ) {
+
+				console.log( $('#graph-examples').children().eq( i ).find('.graph').innerHTML );
+
+			}
+		}, 2000 )
 	});
+
+
 
 
 });

@@ -188,6 +188,36 @@ define( [ 'jquery' ] , function( $ ) {
 			this.options.lineAt0 = !!bool;
 		},
 
+		adapt0To: function( axis, mode, value ) {
+
+			if( axis ) {
+				this._adapt0To = [ axis, mode, value ];	
+			} else {
+				this._adapt0To = false;
+			}
+
+			console.log( this._adapt0To, this );
+		},
+
+		getAdapt0ToMin: function() {
+
+			if( this._adapt0To[ 1 ] == "min" ) {
+				return this._adapt0To[ 2 ]
+			} else {
+				return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMinValue() / this._adapt0To[ 0 ].getMaxValue()  )
+			}
+		},
+
+
+		getAdapt0ToMax: function() {
+
+			if( this._adapt0To[ 1 ] == "max" ) {
+				return this._adapt0To[ 2 ]
+			} else {
+				return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMaxValue() / this._adapt0To[ 0 ].getMinValue()  )
+			}
+		},
+
 		setAxisDataSpacing: function(val1, val2) {
 			this.options.axisDataSpacing.min = val1;
 			this.options.axisDataSpacing.max = val2 || val1;
@@ -209,11 +239,11 @@ define( [ 'jquery' ] , function( $ ) {
 
 		// Returns the true minimum of the axis. Either forced in options or the one from the data
 		getMinValue: function() {
-			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.dataMin);
+			return ! this._adapt0To ? ( this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.dataMin) ) : ( this.getAdapt0ToMin() );
 		},
 
 		getMaxValue: function() {
-			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.dataMax);
+			return !  this._adapt0To ? ( this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.dataMax) ) : ( this.getAdapt0ToMax() );
 		},
 
 		setMinValueData: function( min ) { this.dataMin = min; },

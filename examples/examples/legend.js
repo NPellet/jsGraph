@@ -18,6 +18,18 @@ define( function() {
 
 		 }, function( graphinstance ) {
 
+		 		var series = [ [], [], [] ];
+
+		 		for( var i = 0; i < Math.PI * 2 ; i += 0.1 ) {
+
+		 			series[ 0 ].push( i );
+		 			series[ 1 ].push( i );
+		 			series[ 2 ].push( i );
+
+		 			series[ 0 ].push( Math.sin( i ) );
+		 			series[ 1 ].push( Math.cos( i ) );
+		 			series[ 2 ].push( Math.sin( i ) * Math.cos( i ) );
+		 		}
 
 				var axisProperties = { primaryGrid: false, secondaryGrid: false },
 
@@ -25,18 +37,29 @@ define( function() {
 					leftAxis = graphinstance.getLeftAxis( 0, axisProperties ),
 					rightAxis = graphinstance.getRightAxis( 0, axisProperties );
 
-				graphinstance.newSerie( "serieTest" )
-					.setLabel( "My serie" )
-					.setAxes( xAxis, leftAxis )
-					.setData( series[ 0 ] );
+				graphinstance.newSerie( "sin" )
+					.setLabel( "f(x) = sin(x)" )
+					.autoAxis()
+					.setData( series[ 0 ] )	
+					.setLineColor( '#bd1a1a' )
+					.showMarkers()
 					
-				graphinstance.newSerie( "serieTest_2" )
-					.setLabel( "My serie 2" )
-					.setAxes( xAxis, rightAxis )
+				graphinstance.newSerie( "cos" )
+					.setLabel( "f(x) = sin(x)" )
+					.autoAxis()
 					.setData( series[ 1 ] )
-					.setLineColor('red');
+					.setLineColor('#1abd91');
 
-				graphinstance.setHeight( 250 );
+
+				graphinstance.newSerie( "cossin" )
+					.setLabel( "f(x) = sin(x) * cos(x)" )
+					.autoAxis()
+					.setData( series[ 2 ] )
+					.setLineColor('#891abd');
+
+				graphinstance.getXAxis().setLabel( 'x' );
+				graphinstance.getYAxis().setLabel( 'y' );
+				graphinstance.getYAxis().setLineAt0( true );
 
 				var legend = graphinstance.makeLegend( {
 

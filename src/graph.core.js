@@ -229,11 +229,11 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 			this.markerArrow = document.createElementNS(this.ns, 'marker');
 			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
 			this.markerArrow.setAttribute('id', 'arrow' + this._creation);
-			this.markerArrow.setAttribute('refX', '0');
+			this.markerArrow.setAttribute('refX', '10');
 			this.markerArrow.setAttribute('refY', '5');
 			this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
-			this.markerArrow.setAttribute('markerWidth', '4');
-			this.markerArrow.setAttribute('markerHeight', '3');
+			this.markerArrow.setAttribute('markerWidth', '8');
+			this.markerArrow.setAttribute('markerHeight', '6');
 			this.markerArrow.setAttribute('orient', 'auto');
 			//this.markerArrow.setAttribute('fill', 'context-stroke');
 			//this.markerArrow.setAttribute('stroke', 'context-stroke');
@@ -1593,9 +1593,20 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 					pos[ i ] = this.getPx( value[ i ], axis );
 				}
 
+				console.log( pos, relTo, value );
+
 				if(value['d' + i] !== undefined) {
 
 					var def = (value[ i ] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true, axis) || 0);
+
+					if( i == 'y' && relTo && relTo.x ) {
+
+						var closest = onSerie.searchClosestValue( relTo.x );
+						if( closest ) {
+							def = onSerie.getY( closest.yMin );
+						}
+						//console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
+					}
 
 					if((parsed = _parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 
@@ -1617,6 +1628,8 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 		},
 
 		_getPositionPx: function(value, x, axis) {
+
+			var parsed;
 
 			if(parsed = _parsePx(value)) {
 

@@ -227,14 +227,16 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					pathError += "M " + xpx + " " + ypx;
 
 					if( error[ 0 ] ) {
-						pathError += this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
+						pathError = this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
 					}
 
+
 					if( error[ 1 ] ) {
-						pathError += this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
+						pathError = this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
 					}
 
 				}
+				console.log( pathError );
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}

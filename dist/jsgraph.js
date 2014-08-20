@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.2.2
+ * jsGraphs JavaScript Graphing Library v1.2.4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-19T05:58Z
+ * Date: 2014-08-20T15:44Z
  */
 
 (function( global, factory ) {
@@ -226,6 +226,36 @@ build['./graph.axis'] = ( function( $ ) {
 			this.options.lineAt0 = !!bool;
 		},
 
+		adapt0To: function( axis, mode, value ) {
+
+			if( axis ) {
+				this._adapt0To = [ axis, mode, value ];	
+			} else {
+				this._adapt0To = false;
+			}
+
+			console.log( this._adapt0To, this );
+		},
+
+		getAdapt0ToMin: function() {
+
+			if( this._adapt0To[ 1 ] == "min" ) {
+				return this._adapt0To[ 2 ]
+			} else {
+				return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMinValue() / this._adapt0To[ 0 ].getMaxValue()  )
+			}
+		},
+
+
+		getAdapt0ToMax: function() {
+
+			if( this._adapt0To[ 1 ] == "max" ) {
+				return this._adapt0To[ 2 ]
+			} else {
+				return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMaxValue() / this._adapt0To[ 0 ].getMinValue()  )
+			}
+		},
+
 		setAxisDataSpacing: function(val1, val2) {
 			this.options.axisDataSpacing.min = val1;
 			this.options.axisDataSpacing.max = val2 || val1;
@@ -247,11 +277,11 @@ build['./graph.axis'] = ( function( $ ) {
 
 		// Returns the true minimum of the axis. Either forced in options or the one from the data
 		getMinValue: function() {
-			return this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.dataMin);
+			return ! this._adapt0To ? ( this.options.forcedMin || (this.options.forcedMin === 0 ? 0 : this.dataMin) ) : ( this.getAdapt0ToMin() );
 		},
 
 		getMaxValue: function() {
-			return this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.dataMax);
+			return !  this._adapt0To ? ( this.options.forcedMax || (this.options.forcedMax === 0 ? 0 : this.dataMax) ) : ( this.getAdapt0ToMax() );
 		},
 
 		setMinValueData: function( min ) { this.dataMin = min; },
@@ -303,8 +333,8 @@ build['./graph.axis'] = ( function( $ ) {
 				}
 				this.currentAction = false;
 
-			} else if(this.graph.isZooming())
-				this._handleZoom(px);
+			}/* else if(this.graph.isZooming())
+				this._handleZoom(px);*/
 			
 		},
 
@@ -1230,10 +1260,16 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 		},
 
 		drawSpecifics: function() {
-
 			// Place label correctly
 			//this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 8) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+			this.label.setAttribute('transform', 'translate(' + ( ( this.left ? 1 : -1 ) * (-this.widthHeightTick - 10 - 5) ) + ', ' + (Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + Math.min(this.getMinPx(), this.getMaxPx())) +') rotate(-90)');
+
+			if( ! this.left ) {
+				this.labelTspan.style.dominantBaseline = 'hanging';	
+				this.expTspan.style.dominantBaseline = 'hanging';	
+				this.expTspanExp.style.dominantBaseline = 'hanging';	
+			}
+			
 
 			this.line.setAttribute('y1', this.getMinPx());
 			this.line.setAttribute('y2', this.getMaxPx());
@@ -1911,11 +1947,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 			this.markerArrow = document.createElementNS(this.ns, 'marker');
 			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
 			this.markerArrow.setAttribute('id', 'arrow' + this._creation);
-			this.markerArrow.setAttribute('refX', '0');
+			this.markerArrow.setAttribute('refX', '10');
 			this.markerArrow.setAttribute('refY', '5');
 			this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
-			this.markerArrow.setAttribute('markerWidth', '4');
-			this.markerArrow.setAttribute('markerHeight', '3');
+			this.markerArrow.setAttribute('markerWidth', '8');
+			this.markerArrow.setAttribute('markerHeight', '6');
 			this.markerArrow.setAttribute('orient', 'auto');
 			//this.markerArrow.setAttribute('fill', 'context-stroke');
 			//this.markerArrow.setAttribute('stroke', 'context-stroke');
@@ -2186,7 +2222,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 				return;
 			};
 
-			return;
+//			return;
 
 			this.applyToAxes('handleMouseMove', [x - this.options.paddingLeft, e], true, false);
 			this.applyToAxes('handleMouseMove', [y - this.options.paddingTop, e], false, true);
@@ -2200,7 +2236,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 						results[this.series[i].getName()] = this.series[i].handleMouseMove(false, true);
 					}
 
-					this.options.onMouseMoveData(e, results);
+					this.options.onMouseMoveData.call( this, e, results);
 				}
 				return;
 			}
@@ -3275,9 +3311,20 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 					pos[ i ] = this.getPx( value[ i ], axis );
 				}
 
+				console.log( pos, relTo, value );
+
 				if(value['d' + i] !== undefined) {
 
 					var def = (value[ i ] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true, axis) || 0);
+
+					if( i == 'y' && relTo && relTo.x ) {
+
+						var closest = onSerie.searchClosestValue( relTo.x );
+						if( closest ) {
+							def = onSerie.getY( closest.yMin );
+						}
+						//console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
+					}
 
 					if((parsed = _parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
 
@@ -3299,6 +3346,8 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 		},
 
 		_getPositionPx: function(value, x, axis) {
+
+			var parsed;
 
 			if(parsed = _parsePx(value)) {
 
@@ -5570,6 +5619,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				yMax;
  			
  			var value = this.searchClosestValue(valX);
+
+
  			if(!value)
  				return;
 
@@ -5577,9 +5628,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			var intY = ((1 - ratio) * value.yMin + ratio * value.yMax);
 
 			if(doMarker && this.options.trackMouse) {
-				if(!xMin)
+
+				if( value.xMin == undefined ) {
+
 					return false;
-				else {
+
+				} else {
 					
 					var x = this.getX(this.getFlip() ? intY : valX);
 					var y = this.getY(this.getFlip() ? valX : intY);
@@ -6374,14 +6428,16 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 					pathError += "M " + xpx + " " + ypx;
 
 					if( error[ 0 ] ) {
-						pathError += this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
+						pathError = this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
 					}
 
+
 					if( error[ 1 ] ) {
-						pathError += this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
+						pathError = this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
 					}
 
 				}
+				console.log( pathError );
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
@@ -8381,80 +8437,17 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 
 	var GraphArrow = function(graph) {
 		this.init(graph);
+
 	}
 
 	$.extend(GraphArrow.prototype, GraphLine.prototype, {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 			this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
+
+			console.log( this._dom );
 		}
 	});
-
-	var GraphShapeVerticalLine = function(graph) { this.init(graph); };
-	$.extend(GraphShapeVerticalLine.prototype, GraphLine.prototype, {
-
-		initImpl: function() {
-			this._dom.style.cursor = 'ew-resize';
-		},
-
-		setEvents: function() {
-			var self = this;
-			this._dom.addEventListener('mousedown', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				self.handleMouseDown(e);
-			});
-
-			this._dom.addEventListener('mousemove', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				self.handleMouseMove(e);
-			});
-
-			this._dom.addEventListener('mouseup', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				self.handleMouseUp(e);
-			});
-		},
-
-		handleMouseDown: function(e) {
-			this.moving = true;
-			this.graph.shapeMoving(this);
-			this.coordsI = this.graph.getXY(e);
-		},
-
-		handleMouseMove: function(e) {
-			if(!this.moving)
-				return;
-			var coords = this.graph.getXY(e),
-				delta = this.graph.getXAxis().getRelPx(coords.x - this.coordsI.x),
-				pos = this.getFromData('pos');
-				pos.x += delta;
-
-			this.coordsI = coords;
-			this.setPosition();
-/*
-			if(this.graph.options.onVerticalTracking)
-				this.options.onVerticalTracking(line.id, val, line.dasharray);*/
-		},
-
-		handleMouseUp: function() {
-			this.moving = false;
-			this.triggerChange();
-		},
-
-		setPosition: function() {
-			
-			var position = this._getPosition(this.getFromData('pos'));
-			this.setDom('x1', position.x);
-			this.setDom('x2', position.x);
-			this.setDom('y1', this.graph.getYAxis().getMinPx());
-			this.setDom('y2', this.graph.getYAxis().getMaxPx());
-		},
-
-		setPosition2: function() {}
-	})
 
 	return GraphArrow;
 

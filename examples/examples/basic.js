@@ -5,9 +5,7 @@ define( function() {
 
 			var graphinstance = new Graph( domGraph, function( graphinstance ) {
 
-				graphinstance.setHeight( 240 );
-				graphinstance.setWidth( 200 );
-
+				
 				graphinstance.newSerie("temp_nh")
 					.setLabel( "My serie" )
 					.autoAxis()

@@ -7,15 +7,16 @@ body {
   font-size: 15px; }
 
 .graph-example {
-  height: 350px;
-  width: 300px;
+  height: 500px;
+  width: 400px;
   margin: 20px;
-  float: left;
   position: relative;
-  background: linear-gradient(to bottom, #f2f7f9 0%, #f2f5f7 8%, #feffff 56%);
-  /* W3C */
+  background: white;
+  /*linear-gradient(to bottom, #f2f7f9 0%,#f2f5f7 8%,#feffff 56%); /* W3C */
   border: 1px solid #b7c8ce;
   box-shadow: 0px 0px 5px #c7d8df; }
+  .graph-example .graph {
+    height: 300px; }
   .graph-example h1 {
     background: linear-gradient(to bottom, #ddf1f9 0%, #ddf1f9 8%, #d7e7ed 100%);
     /* W3C */

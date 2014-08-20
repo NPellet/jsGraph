@@ -56,6 +56,10 @@ module.exports = function(grunt) {
                     '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js'
                 }
             }
+        },
+
+        sass: {
+            './examples/style.css': './examples/style.scss'
         }
 
     });

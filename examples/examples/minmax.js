@@ -4,8 +4,6 @@ define( function() {
 
 		var graphinstance = new Graph( domGraph, { series: [ 'zone', 'line' ] }, function( graphinstance ) {
 
-			graphinstance.setHeight( 250 );	
-
 			var data = [];
 			var data2 = [];
 			

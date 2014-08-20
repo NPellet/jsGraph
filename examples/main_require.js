@@ -189,6 +189,7 @@ require( [ 'graph.core', 'highlightjs' ] , function( Graph ) {
 			'axis',
 			'contour',
 			'errorbars',
+			'2axis',
 			'legend',
 			'minmax',
 			'plugins',
@@ -224,6 +225,19 @@ require( [ 'graph.core', 'highlightjs' ] , function( Graph ) {
 
 			//hljs.highlightBlock( $("#example-" + ( i  ) + "-source").html( functions[ i ][ 0 ].toString() ).get(0) );
 		}
+
+
+		window.setTimeout( function() {
+
+			var str ="";
+			for( var i = 0, l = functions.length ; i < l ; i ++ ) {
+//console.log( $('#graph-examples').children().eq( i ).find('.graph').get(0) );
+				str += $('#graph-examples').children().eq( i ).find('.graph').get(0).innerHTML + "\n\n\n\n\n\n";
+
+			}
+
+			console.log( str );
+		}, 2000 )
 
 	});
 
