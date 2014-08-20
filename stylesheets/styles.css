@@ -208,3 +208,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 .clear, .break {
   clear: both;
 }
+
+a, a:visited {
+  color: #666666;
+}
