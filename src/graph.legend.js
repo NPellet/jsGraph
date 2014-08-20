@@ -86,7 +86,7 @@ define( [], function() {
 					var g, line, text;
 
 					g = document.createElementNS(self.graph.ns, 'g');
-					g.setAttribute('transform', "translate(0, " + (i * 16 + 10 + self.options.paddingTop) + ")" );
+					g.setAttribute('transform', "translate(0, " + (i * 16 + self.options.paddingTop) + ")" );
 
 					self.svg.appendChild( g );
 
