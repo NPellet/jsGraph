@@ -79,6 +79,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
   color: #666666;
   text-align: center;
   text-shadow: 1px 1px 3px rgba( 50, 50, 50, 0.6 );
+  margin-bottom: 10px;
 }
 
 .section.header h1 .part1 {
@@ -88,8 +89,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 .section.header h2 {
   font-size: 20px;
   color: #666666;
-  text-align: center;
+  
   text-shadow: 1px 1px 3px rgba( 50, 50, 50, 0.2 );
+  margin-top: 45px;
+}
+
+
+.title.section.header h2 {
+  
+  text-align: center;
+  margin-top: 0px;
+  margin-bottom: 40px;
 }
 
 

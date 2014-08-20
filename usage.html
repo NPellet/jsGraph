@@ -32,6 +32,10 @@
     <div class="section header">
       <div>    
 
+      <h2>
+      Getting started
+      </h2>
+
       <p class="font">
         The bare minimum to load a graph is to load jQuery and the jsGraph library. Place the following scripts in the head tag of your HTML page.
       </p>
@@ -75,6 +79,160 @@
         </pre>
 
         <p class="font"> Make sure that the DOM element already exists in the page. You can use jQuery( document ).ready() to make sure the code is executed after the page has fully loaded </p>
+
+        <h2>
+          Graph initialization - Advanced usage
+        </h2>
+
+        <p class="font">
+          You may dig deeper in the options and tune the graph properties yourself. Check out the examples to see how to use those options
+        </p>
+
+        <pre><code class="javascript">
+  var options = {
+
+    title: 'Graph title', // Graph title
+
+    /* 
+     * Padding values in px. 
+     * The padding is the space between the SVG container and the outer part of the axis.
+     * Axis ticks and labels are not included in the paddings.
+     */
+    paddingTop: 30, 
+    paddingBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
+
+    // Used to draw a line replacing the axis if no axis exists for this side
+    close: {
+      left: true,
+      right: true, 
+      top: true,
+      bottom: true
+    },
+
+
+    fontSize: 12, // Main font size
+    fontFamily: 'Myriad Pro, Helvetica, Arial', // Main font-family
+
+
+    plugins: { // Loads plugins. The key is the path to the plugin file, the value is the options passed to the plugin
+      'graph.plugin.zoom': { zoomMode: 'x' }, // Loads the zooming plugin. 
+      'graph.plugin.drag': {} // Loads the dragging plugin
+    },
+
+    pluginAction: { // Define mouse interactions with the plugin
+      'graph.plugin.drag': { shift: true, ctrl: false },
+      'graph.plugin.zoom': { shift: false, ctrl: false }
+    },
+
+    wheel: { // Mouse wheel
+      type: 'plugin', 
+      plugin: 'graph.plugin.zoom', // Delegate to the zoom plugin
+      options: {
+        direction: 'y' // Zoom in the y direction
+      }
+    },
+
+    dblclick: { // Double click
+      type: 'plugin',
+      plugin: 'graph.plugin.zoom', // Delegate to the zoom plugin
+      options: {
+        mode: 'total' // Totall unzoom the graph
+      }
+    }
+  };
+
+
+  var axis = { // Defines which axis to use
+
+    top: [ { // We want one axis on the top
+      
+      flipped: true, // Flip the axis around
+      axisDataSpacing: { min: 0, max: 0 }, // Tune the padding between the data and the axis boundary
+
+      primaryGrid: false, // Do not display the primary grid
+      secondaryGrid: false, // Do not display the secondary grid
+
+      labelValue: "Top axis" // Labels the axis
+    } ],
+
+    right: [ {  // We want one axis on the right
+
+      forcedMin: 0, // Force the minimum value of the axis to 0
+      axisDataSpacing: { min: 0 }, // No padding between the data and the axis boundary
+      tickPosition: 2, // Put ticks in the outside
+
+      secondaryGrid: false // Do not display the secondary grid
+    } ]
+
+  };
+
+  new Graph( dom, options, axis );
+
+        </code></pre>
+
+
+          <h2>
+            Serie initialize - advanced usage
+          </h2>
+
+         <p class="font">Here's a more advanced example on how to add a serie to the axis. Check out the examples or the full API for more details</p>
+
+<pre><code class="javascript">
+  var g = new Graph( dom, options );
+
+  var serie = g.newSerie("serieName", { }, 'scatter') // New scatter serie
+    .setLabel( "My serie" ) // Give it a label
+    .autoAxis() // Assign the axis automatically.
+    .setData( someData ) // Sets some data
+    .setDataStyle( { // Chose how the points should look like
+      shape: 'circle', 
+      r: 2, 
+      fill: 'rgba(255, 0, 0, 0.3)', 
+      stroke: 'rgb(255, 100, 0)'
+    } );
+
+
+  var serie = g.newSerie("serieName", {
+    autoPeakPicking: true // A basic peak picking algorithm
+
+  }, 'line') // New line series
+    .setData( seriedata )
+    .setLineColor( 'red' ) // Red line
+    .setLineWidth( 2 ) // 2px line width
+    .showMarkers( ) // We want to see the markers
+    .setMarkerType( 1 ) // An empty square
+    .setMarkerZoom( 2 ) // Make the marker bigger
+    .onMouseOverMarker( function() { /* Do something when marker is hovered */ })
+    .onMouseOutMarker( function() { /* Do something when marker is hovered */ })
+    .setLineStyle( 2 ) // Sets the dashing style nb 2 (a dashed line)
+    .setYAxis( g.getRightAxis( 0 ) ) // Assign the y axis to the first right axis
+    .setXAxis( g.getTopAxis( 1 ) ) // Asign the x axis to the second top axis
+
+  var serie = g.newSerie( "serieTest", { }, 'zone' )
+    .autoAxis()
+    .setData( zoneSerie )
+    .setFillColor('rgba(200, 100, 100, 0.2)')
+    .setLineColor('rgba(200, 100, 100, 0.4)');
+
+</code>
+</pre>
+
+        
+
+        <h2>
+        Authors
+        </h2>
+        <p class="font">
+        The authors and other contributors are listed in the AUTHORS file.
+        </p>
+      <h2>
+      License
+      </h2>
+      <p class="font">
+      jsGraph is released under the MIT license. See the LICENSE file for details.
+      </p>
 
         <script>
 
