@@ -71,7 +71,7 @@ background: linear-gradient(to bottom, #dbe3e9 0%,#cedae2 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', endColorstr='#cedae2',GradientType=0 ); /* IE6-9 */
 
 
-  box-shadow: inset 0px -3px 3px rgba( 50, 50, 50, 0.6 );
+/*  box-shadow: inset 0px -3px 3px rgba( 50, 50, 50, 0.6 );*/
 }
 
 .section.header h1 {
@@ -86,15 +86,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 }
 
 .section.header h2 {
-  font-size: 14px;
+  font-size: 20px;
   color: #666666;
   text-align: center;
   text-shadow: 1px 1px 3px rgba( 50, 50, 50, 0.2 );
 }
 
 
-.section.examples {
+.section.description {
   
+  border-top: 1px solid #86b9db;
+
+
   background: #a5cae3; /* Old browsers */
 background: -moz-linear-gradient(top, #a5cae3 0%, #82b5da 100%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a5cae3), color-stop(100%,#82b5da)); /* Chrome,Safari4+ */
@@ -138,16 +141,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a5cae3', end
 }
 
 
-
 #slider_examples .images {
 
-cursor: move; position: absolute; left: 0px; top: 0px;
-
-width: 394px;
+  cursor: move;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 394px;
   height: 285px;
-
   overflow: hidden;
-
 }
 
 
