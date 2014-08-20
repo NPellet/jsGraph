@@ -111,7 +111,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 
 .section.description > div > ul {
   list-style-type: none;
-  font-size: 1.5em;
+  
+}
+
+.font {
+  font-size: 1.4em;
   line-height: 1.9em;
 }
 
@@ -174,7 +178,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 
 
 .section.description .img.border img {
-  
+
   box-shadow: 0px 0px 8px rgba( 100, 100, 100, 0.6 );
   border: 1px solid rgba( 100, 100, 100, 0.9 );
 }

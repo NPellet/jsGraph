@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>jsGraphs - The Dyanamic Graphing Library in Javascript and SVG</title>
+
+  <link href='http://fonts.googleapis.com/css?family=ABeeZee:400,400italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="stylesheets/styles.css">
+  <script type="text/javascript" src="javascripts/jquery.js"></script>
+
+
+  <link rel="stylesheet" href="./highlightjs/styles/monokai_sublime.css">
+  <script src="./highlightjs/highlight.pack.js"></script>
+
+</head>
+<body>
+  <div class="wrapper">
+    <div class="section menu">
+
+      <div>
+        <ul>
+          <li><a href="">Download</a></li>
+          <li><a href="">Showcase</a></li>
+          <li><a href="">Credits</a></li>
+          <li><a href="https://github.com/NPellet/jsGraph">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="section header">
+      <div>    
+
+      <p class="font">
+        The bare minimum to load a graph is to load jQuery and the jsGraph library. Place the following scripts in the head tag of your HTML page.
+      </p>
+
+        <pre>
+
+          <code class="html">
+    &lt;script src="../dist/jquery.min.js" type="text/javascript">&lt;/script>  
+    &lt;script src="../dist/jsgraph.min.js" type="text/javascript">&lt;/script> 
+          </code>
+        </pre>
+
+         <p class="font">A new graph is then created using the following syntax</p>
+
+        <pre>
+          <code class="html">
+  &lt;div id="MyGraph" style="width: 400px; height: 200px;">&lt;/div>
+
+  &lt;script>
+
+    // Just create a serie, f(x) = sin(x)
+    var serie = [];
+    for( var i = 0, l = Math.PI ; i < l ; i += 0.01 ) {
+      serieData.push( i );
+      serieData.push( Math.sin( i ) );
+    }
+
+    // Create a the graph. Looks for the id "MyGraph"
+    var graphinstance = new Graph( "MyGraph" );
+
+    // Creates a new serie
+    graphinstance.newSerie( "serieName" )
+      .autoAxis()  // Assign automatic axes
+      .setData( serieData );  // Sets the serie data
+
+    graphinstance.redraw( );  // Draws the outer part of the graph
+    graphinstance.drawSeries();  // Draws the series
+
+  &lt;/script>
+          </code>
+        </pre>
+
+        <p class="font"> Make sure that the DOM element already exists in the page. You can use jQuery( document ).ready() to make sure the code is executed after the page has fully loaded </p>
+
+        <script>
+
+        hljs.initHighlightingOnLoad();
+        </script>
+      </div>
+    </div>
+
+
+  </div>
+
+</div>
+<!--<script src="javascripts/scale.fix.js"></script>-->
+
+</body>
+</html>
+
+
+<!--        <p class="view"><a href="https://github.com/NPellet/jsGraph">View the Project on GitHub <small>NPellet/jsGraph</small></a></p>
+-->
+

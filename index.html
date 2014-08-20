@@ -1,199 +1,192 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Jsgraph by NPellet</title>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>jsGraphs - The Dyanamic Graphing Library in Javascript and SVG</title>
 
-    <link href='http://fonts.googleapis.com/css?family=ABeeZee:400,400italic' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="stylesheets/styles.css">
+  <link href='http://fonts.googleapis.com/css?family=ABeeZee:400,400italic' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="stylesheets/styles.css">
 
-      <script type="text/javascript" src="javascripts/jquery.js"></script>
+  <script type="text/javascript" src="javascripts/jquery.js"></script>
 
-      <script type="text/javascript" src="jssor/jssor.core.js"></script>
+  <script type="text/javascript" src="jssor/jssor.core.js"></script>
+  <script type="text/javascript" src="jssor/jssor.utils.js"></script>
+  <script type="text/javascript" src="jssor/jssor.slider.js"></script>
 
+  <script src="./javascripts/page.js"></script>
 
-      <script type="text/javascript" src="jssor/jssor.utils.js"></script>
-      <script type="text/javascript" src="jssor/jssor.slider.js"></script>
-
-      <script src="./javascripts/page.js"></script>
-
-      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-  </head>
-  <body>
-    <div class="wrapper">
-
+</head>
+<body>
+  <div class="wrapper">
     <div class="section menu">
-      
+
       <div>
-          <ul>
-            <li><a href="">Download</a></li>
-            <li><a href="">Showcase</a></li>
-            <li><a href="">Credits</a></li>
-            <li><a href="https://github.com/NPellet/jsGraph">View On <strong>GitHub</strong></a></li>
-          </ul>
-      </div>
-
-    </div>
-
-
-    <div class="section header">
-
-      <div>    
-        <h1><span class="part1">Js</span>Graph</h1>
-        <h2>
-          Displays graphs in your browser. Simply. Professionally.
-        </h2>
-      </div>
-    
-
-    <div id="slider_examples">
-
-      <!-- Loading Screen -->
-      <div class="loading">
-          <div class="overlay">
-          </div>
-          <div class="loader">
-          </div>
-      </div>
-
-      <!-- Slides Container -->
-      <div u="slides" class="images">
-          <div>
-              <img u="image" src="./images/slideshow/1.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/2.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/3.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/4.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/5.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/6.jpg" />
-          </div>
-          <div>
-              <img u="image" src="./images/slideshow/7.jpg" />
-          </div>
-            
-        </div>
-    </div>
+        <ul>
+          <li><a href="usage.html">Usage</a></li>
+          <li><a href="">Showcase</a></li>
+          <li><a href="">Credits</a></li>
+          <li><a href="https://github.com/NPellet/jsGraph">View On <strong>GitHub</strong></a></li>
+      </ul>
   </div>
 
+</div>
 
-  <div class="section description">
+<div class="section header">
+  <div>    
+    <h1><span class="part1">Js</span>Graph</h1>
+    <h2>
+      Displays graphs in your browser. Simply. Professionally.
+  </h2>
+</div>
+
+
+<div id="slider_examples">
+
+    <!-- Loading Screen -->
+    <div class="loading">
+      <div class="overlay">
+      </div>
+      <div class="loader">
+      </div>
+  </div>
+
+  <!-- Slides Container -->
+  <div u="slides" class="images">
+      <div>
+        <img u="image" src="./images/slideshow/1.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/2.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/3.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/4.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/5.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/6.jpg" />
+    </div>
+    <div>
+        <img u="image" src="./images/slideshow/7.jpg" />
+    </div>
+
+</div>
+</div>
+</div>
+
+
+<div class="section description font">
   <div>
     <ul>
-    <li>
-      If you are trying to display any sort of scientific data in your browser, you might have just have found the library you're looking for. With jsGraph you can display any data easily and efficiently.
+      <li>
+        If you are trying to display any sort of scientific data in your browser, you might have just have found the library you're looking for. With jsGraph you can display any data easily and efficiently.
     </li>
 
     <li>
-    <h2>
-      Client-side, HTML5 and SVG technology
-    </h2>
+        <h2>
+          Client-side, HTML5 and SVG technology
+      </h2>
 
 
       <div class="img left">
-        <img src="./images/html5.png" />
+          <img src="./images/html5.png" />
       </div> 
       <div>
-      jsGraph is fully written in Javascript and requires only jQuery to run on any version of Google Chrome. By using Scalable Vector Graphics, we create graphs that can be exported in the .svg format that can be read by Adobe Illustrator or other vectorial graphics software.
+          jsGraph is fully written in Javascript and requires only jQuery to run on any version of Google Chrome. By using Scalable Vector Graphics, we create graphs that can be exported in the .svg format that can be read by Adobe Illustrator or other vectorial graphics software.
       </div>
 
       <div class="clear"></div>
-    </li>
+  </li>
 
 
-    <li>
+  <li>
     <h2>
       Going fast
-    </h2>
+  </h2>
 
-      <div class="img right border">
-        <img src="./images/time.jpg" />
-      </div> 
-      <div>
+  <div class="img right border">
+      <img src="./images/time.jpg" />
+  </div> 
+  <div>
       Because shorter rendering time means better user experience, we have taken particular care that your data is displayed in a record time. Because SVG is inherently slower than canvas, we implemented several layers of optimization so that parsing and rendering of heavy data is no longer a burden on your application. No useless data is displayed !
-      </div>
-      <div class="clear"></div>
-    </li>
+  </div>
+  <div class="clear"></div>
+</li>
 
 
-    <li>
+<li>
     <h2>
       Your data the way you want
-    </h2>
-      
+  </h2>
 
 
-      <div class="img left border">
-        <img src="./images/serietypes.jpg" />
-      </div> 
-      <div>
+
+  <div class="img left border">
+      <img src="./images/serietypes.jpg" />
+  </div> 
+  <div>
 
       With jsGraphs, you can display data points connected by lines, scattered points (that can show error bars), contour plots or zones. Each serie can be customized. You may chose its color, line thickness, markers shape, ... Use legends to keep track of which serie represents what. Check out the examples for more !
-      </div>
-      <div class="clear"></div>
-      
-
-    </li>
+  </div>
+  <div class="clear"></div>
 
 
+</li>
 
-    <li>
+
+
+<li>
     <h2>
       Use plugins
-    </h2>
-      <div class="img right border">
-        <img src="./images/plugin.jpg" />
-      </div> 
-      <div>
-       Thanks to JavaScript, you can now use your mouse to interact with your graph. Drag your serie around, zoom on it, draw some shapes or move your mouse over some point to get information about your data !
-      </div>
-      <div class="clear"></div>
-    </li>
+  </h2>
+  <div class="img right border">
+      <img src="./images/plugin.jpg" />
+  </div> 
+  <div>
+      Thanks to JavaScript, you can now use your mouse to interact with your graph. Drag your serie around, zoom on it, draw some shapes or move your mouse over some point to get information about your data !
+  </div>
+  <div class="clear"></div>
+</li>
 
 
 
-    <li>
+<li>
     <h2>
       Annotate your data
-    </h2>
+  </h2>
 
 
 
-      <div class="img left border">
-        <img src="./images/annotation.jpg" />
-      </div> 
-
-
-      <div>
-      Because bare data is often meaningless, we developped a powerful API that allows you to draw shapes onto your data. Specify its shape, its style and its position (in px or relative to your axis). You can even use plugins to draw shapes yourself !
-      </div>
-          <div class="clear"></div>
-    </li>
-
-    </ul>
-
-    </div>
+  <div class="img left border">
+      <img src="./images/annotation.jpg" />
+  </div> 
 
 
   <div>
+      Because bare data is often meaningless, we developped a powerful API that allows you to draw shapes onto your data. Specify its shape, its style and its position (in px or relative to your axis). You can even use plugins to draw shapes yourself !
+  </div>
+  <div class="clear"></div>
+</li>
+
+</ul>
 
 </div>
-      </div>
 
-    </div>
-    <!--<script src="javascripts/scale.fix.js"></script>-->
-    
-  </body>
+
+<div>
+
+</div>
+</div>
+
+</div>
+<!--<script src="javascripts/scale.fix.js"></script>-->
+
+</body>
 </html>
 
 
