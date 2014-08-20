@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.2.4
+ * jsGraphs JavaScript Graphing Library v1.3.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-20T15:44Z
+ * Date: 2014-08-20T19:52Z
  */
 
 (function( global, factory ) {
@@ -1472,7 +1472,7 @@ build['./graph.legend'] = ( function( ) {
 					var g, line, text;
 
 					g = document.createElementNS(self.graph.ns, 'g');
-					g.setAttribute('transform', "translate(0, " + (i * 16 + 10 + self.options.paddingTop) + ")" );
+					g.setAttribute('transform', "translate(0, " + (i * 16 + self.options.paddingTop) + ")" );
 
 					self.svg.appendChild( g );
 

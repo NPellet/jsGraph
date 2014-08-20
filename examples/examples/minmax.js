@@ -6,23 +6,39 @@ define( function() {
 
 			var data = [];
 			var data2 = [];
+			var data3 = [];
 			
 
-			for( var i = 0; i < 40 ; i += 2 ) {
+			for( var i = 0; i < 4 ; i += 0.2 ) {
 
-				data.push( [ i, Math.pow( i, 2 ) ] );
+				data.push( [ i, Math.sin( i ) ] );
 				
 				data2.push( i );
-				data2.push( Math.pow( i, 2 ) - ( ( 0.2 + Math.random() ) * 300 ) );
-				data2.push( Math.pow( i, 2 ) + ( ( 0.2 + Math.random() ) * 300 ) );
+				data2.push( Math.sin( i, 2 ) - ( ( 0.2 + Math.random() ) * 1 ) );
+				data2.push( Math.sin( i, 2 ) + ( ( 0.2 + Math.random() ) * 1 ) );
+
+
+				data3.push( i );
+				data3.push( Math.sin( i, 2 ) - ( ( 1.2 + Math.random() ) * 2 ) );
+				data3.push( Math.sin( i, 2 ) + ( ( 1.2 + Math.random() ) * 2 ) );
 			}
+
+
+
+			var serie = graphinstance.newSerie("serieTest", { }, 'zone')
+				.setLabel( "My serie" )
+				.autoAxis()
+				.setData( data3 )
+				.setFillColor('rgba(100, 100, 300, 0.2)')
+				.setLineColor('transparent');
 
 			var serie = graphinstance.newSerie("serieTest", { }, 'zone')
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data2 )
-				.setFillColor('rgba(200, 100, 100, 0.2)')
+				.setFillColor('rgba(200, 100, 100, 0.6)')
 				.setLineColor('rgba(200, 100, 100, 0.9)');
+
 
 
 			var serie = graphinstance.newSerie("serieTest", { }, 'line')
