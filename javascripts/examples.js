@@ -158,7 +158,7 @@ obj.maxX = 5;
 obj.minY = -5;
 obj.maxY = 5;
 
-var cont = generateContourLines( obj );
+var contour = generateContourLines( obj );
 
 hljs.configure({
   tabReplace: '  ' // 4 spaces
