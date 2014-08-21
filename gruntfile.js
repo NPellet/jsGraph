@@ -29,6 +29,7 @@ module.exports = function(grunt) {
                 updateConfigs: [ 'pkg' ],
                 createTag: true,
                 push: true,
+                pushTo: 'origin',
                 commitFiles: ['-a']
             }
     
