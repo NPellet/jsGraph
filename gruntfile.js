@@ -71,7 +71,7 @@ module.exports = function(grunt) {
             exportToPages: {
 
                 files: {
-                    '../jsGraph-ghpages/': 'examples/examples/**',
+                    '../jsGraph-ghpages/': 'examples/src/**',
                     '../jsGraph-ghpages/graph/jsgraph.js': 'dist/jsgraph.min.js'
                 }
             }
@@ -102,8 +102,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
 
-        var files = fs.readdirSync( './examples/examples/' );
-        var str = "define( [ 'require', " + files.map( function( el ) { return "'./examples/" + el + "'" }).join() + " ], function() { return arguments; });";
+        var files = fs.readdirSync( './examples/src/' );
+        var str = "define( [ 'require', " + files.map( function( el ) { return "'./src/" + el + "'" }).join() + " ], function() { return arguments; });";
 
         grunt.task.run('copy:exportToPages');
         grunt.file.write( '../jsGraph-ghpages/examples/list.js', str );

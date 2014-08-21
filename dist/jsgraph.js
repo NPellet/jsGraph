@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.4.2
+ * jsGraphs JavaScript Graphing Library v1.5.4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-21T15:42Z
+ * Date: 2014-08-21T22:15Z
  */
 
 (function( global, factory ) {
@@ -1671,7 +1671,7 @@ build['./dynamicdepencies'] = ( function( ) {
 
 				file = this.folderMap[ type ] + file;
 			}
-
+console.log( this.caching[ type ], type, file )
 			if( this.caching[ type ][ file ] ) {
 
 			//	console.log( "Found element " + file + " of type " + type + " in cache" );

@@ -29,7 +29,7 @@ define([ 'require' ], function( require ) {
 
 				file = this.folderMap[ type ] + file;
 			}
-
+console.log( this.caching[ type ], type, file )
 			if( this.caching[ type ][ file ] ) {
 
 			//	console.log( "Found element " + file + " of type " + type + " in cache" );
