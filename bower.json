@@ -1,6 +1,6 @@
 {
   "name": "jsGraph",
-  "version": "1.5.3",
+  "version": "1.5.3-1.5.3-v1.5.3-d-1.5.3-v1.5.3-d-v1.5.3-d",
   "homepage": "http://jsgraph.org",
   "main": "dist/jsgraph.js", 
   "keywords": [
@@ -12,7 +12,13 @@
   "ignore": [
     "**/.*",
     "./lib/lib",
-    "./lib/components"
+    "./lib/components",
+    "package.json",
+    "README.md",
+    "*.log",
+    "gruntfile.js",
+    "AUTHORS",
+    "bower.json"
   ],
   "devDependencies": {
     "Aristo-jQuery-UI-Theme": "https://github.com/taitems/Aristo-jQuery-UI-Theme.git",
