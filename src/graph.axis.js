@@ -196,7 +196,7 @@ define( [ 'jquery' ] , function( $ ) {
 				this._adapt0To = false;
 			}
 
-			console.log( this._adapt0To, this );
+		
 		},
 
 		getAdapt0ToMin: function() {

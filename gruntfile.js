@@ -86,7 +86,7 @@ module.exports = function(grunt) {
         grunt.log.writeln( arguments );
     }
 
-    grunt.registerTask( 'default', [ 'build', 'copy:exportToNMR', 'buildExampleList'] );
+    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:exportToNMR', 'buildExampleList'] );
 
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {

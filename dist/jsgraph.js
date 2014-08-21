@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.3.1
+ * jsGraphs JavaScript Graphing Library v1.4.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-21T03:51Z
+ * Date: 2014-08-21T04:25Z
  */
 
 (function( global, factory ) {
@@ -234,7 +234,7 @@ build['./graph.axis'] = ( function( $ ) {
 				this._adapt0To = false;
 			}
 
-			console.log( this._adapt0To, this );
+		
 		},
 
 		getAdapt0ToMin: function() {
