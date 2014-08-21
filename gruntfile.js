@@ -25,7 +25,7 @@ module.exports = function(grunt) {
         bump: {
 
             options: {
-                files: ['package.json'],
+                files: ['package.json', 'bower.json'],
                 updateConfigs: [ 'pkg' ],
                 push: false
             }
@@ -50,6 +50,14 @@ module.exports = function(grunt) {
         },
 
         copy: {
+
+            dist: {
+
+                files: {
+                    'dist/jquery.min.js': 'lib/components/jquery/dist/jquery.min.js'
+                }
+            },
+
             exportToNMR: {
 
                 files: {
@@ -86,7 +94,7 @@ module.exports = function(grunt) {
         grunt.log.writeln( arguments );
     }
 
-    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:exportToNMR', 'buildExampleList'] );
+    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'buildExampleList'] );
 
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {

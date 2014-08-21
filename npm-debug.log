@@ -1,0 +1,251 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'grunt-shell',
+1 verbose cli   '--save-dev' ]
+2 info using npm@1.4.14
+3 info using node@v0.10.29
+4 warn package.json graphs@1.4.0 No repository field.
+5 warn package.json path@0.4.9 path is also the name of a node core module.
+6 verbose readDependencies using package.json deps
+7 verbose cache add [ 'grunt-shell', null ]
+8 verbose cache add name=undefined spec="grunt-shell" args=["grunt-shell",null]
+9 verbose parsed url { protocol: null,
+9 verbose parsed url   slashes: null,
+9 verbose parsed url   auth: null,
+9 verbose parsed url   host: null,
+9 verbose parsed url   port: null,
+9 verbose parsed url   hostname: null,
+9 verbose parsed url   hash: null,
+9 verbose parsed url   search: null,
+9 verbose parsed url   query: null,
+9 verbose parsed url   pathname: 'grunt-shell',
+9 verbose parsed url   path: 'grunt-shell',
+9 verbose parsed url   href: 'grunt-shell' }
+10 silly lockFile 1af6c097-grunt-shell grunt-shell
+11 verbose lock grunt-shell /Users/normanpellet/.npm/1af6c097-grunt-shell.lock
+12 silly lockFile 1af6c097-grunt-shell grunt-shell
+13 silly lockFile 1af6c097-grunt-shell grunt-shell
+14 verbose addNamed [ 'grunt-shell', '' ]
+15 verbose addNamed [ null, '*' ]
+16 silly lockFile 9b13ef1a-grunt-shell grunt-shell@
+17 verbose lock grunt-shell@ /Users/normanpellet/.npm/9b13ef1a-grunt-shell.lock
+18 silly addNameRange { name: 'grunt-shell', range: '*', hasData: false }
+19 verbose url raw grunt-shell
+20 verbose url resolving [ 'https://registry.npmjs.org/', './grunt-shell' ]
+21 verbose url resolved https://registry.npmjs.org/grunt-shell
+22 info trying registry request attempt 1 at 08:35:44
+23 http GET https://registry.npmjs.org/grunt-shell
+24 http 200 https://registry.npmjs.org/grunt-shell
+25 silly registry.get cb [ 200,
+25 silly registry.get   { date: 'Thu, 21 Aug 2014 15:35:45 GMT',
+25 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+25 silly registry.get     etag: '"EBM4ZJGFAWMDFLVMHOSPF2VIS"',
+25 silly registry.get     'content-type': 'application/json',
+25 silly registry.get     'cache-control': 'max-age=60',
+25 silly registry.get     'content-length': '27639',
+25 silly registry.get     'accept-ranges': 'bytes',
+25 silly registry.get     via: '1.1 varnish',
+25 silly registry.get     age: '3801',
+25 silly registry.get     'x-served-by': 'cache-sjc3124-SJC',
+25 silly registry.get     'x-cache': 'HIT',
+25 silly registry.get     'x-cache-hits': '1',
+25 silly registry.get     'x-timer': 'S1408635344.919244,VS0,VE144',
+25 silly registry.get     vary: 'Accept',
+25 silly registry.get     'keep-alive': 'timeout=10, max=50',
+25 silly registry.get     connection: 'Keep-Alive' } ]
+26 silly addNameRange number 2 { name: 'grunt-shell', range: '*', hasData: true }
+27 silly addNameRange versions [ 'grunt-shell',
+27 silly addNameRange   [ '0.1.0',
+27 silly addNameRange     '0.1.1',
+27 silly addNameRange     '0.1.2',
+27 silly addNameRange     '0.1.3',
+27 silly addNameRange     '0.1.4',
+27 silly addNameRange     '0.2.0',
+27 silly addNameRange     '0.2.1',
+27 silly addNameRange     '0.2.2',
+27 silly addNameRange     '0.3.0',
+27 silly addNameRange     '0.3.1',
+27 silly addNameRange     '0.4.0',
+27 silly addNameRange     '0.5.0',
+27 silly addNameRange     '0.6.0',
+27 silly addNameRange     '0.6.1',
+27 silly addNameRange     '0.6.2',
+27 silly addNameRange     '0.6.4',
+27 silly addNameRange     '0.7.0',
+27 silly addNameRange     '1.0.0',
+27 silly addNameRange     '1.0.1' ] ]
+28 verbose addNamed [ 'grunt-shell', '1.0.1' ]
+29 verbose addNamed [ '1.0.1', '1.0.1' ]
+30 silly lockFile b70d2513-grunt-shell-1-0-1 grunt-shell@1.0.1
+31 verbose lock grunt-shell@1.0.1 /Users/normanpellet/.npm/b70d2513-grunt-shell-1-0-1.lock
+32 silly lockFile 6c896d89-runt-shell-grunt-shell-1-0-1-tgz https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+33 verbose lock https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz /Users/normanpellet/.npm/6c896d89-runt-shell-grunt-shell-1-0-1-tgz.lock
+34 verbose addRemoteTarball [ 'https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz',
+34 verbose addRemoteTarball   '4a6a77e73f06125d6ae7bc365665ab179436bba7' ]
+35 info retry fetch attempt 1 at 08:35:45
+36 verbose fetch to= /var/folders/kk/25x2t83d77v1w5xn_w0hpx3r0000gn/T/npm-89247-Ux-t8zHY/registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+37 http GET https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+38 http 200 https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+39 silly lockFile 6c896d89-runt-shell-grunt-shell-1-0-1-tgz https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+40 silly lockFile 6c896d89-runt-shell-grunt-shell-1-0-1-tgz https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz
+41 silly lockFile b70d2513-grunt-shell-1-0-1 grunt-shell@1.0.1
+42 silly lockFile b70d2513-grunt-shell-1-0-1 grunt-shell@1.0.1
+43 silly lockFile 9b13ef1a-grunt-shell grunt-shell@
+44 silly lockFile 9b13ef1a-grunt-shell grunt-shell@
+45 silly resolved [ { name: 'grunt-shell',
+45 silly resolved     version: '1.0.1',
+45 silly resolved     description: 'Run shell commands',
+45 silly resolved     keywords:
+45 silly resolved      [ 'gruntplugin',
+45 silly resolved        'shell',
+45 silly resolved        'command',
+45 silly resolved        'cmd',
+45 silly resolved        'exec',
+45 silly resolved        'spawn',
+45 silly resolved        'process',
+45 silly resolved        'cli' ],
+45 silly resolved     license: 'MIT',
+45 silly resolved     author:
+45 silly resolved      { name: 'Sindre Sorhus',
+45 silly resolved        email: 'sindresorhus@gmail.com',
+45 silly resolved        url: 'http://sindresorhus.com' },
+45 silly resolved     files: [ 'tasks' ],
+45 silly resolved     repository:
+45 silly resolved      { type: 'git',
+45 silly resolved        url: 'https://github.com/sindresorhus/grunt-shell' },
+45 silly resolved     scripts: { test: 'grunt' },
+45 silly resolved     dependencies: { chalk: '^0.5.1' },
+45 silly resolved     devDependencies: { grunt: '^0.4.5', 'grunt-cli': '^0.1.13' },
+45 silly resolved     peerDependencies: { grunt: '>=0.4.0' },
+45 silly resolved     engines: { node: '>=0.10.0' },
+45 silly resolved     gitHead: 'd192a3d2e1894110827497babbb952beb55cf55e',
+45 silly resolved     bugs: { url: 'https://github.com/sindresorhus/grunt-shell/issues' },
+45 silly resolved     homepage: 'https://github.com/sindresorhus/grunt-shell',
+45 silly resolved     _id: 'grunt-shell@1.0.1',
+45 silly resolved     _shasum: '4a6a77e73f06125d6ae7bc365665ab179436bba7',
+45 silly resolved     _from: 'grunt-shell@',
+45 silly resolved     _npmVersion: '1.4.23',
+45 silly resolved     _npmUser: { name: 'sindresorhus', email: 'sindresorhus@gmail.com' },
+45 silly resolved     maintainers: [ [Object] ],
+45 silly resolved     dist:
+45 silly resolved      { shasum: '4a6a77e73f06125d6ae7bc365665ab179436bba7',
+45 silly resolved        tarball: 'http://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz' },
+45 silly resolved     directories: {},
+45 silly resolved     _resolved: 'https://registry.npmjs.org/grunt-shell/-/grunt-shell-1.0.1.tgz' } ]
+46 info install grunt-shell@1.0.1 into /Users/normanpellet/Documents/Web/graph
+47 info installOne grunt-shell@1.0.1
+48 info /Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell unbuild
+49 verbose tar unpack /Users/normanpellet/.npm/grunt-shell/1.0.1/package.tgz
+50 silly lockFile 1b890a60-b-graph-node-modules-grunt-shell tar:///Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell
+51 verbose lock tar:///Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell /Users/normanpellet/.npm/1b890a60-b-graph-node-modules-grunt-shell.lock
+52 silly lockFile 31946d16-pm-grunt-shell-1-0-1-package-tgz tar:///Users/normanpellet/.npm/grunt-shell/1.0.1/package.tgz
+53 verbose lock tar:///Users/normanpellet/.npm/grunt-shell/1.0.1/package.tgz /Users/normanpellet/.npm/31946d16-pm-grunt-shell-1-0-1-package-tgz.lock
+54 silly gunzTarPerm modes [ '755', '644' ]
+55 silly gunzTarPerm extractEntry package.json
+56 silly gunzTarPerm extractEntry readme.md
+57 silly gunzTarPerm extractEntry tasks/shell.js
+58 silly lockFile 1b890a60-b-graph-node-modules-grunt-shell tar:///Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell
+59 silly lockFile 1b890a60-b-graph-node-modules-grunt-shell tar:///Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell
+60 silly lockFile 31946d16-pm-grunt-shell-1-0-1-package-tgz tar:///Users/normanpellet/.npm/grunt-shell/1.0.1/package.tgz
+61 silly lockFile 31946d16-pm-grunt-shell-1-0-1-package-tgz tar:///Users/normanpellet/.npm/grunt-shell/1.0.1/package.tgz
+62 info preinstall grunt-shell@1.0.1
+63 verbose readDependencies using package.json deps
+64 verbose readDependencies using package.json deps
+65 verbose cache add [ 'chalk@^0.5.1', null ]
+66 verbose cache add name=undefined spec="chalk@^0.5.1" args=["chalk@^0.5.1",null]
+67 verbose parsed url { protocol: null,
+67 verbose parsed url   slashes: null,
+67 verbose parsed url   auth: null,
+67 verbose parsed url   host: null,
+67 verbose parsed url   port: null,
+67 verbose parsed url   hostname: null,
+67 verbose parsed url   hash: null,
+67 verbose parsed url   search: null,
+67 verbose parsed url   query: null,
+67 verbose parsed url   pathname: 'chalk@^0.5.1',
+67 verbose parsed url   path: 'chalk@^0.5.1',
+67 verbose parsed url   href: 'chalk@^0.5.1' }
+68 verbose cache add name="chalk" spec="^0.5.1" args=["chalk","^0.5.1"]
+69 verbose parsed url { protocol: null,
+69 verbose parsed url   slashes: null,
+69 verbose parsed url   auth: null,
+69 verbose parsed url   host: null,
+69 verbose parsed url   port: null,
+69 verbose parsed url   hostname: null,
+69 verbose parsed url   hash: null,
+69 verbose parsed url   search: null,
+69 verbose parsed url   query: null,
+69 verbose parsed url   pathname: '^0.5.1',
+69 verbose parsed url   path: '^0.5.1',
+69 verbose parsed url   href: '^0.5.1' }
+70 verbose addNamed [ 'chalk', '^0.5.1' ]
+71 verbose addNamed [ null, '>=0.5.1-0 <0.6.0-0' ]
+72 silly lockFile 24b6c7c3-chalk-0-5-1 chalk@^0.5.1
+73 verbose lock chalk@^0.5.1 /Users/normanpellet/.npm/24b6c7c3-chalk-0-5-1.lock
+74 silly addNameRange { name: 'chalk', range: '>=0.5.1-0 <0.6.0-0', hasData: false }
+75 verbose url raw chalk
+76 verbose url resolving [ 'https://registry.npmjs.org/', './chalk' ]
+77 verbose url resolved https://registry.npmjs.org/chalk
+78 info trying registry request attempt 1 at 08:35:45
+79 verbose etag "AYH9Z5HC7LUZSYM4UCBJJDII5"
+80 http GET https://registry.npmjs.org/chalk
+81 http 304 https://registry.npmjs.org/chalk
+82 silly registry.get cb [ 304,
+82 silly registry.get   { date: 'Thu, 21 Aug 2014 15:35:45 GMT',
+82 silly registry.get     server: 'Apache',
+82 silly registry.get     via: '1.1 varnish',
+82 silly registry.get     'last-modified': 'Thu, 21 Aug 2014 15:35:45 GMT',
+82 silly registry.get     'cache-control': 'max-age=60',
+82 silly registry.get     etag: '"AYH9Z5HC7LUZSYM4UCBJJDII5"',
+82 silly registry.get     'x-served-by': 'cache-sjc3121-SJC',
+82 silly registry.get     'x-cache': 'HIT',
+82 silly registry.get     'x-cache-hits': '1',
+82 silly registry.get     'x-timer': 'S1408635345.209294,VS0,VE90',
+82 silly registry.get     vary: 'Accept',
+82 silly registry.get     'content-length': '0',
+82 silly registry.get     'keep-alive': 'timeout=10, max=50',
+82 silly registry.get     connection: 'Keep-Alive' } ]
+83 verbose etag chalk from cache
+84 silly addNameRange number 2 { name: 'chalk', range: '>=0.5.1-0 <0.6.0-0', hasData: true }
+85 silly addNameRange versions [ 'chalk',
+85 silly addNameRange   [ '0.1.0',
+85 silly addNameRange     '0.1.1',
+85 silly addNameRange     '0.2.0',
+85 silly addNameRange     '0.2.1',
+85 silly addNameRange     '0.3.0',
+85 silly addNameRange     '0.4.0',
+85 silly addNameRange     '0.5.0',
+85 silly addNameRange     '0.5.1' ] ]
+86 verbose addNamed [ 'chalk', '0.5.1' ]
+87 verbose addNamed [ '0.5.1', '0.5.1' ]
+88 silly lockFile c28973bb-chalk-0-5-1 chalk@0.5.1
+89 verbose lock chalk@0.5.1 /Users/normanpellet/.npm/c28973bb-chalk-0-5-1.lock
+90 silly lockFile c28973bb-chalk-0-5-1 chalk@0.5.1
+91 silly lockFile c28973bb-chalk-0-5-1 chalk@0.5.1
+92 silly lockFile 24b6c7c3-chalk-0-5-1 chalk@^0.5.1
+93 silly lockFile 24b6c7c3-chalk-0-5-1 chalk@^0.5.1
+94 verbose about to build /Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell
+95 info /Users/normanpellet/Documents/Web/graph/node_modules/grunt-shell unbuild
+96 info preuninstall grunt-shell@1.0.1
+97 info uninstall grunt-shell@1.0.1
+98 verbose true,/Users/normanpellet/Documents/Web/graph/node_modules,/Users/normanpellet/Documents/Web/graph/node_modules unbuild grunt-shell@1.0.1
+99 info postuninstall grunt-shell@1.0.1
+100 error Error: EACCES, open '/Users/normanpellet/.npm/chalk/0.5.1/package/package.json'
+100 error  { [Error: EACCES, open '/Users/normanpellet/.npm/chalk/0.5.1/package/package.json']
+100 error   errno: 3,
+100 error   code: 'EACCES',
+100 error   path: '/Users/normanpellet/.npm/chalk/0.5.1/package/package.json',
+100 error   parent: 'grunt-shell' }
+101 error Please try running this command again as root/Administrator.
+102 error System Darwin 13.1.0
+103 error command "node" "/usr/local/bin/npm" "install" "grunt-shell" "--save-dev"
+104 error cwd /Users/normanpellet/Documents/Web/graph
+105 error node -v v0.10.29
+106 error npm -v 1.4.14
+107 error path /Users/normanpellet/.npm/chalk/0.5.1/package/package.json
+108 error code EACCES
+109 error errno 3
+110 error stack Error: EACCES, open '/Users/normanpellet/.npm/chalk/0.5.1/package/package.json'
+111 verbose exit [ 3, true ]
