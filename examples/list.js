@@ -1,0 +1,1 @@
+define( [ 'require', './examples/2axis.js','./examples/axis.js','./examples/basic.js','./examples/contour.js','./examples/errorbars.js','./examples/legend.js','./examples/minmax.js','./examples/plugins.js','./examples/scatter.js','./examples/serietypes.js','./examples/shape.js','./examples/xinterval.js' ], function() { return arguments; });

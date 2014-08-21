@@ -1,13 +1,19 @@
 body, html {
   margin: 0px;
   padding: 0px;
+
 }
 
 body {
   font-family: 'ABeeZee', sans-serif;
   font-size: 12px;
+
 }
 
+
+.wrapper {
+  border-top: 15px solid #dbe3e9;
+}
 
 .section {
   width: 100%;
@@ -94,6 +100,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
   margin-top: 45px;
 }
 
+h3 {
+  margin-top: 0px;
+}
 
 .title.section.header h2 {
   
@@ -123,6 +132,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
   list-style-type: none;
   
 }
+
+
+
+.section.description > div > ul > li {
+  margin-bottom: 80px;
+  
+}
+
 
 .font {
   font-size: 1.4em;
@@ -212,3 +229,38 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dbe3e9', end
 a, a:visited {
   color: #666666;
 }
+
+#examples .code code {
+  width: 700px;
+}
+
+#examples .details {
+  float: right;
+  width: 380px;
+}
+
+#examples .graph {
+  background-color: white;
+  width: 400px;
+  height: 300px;
+
+  box-shadow: 0px 0px 8px rgba( 100, 100, 100, 0.4 );
+
+}
+
+#examples .showsource {
+
+  background: #666666;
+  color: white;
+  border-radius: 2px;
+
+  padding: 5px;
+  margin-top: 20px;
+  display: inline-block;
+  cursor: pointer;
+
+
+  margin-left: 170px;
+
+}
+
