@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.5.4
+ * jsGraphs JavaScript Graphing Library v1.5.6
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-21T22:15Z
+ * Date: 2014-08-21T22:20Z
  */
 
 (function( global, factory ) {
@@ -1671,7 +1671,7 @@ build['./dynamicdepencies'] = ( function( ) {
 
 				file = this.folderMap[ type ] + file;
 			}
-console.log( this.caching[ type ], type, file )
+
 			if( this.caching[ type ][ file ] ) {
 
 			//	console.log( "Found element " + file + " of type " + type + " in cache" );
@@ -3311,7 +3311,6 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 					pos[ i ] = this.getPx( value[ i ], axis );
 				}
 
-				console.log( pos, relTo, value );
 
 				if(value['d' + i] !== undefined) {
 
@@ -5328,7 +5327,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			this._createLine(currentLine, i, k);
 			i++;
-			console.timeEnd('Slot');
+			//console.timeEnd('Slot');
 		},
 
 		setMarkerStyleTo: function(dom, noFill) {
@@ -6437,7 +6436,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 					}
 
 				}
-				console.log( pathError );
+				
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
@@ -8444,8 +8443,6 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 		createDom: function() {
 			this._dom = document.createElementNS(this.graph.ns, 'line');
 			this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
-
-			console.log( this._dom );
 		}
 	});
 
