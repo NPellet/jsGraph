@@ -236,7 +236,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					}
 
 				}
-				console.log( pathError );
+				
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}

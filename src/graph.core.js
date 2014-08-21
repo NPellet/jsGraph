@@ -1593,7 +1593,6 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 					pos[ i ] = this.getPx( value[ i ], axis );
 				}
 
-				console.log( pos, relTo, value );
 
 				if(value['d' + i] !== undefined) {
 

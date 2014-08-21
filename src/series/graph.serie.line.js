@@ -705,7 +705,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 			this._createLine(currentLine, i, k);
 			i++;
-			console.timeEnd('Slot');
+			//console.timeEnd('Slot');
 		},
 
 		setMarkerStyleTo: function(dom, noFill) {
