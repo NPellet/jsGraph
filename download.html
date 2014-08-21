@@ -10,7 +10,12 @@
 
   <script type="text/javascript" src="javascripts/jquery.js"></script>
   <script type="text/javascript" src="graph/jsgraph.js"></script>
-  <script src="./javascripts/page.js"></script>
+  
+
+
+  <link rel="stylesheet" href="./highlightjs/styles/monokai_sublime.css">
+  <script src="./highlightjs/highlight.pack.js"></script>
+<script src="./javascripts/page.js"></script>
 
 </head>
 <body>
@@ -29,18 +34,64 @@
 
     </div>
 
-    <div class="section header">
+    <div class="section description">
       <div>    
-        
-      <p class="font">
-        Compressed and uncompressed distribution files are available together with the source development files.
-      </p>
+
+      <ul>
+      <li>
+      <h2>Dowload the distribution</h2>
+
+        <p class="font">
+          Compressed and uncompressed distribution files are available together with the source development files from the Github repository.
+        </p>
+
+        <p class="font">
+          <a href="https://raw.githubusercontent.com/NPellet/jsGraph/stable/dist/jsgraph.min.js">Download the minified version</a> (133 ko).
+        </p>
+
+        <p class="font">
+          <a href="https://raw.githubusercontent.com/NPellet/jsGraph/stable/dist/jsgraph.min.js">Download the uncompressed version</a> (229 ko).
+        </p>
+
+        <p class="font">
+          <a href="http://github.com/Npellet/jsGraph/zipball/master/">Download the full package (source and distribution)</a> (10.2 Mo)
+        </p>
+
+</li>
+
+<li>
+      <div class="img right">
+          <img src="./images/bower.png" />
+      </div> 
+
+        <h2>Download jsGraph using bower</h2>
 
 
       <p class="font">
-        The package can be downloaded from <a href="http://github.com/Npellet/jsGraph/zipball/master/">here</a><br />
-        Alternatively, you may download the <a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">minified version</a> from Github.
+      jsGraph is available as a <a href="http://bower.io">bower</a> package. You can simply install the latest version of jsGraph using the command :<br />
+      <pre><code>bower install jsgraph</code></pre>
+      <p class="font">
+      This will install the latest version of jsGraph in your predefined bower directory. By default we provide the source code within the package (in the <code>./src</code> folder). If you wish to load subsets of jsGraph using a module loader such as <a href="http://requirejs.org">requirejs</a>, you must load the <code>./src/graph.core.js</code> file. The rest of the dependencies will automatically be loaded.
       </p>
+      <p class="font">
+      To update jsGraph using bower, use the command :
+
+<pre><code>bower update jsgraph</code></pre>
+      </p>
+</li>
+
+<li>
+  <h2>Download the development code</h2>
+      <p class="font">
+        You can test the latest features ahead of time by downloading the latest development version available from Github. However this version is often very unstable or may not work at all; it is not suitable for production. You can contribute to the development by reporting bugs you notice on the <a href="http://github.com/NPellet/jsGraph/issues">github page</a> of the project.
+      </p>
+      <p class="font">
+      <a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">Download the development source file</a>
+      </p>
+
+
+
+</li>
 
       </div>
     </div>

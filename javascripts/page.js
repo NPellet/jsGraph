@@ -1,6 +1,9 @@
 
 jQuery(document).ready(function ($) {
 
+
+if( $JssorSlider ) {
+
     var _SlideshowTransitions = [
     //Fade
     { $Duration: 1200, $Opacity: 2 }
@@ -49,6 +52,14 @@ jQuery(document).ready(function ($) {
         }
     };
 
-    var jssor_slider1 = new $JssorSlider$("slider_examples", options);
+    
+        var jssor_slider1 = new $JssorSlider$("slider_examples", options);
+}
 
   });
+
+        
+if( hljs ) {
+        hljs.initHighlightingOnLoad();
+    }
+        
