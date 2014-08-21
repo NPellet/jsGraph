@@ -81,7 +81,7 @@ define( function() {
 					shape.draw();
 					shape.redraw();
 				} );
-
+console.log( graphinstance.getRightAxis() );
 				graphinstance.getRightAxis().adapt0To( graphinstance.getYAxis(), 'min', -10 );
 				
 				graphinstance.getXAxis().setLabel( 'Voltage (V)' );

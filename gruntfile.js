@@ -55,6 +55,14 @@ module.exports = function(grunt) {
                 files: {
                     '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js'
                 }
+            },
+
+            exportToPages: {
+
+                files: {
+                    '../jsGraph-ghpages/': 'examples/examples/**',
+                    '../jsGraph-ghpages/graph/jsgraph.js': 'dist/jsgraph.min.js'
+                }
             }
         },
 
@@ -78,8 +86,17 @@ module.exports = function(grunt) {
         grunt.log.writeln( arguments );
     }
 
-    grunt.registerTask( 'default', [ 'build', 'copy:exportToNMR'] );
+    grunt.registerTask( 'default', [ 'build', 'copy:exportToNMR', 'buildExampleList'] );
 
+
+    grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
+
+        var files = fs.readdirSync( './examples/examples/' );
+        var str = "define( [ 'require', " + files.map( function( el ) { return "'./examples/" + el + "'" }).join() + " ], function() { return arguments; });";
+
+        grunt.task.run('copy:exportToPages');
+        grunt.file.write( '../jsGraph-ghpages/examples/list.js', str );
+    });
 
 
     grunt.registerMultiTask( 'build', 'Build jsGraphs distributions', function() {
