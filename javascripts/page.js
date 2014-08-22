@@ -2,7 +2,7 @@
 jQuery(document).ready(function ($) {
 
 
-if( $JssorSlider ) {
+if( typeof $JssorSlider !== "undefined") {
 
     var _SlideshowTransitions = [
     //Fade
@@ -59,7 +59,7 @@ if( $JssorSlider ) {
   });
 
         
-if( hljs ) {
+if( typeof hljs !== "undefined") {
         hljs.initHighlightingOnLoad();
     }
         
