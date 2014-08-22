@@ -2,7 +2,7 @@
 jQuery(document).ready(function ($) {
 
 
-if( typeof $JssorSlider !== "undefined") {
+if( typeof $JssorSlider$ !== "undefined") {
 
     var _SlideshowTransitions = [
     //Fade
