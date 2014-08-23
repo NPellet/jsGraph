@@ -29,7 +29,7 @@ define( function() {
 					.autoAxis()
 					.setLineColor('grey')
 					.setData( serie )
-					.showMarkers( true );
+					.setMarkers( );
 
 
 				var shape = { type: 'cross', strokeColor: 'red', strokeWidth: 1, pos: { x: 1, y: 5 } };
