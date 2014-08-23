@@ -211,7 +211,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			j = 0, k = 0, m = this.data.length;
 
 			var error;
-			var pathError = "";
+			var pathError = "M 0 0 ";
 
 
 			for( ; j < m ; j += 2 ) {
@@ -240,6 +240,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
+
+
 
 			this.errorPath.setAttribute( 'd', pathError );
 			this.groupMain.appendChild( this.groupPoints );

@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.5.6
+ * jsGraphs JavaScript Graphing Library v1.5.7
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-21T22:20Z
+ * Date: 2014-08-23T05:49Z
  */
 
 (function( global, factory ) {
@@ -4677,22 +4677,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			this.groupMain = document.createElementNS(this.graph.ns, 'g');
 			this.additionalData = {};
 
-			this.domMarker.addEventListener('mouseover', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onMouseOverMarker(e, closest);
-			});
-
-
-			this.domMarker.addEventListener('mouseout', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onMouseOutMarker(e, closest);
-			});
-
-
-			this.domMarker.addEventListener('click', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onClickOnMarker(e, closest);
-			});
+			
 
 			this.marker = document.createElementNS(this.graph.ns, 'circle');
 			this.marker.setAttribute('fill', 'black');
@@ -4722,7 +4707,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.groupLabels);
 			this.groupMain.appendChild(this.marker);
-			this.groupMain.appendChild(this.domMarker);
+			
 			this.groupMain.appendChild(this.groupMarkerSelected);
 			this.groupMain.appendChild(this.markerLabelSquare);
 			this.groupMain.appendChild(this.markerLabel);
@@ -5022,7 +5007,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 					var x = this.getX(this.data[k][i * 2]);
 					var y = this.getY(this.data[k][i * 2 + 1]);
 
-					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.options.markers.zoom + 1).join(" "));
+					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ));
 
 					this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
 					this.groupMarkerSelected.appendChild(dom);
@@ -5152,13 +5137,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var next = this.groupLines.nextSibling;
 			this.groupMain.removeChild(this.groupLines);
-			this.groupMain.removeChild(this.domMarker);
+			
 			this.marker.setAttribute('display', 'none');
 
 			
-			this.markerPath = '';
-			this._markerPath = this.getMarkerPath().join(' ');
-			
+			this.markerCurrentFamily = null;
+			var markerCurrentIndex = 0;
+			var markerNextChange = -1;//this.markerPoints[ markerCurrentIndex ][ 0 ];
+
 			var incrXFlip = 0;
 			var incrYFlip = 1;
 
@@ -5215,6 +5201,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 1 ) {
 
+
+							if( this.markerPoints ) {
+
+								this.getMarkerCurrentFamily( k );
+								
+							}
+
+
+
 							if( ! this.isFlipped() ) {
 							
 								xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
@@ -5240,6 +5235,32 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 2 ) {
 
+
+							if( this.markerPoints ) {
+
+								this.getMarkerCurrentFamily( k );
+								
+							}
+
+/*
+
+							while( k > markerNextChange ) {
+								markerCurrentIndex ++;
+
+								this.markerCurrentFamily = this.markerPoints[ markerCurrentIndex - 1 ][ 1 ];
+
+								if( ! this.markerPoints[ markerCurrentIndex ] ) {
+									markerNextChange = Infinity;
+									break;
+								}
+
+								markerNextChange = this.markerPoints[ markerCurrentIndex ][ 0 ];
+								
+
+							}
+
+						*/
+
 							xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
 							ypx2 = this.getY( this.data[ i ][ j + incrYFlip ] );
 
@@ -5247,8 +5268,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 								continue;
 							}
 
-							if(this.options.autoPeakPicking) {
+							if( this.options.autoPeakPicking ) {
+
 								allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+
 							}
 							
 							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
@@ -5277,16 +5300,31 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				this.lines.splice(i, 1);
 			}
 
-			this.setMarkerStyleTo(this.domMarker);
-			this.domMarker.setAttribute('d', this.markerPath || 'M 0 0');
+			this.insertMarkers();
 
-			//this.groupMain.appendChild(this.groupLines);
-			this.groupMain.appendChild(this.domMarker);
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
 			for( var i = 0, l = this.labels.length ; i < l ; i ++ ) {
 				this.repositionLabel( this.labels[ i ] );
 			}
+		},
+
+		getMarkerCurrentFamily: function( k ) {
+
+			for( var z = 0 ; z < this.markerPoints.length ; z ++ ) {
+				if( this.markerPoints[ z ][ 0 ] <= k ) { // This one is a possibility !
+					if( this.markerPoints[ z ][ 1 ] >= k ) { // Verify that it's in the boundary
+						this.markerCurrentFamily = this.markerPoints[z ][ 2 ];
+					}
+				} else {
+					break;
+				}
+
+
+			}
+
+			return this.markerCurrentFamily;
+
 		},
 
 		drawSlot: function( slotToUse, y ) {
@@ -5330,11 +5368,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			//console.timeEnd('Slot');
 		},
 
-		setMarkerStyleTo: function(dom, noFill) {
+		setMarkerStyleTo: function( dom, family ) {
 			
-			dom.setAttribute('fill', !noFill ? (this.options.markers.fillColor || 'transparent') : 'transparent');
-			dom.setAttribute('stroke', this.options.markers.strokeColor || this.getLineColor());
-			dom.setAttribute('stroke-width', this.options.markers.strokeWidth);
+			if( ! dom ) {
+				throw "Cannot set marker style. DOM does not exist.";
+			}
+
+			dom.setAttribute('fill', family.fillColor || 'transparent' );
+			dom.setAttribute('stroke', family.strokeColor || this.getLineColor( ) );
+			dom.setAttribute('stroke-width', family.strokeWidth || 1 );
 		},
 
 		makePeakPicking: function(allY) {
@@ -5398,7 +5440,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		
-		_addPoint: function(currentLine, xpx, ypx, k, move) {
+		_addPoint: function( currentLine, xpx, ypx, k, move ) {
 			var pos;
 			
 			if(k !== 0) {
@@ -5421,11 +5463,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				currentLine += " ";
 			}
 
-			if(!this.options.markers.show)
+			if( ! this.markerPoints ) {
 				return currentLine;
+			}
 
-			if(!(xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx())) {
-				this._drawMarkerXY(xpx, ypx);
+			if( ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
+
+				drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
 			}
 			return currentLine;
 		},
@@ -5467,52 +5511,90 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		//	line.setAttribute('shape-rendering', 'optimizeSpeed');
 		},
 
-		getMarkerPath: function(zoom, add) {
-			var z = zoom || this.options.markers.zoom,
+		// Revised August 2014. Ok
+		getMarkerPath: function( family, add ) {
+
+			var z = family.zoom || 1 ,
 				add = add || 0,
 				el;
 
-			switch(this.options.markers.type) {
+			switch( family.type ) {
 				case 1:
 					el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
 				break;
 
 				case 2:
-					el = ['m', -2, -2, 'l', 4, 4, 'l', -4, 0, 'l', 4, -4, 'z'];
+					el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
 				break;
+
+
+				case 3:
+					el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
+				break;
+
+
+				case 4:
+					el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
+				break;
+
 			}
 
 
-			if((z == 1 || !z) && !add)
-				return el;
+			if( ( z == 1 || ! z ) && ! add ) {
+				return  el.join(" ");
+			}
 
 			var num = "number";
+
+			if( ! el ) {
+				return;
+			}
+
+
 			for(var i = 0, l = el.length; i < l; i++) {
+
 				if(typeof el[i] == num) {
-					el[i] *= z;
-				//	el[i] += ((!el[i] || !add) ? 0 : (Math.abs(el[i]) / el[i]) * add);
+
+					el[i] *= ( z + add );
 				}
 			}
 
+			return  el.join(" " );
 
-			return el;
 		},
 
-		_drawMarkerXY: function(x, y) {
+		// Revised August 2014. Ok
+		getMarkerDom: function( family ) {
 
-			if(!this.options.markers.show)
-				return;
+			var self = this;
+			if( ! family.dom ) {
+				var dom = document.createElementNS( this.graph.ns, 'path' );
+				this.setMarkerStyleTo( dom, family );
+				family.dom = dom;
+				family.path = "";
+
+				dom.addEventListener('mouseover', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onMouseOverMarker(e, closest);
+				});
 
 
-			this.markerPath += 'M ' + x + ' ' + y + ' ';
+				dom.addEventListener('mouseout', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onMouseOutMarker(e, closest);
+				});
 
-			this.markerPath += this._markerPath + ' ';
 
-			//shape.setAttribute('transform', 'translate(' + x + ' ' + y + ') scale(' + this.options.markers.zoom + ')');
-			//shape.setAttribute('d', this._markerPath);
-			
-			//this.groupMarkers.appendChild(shape);*/
+				dom.addEventListener('click', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onClickOnMarker(e, closest);
+				});
+
+			}
+
+			return family.dom;
 		},
+
 
 	
 		/* */
@@ -5818,7 +5900,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		markersShown: function() {
 			return this.options.markers.show;	
 		},
-
+/*
 		setMarkerType: function(type, skipRedraw) {
 			this.options.markers.type = type;
 			
@@ -5859,6 +5941,116 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
+*/
+		// Multiple markers
+		setMarkers: function( family ) {
+			// Family has to be an object
+			// Family looks like
+			/*
+				{
+					type: 1,
+					zoom: 1,
+					strokeWidth: 1,
+					strokeColor: ''
+					fillColor: '',
+				}
+			*/
+
+			if( ! family ) {
+
+				family = [ {
+					type: 1,
+					zoom: 1,
+					points: 'all'
+				} ]
+
+			}
+			var markerPoints = [];
+
+			markerPoints.push( [ 0, Infinity, null ] );
+
+			for( var i = 0, k = family.length; i < k ; i ++ ) {
+
+				this.getMarkerDom( family[ i ] );
+				family[ i ].markerPath = this.getMarkerPath( family[ i ] );
+
+				if( ! family[ i ].points ) {
+					continue;
+				}
+
+				if( ! Array.isArray( family[ i ].points ) ) {
+					family[ i ].points = [ family[ i ].points ];
+				}
+
+
+				for( var j = 0, l = family[ i ].points.length ; j < l ; j ++ ) {
+
+					if( family[ i ].points[ j ] == 'all' ) {
+
+						markerPoints.push( [ 0, Infinity, i ] );
+
+					} else if ( ! Array.isArray( family[ i ].points[ j ] ) ) {
+
+						markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
+						//markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
+					} else {
+
+						markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
+						
+					}
+				}
+			}
+
+			this.markerFamily = family;
+
+			// Let's sort if by the first index.
+			markerPoints.sort( function( a, b ) { 
+				return ( a[ 0 ] -  b[ 0 ] ) || ( a[ 2 ] == null ? -1 : 1 );
+			} );
+
+			// OK now let's handle clashes
+
+/*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
+
+				// No clash
+				if( markerPoints[ i ][ 1 ] < markerPoints[ i + 1 ][ 1 ] ) {
+					continue;
+				}
+
+				var restartAt = markerPoints[ i + 1 ][ 1 ] + 1;
+				markerPoints[ i ][ 1 ] = markerPoints[ i + 1 ][ 0 ];
+
+				var j = i;
+
+				while( markerPoints[ j ][ 1 ] < restartAt ) {
+					j++;
+				}
+
+				markerPoints.splice( j, 0, [ restartAt, ])
+
+
+			}
+*/
+			this.markerPoints = markerPoints;
+		},
+
+		insertMarkers: function() {
+
+			if( ! this.markerFamily ) {
+				return;
+			}
+
+			for( var i = 0, l = this.markerFamily.length; i < l; i ++ ) {
+
+				this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+				this.groupMain.appendChild( this.markerFamily[ i ].dom );
+			}
+
+
+			
+
+		},
+
 
 		addLabelX: function(x, label) {
 			this.addLabelObj({
@@ -6008,15 +6200,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 		getMarkerForLegend: function() {
 
-			if( ! this.markersShown() ) {
+			if( ! this.markerPoints ) {
 				return;
 			}
 
 			if( ! this.markerForLegend ) {
 
 				var marker = document.createElementNS( this.graph.ns, 'path');
-				this.setMarkerStyleTo( marker , true);
-				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.options.markers.zoom + 1 ).join(" ") );
+				this.setMarkerStyleTo( marker , this.markerFamily[ 0 ] );
+				
+				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
 
 				this.markerForLegend = marker;
 			}
@@ -6025,6 +6218,21 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 		}			
 	} );
+
+	function drawMarkerXY( family, x, y ) {
+
+		if( ! family ) {
+			return;
+		}
+
+		family.path = family.path || "";
+		family.path += 'M ' + x + ' ' + y + ' ';
+
+
+		family.path += family.markerPath + ' ';
+	}
+
+
 
 	return GraphSerie;
  } ) ( build["./graph._serie"] );
@@ -6411,7 +6619,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			j = 0, k = 0, m = this.data.length;
 
 			var error;
-			var pathError = "";
+			var pathError = "M 0 0 ";
 
 
 			for( ; j < m ; j += 2 ) {
@@ -6440,6 +6648,8 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
+
+
 
 			this.errorPath.setAttribute( 'd', pathError );
 			this.groupMain.appendChild( this.groupPoints );
@@ -7529,7 +7739,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 				pos.y = -10000;
 			}*/
 
-			if( pos.x != "NaNpx") {
+			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
 				this.label[labelIndex].setAttribute('x', pos.x);
 				this.label[labelIndex].setAttribute('y', pos.y);	
 			}

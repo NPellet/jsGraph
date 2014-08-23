@@ -17,6 +17,7 @@ define( function() {
 		examples = [
 			'./examples/src/basic',
 			'./examples/src/axis',
+			'./examples/src/markers',
 			'./examples/src/contour',
 			'./examples/src/errorbars',
 			'./examples/src/2axis',

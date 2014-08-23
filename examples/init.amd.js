@@ -11,7 +11,6 @@ require( [ 'jquery', './dist/jsgraph', './examples/series' ] , function( $, Grap
 
 	window.contour = series.contour;
 	window.series = series.numeric;
-
 	window.Graph = Graph;
 
 	var options = {};
