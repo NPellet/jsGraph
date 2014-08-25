@@ -181,7 +181,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 		draw: function() { // Serie redrawing
 
-			
+
 			var x, 
 				y, 
 				xpx, 
@@ -213,9 +213,12 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var error;
 		//	var pathError = "M 0 0 ";
 
-			this.errorsPaths = [];
-			for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
-				this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+			if( this.errortypes ) {
+
+				this.errorsPaths = [];
+				for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
+					this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+				}
 			}
 
 			for( ; j < m ; j += 2 ) {
@@ -244,16 +247,18 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 
-			for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
+			
+			if( this.errortypes ) {
+					
+				for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
 
-				for( var j in this.errorsPaths[ i ] ) {
+					for( var j in this.errorsPaths[ i ] ) {
 
-					if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
-						this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
+							this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						}
 					}
 				}
-
-
 			}
 
 			this.groupMain.appendChild( this.groupPoints );
