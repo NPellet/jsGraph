@@ -42,8 +42,7 @@ define( function() {
 					.autoAxis()
 					.setData( series[ 0 ] )	
 					.setLineColor( '#bd1a1a' )
-					.setMarkers();
-
+					.showMarkers()
 					
 				graphinstance.newSerie( "cos" )
 					.setLabel( "f(x) = sin(x)" )
