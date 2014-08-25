@@ -37,7 +37,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			this.groupMain.appendChild( this.errorPath );
 
 			this.additionalData = {};
-
+/*
 			this.groupPoints.addEventListener('mouseover', function(e) {
 			
 			});
@@ -46,7 +46,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			this.groupPoints.addEventListener('mouseout', function(e) {
 			
 			});
-
+*/
 			this.minX = Number.MAX_VALUE;
 			this.minY = Number.MAX_VALUE;
 			this.maxX = Number.MIN_VALUE;
@@ -211,8 +211,12 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			j = 0, k = 0, m = this.data.length;
 
 			var error;
-			var pathError = "M 0 0 ";
+		//	var pathError = "M 0 0 ";
 
+			this.errorsPaths = [];
+			for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
+				this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+			}
 
 			for( ; j < m ; j += 2 ) {
 
@@ -224,97 +228,107 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 				if( this.error && ( error = this.error[ j / 2 ] ) ) {
 
-					pathError += "M " + xpx + " " + ypx;
+			//		pathError += "M " + xpx + " " + ypx;
 
 					if( error[ 0 ] ) {
-						pathError = this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, pathError );
+						this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, xpx, ypx );
 					}
 
-
 					if( error[ 1 ] ) {
-						pathError = this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, pathError );
+						this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, xpx, ypx );
 					}
 
 				}
-				
 				
 				this._addPoint( xpx, ypx, j / 2 );
 			}
 
 
+			for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
 
-			this.errorPath.setAttribute( 'd', pathError );
+				for( var j in this.errorsPaths[ i ] ) {
+
+					if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
+						this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+					}
+				}
+
+
+			}
+
 			this.groupMain.appendChild( this.groupPoints );
 		},
 
 
-		doErrorDraw: function( orientation, error, originVal, originPx, pathError ) {
+		doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
 
 			if( ! ( error instanceof Array ) ) {
 				error = [ error ]; 
 			}
 
 			var functionName = orientation == 'y' ? 'getY' : 'getX';
+			var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+			var j;
 
 			for( var i = 0 , l = error.length ; i < l ; i ++ ) {
 
 				if( error[ i ] instanceof Array ) { // TOP
 
-					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
-					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+					j = bars[ 0 ];
+					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
+					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+
+					j = bars[ 1 ];
+					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
+					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+					
 
 				} else {
-			
-					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal + error[ i ] ), originPx );
-					pathError = this.makeError( orientation, i, pathError, this[ functionName ]( originVal - error[ i ] ), originPx );
+
+
+					j = bars[ 0 ];
+					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
+					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+					j = bars[ 1 ];
+					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
+					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
 				}
 			}	
-
-
-
-			return pathError;
 		},
 
 
-		setMaxErrorLevel: function( maxErrorLevel ) {
-			this.maxLevel = maxErrorLevel;
-			return this;
-		},
+		makeError: function( orientation, level, coord, origin ) {
 
-		makeError: function( orientation, level, path, coord, origin ) {
+			switch( this.errortypes[ level ] ) {
 
-			if( level >= this.maxLevel ) {
-				return path;
-			}
+				case 'bar':
+					return this["makeBar" + orientation.toUpperCase() ]( coord, origin );
+				break;
 
-			var diff = this.maxLevel - level;
-
-			if( diff == 1 ) { // bars
-				return this["makeBar" + orientation.toUpperCase() ]( path, coord, origin );
-			}
-
-			if( diff == 2 ) {
-				return this["makeBox" + orientation.toUpperCase() ]( path, coord, origin );
+				case 'box':
+					return this["makeBox" + orientation.toUpperCase() ]( coord, origin );
+				break;
 			}
 		},
 
-		makeBarY: function( path, coordY, origin ) {
-			return path + " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
+		makeBarY: function( coordY, origin ) {
+
+			return " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
 		},
 
 
-		makeBoxY: function( path, coordY, origin ) {
-			return path + " h 5 V " + coordY + " h -10 V " + origin + " h 5 ";
+		makeBoxY: function( coordY, origin ) {
+			return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
 		},
 
 
-		makeBarX: function( path, coordY, origin ) {
-			return path + " H " + coordY + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
+		makeBarX: function( coordX, origin ) {
+			return " H " + coordX + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
 		},
 
 
-		makeBoxX: function( path, coordY, origin ) {
-			return path + " v 5 H " + coordY + " v -10 H " + origin + " v 5 ";
+		makeBoxX: function( coordX, origin ) {
+			return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
 		},
 
 
@@ -353,6 +367,94 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 		setDataError: function( error ) {
 			this.error = error;
+			return this;
+		},
+
+		setMaxErrorLevel: function( maxErrorLevel ) {
+			this.maxLevel = maxErrorLevel;
+			return this;
+		},
+
+		setErrorStyle: function( errortypes, errorstyles ) {
+
+			var self = this;
+
+			errortypes = errortypes || [ 'box', 'bar' ];
+
+			// Ensure array
+			if( ! Array.isArray( errortypes ) ) {
+				errortypes = [ errortypes ];
+			}
+
+			this.errortypes = errortypes;
+			
+
+			if( ! errorstyles ) {
+				errorstyles = { bar: { y: {} }, box: { y: {} } };
+			}
+
+			var styles = {};
+			var pairs = [ [ 'y', 'top', 'bottom' ], [ 'x', 'left', 'right' ] ];
+
+			function makePath( style ) {
+
+				style.dom = document.createElementNS( self.graph.ns, 'path' );
+				style.dom.setAttribute('fill', style.fillColor || 'none');
+				style.dom.setAttribute('stroke', style.strokeColor || 'black');
+
+				self.groupMain.appendChild( style.dom );
+			}
+
+			for( var i in errorstyles ) {
+				// i is bar or box
+
+				styles[ i ] = {};
+
+				for( var j = 0, l = pairs.length ; j < l ; j ++ ) {
+
+					if( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
+
+						errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+						errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+
+					}
+
+					for( var k = 1; k <= 2 ; k ++ ) {
+
+						if( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
+
+							styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
+							makePath( styles[ i ][ pairs[ j ][ k ] ] );
+						}	
+					}
+				}
+			}
+/*
+				// None is defined
+				if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
+
+					styles[ i ].top = errorstyles[ i ];
+					styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
+					styles[ i ].bottom = errorstyles[ i ];
+					styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
+
+				} else if( errrostyles[ i ].top ) {
+
+					styles[ i ].bottom = null; // No bottom displayed
+					styles[ i ].top = errrostyles[ i ].top;
+					styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
+
+				} else {
+
+					styles[ i ].bottom = errorstyles[ i ].bottom;
+					styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
+					styles[ i ].top = null;
+				}
+*/
+
+
+			this.errorstyles = styles;
+
 		}
 	} );
 
