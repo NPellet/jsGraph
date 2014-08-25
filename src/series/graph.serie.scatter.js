@@ -181,7 +181,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 		draw: function() { // Serie redrawing
 
-
+			
 			var x, 
 				y, 
 				xpx, 
@@ -376,7 +376,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		setErrorStyle: function( errortypes, errorstyles ) {
-
+console.log('HERE FIRST');
 			var self = this;
 
 			errortypes = errortypes || [ 'box', 'bar' ];
