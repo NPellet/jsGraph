@@ -20,6 +20,8 @@ define( function() {
 			'./examples/src/markers',
 			'./examples/src/contour',
 			'./examples/src/errorbars',
+			'./examples/src/errorbars_style',
+			'./examples/src/timeaxis',
 			'./examples/src/2axis',
 			'./examples/src/legend',
 			'./examples/src/minmax',
