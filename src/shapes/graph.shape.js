@@ -404,7 +404,7 @@ define( [ ], function( ) {
 				pos.y = -10000;
 			}*/
 
-			if( pos.x != "NaNpx") {
+			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
 				this.label[labelIndex].setAttribute('x', pos.x);
 				this.label[labelIndex].setAttribute('y', pos.y);	
 			}

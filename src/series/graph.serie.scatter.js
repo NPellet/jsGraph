@@ -212,10 +212,20 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 			var error;
 		//	var pathError = "M 0 0 ";
+<<<<<<< HEAD
 
 			this.errorsPaths = [];
 			for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
 				this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+=======
+
+			if( this.errortypes ) {
+
+				this.errorsPaths = [];
+				for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
+					this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+				}
+>>>>>>> master
 			}
 
 			for( ; j < m ; j += 2 ) {
@@ -244,6 +254,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 
+<<<<<<< HEAD
 			for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
 
 				for( var j in this.errorsPaths[ i ] ) {
@@ -254,6 +265,20 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 
 
+=======
+			
+			if( this.errortypes ) {
+					
+				for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
+
+					for( var j in this.errorsPaths[ i ] ) {
+
+						if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
+							this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						}
+					}
+				}
+>>>>>>> master
 			}
 
 			this.groupMain.appendChild( this.groupPoints );
@@ -277,12 +302,21 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					j = bars[ 0 ];
 					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
 					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+<<<<<<< HEAD
 
 					j = bars[ 1 ];
 					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
 					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
 					
 
+=======
+
+					j = bars[ 1 ];
+					this.errorsPaths[ i ][ j ] += " M " + xpx + " " + ypx;
+					this.errorsPaths[ i ][ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+					
+
+>>>>>>> master
 				} else {
 
 
@@ -376,7 +410,11 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		setErrorStyle: function( errortypes, errorstyles ) {
+<<<<<<< HEAD
 
+=======
+console.log('HERE FIRST');
+>>>>>>> master
 			var self = this;
 
 			errortypes = errortypes || [ 'box', 'bar' ];

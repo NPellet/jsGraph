@@ -30,7 +30,10 @@ define( function() {
 					.setLineColor('grey')
 					.setData( serie )
 					.setMarkers( );
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 
 
 				var shape = { type: 'cross', strokeColor: 'red', strokeWidth: 1, pos: { x: 1, y: 5 } };

@@ -1,6 +1,10 @@
 {
   "name": "jsGraph",
+<<<<<<< HEAD
   "version": "1.6.0",
+=======
+  "version": "1.8.2",
+>>>>>>> master
   "homepage": "http://jsgraph.org",
   "main": "dist/jsgraph.js", 
   "keywords": [

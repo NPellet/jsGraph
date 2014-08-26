@@ -132,6 +132,8 @@ define( [ 'jquery' ] , function( $ ) {
 			this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
 		},
 
+		handleMouseMoveLocal: function() {},
+
 		setEvents: function() {
 			var self = this;
 			this.rectEvent.addEventListener('mousedown', function(e) {
@@ -454,6 +456,7 @@ define( [ 'jquery' ] , function( $ ) {
 		},
 
 		setCurrentMin: function(val) {
+			
 			this.currentAxisMin = val;
 			if(this.options.logScale) {
 				this.currentAxisMin = Math.max(1e-50, val);

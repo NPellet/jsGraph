@@ -1,11 +1,19 @@
 /*!
+<<<<<<< HEAD
  * jsGraphs JavaScript Graphing Library v1.5.7
+=======
+ * jsGraphs JavaScript Graphing Library v1.8.1
+>>>>>>> master
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
+<<<<<<< HEAD
  * Date: 2014-08-25T18:28Z
+=======
+ * Date: 2014-08-26T07:11Z
+>>>>>>> master
  */
 
 (function( global, factory ) {
@@ -169,6 +177,8 @@ build['./graph.axis'] = ( function( $ ) {
 			this.clip.appendChild(this.clipRect);
 			this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
 		},
+
+		handleMouseMoveLocal: function() {},
 
 		setEvents: function() {
 			var self = this;
@@ -492,6 +502,7 @@ build['./graph.axis'] = ( function( $ ) {
 		},
 
 		setCurrentMin: function(val) {
+			
 			this.currentAxisMin = val;
 			if(this.options.logScale) {
 				this.currentAxisMin = Math.max(1e-50, val);
@@ -1380,6 +1391,813 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 ;
 /* 
  * Build: new source file 
+ * File name : graph.xaxis.time
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
+ */
+
+build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
+
+
+	
+	
+	var GraphXAxis = function(graph, topbottom, options) {
+
+		this.wrapper = { 1: document.createElementNS( graph.ns, 'g' ), 2: document.createElementNS( graph.ns, 'g' ) };
+		this.groups = { 1: [], 2: [] };
+
+
+		var rect = document.createElementNS( graph.ns, 'rect' );
+		rect.setAttribute( 'fill', '#c0c0c0');
+		rect.setAttribute( 'stroke', '#808080');
+		rect.setAttribute( 'height', '20');
+		rect.setAttribute( 'x', '0');
+		rect.setAttribute( 'y', '0');
+
+		this.rect = rect;
+
+		this.wrapper[ 1 ].appendChild( this.rect );
+		
+
+		this.init(graph, options);
+
+		this.group.appendChild( this.wrapper[ 1 ] );
+		this.group.appendChild( this.wrapper[ 2 ] );
+
+		this.wrapper[ 1 ].setAttribute( 'transform', 'translate( 0, 25 )');
+		this.wrapper[ 2 ].setAttribute( 'transform', 'translate( 0, 00 )');
+	}
+
+
+	/*
+	 * Date Format 1.2.3
+	 * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+	 * MIT license
+	 *
+	 * Includes enhancements by Scott Trenda <scott.trenda.net>
+	 * and Kris Kowal <cixar.com/~kris.kowal/>
+	 *
+	 * Accepts a date, a mask, or a date and a mask.
+	 * Returns a formatted version of the given date.
+	 * The date defaults to the current date/time.
+	 * The mask defaults to dateFormat.masks.default.
+	 */
+
+	var dateFormat = function () {
+		var	token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[WLloSZ]|"[^"]*"|'[^']*'/g,
+			timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+			timezoneClip = /[^-+\dA-Z]/g,
+			pad = function (val, len) {
+				val = String(val);
+				len = len || 2;
+				while (val.length < len) val = "0" + val;
+				return val;
+			},
+			getWeek =function( d, f ) {
+				var onejan = new Date( d[ f + 'FullYear']() , 0, 1);
+        		return Math.ceil((((d - onejan) / 86400000) + onejan[ f + 'Day']() + 1) / 7);
+        	};
+
+		// Regexes and supporting functions are cached through closure
+		return function (date, mask, utc) {
+			var dF = dateFormat;
+
+			// You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+			if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+				mask = date;
+				date = undefined;
+			}
+
+			// Passing date through Date applies Date.parse, if necessary
+			date = date ? new Date(date) : new Date;
+			if (isNaN(date)) throw SyntaxError("invalid date");
+
+			mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+
+			// Allow setting the utc argument via the mask
+			if (mask.slice(0, 4) == "UTC:") {
+				mask = mask.slice(4);
+				utc = true;
+			}
+
+			var	_ = utc ? "getUTC" : "get",
+				d = date[_ + "Date"](),
+				D = date[_ + "Day"](),
+				m = date[_ + "Month"](),
+				y = date[_ + "FullYear"](),
+				H = date[_ + "Hours"](),
+				M = date[_ + "Minutes"](),
+				s = date[_ + "Seconds"](),
+				L = date[_ + "Milliseconds"](),
+				o = utc ? 0 : date.getTimezoneOffset(),
+				flags = {
+					d:    d,
+					dd:   pad(d),
+					ddd:  dF.i18n.dayNames[D],
+					dddd: dF.i18n.dayNames[D + 7],
+					m:    m + 1,
+					mm:   pad(m + 1),
+					mmm:  dF.i18n.monthNames[m],
+					mmmm: dF.i18n.monthNames[m + 12],
+					yy:   String(y).slice(2),
+					yyyy: y,
+					h:    H % 12 || 12,
+					hh:   pad(H % 12 || 12),
+					H:    H,
+					HH:   pad(H),
+					M:    M,
+					MM:   pad(M),
+					s:    s,
+					ss:   pad(s),
+					l:    pad(L, 3),
+					L:    pad(L > 99 ? Math.round(L / 10) : L),
+					t:    H < 12 ? "a"  : "p",
+					tt:   H < 12 ? "am" : "pm",
+					T:    H < 12 ? "A"  : "P",
+					TT:   H < 12 ? "AM" : "PM",
+					Z:    utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+					o:    (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+					S:    ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10],
+					W: 	  getWeek( date, _ ), 
+				};
+
+			return mask.replace(token, function ($0) {
+				return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+			});
+		};
+	}();
+
+	// Some common format strings
+	dateFormat.masks = {
+		"default":      "ddd mmm dd yyyy HH:MM:ss",
+		shortDate:      "m/d/yy",
+		mediumDate:     "mmm d, yyyy",
+		longDate:       "mmmm d, yyyy",
+		fullDate:       "dddd, mmmm d, yyyy",
+		shortTime:      "h:MM TT",
+		mediumTime:     "h:MM:ss TT",
+		longTime:       "h:MM:ss TT Z",
+		isoDate:        "yyyy-mm-dd",
+		isoTime:        "HH:MM:ss",
+		isoDateTime:    "yyyy-mm-dd'T'HH:MM:ss",
+		isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+	};
+
+	// Internationalization strings
+	dateFormat.i18n = {
+		dayNames: [
+			"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+			"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+		],
+		monthNames: [
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+			"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+		]
+	};
+
+	/* END DATE FORMAT */
+
+
+
+	function getClosestIncrement( value, basis ) {
+		return Math.round( value / basis ) * basis;
+	}
+
+	function roundDate( date, format ) {
+
+		switch( format.unit ) {
+
+			case 's': // Round at n hour
+
+
+				date.setSeconds( getClosestIncrement( date.getSeconds(), format.increment ) );
+				date.setMilliseconds( 0 );
+
+			break;
+
+			case 'i': // Round at n hour
+
+				date.setMinutes( getClosestIncrement( date.getMinutes(), format.increment ) );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+
+			break;
+
+			case 'h': // Round at n hour
+
+
+				date.setHours( getClosestIncrement( date.getHours(), format.increment ) );
+
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+
+			break;
+
+			case 'd':
+
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+
+				date.setDate( getClosestIncrement( date.getDate(), format.increment ) );
+
+			break;
+
+
+			case 'm':
+
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+				date.setDate( 1 );
+
+				date.setMonth( getClosestIncrement( date.getMonth(), format.increment ) );
+
+			break;
+
+			case 'y':
+
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+				date.setDate( 1 );
+				date.setMonth( 0 );
+
+				//date.setYear( getClosest( date.getDate(), format.increment ) );
+
+
+			break;
+		}
+
+		return date;
+	}
+
+
+	function incrementDate( date, format ) {
+
+
+		switch( format.unit ) {
+
+			case 's': 
+
+				date.setSeconds( date.getSeconds() + format.increment );				
+				date.setMilliseconds( 0 );
+
+
+			break;	
+
+			case 'i': 
+
+				date.setMinutes( date.getMinutes() + format.increment );				
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+
+
+			break;
+
+			case 'h': // Round at n hour
+
+				date.setHours( date.getHours() + format.increment );				
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+
+
+			break;
+
+			case 'd':
+
+				date.setDate( date.getDate() + format.increment );
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+
+				
+
+			break;
+
+
+			case 'm':
+
+				date.setMonth( date.getMonth() + format.increment );
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+				date.setDate( 1 );
+
+			break;
+
+			case 'y':
+
+				date.setYear( date.getYear() + format.increment );
+
+				date.setMinutes( 0 );
+				date.setSeconds( 0 );
+				date.setMilliseconds( 0 );
+				date.setHours( 0 );
+				date.setDate( 1 );
+				date.setMonth( 0 );
+
+
+			break;
+		}
+
+		return date;
+	}
+
+
+	
+	function getGroup( axis, level, number ) {
+
+		if( axis.groups[ level ][ number ] ) {
+			axis.groups[ level ][ number ].group.setAttribute('display', 'block');
+			return axis.groups[ level ][ number ];
+		}
+
+		var g = {
+
+			group: document.createElementNS( axis.graph.ns, 'g' ),
+			text: document.createElementNS( axis.graph.ns, 'text' )
+		}
+
+		var line = document.createElementNS( axis.graph.ns, 'line' );
+
+		line.setAttribute( 'stroke', 'black' );
+		line.setAttribute('y1', 0);
+		switch( level ) {
+
+			case 2:
+
+				line.setAttribute('y2', 6);
+				g.text.setAttribute( 'y', 15  );
+
+				g.line = line;
+
+				g.group.appendChild( g.line );
+			break;
+
+			case 1:
+		
+				
+				line.setAttribute( 'y2', 20 );
+				g.text.setAttribute( 'y', 10  );
+
+				g.line1 = line;
+				g.line2 = line.cloneNode();
+
+				g.group.appendChild( g.line1 );
+				g.group.appendChild( g.line2 );
+
+			break;
+		}
+
+
+		g.text.setAttribute( 'text-anchor', 'middle' );
+		g.text.setAttribute( 'dominant-baseline', 'middle' );
+		
+
+		
+		g.group.appendChild( g.text );
+
+		axis.getWrapper( level ).appendChild( g.group );
+
+		return axis.groups[ level ][ number ] = g;
+	}
+
+	function hideGroups( axis, level, from ) {
+
+		for( ; from < axis.groups[ level ].length ; from ++ ) {
+
+			hideGroup( axis.groups[ level ][ from ] )
+		}
+	}
+
+	function hideGroup( group ) {
+		group.group.setAttribute( 'display', 'none' );
+	}
+
+
+	function getDateText( date, format ) {
+
+		return dateFormat( date, format );
+	}
+
+	function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
+
+
+
+		switch( level ) {
+
+			case 1:
+
+
+			var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
+				x2B = Math.max( minPx, Math.min( maxPx, x2 ) );
+
+				group.line1.setAttribute( 'x1', x1B );
+				group.line2.setAttribute( 'x1', x2B );
+
+				group.line1.setAttribute( 'x2', x1B );
+				group.line2.setAttribute( 'x2', x2B );
+
+				group.text.setAttribute( 'x', ( x1B + x2B ) / 2 );
+
+				if( text.length * 8 > x2B - x1B ) {
+					text = "";
+				}
+
+				group.text.textContent = text;
+			break;
+
+			case 2:
+
+				if( x1 < minPx || x1 > maxPx ) {
+					
+					hideGroup( group );
+					return;
+				}
+
+				group.line.setAttribute( 'x1', x1 );
+				group.line.setAttribute( 'x2', x1 );
+				group.text.setAttribute( 'x', x1 );
+				group.text.textContent = text;
+
+			break;
+		}
+		
+
+	}
+
+
+
+
+	GraphXAxis.prototype = $.extend( true, GraphXAxis.prototype, GraphAxis.prototype, {
+
+		draw: function( ) { // Redrawing of the axis
+			var visible;
+
+
+			if( this.currentAxisMin == undefined || ! this.currentAxisMax == undefined ) {
+				this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+			}
+
+			this.line.setAttribute('x1', this.getMinPx());
+			this.line.setAttribute('x2', this.getMaxPx());
+			this.line.setAttribute('y1', 0);
+			this.line.setAttribute('y2', 0);
+
+
+			var widthPx = this.maxPx - this.minPx;
+			var widthTime = this._getActualInterval();
+
+			var timePerPx = widthTime / widthPx;
+
+			var maxVal = this.getActualMax();
+			var minVal = this.getActualMin();
+
+			this.rect.setAttribute( 'width', widthPx );
+			this.rect.setAttribute( 'x', this.minPx );			
+
+			if( ! maxVal || ! minVal ) {
+				return 0 ;
+			}
+
+			var axisFormat = [
+
+
+				{ // One day
+
+					threshold: 1000,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'HH:MM (dd/mm)'
+						},
+
+						2: {
+							increment: 1,
+							unit: 'i',
+							format: 'MM:ss'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 1500,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							increment: 1,
+							unit: 'i',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 4000,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							increment: 2,
+							unit: 'i',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 8000,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							increment: 10,
+							unit: 'i',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 26400,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							increment: 20,
+							unit: 'i',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+
+
+				{ // One day
+
+					threshold: 86400,
+					increments: {
+
+						1: {
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							increment: 1,
+							unit: 'h',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 200000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							
+							increment: 2, // One day on the first axis
+							unit: 'h',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+				{ // One day
+
+					threshold: 400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							
+							increment: 6, // One day on the first axis
+							unit: 'h',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+				{ // One day
+
+					threshold: 1400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							
+							increment: 12, // One day on the first axis
+							unit: 'h',
+							format: 'HH"h"MM'
+						}
+					}
+				},
+
+				{ // One day
+
+					threshold: 6400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'm',
+							format: 'mmmm'
+						},
+
+						2: {
+							
+							increment: 1, // One day on the first axis
+							unit: 'd',
+							format: 'dd'
+						}
+					}
+				},
+
+
+				{ // One day
+
+					threshold: 12400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'm',
+							format: 'mmmm'
+						},
+
+						2: {
+							
+							increment: 2, // One day on the first axis
+							unit: 'd',
+							format: 'dd'
+						}
+					}
+				},
+
+				{ // One day
+
+					threshold: 86400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'm',
+							format: 'mmmm'
+						},
+
+						2: {
+							
+							increment: 7, // One day on the first axis
+							unit: 'd',
+							format: 'dd'
+						}
+					}
+				},
+
+
+
+			];
+
+
+			var currentFormat;
+
+			for( i = 0; i < axisFormat.length; i ++ ) {
+
+				if( axisFormat[ i ].threshold > timePerPx ) {
+					currentFormat = axisFormat[ i ];
+					break;
+				}
+
+			}
+
+			
+			var	xVal1,
+				xVal2;
+		
+			var level = 0;
+
+			for( level = 1; level <= 2 ; level ++ ) {
+
+				var dateFirst = new Date( minVal );
+
+				var currentDate = roundDate( dateFirst, currentFormat.increments[ level ] ),
+					i = 0;
+
+				
+				do {
+
+					xVal1 = this.getPx( currentDate.getTime( ) );
+
+					var text = getDateText( currentDate, currentFormat.increments[ level ].format );
+					var group = getGroup( this, level, i );
+
+					currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
+					xVal2 = this.getPx( currentDate.getTime( ) );
+
+					renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
+
+					i++;
+
+				} while ( currentDate.getTime() < maxVal );
+
+				hideGroups( this, level, i );
+			}
+
+			
+		},
+
+		getWrapper: function( level ) {
+			return this.wrapper[ level ]
+		},
+
+		setShift: function(shift, totalDimension) {
+			this.shift = shift;
+			this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : (this.graph.getDrawingHeight() - this.shift)) + ')')
+		},
+
+		getAxisPosition: function() {
+			return 60;
+		},
+
+		drawSeries: function() {}
+	});
+
+	
+	return GraphXAxis;
+ } ) ( build["./graph.axis"] );
+
+
+// Build: End source file (graph.xaxis.time) 
+
+
+
+;
+/* 
+ * Build: new source file 
  * File name : graph.legend
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
  */
@@ -1716,7 +2534,7 @@ build['./dynamicdepencies'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
  */
 
-build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, DynamicDepencies) { 
+build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,GraphLegend, DynamicDepencies) { 
 
 	
 
@@ -2490,6 +3308,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 		getRightAxis: function(num, options) {
 			return this._getAxis(num, options, GraphYAxis, 'right');
 		},
+
+		setBottomAxisAsTime: function( num, options ) {
+			return this._getAxis( num, options, GraphXAxisTime, 'bottom' );
+		},
+
 
 		setXAxis: function(axis, num) {
 			this.setBottomAxis(axis, num);
@@ -3498,7 +4321,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphLegend, Dynamic
 
 
 	return Graph;
- } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.legend"],build["./dynamicdepencies"] );
+ } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
 
 
 // Build: End source file (graph.core) 
@@ -4677,22 +5500,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			this.groupMain = document.createElementNS(this.graph.ns, 'g');
 			this.additionalData = {};
 
-			this.domMarker.addEventListener('mouseover', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onMouseOverMarker(e, closest);
-			});
-
-
-			this.domMarker.addEventListener('mouseout', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onMouseOutMarker(e, closest);
-			});
-
-
-			this.domMarker.addEventListener('click', function(e) {
-				var closest = self._getMarkerIndexFromEvent(e);
-				self.onClickOnMarker(e, closest);
-			});
+			
 
 			this.marker = document.createElementNS(this.graph.ns, 'circle');
 			this.marker.setAttribute('fill', 'black');
@@ -4722,7 +5530,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			this.groupMain.appendChild(this.groupLines);
 			this.groupMain.appendChild(this.groupLabels);
 			this.groupMain.appendChild(this.marker);
-			this.groupMain.appendChild(this.domMarker);
+			
 			this.groupMain.appendChild(this.groupMarkerSelected);
 			this.groupMain.appendChild(this.markerLabelSquare);
 			this.groupMain.appendChild(this.markerLabel);
@@ -5022,7 +5830,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 					var x = this.getX(this.data[k][i * 2]);
 					var y = this.getY(this.data[k][i * 2 + 1]);
 
-					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.options.markers.zoom + 1).join(" "));
+					dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ));
 
 					this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
 					this.groupMarkerSelected.appendChild(dom);
@@ -5152,13 +5960,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var next = this.groupLines.nextSibling;
 			this.groupMain.removeChild(this.groupLines);
-			this.groupMain.removeChild(this.domMarker);
+			
 			this.marker.setAttribute('display', 'none');
 
 			
-			this.markerPath = '';
-			this._markerPath = this.getMarkerPath().join(' ');
-			
+			this.markerCurrentFamily = null;
+			var markerCurrentIndex = 0;
+			var markerNextChange = -1;//this.markerPoints[ markerCurrentIndex ][ 0 ];
+
 			var incrXFlip = 0;
 			var incrYFlip = 1;
 
@@ -5167,6 +5976,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				incrYFlip = 0;
 			}
 
+			this.eraseMarkers();
 
 			var totalLength = 0;
 			for( ; i < l ; i ++ ) {
@@ -5215,6 +6025,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 1 ) {
 
+
+							if( this.markerPoints ) {
+
+								this.getMarkerCurrentFamily( k );
+								
+							}
+
+
+
 							if( ! this.isFlipped() ) {
 							
 								xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
@@ -5240,6 +6059,32 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 						for( ; j < m ; j += 2 ) {
 
+
+							if( this.markerPoints ) {
+
+								this.getMarkerCurrentFamily( k );
+								
+							}
+
+/*
+
+							while( k > markerNextChange ) {
+								markerCurrentIndex ++;
+
+								this.markerCurrentFamily = this.markerPoints[ markerCurrentIndex - 1 ][ 1 ];
+
+								if( ! this.markerPoints[ markerCurrentIndex ] ) {
+									markerNextChange = Infinity;
+									break;
+								}
+
+								markerNextChange = this.markerPoints[ markerCurrentIndex ][ 0 ];
+								
+
+							}
+
+						*/
+
 							xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
 							ypx2 = this.getY( this.data[ i ][ j + incrYFlip ] );
 
@@ -5247,8 +6092,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 								continue;
 							}
 
-							if(this.options.autoPeakPicking) {
+							if( this.options.autoPeakPicking ) {
+
 								allY.push( [ ( this.data[ i ][ j + incrYFlip ] ), this.data[ i ][ j + incrXFlip ] ] );
+
 							}
 							
 							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
@@ -5277,16 +6124,31 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				this.lines.splice(i, 1);
 			}
 
-			this.setMarkerStyleTo(this.domMarker);
-			this.domMarker.setAttribute('d', this.markerPath || 'M 0 0');
+			this.insertMarkers();
 
-			//this.groupMain.appendChild(this.groupLines);
-			this.groupMain.appendChild(this.domMarker);
 			this.groupMain.insertBefore(this.groupLines, next);
 			var label;
 			for( var i = 0, l = this.labels.length ; i < l ; i ++ ) {
 				this.repositionLabel( this.labels[ i ] );
 			}
+		},
+
+		getMarkerCurrentFamily: function( k ) {
+
+			for( var z = 0 ; z < this.markerPoints.length ; z ++ ) {
+				if( this.markerPoints[ z ][ 0 ] <= k ) { // This one is a possibility !
+					if( this.markerPoints[ z ][ 1 ] >= k ) { // Verify that it's in the boundary
+						this.markerCurrentFamily = this.markerPoints[z ][ 2 ];
+					}
+				} else {
+					break;
+				}
+
+
+			}
+
+			return this.markerCurrentFamily;
+
 		},
 
 		drawSlot: function( slotToUse, y ) {
@@ -5330,11 +6192,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			//console.timeEnd('Slot');
 		},
 
-		setMarkerStyleTo: function(dom, noFill) {
+		setMarkerStyleTo: function( dom, family ) {
 			
-			dom.setAttribute('fill', !noFill ? (this.options.markers.fillColor || 'transparent') : 'transparent');
-			dom.setAttribute('stroke', this.options.markers.strokeColor || this.getLineColor());
-			dom.setAttribute('stroke-width', this.options.markers.strokeWidth);
+			if( ! dom ) {
+				throw "Cannot set marker style. DOM does not exist.";
+			}
+
+			dom.setAttribute('fill', family.fillColor || 'transparent' );
+			dom.setAttribute('stroke', family.strokeColor || this.getLineColor( ) );
+			dom.setAttribute('stroke-width', family.strokeWidth || 1 );
 		},
 
 		makePeakPicking: function(allY) {
@@ -5398,7 +6264,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		
-		_addPoint: function(currentLine, xpx, ypx, k, move) {
+		_addPoint: function( currentLine, xpx, ypx, k, move ) {
 			var pos;
 			
 			if(k !== 0) {
@@ -5421,11 +6287,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				currentLine += " ";
 			}
 
-			if(!this.options.markers.show)
+			if( ! this.markerPoints ) {
 				return currentLine;
+			}
 
-			if(!(xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx())) {
-				this._drawMarkerXY(xpx, ypx);
+			if( ! ( xpx > this.getXAxis().getMaxPx() || xpx < this.getXAxis().getMinPx() ) ) {
+
+				drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
 			}
 			return currentLine;
 		},
@@ -5467,52 +6335,90 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		//	line.setAttribute('shape-rendering', 'optimizeSpeed');
 		},
 
-		getMarkerPath: function(zoom, add) {
-			var z = zoom || this.options.markers.zoom,
+		// Revised August 2014. Ok
+		getMarkerPath: function( family, add ) {
+
+			var z = family.zoom || 1 ,
 				add = add || 0,
 				el;
 
-			switch(this.options.markers.type) {
+			switch( family.type ) {
 				case 1:
 					el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
 				break;
 
 				case 2:
-					el = ['m', -2, -2, 'l', 4, 4, 'l', -4, 0, 'l', 4, -4, 'z'];
+					el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
 				break;
+
+
+				case 3:
+					el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
+				break;
+
+
+				case 4:
+					el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
+				break;
+
 			}
 
 
-			if((z == 1 || !z) && !add)
-				return el;
+			if( ( z == 1 || ! z ) && ! add ) {
+				return  el.join(" ");
+			}
 
 			var num = "number";
+
+			if( ! el ) {
+				return;
+			}
+
+
 			for(var i = 0, l = el.length; i < l; i++) {
+
 				if(typeof el[i] == num) {
-					el[i] *= z;
-				//	el[i] += ((!el[i] || !add) ? 0 : (Math.abs(el[i]) / el[i]) * add);
+
+					el[i] *= ( z + add );
 				}
 			}
 
+			return  el.join(" " );
 
-			return el;
 		},
 
-		_drawMarkerXY: function(x, y) {
+		// Revised August 2014. Ok
+		getMarkerDom: function( family ) {
 
-			if(!this.options.markers.show)
-				return;
+			var self = this;
+			if( ! family.dom ) {
+				var dom = document.createElementNS( this.graph.ns, 'path' );
+				this.setMarkerStyleTo( dom, family );
+				family.dom = dom;
+				family.path = "";
+
+				dom.addEventListener('mouseover', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onMouseOverMarker(e, closest);
+				});
 
 
-			this.markerPath += 'M ' + x + ' ' + y + ' ';
+				dom.addEventListener('mouseout', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onMouseOutMarker(e, closest);
+				});
 
-			this.markerPath += this._markerPath + ' ';
 
-			//shape.setAttribute('transform', 'translate(' + x + ' ' + y + ') scale(' + this.options.markers.zoom + ')');
-			//shape.setAttribute('d', this._markerPath);
-			
-			//this.groupMarkers.appendChild(shape);*/
+				dom.addEventListener('click', function(e) {
+					var closest = self._getMarkerIndexFromEvent(e);
+					self.onClickOnMarker(e, closest);
+				});
+
+			}
+
+			return family.dom;
 		},
+
 
 	
 		/* */
@@ -5818,7 +6724,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		markersShown: function() {
 			return this.options.markers.show;	
 		},
-
+/*
 		setMarkerType: function(type, skipRedraw) {
 			this.options.markers.type = type;
 			
@@ -5859,6 +6765,116 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			if(!skipRedraw && this._drawn)
 				this.draw();
 		},
+*/
+		// Multiple markers
+		setMarkers: function( family ) {
+			// Family has to be an object
+			// Family looks like
+			/*
+				{
+					type: 1,
+					zoom: 1,
+					strokeWidth: 1,
+					strokeColor: ''
+					fillColor: '',
+				}
+			*/
+
+			if( ! family ) {
+
+				family = [ {
+					type: 1,
+					zoom: 1,
+					points: 'all'
+				} ]
+
+			}
+			var markerPoints = [];
+
+			markerPoints.push( [ 0, Infinity, null ] );
+
+			for( var i = 0, k = family.length; i < k ; i ++ ) {
+
+				this.getMarkerDom( family[ i ] );
+				family[ i ].markerPath = this.getMarkerPath( family[ i ] );
+
+				if( ! family[ i ].points ) {
+					continue;
+				}
+
+				if( ! Array.isArray( family[ i ].points ) ) {
+					family[ i ].points = [ family[ i ].points ];
+				}
+
+
+				for( var j = 0, l = family[ i ].points.length ; j < l ; j ++ ) {
+
+					if( family[ i ].points[ j ] == 'all' ) {
+
+						markerPoints.push( [ 0, Infinity, i ] );
+
+					} else if ( ! Array.isArray( family[ i ].points[ j ] ) ) {
+
+						markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
+						//markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
+					} else {
+
+						markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
+						
+					}
+				}
+			}
+
+			this.markerFamily = family;
+
+			// Let's sort if by the first index.
+			markerPoints.sort( function( a, b ) { 
+				return ( a[ 0 ] -  b[ 0 ] ) || ( a[ 2 ] == null ? -1 : 1 );
+			} );
+
+			// OK now let's handle clashes
+
+/*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
+
+				// No clash
+				if( markerPoints[ i ][ 1 ] < markerPoints[ i + 1 ][ 1 ] ) {
+					continue;
+				}
+
+				var restartAt = markerPoints[ i + 1 ][ 1 ] + 1;
+				markerPoints[ i ][ 1 ] = markerPoints[ i + 1 ][ 0 ];
+
+				var j = i;
+
+				while( markerPoints[ j ][ 1 ] < restartAt ) {
+					j++;
+				}
+
+				markerPoints.splice( j, 0, [ restartAt, ])
+
+
+			}
+*/
+			this.markerPoints = markerPoints;
+		},
+
+		insertMarkers: function() {
+
+			if( ! this.markerFamily ) {
+				return;
+			}
+
+			for( var i = 0, l = this.markerFamily.length; i < l; i ++ ) {
+
+				this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+				this.groupMain.appendChild( this.markerFamily[ i ].dom );
+			}
+
+
+			
+
+		},
+
 
 		addLabelX: function(x, label) {
 			this.addLabelObj({
@@ -6008,23 +7024,46 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 		getMarkerForLegend: function() {
 
-			if( ! this.markersShown() ) {
+			if( ! this.markerPoints ) {
 				return;
 			}
 
 			if( ! this.markerForLegend ) {
 
 				var marker = document.createElementNS( this.graph.ns, 'path');
-				this.setMarkerStyleTo( marker , true);
-				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.options.markers.zoom + 1 ).join(" ") );
+				this.setMarkerStyleTo( marker , this.markerFamily[ 0 ] );
+				
+				marker.setAttribute('d', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
 
 				this.markerForLegend = marker;
 			}
 
 			return this.markerForLegend;
 
-		}			
+		},
+
+		eraseMarkers: function() {
+
+			for( var i in this.markerFamily ) {
+				this.markerFamily[ i ].path = "";
+			}
+		}
 	} );
+
+	function drawMarkerXY( family, x, y ) {
+
+		if( ! family ) {
+			return;
+		}
+
+		family.path = family.path || "";
+		family.path += 'M ' + x + ' ' + y + ' ';
+
+
+		family.path += family.markerPath + ' ';
+	}
+
+
 
 	return GraphSerie;
  } ) ( build["./graph._serie"] );
@@ -6412,10 +7451,20 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
 			var error;
 		//	var pathError = "M 0 0 ";
+<<<<<<< HEAD
 
 			this.errorsPaths = [];
 			for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
 				this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+=======
+
+			if( this.errortypes ) {
+
+				this.errorsPaths = [];
+				for( var i = 0, l = this.errortypes.length; i < l ; i ++ ) {
+					this.errorsPaths[ i ] = { top: "", bottom: "", left: "", right: "" };
+				}
+>>>>>>> master
 			}
 
 			for( ; j < m ; j += 2 ) {
@@ -6444,6 +7493,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 			}
 
 
+<<<<<<< HEAD
 			for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
 
 				for( var j in this.errorsPaths[ i ] ) {
@@ -6454,6 +7504,20 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 				}
 
 
+=======
+			
+			if( this.errortypes ) {
+					
+				for( var i = 0 , l = this.errorsPaths.length ; i < l ; i ++ ) {
+
+					for( var j in this.errorsPaths[ i ] ) {
+
+						if( this.errorstyles[ this.errortypes[ i ] ][ j ] && this.errorstyles[ this.errortypes[ i ] ][ j ].dom ) {
+							this.errorstyles[ this.errortypes[ i ] ][ j ].dom.setAttribute( 'd', this.errorsPaths[ i ][ j ] );
+						}
+					}
+				}
+>>>>>>> master
 			}
 
 			this.groupMain.appendChild( this.groupPoints );
@@ -6576,7 +7640,11 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 		},
 
 		setErrorStyle: function( errortypes, errorstyles ) {
+<<<<<<< HEAD
 
+=======
+console.log('HERE FIRST');
+>>>>>>> master
 			var self = this;
 
 			errortypes = errortypes || [ 'box', 'bar' ];
@@ -7633,7 +8701,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 				pos.y = -10000;
 			}*/
 
-			if( pos.x != "NaNpx") {
+			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
 				this.label[labelIndex].setAttribute('x', pos.x);
 				this.label[labelIndex].setAttribute('y', pos.y);	
 			}
@@ -10010,172 +11078,6 @@ build['./graph.toolbar'] = ( function( ) {
 
 
 // Build: End source file (graph.toolbar) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : graph.xaxis.time
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
- */
-
-build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
-
-
-	
-	
-	var GraphXAxis = function(graph, topbottom, options) {
-		this.init(graph, options);
-		this.top = topbottom == 'top';
-	}
-
-	$.extend( GraphXAxis.prototype, GraphAxis.prototype, {
-
-		getAxisPosition: function() {
-			var size = (this.options.tickPosition == 1 ? 15 : 25) + this.graph.options.fontSize * 2;	
-			if(this.options.allowedPxSerie && this.series.length > 0)
-				size += this.options.allowedPxSerie;
-			return size;
-		},
-
-		getAxisWidthHeight: function() {
-			return;
-		},
-
-		_setShift: function() {
-			this.group.setAttribute('transform', 'translate(0 ' + (this.top ? this.shift : (this.graph.getDrawingHeight() - this.shift)) + ')')
-		},
-
-		getMaxSizeTick: function() {
-			return (this.top ? -1 : 1) * ((this.options.tickPosition == 1) ? 15 : 25)
-		},
-
-		drawTick: function(value, label, scaling, options) {
-			var group = this.groupTicks;
-			var tick = document.createElementNS(this.graph.ns, 'line'),
-				val = this.getPos(value);
-
-			if(val == undefined)
-				return;
-
-			tick.setAttribute('shape-rendering', 'crispEdges');
-			tick.setAttribute('x1', val);
-			tick.setAttribute('x2', val);
-
-			tick.setAttribute('y1', (this.top ? 1 : -1) * this.tickPx1 * scaling);
-			tick.setAttribute('y2', (this.top ? 1 : -1) * this.tickPx2 * scaling);
-
-			if(label && this.options.primaryGrid)
-				this.doGridLine(true, val, val, 0, this.graph.getDrawingHeight());
-			else if(!label && this.options.secondaryGrid)
-				this.doGridLine(false, val, val, 0, this.graph.getDrawingHeight());
-			
-			tick.setAttribute('stroke', 'black');
-
-			this.groupTicks.appendChild(tick);
-			if(label) {
-				var groupLabel = this.groupTickLabels;
-				var tickLabel = document.createElementNS(this.graph.ns, 'text');
-				tickLabel.setAttribute('x', val);
-				tickLabel.setAttribute('y', (this.top ? -1 : 1) * ( ( this.options.tickPosition == 1 ? 8 : 25) + ( this.top ? 10 : 0 ) ) );
-				tickLabel.setAttribute('text-anchor', 'middle');
-				tickLabel.style.dominantBaseline = 'hanging';
-
-				this.setTickContent(tickLabel, value, options);
-				this.graph.applyStyleText(tickLabel);
-				this.groupTickLabels.appendChild(tickLabel);
-			}
-			this.ticks.push(tick);
-		},
-
-		drawSpecifics: function() {
-
-			// Adjusts group shift
-			//this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
-
-			// Place label correctly
-			this.label.setAttribute('text-anchor', 'middle');
-			this.label.setAttribute('x', Math.abs(this.getMaxPx() - this.getMinPx()) / 2 + this.getMinPx());
-			this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 15) + this.graph.options.fontSize));
-
-			this.line.setAttribute('x1', this.getMinPx());
-			this.line.setAttribute('x2', this.getMaxPx());
-			this.line.setAttribute('y1', 0);
-			this.line.setAttribute('y2', 0);
-
-			this.labelTspan.style.dominantBaseline = 'hanging';
-			this.expTspan.style.dominantBaseline = 'hanging';
-			this.expTspanExp.style.dominantBaseline = 'hanging';	
-		},
-
-		drawSeries: function() {
-
-			if(!this.shift) {
-				return;
-			}
-
-			this.rectEvent.setAttribute('y', !this.top ? 0 : -this.shift);
-			this.rectEvent.setAttribute('height', this.totalDimension);
-			this.rectEvent.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.rectEvent.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
-			//this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
-//console.log(this.clipRect);
-			this.clipRect.setAttribute('y', !this.top ? 0 : -this.shift);
-			this.clipRect.setAttribute('height', this.totalDimension);
-			this.clipRect.setAttribute('x', Math.min(this.getMinPx(), this.getMaxPx()));
-			this.clipRect.setAttribute('width', Math.abs(this.getMinPx() - this.getMaxPx()));
-
-
-			for(var i = 0, l = this.series.length; i < l; i++) { // These are the series on the axis itself !!
-				this.series[i].draw();	
-			}
-		},
-
-		_draw0Line: function(px) {
-			this._0line = document.createElementNS(this.graph.ns, 'line');
-			this._0line.setAttribute('x1', px);
-			this._0line.setAttribute('x2', px);
-
-			this._0line.setAttribute('y1', 0);
-			this._0line.setAttribute('y2', this.getMaxPx());
-		
-			this._0line.setAttribute('stroke', 'black');
-			this.groupGrids.appendChild(this._0line);
-		},
-
-
-
-		addSerie: function(name, options) {
-			var serie = new GraphSerieAxisX(name, options);
-			serie.setAxis(this);
-			serie.init(this.graph, name, options);
-			serie.autoAxis();
-			serie.setXAxis(this);
-			this.series.push(serie);
-			this.groupSeries.appendChild(serie.groupMain);
-			this.groupSeries.setAttribute('clip-path', 'url(#_clip' + this.axisRand + ')');
-
-			return serie;
-		},
-
-		handleMouseMoveLocal: function(x, y, e) {
-			x -= this.graph.getPaddingLeft();
-			this.mouseVal = this.getVal(x);
-		},
-
-		isXY: function() {
-			return 'x';
-		}
-
-	});
-
-	
-	return GraphXAxis;
- } ) ( build["./graph.axis"] );
-
-
-// Build: End source file (graph.xaxis.time) 
 
 
 

@@ -18,8 +18,8 @@ define( function() {
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( seriedata )
-				.setMaxErrorLevel( 2 )
-				.setDataError( error );
+				.setDataError( error )
+				.setErrorStyle( [ 'box', 'bar' ] );
 
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	

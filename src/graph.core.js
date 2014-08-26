@@ -1,4 +1,4 @@
-define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphLegend, DynamicDepencies) {
+define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphXAxisTime,GraphLegend, DynamicDepencies) {
 
 	"use strict";
 
@@ -772,6 +772,11 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.legend', './dynami
 		getRightAxis: function(num, options) {
 			return this._getAxis(num, options, GraphYAxis, 'right');
 		},
+
+		setBottomAxisAsTime: function( num, options ) {
+			return this._getAxis( num, options, GraphXAxisTime, 'bottom' );
+		},
+
 
 		setXAxis: function(axis, num) {
 			this.setBottomAxis(axis, num);

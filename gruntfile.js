@@ -72,7 +72,7 @@ module.exports = function(grunt) {
 
                 files: {
                     '../jsGraph-ghpages/': 'examples/src/**',
-                    '../jsGraph-ghpages/graph/jsgraph.js': 'dist/jsgraph.min.js'
+                    '../jsGraph-ghpages/graph/jsgraph.js': 'dist/jsgraph.js'
                 }
             }
         },
