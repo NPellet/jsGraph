@@ -531,6 +531,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				incrYFlip = 0;
 			}
 
+			this.eraseMarkers();
 
 			var totalLength = 0;
 			for( ; i < l ; i ++ ) {
@@ -1594,7 +1595,14 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 			return this.markerForLegend;
 
-		}			
+		},
+
+		eraseMarkers: function() {
+
+			for( var i in this.markerFamily ) {
+				this.markerFamily[ i ].path = "";
+			}
+		}
 	} );
 
 	function drawMarkerXY( family, x, y ) {

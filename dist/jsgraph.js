@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.7.3
+ * jsGraphs JavaScript Graphing Library v1.7.4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-25T18:48Z
+ * Date: 2014-08-26T00:12Z
  */
 
 (function( global, factory ) {
@@ -5153,6 +5153,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				incrYFlip = 0;
 			}
 
+			this.eraseMarkers();
 
 			var totalLength = 0;
 			for( ; i < l ; i ++ ) {
@@ -6216,7 +6217,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			return this.markerForLegend;
 
-		}			
+		},
+
+		eraseMarkers: function() {
+
+			for( var i in this.markerFamily ) {
+				this.markerFamily[ i ].path = "";
+			}
+		}
 	} );
 
 	function drawMarkerXY( family, x, y ) {
