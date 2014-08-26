@@ -817,18 +817,34 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 						
 						xpx = this.xData[ i ].x + j * this.xData[ i ].dx;
-						sum += this.data[ i ][ j ];
 
+
+						if( optimizeMonotoneous && xpx < 0 ) {
+							buffer = [ xpx, ypx, this.data[ i ][ j ] ];
+							continue;
+						}
+
+						if( optimizeMonotoneous && buffer ) {
+
+							sum += buffer[ 2 ];
+							degradationMin = Math.min( degradationMin, buffer[ 2 ] );
+							degradationMax = Math.max( degradationMax, buffer[ 2 ] );
+
+							buffer = false;
+							k++;
+						}
+
+						sum += this.data[ i ][ j ];
 						degradationMin = Math.min( degradationMin, this.data[ i ][ j ] );
 						degradationMax = Math.max( degradationMax, this.data[ i ][ j ] );
 
 
 
-						if( j % delta == 0 && j > 0 ) {
+						if( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
 
 							dataY.push( sum / delta );
 
-							degradationMinMax.push( ( j * this.xData[ i ].dx ), degradationMin, degradationMax );
+							degradationMinMax.push( ( this.xData[ i ].x + j * this.xData[ i ].dx - ( delta / 2 ) * this.xData[ i ].dx ), degradationMin, degradationMax );
 
 							degradationMin = Infinity;
 							degradationMax = - Infinity;
@@ -836,6 +852,15 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 							
 							sum = 0;
 						}
+
+
+
+						if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+							optimizeBreak = true;
+							break;
+						}
+
+
 
 						
 						
@@ -848,7 +873,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					
 				}
 
-				
+
 				if( this.degradationSerie ) {
 					this.degradationSerie.setData( degradationMinMax );
 					this.degradationSerie.draw();
