@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.8.0
+ * jsGraphs JavaScript Graphing Library v1.8.1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-26T07:03Z
+ * Date: 2014-08-26T07:11Z
  */
 
 (function( global, factory ) {
@@ -1896,7 +1896,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 1,
 							unit: 'i',
-							format: 'HH"m"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
@@ -1916,7 +1916,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 2,
 							unit: 'i',
-							format: 'HH"m"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
@@ -1936,7 +1936,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 10,
 							unit: 'i',
-							format: 'HH"h"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
@@ -1956,7 +1956,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 20,
 							unit: 'i',
-							format: 'HH"h"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
@@ -1977,32 +1977,11 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 1,
 							unit: 'h',
-							format: 'HH"h"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
 
-
-				{ // One day
-
-					threshold: 400000,
-					increments: {
-
-						1: {
-
-							increment: 1,
-							unit: 'd',
-							format: 'dd/mm'
-						},
-
-						2: {
-							
-							increment: 2, // One day on the first axis
-							unit: 'h',
-							format: 'HH"h"MM'
-						}
-					}
-				},
 
 				{ // One day
 
@@ -2018,9 +1997,30 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 
 						2: {
 							
+							increment: 2, // One day on the first axis
+							unit: 'h',
+							format: 'H"h"MM'
+						}
+					}
+				},
+
+				{ // One day
+
+					threshold: 400000,
+					increments: {
+
+						1: {
+
+							increment: 1,
+							unit: 'd',
+							format: 'dd/mm'
+						},
+
+						2: {
+							
 							increment: 6, // One day on the first axis
 							unit: 'h',
-							format: 'HH"h"MM'
+							format: 'H"h"MM'
 						}
 					}
 				},
