@@ -552,7 +552,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			this.groupMain.removeChild(this.groupLines);
 			
 			this.marker.setAttribute('display', 'none');
-
 			
 			this.markerCurrentFamily = null;
 			var markerCurrentIndex = 0;
@@ -592,10 +591,8 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-
 			var degradation = [];
 			var buffer;
-
 
 			if( slotToUse ) {
 				if( slotToUse.done ) {
@@ -618,7 +615,6 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 						j = 0, k = 0, m = data[ i ].length;
 
 						for( ; j < m ; j += 1 ) {
-
 
 							if( this.markerPoints ) {
 
@@ -727,10 +723,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 							break;
 						}
 					}
-
 				}
-				
-				
 			}
 
 			if( this.options.autoPeakPicking ) {
@@ -738,6 +731,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 			i++;
+
 			for( ; i < this.lines.length ; i++ ) {
 				this.groupLines.removeChild( this.lines[ i ] );
 				this.lines.splice(i, 1);
@@ -853,24 +847,16 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 							sum = 0;
 						}
 
-
-
 						if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
 							optimizeBreak = true;
 							break;
 						}
-
-
-
-						
 						
 						k++;
 					}
 
 					datas.push( dataY );
 					xData.push( { dx: delta * this.xData[ i ].dx, x: this.xData[ i ].x + ( delta * this.xData[ i ].dx / 2 ) });
-					
-					
 				}
 
 

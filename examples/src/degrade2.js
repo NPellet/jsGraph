@@ -39,32 +39,24 @@ define( function() {
 
 		}, function( graphinstance ) {
 
+			var s = graphinstance.newSerie()
+				.autoAxis()
+				.setData( { x: 0, dx: 0.001, y: serie } )
+				.XIsMonotoneous()
+				.degrade( 5 );
 
-	//	graphinstance.setBottomAxisAsTime();
-	
-		var s = graphinstance.newSerie()
-			.autoAxis()
-			.setData( { x: 0, dx: 0.001, y: serie } )
-			.XIsMonotoneous()
-			.degrade( 5 );
+			s.setFillColor('rgba(200, 0, 0, 0.2)')
+			s.setLineWidth(0)
 
-		s.setFillColor('rgba(200, 0, 0, 0.2)')
-		s.setLineWidth(0)
-
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
-
-
+			graphinstance.redraw( );
+			graphinstance.drawSeries();	
 		});
 
-			
-			
-
+		
 		}, 
 
 		"Degradation", 
-		[ 'Basic chart', 'Axis labels', 'Set graphinstance dimension'] 
+		[ 'Degradation also works for a serie specified in dx'] 
 
 	];
 

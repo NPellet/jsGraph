@@ -28,6 +28,8 @@ define( function() {
 			'./examples/src/plugins',
 			'./examples/src/scatter',
 			'./examples/src/xinterval',
+			'./examples/src/degradation',
+			'./examples/src/degradation2',
 			'./examples/src/shape'
 		];
 

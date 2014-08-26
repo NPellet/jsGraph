@@ -64,7 +64,7 @@ define( function() {
 		}, 
 
 		"Degradation", 
-		[ 'Basic chart', 'Axis labels', 'Set graphinstance dimension'] 
+		[ 'Basic degradation', 'Basic optimization: x is monotoneously increasing' ] 
 
 	];
 
