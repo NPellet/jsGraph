@@ -7,7 +7,7 @@ define( function() {
 		var date = new Date();
 		date.setTime( 0 )
 		
-		while( date.getTime() < 86400000 * 3 ) {
+		while( date.getTime() < 86400000 * 30 ) {
 		
 			serie.push( date.getTime() );
 			serie.push( Math.sin( date.getHours() / 24 * Math.PI + Math.random() / 5 ) );
@@ -45,6 +45,7 @@ define( function() {
 		var s = graphinstance.newSerie()
 			.autoAxis()
 			.setData( serie )
+			.XIsMonotoneous()
 			.degrade( 5 );
 
 		s.setFillColor('rgba(200, 0, 0, 0.2)')

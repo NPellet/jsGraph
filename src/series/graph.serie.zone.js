@@ -270,11 +270,29 @@ define( [  '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			var lineTop = [];
 			var lineBottom = [];
 
+			var buffer;
+
 			for( ; j < m ; j += 3 ) {
 
 				xpx = this.getX( this.data[ j ] );
 				ypx1 = this.getY( this.data[ j + 1 ] );
 				ypx2 = this.getY( this.data[ j + 2 ] );
+
+				if( xpx < 0 ) {
+					buffer = [ xpx, ypx1, ypx2 ]
+					continue;
+				}
+
+				if( buffer ) {
+
+					lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
+					lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
+
+					buffer = false;
+					k++;
+				}
+
+
 
 				if( ypx2 > ypx1 ) {
 					lineTop.push( [ xpx, ypx1 ] );
@@ -282,6 +300,10 @@ define( [  '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				} else {
 					lineTop.push( [ xpx, ypx2 ] );
 					lineBottom.push( [ xpx, ypx1 ] );
+				}
+
+				if( xpx > this.getXAxis().getMaxPx() ) {
+					break;
 				}
 			}
 

@@ -249,6 +249,10 @@ define( [], function() {
 
 		isFlipped: function() {
 			return this.options.flip;
+		},
+
+		isXMonotoneous: function() {
+			return this.xmonotoneous || false;
 		}
 
 
