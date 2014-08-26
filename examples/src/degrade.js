@@ -5,9 +5,9 @@ define( function() {
 
 		var serie = [];
 		var date = new Date();
-		date.setTime( date.getTime() - 86400000 * 3)
+		date.setTime( 0 )
 		
-		while( date.getTime() < Date.now() ) {
+		while( date.getTime() < 86400000 * 3 ) {
 		
 			serie.push( date.getTime() );
 			serie.push( Math.sin( date.getHours() / 24 * Math.PI + Math.random() / 5 ) );
