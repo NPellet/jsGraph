@@ -505,9 +505,12 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		draw: function() { // Serie redrawing
 
 			var data = this.data;
+			var xData = this.xData;
 
 			if( this.degradationPx ) {
-				var data = this.getDegradedData();
+				data = this.getDegradedData();
+				xData = data[ 1 ];
+				data = data[ 0 ];
 			}
 
 
@@ -619,31 +622,52 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 							if( this.markerPoints ) {
 
-								this.getMarkerCurrentFamily( k );
-								
+								this.getMarkerCurrentFamily( k );								
 							}
-
-
 
 							if( ! this.isFlipped() ) {
 							
-								xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
 								ypx = this.getY( data[ i ][ j ] );								
 							} else {
-								ypx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
+								ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
 								xpx = this.getY( data[ i ][ j ] );								
+							}
+
+
+							if( optimizeMonotoneous && xpx < 0 ) {
+								buffer = [ xpx, ypx ];
+								continue;
+							}
+
+							if( optimizeMonotoneous && buffer ) {
+
+								currentLine = this._addPoint( currentLine, buffer[ 0 ], buffer[ 1 ], k );
+								buffer = false;
+								k++;
 							}
 
 							currentLine = this._addPoint( currentLine, xpx, ypx, k );
 							k++;
+
+
+							if( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+								toBreak = true;
+								break;
+							}
+
 						}
 						
 						this._createLine(currentLine, i, k);
+
+						if( toBreak ) { 
+							break;
+						}
 					}
 
 				} else {
 
-					for(; i < l ; i++) {
+					for( ; i < l ; i ++ ) {
 						
 						var toBreak = false;
 
@@ -755,166 +779,194 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 
 			var datas = [];
+			var xData = [],
+				dataY = [],
+				sum = 0;
 
 			if( this.mode == 'x_equally_separated' ) {
 
-				for( ; i < l ; i ++ ) {
-					
-					currentLine = "M ";
-					j = 0, k = 0, m = this.data[ i ].length;
-
-					for( ; j < m ; j += 1 ) {
-
-
-						if( this.markerPoints ) {
-
-							this.getMarkerCurrentFamily( k );
-							
-						}
-
-
-
-						if( ! this.isFlipped() ) {
-						
-							xpx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
-							ypx = this.getY( this.data[ i ][ j ] );								
-						} else {
-							ypx = this.getX( this.xData[ i ].x + j * this.xData[ i ].dx );
-							xpx = this.getY( this.data[ i ][ j ] );								
-						}
-
-						currentLine = this._addPoint( currentLine, xpx, ypx, k );
-						k++;
-					}
-					
-					this._createLine(currentLine, i, k);
+				if( this.isFlipped( ) ) {
+					return [ this.data, this.xData ];
 				}
 
-			} else {
 
+				dataY = [];
 
-				for(; i < l ; i++) {
+				for( ; i < l ; i ++ ) {
 					
-					j = 0,
-					k = 0,
-					m = this.data[ i ].length;
+					j = 0, k = 0, m = this.data[ i ].length;
 
-					
-					degradationNb = 0;
-					degradationValue = 0;
+					var delta = Math.round( this.degradationPx / this.getXAxis().getRelPx( this.xData[ i ].dx ) );
+
+					if( delta == 1 ) {
+						xData.push( this.xData[ i ] );
+						datas.push( this.data[ i ] );
+					}
 
 					degradationMin = Infinity;
 					degradationMax = - Infinity;
 
-					var data = [];
 
-					for( ; j < m ; j += 2 ) {
-
+					for( ; j < m ; j += 1 ) {
 
 						if( this.markerPoints ) {
 
-							this.getMarkerCurrentFamily( k );
-							
-						}
-
-						xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
-
-						if( optimizeMonotoneous && xpx2 < 0 ) {
-
-							buffer = [
-								xpx2,
-								this.getY( this.data[ i ][ j + incrYFlip ] ),
-								this.data[ i ][ j + incrXFlip ],
-								this.data[ i ][ j + incrYFlip ]
-							];
-
-							continue;
+							this.getMarkerCurrentFamily( k );	
 						}
 
 
-
-						if( optimizeMonotoneous && buffer) {
-
-							degradationValue += buffer[ 3 ];
-							degradationNb ++;
-
-							degradationMin = Math.min( degradationMin, buffer[ 3 ] );
-							degradationMax = Math.max( degradationMax, buffer[ 3 ] );
-
-							degradeFirstX = buffer[ 2 ];
-							degradeFirstXPx = buffer[ 0 ];
-
-							buffer = false;
-							k++;
-
-
-						} else if( degradeFirstX === undefined ) {
-
-							degradeFirstX = this.data[ i ][ j + incrXFlip ];
-							degradeFirstXPx = xpx2;
-						}
 						
+						xpx = this.xData[ i ].x + j * this.xData[ i ].dx;
+						sum += this.data[ i ][ j ];
 
-						if( xpx2 - degradeFirstXPx > this.degradationPx && j < m ) {
-
-
-							data.push( 
-								( degradeFirstX + this.data[ i ][ j + incrXFlip ] ) / 2,
-								degradationValue / degradationNb
-							);
-
-							degradationMinMax.push( ( this.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
+						degradationMin = Math.min( degradationMin, this.data[ i ][ j ] );
+						degradationMax = Math.max( degradationMax, this.data[ i ][ j ] );
 
 
-							if( degradeFirstXPx > optimizeMaxPxX ) {
-								break;
-							}
 
-							degradeFirstX = undefined;
-							degradationNb = 0;
-							degradationValue = 0;
+						if( j % delta == 0 && j > 0 ) {
+
+							dataY.push( sum / delta );
+
+							degradationMinMax.push( ( j * this.xData[ i ].dx ), degradationMin, degradationMax );
+
 							degradationMin = Infinity;
 							degradationMax = - Infinity;
 
-							k++;
-
 							
-
-
-						} 
-
-						degradationValue += this.data[ i ][ j + incrYFlip ];
-						degradationNb ++;
-
-						degradationMin = Math.min( degradationMin, this.data[ i ][ j + incrYFlip ] );
-						degradationMax = Math.max( degradationMax, this.data[ i ][ j + incrYFlip ] );
-
-
-						if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-							optimizeBreak = true;
+							sum = 0;
 						}
-					
+
 						
-						xpx = xpx2;
-						ypx = ypx2;
-
+						
+						k++;
 					}
+
+					datas.push( dataY );
+					xData.push( { dx: delta * this.xData[ i ].dx, x: this.xData[ i ].x + ( delta * this.xData[ i ].dx / 2 ) });
 					
-					datas.push( data );
-
-					if( optimizeBreak ) {
-						break;
-					}
+					
 				}
 
-
+				
 				if( this.degradationSerie ) {
 					this.degradationSerie.setData( degradationMinMax );
 					this.degradationSerie.draw();
 				}
+
+				return [ datas, xData ] 
+
 			}
 
-			return datas;
+
+			for(; i < l ; i++) {
+				
+				j = 0,
+				k = 0,
+				m = this.data[ i ].length;
+
+				
+				degradationNb = 0;
+				degradationValue = 0;
+
+				degradationMin = Infinity;
+				degradationMax = - Infinity;
+
+				var data = [];
+
+				for( ; j < m ; j += 2 ) {
+
+					xpx2 = this.getX( this.data[ i ][ j + incrXFlip ] );
+
+					if( optimizeMonotoneous && xpx2 < 0 ) {
+
+						buffer = [
+							xpx2,
+							this.getY( this.data[ i ][ j + incrYFlip ] ),
+							this.data[ i ][ j + incrXFlip ],
+							this.data[ i ][ j + incrYFlip ]
+						];
+
+						continue;
+					}
+
+					if( optimizeMonotoneous && buffer) {
+
+						degradationValue += buffer[ 3 ];
+						degradationNb ++;
+
+						degradationMin = Math.min( degradationMin, buffer[ 3 ] );
+						degradationMax = Math.max( degradationMax, buffer[ 3 ] );
+
+						degradeFirstX = buffer[ 2 ];
+						degradeFirstXPx = buffer[ 0 ];
+
+						buffer = false;
+						k++;
+
+
+					} else if( degradeFirstX === undefined ) {
+
+						degradeFirstX = this.data[ i ][ j + incrXFlip ];
+						degradeFirstXPx = xpx2;
+					}
+					
+
+					if( xpx2 - degradeFirstXPx > this.degradationPx && j < m ) {
+
+
+						data.push( 
+							( degradeFirstX + this.data[ i ][ j + incrXFlip ] ) / 2,
+							degradationValue / degradationNb
+						);
+
+						degradationMinMax.push( ( this.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
+
+
+						if( degradeFirstXPx > optimizeMaxPxX ) {
+							break;
+						}
+
+						degradeFirstX = undefined;
+						degradationNb = 0;
+						degradationValue = 0;
+						degradationMin = Infinity;
+						degradationMax = - Infinity;
+
+						k++;
+					} 
+
+					degradationValue += this.data[ i ][ j + incrYFlip ];
+					degradationNb ++;
+
+					degradationMin = Math.min( degradationMin, this.data[ i ][ j + incrYFlip ] );
+					degradationMax = Math.max( degradationMax, this.data[ i ][ j + incrYFlip ] );
+
+
+					if( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+						optimizeBreak = true;
+					}
+				
+					
+					xpx = xpx2;
+					ypx = ypx2;
+
+				}
+				
+				datas.push( data );
+
+				if( optimizeBreak ) {
+					break;
+				}
+			}
+
+
+			if( this.degradationSerie ) {
+				this.degradationSerie.setData( degradationMinMax );
+				this.degradationSerie.draw();
+			}
+	
+			return [ datas ];
 
 
 		},
