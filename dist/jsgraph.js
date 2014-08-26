@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.7.5
+ * jsGraphs JavaScript Graphing Library v1.8.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-26T07:01Z
+ * Date: 2014-08-26T07:03Z
  */
 
 (function( global, factory ) {
@@ -1884,7 +1884,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 
 				{ // One day
 
-					threshold: 2000,
+					threshold: 1500,
 					increments: {
 
 						1: {
@@ -1896,7 +1896,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 1,
 							unit: 'i',
-							format: 'HH:MM'
+							format: 'HH"m"MM'
 						}
 					}
 				},
@@ -1904,7 +1904,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 
 				{ // One day
 
-					threshold: 5000,
+					threshold: 4000,
 					increments: {
 
 						1: {
@@ -1916,7 +1916,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 						2: {
 							increment: 2,
 							unit: 'i',
-							format: 'HH:MM'
+							format: 'HH"m"MM'
 						}
 					}
 				},

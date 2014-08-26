@@ -495,7 +495,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
 				{ // One day
 
-					threshold: 2000,
+					threshold: 1500,
 					increments: {
 
 						1: {
@@ -507,7 +507,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 						2: {
 							increment: 1,
 							unit: 'i',
-							format: 'HH:MM'
+							format: 'HH"m"MM'
 						}
 					}
 				},
@@ -515,7 +515,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
 				{ // One day
 
-					threshold: 5000,
+					threshold: 4000,
 					increments: {
 
 						1: {
@@ -527,7 +527,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 						2: {
 							increment: 2,
 							unit: 'i',
-							format: 'HH:MM'
+							format: 'HH"m"MM'
 						}
 					}
 				},
