@@ -15,26 +15,28 @@ define( function() {
 		}, function( graphinstance ) {
 
 
-			var data = { x: 0.5, dx: 0.01, y: [] };
+			var data = { x: 0.5, dx: 0.2, y: [] };
 
-			for( var i = 1, l = 1000; i < l ; i ++ ) {
-				data.y.push( Math.log( i ) * ( Math.random() + 3 ) );
+			for( var i = 1, l = 30; i < l ; i += 1 ) {
+				data.y.push( Math.sin( i * 0.2 + 0.5 ) );
 			}
 
 			graphinstance.newSerie("serieTest")
 				.setLabel( "My serie" )
 				.autoAxis()
-				.setData( data );
+				.setData( data )
+				.setMarkers();
 
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 
-
-
 		} );
 		
 
-	}, "Display x interval data", [ "Use dx series"] ];
+	}, "Display x interval data", [ 
+
+
+	"Often you have little concern for the x values. Either they are irrelevant or they have always equal spacing. In this case the second data definition: <code>{ x: start, dx: delta, y: [] }</code> and replace <code>start</code>, <code>delta</code> by the starting x value and the increment at each point of the <code>y</code> array."] ];
 
 
 });

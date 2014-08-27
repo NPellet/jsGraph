@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.0
+ * jsGraphs JavaScript Graphing Library v1.9.1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-26T21:46Z
+ * Date: 2014-08-27T00:58Z
  */
 
 (function( global, factory ) {
@@ -6949,6 +6949,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 				case 2: 
 					return "5, 5";
 				break;
+
+				case 3:
+					return "2, 2"
+				break;
+
+				case 4: return "1, 1"; break;
+				case 5: return "2, 4"; break;
 
 				case false:
 				case 1:

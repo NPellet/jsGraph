@@ -80,6 +80,15 @@ function( domGraph ) {
 	graphinstance.drawSeries();				
 
 
-}, "Scaling different axis", [ 'Displaying a legend', "Legend in movable", "Wheel scales the selected serie"] ];
+}, "Scaling different axis", 
+
+	[
+		[ 'Add more axis', 'Add as many axis on your graph as you want. Axis on the same side of the graph stack on each other automatically'], 
+		'You are required to link your series to the axis you want. <code>autoAxis()</code> will bind the serie to the first bottom axis and first left axis.',
+		'Use <code>axis.adapt0To( otherAxis[, mode, value ] )</code> to adapt the 0 of the axis to another one. If <code>mode</code> (min/max) and value are specified, the min or the max of the axis will take the value <code>value</code>. The other one will be determined by the position of the zero.'
+	]
+];
 
 });
+
+

@@ -1509,6 +1509,13 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 					return "5, 5";
 				break;
 
+				case 3:
+					return "2, 2"
+				break;
+
+				case 4: return "1, 1"; break;
+				case 5: return "2, 4"; break;
+
 				case false:
 				case 1:
 					return false;

@@ -130,6 +130,12 @@ define( function() {
 
 		 } );
 		
-	}, "Scaling different axis", [ 'Displaying a legend', "Legend in movable", "Wheel scales the selected serie"] ];
+	}, "Setting markers", [ 
+
+
+	'Set any style of markers you want through the <code>serie.setMarkers</code> method. It takes an array of objects as an argument. Every object must have the property <code>type</code> which defines which shape should be used'
+
+
+	] ];
 
 });
