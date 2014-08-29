@@ -71,8 +71,8 @@ module.exports = function(grunt) {
             exportToPages: {
 
                 files: {
-                    '../jsGraph-ghpages/': 'examples/src/**',
-                    '../jsGraph-ghpages/graph/jsgraph.js': 'dist/jsgraph.js'
+                    '../jsGraph-ghpages/js/jsgraph/jsgraph.js': 'dist/jsgraph.min.js',
+                    '../jsGraph-ghpages/js/jquery/jquery.min.js': 'dist/jquery.min.js'
                 }
             }
         },
@@ -85,6 +85,9 @@ module.exports = function(grunt) {
 
 
     var fs = require('fs');
+    var requirejs = require('requirejs');
+    var npmpath = require('path');
+    var beautify = require('js-beautify').js_beautify;
 
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-sloc');
@@ -242,9 +245,8 @@ module.exports = function(grunt) {
 
 
 
-        var requirejs = require('requirejs'),
-            npmpath = require('path'),
-            requirejsConfig = {
+    
+           var requirejsConfig = {
 
                 // It's all in the src folder
                 baseUrl: "src",
@@ -298,5 +300,81 @@ module.exports = function(grunt) {
 
             done( error );
         } );
+    } );
+
+
+    grunt.registerTask( 'sendToPages', 'Sends examples to pages', function() {
+
+        var yml = "examplesTree:\n";
+        var basePath = './examples/src/';
+        var i = 0;
+        fs.readdirSync( basePath ).map( function( folder ) {
+
+            if( fs.statSync( basePath + folder ).isDirectory() ) {
+
+                var folderName = fs.readFileSync( basePath + folder + '/folderName.txt' );
+
+                yml += "- title: \"" + folderName + "\"\n";
+                yml += "  children:\n"; 
+
+                fs.readdirSync( basePath + folder ).map( function( file ) {
+
+                   if( file.indexOf( '.js' ) == -1 ) {
+                     return;
+                   }
+
+                   var folder2 = folder.replace(/^([0-9]+-)/, "");
+                   var file2 = file.replace(/^([0-9]+-)/, "");
+
+                   var func = requirejs( basePath + folder + "/" + file );
+                   var funcString = func[ 0 ].toString();
+
+                   var markdown =   "---\n" +
+                                    "layout: page_menu\n" + 
+                                    "treeName: examplesTree\n" + ( i == 0 ? "permalink: /examples.html\ntitle: Examples\n" : "") + 
+                                    "---\n";
+
+
+
+
+
+                    markdown += "<h1>" + func[ 1 ] + "</h1>";
+
+                    markdown += '<div class="graph-example"><div class="graph" id="example-graph"></div><div id="example-details">' + func[ 2 ].map( function( val ) {
+
+                        if( Array.isArray( val ) ) {
+                            return '<div><h2>' + val[ 0 ] + '</h2><p class="font small">' + val[ 1 ] + '</p></div>';
+                        }
+
+                        return '<p class="font small">' + val + '</p>';
+                    } ).join("") + '</div><h2>Source code</h2><div id="example-function">{% highlight javascript %}' + 
+
+                        beautify( 
+                            funcString
+                            .replace(/(\s*)\/\/ BEGIN IGNORE ON BUILD((.|[\r\n])*)\/\/ END IGNORE ON BUILD(\s*([\r\n])+)/g, "\n")
+                            .replace(/^((.|[\r\n])*)function\s*\(\s*domGraph\s*\)\s*{/, "")
+                            .replace(/\}([\s\r\n]*)$/, ""), 
+
+                            { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } )
+
+                         + '{% endhighlight %}</div></div>';
+
+
+                    markdown += '<script type="text/javascript"> (' + funcString + ')( "example-graph" );</script>';
+
+                    grunt.file.write( '../jsGraph-ghpages/_examples/' + folder2 + '/' + file2 + '.markdown', markdown );
+
+                    yml += "   - title: \"" + func[ 1 ] + "\"\n";
+                    yml += "     url: \"" + ( i == 0 ? "/examples.html" : ( "/examples/" + folder2 + "/" + file2 + "/") ) + "\"\n";
+
+                    i++;
+                } );
+            }
+        } );
+
+        var ymlMaster = grunt.file.read( '../jsGraph-ghpages/_config.yml' )
+                            .replace(/#exampleTree start((.|[\r\n])*)#exampleTree end/, "#exampleTree start\n" +  yml + "\n#exampleTree end");
+        grunt.file.write( '../jsGraph-ghpages/_config.yml', ymlMaster );
+
     } );
 };

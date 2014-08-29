@@ -148,9 +148,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 			return !this.left;
 		},
 
-		flip: function(bool) {
-			this.options.flipped = !bool;
-			return this;
+		isFlipped: function() {
+			return ! this.options.flipped;
 		},
 
 		_draw0Line: function(px) {

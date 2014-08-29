@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-27T00:58Z
+ * Date: 2014-08-29T15:37Z
  */
 
 (function( global, factory ) {
@@ -272,9 +272,9 @@ build['./graph.axis'] = ( function( $ ) {
 		},
 
 		setMinPx: function(px) { this.minPx = px; },
-		getMinPx: function() { return this.options.flipped ? this.maxPx : this.minPx; },
+		getMinPx: function() { return this.isFlipped() ? this.maxPx : this.minPx; },
 		setMaxPx: function(px) { this.maxPx = px; },
-		getMaxPx: function(px) { return this.options.flipped ? this.minPx : this.maxPx; },
+		getMaxPx: function(px) { return this.isFlipped() ? this.minPx : this.maxPx; },
 		getMathMaxPx: function() { return this.maxPx; },
 
 		// Returns the true minimum of the axis. Either forced in options or the one from the data
@@ -478,6 +478,11 @@ build['./graph.axis'] = ( function( $ ) {
 				this.currentAxisMin = Math.max( 1e-50, this.currentAxisMin );
 				this.currentAxisMax = Math.max( 1e-50, this.currentAxisMax );
 			}
+
+			if( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
+				this.currentAxisMax = undefined;
+				this.currentAxisMin = undefined;
+			} 
 
 		},
 
@@ -745,7 +750,6 @@ build['./graph.axis'] = ( function( $ ) {
 //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
 			// Ex 50 / (100) * (1000 - 700) + 700
 				if(!this.options.logScale) {
-
 					return (value - this.getActualMin()) / (this._getActualInterval()) * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 				}
 				else {
@@ -1317,9 +1321,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 			return !this.left;
 		},
 
-		flip: function(bool) {
-			this.options.flipped = !bool;
-			return this;
+		isFlipped: function() {
+			return ! this.options.flipped;
 		},
 
 		_draw0Line: function(px) {
@@ -2546,16 +2549,9 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			bottom: true
 		},
 
-		
-		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
-		addLabelOnClick: false,
-		onVerticalTracking: false,
-		onHorizontalTracking: false,
-		rangeLimitX: 10,
-		rangeLimitY: 0,		
-
+		
 		plugins: [],
 		pluginAction: {},
 		wheel: {},
@@ -2608,11 +2604,11 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		this.series = [];
 		this._dom = dom;
 		// DOM
+		
 		this.doDom();
 
 		this.setSize( $(dom).width(), $(dom).height() );
 		this._resize();
-
 		this.registerEvents();
 		
 		this.dynamicLoader = new DynamicDepencies();
@@ -3503,7 +3499,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			// Apply to top and bottom
 			this.applyToAxes( function( axis ) {
-
+console.log('ds');
 				if( axis.disabled ) {
 					return;
 				}
@@ -10346,7 +10342,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 			}
 
 
-			if( x !== NaN && x !== false && y !== NaN && y !== false) {
+			if( !isNaN(x) && !isNaN(y) && x !== false && y !== false ) {
 				this.setDom('width', width);
 				this.setDom('height', height);
 				this.setDom('x', x);

@@ -18,16 +18,9 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			bottom: true
 		},
 
-		
-		lineToZero: false,
 		fontSize: 12,
 		fontFamily: 'Myriad Pro, Helvetica, Arial',
-		addLabelOnClick: false,
-		onVerticalTracking: false,
-		onHorizontalTracking: false,
-		rangeLimitX: 10,
-		rangeLimitY: 0,		
-
+		
 		plugins: [],
 		pluginAction: {},
 		wheel: {},
@@ -80,11 +73,11 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		this.series = [];
 		this._dom = dom;
 		// DOM
+		
 		this.doDom();
 
 		this.setSize( $(dom).width(), $(dom).height() );
 		this._resize();
-
 		this.registerEvents();
 		
 		this.dynamicLoader = new DynamicDepencies();
@@ -975,7 +968,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 			// Apply to top and bottom
 			this.applyToAxes( function( axis ) {
-
+console.log('ds');
 				if( axis.disabled ) {
 					return;
 				}
