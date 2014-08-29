@@ -5,7 +5,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 	"use strict";
 	
 	var GraphYAxis = function(graph, leftright, options) {
-		this.init(graph, options, { flipped: true });
+		this.init(graph, options);
+
 		this.leftright = leftright;
 		this.left = leftright == 'left';
 		

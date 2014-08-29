@@ -466,13 +466,22 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 
 			for( i in keyComb ) {
+
 				if( ! keyComb[i]._forced ) {
 
-					if(shift !== keyComb[i].shift) {
+					if( keyComb[ i ].shift == undefined ) {
+						keyComb[ i ].shift = false;
+					}
+					
+					if( keyComb[ i ].ctrl == undefined ) {
+						keyComb[ i ].ctrl = false;
+					}
+
+					if( shift != keyComb[i].shift ) {
 						continue;
 					}
 
-					if(ctrl !== keyComb[i].ctrl) {
+					if(ctrl != keyComb[i].ctrl) {
 						continue;
 					}
 				}
@@ -968,7 +977,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 			// Apply to top and bottom
 			this.applyToAxes( function( axis ) {
-console.log('ds');
+
 				if( axis.disabled ) {
 					return;
 				}

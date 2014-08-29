@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.3
+ * jsGraphs JavaScript Graphing Library v1.9.4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-29T16:14Z
+ * Date: 2014-08-29T22:59Z
  */
 
 (function( global, factory ) {
@@ -1178,7 +1178,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 	
 	
 	var GraphYAxis = function(graph, leftright, options) {
-		this.init(graph, options, { flipped: true });
+		this.init(graph, options);
+
 		this.leftright = leftright;
 		this.left = leftright == 'left';
 		
@@ -2997,13 +2998,22 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 
 			for( i in keyComb ) {
+
 				if( ! keyComb[i]._forced ) {
 
-					if(shift !== keyComb[i].shift) {
+					if( keyComb[ i ].shift == undefined ) {
+						keyComb[ i ].shift = false;
+					}
+					
+					if( keyComb[ i ].ctrl == undefined ) {
+						keyComb[ i ].ctrl = false;
+					}
+
+					if( shift != keyComb[i].shift ) {
 						continue;
 					}
 
-					if(ctrl !== keyComb[i].ctrl) {
+					if(ctrl != keyComb[i].ctrl) {
 						continue;
 					}
 				}
@@ -3499,7 +3509,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 			// Apply to top and bottom
 			this.applyToAxes( function( axis ) {
-console.log('ds');
+
 				if( axis.disabled ) {
 					return;
 				}
@@ -5533,6 +5543,34 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			if(this.initExtended1)
 				this.initExtended1();
+
+			if(this.options.autoPeakPicking) {
+
+				this.picks = this.picks || [];
+				
+
+				this.picksDef = [];
+
+				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+
+					this.picksDef.push( this.graph.makeShape( { 
+
+							type: 'label', 
+							label: {
+								text: "",
+								position: { x: 0 },
+								anchor: 'middle'
+							}
+
+						} ).then( function( shape ) {
+
+							shape.setSerie( self );
+							self.picks.push( shape );	
+ 						} )
+					);
+				}
+
+			}
 		},
 
 
@@ -5926,13 +5964,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		degrade: function( pxPerP, options ) {
 
 			var serie = this.graph.newSerie( this.name, options, 'zone' );
+			this.degradationPx = pxPerP;
 
+			if( ! serie ) {
+				return;
+			}
+			
 			serie.setData([]);
 
 			serie.setXAxis( this.getXAxis() );
 			serie.setYAxis( this.getYAxis() );
 
-			this.degradationPx = pxPerP;
+			
 			this.degradationSerie = serie;
 
 			return serie;
@@ -5968,19 +6011,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var optimizeMonotoneous = this.isXMonotoneous(), optimizeMaxPxX = this.getXAxis().getMaxPx(), optimizeBreak, buffer;
 
-			this.picks = this.picks || [];
-			var shape;
-			if(this.options.autoPeakPicking) {
-				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
-					shape = this.graph.makeShape({ type: 'label', label: {
-						text: "",
-						position: { x: 0 },
-						anchor: 'middle'
-					} } );
-					shape.setSerie( this );
-					this.picks.push( shape );
-				}
-			}
+			var shape, self = this;
 
 
 			this._drawn = true;			
@@ -6030,6 +6061,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 			var degradation = [];
 			var buffer;
+
+			var lookForMaxima = true;
+			var lookForMinima = false;
+
+			if( this.options.autoPeakPicking ) {
+				var lastYPeakPicking;
+			}
 
 			if( slotToUse ) {
 				if( slotToUse.done ) {
@@ -6138,8 +6176,37 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 							if( this.options.autoPeakPicking ) {
 
-								allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );
+								if( this.options.autoPeakPicking == "continuous") {
 
+									if( ! lastYPeakPicking ) {
+										lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ];
+									} else {
+
+										if( ( data[ i ][ j + incrYFlip ] >= lastYPeakPicking[ 0 ] && lookForMaxima ) || ( data[ i ][ j + incrYFlip ] <= lastYPeakPicking[ 0 ] && lookForMinima ) ) {
+
+											lastYPeakPicking = [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ]
+
+										} else {
+
+											if( lookForMinima ) {
+												lookForMinima = false;
+												lookForMaxima = true;
+											} else {
+
+												lookForMinima = true;
+												lookForMaxima = false;
+
+												allY.push( lastYPeakPicking );	
+												lastYPeakPicking = false;	
+											}
+											
+
+										}
+									} 
+	
+								} else {
+									allY.push( [ ( data[ i ][ j + incrYFlip ] ), data[ i ][ j + incrXFlip ] ] );	
+								}
 							}
 							
 							currentLine = this._addPoint( currentLine, xpx2, ypx2, k );
@@ -6492,57 +6559,71 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 		},
 
 		makePeakPicking: function(allY) {
-			
-			var x,
-				px,
-				passed = [],
-				px,
-				i = 0,
-				l = allY.length,
-				k, m, y;
-			
-			allY.sort(function(a, b) {
-				return b[0] - a[0];
-			});
+				
+			var self = this;
 
-			for( ; i < l ; i ++ ) {
+			$.when.apply( $, this.picksDef ).then( function() {
 
-				x = allY[i][1],
-				px = this.getX(x),
-				k = 0, m = passed.length,
-				y = this.getY(allY[i][0]);
+				var x,
+					px,
+					passed = [],
+					px,
+					i = 0,
+					l = allY.length,
+					k, m, y;
+				
+				allY.sort(function(a, b) {
+					return b[0] - a[0];
+				});
 
-				if(px < this.getXAxis().getMinPx() || px > this.getXAxis().getMaxPx())
-					continue;
+				for( ; i < l ; i ++ ) {
 
-				if(y > this.getYAxis().getMinPx() || y < this.getYAxis().getMaxPx())
-					continue;
+					x = allY[i][1],
+					px = self.getX(x),
+					k = 0, m = passed.length,
+					y = self.getY(allY[i][0]);
 
-				for( ; k < m ; k++) {
-					if(Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
+					if( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+						continue;
+					}
+
+					if( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+						continue;
+					}
+
+					for( ; k < m ; k++) {
+						if(Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
+							break;
+						}
+					}
+
+					if(k < m) {
+						continue;
+					}
+
+					if( ! self.picks[ m ] ) {
+						return;
+					}
+
+
+
+					self.picks[ m ].set('labelPosition', { 
+															x: x,
+					 										dy: "-10px"
+					 									}
+					 				);
+
+					self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+					passed.push( px );
+
+					if(passed.length == self.options.autoPeakPickingNb) {
 						break;
 					}
 				}
 
-				if(k < m) {
-					continue;
-				}
+				self.graph.redrawShapes();
 
-				this.picks[ m ].set('labelPosition', { 
-														x: x,
-				 										dy: "-10px"
-				 									}
-				 				);
-
-				this.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-				passed.push( px );
-
-				if(passed.length == this.options.autoPeakPickingNb) {
-					break;
-				}
-			}
-
-			this.graph.redrawShapes();
+			});
 		},
 
 		hideTrackingMarker: function() {
@@ -8863,6 +8944,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 			}*/
 
 			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
+
+				
 				this.label[labelIndex].setAttribute('x', pos.x);
 				this.label[labelIndex].setAttribute('y', pos.y);	
 			}
@@ -9810,15 +9893,21 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 
 		setPosition: function() {
 			var pos = this._getPosition(this.get('labelPosition'));
+			
 			if(!pos)
 				return;
 			
 			this.everyLabel(function(i) {
+				
 				this.label[i].setAttribute('x', pos.x);
 				this.label[i].setAttribute('y', pos.y);	
 			});
+
+			return true;
 			
 		},
+
+		_setLabelPosition: function() {},
 
 		redrawImpl: function() {
 			this.draw();

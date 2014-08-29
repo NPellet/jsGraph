@@ -2,8 +2,11 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { series: [ 'zone', 'line' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
+
+
+// BEGIN IGNORE ON BUILD
 			var data = [];
 			var data2 = [];
 			var data3 = [];
@@ -16,14 +19,13 @@ define( function() {
 				data2.push( i );
 				data2.push( Math.sin( i, 2 ) - ( ( 0.4 + Math.random() ) * 1 ) );
 				data2.push( Math.sin( i, 2 ) + ( ( 0.4 + Math.random() ) * 1 ) );
-				//data2.push( ( Math.random() > 0.8 ? undefined : Math.sin( i, 2 ) + ( ( 0.2 + Math.random() ) * 1 ) ) );
-
+		
 
 				data3.push( i );
 				data3.push( Math.sin( i, 2 ) - ( ( 1.2 + Math.random() ) * 2 ) );
 				data3.push( Math.sin( i, 2 ) + ( ( 1.2 + Math.random() ) * 2 ) );
 			}
-
+// END IGNORE ON BUILD
 
 
 			var serie = graphinstance.newSerie("serieTest", { }, 'zone')
@@ -50,9 +52,9 @@ define( function() {
 			graphinstance.drawSeries();	
 
 	
-		} );
+		} 
 		
-	}, "Min/Max serie", [ 
+	, "Min/Max serie", [ 
 
 
 	"To display zone series, use the <code>zone</code> keyword in the <code>graph.newSerie( serieName, serieOptions, serieType )</code>.",
