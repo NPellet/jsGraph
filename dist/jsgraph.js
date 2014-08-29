@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.1
+ * jsGraphs JavaScript Graphing Library v1.9.3
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-08-29T15:37Z
+ * Date: 2014-08-29T16:14Z
  */
 
 (function( global, factory ) {
@@ -8446,144 +8446,6 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 
 
 // Build: End source file (graph.serieaxis) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : graph.serieaxisx
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisx.js
- */
-
-build['./graph.serieaxisx'] = ( function( GraphSerieAxis ) { 
-
-
-	var GraphSerieAxisX = function() {};
-	$.extend(GraphSerieAxisX.prototype, GraphSerieAxis.prototype, {	
-		
-		getY: function(value) {
-			var y = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels;
-			return y;
-		},
-
-		getX: function(value) {
-			//console.log(value, this.axis.getActualMin())
-			var x = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;	
-			//if((this.axis.isFlipped() && (x < this.axis.getMaxPx() || x > this.axis.getMinPx())) || (!this.axis.isFlipped() && (x > this.axis.getMaxPx() || x < this.axis.getMinPx())))
-			//	return;
-			return x;
-		},
-
-		bindLabelHandlers: function(label) {
-			var self = this;
-
-			function clickHandler(e) {
-				if(self.axis.currentAction !== false)
-					return;
-				self.axis.currentAction = 'labelDragging';
-				e.stopPropagation();
-				label.dragging = true;
-				var coords = self.graph.getXY(e);
-				label.draggingIniX = coords.x;
-				label.draggingIniY = coords.y;
-				self.labelDragging = label;
-			}
-
-
-			function clickHandlerMain(e) {
-				if(self.axis.currentAction !== false)
-					return;
-				self.axis.currentAction = 'labelDraggingMain';
-				e.preventDefault();
-				e.stopPropagation();
-				self.labelDragging = label;
-			}
-			
-			label.labelDom.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('mousedown', clickHandler);
-			label.rect.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-			label.labelDom.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-
-			label.path.addEventListener('click', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-			label.path.addEventListener('mousedown', clickHandlerMain);
-		}
-	});
-
-	return GraphSerieAxisX;
-
- } ) ( build["./graph.serieaxis"] );
-
-
-// Build: End source file (graph.serieaxisx) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : graph.serieaxisy
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxisy.js
- */
-
-build['./graph.serieaxisy'] = ( function( GraphSerieAxis ) { 
-
-
-	var GraphSerieAxisY = function() {};
-	$.extend(GraphSerieAxisY.prototype, GraphSerieAxis.prototype, {
-		
-		getX: function(value) {
-			
-			var x = - Math.round(1000 * (((value - this.minY) / (this.maxY - this.minY)))) / 1000  * (this.axis.totalDimension - this.axis._widthLabels) - this.axis._widthLabels - 5;
-			return x;
-		},
-
-		getY: function(value) {
-			
-			var y = Math.round(1000*(((value - this.axis.getActualMin()) / (this.axis._getActualInterval())) * (this.axis.getMaxPx() - this.axis.getMinPx()) + this.axis.getMinPx())) / 1000;
-			//if((this.axis.isFlipped() && y < this.axis.getMaxPx() || y > this.axis.getMinPx()) || (!this.axis.isFlipped() && (y > this.axis.getMaxPx() || y < this.axis.getMinPx())))
-		//		return;
-			return y;
-		},
-
-
-		getMinX: function() {
-			return this.minY;
-		},
-
-		getMaxX: function() {
-			return this.maxY;
-		},
-
-		getMinY: function() {
-			return this.minX;
-		},
-
-		getMaxY: function() {
-			return this.maxX;
-		}
-
-	});
-
-
-	return GraphSerieAxisY;
-
- } ) ( build["./graph.serieaxis"] );
-
-
-// Build: End source file (graph.serieaxisy) 
 
 
 
