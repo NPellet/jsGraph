@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-01T05:51Z
+ * Date: 2014-09-01T05:59Z
  */
 
 (function( global, factory ) {
