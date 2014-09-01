@@ -74,6 +74,15 @@ module.exports = function(grunt) {
                     '../jsGraph-ghpages/js/jsgraph/jsgraph.js': 'dist/jsgraph.min.js',
                     '../jsGraph-ghpages/js/jquery/jquery.min.js': 'dist/jquery.min.js'
                 }
+            },
+
+
+            exportDevToPages: {
+
+                files: {
+                    '../jsGraph-ghpages/js/jsgraph/jsgraph.js': 'dist/jsgraph.js',
+                    '../jsGraph-ghpages/js/jquery/jquery.min.js': 'dist/jquery.min.js'
+                }
             }
         },
 
@@ -303,7 +312,17 @@ module.exports = function(grunt) {
     } );
 
 
-    grunt.registerTask( 'sendToPages', 'Sends examples to pages', function() {
+    grunt.registerTask( 'topages', 'Sends examples to pages', function() {
+
+        grunt.task.run('default');
+
+        if( grunt.option( 'dev') ) {
+            grunt.task.run('copy:exportDevToPages');    
+        } else {
+            grunt.task.run('copy:exportToPages');    
+        }
+        
+
 
         var yml = "examplesTree:\n";
         var basePath = './examples/src/';

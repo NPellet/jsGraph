@@ -409,7 +409,13 @@ var serieData = [
 
 // END IGNORE ON BUILD
 
-		graphinstance.newSerie("msdata", { autoPeakPicking: true, lineToZero: true }, 'line', function( serie ) {
+		graphinstance.newSerie("msdata", 
+			{ 
+				autoPeakPicking: true, 
+				autoPeakPickingNb: 10,
+				lineToZero: true 
+
+			}, 'line', function( serie ) {
 
 				serie
 					.autoAxis()

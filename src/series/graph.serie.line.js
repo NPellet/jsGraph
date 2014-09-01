@@ -106,7 +106,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 				for(var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
 
-					this.picksDef.push( this.graph.makeShape( { 
+					this.picksDef.push( this.graph.newShape( { 
 
 							type: 'label', 
 							label: {
@@ -286,9 +286,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				this.minY = minX;
 			}
 
-
-			this.graph.updateAxes();
-
+			this.graph._updateAxes();
 
 			return this;
 		},
@@ -381,10 +379,15 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				}
 			}
 
-			this.graph.series.splice(this.graph.series.indexOf(this), 1);
-
+			this.graph._removeSerie( this );
+			
 			if( ! noRedraw ) {
 				this.graph.redraw();
+			}
+
+			if( this.graph.legend ) {
+
+				this.graph.legend.update( );
 			}
 		},
 
@@ -472,7 +475,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 
 
 		_getMarkerIndexFromEvent: function(e) {
-			var px = this.graph.getXY(e);
+			var px = this.graph._getXY(e);
 			return this.searchIndexByPxXY((px.x - this.graph.getPaddingLeft()), (px.y - this.graph.getPaddingTop()));
 
 		},
@@ -1914,7 +1917,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				e.stopPropagation();
 				label.dragging = true;
 
-				var coords = self.graph.getXY(e);
+				var coords = self.graph._getXY(e);
 				label.draggingIniX = coords.x;
 				label.draggingIniY = coords.y;
 				self.labelDragging = label;
