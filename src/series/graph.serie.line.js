@@ -826,7 +826,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			//console.log(slotToUse, y, this.slots[ y ]);
 			
 			var currentLine = "M ";
-			k = 0;
+			var k = 0;
 			var i = 0, xpx, max;
 			var j;
 

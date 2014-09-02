@@ -132,7 +132,7 @@ define( [], function() {
 		},
 
 		setXAxis: function( axis ) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
 			else
 				this.xaxis = axis;
@@ -141,7 +141,7 @@ define( [], function() {
 		},
 
 		setYAxis: function(axis) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
 			else
 				this.yaxis = axis;
