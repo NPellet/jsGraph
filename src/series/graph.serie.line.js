@@ -779,7 +779,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 			}
 
 			if( this.options.autoPeakPicking ) {
-				this.makePeakPicking( allY );
+				makePeakPicking( this, allY );
 			}
 
 			i++;

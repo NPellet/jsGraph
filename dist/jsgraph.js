@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.7
+ * jsGraphs JavaScript Graphing Library v1.9.8
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-02T02:37Z
+ * Date: 2014-09-02T02:44Z
  */
 
 (function( global, factory ) {
@@ -6153,7 +6153,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			}
 
 			if( this.options.autoPeakPicking ) {
-				this.makePeakPicking( allY );
+				makePeakPicking( this, allY );
 			}
 
 			i++;
