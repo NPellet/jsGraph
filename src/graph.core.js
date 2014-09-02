@@ -1678,8 +1678,12 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 
 
 	function _closeLine( graph, mode, x1, x2, y1, y2) {	
-			
-		if( graph.options.close[ mode ] && graph.axis[ mode ].length == 0 ) {
+		
+		if( graph.options.close === false ) {
+			return;
+		}
+		
+		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
 			graph.closingLines[ mode ].setAttribute('x1', x1);

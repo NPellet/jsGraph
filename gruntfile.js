@@ -71,8 +71,8 @@ module.exports = function(grunt) {
             exportToPages: {
 
                 files: {
-                    '../jsGraph-ghpages/js/jsgraph/jsgraph.js': 'dist/jsgraph.min.js',
-                    '../jsGraph-ghpages/js/jquery/jquery.min.js': 'dist/jquery.min.js'
+                    '../jsgraphwww/js/jsgraph/jsgraph.js': 'dist/jsgraph.min.js',
+                    '../jsgraphwww/js/jquery/jquery.min.js': 'dist/jquery.min.js'
                 }
             },
 
@@ -80,8 +80,8 @@ module.exports = function(grunt) {
             exportDevToPages: {
 
                 files: {
-                    '../jsGraph-ghpages/js/jsgraph/jsgraph.js': 'dist/jsgraph.js',
-                    '../jsGraph-ghpages/js/jquery/jquery.min.js': 'dist/jquery.min.js'
+                    '../jsgraphwww/js/jsgraph/jsgraph.js': 'dist/jsgraph.js',
+                    '../jsgraphwww/js/jquery/jquery.min.js': 'dist/jquery.min.js'
                 }
             }
         },
@@ -118,7 +118,7 @@ module.exports = function(grunt) {
         var str = "define( [ 'require', " + files.map( function( el ) { return "'./src/" + el + "'" }).join() + " ], function() { return arguments; });";
 
         grunt.task.run('copy:exportToPages');
-        grunt.file.write( '../jsGraph-ghpages/examples/list.js', str );
+        grunt.file.write( '../jsgraphwww/examples/list.js', str );
     });
 
 
@@ -381,7 +381,7 @@ module.exports = function(grunt) {
 
                     markdown += '<script type="text/javascript"> (' + funcString + ')( "example-graph" );</script>';
 
-                    grunt.file.write( '../jsGraph-ghpages/_examples/' + folder2 + '/' + file2 + '.markdown', markdown );
+                    grunt.file.write( '../jsgraphwww/_examples/' + folder2 + '/' + file2 + '.markdown', markdown );
 
                     yml += "   - title: \"" + func[ 1 ] + "\"\n";
                     yml += "     url: \"" + ( i == 0 ? "/examples.html" : ( "/examples/" + folder2 + "/" + file2 + "/") ) + "\"\n";
@@ -391,9 +391,9 @@ module.exports = function(grunt) {
             }
         } );
 
-        var ymlMaster = grunt.file.read( '../jsGraph-ghpages/_config.yml' )
+        var ymlMaster = grunt.file.read( '../jsgraphwww/_config.yml' )
                             .replace(/#exampleTree start((.|[\r\n])*)#exampleTree end/, "#exampleTree start\n" +  yml + "\n#exampleTree end");
-        grunt.file.write( '../jsGraph-ghpages/_config.yml', ymlMaster );
+        grunt.file.write( '../jsgraphwww/_config.yml', ymlMaster );
 
     } );
 };

@@ -181,6 +181,16 @@ define( [ 'jquery' ] , function( $ ) {
 			}
 		},
 
+		hide: function() {
+			this.options.display = false;
+			return this;
+		},
+
+		show: function() {
+			this.options.display = true;
+			return this;
+		},
+
 		setDisplay: function(bool) {
 			this.options.display = !!bool;
 			return this;
@@ -803,12 +813,12 @@ define( [ 'jquery' ] , function( $ ) {
 			
 			
 			while(incr < 1 * units[umin + 1][0] && umin > -1) {
+
 				first = false;
 				value = (value - valueRounded) * units[umin + 1][0] / units[umin][0];
 				valueRounded = Math.round(value);
 				text += " " + valueRounded + units[umin][1];
 				umin--;
-
 			}
 			
 			return text;
@@ -869,6 +879,12 @@ define( [ 'jquery' ] , function( $ ) {
 			}
 
 			this.options.tickPosition = pos;
+			return this;
+		},
+
+		toggleGrids: function( bool ) {
+			this.options.primaryGrid = bool;
+			this.options.secondaryGrid = bool;
 			return this;
 		},
 
