@@ -1533,7 +1533,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			e.preventDefault();
 			e.stopPropagation();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel(self, deltaY, e);
+			_handleMouseWheel(self, deltaY, e);
 
 			return false;
 		});
@@ -1542,7 +1542,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			e.stopPropagation();
 			e.preventDefault();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel( self, deltaY, e );	
+			_handleMouseWheel( self, deltaY, e );	
 			
 			return false;
 		});
@@ -1682,7 +1682,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		if( graph.options.close === false ) {
 			return;
 		}
-		
+
 		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');

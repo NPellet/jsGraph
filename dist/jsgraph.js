@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.8
+ * jsGraphs JavaScript Graphing Library v1.9.9-1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-02T02:44Z
+ * Date: 2014-09-02T18:33Z
  */
 
 (function( global, factory ) {
@@ -4079,7 +4079,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			e.preventDefault();
 			e.stopPropagation();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel(self, deltaY, e);
+			_handleMouseWheel(self, deltaY, e);
 
 			return false;
 		});
@@ -4088,7 +4088,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			e.stopPropagation();
 			e.preventDefault();
 			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			handleMouseWheel( self, deltaY, e );	
+			_handleMouseWheel( self, deltaY, e );	
 			
 			return false;
 		});
@@ -4228,7 +4228,7 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 		if( graph.options.close === false ) {
 			return;
 		}
-		
+
 		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && graph.axis[ mode ].length == 0 ) {
 
 			graph.closingLines[ mode ].setAttribute('display', 'block');
@@ -7639,7 +7639,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 				continuous;
 
 			if( ! data instanceof Array ) {
-				return;
+				return this;
 			}
 
 			
@@ -7721,6 +7721,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 		},
 
 		setDataStyle: function( std, extra ) {
+
 			this.stdStylePerso = std;
 			this.extraStyle = extra;
 

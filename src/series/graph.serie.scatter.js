@@ -91,7 +91,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 				continuous;
 
 			if( ! data instanceof Array ) {
-				return;
+				return this;
 			}
 
 			
@@ -173,6 +173,7 @@ define( [ '../graph._serie'], function( GraphSerieNonInstanciable ) {
 		},
 
 		setDataStyle: function( std, extra ) {
+
 			this.stdStylePerso = std;
 			this.extraStyle = extra;
 
