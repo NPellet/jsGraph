@@ -315,7 +315,8 @@ module.exports = function(grunt) {
     grunt.registerTask( 'topages', 'Sends examples to pages', function() {
 
         grunt.task.run('default');
-
+        grunt.task.run('buildExampleList');
+        
         if( grunt.option( 'dev') ) {
             grunt.task.run('copy:exportDevToPages');    
         } else {
