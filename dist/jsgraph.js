@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-02T18:33Z
+ * Date: 2014-09-03T01:25Z
  */
 
 (function( global, factory ) {
@@ -299,8 +299,14 @@ build['./graph.axis'] = ( function( $ ) {
 		setMinValueData: function( min ) { this.dataMin = min; },
 		setMaxValueData: function( max ) { this.dataMax = max; },
 
-		forceMin: function(val) {    this.options.forcedMin = val; },
-		forceMax: function(val) {   this.options.forcedMax = val; },
+		forceMin: function(val) {
+			this.options.forcedMin = val;
+			return this;
+		},
+		forceMax: function(val) {
+			this.options.forcedMax = val;
+			return this;
+		},
 
 		getNbTicksPrimary: function() {
 			return this.options.nbTicksPrimary;
@@ -4245,6 +4251,43 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 	}
 
 
+	function _handleMouseWheel(graph, delta, e) {
+
+
+		e.preventDefault();
+		e.stopPropagation();
+
+		if( ! graph.options.wheel.type ) {
+			return;
+		}
+
+		switch( graph.options.wheel.type ) {
+
+			case 'plugin':
+
+				var plugin;
+
+				if( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+					plugin.onMouseWheel( delta, e );
+				}
+
+			break;
+
+
+			case 'toSeries':
+
+				for(var i = 0, l = graph.series.length; i < l; i++) {
+					graph.series[ i ].onMouseWheel(delta, e);
+				}
+
+			break;
+
+		}
+
+		graph.redraw( );
+		graph.drawSeries( true );
+	}
+
 	return Graph;
  } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
 
@@ -4394,7 +4437,7 @@ build['./graph._serie'] = ( function( ) {
 		},
 
 		setXAxis: function( axis ) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
 			else
 				this.xaxis = axis;
@@ -4403,7 +4446,7 @@ build['./graph._serie'] = ( function( ) {
 		},
 
 		setYAxis: function(axis) {
-			if(typeof axis == "Number")
+			if(typeof axis == "number")
 				this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
 			else
 				this.yaxis = axis;
@@ -6200,7 +6243,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 			//console.log(slotToUse, y, this.slots[ y ]);
 			
 			var currentLine = "M ";
-			k = 0;
+			var k = 0;
 			var i = 0, xpx, max;
 			var j;
 
