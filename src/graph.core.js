@@ -1,802 +1,801 @@
-define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./graph.legend', './dynamicdepencies'], function($,GraphXAxis,GraphYAxis,GraphXAxisTime,GraphLegend, DynamicDepencies) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
 
-	"use strict";
+  "use strict";
 
-	var graphDefaults = {
+  var graphDefaults = {
 
-		title: '',
-	
-		paddingTop: 30,
-		paddingBottom: 5,
-		paddingLeft: 20,
-		paddingRight: 20,
+    title: '',
 
-		close: {
-			left: true,
-			right: true, 
-			top: true,
-			bottom: true
-		},
+    paddingTop: 30,
+    paddingBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
 
-		fontSize: 12,
-		fontFamily: 'Myriad Pro, Helvetica, Arial',
-		
-		plugins: [],
-		pluginAction: {},
-		wheel: {},
-		dblclick: {},
+    close: {
+      left: true,
+      right: true,
+      top: true,
+      bottom: true
+    },
 
-		dynamicDependencies: {
-			'plugin': './plugins/',
-			'serie': './series/',
-			'shapes': './shapes/'
-		},
+    fontSize: 12,
+    fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-		series: [ 'line' ]
-	};
+    plugins: [],
+    pluginAction: {},
+    wheel: {},
+    dblclick: {},
 
+    dynamicDependencies: {
+      'plugin': './plugins/',
+      'serie': './series/',
+      'shapes': './shapes/'
+    },
 
-	var Graph = function( dom, options, axis, callback ) {
+    series: [ 'line' ]
+  };
 
-		var self = this;
-		this._creation = Date.now() + Math.random();
+  var Graph = function( dom, options, axis, callback ) {
 
-		if( typeof dom == "string" ) {
-			dom = document.getElementById( dom );
-		}
+    var self = this;
+    this._creation = Date.now() + Math.random();
 
-		if( ! dom || ! dom.appendChild ) {
-			throw "The DOM has not been defined";
-		}
+    if ( typeof dom == "string" ) {
+      dom = document.getElementById( dom );
+    }
 
+    if ( !dom || !dom.appendChild ) {
+      throw "The DOM has not been defined";
+    }
 
-		if( typeof axis == "function" ) {
-			callback = axis;
-			axis = false;
-		}
+    if ( typeof axis == "function" ) {
+      callback = axis;
+      axis = false;
+    }
 
-		if( typeof options == "function" ) {
-			callback = options;
-			options = {};
-			
-		}
+    if ( typeof options == "function" ) {
+      callback = options;
+      options = {};
 
-		
-		this.options = $.extend({}, graphDefaults, options);
-		this.axis = {left: [], top: [], bottom: [], right: []};
+    }
 
-		this.shapes = [];
-		this.shapesLocked = false;
+    this.options = $.extend( {}, graphDefaults, options );
+    this.axis = {
+      left: [],
+      top: [],
+      bottom: [],
+      right: []
+    };
 
-		this.ns = 'http://www.w3.org/2000/svg';
-		this.nsxlink = "http://www.w3.org/1999/xlink";
-		this.series = [];
-		this._dom = dom;
-		// DOM
-		
-		this._doDom();
+    this.shapes = [];
+    this.shapesLocked = false;
 
-		this.setSize( $(dom).width(), $(dom).height() );
-		this._resize();
-		_registerEvents( this );
-		
-		this.dynamicLoader = new DynamicDepencies();
-		this.dynamicLoader.configure( this.options.dynamicDependencies );
+    this.ns = 'http://www.w3.org/2000/svg';
+    this.nsxlink = "http://www.w3.org/1999/xlink";
+    this.series = [];
+    this._dom = dom;
+    // DOM
 
-		this.trackingLines = {
-			id: 0,
-			current: false,
-			dasharray: [false, "5, 5", "5, 1", "1, 5"],
-			currentDasharray: [],
-			vertical: [],
-			horizontal: []
-		};
+    this._doDom();
 
+    this.setSize( $( dom ).width(), $( dom ).height() );
+    this._resize();
+    _registerEvents( this );
 
-		this.shapeHandlers = {
-			mouseDown: [],
-			mouseUp: [],
-			mouseMove: [],
-			mouseOver: [],
-			mouseOut: [],
-			beforeMouseMove: []
-		};
+    this.dynamicLoader = new DynamicDepencies();
+    this.dynamicLoader.configure( this.options.dynamicDependencies );
 
-		this.pluginsReady = $.Deferred();
-		this.seriesReady = $.Deferred();
+    this.trackingLines = {
+      id: 0,
+      current: false,
+      dasharray: [ false, "5, 5", "5, 1", "1, 5" ],
+      currentDasharray: [],
+      vertical: [],
+      horizontal: []
+    };
 
-		this.currentAction = false;
+    this.shapeHandlers = {
+      mouseDown: [],
+      mouseUp: [],
+      mouseMove: [],
+      mouseOver: [],
+      mouseOut: [],
+      beforeMouseMove: []
+    };
 
+    this.pluginsReady = $.Deferred();
+    this.seriesReady = $.Deferred();
 
-		if( callback ) {
-			$.when( this.pluginsReady, this.seriesReady ).then( function( ) { callback( self ) } );
-		}
+    this.currentAction = false;
 
-		var funcName;
-		if( axis ) {
-			for(var i in axis) {
-				for(var j = 0, l = axis[i].length; j < l; j++) {
-					switch(i) {
-						case 'top': funcName = 'setTopAxis'; var axisInstance = new GraphXAxis(this, 'top', axis[i][j]); break;
-						case 'bottom': funcName = 'setBottomAxis';  var axisInstance = new GraphXAxis(this, 'bottom', axis[i][j]); break;
-						case 'left': funcName = 'setLeftAxis';  var axisInstance = new GraphYAxis(this, 'left', axis[i][j]);break;
-						case 'right': funcName = 'setRightAxis';  var axisInstance = new GraphYAxis(this, 'right', axis[i][j]); break;
-					}
-					this[funcName](axisInstance, j);
-				}
-			}
-		}
+    if ( callback ) {
+      $.when( this.pluginsReady, this.seriesReady ).then( function() {
+        callback( self )
+      } );
+    }
 
-		this._pluginsInit();
-		this._seriesInit();
-	}
+    var funcName;
+    if ( axis ) {
+      for ( var i in axis ) {
+        for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
+          switch ( i ) {
+            case 'top':
+              funcName = 'setTopAxis';
+              var axisInstance = new GraphXAxis( this, 'top', axis[ i ][ j ] );
+              break;
+            case 'bottom':
+              funcName = 'setBottomAxis';
+              var axisInstance = new GraphXAxis( this, 'bottom', axis[ i ][ j ] );
+              break;
+            case 'left':
+              funcName = 'setLeftAxis';
+              var axisInstance = new GraphYAxis( this, 'left', axis[ i ][ j ] );
+              break;
+            case 'right':
+              funcName = 'setRightAxis';
+              var axisInstance = new GraphYAxis( this, 'right', axis[ i ][ j ] );
+              break;
+          }
+          this[ funcName ]( axisInstance, j );
+        }
+      }
+    }
 
-	Graph.prototype = {
+    this._pluginsInit();
+    this._seriesInit();
+  }
 
-		setAttributeTo: function(to, params, ns) {
-			var i;
+  Graph.prototype = {
 
-			if(ns) {
-				for(i in params) {
-					to.setAttributeNS(ns, i, params[i]);
-				}
-			} else {
-				for(i in params) {
-					to.setAttribute(i, params[i]);
-				}
-			}
-		},
+    setAttributeTo: function( to, params, ns ) {
+      var i;
 
-		_doDom: function() {
+      if ( ns ) {
+        for ( i in params ) {
+          to.setAttributeNS( ns, i, params[ i ] );
+        }
+      } else {
+        for ( i in params ) {
+          to.setAttribute( i, params[ i ] );
+        }
+      }
+    },
 
-			// Create SVG element, set the NS
-			this.dom = document.createElementNS(this.ns, 'svg');
-			this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-			//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);	
-			this.setAttributeTo(this.dom, {
-				'xmlns': this.ns,
-				'font-family': this.options.fontFamily,
-				'font-size': this.options.fontSize 
-			});
-			
-			this._dom.appendChild(this.dom);
-			
-			this._dom.setAttribute('tabindex', 1);
+    _doDom: function() {
 
-			this._dom.style.outline = "none";
+      // Create SVG element, set the NS
+      this.dom = document.createElementNS( this.ns, 'svg' );
+      this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+      //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);	
+      this.setAttributeTo( this.dom, {
+        'xmlns': this.ns,
+        'font-family': this.options.fontFamily,
+        'font-size': this.options.fontSize
+      } );
 
-			this.defs = document.createElementNS(this.ns, 'defs');
-			this.dom.appendChild(this.defs);
+      this._dom.appendChild( this.dom );
 
-			this.rectEvent = document.createElementNS(this.ns, 'rect');
-			this.setAttributeTo(this.rectEvent, {
-				'pointer-events': 'fill',
-				'fill': 'transparent'
-			});
-			this.dom.appendChild(this.rectEvent);
+      this._dom.setAttribute( 'tabindex', 1 );
 
+      this._dom.style.outline = "none";
 
-			// Handling graph title
-			this.domTitle = document.createElementNS(this.ns, 'text');
-			this.setTitle(this.options.title);
-			this.setAttributeTo(this.domTitle, {
-				'text-anchor': 'middle',
-				'y': 20
-			});
-			this.dom.appendChild(this.domTitle);
-			//
+      this.defs = document.createElementNS( this.ns, 'defs' );
+      this.dom.appendChild( this.defs );
 
+      this.rectEvent = document.createElementNS( this.ns, 'rect' );
+      this.setAttributeTo( this.rectEvent, {
+        'pointer-events': 'fill',
+        'fill': 'transparent'
+      } );
+      this.dom.appendChild( this.rectEvent );
 
-			this.graphingZone = document.createElementNS(this.ns, 'g');
-			this.setAttributeTo(this.graphingZone, {
-				'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
-			});
-			this.dom.appendChild(this.graphingZone);
+      // Handling graph title
+      this.domTitle = document.createElementNS( this.ns, 'text' );
+      this.setTitle( this.options.title );
+      this.setAttributeTo( this.domTitle, {
+        'text-anchor': 'middle',
+        'y': 20
+      } );
+      this.dom.appendChild( this.domTitle );
+      //
 
-	
-		/*	this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+      this.graphingZone = document.createElementNS( this.ns, 'g' );
+      this.setAttributeTo( this.graphingZone, {
+        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      } );
+      this.dom.appendChild( this.graphingZone );
+
+      /*	this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
 			//this.shapeZoneRect.setAttribute('pointer-events', 'fill');
 			this.shapeZoneRect.setAttribute('fill', 'transparent');
 			this.shapeZone.appendChild(this.shapeZoneRect);
 		*/
-			this.axisGroup = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.axisGroup);
+      this.axisGroup = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.axisGroup );
+
+      this.plotGroup = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.plotGroup );
+
+      // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+      this.shapeZone = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.shapeZone );
+
+      this._makeClosingLines();
 
+      this.clip = document.createElementNS( this.ns, 'clipPath' );
+      this.clip.setAttribute( 'id', '_clipplot' + this._creation )
+      this.defs.appendChild( this.clip );
 
-			this.plotGroup = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.plotGroup);
+      this.clipRect = document.createElementNS( this.ns, 'rect' );
+      this.clip.appendChild( this.clipRect );
+      this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
 
-			// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-			this.shapeZone = document.createElementNS(this.ns, 'g');
-			this.graphingZone.appendChild(this.shapeZone);
+      this.markerArrow = document.createElementNS( this.ns, 'marker' );
+      this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
+      this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
+      this.markerArrow.setAttribute( 'refX', '6' );
+      this.markerArrow.setAttribute( 'refY', '5' );
+      this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+      this.markerArrow.setAttribute( 'markerWidth', '8' );
+      this.markerArrow.setAttribute( 'markerHeight', '6' );
+      this.markerArrow.setAttribute( 'orient', 'auto' );
+      //this.markerArrow.setAttribute('fill', 'context-stroke');
+      //this.markerArrow.setAttribute('stroke', 'context-stroke');
 
-			
-			this._makeClosingLines();
+      var pathArrow = document.createElementNS( this.ns, 'path' );
+      pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
+      pathArrow.setAttribute( 'fill', 'context-stroke' );
+      this.markerArrow.appendChild( pathArrow );
 
-			this.clip = document.createElementNS(this.ns, 'clipPath');
-			this.clip.setAttribute('id', '_clipplot' + this._creation)
-			this.defs.appendChild(this.clip);
+      this.defs.appendChild( this.markerArrow );
 
-			this.clipRect = document.createElementNS(this.ns, 'rect');
-			this.clip.appendChild(this.clipRect);
-			this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+      this.vertLineArrow = document.createElementNS( this.ns, 'marker' );
+      this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
+      this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
+      this.vertLineArrow.setAttribute( 'refX', '0' );
+      this.vertLineArrow.setAttribute( 'refY', '5' );
+      this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+      this.vertLineArrow.setAttribute( 'markerWidth', '20' );
+      this.vertLineArrow.setAttribute( 'markerHeight', '10' );
+      this.vertLineArrow.setAttribute( 'orient', 'auto' );
+      //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+      //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+      this.vertLineArrow.setAttribute( 'stroke-width', '1px' );
 
+      var pathVertLine = document.createElementNS( this.ns, 'path' );
+      pathVertLine.setAttribute( 'd', 'M 0 -10 L 0 10' );
+      pathVertLine.setAttribute( 'stroke', 'black' );
 
-			this.markerArrow = document.createElementNS(this.ns, 'marker');
-			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
-			this.markerArrow.setAttribute('id', 'arrow' + this._creation);
-			this.markerArrow.setAttribute('refX', '6');
-			this.markerArrow.setAttribute('refY', '5');
-			this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
-			this.markerArrow.setAttribute('markerWidth', '8');
-			this.markerArrow.setAttribute('markerHeight', '6');
-			this.markerArrow.setAttribute('orient', 'auto');
-			//this.markerArrow.setAttribute('fill', 'context-stroke');
-			//this.markerArrow.setAttribute('stroke', 'context-stroke');
+      this.vertLineArrow.appendChild( pathVertLine );
 
-			var pathArrow = document.createElementNS(this.ns, 'path');
-			pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-			pathArrow.setAttribute('fill', 'context-stroke');
-			this.markerArrow.appendChild(pathArrow);
+      this.defs.appendChild( this.vertLineArrow );
 
-			this.defs.appendChild(this.markerArrow);
+      this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+      this.bypassHandleMouse = false;
+    },
 
-			this.vertLineArrow = document.createElementNS(this.ns, 'marker');
-			this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
-			this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
-			this.vertLineArrow.setAttribute('refX', '0');
-			this.vertLineArrow.setAttribute('refY', '5');
-			this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
-			this.vertLineArrow.setAttribute('markerWidth', '20');
-			this.vertLineArrow.setAttribute('markerHeight', '10');
-			this.vertLineArrow.setAttribute('orient', 'auto');
-			//this.vertLineArrow.setAttribute('fill', 'context-stroke');
-			//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-			this.vertLineArrow.setAttribute('stroke-width', '1px');
-
-			var pathVertLine = document.createElementNS(this.ns, 'path');
-			pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
-			pathVertLine.setAttribute('stroke', 'black');
-			
-			this.vertLineArrow.appendChild(pathVertLine);
-
-			this.defs.appendChild(this.vertLineArrow);
-
-
-			this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
-
-			this.bypassHandleMouse = false;
-		},
-
-		setOption: function(name, val) {
-			this.options[name] = val;
-		},
-
-		kill: function() {
-			this._dom.removeChild(this.dom);
-
-		},
-
-		_getXY: function(e) {
-			
-			var x = e.clientX,
-				y = e.clientY;
-
-			if( e.layerX !== undefined && e.layerY !== undefined ) {
-				return { x: e.layerX, y: e.layerY };
-			} 
-
-			y = e.clientY;
-
-			var pos = this.offsetCached || $( this._dom ).offset();
-
-			x -= pos.left - window.scrollX;
-			y -= pos.top - window.scrollY;
-
-			return {x: x, y: y};
-		},
-
-
-		cacheOffset: function() {
-			this.offsetCached = $( this._dom ).offset();
-		},
-
-		uncacheOffset: function() {
-			this.offsetCached = false;
-		},
-		
-
-		focus: function() {
-			this._dom.focus();
-		},
-
-		isPluginAllowed: function( e, plugin ) {
-
-			if( this.forcedPlugin == plugin ) {
-				return true;
-			}
-
-			var act = this.options.pluginAction[ plugin ] || plugin,
-				shift = e.shiftKey, 
-				ctrl = e.ctrlKey;
-
-			if( act.shift === undefined ) {
-				act.shift = false;
-			}
-			
-			if( act.ctrl === undefined ) {
-				act.ctrl = false;
-			}
-
-			if(shift !== act.shift) {
-				return false;
-			}
-
-			if(ctrl !== act.ctrl) {
-				return false;
-			}
-
-			return true;
-		},
-
-		
-		forcePlugin: function( plugin ) {
-			this.forcedPlugin = plugin;
-		},
-
-		unforcePlugin: function( ) {
-			this.forcedPlugin = false;
-		},
-		
-		elementMoving: function( movingElement ) {
-			this.bypassHandleMouse = movingElement;
-		},
-	
-		_resetAxes: function() {
-
-			while(this.axisGroup.firstChild) {
-				this.axisGroup.removeChild(this.axisGroup.firstChild);
-			}
-			this.axis.left = [];
-			this.axis.right = [];
-			this.axis.bottom = [];
-			this.axis.top = [];
-		},
-
-	
-
-		_applyToAxis: {
-			'string': function(type, func, params) {
-		//		params.splice(1, 0, type);
-
-				for(var i = 0; i < this.axis[type].length; i++) {
-					this.axis[type][i][func].apply(this.axis[type][i], params);	
-				}
-			},
-
-			'function': function(type, func, params) {
-				for(var i = 0; i < this.axis[type].length; i++) {
-					func.call(this, this.axis[type][i], type);
-				}
-			}
-		},
-		
-		_applyToAxes: function(func, params, tb, lr) {
-			var ax = [], i = 0, l;
-
-			if(tb || tb == undefined) {
-				ax.push('top');
-				ax.push('bottom');
-			}
-			if(lr || lr == undefined) {
-				ax.push('left');
-				ax.push('right');
-			}
-
-			for( l = ax.length; i < l; i++ ) {
-				this._applyToAxis[typeof func].call(this, ax[i], func, params);
-			}
-		},
-
-
-		setWidth: function(width, skipResize) {
-			this.width = width;
-
-			if(!skipResize)
-				this._resize();
-		},
-
-		getWidth: function() {
-			return this.width;
-		},
-
-		setHeight: function(height, skipResize) {
-			this.height = height;
-
-			if(!skipResize)
-				this._resize();
-		},
-
-		getHeight: function() {
-			return this.height;
-		},
-
-		resize: function(w, h) {
-
-			this.setSize( w, h );
-			this._resize();
-		},
-
-		setSize: function( w, h ) {
-
-			this.setWidth( w, true );
-			this.setHeight( h, true );
-
-			this.getDrawingHeight();
-			this.getDrawingWidth();
-
-		},
-
-		getDom: function() { 
-			return this.dom;
-		},
-
-
-		getXAxis: function(num, options) {
-			if(this.axis.top.length > 0 && this.axis.bottom.length == 0) {
-				return this.getTopAxis(num, options);
-			}
-
-			return this.getBottomAxis(num, options);
-		},
-
-		getYAxis: function(num, options) {
-
-			if(this.axis.right.length > 0 && this.axis.left.length == 0) {
-				return this.getRightAxis(num, options);
-			}
-
-			return this.getLeftAxis(num, options);
-		},
-
-	
-		getTopAxis: function(num, options) {
-			return _getAxis(this, num, options, GraphXAxis, 'top');
-		},
-
-		getBottomAxis: function(num, options) {
-			return _getAxis(this, num, options, GraphXAxis, 'bottom');
-		},
-
-		getLeftAxis: function(num, options) {
-			return _getAxis(this, num, options, GraphYAxis, 'left');
-		},
-
-		getRightAxis: function(num, options) {
-			return _getAxis(this, num, options, GraphYAxis, 'right');
-		},
-
-		setBottomAxisAsTime: function( num, options ) {
-			return _getAxis( this, num, options, GraphXAxisTime, 'bottom' );
-		},
-
-
-		setXAxis: function(axis, num) {
-			this.setBottomAxis(axis, num);
-		},
-		setYAxis: function(axis, num) {
-			this.setLeftAxis(axis, num);
-		},
-
-		setLeftAxis: function(axis, num) {
-			num = num || 0;
-			this.axis.left[num] = axis;
-		},
-		setRightAxis: function(axis, num) {
-			num = num || 0;
-			this.axis.right[num] = axis;
-		},
-		setTopAxis: function(axis, num) {
-			num = num || 0;
-			this.axis.top[num] = axis;
-		},
-		setBottomAxis: function(axis, num) {
-			num = num || 0;
-			this.axis.bottom[num] = axis;
-		},
-
-		getPaddingTop: function() {
-			return this.options.paddingTop;
-		},
-
-		getPaddingLeft: function() {
-			return this.options.paddingLeft;
-		},
-
-		getPaddingBottom: function() {
-			return this.options.paddingTop;
-		},
-
-		getPaddingRight: function() {
-			return this.options.paddingRight;
-		},
-
-		// Title
-		setTitle: function(title) {
-			this.options.title = title;
-			this.domTitle.textContent = title;
-		},
-
-		displayTitle: function() {
-			this.domTitle.setAttribute('display', 'inline');
-		},
-
-		hideTitle: function() {
-			this.domTitle.setAttribute('display', 'none');
-		},
-
-
-		getDrawingHeight: function(useCache) {
-			if(useCache && this.innerHeight)
-				return this.innerHeight;
-			var height = this.height - this.options.paddingTop - this.options.paddingBottom;
-			return (this.innerHeight = height);
-		},
-
-		getDrawingWidth: function(useCache) {
-			if(useCache && this.innerWidth)
-				return this.innerWidth;
-			var width = this.width - this.options.paddingLeft - this.options.paddingRight;
-			return (this.innerWidth = width);
-		},
-
-		getBoundaryAxisFromSeries: function(axis, xy, minmax) {
-			var x = xy == 'x',
-				min = minmax == 'min',
-				val,
-				func = x ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
-				func2use = func[min ? 0 : 1],
-				currentSerie,
-				serie,
-				series,
-				serieValue,
-				i,
-				l;
-
-			val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
-			series = this.getSeriesFromAxis(axis, true);
-			
-			for(i = 0, l = series.length; i < l; i++) {
-
-				serie = series[i];
-				serieValue = serie[func2use]();
-
-				val = Math[minmax](val, serieValue);
-
-				if(val == serieValue && currentSerie) {
-					currentSerie.isMinOrMax(false, xy, minmax);
-					currentSerie = serie;
-					serie.isMinOrMax(true, xy, minmax);
-				}
-			}
-		
-			return val;
-		},
-
-		getSeriesFromAxis: function(axis, selfSeries) {
-			var series = [],
-				i = this.series.length - 1;
-			for(; i >= 0; i--)
-				if(this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis)
-					series.push(this.series[i]);
-
-			if(selfSeries) {
-				for(i = 0; i < axis.series.length; i++)
-					series.push(axis.series[i])
-			}
-
-			return series;
-		},
-
-		_resize: function() {
-
-			if( ! this.width || ! this.height) {
-				return;
-			}
-
-			this.sizeSet = true;
-			this.dom.setAttribute('width', this.width);
-			this.dom.setAttribute('height', this.height);
-			this.domTitle.setAttribute('x', this.width / 2);
-
-			refreshDrawingZone( this );
-		},
-
-		canRedraw: function() {
-			return (this.width && this.height);
-		},
-
-		redraw: function( noX, noY ) {
-
-			if( ! this.canRedraw( ) ) {
-				return;
-			}
-
-			if( ! this.sizeSet ) {
-
-				this._resize( );
-
-			} else {
-
-				refreshDrawingZone( this, noX, noY );
-			}
-
-			return true;
-		},
-
-
-		/*
-		 *	Updates the min and max value of the axis according to the data only
-		 *	Does not perform autoscale
-		 *	But we need to keep track of the data min/max in case of an autoAxis.
-		 */
-		_updateAxes: function() {
-
-			var axisvars = ['bottom', 'top', 'left', 'right'],
-				axis,
-				j,
-				l,
-				i,
-				xy;
-
-			this.refreshMinOrMax();
-
-			for( j = 0, l = axisvars.length; j < l; j++) {
-
-				for(i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
-
-					axis = this.axis[ axisvars[ j ] ][ i ];
-					xy = j < 2 ? 'x' : 'y';
-
-					if( axis.disabled ) {
-						continue;
-					}
-
-//console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-					axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min') );
-					axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-
-				}
-			}
-		},
-
-		// Repaints the axis and series
-	
-
-		autoscaleAxes: function() {
-
-			this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
-			this.redraw();
-			
-		},
-
-		refreshMinOrMax: function() {
-			var i = this.series.length - 1;
-			for(;i >= 0; i--) { // Let's remove the serie from the stack
-				this.series[i].isMinOrMax(false);
-			}
-		},
-
-		newSerie: function( name, options, type, callback ) {
-
-
-			var self = this;
-
-			if( typeof type == "function" ) {
-				type = "line";
-				callback = type;
-			}
-
-			if( ! type ) {
-				type = "line";
-			}
-
-			var serie = makeSerie( this, name, options, type, function( serie ) {
-
-				self.series.push(serie);
-
-				if( self.legend ) {
-					self.legend.update();
-				}
-
-				if( callback ) {
-					callback( serie );
-				}
-			} );
-
-			return serie;
-		},
-
-		getSerie: function(name) {
-			if(typeof name == 'number') {
-				return this.series[name];
-			}
-			var i = 0, l = this.series.length;
-			for(; i < l; i++) {
-				if( this.series[i].getName() == name ) {
-					return this.series[i];
-				}
-			}
-		},
-
-
-		getSeries: function() {
-			return this.series;
-		},
-
-
-		drawSerie: function( serie ) {
-
-			if( ! serie.draw ) {
-				throw "Serie has no method draw";
-			}
-
-			serie.draw( );
-		},
-
-		resetSeries: function() {
-			for(var i = 0; i < this.series.length; i++) {
-				this.series[i].kill(true);	
-			}
-			this.series = [];
-		},
-
-		drawSeries: function( ) {
-
-			if( ! this.width || ! this.height ) {
-				return;
-			}
-
-			var i = this.series.length - 1;
-			for( ; i >= 0; i-- ) {
-				this.series[i].draw( );
-			}
-		},
-
-		_removeSerie: function( serie ) {
-
-			this.series.splice( this.series.indexOf( serie ), 1 );
-	
-		},
-
-		selectSerie: function( serie ) {
-
-			if( this.selectedSerie == serie ) {
-				return;
-			}
-
-			if( this.selectedSerie ) {
-
-				this.selectedSerie.unselect();
-			}
-
-			this.selectedSerie = serie;
-			serie.select();
-		},
-
-		unselectSerie: function( serie ) {
-
-			serie.unselect();
-			this.selectedSerie = false;
-		},
-
-		getSelectedSerie: function() {
-			return this.selectedSerie;
-		},
-		
-
-
-/*
+    setOption: function( name, val ) {
+      this.options[ name ] = val;
+    },
+
+    kill: function() {
+      this._dom.removeChild( this.dom );
+
+    },
+
+    _getXY: function( e ) {
+
+      var x = e.clientX,
+        y = e.clientY;
+
+      if ( e.layerX !== undefined && e.layerY !== undefined ) {
+        return {
+          x: e.layerX,
+          y: e.layerY
+        };
+      }
+
+      y = e.clientY;
+
+      var pos = this.offsetCached || $( this._dom ).offset();
+
+      x -= pos.left - window.scrollX;
+      y -= pos.top - window.scrollY;
+
+      return {
+        x: x,
+        y: y
+      };
+    },
+
+    cacheOffset: function() {
+      this.offsetCached = $( this._dom ).offset();
+    },
+
+    uncacheOffset: function() {
+      this.offsetCached = false;
+    },
+
+    focus: function()  {
+      this._dom.focus();
+    },
+
+    isPluginAllowed: function( e, plugin ) {
+
+      if ( this.forcedPlugin == plugin ) {
+        return true;
+      }
+
+      var act = this.options.pluginAction[ plugin ] || plugin,
+        shift = e.shiftKey,
+        ctrl = e.ctrlKey;
+
+      if ( act.shift === undefined ) {
+        act.shift = false;
+      }
+
+      if ( act.ctrl === undefined ) {
+        act.ctrl = false;
+      }
+
+      if ( shift !== act.shift ) {
+        return false;
+      }
+
+      if ( ctrl !== act.ctrl ) {
+        return false;
+      }
+
+      return true;
+    },
+
+    forcePlugin: function( plugin ) {
+      this.forcedPlugin = plugin;
+    },
+
+    unforcePlugin: function() {
+      this.forcedPlugin = false;
+    },
+
+    elementMoving: function( movingElement ) {
+      this.bypassHandleMouse = movingElement;
+    },
+
+    _resetAxes: function() {
+
+      while ( this.axisGroup.firstChild ) {
+        this.axisGroup.removeChild( this.axisGroup.firstChild );
+      }
+      this.axis.left = [];
+      this.axis.right = [];
+      this.axis.bottom = [];
+      this.axis.top = [];
+    },
+
+    _applyToAxis: {
+      'string': function( type, func, params ) {
+        //		params.splice(1, 0, type);
+
+        for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+          this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
+        }
+      },
+
+      'function': function( type, func, params ) {
+        for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+          func.call( this, this.axis[ type ][ i ], type );
+        }
+      }
+    },
+
+    _applyToAxes: function( func, params, tb, lr ) {
+      var ax = [],
+        i = 0,
+        l;
+
+      if ( tb || tb == undefined ) {
+        ax.push( 'top' );
+        ax.push( 'bottom' );
+      }
+      if ( lr || lr == undefined ) {
+        ax.push( 'left' );
+        ax.push( 'right' );
+      }
+
+      for ( l = ax.length; i < l; i++ ) {
+        this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
+      }
+    },
+
+    setWidth: function( width, skipResize ) {
+      this.width = width;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    getWidth: function() {
+      return this.width;
+    },
+
+    setHeight: function( height, skipResize ) {
+      this.height = height;
+
+      if ( !skipResize )
+        this._resize();
+    },
+
+    getHeight: function() {
+      return this.height;
+    },
+
+    resize: function( w, h ) {
+
+      this.setSize( w, h );
+      this._resize();
+    },
+
+    setSize: function( w, h ) {
+
+      this.setWidth( w, true );
+      this.setHeight( h, true );
+
+      this.getDrawingHeight();
+      this.getDrawingWidth();
+
+    },
+
+    getDom: function() {
+      return this.dom;
+    },
+
+    getXAxis: function( num, options ) {
+      if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
+        return this.getTopAxis( num, options );
+      }
+
+      return this.getBottomAxis( num, options );
+    },
+
+    getYAxis: function( num, options ) {
+
+      if ( this.axis.right.length > 0 && this.axis.left.length == 0 ) {
+        return this.getRightAxis( num, options );
+      }
+
+      return this.getLeftAxis( num, options );
+    },
+
+    getTopAxis: function( num, options ) {
+      return _getAxis( this, num, options, GraphXAxis, 'top' );
+    },
+
+    getBottomAxis: function( num, options ) {
+      return _getAxis( this, num, options, GraphXAxis, 'bottom' );
+    },
+
+    getLeftAxis: function( num, options ) {
+      return _getAxis( this, num, options, GraphYAxis, 'left' );
+    },
+
+    getRightAxis: function( num, options ) {
+      return _getAxis( this, num, options, GraphYAxis, 'right' );
+    },
+
+    setBottomAxisAsTime: function( num, options ) {
+      return _getAxis( this, num, options, GraphXAxisTime, 'bottom' );
+    },
+
+    setXAxis: function( axis, num ) {
+      this.setBottomAxis( axis, num );
+    },
+    setYAxis: function( axis, num ) {
+      this.setLeftAxis( axis, num );
+    },
+
+    setLeftAxis: function( axis, num ) {
+      num = num || 0;
+      this.axis.left[ num ] = axis;
+    },
+    setRightAxis: function( axis, num ) {
+      num = num || 0;
+      this.axis.right[ num ] = axis;
+    },
+    setTopAxis: function( axis, num ) {
+      num = num || 0;
+      this.axis.top[ num ] = axis;
+    },
+    setBottomAxis: function( axis, num ) {
+      num = num || 0;
+      this.axis.bottom[ num ] = axis;
+    },
+
+    getPaddingTop: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingLeft: function() {
+      return this.options.paddingLeft;
+    },
+
+    getPaddingBottom: function() {
+      return this.options.paddingTop;
+    },
+
+    getPaddingRight: function() {
+      return this.options.paddingRight;
+    },
+
+    // Title
+    setTitle: function( title ) {
+      this.options.title = title;
+      this.domTitle.textContent = title;
+    },
+
+    displayTitle: function() {
+      this.domTitle.setAttribute( 'display', 'inline' );
+    },
+
+    hideTitle: function() {
+      this.domTitle.setAttribute( 'display', 'none' );
+    },
+
+    getDrawingHeight: function( useCache ) {
+      if ( useCache && this.innerHeight )
+        return this.innerHeight;
+      var height = this.height - this.options.paddingTop - this.options.paddingBottom;
+      return ( this.innerHeight = height );
+    },
+
+    getDrawingWidth: function( useCache ) {
+      if ( useCache && this.innerWidth )
+        return this.innerWidth;
+      var width = this.width - this.options.paddingLeft - this.options.paddingRight;
+      return ( this.innerWidth = width );
+    },
+
+    getBoundaryAxisFromSeries: function( axis, xy, minmax ) {
+      var x = xy == 'x',
+        min = minmax == 'min',
+        val,
+        func = x ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
+        func2use = func[ min ? 0 : 1 ],
+        currentSerie,
+        serie,
+        series,
+        serieValue,
+        i,
+        l;
+
+      val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
+      series = this.getSeriesFromAxis( axis, true );
+
+      for ( i = 0, l = series.length; i < l; i++ ) {
+
+        serie = series[ i ];
+        serieValue = serie[ func2use ]();
+
+        val = Math[ minmax ]( val, serieValue );
+
+        if ( val == serieValue && currentSerie ) {
+          currentSerie.isMinOrMax( false, xy, minmax );
+          currentSerie = serie;
+          serie.isMinOrMax( true, xy, minmax );
+        }
+      }
+
+      return val;
+    },
+
+    getSeriesFromAxis: function( axis, selfSeries ) {
+      var series = [],
+        i = this.series.length - 1;
+      for ( ; i >= 0; i-- )
+        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis )
+          series.push( this.series[ i ] );
+
+      if ( selfSeries ) {
+        for ( i = 0; i < axis.series.length; i++ )
+          series.push( axis.series[ i ] )
+      }
+
+      return series;
+    },
+
+    _resize: function() {
+
+      if ( !this.width || !this.height ) {
+        return;
+      }
+
+      this.sizeSet = true;
+      this.dom.setAttribute( 'width', this.width );
+      this.dom.setAttribute( 'height', this.height );
+      this.domTitle.setAttribute( 'x', this.width / 2 );
+
+      refreshDrawingZone( this );
+    },
+
+    canRedraw: function() {
+      return ( this.width && this.height );
+    },
+
+    redraw: function( noX, noY ) {
+
+      if ( !this.canRedraw() ) {
+        return;
+      }
+
+      if ( !this.sizeSet ) {
+
+        this._resize();
+
+      } else {
+
+        refreshDrawingZone( this, noX, noY );
+      }
+
+      return true;
+    },
+
+    /*
+     *	Updates the min and max value of the axis according to the data only
+     *	Does not perform autoscale
+     *	But we need to keep track of the data min/max in case of an autoAxis.
+     */
+    _updateAxes: function() {
+
+      var axisvars = [ 'bottom', 'top', 'left', 'right' ],
+        axis,
+        j,
+        l,
+        i,
+        xy;
+
+      this.refreshMinOrMax();
+
+      for ( j = 0, l = axisvars.length; j < l; j++ ) {
+
+        for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
+
+          axis = this.axis[ axisvars[ j ] ][ i ];
+          xy = j < 2 ? 'x' : 'y';
+
+          if ( axis.disabled ) {
+            continue;
+          }
+
+          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+          axis.setMinValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min' ) );
+          axis.setMaxValueData( this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max' ) );
+
+        }
+      }
+    },
+
+    // Repaints the axis and series
+
+    autoscaleAxes: function() {
+
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+      this.redraw();
+
+    },
+
+    refreshMinOrMax: function() {
+      var i = this.series.length - 1;
+      for ( ; i >= 0; i-- ) { // Let's remove the serie from the stack
+        this.series[ i ].isMinOrMax( false );
+      }
+    },
+
+    newSerie: function( name, options, type, callback ) {
+
+      var self = this;
+
+      if ( typeof type == "function" ) {
+        type = "line";
+        callback = type;
+      }
+
+      if ( !type ) {
+        type = "line";
+      }
+
+      var serie = makeSerie( this, name, options, type, function( serie ) {
+
+        self.series.push( serie );
+
+        if ( self.legend ) {
+          self.legend.update();
+        }
+
+        if ( callback ) {
+          callback( serie );
+        }
+      } );
+
+      return serie;
+    },
+
+    getSerie: function( name ) {
+      if ( typeof name == 'number' ) {
+        return this.series[ name ];
+      }
+      var i = 0,
+        l = this.series.length;
+      for ( ; i < l; i++ ) {
+        if ( this.series[ i ].getName() == name ) {
+          return this.series[ i ];
+        }
+      }
+    },
+
+    getSeries: function() {
+      return this.series;
+    },
+
+    drawSerie: function( serie ) {
+
+      if ( !serie.draw ) {
+        throw "Serie has no method draw";
+      }
+
+      serie.draw();
+    },
+
+    resetSeries: function() {
+      for ( var i = 0; i < this.series.length; i++ ) {
+        this.series[ i ].kill( true );
+      }
+      this.series = [];
+    },
+
+    drawSeries: function() {
+
+      if ( !this.width || !this.height ) {
+        return;
+      }
+
+      var i = this.series.length - 1;
+      for ( ; i >= 0; i-- ) {
+        this.series[ i ].draw();
+      }
+    },
+
+    _removeSerie: function( serie ) {
+
+      this.series.splice( this.series.indexOf( serie ), 1 );
+
+    },
+
+    selectSerie: function( serie ) {
+
+      if ( this.selectedSerie == serie ) {
+        return;
+      }
+
+      if ( this.selectedSerie ) {
+
+        this.selectedSerie.unselect();
+      }
+
+      this.selectedSerie = serie;
+      serie.select();
+    },
+
+    unselectSerie: function( serie ) {
+
+      serie.unselect();
+      this.selectedSerie = false;
+    },
+
+    getSelectedSerie: function() {
+      return this.selectedSerie;
+    },
+
+    /*
 		checkMinOrMax: function(serie) {
 			var xAxis = serie.getXAxis();
 			var yAxis = serie.getYAxis();
@@ -831,947 +830,916 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 		},
 */
 
-		makeToolbar: function( toolbarData ) {
+    makeToolbar: function( toolbarData ) {
 
-			var self = this,
-				deferred = $.Deferred();
+      var self = this,
+        deferred = $.Deferred();
 
-			this.dynamicLoader.load( 'util', './graph.toolbar', function( toolbar ) {
+      this.dynamicLoader.load( 'util', './graph.toolbar', function( toolbar ) {
 
-				self.toolbar = new toolbar( self, toolbarData );
-				deferred.resolve( self.toolbar );
-			});
+        self.toolbar = new toolbar( self, toolbarData );
+        deferred.resolve( self.toolbar );
+      } );
 
-			return deferred;
-		},
+      return deferred;
+    },
 
-		newShape: function( shapeData, events, mute ) {
+    newShape: function( shapeData, events, mute ) {
 
-			var self = this,
-				response,
-				deferred = $.Deferred();
-			
-			shapeData.id = Math.random();
+      var self = this,
+        response,
+        deferred = $.Deferred();
 
-			if( ! mute ) {
+      shapeData.id = Math.random();
 
-				if( false === ( response = this.triggerEvent('onBeforeNewShape', shapeData ) ) ) {
-					return;
-				}
-			}
+      if ( !mute ) {
 
-			if( response ) {
-				shapeData = response;
-			}
+        if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
+          return;
+        }
+      }
 
-			var callback = function( shapeConstructor ) {
+      if ( response ) {
+        shapeData = response;
+      }
 
-				var shape = new shapeConstructor( self, shapeData.shapeOptions );
+      var callback = function( shapeConstructor ) {
 
-				shape.setSerie( self.getSerie( 0 ) );
+        var shape = new shapeConstructor( self, shapeData.shapeOptions );
 
-				if(!shape) {
-					return;
-				}
+        shape.setSerie( self.getSerie( 0 ) );
 
-				shape.setOriginalData( shapeData, events );
-				if( shape.data ) {
-					shape.data.id = self.id;
-				}
+        if ( !shape ) {
+          return;
+        }
 
-				
-				if( shapeData.fillColor ) {
-					shape.set( 'fillColor', shapeData.fillColor );
-				}	
+        shape.setOriginalData( shapeData, events );
+        if ( shape.data ) {
+          shape.data.id = self.id;
+        }
 
-				if( shapeData.strokeColor ) {
-					shape.set( 'strokeColor', shapeData.strokeColor );
-				}
+        if ( shapeData.fillColor ) {
+          shape.set( 'fillColor', shapeData.fillColor );
+        }
 
-				if( shapeData.strokeWidth ) {
-					shape.set( 'strokeWidth', shapeData.strokeWidth || (shapeData.strokeColor ? 1 : 0));
-				}	
+        if ( shapeData.strokeColor ) {
+          shape.set( 'strokeColor', shapeData.strokeColor );
+        }
 
-				if( shapeData.label ) {
+        if ( shapeData.strokeWidth ) {
+          shape.set( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
+        }
 
-					if ( ! ( shapeData.label instanceof Array ) ) {
-						shapeData.label = [ shapeData.label ];
-					}
+        if ( shapeData.label ) {
 
-					for ( var i = 0, l = shapeData.label.length ; i < l ; i++) {
+          if ( !( shapeData.label instanceof Array ) ) {
+            shapeData.label = [ shapeData.label ];
+          }
 
-						shape.set('labelPosition', shapeData.label[i].position, i);
-						shape.set('labelColor', shapeData.label[i].color || 'black', i);
-						shape.set('labelSize', shapeData.label[i].size, i);
-						shape.set('labelAngle', shapeData.label[i].angle || 0, i);
+          for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
 
+            shape.set( 'labelPosition', shapeData.label[ i ].position, i );
+            shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
+            shape.set( 'labelSize', shapeData.label[ i ].size, i );
+            shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
 
-						if(shapeData.label[i].anchor) {
-							shape.set('labelAnchor', shapeData.label[i].anchor, i);
-						}
-					}
+            if ( shapeData.label[ i ].anchor ) {
+              shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
+            }
+          }
 
-					shape.setLabelNumber(l);
-				}
+          shape.setLabelNumber( l );
+        }
 
-				/*switch(shape.type) {
+        /*switch(shape.type) {
 					case 'rect':
 					case 'rectangle':
 						shape.set('width', shape.width);
 						shape.set('height', shape.height);
 					break;
 				}*/
-				self.shapes.push(shape);
+        self.shapes.push( shape );
 
-				self.triggerEvent('onShapeMake', shape, shapeData);
+        self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-				deferred.resolve( shape );
+        deferred.resolve( shape );
 
+        if ( !mute ) {
+          self.triggerEvent( 'onNewShape', shapeData );
+        }
 
-				if( ! mute ) {
-					self.triggerEvent('onNewShape', shapeData );
-				}
+      }
 
+      if ( shapeData.url ) {
+        this.dynamicLoader.load( 'external', shapeData.url, callback );
+      } else {
+        this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+      }
 
-			}
+      return deferred;
+    },
 
-			if( shapeData.url ) {
-				this.dynamicLoader.load( 'external', shapeData.url, callback );
-			} else {
-				this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
-			}
+    redrawShapes: function() {
 
-			return deferred;
-		},
+      //this.graphingZone.removeChild(this.shapeZone);
+      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+        this.shapes[ i ].redraw();
+      }
+      //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
+    },
 
-		redrawShapes: function() {
+    removeShapes: function() {
+      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+        this.shapes[ i ].kill();
+      }
+      this.shapes = [];
+    },
 
+    _removeShape: function( shape ) {
+      this.shapes.splice( this.shapes.indexOf( shape ), 1 );
+    },
 
-			//this.graphingZone.removeChild(this.shapeZone);
-			for(var i = 0, l = this.shapes.length; i < l; i++) {
-				this.shapes[i].redraw();
-			}
-			//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
-		},
+    _makeClosingLines: function() {
 
-		removeShapes: function() {
-			for(var i = 0, l = this.shapes.length; i < l; i++) {
-				this.shapes[i].kill();
-			}
-			this.shapes = [];
-		},
+      this.closingLines = {};
+      var els = [ 'top', 'bottom', 'left', 'right' ],
+        i = 0,
+        l = 4,
+        line;
+      for ( ; i < l; i++ ) {
+        var line = document.createElementNS( this.ns, 'line' );
+        line.setAttribute( 'stroke', 'black' );
+        line.setAttribute( 'shape-rendering', 'crispEdges' );
+        line.setAttribute( 'stroke-linecap', 'square' );
+        line.setAttribute( 'display', 'none' );
+        this.closingLines[ els[ i ] ] = line;
+        this.graphingZone.appendChild( line );
+      }
+    },
 
-		_removeShape: function( shape ) {
-			this.shapes.splice( this.shapes.indexOf( shape ), 1 );
-		},
+    _seriesInit: function() {
 
-		_makeClosingLines: function() {
+      var self = this,
+        series = this.options.series,
+        nb = series.length;
 
-			this.closingLines = {};
-			var els = ['top', 'bottom', 'left', 'right'], i = 0, l = 4, line;
-			for(; i < l; i++) {
-				var line = document.createElementNS(this.ns, 'line');
-				line.setAttribute('stroke', 'black');
-				line.setAttribute('shape-rendering', 'crispEdges');
-				line.setAttribute('stroke-linecap', 'square');
-				line.setAttribute('display', 'none');
-				this.closingLines[els[i]] = line;
-				this.graphingZone.appendChild(line);
-			}
-		},
+      if ( nb == 0 ) {
+        return self._seriesReady();
+      }
 
-		_seriesInit: function( ) {
+      series.map( function( serie ) {
 
-			var self = this,
-				series = this.options.series,
-				nb = series.length;
+        self.dynamicLoader.load( 'serie', 'graph.serie.' + serie, function() {
 
-			if( nb == 0 ) {
-				return self._seriesReady();
-			}
+          if ( ( --nb ) == 0 ) {
 
-			series.map( function( serie ) {
-				
-				self.dynamicLoader.load( 'serie', 'graph.serie.' + serie, function() {
+            self._seriesReady();
+          }
+        } );
+      } )
+    },
 
-					if( ( -- nb ) == 0 ) {
+    _seriesReady: function() {
 
-						self._seriesReady();
-					}
-				} );
-			} )
-		},
+      this.seriesReady.resolve();
+    },
 
-		_seriesReady: function() {
+    _pluginsExecute: function( funcName, args ) {
 
-			this.seriesReady.resolve();
-		},
+      //			Array.prototype.splice.apply(args, [0, 0, this]);
 
-		_pluginsExecute: function(funcName, args) {
+      for ( var i in this._plugins ) {
 
-//			Array.prototype.splice.apply(args, [0, 0, this]);
+        if ( this._plugins[ i ] && this._plugins[ i ][ funcName ] ) {
 
-			for(var i in this._plugins) {
+          this._plugins[ i ][ funcName ].apply( this._plugins[ i ], args );
 
-				if( this._plugins[ i ] && this._plugins[ i ][ funcName ] ) {
+        }
+      }
+    },
 
-					this._plugins[ i ][ funcName ].apply( this._plugins[ i ], args );
+    _pluginExecute: function( which, func, args ) {
 
-				}
-			}
-		},
+      //Array.prototype.splice.apply( args, [ 0, 0, this ] );
 
-		_pluginExecute: function(which, func, args) {
-			
-			//Array.prototype.splice.apply( args, [ 0, 0, this ] );
+      if ( this._plugins[ which ] && this._plugins[ which ][ func ] ) {
 
-			if( this._plugins[ which ] && this._plugins[ which ][ func ] ) {
+        this._plugins[ which ][ func ].apply( this._plugins[ which ], args );
+      }
+    },
 
-				this._plugins[ which ][ func ].apply( this._plugins[ which ], args );
-			}
-		},
+    _pluginsInit: function() {
 
-		_pluginsInit: function() {
+      var self = this,
+        pluginsToLoad,
+        nb;
 
-			var self = this,
-				pluginsToLoad,
-				nb;
+      this._plugins = this._plugins || {};
 
-			this._plugins = this._plugins || {};
-			
+      if ( Array.isArray( this.options.plugins ) ) {
+        pluginsToLoad = this.options.plugins
+      } else {
+        pluginsToLoad = [];
 
-			if( Array.isArray( this.options.plugins ) ) {
-				pluginsToLoad = this.options.plugins
-			} else {
-				pluginsToLoad = [];
+        for ( var i in this.options.plugins ) {
+          pluginsToLoad.push( i );
+        }
+      }
 
-				for( var i in this.options.plugins ) {
-					pluginsToLoad.push( i );
-				}
-			}
+      if ( ( nb = pluginsToLoad.length ) == 0 ) {
+        return self._pluginsReady();
+      }
 
-			if( ( nb = pluginsToLoad.length ) == 0 ) {
-				return self._pluginsReady();
-			}
+      this.pluginsToLoad = pluginsToLoad.length;
 
-			this.pluginsToLoad = pluginsToLoad.length;
+      this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, smth, filename ) {
 
-			this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, smth, filename ) {
+        self._plugins[ filename ] = new plugin();
+        self._plugins[ filename ].init( self, self.options.plugins[ filename ] || {}, filename );
 
-				self._plugins[ filename ] = new plugin();
-				self._plugins[ filename ].init( self, self.options.plugins[ filename ] || { }, filename );
-			
-		
-				if( ( -- nb ) == 0 ) {
+        if ( ( --nb ) == 0 ) {
 
-					self._pluginsReady();
+          self._pluginsReady();
 
-				}
-		
-			} );
-			//this._pluginsExecute('init', arguments);
-		},
+        }
 
-		getPlugin: function( pluginName ) {
-			var self = this;
-			return this.pluginsReady.then( function() {
+      } );
+      //this._pluginsExecute('init', arguments);
+    },
 
-				return self._plugins[ pluginName ] || false;
-			} );
-		},
+    getPlugin: function( pluginName ) {
+      var self = this;
+      return this.pluginsReady.then( function() {
 
-		_pluginsReady: function() {
-			this.pluginsReady.resolve();
-		},
+        return self._plugins[ pluginName ] || false;
+      } );
+    },
 
-		triggerEvent: function() {
-			var func = arguments[0], 
-				args = Array.prototype.splice.apply(arguments, [0, 1]);
-				
-			if(typeof this.options[func] == "function") {
-				return this.options[func].apply(this, arguments);
-			}
+    _pluginsReady: function() {
+      this.pluginsReady.resolve();
+    },
 
-			return;
-		},
+    triggerEvent: function() {
+      var func = arguments[ 0 ],
+        args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
 
-		selectShape: function( shape, mute ) {
+      if ( typeof this.options[ func ] == "function" ) {
+        return this.options[ func ].apply( this, arguments );
+      }
 
-			// Already selected. Returns false
-			if( this.selectedShape == shape ) {
-				return false;
-			}
+      return;
+    },
 
-			if( this.selectedShape ) { // Only one selected shape at the time
+    selectShape: function( shape, mute ) {
 
-				//console.log('Unselect shape');
-				this.selectedShape.unselect( );
-			}
+      // Already selected. Returns false
+      if ( this.selectedShape == shape ) {
+        return false;
+      }
 
-			if( ! mute ) {
-				shape.select( true );
-			}
+      if ( this.selectedShape )  { // Only one selected shape at the time
 
-			this.selectedShape = shape;
-			this.triggerEvent('onShapeSelect', shape.data);
-		},
+        //console.log('Unselect shape');
+        this.selectedShape.unselect();
+      }
 
-		unselectShape: function( ) {
+      if ( !mute ) {
+        shape.select( true );
+      }
 
-			if( ! this.selectedShape ) {
-				return;
-			}
+      this.selectedShape = shape;
+      this.triggerEvent( 'onShapeSelect', shape.data );
+    },
 
-			this.selectedShape.unselect();
-			
-			
-			this.triggerEvent('onShapeUnselect', this.selectedShape.data);
-			this.selectedShape = false;
-		},
+    unselectShape: function() {
 
+      if ( !this.selectedShape ) {
+        return;
+      }
 
-		makeLegend: function( options ) {
-			this.legend = new GraphLegend( this, options );
-			this.graphingZone.appendChild( this.legend.getDom() );
-			this.legend.update();
+      this.selectedShape.unselect();
 
-			return this.legend;
-		},
+      this.triggerEvent( 'onShapeUnselect', this.selectedShape.data );
+      this.selectedShape = false;
+    },
 
-		updateLegend: function() {
+    makeLegend: function( options ) {
+      this.legend = new GraphLegend( this, options );
+      this.graphingZone.appendChild( this.legend.getDom() );
+      this.legend.update();
 
-			if( ! this.legend ) {
-				return;
-			}
+      return this.legend;
+    },
 
-			this.legend.update();
-		},
+    updateLegend: function() {
 
+      if ( !this.legend ) {
+        return;
+      }
 
-		getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
+      this.legend.update();
+    },
 
-			var parsed,
-				pos = { x: false, y: false };
+    getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
 
-			if( ! xAxis ) {
-				xAxis = this.getXAxis();
-			}
+      var parsed,
+        pos = {
+          x: false,
+          y: false
+        };
 
-			if( ! yAxis ) {
-				yAxis = this.getYAxis();
-			}
+      if ( !xAxis ) {
+        xAxis = this.getXAxis();
+      }
 
-			if( ! value ) {
-				return;
-			}
+      if ( !yAxis ) {
+        yAxis = this.getYAxis();
+      }
 
+      if ( !value ) {
+        return;
+      }
 
+      for ( var i in pos ) {
 
-			for(var i in pos) {
+        var axis = i == 'x' ? xAxis : yAxis;
 
-				var axis = i == 'x' ? xAxis : yAxis;
+        if ( value[ i ] === undefined && ( ( value[ 'd' + i ] !== undefined && relTo === undefined ) || relTo === undefined ) ) {
 
-				if( value[ i ] === undefined && ((value['d' + i] !== undefined && relTo === undefined) || relTo === undefined)) {
-					
-					if(i == 'x') {
+          if ( i == 'x' ) {
 
-						if( value['d' + i] === undefined ) {
-							continue;
-						}
+            if ( value[ 'd' + i ] === undefined ) {
+              continue;
+            }
 
-						pos[i] = relTo ? relTo[i] : axis.getPos(0);
+            pos[ i ] = relTo ? relTo[ i ] : axis.getPos( 0 );
 
-					} else if( value.x && onSerie) {
+          } else if ( value.x && onSerie ) {
 
-						var val;
-						if( _parsePx( value.x ) !== false ) {
-							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
-							pos[ i ] = 0;
-						} else {
+            var val;
+            if ( _parsePx( value.x ) !== false ) {
+              console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
+              pos[ i ] = 0;
+            } else {
 
-							var closest = onSerie.searchClosestValue( val );
+              var closest = onSerie.searchClosestValue( val );
 
-							if( ! closest ) {
-								console.warn("Could not find y position. Returning 0 for y.");
-								pos[ i ] = 0;
-							} else {
-								pos[ i ] = onSerie.getY( closest.yMin );	
-							}
-						}
-					}
+              if ( !closest ) {
+                console.warn( "Could not find y position. Returning 0 for y." );
+                pos[ i ] = 0;
+              } else {
+                pos[ i ] = onSerie.getY( closest.yMin );
+              }
+            }
+          }
 
-				} else if( value[ i ] !== undefined ) {
+        } else if ( value[ i ] !== undefined ) {
 
-					pos[ i ] = this.getPx( value[ i ], axis );
-				}
+          pos[ i ] = this.getPx( value[ i ], axis );
+        }
 
+        if ( value[ 'd' + i ] !== undefined ) {
 
-				if(value['d' + i] !== undefined) {
+          var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-					var def = (value[ i ] !== undefined || relTo == undefined || relTo[i] == undefined) ? pos[i] : (this._getPositionPx(relTo[i], true, axis) || 0);
+          if ( i == 'y' && relTo && relTo.x ) {
 
-					if( i == 'y' && relTo && relTo.x ) {
+            var closest = onSerie.searchClosestValue( relTo.x );
+            if ( closest ) {
+              def = onSerie.getY( closest.yMin );
+            }
+            //console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
+          }
 
-						var closest = onSerie.searchClosestValue( relTo.x );
-						if( closest ) {
-							def = onSerie.getY( closest.yMin );
-						}
-						//console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
-					}
+          if ( ( parsed = _parsePx( value[ 'd' + i ] ) ) !== false ) { // dx in px => val + 10px
 
-					if((parsed = _parsePx(value['d' + i])) !== false) { // dx in px => val + 10px
+            pos[ i ] = def + parsed; // return integer (will be interpreted as px)
 
-						pos[i] = def + parsed;  // return integer (will be interpreted as px)
+          } else if ( parsed = this._parsePercent( value[ 'd' + i ] ) ) {
 
-					} else if(parsed = this._parsePercent(value['d' + i])) {
+            pos[ i ] = def + this._getPositionPx( parsed, true, axis ); // returns xx%
 
-						pos[i] = def + this._getPositionPx(parsed, true, axis); // returns xx%
+          } else if ( axis ) {
 
-					} else if( axis ) {
+            pos[ i ] = def + axis.getRelPx( value[ 'd' + i ] ); // px + unittopx
 
-						pos[i] = def + axis.getRelPx(value['d' + i]); // px + unittopx
+          }
+        }
+      }
 
-					}
-				}
-			}
+      return pos;
+    },
 
-			return pos;
-		},
+    _getPositionPx: function( value, x, axis ) {
 
+      var parsed;
 
-		_getPositionPx: function(value, x, axis) {
+      if ( ( parsed = _parsePx( value ) ) !== false ) {
+        return parsed; // return integer (will be interpreted as px)
+      }
 
-			var parsed;
-			
-			if( ( parsed = _parsePx(value) ) !== false ) {
-				return parsed; // return integer (will be interpreted as px)
-			}
+      if ( ( parsed = this._parsePercent( value ) ) !== false ) {
 
-			if( ( parsed = this._parsePercent( value ) ) !== false ) {
+        return parsed / 100 * ( x ? this.graph.getDrawingWidth() : this.graph.getDrawingHeight() );
 
-				return parsed / 100 * ( x ? this.graph.getDrawingWidth( ) : this.graph.getDrawingHeight( ) );
+      } else if ( axis ) {
 
-			} else if( axis ) {
+        return axis.getPos( value );
+      }
+    },
 
-				return axis.getPos(value);
-			}
-		},
+    _parsePercent: function( percent ) {
+      if ( percent && percent.indexOf && percent.indexOf( '%' ) > -1 ) {
+        return percent;
+      }
+      return false;
+    },
 
+    deltaPosition: function( ref, delta, axis ) {
 
+      var refPx, deltaPx;
 
+      if ( ( refPx = _parsePx( ref ) ) !== false ) {
 
-		_parsePercent: function(percent) {
-			if(percent && percent.indexOf && percent.indexOf('%') > -1) {
-				return percent;
-			}
-			return false;	
-		},
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          return ( refPx + deltaPx ) + "px";
+        } else {
+          return ( refPx + axis.getRelPx( delta ) ) + "px";
+        }
+      } else {
 
-		deltaPosition: function( ref, delta, axis ) {
-			
-			var refPx, deltaPx;
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          return ( ref + axis.getRelVal( deltaPx ) );
+        } else {
+          return ( ref + delta );
+        }
+      }
+    },
 
-			if( ( refPx = _parsePx( ref ) ) !== false ) {
+    getPx: function( value, axis, rel ) {
 
-				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
-					return ( refPx + deltaPx ) + "px";	
-				} else {
-					return ( refPx + axis.getRelPx( delta ) ) + "px";
-				}
-			} else {
+      var parsed;
 
-				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
-					return ( ref + axis.getRelVal( deltaPx ) );
-				} else {
-					return ( ref + delta );
-				}
-			}
-		},
+      if ( ( parsed = _parsePx( value ) ) !== false ) {
 
-		getPx: function( value, axis, rel ) {
+        return parsed; // return integer (will be interpreted as px)
 
+      } else if ( parsed = this._parsePercent( value ) ) {
 
-			var parsed;
+        return parsed; // returns xx%
 
+      } else if ( axis ) {
 
-			if( ( parsed = _parsePx( value ) ) !== false ) {
+        if ( value == "min" ) {
 
-				return parsed; // return integer (will be interpreted as px)
+          return axis.getMinPx();
 
-			} else if( parsed = this._parsePercent( value ) ) {
+        } else if ( value == "max" ) {
 
-				return parsed; // returns xx%
+          return axis.getMaxPx();
 
-			} else if( axis ) {
+        } else if ( rel ) {
 
-				if( value == "min" ) {
+          return axis.getRelPx( value );
+        } else {
 
-					return axis.getMinPx();
+          return axis.getPos( value );
+        }
+      }
+    },
 
-				} else if( value == "max" ) {
+    getPxRel: function( value, axis ) {
 
-					return axis.getMaxPx();
-				
-				} else if( rel ) {
+      return this.getPx( value, axis, true );
+    },
 
-					return axis.getRelPx( value );
-				} else {
+    contextListen: function( target, menuElements, callback ) {
 
-					return axis.getPos( value );
-				}
-			}
-		},
+      var self = this;
 
-		getPxRel: function( value, axis ) {
+      if ( this.options.onContextMenuListen ) {
+        return this.options.onContextMenuListen( target, menuElements, callback );
+      }
 
-			return this.getPx( value, axis, true );
-		},
+      if ( !this.context ) {
 
-		contextListen: function( target, menuElements, callback ) {
+        this.dynamicLoader.load( 'util', './util/context', function( Context ) {
 
-			var self = this;
+          var instContext = new Context();
 
-			if( this.options.onContextMenuListen ) {
-				return this.options.onContextMenuListen( target, menuElements, callback );
-			}
+          instContext.init( self._dom );
+          instContext.listen( target, menuElements, callback );
 
-			if( ! this.context ) {
+          self.context = instContext;
+        } );
 
-				this.dynamicLoader.load( 'util', './util/context', function( Context ) {
+      } else {
+        this.context.listen( target, menuElements, callback );
+      }
 
-					var instContext = new Context();
+    },
 
-					instContext.init( self._dom );
-					instContext.listen( target, menuElements, callback );
+    lockShapes: function() {
+      this.shapesLocked = true;
+    },
 
-					self.context = instContext;
-				});	
+    unlockShapes: function() {
+      //		console.log('unlock');
+      this.shapesLocked = false;
+    }
+  }
 
-			} else {
-				this.context.listen( target, menuElements, callback );
-			}
-			
-		},
+  function makeSerie( graph, name, options, type, callback ) {
 
-		lockShapes: function() {
-			this.shapesLocked = true;
-		},
+    return graph.dynamicLoader.load( 'serie', 'graph.serie.' + type, function( Serie ) {
 
-		unlockShapes: function() {
-	//		console.log('unlock');
-			this.shapesLocked = false;
-		}
-	}
+      var serie = new Serie();
+      serie.init( graph, name, options );
+      graph.plotGroup.appendChild( serie.groupMain );
+      callback( serie );
+      return serie;
 
+    } );
+  };
 
-	function makeSerie( graph, name, options, type, callback ) {
+  function _parsePx( px ) {
+    if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
+      return parseInt( px.replace( 'px', '' ) );
+    }
+    return false;
+  };
 
-		return graph.dynamicLoader.load( 'serie', 'graph.serie.' + type, function( Serie ) {
+  function refreshDrawingZone( graph, noX, noY ) {
 
-			var serie = new Serie();
-			serie.init( graph, name, options );
-			graph.plotGroup.appendChild( serie.groupMain );
-			callback( serie );
-			return serie;
-			
-		} );		
-	};
+    var i, j, l, xy, min, max;
+    var axisvars = [ 'bottom', 'top', 'left', 'right' ],
+      shift = [ 0, 0, 0, 0 ],
+      axis;
 
+    graph._painted = true;
+    graph.refreshMinOrMax();
 
-	function _parsePx( px ) {
-		if( px && px.indexOf && px.indexOf('px') > -1) {
-			return parseInt(px.replace('px', ''));
-		}
-		return false;
-	};
+    // Apply to top and bottom
+    graph._applyToAxes( function( axis ) {
 
+      if ( axis.disabled ) {
+        return;
+      }
 
-	function refreshDrawingZone( graph, noX, noY ) {
+      var axisIndex = axisvars.indexOf( arguments[ 1 ] );
+      axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition() );
+      shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 
-		var i, j, l, xy, min, max;
-		var axisvars = ['bottom', 'top', 'left', 'right'], shift = [0, 0, 0, 0], axis;
+    }, false, true, false );
 
-		graph._painted = true;
-		graph.refreshMinOrMax();
+    // Applied to left and right
+    graph._applyToAxes( function( axis ) {
 
-		// Apply to top and bottom
-		graph._applyToAxes( function( axis ) {
+      if ( axis.disabled ) {
+        return;
+      }
 
-			if( axis.disabled ) {
-				return;
-			}
+      axis.setMinPx( shift[ 1 ] );
+      axis.setMaxPx( graph.getDrawingHeight( true ) - shift[ 0 ] );
 
-			var axisIndex = axisvars.indexOf( arguments[ 1 ] );
-			axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition( ) ); 
-			shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+      // First we need to draw it in order to determine the width to allocate
+      // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-		}, false, true, false );
+      var drawn = axis.draw() || 0,
+        axisIndex = axisvars.indexOf( arguments[ 1 ] ),
+        axisDim = axis.getAxisPosition();
 
+      // Get axis position gives the extra shift that is common
+      axis.setShift( shift[ axisIndex ] + axisDim + drawn, drawn + axisDim );
+      shift[ axisIndex ] += drawn + axisDim;
 
-		// Applied to left and right
-		graph._applyToAxes(function(axis) {
+      axis.drawSeries();
 
-			if( axis.disabled ) {
-				return;
-			}
+    }, false, false, true );
 
-			axis.setMinPx( shift[ 1 ] );
-			axis.setMaxPx( graph.getDrawingHeight( true ) - shift[ 0 ] );
+    // Apply to top and bottom
+    graph._applyToAxes( function( axis ) {
 
-			// First we need to draw it in order to determine the width to allocate
-			// graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+      if ( axis.disabled ) {
+        return;
+      }
 
-			var drawn = axis.draw( ) || 0,
-				axisIndex = axisvars.indexOf( arguments[ 1 ] ),
-				axisDim = axis.getAxisPosition( );
+      axis.setMinPx( shift[ 2 ] );
+      axis.setMaxPx( graph.getDrawingWidth( true ) - shift[ 3 ] );
+      axis.draw();
 
-			// Get axis position gives the extra shift that is common
-			axis.setShift(shift[axisIndex] + axisDim + drawn, drawn + axisDim);
-			shift[ axisIndex ] += drawn + axisDim;
+      axis.drawSeries();
 
-			axis.drawSeries();
+    }, false, true, false );
 
-		}, false, false, true);
-
-	
-		// Apply to top and bottom
-		graph._applyToAxes(function(axis) {
-			
-			if( axis.disabled ) {
-				return;
-			}
-
-			axis.setMinPx( shift[ 2 ] );
-			axis.setMaxPx( graph.getDrawingWidth(true) - shift[ 3 ] );
-			axis.draw( );
-
-
-
-			axis.drawSeries();
-
-		}, false, true, false);
-
-		// Apply to all axis
-/*		graph._applyToAxes(function(axis) {
+    // Apply to all axis
+    /*		graph._applyToAxes(function(axis) {
 			axis.drawSeries();
 		}, false, true, true);
-*/		
+*/
 
+    _closeLine( graph, 'right', graph.getDrawingWidth( true ), graph.getDrawingWidth( true ), shift[ 1 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
+    _closeLine( graph, 'left', 0, 0, shift[ 1 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
+    _closeLine( graph, 'top', shift[ 2 ], graph.getDrawingWidth( true ) - shift[ 3 ], 0, 0 );
+    _closeLine( graph, 'bottom', shift[ 2 ], graph.getDrawingWidth( true ) - shift[ 3 ], graph.getDrawingHeight( true ) - shift[ 0 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
 
-		_closeLine( graph, 'right', graph.getDrawingWidth(true), graph.getDrawingWidth(true), shift[ 1 ], graph.getDrawingHeight(true) - shift[0]);
-		_closeLine( graph, 'left', 0, 0, shift[ 1 ], graph.getDrawingHeight(true) - shift[0]);
-		_closeLine( graph, 'top', shift[2], graph.getDrawingWidth(true) - shift[3], 0, 0);
-		_closeLine( graph, 'bottom', shift[2], graph.getDrawingWidth(true) - shift[3], graph.getDrawingHeight(true) - shift[0], graph.getDrawingHeight(true) - shift[0]);
+    graph.clipRect.setAttribute( 'y', shift[ 1 ] );
+    graph.clipRect.setAttribute( 'x', shift[ 2 ] );
+    graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift[ 2 ] - shift[ 3 ] );
+    graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift[ 1 ] - shift[ 0 ] );
 
-		graph.clipRect.setAttribute('y', shift[1]);
-		graph.clipRect.setAttribute('x', shift[2]);
-		graph.clipRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-		graph.clipRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+    graph.rectEvent.setAttribute( 'x', shift[ 1 ] );
+    graph.rectEvent.setAttribute( 'y', shift[ 2 ] );
+    graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift[ 2 ] - shift[ 3 ] );
+    graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift[ 1 ] - shift[ 0 ] );
 
-
-		graph.rectEvent.setAttribute('x', shift[1]);
-		graph.rectEvent.setAttribute('y', shift[2]);
-		graph.rectEvent.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-		graph.rectEvent.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
-
-/*
+    /*
 		graph.shapeZoneRect.setAttribute('x', shift[1]);
 		graph.shapeZoneRect.setAttribute('y', shift[2]);
 		graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
 		graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
 */
-		graph.shift = shift;
-		graph.redrawShapes();
-	}
-
-	function _registerEvents( graph ) {
-		var self = graph;
-
-		graph._dom.addEventListener( 'keydown', function( e ) {
-	
-			e.preventDefault();
-			e.stopPropagation();
-			
-			if( e.keyCode == 8 && self.selectedShape ) {
-				self.selectedShape.kill();
-			}
-
-		});
-
-
-
-
-		graph.dom.addEventListener('mousemove', function(e) {
-			e.preventDefault();
-			var coords = self._getXY(e);
-			_handleMouseMove( self, coords.x, coords.y, e );
-		});
-
-		graph.dom.addEventListener('mousedown', function(e) {
-			
-			self.focus();
+    graph.shift = shift;
+    graph.redrawShapes();
+  }
 
-			e.preventDefault( );
-			if( e.which == 3 || e.ctrlKey ) {
-				return;
-			}
-
-			var coords = self._getXY( e );
-			_handleMouseDown( self, coords.x, coords.y, e );
-
-		});
+  function _registerEvents( graph ) {
+    var self = graph;
 
-		graph.dom.addEventListener('mouseup', function(e) {
-
-			e.preventDefault( );
-			var coords = self._getXY( e );
-			_handleMouseUp( self, coords.x, coords.y, e );
-
-		});
+    graph._dom.addEventListener( 'keydown', function( e ) {
 
-		graph.dom.addEventListener('dblclick', function(e) {
-			e.preventDefault();
-			
-			if( self.clickTimeout ) {
-				window.clearTimeout( self.clickTimeout );
-			}
-
-			var coords = self._getXY(e);
-			self.cancelClick = true;
-			_handleDblClick( self, coords.x, coords.y, e );
-		});
-
-		graph.dom.addEventListener('click', function(e) {
-
-			// Cancel right click or Command+Click
-			if(e.which == 3 || e.ctrlKey)
-				return;
-			e.preventDefault();
-			var coords = self._getXY(e);
-			if(self.clickTimeout)
-				window.clearTimeout(self.clickTimeout);
-
-			// Only execute the action after 200ms
-			self.clickTimeout = window.setTimeout(function() {
-				_handleClick( self, coords.x,coords.y, e );
-			}, 200);
-		});
+      e.preventDefault();
+      e.stopPropagation();
 
-		graph.rectEvent.addEventListener('mousewheel', function(e) {
-			e.preventDefault();
-			e.stopPropagation();
-			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			_handleMouseWheel(self, deltaY, e);
+      if ( e.keyCode == 8 && self.selectedShape ) {
+        self.selectedShape.kill();
+      }
 
-			return false;
-		});
+    } );
 
-		graph.rectEvent.addEventListener('wheel', function(e) {
-			e.stopPropagation();
-			e.preventDefault();
-			var deltaY = e.wheelDeltaY || e.wheelDelta || - e.deltaY;
-			_handleMouseWheel( self, deltaY, e );	
-			
-			return false;
-		});
-	}
+    graph.dom.addEventListener( 'mousemove', function( e ) {
+      e.preventDefault();
+      var coords = self._getXY( e );
+      _handleMouseMove( self, coords.x, coords.y, e );
+    } );
 
-	function _handleMouseDown( graph, x, y, e ) {
+    graph.dom.addEventListener( 'mousedown', function( e ) {
 
-		var self = graph,
-			$target = $(e.target), 
-			shift = e.shiftKey, 
-			ctrl = e.ctrlKey, 
-			keyComb = graph.options.pluginAction,
-			i;
+      self.focus();
 
-		graph.unselectShape();
+      e.preventDefault();
+      if ( e.which == 3 || e.ctrlKey ) {
+        return;
+      }
 
-		if( graph.forcedPlugin ) {
+      var coords = self._getXY( e );
+      _handleMouseDown( self, coords.x, coords.y, e );
 
-			graph.activePlugin = graph.forcedPlugin;
-			graph._pluginExecute( graph.activePlugin, 'onMouseDown', [ graph, x, y, e]);
-			return;
-		}
+    } );
 
-		for( i in keyComb ) {
+    graph.dom.addEventListener( 'mouseup', function( e ) {
 
-			if( graph.isPluginAllowed( e, keyComb[ i ] ) ) {
-				
-				graph.activePlugin = i; // Lease the mouse action to the current action
-				graph._pluginExecute(i, 'onMouseDown', [ graph, x, y, e]);
-				break;
-			}
-		}
-	}
+      e.preventDefault();
+      var coords = self._getXY( e );
+      _handleMouseUp( self, coords.x, coords.y, e );
 
+    } );
 
+    graph.dom.addEventListener( 'dblclick', function( e ) {
+      e.preventDefault();
 
-	function _handleMouseMove( graph, x, y, e ) {
+      if ( self.clickTimeout ) {
+        window.clearTimeout( self.clickTimeout );
+      }
 
-		if( graph.bypassHandleMouse ) {
-			graph.bypassHandleMouse.handleMouseMove(e);
-			return;
-		}
-		
-		if( graph._pluginExecute(graph.activePlugin, 'onMouseMove', [ graph, x, y, e ]) ) {
-			return;
-		};
+      var coords = self._getXY( e );
+      self.cancelClick = true;
+      _handleDblClick( self, coords.x, coords.y, e );
+    } );
 
-//			return;
+    graph.dom.addEventListener( 'click', function( e ) {
 
-		graph._applyToAxes('handleMouseMove', [x - graph.options.paddingLeft, e], true, false);
-		graph._applyToAxes('handleMouseMove', [y - graph.options.paddingTop, e], false, true);
+      // Cancel right click or Command+Click
+      if ( e.which == 3 || e.ctrlKey )
+        return;
+      e.preventDefault();
+      var coords = self._getXY( e );
+      if ( self.clickTimeout )
+        window.clearTimeout( self.clickTimeout );
 
-		if(!graph.activePlugin) {
-			var results = {};
-			
-			if(graph.options.onMouseMoveData) {
+      // Only execute the action after 200ms
+      self.clickTimeout = window.setTimeout( function() {
+        _handleClick( self, coords.x, coords.y, e );
+      }, 200 );
+    } );
 
-				for(var i = 0; i < graph.series.length; i++) {
-					results[graph.series[i].getName()] = graph.series[i].handleMouseMove(false, true);
-				}
+    graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+      e.preventDefault();
+      e.stopPropagation();
+      var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+      _handleMouseWheel( self, deltaY, e );
 
-				graph.options.onMouseMoveData.call( graph, e, results);
-			}
-			return;
-		}
-	}
+      return false;
+    } );
 
-	function _handleDblClick( graph, x, y, e ) {
-	//	var _x = x - graph.options.paddingLeft;
-	//	var _y = y - graph.options.paddingTop;
-		var pref = graph.options.dblclick;
+    graph.rectEvent.addEventListener( 'wheel', function( e ) {
+      e.stopPropagation();
+      e.preventDefault();
+      var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+      _handleMouseWheel( self, deltaY, e );
 
-		if( ! pref || ! pref.type ) {
-			return;
-		}
+      return false;
+    } );
+  }
 
-		switch( pref.type ) {
+  function _handleMouseDown( graph, x, y, e ) {
 
-			case 'plugin':
+    var self = graph,
+      $target = $( e.target ),
+      shift = e.shiftKey,
+      ctrl = e.ctrlKey,
+      keyComb = graph.options.pluginAction,
+      i;
 
-				var plugin;
+    graph.unselectShape();
 
-				if( ( plugin = graph._plugins[ pref.plugin ] ) ) {
+    if ( graph.forcedPlugin ) {
 
-					plugin.onDblClick( graph, x, y, pref.options, e );
-				}
+      graph.activePlugin = graph.forcedPlugin;
+      graph._pluginExecute( graph.activePlugin, 'onMouseDown', [ graph, x, y, e ] );
+      return;
+    }
 
-			break;
-		}
-	}
+    for ( i in keyComb ) {
 
-	function _handleMouseUp(graph, x, y, e) {
+      if ( graph.isPluginAllowed( e, keyComb[ i ] ) ) {
 
-		if(graph.bypassHandleMouse) {
-			graph.bypassHandleMouse.handleMouseUp(e);
-			graph.activePlugin = false;
-			return;
-		}
+        graph.activePlugin = i; // Lease the mouse action to the current action
+        graph._pluginExecute( i, 'onMouseDown', [ graph, x, y, e ] );
+        break;
+      }
+    }
+  }
 
-		graph._pluginExecute(graph.activePlugin, 'onMouseUp', [ graph, x, y, e ]);
-		graph.activePlugin = false;
+  function _handleMouseMove( graph, x, y, e ) {
 
-	}
+    if ( graph.bypassHandleMouse ) {
+      graph.bypassHandleMouse.handleMouseMove( e );
+      return;
+    }
 
- 	function _handleClick(graph, x, y, e) {
-		
-		if( ! graph.options.addLabelOnClick ) {
-			return;
-		}
+    if ( graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
+      return;
+    };
 
-		if(graph.currentAction !== false) {
-			return;
-		}
+    //			return;
 
-		for(var i = 0, l = graph.series.length; i < l; i++) {
-			graph.series[i].addLabelX(graph.series[i].getXAxis().getVal(x - graph.getPaddingLeft()));
-		}
-	}
+    graph._applyToAxes( 'handleMouseMove', [ x - graph.options.paddingLeft, e ], true, false );
+    graph._applyToAxes( 'handleMouseMove', [ y - graph.options.paddingTop, e ], false, true );
 
+    if ( !graph.activePlugin ) {
+      var results = {};
 
+      if ( graph.options.onMouseMoveData ) {
 
-	function _getAxis(graph, num, options, inst, pos) {
+        for ( var i = 0; i < graph.series.length; i++ ) {
+          results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+        }
 
-		num = num || 0;
+        graph.options.onMouseMoveData.call( graph, e, results );
+      }
+      return;
+    }
+  }
 
-		if(typeof num == "object") {
-			options = num;
-			num = 0;
-		}
+  function _handleDblClick( graph, x, y, e ) {
+    //	var _x = x - graph.options.paddingLeft;
+    //	var _y = y - graph.options.paddingTop;
+    var pref = graph.options.dblclick;
 
-		return graph.axis[pos][num] = graph.axis[pos][num] || new inst(graph, pos, options);
-	}
+    if ( !pref ||  !pref.type ) {
+      return;
+    }
 
+    switch ( pref.type ) {
 
-	function _closeLine( graph, mode, x1, x2, y1, y2) {	
-		
-		if( graph.options.close === false ) {
-			return;
-		}
+      case 'plugin':
 
-		var l = 0;
+        var plugin;
 
-		graph.axis[ mode ].map( function( g ) {
+        if ( ( plugin = graph._plugins[ pref.plugin ] ) ) {
 
-			if( g.isDisplayed() ) {
-				l++;
-			}
-		});
+          plugin.onDblClick( graph, x, y, pref.options, e );
+        }
 
-		if( ( graph.options.close === true  || graph.options.close[ mode ] ) && l == 0 ) {
+        break;
+    }
+  }
 
-			graph.closingLines[ mode ].setAttribute('display', 'block');
-			graph.closingLines[ mode ].setAttribute('x1', x1);
-			graph.closingLines[ mode ].setAttribute('x2', x2);
-			graph.closingLines[ mode ].setAttribute('y1', y1);
-			graph.closingLines[ mode ].setAttribute('y2', y2);
+  function _handleMouseUp( graph, x, y, e ) {
 
-		} else {
+    if ( graph.bypassHandleMouse ) {
+      graph.bypassHandleMouse.handleMouseUp( e );
+      graph.activePlugin = false;
+      return;
+    }
 
-			graph.closingLines[ mode ].setAttribute('display', 'none');
+    graph._pluginExecute( graph.activePlugin, 'onMouseUp', [ graph, x, y, e ] );
+    graph.activePlugin = false;
 
-		}
-	}
+  }
 
+  function _handleClick( graph, x, y, e ) {
 
-	function _handleMouseWheel(graph, delta, e) {
+    if ( !graph.options.addLabelOnClick ) {
+      return;
+    }
 
+    if ( graph.currentAction !== false ) {
+      return;
+    }
 
-		e.preventDefault();
-		e.stopPropagation();
+    for ( var i = 0, l = graph.series.length; i < l; i++ ) {
+      graph.series[ i ].addLabelX( graph.series[ i ].getXAxis().getVal( x - graph.getPaddingLeft() ) );
+    }
+  }
 
-		if( ! graph.options.wheel.type ) {
-			return;
-		}
+  function _getAxis( graph, num, options, inst, pos ) {
 
-		switch( graph.options.wheel.type ) {
+    num = num || 0;
 
-			case 'plugin':
+    if ( typeof num == "object" ) {
+      options = num;
+      num = 0;
+    }
 
-				var plugin;
+    return graph.axis[ pos ][ num ] = graph.axis[ pos ][ num ] || new inst( graph, pos, options );
+  }
 
-				if( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
-					plugin.onMouseWheel( delta, e );
-				}
+  function _closeLine( graph, mode, x1, x2, y1, y2 ) {
 
-			break;
+    if ( graph.options.close === false ) {
+      return;
+    }
 
+    var l = 0;
 
-			case 'toSeries':
+    graph.axis[ mode ].map( function( g ) {
 
-				for(var i = 0, l = graph.series.length; i < l; i++) {
-					graph.series[ i ].onMouseWheel(delta, e);
-				}
+      if ( g.isDisplayed() ) {
+        l++;
+      }
+    } );
 
-			break;
+    if ( ( graph.options.close === true || graph.options.close[ mode ] ) && l == 0 ) {
 
-		}
+      graph.closingLines[ mode ].setAttribute( 'display', 'block' );
+      graph.closingLines[ mode ].setAttribute( 'x1', x1 );
+      graph.closingLines[ mode ].setAttribute( 'x2', x2 );
+      graph.closingLines[ mode ].setAttribute( 'y1', y1 );
+      graph.closingLines[ mode ].setAttribute( 'y2', y2 );
 
-		graph.redraw( );
-		graph.drawSeries( true );
-	}
+    } else {
 
-	return Graph;
-});
+      graph.closingLines[ mode ].setAttribute( 'display', 'none' );
+
+    }
+  }
+
+  function _handleMouseWheel( graph, delta, e ) {
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    if ( !graph.options.wheel.type ) {
+      return;
+    }
+
+    switch ( graph.options.wheel.type ) {
+
+      case 'plugin':
+
+        var plugin;
+
+        if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+          plugin.onMouseWheel( delta, e );
+        }
+
+        break;
+
+      case 'toSeries':
+
+        for ( var i = 0, l = graph.series.length; i < l; i++ ) {
+          graph.series[ i ].onMouseWheel( delta, e );
+        }
+
+        break;
+
+    }
+
+    graph.redraw();
+    graph.drawSeries( true );
+  }
+
+  return Graph;
+} );

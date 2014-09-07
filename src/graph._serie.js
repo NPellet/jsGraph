@@ -1,455 +1,439 @@
-
 define( [], function() {
 
-	"use strict";
+  "use strict";
 
-	var GraphSerieNonInstanciable = function() {
-		throw "This serie is not instanciable";
-	}
+  var GraphSerieNonInstanciable = function() {
+    throw "This serie is not instanciable";
+  }
 
-	GraphSerieNonInstanciable.prototype = {
+  GraphSerieNonInstanciable.prototype = {
 
-		setAdditionalData: function( data ) {
-			this.additionalData = data;
-			return this;
-		},
+    setAdditionalData: function( data ) {
+      this.additionalData = data;
+      return this;
+    },
 
-		getAdditionalData: function( ) {
-			return this.additionalData;
-		},
+    getAdditionalData: function() {
+      return this.additionalData;
+    },
 
+    /**
+     *	Possible data types
+     *	[100, 0.145, 101, 0.152, 102, 0.153]
+     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
+     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
+     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
+     *
+     *	Converts every data type to a 1D array
+     */
 
+    setData: function( data, arg, type ) {
 
-		/**
-		 *	Possible data types
-		 *	[100, 0.145, 101, 0.152, 102, 0.153]
-		 *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-		 *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-		 *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-		 *
-		 *	Converts every data type to a 1D array
-		 */
+      var z = 0,
+        x,
+        dx,
+        arg = arg || "2D",
+        type = type || 'float',
+        arr,
+        total = 0,
+        continuous;
 
-		setData: function(data, arg, type) {
+      if ( !data instanceof Array ) {
+        return;
+      }
 
-			var z = 0,
-				x,
-				dx, 
-				arg = arg || "2D", 
-				type = type || 'float', 
-				arr, 
-				total = 0,
-				continuous;
+      // Single object
+      var datas = [];
+      if ( !( data instanceof Array ) && typeof data == 'object' ) {
+        data = [ data ];
+      } else if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
+        data = [ data ];
+        arg = "1D";
+      }
 
-			if( ! data instanceof Array ) {
-				return;
-			}
+      var _2d = ( arg == "2D" );
 
-			// Single object
-			var datas = [];
-			if( ! ( data instanceof Array ) && typeof data == 'object' ) {
-				data = [ data ];
-			} else if( data instanceof Array && ! ( data[ 0 ] instanceof Array ) ) {// [100, 103, 102, 2143, ...]
-				data = [ data ];
-				arg = "1D";
-			}
+      // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
+      if ( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+        data = [ data ];
+      }
 
-			var _2d = ( arg == "2D" );
+      if ( data[ 0 ] instanceof Array ) {
+        for ( var i = 0, k = data.length; i < k; i++ ) {
 
-			// [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-			if( data[ 0 ] instanceof Array && arg == "2D" && ! ( data[ 0 ][ 0 ] instanceof Array ) ) {
-				data = [ data ];
-			}
+          arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
+          datas.push( arr );
+          z = 0;
 
+          for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-			if(data[ 0 ] instanceof Array) {
-				for(var i = 0, k = data.length; i < k; i++) {
+            if ( _2d ) {
+              arr[ z ] = ( data[ i ][ j ][ 0 ] );
+              this._checkX( arr[ z ] );
+              z++;
+              arr[ z ] = ( data[ i ][ j ][ 1 ] );
+              this._checkY( arr[ z ] );
+              z++;
+              total++;
+            } else { // 1D Array
+              arr[ z ] = data[ i ][ j ];
+              this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+              z++;
+              total += j % 2 ? 1 : 0;
 
-					arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
-					datas.push( arr );
-					z = 0;
-					
-					for(var j = 0, l = data[ i ].length; j < l; j++) {
+            }
+          }
+        }
 
-						if(_2d) {
-							arr[z] = (data[i][j][0]);
-							this._checkX(arr[z]);
-							z++;
-							arr[z] = (data[i][j][1]);
-							this._checkY(arr[z]);
-							z++;
-							total++;
-						} else { // 1D Array
-							arr[z] = data[i][j];
-							this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-							z++;
-							total += j % 2 ? 1 : 0;
+      } else if ( typeof data[ 0 ] == 'object' ) {
 
-						}
-					}
-				}
+        this.mode = 'x_equally_separated';
 
-			} else if(typeof data[0] == 'object') {
-				
-				this.mode = 'x_equally_separated';
+        var number = 0,
+          numbers = [],
+          datas = [],
+          k = 0,
+          o;
+        for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
+          number += data[ i ].y.length;
+          continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
+          if ( !continuous ) {
+            datas.push( this._addData( type, number ) );
+            numbers.push( number );
+            number = 0;
+          }
+        }
 
-				var number = 0, numbers = [], datas = [], k = 0, o;
-				for(var i = 0, l = data.length; i < l; i++) { // Several piece of data together
-					number += data[i].y.length;
-					continuous = (i != 0) && (!data[i + 1] || data[i].x + data[i].dx * (data[i].y.length) == data[i + 1].x);
-					if( ! continuous ) {
-						datas.push(this._addData(type, number));
-						numbers.push(number);
-						number = 0;
-					}
-				}
+        this.xData = [];
 
-				this.xData = [];
+        number = 0, k = 0, z = 0;
 
-				number = 0, k = 0, z = 0;
+        for ( var i = 0, l = data.length; i < l; i++ ) {
+          x = data[ i ].x, dx = data[ i ].dx;
 
-				for(var i = 0, l = data.length; i < l; i++) {
-					x = data[i].x, dx = data[i].dx;
+          this.xData.push( {
+            x: x,
+            dx: dx
+          } );
 
-					this.xData.push( { x : x, dx : dx } );
+          o = data[ i ].y.length;
+          this._checkX( x );
+          this._checkX( x + dx * o );
 
-					o = data[i].y.length;
-					this._checkX( x );
-					this._checkX( x + dx * o );
-
-					for(var j = 0; j < o; j++) {
-						/*datas[k][z] = (x + j * dx);
+          for ( var j = 0; j < o; j++ ) {
+            /*datas[k][z] = (x + j * dx);
 						this._checkX(datas[k][z]);
 						z++;*/
-						// 30 june 2014. To save memory I suggest that we do not add this stupid data.
-			
-						datas[k][z] = (data[i].y[j]);
-						this._checkY(datas[k][z]);
-						z++;
-						total++;
-
-
-					}
-					number += data[i].y.length;
-			
-					if(numbers[k] == number) {
-						k++;
-						number = 0;
-						z = 0;
-					}
-				}
-			}
-
-			// Determination of slots for low res spectrum
-			var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth( ),
-				ws = [];
-
-			var min = this.graph.getDrawingWidth( ) * 4;
-			var max = total / 4;
-
-			var min = this.graph.getDrawingWidth( );
-			var max = total;
+            // 30 june 2014. To save memory I suggest that we do not add this stupid data.
 
-			this.data = datas;
-			
-			if( min > 0 ) {
+            datas[ k ][ z ] = ( data[ i ].y[ j ] );
+            this._checkY( datas[ k ][ z ] );
+            z++;
+            total++;
 
-				while( min < max ) {
-					ws.push( min );
-					min *= 4;
-				}
-
-				this.slots = ws;
-			
-				if( this.options.useSlots ) {
-					this.calculateSlots( );
-				}
-			}
+          }
+          number += data[ i ].y.length;
 
-			if( this.isFlipped() ) {
-
-				var maxX = this.maxX;
-				var maxY = this.maxY;
-				var minX = this.minX;
-				var minY = this.minY;
+          if ( numbers[ k ] == number ) {
+            k++;
+            number = 0;
+            z = 0;
+          }
+        }
+      }
 
-				this.maxX = maxY;
-				this.maxY = maxX;
+      // Determination of slots for low res spectrum
+      var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth(),
+        ws = [];
 
-				this.minX = minY;
-				this.minY = minX;
-			}
+      var min = this.graph.getDrawingWidth() * 4;
+      var max = total / 4;
 
-			this.graph._updateAxes();
+      var min = this.graph.getDrawingWidth();
+      var max = total;
 
-			return this;
-		},
+      this.data = datas;
 
+      if ( min > 0 ) {
 
+        while ( min < max ) {
+          ws.push( min );
+          min *= 4;
+        }
 
-		_addData: function(type, howmany) {
+        this.slots = ws;
 
-			switch(type) {
-				case 'int':
-					var size = howmany * 4; // 4 byte per number (32 bits)
-				break;
-				case 'float':
-					var size = howmany * 8; // 4 byte per number (64 bits)
-				break;
-			}
+        if ( this.options.useSlots ) {
+          this.calculateSlots();
+        }
+      }
 
-			var arr = new ArrayBuffer(size);
+      if ( this.isFlipped() ) {
 
-			switch(type) {
-				case 'int':
-					return new Int32Array(arr);
-				break;
+        var maxX = this.maxX;
+        var maxY = this.maxY;
+        var minX = this.minX;
+        var minY = this.minY;
 
-				default:
-				case 'float':
-					return new Float64Array(arr);
-				break;
-			}
-		},
+        this.maxX = maxY;
+        this.maxY = maxX;
 
-		kill: function( noRedraw ) {
+        this.minX = minY;
+        this.minY = minX;
+      }
 
-			this.graph.plotGroup.removeChild(this.groupMain);
+      this.graph._updateAxes();
 
-			if (this.picks && this.picks.length) {
-				for(var i = 0, l = this.picks.length; i < l; i++) {
-					this.picks[i].kill();
-				}
-			}
+      return this;
+    },
 
-			this.graph.series.splice(this.graph.series.indexOf(this), 1);
+    _addData: function( type, howmany ) {
 
-			if( ! noRedraw ) {
-				this.graph.redraw();
-			}
-		},
+      switch ( type ) {
+        case 'int':
+          var size = howmany * 4; // 4 byte per number (32 bits)
+          break;
+        case 'float':
+          var size = howmany * 8; // 4 byte per number (64 bits)
+          break;
+      }
 
-		isMinOrMax: function(bool, xy, minmax) {
+      var arr = new ArrayBuffer( size );
 
-			if( bool == undefined ) {
-				return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
-			}
+      switch ( type ) {
+        case 'int':
+          return new Int32Array( arr );
+          break;
 
-			if( minmax == undefined && xy != undefined ) {
-				this._isMinOrMax[ xy ].min = bool;
-				this._isMinOrMax[ xy ].max = bool;
-				return;
-			}
+        default:
+        case 'float':
+          return new Float64Array( arr );
+          break;
+      }
+    },
 
-			if( xy != undefined && minmax != undefined ) {
-				this._isMinOrMax[ xy ][ minmax ] = bool;
-			}
-		},
+    kill: function( noRedraw ) {
 
+      this.graph.plotGroup.removeChild( this.groupMain );
 
-		hide: function() {
-			this.shown = false;
-			this.groupMain.setAttribute('display', 'none');
+      if ( this.picks && this.picks.length ) {
+        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+          this.picks[ i ].kill();
+        }
+      }
 
-			this.getSymbolForLegend().setAttribute('opacity', 0.5);
-			this.getTextForLegend().setAttribute('opacity', 0.5);
-		},
+      this.graph.series.splice( this.graph.series.indexOf( this ), 1 );
 
-		show: function() {
-			this.shown = true;
-			this.groupMain.setAttribute('display', 'block');
+      if ( !noRedraw )  {
+        this.graph.redraw();
+      }
+    },
+
+    isMinOrMax: function( bool, xy, minmax ) {
+
+      if ( bool == undefined ) {
+        return this._isMinOrMax.x.min || this._isMinOrMax.x.max || this._isMinOrMax.y.min || this._isMinOrMax.y.max;
+      }
+
+      if ( minmax == undefined && xy != undefined ) {
+        this._isMinOrMax[ xy ].min = bool;
+        this._isMinOrMax[ xy ].max = bool;
+        return;
+      }
 
-			this.getSymbolForLegend().setAttribute('opacity', 1);
-			this.getTextForLegend().setAttribute('opacity', 1);
-		},
+      if ( xy != undefined && minmax != undefined ) {
+        this._isMinOrMax[ xy ][ minmax ] = bool;
+      }
+    },
+
+    hide: function() {
+      this.shown = false;
+      this.groupMain.setAttribute( 'display', 'none' );
+
+      this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
+      this.getTextForLegend().setAttribute( 'opacity', 0.5 );
+    },
 
-		toggleShow: function() {
-			if( ! this.shown ) {
-				this.show();
-				return;
-			}
+    show: function() {
+      this.shown = true;
+      this.groupMain.setAttribute( 'display', 'block' );
 
+      this.getSymbolForLegend().setAttribute( 'opacity', 1 );
+      this.getTextForLegend().setAttribute( 'opacity', 1 );
+    },
 
-			this.hide();
-		},
+    toggleShow: function() {
+      if ( !this.shown ) {
+        this.show();
+        return;
+      }
 
+      this.hide();
+    },
 
-		isShown: function() {
-			return this.shown;
-		},
+    isShown: function() {
+      return this.shown;
+    },
 
-		getX: function(val) {
-			return Math.round(this.getXAxis().getPx(val) * 5) / 5;
-		},
+    getX: function( val ) {
+      return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
+    },
 
-		getY: function(val) {
-			return Math.round(this.getYAxis().getPx(val) * 5) / 5;
-		},
+    getY: function( val ) {
+      return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
+    },
 
+    isSelected: function() {
+      return this.selected;
+    },
 
+    _checkX: function( val ) {
+      this.minX = Math.min( this.minX, val );
+      this.maxX = Math.max( this.maxX, val );
+    },
 
-		isSelected: function() {
-			return this.selected;
-		},
+    _checkY: function( val ) {
+      this.minY = Math.min( this.minY, val );
+      this.maxY = Math.max( this.maxY, val );
+    },
 
+    getName: function() {
+      return this.name;
+    },
 
+    /* AXIS */
 
-		_checkX: function(val) {
-			this.minX = Math.min(this.minX, val);
-			this.maxX = Math.max(this.maxX, val);
-		},
+    autoAxis: function() {
+      this.setXAxis( !this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
+      this.setYAxis( !this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
+      this.graph._updateAxes();
 
-		_checkY: function(val) {
-			this.minY = Math.min(this.minY, val);
-			this.maxY = Math.max(this.maxY, val);
-		},
+      return this;
+    },
 
-		getName: function() {
-			return this.name;
-		},
+    setXAxis: function( axis ) {
+      if ( typeof axis == "number" )
+        this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
+      else
+        this.xaxis = axis;
 
+      return this;
+    },
 
+    setYAxis: function( axis ) {
+      if ( typeof axis == "number" )
+        this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
+      else
+        this.yaxis = axis;
 
-	/* AXIS */
+      return this;
+    },
 
+    getXAxis: function() {
+      return this.xaxis;
+    },
 
-		autoAxis: function() {
-			this.setXAxis( ! this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
-			this.setYAxis( ! this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
+    getYAxis: function() {
+      return this.yaxis;
+    },
 
-			this.graph._updateAxes();
-			
-			return this;
-		},
+    setAxes: function() {
 
-		setXAxis: function( axis ) {
-			if(typeof axis == "number")
-				this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
-			else
-				this.xaxis = axis;
+      for ( var i = 0; i < 2; i++ ) {
 
-			return this;
-		},
+        if ( arguments[ i ] ) {
+          this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
+        }
+      }
 
-		setYAxis: function(axis) {
-			if(typeof axis == "number")
-				this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
-			else
-				this.yaxis = axis;
+      return this;
+    },
 
-			return this;
-		},
+    /* */
 
-		getXAxis: function() {
-			return this.xaxis;
-		},
+    /* DATA MIN MAX */
 
-		getYAxis: function() {
-			return this.yaxis;
-		},
+    getMinX: function() {
+      return this.minX;
+    },
 
-		setAxes: function() {
+    getMaxX: function() {
+      return this.maxX;
+    },
 
-			for( var i = 0 ; i < 2 ; i ++ ) {
+    getMinY: function() {
+      return this.minY;
+    },
 
-				if( arguments[ i ] ) {
-					this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis') ]( arguments[ i ] );
-				}
-			}
+    getMaxY: function() {
+      return this.maxY;
+    },
 
-			return this;
-		},
+    getSymbolForLegend: function() {
 
-		/* */
-		
+      if ( !this.lineForLegend ) {
 
-		/* DATA MIN MAX */
+        var line = document.createElementNS( this.graph.ns, 'line' );
+        this.applyLineStyle( line );
 
-		getMinX: function() {
-			return this.minX;
-		},
+        line.setAttribute( 'x1', 5 );
+        line.setAttribute( 'x2', 25 );
+        line.setAttribute( 'y1', 0 );
+        line.setAttribute( 'y2', 0 );
 
-		getMaxX: function() {
-			return this.maxX;
-		},
+        line.setAttribute( 'cursor', 'pointer' );
 
-		getMinY: function() {
-			return this.minY;
-		},
+        this.lineForLegend = line;
+      }
 
-		getMaxY: function() {
-			return this.maxY;
-		},
+      return this.lineForLegend;
 
+    },
 
-		getSymbolForLegend: function() {
+    getTextForLegend: function() {
 
-			if( ! this.lineForLegend ) {
+      if ( !this.textForLegend ) {
 
-				var line = document.createElementNS( this.graph.ns, 'line' );
-				this.applyLineStyle( line );
+        var text = document.createElementNS( this.graph.ns, 'text' );
+        text.setAttribute( 'transform', 'translate(35, 3)' );
+        text.setAttribute( 'cursor', 'pointer' );
+        text.textContent = this.getLabel();
 
-				line.setAttribute('x1', 5);
-				line.setAttribute('x2', 25);
-				line.setAttribute('y1', 0);
-				line.setAttribute('y2', 0);
+        this.textForLegend = text;
+      }
 
-				line.setAttribute('cursor', 'pointer');
+      return this.textForLegend;
+    },
 
-				this.lineForLegend = line;
-			}
+    getLabel: function() {
+      return this.options.label || this.name;
+    },
 
-			return this.lineForLegend;
+    setLabel: function( label ) {
+      this.options.label = label;
+      return this;
+    },
 
-		},
-		
-		getTextForLegend: function() {
+    /* FLIP */
 
-			if( ! this.textForLegend ) {
+    setFlip: function( bol ) {
+      this.options.flip = bol;
+    },
 
-				var text = document.createElementNS( this.graph.ns, 'text' );
-				text.setAttribute('transform', 'translate(35, 3)');
-				text.setAttribute('cursor', 'pointer');
-				text.textContent = this.getLabel( );
+    getFlip: function() {
+      return this.options.flip;
+    },
 
-				this.textForLegend = text;	
-			}
+    isFlipped: function() {
+      return this.options.flip;
+    },
 
-			return this.textForLegend;
-		},
+    isXMonotoneous: function() {
+      return this.xmonotoneous ||  false;
+    }
 
-		getLabel: function() {
-			return this.options.label || this.name;
-		},
+  };
 
-		setLabel: function( label ) {
-			this.options.label = label;
-			return this;
-		},
-
-
-		/* FLIP */
-
-		setFlip: function(bol) {
-			this.options.flip = bol;
-		},
-
-		getFlip: function() {
-			return this.options.flip;
-		},
-
-		isFlipped: function() {
-			return this.options.flip;
-		},
-
-		isXMonotoneous: function() {
-			return this.xmonotoneous || false;
-		}
-
-
-
-	};
-
-	return GraphSerieNonInstanciable;
-});
+  return GraphSerieNonInstanciable;
+} );

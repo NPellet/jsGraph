@@ -1,875 +1,912 @@
+define( [], function() {
 
-define( [ ], function( ) {
+  "use strict";
 
-	"use strict";
-	function getColor( color ) {
+  function getColor( color ) {
 
-		if (Array.isArray(color)) {
-			switch (color.length) {
-				case 3:
-					return 'rgb(' + color.join(',') + ')';
-					break;
-				case 4:
-					return 'rgba(' + color.join(',') + ')';
-					break;
-			}
-		} else if( typeof(color) == "object") {
-			return "rgb(" + Math.round( color.r * 255 ) + ", " + Math.round( color.g * 255 ) + ", " + Math.round( color.b * 255 ) + ")";
-		}
+    if ( Array.isArray( color ) ) {
+      switch ( color.length ) {
+        case 3:
+          return 'rgb(' + color.join( ',' ) + ')';
+          break;
+        case 4:
+          return 'rgba(' + color.join( ',' ) + ')';
+          break;
+      }
+    } else if ( typeof( color ) == "object" ) {
+      return "rgb(" + Math.round( color.r * 255 ) + ", " + Math.round( color.g * 255 ) + ", " + Math.round( color.b * 255 ) + ")";
+    }
 
-		return color;
-	}
+    return color;
+  }
 
+  var GraphShape = function() {};
 
-	var GraphShape = function() { };
+  GraphShape.prototype = {
 
-	GraphShape.prototype = {
+    init: function( graph, groupName ) {
 
-		init: function( graph, groupName ) {
+      var self = this;
 
-			var self = this;
+      this.graph = graph;
+      this.properties = {};
+      this.group = document.createElementNS( this.graph.ns, 'g' );
 
-			this.graph = graph;
-			this.properties = {};
-			this.group = document.createElementNS(this.graph.ns, 'g');
+      this.options = this.options || {};
 
-			this.options = this.options || {};
+      if ( groupName ) {
+        this.group.setAttribute( 'data-groupname', groupName );
+      }
 
-			if( groupName ) {
-				this.group.setAttribute( 'data-groupname', groupName );
-			}
+      this._selected = false;
+      this.createDom();
+      this.setEvents();
 
-			this._selected = false;
-			this.createDom();
-			this.setEvents();
-			
-			this.classes = [];
+      this.classes = [];
 
-			this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
-			this.rectEvent.setAttribute('pointer-events', 'fill');
-			this.rectEvent.setAttribute('fill', 'transparent');
+      this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
+      this.rectEvent.setAttribute( 'pointer-events', 'fill' );
+      this.rectEvent.setAttribute( 'fill', 'transparent' );
 
-			this._movable = true;
-			
-			if( this._dom ) {
+      this._movable = true;
 
-				this.group.appendChild(this._dom);
+      if ( this._dom ) {
 
-				this._dom.addEventListener('mouseover', function (e) {
+        this.group.appendChild( this._dom );
 
-					self.handleMouseOver( e );
-					//self.doHover( true, e );
-				//	e.stopPropagation();
+        this._dom.addEventListener( 'mouseover', function( e ) {
 
-				});
+          self.handleMouseOver( e );
+          //self.doHover( true, e );
+          //	e.stopPropagation();
 
-				this._dom.addEventListener( 'mouseout', function (e) {
+        } );
 
-					self.handleMouseOut( e );
+        this._dom.addEventListener( 'mouseout', function( e ) {
 
-					//self.doHover( false, e );
-					//e.stopPropagation();
+          self.handleMouseOut( e );
 
-				});
+          //self.doHover( false, e );
+          //e.stopPropagation();
 
-				this._dom.addEventListener( 'mousedown', function(e) {
-					
-					self.graph.focus();
+        } );
 
-					e.preventDefault();
-			//		e.stopPropagation();
+        this._dom.addEventListener( 'mousedown', function( e ) {
 
-					self.handleSelected = false;
-					self.moving = true;
+          self.graph.focus();
 
-					self.handleMouseDown(e);
-				} );
+          e.preventDefault();
+          //		e.stopPropagation();
 
-				this._dom.addEventListener( 'dblclick', function(e) {
-			
-					e.preventDefault();
-					e.stopPropagation();
-					
-					self.handleDblClick(e);
-				} );
-			}
+          self.handleSelected = false;
+          self.moving = true;
 
-//			this.group.appendChild(this.rectEvent);
-			
-			this.graph.shapeZone.appendChild(this.group);
-			this.initImpl();
-		},
+          self.handleMouseDown( e );
+        } );
 
-		addClass: function( className ) {
+        this._dom.addEventListener( 'dblclick', function( e ) {
 
-			this.classes = this.classes || [];
+          e.preventDefault();
+          e.stopPropagation();
 
-			if( this.classes.indexOf( className ) == -1 ) {
-				this.classes.push( className );
-			}
+          self.handleDblClick( e );
+        } );
+      }
 
-			this.makeClasses();
-		},
+      //			this.group.appendChild(this.rectEvent);
 
-		removeClass: function( className ) {
+      this.graph.shapeZone.appendChild( this.group );
+      this.initImpl();
+    },
 
-			this.classes.splice( this.classes.indexOf( className ), 1 );
+    addClass: function( className ) {
 
-			this.makeClasses();
-		},
+      this.classes = this.classes || [];
 
-		makeClasses: function() {
+      if ( this.classes.indexOf( className ) == -1 ) {
+        this.classes.push( className );
+      }
 
-			this._dom.setAttribute( 'class', this.classes.join(" ") );
-		},
+      this.makeClasses();
+    },
 
-		initImpl: function() {},
+    removeClass: function( className ) {
 
-		setOriginalData: function(data, events) {
-			this.data = data;
-			this.events = events;
+      this.classes.splice( this.classes.indexOf( className ), 1 );
 
-		},
+      this.makeClasses();
+    },
 
-		triggerChange: function() {
-			this.graph.triggerEvent('onAnnotationChange', this.data, this);
-		},
+    makeClasses: function() {
 
-		setEvents: function() {},
+      this._dom.setAttribute( 'class', this.classes.join( " " ) );
+    },
 
-		setSelectableOnClick: function() {
-			return;
-			var self = this;
-			this._dom.addEventListener('click', function() {
-				if(!self._selectable)
-					return;
-				self._selected = !self._selected;
-				self[self._selected ? 'select' : 'unselect']();
-			});
-		},
+    initImpl: function() {},
 
-		setBBox: function() {
+    setOriginalData: function( data, events ) {
+      this.data = data;
+      this.events = events;
 
-			this.group.removeChild(this.rectEvent);
-			var box = this.group.getBBox();
-			this.rectEvent.setAttribute('x', box.x);
-			this.rectEvent.setAttribute('y', box.y - 10);
-			this.rectEvent.setAttribute('width', box.width);
-			this.rectEvent.setAttribute('height', box.height + 20);
+    },
 
-			this.group.appendChild(this.rectEvent);
-		},
+    triggerChange: function() {
+      this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
+    },
 
-		setMouseOver: function(callback) {
-			this.rectEvent.addEventListener('mouseover', callback);
-		},
+    setEvents: function() {},
 
-		kill: function() {
+    setSelectableOnClick: function() {
+      return;
+      var self = this;
+      this._dom.addEventListener( 'click', function() {
+        if ( !self._selectable )
+          return;
+        self._selected = !self._selected;
+        self[ self._selected ? 'select' : 'unselect' ]();
+      } );
+    },
 
-			this.graph.shapeZone.removeChild(this.group);
-			this.graph._removeShape( this );
+    setBBox: function() {
 
-			if( this.options.onRemove ) {
-				this.options.onRemove.call( this );
-			}
-		},
+      this.group.removeChild( this.rectEvent );
+      var box = this.group.getBBox();
+      this.rectEvent.setAttribute( 'x', box.x );
+      this.rectEvent.setAttribute( 'y', box.y - 10 );
+      this.rectEvent.setAttribute( 'width', box.width );
+      this.rectEvent.setAttribute( 'height', box.height + 20 );
 
-	/*	applyAll: function() {
+      this.group.appendChild( this.rectEvent );
+    },
+
+    setMouseOver: function( callback ) {
+      this.rectEvent.addEventListener( 'mouseover', callback );
+    },
+
+    kill: function() {
+
+      this.graph.shapeZone.removeChild( this.group );
+      this.graph._removeShape( this );
+
+      if ( this.options.onRemove ) {
+        this.options.onRemove.call( this );
+      }
+    },
+
+    /*	applyAll: function() {
 			for(var i in this.properties)
 				this._dom.setAttribute(i, this.properties[i]);
 		},
 */
-		draw: function() {
+    draw: function() {
 
-			if( this.labelNumber == undefined ) {
-				this.setLabelNumber( 1 );
-			}
+      if ( this.labelNumber == undefined ) {
+        this.setLabelNumber( 1 );
+      }
 
-			this.setFillColor( );
-			this.setStrokeColor( );
-			this.setStrokeWidth( );
-			this.setDashArray( );
+      this.setFillColor();
+      this.setStrokeColor();
+      this.setStrokeWidth();
+      this.setDashArray();
 
-			this.everyLabel(function(i) {
+      this.everyLabel( function( i ) {
 
-				if(this.get('labelPosition', i)) {
+        if ( this.get( 'labelPosition', i ) ) {
+
+          this.setLabelText( i );
+          this.setLabelSize( i );
+          //this.setLabelAngle(i);
+          this.setLabelColor( i );
+          this.setLabelPosition( i );
+
+        }
+
+        if ( this.get( 'labelAnchor', i ) ) {
+
+          this._forceLabelAnchor( i );
+
+        }
+      } );
+    },
+
+    redraw: function() {
+      //	this.kill();
+      var variable;
+      this.position = this.setPosition();
+
+      this.redrawImpl();
+
+      if ( !this.position )
+        return;
+
+      this.everyLabel( function( i ) {
+
+        if ( this.get( 'labelPosition', i ) ) {
+
+          this.setLabelPosition( i );
+          this.setLabelAngle( i );
+
+        }
+
+      } );
+
+      if ( this.afterDone )
+        this.afterDone();
+      //	this.done();
+    },
+
+    redrawImpl: function() {},
+
+    done: function() {
+      //this.applyAll();
+      //;
+
+    },
+
+    setSerie: function( serie ) {
+      this.serie = serie;
+    },
+    set: function( prop, val, index ) {
+
+      this.properties[ prop ] = this.properties[ prop ] || [];
+      this.properties[ prop ][ index || 0 ] = val;
+
+      this.configuration = this.configuration || {
+        sections: {
+          shape_cfg: [ {
+            groups: {
+              shape_cfg: [ {}  ]
+            }
+          } ]
+        }
+      };
+      this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
+
+    },
+
+    get: function( prop, index ) {
+      this.configuration = this.configuration || {
+        sections: {
+          shape_cfg: [ {
+            groups: {
+              shape_cfg: [ {}  ]
+            }
+          } ]
+        }
+      };
+      return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [] )[ 0 ];
+    },
+
+    getFromData: function( prop ) {
+      return this.data[ prop ];
+    },
+    setData: function( prop, val ) {
+      return this.data[ prop ] = val;
+    },
+    setDom: function( prop, val ) {
+      if ( this._dom ) this._dom.setAttribute( prop, val );
+    },
+
+    setPosition: function() {
+      var position = this._getPosition( this.getFromData( 'pos' ) );
+      this.setDom( 'x', position.x );
+      this.setDom( 'y', position.y );
+      return true;
+    },
+
+    setFillColor: function() {
+      this.setDom( 'fill', getColor( this.get( 'fillColor' ) ) );
+    },
+    setStrokeColor: function() {
+      this.setDom( 'stroke', getColor( this.get( 'strokeColor' ) ) );
+    },
+    setStrokeWidth: function() {
+      this.setDom( 'stroke-width', this.get( 'strokeWidth' ) );
+    },
+    setDashArray: function() {
+      if ( this.get( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.get( 'strokeDashArray' ) );
+    },
+
+    setLabelText: function( index ) {
+      if ( this.label ) this.label[ index ].textContent = this.data.label[ index ].text;
+    },
+    setLabelColor: function( index ) {
+      if ( this.label ) this.label[ index ].setAttribute( 'fill', this.get( 'labelColor' ) );
+    },
+    setLabelSize: function( index ) {
+      if ( this.label ) this.label[ index ].setAttribute( 'font-size', this.get( 'labelSize' ) );
+    },
+    setLabelPosition: function( index ) {
+      if ( this.label ) this._setLabelPosition( index );
+    },
+    setLabelAngle: function( index ) {
+      if ( this.label ) this._setLabelAngle( index );
+    },
 
-					this.setLabelText(i);
-					this.setLabelSize(i);
-					//this.setLabelAngle(i);
-					this.setLabelColor(i);
-					this.setLabelPosition(i);
+    _getPosition: function( value, relTo ) {
+      var yAxis;
+      var xAxis = yAxis = false;
 
-				}
+      if ( this.serie ) {
+        xAxis = this.serie.getXAxis();
+        yAxis = this.serie.getYAxis();
+      }
+
+      return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
+    },
 
-				if(this.get('labelAnchor', i)) {
+    setLabelNumber: function( nb ) {
+      this.labelNumber = nb;
+      this._makeLabel();
+    },
 
-					this._forceLabelAnchor(i);
+    everyLabel: function( callback ) {
+      for ( var i = 0; i < this.labelNumber; i++ ) {
+        callback.call( this, i );
+      }
+    },
 
-				}
-			});
-		},
+    toggleLabel: function( labelId, visible ) {
+      if ( this.labelNumber && this.label[ i ] ) {
+        this.label[ i ].setAttribute( 'display', visible ? 'block' : 'none' );
+      }
+    },
 
-		redraw: function() {
-		//	this.kill();
-			var variable;
-			this.position = this.setPosition();
-			
-			this.redrawImpl();
+    _makeLabel: function() {
+      var self = this;
+      this.label = this.label || [];
 
-			if(!this.position)
-				return;
+      this.everyLabel( function( i ) {
 
-			this.everyLabel(function(i) {
+        this.label[ i ] = document.createElementNS( this.graph.ns, 'text' );
 
-				if(this.get('labelPosition', i)) {
+        this.label[ i ].addEventListener( 'mouseover', function( e ) {
 
-					this.setLabelPosition(i);
-					this.setLabelAngle(i);
+          //self.doHover( true );
+          e.stopPropagation();
 
-				}
+        } );
 
-			});
-		
-		
-			if(this.afterDone)
-				this.afterDone();
-		//	this.done();
-		},
+        this.label[ i ].addEventListener( 'mouseout', function( e ) {
 
-		redrawImpl: function() {},
+          //self.doHover( false );
+          e.stopPropagation();
 
-		done: function() {
-			//this.applyAll();
-			//;
-			
-			
-		},
+        } );
 
-		setSerie: function(serie) {			this.serie = serie;								},
-		set: function(prop, val, index) {
+        this.label[ i ].addEventListener( 'dblclick', function( e ) {
 
-			this.properties[prop] = this.properties[prop] || [];
-			this.properties[prop][index || 0] = val;
+          e.preventDefault();
+          e.stopPropagation();
 
-			this.configuration = this.configuration || { sections: { shape_cfg: [ { groups: { shape_cfg: [ {} ] }} ]}};
-			this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
+          $( '<input type="text" />' ).attr( 'value', e.target.textContent ).prependTo( self.graph._dom ).css( {
 
+            position: 'absolute',
+            'margin-top': ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + "px",
+            'margin-left': ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + "px",
+            textAlign: 'center',
+            width: '100px'
 
-		},
+          } ).bind( 'blur', function() {
 
-		get: function(prop, index) {
-			this.configuration = this.configuration || { sections: { shape_cfg: [ { groups: { shape_cfg: [ {} ] }} ]}};
-			return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [])[ 0 ];
-		},
+            $( this ).remove();
+            self.data.label[ i ].text = $( this ).prop( 'value' );
+            self.label[ i ].textContent = $( this ).prop( 'value' );
 
+            self.triggerChange();
 
-		getFromData: function(prop)			{ return this.data[prop]; 						},
-		setData: function(prop, val)			{ return this.data[prop] = val; 						},
-		setDom: function(prop, val) {		if(this._dom) this._dom.setAttribute(prop, val);				},
+          } ).bind( 'keyup', function( e ) {
 
-		setPosition: function() {
-			var position = this._getPosition(this.getFromData('pos'));
-			this.setDom('x', position.x);
-			this.setDom('y', position.y);
-			return true;
-		},
+            e.stopPropagation();
+            e.preventDefault();
 
-		setFillColor: function() {			this.setDom('fill', getColor( this.get('fillColor')) );					},
-		setStrokeColor: function() {		this.setDom('stroke', getColor( this.get('strokeColor')) );				},
-		setStrokeWidth: function() {		this.setDom('stroke-width', this.get('strokeWidth'));		},
-		setDashArray: function() {			if(this.get('strokeDashArray')) this.setDom('stroke-dasharray', this.get('strokeDashArray'));				},
+            if ( e.keyCode == 13 ) {
+              $( this ).trigger( 'blur' );
+            }
 
-		setLabelText: function(index) {		if(this.label) this.label[index].textContent = this.data.label[index].text;					},
-		setLabelColor: function(index) {	if(this.label) this.label[index].setAttribute('fill', this.get('labelColor'));				},
-		setLabelSize: function(index) {		if(this.label) this.label[index].setAttribute('font-size', this.get('labelSize'));		},
-		setLabelPosition: function(index) { if(this.label) this._setLabelPosition(index);											},
-		setLabelAngle: function(index) {	if(this.label) this._setLabelAngle(index);												},
-		
-		_getPosition: function(value, relTo) {
-			var yAxis;
-			var xAxis = yAxis = false;
+          } ).bind( 'keypress', function( e ) {
 
-			if( this.serie ) {
-				xAxis = this.serie.getXAxis();
-				yAxis = this.serie.getYAxis();
-			}
+            e.stopPropagation();
+          } ).bind( 'keydown', function( e ) {
 
-			return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
-		},
+            e.stopPropagation();
 
-		setLabelNumber: function(nb) {
-			this.labelNumber = nb;
-			this._makeLabel();
-		},
+          } ).focus().get( 0 ).select();
 
-		everyLabel: function(callback) {
-			for(var i = 0; i < this.labelNumber; i++) {
-				callback.call(this, i);
-			}
-		},
+        } );
 
-		toggleLabel: function(labelId, visible) {
-			if(this.labelNumber && this.label[i]) {
-				this.label[i].setAttribute('display', visible ? 'block' : 'none');
-			}
-		},
+        self.group.appendChild( this.label[ i ] );
+      } );
+    },
 
-		_makeLabel: function() {
-			var self = this;
-			this.label = this.label || [];
+    _setLabelPosition: function( labelIndex, pos ) {
 
-			this.everyLabel(function(i) {
+      var currPos = this.getFromData( 'pos' );
 
-				this.label[i] = document.createElementNS(this.graph.ns, 'text');
+      if ( !currPos ) {
+        pos = {
+          x: -1000,
+          y: -1000
+        };
+      } else {
 
+        var parsedCurrPos = this._getPosition( currPos );
 
-				this.label[i].addEventListener( 'mouseover', function ( e ) {
+        if ( !pos ) {
+          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+        }
+      }
 
-
-					//self.doHover( true );
-					e.stopPropagation();
-					
-				});
-
-
-				this.label[i].addEventListener( 'mouseout', function ( e ) {
-
-					//self.doHover( false );
-					e.stopPropagation();
-
-				});
-
-
-				this.label[i].addEventListener( 'dblclick', function( e ) {
-
-					e.preventDefault();
-					e.stopPropagation();
-
-					$('<input type="text" />').attr('value', e.target.textContent ).prependTo( self.graph._dom ).css( {
-
-						position: 'absolute',
-						'margin-top': (parseInt(e.target.getAttribute('y').replace('px', '')) - 10) + "px",
-						'margin-left': (parseInt(e.target.getAttribute('x').replace('px', '')) - 50) + "px",
-						textAlign: 'center',
-						width: '100px'
-
-					} ).bind( 'blur', function() {
-
-						$( this ).remove();
-						self.data.label[ i ].text = $ ( this ).prop( 'value' );
-						self.label[ i ].textContent = $ ( this ).prop( 'value' );
-
-						self.triggerChange();
-
-					} ).bind( 'keyup', function(e) {
-
-						e.stopPropagation();
-						e.preventDefault();
-
-						if ( e.keyCode == 13 ) {
-							$( this ).trigger( 'blur' );
-						}
-						
-					} ).bind('keypress', function(e) {
-					
-						e.stopPropagation();
-					}).bind('keydown', function(e) {
-					
-						e.stopPropagation();
-
-					}).focus( ).get(0).select();
-
-				});
-
-				self.group.appendChild(this.label[i]);
-			});
-		},
-
-		_setLabelPosition: function( labelIndex, pos ) {
-
-			var currPos = this.getFromData('pos');
-
-			if( ! currPos ) {
-				pos = { x: -1000, y: -1000 };
-			} else {
-
-				var parsedCurrPos = this._getPosition(currPos);
-
-				if( !pos ) {
-					var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
-				}
-			}
-
-			/*if( pos.x || isNaN( pos.y ) ) {
+      /*if( pos.x || isNaN( pos.y ) ) {
 				pos.x = -10000;
 				pos.y = -10000;
 			}*/
 
-			if( pos.x != "NaNpx" && ! isNaN( pos.x ) && pos.x !== "NaN") {
-
-				
-				this.label[labelIndex].setAttribute('x', pos.x);
-				this.label[labelIndex].setAttribute('y', pos.y);	
-			}
-			//this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-			//this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
-
-		},
-
-		_setLabelAngle: function(labelIndex, angle) {
-			var currAngle = this.get('labelAngle', labelIndex) || 0;
-
-			if(currAngle == 0)
-				return;
-
-			var x = this.label[labelIndex].getAttribute('x');
-			var y = this.label[labelIndex].getAttribute('y');
-			this.label[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
-		},
-
-		_forceLabelAnchor: function(i) {
-			this.label[i].setAttribute('text-anchor', this._getLabelAnchor());
-		},
+      if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
+
+        this.label[ labelIndex ].setAttribute( 'x', pos.x );
+        this.label[ labelIndex ].setAttribute( 'y', pos.y );
+      }
+      //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
+      //this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
 
-		_getLabelAnchor: function() {
-			var anchor = this.get('labelAnchor');
-			switch(anchor) {
-				case 'middle':
-				case 'start':
-				case 'end':
-					return anchor;
-				break;
+    },
 
-				case 'right':
-					return 'end';
-				break;
+    _setLabelAngle: function( labelIndex, angle ) {
+      var currAngle = this.get( 'labelAngle', labelIndex ) || 0;
 
-				case 'left':
-					return 'start';
-				break;
+      if ( currAngle == 0 )
+        return;
 
-				default:
-					return 'start';
-				break;
-			}
-		},
+      var x = this.label[ labelIndex ].getAttribute( 'x' );
+      var y = this.label[ labelIndex ].getAttribute( 'y' );
+      this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    },
 
-		setSelectable: function(bln) {
-			this._selectable = bln;
-		},
+    _forceLabelAnchor: function( i ) {
+      this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor() );
+    },
 
-		setMovable: function ( bln ) {
-			this._movable = bln;
-		},
+    _getLabelAnchor: function() {
+      var anchor = this.get( 'labelAnchor' );
+      switch ( anchor ) {
+        case 'middle':
+        case 'start':
+        case 'end':
+          return anchor;
+          break;
 
+        case 'right':
+          return 'end';
+          break;
 
-		select: function( mute ) {
+        case 'left':
+          return 'start';
+          break;
 
-			if( ! this._selectable ) {
-				return;
-			}
+        default:
+          return 'start';
+          break;
+      }
+    },
 
-			this._selected = true;
-			this.selectStyle();
+    setSelectable: function( bln ) {
+      this._selectable = bln;
+    },
 
-			if( ! this._staticHandles ) {
-				this.addHandles();
-				this.setHandles();
-			}
+    setMovable: function( bln ) {
+      this._movable = bln;
+    },
 
-			if( ! mute ) {
-				this.graph.selectShape( this, true );
-			}
-		},
+    select: function( mute ) {
 
-		unselect: function() {
+      if ( !this._selectable ) {
+        return;
+      }
 
-			if( ! this._selectable ) {
-				return;
-			}
+      this._selected = true;
+      this.selectStyle();
 
-			this._selected = false;
+      if ( !this._staticHandles ) {
+        this.addHandles();
+        this.setHandles();
+      }
 
-			this.setStrokeWidth();
-			this.setStrokeColor();
-			this.setDashArray();
-			this.setFillColor();
+      if ( !mute ) {
+        this.graph.selectShape( this, true );
+      }
+    },
 
-			if( this.handlesInDom && ! this._staticHandles ) {
-				this.handlesInDom = false;
-				this.removeHandles();
-			}
-			
-		},
+    unselect: function() {
 
-		staticHandles: function( bool ) {
-			this._staticHandles = bool;
+      if ( !this._selectable ) {
+        return;
+      }
 
-			if( bool ) {
-				this.addHandles();
-				this.setHandles();
-			} else {
-				this.removeHandles();
-			}
-			
-		},
+      this._selected = false;
 
-		createHandles: function( nb, type, attr ) {
+      this.setStrokeWidth();
+      this.setStrokeColor();
+      this.setDashArray();
+      this.setFillColor();
 
-			if( this.isLocked() ) {
-				return;
-			}
+      if ( this.handlesInDom && !this._staticHandles ) {
+        this.handlesInDom = false;
+        this.removeHandles();
+      }
 
-			var self = this,
-				handles = [];
+    },
 
-			for( var i = 1; i <= nb; i ++ ) {
+    staticHandles: function( bool ) {
+      this._staticHandles = bool;
 
-				( function( j ) {
+      if ( bool ) {
+        this.addHandles();
+        this.setHandles();
+      } else {
+        this.removeHandles();
+      }
 
-					self['handle' + j ] = document.createElementNS(self.graph.ns, type);
+    },
 
-					for( var k in attr ) {
-						self['handle' + j ].setAttribute( k, attr[ k ] );
-					}
+    createHandles: function( nb, type, attr ) {
 
-					self[ 'handle' + j ].addEventListener( 'mousedown', function(e) {
+      if ( this.isLocked() ) {
+        return;
+      }
 
-						e.preventDefault();
-						e.stopPropagation();
-						
-						self.handleSelected = j;
-						self.handleMouseDown( e );
-					} );
+      var self = this,
+        handles = [];
 
-					handles.push( self[ 'handle' + j ] );
+      for ( var i = 1; i <= nb; i++ ) {
 
-				} ) ( i );
+        ( function( j ) {
 
-			}
+          self[ 'handle' + j ] = document.createElementNS( self.graph.ns, type );
 
-			return this.handles = handles;
-		},
-	
-		handleMouseDownImpl: function() {},
-		handleMouseMoveImpl: function() {},
-		handleMouseUpImpl: function() {},
-		handleCreateImpl: function() {},
+          for ( var k in attr ) {
+            self[ 'handle' + j ].setAttribute( k, attr[ k ] );
+          }
 
-		handlers: {
+          self[ 'handle' + j ].addEventListener( 'mousedown', function( e ) {
 
-			mouseUp: [ 
-				function( e ) {
-					this.moving = false;
-					this.resize = false;
-					this.graph.elementMoving(false);
-
-					return this.handleMouseUpImpl( e );
-				}  
-			],
+            e.preventDefault();
+            e.stopPropagation();
 
-			mouseMove: [
-				function( e ) {
+            self.handleSelected = j;
+            self.handleMouseDown( e );
+          } );
 
-					var coords = this.graph._getXY( e );
-					
-					var
-						deltaX = this.serie.getXAxis( ).getRelVal( coords.x - this.mouseCoords.x ),
-						deltaY = this.serie.getYAxis( ).getRelVal( coords.y - this.mouseCoords.y );
+          handles.push( self[ 'handle' + j ] );
 
-					if( deltaX != 0 || deltaY !== 0) {
-						this.preventUnselect = true;
-					}		
+        } )( i );
 
-					this.mouseCoords = coords;	
-					var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
+      }
 
-					if( this.options ) {
-						
-						if( this.moving ) {
+      return this.handles = handles;
+    },
 
-							if( this.options.onMove ) {
-								this.options.onMove.call( this );
-							}
+    handleMouseDownImpl: function() {},
+    handleMouseMoveImpl: function() {},
+    handleMouseUpImpl: function() {},
+    handleCreateImpl: function() {},
 
-						} else  {
+    handlers: {
 
-							if( this.options.onResize ) {
-								this.options.onResize.call( this );	
-							}
-						}
-					}
+      mouseUp: [
 
-					return ret;
-				}
-			],
+        function( e ) {
+          this.moving = false;
+          this.resize = false;
+          this.graph.elementMoving( false );
 
-			mouseDown: [
-				function ( e ) {
+          return this.handleMouseUpImpl( e );
+        }
+      ],
 
-					var self = this;
-				//	e.stopPropagation();
-					e.preventDefault();
+      mouseMove: [
 
-					this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
+        function( e ) {
 
-					//if( this._movable !== false ) {
-						this.graph.elementMoving( this );
-					//}
+          var coords = this.graph._getXY( e );
 
-					if( ! this._selected ) {
-						this.preventUnselect = true;
-						this.timeoutSelect = window.setTimeout(function() { // Tweak needed to select the shape.
-							self.select();
-							self.timeoutSelect = false;
-						}, 100);
-					}
-					this.mouseCoords = this.graph._getXY( e );	
+          var
+            deltaX = this.serie.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
+            deltaY = this.serie.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
-					return this.handleMouseDownImpl( e, this.mouseCoords );
-				}
-			],
+          if ( deltaX != 0 ||  deltaY !== 0 ) {
+            this.preventUnselect = true;
+          }
 
+          this.mouseCoords = coords;
+          var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
 
-			mouseOver: [
-				function( e ) {
-					var clbks;
+          if ( this.options ) {
 
+            if ( this.moving ) {
 
-					this.highlight();
-					this.addClass('hover');
+              if ( this.options.onMove ) {
+                this.options.onMove.call( this );
+              }
 
-					if( ! ( clbks = this._mouseOverCallbacks ) ) {
-						return;
-					}
-					clbks.fireWith( this, [ this.data, this.parameters ] );
-				}
-			],
+            } else {
 
-			mouseOut: [
-				function( e ) {
-					var clbks;
+              if ( this.options.onResize ) {
+                this.options.onResize.call( this );
+              }
+            }
+          }
 
-					this.unhighlight();
-					this.removeClass('hover');
-					
-					if( ! ( clbks = this._mouseOutCallbacks ) ) {
-						return;
-					}
-					clbks.fireWith( this, [ this.data, this.parameters ] );
-				}
-			]
-		},
+          return ret;
+        }
+      ],
 
-		handleMouseDown: function( e ) {
-			return this.callHandler( 'mouseDown', e );
-		},
+      mouseDown: [
 
-		handleMouseMove: function( e ) {
+        function( e ) {
 
-			if( this.isLocked() && this._movable !== false ) {
+          var self = this;
+          //	e.stopPropagation();
+          e.preventDefault();
 
-				this.graph.elementMoving( false );	
+          this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
 
-				if( this.isLocked() ) {
-					this.handleSelected = false;
-				}
+          //if( this._movable !== false ) {
+          this.graph.elementMoving( this );
+          //}
 
-				this.moving = true;
-			}
-			
+          if ( !this._selected ) {
+            this.preventUnselect = true;
+            this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
+              self.select();
+              self.timeoutSelect = false;
+            }, 100 );
+          }
+          this.mouseCoords = this.graph._getXY( e );
 
-			if( ! this._movable ) {
-				this.moving = false;
-			}
+          return this.handleMouseDownImpl( e, this.mouseCoords );
+        }
+      ],
 
-				
-			if( this.callHandler( 'beforeMouseMove', e ) === false ) {
-				return;
-			}
+      mouseOver: [
 
+        function( e ) {
+          var clbks;
 
-			this.callHandler( 'mouseMove', e );
+          this.highlight();
+          this.addClass( 'hover' );
 
+          if ( !( clbks = this._mouseOverCallbacks ) ) {
+            return;
+          }
+          clbks.fireWith( this, [ this.data, this.parameters ] );
+        }
+      ],
 
-		},
+      mouseOut: [
 
-		handleMouseUp: function( e ) {
-			this.callHandler( 'mouseUp', e );
-			this.handleSelected = false;
-//			this.triggerChange();
-		},
+        function( e ) {
+          var clbks;
 
-		handleMouseOver: function() {
+          this.unhighlight();
+          this.removeClass( 'hover' );
 
-			this.callHandler( 'mouseOver' );
-		},
+          if ( !( clbks = this._mouseOutCallbacks ) ) {
+            return;
+          }
+          clbks.fireWith( this, [ this.data, this.parameters ] );
+        }
+      ]
+    },
 
-		handleMouseOut: function() {
-			this.callHandler( 'mouseOut' );
-		},
+    handleMouseDown: function( e ) {
+      return this.callHandler( 'mouseDown', e );
+    },
 
-		removeHandles: function() {
+    handleMouseMove: function( e ) {
 
-			for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
-				this.group.removeChild( this['handle' + i ] );
-			}
-		},
+      if ( this.isLocked() && this._movable !== false ) {
 
-		callHandler: function( handlerType ) {
-			var handler = handlerType;
-			var args = Array.prototype.shift.call( arguments );
-			var resp;
-			
-			var handlers;
+        this.graph.elementMoving( false );
 
-			if( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
-				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
-					
-					if( ( resp = handlers[ i ].apply( this, arguments ) ) !== undefined) {
-						return resp;
-					}
-				}
-			}
+        if ( this.isLocked() ) {
+          this.handleSelected = false;
+        }
 
+        this.moving = true;
+      }
 
-			if( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
-				for( var i = 0, l = handlers.length ; i < l ; i ++ ) {
-					if( handlers[ i ].apply( this, arguments ) ) {
-					//	return;
-					}
-				}
-			}
+      if ( !this._movable ) {
+        this.moving = false;
+      }
 
-			
-			
-		},
+      if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
+        return;
+      }
 
-		addHandles: function() {
+      this.callHandler( 'mouseMove', e );
 
-			if( this.isLocked() ) {
-				return;
-			}
+    },
 
-			if( ! this.handlesInDom ) {
+    handleMouseUp: function( e ) {
+      this.callHandler( 'mouseUp', e );
+      this.handleSelected = false;
+      //			this.triggerChange();
+    },
 
-				this.handlesInDom = true;
+    handleMouseOver: function() {
 
-				for( var i = 1 ; i <= this.nbHandles ; i ++ ) {
-					if( this[ 'handle' + i ] ) {
-						this.group.appendChild( this[ 'handle' + i ] );
-					}
-				}
-			}
-		},
+      this.callHandler( 'mouseOver' );
+    },
 
-		handleDblClick: function() {
+    handleMouseOut: function() {
+      this.callHandler( 'mouseOut' );
+    },
 
-			this.configure();
-		},
+    removeHandles: function() {
 
-		configure: function() {
+      for ( var i = 1; i <= this.nbHandles; i++ ) {
+        this.group.removeChild( this[ 'handle' + i ] );
+      }
+    },
 
-			var self = this;
-			var div = $('<div></div>').dialog({ modal: true, position: ['center', 50], width: '80%' } );
-			div.prev().remove();
-			div.parent().css('z-index', 1000);
+    callHandler: function( handlerType ) {
+      var handler = handlerType;
+      var args = Array.prototype.shift.call( arguments );
+      var resp;
 
-			require( [ 'require', 'lib/lib/forms/form' ], function( require,Form ) {
+      var handlers;
 
-					
-				var form = new Form({ });
-				form.init();
+      if ( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
+        for ( var i = 0, l = handlers.length; i < l; i++ ) {
 
-				var structure = {
+          if ( ( resp = handlers[ i ].apply( this, arguments ) ) !== undefined ) {
+            return resp;
+          }
+        }
+      }
 
-					sections: {
+      if ( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
+        for ( var i = 0, l = handlers.length; i < l; i++ ) {
+          if ( handlers[ i ].apply( this, arguments ) ) {
+            //	return;
+          }
+        }
+      }
 
-						shape_cfg: {
+    },
 
-							options: {
-								title: 'Shape',
-								icon: 'info_rhombus'
-							},
+    addHandles: function() {
 
-							groups: {
+      if ( this.isLocked() ) {
+        return;
+      }
 
-								shape_cfg: {
-									options: {
-										type: 'list'
-									},
+      if ( !this.handlesInDom ) {
 
-									fields: self.getFieldsConfig()
-								}
-							}
-						}
-					}
-				};
+        this.handlesInDom = true;
 
-				form.setStructure( structure );
+        for ( var i = 1; i <= this.nbHandles; i++ ) {
+          if ( this[ 'handle' + i ] ) {
+            this.group.appendChild( this[ 'handle' + i ] );
+          }
+        }
+      }
+    },
 
-				form.onStructureLoaded().done(function() {
-					form.fill( self.getConfiguration() );
-				});
+    handleDblClick: function() {
 
-				form.addButton('Cancel', { color: 'blue' }, function() {
-					div.dialog( 'close' );
-				});
+      this.configure();
+    },
 
-				form.addButton('Save', { color: 'green' }, function() {
-					self.setConfiguration( form.getValue( ) );
-					div.dialog('close');
+    configure: function() {
 
-				});
+      var self = this;
+      var div = $( '<div></div>' ).dialog( {
+        modal: true,
+        position: [ 'center', 50 ],
+        width: '80%'
+      } );
+      div.prev().remove();
+      div.parent().css( 'z-index', 1000 );
 
-				form.onLoaded().done(function() {
+      require( [ 'require', 'lib/lib/forms/form' ], function( require, Form ) {
 
-					div.html(form.makeDom());
-					form.inDom();
-				});
-			});
-		},
+        var form = new Form( {} );
+        form.init();
 
-		getConfiguration: function() {
-			return this.configuration = this.configuration || {};
-		},
+        var structure = {
 
-		setConfiguration: function( configuration ) {
+          sections: {
 
-			this.configuration = $.extend( true, this.configuration, configuration );
-		},
+            shape_cfg: {
 
-		isLocked: function() {
+              options: {
+                title: 'Shape',
+                icon: 'info_rhombus'
+              },
 
-			return this.options.locked || this.graph.shapesLocked;
-		},
+              groups: {
 
-		lock: function() {
-			this.options.locked = true;
-		},
+                shape_cfg: {
+                  options: {
+                    type: 'list'
+                  },
 
-		unlock: function() {
-			this.options.locked = false;
-		},
+                  fields: self.getFieldsConfig()
+                }
+              }
+            }
+          }
+        };
 
-		isBindable: function() {
-			
-			return this.options.bindable;
-		},
+        form.setStructure( structure );
 
-		setBindableToDom: function() {
+        form.onStructureLoaded().done( function() {
+          form.fill( self.getConfiguration() );
+        } );
 
-			if( this.isBindable() ) {
-				this.addClass('bindable');
-			}	
-		},
+        form.addButton( 'Cancel', {
+          color: 'blue'
+        }, function() {
+          div.dialog( 'close' );
+        } );
 
-		highlight: function() {},
-		unhighlight: function() {}
+        form.addButton( 'Save', {
+          color: 'green'
+        }, function() {
+          self.setConfiguration( form.getValue() );
+          div.dialog( 'close' );
 
-	}
+        } );
 
-	return GraphShape;
+        form.onLoaded().done( function() {
 
-});
+          div.html( form.makeDom() );
+          form.inDom();
+        } );
+      } );
+    },
+
+    getConfiguration: function() {
+      return this.configuration = this.configuration ||  {};
+    },
+
+    setConfiguration: function( configuration ) {
+
+      this.configuration = $.extend( true, this.configuration, configuration );
+    },
+
+    isLocked: function() {
+
+      return this.options.locked ||  this.graph.shapesLocked;
+    },
+
+    lock: function() {
+      this.options.locked = true;
+    },
+
+    unlock: function() {
+      this.options.locked = false;
+    },
+
+    isBindable: function() {
+
+      return this.options.bindable;
+    },
+
+    setBindableToDom: function() {
+
+      if ( this.isBindable() ) {
+        this.addClass( 'bindable' );
+      }
+    },
+
+    highlight: function() {},
+    unhighlight: function() {}
+
+  }
+
+  return GraphShape;
+
+} );

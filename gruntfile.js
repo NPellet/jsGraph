@@ -113,10 +113,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
 
-    function convert() {
-
-        grunt.log.writeln( arguments );
-    }
 
     grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'buildExampleList'] );
 
@@ -138,7 +134,7 @@ module.exports = function(grunt) {
         var rdefineEnd = /\}\s*\)\s*;[^}\w]*$/;
 
         var version = grunt.config('pkg').version;
-        grunt.log.writeln( version );
+        
 
         var buildConvert = function( name, path, contents ) {
 //            return contents;
@@ -153,6 +149,10 @@ module.exports = function(grunt) {
 
             } else {
 */
+
+
+                grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+
 
 
                 if( name !== 'graph' ) {
@@ -406,4 +406,11 @@ module.exports = function(grunt) {
         grunt.file.write( '../jsgraphwww/_config.yml', ymlMaster );
 
     } );
+
+    grunt.registerTask( 'beautify', 'Beautify source code', function() {
+
+
+        grunt.file.write( './src/graph.core.js', beautify( grunt.file.read( './src/graph.core.js' ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+
+    });
 };
