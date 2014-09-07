@@ -225,7 +225,7 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			this.markerArrow = document.createElementNS(this.ns, 'marker');
 			this.markerArrow.setAttribute('viewBox', '0 0 10 10');
 			this.markerArrow.setAttribute('id', 'arrow' + this._creation);
-			this.markerArrow.setAttribute('refX', '10');
+			this.markerArrow.setAttribute('refX', '6');
 			this.markerArrow.setAttribute('refY', '5');
 			this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
 			this.markerArrow.setAttribute('markerWidth', '8');
