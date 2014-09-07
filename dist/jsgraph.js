@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-2
+ * jsGraphs JavaScript Graphing Library v1.9.9-3
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-06T08:07Z
+ * Date: 2014-09-07T17:40Z
  */
 
 (function( global, factory ) {
@@ -9722,7 +9722,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 		setPosition: function() {
 			var position = this._getPosition( this.getFromData('pos') );
 
-			if( ! position.x || ! position.y) {
+			if( ! position || ! position.x || ! position.y) {
 				return;
 			}
 
