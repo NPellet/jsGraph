@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-5
+ * jsGraphs JavaScript Graphing Library v1.9.9-6
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-07T18:55Z
+ * Date: 2014-09-07T19:28Z
  */
 
 (function( global, factory ) {
@@ -9921,6 +9921,16 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 	var GraphArrow = function(graph) {
 		this.init(graph);
 
+		this.nbHandles = 2;
+
+		this.createHandles( this.nbHandles, 'rect', { 
+									transform: "translate(-3 -3)", 
+									width: 6, 
+									height: 6, 
+									stroke: "black", 
+									fill: "white",
+									cursor: 'nwse-resize'
+								} );
 	}
 
 	$.extend(GraphArrow.prototype, GraphLine.prototype, {
