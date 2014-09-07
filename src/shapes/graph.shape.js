@@ -49,6 +49,8 @@ define( [ ], function( ) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
+			this._movable = true;
+			
 			if( this._dom ) {
 
 				this.group.appendChild(this._dom);

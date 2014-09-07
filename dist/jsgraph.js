@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-07T18:41Z
+ * Date: 2014-09-07T18:55Z
  */
 
 (function( global, factory ) {
@@ -8584,6 +8584,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this.rectEvent.setAttribute('pointer-events', 'fill');
 			this.rectEvent.setAttribute('fill', 'transparent');
 
+			this._movable = true;
+			
 			if( this._dom ) {
 
 				this.group.appendChild(this._dom);
@@ -9799,6 +9801,17 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
+
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
 
 
 			if( this.handleSelected == 1 ) {
