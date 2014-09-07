@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-4
+ * jsGraphs JavaScript Graphing Library v1.9.9-5
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-07T18:09Z
+ * Date: 2014-09-07T18:41Z
  */
 
 (function( global, factory ) {
@@ -3839,16 +3839,16 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 			
 			var refPx, deltaPx;
 
-			if( refPx = _parsePx( ref ) ) {
+			if( ( refPx = _parsePx( ref ) ) !== false ) {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( refPx + deltaPx ) + "px";	
 				} else {
 					return ( refPx + axis.getRelPx( delta ) ) + "px";
 				}
 			} else {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( ref + axis.getRelVal( deltaPx ) );
 				} else {
 					return ( ref + delta );
@@ -9007,6 +9007,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this.selectStyle();
 
 			if( ! this._staticHandles ) {
+				this.addHandles();
 				this.setHandles();
 			}
 
@@ -9039,6 +9040,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 			this._staticHandles = bool;
 
 			if( bool ) {
+				this.addHandles();
 				this.setHandles();
 			} else {
 				this.removeHandles();
@@ -10377,6 +10379,8 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 				x = pos.x,
 				y = pos.y;
 
+
+
 			if(width == undefined || height == undefined) {
 
 				var position2 = this._getPosition(this.getFromData('pos2'));
@@ -10388,6 +10392,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
 				width = position2.x - pos.x;
 				height = position2.y - pos.y;
+
 			} else {
 				width = this.graph.getPxRel( width, this.serie.getXAxis( ) );
 				height = this.graph.getPxRel( height, this.serie.getYAxis( ) );
@@ -10479,12 +10484,23 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 				return;
 			}
 			
-			var w = this.getFromData('width') || 0;
-			var h = this.getFromData('height') || 0;
+			var w = this.getFromData('width');
+			var h = this.getFromData('height');
 			var pos = this.getFromData('pos');
 			var pos2 = this.getFromData('pos2');
 
-			if( ! pos2 ) {
+			if( pos2.dx ) {
+				
+				pos2.x = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dx = false;
+			}
+
+			if( pos2.dy ) {
+				pos2.y = this.graph.deltaPosition( pos2.x || pos.x, pos2.dx, this.serie.getXAxis() );
+				pos2.dy = false;
+			}
+
+			if( w !== undefined && h !== undefined ) {
 				
 				if( this.moving ) {
 
@@ -10691,13 +10707,6 @@ this.handle1.setAttribute('x', this.currentX);
 					case 'corners':
 					default:
 
-						if( this.handleSelected == 1 || this.handleSelected == 4 ) {
-							var inv = ! invX;
-						} else {
-							var inv = invX;
-						}
-
-
 						if( this.handleSelected == 1 ) {
 
 							posX = this.graph.deltaPosition( posX, deltaX, this.serie.getXAxis( ) );	
@@ -10722,13 +10731,14 @@ this.handle1.setAttribute('x', this.currentX);
 							
 						}
 
+
 						pos2.x = pos2X;
 						pos2.y = pos2Y;
 						
 						pos.x = posX;
 						pos.y = posY;
 
-
+						console.log( pos, pos2 );
 					break;
 
 				}
@@ -10747,17 +10757,17 @@ this.handle1.setAttribute('x', this.currentX);
 
 		setHandles: function() {
 
+			if( ! this.handlesInDom ) {
+				return;
+			}
+
 			if( this.currentX == undefined ) {
 				return;
 			}
 
-			this.addHandles();
-
 			switch( this.options.handles.type ) {
 
 				case 'sides':
-
-
 
 					if( this.handles.left ) {
 						this.handles.left.setAttribute('transform', 'translate(' + this.currentX + ' ' + ( this.currentY + this.currentH / 2 ) + ')');
@@ -10934,8 +10944,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos'));
 			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
-			console.log( this.getFromData('pos'))
-			console.log( this.getFromData('pos2'), pos1, pos2)
+			
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},

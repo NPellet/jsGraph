@@ -1271,16 +1271,16 @@ define([ 'jquery', './graph.axis.x','./graph.axis.y','./graph.xaxis.time','./gra
 			
 			var refPx, deltaPx;
 
-			if( refPx = _parsePx( ref ) ) {
+			if( ( refPx = _parsePx( ref ) ) !== false ) {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( refPx + deltaPx ) + "px";	
 				} else {
 					return ( refPx + axis.getRelPx( delta ) ) + "px";
 				}
 			} else {
 
-				if( deltaPx = _parsePx( delta ) ) {
+				if( ( deltaPx = _parsePx( delta ) ) !== false ) {
 					return ( ref + axis.getRelVal( deltaPx ) );
 				} else {
 					return ( ref + delta );

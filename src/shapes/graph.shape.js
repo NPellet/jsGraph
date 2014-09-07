@@ -472,6 +472,7 @@ define( [ ], function( ) {
 			this.selectStyle();
 
 			if( ! this._staticHandles ) {
+				this.addHandles();
 				this.setHandles();
 			}
 
@@ -504,6 +505,7 @@ define( [ ], function( ) {
 			this._staticHandles = bool;
 
 			if( bool ) {
+				this.addHandles();
 				this.setHandles();
 			} else {
 				this.removeHandles();
