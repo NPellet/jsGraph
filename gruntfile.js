@@ -77,6 +77,15 @@ module.exports = function(grunt) {
             },
 
 
+            exportToVisualizer: {
+
+                files: {
+                    '../visualizer-dev/src/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    
+                }
+            },
+
+
             exportDevToPages: {
 
                 files: {
@@ -109,7 +118,7 @@ module.exports = function(grunt) {
         grunt.log.writeln( arguments );
     }
 
-    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'buildExampleList'] );
+    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'buildExampleList'] );
 
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {

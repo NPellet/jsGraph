@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-3
+ * jsGraphs JavaScript Graphing Library v1.9.9-4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-07T17:40Z
+ * Date: 2014-09-07T18:09Z
  */
 
 (function( global, factory ) {
@@ -3751,14 +3751,21 @@ build['./graph.core'] = ( function( $,GraphXAxis,GraphYAxis,GraphXAxisTime,Graph
 
 					} else if( value.x && onSerie) {
 
-						var closest = onSerie.searchClosestValue( value.x );
+						var val;
+						if( _parsePx( value.x ) !== false ) {
+							console.warn("You have defined x in px and not y. Makes no sense. Returning 0 for y");
+							pos[ i ] = 0;
+						} else {
 
-						if( ! closest ) {
-							return;
+							var closest = onSerie.searchClosestValue( val );
+
+							if( ! closest ) {
+								console.warn("Could not find y position. Returning 0 for y.");
+								pos[ i ] = 0;
+							} else {
+								pos[ i ] = onSerie.getY( closest.yMin );	
+							}
 						}
-
-						pos[ i ] = onSerie.getY( closest.yMin );
-
 					}
 
 				} else if( value[ i ] !== undefined ) {
@@ -10927,6 +10934,8 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 		setLabelPosition: function(labelIndex) {
 			var pos1 = this._getPosition(this.getFromData('pos'));
 			var pos2 = this._getPosition(this.getFromData('pos2'), this.getFromData('pos'));
+			console.log( this.getFromData('pos'))
+			console.log( this.getFromData('pos2'), pos1, pos2)
 			this._setLabelPosition(labelIndex, this._getPosition(this.get('labelPosition', labelIndex), {x: (pos1.x + pos2.x) / 2 + "px", y: (pos1.y + pos2.y) / 2 + "px" }));
 			
 		},
