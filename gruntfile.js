@@ -92,6 +92,13 @@ module.exports = function(grunt) {
 
         sass: {
             './examples/style.css': './examples/style.scss'
+        },
+
+        watch: {
+          scripts: {
+            files: ['src/**/*.js'],
+            tasks: ['build']
+          },
         }
 
     });
@@ -108,6 +115,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
 
     grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'buildExampleList'] );
@@ -146,7 +154,7 @@ module.exports = function(grunt) {
 */
 
 
-                grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+        //        grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
 
 

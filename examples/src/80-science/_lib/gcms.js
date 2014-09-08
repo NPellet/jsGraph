@@ -83,10 +83,10 @@
 
 
 						onAnnotationMake: function(annot) {
-
+console.log( annot)
 							switch( annot.type ) {
 								case 'areaundercurve':
-									self.trigger( 'AUCCreated', [ this ] );
+									self.trigger( 'AUCCreated', [ annot ] );
 								break;
 							}
 
@@ -186,7 +186,7 @@
 							// Autoscale y ?
 							
 							self.msGraph.redraw();
-							self.msGraph.drawSeries();
+							self.msSerieMouseTrack.draw();
 						}
 					},
 
@@ -359,6 +359,27 @@
 
 				this.gcGraph = new Graph( this.domGC, optionsGc, axisGc);
 				this.msGraph = new Graph( this.domMS, optionsMs, axisMs);
+
+				this.msGraph.getBottomAxis().zoom( 0, 100 );
+				this.msGraph.getLeftAxis().zoom( 0, 1 );
+
+				this.gcGraph.redraw();
+				this.msGraph.redraw();
+
+				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
+					self.trigger('AUCCreated', shape );
+				} );
+
+
+				this.gcGraph.shapeHandlers.mouseOver.push( function( shape ) {
+
+					shape.highlight( { "stroke-width": 10 });
+				});
+
+				this.gcGraph.shapeHandlers.mouseOut.push( function( shape ) {
+
+					shape.unHighlight();
+				});
 			},
 
 			doMsFromAUC: function( annot ) { // Creating an averaged MS on the fly
@@ -562,6 +583,10 @@
 			},
 
 			trigger: function( func, params ) {
+
+				if( ! Array.isArray( params ) ) {
+					params = [ params ];
+				}
 
 				if( this.options[ func ] ) {
 					this.options[ func ].apply( this, params );

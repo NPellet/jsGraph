@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-08T04:38Z
+ * Date: 2014-09-08T07:54Z
  */
 
 (function( global, factory ) {
@@ -2657,7 +2657,12 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       mouseMove: [],
       mouseOver: [],
       mouseOut: [],
-      beforeMouseMove: []
+      beforeMouseMove: [],
+      onCreated: [],
+      onResizing: [],
+      onMoving: [],
+      onEndResizing: [],
+      onEndMoving: []
     };
 
     this.pluginsReady = $.Deferred();
@@ -4019,7 +4024,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 		graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
 */
     graph.shift = shift;
-    graph.redrawShapes();
+    graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
   }
 
   function _registerEvents( graph ) {
@@ -5301,7 +5306,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        shape.handleCreateImpl();
+        shape.created();
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
@@ -5702,7 +5707,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
               position: {
                 x: 0
               },
-              anchor: 'middle'
+              anchor: 'middle',
+
+            },
+
+            shapeOptions: {
+              minPosY: 15
             }
 
           } ).then( function( shape ) {
@@ -7346,13 +7356,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
         self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
         passed.push( px );
+        self.picks[ m ].redraw();
 
         if ( passed.length == self.options.autoPeakPickingNb ) {
           break;
         }
       }
-
-      self.graph.redrawShapes();
 
     } );
   }
@@ -8870,7 +8879,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 				pos.x = -10000;
 				pos.y = -10000;
 			}*/
-
+      console.log( 'sfdsdf' );
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -9017,6 +9026,12 @@ build['./shapes/graph.shape'] = ( function( ) {
       return this.handles = handles;
     },
 
+    created: function() {
+
+      this.callHandler( "onCreated", this );
+      this.handleCreateImpl();
+    },
+
     handleMouseDownImpl: function() {},
     handleMouseMoveImpl: function() {},
     handleMouseUpImpl: function() {},
@@ -9105,7 +9120,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         function( e ) {
           var clbks;
 
-          this.highlight();
+          //this.highlight();
           this.addClass( 'hover' );
 
           if ( !( clbks = this._mouseOverCallbacks ) ) {
@@ -9120,7 +9135,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         function( e ) {
           var clbks;
 
-          this.unhighlight();
+      //    this.unHighlight();
           this.removeClass( 'hover' );
 
           if ( !( clbks = this._mouseOutCallbacks ) ) {
@@ -9169,11 +9184,11 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     handleMouseOver: function() {
 
-      this.callHandler( 'mouseOver' );
+      this.callHandler( 'mouseOver', this );
     },
 
     handleMouseOut: function() {
-      this.callHandler( 'mouseOut' );
+      this.callHandler( 'mouseOut', this );
     },
 
     removeHandles: function() {
@@ -9335,8 +9350,28 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
     },
 
-    highlight: function() {},
-    unhighlight: function() {}
+    highlight: function( params ) {
+
+      this.savedHighlight = {};
+      for( var i in params ) {
+      	this.savedHighlight[ i ] = this._dom.getAttribute( i );
+      	this._dom.setAttribute( i, params[ i ] );
+      }
+
+      this.highlightImpl();
+    },
+
+    unHighlight: function() {
+
+      for( var i in this.savedHighlight ) {
+      	this._dom.setAttribute( i, this.savedHighlight[ i ] );
+      }
+
+
+    },
+
+    highlightImpl: function() {},
+    unHighlightImpl: function() {}
 
   }
 
@@ -9860,8 +9895,9 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
 
-  var GraphLabel = function( graph ) {
+  var GraphLabel = function( graph, options ) {
     this.init( graph );
+    this.options = options ||  {};
   }
   $.extend( GraphLabel.prototype, GraphShape.prototype, {
     createDom: function() {
@@ -9873,6 +9909,12 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 
       if ( !pos )
         return;
+
+      if ( this.options.minPosY !== undefined ) {
+        if ( pos.y < this.options.minPosY ) {
+          pos.y = this.options.minPosY;
+        }
+      }
 
       this.everyLabel( function( i ) {
 
@@ -10736,22 +10778,6 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
       this.setPosition();
       this.setHandles();
       this.setBindableToDom( this._dom );
-    },
-
-    highlight: function() {
-
-      this._dom.setAttribute( 'stroke-width', '5' );
-
-      this.setLinesY( lineHeight + 2 );
-
-    },
-
-    unhighlight: function() {
-
-      this.setStrokeWidth();
-
-      this.setLinesY( lineHeight );
-
     }
 
   } );

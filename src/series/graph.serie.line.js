@@ -102,7 +102,12 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
               position: {
                 x: 0
               },
-              anchor: 'middle'
+              anchor: 'middle',
+
+            },
+
+            shapeOptions: {
+              minPosY: 15
             }
 
           } ).then( function( shape ) {
@@ -1746,13 +1751,12 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
         self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
         passed.push( px );
+        self.picks[ m ].redraw();
 
         if ( passed.length == self.options.autoPeakPickingNb ) {
           break;
         }
       }
-
-      self.graph.redrawShapes();
 
     } );
   }

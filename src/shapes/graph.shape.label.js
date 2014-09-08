@@ -1,7 +1,8 @@
 define( [ './graph.shape' ], function( GraphShape ) {
 
-  var GraphLabel = function( graph ) {
+  var GraphLabel = function( graph, options ) {
     this.init( graph );
+    this.options = options ||  {};
   }
   $.extend( GraphLabel.prototype, GraphShape.prototype, {
     createDom: function() {
@@ -13,6 +14,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       if ( !pos )
         return;
+
+      if ( this.options.minPosY !== undefined ) {
+        if ( pos.y < this.options.minPosY ) {
+          pos.y = this.options.minPosY;
+        }
+      }
 
       this.everyLabel( function( i ) {
 

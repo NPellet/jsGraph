@@ -77,7 +77,7 @@ define( [], function() {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        shape.handleCreateImpl();
+        shape.created();
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );

@@ -30,22 +30,6 @@ define( [ './graph.shape.rect' ], function( GraphRect ) {
       this.setPosition();
       this.setHandles();
       this.setBindableToDom( this._dom );
-    },
-
-    highlight: function() {
-
-      this._dom.setAttribute( 'stroke-width', '5' );
-
-      this.setLinesY( lineHeight + 2 );
-
-    },
-
-    unhighlight: function() {
-
-      this.setStrokeWidth();
-
-      this.setLinesY( lineHeight );
-
     }
 
   } );

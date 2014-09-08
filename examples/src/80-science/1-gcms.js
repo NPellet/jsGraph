@@ -61,6 +61,8 @@ define( function( ) {
 
 });
 */
+// BEGIN INGORE ON BUILD
+
 
 define( ['require'], function( require ) {
 
@@ -87,10 +89,35 @@ define( ['require'], function( require ) {
 
 						div1.style.width = '100%';
 						div1.style.height = '250px';
-						
-						var gcms = new GCMSConstructor( div1, div2, {} );
+		
+
+						var table = $("<table><thead><tr><th>From</th><th>To</th><th>Color</th><th>Display MS</th></tr></thead><tbody></tbody></table>");
+						var tbody = table.find('tbody');
+
+						var gcms = new GCMSConstructor( div1, div2, {
+
+							AUCCreated: function( auc ) {
+console.log( auc );
+								var pos = Math.round( auc.data.pos );
+								var pos2 = Math.round( auc.data.pos2 );
+								var color = auc.data.color;
+
+								var tr = $("<tr />")	
+											.append( '<td>' + pos.x + '</td><td>' + pos.y + '</td><td><input type="color" value="' + color + '" /></td><td></td>');
+
+								auc._line = tr;
+								table.append( tr );
+							}
+
+
+						} );
+
+						domGraph.appendChild( table.get( 0 ) );
 						gcms.setGC( gcmsData.gcms.gc );
 						gcms.setMS( gcmsData.gcms.ms );
+
+
+
 					})
 
 				} )
@@ -113,3 +140,4 @@ define( ['require'], function( require ) {
 	];
 
 });
+

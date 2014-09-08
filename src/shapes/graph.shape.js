@@ -442,7 +442,7 @@ define( [], function() {
 				pos.x = -10000;
 				pos.y = -10000;
 			}*/
-
+      console.log( 'sfdsdf' );
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -589,6 +589,12 @@ define( [], function() {
       return this.handles = handles;
     },
 
+    created: function() {
+
+      this.callHandler( "onCreated", this );
+      this.handleCreateImpl();
+    },
+
     handleMouseDownImpl: function() {},
     handleMouseMoveImpl: function() {},
     handleMouseUpImpl: function() {},
@@ -677,7 +683,7 @@ define( [], function() {
         function( e ) {
           var clbks;
 
-          this.highlight();
+          //this.highlight();
           this.addClass( 'hover' );
 
           if ( !( clbks = this._mouseOverCallbacks ) ) {
@@ -692,7 +698,7 @@ define( [], function() {
         function( e ) {
           var clbks;
 
-          this.unhighlight();
+      //    this.unHighlight();
           this.removeClass( 'hover' );
 
           if ( !( clbks = this._mouseOutCallbacks ) ) {
@@ -741,11 +747,11 @@ define( [], function() {
 
     handleMouseOver: function() {
 
-      this.callHandler( 'mouseOver' );
+      this.callHandler( 'mouseOver', this );
     },
 
     handleMouseOut: function() {
-      this.callHandler( 'mouseOut' );
+      this.callHandler( 'mouseOut', this );
     },
 
     removeHandles: function() {
@@ -907,8 +913,28 @@ define( [], function() {
       }
     },
 
-    highlight: function() {},
-    unhighlight: function() {}
+    highlight: function( params ) {
+
+      this.savedHighlight = {};
+      for( var i in params ) {
+      	this.savedHighlight[ i ] = this._dom.getAttribute( i );
+      	this._dom.setAttribute( i, params[ i ] );
+      }
+
+      this.highlightImpl();
+    },
+
+    unHighlight: function() {
+
+      for( var i in this.savedHighlight ) {
+      	this._dom.setAttribute( i, this.savedHighlight[ i ] );
+      }
+
+
+    },
+
+    highlightImpl: function() {},
+    unHighlightImpl: function() {}
 
   }
 

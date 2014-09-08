@@ -100,7 +100,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       mouseMove: [],
       mouseOver: [],
       mouseOut: [],
-      beforeMouseMove: []
+      beforeMouseMove: [],
+      onCreated: [],
+      onResizing: [],
+      onMoving: [],
+      onEndResizing: [],
+      onEndMoving: []
     };
 
     this.pluginsReady = $.Deferred();
@@ -1462,7 +1467,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 		graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
 */
     graph.shift = shift;
-    graph.redrawShapes();
+    graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
   }
 
   function _registerEvents( graph ) {
