@@ -13,11 +13,6 @@ module.exports = function(grunt) {
             maximal: {
                 
                 output: 'dist/jsgraph.js'
-            },
-
-            minimal: {
-                
-                output: 'dist/jsgraph.js'
             }
         },
 
@@ -103,6 +98,7 @@ module.exports = function(grunt) {
 
 
     var fs = require('fs');
+    var w = require('wrench');
     var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
@@ -115,7 +111,6 @@ module.exports = function(grunt) {
 
 
     grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'buildExampleList'] );
-
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
 
@@ -323,6 +318,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'topages', 'Sends examples to pages', function() {
 
+        var done = this.async();
+
         grunt.task.run('default');
         grunt.task.run('buildExampleList');
         
@@ -393,24 +390,31 @@ module.exports = function(grunt) {
 
                     grunt.file.write( '../jsgraphwww/_examples/' + folder2 + '/' + file2 + '.markdown', markdown );
 
+                    if( fs.existsSync(  basePath + folder + "/_lib/" )) {
+                        w.copyDirSyncRecursive( basePath + folder + "/_lib/", "../jsgraphwww/_examples/" + folder2 + "/_lib/", {
+                            forceDelete: true
+                        });
+                    }
+
+
+                    
                     yml += "   - title: \"" + func[ 1 ] + "\"\n";
                     yml += "     url: \"" + ( i == 0 ? "/examples.html" : ( "/examples/" + folder2 + "/" + file2 + "/") ) + "\"\n";
 
                     i++;
                 } );
             }
+
+
         } );
 
         var ymlMaster = grunt.file.read( '../jsgraphwww/_config.yml' )
                             .replace(/#exampleTree start((.|[\r\n])*)#exampleTree end/, "#exampleTree start\n" +  yml + "\n#exampleTree end");
         grunt.file.write( '../jsgraphwww/_config.yml', ymlMaster );
 
+
+        done();
+
+
     } );
-
-    grunt.registerTask( 'beautify', 'Beautify source code', function() {
-
-
-        grunt.file.write( './src/graph.core.js', beautify( grunt.file.read( './src/graph.core.js' ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
-
-    });
 };

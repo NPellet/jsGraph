@@ -181,9 +181,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     handleMouseDownImpl: function( e ) {
 
-      var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
-
     },
 
     handleMouseUpImpl: function() {

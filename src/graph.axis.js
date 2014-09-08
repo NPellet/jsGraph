@@ -342,6 +342,10 @@ define( [ 'jquery' ], function( $ ) {
 
     },
 
+    zoom: function( val1, val2 ) {
+      return this._doZoomVal( val1, val2 );
+    },
+
     _doZoomVal: function( val1, val2, mute ) {
 
       return this._doZoom( this.getPx( val1 ), this.getPx( val2 ), val1, val2, mute );
@@ -354,6 +358,7 @@ define( [ 'jquery' ], function( $ ) {
       var val2 = val2 || this.getVal( px2 );
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
+
       this._hasChanged = true;
       if ( this.options.onZoom && !mute )
         this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
@@ -783,6 +788,7 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getVal: function( px ) {
+
       // Ex 50 / (100) * (1000 - 700) + 700
       return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
     },

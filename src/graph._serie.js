@@ -38,6 +38,11 @@ define( [], function() {
         total = 0,
         continuous;
 
+      this.minX = +Infinity;
+      this.minY = +Infinity;
+      this.maxX = -Infinity;
+      this.maxY = -Infinity;
+
       if ( !data instanceof Array ) {
         return;
       }

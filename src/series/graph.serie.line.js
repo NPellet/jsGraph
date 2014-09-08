@@ -69,12 +69,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
       //this.scale = 1;
       //this.shift = 0;
-
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
       this.lines = [];
 
       this.groupMain.appendChild( this.groupLines );
@@ -892,12 +886,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       for ( var i = 0; i < this.data.length; i++ ) {
 
-        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX > this.data[ i ][ 0 ] ) ) {
+        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
           xMinIndex = this._searchBinary( valX, this.data[ i ], false );
-        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX < this.data[ i ][ 0 ] ) ) {
+        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
           xMinIndex = this._searchBinary( valX, this.data[ i ], true );
-        } else
+        } else {
           continue;
+        }
 
         return {
           dataIndex: i,
@@ -1025,12 +1020,23 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         end2 = Math.max( start, end ),
         v1 = this.searchClosestValue( start2 ),
         v2 = this.searchClosestValue( end2 ),
-        i, j, max = 0,
+        i, j, max = -Infinity,
         initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
         initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
         for ( j = initJ; j <= maxJ; j += 2 ) {
           max = Math.max( max, this.data[ i ][ j + 1 ] );
         }

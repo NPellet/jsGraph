@@ -1,6 +1,6 @@
 {
   "name": "graphs",
-  "version": "1.9.9-8",
+  "version": "1.9.9",
   "devDependencies": {
     "bower": "^1.3.5",
     "grunt": "^0.4.5",
@@ -13,7 +13,9 @@
     "grunt-sass": "^0.14.0",
     "grunt-sloc": "^0.5.2",
     "js-beautify": "^1.5.1",
+    "ncp": "^0.6.0",
     "path": "^0.4.9",
-    "requirejs": "2.1.14"
+    "requirejs": "2.1.14",
+    "wrench": "^1.5.8"
   }
 }

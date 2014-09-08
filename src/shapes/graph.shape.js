@@ -49,6 +49,7 @@ define( [], function() {
       this.rectEvent.setAttribute( 'fill', 'transparent' );
 
       this._movable = true;
+      this._selectable = true;
 
       if ( this._dom ) {
 
@@ -72,7 +73,7 @@ define( [], function() {
         } );
 
         this._dom.addEventListener( 'mousedown', function( e ) {
-
+          console.log( 'mousedown' );
           self.graph.focus();
 
           e.preventDefault();
@@ -512,6 +513,8 @@ define( [], function() {
         this.setHandles();
       }
 
+      this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
+
       if ( !mute ) {
         this.graph.selectShape( this, true );
       }
@@ -658,6 +661,7 @@ define( [], function() {
           if ( !this._selected ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
+
               self.select();
               self.timeoutSelect = false;
             }, 100 );
@@ -700,6 +704,7 @@ define( [], function() {
     },
 
     handleMouseDown: function( e ) {
+
       return this.callHandler( 'mouseDown', e );
     },
 

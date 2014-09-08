@@ -289,10 +289,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       var x = e.clientX,
         y = e.clientY;
 
-      if ( e.layerX !== undefined && e.layerY !== undefined ) {
+      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+
         return {
-          x: e.layerX,
-          y: e.layerY
+          x: e.offsetX,
+          y: e.offsetY
         };
       }
 

@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-07T19:55Z
+ * Date: 2014-09-08T03:42Z
  */
 
 (function( global, factory ) {
@@ -380,6 +380,10 @@ build['./graph.axis'] = ( function( $ ) {
 
     },
 
+    zoom: function( val1, val2 ) {
+      return this._doZoomVal( val1, val2 );
+    },
+
     _doZoomVal: function( val1, val2, mute ) {
 
       return this._doZoom( this.getPx( val1 ), this.getPx( val2 ), val1, val2, mute );
@@ -392,6 +396,7 @@ build['./graph.axis'] = ( function( $ ) {
       var val2 = val2 || this.getVal( px2 );
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
+
       this._hasChanged = true;
       if ( this.options.onZoom && !mute )
         this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
@@ -821,6 +826,7 @@ build['./graph.axis'] = ( function( $ ) {
     },
 
     getVal: function( px ) {
+
       // Ex 50 / (100) * (1000 - 700) + 700
       return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
     },
@@ -1365,7 +1371,6 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
     },
 
     isFlipped: function() {
-
       return !this.options.flipped;
     },
 
@@ -1400,28 +1405,50 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
     },
 
     // TODO: Get the min value as well
-    scaleToFitAxis: function( axis, start, end ) {
-      var max = 0;
+    scaleToFitAxis: function( axis, exclude, start, end ) {
+
+      if ( !start ) {
+        start = axis.getActualMin();
+      }
+
+      if ( !end ) {
+        end = axis.getActualMax();
+      }
+
+      if ( typeof exclude == "number" ) {
+        end = start;
+        start = exclude;
+        exclude = false;
+      }
+
+      var max = -Infinity,
+        j = 0;
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
-        if ( !( this.graph.series[ i ].getXAxis() == axis ) ) {
+
+        if ( this.graph.series[ i ] == exclude ) {
           continue;
         }
 
+        if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
+          continue;
+        }
+
+        j++;
+
         max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
       }
-      this._doZoomVal( 0, max );
+
+      if ( j == 0 ) {
+
+        this.setMinMaxToFitSeries();
+      } else {
+        this._doZoomVal( 0, max );
+      }
     },
 
     isXY: function() {
       return 'y';
-    },
-
-    getMinPx: function() {
-      return !this.isFlipped() ? this.maxPx : this.minPx;
-    },
-    getMaxPx: function( px ) {
-      return !this.isFlipped() ? this.minPx : this.maxPx;
-    },
+    }
 
   } );
 
@@ -2819,10 +2846,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       var x = e.clientX,
         y = e.clientY;
 
-      if ( e.layerX !== undefined && e.layerY !== undefined ) {
+      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+
         return {
-          x: e.layerX,
-          y: e.layerY
+          x: e.offsetX,
+          y: e.offsetY
         };
       }
 
@@ -4326,6 +4354,11 @@ build['./graph._serie'] = ( function( ) {
         total = 0,
         continuous;
 
+      this.minX = +Infinity;
+      this.minY = +Infinity;
+      this.maxX = -Infinity;
+      this.maxY = -Infinity;
+
       if ( !data instanceof Array ) {
         return;
       }
@@ -5621,12 +5654,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
       //this.scale = 1;
       //this.shift = 0;
-
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
       this.lines = [];
 
       this.groupMain.appendChild( this.groupLines );
@@ -6444,12 +6471,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       for ( var i = 0; i < this.data.length; i++ ) {
 
-        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX > this.data[ i ][ 0 ] ) ) {
+        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
           xMinIndex = this._searchBinary( valX, this.data[ i ], false );
-        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX < this.data[ i ][ 0 ] ) ) {
+        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
           xMinIndex = this._searchBinary( valX, this.data[ i ], true );
-        } else
+        } else {
           continue;
+        }
 
         return {
           dataIndex: i,
@@ -6474,6 +6502,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         xMax,
         yMax;
 
+      
       var value = this.searchClosestValue( valX );
 
       if ( !value )
@@ -6577,12 +6606,23 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         end2 = Math.max( start, end ),
         v1 = this.searchClosestValue( start2 ),
         v2 = this.searchClosestValue( end2 ),
-        i, j, max = 0,
+        i, j, max = -Infinity,
         initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
         initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
         for ( j = initJ; j <= maxJ; j += 2 ) {
           max = Math.max( max, this.data[ i ][ j + 1 ] );
         }
@@ -8423,6 +8463,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.rectEvent.setAttribute( 'fill', 'transparent' );
 
       this._movable = true;
+      this._selectable = true;
 
       if ( this._dom ) {
 
@@ -8446,7 +8487,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         } );
 
         this._dom.addEventListener( 'mousedown', function( e ) {
-
+          console.log( 'mousedown' );
           self.graph.focus();
 
           e.preventDefault();
@@ -8886,6 +8927,8 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.setHandles();
       }
 
+      this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
+
       if ( !mute ) {
         this.graph.selectShape( this, true );
       }
@@ -9032,6 +9075,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           if ( !this._selected ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
+
               self.select();
               self.timeoutSelect = false;
             }, 100 );
@@ -9074,6 +9118,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     handleMouseDown: function( e ) {
+
       return this.callHandler( 'mouseDown', e );
     },
 
@@ -9310,13 +9355,18 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
       var self = this;
       this._dom = document.createElementNS( this.graph.ns, 'path' );
-      this._dom.setAttribute( 'pointer-events', 'stroke' );
+      //this._dom.setAttribute( 'pointer-events', 'stroke' );
+
+      this.nbHandles = 2;
+      this.createHandles( this.nbHandles, 'line', {
+        'stroke-width': '3',
+        'stroke': 'transparent',
+        'pointer-events': 'stroke',
+        'cursor': 'ew-resize'
+      } );
 
       /*			this.handle1 = document.createElementNS(this.graph.ns, 'line');
-			this.handle1.setAttribute('stroke-width', '3');
-			this.handle1.setAttribute('stroke', 'transparent');
-			this.handle1.setAttribute('pointer-events', 'stroke');
-			this.handle1.setAttribute('cursor', 'ew-resize');
+			this.handle1.setAttribute(');
 
 			this.handle2 = document.createElementNS(this.graph.ns, 'line');
 			this.handle2.setAttribute('stroke-width', '3');
@@ -9372,7 +9422,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
-        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph.getXY( e ).x - this.graph.getPaddingLeft() ) );
+        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
         if ( !value ) {
           return;
@@ -9478,29 +9528,11 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       return true;
     },
 
-    select: function() {
+    setHandles: function() {
 
-      if ( this.isLocked() ) {
+      if ( !this.firstX ) {
         return;
       }
-
-      if ( !this.firstX ||  !this.lastX ) {
-        return;
-      }
-
-      this._selected = true;
-
-      this.selectHandles();
-
-      this.group.appendChild( this.handle1 );
-      this.group.appendChild( this.handle2 );
-
-      this.selectStyle();
-
-      this.graph.selectShape( this );
-    },
-
-    selectHandles: function() {
       this.handle1.setAttribute( 'x1', this.firstX );
       this.handle1.setAttribute( 'x2', this.firstX );
 
@@ -10306,9 +10338,6 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
     },
 
     handleMouseDownImpl: function( e ) {
-
-      var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
 
     },
 

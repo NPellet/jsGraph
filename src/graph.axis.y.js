@@ -144,7 +144,6 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     isFlipped: function() {
-
       return !this.options.flipped;
     },
 
@@ -179,28 +178,50 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     // TODO: Get the min value as well
-    scaleToFitAxis: function( axis, start, end ) {
-      var max = 0;
+    scaleToFitAxis: function( axis, exclude, start, end ) {
+
+      if ( !start ) {
+        start = axis.getActualMin();
+      }
+
+      if ( !end ) {
+        end = axis.getActualMax();
+      }
+
+      if ( typeof exclude == "number" ) {
+        end = start;
+        start = exclude;
+        exclude = false;
+      }
+
+      var max = -Infinity,
+        j = 0;
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
-        if ( !( this.graph.series[ i ].getXAxis() == axis ) ) {
+
+        if ( this.graph.series[ i ] == exclude ) {
           continue;
         }
 
+        if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
+          continue;
+        }
+
+        j++;
+
         max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
       }
-      this._doZoomVal( 0, max );
+
+      if ( j == 0 ) {
+
+        this.setMinMaxToFitSeries();
+      } else {
+        this._doZoomVal( 0, max );
+      }
     },
 
     isXY: function() {
       return 'y';
-    },
-
-    getMinPx: function() {
-      return !this.isFlipped() ? this.maxPx : this.minPx;
-    },
-    getMaxPx: function( px ) {
-      return !this.isFlipped() ? this.minPx : this.maxPx;
-    },
+    }
 
   } );
 

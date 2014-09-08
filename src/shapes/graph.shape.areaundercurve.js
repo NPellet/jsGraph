@@ -11,13 +11,18 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var self = this;
       this._dom = document.createElementNS( this.graph.ns, 'path' );
-      this._dom.setAttribute( 'pointer-events', 'stroke' );
+      //this._dom.setAttribute( 'pointer-events', 'stroke' );
+
+      this.nbHandles = 2;
+      this.createHandles( this.nbHandles, 'line', {
+        'stroke-width': '3',
+        'stroke': 'transparent',
+        'pointer-events': 'stroke',
+        'cursor': 'ew-resize'
+      } );
 
       /*			this.handle1 = document.createElementNS(this.graph.ns, 'line');
-			this.handle1.setAttribute('stroke-width', '3');
-			this.handle1.setAttribute('stroke', 'transparent');
-			this.handle1.setAttribute('pointer-events', 'stroke');
-			this.handle1.setAttribute('cursor', 'ew-resize');
+			this.handle1.setAttribute(');
 
 			this.handle2 = document.createElementNS(this.graph.ns, 'line');
 			this.handle2.setAttribute('stroke-width', '3');
@@ -73,7 +78,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
-        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph.getXY( e ).x - this.graph.getPaddingLeft() ) );
+        var value = this.serie.searchClosestValue( this.serie.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
         if ( !value ) {
           return;
@@ -179,29 +184,11 @@ define( [ './graph.shape' ], function( GraphShape ) {
       return true;
     },
 
-    select: function() {
+    setHandles: function() {
 
-      if ( this.isLocked() ) {
+      if ( !this.firstX ) {
         return;
       }
-
-      if ( !this.firstX ||  !this.lastX ) {
-        return;
-      }
-
-      this._selected = true;
-
-      this.selectHandles();
-
-      this.group.appendChild( this.handle1 );
-      this.group.appendChild( this.handle2 );
-
-      this.selectStyle();
-
-      this.graph.selectShape( this );
-    },
-
-    selectHandles: function() {
       this.handle1.setAttribute( 'x1', this.firstX );
       this.handle1.setAttribute( 'x2', this.firstX );
 
