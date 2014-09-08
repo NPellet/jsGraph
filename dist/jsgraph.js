@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9
+ * jsGraphs JavaScript Graphing Library v1.9.10-0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-08T07:54Z
+ * Date: 2014-09-08T08:27Z
  */
 
 (function( global, factory ) {
@@ -2661,8 +2661,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       onCreated: [],
       onResizing: [],
       onMoving: [],
-      onEndResizing: [],
-      onEndMoving: []
+      onAfterResized: [],
+      onAfterMoved: []
     };
 
     this.pluginsReady = $.Deferred();
@@ -9042,8 +9042,18 @@ build['./shapes/graph.shape'] = ( function( ) {
       mouseUp: [
 
         function( e ) {
+
+          if( this.moving ) {
+            this.callHandler("onAfterMoved", this );
+          }
+
+          if( this.handleSelected || this.resize ) {
+            this.callHandler("onAfterResized", this ); 
+          }
+
           this.moving = false;
           this.resize = false;
+          this.handleSelected = false;
           this.graph.elementMoving( false );
 
           return this.handleMouseUpImpl( e );

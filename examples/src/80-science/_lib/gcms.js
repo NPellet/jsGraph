@@ -57,7 +57,7 @@
 
 						plugins: {
 							'graph.plugin.zoom': { zoomMode: 'x' },
-							'graph.plugin.shape': { type: 'areaundercurve', fillColor: 'rgba(0, 100, 100, 0.2 )', strokeColor: 'rgba(0, 100, 100, 1)', strokeWidth: 2 }
+							'graph.plugin.shape': { type: 'areaundercurve', color: [ 0, 100, 100 ], fillColor: 'rgba(0,100,100,0.3)', strokeColor: 'rgba(0,100,100,1)', strokeWidth: 2 }
 						},
 
 						pluginAction: {
@@ -369,17 +369,16 @@ console.log( annot)
 				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
 					self.trigger('AUCCreated', shape );
 				} );
+				this.gcGraph.shapeHandlers.onAfterMoved.push( function( shape ) {
+					
+					self.trigger('AUCChange', shape );
+				} );
+
+				this.gcGraph.shapeHandlers.onAfterResized.push( function( shape ) {
+					self.trigger('AUCChange', shape );
+				} );
 
 
-				this.gcGraph.shapeHandlers.mouseOver.push( function( shape ) {
-
-					shape.highlight( { "stroke-width": 10 });
-				});
-
-				this.gcGraph.shapeHandlers.mouseOut.push( function( shape ) {
-
-					shape.unHighlight();
-				});
 			},
 
 			doMsFromAUC: function( annot ) { // Creating an averaged MS on the fly

@@ -605,8 +605,18 @@ define( [], function() {
       mouseUp: [
 
         function( e ) {
+
+          if( this.moving ) {
+            this.callHandler("onAfterMoved", this );
+          }
+
+          if( this.handleSelected || this.resize ) {
+            this.callHandler("onAfterResized", this ); 
+          }
+
           this.moving = false;
           this.resize = false;
+          this.handleSelected = false;
           this.graph.elementMoving( false );
 
           return this.handleMouseUpImpl( e );

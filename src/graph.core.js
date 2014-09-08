@@ -104,8 +104,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       onCreated: [],
       onResizing: [],
       onMoving: [],
-      onEndResizing: [],
-      onEndMoving: []
+      onAfterResized: [],
+      onAfterMoved: []
     };
 
     this.pluginsReady = $.Deferred();
