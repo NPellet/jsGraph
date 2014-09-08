@@ -1178,12 +1178,13 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
           } else if ( value.x && onSerie ) {
 
             var val;
+
             if ( _parsePx( value.x ) !== false ) {
               console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
               pos[ i ] = 0;
             } else {
 
-              var closest = onSerie.searchClosestValue( val );
+              var closest = onSerie.searchClosestValue( value.x );
 
               if ( !closest ) {
                 console.warn( "Could not find y position. Returning 0 for y." );
@@ -1484,6 +1485,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       _handleMouseMove( self, coords.x, coords.y, e );
     } );
 
+    graph.dom.addEventListener( 'mouseleave', function( e ) {
+
+      _handleMouseLeave( self );
+    } );
+
     graph.dom.addEventListener( 'mousedown', function( e ) {
 
       self.focus();
@@ -1740,6 +1746,15 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
     graph.redraw();
     graph.drawSeries( true );
+  }
+
+  function _handleMouseLeave( graph ) {
+
+    if ( graph.options.handleMouseLeave ) {
+      graph.options.handleMouseLeave.call( this );
+
+    }
+
   }
 
   return Graph;

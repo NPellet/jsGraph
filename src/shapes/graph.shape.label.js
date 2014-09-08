@@ -18,6 +18,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
         this.label[ i ].setAttribute( 'x', pos.x );
         this.label[ i ].setAttribute( 'y', pos.y );
+
       } );
 
       return true;

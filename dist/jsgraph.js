@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.9-8
+ * jsGraphs JavaScript Graphing Library v1.9.9
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-08T03:42Z
+ * Date: 2014-09-08T04:38Z
  */
 
 (function( global, factory ) {
@@ -3735,12 +3735,13 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
           } else if ( value.x && onSerie ) {
 
             var val;
+
             if ( _parsePx( value.x ) !== false ) {
               console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
               pos[ i ] = 0;
             } else {
 
-              var closest = onSerie.searchClosestValue( val );
+              var closest = onSerie.searchClosestValue( value.x );
 
               if ( !closest ) {
                 console.warn( "Could not find y position. Returning 0 for y." );
@@ -4041,6 +4042,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       _handleMouseMove( self, coords.x, coords.y, e );
     } );
 
+    graph.dom.addEventListener( 'mouseleave', function( e ) {
+
+      _handleMouseLeave( self );
+    } );
+
     graph.dom.addEventListener( 'mousedown', function( e ) {
 
       self.focus();
@@ -4297,6 +4303,15 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
     graph.redraw();
     graph.drawSeries( true );
+  }
+
+  function _handleMouseLeave( graph ) {
+
+    if ( graph.options.handleMouseLeave ) {
+      graph.options.handleMouseLeave.call( this );
+
+    }
+
   }
 
   return Graph;
@@ -6502,7 +6517,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         xMax,
         yMax;
 
-      
       var value = this.searchClosestValue( valX );
 
       if ( !value )
@@ -9864,6 +9878,7 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 
         this.label[ i ].setAttribute( 'x', pos.x );
         this.label[ i ].setAttribute( 'y', pos.y );
+
       } );
 
       return true;
