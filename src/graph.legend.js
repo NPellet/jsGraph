@@ -19,6 +19,8 @@ define( [], function() {
 
     this.graph = graph;
     this.svg = document.createElementNS( this.graph.ns, 'g' );
+    this.subG = document.createElementNS( this.graph.ns, 'g' );
+
     this.rect = document.createElementNS( this.graph.ns, 'rect' );
     this.rectBottom = document.createElementNS( this.graph.ns, 'rect' );
 
@@ -27,6 +29,8 @@ define( [], function() {
 
     this.rectBottom.setAttribute( 'x', 0 );
     this.rectBottom.setAttribute( 'y', 0 );
+
+    this.svg.appendChild( this.subG );
 
     this.pos = {
       x: undefined,
@@ -69,11 +73,11 @@ define( [], function() {
       var self = this;
       this.applyStyle();
 
-      while ( this.svg.hasChildNodes() ) {
-        this.svg.removeChild( this.svg.lastChild );
+      while ( this.subG.hasChildNodes() ) {
+        this.subG.removeChild( this.subG.lastChild );
       }
 
-      this.svg.appendChild( this.rectBottom );
+      this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
 
       var series = this.graph.getSeries(),
         line,
@@ -89,7 +93,7 @@ define( [], function() {
           g = document.createElementNS( self.graph.ns, 'g' );
           g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
 
-          self.svg.appendChild( g );
+          self.subG.appendChild( g );
 
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
@@ -125,7 +129,7 @@ define( [], function() {
         } )( i );
       }
 
-      var bbox = this.svg.getBBox();
+      var bbox = this.subG.getBBox();
 
       this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
       this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -144,8 +148,8 @@ define( [], function() {
       this.rectBottom.setAttribute( 'width', this.width );
       this.rectBottom.setAttribute( 'height', this.height );
 
-      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingLeft );
-      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
       this.svg.appendChild( this.rect );
     },

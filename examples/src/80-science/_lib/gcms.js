@@ -20,7 +20,8 @@
 	var factory = function( $, Graph ) {
 		var defaults = {
 			msIsContinuous: false,
-			title: 'GC-MS'
+			title: 'GC-MS',
+			onlyOneMS: false
 		}
 
 		var gcms = function( domGC, domMS, options ) {
@@ -37,6 +38,8 @@
 
 			this.domGC = domGC;
 			this.domMS = domMS;
+
+			this.firstMsSerie = true;
 
 			this.init();
 		}
@@ -80,10 +83,10 @@
 								mode: 'total'
 							}
 						},
+/*
 
+						onAnnotationMake: function( annot, shape ) {
 
-						onAnnotationMake: function(annot) {
-console.log( annot)
 							switch( annot.type ) {
 								case 'areaundercurve':
 									self.trigger( 'AUCCreated', [ annot ] );
@@ -93,11 +96,11 @@ console.log( annot)
 	//						self.onAnnotationMake( annot );						
 						},
 
-						onAnnotationSelect: function(annot) {
+						onAnnotationSelect: function( annot, shape ) {
 
 							switch(annot.type) {
 								case 'areaundercurve': 
-									self.doMsFromAUC( annot );
+									self.doMsFromAUC( annot, shape );
 									//self.AUCSelected( annot );
 									self.trigger( 'AUCSelected', [ this ] );
 
@@ -105,9 +108,9 @@ console.log( annot)
 							}
 						},
 
-						onAnnotationChange: function( annot ) {
+						onAnnotationChange: function( annot, shape ) {
 
-							self.doMsFromAUC( annot );
+							self.doMsFromAUC( annot, this );
 
 							switch( annot.type ) {
 								case 'surfaceUnderCurve':
@@ -115,7 +118,7 @@ console.log( annot)
 								break;
 							}
 						},
-
+*/
 
 						onAnnotationRemove: function(annot) {
 
@@ -157,12 +160,17 @@ console.log( annot)
 
 							if( ! self.msSerieMouseTrack ) {
 								
-								self.msSerieMouseTrack = self.msGraph.newSerie("", 
+								self.msSerieMouseTrack = self
+								.msGraph
+								.newSerie("", 
 									{ 
-										lineToZero: ! this.options.msIsContinuous
+										lineToZero: ! this.options.msIsContinuous,
+										lineColor: 'rgba( 100, 100, 100, 0.5 )'
 									}
 								)
-								.autoAxis()
+								.autoAxis();
+
+
 							}
 
 							if( ! ms ) {
@@ -170,6 +178,13 @@ console.log( annot)
 							}
 
 							self.msSerieMouseTrack.setData( ms );
+
+
+							if( self.firstMsSerie ) {
+								console.log('ds');
+								self.msGraph.getBottomAxis().setMinMaxToFitSeries();
+								self.firstMsSerie = false;
+							}
 
 							self.msGraph._updateAxes();
 
@@ -369,19 +384,37 @@ console.log( annot)
 				this.gcGraph.shapeHandlers.onCreated.push( function( shape ) {
 					self.trigger('AUCCreated', shape );
 				} );
+
 				this.gcGraph.shapeHandlers.onAfterMoved.push( function( shape ) {
-					
+					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
 
 				this.gcGraph.shapeHandlers.onAfterResized.push( function( shape ) {
+					self.doMsFromAUC( shape.data, shape );
 					self.trigger('AUCChange', shape );
 				} );
 
+				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
+					self.trigger('AUCSelected', shape );
+				} );
+
+				this.gcGraph.shapeHandlers.onUnselected.push( function( shape ) {
+					self.trigger('AUCUnselected', shape );
+				} );
+
+				this.gcGraph.shapeHandlers.onRemoved.push( function( shape ) {
+					self.trigger('AUCRemoved', shape );
+				} );
+/*
+				this.gcGraph.shapeHandlers.onSelected.push( function( shape ) {
+					self.doMsFromAUC( shape.data, shape );
+				} );
+*/
 
 			},
 
-			doMsFromAUC: function( annot ) { // Creating an averaged MS on the fly
+			doMsFromAUC: function( annot, shape ) { // Creating an averaged MS on the fly
 
 				var self = this,
 					xStart = annot.pos.x,
@@ -429,16 +462,24 @@ console.log( annot)
 					finalMs.push( Math.round( obj[ allMs[ i ] ] / Math.abs( indexMax - indexMin ) ) );
 				}
 
-				if( ! this.msFromAucSerie ) {
-
-					this.msFromAucSerie = this.msGraph.newSerie('fromAUC', { autoPeakPicking: true, lineToZero: ! this.options.msIsContinuous })
-												.autoAxis()
-												.setYAxis( self.msGraph.getRightAxis( ) )
-												.setLineWidth( 3 );
+				if( this.options.onlyOneMS ) {
+					var buffer = this;
+				} else {
+					var buffer = shape;
 				}
 
-				self.msFromAucSerie.setData( finalMs );
-				self.msFromAucSerie.setLineColor( annot.strokeColor || annot.fillColor || 'red' );
+				if( ! buffer.msFromAucSerie ) {
+
+					buffer.msFromAucSerie = this
+						.msGraph
+						.newSerie('fromAUC', { autoPeakPicking: true, lineToZero: ! this.options.msIsContinuous })
+						.autoAxis()
+						.setYAxis( self.msGraph.getRightAxis( ) )
+						.setLineWidth( 3 );
+				}
+
+				buffer.msFromAucSerie.setData( finalMs );
+				buffer.msFromAucSerie.setLineColor( annot.strokeColor || annot.fillColor || 'red' );
 
 				self.msGraph._updateAxes();
 				//self.msGraph.getRightAxis().setMaxValue(self.msGraph.getBoundaryAxisFromSeries(self.msGraph.getRightAxis(), 'y', 'max'));
@@ -446,21 +487,25 @@ console.log( annot)
 				//self.msGraph.getRightAxis().setMinMaxToFitSeries();
 
 
-				self.msGraph.getRightAxis().scaleToFitAxis( self.msGraph.getBottomAxis(), self.msFromAucSerie );
+				if( this.firstMsSerie ) {
+					self.msGraph.getBottomAxis().setMinMaxToFitSeries();
+					this.firstMsSerie = false;
+				}
 
-
+				self.msGraph.getRightAxis().scaleToFitAxis( self.msGraph.getBottomAxis()/*, buffer.msFromAucSerie */);
 				//self.msGraph.getLeftAxis().setMinMaxToFitSeries();
 
 				self.msGraph.redraw();
 				self.msGraph.drawSeries();
 
-				self.trigger('onMsFromAUCChange', [ finalMs, annot, self.msFromAucSerie ] );
+
+				self.trigger('onMsFromAUCChange', [ finalMs, annot, buffer.msFromAucSerie ] );
 			},
 
 
 
 			killMsFromAUC: function() {				
-
+				return;
 				if( ! this.msFromAucSerie ) {
 					return;
 				}
@@ -477,7 +522,7 @@ console.log( annot)
 			zoomOnGC: function(start, end, y) {
 
 				this.gcGraph.getBottomAxis().zoom( start - (end - start) * 0.4, end + (end - start) * 0.4 );
-				this.gcGraph.getLeftAxis().scaleToFitAxis(this.gcGraph.getBottomAxis(), start, end);
+				this.gcGraph.getLeftAxis().scaleToFitAxis( this.gcGraph.getBottomAxis(), start, end );
 
 				this.gcGraph.redraw();
 				this.gcGraph.drawSeries();
@@ -511,11 +556,9 @@ console.log( annot)
 				for( ; i < l ; i++ ) {
 					this.gcData[i].kill();
 				}
-
 				this.gcData = [];
 
 				if( this.msSerieMouseTrack ) {
-
 					this.msSerieMouseTrack.kill( true );
 					this.msSerieMouseTrack = false;
 				}
@@ -576,6 +619,15 @@ console.log( annot)
 				this.extMS = this.msGraph.newSerie('external', { useSlots: false, lineToZero: !cont, lineWidth: 3, lineColor: 'rgba(0, 0, 255, 0.2)' });
 				this.extMS.setXAxis(this.msGraph.getXAxis());
 				this.extMS.setYAxis(this.msGraph.getRightAxis(1, {primaryGrid: false, secondaryGrid: false, axisDataSpacing: { min: 0, max: 0}, display: false }));
+
+
+
+				if( this.firstMsSerie ) {
+					self.msGraph.getBottomAxis().setMinMaxToFitSeries();
+					this.firstMsSerie = false;
+				}
+				
+
 				this.extMS.setData(ms);
 				this.msGraph.redraw(true, true, false);
 				this.msGraph.drawSeries();
@@ -590,6 +642,15 @@ console.log( annot)
 				if( this.options[ func ] ) {
 					this.options[ func ].apply( this, params );
 				}
+			},
+
+			redrawMs: function() {
+
+				this.msGraph._updateAxes();
+				this.msGraph.getRightAxis().scaleToFitAxis( this.msGraph.getBottomAxis() );
+
+				this.msGraph.redraw();
+				this.msGraph.drawSeries();
 			}
 		};
 

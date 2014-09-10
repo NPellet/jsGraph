@@ -354,8 +354,8 @@ define( [ 'jquery' ], function( $ ) {
     _doZoom: function( px1, px2, val1, val2, mute ) {
 
       //if(this.options.display || 1 == 1) {
-      var val1 = val1 || this.getVal( px1 );
-      var val2 = val2 || this.getVal( px2 );
+      var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
+      var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
 
@@ -764,6 +764,8 @@ define( [ 'jquery' ], function( $ ) {
       //				console.log(this);
       //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
       // Ex 50 / (100) * (1000 - 700) + 700
+
+      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {

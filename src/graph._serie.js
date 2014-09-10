@@ -252,20 +252,27 @@ define( [], function() {
     },
 
     hide: function() {
-      this.shown = false;
+      this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
 
       this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
       this.getTextForLegend().setAttribute( 'opacity', 0.5 );
+
+      this.hideImpl();
     },
 
     show: function() {
-      this.shown = true;
+      this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
 
       this.getSymbolForLegend().setAttribute( 'opacity', 1 );
       this.getTextForLegend().setAttribute( 'opacity', 1 );
+
+      this.showImpl();
     },
+
+    hideImpl: function() {},
+    showImpl: function() {},
 
     toggleShow: function() {
       if ( !this.shown ) {
@@ -277,7 +284,7 @@ define( [], function() {
     },
 
     isShown: function() {
-      return this.shown;
+      return !this.hidden;
     },
 
     getX: function( val ) {

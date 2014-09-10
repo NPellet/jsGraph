@@ -101,11 +101,15 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       mouseOver: [],
       mouseOut: [],
       beforeMouseMove: [],
+      onChange: [],
       onCreated: [],
       onResizing: [],
       onMoving: [],
       onAfterResized: [],
-      onAfterMoved: []
+      onAfterMoved: [],
+      onSelected: [],
+      onUnselected: [],
+      onRemoved: []
     };
 
     this.pluginsReady = $.Deferred();
@@ -580,6 +584,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       for ( i = 0, l = series.length; i < l; i++ ) {
 
         serie = series[ i ];
+
+        if ( !serie.isShown() ) {
+          continue;
+        }
+
         serieValue = serie[ func2use ]();
 
         val = Math[ minmax ]( val, serieValue );
@@ -597,13 +606,17 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
     getSeriesFromAxis: function( axis, selfSeries ) {
       var series = [],
         i = this.series.length - 1;
-      for ( ; i >= 0; i-- )
-        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis )
+      for ( ; i >= 0; i-- ) {
+        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis ) {
           series.push( this.series[ i ] );
+        }
+      }
 
-      if ( selfSeries ) {
-        for ( i = 0; i < axis.series.length; i++ )
-          series.push( axis.series[ i ] )
+      if ( series ) {
+
+        for ( i = 0; i < axis.series.length; i++ ) {
+          series.push( axis.series[ i ] );
+        }
       }
 
       return series;
@@ -731,9 +744,13 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       }
       var i = 0,
         l = this.series.length;
+
       for ( ; i < l; i++ ) {
+
         if ( this.series[ i ].getName() == name ) {
+
           return this.series[ i ];
+
         }
       }
     },
@@ -766,7 +783,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
-        this.series[ i ].draw();
+
+        if ( this.series[  i ].isShown() ) {
+          this.series[ i ].draw();
+        }
       }
     },
 
@@ -1545,7 +1565,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       }, 200 );
     } );
 
-    graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+    graph.dom.addEventListener( 'mousewheel', function( e ) {
       e.preventDefault();
       e.stopPropagation();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -1615,6 +1635,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       if ( graph.options.onMouseMoveData ) {
 
         for ( var i = 0; i < graph.series.length; i++ ) {
+
           results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
         }
 

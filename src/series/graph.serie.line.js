@@ -133,7 +133,72 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       var self = this;
       this.slotsData = {};
-      this.slotWorker = new Worker( './src/slotworker.js' );
+//      this.slotWorker = new Worker( './src/slotworker.js' );
+
+
+    var workerUrl = URL.createObjectURL( new Blob(
+
+        [
+        " ( " + 
+
+            function() { 
+
+           
+          onmessage = function( e ) {
+            var data = e.data.data;
+            var slotNb = e.data.slotNumber;
+            var slot = e.data.slot;
+            var flip = e.data.flip;
+            var max = e.data.max;
+            var min = e.data.min;
+
+            var dataPerSlot = slot / (max - min);
+
+            var incrXFlip = 0;
+            var incrYFlip = 1;
+
+            if( flip ) {
+              incrXFlip = 1;
+              incrYFlip = 0;
+            }
+
+
+
+            this.slotsData = [];
+
+            for(var j = 0, k = data.length; j < k ; j ++ ) {
+
+              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
+
+                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
+                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
+                    min: data[ j ][ m + incrYFlip ], 
+                    max: data[ j ][ m + incrYFlip ], 
+                    start: data[ j ][ m + incrYFlip ],
+                    stop: false,
+                    x: data[ j ][ m + incrXFlip ] };
+
+                this.slotsData[ slotNumber ].stop = data[ j ][ m + incrYFlip ];
+                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].min );
+                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].max );
+
+              }
+            }
+
+            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
+          };
+
+
+            }.toString() + ")()"
+
+        ], { type: 'application/javascript' }
+
+        ) );
+
+
+        this.slotWorker = new Worker( workerUrl );
+
+      
 
       this.slotWorker.onmessage = function( e ) {
         self.slotsData[ e.data.slot ].resolve( e.data.data );
@@ -364,8 +429,10 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         self = this;
 
       var optimizeMonotoneous = this.isXMonotoneous(),
-        optimizeMaxPxX = this.getXAxis().getMaxPx(),
+        optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
         optimizeBreak, buffer;
+
+
 
       var shape, self = this;
 
@@ -564,6 +631,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
               if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
                 toBreak = true;
+                
                 break;
               }
 
@@ -578,6 +646,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
             }
           }
         }
+
+        console.log( k );
       }
 
       if ( this.options.autoPeakPicking ) {
@@ -598,6 +668,24 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
+    },
+
+    hidePeakPicking: function( lock ) {
+
+      if ( !this._hidePeakPickingLocked ) {
+        this._hidePeakPickingLocked = lock;
+      }
+
+      hidePeakPicking( this );
+    },
+
+    showPeakPicking: function( unlock ) {
+
+      if ( this._hidePeakPickingLocked && !unlock ) {
+        return;
+      }
+
+      showPeakPicking( this );
     },
 
     getMarkerCurrentFamily: function( k ) {
@@ -735,6 +823,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       }
 
       return line;
+    },
+
+    applyLineStyles: function() {
+
+      for ( var i = 0; i < this.lines.length; i++ ) {
+        this.applyLineStyle( this.lines[ i ] );
+      }
     },
 
     applyLineStyle: function( line ) {
@@ -1295,6 +1390,14 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.markerPoints = markerPoints;
     },
 
+    showImpl: function() {
+      this.showPeakPicking();
+    },
+
+    hideImpl: function() {
+      this.hidePeakPicking();
+    },
+
     addLabelX: function( x, label ) {
       this.addLabelObj( {
         x: x,
@@ -1479,7 +1582,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
   }
 
   function getDegradedData( graph ) { // Serie redrawing
-
+  
     var self = graph,
       xpx,
       ypx,
@@ -1571,7 +1674,9 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           }
 
           if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+            
             optimizeBreak = true;
+            
             break;
           }
 
@@ -1673,6 +1778,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
 
         if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+
           optimizeBreak = true;
         }
 
@@ -1684,6 +1790,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       datas.push( data );
 
       if ( optimizeBreak ) {
+
         break;
       }
     }
@@ -1696,6 +1803,29 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
     return [ datas ];
 
   };
+
+  function hidePeakPicking( graph ) {
+
+    if( ! graph.picks ) {
+      return;
+    }
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].hide();
+    }
+
+  }
+
+  function showPeakPicking( graph ) {
+
+
+    if( ! graph.picks ) {
+      return;
+    }
+    
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].show();
+    }
+  }
 
   function makePeakPicking( graph, allY ) {
 
@@ -1744,6 +1874,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           return;
         }
 
+        //    self.picks[ m ].show();
         self.picks[ m ].set( 'labelPosition', {
           x: x,
           dy: "-10px"

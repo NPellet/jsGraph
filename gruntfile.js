@@ -97,7 +97,7 @@ module.exports = function(grunt) {
         watch: {
           scripts: {
             files: ['src/**/*.js'],
-            tasks: ['build']
+            tasks: ['default']
           },
         }
 
@@ -154,7 +154,7 @@ module.exports = function(grunt) {
 */
 
 
-        //        grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+           //     grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
 
 
@@ -342,6 +342,8 @@ module.exports = function(grunt) {
         var yml = "examplesTree:\n";
         var basePath = './examples/src/';
         var i = 0;
+
+
         fs.readdirSync( basePath ).map( function( folder ) {
 
             if( fs.statSync( basePath + folder ).isDirectory() ) {
@@ -350,6 +352,8 @@ module.exports = function(grunt) {
 
                 yml += "- title: \"" + folderName + "\"\n";
                 yml += "  children:\n"; 
+
+                
 
                 fs.readdirSync( basePath + folder ).map( function( file ) {
 

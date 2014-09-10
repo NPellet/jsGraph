@@ -105,6 +105,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
+      console.log( this.getFromData( 'pos' ) );
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -155,6 +156,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         this.setDom( 'y', y );
 
         this.setHandles();
+        this.updateMask();
 
         return true;
       }

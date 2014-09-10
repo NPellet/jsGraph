@@ -51,6 +51,24 @@ define( [], function() {
       this._movable = true;
       this._selectable = true;
 
+      if ( this.options.masker ) {
+
+        var maskPath = document.createElementNS( this.graph.ns, 'mask' );
+        this.maskingId = Math.random();
+        maskPath.setAttribute( 'id', this.maskingId );
+
+        this.maskDomWrapper = document.createElementNS( this.graph.ns, 'rect' );
+        this.maskDomWrapper.setAttribute( 'fill', 'white' );
+        maskPath.appendChild( this.maskDomWrapper );
+
+        var maskDom = this._dom.cloneNode();
+        maskPath.appendChild( maskDom );
+
+        this.maskDom = maskDom;
+
+        this.graph.defs.appendChild( maskPath );
+      }
+
       if ( this._dom ) {
 
         this.group.appendChild( this._dom );
@@ -73,7 +91,7 @@ define( [], function() {
         } );
 
         this._dom.addEventListener( 'mousedown', function( e ) {
-          console.log( 'mousedown' );
+
           self.graph.focus();
 
           e.preventDefault();
@@ -98,6 +116,26 @@ define( [], function() {
 
       this.graph.shapeZone.appendChild( this.group );
       this.initImpl();
+    },
+
+    hide: function() {
+
+      if ( this.hidden ) {
+        return;
+      }
+
+      this.hidden = true;
+      this.group.style.display = 'none';
+    },
+
+    show: function() {
+
+      if ( !this.hidden ) {
+        return;
+      }
+
+      this.hidden = false;
+      this.group.style.display = 'block';
     },
 
     addClass: function( className ) {
@@ -169,9 +207,8 @@ define( [], function() {
       this.graph.shapeZone.removeChild( this.group );
       this.graph._removeShape( this );
 
-      if ( this.options.onRemove ) {
-        this.options.onRemove.call( this );
-      }
+      this.callHandler( "onRemoved", this );
+
     },
 
     /*	applyAll: function() {
@@ -513,6 +550,8 @@ define( [], function() {
         this.setHandles();
       }
 
+      this.callHandler( "onSelected", this );
+
       this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
 
       if ( !mute ) {
@@ -538,6 +577,12 @@ define( [], function() {
         this.removeHandles();
       }
 
+      this.callHandler( "onUnselected", this );
+
+    },
+
+    isSelected: function() {
+      return this._selected;
     },
 
     staticHandles: function( bool ) {
@@ -606,12 +651,12 @@ define( [], function() {
 
         function( e ) {
 
-          if( this.moving ) {
-            this.callHandler("onAfterMoved", this );
+          if ( this.moving ) {
+            this.callHandler( "onAfterMoved", this );
           }
 
-          if( this.handleSelected || this.resize ) {
-            this.callHandler("onAfterResized", this ); 
+          if ( this.handleSelected || this.resize ) {
+            this.callHandler( "onAfterResized", this );
           }
 
           this.moving = false;
@@ -654,6 +699,8 @@ define( [], function() {
                 this.options.onResize.call( this );
               }
             }
+
+            this.callHandler('onChange', this );
           }
 
           return ret;
@@ -708,7 +755,7 @@ define( [], function() {
         function( e ) {
           var clbks;
 
-      //    this.unHighlight();
+          //    this.unHighlight();
           this.removeClass( 'hover' );
 
           if ( !( clbks = this._mouseOutCallbacks ) ) {
@@ -926,9 +973,9 @@ define( [], function() {
     highlight: function( params ) {
 
       this.savedHighlight = {};
-      for( var i in params ) {
-      	this.savedHighlight[ i ] = this._dom.getAttribute( i );
-      	this._dom.setAttribute( i, params[ i ] );
+      for ( var i in params ) {
+        this.savedHighlight[ i ] = this._dom.getAttribute( i );
+        this._dom.setAttribute( i, params[ i ] );
       }
 
       this.highlightImpl();
@@ -936,15 +983,58 @@ define( [], function() {
 
     unHighlight: function() {
 
-      for( var i in this.savedHighlight ) {
-      	this._dom.setAttribute( i, this.savedHighlight[ i ] );
+      for ( var i in this.savedHighlight ) {
+        this._dom.setAttribute( i, this.savedHighlight[ i ] );
       }
-
 
     },
 
     highlightImpl: function() {},
-    unHighlightImpl: function() {}
+    unHighlightImpl: function() {},
+
+    getMaskingID: function() {
+      return this.maskingId;
+    },
+
+    maskWith: function( otherShape ) {
+      console.log( otherShape, otherShape.getMaskingID() );
+      var maskingId;
+      if ( maskingId = otherShape.getMaskingID() ) {
+        this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+      } else {
+        this._dom.removeAttribute( 'mask' );
+      }
+    },
+
+    updateMask: function() {
+      if ( this.maskDom ) {
+
+        var position = {
+          x: 'min',
+          y: 'min'
+        };
+        var position2 = {
+          x: 'max',
+          y: 'max'
+        };
+
+        position = this._getPosition( position );
+        position2 = this._getPosition( position2 );
+
+        this.maskDomWrapper.setAttribute( 'x', Math.min( position.x, position2.x ) );
+        this.maskDomWrapper.setAttribute( 'y', Math.min( position.y, position2.y ) );
+
+        this.maskDomWrapper.setAttribute( 'width', Math.abs( position2.x - position.x ) );
+        this.maskDomWrapper.setAttribute( 'height', Math.abs( position2.y - position.y ) );
+
+        for ( var i = 0; i < this._dom.attributes.length; i++ ) {
+          this.maskDom.setAttribute( this._dom.attributes[ i ].name, this._dom.attributes[ i ].value );
+        }
+
+        this.maskDom.setAttribute( 'fill', 'black' );
+
+      }
+    }
 
   }
 

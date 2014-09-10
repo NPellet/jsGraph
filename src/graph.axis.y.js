@@ -196,7 +196,12 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
       var max = -Infinity,
         j = 0;
+
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
+
+        if ( !this.graph.series[ i ].isShown() ) {
+          continue;
+        }
 
         if ( this.graph.series[ i ] == exclude ) {
           continue;
@@ -207,7 +212,6 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         }
 
         j++;
-
         max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
       }
 

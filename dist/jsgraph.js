@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-08T08:27Z
+ * Date: 2014-09-10T05:13Z
  */
 
 (function( global, factory ) {
@@ -392,8 +392,8 @@ build['./graph.axis'] = ( function( $ ) {
     _doZoom: function( px1, px2, val1, val2, mute ) {
 
       //if(this.options.display || 1 == 1) {
-      var val1 = val1 || this.getVal( px1 );
-      var val2 = val2 || this.getVal( px2 );
+      var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
+      var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
 
@@ -802,6 +802,8 @@ build['./graph.axis'] = ( function( $ ) {
       //				console.log(this);
       //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
       // Ex 50 / (100) * (1000 - 700) + 700
+
+      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
@@ -1423,7 +1425,12 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
       var max = -Infinity,
         j = 0;
+
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
+
+        if ( !this.graph.series[ i ].isShown() ) {
+          continue;
+        }
 
         if ( this.graph.series[ i ] == exclude ) {
           continue;
@@ -1434,7 +1441,6 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         }
 
         j++;
-
         max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
       }
 
@@ -2251,6 +2257,8 @@ build['./graph.legend'] = ( function( ) {
 
     this.graph = graph;
     this.svg = document.createElementNS( this.graph.ns, 'g' );
+    this.subG = document.createElementNS( this.graph.ns, 'g' );
+
     this.rect = document.createElementNS( this.graph.ns, 'rect' );
     this.rectBottom = document.createElementNS( this.graph.ns, 'rect' );
 
@@ -2259,6 +2267,8 @@ build['./graph.legend'] = ( function( ) {
 
     this.rectBottom.setAttribute( 'x', 0 );
     this.rectBottom.setAttribute( 'y', 0 );
+
+    this.svg.appendChild( this.subG );
 
     this.pos = {
       x: undefined,
@@ -2301,11 +2311,11 @@ build['./graph.legend'] = ( function( ) {
       var self = this;
       this.applyStyle();
 
-      while ( this.svg.hasChildNodes() ) {
-        this.svg.removeChild( this.svg.lastChild );
+      while ( this.subG.hasChildNodes() ) {
+        this.subG.removeChild( this.subG.lastChild );
       }
 
-      this.svg.appendChild( this.rectBottom );
+      this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
 
       var series = this.graph.getSeries(),
         line,
@@ -2321,7 +2331,7 @@ build['./graph.legend'] = ( function( ) {
           g = document.createElementNS( self.graph.ns, 'g' );
           g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
 
-          self.svg.appendChild( g );
+          self.subG.appendChild( g );
 
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
@@ -2357,7 +2367,7 @@ build['./graph.legend'] = ( function( ) {
         } )( i );
       }
 
-      var bbox = this.svg.getBBox();
+      var bbox = this.subG.getBBox();
 
       this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
       this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -2376,8 +2386,8 @@ build['./graph.legend'] = ( function( ) {
       this.rectBottom.setAttribute( 'width', this.width );
       this.rectBottom.setAttribute( 'height', this.height );
 
-      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingLeft );
-      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
       this.svg.appendChild( this.rect );
     },
@@ -2658,11 +2668,15 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       mouseOver: [],
       mouseOut: [],
       beforeMouseMove: [],
+      onChange: [],
       onCreated: [],
       onResizing: [],
       onMoving: [],
       onAfterResized: [],
-      onAfterMoved: []
+      onAfterMoved: [],
+      onSelected: [],
+      onUnselected: [],
+      onRemoved: []
     };
 
     this.pluginsReady = $.Deferred();
@@ -3137,6 +3151,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       for ( i = 0, l = series.length; i < l; i++ ) {
 
         serie = series[ i ];
+
+        if ( !serie.isShown() ) {
+          continue;
+        }
+
         serieValue = serie[ func2use ]();
 
         val = Math[ minmax ]( val, serieValue );
@@ -3154,13 +3173,17 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
     getSeriesFromAxis: function( axis, selfSeries ) {
       var series = [],
         i = this.series.length - 1;
-      for ( ; i >= 0; i-- )
-        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis )
+      for ( ; i >= 0; i-- ) {
+        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis ) {
           series.push( this.series[ i ] );
+        }
+      }
 
-      if ( selfSeries ) {
-        for ( i = 0; i < axis.series.length; i++ )
-          series.push( axis.series[ i ] )
+      if ( series ) {
+
+        for ( i = 0; i < axis.series.length; i++ ) {
+          series.push( axis.series[ i ] );
+        }
       }
 
       return series;
@@ -3288,9 +3311,13 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       }
       var i = 0,
         l = this.series.length;
+
       for ( ; i < l; i++ ) {
+
         if ( this.series[ i ].getName() == name ) {
+
           return this.series[ i ];
+
         }
       }
     },
@@ -3323,7 +3350,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
-        this.series[ i ].draw();
+
+        if ( this.series[  i ].isShown() ) {
+          this.series[ i ].draw();
+        }
       }
     },
 
@@ -4102,7 +4132,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       }, 200 );
     } );
 
-    graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+    graph.dom.addEventListener( 'mousewheel', function( e ) {
       e.preventDefault();
       e.stopPropagation();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -4172,6 +4202,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       if ( graph.options.onMouseMoveData ) {
 
         for ( var i = 0; i < graph.series.length; i++ ) {
+
           results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
         }
 
@@ -4588,20 +4619,27 @@ build['./graph._serie'] = ( function( ) {
     },
 
     hide: function() {
-      this.shown = false;
+      this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
 
       this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
       this.getTextForLegend().setAttribute( 'opacity', 0.5 );
+
+      this.hideImpl();
     },
 
     show: function() {
-      this.shown = true;
+      this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
 
       this.getSymbolForLegend().setAttribute( 'opacity', 1 );
       this.getTextForLegend().setAttribute( 'opacity', 1 );
+
+      this.showImpl();
     },
+
+    hideImpl: function() {},
+    showImpl: function() {},
 
     toggleShow: function() {
       if ( !this.shown ) {
@@ -4613,7 +4651,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     isShown: function() {
-      return this.shown;
+      return !this.hidden;
     },
 
     getX: function( val ) {
@@ -5738,7 +5776,72 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       var self = this;
       this.slotsData = {};
-      this.slotWorker = new Worker( './src/slotworker.js' );
+//      this.slotWorker = new Worker( './src/slotworker.js' );
+
+
+    var workerUrl = URL.createObjectURL( new Blob(
+
+        [
+        " ( " + 
+
+            function() { 
+
+           
+          onmessage = function( e ) {
+            var data = e.data.data;
+            var slotNb = e.data.slotNumber;
+            var slot = e.data.slot;
+            var flip = e.data.flip;
+            var max = e.data.max;
+            var min = e.data.min;
+
+            var dataPerSlot = slot / (max - min);
+
+            var incrXFlip = 0;
+            var incrYFlip = 1;
+
+            if( flip ) {
+              incrXFlip = 1;
+              incrYFlip = 0;
+            }
+
+
+
+            this.slotsData = [];
+
+            for(var j = 0, k = data.length; j < k ; j ++ ) {
+
+              for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
+
+                slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
+                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
+                    min: data[ j ][ m + incrYFlip ], 
+                    max: data[ j ][ m + incrYFlip ], 
+                    start: data[ j ][ m + incrYFlip ],
+                    stop: false,
+                    x: data[ j ][ m + incrXFlip ] };
+
+                this.slotsData[ slotNumber ].stop = data[ j ][ m + incrYFlip ];
+                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].min );
+                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].max );
+
+              }
+            }
+
+            postMessage( { slotNumber: slotNb, slot: slot, data: this.slotsData } );
+          };
+
+
+            }.toString() + ")()"
+
+        ], { type: 'application/javascript' }
+
+        ) );
+
+
+        this.slotWorker = new Worker( workerUrl );
+
+      
 
       this.slotWorker.onmessage = function( e ) {
         self.slotsData[ e.data.slot ].resolve( e.data.data );
@@ -5969,8 +6072,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         self = this;
 
       var optimizeMonotoneous = this.isXMonotoneous(),
-        optimizeMaxPxX = this.getXAxis().getMaxPx(),
+        optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
         optimizeBreak, buffer;
+
+
 
       var shape, self = this;
 
@@ -6169,6 +6274,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
               if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
                 toBreak = true;
+                
                 break;
               }
 
@@ -6183,6 +6289,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
             }
           }
         }
+
+        console.log( k );
       }
 
       if ( this.options.autoPeakPicking ) {
@@ -6203,6 +6311,24 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       for ( var i = 0, l = this.labels.length; i < l; i++ ) {
         this.repositionLabel( this.labels[ i ] );
       }
+    },
+
+    hidePeakPicking: function( lock ) {
+
+      if ( !this._hidePeakPickingLocked ) {
+        this._hidePeakPickingLocked = lock;
+      }
+
+      hidePeakPicking( this );
+    },
+
+    showPeakPicking: function( unlock ) {
+
+      if ( this._hidePeakPickingLocked && !unlock ) {
+        return;
+      }
+
+      showPeakPicking( this );
     },
 
     getMarkerCurrentFamily: function( k ) {
@@ -6340,6 +6466,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       }
 
       return line;
+    },
+
+    applyLineStyles: function() {
+
+      for ( var i = 0; i < this.lines.length; i++ ) {
+        this.applyLineStyle( this.lines[ i ] );
+      }
     },
 
     applyLineStyle: function( line ) {
@@ -6900,6 +7033,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       this.markerPoints = markerPoints;
     },
 
+    showImpl: function() {
+      this.showPeakPicking();
+    },
+
+    hideImpl: function() {
+      this.hidePeakPicking();
+    },
+
     addLabelX: function( x, label ) {
       this.addLabelObj( {
         x: x,
@@ -7084,7 +7225,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
   }
 
   function getDegradedData( graph ) { // Serie redrawing
-
+  
     var self = graph,
       xpx,
       ypx,
@@ -7176,7 +7317,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           }
 
           if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
+            
             optimizeBreak = true;
+            
             break;
           }
 
@@ -7278,6 +7421,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
 
         if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
+
           optimizeBreak = true;
         }
 
@@ -7289,6 +7433,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       datas.push( data );
 
       if ( optimizeBreak ) {
+
         break;
       }
     }
@@ -7301,6 +7446,29 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     return [ datas ];
 
   };
+
+  function hidePeakPicking( graph ) {
+
+    if( ! graph.picks ) {
+      return;
+    }
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].hide();
+    }
+
+  }
+
+  function showPeakPicking( graph ) {
+
+
+    if( ! graph.picks ) {
+      return;
+    }
+    
+    for ( var i = 0; i < graph.picks.length; i++ ) {
+      graph.picks[ i ].show();
+    }
+  }
 
   function makePeakPicking( graph, allY ) {
 
@@ -7349,6 +7517,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           return;
         }
 
+        //    self.picks[ m ].show();
         self.picks[ m ].set( 'labelPosition', {
           x: x,
           dy: "-10px"
@@ -8488,6 +8657,24 @@ build['./shapes/graph.shape'] = ( function( ) {
       this._movable = true;
       this._selectable = true;
 
+      if ( this.options.masker ) {
+
+        var maskPath = document.createElementNS( this.graph.ns, 'mask' );
+        this.maskingId = Math.random();
+        maskPath.setAttribute( 'id', this.maskingId );
+
+        this.maskDomWrapper = document.createElementNS( this.graph.ns, 'rect' );
+        this.maskDomWrapper.setAttribute( 'fill', 'white' );
+        maskPath.appendChild( this.maskDomWrapper );
+
+        var maskDom = this._dom.cloneNode();
+        maskPath.appendChild( maskDom );
+
+        this.maskDom = maskDom;
+
+        this.graph.defs.appendChild( maskPath );
+      }
+
       if ( this._dom ) {
 
         this.group.appendChild( this._dom );
@@ -8510,7 +8697,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         } );
 
         this._dom.addEventListener( 'mousedown', function( e ) {
-          console.log( 'mousedown' );
+
           self.graph.focus();
 
           e.preventDefault();
@@ -8535,6 +8722,26 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.graph.shapeZone.appendChild( this.group );
       this.initImpl();
+    },
+
+    hide: function() {
+
+      if ( this.hidden ) {
+        return;
+      }
+
+      this.hidden = true;
+      this.group.style.display = 'none';
+    },
+
+    show: function() {
+
+      if ( !this.hidden ) {
+        return;
+      }
+
+      this.hidden = false;
+      this.group.style.display = 'block';
     },
 
     addClass: function( className ) {
@@ -8606,9 +8813,8 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.graph.shapeZone.removeChild( this.group );
       this.graph._removeShape( this );
 
-      if ( this.options.onRemove ) {
-        this.options.onRemove.call( this );
-      }
+      this.callHandler( "onRemoved", this );
+
     },
 
     /*	applyAll: function() {
@@ -8950,6 +9156,8 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.setHandles();
       }
 
+      this.callHandler( "onSelected", this );
+
       this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
 
       if ( !mute ) {
@@ -8975,6 +9183,12 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.removeHandles();
       }
 
+      this.callHandler( "onUnselected", this );
+
+    },
+
+    isSelected: function() {
+      return this._selected;
     },
 
     staticHandles: function( bool ) {
@@ -9043,12 +9257,12 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         function( e ) {
 
-          if( this.moving ) {
-            this.callHandler("onAfterMoved", this );
+          if ( this.moving ) {
+            this.callHandler( "onAfterMoved", this );
           }
 
-          if( this.handleSelected || this.resize ) {
-            this.callHandler("onAfterResized", this ); 
+          if ( this.handleSelected || this.resize ) {
+            this.callHandler( "onAfterResized", this );
           }
 
           this.moving = false;
@@ -9091,6 +9305,8 @@ build['./shapes/graph.shape'] = ( function( ) {
                 this.options.onResize.call( this );
               }
             }
+
+            this.callHandler('onChange', this );
           }
 
           return ret;
@@ -9145,7 +9361,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         function( e ) {
           var clbks;
 
-      //    this.unHighlight();
+          //    this.unHighlight();
           this.removeClass( 'hover' );
 
           if ( !( clbks = this._mouseOutCallbacks ) ) {
@@ -9363,9 +9579,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     highlight: function( params ) {
 
       this.savedHighlight = {};
-      for( var i in params ) {
-      	this.savedHighlight[ i ] = this._dom.getAttribute( i );
-      	this._dom.setAttribute( i, params[ i ] );
+      for ( var i in params ) {
+        this.savedHighlight[ i ] = this._dom.getAttribute( i );
+        this._dom.setAttribute( i, params[ i ] );
       }
 
       this.highlightImpl();
@@ -9373,15 +9589,58 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     unHighlight: function() {
 
-      for( var i in this.savedHighlight ) {
-      	this._dom.setAttribute( i, this.savedHighlight[ i ] );
+      for ( var i in this.savedHighlight ) {
+        this._dom.setAttribute( i, this.savedHighlight[ i ] );
       }
-
 
     },
 
     highlightImpl: function() {},
-    unHighlightImpl: function() {}
+    unHighlightImpl: function() {},
+
+    getMaskingID: function() {
+      return this.maskingId;
+    },
+
+    maskWith: function( otherShape ) {
+      console.log( otherShape, otherShape.getMaskingID() );
+      var maskingId;
+      if ( maskingId = otherShape.getMaskingID() ) {
+        this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+      } else {
+        this._dom.removeAttribute( 'mask' );
+      }
+    },
+
+    updateMask: function() {
+      if ( this.maskDom ) {
+
+        var position = {
+          x: 'min',
+          y: 'min'
+        };
+        var position2 = {
+          x: 'max',
+          y: 'max'
+        };
+
+        position = this._getPosition( position );
+        position2 = this._getPosition( position2 );
+
+        this.maskDomWrapper.setAttribute( 'x', Math.min( position.x, position2.x ) );
+        this.maskDomWrapper.setAttribute( 'y', Math.min( position.y, position2.y ) );
+
+        this.maskDomWrapper.setAttribute( 'width', Math.abs( position2.x - position.x ) );
+        this.maskDomWrapper.setAttribute( 'height', Math.abs( position2.y - position.y ) );
+
+        for ( var i = 0; i < this._dom.attributes.length; i++ ) {
+          this.maskDom.setAttribute( this._dom.attributes[ i ].name, this._dom.attributes[ i ].value );
+        }
+
+        this.maskDom.setAttribute( 'fill', 'black' );
+
+      }
+    }
 
   }
 
@@ -10330,6 +10589,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
+      console.log( this.getFromData( 'pos' ) );
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -10380,6 +10640,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
         this.setDom( 'y', y );
 
         this.setHandles();
+        this.updateMask();
 
         return true;
       }
