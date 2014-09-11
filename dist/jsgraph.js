@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.10-1
+ * jsGraphs JavaScript Graphing Library v1.9.10-2
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-11T00:55Z
+ * Date: 2014-09-11T04:23Z
  */
 
 (function( global, factory ) {
@@ -5816,18 +5816,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
             var flip = e.data.flip;
             var max = e.data.max;
             var min = e.data.min;
-
+            var slotNumber;
             var dataPerSlot = slot / (max - min);
-
-            var incrXFlip = 0;
-            var incrYFlip = 1;
-
-            if( flip ) {
-              incrXFlip = 1;
-              incrYFlip = 0;
-            }
-
-
 
             this.slotsData = [];
 
@@ -5836,16 +5826,17 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
               for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
 
                 slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
-                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
-                    min: data[ j ][ m + incrYFlip ], 
-                    max: data[ j ][ m + incrYFlip ], 
-                    start: data[ j ][ m + incrYFlip ],
-                    stop: false,
-                    x: data[ j ][ m + incrXFlip ] };
 
-                this.slotsData[ slotNumber ].stop = data[ j ][ m + incrYFlip ];
-                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].min );
-                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].max );
+                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
+                    min: data[ j ][ m + 1], 
+                    max: data[ j ][ m + 1], 
+                    start: data[ j ][ m + 1],
+                    stop: false,
+                    x: data[ j ][ m ] };
+
+                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
+                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
 
               }
             }
@@ -5866,8 +5857,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       
 
       this.slotWorker.onmessage = function( e ) {
+
         self.slotsData[ e.data.slot ].resolve( e.data.data );
       }
+
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
 
@@ -5881,6 +5874,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var def = $.Deferred();
 
       this.slotWorker.postMessage( {
+        min: this.getFlip() ? this.minY : this.minX,
+        max: this.getFlip() ? this.maxY : this.maxX,
         min: this.minX,
         max: this.maxX,
         data: this.data,
@@ -5900,6 +5895,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         self.slotsData[ slot ] = data;
         return data;
       } );
+
     },
 
     kill: function( noRedraw ) {
@@ -6135,7 +6131,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       if ( this.options.useSlots && this.slots ) {
 
-        var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
+        if( this.isFlipped() ) {
+          var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
+        } else {
+          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
+        }
+        
 
         for ( var y = 0, z = this.slots.length; y < z; y++ ) {
 
@@ -6312,7 +6313,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           }
         }
 
-        console.log( k );
+        
       }
 
       if ( this.options.autoPeakPicking ) {
@@ -6372,8 +6373,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
     drawSlot: function( slotToUse, y ) {
 
-      var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
-
+      
       //console.log(slotToUse, y, this.slots[ y ]);
 
       var currentLine = "M ";
@@ -6382,8 +6382,21 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         xpx, max;
       var j;
 
-      var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
-      var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
+      if( this.isFlipped() ) {
+
+        var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
+
+        var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );  
+
+      } else {
+
+        var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
+
+        var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
+      }
+      
 
       for ( j = slotInit; j <= slotFinal; j++ ) {
 
@@ -6391,19 +6404,41 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           continue;
         }
 
-        xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
-        max = this.getY( slotToUse[ j ].max );
+        if( this.isFlipped() ) {
 
-        if ( this.options.autoPeakPicking ) {
-          allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
+          max = this.getX( slotToUse[ j ].max );
+
+          /*if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+*/
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].start ), ypx, k );
+          currentLine = this._addPoint( currentLine, max, ypx, false, true );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].min ), ypx );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].stop ), ypx, false, true );
+
+          k++;
+        } else {
+
+
+          xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+
+          
+          max = this.getY( slotToUse[ j ].max );
+
+          if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
+          currentLine = this._addPoint( currentLine, xpx, max, false, true );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
+
+          k++;
         }
-
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
-        currentLine = this._addPoint( currentLine, xpx, max, false, true );
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
-
-        k++;
+        
 
       }
 
@@ -7694,7 +7729,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         incrYFlip = 1;
       }
 
+      var minY = this.getYAxis().getActualMin();
+      var minX = this.getXAxis().getActualMin();
 
+      var maxX = this.getXAxis().getActualMax();
+      var maxY = this.getYAxis().getActualMax();
+console.log( minY, minX, maxY, maxX )
       for ( ; i < l; i++ ) {
 
         j = 0, k = 0, currentLine = "";
@@ -7702,6 +7742,11 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
           var lastxpx, lastypx;
+
+
+          if( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) || ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX )))  {
+            continue;
+          }
 
           xpx2 = this.getX( arr[ j + incrXFlip ] );
           ypx2 = this.getY( arr[ j + incrYFlip ] );
@@ -7712,6 +7757,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           if ( xpx == xpx2 && ypx == ypx2 ) {
             continue;
           }
+
 
           /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
@@ -7785,22 +7831,36 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     },
 
-    onMouseWheel: function( delta, e ) {
+    onMouseWheel: function( delta, e, fixed ) {
 
       delta /= 250;
 
-      if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
+      if( fixed !== undefined ) {
 
-        this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
-        this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
-    
+        if( fixed < 0 ) {
+          this.negativeThreshold = - fixed * this.minZ;
+          this.negativeDelta = Math.pow( this.negativeThreshold / ( - this.minZ ), 1/3);
+        } else {
+          this.positiveThreshold = fixed * this.maxZ;
+          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
+        }
+
       } else {
 
-        this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
-        this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
-    
-      }
+        if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
 
+          this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
+          this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
+      
+        } else {
+
+          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
+          this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
+      
+        }
+
+      }
+      
       for ( var i in this.zValues ) {
 
         this.zValues[ i ].dom.setAttribute( 'display', ( ( i > 0 && i > this.positiveThreshold ) || ( i < 0 && i < this.negativeThreshold ) ) ? 'block' : 'none' );
@@ -7814,11 +7874,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         if( ! this.options.hasNegative ) {
           this._shapeZoom.hideHandleNeg(); 
         } else {
-          this._shapeZoom.setHandleNeg( this.negativeThreshold, this.minZ );  
+          
+          this._shapeZoom.setHandleNeg( - ( Math.pow( this.negativeDelta, 3 ) ), this.minZ );  
           this._shapeZoom.showHandleNeg();
         }
         
-        this._shapeZoom.setHandlePos( this.positiveThreshold, this.maxZ );
+        this._shapeZoom.setHandlePos( ( Math.pow( this.positiveDelta, 3 ) ), this.maxZ );
       }
     },
 
@@ -11783,6 +11844,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     this.init( graph );
     this.options = options ||  {};
+    this.series = [];
   }
 
 
@@ -11850,12 +11912,12 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     setHandleNeg: function( value, max ) {
 
-      this.handleNeg.setAttribute( 'y', ( value / max ) * 95 + 105 )
+      this.handleNeg.setAttribute( 'y', ( value ) * 95 + 105 )
     },
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1- value / max  ) * 95 )
+      this.handlePos.setAttribute( 'y', ( 1- value  ) * 95 )
     },
 
     redrawImpl: function() {
@@ -11882,34 +11944,46 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
       return true;
     },
 
+    addSerie: function( serie ) {
+      this.series.push( serie );
+    },
+
     handleMouseMoveImpl: function( e ) {
 
-      console.log( e );
+      
       var o = $(this._dom).offset();
       var cY = e.pageY - o.top;
-console.log( cY );
+//console.log( this.selected );
       if( this.selected == "negative" ) {
 
         if( cY > 200 ) {
-          this.handleNeg.setAttribute('y', 200);
+          cY = 200;
         } else if( cY < 105) {
-          this.handleNeg.setAttribute('y', 105);
-        } else {
-          this.handleNeg.setAttribute('y', cY);
-        }
+         cY = 105;
+        } 
+
+        //this.handleNeg.setAttribute('y', cY);
+        //console.log( cY);
+        cY = - ( cY - 105 ) / 95; 
+        
       }
 
 
       if( this.selected == "positive" ) {
 
         if( cY < 0 ) {
-          this.handlePos.setAttribute('y', 0);
+          cY = 0;
         } else if( cY > 95) {
-          this.handlePos.setAttribute('y', 95);
-        } else {
-           this.handlePos.setAttribute('y', cY);  
+          cY = 95;
         }
+
+       // this.handlePos.setAttribute('y', cY);  
+        cY = ( 95 - cY ) / 95;
       }
+
+      this.series.map( function ( s ) {
+        s.onMouseWheel( false, false, cY );
+      });
 
       
     },

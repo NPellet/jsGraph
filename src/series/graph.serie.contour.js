@@ -107,7 +107,12 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         incrYFlip = 1;
       }
 
+      var minY = this.getYAxis().getActualMin();
+      var minX = this.getXAxis().getActualMin();
 
+      var maxX = this.getXAxis().getActualMax();
+      var maxY = this.getYAxis().getActualMax();
+console.log( minY, minX, maxY, maxX )
       for ( ; i < l; i++ ) {
 
         j = 0, k = 0, currentLine = "";
@@ -115,6 +120,11 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
           var lastxpx, lastypx;
+
+
+          if( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) || ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX )))  {
+            continue;
+          }
 
           xpx2 = this.getX( arr[ j + incrXFlip ] );
           ypx2 = this.getY( arr[ j + incrYFlip ] );
@@ -125,6 +135,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           if ( xpx == xpx2 && ypx == ypx2 ) {
             continue;
           }
+
 
           /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 						currentLine += "L";
@@ -198,22 +209,36 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     },
 
-    onMouseWheel: function( delta, e ) {
+    onMouseWheel: function( delta, e, fixed ) {
 
       delta /= 250;
 
-      if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
+      if( fixed !== undefined ) {
 
-        this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
-        this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
-    
+        if( fixed < 0 ) {
+          this.negativeThreshold = - fixed * this.minZ;
+          this.negativeDelta = Math.pow( this.negativeThreshold / ( - this.minZ ), 1/3);
+        } else {
+          this.positiveThreshold = fixed * this.maxZ;
+          this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
+        }
+
       } else {
 
-        this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
-        this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
-    
-      }
+        if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
 
+          this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
+          this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
+      
+        } else {
+
+          this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
+          this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
+      
+        }
+
+      }
+      
       for ( var i in this.zValues ) {
 
         this.zValues[ i ].dom.setAttribute( 'display', ( ( i > 0 && i > this.positiveThreshold ) || ( i < 0 && i < this.negativeThreshold ) ) ? 'block' : 'none' );
@@ -227,11 +252,12 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         if( ! this.options.hasNegative ) {
           this._shapeZoom.hideHandleNeg(); 
         } else {
-          this._shapeZoom.setHandleNeg( this.negativeThreshold, this.minZ );  
+          
+          this._shapeZoom.setHandleNeg( - ( Math.pow( this.negativeDelta, 3 ) ), this.minZ );  
           this._shapeZoom.showHandleNeg();
         }
         
-        this._shapeZoom.setHandlePos( this.positiveThreshold, this.maxZ );
+        this._shapeZoom.setHandlePos( ( Math.pow( this.positiveDelta, 3 ) ), this.maxZ );
       }
     },
 

@@ -151,18 +151,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
             var flip = e.data.flip;
             var max = e.data.max;
             var min = e.data.min;
-
+            var slotNumber;
             var dataPerSlot = slot / (max - min);
-
-            var incrXFlip = 0;
-            var incrYFlip = 1;
-
-            if( flip ) {
-              incrXFlip = 1;
-              incrYFlip = 0;
-            }
-
-
 
             this.slotsData = [];
 
@@ -171,16 +161,17 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
               for(var m = 0, n = data[ j ].length ; m < n ; m += 2 ) {
 
                 slotNumber = Math.floor( ( data[ j ][ m ] - min ) * dataPerSlot );
-                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
-                    min: data[ j ][ m + incrYFlip ], 
-                    max: data[ j ][ m + incrYFlip ], 
-                    start: data[ j ][ m + incrYFlip ],
-                    stop: false,
-                    x: data[ j ][ m + incrXFlip ] };
 
-                this.slotsData[ slotNumber ].stop = data[ j ][ m + incrYFlip ];
-                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].min );
-                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + incrYFlip ], this.slotsData[ slotNumber ].max );
+                this.slotsData[ slotNumber ] = this.slotsData[ slotNumber ] || { 
+                    min: data[ j ][ m + 1], 
+                    max: data[ j ][ m + 1], 
+                    start: data[ j ][ m + 1],
+                    stop: false,
+                    x: data[ j ][ m ] };
+
+                this.slotsData[ slotNumber ].stop = data[ j ][ m + 1 ];
+                this.slotsData[ slotNumber ].min = Math.min( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].min );
+                this.slotsData[ slotNumber ].max = Math.max( data[ j ][ m + 1 ], this.slotsData[ slotNumber ].max );
 
               }
             }
@@ -201,8 +192,10 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       
 
       this.slotWorker.onmessage = function( e ) {
+
         self.slotsData[ e.data.slot ].resolve( e.data.data );
       }
+
 
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
 
@@ -216,6 +209,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var def = $.Deferred();
 
       this.slotWorker.postMessage( {
+        min: this.getFlip() ? this.minY : this.minX,
+        max: this.getFlip() ? this.maxY : this.maxX,
         min: this.minX,
         max: this.maxX,
         data: this.data,
@@ -235,6 +230,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         self.slotsData[ slot ] = data;
         return data;
       } );
+
     },
 
     kill: function( noRedraw ) {
@@ -470,7 +466,12 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       if ( this.options.useSlots && this.slots ) {
 
-        var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
+        if( this.isFlipped() ) {
+          var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
+        } else {
+          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );  
+        }
+        
 
         for ( var y = 0, z = this.slots.length; y < z; y++ ) {
 
@@ -647,7 +648,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           }
         }
 
-        console.log( k );
+        
       }
 
       if ( this.options.autoPeakPicking ) {
@@ -707,8 +708,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     drawSlot: function( slotToUse, y ) {
 
-      var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
-
+      
       //console.log(slotToUse, y, this.slots[ y ]);
 
       var currentLine = "M ";
@@ -717,8 +717,21 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         xpx, max;
       var j;
 
-      var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
-      var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
+      if( this.isFlipped() ) {
+
+        var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
+
+        var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );  
+
+      } else {
+
+        var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
+
+        var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
+        var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
+      }
+      
 
       for ( j = slotInit; j <= slotFinal; j++ ) {
 
@@ -726,19 +739,41 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           continue;
         }
 
-        xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
-        max = this.getY( slotToUse[ j ].max );
+        if( this.isFlipped() ) {
 
-        if ( this.options.autoPeakPicking ) {
-          allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
+          max = this.getX( slotToUse[ j ].max );
+
+          /*if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+*/
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].start ), ypx, k );
+          currentLine = this._addPoint( currentLine, max, ypx, false, true );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].min ), ypx );
+          currentLine = this._addPoint( currentLine, this.getX( slotToUse[ j ].stop ), ypx, false, true );
+
+          k++;
+        } else {
+
+
+          xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+
+          
+          max = this.getY( slotToUse[ j ].max );
+
+          if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
+          currentLine = this._addPoint( currentLine, xpx, max, false, true );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
+          currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
+
+          k++;
         }
-
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].start ), k );
-        currentLine = this._addPoint( currentLine, xpx, max, false, true );
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].min ) );
-        currentLine = this._addPoint( currentLine, xpx, this.getY( slotToUse[ j ].stop ), false, true );
-
-        k++;
+        
 
       }
 
