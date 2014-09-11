@@ -9,6 +9,7 @@ define( [], function() {
     init: function( graph, options ) {
 
       this.options = options;
+      this.graph = graph;
       this.shapeType = options.type;
 
     },
@@ -53,16 +54,21 @@ define( [], function() {
         }
       };
 
-      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
+      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
 
-        if ( !shape ) {
-          return;
-        }
+      if( shape ) {
 
-        self.currentShape = shape;
-        self.currentShapeEvent = e;
+          shape.then( function( shape ) {
 
-      } );
+            if ( !shape ) {
+              return;
+            }
+
+            self.currentShape = shape;
+            self.currentShapeEvent = e;
+
+          } );
+      }
 
     },
 
@@ -78,6 +84,11 @@ define( [], function() {
         self.currentShape = false;
 
         shape.created();
+
+        if( graph.selectedSerie ) {
+          shape.setSerie( graph.selectedSerie );
+        }
+
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );

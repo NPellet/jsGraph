@@ -418,6 +418,10 @@ define( [], function() {
       return this.textForLegend;
     },
 
+    setLegendSymbolStyle: function() {
+      this.applyLineStyle( this.getSymbolForLegend() );
+    },
+
     getLabel: function() {
       return this.options.label || this.name;
     },

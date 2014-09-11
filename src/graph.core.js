@@ -878,12 +878,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
       shapeData.id = Math.random();
 
-      if ( !mute ) {
+      if ( ! mute ) {
 
         if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
-          return;
+          return false;
         }
       }
+
+      
 
       if ( response ) {
         shapeData = response;
@@ -1770,8 +1772,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
     }
 
+    // Redraw not obvious at all !!
+/*
     graph.redraw();
     graph.drawSeries( true );
+
+    */
   }
 
   function _handleMouseLeave( graph ) {

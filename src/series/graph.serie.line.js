@@ -1149,6 +1149,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     setLineStyle: function( number ) {
       this.options.lineStyle = number;
+      return this;
     },
 
     getLineStyle: function() {

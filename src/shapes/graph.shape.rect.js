@@ -105,7 +105,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
-      console.log( this.getFromData( 'pos' ) );
+      
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -442,7 +442,7 @@ this.handle1.setAttribute('x', this.currentX);
             pos.x = posX;
             pos.y = posY;
 
-            console.log( pos, pos2 );
+            
             break;
 
         }

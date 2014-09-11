@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.10-0
+ * jsGraphs JavaScript Graphing Library v1.9.10-1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-10T05:13Z
+ * Date: 2014-09-11T00:55Z
  */
 
 (function( global, factory ) {
@@ -2358,6 +2358,7 @@ build['./graph.legend'] = ( function( ) {
               self.graph.selectSerie( serie );
 
             } else {
+              
               serie.show();
 
             }
@@ -3445,12 +3446,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
       shapeData.id = Math.random();
 
-      if ( !mute ) {
+      if ( ! mute ) {
 
         if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
-          return;
+          return false;
         }
       }
+
+      
 
       if ( response ) {
         shapeData = response;
@@ -4337,8 +4340,12 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
     }
 
+    // Redraw not obvious at all !!
+/*
     graph.redraw();
     graph.drawSeries( true );
+
+    */
   }
 
   function _handleMouseLeave( graph ) {
@@ -4783,6 +4790,10 @@ build['./graph._serie'] = ( function( ) {
       }
 
       return this.textForLegend;
+    },
+
+    setLegendSymbolStyle: function() {
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     getLabel: function() {
@@ -5276,6 +5287,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
     init: function( graph, options ) {
 
       this.options = options;
+      this.graph = graph;
       this.shapeType = options.type;
 
     },
@@ -5320,16 +5332,21 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         }
       };
 
-      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, true ).then( function( shape ) {
+      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
 
-        if ( !shape ) {
-          return;
-        }
+      if( shape ) {
 
-        self.currentShape = shape;
-        self.currentShapeEvent = e;
+          shape.then( function( shape ) {
 
-      } );
+            if ( !shape ) {
+              return;
+            }
+
+            self.currentShape = shape;
+            self.currentShapeEvent = e;
+
+          } );
+      }
 
     },
 
@@ -5345,6 +5362,11 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         self.currentShape = false;
 
         shape.created();
+
+        if( graph.selectedSerie ) {
+          shape.setSerie( graph.selectedSerie );
+        }
+
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
@@ -6792,6 +6814,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
     setLineStyle: function( number ) {
       this.options.lineStyle = number;
+      return this;
     },
 
     getLineStyle: function() {
@@ -7564,9 +7587,55 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
 
+  // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+  /**
+   * Converts an HSL color value to RGB. Conversion formula
+   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+   * Assumes h, s, and l are contained in the set [0, 1] and
+   * returns r, g, and b in the set [0, 255].
+   *
+   * @param   Number  h       The hue
+   * @param   Number  s       The saturation
+   * @param   Number  l       The lightness
+   * @return  Array           The RGB representation
+   */
+  function hslToRgb(h, s, l){
+      var r, g, b;
+
+      if(s == 0){
+          r = g = b = l; // achromatic
+      }else{
+          function hue2rgb(p, q, t){
+              if(t < 0) t += 1;
+              if(t > 1) t -= 1;
+              if(t < 1/6) return p + (q - p) * 6 * t;
+              if(t < 1/2) return q;
+              if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+              return p;
+          }
+
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1/3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1/3);
+      }
+
+      return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+  }
+
+
+
+
   var GraphSerieContour = function() {
-    this.accumulatedDelta = 0;
-    this.threshold = 0;
+
+    this.negativeDelta = 0;
+    this.positiveDelta = 0;
+
+    this.negativeThreshold = 0;
+    this.positiveThreshold = 0;
+
+
   };
 
   $.extend( GraphSerieContour.prototype, GraphSerie.prototype, {
@@ -7611,8 +7680,8 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         l = this.data.length,
         j = 0,
         k, m, currentLine, domLine, arr;
-      this.minZ = -Number.MAX_VALUE;
-      this.maxZ = Number.MAX_VALUE;
+      this.minZ = Infinity;
+      this.maxZ = - Infinity;
 
       var next = this.groupLines.nextSibling;
       this.groupMain.removeChild( this.groupLines );
@@ -7624,6 +7693,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         incrXFlip = 0;
         incrYFlip = 1;
       }
+
 
       for ( ; i < l; i++ ) {
 
@@ -7678,12 +7748,13 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           dom: domLine
         };
 
-        this.minZ = Math.max( this.minZ, this.data[ i ].zValue );
-        this.maxZ = Math.min( this.maxZ, this.data[ i ].zValue );
+        this.minZ = Math.min( this.minZ, this.data[ i ].zValue );
+        this.maxZ = Math.max( this.maxZ, this.data[ i ].zValue );
       }
 
       i++;
 
+      
       for ( ; i < this.lines.length; i++ ) {
 
         this.groupLines.removeChild( this.lines[ i ] );
@@ -7691,22 +7762,151 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
       }
 
+      i = 0;
+
+      for ( ; i < l; i++ ) {
+        this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
+      }
+
+      if ( this.graph.legend ) {
+        this.graph.legend.update();
+      }
+
+
+      this.onMouseWheel( 0, { shiftKey: false } );
       this.groupMain.insertBefore( this.groupLines, next );
+    },
+
+    initimpl: function() {
+
+      if( ! this.options.hasNegative ) {
+        this.negativeThreshold = 0;
+      }
+
     },
 
     onMouseWheel: function( delta, e ) {
 
-      this.accumulatedDelta = Math.min( 1, Math.max( -1, this.accumulatedDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
-      this.threshold = Math.max( -this.minZ, this.maxZ ) * ( Math.pow( this.accumulatedDelta, 3 ) );
+      delta /= 250;
+
+      if( ( ! e.shiftKey ) || ! this.options.hasNegative ) {
+
+        this.positiveDelta = Math.min( 1, Math.max( 0, this.positiveDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) );
+        this.positiveThreshold = this.maxZ * ( Math.pow( this.positiveDelta, 3 ) );
+    
+      } else {
+
+        this.negativeDelta = Math.min( 0, Math.max( -1, this.negativeDelta + Math.min( 0.1, Math.max( -0.1, delta ) ) ) ); 
+        this.negativeThreshold = - this.minZ * ( Math.pow( this.negativeDelta, 3 ) );
+    
+      }
 
       for ( var i in this.zValues ) {
-        this.zValues[ i ].dom.setAttribute( 'display', Math.abs( i ) < this.threshold ? 'none' : 'block' );
+
+        this.zValues[ i ].dom.setAttribute( 'display', ( ( i > 0 && i > this.positiveThreshold ) || ( i < 0 && i < this.negativeThreshold ) ) ? 'block' : 'none' );
+
+      }
+      
+
+      if( this._shapeZoom ) {
+
+
+        if( ! this.options.hasNegative ) {
+          this._shapeZoom.hideHandleNeg(); 
+        } else {
+          this._shapeZoom.setHandleNeg( this.negativeThreshold, this.minZ );  
+          this._shapeZoom.showHandleNeg();
+        }
+        
+        this._shapeZoom.setHandlePos( this.positiveThreshold, this.maxZ );
       }
     },
 
     setColors: function( colors ) {
       this.zoneColors = colors;
+    },
+
+    setDynamicColor: function( colors ) {
+
+      this.lineColors = colors;
+
+    },
+
+
+    setNegative: function( bln ) {
+      this.options.hasNegative = bln;
+
+      if( bln ) {
+        this.negativeThreshold = 0;
+      }
+    },
+
+    setColorTo: function( line, zValue, min, max ) {
+
+      if( ! this.lineColors ) {
+        return;
+      }
+
+      var hsl = { h: 0, s: 0, l: 0 };
+
+      for( var i in hsl ) {
+
+        if( zValue > 0 ) {
+          hsl[ i ] = this.lineColors.fromPositive[ i ] + ( ( this.lineColors.toPositive[ i ] - this.lineColors.fromPositive[ i ] ) * ( zValue / max ) );  
+        } else {
+          hsl[ i ] = this.lineColors.fromNegative[ i ] + ( ( this.lineColors.toNegative[ i ] - this.lineColors.fromNegative[ i ] ) * ( zValue / min ) );  
+        }
+      }
+
+      hsl.h /= 360;
+
+      var rgb = hslToRgb( hsl.h, hsl.s, hsl.l );
+      
+      line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')');
+    },
+
+     getSymbolForLegend: function() {
+
+      if ( !this.lineForLegend ) {
+
+        var line = document.createElementNS( this.graph.ns, 'ellipse' );
+
+        line.setAttribute( 'cx', 7 );
+        line.setAttribute( 'cy', 0 );
+        line.setAttribute( 'rx', 8 );
+        line.setAttribute( 'ry', 3 );
+
+        line.setAttribute( 'cursor', 'pointer' );
+        this.lineForLegend = line;
+
+        
+      }
+
+      this.applyLineStyle( this.lineForLegend, this.maxZ );
+
+      return this.lineForLegend;
+    },
+
+
+
+    applyLineStyle: function( line, overwriteValue ) {
+      line.setAttribute( 'stroke', this.getLineColor() );
+      line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
+      if ( this.getLineDashArray() )
+        line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      line.setAttribute( 'fill', 'none' );
+
+      this.setColorTo( line, ( ( overwriteValue !== undefined ) ? overwriteValue : line.getAttribute( 'data-zvalue' ) ), this.minZ, this.maxZ );
+      //  line.setAttribute('shape-rendering', 'optimizeSpeed');
+    },
+
+
+    setShapeZoom: function( shape ) {
+      this._shapeZoom = shape;
     }
+
+
+
   } );
 
   return GraphSerieContour;
@@ -8890,6 +9090,11 @@ build['./shapes/graph.shape'] = ( function( ) {
     setSerie: function( serie ) {
       this.serie = serie;
     },
+
+    getSerie: function() {
+      return this.serie;
+    },
+
     set: function( prop, val, index ) {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
@@ -9085,7 +9290,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 				pos.x = -10000;
 				pos.y = -10000;
 			}*/
-      console.log( 'sfdsdf' );
+      
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -9279,7 +9484,6 @@ build['./shapes/graph.shape'] = ( function( ) {
         function( e ) {
 
           var coords = this.graph._getXY( e );
-
           var
             deltaX = this.serie.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
             deltaY = this.serie.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
@@ -9603,7 +9807,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     maskWith: function( otherShape ) {
-      console.log( otherShape, otherShape.getMaskingID() );
+      
       var maskingId;
       if ( maskingId = otherShape.getMaskingID() ) {
         this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
@@ -10589,7 +10793,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
 
       var width = this.getFromData( 'width' ),
         height = this.getFromData( 'height' );
-      console.log( this.getFromData( 'pos' ) );
+      
 
       var pos = this._getPosition( this.getFromData( 'pos' ) ),
         x = pos.x,
@@ -10926,7 +11130,7 @@ this.handle1.setAttribute('x', this.currentX);
             pos.x = posX;
             pos.y = posY;
 
-            console.log( pos, pos2 );
+            
             break;
 
         }
@@ -11569,6 +11773,176 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 ;
 /* 
  * Build: new source file 
+ * File name : shapes/graph.shape.zoom2d
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+ */
+
+build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
+
+  var Zoom2DShape = function( graph, options ) {
+
+    this.init( graph );
+    this.options = options ||  {};
+  }
+
+
+  $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
+
+    createDom: function() {
+      this._dom = document.createElementNS( this.graph.ns, 'g' );
+
+      var rect = document.createElementNS( this.graph.ns, 'rect');
+      rect.setAttribute('rx', 3 );
+      rect.setAttribute('ry', 3 );
+
+      rect.setAttribute('height', 200 );
+      rect.setAttribute('width', 6 );
+      rect.setAttribute('fill', 'rgb(150, 140, 180)' );
+      rect.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
+      rect.setAttribute('stroke-width', '1px' );
+      rect.setAttribute('x', 0 );
+      rect.setAttribute('y', 0 );
+
+      this._dom.appendChild( rect );
+
+      var handlePos = document.createElementNS( this.graph.ns, 'rect');
+      
+      handlePos.setAttribute('height', 5 );
+      handlePos.setAttribute('width', 12 );
+      handlePos.setAttribute('fill', 'rgb(190, 180, 220)' );
+      handlePos.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
+      handlePos.setAttribute('stroke-width', '1px' );
+      handlePos.setAttribute('x', -3 );
+      handlePos.setAttribute('y', 0 );
+      handlePos.setAttribute('class', 'positive');
+      handlePos.setAttribute('cursor', 'pointer' );
+
+
+      var handleNeg = document.createElementNS( this.graph.ns, 'rect');
+      
+      handleNeg.setAttribute('height', 5 );
+      handleNeg.setAttribute('width', 12 );
+      handleNeg.setAttribute('fill', 'rgb(190, 180, 220)' );
+      handleNeg.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
+      handleNeg.setAttribute('stroke-width', '1px' );
+      handleNeg.setAttribute('x', -3 );
+      handleNeg.setAttribute('y', 0 );
+      handleNeg.setAttribute('class', 'negative');
+      handleNeg.setAttribute('cursor', 'pointer' );
+
+      this._dom.appendChild( handlePos );
+      this._dom.appendChild( handleNeg );
+
+      this.handlePos = handlePos;
+      this.handleNeg = handleNeg;
+    },
+
+    setPosition: function() {
+      var position = this._getPosition( this.getFromData( 'pos' ) );
+
+      if ( !position || !position.x || !position.y ) {
+        return;
+      }
+
+      this.setDom( 'transform', 'translate(' + position.x +', ' + position.y + ')' );
+      return true;
+    },
+
+    setHandleNeg: function( value, max ) {
+
+      this.handleNeg.setAttribute( 'y', ( value / max ) * 95 + 105 )
+    },
+
+    setHandlePos: function( value, max ) {
+
+      this.handlePos.setAttribute( 'y', ( 1- value / max  ) * 95 )
+    },
+
+    redrawImpl: function() {
+      this.setPosition();
+    },
+
+    handleCreateImpl: function() {
+
+      this.resize = true;
+      this.handleSelected = 2;
+
+    },
+
+    handleMouseDownImpl: function( e ) {
+
+      this.selected = e.target.getAttribute('class') == 'positive' ? 'positive' : ( e.target.getAttribute('class') == 'negative'  ? 'negative' : false );
+      return true;
+    },
+
+    handleMouseUpImpl: function() {
+
+      this.selected = false;
+      this.triggerChange();
+      return true;
+    },
+
+    handleMouseMoveImpl: function( e ) {
+
+      console.log( e );
+      var o = $(this._dom).offset();
+      var cY = e.pageY - o.top;
+console.log( cY );
+      if( this.selected == "negative" ) {
+
+        if( cY > 200 ) {
+          this.handleNeg.setAttribute('y', 200);
+        } else if( cY < 105) {
+          this.handleNeg.setAttribute('y', 105);
+        } else {
+          this.handleNeg.setAttribute('y', cY);
+        }
+      }
+
+
+      if( this.selected == "positive" ) {
+
+        if( cY < 0 ) {
+          this.handlePos.setAttribute('y', 0);
+        } else if( cY > 95) {
+          this.handlePos.setAttribute('y', 95);
+        } else {
+           this.handlePos.setAttribute('y', cY);  
+        }
+      }
+
+      
+    },
+
+    selectStyle: function() {
+      this.setDom( 'stroke', 'red' );
+      this.setDom( 'stroke-width', '2' );
+    },
+
+    hideHandleNeg: function() {
+      this.handleNeg.setAttribute('display', 'none');
+    },
+
+    showHandleNeg: function() {
+            this.handleNeg.setAttribute('display', 'block');
+    },
+
+    setHandles: function() {}
+
+  } );
+
+  return Zoom2DShape;
+
+ } ) ( build["./shapes/graph.shape"] );
+
+
+// Build: End source file (shapes/graph.shape.zoom2d) 
+
+
+
+;
+/* 
+ * Build: new source file 
  * File name : graph.toolbar
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
  */
@@ -11734,6 +12108,7 @@ build['./graph.toolbar'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
  */
 
+build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }
 return build[ './graph.core' ];
 
 

@@ -33,6 +33,7 @@ define( [
     './shapes/graph.shape.rangex',
     './shapes/graph.shape.rect',
     './shapes/graph.shape.cross',
+    './shapes/graph.shape.zoom2d',
 
     './graph.toolbar',
     './graph.xaxis.time',

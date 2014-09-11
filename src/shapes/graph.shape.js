@@ -284,6 +284,11 @@ define( [], function() {
     setSerie: function( serie ) {
       this.serie = serie;
     },
+
+    getSerie: function() {
+      return this.serie;
+    },
+
     set: function( prop, val, index ) {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
@@ -479,7 +484,7 @@ define( [], function() {
 				pos.x = -10000;
 				pos.y = -10000;
 			}*/
-      console.log( 'sfdsdf' );
+      
       if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
 
         this.label[ labelIndex ].setAttribute( 'x', pos.x );
@@ -673,7 +678,6 @@ define( [], function() {
         function( e ) {
 
           var coords = this.graph._getXY( e );
-
           var
             deltaX = this.serie.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
             deltaY = this.serie.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
@@ -997,7 +1001,7 @@ define( [], function() {
     },
 
     maskWith: function( otherShape ) {
-      console.log( otherShape, otherShape.getMaskingID() );
+      
       var maskingId;
       if ( maskingId = otherShape.getMaskingID() ) {
         this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
