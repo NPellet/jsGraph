@@ -201,7 +201,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
         //this.slotsData[ i ] = $.Deferred();
         this.calculateSlot( this.slots[ i ], i );
-        //				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
+        //        this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
       }
     },
 
@@ -209,16 +209,15 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var def = $.Deferred();
 
       this.slotWorker.postMessage( {
-        min: this.getFlip() ? this.minY : this.minX,
-        max: this.getFlip() ? this.maxY : this.maxX,
+        /*min: this.getFlip() ? this.minY : this.minX,
+        max: this.getFlip() ? this.maxY : this.maxX,*/
         min: this.minX,
         max: this.maxX,
         data: this.data,
         slot: slot,
         slotNumber: slotNumber,
-        flip: this.getFlip()
+        flip: this.getFlip( )
       } );
-
       return def;
     },
 
@@ -278,7 +277,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on ||  ( force === true && force !== false ) ) {
+      if ( _on || ( force === true && force !== false ) ) {
 
         if ( !el[ index ] ) {
 
@@ -437,7 +436,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var next = this.groupLines.nextSibling;
       this.groupMain.removeChild( this.groupLines );
 
-      this.marker.setAttribute( 'display', 'none' );
 
       this.markerCurrentFamily = null;
       var markerCurrentIndex = 0;
@@ -709,8 +707,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
     drawSlot: function( slotToUse, y ) {
 
       
-      //console.log(slotToUse, y, this.slots[ y ]);
-
       var currentLine = "M ";
       var k = 0;
       var i = 0,
@@ -779,7 +775,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       this._createLine( currentLine, i, k );
       i++;
-      //console.timeEnd('Slot');
+      
     },
 
     setMarkerStyleTo: function( dom, family ) {

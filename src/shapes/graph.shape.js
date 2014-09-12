@@ -170,6 +170,7 @@ define( [], function() {
     },
 
     triggerChange: function() {
+      
       this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
     },
 
@@ -476,7 +477,10 @@ define( [], function() {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
+          
           var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+        } else {
+          pos = this._getPosition( pos );
         }
       }
 

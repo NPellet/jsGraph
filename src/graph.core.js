@@ -78,7 +78,23 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
     this._doDom();
 
-    this.setSize( $( dom ).width(), $( dom ).height() );
+    var w, h;
+    if( dom.style.width ) {
+      w = parseInt( dom.style.width.replace('px', '') );
+    } else {
+       w = $( dom ).width()
+    }
+
+
+    if( dom.style.height ) {
+      h = parseInt( dom.style.height.replace('px', '') );
+    } else {
+       h = $( dom ).height()
+    }
+    
+
+
+    this.setSize( w, h );
     this._resize();
     _registerEvents( this );
 
@@ -803,11 +819,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
       }
 
       if ( this.selectedSerie ) {
-
         this.selectedSerie.unselect();
       }
 
       this.selectedSerie = serie;
+      this.triggerEvent( 'onSelectSerie', serie );
       serie.select();
     },
 
@@ -815,6 +831,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
 
       serie.unselect();
       this.selectedSerie = false;
+      this.triggerEvent( 'onUnselectSerie', serie );
+
     },
 
     getSelectedSerie: function() {
@@ -885,7 +903,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         }
       }
 
-      
+
 
       if ( response ) {
         shapeData = response;
@@ -1297,12 +1315,27 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         }
       } else {
 
+        ref = this.getValPosition( ref, axis );
+
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
           return ( ref + axis.getRelVal( deltaPx ) );
         } else {
           return ( ref + delta );
         }
       }
+    },
+
+    getValPosition: function( rel, axis ) {
+
+      if( rel == 'max' ) {
+        return axis.getMaxValue();
+      }
+
+      if( rel == 'min' ) {
+        return axis.getMinValue();
+      }
+
+      return rel;
     },
 
     getPx: function( value, axis, rel ) {
@@ -1757,6 +1790,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.xaxis.time', '.
         var plugin;
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+
           plugin.onMouseWheel( delta, e );
         }
 

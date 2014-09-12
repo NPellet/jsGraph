@@ -323,7 +323,7 @@ define( [ 'jquery' ], function( $ ) {
         ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
-      this.graph.redraw( true );
+      this.graph.redraw( );
       //	this.graph.drawSeries(true);
 
     },

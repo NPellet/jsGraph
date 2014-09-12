@@ -12,21 +12,22 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
    * @param   Number  l       The lightness
    * @return  Array           The RGB representation
    */
+   function hue2rgb(p, q, t){
+        if(t < 0) t += 1;
+        if(t > 1) t -= 1;
+        if(t < 1/6) return p + (q - p) * 6 * t;
+        if(t < 1/2) return q;
+        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    }
+    
   function hslToRgb(h, s, l){
       var r, g, b;
 
       if(s == 0){
           r = g = b = l; // achromatic
       }else{
-          function hue2rgb(p, q, t){
-              if(t < 0) t += 1;
-              if(t > 1) t -= 1;
-              if(t < 1/6) return p + (q - p) * 6 * t;
-              if(t < 1/2) return q;
-              if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-              return p;
-          }
-
+          
           var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
           var p = 2 * l - q;
           r = hue2rgb(p, q, h + 1/3);
@@ -112,7 +113,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
       var maxX = this.getXAxis().getActualMax();
       var maxY = this.getYAxis().getActualMax();
-console.log( minY, minX, maxY, maxX )
+
       for ( ; i < l; i++ ) {
 
         j = 0, k = 0, currentLine = "";
@@ -209,16 +210,18 @@ console.log( minY, minX, maxY, maxX )
 
     },
 
-    onMouseWheel: function( delta, e, fixed ) {
+    onMouseWheel: function( delta, e, fixed, positive ) {
 
       delta /= 250;
 
       if( fixed !== undefined ) {
 
-        if( fixed < 0 ) {
+        if( ! positive ) {
           this.negativeThreshold = - fixed * this.minZ;
-          this.negativeDelta = Math.pow( this.negativeThreshold / ( - this.minZ ), 1/3);
-        } else {
+          this.negativeDelta = - Math.pow( Math.abs( ( this.negativeThreshold / ( - this.minZ ) ) ), 1/3);
+        }
+
+        if( positive ) {
           this.positiveThreshold = fixed * this.maxZ;
           this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
         }
@@ -238,10 +241,18 @@ console.log( minY, minX, maxY, maxX )
         }
 
       }
-      
+
+      if( isNaN( this.positiveDelta ) ) {
+        this.positiveDelta = 0;
+      }
+
+      if( isNaN( this.negativeDelta ) ) {
+        this.negativeDelta = 0;
+      }
+
       for ( var i in this.zValues ) {
 
-        this.zValues[ i ].dom.setAttribute( 'display', ( ( i > 0 && i > this.positiveThreshold ) || ( i < 0 && i < this.negativeThreshold ) ) ? 'block' : 'none' );
+        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) || ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
 
       }
       

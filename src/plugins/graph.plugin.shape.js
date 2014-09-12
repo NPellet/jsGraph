@@ -83,13 +83,14 @@ define( [], function() {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        shape.created();
+        
 
         if( graph.selectedSerie ) {
           shape.setSerie( graph.selectedSerie );
         }
 
-
+        shape.created();
+        
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
         }

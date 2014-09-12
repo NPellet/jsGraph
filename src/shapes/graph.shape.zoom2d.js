@@ -17,7 +17,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       rect.setAttribute('rx', 3 );
       rect.setAttribute('ry', 3 );
 
-      rect.setAttribute('height', 200 );
+      rect.setAttribute('height', 100 );
       rect.setAttribute('width', 6 );
       rect.setAttribute('fill', 'rgb(150, 140, 180)' );
       rect.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
@@ -25,6 +25,9 @@ define( [ './graph.shape' ], function( GraphShape ) {
       rect.setAttribute('x', 0 );
       rect.setAttribute('y', 0 );
 
+      this.rect = rect;
+
+      
       this._dom.appendChild( rect );
 
       var handlePos = document.createElementNS( this.graph.ns, 'rect');
@@ -72,12 +75,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     setHandleNeg: function( value, max ) {
 
-      this.handleNeg.setAttribute( 'y', ( value ) * 95 + 105 )
+      this.handleNeg.setAttribute( 'y', ( value ) * 45 + 55 )
     },
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1- value  ) * 95 )
+      this.handlePos.setAttribute( 'y', ( 1- value  ) * 45 )
     },
 
     redrawImpl: function() {
@@ -114,18 +117,25 @@ define( [ './graph.shape' ], function( GraphShape ) {
       var o = $(this._dom).offset();
       var cY = e.pageY - o.top;
 //console.log( this.selected );
+
+
       if( this.selected == "negative" ) {
 
-        if( cY > 200 ) {
-          cY = 200;
-        } else if( cY < 105) {
-         cY = 105;
+        if( cY > 100 ) {
+          cY = 100;
+        } else if( cY < 55) {
+         cY = 55;
         } 
 
         //this.handleNeg.setAttribute('y', cY);
         //console.log( cY);
-        cY = - ( cY - 105 ) / 95; 
+        cY = - ( cY - 55 ) / 45; 
         
+        this.series.map( function ( s ) {
+          s.onMouseWheel( false, false, cY, false );
+        });
+
+
       }
 
 
@@ -133,17 +143,20 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
         if( cY < 0 ) {
           cY = 0;
-        } else if( cY > 95) {
-          cY = 95;
+        } else if( cY > 45) {
+          cY = 45;
         }
 
        // this.handlePos.setAttribute('y', cY);  
-        cY = ( 95 - cY ) / 95;
+        cY = ( 45 - cY ) / 45;
+
+        this.series.map( function ( s ) {
+          s.onMouseWheel( false, false, cY, true );
+        });
+
+
       }
 
-      this.series.map( function ( s ) {
-        s.onMouseWheel( false, false, cY );
-      });
 
       
     },
@@ -155,10 +168,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     hideHandleNeg: function() {
       this.handleNeg.setAttribute('display', 'none');
+      this.rect.setAttribute('height', 45);
     },
 
     showHandleNeg: function() {
-            this.handleNeg.setAttribute('display', 'block');
+      this.handleNeg.setAttribute('display', 'block');
+      this.rect.setAttribute('height', 100);
     },
 
     setHandles: function() {}

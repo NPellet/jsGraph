@@ -80,9 +80,11 @@ define( [], function() {
               this._checkY( arr[ z ] );
               z++;
               total++;
+
             } else { // 1D Array
               arr[ z ] = data[ i ][ j ];
               this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+
               z++;
               total += j % 2 ? 1 : 0;
 
@@ -269,6 +271,8 @@ define( [], function() {
       this.getTextForLegend().setAttribute( 'opacity', 1 );
 
       this.showImpl();
+
+      this.draw();
     },
 
     hideImpl: function() {},
@@ -422,6 +426,10 @@ define( [], function() {
       this.applyLineStyle( this.getSymbolForLegend() );
     },
 
+    getIndex: function() {
+      return this.graph.series.indexOf( this );
+    },
+    
     getLabel: function() {
       return this.options.label || this.name;
     },

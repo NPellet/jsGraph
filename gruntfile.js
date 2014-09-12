@@ -81,6 +81,16 @@ module.exports = function(grunt) {
             },
 
 
+            exportToTest: {
+
+                files: {
+                    '../demo_workshop/lib/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    '../demo_workshop/lib/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js',
+                    
+                }
+            },
+
+
             exportDevToPages: {
 
                 files: {
@@ -118,7 +128,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
 
-    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'buildExampleList'] );
+    grunt.registerTask( 'default', [ 'build', 'uglify', 'copy:dist', 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'] );
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
 
@@ -165,7 +175,7 @@ module.exports = function(grunt) {
                     if( ! matches ) {
                         grunt.log.writeln("Possible error for file " + name + "(" + path + "). No define found");
                         grunt.log.writeln("Trying anonymous module");
-
+console.log( contents );
                          matches = contents
                             .match( /define\s*\(\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
                         

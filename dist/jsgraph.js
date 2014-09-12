@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.10-2
+ * jsGraphs JavaScript Graphing Library v1.9.10
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-11T04:23Z
+ * Date: 2014-09-12T07:30Z
  */
 
 (function( global, factory ) {
@@ -361,7 +361,7 @@ build['./graph.axis'] = ( function( $ ) {
         ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
-      this.graph.redraw( true );
+      this.graph.redraw( );
       //	this.graph.drawSeries(true);
 
     },
@@ -2646,7 +2646,23 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
     this._doDom();
 
-    this.setSize( $( dom ).width(), $( dom ).height() );
+    var w, h;
+    if( dom.style.width ) {
+      w = parseInt( dom.style.width.replace('px', '') );
+    } else {
+       w = $( dom ).width()
+    }
+
+
+    if( dom.style.height ) {
+      h = parseInt( dom.style.height.replace('px', '') );
+    } else {
+       h = $( dom ).height()
+    }
+    
+
+
+    this.setSize( w, h );
     this._resize();
     _registerEvents( this );
 
@@ -3371,11 +3387,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
       }
 
       if ( this.selectedSerie ) {
-
         this.selectedSerie.unselect();
       }
 
       this.selectedSerie = serie;
+      this.triggerEvent( 'onSelectSerie', serie );
       serie.select();
     },
 
@@ -3383,6 +3399,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
 
       serie.unselect();
       this.selectedSerie = false;
+      this.triggerEvent( 'onUnselectSerie', serie );
+
     },
 
     getSelectedSerie: function() {
@@ -3453,7 +3471,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
         }
       }
 
-      
+
 
       if ( response ) {
         shapeData = response;
@@ -3865,12 +3883,27 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
         }
       } else {
 
+        ref = this.getValPosition( ref, axis );
+
         if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
           return ( ref + axis.getRelVal( deltaPx ) );
         } else {
           return ( ref + delta );
         }
       }
+    },
+
+    getValPosition: function( rel, axis ) {
+
+      if( rel == 'max' ) {
+        return axis.getMaxValue();
+      }
+
+      if( rel == 'min' ) {
+        return axis.getMinValue();
+      }
+
+      return rel;
     },
 
     getPx: function( value, axis, rel ) {
@@ -4325,6 +4358,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisTime, G
         var plugin;
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+
           plugin.onMouseWheel( delta, e );
         }
 
@@ -4454,9 +4488,11 @@ build['./graph._serie'] = ( function( ) {
               this._checkY( arr[ z ] );
               z++;
               total++;
+
             } else { // 1D Array
               arr[ z ] = data[ i ][ j ];
               this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+
               z++;
               total += j % 2 ? 1 : 0;
 
@@ -4643,6 +4679,8 @@ build['./graph._serie'] = ( function( ) {
       this.getTextForLegend().setAttribute( 'opacity', 1 );
 
       this.showImpl();
+
+      this.draw();
     },
 
     hideImpl: function() {},
@@ -4796,6 +4834,10 @@ build['./graph._serie'] = ( function( ) {
       this.applyLineStyle( this.getSymbolForLegend() );
     },
 
+    getIndex: function() {
+      return this.graph.series.indexOf( this );
+    },
+    
     getLabel: function() {
       return this.options.label || this.name;
     },
@@ -5361,13 +5403,14 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         var shape = self.currentShape;
         self.currentShape = false;
 
-        shape.created();
+        
 
         if( graph.selectedSerie ) {
           shape.setSerie( graph.selectedSerie );
         }
 
-
+        shape.created();
+        
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
         }
@@ -5547,7 +5590,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       graph.drawSeries();
 
       if ( this.options.onZoomEnd && !mute ) {
-        this.options.onZoomEnd( graph, x, y, e, mute );
+        this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
       }
 
       if ( this._backedUpZoomMode ) {
@@ -5565,6 +5608,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       }
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      this.graph.drawSeries();
     },
 
     onDblClick: function( graph, x, y, pref, e, mute ) {
@@ -5866,7 +5910,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
         //this.slotsData[ i ] = $.Deferred();
         this.calculateSlot( this.slots[ i ], i );
-        //				this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
+        //        this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
       }
     },
 
@@ -5874,16 +5918,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var def = $.Deferred();
 
       this.slotWorker.postMessage( {
-        min: this.getFlip() ? this.minY : this.minX,
-        max: this.getFlip() ? this.maxY : this.maxX,
+        /*min: this.getFlip() ? this.minY : this.minX,
+        max: this.getFlip() ? this.maxY : this.maxX,*/
         min: this.minX,
         max: this.maxX,
         data: this.data,
         slot: slot,
         slotNumber: slotNumber,
-        flip: this.getFlip()
+        flip: this.getFlip( )
       } );
-
       return def;
     },
 
@@ -5943,7 +5986,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on ||  ( force === true && force !== false ) ) {
+      if ( _on || ( force === true && force !== false ) ) {
 
         if ( !el[ index ] ) {
 
@@ -6102,7 +6145,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var next = this.groupLines.nextSibling;
       this.groupMain.removeChild( this.groupLines );
 
-      this.marker.setAttribute( 'display', 'none' );
 
       this.markerCurrentFamily = null;
       var markerCurrentIndex = 0;
@@ -6374,8 +6416,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     drawSlot: function( slotToUse, y ) {
 
       
-      //console.log(slotToUse, y, this.slots[ y ]);
-
       var currentLine = "M ";
       var k = 0;
       var i = 0,
@@ -6444,7 +6484,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       this._createLine( currentLine, i, k );
       i++;
-      //console.timeEnd('Slot');
+      
     },
 
     setMarkerStyleTo: function( dom, family ) {
@@ -7634,21 +7674,22 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
    * @param   Number  l       The lightness
    * @return  Array           The RGB representation
    */
+   function hue2rgb(p, q, t){
+        if(t < 0) t += 1;
+        if(t > 1) t -= 1;
+        if(t < 1/6) return p + (q - p) * 6 * t;
+        if(t < 1/2) return q;
+        if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+    }
+    
   function hslToRgb(h, s, l){
       var r, g, b;
 
       if(s == 0){
           r = g = b = l; // achromatic
       }else{
-          function hue2rgb(p, q, t){
-              if(t < 0) t += 1;
-              if(t > 1) t -= 1;
-              if(t < 1/6) return p + (q - p) * 6 * t;
-              if(t < 1/2) return q;
-              if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-              return p;
-          }
-
+          
           var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
           var p = 2 * l - q;
           r = hue2rgb(p, q, h + 1/3);
@@ -7734,7 +7775,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
       var maxX = this.getXAxis().getActualMax();
       var maxY = this.getYAxis().getActualMax();
-console.log( minY, minX, maxY, maxX )
+
       for ( ; i < l; i++ ) {
 
         j = 0, k = 0, currentLine = "";
@@ -7831,16 +7872,18 @@ console.log( minY, minX, maxY, maxX )
 
     },
 
-    onMouseWheel: function( delta, e, fixed ) {
+    onMouseWheel: function( delta, e, fixed, positive ) {
 
       delta /= 250;
 
       if( fixed !== undefined ) {
 
-        if( fixed < 0 ) {
+        if( ! positive ) {
           this.negativeThreshold = - fixed * this.minZ;
-          this.negativeDelta = Math.pow( this.negativeThreshold / ( - this.minZ ), 1/3);
-        } else {
+          this.negativeDelta = - Math.pow( Math.abs( ( this.negativeThreshold / ( - this.minZ ) ) ), 1/3);
+        }
+
+        if( positive ) {
           this.positiveThreshold = fixed * this.maxZ;
           this.positiveDelta = Math.pow( this.positiveThreshold / ( this.maxZ ), 1/3);
         }
@@ -7860,10 +7903,18 @@ console.log( minY, minX, maxY, maxX )
         }
 
       }
-      
+
+      if( isNaN( this.positiveDelta ) ) {
+        this.positiveDelta = 0;
+      }
+
+      if( isNaN( this.negativeDelta ) ) {
+        this.negativeDelta = 0;
+      }
+
       for ( var i in this.zValues ) {
 
-        this.zValues[ i ].dom.setAttribute( 'display', ( ( i > 0 && i > this.positiveThreshold ) || ( i < 0 && i < this.negativeThreshold ) ) ? 'block' : 'none' );
+        this.zValues[ i ].dom.setAttribute( 'display', ( ( i >= 0 && i >= this.positiveThreshold ) || ( i <= 0 && i <= this.negativeThreshold ) ) ? 'block' : 'none' );
 
       }
       
@@ -9037,6 +9088,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     triggerChange: function() {
+      
       this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
     },
 
@@ -9343,7 +9395,10 @@ build['./shapes/graph.shape'] = ( function( ) {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
+          
           var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+        } else {
+          pos = this._getPosition( pos );
         }
       }
 
@@ -10320,13 +10375,23 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
         var forced = this.options.forcedCoords;
 
         if ( forced.y !== undefined ) {
-          pos2.y = forced.y;
-          pos.y = forced.y;
+
+        	if( typeof forced.y == "function" ) {
+        		pos2.y = pos.y = forced.y( this );
+        	} else {
+          		pos2.y = forced.y;
+          		pos.y = forced.y;
+          	}
         }
 
         if ( forced.x !== undefined ) {
-          pos2.x = forced.x;
-          pos.x = forced.x;
+
+        	if( typeof forced.x == "function" ) {
+        		pos2.x = pos.x = forced.x( this );
+        	} else {
+	          pos2.x = forced.x;
+	          pos.x = forced.x;
+	         }
         }
       }
 
@@ -11857,7 +11922,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
       rect.setAttribute('rx', 3 );
       rect.setAttribute('ry', 3 );
 
-      rect.setAttribute('height', 200 );
+      rect.setAttribute('height', 100 );
       rect.setAttribute('width', 6 );
       rect.setAttribute('fill', 'rgb(150, 140, 180)' );
       rect.setAttribute('stroke', 'rgb( 40, 40, 40 )' );
@@ -11865,6 +11930,9 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
       rect.setAttribute('x', 0 );
       rect.setAttribute('y', 0 );
 
+      this.rect = rect;
+
+      
       this._dom.appendChild( rect );
 
       var handlePos = document.createElementNS( this.graph.ns, 'rect');
@@ -11912,12 +11980,12 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     setHandleNeg: function( value, max ) {
 
-      this.handleNeg.setAttribute( 'y', ( value ) * 95 + 105 )
+      this.handleNeg.setAttribute( 'y', ( value ) * 45 + 55 )
     },
 
     setHandlePos: function( value, max ) {
 
-      this.handlePos.setAttribute( 'y', ( 1- value  ) * 95 )
+      this.handlePos.setAttribute( 'y', ( 1- value  ) * 45 )
     },
 
     redrawImpl: function() {
@@ -11954,18 +12022,25 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
       var o = $(this._dom).offset();
       var cY = e.pageY - o.top;
 //console.log( this.selected );
+
+
       if( this.selected == "negative" ) {
 
-        if( cY > 200 ) {
-          cY = 200;
-        } else if( cY < 105) {
-         cY = 105;
+        if( cY > 100 ) {
+          cY = 100;
+        } else if( cY < 55) {
+         cY = 55;
         } 
 
         //this.handleNeg.setAttribute('y', cY);
         //console.log( cY);
-        cY = - ( cY - 105 ) / 95; 
+        cY = - ( cY - 55 ) / 45; 
         
+        this.series.map( function ( s ) {
+          s.onMouseWheel( false, false, cY, false );
+        });
+
+
       }
 
 
@@ -11973,17 +12048,20 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
         if( cY < 0 ) {
           cY = 0;
-        } else if( cY > 95) {
-          cY = 95;
+        } else if( cY > 45) {
+          cY = 45;
         }
 
        // this.handlePos.setAttribute('y', cY);  
-        cY = ( 95 - cY ) / 95;
+        cY = ( 45 - cY ) / 45;
+
+        this.series.map( function ( s ) {
+          s.onMouseWheel( false, false, cY, true );
+        });
+
+
       }
 
-      this.series.map( function ( s ) {
-        s.onMouseWheel( false, false, cY );
-      });
 
       
     },
@@ -11995,10 +12073,12 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 
     hideHandleNeg: function() {
       this.handleNeg.setAttribute('display', 'none');
+      this.rect.setAttribute('height', 45);
     },
 
     showHandleNeg: function() {
-            this.handleNeg.setAttribute('display', 'block');
+      this.handleNeg.setAttribute('display', 'block');
+      this.rect.setAttribute('height', 100);
     },
 
     setHandles: function() {}

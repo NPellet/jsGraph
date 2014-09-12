@@ -140,7 +140,7 @@ define( [], function() {
       graph.drawSeries();
 
       if ( this.options.onZoomEnd && !mute ) {
-        this.options.onZoomEnd( graph, x, y, e, mute );
+        this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
       }
 
       if ( this._backedUpZoomMode ) {
@@ -158,6 +158,7 @@ define( [], function() {
       }
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      this.graph.drawSeries();
     },
 
     onDblClick: function( graph, x, y, pref, e, mute ) {
