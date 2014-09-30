@@ -402,6 +402,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       var data = this.data;
       var xData = this.xData;
 
+      this.currentLine = 0;
+
       if ( this.degradationPx ) {
         data = getDegradedData( this );
         xData = data[ 1 ];
@@ -546,7 +548,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -579,7 +581,12 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
 
               if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-                continue;
+                if( k > 0 ) {
+                   this._createLine( currentLine, k );
+                   currentLine = "M ";
+                   k = 0;
+                 }
+                 continue;
               }
 
               if ( optimizeMonotoneous && xpx2 < 0 ) {
@@ -641,7 +648,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
               ypx = ypx2;
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -658,7 +665,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       i++;
 
-      for ( ; i < this.lines.length; i++ ) {
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
@@ -776,7 +783,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       }
 
-      this._createLine( currentLine, i, k );
+      this._createLine( currentLine, k );
       i++;
       
     },
@@ -833,8 +840,9 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
     },
 
     // Returns the DOM
-    _createLine: function( points, i, nbPoints ) {
+    _createLine: function( points, nbPoints ) {
 
+      var i = this.currentLine ++;
       if ( this.lines[ i ] ) {
         var line = this.lines[ i ];
       } else {
