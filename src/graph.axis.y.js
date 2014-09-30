@@ -81,7 +81,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         this.groupTickLabels.appendChild( tickLabel );
 
-        if ( String( tickLabel ).length >= this.longestTick[ 1 ] ) {
+        if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
           this.longestTick[ 0 ] = tickLabel;
           this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 

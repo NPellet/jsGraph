@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.11-0
+ * jsGraphs JavaScript Graphing Library v1.9.11
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-30T20:34Z
+ * Date: 2014-09-30T20:43Z
  */
 
 (function( global, factory ) {
@@ -1301,7 +1301,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
         this.groupTickLabels.appendChild( tickLabel );
 
-        if ( String( tickLabel ).length >= this.longestTick[ 1 ] ) {
+        if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
           this.longestTick[ 0 ] = tickLabel;
           this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 
@@ -1576,8 +1576,9 @@ build['./graph.axis.broken'] = ( function( $ ) {
           }
       } );
 
-      this.widthHeightTick = this.getMaxSizeTick();
 
+      this.widthHeightTick = this.getMaxSizeTick();
+      return this.widthHeightTick;
     },
 
     secondaryTicks: function() {
