@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.11
+ * jsGraphs JavaScript Graphing Library v1.9.13
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-30T20:43Z
+ * Date: 2014-09-30T21:12Z
  */
 
 (function( global, factory ) {
@@ -6388,6 +6388,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       var data = this.data;
       var xData = this.xData;
 
+      this.currentLine = 0;
+
       if ( this.degradationPx ) {
         data = getDegradedData( this );
         xData = data[ 1 ];
@@ -6532,7 +6534,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -6565,7 +6567,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
 
               if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
-                continue;
+                if( k > 0 ) {
+                   this._createLine( currentLine, k );
+                   currentLine = "M ";
+                   k = 0;
+                 }
+                 continue;
               }
 
               if ( optimizeMonotoneous && xpx2 < 0 ) {
@@ -6627,7 +6634,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
               ypx = ypx2;
             }
 
-            this._createLine( currentLine, i, k );
+            this._createLine( currentLine, k );
 
             if ( toBreak ) {
               break;
@@ -6644,7 +6651,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       i++;
 
-      for ( ; i < this.lines.length; i++ ) {
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
       }
@@ -6762,7 +6769,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       }
 
-      this._createLine( currentLine, i, k );
+      this._createLine( currentLine, k );
       i++;
       
     },
@@ -6819,8 +6826,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     },
 
     // Returns the DOM
-    _createLine: function( points, i, nbPoints ) {
+    _createLine: function( points, nbPoints ) {
 
+      var i = this.currentLine ++;
       if ( this.lines[ i ] ) {
         var line = this.lines[ i ];
       } else {
