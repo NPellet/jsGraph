@@ -427,8 +427,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
         optimizeBreak, buffer;
 
-
-
       var shape, self = this;
 
       this._drawn = true;
@@ -517,7 +515,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
                 this.getMarkerCurrentFamily( k );
               }
 
-              if ( !this.isFlipped() ) {
+              if ( ! this.isFlipped() ) {
 
                 xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
                 ypx = this.getY( data[ i ][ j ] );
@@ -576,6 +574,11 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
               ypx2 = this.getY( data[ i ][ j + incrYFlip ] );
 
               if ( xpx2 == xpx && ypx2 == ypx ) {
+                continue;
+              }
+
+
+              if( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
                 continue;
               }
 

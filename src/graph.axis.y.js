@@ -159,19 +159,6 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       this.groupGrids.appendChild( this._0line );
     },
 
-    addSerie: function( name, options ) {
-      var serie = new GraphSerieAxisY( name, options );
-      serie.init( this.graph, name, options );
-      serie.setAxis( this );
-      serie.autoAxis();
-      serie.setYAxis( this );
-      this.series.push( serie );
-      this.groupSeries.appendChild( serie.groupMain );
-      this.groupSeries.setAttribute( 'clip-path', 'url(#_clip' + this.axisRand + ')' );
-
-      return serie;
-    },
-
     handleMouseMoveLocal: function( x, y, e ) {
       y -= this.graph.getPaddingTop();
       this.mouseVal = this.getVal( y );
