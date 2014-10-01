@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.13
+ * jsGraphs JavaScript Graphing Library v1.9.14-0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-09-30T21:12Z
+ * Date: 2014-10-01T11:24Z
  */
 
 (function( global, factory ) {
@@ -4564,7 +4564,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         var axisInstance = _availableAxes.def;
       break;
     }
-console.log( axisInstance );
 
     switch( pos ) {
 
@@ -6844,10 +6843,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       }
 
-      if ( !this.lines[ i ] ) {
+      if ( ! this.lines[ i ] ) {
         this.groupLines.appendChild( line );
         this.lines[ i ] = line;
-
       }
 
       return line;
@@ -8040,6 +8038,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     draw: function( doNotRedrawZone ) {
 
+      this.currentLine = 0;
       var x, y, xpx, ypx, xpx2, ypx2, i = 0,
         l = this.data.length,
         j = 0,
@@ -8111,7 +8110,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           k++;
         }
 
-        domLine = this._createLine( currentLine + " z", i, k );
+        domLine = this._createLine( currentLine + " z", k );
         domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
 
         if ( this.zoneColors && this.zoneColors[ i ] ) {
@@ -8130,12 +8129,11 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       i++;
 
       
-      for ( ; i < this.lines.length; i++ ) {
-
+      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
         this.lines.splice( i, 1 );
-
       }
+
 
       i = 0;
 
