@@ -1768,7 +1768,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
         var axisInstance = _availableAxes.def;
       break;
     }
-console.log( axisInstance );
 
     switch( pos ) {
 

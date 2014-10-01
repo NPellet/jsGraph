@@ -858,10 +858,9 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       }
 
-      if ( !this.lines[ i ] ) {
+      if ( ! this.lines[ i ] ) {
         this.groupLines.appendChild( line );
         this.lines[ i ] = line;
-
       }
 
       return line;
