@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-2
+ * jsGraphs JavaScript Graphing Library v1.9.14-3
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-05T09:01Z
+ * Date: 2014-10-13T08:29Z
  */
 
 (function( global, factory ) {
@@ -1469,7 +1469,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     // [ [ 0, 10 ], [ 50, 100 ] ]
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
-
+      this._broken = true;
       var 
         self = this,
         i = 0,
@@ -1624,6 +1624,40 @@ build['./graph.axis.broken'] = ( function( $ ) {
       }
       // Ex 50 / (100) * (1000 - 700) + 700
       return ;
+    },
+
+    getRatioInRange: function( inRangeOf, value ) {
+
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
+            
+          return;
+        }
+      }
+      
+    },
+
+
+    getInRange: function( inRangeOf, value ) {
+
+      
+
+      for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
+        if( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
+          // This range
+
+
+             return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+            
+          return;
+        }
+      }
+      
     }
   }
 
@@ -3320,9 +3354,11 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     setBottomAxisAsTime: function( num, options ) {
-      options = options || {};
+      throw "Method deprecated. Create your axis with { type: 'time' } as options instead";
+      /*options = options || {};
       options.type = 'time';
-      return _getAxis( this, num, options, 'bottom' );
+      return _getAxis( this, num, options, 'bottom' );*/
+
     },
 
     setXAxis: function( axis, num ) {
@@ -3396,9 +3432,9 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     getBoundaryAxis: function( axis, xy, minmax ) {
 
       var valSeries = this.getBoundaryAxisFromSeries( axis, xy, minmax );
-      var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-      
-      return Math[ minmax ]( valSeries, valShapes );
+    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      return valSeries;
+      //return Math[ minmax ]( valSeries, valShapes );
 
     },
 
