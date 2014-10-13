@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-3
+ * jsGraphs JavaScript Graphing Library v1.9.14-4
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-13T08:29Z
+ * Date: 2014-10-13T09:22Z
  */
 
 (function( global, factory ) {
@@ -809,6 +809,7 @@ build['./graph.axis'] = ( function( $ ) {
 
       //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
       if ( !this.options.logScale ) {
+        
         return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min
@@ -5089,6 +5090,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     setXAxis: function( axis ) {
+      
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
       else
@@ -6467,6 +6469,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
 
       if ( this.degradationPx ) {
         data = getDegradedData( this );
+        console.log( data );
         xData = data[ 1 ];
         data = data[ 0 ];
       }
@@ -7701,7 +7704,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       incrYFlip = 1,
       degradeFirstX, degradeFirstXPx,
       optimizeMonotoneous = graph.isXMonotoneous(),
-      optimizeMaxPxX = graph.getXAxis().getMaxPx(),
+      optimizeMaxPxX = graph.getXAxis().getMathMaxPx(),
       optimizeBreak, buffer;
 
     if ( graph.isFlipped() ) {
@@ -7815,7 +7818,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       degradationMax = -Infinity;
 
       var data = [];
-
       for ( ; j < m; j += 2 ) {
 
         xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
@@ -7852,7 +7854,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
           degradeFirstXPx = xpx2;
         }
 
-        if ( xpx2 - degradeFirstXPx > graph.degradationPx && j < m ) {
+        if ( Math.abs( xpx2 - degradeFirstXPx ) > graph.degradationPx && j < m ) {
 
           data.push(
             ( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
@@ -8870,8 +8872,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
   
 
-  var GraphSerieScatter = function() {}
-  $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
+  var GraphSerieZone = function() {}
+  $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
       label: "",
@@ -8891,7 +8893,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.id = Math.random() + Date.now();
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
       this._isMinOrMax = {
@@ -9174,7 +9176,9 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
       lineBottom.reverse();
 
-      this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      if( lineTop.length > 0 && lineBottom.length > 0 ) {
+        this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      }
 
       this.applyLineStyle( this.lineZone );
       this.groupMain.appendChild( this.groupZones );
@@ -9224,7 +9228,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
   } );
 
-  return GraphSerieScatter;
+  return GraphSerieZone;
  } ) ( build["./graph._serie"] );
 
 
