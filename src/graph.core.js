@@ -564,7 +564,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     },
 
     getPaddingBottom: function() {
-      return this.options.paddingTop;
+      return this.options.paddingBottom;
     },
 
     getPaddingRight: function() {
