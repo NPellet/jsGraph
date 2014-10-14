@@ -77,6 +77,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
     }
 
     this.options = $.extend( {}, graphDefaults, options );
+
+    if (this.options.hasOwnProperty('padding')) {
+      this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
+    }
+
     this.axis = {
       left: [],
       top: [],
