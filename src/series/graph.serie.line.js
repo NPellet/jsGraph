@@ -558,15 +558,9 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         }
       }
 
-      
       this.makePeakPicking( );
-
-      i++;
-
       this.removeExtraLines();
-      
-      insertMarkers( this );
-
+      this.insertMarkers( );
       this.insertLinesGroup();
 
       
@@ -615,9 +609,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         for ( ; j < m; j += 2 ) {
 
           if ( this.markersShown() ) {
-
-            this.getMarkerCurrentFamily( k );
-
+            this.getMarkerCurrentFamily( this.counter );
           }
 
           x = data[ i ][ j + incrXFlip ];
@@ -1802,6 +1794,19 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       }
 
     } );
+  },
+
+
+  insertMarkers: function( ) {
+
+    if ( ! this.markerFamily ) {
+      return;
+    }
+
+    for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
+      this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+      this.groupMain.appendChild( this.markerFamily[ i ].dom );
+    }
   }
 
 
@@ -2065,17 +2070,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
     }
   }
 
-  function insertMarkers( graph ) {
-
-    if ( !graph.markerFamily ) {
-      return;
-    }
-
-    for ( var i = 0, l = graph.markerFamily.length; i < l; i++ ) {
-      graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
-      graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
-    }
-  }
 
   return GraphSerie;
 } );

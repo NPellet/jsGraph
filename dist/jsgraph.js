@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.9.14-6
+ * jsGraphs JavaScript Graphing Library v1.10.0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-15T17:02Z
+ * Date: 2014-10-15T19:16Z
  */
 
 (function( global, factory ) {
@@ -6629,15 +6629,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         }
       }
 
-      
       this.makePeakPicking( );
-
-      i++;
-
       this.removeExtraLines();
-      
-      insertMarkers( this );
-
+      this.insertMarkers( );
       this.insertLinesGroup();
 
       
@@ -6686,9 +6680,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
         for ( ; j < m; j += 2 ) {
 
           if ( this.markersShown() ) {
-
-            this.getMarkerCurrentFamily( k );
-
+            this.getMarkerCurrentFamily( this.counter );
           }
 
           x = data[ i ][ j + incrXFlip ];
@@ -7873,6 +7865,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
       }
 
     } );
+  },
+
+
+  insertMarkers: function( ) {
+
+    if ( ! this.markerFamily ) {
+      return;
+    }
+
+    for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
+      this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
+      this.groupMain.appendChild( this.markerFamily[ i ].dom );
+    }
   }
 
 
@@ -8136,17 +8141,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable ) {
     }
   }
 
-  function insertMarkers( graph ) {
-
-    if ( !graph.markerFamily ) {
-      return;
-    }
-
-    for ( var i = 0, l = graph.markerFamily.length; i < l; i++ ) {
-      graph.markerFamily[ i ].dom.setAttribute( 'd', graph.markerFamily[ i ].path );
-      graph.groupMain.appendChild( graph.markerFamily[ i ].dom );
-    }
-  }
 
   return GraphSerie;
  } ) ( build["./graph._serie"] );
