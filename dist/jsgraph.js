@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-0
+ * jsGraphs JavaScript Graphing Library v1.10.1-1
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-16T11:46Z
+ * Date: 2014-10-16T11:57Z
  */
 
 (function( global, factory ) {
@@ -1475,6 +1475,10 @@ build['./graph.axis.broken'] = ( function( $ ) {
       return this.options.nbTicksSecondary;
     },
 
+    getBreakingSpacing: function() {
+      return this.options.breakingSpacing || 5;
+    },
+
     // [ [ 0, 10 ], [ 50, 100 ] ]
     setBrokenRanges: function( ranges ) {
       this.ranges = [];
@@ -1509,7 +1513,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     drawLinearTicksWrapper: function( ) {
 
       var nbIntervals = this.ranges.length - 1,
-          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * 5,
+          availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
@@ -1531,14 +1535,14 @@ build['./graph.axis.broken'] = ( function( $ ) {
       var maxPx = this.getMaxPx();
       var last = minPx;
       var nbIntervals = this.ranges.length - 1;
-      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * 5 * ( self.isFlipped() ? -1 : 1 );
+      var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * this.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
 
       this.resetTicks();
 
 
       this.ranges.map( function( range, index ) {
 
-        range.minPx = index == 0 ? minPx : last + 5 * ( self.isFlipped() ? -1 : 1 );
+        range.minPx = index == 0 ? minPx : last + self.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
@@ -1632,7 +1636,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getRelVal: function( px ) {
-      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * 5 ) * this.totalValRanges;
+      return px / (  ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
     },
 
     getVal: function( px ) {
