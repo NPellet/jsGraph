@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-1
+ * jsGraphs JavaScript Graphing Library v1.10.1-2
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-16T11:57Z
+ * Date: 2014-10-16T13:11Z
  */
 
 (function( global, factory ) {
@@ -10979,8 +10979,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         v2 = v3;
       }
 
+      this.counter = 0;
+
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        currentLine = "M ";
+        this.currentLine = "";
         init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
         max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
         k = 0;
@@ -10997,8 +10999,16 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
             this.firstX = x;
             this.firstY = y;
           }
-          currentLine = this.serie._addPoint( currentLine, x, y, k );
+
+          if( k > 0 ) {
+            this.currentLine += " L " + x + " " + y + " "  
+          } else {
+            this.currentLine += " M " + x + " " + y + " ";
+          }
+          
+          //this.serie._addPoint( x, y, false, this.currentLine );
           k++;
+
         }
 
         this.lastX = x;
@@ -11008,8 +11018,8 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
-        this.setDom( 'd', currentLine );
+        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.setDom( 'd', this.currentLine );
       }
 
       this.maxY = this.serie.getY( maxY );
