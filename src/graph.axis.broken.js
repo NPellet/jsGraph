@@ -1,5 +1,7 @@
 define( [ 'jquery' ], function( $ ) {
 
+  "use strict";
+
   var GraphAxis = function() {}
 
   GraphAxis.prototype = {
@@ -35,7 +37,7 @@ define( [ 'jquery' ], function( $ ) {
             min: range[ 0 ],
             max: range[ 1 ],
             minPx: undefined,
-            minPx: undefined
+            maxPx: undefined
 
           } );
       });
@@ -50,7 +52,6 @@ define( [ 'jquery' ], function( $ ) {
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
-      console.log( ticksPrimary, this.totalValRanges)
       var nbSecondaryTicks = this.secondaryTicks();
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
@@ -80,6 +81,23 @@ define( [ 'jquery' ], function( $ ) {
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
+
+        if( index > 0 ) {
+          if( ! range.brokenMin ) {
+            range.brokenMin = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMin );
+          } 
+          self.placeBrokenLine( range, range.brokenMin, range.minPx );
+        }
+
+        if( index < self.ranges.length - 1 ) {
+          if( ! range.brokenMax ) {
+            range.brokenMax = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMax );
+          } 
+          self.placeBrokenLine( range, range.brokenMax, range.maxPx );
+        }
+
 
         var min = range.min,
             max = range.max,
@@ -140,12 +158,7 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getPos: function( value ) {
-      //			if(this.getMaxPx() == undefined)
-      //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
-      // Ex 50 / (100) * (1000 - 700) + 700
-
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx

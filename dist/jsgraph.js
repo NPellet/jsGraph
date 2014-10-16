@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.0
+ * jsGraphs JavaScript Graphing Library v1.10.1-0
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-15T19:16Z
+ * Date: 2014-10-16T11:46Z
  */
 
 (function( global, factory ) {
@@ -1106,8 +1106,9 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       var tick = document.createElementNS( this.graph.ns, 'line' ),
         val = this.getPos( value );
 
-      if ( val == undefined )
+      if ( val == undefined ) {
         return;
+      }
 
       tick.setAttribute( 'shape-rendering', 'crispEdges' );
       tick.setAttribute( 'x1', val );
@@ -1116,10 +1117,15 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      if ( label && this.options.primaryGrid )
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
+        
+      }
 
       tick.setAttribute( 'stroke', 'black' );
 
@@ -1455,6 +1461,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
 build['./graph.axis.broken'] = ( function( $ ) { 
 
+  
+
   var GraphAxis = function() {}
 
   GraphAxis.prototype = {
@@ -1490,7 +1498,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
             min: range[ 0 ],
             max: range[ 1 ],
             minPx: undefined,
-            minPx: undefined
+            maxPx: undefined
 
           } );
       });
@@ -1505,7 +1513,6 @@ build['./graph.axis.broken'] = ( function( $ ) {
           nbTicksPrimary = this.getNbTicksPrimary();
 
       var ticksPrimary = this.getUnitPerTick( availableDrawingPxs, nbTicksPrimary, this.totalValRanges );
-      console.log( ticksPrimary, this.totalValRanges)
       var nbSecondaryTicks = this.secondaryTicks();
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
@@ -1535,6 +1542,23 @@ build['./graph.axis.broken'] = ( function( $ ) {
         range.maxPx = range.minPx + availableDrawingPxs * range.ratio;
 
         last = range.maxPx;
+
+        if( index > 0 ) {
+          if( ! range.brokenMin ) {
+            range.brokenMin = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMin );
+          } 
+          self.placeBrokenLine( range, range.brokenMin, range.minPx );
+        }
+
+        if( index < self.ranges.length - 1 ) {
+          if( ! range.brokenMax ) {
+            range.brokenMax = self.createBrokenLine( range );
+            self.group.appendChild( range.brokenMax );
+          } 
+          self.placeBrokenLine( range, range.brokenMax, range.maxPx );
+        }
+
 
         var min = range.min,
             max = range.max,
@@ -1595,12 +1619,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getPos: function( value ) {
-      //			if(this.getMaxPx() == undefined)
-      //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
-      // Ex 50 / (100) * (1000 - 700) + 700
-
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      
       for( var i = 0, l = this.ranges.length; i < l ; i ++ ) {
         if( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
@@ -1694,7 +1713,24 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
     this.top = topbottom == 'top';
   }
 
-  $.extend( GraphXAxisBroken.prototype, GraphBrokenAxis.prototype, GraphXAxis.prototype );
+  $.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-3');
+        line.setAttribute('x2', '3');
+        line.setAttribute('y1', '-5');
+        line.setAttribute('y2', '5');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + px + ', ' + 0 + ')');
+  	}
+  } );
 
   return GraphXAxisBroken;
 
@@ -1725,7 +1761,26 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 
   }
 
-  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype );
+  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
+
+
+  	createBrokenLine: function( range ) {
+
+  		var line = document.createElementNS( this.graph.ns, 'line' );
+        line.setAttribute('x1', '-5');
+        line.setAttribute('x2', '5');
+        line.setAttribute('y1', '-3');
+        line.setAttribute('y2', '3');
+        line.setAttribute('stroke', 'black');
+
+        return line;
+  	},
+
+  	placeBrokenLine: function( range, line, px ) {
+		line.setAttribute('transform', 'translate(' + 0 + ', ' + px + ')');
+  	}
+
+  } );
 
 
   return GraphYAxisBroken;
