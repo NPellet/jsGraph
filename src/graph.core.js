@@ -884,11 +884,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       return deferred;
     },
 
-    newShape: function( shapeData, events, mute ) {
+    newShape: function( shapeData, events, mute, noDeferred ) {
 
       var self = this,
-        response,
-        deferred = $.Deferred();
+        response;
+
+      if( ! noDeferred ) {
+        var deferred = $.Deferred();
+      }
 
       shapeData.id = Math.random();
 
@@ -953,32 +956,31 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
           shape.setLabelNumber( l );
         }
 
-        /*switch(shape.type) {
-					case 'rect':
-					case 'rectangle':
-						shape.set('width', shape.width);
-						shape.set('height', shape.height);
-					break;
-				}*/
         self.shapes.push( shape );
-
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        deferred.resolve( shape );
+        if( ! noDeferred ) {
+          deferred.resolve( shape );
+        }
 
-        if ( !mute ) {
+        if ( ! mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
       }
 
       if ( shapeData.url ) {
-        this.dynamicLoader.load( 'external', shapeData.url, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'external', shapeData.url, callback );
       } else {
-        this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-      return deferred;
+
+      if( ! noDeferred ) {
+        return deferred;
+      }
+
+      return dynamicLoaderResponse;
     },
 
     redrawShapes: function() {

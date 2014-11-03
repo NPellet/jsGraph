@@ -6,12 +6,12 @@ define( function() {
 
         var graphinstance = new Graph( domGraph, function( graphinstance ) {
 
-          /*  graphinstance.getXAxis().forceMin( 0 );
+            graphinstance.getXAxis().forceMin( 0 );
             graphinstance.getXAxis().forceMax( 100 );
 
             graphinstance.getYAxis().forceMin( 0 );
             graphinstance.getYAxis().forceMax( 100 );
-*/
+
 
             graphinstance.newShape({ 
                 type: 'arrow', 

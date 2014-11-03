@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-8
+ * jsGraphs JavaScript Graphing Library v1.10.1-9
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-10-21T12:52Z
+ * Date: 2014-11-03T12:01Z
  */
 
 (function( global, factory ) {
@@ -33,7 +33,7 @@
 /* 
  * Build: new source file 
  * File name : graph.axis
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
  */
 
 build['./graph.axis'] = ( function( $ ) { 
@@ -1063,7 +1063,7 @@ build['./graph.axis'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
@@ -1222,7 +1222,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
@@ -1456,7 +1456,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.broken
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.broken.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
@@ -1705,7 +1705,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.broken
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.x.broken.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
@@ -1749,7 +1749,7 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y.broken
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.axis.y.broken.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
@@ -1800,7 +1800,7 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.xaxis.time
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.xaxis.time.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
  */
 
 build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
@@ -2562,7 +2562,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.legend
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.legend.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
  */
 
 build['./graph.legend'] = ( function( ) { 
@@ -2817,7 +2817,7 @@ build['./graph.legend'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dynamicdepencies
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/dynamicdepencies.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/dynamicdepencies.js
  */
 
 build['./dynamicdepencies'] = ( function( ) { 
@@ -2892,7 +2892,7 @@ build['./dynamicdepencies'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph.core
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.core.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
  */
 
 build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
@@ -3781,11 +3781,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       return deferred;
     },
 
-    newShape: function( shapeData, events, mute ) {
+    newShape: function( shapeData, events, mute, noDeferred ) {
 
       var self = this,
-        response,
-        deferred = $.Deferred();
+        response;
+
+      if( ! noDeferred ) {
+        var deferred = $.Deferred();
+      }
 
       shapeData.id = Math.random();
 
@@ -3850,32 +3853,31 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           shape.setLabelNumber( l );
         }
 
-        /*switch(shape.type) {
-					case 'rect':
-					case 'rectangle':
-						shape.set('width', shape.width);
-						shape.set('height', shape.height);
-					break;
-				}*/
         self.shapes.push( shape );
-
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        deferred.resolve( shape );
+        if( ! noDeferred ) {
+          deferred.resolve( shape );
+        }
 
-        if ( !mute ) {
+        if ( ! mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
       }
 
       if ( shapeData.url ) {
-        this.dynamicLoader.load( 'external', shapeData.url, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'external', shapeData.url, callback );
       } else {
-        this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+        var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-      return deferred;
+
+      if( ! noDeferred ) {
+        return deferred;
+      }
+
+      return dynamicLoaderResponse;
     },
 
     redrawShapes: function() {
@@ -4834,7 +4836,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 /* 
  * Build: new source file 
  * File name : graph._serie
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph._serie.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
  */
 
 build['./graph._serie'] = ( function( ) { 
@@ -5312,7 +5314,7 @@ build['./graph._serie'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.drag
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.drag.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
  */
 
 build['./plugins/graph.plugin.drag'] = ( function( ) { 
@@ -5364,7 +5366,7 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.linking
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.linking.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.linking.js
  */
 
 build['./plugins/graph.plugin.linking'] = ( function( ) { 
@@ -5621,7 +5623,7 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.nmrpeakpicking
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.nmrpeakpicking.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.nmrpeakpicking.js
  */
 
 build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
@@ -5680,7 +5682,7 @@ build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.range
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.range.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.range.js
  */
 
 build['./plugins/graph.plugin.range'] = ( function( ) { 
@@ -5748,7 +5750,7 @@ build['./plugins/graph.plugin.range'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.shape
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.shape.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
  */
 
 build['./plugins/graph.plugin.shape'] = ( function( ) { 
@@ -5878,7 +5880,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.zoom
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/plugins/graph.plugin.zoom.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
  */
 
 build['./plugins/graph.plugin.zoom'] = ( function( ) { 
@@ -6137,7 +6139,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : series/slotoptimizer
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/slotoptimizer.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
  */
 
 build['./series/slotoptimizer'] = ( function( ) { 
@@ -6234,7 +6236,7 @@ build['./series/slotoptimizer'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
  */
 
 build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, SlotOptimizer ) { 
@@ -8261,7 +8263,7 @@ console.log( data );
 /* 
  * Build: new source file 
  * File name : series/graph.serie.contour
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.contour.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
  */
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
@@ -8658,7 +8660,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line.broken
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.line.broken.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
  */
 
 build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
@@ -8892,7 +8894,7 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.scatter
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.scatter.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
@@ -9346,7 +9348,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 /* 
  * Build: new source file 
  * File name : series/graph.serie.zone
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/series/graph.serie.zone.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
@@ -9721,7 +9723,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : graph.serieaxis
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.serieaxis.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxis.js
  */
 
 build['./graph.serieaxis'] = ( function( GraphSerie ) { 
@@ -9773,7 +9775,7 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
@@ -10377,7 +10379,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     createHandles: function( nb, type, attr ) {
 
       if ( this.isLocked() ) {
-        return;
+        return [];
       }
 
       var self = this,
@@ -10875,7 +10877,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.areaundercurve
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.areaundercurve.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
@@ -11149,7 +11151,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.line
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.line.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
@@ -11361,7 +11363,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.arrow
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.arrow.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
@@ -11401,7 +11403,7 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.label
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.label.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
@@ -11458,7 +11460,7 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.nmrintegral
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.nmrintegral.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -11721,7 +11723,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rect
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rect.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
@@ -11738,70 +11740,72 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       type: 'corners'
     };
 
-    switch ( this.options.handles.type ) {
+    if( ! this.isLocked() ) {
+      switch ( this.options.handles.type ) {
 
-      case 'sides':
+        case 'sides':
 
-        this.options.handles.sides = this.options.handles.sides || {
-          top: true,
-          bottom: true,
-          left: true,
-          right: true
-        };
+          this.options.handles.sides = this.options.handles.sides || {
+            top: true,
+            bottom: true,
+            left: true,
+            right: true
+          };
 
-        var j = 0;
-        for ( var i in this.options.handles.sides ) {
-          if ( this.options.handles.sides[ i ] ) {
-            j++;
-          }
-        }
-
-        this.createHandles( j, 'g' ).map( function( g ) {
-
-          var r = document.createElementNS( graph.ns, 'rect' );
-          r.setAttribute( 'x', '-3' );
-          r.setAttribute( 'width', '6' );
-          r.setAttribute( 'y', '-6' );
-          r.setAttribute( 'height', '12' );
-          r.setAttribute( 'stroke', 'black' );
-          r.setAttribute( 'fill', 'white' );
-          r.setAttribute( 'cursor', 'pointer' );
-
-          g.appendChild( r );
-        } );
-
-        var j = 1;
-        this.handles = {};
-        this.sides = [];
-        for ( var i in this.options.handles.sides ) {
-          if ( this.options.handles.sides[ i ] ) {
-            this.handles[ i ] = this[ 'handle' + j ];
-            this.sides[ j ] = i;
-            j++;
+          var j = 0;
+          for ( var i in this.options.handles.sides ) {
+            if ( this.options.handles.sides[ i ] ) {
+              j++;
+            }
           }
 
-        }
+          this.createHandles( j, 'g' ).map( function( g ) {
 
-        break;
+            var r = document.createElementNS( graph.ns, 'rect' );
+            r.setAttribute( 'x', '-3' );
+            r.setAttribute( 'width', '6' );
+            r.setAttribute( 'y', '-6' );
+            r.setAttribute( 'height', '12' );
+            r.setAttribute( 'stroke', 'black' );
+            r.setAttribute( 'fill', 'white' );
+            r.setAttribute( 'cursor', 'pointer' );
 
-      default:
-      case 'corners':
-        this.createHandles( this.nbHandles, 'rect', {
-          transform: "translate(-3 -3)",
-          width: 6,
-          height: 6,
-          stroke: "black",
-          fill: "white"
-        } );
+            g.appendChild( r );
+          } );
 
-        this.handle2.setAttribute( 'cursor', 'nesw-resize' );
-        this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+          var j = 1;
+          this.handles = {};
+          this.sides = [];
+          for ( var i in this.options.handles.sides ) {
+            if ( this.options.handles.sides[ i ] ) {
+              this.handles[ i ] = this[ 'handle' + j ];
+              this.sides[ j ] = i;
+              j++;
+            }
 
-        this.handle1.setAttribute( 'cursor', 'nwse-resize' );
-        this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+          }
 
-        break;
+          break;
 
+        default:
+        case 'corners':
+          this.createHandles( this.nbHandles, 'rect', {
+            transform: "translate(-3 -3)",
+            width: 6,
+            height: 6,
+            stroke: "black",
+            fill: "white"
+          } );
+
+          this.handle2.setAttribute( 'cursor', 'nesw-resize' );
+          this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+
+          this.handle1.setAttribute( 'cursor', 'nwse-resize' );
+          this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+
+          break;
+
+      }
     }
 
   }
@@ -12194,7 +12198,11 @@ this.handle1.setAttribute('x', this.currentX);
 
     setHandles: function() {
 
-      if ( !this.handlesInDom ) {
+      if( this.isLocked() ) {
+        return;
+      }
+      
+      if ( ! this.handlesInDom ) {
         return;
       }
 
@@ -12266,7 +12274,7 @@ this.handle1.setAttribute('x', this.currentX);
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakintegration2d
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakintegration2d.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
@@ -12318,7 +12326,7 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
@@ -12364,7 +12372,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval2
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.peakinterval2.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
@@ -12589,7 +12597,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rangex
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.rangex.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -12688,7 +12696,7 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.cross
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.cross.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
@@ -12822,7 +12830,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.zoom2d
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/shapes/graph.shape.zoom2d.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
@@ -13020,7 +13028,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : graph.toolbar
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.toolbar.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
  */
 
 build['./graph.toolbar'] = ( function( ) { 
@@ -13181,7 +13189,7 @@ build['./graph.toolbar'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph
- * File path : /home/mzasso/NetBeansProjects/jsGraph/src/graph.js
+ * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
  */
 
 build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }
