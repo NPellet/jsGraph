@@ -599,7 +599,7 @@ define( [], function() {
     createHandles: function( nb, type, attr ) {
 
       if ( this.isLocked() ) {
-        return;
+        return [];
       }
 
       var self = this,
