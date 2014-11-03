@@ -32,8 +32,8 @@ define( function() {
                 type: 'rect', 
                 pos: { x: 60, y: 80 },
                 pos2: { x: 20, y: 20 },
-               strokeColor: 'red',
-               strokeWidth: 1
+                 strokeColor: 'red',
+                 strokeWidth: 1
 
             }).then( function( shape ) {
 

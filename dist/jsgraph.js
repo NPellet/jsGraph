@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-9
+ * jsGraphs JavaScript Graphing Library v1.10.1-10
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-03T12:01Z
+ * Date: 2014-11-03T22:00Z
  */
 
 (function( global, factory ) {
@@ -3155,6 +3155,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
       this.shapeZone = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.shapeZone );
+      this.shapeLayers = [];
 
       this._makeClosingLines();
 
@@ -3832,6 +3833,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           shape.set( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
         }
 
+        if ( shapeData.layer ) {
+          shape.setLayer( shapeData.layer );
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {
@@ -3900,6 +3905,31 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.shapes.splice( this.shapes.indexOf( shape ), 1 );
     },
 
+    appendShapeToDom: function( shape ) {
+
+      var shapeLayer = shape.getLayer();
+      
+      if( ! this.shapeLayers[ shapeLayer ] ) {
+        this.shapeLayers[ shapeLayer ] = document.createElementNS( this.ns, 'g' );
+        var i = 1,
+            prevLayer;
+
+        while( ! ( prevLayer = this.shapeLayers[ shapeLayer - i ] ) && shapeLayer - i >= 0 ) {
+          i ++;
+        }
+
+        if( ! prevLayer ) {
+          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], this.shapeZone.firstChild );
+        } else if( prevLayer.nextSibling ) {
+          this.shapeZone.insertBefore( this.shapeLayers[ shapeLayer ], prevLayer.nextSibling );
+        } else {
+          this.shapeZone.appendChild( this.shapeLayers[ shapeLayer ] );
+        }
+      }
+
+      this.shapeLayers[ shapeLayer ].appendChild( shape.group );
+    },
+    
     _makeClosingLines: function() {
 
       this.closingLines = {};
@@ -9824,10 +9854,6 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.classes = [];
 
-      this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
-      this.rectEvent.setAttribute( 'pointer-events', 'fill' );
-      this.rectEvent.setAttribute( 'fill', 'transparent' );
-
       this._movable = true;
       this._selectable = true;
 
@@ -9856,17 +9882,12 @@ build['./shapes/graph.shape'] = ( function( ) {
         this._dom.addEventListener( 'mouseover', function( e ) {
 
           self.handleMouseOver( e );
-          //self.doHover( true, e );
-          //	e.stopPropagation();
 
         } );
 
         this._dom.addEventListener( 'mouseout', function( e ) {
 
           self.handleMouseOut( e );
-
-          //self.doHover( false, e );
-          //e.stopPropagation();
 
         } );
 
@@ -9894,7 +9915,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       //			this.group.appendChild(this.rectEvent);
 
-      this.graph.shapeZone.appendChild( this.group );
+      
       this.initImpl();
     },
 
@@ -9969,6 +9990,12 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     setBBox: function() {
 
+      if( ! this.rectEvent ) {
+        this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
+        this.rectEvent.setAttribute( 'pointer-events', 'fill' );
+        this.rectEvent.setAttribute( 'fill', 'transparent' );
+      }
+
       this.group.removeChild( this.rectEvent );
       var box = this.group.getBBox();
       this.rectEvent.setAttribute( 'x', box.x );
@@ -9979,9 +10006,6 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.group.appendChild( this.rectEvent );
     },
 
-    setMouseOver: function( callback ) {
-      this.rectEvent.addEventListener( 'mouseover', callback );
-    },
 
     kill: function() {
 
@@ -10001,6 +10025,11 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       if ( this.labelNumber == undefined ) {
         this.setLabelNumber( 1 );
+      }
+
+      if( ! this._inDom ) {
+        this.graph.appendShapeToDom( this );
+        this._inDom = true;
       }
 
       this.setFillColor();
@@ -10171,7 +10200,16 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
     },
 
+    checkMinMax: function() {
+
+      var pos = this.get
+
+
+
+    },
+
     _makeLabel: function() {
+
       var self = this;
       this.label = this.label || [];
 
@@ -10379,7 +10417,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     createHandles: function( nb, type, attr ) {
 
       if ( this.isLocked() ) {
-        return [];
+        return;
       }
 
       var self = this,
@@ -10495,16 +10533,17 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
 
-          //if( this._movable !== false ) {
-          this.graph.elementMoving( this );
-          //}
+          if( ! this.isLocked() ) {
+            this.graph.elementMoving( this );
+          }
 
-          if ( !this._selected ) {
+          if ( ! this._selected && ! this.isLocked( ) ) {
             this.preventUnselect = true;
             this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
 
-              self.select();
-              self.timeoutSelect = false;
+                self.select();
+                self.timeoutSelect = false;
+
             }, 100 );
           }
           this.mouseCoords = this.graph._getXY( e );
@@ -10861,6 +10900,16 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     getMaxY: function() {
       return this.maxY;
+    },
+
+    // Layers
+
+    getLayer: function() {
+      return this._layer || 1;
+    },
+
+    setLayer: function( layer ) {
+      this._layer = layer;
     }
   }
 
