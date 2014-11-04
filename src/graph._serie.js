@@ -221,7 +221,6 @@ define( [], function() {
     },
 
     kill: function( noRedraw ) {
-
       this.graph.plotGroup.removeChild( this.groupMain );
 
       if ( this.picks && this.picks.length ) {
@@ -230,10 +229,15 @@ define( [], function() {
         }
       }
 
-      this.graph.series.splice( this.graph.series.indexOf( this ), 1 );
+      this.graph._removeSerie( this );
 
-      if ( !noRedraw )  {
+      if ( ! noRedraw )  {
         this.graph.redraw();
+      }
+
+      if ( this.graph.legend ) {
+
+        this.graph.legend.update();
       }
     },
 
@@ -457,6 +461,15 @@ define( [], function() {
 
     isXMonotoneous: function() {
       return this.xmonotoneous ||  false;
+    },
+
+
+    getLayer: function() {
+      return this.options.layer || 1;
+    },
+
+    setLayer: function( layer ) {
+      this.options.layer = layer;
     }
 
   };
