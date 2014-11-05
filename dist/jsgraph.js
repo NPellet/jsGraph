@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T13:09Z
+ * Date: 2014-11-05T13:15Z
  */
 
 (function( global, factory ) {
@@ -3864,7 +3864,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       }
 
       return dynamicLoaderResponse;
-      
+
     },
 
     redrawShapes: function() {
