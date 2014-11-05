@@ -960,6 +960,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+        return shape;
       }
 
       if ( shapeData.url ) {
@@ -972,7 +973,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         return deferred;
       }
 
-      return shape;
+      return dynamicLoaderResponse;
+
     },
 
     redrawShapes: function() {

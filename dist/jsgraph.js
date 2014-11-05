@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-4
+ * jsGraph JavaScript Graphing Library v1.10.2-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T13:08Z
+ * Date: 2014-11-05T13:09Z
  */
 
 (function( global, factory ) {
@@ -3850,6 +3850,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+        return shape;
       }
 
       if ( shapeData.url ) {
@@ -3862,7 +3863,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         return deferred;
       }
 
-      return shape;
+      return dynamicLoaderResponse;
+      
     },
 
     redrawShapes: function() {
