@@ -25,7 +25,8 @@ module.exports = function(grunt) {
                 createTag: true,
                 push: true,
                 pushTo: 'origin',
-                commitFiles: ['-a']
+                commitFiles: ['-a'],
+                runTasks: [ 'default' ]
             }
     
         },
