@@ -221,7 +221,7 @@ define( [], function() {
     },
 
     kill: function( noRedraw ) {
-      this.graph.plotGroup.removeChild( this.groupMain );
+      this.graph.removeSerieFromDom( this );
 
       if ( this.picks && this.picks.length ) {
         for ( var i = 0, l = this.picks.length; i < l; i++ ) {

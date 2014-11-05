@@ -1,11 +1,11 @@
 /*!
- * jsGraphs JavaScript Graphing Library v1.10.1-11
+ * jsGraphs JavaScript Graphing Library v1.10.1-12
  * http://github.com/NPellet/jsGraphs
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-04T16:15Z
+ * Date: 2014-11-05T09:53Z
  */
 
 (function( global, factory ) {
@@ -3911,8 +3911,16 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
     },
 
+    removeShapeFromDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+    },
+    
     appendSerieToDom: function( serie ) {
       this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
+    },
+
+    removeSerieFromDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
     },
 
     getLayer: function( layer, mode ) {
@@ -5119,7 +5127,7 @@ build['./graph._serie'] = ( function( ) {
     },
 
     kill: function( noRedraw ) {
-      this.graph.plotGroup.removeChild( this.groupMain );
+      this.graph.removeSerieFromDom( this );
 
       if ( this.picks && this.picks.length ) {
         for ( var i = 0, l = this.picks.length; i < l; i++ ) {
@@ -5447,6 +5455,8 @@ build['./plugins/graph.plugin.linking'] = ( function( ) {
 
     init: function( graph, options, plugin ) {
 
+      throw "Plugin deprecated. Use wrapper code instead (see jsNMR)";
+      
       this.options = options;
       var self = this;
       this.graph = graph;
@@ -10027,7 +10037,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     kill: function() {
 
-      this.graph.shapeZone.removeChild( this.group );
+      this.graph.removeShapeFromDom( this );
       this.graph._removeShape( this );
 
       this.callHandler( "onRemoved", this );
@@ -10549,7 +10559,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           //	e.stopPropagation();
           e.preventDefault();
 
-          this.graph.shapeZone.appendChild( this.group ); // Put the shape on top of the stack !
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
           if( ! this.isLocked() ) {
             this.graph.elementMoving( this );

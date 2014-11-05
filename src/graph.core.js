@@ -1014,8 +1014,16 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y',  './graph.axis.x.broken'
       this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
     },
 
+    removeShapeFromDom: function( shape ) {
+      this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );  
+    },
+    
     appendSerieToDom: function( serie ) {
       this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
+    },
+
+    removeSerieFromDom: function( serie ) {
+      this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );  
     },
 
     getLayer: function( layer, mode ) {
