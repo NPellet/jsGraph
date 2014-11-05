@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-2
+ * jsGraph JavaScript Graphing Library v1.10.2-3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-05T10:54Z
+ * Date: 2014-11-05T11:23Z
  */
 
 (function( global, factory ) {
@@ -2986,14 +2986,19 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this._doDom();
 
     var w, h;
+
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      w = parseInt( dom.style.minWidth.replace( 'px', '' ) );
     } else {
       w = $( dom ).width();
     }
 
     if ( dom.style.height && dom.style.height.indexOf( "%" ) == -1 ) {
       h = parseInt( dom.style.height.replace( 'px', '' ) );
+    } else if ( dom.style.minWidth && dom.style.minWidth.indexOf( "%" ) == -1 ) {
+      h = parseInt( dom.style.minHeight.replace( 'px', '' ) );
     } else {
       h = $( dom ).height();
     }
