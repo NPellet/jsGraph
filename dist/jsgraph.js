@@ -1,5 +1,5 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-1
+ * jsGraph JavaScript Graphing Library v1.10.2-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
