@@ -135,13 +135,16 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
 
-
     grunt.registerTask( "minify", "Minifying distribution file", function() {
-
-        grunt.task.run( "uglify" ); // Uglifies the dist file
-        
+        grunt.task.run( "uglify" ); // Uglifies the dist file        
     });
 
+    grunt.registerTask( "release", "Make a new release", function() {
+
+        grunt.task.run("bump:prerelease:bump-only");
+        grunt.task.run("default");
+        grunt.task.run("bump:prerelease:commit-only");
+    })
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
 
