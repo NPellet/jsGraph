@@ -397,7 +397,7 @@ module.exports = function(grunt) {
                          + '{% endhighlight %}</div></div>';
 
 
-                    markdown += '<script type="text/javascript"> (' + funcString + ')( "example-graph" );</script>';
+                    markdown += '<script type="text/javascript"> $(document).ready( function() { (' + funcString + ')( "example-graph" ); }); </script>';
 
                     grunt.file.write( '../jsgraphwww/_examples/' + folder2 + '/' + file2 + '.markdown', markdown );
 
