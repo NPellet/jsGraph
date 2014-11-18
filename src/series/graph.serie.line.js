@@ -494,16 +494,16 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         xpx,
         ypx,
         xpx2,
-        ypx2;
+        ypx2,
+        xAxis = this.getXAxis(),
+        yAxis = this.getYAxis();
 
       var incrXFlip = 0;
       var incrYFlip = 1;
 
       if ( this.isFlipped() ) {
-
         incrXFlip = 1;
         incrYFlip = 0;
-
       }
 
       for ( ; i < l; i++ ) {
@@ -521,6 +521,18 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
+
+          if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
+
+            lastPointX = x;
+            lastPointY = y;
+            continue;
+          }
+
+          if ( lastPoint ) {
+            xpx2 = this.getX( lastPointX );
+            ypx2 = this.getY( lastPointY );
+          }
 
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );

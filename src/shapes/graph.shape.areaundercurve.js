@@ -226,7 +226,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var x = ( this.firstX + this.lastX ) / 2 + "px";
       var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
-      var flip = this.serie.isFlipped();
+      var flip = this.serie ? this.serie.isFlipped() :  false;
 
       this._setLabelPosition( labelIndex, {
         x: flip ? y : x,

@@ -259,7 +259,7 @@ define( [], function() {
       }
     },
 
-    hide: function() {
+    hide: function( hideShapes ) {
       this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
 
@@ -267,9 +267,17 @@ define( [], function() {
       this.getTextForLegend().setAttribute( 'opacity', 0.5 );
 
       this.hideImpl();
+
+      if ( hideShapes ) {
+        var shapes = this.graph.getShapesOfSerie( this );
+        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+          shapes[ i ].hide();
+        }
+      }
+
     },
 
-    show: function() {
+    show: function( showShapes ) {
       this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
 
@@ -279,6 +287,13 @@ define( [], function() {
       this.showImpl();
 
       this.draw();
+
+      if ( showShapes ) {
+        var shapes = this.graph.getShapesOfSerie( this );
+        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+          shapes[ i ].show();
+        }
+      }
     },
 
     hideImpl: function() {},

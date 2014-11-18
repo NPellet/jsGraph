@@ -612,14 +612,22 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         }
       }
 
-      if ( series ) {
+      return series;
+    },
 
-        for ( i = 0; i < axis.series.length; i++ ) {
-          series.push( axis.series[ i ] );
+    getShapesOfSerie: function( serie ) {
+
+      var shapes = [];
+      var i = this.shapes.length - 1;
+
+      for ( ; i >= 0; i-- ) {
+
+        if ( this.shapes[ i ].getSerie() == serie ) {
+          shapes.push( this.shapes[ i ] );
         }
       }
 
-      return series;
+      return shapes;
     },
 
     _resize: function() {

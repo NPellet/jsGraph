@@ -112,7 +112,7 @@ module.exports = function(grunt) {
         watch: {
           scripts: {
             files: ['src/**/*.js'],
-            tasks: ['default']
+            tasks: ['default', 'copy:exportToNMR']
           },
         }
 

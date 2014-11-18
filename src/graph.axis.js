@@ -51,8 +51,6 @@ define( [ 'jquery' ], function( $ ) {
       this.rectEvent.setAttribute( 'fill', 'transparent' );
       this.group.appendChild( this.rectEvent );
 
-      this.setEvents();
-
       this.graph.axisGroup.appendChild( this.group ); // Adds to the main axiszone
 
       this.line = document.createElementNS( this.graph.ns, 'line' );
@@ -139,41 +137,6 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     handleMouseMoveLocal: function() {},
-
-    setEvents: function() {
-      var self = this;
-      this.rectEvent.addEventListener( 'mousedown', function( e ) {
-
-        e.stopPropagation();
-        e.preventDefault();
-        if ( e.which == 3 || e.ctrlKey ) {
-          return;
-        }
-        var coords = self.graph._getXY( e );
-
-        self.graph.currentAction = 'zooming';
-        self.graph._zoomingMode = self instanceof GraphXAxis ? 'x' : 'y';
-        self.graph._zoomingXStart = coords.x;
-        self.graph._zoomingYStart = coords.y;
-        self.graph._zoomingXStartRel = coords.x - self.graph.getPaddingLeft();
-        self.graph._zoomingYStartRel = coords.y - self.graph.getPaddingTop();
-        self.this._zoomingSquare.setAttribute( 'width', 0 );
-        self.this._zoomingSquare.setAttribute( 'height', 0 );
-
-        switch ( self.graph._zoomingMode ) {
-          case 'x':
-            self.this._zoomingSquare.setAttribute( 'y', self.graph.getPaddingTop() + self.shift - self.totalDimension );
-            self.this._zoomingSquare.setAttribute( 'height', self.totalDimension );
-            break;
-          case 'y':
-            self.this._zoomingSquare.setAttribute( 'x', self.graph.getPaddingLeft() + self.shift - self.totalDimension );
-            self.this._zoomingSquare.setAttribute( 'width', self.totalDimension );
-            break;
-        }
-
-        self.this._zoomingSquare.setAttribute( 'display', 'block' );
-      } );
-    },
 
     addLabel: function( x ) {
 
@@ -808,10 +771,12 @@ define( [ 'jquery' ], function( $ ) {
       } else {
 
         value = value * Math.pow( 10, this.getExponentialFactor() ) * Math.pow( 10, this.getExponentialLabelFactor() );
-        if ( this.options.shiftToZero )
+        if ( this.options.shiftToZero ) {
           value -= this.dataMin;
-        if ( this.options.ticklabelratio )
+        }
+        if ( this.options.ticklabelratio ) {
           value *= this.options.ticklabelratio;
+        }
         if ( this.options.unitModification ) {
           value = this.modifyUnit( value, this.options.unitModification );
           return value;

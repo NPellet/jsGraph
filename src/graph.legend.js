@@ -10,7 +10,10 @@ define( [], function() {
     paddingBottom: 10,
     paddingRight: 10,
 
-    movable: false
+    movable: false,
+
+    shapesToggleable: true,
+    isSerieHideable: true
   }
 
   var Legend = function( graph, options ) {
@@ -71,6 +74,7 @@ define( [], function() {
     update: function() {
 
       var self = this;
+
       this.applyStyle();
 
       while ( this.subG.hasChildNodes() ) {
@@ -110,18 +114,18 @@ define( [], function() {
 
             var serie = series[ j ];
 
-            if ( serie.isSelected() ) {
+            if ( serie.isSelected() && self.isHideable() ) {
 
-              serie.hide();
+              serie.hide( self.isToggleShapes() );
               self.graph.unselectSerie( serie );
 
             } else if ( serie.isShown() ) {
 
               self.graph.selectSerie( serie );
 
-            } else {
+            } else if ( self.isHideable() ) {
 
-              serie.show();
+              serie.show( self.isToggleShapes() );
 
             }
 
@@ -153,6 +157,14 @@ define( [], function() {
       this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
       this.svg.appendChild( this.rect );
+    },
+
+    isHideable: function() {
+      return this.options.isSerieHideable;
+    },
+
+    isToggleShapes: function() {
+      return this.options.shapesToggleable;
     },
 
     getDom: function() {
