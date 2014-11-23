@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-18T23:09Z
+ * Date: 2014-11-23T15:47Z
  */
 
 (function( global, factory ) {
@@ -3617,6 +3617,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     getSerie: function( name ) {
+
       if ( typeof name == 'number' ) {
         return this.series[ name ];
       }
@@ -3651,6 +3652,16 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         this.series[ i ].kill( true );
       }
       this.series = [];
+    },
+
+    // Alias to resetSeries
+    removeSeries: function() {
+      this.resetSeries();
+    },
+
+    // Alias to resetSeries
+    killSeries: function() {
+      this.resetSeries();
     },
 
     drawSeries: function() {
@@ -5910,9 +5921,11 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
     },
 
     onMouseUp: function() {
+
       var self = this;
       if ( self.currentShape ) {
-        self.currentShape.kill();
+        // No need to kill it as it hasn't been actually put in the dom right now
+        //self.currentShape.kill();
         self.currentShape = false;
       }
     }
@@ -6689,15 +6702,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     removeExtraLines: function() {
 
-      var i = this.currentLineId + 1,
+      var i = this.currentLineId,
         l = this.lines.length;
 
       for ( ; i < l; i++ ) {
-
         this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
       }
 
+      this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
       this.currentLineId = 0;
     },
 
@@ -6824,7 +6836,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
-          if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
+          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
 
             lastPointX = x;
             lastPointY = y;
@@ -6835,7 +6847,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
             xpx2 = this.getX( lastPointX );
             ypx2 = this.getY( lastPointY );
           }
-
+*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
@@ -6845,6 +6857,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
             if ( this.counter > 0 ) {
+
               this._createLine();
             }
             continue;
@@ -6876,6 +6889,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         if ( toBreak ) {
           break;
         }
+
       }
     },
 
@@ -7201,8 +7215,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     applyLineStyle: function( line ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-      if ( this.getLineDashArray() )
+      if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
@@ -9849,12 +9864,17 @@ build['./shapes/graph.shape'] = ( function( ) {
           self.graph.focus();
 
           e.preventDefault();
-          //		e.stopPropagation();
+          //    e.stopPropagation();
 
           self.handleSelected = false;
           self.moving = true;
 
           self.handleMouseDown( e );
+        } );
+
+        this._dom.addEventListener( 'click', function( e ) {
+
+          self.handleClick( e );
         } );
 
         this._dom.addEventListener( 'dblclick', function( e ) {
@@ -10363,7 +10383,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     },
 
-    createHandles: function( nb, type, attr ) {
+    createHandles: function( nb, type, attr, callbackEach ) {
 
       if ( this.isLocked() ) {
         return;
@@ -10378,8 +10398,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           self[ 'handle' + j ] = document.createElementNS( self.graph.ns, type );
 
-          for ( var k in attr ) {
-            self[ 'handle' + j ].setAttribute( k, attr[ k ] );
+          if ( attr ) {
+            for ( var k in attr ) {
+              self[ 'handle' + j ].setAttribute( k, attr[ k ] );
+            }
           }
 
           self[ 'handle' + j ].addEventListener( 'mousedown', function( e ) {
@@ -10392,6 +10414,10 @@ build['./shapes/graph.shape'] = ( function( ) {
           } );
 
           handles.push( self[ 'handle' + j ] );
+
+          if ( callbackEach ) {
+            callbackEach( self[ 'handle' + j ] );
+          }
 
         } )( i );
 
@@ -10486,18 +10512,18 @@ build['./shapes/graph.shape'] = ( function( ) {
             this.graph.elementMoving( this );
           }
 
-          if ( !this._selected && !this.isLocked() ) {
-            this.preventUnselect = true;
-            this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
-
-              self.select();
-              self.timeoutSelect = false;
-
-            }, 100 );
-          }
           this.mouseCoords = this.graph._getXY( e );
 
           return this.handleMouseDownImpl( e, this.mouseCoords );
+        }
+      ],
+
+      click: [
+
+        function( e ) {
+
+          this.select();
+
         }
       ],
 
@@ -10537,6 +10563,10 @@ build['./shapes/graph.shape'] = ( function( ) {
       return this.callHandler( 'mouseDown', e );
     },
 
+    handleClick: function( e ) {
+      return this.callHandler( 'click', e );
+    },
+
     handleMouseMove: function( e ) {
 
       if ( this.isLocked() && this._movable !== false ) {
@@ -10548,6 +10578,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         }
 
         this.moving = true;
+
       }
 
       if ( !this._movable ) {
@@ -10556,6 +10587,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
         return;
+      }
+
+      if ( !this.isSelected() ) {
+        this.select();
       }
 
       this.callHandler( 'mouseMove', e );
@@ -10966,6 +11001,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           this.preventUnselect = true;
 
         this.resizingPosition.x = value.xMin;
+      } else {
+
+        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
       this.position = this.setPosition();
@@ -12605,41 +12644,68 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
       this._dom = document.createElementNS( this.graph.ns, 'rect' );
       this._dom.setAttribute( 'class', 'rangeRect' );
       this._dom.setAttribute( 'cursor', 'move' );
-      this.handle1 = this._makeHandle();
-      this.handle2 = this._makeHandle();
+
+      //this._dom.setAttribute( 'pointer-events', 'stroke' );
+
+      var self = this;
+      this.nbHandles = 2;
+      this.createHandles( this.nbHandles, 'g', {
+        'stroke-width': '3',
+        'stroke': 'transparent',
+        'pointer-events': 'stroke',
+        'cursor': 'ew-resize'
+      }, function( handle ) {
+        self._makeHandle( handle );
+      } );
 
       this.setDom( 'cursor', 'move' );
       this.doDraw = undefined;
     },
 
     setPosition: function() {
+
       var posXY = this._getPosition( this.getFromData( 'pos' ) ),
         posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
+
       this.reversed = x == posXY2.x;
 
       if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
         return false;
       }
 
-      this.group.appendChild( this.handle1 );
-      this.group.appendChild( this.handle2 );
-
-      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
-      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
       this.setDom( 'x', x );
       this.setDom( 'width', w );
       this.setDom( 'y', 0 );
       this.setDom( 'height', this.graph.getDrawingHeight() - this.graph.shift[ 0 ] );
 
+      this.setHandles( x, w );
+
       return true;
     },
 
-    _makeHandle: function() {
+    setHandles: function( x, w ) {
+      /*         this.group.appendChild( this.handle1 );
+      this.group.appendChild( this.handle2 );
+*/
 
-      var rangeHandle = document.createElementNS( this.graph.ns, 'g' );
+      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
+        w = Math.abs( posXY.x - posXY2.x ),
+        x = Math.min( posXY.x, posXY2.x );
+
+      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
+      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
+
+    },
+
+    selectHandles: function() {}, // Cancel areaundercurve
+
+    _makeHandle: function( rangeHandle ) {
+
       rangeHandle.setAttribute( 'id', "rangeHandle" + this.graph._creation );
+
       var r = document.createElementNS( this.graph.ns, 'rect' );
       r.setAttribute( 'rx', 0 );
       r.setAttribute( 'ry', 0 );

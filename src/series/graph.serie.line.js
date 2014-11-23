@@ -387,15 +387,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     removeExtraLines: function() {
 
-      var i = this.currentLineId + 1,
+      var i = this.currentLineId,
         l = this.lines.length;
 
       for ( ; i < l; i++ ) {
-
         this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
       }
 
+      this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
       this.currentLineId = 0;
     },
 
@@ -522,7 +521,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
-          if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
+          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
 
             lastPointX = x;
             lastPointY = y;
@@ -533,7 +532,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
             xpx2 = this.getX( lastPointX );
             ypx2 = this.getY( lastPointY );
           }
-
+*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
@@ -543,6 +542,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
             if ( this.counter > 0 ) {
+
               this._createLine();
             }
             continue;
@@ -574,6 +574,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         if ( toBreak ) {
           break;
         }
+
       }
     },
 
@@ -899,8 +900,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     applyLineStyle: function( line ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-      if ( this.getLineDashArray() )
+      if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },

@@ -81,6 +81,7 @@ module.exports = function(grunt) {
 
                 files: {
                     '../visualizer-dev/src/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    '../visualizer-dev/src/components/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.js',
                     
                 }
             },
@@ -112,7 +113,7 @@ module.exports = function(grunt) {
         watch: {
           scripts: {
             files: ['src/**/*.js'],
-            tasks: ['default', 'copy:exportToNMR']
+            tasks: ['default', 'copy:exportToNMR', 'copy:exportToVisualizer']
           },
         }
 

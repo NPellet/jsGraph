@@ -86,12 +86,17 @@ define( [], function() {
           self.graph.focus();
 
           e.preventDefault();
-          //		e.stopPropagation();
+          //    e.stopPropagation();
 
           self.handleSelected = false;
           self.moving = true;
 
           self.handleMouseDown( e );
+        } );
+
+        this._dom.addEventListener( 'click', function( e ) {
+
+          self.handleClick( e );
         } );
 
         this._dom.addEventListener( 'dblclick', function( e ) {
@@ -600,7 +605,7 @@ define( [], function() {
 
     },
 
-    createHandles: function( nb, type, attr ) {
+    createHandles: function( nb, type, attr, callbackEach ) {
 
       if ( this.isLocked() ) {
         return;
@@ -615,8 +620,10 @@ define( [], function() {
 
           self[ 'handle' + j ] = document.createElementNS( self.graph.ns, type );
 
-          for ( var k in attr ) {
-            self[ 'handle' + j ].setAttribute( k, attr[ k ] );
+          if ( attr ) {
+            for ( var k in attr ) {
+              self[ 'handle' + j ].setAttribute( k, attr[ k ] );
+            }
           }
 
           self[ 'handle' + j ].addEventListener( 'mousedown', function( e ) {
@@ -629,6 +636,10 @@ define( [], function() {
           } );
 
           handles.push( self[ 'handle' + j ] );
+
+          if ( callbackEach ) {
+            callbackEach( self[ 'handle' + j ] );
+          }
 
         } )( i );
 
@@ -723,18 +734,18 @@ define( [], function() {
             this.graph.elementMoving( this );
           }
 
-          if ( !this._selected && !this.isLocked() ) {
-            this.preventUnselect = true;
-            this.timeoutSelect = window.setTimeout( function() { // Tweak needed to select the shape.
-
-              self.select();
-              self.timeoutSelect = false;
-
-            }, 100 );
-          }
           this.mouseCoords = this.graph._getXY( e );
 
           return this.handleMouseDownImpl( e, this.mouseCoords );
+        }
+      ],
+
+      click: [
+
+        function( e ) {
+
+          this.select();
+
         }
       ],
 
@@ -774,6 +785,10 @@ define( [], function() {
       return this.callHandler( 'mouseDown', e );
     },
 
+    handleClick: function( e ) {
+      return this.callHandler( 'click', e );
+    },
+
     handleMouseMove: function( e ) {
 
       if ( this.isLocked() && this._movable !== false ) {
@@ -785,6 +800,7 @@ define( [], function() {
         }
 
         this.moving = true;
+
       }
 
       if ( !this._movable ) {
@@ -793,6 +809,10 @@ define( [], function() {
 
       if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
         return;
+      }
+
+      if ( !this.isSelected() ) {
+        this.select();
       }
 
       this.callHandler( 'mouseMove', e );

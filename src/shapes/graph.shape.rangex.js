@@ -9,41 +9,68 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       this._dom = document.createElementNS( this.graph.ns, 'rect' );
       this._dom.setAttribute( 'class', 'rangeRect' );
       this._dom.setAttribute( 'cursor', 'move' );
-      this.handle1 = this._makeHandle();
-      this.handle2 = this._makeHandle();
+
+      //this._dom.setAttribute( 'pointer-events', 'stroke' );
+
+      var self = this;
+      this.nbHandles = 2;
+      this.createHandles( this.nbHandles, 'g', {
+        'stroke-width': '3',
+        'stroke': 'transparent',
+        'pointer-events': 'stroke',
+        'cursor': 'ew-resize'
+      }, function( handle ) {
+        self._makeHandle( handle );
+      } );
 
       this.setDom( 'cursor', 'move' );
       this.doDraw = undefined;
     },
 
     setPosition: function() {
+
       var posXY = this._getPosition( this.getFromData( 'pos' ) ),
         posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
+
       this.reversed = x == posXY2.x;
 
       if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
         return false;
       }
 
-      this.group.appendChild( this.handle1 );
-      this.group.appendChild( this.handle2 );
-
-      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
-      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
       this.setDom( 'x', x );
       this.setDom( 'width', w );
       this.setDom( 'y', 0 );
       this.setDom( 'height', this.graph.getDrawingHeight() - this.graph.shift[ 0 ] );
 
+      this.setHandles( x, w );
+
       return true;
     },
 
-    _makeHandle: function() {
+    setHandles: function( x, w ) {
+      /*         this.group.appendChild( this.handle1 );
+      this.group.appendChild( this.handle2 );
+*/
 
-      var rangeHandle = document.createElementNS( this.graph.ns, 'g' );
+      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
+        w = Math.abs( posXY.x - posXY2.x ),
+        x = Math.min( posXY.x, posXY2.x );
+
+      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
+      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
+
+    },
+
+    selectHandles: function() {}, // Cancel areaundercurve
+
+    _makeHandle: function( rangeHandle ) {
+
       rangeHandle.setAttribute( 'id', "rangeHandle" + this.graph._creation );
+
       var r = document.createElementNS( this.graph.ns, 'rect' );
       r.setAttribute( 'rx', 0 );
       r.setAttribute( 'ry', 0 );

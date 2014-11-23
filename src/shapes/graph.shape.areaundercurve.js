@@ -88,6 +88,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
           this.preventUnselect = true;
 
         this.resizingPosition.x = value.xMin;
+      } else {
+
+        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
       this.position = this.setPosition();

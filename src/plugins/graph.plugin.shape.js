@@ -101,9 +101,11 @@ define( [], function() {
     },
 
     onMouseUp: function() {
+
       var self = this;
       if ( self.currentShape ) {
-        self.currentShape.kill();
+        // No need to kill it as it hasn't been actually put in the dom right now
+        //self.currentShape.kill();
         self.currentShape = false;
       }
     }

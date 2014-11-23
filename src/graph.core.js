@@ -750,6 +750,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     getSerie: function( name ) {
+
       if ( typeof name == 'number' ) {
         return this.series[ name ];
       }
@@ -784,6 +785,16 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         this.series[ i ].kill( true );
       }
       this.series = [];
+    },
+
+    // Alias to resetSeries
+    removeSeries: function() {
+      this.resetSeries();
+    },
+
+    // Alias to resetSeries
+    killSeries: function() {
+      this.resetSeries();
     },
 
     drawSeries: function() {
