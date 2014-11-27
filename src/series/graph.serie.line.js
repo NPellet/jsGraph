@@ -178,7 +178,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     onMouseOutMarker: function( e, index ) {
       this.markersOffHover();
-      if ( this.options.onMouseOutMarker && this.infos ) {
+      if ( this.options.onMouseOutMarker ) {
         this.options.onMouseOutMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
       }
     },
