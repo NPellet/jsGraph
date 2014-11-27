@@ -168,7 +168,8 @@ module.exports = function(grunt) {
 
             grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
-            if( name !== 'graph' ) {
+            if( name !== 'graph' && path.indexOf('lib/') == -1 ) {
+                
                 matches = contents
                     .match( /define\s*\(\s*'([^']*)'\s*,\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
 

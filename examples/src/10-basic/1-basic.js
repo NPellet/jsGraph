@@ -6,12 +6,21 @@ define( function() {
 	var graphinstance = new Graph( domGraph, { }, { }, function( graphinstance ) {
 		graphinstance.redraw( );
 			
+
+	graphinstance.on("newSerie", function( serie ) {
+
+		console.log( serie );
+	})
+
+	
       graphinstance.newSerie("temp_nh", { useSlots: true } )
         .autoAxis()
         .setData( series[ 0 ] );
 
 	graphinstance.redraw();
 	graphinstance.drawSeries();
+console.log('a');
+	
 	//graphinstance.drawSeries();
 
 /*

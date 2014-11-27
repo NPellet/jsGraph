@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-7
+ * jsGraph JavaScript Graphing Library v1.10.2-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-11-23T21:22Z
+ * Date: 2014-11-27T10:31Z
  */
 
 (function( global, factory ) {
@@ -2861,11 +2861,26 @@ build['./dynamicdepencies'] = ( function( ) {
 ;
 /* 
  * Build: new source file 
+ * File name : ../lib/components/eventEmitter/EventEmitter
+ * File path : /Users/normanpellet/Documents/Web/graph/src/../lib/components/eventEmitter/EventEmitter.js
+ */
+
+build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }
+return build[ './graph.core' ];
+
+
+// Build: End source file (../lib/components/eventEmitter/EventEmitter) 
+
+
+
+;
+/* 
+ * Build: new source file 
  * File name : graph.core
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
  */
 
-build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) { 
+build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) { 
 
   
 
@@ -3048,7 +3063,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     this._seriesInit();
   }
 
-  Graph.prototype = {
+  Graph.prototype = $.extend( {}, EventEmitter.prototype, {
 
     setAttributeTo: function( to, params, ns ) {
       var i;
@@ -3611,6 +3626,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           callback( serie );
         }
 
+        self.emit( "newSerie", serie );
       } );
 
       return serie;
@@ -3846,6 +3862,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+      self.emit( "newShape", serie );
+
         return shape;
       }
 
@@ -3874,7 +3892,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill();
+        this.shapes[ i ].kill( true );
       }
       this.shapes = [];
     },
@@ -4411,7 +4429,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         y: y
       };
     },
-  }
+
+  } );
 
   function makeSerie( graph, name, options, type, callback ) {
 
@@ -4860,7 +4879,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
   }
 
   return Graph;
- } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"] );
+ } ) ( build["./jquery"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.xaxis.time"],build["./graph.legend"],build["./dynamicdepencies"],build["./lib/components/eventEmitter/EventEmitter"] );
 
 
 // Build: End source file (graph.core) 
@@ -9978,10 +9997,13 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.group.appendChild( this.rectEvent );
     },
 
-    kill: function() {
+    kill: function( keepInStack ) {
 
       this.graph.removeShapeFromDom( this );
-      this.graph._removeShape( this );
+
+      if ( !keepInStack ) {
+        this.graph._removeShape( this );
+      }
 
       this.callHandler( "onRemoved", this );
 

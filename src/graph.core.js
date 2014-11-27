@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies ) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies', '../lib/components/eventEmitter/EventEmitter' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) {
 
   "use strict";
 
@@ -181,7 +181,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     this._seriesInit();
   }
 
-  Graph.prototype = {
+  Graph.prototype = $.extend( {}, EventEmitter.prototype, {
 
     setAttributeTo: function( to, params, ns ) {
       var i;
@@ -744,6 +744,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           callback( serie );
         }
 
+        self.emit( "newSerie", serie );
       } );
 
       return serie;
@@ -979,6 +980,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
+        self.emit( "newShape", serie );
+
         return shape;
       }
 
@@ -1007,7 +1010,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill();
+        this.shapes[ i ].kill( true );
       }
       this.shapes = [];
     },
@@ -1544,7 +1547,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         y: y
       };
     },
-  }
+
+  } );
 
   function makeSerie( graph, name, options, type, callback ) {
 

@@ -200,10 +200,13 @@ define( [], function() {
       this.group.appendChild( this.rectEvent );
     },
 
-    kill: function() {
+    kill: function( keepInStack ) {
 
       this.graph.removeShapeFromDom( this );
-      this.graph._removeShape( this );
+
+      if ( !keepInStack ) {
+        this.graph._removeShape( this );
+      }
 
       this.callHandler( "onRemoved", this );
 
