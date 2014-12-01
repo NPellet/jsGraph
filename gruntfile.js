@@ -166,113 +166,119 @@ module.exports = function(grunt) {
         
         var buildConvert = function( name, path, contents ) {
 
-            grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+            if( path.indexOf('dependencies/') == -1 ) {
 
-            if( name !== 'graph' && path.indexOf('lib/') == -1 ) {
-                
-                matches = contents
-                    .match( /define\s*\(\s*'([^']*)'\s*,\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
+                grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
-                if( ! matches ) {
-                    grunt.log.writeln("Possible error for file " + name + "(" + path + "). No define found");
-                    grunt.log.writeln("Trying anonymous module. But that might lead to errors.");
+                if( name !== 'graph' ) {
 
-                     matches = contents
-                        .match( /define\s*\(\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
-                    
+                    matches = contents
+                        .match( /define\s*\(\s*'([^']*)'\s*,\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
+
                     if( ! matches ) {
-                        grunt.log.writeln("Still nothing...");
-                        grunt.log.writeln("Skipping inclusion");
-                        return "";
-                    } else {
-                        // Insert the current name in the matches
-                        matches.splice( 1, 0, name );
-                        grunt.log.writeln("Ok we're good");
+                        grunt.log.writeln("Possible error for file " + name + "(" + path + "). No define found");
+                        grunt.log.writeln("Trying anonymous module. But that might lead to errors.");
+
+                         matches = contents
+                            .match( /define\s*\(\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
+                        
+                        if( ! matches ) {
+                            grunt.log.writeln("Still nothing...");
+                            grunt.log.writeln("Skipping inclusion");
+                            return "";
+                        } else {
+                            // Insert the current name in the matches
+                            matches.splice( 1, 0, name );
+                            grunt.log.writeln("Ok we're good");
+                        }
+
                     }
 
+                    contents = contents
+                        .replace( /define\([^{]*?{/, "" )
+                        .replace( rdefineEnd, "" );
+
+
+                    var defineName = matches[ 1 ];
+                    // For some reason defineName does not contain the original "./" ...
+
+                    var dependencies = matches[ 2 ].split(",");
+                    var objects = matches[ 3 ].split(',').map( function( val ) {
+
+                        if( val.length == 0 || val.indexOf('require') > -1 ) return null;
+
+                        return val;
+                    }).join();
+                    
+                    var basePath = npmpath.resolve('.') + "/";
+                    var defineName = npmpath.resolve( defineName );
+
+                    defineName = "./" + defineName.replace( basePath, "" );
+
+                    dependencies = dependencies.map( function( val ) { 
+
+                        if( val.length == 0 || val.indexOf('require') > -1 ) {
+                            return null;
+                        }
+
+                        var val = val.replace(/^\s*?['"]([^'"]*)['"]\s*?$/, "$1");
+                        val = npmpath.resolve( npmpath.dirname( path ), val );
+
+
+                        val = "./" + val.replace( basePath, "" ).replace( /^src\//, "" );
+
+                        return 'build["' + val + '"]';
+
+                    } );
+
+
+
+                    contents = "build['" + defineName + "'] = ( function( " + objects + ") { " + contents + " } ) ( " + dependencies.join() + " );\n"; 
+                } else {
+
+                    contents = "build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }\n";
+                    contents += "return build[ './graph.core' ];\n";
+                   
                 }
 
+
+
+                // Remove anything wrapped with
+                // /* ExcludeStart */ /* ExcludeEnd */
+                // or a single line directly after a // BuildExclude comment
                 contents = contents
-                    .replace( /define\([^{]*?{/, "" )
-                    .replace( rdefineEnd, "" );
+                    .replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
+                    .replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
 
+                // Remove empty definitions
+                contents = contents
+                    .replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
+            
+                // Remove empty lines
+                contents = contents
+                    .replace(/^\s*\"use strict\";\s*(\s)/ig, "$1" );
+            //    }
 
-                var defineName = matches[ 1 ];
-                // For some reason defineName does not contain the original "./" ...
+                contents = contents
+                    .replace(/ /ig, " " );
 
-                var dependencies = matches[ 2 ].split(",");
-                var objects = matches[ 3 ].split(',').map( function( val ) {
+                    
+                contents = 
 
-                    if( val.length == 0 || val.indexOf('require') > -1 ) return null;
+                "/* \n" +
+                " * Build: new source file \n" +
+                " * File name : " + name + "\n" + 
+                " * File path : " + path + "\n" + 
+                " */\n\n" +
 
-                    return val;
-                }).join();
-                
-                var basePath = npmpath.resolve('.') + "/";
-                var defineName = npmpath.resolve( defineName );
-
-                defineName = "./" + defineName.replace( basePath, "" );
-
-                dependencies = dependencies.map( function( val ) { 
-
-                    if( val.length == 0 || val.indexOf('require') > -1 ) {
-                        return null;
-                    }
-
-                    var val = val.replace(/^\s*?['"]([^'"]*)['"]\s*?$/, "$1");
-                    val = npmpath.resolve( npmpath.dirname( path ), val );
-
-
-                    val = "./" + val.replace( basePath, "" ).replace( /^src\//, "" );
-
-                    return 'build["' + val + '"]';
-
-                } );
-
-
-
-                contents = "build['" + defineName + "'] = ( function( " + objects + ") { " + contents + " } ) ( " + dependencies.join() + " );\n"; 
+                contents + 
+                "\n\n" + 
+                "// Build: End source file (" + name + ") \n\n\n\n";
             } else {
-
-                contents = "build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }\n";
-                contents += "return build[ './graph.core' ];\n";
-               
-            }
-
-
-
-            // Remove anything wrapped with
-            // /* ExcludeStart */ /* ExcludeEnd */
-            // or a single line directly after a // BuildExclude comment
-            contents = contents
-                .replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
-                .replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
-
-            // Remove empty definitions
-            contents = contents
-                .replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
-        
-            // Remove empty lines
-            contents = contents
-                .replace(/^\s*\"use strict\";\s*(\s)/ig, "$1" );
-        //    }
-
-            contents = contents
-                .replace(/ /ig, " " );
-
                 
-            contents = 
+                contents = "build['./" + name + "'] = ( function() { " + contents + " return this.EventEmitter; } ) ();\n"; 
 
-            "/* \n" +
-            " * Build: new source file \n" +
-            " * File name : " + name + "\n" + 
-            " * File path : " + path + "\n" + 
-            " */\n\n" +
-
-            contents + 
-            "\n\n" + 
-            "// Build: End source file (" + name + ") \n\n\n\n";
-
+            }
             return contents;
         }
 
@@ -298,7 +304,7 @@ module.exports = function(grunt) {
 
 
             paths: {
-                'jquery': '../lib/components/jquery/dist/jquery.min'
+                'jquery': './dependencies/jquery/dist/jquery.min'
             },
 
             // Taken from the jquery build task

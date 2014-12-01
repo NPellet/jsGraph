@@ -165,7 +165,11 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     // TODO: Get the min value as well
-    scaleToFitAxis: function( axis, exclude, start, end ) {
+    scaleToFitAxis: function( axis, excludeSerie, start, end ) {
+      //console.log( axis instanceof GraphAxis );
+      if ( !axis ) {
+        axis = this.graph.getXAxis();
+      }
 
       if ( !start ) {
         start = axis.getActualMin();
@@ -175,10 +179,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         end = axis.getActualMax();
       }
 
-      if ( typeof exclude == "number" ) {
+      if ( typeof excludeSerie == "number" ) {
         end = start;
-        start = exclude;
-        exclude = false;
+        start = excludeSerie;
+        excludeSerie = false;
       }
 
       var max = -Infinity,
@@ -190,7 +194,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
           continue;
         }
 
-        if ( this.graph.series[ i ] == exclude ) {
+        if ( this.graph.series[ i ] == excludeSerie ) {
           continue;
         }
 

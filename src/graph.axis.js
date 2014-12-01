@@ -1,8 +1,8 @@
-define( [ 'jquery' ], function( $ ) {
+define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, EventEmitter ) {
 
   var GraphAxis = function() {}
 
-  GraphAxis.prototype = {
+  GraphAxis.prototype = $.extend( GraphAxis.prototype, EventEmitter.prototype, {
 
     defaults: {
       lineAt0: false,
@@ -323,9 +323,14 @@ define( [ 'jquery' ], function( $ ) {
       this.setCurrentMax( Math.max( val1, val2 ) );
 
       this._hasChanged = true;
-      if ( this.options.onZoom && !mute )
+
+      // New method
+      this.emit( "zoom", [ this, this.currentAxisMin, this.currentAxisMax ] );
+
+      // Old method
+      if ( this.options.onZoom && !mute ) {
         this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
-      //	}
+      }
     },
 
     getSerieShift: function() {
@@ -817,6 +822,10 @@ define( [ 'jquery' ], function( $ ) {
           break;
       }
 
+      if ( !units[ umin ] ) {
+        return false;
+      }
+
       var incr = this.incrTick;
       var text = "",
         valueRounded;
@@ -975,7 +984,7 @@ define( [ 'jquery' ], function( $ ) {
       for ( var i = 0, l = this.series.length; i < l; i++ )
         this.series[ i ].hideTrackingMarker();
     }
-  }
+  } );
 
   return GraphAxis;
 

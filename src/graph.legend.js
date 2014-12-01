@@ -14,6 +14,7 @@ define( [], function() {
 
     shapesToggleable: true,
     isSerieHideable: true
+
   }
 
   var Legend = function( graph, options ) {

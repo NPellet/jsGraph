@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies', '../lib/components/eventEmitter/EventEmitter' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) {
 
   "use strict";
 
@@ -980,7 +980,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
-        self.emit( "newShape", serie );
+        self.emit( "newShape", shape );
 
         return shape;
       }
