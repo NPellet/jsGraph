@@ -1010,7 +1010,9 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].kill( true );
+        if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+          this.shapes[ i ].kill( true );
+        }
       }
       this.shapes = [];
     },

@@ -137,7 +137,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
             continue;
           }
 
-          sum += Math.abs( ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] - firstYVal ) * 0.5 );
+          sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
 
           if ( x == lastX && y == lastY ) {
             continue;
@@ -172,9 +172,13 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       var integration = this.maxIntegration || sum;
 
       for ( var i = 0, l = points.length; i < l; i++ ) {
-
+        //   console.log( points[ i ][ 1 ] / sum );
         points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
 
+        /* console.log( this.ratio, integration );
+        console.log( this.maxPx );
+        console.log( points[ i ][ 1 ] );
+*/
         if ( i == 0 ) {
           this.firstPointY = points[ i ][ 1 ];
         }

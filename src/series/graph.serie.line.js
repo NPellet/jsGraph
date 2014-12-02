@@ -549,17 +549,19 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           }
 
           // OPTIMIZATION START
-          if ( !this._optimize_before( xpx, ypx ) ) {
+          if ( !this._optimize_before( xpx2, ypx2 ) ) {
             continue;
+
           }
           // OPTIMIZATION END
 
           this._addPoint( xpx2, ypx2 );
 
           // OPTIMIZATION START
-          if ( !this._optimize_after( xpx, ypx ) ) {
+          if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
             break;
+
           }
           // OPTIMIZATION END
 
@@ -576,6 +578,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
 
       }
+
     },
 
     _draw_slot: function() {
@@ -667,11 +670,12 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     _optimize_before: function( xpx, ypx ) {
 
-      if ( !this.optimizeMonotoneous ) {
+      if ( !this._optimizeMonotoneous ) {
         return true;
       }
 
       if ( xpx < 0 ) {
+
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
       }
@@ -686,10 +690,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       return true;
     },
 
-    _optimize_after: function() {
+    _optimize_after: function( xpx, ypx ) {
 
-      if ( this.optimizeMonotoneous && xpx > this.optimizeMaxPxX ) {
-        toBreak = true;
+      if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
+
         return false;
       }
 

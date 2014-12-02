@@ -5,7 +5,7 @@
  * @preserve
  */
 
-( function() {
+define( [ "jquery" ], function() {
   'use strict';
 
   /**
@@ -450,7 +450,7 @@
     exports.EventEmitter = originalGlobalValue;
     return EventEmitter;
   };
-/*
+  /*
   // Expose the class either via AMD, CommonJS or the global object
   if ( typeof define === 'function' && define.amd ) {
     define( function() {
@@ -463,5 +463,7 @@
   }*/
 
   exports.EventEmitter = EventEmitter;
-  
-}.call( this ) );
+
+  return EventEmitter;
+
+} );

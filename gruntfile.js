@@ -64,7 +64,8 @@ module.exports = function(grunt) {
             exportToNMR: {
 
                 files: {
-                    '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js'
+                    '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    '../nmr/lib/components/graph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
                 }
             },
 
@@ -166,7 +167,7 @@ module.exports = function(grunt) {
         
         var buildConvert = function( name, path, contents ) {
 
-            if( path.indexOf('dependencies/') == -1 ) {
+            if( path.indexOf('dependencies/') == -1 || 1 == 1 ) {
 
                 grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
@@ -176,6 +177,7 @@ module.exports = function(grunt) {
                         .match( /define\s*\(\s*'([^']*)'\s*,\s*\[\s*(.*)\s*\]\s*,\s*function\s*\(\s*([^)]*)\s*\)/i );
 
                     if( ! matches ) {
+                        
                         grunt.log.writeln("Possible error for file " + name + "(" + path + "). No define found");
                         grunt.log.writeln("Trying anonymous module. But that might lead to errors.");
 
@@ -276,7 +278,7 @@ module.exports = function(grunt) {
                 "// Build: End source file (" + name + ") \n\n\n\n";
             } else {
                 
-                contents = "build['./" + name + "'] = ( function() { " + contents + " return this.EventEmitter; } ) ();\n"; 
+              //  contents = "build['./" + name + "'] = ( function() { " + contents + " \n"; 
 
             }
             return contents;

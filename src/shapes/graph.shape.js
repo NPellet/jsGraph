@@ -208,6 +208,7 @@ define( [], function() {
         this.graph._removeShape( this );
       }
 
+      this._inDom = false;
       this.callHandler( "onRemoved", this );
 
     },

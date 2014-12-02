@@ -153,11 +153,13 @@ define( [], function() {
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
-        serie.getYAxis().handleMouseWheel( delta, e );
-        return;
+        if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+          return;
+        }
       }
 
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+
       this.graph.drawSeries();
     },
 
