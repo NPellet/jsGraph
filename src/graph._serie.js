@@ -485,6 +485,10 @@ define( [], function() {
 
     setLayer: function( layer ) {
       this.options.layer = layer;
+    },
+
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
     }
 
   };

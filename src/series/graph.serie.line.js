@@ -911,6 +911,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
 
+    updateStyle: function() {
+      this.applyLineStyles();
+      this.setLegendSymbolStyle();
+    },
+
     // Revised August 2014. Ok
     getMarkerPath: function( family, add ) {
 

@@ -115,7 +115,7 @@ define( [], function() {
 
     onMouseUp: function( graph, x, y, e, mute ) {
 
-      this._zoomingSquare.setAttribute( 'display', 'none' );
+      this.removeZone();
       var _x = x - graph.options.paddingLeft;
       var _y = y - graph.options.paddingTop;
 
@@ -146,6 +146,10 @@ define( [], function() {
       if ( this._backedUpZoomMode ) {
         this._zoomingMode = this._backedUpZoomMode;
       }
+    },
+
+    removeZone: function() {
+      this._zoomingSquare.setAttribute( 'display', 'none' );
     },
 
     onMouseWheel: function( delta, e ) {

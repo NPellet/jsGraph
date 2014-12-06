@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-9
+ * jsGraph JavaScript Graphing Library v1.10.2-10
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-02T22:58Z
+ * Date: 2014-12-06T11:20Z
  */
 
 (function( global, factory ) {
@@ -5863,6 +5863,10 @@ build['./graph._serie'] = ( function( ) {
 
     setLayer: function( layer ) {
       this.options.layer = layer;
+    },
+
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
     }
 
   };
@@ -6567,7 +6571,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
     onMouseUp: function( graph, x, y, e, mute ) {
 
-      this._zoomingSquare.setAttribute( 'display', 'none' );
+      this.removeZone();
       var _x = x - graph.options.paddingLeft;
       var _y = y - graph.options.paddingTop;
 
@@ -6598,6 +6602,10 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       if ( this._backedUpZoomMode ) {
         this._zoomingMode = this._backedUpZoomMode;
       }
+    },
+
+    removeZone: function() {
+      this._zoomingSquare.setAttribute( 'display', 'none' );
     },
 
     onMouseWheel: function( delta, e ) {
@@ -7728,6 +7736,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+    },
+
+    updateStyle: function() {
+      this.applyLineStyles();
+      this.setLegendSymbolStyle();
     },
 
     // Revised August 2014. Ok
@@ -12150,7 +12163,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
           }
 
           sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
-          
+
           if ( x == lastX && y == lastY ) {
             continue;
           }
@@ -12200,7 +12213,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
       }
 
       this.points = points;
-      this.lastSum = sum;
+      this.lastSum = Math.abs( sum );
 
       var lastY = firstY,
         lastX = this.lastX;

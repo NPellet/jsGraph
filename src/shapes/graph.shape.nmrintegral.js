@@ -188,7 +188,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       }
 
       this.points = points;
-      this.lastSum = sum;
+      this.lastSum = Math.abs( sum );
 
       var lastY = firstY,
         lastX = this.lastX;
