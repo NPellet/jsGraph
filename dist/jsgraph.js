@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-0
+ * jsGraph JavaScript Graphing Library v1.10.3-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-08T16:22Z
+ * Date: 2014-12-08T21:07Z
  */
 
 (function( global, factory ) {
@@ -9460,6 +9460,8 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       this.id = Math.random() + Date.now();
 
+      this.shapes = []; // Stores all shapes
+
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
       this.data = [];
@@ -9480,6 +9482,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
       this.additionalData = {};
+
+      this.selectedStyleGeneral = {};
+      this.selectedStyleModifiers = {};
       /*
       this.groupPoints.addEventListener('mouseover', function(e) {
       
@@ -9543,6 +9548,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         total = 0,
         continuous;
 
+      this.shapes = [];
+      this.empty();
+
       if ( !data instanceof Array ) {
         return this;
       }
@@ -9585,8 +9593,8 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     empty: function() {
 
-      while ( this.group.firstChild ) {
-        this.group.removeChild( this.group.firstChild );
+      while ( this.groupPoints.firstChild ) {
+        this.groupPoints.removeChild( this.groupPoints.firstChild );
       }
     },
 
@@ -9773,30 +9781,53 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       if ( this.extraStyle && this.extraStyle[ k ] ) {
 
-        this.doShape( g, this.extraStyle[ k ] );
+        shape = this.doShape( g, this.extraStyle[ k ] );
 
       } else if ( this.stdStylePerso ) {
 
-        this.doShape( g, this.stdStylePerso );
+        shape = this.doShape( g, this.stdStylePerso );
 
       } else {
 
-        this.doShape( g, this.stdStyle );
+        shape = this.doShape( g, this.stdStyle );
       }
 
+      this.shapes[ k ] = shape;
+      this.setStyle( k );
       this.groupPoints.appendChild( g );
     },
 
     doShape: function( group, shape ) {
-
       var el = document.createElementNS( this.graph.ns, shape.shape );
-      for ( var i in shape ) {
+      group.appendChild( el );
+      return el;
+    },
+
+    setStyle: function( index ) {
+
+      var style;
+      var shape = this.shapes[ index ];
+
+      if ( this.extraStyle && this.extraStyle[ index ] ) {
+
+        style = this.extraStyle[ index ];
+
+      } else if ( this.stdStylePerso ) {
+
+        style = this.stdStylePerso;
+
+      } else {
+
+        style = this.stdStyle;
+
+      }
+
+      for ( var i in style ) {
         if ( i !== "shape" ) {
-          el.setAttribute( i, shape[ i ] );
+          shape.setAttribute( i, style[ i ] );
         }
       }
 
-      group.appendChild( el );
     },
 
     setDataError: function( error ) {
@@ -9890,7 +9921,57 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
       this.errorstyles = styles;
 
+    },
+
+    selectPoint: function( index, setOn ) {
+
+      if ( Array.isArray( index ) ) {
+        return this.selectPoints( index );
+      }
+
+      if ( this.shapes[ index ] ) {
+
+        if ( ( this.shapes[ index ]._selected || setOn === false ) && setOn !== true ) {
+
+          for ( var i in this.selectedStyleGeneral ) {
+            this.shapes[ index ].removeAttribute( i );
+          }
+
+          if ( this.selectedStyleModifiers[ index ] ) {
+            for ( var i in this.selectedStyleModifiers[ index ] ) {
+              this.shapes[ index ].removeAttribute( i );
+            }
+          }
+
+          this.shapes[ index ]._selected = false;
+          this.setStyle( index );
+
+        } else {
+
+          this.shapes[ index ]._selected = true;
+
+          for ( var i in this.selectedStyleGeneral ) {
+            this.shapes[ index ].setAttribute( i, this.selectedStyleGeneral[ i ] );
+          }
+
+          if ( this.selectedStyleModifiers[ index ] ) {
+            for ( var i in this.selectedStyleModifiers[ index ] ) {
+              this.shapes[ index ].setAttribute( i, this.selectedStyleModifiers[ index ][ i ] );
+            }
+          }
+
+        }
+
+      }
+
+    },
+
+    setSelectedStyle: function( general, modifiers ) {
+
+      this.selectedStyleGeneral = general;
+      this.selectedStyleModifiers = modifiers || {};
     }
+
   } );
 
   return GraphSerieScatter;

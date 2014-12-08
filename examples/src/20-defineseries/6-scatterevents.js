@@ -28,6 +28,23 @@ define( function() {
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 
+			serie.setSelectedStyle( { stroke: 'green', fill: 'rgba(20, 255, 40, 0.5)', transform: 'scale(2, 2)' } );
+
+			var index, lastIndex;
+			window.setInterval( function() {
+
+				if( lastIndex ) {
+					serie.selectPoint( lastIndex, false ); // Unselect
+				}
+
+
+				index = Math.round( Math.random() * ( series[ 0 ].length / 2 - 1 ) );
+				serie.selectPoint( index );
+				lastIndex = index;
+
+
+			}, 1000 )
+
 		} );
 
 	}, "Scatter plot", [ 
