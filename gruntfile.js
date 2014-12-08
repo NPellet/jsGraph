@@ -64,8 +64,8 @@ module.exports = function(grunt) {
             exportToNMR: {
 
                 files: {
-                    '../nmr/lib/components/graph/dist/jsgraph.js': 'dist/jsgraph.js',
-                    '../nmr/lib/components/graph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
+                    '../nmr/lib/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    '../nmr/lib/components/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
                 }
             },
 
@@ -146,6 +146,14 @@ module.exports = function(grunt) {
         grunt.task.run("bump:prerelease:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:prerelease:commit-only");
+    })
+
+
+    grunt.registerTask( "patch", "Make a new release", function() {
+
+        grunt.task.run("bump:patch:bump-only");
+        grunt.task.run("default");
+        grunt.task.run("bump:patch:commit-only");
     })
 
     grunt.registerTask( 'buildExampleList', 'Lists all examples', function() {
