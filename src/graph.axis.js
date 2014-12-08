@@ -275,9 +275,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       var baseline;
 
       if ( this.options.wheelBaseline == "min" ) {
-        baseline = this.getActualMin();
+        baseline = this.getMinValue();
       } else if ( this.options.wheelBaseline == "max" ) {
-        baseline = this.getActualMax();
+        baseline = this.getMaxValue();
       } else {
         baseline = this.options.wheelBaseline;
       }
