@@ -549,14 +549,16 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       var
         x = xy == 'x',
         i = 0,
-         min = minmax == 'min',
+        min = minmax == 'min',
         l = this.shapes.length,
         val = minmax == 'min' ? Infinity : - Infinity,
         func = x ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
         func2use = func[ min ? 0 : 1 ],
-        funcGetAxis = x ? 'getXAxis' : 'getYAxis'
+        funcGetAxis = x ? 'getXAxis' : 'getYAxis',
+        shape;
 
       for( ; i < l ; i ++ ) {
+        shape = this.shapes[ i ];
         if( shape[ funcGetAxis ]() == axis && shape[ func2use ] ) {
           val = Math[ minmax ]( val, shape[ func2use ]( ) );  
         }
