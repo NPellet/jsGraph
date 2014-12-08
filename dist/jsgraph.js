@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.2-11
+ * jsGraph JavaScript Graphing Library v1.10.2-12
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-08T11:16Z
+ * Date: 2014-12-08T15:37Z
  */
 
 (function( global, factory ) {
@@ -12205,6 +12205,8 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
           if ( x == lastX && y == lastY ) {
             continue;
           }
+
+          lastXVal = this.serie.data[ i ][ j + incrXFlip ];
 
           lastX = x;
           lastY = y;

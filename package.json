@@ -1,6 +1,6 @@
 {
   "name": "graphs",
-  "version": "1.10.2-11",
+  "version": "1.10.2-12",
   "devDependencies": {
     "bower": "^1.3.5",
     "grunt": "^0.4.5",

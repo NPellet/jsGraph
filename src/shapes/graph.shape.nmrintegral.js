@@ -143,6 +143,8 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
             continue;
           }
 
+          lastXVal = this.serie.data[ i ][ j + incrXFlip ];
+
           lastX = x;
           lastY = y;
 
