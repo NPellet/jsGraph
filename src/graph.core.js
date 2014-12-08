@@ -91,8 +91,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
     this._dom = dom;
-    // DOM
 
+    if ( this.options.hasOwnProperty( 'padding' ) ) {
+      this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
+    }
+
+    // DOM
     var w, h;
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
@@ -386,7 +390,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     getPaddingBottom: function() {
-      return this.options.paddingTop;
+      return this.options.paddingBottom;
     },
 
     getPaddingRight: function() {
