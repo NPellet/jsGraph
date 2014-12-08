@@ -1550,6 +1550,27 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       };
     },
 
+    mapEventEmission: function( options, source ) {
+
+      if ( !source ) {
+        source = this;
+      }
+
+      var eventName;
+
+      for ( var i in options ) {
+
+        // Starts with onXXX
+        if ( i.indexOf( "on" ) == 0 && typeof options[ i ] == "function" ) {
+          eventName = i.substring( 2 );
+          eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
+
+          if ( source.on ) {
+            source.on( eventName, options[ i ] );
+          }
+        }
+      }
+    }
   } );
 
   function makeSerie( graph, name, options, type, callback ) {

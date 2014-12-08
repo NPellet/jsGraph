@@ -34,6 +34,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
 
+      this.graph.mapEventEmission( this.options, this );
+
       this.data = [];
       this._isMinOrMax = {
         x: {

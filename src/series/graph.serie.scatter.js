@@ -6,7 +6,80 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
-      label: ""
+      label: "",
+      onHover: false
+    },
+
+    init: function( graph, name, options ) {
+
+      var self = this;
+
+      this.graph = graph;
+      this.name = name;
+
+      this.id = Math.random() + Date.now();
+
+      this.shown = true;
+      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+      this.data = [];
+      this.graph.mapEventEmission( this.options, this );
+
+      this._isMinOrMax = {
+        x: {
+          min: false,
+          max: false
+        },
+        y: {
+          min: false,
+          max: false
+        }
+      };
+
+      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+      this.additionalData = {};
+      /*
+      this.groupPoints.addEventListener('mouseover', function(e) {
+      
+      });
+
+
+      this.groupPoints.addEventListener('mouseout', function(e) {
+      
+      });
+*/
+
+      this.groupPoints.addEventListener( 'mouseover', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.groupPoints.addEventListener( 'mouseout', function( e ) {
+        var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+        self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      } );
+
+      this.minX = Number.MAX_VALUE;
+      this.minY = Number.MAX_VALUE;
+      this.maxX = Number.MIN_VALUE;
+      this.maxY = Number.MIN_VALUE;
+
+      this.groupMain.appendChild( this.groupPoints );
+      this.currentAction = false;
+
+      if ( this.initExtended1 ) {
+        this.initExtended1();
+      }
+
+      this.stdStyle = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 3,
+        stroke: 'transparent',
+        fill: "black"
+      }
     },
 
     /**
@@ -69,66 +142,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       return this;
     },
 
-    init: function( graph, name, options ) {
-
-      var self = this;
-
-      this.graph = graph;
-      this.name = name;
-
-      this.id = Math.random() + Date.now();
-
-      this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
-      this.data = [];
-
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
-
-      this.groupPoints = document.createElementNS( this.graph.ns, 'g' );
-      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
-      this.additionalData = {};
-      /*
-			this.groupPoints.addEventListener('mouseover', function(e) {
-			
-			});
-
-
-			this.groupPoints.addEventListener('mouseout', function(e) {
-			
-			});
-*/
-      this.minX = Number.MAX_VALUE;
-      this.minY = Number.MAX_VALUE;
-      this.maxX = Number.MIN_VALUE;
-      this.maxY = Number.MIN_VALUE;
-
-      this.groupMain.appendChild( this.groupPoints );
-      this.currentAction = false;
-
-      if ( this.initExtended1 ) {
-        this.initExtended1();
-      }
-
-      this.stdStyle = {
-        shape: 'circle',
-        cx: 0,
-        cy: 0,
-        r: 3,
-        stroke: 'transparent',
-        fill: "black"
-      }
-    },
-
     empty: function() {
 
       while ( this.group.firstChild ) {
@@ -188,6 +201,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       if ( this.errorstyles ) {
 
         for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+
           this.errorstyles[ i ].paths = {
             top: "",
             bottom: "",
@@ -314,6 +328,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       var g = document.createElementNS( this.graph.ns, 'g' );
       g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
+      g.setAttribute( 'data-shapeid', k );
 
       if ( this.extraStyle && this.extraStyle[ k ] ) {
 

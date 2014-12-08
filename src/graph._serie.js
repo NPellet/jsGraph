@@ -1,4 +1,4 @@
-define( [], function() {
+define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter ) {
 
   "use strict";
 
@@ -6,7 +6,7 @@ define( [], function() {
     throw "This serie is not instanciable";
   }
 
-  GraphSerieNonInstanciable.prototype = {
+  GraphSerieNonInstanciable.prototype = $.extend( {}, EventEmitter.prototype, {
 
     setAdditionalData: function( data ) {
       this.additionalData = data;
@@ -491,7 +491,7 @@ define( [], function() {
       this.setLegendSymbolStyle();
     }
 
-  };
+  } );
 
   return GraphSerieNonInstanciable;
 } );
