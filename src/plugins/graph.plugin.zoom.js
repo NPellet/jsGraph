@@ -154,8 +154,12 @@ define( [], function() {
 
     onMouseWheel: function( delta, e, options ) {
 
-      if ( !baseline ) {
-        baseline = 0;
+      if ( !options ) {
+        options = {};
+      }
+
+      if ( !options.baseline ) {
+        options.baseline = 0;
       }
 
       var serie;
@@ -172,6 +176,7 @@ define( [], function() {
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
       this.graph.drawSeries();
+
     },
 
     onDblClick: function( graph, x, y, pref, e, mute ) {

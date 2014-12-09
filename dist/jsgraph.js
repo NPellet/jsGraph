@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-2
+ * jsGraph JavaScript Graphing Library v1.10.3-3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-09T07:12Z
+ * Date: 2014-12-09T07:57Z
  */
 
 (function( global, factory ) {
@@ -798,14 +798,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     handleMouseWheel: function( delta, e, baseline ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
-      var baseline;
 
-      if ( wheelBaseline == "min" ) {
+      if ( baseline == "min" ) {
         baseline = this.getMinValue();
-      } else if ( wheelBaseline == "max" ) {
+      } else if ( baseline == "max" ) {
         baseline = this.getMaxValue();
-      } else {
-        baseline = wheelBaseline;
+      } else if ( !baseline ) {
+        baseline = 0;
       }
 
       this._doZoomVal(
@@ -3795,6 +3794,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     _applyToAxes: function( func, params, tb, lr ) {
+
       var ax = [],
         i = 0,
         l;
@@ -6641,8 +6641,12 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
     onMouseWheel: function( delta, e, options ) {
 
-      if ( !baseline ) {
-        baseline = 0;
+      if ( !options ) {
+        options = {};
+      }
+
+      if ( !options.baseline ) {
+        options.baseline = 0;
       }
 
       var serie;
@@ -6659,6 +6663,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
       this.graph.drawSeries();
+
     },
 
     onDblClick: function( graph, x, y, pref, e, mute ) {

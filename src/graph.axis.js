@@ -278,14 +278,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     handleMouseWheel: function( delta, e, baseline ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
-      var baseline;
 
-      if ( wheelBaseline == "min" ) {
+      if ( baseline == "min" ) {
         baseline = this.getMinValue();
-      } else if ( wheelBaseline == "max" ) {
+      } else if ( baseline == "max" ) {
         baseline = this.getMaxValue();
-      } else {
-        baseline = wheelBaseline;
+      } else if ( !baseline ) {
+        baseline = 0;
       }
 
       this._doZoomVal(

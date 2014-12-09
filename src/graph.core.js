@@ -426,6 +426,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     _applyToAxes: function( func, params, tb, lr ) {
+
       var ax = [],
         i = 0,
         l;
