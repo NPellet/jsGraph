@@ -152,7 +152,11 @@ define( [], function() {
       this._zoomingSquare.setAttribute( 'display', 'none' );
     },
 
-    onMouseWheel: function( delta, e ) {
+    onMouseWheel: function( delta, e, options ) {
+
+      if ( !baseline ) {
+        baseline = 0;
+      }
 
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
@@ -162,7 +166,10 @@ define( [], function() {
         }
       }
 
-      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      var doX = ( options.direction == 'x' );
+      var doY = !( options.direction !== 'y' );
+
+      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
       this.graph.drawSeries();
     },

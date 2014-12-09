@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-08T21:18Z
+ * Date: 2014-12-09T07:12Z
  */
 
 (function( global, factory ) {
@@ -542,7 +542,6 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       ticklabelratio: 1,
       exponentialFactor: 0,
       exponentialLabelFactor: 0,
-      wheelBaseline: "min",
       logScale: false,
       allowedPxSerie: 100,
       forcedMin: false,
@@ -777,6 +776,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this;
     },
 
+    force: function( axis ) {
+      if ( axis.getMaxValue && axis.getMinValue ) {
+        this.options.forcedMin = axis.getMinValue();
+        this.options.forcedMax = axis.getMaxValue();
+      }
+    },
+
     getNbTicksPrimary: function() {
       return this.options.nbTicksPrimary;
     },
@@ -789,17 +795,17 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.mouseVal = this.getVal( px );
     },
 
-    handleMouseWheel: function( delta, e ) {
+    handleMouseWheel: function( delta, e, baseline ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
       var baseline;
 
-      if ( this.options.wheelBaseline == "min" ) {
+      if ( wheelBaseline == "min" ) {
         baseline = this.getMinValue();
-      } else if ( this.options.wheelBaseline == "max" ) {
+      } else if ( wheelBaseline == "max" ) {
         baseline = this.getMaxValue();
       } else {
-        baseline = this.options.wheelBaseline;
+        baseline = wheelBaseline;
       }
 
       this._doZoomVal(
@@ -4963,7 +4969,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     return false;
   };
 
-  function refreshDrawingZone( graph, noX, noY ) {
+  function refreshDrawingZone( graph ) {
 
     var i, j, l, xy, min, max;
     var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -5354,7 +5360,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
 
-          plugin.onMouseWheel( delta, e );
+          plugin.onMouseWheel( delta, e, graph.options.wheel.options );
         }
 
         break;
@@ -6633,7 +6639,11 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       this._zoomingSquare.setAttribute( 'display', 'none' );
     },
 
-    onMouseWheel: function( delta, e ) {
+    onMouseWheel: function( delta, e, options ) {
+
+      if ( !baseline ) {
+        baseline = 0;
+      }
 
       var serie;
       if ( ( serie = this.graph.getSelectedSerie() ) ) {
@@ -6643,7 +6653,10 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
         }
       }
 
-      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e ], false, true );
+      var doX = ( options.direction == 'x' );
+      var doY = !( options.direction !== 'y' );
+
+      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
       this.graph.drawSeries();
     },

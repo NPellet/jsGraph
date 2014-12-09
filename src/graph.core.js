@@ -1600,7 +1600,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     return false;
   };
 
-  function refreshDrawingZone( graph, noX, noY ) {
+  function refreshDrawingZone( graph ) {
 
     var i, j, l, xy, min, max;
     var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -1991,7 +1991,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
 
-          plugin.onMouseWheel( delta, e );
+          plugin.onMouseWheel( delta, e, graph.options.wheel.options );
         }
 
         break;
