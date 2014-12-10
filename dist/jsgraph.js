@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-3
+ * jsGraph JavaScript Graphing Library v1.10.3-4
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-09T07:57Z
+ * Date: 2014-12-10T13:34Z
  */
 
 (function( global, factory ) {
@@ -9540,14 +9540,28 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         this.initExtended1();
       }
 
-      this.stdStyle = {
+      this.styles = {};
+      this.styles.unselected = {};
+      this.styles.selected = {};
+
+      this.styles.unselected.default = {
         shape: 'circle',
         cx: 0,
         cy: 0,
         r: 3,
         stroke: 'transparent',
         fill: "black"
-      }
+      };
+
+      this.styles.selected.default = {
+        shape: 'circle',
+        cx: 0,
+        cy: 0,
+        r: 4,
+        stroke: 'transparent',
+        fill: "black"
+      };
+
     },
 
     /**
@@ -9570,8 +9584,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         total = 0,
         continuous;
 
-      this.shapes = [];
       this.empty();
+      this.shapesPositions = [];
+      this.shapes = [];
 
       if ( !data instanceof Array ) {
         return this;
@@ -9629,10 +9644,24 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       this.selected = false;
     },
 
-    setDataStyle: function( std, extra ) {
+    setStyle: function( all, modifiers, mode ) {
 
-      this.stdStylePerso = std;
-      this.extraStyle = extra;
+      if ( typeof modifiers == "string" ) {
+        mode = modifiers;
+        modifiers = false;
+      }
+
+      if ( mode === undefined ) {
+        mode = "unselected"
+      }
+
+      if ( mode !== "selected" && mode !== "unselected" ) {
+        throw "Style mode is not correct. Should be selected or unselected";
+      }
+
+      this.styles[ mode ] = this.styles[ mode ] ||  {};
+      this.styles[ mode ].all = all;
+      this.styles[ mode ].modifiers = modifiers;
 
       return this;
     },
@@ -9663,6 +9692,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       }
 
       var totalLength = this.data.length / 2;
+      var keys = [];
 
       j = 0, k = 0, m = this.data.length;
 
@@ -9706,7 +9736,10 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         }
 
-        this._addPoint( xpx, ypx, j / 2 );
+        this.shapesPositions[ j / 2 ] = [ xpx, ypx ];
+        keys.push( j / 2 );
+
+        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
       }
 
       if ( this.errorstyles ) {
@@ -9721,6 +9754,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
           }
         }
       }
+
+      // This will automatically create the shapes      
+      this.applyStyle( "unselected", keys );
 
       this.groupMain.appendChild( this.groupPoints );
     },
@@ -9815,7 +9851,6 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       }
 
       this.shapes[ k ] = shape;
-      this.setStyle( k );
       this.groupPoints.appendChild( g );
     },
 
@@ -9825,29 +9860,108 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       return el;
     },
 
-    setStyle: function( index ) {
+    getStyle: function( selection, index ) {
 
-      var style;
-      var shape = this.shapes[ index ];
+      var selection = selection || 'unselected';
+      var indices;
 
-      if ( this.extraStyle && this.extraStyle[ index ] ) {
+      var styles = {};
 
-        style = this.extraStyle[ index ];
-
-      } else if ( this.stdStylePerso ) {
-
-        style = this.stdStylePerso;
-
-      } else {
-
-        style = this.stdStyle;
-
+      if ( typeof index == "number" ) {
+        indices = [ index ];
+      } else if ( Array.isArray( index ) ) {
+        indices = index;
       }
 
-      for ( var i in style ) {
-        if ( i !== "shape" ) {
-          shape.setAttribute( i, style[ i ] );
+      var shape, index, modifier, style, j; // loop variables
+      var styleAll;
+
+      if ( this.styles[ selection ].all !== undefined ) {
+
+        styleAll = this.styles[ selection ].all;
+
+        if ( typeof styleAll == "function" ) {
+
+          styleAll = styleAll();
+
+        } else if ( styleAll === false ) {
+
+          styleAll = {};
+
         }
+      }
+
+      var i = 0,
+        l = indices.length;
+
+      for ( ; i < l; i++ ) {
+
+        index = indices[ i ];
+        shape = this.shapes[ index ];
+
+        if ( ( modifier = this.styles[ selection ].modifiers ) && ( typeof modifier == "function" || modifier[  index ] ) ) {
+
+          if ( typeof modifier == "function" ) {
+
+            style = modifier( index, shape );
+
+          } else if ( modifier[  index ] ) {
+
+            style = modifier[ index ];
+
+          }
+
+          var tmp = $.extend( {}, styleAll, style );
+          style = $.extend( style, tmp );
+
+        } else if ( styleAll !== undefined ) {
+
+          style = styleAll;
+
+        } else {
+
+          style = this.styles[ selection ].default;
+
+        }
+
+        if ( !shape ) { // Shape doesn't exist, let's create it
+
+          var g = document.createElementNS( this.graph.ns, 'g' );
+          g.setAttribute( 'transform', 'translate(' + this.shapesPositions[  index ][ 0 ] + ', ' + this.shapesPositions[  index ][ 1 ] + ')' );
+          g.setAttribute( 'data-shapeid', index );
+          this.shapes[ index ] = this.doShape( g, style );
+          this.groupPoints.appendChild( g );
+        }
+
+        styles[ index ] = style;
+      }
+
+      return styles;
+    },
+
+    applyStyle: function( selection, index ) {
+
+      var styles = this.getStyle( selection, index );
+
+      for ( var i in styles ) {
+        for ( j in styles[ i ] ) {
+
+          if ( j !== "shape" ) {
+
+            if ( styles[ i ][ j ] ) {
+
+              this.shapes[ i ].setAttribute( j, styles[ i ][ j ] );
+
+            } else {
+
+              this.shapes[ i ].removeAttribute( j );
+
+            }
+
+          }
+
+        }
+
       }
 
     },
@@ -9955,43 +10069,24 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         if ( ( this.shapes[ index ]._selected || setOn === false ) && setOn !== true ) {
 
-          for ( var i in this.selectedStyleGeneral ) {
+          this.shapes[ index ]._selected = false;
+
+          var allStyles = this.getStyle( "selected", index );
+
+          for ( var i in allStyles[ index ] ) {
             this.shapes[ index ].removeAttribute( i );
           }
 
-          if ( this.selectedStyleModifiers[ index ] ) {
-            for ( var i in this.selectedStyleModifiers[ index ] ) {
-              this.shapes[ index ].removeAttribute( i );
-            }
-          }
-
-          this.shapes[ index ]._selected = false;
-          this.setStyle( index );
+          this.applyStyle( "unselected", index );
 
         } else {
 
-          this.shapes[ index ]._selected = true;
-
-          for ( var i in this.selectedStyleGeneral ) {
-            this.shapes[ index ].setAttribute( i, this.selectedStyleGeneral[ i ] );
-          }
-
-          if ( this.selectedStyleModifiers[ index ] ) {
-            for ( var i in this.selectedStyleModifiers[ index ] ) {
-              this.shapes[ index ].setAttribute( i, this.selectedStyleModifiers[ index ][ i ] );
-            }
-          }
+          this.applyStyle( "selected", index );
 
         }
 
       }
 
-    },
-
-    setSelectedStyle: function( general, modifiers ) {
-
-      this.selectedStyleGeneral = general;
-      this.selectedStyleModifiers = modifiers || {};
     }
 
   } );

@@ -16,8 +16,12 @@ define( function() {
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( series[ 0 ] )
-				.setDataStyle(
+				.setStyle(
 					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }
+				)
+				.setStyle(
+					{ stroke: 'green', fill: 'rgba(20, 255, 40, 0.5)', transform: 'scale(2, 2)' },
+					"selected"
 				);
 
 
@@ -28,7 +32,7 @@ define( function() {
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 
-			serie.setSelectedStyle( { stroke: 'green', fill: 'rgba(20, 255, 40, 0.5)', transform: 'scale(2, 2)' } );
+			
 
 			var index, lastIndex;
 			window.setInterval( function() {
