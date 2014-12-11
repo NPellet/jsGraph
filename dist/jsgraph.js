@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-10T13:42Z
+ * Date: 2014-12-11T08:54Z
  */
 
 (function( global, factory ) {
@@ -1853,18 +1853,26 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
     },
 
     // TODO: Get the min value as well
-    scaleToFitAxis: function( axis, excludeSerie, start, end ) {
+    scaleToFitAxis: function( axis, excludeSerie, start, end, min, max ) {
       //console.log( axis instanceof GraphAxis );
       if ( !axis ) {
         axis = this.graph.getXAxis();
       }
 
-      if ( !start ) {
+      if ( isNaN( start ) ) {
         start = axis.getActualMin();
       }
 
-      if ( !end ) {
+      if ( isNaN( end ) ) {
         end = axis.getActualMax();
+      }
+
+      if ( min === undefined ) {
+        min = true;
+      }
+
+      if ( max === undefined ) {
+        max = true;
       }
 
       if ( typeof excludeSerie == "number" ) {
@@ -1873,7 +1881,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         excludeSerie = false;
       }
 
-      var max = -Infinity,
+      var maxV = -Infinity,
+        minV = Infinity,
         j = 0;
 
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
@@ -1891,14 +1900,26 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         }
 
         j++;
-        max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
+        maxV = Math.max( maxV, this.graph.series[ i ].getMax( start, end ) );
+        minV = Math.min( minV, this.graph.series[ i ].getMin( start, end ) );
       }
 
       if ( j == 0 ) {
 
-        this.setMinMaxToFitSeries();
+        this.setMinMaxToFitSeries(); // No point was found
+
       } else {
-        this._doZoomVal( 0, max );
+
+        // If we wanted originally to resize min and max. Otherwise we use the current value
+        minV = min ? minV : this.getActualMin();
+        maxV = max ? maxV : this.getActualMax();
+        console.log( minV, maxV );
+        var interval = maxV - minV;
+
+        minV -= ( this.options.axisDataSpacing.min * interval );
+        maxV += ( this.options.axisDataSpacing.max * interval );
+
+        this._doZoomVal( minV, maxV );
       }
     },
 
@@ -8092,6 +8113,37 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return max;
     },
 
+    getMin: function( start, end ) {
+
+      var start2 = Math.min( start, end ),
+        end2 = Math.max( start, end ),
+        v1 = this.searchClosestValue( start2 ),
+        v2 = this.searchClosestValue( end2 ),
+        i, j, min = Infinity,
+        initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
+
+      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+        for ( j = initJ; j <= maxJ; j += 2 ) {
+          min = Math.min( min, this.data[ i ][ j + 1 ] );
+        }
+      }
+
+      return min;
+    },
+
     /* LINE STYLE */
 
     setLineStyle: function( number ) {
@@ -8826,7 +8878,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     }
 
     return [ datas ];
-
   };
 
   function hidePeakPicking( graph ) {
