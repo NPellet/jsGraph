@@ -953,6 +953,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           shape.setLayer( shapeData.layer );
         }
 
+        if ( shapeData.locked ) {
+          shape.lock();
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {

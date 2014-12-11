@@ -976,15 +976,15 @@ define( [], function() {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {

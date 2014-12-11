@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-0
+ * jsGraph JavaScript Graphing Library v1.10.4-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T20:49Z
+ * Date: 2014-12-11T20:55Z
  */
 
 (function( global, factory ) {
@@ -4340,6 +4340,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         if ( shapeData.layer ) {
           shape.setLayer( shapeData.layer );
+        }
+
+        if( shapeData.locked ) {
+          shape.lock();
         }
 
         if ( shapeData.label ) {
@@ -11489,7 +11493,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     handleDblClick: function() {
 
-      if( this.options.configurable ) {
+      if ( this.options.configurable ) {
         this.configure();
       }
     },
@@ -11574,15 +11578,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {
