@@ -957,6 +957,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           shape.lock();
         }
 
+        if ( shapeData.selectable ) {
+          shape.selectable();
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {

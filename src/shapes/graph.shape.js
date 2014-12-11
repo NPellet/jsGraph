@@ -45,7 +45,7 @@ define( [], function() {
       this.classes = [];
 
       this._movable = true;
-      this._selectable = true;
+      this._selectable = false;
 
       if ( this.options.masker ) {
 
@@ -546,6 +546,14 @@ define( [], function() {
 
     setMovable: function( bln ) {
       this._movable = bln;
+    },
+
+    unselectable: function() {
+      this._selectable = false;
+    },
+
+    selectable: function() {
+      this._selectable = true;
     },
 
     select: function( mute ) {
