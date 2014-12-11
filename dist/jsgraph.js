@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3-4
+ * jsGraph JavaScript Graphing Library v1.10.3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T08:54Z
+ * Date: 2014-12-11T19:05Z
  */
 
 (function( global, factory ) {
@@ -1913,7 +1913,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         // If we wanted originally to resize min and max. Otherwise we use the current value
         minV = min ? minV : this.getActualMin();
         maxV = max ? maxV : this.getActualMax();
-        console.log( minV, maxV );
+
         var interval = maxV - minV;
 
         minV -= ( this.options.axisDataSpacing.min * interval );
@@ -4176,8 +4176,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
     },
 
     resetSeries: function() {
-      for ( var i = 0; i < this.series.length; i++ ) {
-        this.series[ i ].kill( true );
+      while ( this.series[ 0 ] ) {
+        this.series[ 0 ].kill( true );
       }
       this.series = [];
     },
@@ -8091,6 +8091,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         i, j, max = -Infinity,
         initJ, maxJ;
 
+      console.log( start2, end2, v1, v2 );
+
       if ( !v1 ) {
         start2 = this.minX;
         v1 = this.searchClosestValue( start2 );
@@ -8099,6 +8101,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       if ( !v2 ) {
         end2 = this.maxX;
         v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return -Infinity;
       }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
@@ -8130,6 +8136,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       if ( !v2 ) {
         end2 = this.maxX;
         v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return Infinity;
       }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
@@ -9978,11 +9988,13 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         if ( !shape ) { // Shape doesn't exist, let's create it
 
           var g = document.createElementNS( this.graph.ns, 'g' );
-          g.setAttribute( 'transform', 'translate(' + this.shapesPositions[  index ][ 0 ] + ', ' + this.shapesPositions[  index ][ 1 ] + ')' );
           g.setAttribute( 'data-shapeid', index );
           this.shapes[ index ] = this.doShape( g, style );
           this.groupPoints.appendChild( g );
+          shape = this.shapes[ index ];
         }
+
+        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesPositions[ index ][ 0 ] + ', ' + this.shapesPositions[ index ][ 1 ] + ')' );
 
         styles[ index ] = style;
       }

@@ -225,7 +225,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         // If we wanted originally to resize min and max. Otherwise we use the current value
         minV = min ? minV : this.getActualMin();
         maxV = max ? maxV : this.getActualMax();
-        console.log( minV, maxV );
+
         var interval = maxV - minV;
 
         minV -= ( this.options.axisDataSpacing.min * interval );

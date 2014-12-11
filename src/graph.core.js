@@ -787,8 +787,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     resetSeries: function() {
-      for ( var i = 0; i < this.series.length; i++ ) {
-        this.series[ i ].kill( true );
+      while ( this.series[ 0 ] ) {
+        this.series[ 0 ].kill( true );
       }
       this.series = [];
     },

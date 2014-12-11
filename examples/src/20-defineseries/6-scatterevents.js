@@ -2,7 +2,19 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ],
+
+		plugins: {
+				'graph.plugin.zoom': { zoomMode: 'x' },
+				'graph.plugin.drag': {}
+			},
+
+			pluginAction: {
+				'graph.plugin.drag': { shift: true, ctrl: false },
+				'graph.plugin.zoom': { shift: false, ctrl: false }
+			}
+
+			 }, function( graphinstance ) {
 
 			var modificators = [];
 			
@@ -32,8 +44,6 @@ define( function() {
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 
-			
-
 			var index, lastIndex;
 			window.setInterval( function() {
 
@@ -41,11 +51,9 @@ define( function() {
 					serie.selectPoint( lastIndex, false ); // Unselect
 				}
 
-
 				index = Math.round( Math.random() * ( series[ 0 ].length / 2 - 1 ) );
 				serie.selectPoint( index );
 				lastIndex = index;
-
 
 			}, 1000 )
 

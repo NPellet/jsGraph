@@ -1200,6 +1200,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         i, j, max = -Infinity,
         initJ, maxJ;
 
+      console.log( start2, end2, v1, v2 );
+
       if ( !v1 ) {
         start2 = this.minX;
         v1 = this.searchClosestValue( start2 );
@@ -1208,6 +1210,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       if ( !v2 ) {
         end2 = this.maxX;
         v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return -Infinity;
       }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
@@ -1239,6 +1245,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       if ( !v2 ) {
         end2 = this.maxX;
         v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return Infinity;
       }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {

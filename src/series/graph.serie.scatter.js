@@ -464,11 +464,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         if ( !shape ) { // Shape doesn't exist, let's create it
 
           var g = document.createElementNS( this.graph.ns, 'g' );
-          g.setAttribute( 'transform', 'translate(' + this.shapesPositions[  index ][ 0 ] + ', ' + this.shapesPositions[  index ][ 1 ] + ')' );
           g.setAttribute( 'data-shapeid', index );
           this.shapes[ index ] = this.doShape( g, style );
           this.groupPoints.appendChild( g );
+          shape = this.shapes[ index ];
         }
+
+        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesPositions[ index ][ 0 ] + ', ' + this.shapesPositions[ index ][ 1 ] + ')' );
 
         styles[ index ] = style;
       }
