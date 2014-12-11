@@ -891,7 +891,9 @@ define( [], function() {
 
     handleDblClick: function() {
 
-      this.configure();
+      if ( this.options.configurable ) {
+        this.configure();
+      }
     },
 
     configure: function() {

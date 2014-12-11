@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3
+ * jsGraph JavaScript Graphing Library v1.10.4-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T19:05Z
+ * Date: 2014-12-11T20:49Z
  */
 
 (function( global, factory ) {
@@ -11489,7 +11489,9 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     handleDblClick: function() {
 
-      this.configure();
+      if( this.options.configurable ) {
+        this.configure();
+      }
     },
 
     configure: function() {
