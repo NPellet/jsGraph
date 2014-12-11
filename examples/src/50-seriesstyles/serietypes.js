@@ -21,17 +21,14 @@ define( function() {
 
 					}
 				}
-
-
-				
-
 			}
+			
 			// END IGNORE ON BUILD
 			var serie = graphinstance.newSerie("serieTest", { }, 'scatter')
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( series[ 0 ] )
-				.setDataStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgba(255, 100, 0, 0.6)' } );
+				.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgba(255, 100, 0, 0.6)' } );
 
 
 

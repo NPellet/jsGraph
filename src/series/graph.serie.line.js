@@ -1200,6 +1200,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         i, j, max = -Infinity,
         initJ, maxJ;
 
+      console.log( start2, end2, v1, v2 );
+
       if ( !v1 ) {
         start2 = this.minX;
         v1 = this.searchClosestValue( start2 );
@@ -1208,6 +1210,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       if ( !v2 ) {
         end2 = this.maxX;
         v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return -Infinity;
       }
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
@@ -1220,6 +1226,41 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
 
       return max;
+    },
+
+    getMin: function( start, end ) {
+
+      var start2 = Math.min( start, end ),
+        end2 = Math.max( start, end ),
+        v1 = this.searchClosestValue( start2 ),
+        v2 = this.searchClosestValue( end2 ),
+        i, j, min = Infinity,
+        initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return Infinity;
+      }
+
+      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+        for ( j = initJ; j <= maxJ; j += 2 ) {
+          min = Math.min( min, this.data[ i ][ j + 1 ] );
+        }
+      }
+
+      return min;
     },
 
     /* LINE STYLE */
@@ -1956,7 +1997,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     }
 
     return [ datas ];
-
   };
 
   function hidePeakPicking( graph ) {

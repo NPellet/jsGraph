@@ -11,7 +11,7 @@ define( function() {
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( series[ 0 ] )
-				.setDataStyle( 
+				.setStyle( 
 					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
 					modificators
 				);

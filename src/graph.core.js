@@ -91,8 +91,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
     this._dom = dom;
-    // DOM
 
+    if ( this.options.hasOwnProperty( 'padding' ) ) {
+      this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
+    }
+
+    // DOM
     var w, h;
     if ( dom.style.width && dom.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( dom.style.width.replace( 'px', '' ) );
@@ -386,7 +390,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     getPaddingBottom: function() {
-      return this.options.paddingTop;
+      return this.options.paddingBottom;
     },
 
     getPaddingRight: function() {
@@ -422,6 +426,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     _applyToAxes: function( func, params, tb, lr ) {
+
       var ax = [],
         i = 0,
         l;
@@ -782,8 +787,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     resetSeries: function() {
-      for ( var i = 0; i < this.series.length; i++ ) {
-        this.series[ i ].kill( true );
+      while ( this.series[ 0 ] ) {
+        this.series[ 0 ].kill( true );
       }
       this.series = [];
     },
@@ -1596,7 +1601,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     return false;
   };
 
-  function refreshDrawingZone( graph, noX, noY ) {
+  function refreshDrawingZone( graph ) {
 
     var i, j, l, xy, min, max;
     var axisvars = [ 'bottom', 'top', 'left', 'right' ],
@@ -1987,7 +1992,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
 
-          plugin.onMouseWheel( delta, e );
+          plugin.onMouseWheel( delta, e, graph.options.wheel.options );
         }
 
         break;

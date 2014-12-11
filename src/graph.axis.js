@@ -22,7 +22,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       ticklabelratio: 1,
       exponentialFactor: 0,
       exponentialLabelFactor: 0,
-      wheelBaseline: "min",
       logScale: false,
       allowedPxSerie: 100,
       forcedMin: false,
@@ -257,6 +256,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return this;
     },
 
+    force: function( axis ) {
+      if ( axis.getMaxValue && axis.getMinValue ) {
+        this.options.forcedMin = axis.getMinValue();
+        this.options.forcedMax = axis.getMaxValue();
+      }
+    },
+
     getNbTicksPrimary: function() {
       return this.options.nbTicksPrimary;
     },
@@ -269,17 +275,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.mouseVal = this.getVal( px );
     },
 
-    handleMouseWheel: function( delta, e ) {
+    handleMouseWheel: function( delta, e, baseline ) {
 
       delta = Math.min( 0.2, Math.max( -0.2, delta ) );
-      var baseline;
 
-      if ( this.options.wheelBaseline == "min" ) {
+      if ( baseline == "min" ) {
         baseline = this.getMinValue();
-      } else if ( this.options.wheelBaseline == "max" ) {
+      } else if ( baseline == "max" ) {
         baseline = this.getMaxValue();
-      } else {
-        baseline = this.options.wheelBaseline;
+      } else if ( !baseline ) {
+        baseline = 0;
       }
 
       this._doZoomVal(

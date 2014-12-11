@@ -165,18 +165,26 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     // TODO: Get the min value as well
-    scaleToFitAxis: function( axis, excludeSerie, start, end ) {
+    scaleToFitAxis: function( axis, excludeSerie, start, end, min, max ) {
       //console.log( axis instanceof GraphAxis );
       if ( !axis ) {
         axis = this.graph.getXAxis();
       }
 
-      if ( !start ) {
+      if ( isNaN( start ) ) {
         start = axis.getActualMin();
       }
 
-      if ( !end ) {
+      if ( isNaN( end ) ) {
         end = axis.getActualMax();
+      }
+
+      if ( min === undefined ) {
+        min = true;
+      }
+
+      if ( max === undefined ) {
+        max = true;
       }
 
       if ( typeof excludeSerie == "number" ) {
@@ -185,7 +193,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         excludeSerie = false;
       }
 
-      var max = -Infinity,
+      var maxV = -Infinity,
+        minV = Infinity,
         j = 0;
 
       for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
@@ -203,14 +212,26 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         }
 
         j++;
-        max = Math.max( max, this.graph.series[ i ].getMax( start, end ) );
+        maxV = Math.max( maxV, this.graph.series[ i ].getMax( start, end ) );
+        minV = Math.min( minV, this.graph.series[ i ].getMin( start, end ) );
       }
 
       if ( j == 0 ) {
 
-        this.setMinMaxToFitSeries();
+        this.setMinMaxToFitSeries(); // No point was found
+
       } else {
-        this._doZoomVal( 0, max );
+
+        // If we wanted originally to resize min and max. Otherwise we use the current value
+        minV = min ? minV : this.getActualMin();
+        maxV = max ? maxV : this.getActualMax();
+
+        var interval = maxV - minV;
+
+        minV -= ( this.options.axisDataSpacing.min * interval );
+        maxV += ( this.options.axisDataSpacing.max * interval );
+
+        this._doZoomVal( minV, maxV );
       }
     },
 

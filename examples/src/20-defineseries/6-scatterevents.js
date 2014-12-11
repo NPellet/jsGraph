@@ -2,7 +2,19 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ],
+
+		plugins: {
+				'graph.plugin.zoom': { zoomMode: 'x' },
+				'graph.plugin.drag': {}
+			},
+
+			pluginAction: {
+				'graph.plugin.drag': { shift: true, ctrl: false },
+				'graph.plugin.zoom': { shift: false, ctrl: false }
+			}
+
+			 }, function( graphinstance ) {
 
 			var modificators = [];
 			
@@ -16,8 +28,12 @@ define( function() {
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( series[ 0 ] )
-				.setDataStyle(
+				.setStyle(
 					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }
+				)
+				.setStyle(
+					{ stroke: 'green', fill: 'rgba(20, 255, 40, 0.5)', transform: 'scale(2, 2)' },
+					"selected"
 				);
 
 
@@ -28,8 +44,6 @@ define( function() {
 			graphinstance.redraw( );
 			graphinstance.drawSeries();	
 
-			serie.setSelectedStyle( { stroke: 'green', fill: 'rgba(20, 255, 40, 0.5)', transform: 'scale(2, 2)' } );
-
 			var index, lastIndex;
 			window.setInterval( function() {
 
@@ -37,11 +51,9 @@ define( function() {
 					serie.selectPoint( lastIndex, false ); // Unselect
 				}
 
-
 				index = Math.round( Math.random() * ( series[ 0 ].length / 2 - 1 ) );
 				serie.selectPoint( index );
 				lastIndex = index;
-
 
 			}, 1000 )
 
