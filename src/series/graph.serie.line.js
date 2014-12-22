@@ -94,8 +94,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
 
-      this.labels = [];
-
       this.currentAction = false;
 
       if ( this.initExtended1 )
@@ -290,6 +288,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     select: function( selectionType ) {
 
+      selectionType = selectionType ||  "selected";
+
       this.selected = true;
 
       if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
@@ -308,13 +308,15 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     unselect: function() {
 
       this.selected = false;
-
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
-
-        this.applyLineStyle( this.lines[ i ] );
+      var selectionType = "unselected";
+      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        this.selectionType = selectionType;
+        this.draw();
+        this.applyLineStyles();
+      } else {
+        this.selectionType = selectionType;
+        this.applyLineStyles();
       }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     degrade: function( pxPerP, options ) {
@@ -490,10 +492,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.insertMarkers();
       this.insertLinesGroup();
 
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
     },
 
     _draw_standard: function() {
@@ -1013,46 +1011,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
 
       return family.dom;
-    },
-
-    /* */
-    handleLabelMove: function( x, y ) {
-
-      var label = this.labelDragging;
-
-      if ( !label )
-        return;
-
-      label.labelX += x - label.draggingIniX;
-      label.draggingIniX = x;
-
-      label.labelY += y - label.draggingIniY;
-      label.draggingIniY = y;
-
-      label.rect.setAttribute( 'x', label.labelX );
-      label.rect.setAttribute( 'y', label.labelY - this.graph.options.fontSize );
-      label.labelDom.setAttribute( 'x', label.labelX );
-      label.labelDom.setAttribute( 'y', label.labelY );
-
-      label.labelLine.setAttribute( 'x1', label.labelX + label.labelDom.getComputedTextLength() / 2 );
-      label.labelLine.setAttribute( 'y1', label.labelY - this.graph.options.fontSize / 2 );
-
-    },
-
-    handleLabelMainMove: function( x, y ) {
-
-      if ( this.options.labelMoveFollowCurve || 1 == 1 ) {
-        var label = this.labelDragging;
-        label.x = this.getXAxis().getVal( x - this.graph.options.paddingLeft );
-
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-        this.repositionLabel( label, true );
-      }
-    },
-
-    handleLabelUp: function() {
-
-      this.labelDragging = false;
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -1579,145 +1537,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     hideImpl: function() {
       this.hidePeakPicking();
-    },
-
-    addLabelX: function( x, label ) {
-      this.addLabelObj( {
-        x: x,
-        label: label
-      } );
-    },
-
-    addLabel: function( x, y, label ) {
-      this.addLabelObj( {
-        x: x,
-        y: y,
-        label: label
-      } );
-    },
-
-    repositionLabel: function( label, recalculateLabel ) {
-      var x = !this.getFlip() ? this.getX( label.x ) : this.getY( label.x ),
-        y = !this.getFlip() ? this.getY( label.y ) : this.getX( label.y );
-
-      var nan = ( isNaN( x ) || isNaN( y ) );
-      label.group.setAttribute( 'display', nan ? 'none' : 'block' );
-
-      if ( recalculateLabel ) {
-        label.labelDom.textContent = this.options.label
-          .replace( '<x>', label.x.toFixed( this.options.trackMouseLabelRouding ) || '' )
-          .replace( '<label>', label.label || '' );
-
-        label.rect.setAttribute( 'width', label.labelDom.getComputedTextLength() + 2 );
-      }
-      if ( nan )
-        return;
-      label.group.setAttribute( 'transform', 'translate(' + x + ' ' + y + ')' );
-    },
-
-    addLabelObj: function( label ) {
-      var self = this,
-        group, labelDom, rect, path;
-
-      this.labels.push( label );
-      if ( label.x && !label.y ) {
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-      }
-
-      group = document.createElementNS( this.graph.ns, 'g' );
-      this.groupLabels.appendChild( group );
-
-      labelDom = document.createElementNS( this.graph.ns, 'text' );
-      labelDom.setAttribute( 'x', 5 );
-      labelDom.setAttribute( 'y', -5 );
-
-      var labelLine = document.createElementNS( this.graph.ns, 'line' );
-      labelLine.setAttribute( 'stroke', 'black' );
-      labelLine.setAttribute( 'x2', 0 );
-      labelLine.setAttribute( 'x1', 0 );
-
-      group.appendChild( labelLine );
-      group.appendChild( labelDom );
-      rect = document.createElementNS( this.graph.ns, 'rect' );
-      rect.setAttribute( 'x', 5 );
-      rect.setAttribute( 'y', -this.graph.options.fontSize - 5 );
-      rect.setAttribute( 'width', labelDom.getComputedTextLength() + 2 );
-      rect.setAttribute( 'height', this.graph.options.fontSize + 2 );
-      rect.setAttribute( 'fill', 'white' );
-      rect.style.cursor = 'move';
-      labelDom.style.cursor = 'move';
-
-      path = document.createElementNS( this.graph.ns, 'path' );
-      path.setAttribute( 'd', 'M 0 -4 l 0 8 m -4 -4 l 8 0' );
-      path.setAttribute( 'stroke-width', '1px' );
-      path.setAttribute( 'stroke', 'black' );
-
-      path.style.cursor = 'move';
-
-      group.insertBefore( rect, labelDom );
-
-      group.appendChild( path );
-
-      label.labelLine = labelLine;
-      label.group = group;
-      label.rect = rect;
-      label.labelDom = labelDom;
-      label.path = path;
-
-      label.labelY = -5;
-      label.labelX = 5;
-
-      this.bindLabelHandlers( label );
-      this.repositionLabel( label, true );
-    },
-
-    bindLabelHandlers: function( label ) {
-      var self = this;
-
-      function clickHandler( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-
-        self.graph.currentAction = 'labelDragging';
-        e.stopPropagation();
-        label.dragging = true;
-
-        var coords = self.graph._getXY( e );
-        label.draggingIniX = coords.x;
-        label.draggingIniY = coords.y;
-        self.labelDragging = label;
-      }
-
-      function clickHandlerMain( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-        self.graph.currentAction = 'labelDraggingMain';
-        self.labelDragging = label;
-      }
-
-      label.labelDom.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.labelDom.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.path.addEventListener( 'mousedown', clickHandlerMain );
-      label.path.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
     },
 
     XIsMonotoneous: function() {

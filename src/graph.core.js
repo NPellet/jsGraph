@@ -973,6 +973,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
             shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
             shape.set( 'labelSize', shapeData.label[ i ].size, i );
             shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
 
             if ( shapeData.label[ i ].anchor ) {
               shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );

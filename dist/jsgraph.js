@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-6
+ * jsGraph JavaScript Graphing Library v1.10.4-7
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-22T13:55Z
+ * Date: 2014-12-22T19:23Z
  */
 
 (function( global, factory ) {
@@ -4362,6 +4362,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
             shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
             shape.set( 'labelSize', shapeData.label[ i ].size, i );
             shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
 
             if ( shapeData.label[ i ].anchor ) {
               shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
@@ -7004,8 +7005,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
 
-      this.labels = [];
-
       this.currentAction = false;
 
       if ( this.initExtended1 )
@@ -7200,6 +7199,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     select: function( selectionType ) {
 
+      selectionType = selectionType ||  "selected";
+
       this.selected = true;
 
       if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
@@ -7218,13 +7219,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     unselect: function() {
 
       this.selected = false;
-
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
-
-        this.applyLineStyle( this.lines[ i ] );
+      var selectionType = "unselected";
+      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        this.selectionType = selectionType;
+        this.draw();
+        this.applyLineStyles();
+      } else {
+        this.selectionType = selectionType;
+        this.applyLineStyles();
       }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     degrade: function( pxPerP, options ) {
@@ -7400,10 +7403,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
     },
 
     _draw_standard: function() {
@@ -7923,46 +7922,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       return family.dom;
-    },
-
-    /* */
-    handleLabelMove: function( x, y ) {
-
-      var label = this.labelDragging;
-
-      if ( !label )
-        return;
-
-      label.labelX += x - label.draggingIniX;
-      label.draggingIniX = x;
-
-      label.labelY += y - label.draggingIniY;
-      label.draggingIniY = y;
-
-      label.rect.setAttribute( 'x', label.labelX );
-      label.rect.setAttribute( 'y', label.labelY - this.graph.options.fontSize );
-      label.labelDom.setAttribute( 'x', label.labelX );
-      label.labelDom.setAttribute( 'y', label.labelY );
-
-      label.labelLine.setAttribute( 'x1', label.labelX + label.labelDom.getComputedTextLength() / 2 );
-      label.labelLine.setAttribute( 'y1', label.labelY - this.graph.options.fontSize / 2 );
-
-    },
-
-    handleLabelMainMove: function( x, y ) {
-
-      if ( this.options.labelMoveFollowCurve || 1 == 1 ) {
-        var label = this.labelDragging;
-        label.x = this.getXAxis().getVal( x - this.graph.options.paddingLeft );
-
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-        this.repositionLabel( label, true );
-      }
-    },
-
-    handleLabelUp: function() {
-
-      this.labelDragging = false;
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -8489,145 +8448,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     hideImpl: function() {
       this.hidePeakPicking();
-    },
-
-    addLabelX: function( x, label ) {
-      this.addLabelObj( {
-        x: x,
-        label: label
-      } );
-    },
-
-    addLabel: function( x, y, label ) {
-      this.addLabelObj( {
-        x: x,
-        y: y,
-        label: label
-      } );
-    },
-
-    repositionLabel: function( label, recalculateLabel ) {
-      var x = !this.getFlip() ? this.getX( label.x ) : this.getY( label.x ),
-        y = !this.getFlip() ? this.getY( label.y ) : this.getX( label.y );
-
-      var nan = ( isNaN( x ) || isNaN( y ) );
-      label.group.setAttribute( 'display', nan ? 'none' : 'block' );
-
-      if ( recalculateLabel ) {
-        label.labelDom.textContent = this.options.label
-          .replace( '<x>', label.x.toFixed( this.options.trackMouseLabelRouding ) || '' )
-          .replace( '<label>', label.label || '' );
-
-        label.rect.setAttribute( 'width', label.labelDom.getComputedTextLength() + 2 );
-      }
-      if ( nan )
-        return;
-      label.group.setAttribute( 'transform', 'translate(' + x + ' ' + y + ')' );
-    },
-
-    addLabelObj: function( label ) {
-      var self = this,
-        group, labelDom, rect, path;
-
-      this.labels.push( label );
-      if ( label.x && !label.y ) {
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-      }
-
-      group = document.createElementNS( this.graph.ns, 'g' );
-      this.groupLabels.appendChild( group );
-
-      labelDom = document.createElementNS( this.graph.ns, 'text' );
-      labelDom.setAttribute( 'x', 5 );
-      labelDom.setAttribute( 'y', -5 );
-
-      var labelLine = document.createElementNS( this.graph.ns, 'line' );
-      labelLine.setAttribute( 'stroke', 'black' );
-      labelLine.setAttribute( 'x2', 0 );
-      labelLine.setAttribute( 'x1', 0 );
-
-      group.appendChild( labelLine );
-      group.appendChild( labelDom );
-      rect = document.createElementNS( this.graph.ns, 'rect' );
-      rect.setAttribute( 'x', 5 );
-      rect.setAttribute( 'y', -this.graph.options.fontSize - 5 );
-      rect.setAttribute( 'width', labelDom.getComputedTextLength() + 2 );
-      rect.setAttribute( 'height', this.graph.options.fontSize + 2 );
-      rect.setAttribute( 'fill', 'white' );
-      rect.style.cursor = 'move';
-      labelDom.style.cursor = 'move';
-
-      path = document.createElementNS( this.graph.ns, 'path' );
-      path.setAttribute( 'd', 'M 0 -4 l 0 8 m -4 -4 l 8 0' );
-      path.setAttribute( 'stroke-width', '1px' );
-      path.setAttribute( 'stroke', 'black' );
-
-      path.style.cursor = 'move';
-
-      group.insertBefore( rect, labelDom );
-
-      group.appendChild( path );
-
-      label.labelLine = labelLine;
-      label.group = group;
-      label.rect = rect;
-      label.labelDom = labelDom;
-      label.path = path;
-
-      label.labelY = -5;
-      label.labelX = 5;
-
-      this.bindLabelHandlers( label );
-      this.repositionLabel( label, true );
-    },
-
-    bindLabelHandlers: function( label ) {
-      var self = this;
-
-      function clickHandler( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-
-        self.graph.currentAction = 'labelDragging';
-        e.stopPropagation();
-        label.dragging = true;
-
-        var coords = self.graph._getXY( e );
-        label.draggingIniX = coords.x;
-        label.draggingIniY = coords.y;
-        self.labelDragging = label;
-      }
-
-      function clickHandlerMain( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-        self.graph.currentAction = 'labelDraggingMain';
-        self.labelDragging = label;
-      }
-
-      label.labelDom.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.labelDom.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.path.addEventListener( 'mousedown', clickHandlerMain );
-      label.path.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
     },
 
     XIsMonotoneous: function() {
@@ -11035,6 +10855,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     setLabelAngle: function( index ) {
       if ( this.label ) this._setLabelAngle( index );
     },
+    setLabelBaseline: function( index ) {
+      if ( this.label ) this._setLabelBaseline( index );
+    },
 
     _getPosition: function( value, relTo ) {
 
@@ -11055,8 +10878,8 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     toggleLabel: function( labelId, visible ) {
-      if ( this.labelNumber && this.label[ i ] ) {
-        this.label[ i ].setAttribute( 'display', visible ? 'block' : 'none' );
+      if ( this.labelNumber && this.label[ labelId ] ) {
+        this.label[ labelId ].setAttribute( 'display', visible ? 'block' : 'none' );
       }
     },
 
@@ -11161,7 +10984,8 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.label[ labelIndex ].setAttribute( 'y', pos.y );
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-      //this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.get( 'labelBaseline', labelIndex ) );
 
     },
 
@@ -11174,6 +10998,11 @@ build['./shapes/graph.shape'] = ( function( ) {
       var x = this.label[ labelIndex ].getAttribute( 'x' );
       var y = this.label[ labelIndex ].getAttribute( 'y' );
       this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    },
+
+    _setLabelBaseline: function( labelIndex, angle ) {
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
     },
 
     _forceLabelAnchor: function( i ) {
