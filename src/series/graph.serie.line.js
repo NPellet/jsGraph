@@ -10,14 +10,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       lineStyle: 1,
       flip: false,
       label: "",
+      lineWidth: 1,
 
       markers: false,
       trackMouse: false,
       trackMouseLabel: false,
       trackMouseLabelRouding: 1,
       lineToZero: false,
-
-      lineWidth: 1,
 
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
@@ -27,14 +26,28 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     init: function( graph, name, options ) {
 
       var self = this;
+
+      this.selectionType = "unselected";
+      this.markerFamilies = {};
+
       this.graph = graph;
       this.name = name;
-      this.id = Math.random() + Date.now();
+      this.id = this.graph.uniqueId();
+
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
+      this.graph.mapEventEmission( this.options, this ); // Register events
+
+      // Creates an empty style variable
+      this.styles = {};
+
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
-
-      this.graph.mapEventEmission( this.options, this );
 
       this.data = [];
       this._isMinOrMax = {
@@ -204,7 +217,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           var x = this.getX( this.data[ k ][ i * 2 ] );
           var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
 
-          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ) );
+          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
@@ -275,12 +288,19 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
     },
 
-    select: function() {
+    select: function( selectionType ) {
+
       this.selected = true;
 
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
+      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        this.selectionType = selectionType;
 
-        this.applyLineStyle( this.lines[ i ] );
+        this.draw();
+        this.applyLineStyles();
+      } else {
+        this.selectionType = selectionType;
+        console.log( 'just apply' )
+        this.applyLineStyles();
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
@@ -363,9 +383,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           }
         }
       }
-
-      // Init markers
-      this._markerCurrentFamily = null;
 
       this.detectedPeaks = [];
       this.lastYPeakPicking = false;
@@ -517,6 +534,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         for ( ; j < m; j += 2 ) {
 
           if ( this.markersShown() ) {
+
             this.getMarkerCurrentFamily( this.counter );
           }
 
@@ -723,10 +741,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     getMarkerCurrentFamily: function( k ) {
 
-      for ( var z = 0; z < this.markerPoints.length; z++ ) {
-        if ( this.markerPoints[ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[  z ][ 1 ] >= k ) { // Verify that it's in the boundary
-            this.markerCurrentFamily = this.markerPoints[ z ][ 2 ];
+      for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
+        if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
+          if ( this.markerPoints[ this.selectionType ][  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+            this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
           }
         } else {
           break;
@@ -863,7 +881,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
-        drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
+        drawMarkerXY( this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
     },
@@ -908,6 +926,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
       if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      } else {
+        line.removeAttribute( 'stroke-dasharray' );
       }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
@@ -1200,7 +1220,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         i, j, max = -Infinity,
         initJ, maxJ;
 
-      console.log( start2, end2, v1, v2 );
+      //      console.log( start2, end2, v1, v2 );
 
       if ( !v1 ) {
         start2 = this.minX;
@@ -1265,18 +1285,27 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     /* LINE STYLE */
 
-    setLineStyle: function( number ) {
-      this.options.lineStyle = number;
+    setStyle: function( style, selectionType ) {
+
+      this.styles[ selectionType ] = style;
+    },
+
+    setLineStyle: function( number, selectionType ) {
+
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineStyle = number;
+
       return this;
     },
 
-    getLineStyle: function() {
-      return this.options.lineStyle;
+    getLineStyle: function( selectionType ) {
+      return this.getStyle( selectionType ).lineStyle;
     },
 
-    getLineDashArray: function() {
+    getLineDashArray: function( selectionType ) {
 
-      switch ( this.options.lineStyle ) {
+      switch ( this.getStyle( selectionType ).lineStyle ) {
 
         case 2:
           return "1, 1";
@@ -1320,104 +1349,93 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           break;
 
         default:
-          return this.options.lineStyle;
+          return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
           break;
       }
     },
 
+    getStyle: function( selectionType ) {
+
+      var s = this.styles[ selectionType || this.selectionType || "unselected" ];
+      if ( s ) {
+        return $.extend( {}, this.styles.unselected, s );
+      } else {
+        console.warn( "Style " + ( selectionType || this.selectionType || "unselected" ) + " does not exist. Returning unselected style" );
+      }
+
+      return this.styles.unselected;
+    },
+
     /*  */
 
-    setLineWidth: function( width ) {
-      this.options.lineWidth = width;
+    setLineWidth: function( width, selectionType ) {
+
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineWidth = width;
+
       return this;
     },
 
-    getLineWidth: function() {
-      return this.options.lineWidth;
+    getLineWidth: function( selectionType ) {
+      return this.getStyle( selectionType ).lineWidth;
     },
 
     /* LINE COLOR */
+    setLineColor: function( color, selectionType ) {
 
-    setLineColor: function( color ) {
-      this.options.lineColor = color;
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineColor = color;
+
       return this;
     },
 
-    getLineColor: function() {
-      return this.options.lineColor;
+    getLineColor: function( selectionType ) {
+      return this.getStyle( selectionType ).lineColor;
     },
 
     /* */
 
     /* MARKERS */
+    showMarkers: function( selectionType, redraw ) {
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].markers = true;
 
-    showMarkers: function( skipRedraw ) {
-      this.options.markers = true;
-
-      if ( !skipRedraw && this._drawn ) {
+      if ( redraw && this._drawn ) {
         this.draw();
       }
 
       return this;
     },
 
-    hideMarkers: function( skipRedraw ) {
-      this.options.markers = false;
+    hideMarkers: function( selectionType, redraw ) {
 
-      if ( !skipRedraw && this._drawn ) {
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ].markers = false;
+
+      if ( redraw && this._drawn ) {
         this.draw();
       }
 
       return this;
     },
 
-    markersShown: function() {
-      return this.options.markers;
+    markersShown: function( selectionType ) {
+      return this.getStyle( selectionType ).markers;
     },
-    /*
-		setMarkerType: function(type, skipRedraw) {
-			this.options.markers.type = type;
-			
-			if(!skipRedraw && this._drawn) {
-				this.draw();
-			}
 
-			return this;
-		},
+    areMarkersShown: function() {
+      return this.markersShown.apply( this, arguments );
+    },
 
-		setMarkerZoom: function(zoom, skipRedraw) {
-			this.options.markers.zoom = zoom;
+    isMarkersShown: function() {
+      return this.markersShown.apply( this, arguments );
+    },
 
-			if(!skipRedraw && this._drawn) {
-				this.draw();
-			}
-
-			return this;
-		},
-
-		setMarkerStrokeColor: function(color, skipRedraw) {
-			this.options.markers.strokeColor = color;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-
-		setMarkerStrokeWidth: function(width, skipRedraw) {
-			this.options.markers.strokeWidth = width;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-
-		setMarkerFillColor: function(color, skipRedraw) {
-			this.options.markers.fillColor = color;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-*/
     // Multiple markers
-    setMarkers: function( family ) {
+    setMarkers: function( families, selectionType ) {
       // Family has to be an object
       // Family looks like
       /*
@@ -1430,53 +1448,55 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 				}
 			*/
 
-      this.showMarkers( true );
+      //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
-      if ( !family ) {
+      this.showMarkers( selectionType, true );
 
-        family = [ {
+      if ( !families ) {
+
+        families = [ {
           type: 1,
           zoom: 1,
           points: 'all'
         } ]
-
       }
-      var markerPoints = [];
 
+      var markerPoints = [];
       markerPoints.push( [ 0, Infinity, null ] );
 
-      for ( var i = 0, k = family.length; i < k; i++ ) {
+      for ( var i = 0, k = families.length; i < k; i++ ) {
 
-        this.getMarkerDom( family[ i ] );
-        family[ i ].markerPath = this.getMarkerPath( family[ i ] );
+        this.getMarkerDom( families[ i ] );
+        families[ i ].markerPath = this.getMarkerPath( families[ i ] );
 
-        if ( !family[ i ].points ) {
+        if ( !families[ i ].points ) {
           continue;
         }
 
-        if ( !Array.isArray( family[ i ].points ) ) {
-          family[ i ].points = [ family[ i ].points ];
+        if ( !Array.isArray( families[ i ].points ) ) {
+          families[ i ].points = [ families[ i ].points ];
         }
 
-        for ( var j = 0, l = family[ i ].points.length; j < l; j++ ) {
+        for ( var j = 0, l = families[ i ].points.length; j < l; j++ ) {
 
-          if ( family[ i ].points[ j ] == 'all' ) {
+          if ( families[ i ].points[ j ] == 'all' ) {
 
             markerPoints.push( [ 0, Infinity, i ] );
 
-          } else if ( !Array.isArray( family[ i ].points[ j ] ) ) {
+          } else if ( !Array.isArray( families[ i ].points[ j ] ) ) {
 
-            markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
+            markerPoints.push( [ families[ i ].points[ j ], families[ i ].points[ j ], i ] );
             //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
           } else {
 
-            markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
+            markerPoints.push( [ families[ i ].points[ j ][ 0 ], families[ i ].points[ j ][ 1 ], i ] );
 
           }
         }
       }
 
-      this.markerFamily = family;
+      this.markerFamilies = this.markerFamilies || {};
+      this.markerFamilies[ selectionType || "unselected" ] = families;
 
       // Let's sort if by the first index.
       markerPoints.sort( function( a, b ) { 
@@ -1506,7 +1526,52 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
 			}
 */
-      this.markerPoints = markerPoints;
+      this.markerPoints = this.markerPoints ||  {};
+      this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+    },
+
+    insertMarkers: function() {
+
+      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] ) {
+        return;
+      }
+
+      for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
+        this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
+        this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+        this.currentMarkersSelectionType = this.selectionType;
+      }
+    },
+
+    getMarkerForLegend: function() {
+
+      if ( !this.markerPoints[ this.selectionType ] ) {
+        return;
+      }
+
+      if ( !this.markerForLegend ) {
+
+        var marker = document.createElementNS( this.graph.ns, 'path' );
+        this.setMarkerStyleTo( marker, this.markerFamilies[ 0 ] );
+
+        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
+
+        this.markerForLegend = marker;
+      }
+
+      return this.markerForLegend;
+    },
+
+    eraseMarkers: function() {
+
+      if ( this.currentMarkersSelectionType ) {
+
+        for ( var i in this.markerFamilies[ this.currentMarkersSelectionType ] ) {
+          this.groupMain.removeChild( this.markerFamilies[ this.currentMarkersSelectionType ][ i ].dom );
+        }
+        this.currentMarkersSelectionType = false;
+      }
+
     },
 
     showImpl: function() {
@@ -1656,32 +1721,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       } );
     },
 
-    getMarkerForLegend: function() {
-
-      if ( !this.markerPoints ) {
-        return;
-      }
-
-      if ( !this.markerForLegend ) {
-
-        var marker = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( marker, this.markerFamily[ 0 ] );
-
-        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
-
-        this.markerForLegend = marker;
-      }
-
-      return this.markerForLegend;
-    },
-
-    eraseMarkers: function() {
-
-      for ( var i in this.markerFamily ) {
-        this.markerFamily[ i ].path = "";
-      }
-    },
-
     XIsMonotoneous: function() {
       this.xmonotoneous = true;
       return this;
@@ -1750,18 +1789,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
 
       } );
-    },
-
-    insertMarkers: function() {
-
-      if ( !this.markerFamily ) {
-        return;
-      }
-
-      for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
-        this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-        this.groupMain.appendChild( this.markerFamily[ i ].dom );
-      }
     }
 
   } );
