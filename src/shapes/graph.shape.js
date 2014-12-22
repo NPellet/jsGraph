@@ -101,8 +101,8 @@ define( [], function() {
 
         this._dom.addEventListener( 'dblclick', function( e ) {
 
-          e.preventDefault();
-          e.stopPropagation();
+          //e.preventDefault();
+          // e.stopPropagation();
 
           self.handleDblClick( e );
         } );
@@ -897,9 +897,11 @@ define( [], function() {
       }
     },
 
-    handleDblClick: function() {
+    handleDblClick: function( e ) {
 
       if ( this.options.configurable ) {
+        e.preventDefault();
+        e.stopPropagation();
         this.configure();
       }
     },

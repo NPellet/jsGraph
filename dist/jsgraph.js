@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-4
+ * jsGraph JavaScript Graphing Library v1.10.4-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-22T13:51Z
+ * Date: 2014-12-22T13:54Z
  */
 
 (function( global, factory ) {
@@ -7209,7 +7209,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         this.applyLineStyles();
       } else {
         this.selectionType = selectionType;
-        console.log( 'just apply' )
         this.applyLineStyles();
       }
 
@@ -10765,8 +10764,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         this._dom.addEventListener( 'dblclick', function( e ) {
 
-          e.preventDefault();
-          e.stopPropagation();
+          //e.preventDefault();
+         // e.stopPropagation();
 
           self.handleDblClick( e );
         } );
@@ -11561,9 +11560,11 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
     },
 
-    handleDblClick: function() {
+    handleDblClick: function( e ) {
 
       if ( this.options.configurable ) {
+        e.preventDefault();
+        e.stopPropagation();
         this.configure();
       }
     },

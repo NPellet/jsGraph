@@ -299,7 +299,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         this.applyLineStyles();
       } else {
         this.selectionType = selectionType;
-        console.log( 'just apply' )
         this.applyLineStyles();
       }
 
