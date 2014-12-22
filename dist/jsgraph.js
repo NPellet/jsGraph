@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.3
+ * jsGraph JavaScript Graphing Library v1.10.4-7
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-11T19:06Z
+ * Date: 2014-12-22T19:24Z
  */
 
 (function( global, factory ) {
@@ -4342,6 +4342,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           shape.setLayer( shapeData.layer );
         }
 
+        if ( shapeData.locked ) {
+          shape.lock();
+        }
+
+        if ( shapeData.selectable ) {
+          shape.selectable();
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {
@@ -4354,6 +4362,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
             shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
             shape.set( 'labelSize', shapeData.label[ i ].size, i );
             shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
 
             if ( shapeData.label[ i ].anchor ) {
               shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
@@ -4964,7 +4973,18 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           }
         }
       }
+    },
+
+    uniqueId: function() {
+      // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+        var r = Math.random() * 16 | 0,
+          v = c == 'x' ? r : ( r & 0x3 | 0x8 );
+        return v.toString( 16 );
+      } );
+
     }
+
   } );
 
   function makeSerie( graph, name, options, type, callback ) {
@@ -6901,14 +6921,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       lineStyle: 1,
       flip: false,
       label: "",
+      lineWidth: 1,
 
       markers: false,
       trackMouse: false,
       trackMouseLabel: false,
       trackMouseLabelRouding: 1,
       lineToZero: false,
-
-      lineWidth: 1,
 
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
@@ -6918,14 +6937,28 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     init: function( graph, name, options ) {
 
       var self = this;
+
+      this.selectionType = "unselected";
+      this.markerFamilies = {};
+
       this.graph = graph;
       this.name = name;
-      this.id = Math.random() + Date.now();
+      this.id = this.graph.uniqueId();
+
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
+      this.graph.mapEventEmission( this.options, this ); // Register events
+
+      // Creates an empty style variable
+      this.styles = {};
+
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options );
-
-      this.graph.mapEventEmission( this.options, this );
 
       this.data = [];
       this._isMinOrMax = {
@@ -6971,8 +7004,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.groupMain.appendChild( this.groupMarkerSelected );
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
-
-      this.labels = [];
 
       this.currentAction = false;
 
@@ -7095,7 +7126,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           var x = this.getX( this.data[ k ][ i * 2 ] );
           var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
 
-          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamily[ this.getMarkerCurrentFamily( i ) ], 1 ) );
+          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
@@ -7166,12 +7197,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
     },
 
-    select: function() {
+    select: function( selectionType ) {
+
+      selectionType = selectionType ||  "selected";
+
       this.selected = true;
 
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
+      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        this.selectionType = selectionType;
 
-        this.applyLineStyle( this.lines[ i ] );
+        this.draw();
+        this.applyLineStyles();
+      } else {
+        this.selectionType = selectionType;
+        this.applyLineStyles();
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
@@ -7180,13 +7219,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     unselect: function() {
 
       this.selected = false;
-
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
-
-        this.applyLineStyle( this.lines[ i ] );
+      var selectionType = "unselected";
+      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        this.selectionType = selectionType;
+        this.draw();
+        this.applyLineStyles();
+      } else {
+        this.selectionType = selectionType;
+        this.applyLineStyles();
       }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     degrade: function( pxPerP, options ) {
@@ -7254,9 +7295,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           }
         }
       }
-
-      // Init markers
-      this._markerCurrentFamily = null;
 
       this.detectedPeaks = [];
       this.lastYPeakPicking = false;
@@ -7365,10 +7403,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
     },
 
     _draw_standard: function() {
@@ -7408,6 +7442,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         for ( ; j < m; j += 2 ) {
 
           if ( this.markersShown() ) {
+
             this.getMarkerCurrentFamily( this.counter );
           }
 
@@ -7614,10 +7649,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     getMarkerCurrentFamily: function( k ) {
 
-      for ( var z = 0; z < this.markerPoints.length; z++ ) {
-        if ( this.markerPoints[ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[  z ][ 1 ] >= k ) { // Verify that it's in the boundary
-            this.markerCurrentFamily = this.markerPoints[ z ][ 2 ];
+      for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
+        if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
+          if ( this.markerPoints[ this.selectionType ][  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+            this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
           }
         } else {
           break;
@@ -7754,7 +7789,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
-        drawMarkerXY( this.markerFamily[ this.markerCurrentFamily ], xpx, ypx );
+        drawMarkerXY( this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
     },
@@ -7799,6 +7834,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
       if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      } else {
+        line.removeAttribute( 'stroke-dasharray' );
       }
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
@@ -7885,46 +7922,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       return family.dom;
-    },
-
-    /* */
-    handleLabelMove: function( x, y ) {
-
-      var label = this.labelDragging;
-
-      if ( !label )
-        return;
-
-      label.labelX += x - label.draggingIniX;
-      label.draggingIniX = x;
-
-      label.labelY += y - label.draggingIniY;
-      label.draggingIniY = y;
-
-      label.rect.setAttribute( 'x', label.labelX );
-      label.rect.setAttribute( 'y', label.labelY - this.graph.options.fontSize );
-      label.labelDom.setAttribute( 'x', label.labelX );
-      label.labelDom.setAttribute( 'y', label.labelY );
-
-      label.labelLine.setAttribute( 'x1', label.labelX + label.labelDom.getComputedTextLength() / 2 );
-      label.labelLine.setAttribute( 'y1', label.labelY - this.graph.options.fontSize / 2 );
-
-    },
-
-    handleLabelMainMove: function( x, y ) {
-
-      if ( this.options.labelMoveFollowCurve || 1 == 1 ) {
-        var label = this.labelDragging;
-        label.x = this.getXAxis().getVal( x - this.graph.options.paddingLeft );
-
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
-        this.repositionLabel( label, true );
-      }
-    },
-
-    handleLabelUp: function() {
-
-      this.labelDragging = false;
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -8091,7 +8088,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         i, j, max = -Infinity,
         initJ, maxJ;
 
-      console.log( start2, end2, v1, v2 );
+      //      console.log( start2, end2, v1, v2 );
 
       if ( !v1 ) {
         start2 = this.minX;
@@ -8156,18 +8153,27 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     /* LINE STYLE */
 
-    setLineStyle: function( number ) {
-      this.options.lineStyle = number;
+    setStyle: function( style, selectionType ) {
+
+      this.styles[ selectionType ] = style;
+    },
+
+    setLineStyle: function( number, selectionType ) {
+
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineStyle = number;
+
       return this;
     },
 
-    getLineStyle: function() {
-      return this.options.lineStyle;
+    getLineStyle: function( selectionType ) {
+      return this.getStyle( selectionType ).lineStyle;
     },
 
-    getLineDashArray: function() {
+    getLineDashArray: function( selectionType ) {
 
-      switch ( this.options.lineStyle ) {
+      switch ( this.getStyle( selectionType ).lineStyle ) {
 
         case 2:
           return "1, 1";
@@ -8211,104 +8217,93 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           break;
 
         default:
-          return this.options.lineStyle;
+          return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
           break;
       }
     },
 
+    getStyle: function( selectionType ) {
+
+      var s = this.styles[ selectionType || this.selectionType || "unselected" ];
+      if ( s ) {
+        return $.extend( {}, this.styles.unselected, s );
+      } else {
+        console.warn( "Style " + ( selectionType || this.selectionType || "unselected" ) + " does not exist. Returning unselected style" );
+      }
+
+      return this.styles.unselected;
+    },
+
     /*  */
 
-    setLineWidth: function( width ) {
-      this.options.lineWidth = width;
+    setLineWidth: function( width, selectionType ) {
+
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineWidth = width;
+
       return this;
     },
 
-    getLineWidth: function() {
-      return this.options.lineWidth;
+    getLineWidth: function( selectionType ) {
+      return this.getStyle( selectionType ).lineWidth;
     },
 
     /* LINE COLOR */
+    setLineColor: function( color, selectionType ) {
 
-    setLineColor: function( color ) {
-      this.options.lineColor = color;
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].lineColor = color;
+
       return this;
     },
 
-    getLineColor: function() {
-      return this.options.lineColor;
+    getLineColor: function( selectionType ) {
+      return this.getStyle( selectionType ).lineColor;
     },
 
     /* */
 
     /* MARKERS */
+    showMarkers: function( selectionType, redraw ) {
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+      this.styles[ selectionType ].markers = true;
 
-    showMarkers: function( skipRedraw ) {
-      this.options.markers = true;
-
-      if ( !skipRedraw && this._drawn ) {
+      if ( redraw && this._drawn ) {
         this.draw();
       }
 
       return this;
     },
 
-    hideMarkers: function( skipRedraw ) {
-      this.options.markers = false;
+    hideMarkers: function( selectionType, redraw ) {
 
-      if ( !skipRedraw && this._drawn ) {
+      selectionType = selectionType ||  "unselected";
+      this.styles[ selectionType ].markers = false;
+
+      if ( redraw && this._drawn ) {
         this.draw();
       }
 
       return this;
     },
 
-    markersShown: function() {
-      return this.options.markers;
+    markersShown: function( selectionType ) {
+      return this.getStyle( selectionType ).markers;
     },
-    /*
-		setMarkerType: function(type, skipRedraw) {
-			this.options.markers.type = type;
-			
-			if(!skipRedraw && this._drawn) {
-				this.draw();
-			}
 
-			return this;
-		},
+    areMarkersShown: function() {
+      return this.markersShown.apply( this, arguments );
+    },
 
-		setMarkerZoom: function(zoom, skipRedraw) {
-			this.options.markers.zoom = zoom;
+    isMarkersShown: function() {
+      return this.markersShown.apply( this, arguments );
+    },
 
-			if(!skipRedraw && this._drawn) {
-				this.draw();
-			}
-
-			return this;
-		},
-
-		setMarkerStrokeColor: function(color, skipRedraw) {
-			this.options.markers.strokeColor = color;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-
-		setMarkerStrokeWidth: function(width, skipRedraw) {
-			this.options.markers.strokeWidth = width;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-
-		setMarkerFillColor: function(color, skipRedraw) {
-			this.options.markers.fillColor = color;
-
-			if(!skipRedraw && this._drawn)
-				this.draw();
-		},
-*/
     // Multiple markers
-    setMarkers: function( family ) {
+    setMarkers: function( families, selectionType ) {
       // Family has to be an object
       // Family looks like
       /*
@@ -8321,53 +8316,55 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 				}
 			*/
 
-      this.showMarkers( true );
+      //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
-      if ( !family ) {
+      this.showMarkers( selectionType, true );
 
-        family = [ {
+      if ( !families ) {
+
+        families = [ {
           type: 1,
           zoom: 1,
           points: 'all'
         } ]
-
       }
-      var markerPoints = [];
 
+      var markerPoints = [];
       markerPoints.push( [ 0, Infinity, null ] );
 
-      for ( var i = 0, k = family.length; i < k; i++ ) {
+      for ( var i = 0, k = families.length; i < k; i++ ) {
 
-        this.getMarkerDom( family[ i ] );
-        family[ i ].markerPath = this.getMarkerPath( family[ i ] );
+        this.getMarkerDom( families[ i ] );
+        families[ i ].markerPath = this.getMarkerPath( families[ i ] );
 
-        if ( !family[ i ].points ) {
+        if ( !families[ i ].points ) {
           continue;
         }
 
-        if ( !Array.isArray( family[ i ].points ) ) {
-          family[ i ].points = [ family[ i ].points ];
+        if ( !Array.isArray( families[ i ].points ) ) {
+          families[ i ].points = [ families[ i ].points ];
         }
 
-        for ( var j = 0, l = family[ i ].points.length; j < l; j++ ) {
+        for ( var j = 0, l = families[ i ].points.length; j < l; j++ ) {
 
-          if ( family[ i ].points[ j ] == 'all' ) {
+          if ( families[ i ].points[ j ] == 'all' ) {
 
             markerPoints.push( [ 0, Infinity, i ] );
 
-          } else if ( !Array.isArray( family[ i ].points[ j ] ) ) {
+          } else if ( !Array.isArray( families[ i ].points[ j ] ) ) {
 
-            markerPoints.push( [ family[ i ].points[ j ], family[ i ].points[ j ], i ] );
+            markerPoints.push( [ families[ i ].points[ j ], families[ i ].points[ j ], i ] );
             //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
           } else {
 
-            markerPoints.push( [ family[ i ].points[ j ][ 0 ], family[ i ].points[ j ][ 1 ], i ] );
+            markerPoints.push( [ families[ i ].points[ j ][ 0 ], families[ i ].points[ j ][ 1 ], i ] );
 
           }
         }
       }
 
-      this.markerFamily = family;
+      this.markerFamilies = this.markerFamilies || {};
+      this.markerFamilies[ selectionType || "unselected" ] = families;
 
       // Let's sort if by the first index.
       markerPoints.sort( function( a, b ) { 
@@ -8397,168 +8394,35 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
 			}
 */
-      this.markerPoints = markerPoints;
+      this.markerPoints = this.markerPoints ||  {};
+      this.markerPoints[ selectionType || "unselected" ] = markerPoints;
     },
 
-    showImpl: function() {
-      this.showPeakPicking();
-    },
+    insertMarkers: function() {
 
-    hideImpl: function() {
-      this.hidePeakPicking();
-    },
-
-    addLabelX: function( x, label ) {
-      this.addLabelObj( {
-        x: x,
-        label: label
-      } );
-    },
-
-    addLabel: function( x, y, label ) {
-      this.addLabelObj( {
-        x: x,
-        y: y,
-        label: label
-      } );
-    },
-
-    repositionLabel: function( label, recalculateLabel ) {
-      var x = !this.getFlip() ? this.getX( label.x ) : this.getY( label.x ),
-        y = !this.getFlip() ? this.getY( label.y ) : this.getX( label.y );
-
-      var nan = ( isNaN( x ) || isNaN( y ) );
-      label.group.setAttribute( 'display', nan ? 'none' : 'block' );
-
-      if ( recalculateLabel ) {
-        label.labelDom.textContent = this.options.label
-          .replace( '<x>', label.x.toFixed( this.options.trackMouseLabelRouding ) || '' )
-          .replace( '<label>', label.label || '' );
-
-        label.rect.setAttribute( 'width', label.labelDom.getComputedTextLength() + 2 );
-      }
-      if ( nan )
+      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] ) {
         return;
-      label.group.setAttribute( 'transform', 'translate(' + x + ' ' + y + ')' );
-    },
-
-    addLabelObj: function( label ) {
-      var self = this,
-        group, labelDom, rect, path;
-
-      this.labels.push( label );
-      if ( label.x && !label.y ) {
-        label.y = this.handleMouseMove( label.x, false ).interpolatedY;
       }
 
-      group = document.createElementNS( this.graph.ns, 'g' );
-      this.groupLabels.appendChild( group );
-
-      labelDom = document.createElementNS( this.graph.ns, 'text' );
-      labelDom.setAttribute( 'x', 5 );
-      labelDom.setAttribute( 'y', -5 );
-
-      var labelLine = document.createElementNS( this.graph.ns, 'line' );
-      labelLine.setAttribute( 'stroke', 'black' );
-      labelLine.setAttribute( 'x2', 0 );
-      labelLine.setAttribute( 'x1', 0 );
-
-      group.appendChild( labelLine );
-      group.appendChild( labelDom );
-      rect = document.createElementNS( this.graph.ns, 'rect' );
-      rect.setAttribute( 'x', 5 );
-      rect.setAttribute( 'y', -this.graph.options.fontSize - 5 );
-      rect.setAttribute( 'width', labelDom.getComputedTextLength() + 2 );
-      rect.setAttribute( 'height', this.graph.options.fontSize + 2 );
-      rect.setAttribute( 'fill', 'white' );
-      rect.style.cursor = 'move';
-      labelDom.style.cursor = 'move';
-
-      path = document.createElementNS( this.graph.ns, 'path' );
-      path.setAttribute( 'd', 'M 0 -4 l 0 8 m -4 -4 l 8 0' );
-      path.setAttribute( 'stroke-width', '1px' );
-      path.setAttribute( 'stroke', 'black' );
-
-      path.style.cursor = 'move';
-
-      group.insertBefore( rect, labelDom );
-
-      group.appendChild( path );
-
-      label.labelLine = labelLine;
-      label.group = group;
-      label.rect = rect;
-      label.labelDom = labelDom;
-      label.path = path;
-
-      label.labelY = -5;
-      label.labelX = 5;
-
-      this.bindLabelHandlers( label );
-      this.repositionLabel( label, true );
-    },
-
-    bindLabelHandlers: function( label ) {
-      var self = this;
-
-      function clickHandler( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-
-        self.graph.currentAction = 'labelDragging';
-        e.stopPropagation();
-        label.dragging = true;
-
-        var coords = self.graph._getXY( e );
-        label.draggingIniX = coords.x;
-        label.draggingIniY = coords.y;
-        self.labelDragging = label;
+      for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
+        this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
+        this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+        this.currentMarkersSelectionType = this.selectionType;
       }
-
-      function clickHandlerMain( e ) {
-
-        if ( self.graph.currentAction !== false ) {
-          return;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-        self.graph.currentAction = 'labelDraggingMain';
-        self.labelDragging = label;
-      }
-
-      label.labelDom.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'mousedown', clickHandler );
-      label.rect.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.labelDom.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
-
-      label.path.addEventListener( 'mousedown', clickHandlerMain );
-      label.path.addEventListener( 'click', function( e ) {
-        e.preventDefault();
-        e.stopPropagation();
-      } );
     },
 
     getMarkerForLegend: function() {
 
-      if ( !this.markerPoints ) {
+      if ( !this.markerPoints[ this.selectionType ] ) {
         return;
       }
 
       if ( !this.markerForLegend ) {
 
         var marker = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( marker, this.markerFamily[ 0 ] );
+        this.setMarkerStyleTo( marker, this.markerFamilies[ 0 ] );
 
-        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamily[ 0 ] ) );
+        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
 
         this.markerForLegend = marker;
       }
@@ -8568,9 +8432,22 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     eraseMarkers: function() {
 
-      for ( var i in this.markerFamily ) {
-        this.markerFamily[ i ].path = "";
+      if ( this.currentMarkersSelectionType ) {
+
+        for ( var i in this.markerFamilies[ this.currentMarkersSelectionType ] ) {
+          this.groupMain.removeChild( this.markerFamilies[ this.currentMarkersSelectionType ][ i ].dom );
+        }
+        this.currentMarkersSelectionType = false;
       }
+
+    },
+
+    showImpl: function() {
+      this.showPeakPicking();
+    },
+
+    hideImpl: function() {
+      this.hidePeakPicking();
     },
 
     XIsMonotoneous: function() {
@@ -8641,18 +8518,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
 
       } );
-    },
-
-    insertMarkers: function() {
-
-      if ( !this.markerFamily ) {
-        return;
-      }
-
-      for ( var i = 0, l = this.markerFamily.length; i < l; i++ ) {
-        this.markerFamily[ i ].dom.setAttribute( 'd', this.markerFamily[ i ].path );
-        this.groupMain.appendChild( this.markerFamily[ i ].dom );
-      }
     }
 
   } );
@@ -9646,7 +9511,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
         continuous;
 
       this.empty();
-      this.shapesPositions = [];
+      this.shapesDetails = [];
       this.shapes = [];
 
       if ( !data instanceof Array ) {
@@ -9715,11 +9580,15 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       if ( mode === undefined ) {
         mode = "unselected"
       }
+      /*
+      if( ! this.styles[ mode ] ) {
+
+      }
 
       if ( mode !== "selected" && mode !== "unselected" ) {
         throw "Style mode is not correct. Should be selected or unselected";
       }
-
+*/
       this.styles[ mode ] = this.styles[ mode ] ||  {};
       this.styles[ mode ].all = all;
       this.styles[ mode ].modifiers = modifiers;
@@ -9797,7 +9666,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         }
 
-        this.shapesPositions[ j / 2 ] = [ xpx, ypx ];
+        this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
+        this.shapesDetails[ j / 2 ][ 0 ] = xpx;
+        this.shapesDetails[ j / 2 ][ 1 ] = ypx;
         keys.push( j / 2 );
 
         //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
@@ -9994,7 +9865,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
           shape = this.shapes[ index ];
         }
 
-        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesPositions[ index ][ 0 ] + ', ' + this.shapesPositions[ index ][ 1 ] + ')' );
+        shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
 
         styles[ index ] = style;
       }
@@ -10007,6 +9878,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
       var styles = this.getStyle( selection, index );
 
       for ( var i in styles ) {
+
         for ( j in styles[ i ] ) {
 
           if ( j !== "shape" ) {
@@ -10122,19 +9994,30 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     },
 
-    selectPoint: function( index, setOn ) {
+    unselectPoint: function( index ) {
+      this.selectPoint( index, false );
+
+    },
+
+    selectPoint: function( index, setOn, selectionType ) {
+
+      if ( typeof setOn == "string" ) {
+        selectionType = setOn;
+        setOn = undefined;
+      }
 
       if ( Array.isArray( index ) ) {
         return this.selectPoints( index );
       }
 
-      if ( this.shapes[ index ] ) {
+      if ( this.shapes[ index ] && this.shapesDetails[ index ] ) {
 
-        if ( ( this.shapes[ index ]._selected || setOn === false ) && setOn !== true ) {
+        if ( ( this.shapesDetails[ index ][ 2 ] || setOn === false ) && setOn !== true ) {
 
-          this.shapes[ index ]._selected = false;
+          var selectionStyle = this.shapesDetails[ index ][ 2 ];
+          this.shapesDetails[ index ][ 2 ] = false;
 
-          var allStyles = this.getStyle( "selected", index );
+          var allStyles = this.getStyle( selectionStyle, index );
 
           for ( var i in allStyles[ index ] ) {
             this.shapes[ index ].removeAttribute( i );
@@ -10144,7 +10027,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
         } else {
 
-          this.applyStyle( "selected", index );
+          selectionType = selectionType ||  "selected";
+          this.shapesDetails[ index ][ 2 ] = selectionType;
+          this.applyStyle( selectionType, index );
 
         }
 
@@ -10643,7 +10528,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.classes = [];
 
       this._movable = true;
-      this._selectable = true;
+      this._selectable = false;
 
       if ( this.options.masker ) {
 
@@ -10699,8 +10584,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         this._dom.addEventListener( 'dblclick', function( e ) {
 
-          e.preventDefault();
-          e.stopPropagation();
+          //e.preventDefault();
+          // e.stopPropagation();
 
           self.handleDblClick( e );
         } );
@@ -10970,6 +10855,9 @@ build['./shapes/graph.shape'] = ( function( ) {
     setLabelAngle: function( index ) {
       if ( this.label ) this._setLabelAngle( index );
     },
+    setLabelBaseline: function( index ) {
+      if ( this.label ) this._setLabelBaseline( index );
+    },
 
     _getPosition: function( value, relTo ) {
 
@@ -10990,8 +10878,8 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     toggleLabel: function( labelId, visible ) {
-      if ( this.labelNumber && this.label[ i ] ) {
-        this.label[ i ].setAttribute( 'display', visible ? 'block' : 'none' );
+      if ( this.labelNumber && this.label[ labelId ] ) {
+        this.label[ labelId ].setAttribute( 'display', visible ? 'block' : 'none' );
       }
     },
 
@@ -11096,7 +10984,8 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.label[ labelIndex ].setAttribute( 'y', pos.y );
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-      //this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.get( 'labelBaseline', labelIndex ) );
 
     },
 
@@ -11109,6 +10998,11 @@ build['./shapes/graph.shape'] = ( function( ) {
       var x = this.label[ labelIndex ].getAttribute( 'x' );
       var y = this.label[ labelIndex ].getAttribute( 'y' );
       this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    },
+
+    _setLabelBaseline: function( labelIndex, angle ) {
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
     },
 
     _forceLabelAnchor: function( i ) {
@@ -11144,6 +11038,14 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     setMovable: function( bln ) {
       this._movable = bln;
+    },
+
+    unselectable: function() {
+      this._selectable = false;
+    },
+
+    selectable: function() {
+      this._selectable = true;
     },
 
     select: function( mute ) {
@@ -11487,9 +11389,13 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
     },
 
-    handleDblClick: function() {
+    handleDblClick: function( e ) {
 
-      this.configure();
+      if ( this.options.configurable ) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.configure();
+      }
     },
 
     configure: function() {
@@ -11572,15 +11478,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {

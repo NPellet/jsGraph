@@ -45,7 +45,7 @@ define( [], function() {
       this.classes = [];
 
       this._movable = true;
-      this._selectable = true;
+      this._selectable = false;
 
       if ( this.options.masker ) {
 
@@ -101,8 +101,8 @@ define( [], function() {
 
         this._dom.addEventListener( 'dblclick', function( e ) {
 
-          e.preventDefault();
-          e.stopPropagation();
+          //e.preventDefault();
+          // e.stopPropagation();
 
           self.handleDblClick( e );
         } );
@@ -372,6 +372,9 @@ define( [], function() {
     setLabelAngle: function( index ) {
       if ( this.label ) this._setLabelAngle( index );
     },
+    setLabelBaseline: function( index ) {
+      if ( this.label ) this._setLabelBaseline( index );
+    },
 
     _getPosition: function( value, relTo ) {
 
@@ -392,8 +395,8 @@ define( [], function() {
     },
 
     toggleLabel: function( labelId, visible ) {
-      if ( this.labelNumber && this.label[ i ] ) {
-        this.label[ i ].setAttribute( 'display', visible ? 'block' : 'none' );
+      if ( this.labelNumber && this.label[ labelId ] ) {
+        this.label[ labelId ].setAttribute( 'display', visible ? 'block' : 'none' );
       }
     },
 
@@ -498,7 +501,8 @@ define( [], function() {
         this.label[ labelIndex ].setAttribute( 'y', pos.y );
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
-      //this.label[labelIndex].setAttribute('dominant-baseline', pos.y < parsedCurrPos.y ? 'no-change' : (pos.y == parsedCurrPos.y ? 'middle' : 'hanging'));
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.get( 'labelBaseline', labelIndex ) );
 
     },
 
@@ -511,6 +515,11 @@ define( [], function() {
       var x = this.label[ labelIndex ].getAttribute( 'x' );
       var y = this.label[ labelIndex ].getAttribute( 'y' );
       this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    },
+
+    _setLabelBaseline: function( labelIndex, angle ) {
+
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
     },
 
     _forceLabelAnchor: function( i ) {
@@ -546,6 +555,14 @@ define( [], function() {
 
     setMovable: function( bln ) {
       this._movable = bln;
+    },
+
+    unselectable: function() {
+      this._selectable = false;
+    },
+
+    selectable: function() {
+      this._selectable = true;
     },
 
     select: function( mute ) {
@@ -889,9 +906,13 @@ define( [], function() {
       }
     },
 
-    handleDblClick: function() {
+    handleDblClick: function( e ) {
 
-      this.configure();
+      if ( this.options.configurable ) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.configure();
+      }
     },
 
     configure: function() {
@@ -974,15 +995,15 @@ define( [], function() {
 
     isLocked: function() {
 
-      return this.options.locked ||  this.graph.shapesLocked;
+      return this.locked ||  this.graph.shapesLocked;
     },
 
     lock: function() {
-      this.options.locked = true;
+      this.locked = true;
     },
 
     unlock: function() {
-      this.options.locked = false;
+      this.locked = false;
     },
 
     isBindable: function() {

@@ -71,10 +71,8 @@ define( function() {
 							strokeColor: 'green'
 
 						}
-
 					]
-
-					);
+				);
 					
 		
 

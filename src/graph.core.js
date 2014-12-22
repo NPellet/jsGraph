@@ -953,6 +953,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           shape.setLayer( shapeData.layer );
         }
 
+        if ( shapeData.locked ) {
+          shape.lock();
+        }
+
+        if ( shapeData.selectable ) {
+          shape.selectable();
+        }
+
         if ( shapeData.label ) {
 
           if ( !( shapeData.label instanceof Array ) ) {
@@ -965,6 +973,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
             shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
             shape.set( 'labelSize', shapeData.label[ i ].size, i );
             shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
 
             if ( shapeData.label[ i ].anchor ) {
               shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
@@ -1575,7 +1584,18 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           }
         }
       }
+    },
+
+    uniqueId: function() {
+      // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
+        var r = Math.random() * 16 | 0,
+          v = c == 'x' ? r : ( r & 0x3 | 0x8 );
+        return v.toString( 16 );
+      } );
+
     }
+
   } );
 
   function makeSerie( graph, name, options, type, callback ) {
