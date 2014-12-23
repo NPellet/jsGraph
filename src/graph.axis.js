@@ -357,90 +357,100 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     getUnitPerTick: function( px, nbTick, valrange ) {
 
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
-      if ( !nbTick )
+      if ( !nbTick ) {
         nbTick = px / 10;
-      else
+      } else {
         nbTick = Math.min( nbTick, px / 10 );
+      }
 
       // So now the question is, how many units per ticks ?
       // Say, we have 0.0004 unit per tick
       var unitPerTick = valrange / nbTick;
 
-      if ( this.options.unitModification == 'time' ) {
-        // Determine the time domain using max.
+      switch ( this.options.unitModification ) {
 
-        var max = this.getModifiedValue( this.getMaxValue() ),
-          units = [
-            [ 60, 'min' ],
-            [ 3600, 'h' ],
-            [ 3600 * 24, 'd' ]
-          ];
-        if ( max < 3600 ) { // to minutes
-          umin = 0;
-        } else if ( max < 3600 * 24 ) {
-          umin = 1;
-        } else {
-          umin = 2;
-        }
+        case 'time':
+        case 'time:min.sec':
 
-        var breaked = false;
-        for ( var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
-          for ( var k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
-            if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
-              breaked = true;
+          var max = this.getModifiedValue( this.getMaxValue() ),
+            units = [
+              [ 60, 'min' ],
+              [ 3600, 'h' ],
+              [ 3600 * 24, 'd' ]
+            ];
+
+          if ( max < 3600 ) { // to minutes
+            umin = 0;
+          } else if ( max < 3600 * 24 ) {
+            umin = 1;
+          } else {
+            umin = 2;
+          }
+
+          var breaked = false;
+          for ( var i = 0, l = this.unitModificationTimeTicks.length; i < l; i++ ) {
+            for ( var k = 0, m = this.unitModificationTimeTicks[ i ][ 1 ].length; k < m; k++ ) {
+              if ( unitPerTick < this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ] ) {
+                breaked = true;
+                break;
+              }
+            }
+            if ( breaked ) {
               break;
             }
           }
-          if ( breaked )
-            break;
-        }
 
-        //i and k contain the good variable;
-        if ( i !== this.unitModificationTimeTicks.length )
-          unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
-        else
-          unitPerTickCorrect = 1;
-
-      } else {
-        // We take the log
-        var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
-        /*
-					Example:
-						13'453 => Math.log10() = 4.12 => 4
-						0.0000341 => Math.log10() = -4.46 => -5
-				*/
-
-        var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
-
-        /*
-					Example:
-						13'453 (4) => 1.345
-						0.0000341 (-5) => 3.41
-				*/
-
-        this.decimals = -decimals;
-
-        var possibleTicks = [ 1, 2, 5, 10 ];
-        var closest = false;
-        for ( var i = possibleTicks.length - 1; i >= 0; i-- )
-          if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
-            closest = possibleTicks[ i ];
+          //i and k contain the good variable;
+          if ( i !== this.unitModificationTimeTicks.length ) {
+            unitPerTickCorrect = this.unitModificationTimeTicks[ i ][ 0 ] * this.unitModificationTimeTicks[ i ][ 1 ][ k ];
+          } else {
+            unitPerTickCorrect = 1;
           }
 
-          // Ok now closest is the number of unit per tick in the natural number
-          /*
-					Example:
-						13'453 (4) (1.345) => 1
-						0.0000341 (-5) (3.41) => 5 
-				*/
+          break;
 
-          // Let's scale it back
-        var unitPerTickCorrect = closest * Math.pow( 10, decimals );
-        /*
-					Example:
-						13'453 (4) (1.345) (1) => 10'000
-						0.0000341 (-5) (3.41) (5) => 0.00005
-				*/
+        default:
+
+          // We take the log
+          var decimals = Math.floor( Math.log( unitPerTick ) / Math.log( 10 ) );
+          /*
+  					Example:
+  						13'453 => Math.log10() = 4.12 => 4
+  						0.0000341 => Math.log10() = -4.46 => -5
+  				*/
+
+          var numberToNatural = unitPerTick * Math.pow( 10, -decimals );
+
+          /*
+  					Example:
+  						13'453 (4) => 1.345
+  						0.0000341 (-5) => 3.41
+  				*/
+
+          this.decimals = -decimals;
+
+          var possibleTicks = [ 1, 2, 5, 10 ];
+          var closest = false;
+          for ( var i = possibleTicks.length - 1; i >= 0; i-- )
+            if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
+              closest = possibleTicks[ i ];
+            }
+
+            // Ok now closest is the number of unit per tick in the natural number
+            /*
+  					Example:
+  						13'453 (4) (1.345) => 1
+  						0.0000341 (-5) (3.41) => 5 
+  				*/
+
+            // Let's scale it back
+          var unitPerTickCorrect = closest * Math.pow( 10, decimals );
+          /*
+  					Example:
+  						13'453 (4) (1.345) (1) => 10'000
+  						0.0000341 (-5) (3.41) (5) => 0.00005
+  				*/
+          break;
       }
 
       var nbTicks = valrange / unitPerTickCorrect;
@@ -800,18 +810,27 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     getModifiedValue: function( value ) {
-      if ( this.options.ticklabelratio )
+      if ( this.options.ticklabelratio ) {
         value *= this.options.ticklabelratio;
+      }
 
-      if ( this.options.shiftToZero )
+      if ( this.options.shiftToZero ) {
         value -= this.getMinValue() * ( this.options.ticklabelratio || 1 );
+      }
+
       return value;
     },
 
     modifyUnit: function( value, mode ) {
+
+      var text = "";
+      var incr = this.incrTick;
+
       switch ( mode ) {
+
         case 'time': // val must be in seconds => transform in hours / days / months
           var max = this.getModifiedValue( this.getMaxValue() ),
+            first,
             units = [
               [ 60, 'min' ],
               [ 3600, 'h' ],
@@ -824,31 +843,35 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
           } else if ( max < 3600 * 24 * 30 ) {
             umin = 2;
           }
+
+          if ( !units[ umin ] ) {
+            return false;
+          }
+
+          value = value / units[ umin ][ 0 ];
+          var valueRounded = Math.floor( value );
+          text = valueRounded + units[ umin ][ 1 ];
+
+          // Addind lower unit for precision
+          umin--;
+          while ( incr < 1 * units[ umin + 1 ][ 0 ] && umin > -1 ) {
+
+            first = false;
+            value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
+            valueRounded = Math.round( value );
+            text += " " + valueRounded + units[ umin ][ 1 ];
+            umin--;
+          }
+
           break;
-      }
 
-      if ( !units[ umin ] ) {
-        return false;
-      }
-
-      var incr = this.incrTick;
-      var text = "",
-        valueRounded;
-
-      value = value / units[ umin ][ 0 ];
-
-      valueRounded = Math.floor( value );
-
-      text = valueRounded + units[ umin ][ 1 ];
-      umin--;
-
-      while ( incr < 1 * units[ umin + 1 ][ 0 ] && umin > -1 ) {
-
-        first = false;
-        value = ( value - valueRounded ) * units[ umin + 1 ][ 0 ] / units[ umin ][ 0 ];
-        valueRounded = Math.round( value );
-        text += " " + valueRounded + units[ umin ][ 1 ];
-        umin--;
+        case 'time:min.sec':
+          value = value / 60;
+          var valueRounded = Math.floor( value );
+          var s = ( Math.round( ( value - valueRounded ) * 60 ) + "" );
+          s = s.length == 1 ? '0' + s : s;
+          text = valueRounded + "." + s;
+          break;
       }
 
       return text;
