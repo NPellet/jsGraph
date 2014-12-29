@@ -33,10 +33,15 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
     },
 
-    drawTick: function( value, label, scaling, options ) {
+    drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks;
-      var tick = document.createElementNS( this.graph.ns, 'line' ),
+      var tick = document.createElementNS( this.graph.ns, 'line' );
+
+      if ( forcedPos !== undefined ) {
+        val = forcedPos;
+      } else {
         val = this.getPos( value );
+      }
 
       if ( val == undefined ) {
         return;
@@ -75,6 +80,8 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
         this.groupTickLabels.appendChild( tickLabel );
       }
       this.ticks.push( tick );
+
+      return [ tick, tickLabel ];
     },
 
     drawSpecifics: function() {

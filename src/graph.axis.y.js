@@ -38,11 +38,16 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       return ( this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
     },
 
-    drawTick: function( value, label, scaling, options ) {
+    drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks,
         tickLabel,
-        labelWidth = 0,
+        labelWidth = 0;
+
+      if ( forcedPos !== undefined ) {
+        pos = forcedPos;
+      } else {
         pos = this.getPos( value );
+      }
 
       if ( pos == undefined )
         return;

@@ -520,38 +520,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     _draw: function() { // Redrawing of the axis
       var visible;
 
-      switch ( this.options.tickPosition ) {
-        case 3:
-          this.tickPx1 = -2;
-          this.tickPx2 = 0;
-          break;
-
-        case 2:
-          this.tickPx1 = -1;
-          this.tickPx2 = 1;
-          break;
-
-        case 1:
-          this.tickPx1 = 0;
-          this.tickPx2 = 2;
-          break;
-      }
-
-      // Remove all ticks
-      while ( this.groupTicks.firstChild )
-        this.groupTicks.removeChild( this.groupTicks.firstChild );
-
-      // Remove all ticks
-      while ( this.groupTickLabels.firstChild )
-        this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
-
-      // Remove all grids
-      while ( this.groupGrids.firstChild )
-        this.groupGrids.removeChild( this.groupGrids.firstChild );
+      this.drawInit();
 
       if ( this.currentAxisMin == undefined || !this.currentAxisMax == undefined ) {
         this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
       }
+
+      //   this.setSlaveAxesBoundaries();
 
       // The data min max is stored in this.dataMin, this.dataMax
 
@@ -573,7 +548,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.line.setAttribute( 'display', 'block' );
 
       if ( !this.options.hideTicks ) {
-        if ( !this.options.logScale ) {
+
+        if ( this.linkedToAxis ) { // px defined, linked to another axis
+
+          var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+
+        } else if ( !this.options.logScale ) {
           // So the setting is: How many ticks in total ? Then we have to separate it
 
           if ( this.options.scientificTicks ) {
@@ -621,6 +601,41 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return widthHeight + ( label ? 20 : 0 );
     },
 
+    drawInit: function() {
+
+      switch ( this.options.tickPosition ) {
+        case 3:
+          this.tickPx1 = -2;
+          this.tickPx2 = 0;
+          break;
+
+        case 2:
+          this.tickPx1 = -1;
+          this.tickPx2 = 1;
+          break;
+
+        case 1:
+          this.tickPx1 = 0;
+          this.tickPx2 = 2;
+          break;
+      }
+
+      // Remove all ticks
+      while ( this.groupTicks.firstChild ) {
+        this.groupTicks.removeChild( this.groupTicks.firstChild );
+      }
+
+      // Remove all ticks
+      while ( this.groupTickLabels.firstChild ) {
+        this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
+      }
+
+      // Remove all grids
+      while ( this.groupGrids.firstChild ) {
+        this.groupGrids.removeChild( this.groupGrids.firstChild );
+      }
+    },
+
     drawLinearTicksWrapper: function( widthPx, valrange ) {
 
       var nbTicks1 = this.getNbTicksPrimary();
@@ -666,22 +681,30 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.resetTicks();
 
       while ( incrTick < max ) {
+
         loop++;
-        if ( loop > 200 )
+        if ( loop > 200 ) {
           break;
+        }
+
         if ( secondary ) {
           subIncrTick = incrTick + secondaryIncr;
           //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
           var loop2 = 0;
+
           while ( subIncrTick < incrTick + unitPerTick ) {
             loop2++;
-            if ( loop2 > 100 )
+            if ( loop2 > 100 ) {
               break;
+            }
+
             if ( subIncrTick < min || subIncrTick > max ) {
               subIncrTick += secondaryIncr;
               continue;
             }
-            this.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+
+            this.drawTickWrapper( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+
             subIncrTick += secondaryIncr;
           }
         }
@@ -691,7 +714,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
           continue;
         }
 
-        this.drawTick( incrTick, true, 4 );
+        this.drawTickWrapper( incrTick, true, 4 );
         incrTick += primary[ 0 ];
       }
 
@@ -725,14 +748,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       while ( ( val = incr * Math.pow( 10, pow ) ) < max ) {
         if ( incr == 1 ) { // Superior power
           if ( val > min )
-            this.drawTick( val, true, 5, optsMain );
+            this.drawTickWrapper( val, true, 5, optsMain );
         }
         if ( incr == 10 ) {
           incr = 1;
           pow++;
         } else {
           if ( incr != 1 && val > min )
-            this.drawTick( val, true, 2, {
+            this.drawTickWrapper( val, true, 2, {
               overwrite: incr,
               fontSize: '0.6em'
             } );
@@ -740,6 +763,55 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         }
       }
       return 5;
+    },
+
+    drawTickWrapper: function( value, label, scaling, options ) {
+
+      //var pos = this.getPos( value );
+
+      this.drawTick( value, label, scaling, options );
+    },
+
+    linkToAxis: function( axis, scalingFunction, decimals ) {
+
+      this.linkedToAxis = {
+        axis: axis,
+        scalingFunction: scalingFunction,
+        decimals: decimals ||  1
+      };
+
+    },
+
+    drawLinkedToAxisTicksWrapper: function( widthPx, valrange ) {
+
+      var opts = this.linkedToAxis,
+        px = 0,
+        val,
+        t,
+        i = 0;
+
+      do {
+
+        val = opts.scalingFunction( opts.axis.getVal( px + this.getMinPx() ) );
+
+        if ( opts.decimals ) {
+          this.decimals = opts.decimals;
+        }
+
+        t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
+
+        if ( i == 0 ) {
+
+          var l = String( t[ 1 ].textContent ).length * 8;
+          opts.deltaPx = Math.round( l * 5 ) / 5;
+
+        }
+
+        i++;
+
+        px += opts.deltaPx;
+
+      } while ( px < widthPx );
     },
 
     getPx: function( value ) {
@@ -786,8 +858,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     valueToText: function( value ) {
 
       if ( this.options.scientificTicks ) {
+
         value /= Math.pow( 10, this.scientificExp );
         return value.toFixed( 1 );
+
       } else {
 
         value = value * Math.pow( 10, this.getExponentialFactor() ) * Math.pow( 10, this.getExponentialLabelFactor() );
@@ -801,9 +875,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
           value = this.modifyUnit( value, this.options.unitModification );
           return value;
         }
+
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
-        if ( dec > 0 )
+
+        if ( dec > 0 ) {
           return value.toFixed( dec );
+        }
 
         return value.toFixed( 0 );
       }
@@ -974,9 +1051,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     setTickContent: function( dom, val, options ) {
       if ( !options ) options = {};
 
-      if ( options.overwrite || !options.exponential )
+      if ( options.overwrite || !options.exponential ) {
+
         dom.textContent = options.overwrite || this.valueToText( val );
-      else {
+
+      } else {
         var log = Math.round( Math.log( val ) / Math.log( 10 ) );
         var unit = Math.floor( val * Math.pow( 10, -log ) );
 
