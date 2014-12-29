@@ -43,6 +43,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     wheel: {},
     dblclick: {},
 
+    shapeSelection: 'unique',
+
     dynamicDependencies: {
       'plugin': './plugins/',
       'serie': './series/',
@@ -86,6 +88,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     this.shapes = [];
     this.shapesLocked = false;
+
+    this.selectedShapes = [];
 
     this.ns = 'http://www.w3.org/2000/svg';
     this.nsxlink = "http://www.w3.org/1999/xlink";
@@ -1261,34 +1265,62 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     selectShape: function( shape, mute ) {
 
       // Already selected. Returns false
-      if ( this.selectedShape == shape ) {
+      if ( this.selectedShapes.indexOf( shape ) > -1 ) {
         return false;
       }
 
-      if ( this.selectedShape )  { // Only one selected shape at the time
-
-        //console.log('Unselect shape');
-        this.selectedShape.unselect();
+      if ( !shape.isSelectable() ) {
+        return false;
       }
 
-      if ( !mute ) {
-        shape.select( true );
-      }
+      this.emit( "beforeShapeSelect", shape );
 
-      this.selectedShape = shape;
-      this.triggerEvent( 'onShapeSelect', shape.data );
-    },
-
-    unselectShape: function() {
-
-      if ( !this.selectedShape ) {
+      if ( this.cancelSelectShape ) {
+        this.cancelSelectShape = false;
         return;
       }
 
-      this.selectedShape.unselect();
+      this.cancelSelectShape = false;
 
-      this.triggerEvent( 'onShapeUnselect', this.selectedShape.data );
-      this.selectedShape = false;
+      if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+
+        //console.log('Unselect shape');
+        while ( this.selectedShapes[ 0 ] ) {
+          this.selectedShapes[ 0 ]._unselect();
+        }
+      }
+
+      shape._select();
+
+      this.selectedShapes.push( shape );
+      this.emit( "shapeSelect", shape );
+    },
+
+    unselectShape: function( shape ) {
+
+      if ( this.selectedShapes.indexOf( shape ) == -1 ) {
+        return;
+      }
+
+      this.emit( "beforeShapeSelect", shape );
+
+      if ( this.cancelUnselectShape ) {
+        this.cancelUnselectShape = false;
+        return;
+      }
+
+      shape._unselect();
+
+      this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
+      this.emit( "shapeUnselect", shape );
+    },
+
+    unselectShapes: function() {
+
+      while ( this.selectedShapes[ 0 ] ) {
+        this.unselectShape( this.selectedShapes[  0 ] );
+      }
+
     },
 
     makeLegend: function( options ) {
@@ -1777,17 +1809,20 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     graph.dom.addEventListener( 'click', function( e ) {
 
       // Cancel right click or Command+Click
-      if ( e.which == 3 || e.ctrlKey )
+      if ( e.which == 3 || e.ctrlKey ) {
         return;
+      }
+
       e.preventDefault();
       var coords = self._getXY( e );
-      if ( self.clickTimeout )
+      if ( self.clickTimeout ) {
         window.clearTimeout( self.clickTimeout );
+      }
 
-      // Only execute the action after 200ms
+      // Only execute the action after 100ms
       self.clickTimeout = window.setTimeout( function() {
         _handleClick( self, coords.x, coords.y, e );
-      }, 200 );
+      }, 100 );
     } );
 
     graph.dom.addEventListener( 'mousewheel', function( e ) {
@@ -1818,8 +1853,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       keyComb = graph.options.pluginAction,
       i;
 
-    graph.unselectShape();
-
     if ( graph.forcedPlugin ) {
 
       graph.activePlugin = graph.forcedPlugin;
@@ -1833,9 +1866,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         graph.activePlugin = i; // Lease the mouse action to the current action
         graph._pluginExecute( i, 'onMouseDown', [ graph, x, y, e ] );
-        break;
+        return;
       }
     }
+
   }
 
   function _handleMouseMove( graph, x, y, e ) {
@@ -1909,17 +1943,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
   function _handleClick( graph, x, y, e ) {
 
-    if ( !graph.options.addLabelOnClick ) {
-      return;
+    if ( !e.shiftKey ) {
+      graph.unselectShapes();
     }
 
-    if ( graph.currentAction !== false ) {
-      return;
-    }
-
-    for ( var i = 0, l = graph.series.length; i < l; i++ ) {
-      graph.series[ i ].addLabelX( graph.series[ i ].getXAxis().getVal( x - graph.getPaddingLeft() ) );
-    }
   }
 
   function _getAxis( graph, num, options, pos ) {

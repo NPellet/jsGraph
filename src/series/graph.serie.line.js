@@ -119,6 +119,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
             },
 
+            selectable: true,
+
             shapeOptions: {
               minPosY: 15
             }
@@ -127,6 +129,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
             shape.setSerie( self );
             self.picks.push( shape );
+
           } ) );
         }
 
@@ -1556,17 +1559,24 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           px,
           i = 0,
           l = ys.length,
-          k, m, y;
+          k, m, y,
+          index;
+
+        var selected = self.graph.selectedShapes.map( function( shape ) {
+          return shape.data.mz;
+        } );
 
         ys.sort( function( a, b ) {
           return b[ 0 ] - a[ 0 ];
         } );
 
+        m = 0;
+
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
           px = self.getX( x ),
-          k = 0, m = passed.length,
+          k = 0,
           y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
@@ -1577,13 +1587,20 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
             continue;
           }
 
-          for ( ; k < m; k++ ) {
+          // Distance check
+          for ( ; k < passed.length; k++ ) {
             if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
               break;
             }
           }
+          if ( k < passed.length ) {
+            continue;
+          }
+          // Distance check end
 
-          if ( k < m ) {
+          // If the retained one has already been selected somewhere, continue;
+          if ( ( index = selected.indexOf( x ) ) > -1 ) {
+            passed.push( px );
             continue;
           }
 
@@ -1597,9 +1614,16 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
             dy: "-10px"
           } );
 
+          self.picks[ m ].data.mz = x;
+
           self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
           passed.push( px );
           self.picks[ m ].redraw();
+
+          m++;
+          while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
+            m++;
+          }
 
           if ( passed.length == self.options.autoPeakPickingNb ) {
             break;

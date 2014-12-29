@@ -36,7 +36,26 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     redrawImpl: function() {
       this.draw();
+    },
+
+    selectStyle: function() {
+
+      this.everyLabel( function( i ) {
+
+        this.label[ i ].setAttribute( 'font-weight', 'bold' );
+
+      } );
+    },
+
+    unselectStyle: function() {
+
+      this.everyLabel( function( i ) {
+
+        this.label[ i ].setAttribute( 'font-weight', 'normal' );
+
+      } );
     }
+
   } );
 
   return GraphLabel;

@@ -65,27 +65,29 @@ define( [], function() {
         this.graph.defs.appendChild( maskPath );
       }
 
-      if ( this._dom ) {
+      if ( this.group ) {
 
-        this.group.appendChild( this._dom );
+        if ( this._dom ) {
+          this.group.appendChild( this._dom );
+        }
 
-        this._dom.addEventListener( 'mouseover', function( e ) {
+        this.group.addEventListener( 'mouseover', function( e ) {
 
           self.handleMouseOver( e );
 
         } );
 
-        this._dom.addEventListener( 'mouseout', function( e ) {
+        this.group.addEventListener( 'mouseout', function( e ) {
 
           self.handleMouseOut( e );
 
         } );
 
-        this._dom.addEventListener( 'mousedown', function( e ) {
-
+        this.group.addEventListener( 'mousedown', function( e ) {
+          console.log( 'down' );
           self.graph.focus();
 
-          e.preventDefault();
+          //  e.preventDefault();
           //    e.stopPropagation();
 
           self.handleSelected = false;
@@ -94,12 +96,12 @@ define( [], function() {
           self.handleMouseDown( e );
         } );
 
-        this._dom.addEventListener( 'click', function( e ) {
-
+        this.group.addEventListener( 'click', function( e ) {
+          console.log( 'clicked' );
           self.handleClick( e );
         } );
 
-        this._dom.addEventListener( 'dblclick', function( e ) {
+        this.group.addEventListener( 'dblclick', function( e ) {
 
           //e.preventDefault();
           // e.stopPropagation();
@@ -558,14 +560,26 @@ define( [], function() {
     },
 
     unselectable: function() {
-      this._selectable = false;
+      this.setSelectable( false );
     },
 
     selectable: function() {
-      this._selectable = true;
+      this.setSelectable( true );
     },
 
-    select: function( mute ) {
+    isSelectable: function() {
+      return this._selectable;
+    },
+
+    isSelected: function() {
+      return this._selected;
+    },
+
+    hasHandles: function() {
+      return !!this.handles;
+    },
+
+    _select: function() {
 
       if ( !this._selectable ) {
         return;
@@ -574,27 +588,24 @@ define( [], function() {
       this._selected = true;
       this.selectStyle();
 
-      if ( !this._staticHandles ) {
+      if ( this.hasHandles() && !this._staticHandles ) {
         this.addHandles();
         this.setHandles();
       }
 
       this.callHandler( "onSelected", this );
-
       this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
 
-      if ( !mute ) {
-        this.graph.selectShape( this, true );
-      }
     },
 
-    unselect: function() {
+    _unselect: function() {
 
       if ( !this._selectable ) {
         return;
       }
 
       this._selected = false;
+      this.unselectStyle();
 
       this.setStrokeWidth();
       this.setStrokeColor();
@@ -608,10 +619,6 @@ define( [], function() {
 
       this.callHandler( "onUnselected", this );
 
-    },
-
-    isSelected: function() {
-      return this._selected;
     },
 
     staticHandles: function( bool ) {
@@ -749,7 +756,7 @@ define( [], function() {
           //	e.stopPropagation();
           e.preventDefault();
 
-          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+          //          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
@@ -765,7 +772,14 @@ define( [], function() {
 
         function( e ) {
 
-          this.select();
+          e.stopPropagation();
+          e.preventDefault();
+
+          if ( !e.shiftKey ) {
+            this.graph.unselectShapes();
+          }
+
+          this.graph.selectShape( this );
 
         }
       ],
@@ -807,6 +821,7 @@ define( [], function() {
     },
 
     handleClick: function( e ) {
+
       return this.callHandler( 'click', e );
     },
 
@@ -832,10 +847,7 @@ define( [], function() {
         return;
       }
 
-      if ( !this.isSelected() ) {
-        this.select();
-      }
-
+      this.graph.selectShape( this );
       this.callHandler( 'mouseMove', e );
 
     },
@@ -1139,6 +1151,14 @@ define( [], function() {
 
     setLayer: function( layer ) {
       this._layer = layer;
+    },
+
+    selectStyle: function() {
+
+    },
+
+    unselectStyle: function() {
+
     }
   }
 
