@@ -56,7 +56,23 @@ define( [], function() {
         return;
       }
 
-      var pos = this.graph.getPosition( position );
+      this.position = position;
+      this.alignToX = alignToX;
+      this.alignToY = alignToY;
+
+    },
+
+    calculatePosition: function() {
+
+      var position = this.position,
+        alignToY = this.alignToY,
+        alignToX = this.alignToX;
+
+      var pos = this.graph.getPosition( position, undefined, this.graph.getXAxis(), this.graph.getYAxis() );
+
+      if ( !pos ) {
+        return;
+      }
 
       if ( alignToX == "right" ) {
         pos.x -= this.width;
@@ -77,6 +93,7 @@ define( [], function() {
       var self = this;
 
       this.applyStyle();
+      this.calculatePosition();
 
       while ( this.subG.hasChildNodes() ) {
         this.subG.removeChild( this.subG.lastChild );

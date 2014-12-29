@@ -495,6 +495,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.insertMarkers();
       this.insertLinesGroup();
 
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     _draw_standard: function() {
@@ -1505,7 +1506,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     getMarkerForLegend: function() {
 
-      if ( !this.markerPoints[ this.selectionType ] ) {
+      if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
         return;
       }
 

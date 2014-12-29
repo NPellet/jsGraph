@@ -756,8 +756,6 @@ define( [], function() {
           //	e.stopPropagation();
           e.preventDefault();
 
-          //          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
-
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
           }
@@ -780,7 +778,7 @@ define( [], function() {
           }
 
           this.graph.selectShape( this );
-
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
         }
       ],
 

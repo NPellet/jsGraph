@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-8
+ * jsGraph JavaScript Graphing Library v1.10.4-9
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T12:10Z
+ * Date: 2014-12-29T14:40Z
  */
 
 (function( global, factory ) {
@@ -3125,7 +3125,23 @@ build['./graph.legend'] = ( function( ) {
         return;
       }
 
-      var pos = this.graph.getPosition( position );
+      this.position = position;
+      this.alignToX = alignToX;
+      this.alignToY = alignToY;
+
+    },
+
+    calculatePosition: function() {
+
+      var position = this.position,
+        alignToY = this.alignToY,
+        alignToX = this.alignToX;
+
+      var pos = this.graph.getPosition( position, undefined, this.graph.getXAxis(), this.graph.getYAxis() );
+
+      if ( !pos ) {
+        return;
+      }
 
       if ( alignToX == "right" ) {
         pos.x -= this.width;
@@ -3146,6 +3162,7 @@ build['./graph.legend'] = ( function( ) {
       var self = this;
 
       this.applyStyle();
+      this.calculatePosition();
 
       while ( this.subG.hasChildNodes() ) {
         this.subG.removeChild( this.subG.lastChild );
@@ -7456,6 +7473,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     _draw_standard: function() {
@@ -8466,7 +8484,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     getMarkerForLegend: function() {
 
-      if ( !this.markerPoints[ this.selectionType ] ) {
+      if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
         return;
       }
 
@@ -11313,8 +11331,6 @@ build['./shapes/graph.shape'] = ( function( ) {
           //	e.stopPropagation();
           e.preventDefault();
 
-          //          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
-
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
           }
@@ -11337,7 +11353,7 @@ build['./shapes/graph.shape'] = ( function( ) {
           }
 
           this.graph.selectShape( this );
-
+          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
         }
       ],
 
@@ -11932,7 +11948,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-      
+
       return true;
     },
 
