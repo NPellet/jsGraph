@@ -195,9 +195,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-      if ( this._selected ) {
-        this.select();
-      }
 
       return true;
     },
