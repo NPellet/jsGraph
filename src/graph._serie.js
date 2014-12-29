@@ -95,7 +95,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
       } else if ( typeof data[ 0 ] == 'object' ) {
 
         this.mode = 'x_equally_separated';
-
+        console.log( data );
         var number = 0,
           numbers = [],
           datas = [],
@@ -321,7 +321,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
     },
 
     isSelected: function() {
-      return this.selected;
+      return this.selected ||  ( this.selectionType !== "unselected" );
     },
 
     _checkX: function( val ) {

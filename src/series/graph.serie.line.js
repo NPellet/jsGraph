@@ -20,7 +20,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
-      autoPeakPickingMinDistance: 10
+      autoPeakPickingMinDistance: 10,
+
+      selectableOnClick: true
     },
 
     init: function( graph, name, options ) {
@@ -45,6 +47,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         lineColor: this.options.lineColor,
         lineStyle: this.options.lineStyle,
         markers: this.options.markers
+      };
+
+      this.styles.selected = {
+        lineWidth: 3
       };
 
       this.shown = true;
@@ -134,6 +140,19 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
 
       }
+
+      this.groupLines.addEventListener( 'click', function( e ) {
+        console.log( 'e', self.options.selectableOnClick )
+        if ( self.options.selectableOnClick ) {
+          console.log( self.isSelected() );
+          if ( self.isSelected() ) {
+            self.unselect();
+          } else {
+            self.select( "selected" );
+          }
+        }
+      } );
+
     },
 
     setAdditionalData: function( data ) {
@@ -320,6 +339,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         this.selectionType = selectionType;
         this.applyLineStyles();
       }
+
+      this.applyLineStyle( this.getSymbolForLegend() );
     },
 
     degrade: function( pxPerP, options ) {
@@ -923,8 +944,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     applyLineStyle: function( line ) {
+
       line.setAttribute( 'stroke', this.getLineColor() );
-      line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
+      line.setAttribute( 'stroke-width', this.getLineWidth() );
       if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
       } else {
@@ -1318,6 +1340,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     getStyle: function( selectionType ) {
 
       var s = this.styles[ selectionType || this.selectionType || "unselected" ];
+
       if ( s ) {
         return $.extend( {}, this.styles.unselected, s );
       } else {
@@ -1339,6 +1362,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     getLineWidth: function( selectionType ) {
+
       return this.getStyle( selectionType ).lineWidth;
     },
 

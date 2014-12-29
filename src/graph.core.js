@@ -840,7 +840,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       this.selectedSerie = serie;
       this.triggerEvent( 'onSelectSerie', serie );
-      serie.select();
+      serie.select( "selected" );
     },
 
     unselectSerie: function( serie ) {
