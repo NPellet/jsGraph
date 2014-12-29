@@ -99,9 +99,11 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       this.line.setAttribute( 'y1', 0 );
       this.line.setAttribute( 'y2', 0 );
 
-      this.labelTspan.style.dominantBaseline = 'hanging';
-      this.expTspan.style.dominantBaseline = 'hanging';
-      this.expTspanExp.style.dominantBaseline = 'hanging';
+      if ( !this.top ) {
+        this.labelTspan.style.dominantBaseline = 'hanging';
+        this.expTspan.style.dominantBaseline = 'hanging';
+        this.expTspanExp.style.dominantBaseline = 'hanging';
+      }
     },
 
     drawSeries: function() {

@@ -551,6 +551,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
         if ( this.linkedToAxis ) { // px defined, linked to another axis
 
+          this.linkedToAxis.deltaPx = 10;
           var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
 
         } else if ( !this.options.logScale ) {
@@ -788,7 +789,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         px = 0,
         val,
         t,
-        i = 0;
+        i = 0,
+        l,
+        delta2;
+
+      console.warn( "This is a temporary trick. Needs to be removed for efficiency purposes" );
+      opts.axis.draw();
+
+      if ( !opts.deltaPx ) {
+        opts.deltaPx = 10;
+      }
 
       do {
 
@@ -800,11 +810,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
         t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
 
-        if ( i == 0 ) {
+        l = String( t[ 1 ].textContent ).length * 8;
+        delta2 = Math.round( l / 5 ) * 5;
 
-          var l = String( t[ 1 ].textContent ).length * 8;
-          opts.deltaPx = Math.round( l * 5 ) / 5;
-
+        if ( delta2 > opts.deltaPx ) {
+          opts.deltaPx = delta2;
+          this.drawInit();
+          this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+          return;
         }
 
         i++;
@@ -877,6 +890,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         }
 
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
+
+        if ( isNaN( value ) ) {
+          return "";
+        }
 
         if ( dec > 0 ) {
           return value.toFixed( dec );

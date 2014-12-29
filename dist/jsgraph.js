@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T17:46Z
+ * Date: 2014-12-29T18:05Z
  */
 
 (function( global, factory ) {
@@ -1071,6 +1071,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
         if ( this.linkedToAxis ) { // px defined, linked to another axis
 
+          this.linkedToAxis.deltaPx = 10;
           var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
 
         } else if ( !this.options.logScale ) {
@@ -1308,23 +1309,35 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
         px = 0,
         val,
         t,
-        i = 0;
+        i = 0,
+        l,
+        delta2;
+
+      console.warn( "This is a temporary trick. Needs to be removed for efficiency purposes" );
+      opts.axis.draw();
+
+      if ( !opts.deltaPx ) {
+        opts.deltaPx = 10;
+      }
 
       do {
 
         val = opts.scalingFunction( opts.axis.getVal( px + this.getMinPx() ) );
-        
+
         if ( opts.decimals ) {
           this.decimals = opts.decimals;
         }
 
         t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
 
-        if ( i == 0 ) {
+        l = String( t[ 1 ].textContent ).length * 8;
+        delta2 = Math.round( l / 5 ) * 5;
 
-          var l = String( t[ 1 ].textContent ).length * 8;
-          opts.deltaPx = Math.round( l * 5 ) / 5;
-
+        if ( delta2 > opts.deltaPx ) {
+          opts.deltaPx = delta2;
+          this.drawInit();
+          this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+          return;
         }
 
         i++;
@@ -1398,6 +1411,10 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 
+        if( isNaN( value ) ) {
+          return "";
+        }
+        
         if ( dec > 0 ) {
           return value.toFixed( dec );
         }
@@ -1730,9 +1747,11 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.line.setAttribute( 'y1', 0 );
       this.line.setAttribute( 'y2', 0 );
 
-      this.labelTspan.style.dominantBaseline = 'hanging';
-      this.expTspan.style.dominantBaseline = 'hanging';
-      this.expTspanExp.style.dominantBaseline = 'hanging';
+      if ( !this.top ) {
+        this.labelTspan.style.dominantBaseline = 'hanging';
+        this.expTspan.style.dominantBaseline = 'hanging';
+        this.expTspanExp.style.dominantBaseline = 'hanging';
+      }
     },
 
     drawSeries: function() {
