@@ -460,11 +460,12 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
               this.lastYPeakPicking = [ y, x ]
 
-            } else {
+            } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
 
               if ( this.lookForMinima ) {
                 this.lookForMinima = false;
                 this.lookForMaxima = true;
+
               } else {
 
                 this.lookForMinima = true;
@@ -473,6 +474,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
                 this.detectedPeaks.push( this.lastYPeakPicking );
                 this.lastYPeakPicking = false;
               }
+
+              this.lastYPeakPicking = [ y, x ];
 
             }
           }
@@ -601,6 +604,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           this._addPoint( xpx2, ypx2 );
 
+          this.detectPeaks( x, y );
+
           // OPTIMIZATION START
           if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
@@ -608,8 +613,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           }
           // OPTIMIZATION END
-
-          this.detectPeaks( x, y );
 
           xpx = xpx2;
           ypx = ypx2;

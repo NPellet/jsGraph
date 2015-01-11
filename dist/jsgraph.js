@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-12
+ * jsGraph JavaScript Graphing Library v1.10.4-13
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-11T00:10Z
+ * Date: 2015-01-11T00:28Z
  */
 
 (function( global, factory ) {
@@ -7557,11 +7557,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
               this.lastYPeakPicking = [ y, x ]
 
-            } else {
+            } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
 
               if ( this.lookForMinima ) {
                 this.lookForMinima = false;
                 this.lookForMaxima = true;
+
               } else {
 
                 this.lookForMinima = true;
@@ -7570,6 +7571,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
                 this.detectedPeaks.push( this.lastYPeakPicking );
                 this.lastYPeakPicking = false;
               }
+
+              this.lastYPeakPicking = [ y, x ];
 
             }
           }
@@ -7698,6 +7701,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           this._addPoint( xpx2, ypx2 );
 
+          this.detectPeaks( x, y );
+
           // OPTIMIZATION START
           if ( !this._optimize_after( xpx2, ypx2 ) ) {
             toBreak = true;
@@ -7705,8 +7710,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           }
           // OPTIMIZATION END
-
-          this.detectPeaks( x, y );
 
           xpx = xpx2;
           ypx = ypx2;
