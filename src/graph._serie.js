@@ -95,12 +95,17 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
       } else if ( typeof data[ 0 ] == 'object' ) {
 
         this.mode = 'x_equally_separated';
-        console.log( data );
+
         var number = 0,
           numbers = [],
           datas = [],
           k = 0,
           o;
+
+        if ( !data[ 0 ].y ) {
+          return;
+        }
+
         for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
           number += data[ i ].y.length;
           continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );

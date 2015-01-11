@@ -961,6 +961,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
           shape.lock();
         }
 
+        if ( shapeData.selectOnMouseDown ) {
+          shape._selectOnMouseDown = shapeData.selectOnMouseDown;
+        }
+
         if ( shapeData.selectable ) {
           shape.selectable();
         }
@@ -1286,12 +1290,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
-          this.selectedShapes[ 0 ]._unselect();
+
+          this.unselectShape( this.selectedShapes[ 0 ] )
         }
       }
 
       shape._select();
-
       this.selectedShapes.push( shape );
       this.emit( "shapeSelect", shape );
     },
@@ -1575,14 +1579,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       var x = e.clientX,
         y = e.clientY;
 
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+      /*if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
 
         return {
           x: e.offsetX,
           y: e.offsetY
         };
       }
-
+*/
       y = e.clientY;
 
       var pos = this.offsetCached || $( this._dom ).offset();

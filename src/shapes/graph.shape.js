@@ -97,7 +97,7 @@ define( [], function() {
         } );
 
         this.group.addEventListener( 'click', function( e ) {
-          console.log( 'clicked' );
+
           self.handleClick( e );
         } );
 
@@ -155,7 +155,9 @@ define( [], function() {
 
     makeClasses: function() {
 
-      this._dom.setAttribute( 'class', this.classes.join( " " ) );
+      if ( this._dom ) {
+        this._dom.setAttribute( 'class', this.classes.join( " " ) );
+      }
     },
 
     initImpl: function() {},
@@ -417,20 +419,20 @@ define( [], function() {
 
         this.label[ i ] = document.createElementNS( this.graph.ns, 'text' );
 
-        this.label[ i ].addEventListener( 'mouseover', function( e ) {
+        /* this.label[ i ].addEventListener( 'mouseover', function( e ) {
 
           //self.doHover( true );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
 
         this.label[ i ].addEventListener( 'mouseout', function( e ) {
 
           //self.doHover( false );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
-
+*/
         this.label[ i ].addEventListener( 'dblclick', function( e ) {
 
           e.preventDefault();
@@ -584,6 +586,9 @@ define( [], function() {
       if ( !this._selectable ) {
         return;
       }
+
+      // Put on the stack
+      this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
       this._selected = true;
       this.selectStyle();
@@ -758,6 +763,10 @@ define( [], function() {
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
+
+            if ( this._selectOnMouseDown ) {
+              this.graph.selectShape( this );
+            }
           }
 
           this.mouseCoords = this.graph._getXY( e );
@@ -778,7 +787,6 @@ define( [], function() {
           }
 
           this.graph.selectShape( this );
-          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
         }
       ],
 
@@ -841,11 +849,14 @@ define( [], function() {
         this.moving = false;
       }
 
+      if ( this.moving && !this.isSelected() ) {
+        this.graph.selectShape( this );
+      }
+
       if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
         return;
       }
 
-      this.graph.selectShape( this );
       this.callHandler( 'mouseMove', e );
 
     },

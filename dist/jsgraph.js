@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-10
+ * jsGraph JavaScript Graphing Library v1.10.4-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2014-12-29T18:05Z
+ * Date: 2015-01-11T00:02Z
  */
 
 (function( global, factory ) {
@@ -1411,10 +1411,10 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
         var dec = this.decimals - this.getExponentialFactor() - this.getExponentialLabelFactor();
 
-        if( isNaN( value ) ) {
+        if ( isNaN( value ) ) {
           return "";
         }
-        
+
         if ( dec > 0 ) {
           return value.toFixed( dec );
         }
@@ -4500,6 +4500,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
           shape.lock();
         }
 
+        if ( shapeData.selectOnMouseDown ) {
+          shape._selectOnMouseDown = shapeData.selectOnMouseDown;
+        }
+
         if ( shapeData.selectable ) {
           shape.selectable();
         }
@@ -4825,12 +4829,12 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
-          this.selectedShapes[ 0 ]._unselect();
+
+          this.unselectShape( this.selectedShapes[ 0 ] )
         }
       }
 
       shape._select();
-
       this.selectedShapes.push( shape );
       this.emit( "shapeSelect", shape );
     },
@@ -5114,14 +5118,14 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       var x = e.clientX,
         y = e.clientY;
 
-      if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
+      /*if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
 
         return {
           x: e.offsetX,
           y: e.offsetY
         };
       }
-
+*/
       y = e.clientY;
 
       var pos = this.offsetCached || $( this._dom ).offset();
@@ -5722,12 +5726,17 @@ build['./graph._serie'] = ( function( EventEmitter ) {
       } else if ( typeof data[ 0 ] == 'object' ) {
 
         this.mode = 'x_equally_separated';
-        console.log( data );
+
         var number = 0,
           numbers = [],
           datas = [],
           k = 0,
           o;
+
+        if ( !data[ 0 ].y ) {
+          return;
+        }
+
         for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
           number += data[ i ].y.length;
           continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
@@ -7230,9 +7239,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       this.groupLines.addEventListener( 'click', function( e ) {
-        console.log( 'e', self.options.selectableOnClick )
+
         if ( self.options.selectableOnClick ) {
-          console.log( self.isSelected() );
+
           if ( self.isSelected() ) {
             self.unselect();
           } else {
@@ -8729,8 +8738,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           self.picks[ m ].data.mz = x;
 
-          self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-          passed.push( px );
+          if ( self.options.autoPeakPickingFormat ) {
+
+            self.picks[ m ].data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+          } else {
+            self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+          }
+
           self.picks[ m ].redraw();
 
           m++;
@@ -10806,7 +10820,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         } );
 
         this.group.addEventListener( 'click', function( e ) {
-          console.log( 'clicked' );
+
           self.handleClick( e );
         } );
 
@@ -10864,7 +10878,9 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     makeClasses: function() {
 
-      this._dom.setAttribute( 'class', this.classes.join( " " ) );
+      if ( this._dom ) {
+        this._dom.setAttribute( 'class', this.classes.join( " " ) );
+      }
     },
 
     initImpl: function() {},
@@ -11126,20 +11142,20 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         this.label[ i ] = document.createElementNS( this.graph.ns, 'text' );
 
-        this.label[ i ].addEventListener( 'mouseover', function( e ) {
+        /* this.label[ i ].addEventListener( 'mouseover', function( e ) {
 
           //self.doHover( true );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
 
         this.label[ i ].addEventListener( 'mouseout', function( e ) {
 
           //self.doHover( false );
-          e.stopPropagation();
+          //e.stopPropagation();
 
         } );
-
+*/
         this.label[ i ].addEventListener( 'dblclick', function( e ) {
 
           e.preventDefault();
@@ -11293,6 +11309,9 @@ build['./shapes/graph.shape'] = ( function( ) {
       if ( !this._selectable ) {
         return;
       }
+
+      // Put on the stack
+      this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
       this._selected = true;
       this.selectStyle();
@@ -11467,6 +11486,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
+
+            if ( this._selectOnMouseDown ) {
+              this.graph.selectShape( this );
+            }
           }
 
           this.mouseCoords = this.graph._getXY( e );
@@ -11487,7 +11510,6 @@ build['./shapes/graph.shape'] = ( function( ) {
           }
 
           this.graph.selectShape( this );
-          this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
         }
       ],
 
@@ -11550,11 +11572,14 @@ build['./shapes/graph.shape'] = ( function( ) {
         this.moving = false;
       }
 
+      if ( this.moving && !this.isSelected() ) {
+        this.graph.selectShape( this );
+      }
+
       if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
         return;
       }
 
-      this.graph.selectShape( this );
       this.callHandler( 'mouseMove', e );
 
     },

@@ -142,9 +142,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
 
       this.groupLines.addEventListener( 'click', function( e ) {
-        console.log( 'e', self.options.selectableOnClick )
+
         if ( self.options.selectableOnClick ) {
-          console.log( self.isSelected() );
+
           if ( self.isSelected() ) {
             self.unselect();
           } else {
@@ -1641,8 +1641,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           self.picks[ m ].data.mz = x;
 
-          self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-          passed.push( px );
+          if ( self.options.autoPeakPickingFormat ) {
+
+            self.picks[ m ].data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+          } else {
+            self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+          }
+
           self.picks[ m ].redraw();
 
           m++;
