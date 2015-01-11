@@ -424,6 +424,7 @@ var serieData = [
 				autoPeakPicking: true, 
 				autoPeakPickingNb: 10,
 				autoPeakPickingFormat: function( val, index ) {  this.set( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toPrecision( 3 ); },
+				autoPeakPickingAllowAllY: true,
 				lineToZero: true 
 
 			}, 'line', function( serie ) {

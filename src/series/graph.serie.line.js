@@ -21,6 +21,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
       autoPeakPickingMinDistance: 10,
+      autoPeakPickingFormat: false,
+      autoPeakPickingAllowAllY: false,
 
       selectableOnClick: true
     },
@@ -1608,7 +1610,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
             continue;
           }
 
-          if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+          if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
+
             continue;
           }
 
@@ -1621,6 +1624,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           if ( k < passed.length ) {
             continue;
           }
+
           // Distance check end
 
           // If the retained one has already been selected somewhere, continue;

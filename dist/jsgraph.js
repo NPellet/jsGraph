@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-11
+ * jsGraph JavaScript Graphing Library v1.10.4-12
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-11T00:02Z
+ * Date: 2015-01-11T00:10Z
  */
 
 (function( global, factory ) {
@@ -7118,6 +7118,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       autoPeakPicking: false,
       autoPeakPickingNb: 4,
       autoPeakPickingMinDistance: 10,
+      autoPeakPickingFormat: false,
+      autoPeakPickingAllowAllY: false,
 
       selectableOnClick: true
     },
@@ -8705,7 +8707,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
             continue;
           }
 
-          if ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) {
+          if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
+
             continue;
           }
 
@@ -8718,6 +8721,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           if ( k < passed.length ) {
             continue;
           }
+
           // Distance check end
 
           // If the retained one has already been selected somewhere, continue;
