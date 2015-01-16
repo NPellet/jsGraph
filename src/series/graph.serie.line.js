@@ -1554,11 +1554,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     eraseMarkers: function() {
 
+      var self = this;
       if ( this.currentMarkersSelectionType ) {
 
-        for ( var i in this.markerFamilies[ this.currentMarkersSelectionType ] ) {
-          this.groupMain.removeChild( this.markerFamilies[ this.currentMarkersSelectionType ][ i ].dom );
-        }
+        this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
+          self.groupMain.removeChild( el.dom );
+          el.path = "";
+        } );
+
         this.currentMarkersSelectionType = false;
       }
 
