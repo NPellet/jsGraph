@@ -235,17 +235,20 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           var dom = document.createElementNS( this.graph.ns, 'path' );
           this.setMarkerStyleTo( dom, true );
-
-          var x = this.getX( this.data[ k ][ i * 2 ] );
-          var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
-
-          dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
-
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
 
-          if ( hover )
-            this.markerHovered++;
+        } else {
+          dom = el[ index ];
+        }
+
+        var x = this.getX( this.data[ k ][ i * 2 ] );
+        var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+
+        dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
+
+        if ( hover ) {
+          this.markerHovered++;
         }
 
       } else if ( force === false ||  !_on ) {
@@ -280,14 +283,17 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       var toggledOn = this.toggleMarker( index );
 
-      if ( toggledOn && this.options.onSelectMarker )
+      if ( toggledOn && this.options.onSelectMarker ) {
         this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      }
 
-      if ( !toggledOn && this.options.onUnselectMarker )
+      if ( !toggledOn && this.options.onUnselectMarker ) {
         this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+      }
 
-      if ( this.options.onToggleMarker )
+      if ( this.options.onToggleMarker ) {
         this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
+      }
     },
 
     _getMarkerIndexFromEvent: function( e ) {
@@ -520,6 +526,15 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.removeExtraLines();
       this.insertMarkers();
       this.insertLinesGroup();
+
+      for ( var i in this.domMarkerHover ) {
+        this.toggleMarker( i.split( ',' ), true, true );
+      }
+
+      for ( var i in this.domMarkerSelect ) {
+
+        this.toggleMarker( i.split( ',' ), true, false );
+      }
 
       this.applyLineStyle( this.getSymbolForLegend() );
     },
