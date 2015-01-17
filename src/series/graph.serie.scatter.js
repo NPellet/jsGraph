@@ -612,6 +612,10 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     selectPoint: function( index, setOn, selectionType ) {
 
+      if ( this.shapesDetails[ index ][ 2 ] == selectionType ) {
+        return;
+      }
+
       if ( typeof setOn == "string" ) {
         selectionType = setOn;
         setOn = undefined;

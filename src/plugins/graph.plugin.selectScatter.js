@@ -1,8 +1,8 @@
-define( [], function() {
+define( [ '../dependencies/eventEmitter/eventEmitter' ], function( EventEmitter ) {
 
   var plugin = function() {};
 
-  plugin.prototype = {
+  plugin.prototype = $.extend( plugin.prototype, EventEmitter.prototype, {
 
     init: function( graph, options ) {
 
@@ -43,6 +43,7 @@ define( [], function() {
 
       this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
       this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+      this._path.setAttribute( 'd', '' );
       this._path.setAttribute( 'display', 'block' );
 
     },
@@ -67,6 +68,7 @@ define( [], function() {
     findPoints: function() {
 
       var data = this.serie.data;
+      var selected = [];
       var counter = 0,
         j2;
       for ( var i = 0, l = data.length; i < l; i += 2 ) {
@@ -89,21 +91,27 @@ define( [], function() {
         }
 
         if ( counter % 2 == 1 ) {
-
+          selected.push( i / 2 );
           this.serie.selectPoint( i / 2, true, "selected" );
+        } else {
+          this.serie.unselectPoint( i / 2 );
         }
 
       }
+
+      this.selected = selected;
+      this.emit( "selectionProcess", selected );
     },
 
     onMouseUp: function( graph, x, y, e, mute ) {
       this._path.setAttribute( 'display', 'none' );
+      this.emit( "selectionEnd", this.selected );
     },
 
     removeZone: function() {
 
     }
-  }
+  } );
 
   return plugin;
 } );

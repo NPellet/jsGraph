@@ -2,8 +2,10 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, {
+		var selectedDom = $("<div />");
+		$( "#" + domGraph ).parent().append( selectedDom );
 
+		var graphinstance = new Graph( domGraph, {
 
 			plugins: {
 				'graph.plugin.selectScatter': {},
@@ -26,11 +28,32 @@ define( function() {
 				.autoAxis()
 				.setData( series[ 0 ] )
 				.setStyle( 
-					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }
+					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 1)' }
+				)
+				.setStyle(
+					{
+						fill: 'rgba(40, 150, 20, 0.3)',
+						stroke: 'rgba( 40, 150, 20, 1)',
+						r: 2
+					},
+
+					'selected'
 				);
 
 			graphinstance.getPlugin('graph.plugin.selectScatter').then( function( plugin ) {
 				plugin.setSerie( serie );
+
+				plugin.on('selectionProcess', function( selectedIndices ) {
+					
+					selectedDom.html( "Selected number: " + selectedIndices.length + "<br />Selected indices: " + selectedIndices.join(", ") );
+					
+				} );
+
+				plugin.on('selectionEnd', function( selectedIndices ) {
+					
+					selectedDom.html( "Selection has ended. Number of selection: " + selectedIndices.length );
+					
+				} );
 			});
 
 			graphinstance.redraw( );
@@ -38,14 +61,7 @@ define( function() {
 
 		} );
 		
-
-	}, "Basic", [ 
-
-
-	"Display a scatter plot using <code>graph.newSerie(name, options, 'scatter')</code>. Setting the data remains the same", "To specify how the scattered points have to look like, use <code>serie.setDataStyle( general, modificators ).</code> The parameter <code>general</code> defines what all shapes look like. The parameter <code>modificator</code> (array) allows you to override the shapes for the points at the non-null indices of the array."
-
-
-	]
+	}, "Point selection plugin", [ ]
 
 	];
 
