@@ -394,9 +394,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         this._xDataToUse = this.xData;
       }
 
-      this._optimizeMonotoneous = this.isXMonotoneous(),
-      this._optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
-      this._optimizeBreak,
+      this._optimizeMonotoneous = this.isXMonotoneous();
+      this._optimizeMaxPxX = this.XMonotoneousDirection() ? this.getXAxis().getMaxPx() : this.getXAxis().getMinPx();
+      this._optimizeMinPxX = this.XMonotoneousDirection() ? this.getXAxis().getMinPx() : this.getXAxis().getMaxPx();
+
+      this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
+
+      this._optimizeBreak;
       this._optimizeBuffer;
 
       // Slots
@@ -736,7 +740,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         return true;
       }
 
-      if ( xpx < 0 ) {
+      if ( ( this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) || ( !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) ) {
+
+        //      if ( xpx < this._optimizeMinPxX ) {
 
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
@@ -754,7 +760,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     _optimize_after: function( xpx, ypx ) {
 
-      if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
+      if ( !this._optimizeMonotoneous ) {
+        return true;
+      }
+
+      if ( ( this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) || ( !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) ) {
 
         return false;
       }
@@ -1358,18 +1368,18 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     getStyle: function( selectionType ) {
-
-      var s = this.styles[ selectionType || this.selectionType || "unselected" ];
-
-      if ( s ) {
-        return $.extend( {}, this.styles.unselected, s );
-      } else {
-        console.warn( "Style " + ( selectionType || this.selectionType || "unselected" ) + " does not exist. Returning unselected style" );
-      }
-
-      return this.styles.unselected;
+      return this.styles[ selectionType || this.selectionType || "unselected" ];
     },
 
+    extendStyles: function() {
+      for ( var i in this.styles ) {
+
+        var s = this.styles[ i ];
+        if ( s ) {
+          this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+        }
+      }
+    },
     /*  */
 
     setLineWidth: function( width, selectionType ) {

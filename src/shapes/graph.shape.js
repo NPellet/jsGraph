@@ -376,7 +376,7 @@ define( [], function() {
         switch ( this.transforms[ i ].type ) {
 
           case 'translate':
-            console.log( this.transforms[ i ].arguments[ 0 ], this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ) );
+
             transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
             transformString += ", ";
             transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );

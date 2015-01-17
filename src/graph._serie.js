@@ -346,6 +346,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
     /* AXIS */
 
     autoAxis: function() {
+
       this.setXAxis( !this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
       this.setYAxis( !this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
@@ -482,6 +483,11 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
 
     isXMonotoneous: function() {
       return this.xmonotoneous ||  false;
+    },
+
+    XMonotoneousDirection: function() {
+
+      return ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     getLayer: function() {

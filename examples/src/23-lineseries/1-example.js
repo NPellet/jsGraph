@@ -50,7 +50,7 @@ define( function() {
 
 			serie.showMarkers("selection3");
 					
-		
+			serie.resetStyles();
 
 
 

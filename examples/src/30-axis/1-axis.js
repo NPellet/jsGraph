@@ -13,7 +13,7 @@ define( function() {
 				} ],
 
 				right: [ {
-					forcedMin: 0,
+					forcedMax: 0,
 					axisDataSpacing: { min: 0 },
 					tickPosition: 2,
 					secondaryGrid: false
@@ -24,10 +24,10 @@ define( function() {
 				graphinstance.newSerie("temperatures")
 					.setLabel( "My serie" )
 					.autoAxis()
-					.setData( series[ 5 ] )
+					.setData( series[ 0 ] )
 					.setLineColor('red');
 
-				graphinstance.autoscaleAxes();
+				
 				graphinstance.redraw( );
 				graphinstance.drawSeries( );
 

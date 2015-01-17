@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-19
+ * jsGraph JavaScript Graphing Library v1.10.4-20
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-17T19:53Z
+ * Date: 2015-01-17T23:23Z
  */
 
 (function( global, factory ) {
@@ -751,6 +751,10 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this.maxPx;
     },
 
+    getMathMinPx: function() {
+      return this.minPx;
+    },
+
     // Returns the true minimum of the axis. Either forced in options or the one from the data
     getMinValue: function() {
       return !this._adapt0To ? ( this.options.forcedMin || ( this.options.forcedMin === 0 ? 0 : this.dataMin ) ) : ( this.getAdapt0ToMin() );
@@ -1374,8 +1378,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     },
 
     getRelPx: function( value ) {
-      console.log( this._getActualInterval(), this.getMaxPx(), this.getMinPx(), value );
-      console.trace();
+
       return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 
@@ -5989,6 +5992,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
     /* AXIS */
 
     autoAxis: function() {
+
       this.setXAxis( !this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
       this.setYAxis( !this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
 
@@ -6125,6 +6129,11 @@ build['./graph._serie'] = ( function( EventEmitter ) {
 
     isXMonotoneous: function() {
       return this.xmonotoneous ||  false;
+    },
+
+    XMonotoneousDirection: function() {
+
+      return ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     getLayer: function() {
@@ -7729,9 +7738,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         this._xDataToUse = this.xData;
       }
 
-      this._optimizeMonotoneous = this.isXMonotoneous(),
-      this._optimizeMaxPxX = this.getXAxis().getMathMaxPx(),
-      this._optimizeBreak,
+      this._optimizeMonotoneous = this.isXMonotoneous();
+      this._optimizeMaxPxX = this.XMonotoneousDirection() ? this.getXAxis().getMaxPx() : this.getXAxis().getMinPx();
+      this._optimizeMinPxX = this.XMonotoneousDirection() ? this.getXAxis().getMinPx() : this.getXAxis().getMaxPx();
+
+      this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
+
+      this._optimizeBreak;
       this._optimizeBuffer;
 
       // Slots
@@ -8071,7 +8084,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return true;
       }
 
-      if ( xpx < 0 ) {
+      if ( ( this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) || ( !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) ) {
+
+        //      if ( xpx < this._optimizeMinPxX ) {
 
         this._optimizeBuffer = [ xpx, ypx ];
         return false;
@@ -8089,7 +8104,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     _optimize_after: function( xpx, ypx ) {
 
-      if ( this._optimizeMonotoneous && xpx > this._optimizeMaxPxX ) {
+      if ( !this._optimizeMonotoneous ) {
+        return true;
+      }
+
+      if ( ( this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) || ( !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) ) {
 
         return false;
       }
@@ -8693,18 +8712,18 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     getStyle: function( selectionType ) {
-
-      var s = this.styles[ selectionType || this.selectionType || "unselected" ];
-
-      if ( s ) {
-        return $.extend( {}, this.styles.unselected, s );
-      } else {
-        console.warn( "Style " + ( selectionType || this.selectionType || "unselected" ) + " does not exist. Returning unselected style" );
-      }
-
-      return this.styles.unselected;
+      return this.styles[ selectionType || this.selectionType || "unselected" ];
     },
 
+    extendStyles: function() {
+      for ( var i in this.styles ) {
+
+        var s = this.styles[ i ];
+        if ( s ) {
+          this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+        }
+      }
+    },
     /*  */
 
     setLineWidth: function( width, selectionType ) {
@@ -11367,7 +11386,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         switch ( this.transforms[ i ].type ) {
 
           case 'translate':
-            console.log( this.transforms[ i ].arguments[ 0 ], this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ) );
+
             transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
             transformString += ", ";
             transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );

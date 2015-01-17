@@ -231,6 +231,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return this.maxPx;
     },
 
+    getMathMinPx: function() {
+      return this.minPx;
+    },
+
     // Returns the true minimum of the axis. Either forced in options or the one from the data
     getMinValue: function() {
       return !this._adapt0To ? ( this.options.forcedMin || ( this.options.forcedMin === 0 ? 0 : this.dataMin ) ) : ( this.getAdapt0ToMin() );
@@ -854,8 +858,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     getRelPx: function( value ) {
-      console.log( this._getActualInterval(), this.getMaxPx(), this.getMinPx(), value );
-      console.trace();
+
       return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 
