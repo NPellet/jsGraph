@@ -25,6 +25,7 @@ define( [
     './shapes/graph.shape.areaundercurve',
     './shapes/graph.shape.arrow',
     './shapes/graph.shape',
+    './shapes/graph.shape.ellipse',
     './shapes/graph.shape.label',
     './shapes/graph.shape.line',
     './shapes/graph.shape.nmrintegral',

@@ -1466,6 +1466,16 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       return false;
     },
 
+    getDeltaPx: function( value, axis ) {
+      var v;
+      if ( ( v = _parsePx( value ) ) !== false ) {
+        return ( v ) + "px";
+      } else {
+
+        return ( axis.getRelPx( value ) ) + "px";
+      }
+    },
+
     deltaPosition: function( ref, delta, axis ) {
 
       var refPx, deltaPx;

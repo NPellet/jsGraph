@@ -854,6 +854,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     getRelPx: function( value ) {
+      console.log( this._getActualInterval(), this.getMaxPx(), this.getMinPx(), value );
+      console.trace();
       return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 

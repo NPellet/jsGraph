@@ -43,6 +43,7 @@ define( [], function() {
       this.setEvents();
 
       this.classes = [];
+      this.transforms = [];
 
       this._movable = true;
       this._selectable = false;
@@ -237,6 +238,7 @@ define( [], function() {
       this.setStrokeColor();
       this.setStrokeWidth();
       this.setDashArray();
+      this.setTransform();
 
       this.everyLabel( function( i ) {
 
@@ -262,6 +264,7 @@ define( [], function() {
       //	this.kill();
       var variable;
       this.position = this.setPosition();
+      this.setTransform();
 
       this.redrawImpl();
 
@@ -359,6 +362,46 @@ define( [], function() {
     },
     setDashArray: function() {
       if ( this.get( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.get( 'strokeDashArray' ) );
+    },
+
+    setTransform: function() {
+
+      var transformString = "";
+      var transforms = this.get( 'transform' );
+
+      for ( var i = 0; i < this.transforms.length; i++ ) {
+
+        transformString += this.transforms[ i ].type + "(";
+
+        switch ( this.transforms[ i ].type ) {
+
+          case 'translate':
+            console.log( this.transforms[ i ].arguments[ 0 ], this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ) );
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+            transformString += ", ";
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
+            break;
+
+          case 'rotate':
+            transformString += this.transforms[ i ].arguments[ 0 ];
+            transformString += ", ";
+
+            if ( this.transforms[ i ].arguments.length == 1 ) {
+              var p = this._getPosition( this.getFromData( 'pos' ) );
+              transformString += p.x + ", " + p.y;
+
+            } else {
+              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
+              transformString += ", ";
+              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
+            }
+            break;
+        }
+
+        transformString += ") ";
+      }
+
+      this.group.setAttribute( 'transform', transformString );
     },
 
     setLabelText: function( index ) {
@@ -616,6 +659,7 @@ define( [], function() {
       this.setStrokeColor();
       this.setDashArray();
       this.setFillColor();
+      this.setTransform();
 
       if ( this.handlesInDom && !this._staticHandles ) {
         this.handlesInDom = false;
@@ -1168,7 +1212,19 @@ define( [], function() {
 
     unselectStyle: function() {
 
+    },
+
+    resetTransforms: function() {
+      this.transforms = [];
+    },
+
+    addTransform: function( type, args ) {
+      this.transforms.push( {
+        type: type,
+        arguments: Array.isArray( args ) ? args : [ args ]
+      } );
     }
+
   }
 
   return GraphShape;

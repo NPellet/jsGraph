@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-15
+ * jsGraph JavaScript Graphing Library v1.10.4-16
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-16T13:31Z
+ * Date: 2015-01-17T00:41Z
  */
 
 (function( global, factory ) {
@@ -1374,6 +1374,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     },
 
     getRelPx: function( value ) {
+      console.log( this._getActualInterval(), this.getMaxPx(), this.getMinPx(), value );
+      console.trace();
       return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 
@@ -5003,6 +5005,16 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         return percent;
       }
       return false;
+    },
+
+    getDeltaPx: function( value, axis ) {
+      var v;
+      if ( ( v = _parsePx( value ) ) !== false ) {
+        return ( v ) + "px";
+      } else {
+
+        return ( axis.getRelPx( value ) ) + "px";
+      }
     },
 
     deltaPosition: function( ref, delta, axis ) {
@@ -10791,6 +10803,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.setEvents();
 
       this.classes = [];
+      this.transforms = [];
 
       this._movable = true;
       this._selectable = false;
@@ -10985,6 +10998,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.setStrokeColor();
       this.setStrokeWidth();
       this.setDashArray();
+      this.setTransform();
 
       this.everyLabel( function( i ) {
 
@@ -11010,6 +11024,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       //	this.kill();
       var variable;
       this.position = this.setPosition();
+      this.setTransform();
 
       this.redrawImpl();
 
@@ -11107,6 +11122,46 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
     setDashArray: function() {
       if ( this.get( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.get( 'strokeDashArray' ) );
+    },
+
+    setTransform: function() {
+
+      var transformString = "";
+      var transforms = this.get( 'transform' );
+
+      for ( var i = 0; i < this.transforms.length; i++ ) {
+
+        transformString += this.transforms[ i ].type + "(";
+
+        switch ( this.transforms[ i ].type ) {
+
+          case 'translate':
+            console.log( this.transforms[ i ].arguments[ 0 ], this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ) );
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+            transformString += ", ";
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
+            break;
+
+          case 'rotate':
+            transformString += this.transforms[ i ].arguments[ 0 ];
+            transformString += ", ";
+
+            if ( this.transforms[ i ].arguments.length == 1 ) {
+              var p = this._getPosition( this.getFromData( 'pos' ) );
+              transformString += p.x + ", " + p.y;
+
+            } else {
+              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
+              transformString += ", ";
+              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
+            }
+            break;
+        }
+
+        transformString += ") ";
+      }
+
+      this.group.setAttribute( 'transform', transformString );
     },
 
     setLabelText: function( index ) {
@@ -11364,6 +11419,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       this.setStrokeColor();
       this.setDashArray();
       this.setFillColor();
+      this.setTransform();
 
       if ( this.handlesInDom && !this._staticHandles ) {
         this.handlesInDom = false;
@@ -11916,7 +11972,19 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     unselectStyle: function() {
 
+    },
+
+    resetTransforms: function() {
+      this.transforms = [];
+    },
+
+    addTransform: function( type, args ) {
+      this.transforms.push( {
+        type: type,
+        arguments: Array.isArray( args ) ? args : [ args ]
+      } );
     }
+
   }
 
   return GraphShape;
@@ -12452,6 +12520,120 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 
 
 // Build: End source file (shapes/graph.shape.arrow) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : shapes/graph.shape.ellipse
+ * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
+ */
+
+build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) { 
+
+  var GraphRect = function( graph, options ) {
+
+    this.options = options;
+    this.init( graph );
+
+    this.graph = graph;
+
+  }
+
+  $.extend( GraphRect.prototype, GraphShape.prototype, {
+
+    createDom: function() {
+      this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
+    },
+
+    setPosition: function() {
+
+      var pos = this._getPosition( this.getFromData( 'pos' ) ),
+        x = pos.x,
+        y = pos.y;
+
+      if ( !isNaN( x ) && !isNaN( y ) && x !== false && y !== false ) {
+
+        this.setDom( 'cx', x );
+        this.setDom( 'cy', y );
+
+        this.setDom( 'rx', this.rx || 0 );
+        this.setDom( 'ry', this.ry || 0 );
+
+        return true;
+      }
+
+      return false;
+    },
+
+    setRX: function( rx ) {
+      this.rx = rx;
+    },
+
+    setRY: function( ry ) {
+      this.ry = ry;
+    },
+
+    setR: function( rx, ry ) {
+      this.rx = rx;
+      this.ry = ry;
+    },
+
+    getLinkingCoords: function() {
+
+      return {
+        x: this.currentX + this.currentW / 2,
+        y: this.currentY + this.currentH / 2
+      };
+    },
+
+    redrawImpl: function() {
+
+    },
+
+    handleCreateImpl: function() {
+      this.resize = true;
+    },
+
+    handleMouseDownImpl: function( e ) {
+
+    },
+
+    handleMouseUpImpl: function() {
+
+      /*	if( pos2.y < pos.y ) {
+				var y = pos.y;
+				pos.y = pos2.y;
+				pos2.y = y;
+			}
+		*/
+      this.triggerChange();
+    },
+
+    handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+      return;
+
+    },
+
+    setHandles: function() {
+
+    },
+
+    selectStyle: function() {
+      this.setDom( 'stroke', 'red' );
+      this.setDom( 'stroke-width', '2' );
+      this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
+    }
+
+  } );
+
+  return GraphRect;
+
+ } ) ( build["./shapes/graph.shape"] );
+
+
+// Build: End source file (shapes/graph.shape.ellipse) 
 
 
 
