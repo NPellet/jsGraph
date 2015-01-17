@@ -640,6 +640,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
           selectionType = selectionType ||  "selected";
           this.shapesDetails[ index ][ 2 ] = selectionType;
+
           this.applyStyle( selectionType, index );
 
         }

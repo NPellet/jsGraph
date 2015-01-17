@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-16
+ * jsGraph JavaScript Graphing Library v1.10.4-17
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-17T00:41Z
+ * Date: 2015-01-17T13:47Z
  */
 
 (function( global, factory ) {
@@ -6204,392 +6204,6 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 ;
 /* 
  * Build: new source file 
- * File name : plugins/graph.plugin.linking
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.linking.js
- */
-
-build['./plugins/graph.plugin.linking'] = ( function( ) { 
-
-  var plugin = function() {};
-
-  plugin.prototype = {
-
-    init: function( graph, options, plugin ) {
-
-      throw "Plugin deprecated. Use wrapper code instead (see jsNMR)";
-
-      this.options = options;
-      var self = this;
-      this.graph = graph;
-      this.plugin = plugin;
-
-      var funcs = {
-
-        /* Linking shapes */
-
-        linkA: function( shapeA, line ) {
-          this.linking.current.a = shapeA;
-          this.linking.current.line = line;
-        },
-
-        linkB: function( shapeB ) {
-          this.linking.current.b = shapeB;
-        },
-
-        getLinkingA: function() {
-          return this.linking.current.a;
-        },
-
-        getLinkingB: function() {
-          return this.linking.current.b;
-        },
-
-        isLinking: function( set ) {
-          return !!this.linking.current.a;
-        },
-
-        newLinkingLine: function() {
-          var line = document.createElementNS( this.ns, 'line' );
-          line.setAttribute( 'class', 'graph-linkingline' );
-          this.shapeZone.insertBefore( line, this.shapeZone.firstChild );
-          return line;
-        },
-
-        getLinkingLine: function( add ) {
-          return this.linking.current.line;
-        },
-
-        endLinking: function() {
-
-          if ( ( this.linking.current.a == this.linking.current.b && this.linking.current.a ) || ( !this.linking.current.b && this.linking.current.a ) ) {
-
-            this.shapeZone.removeChild( this.linking.current.line );
-            this.linking.current = {};
-
-            return;
-          }
-
-          if ( this.linking.current.line ) {
-
-            this.linking.current.line.style.display = "none";
-            this.linking.links.push( this.linking.current );
-            this.linking.current = {};
-          }
-
-          return this.linking.links[ this.linking.links.length - 1 ];
-        },
-
-        linkingReveal: function() {
-
-          for ( var i = 0, l = this.linking.links.length; i < l; i++ ) {
-
-            this.linking.links[ i ].line.style.display = "block";
-          }
-        },
-
-        linkingHide: function() {
-
-          for ( var i = 0, l = this.linking.links.length; i < l; i++ ) {
-
-            this.linking.links[ i ].line.style.display = "none";
-          }
-        }
-
-      };
-
-      for ( var i in funcs ) {
-        graph[ i ] = funcs[ i ];
-      }
-
-      function linkingStart( shape, e, clicked ) {
-
-        self.islinking = true;
-        var linking = shape.graph.isLinking();
-
-        if ( linking ) {
-          return;
-        }
-
-        var line = shape.graph.newLinkingLine();
-        var coords = shape.getLinkingCoords();
-
-        line.setAttribute( 'x1', coords.x );
-        line.setAttribute( 'y1', coords.y );
-        line.setAttribute( 'x2', coords.x );
-        line.setAttribute( 'y2', coords.y );
-
-        shape.graph.linkA( shape, line );
-      }
-
-      function linkingMove( shape, e ) {
-
-        var linking = shape.graph.isLinking();
-
-        if ( !linking ) {
-          return;
-        }
-
-        if ( shape.graph.getLinkingB() ) { // Hover something else
-          return;
-        }
-
-        var line = shape.graph.getLinkingLine();
-        var coords = shape.graph._getXY( e );
-
-        line.setAttribute( 'x2', coords.x - shape.graph.getPaddingLeft() );
-        line.setAttribute( 'y2', coords.y - shape.graph.getPaddingTop() );
-      }
-
-      function linkingOn( shape, e ) {
-
-        var linking = shape.graph.isLinking();
-        if ( !linking ) {
-          return;
-        }
-
-        var linkingA = shape.graph.getLinkingA();
-
-        if ( linkingA == this ) {
-          return;
-        }
-
-        shape.graph.linkB( shape ); // Update B element
-
-        var coords = shape.getLinkingCoords();
-
-        var line = shape.graph.getLinkingLine();
-        line.setAttribute( 'x2', coords.x );
-        line.setAttribute( 'y2', coords.y );
-      }
-
-      function linkingOut( shape, e ) {
-
-        var linking = shape.graph.isLinking();
-        if ( !linking ) {
-          return;
-        }
-        shape.graph.linkB( undefined ); // Remove B element
-      }
-
-      function linkingFinalize( shape ) {
-
-        return shape.graph.endLinking();
-      }
-
-      graph.linking = {
-        current: {},
-        links: []
-      };
-      /*
-			graph._dom.addEventListener('keydown', function( e ) {
-
-				e.preventDefault();
-				e.stopPropagation();
-
-				if( ( e.keyCode == 16 && e.ctrlKey ) || ( e.keyCode == 17 && e.shiftKey )) {
-					graph.linkingReveal();
-				}
-			});*/
-
-      /*			graph._dom.addEventListener( 'keyup', function( e ) {
-
-				e.preventDefault();
-				e.stopPropagation();
-				graph.linkingHide();
-			});
-*/
-      graph.shapeHandlers.mouseDown.push( function( e ) {
-
-        if ( self.graph.isPluginAllowed( e, self.plugin ) ) {
-
-          this.moving = false;
-          this.handleSelected = false;
-
-          linkingStart( this, e, true );
-        }
-      } );
-
-      graph.shapeHandlers.mouseUp.push( function( e ) {
-
-        var link;
-        if ( ( link = linkingFinalize( this ) ) ) {
-
-          link.a.linking = link.a.linking ||  0;
-          link.a.linking++;
-
-          link.b.linking = link.b.linking ||  0;
-          link.b.linking++;
-
-          link.a.addClass( 'linking' );
-          link.b.addClass( 'linking' );
-
-          link.a.addClass( 'linking' + link.a.linking );
-          link.a.removeClass( 'linking' + ( link.a.linking - 1 ) );
-
-          link.b.addClass( 'linking' + link.a.linking );
-          link.b.removeClass( 'linking' + ( link.a.linking - 1 ) );
-
-          if ( self.options.onLinkCreate ) {
-            self.options.onLinkCreate( link.a, link.b );
-          }
-        }
-      } );
-
-      graph.shapeHandlers.mouseMove.push( function( e ) {
-
-        linkingMove( this, e, true );
-      } );
-
-      graph.shapeHandlers.mouseOver.push( function( e ) {
-
-        linkingOn( this, e, true );
-      } );
-
-      graph.shapeHandlers.mouseOut.push( function( e ) {
-
-        linkingOut( this, e, true );
-      } );
-    }
-  };
-
-  return plugin;
- } ) (  );
-
-
-// Build: End source file (plugins/graph.plugin.linking) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : plugins/graph.plugin.nmrpeakpicking
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.nmrpeakpicking.js
- */
-
-build['./plugins/graph.plugin.nmrpeakpicking'] = ( function( ) { 
-
-  var plugin = function() {};
-
-  plugin.prototype = {
-
-    init: function( graph ) {
-      this.graph = graph;
-    },
-
-    process: function() {
-
-      //		console.log( arguments );
-
-      var series = arguments;
-      //		console.log( series[ 0 ].data );
-      //		console.log( series[ 0 ].getAdditionalData() );
-
-      this.graph.newShape( {
-
-        type: 'rect',
-        pos: {
-          x: 0,
-          y: 1000
-        },
-
-        pos2: {
-          x: 10,
-          y: 100000000
-        },
-
-        fillColor: [ 100, 100, 100, 0.3 ],
-        strokeColor: [ 100, 100, 100, 0.9 ],
-        strokeWidth: 1
-
-      } ).then( function( shape ) {
-
-        shape.draw();
-        shape.redraw();
-      } )
-
-    }
-  }
-
-  return plugin;
- } ) (  );
-
-
-// Build: End source file (plugins/graph.plugin.nmrpeakpicking) 
-
-
-
-;
-/* 
- * Build: new source file 
- * File name : plugins/graph.plugin.range
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.range.js
- */
-
-build['./plugins/graph.plugin.range'] = ( function( ) { 
-
-  var plugin = function() {};
-
-  plugin.prototype = {
-
-    init: function() {},
-
-    onMouseDown: function( graph, x, y, e, target ) {
-      var self = graph;
-      this.count = this.count || 0;
-      if ( this.count == graph.options.rangeLimitX )
-        return;
-      x -= graph.getPaddingLeft(), xVal = graph.getXAxis().getVal( x );
-
-      var shape = graph.newShape( {
-        type: 'rangeX',
-        pos: {
-          x: xVal,
-          y: 0
-        },
-        pos2: {
-          x: xVal,
-          y: 0
-        }
-      }, {
-        onChange: function( newData ) {
-          self.triggerEvent( 'onAnnotationChange', newData );
-        }
-      }, true );
-
-      if ( require ) {
-        require( [ 'src/util/context' ], function( Context ) {
-          Context.listen( shape._dom, [
-            [ '<li><a><span class="ui-icon ui-icon-cross"></span> Remove range zone</a></li>',
-              function( e ) {
-                shape.kill();
-              }
-            ]
-          ] );
-        } );
-      }
-
-      var color = Util.getNextColorRGB( this.count, graph.options.rangeLimitX );
-
-      shape.set( 'fillColor', 'rgba(' + color + ', 0.3)' );
-      shape.set( 'strokeColor', 'rgba(' + color + ', 0.9)' );
-      this.count++;
-      shape.handleMouseDown( e, true );
-      shape.draw();
-    }
-  }
-
-  return plugin;
- } ) (  );
-
-
-// Build: End source file (plugins/graph.plugin.range) 
-
-
-
-;
-/* 
- * Build: new source file 
  * File name : plugins/graph.plugin.shape
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
  */
@@ -6714,6 +6328,128 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 
 
 // Build: End source file (plugins/graph.plugin.shape) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : plugins/graph.plugin.selectScatter
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
+ */
+
+build['./plugins/graph.plugin.selectScatter'] = ( function( ) { 
+
+  var plugin = function() {};
+
+  plugin.prototype = {
+
+    init: function( graph, options ) {
+
+      this._path = document.createElementNS( graph.ns, 'path' );
+
+      graph.setAttributeTo( this._path, {
+        'display': 'none',
+        'fill': 'rgba(0,0,0,0.1)',
+        'stroke': 'rgba(0,0,0,1)',
+        'shape-rendering': 'crispEdges',
+        'x': 0,
+        'y': 0,
+        'height': 0,
+        'width': 0,
+        'd': ''
+      } );
+
+      this.options = options;
+      this.graph = graph;
+
+      graph.dom.appendChild( this._path );
+
+    },
+
+    setSerie: function( serie ) {
+      this.serie = serie;
+    },
+
+    onMouseDown: function( graph, x, y, e, mute ) {
+
+      if ( !this.serie ) {
+        return;
+      }
+
+      this.path = 'M ' + x + ' ' + y + ' ';
+      this.currentX = x;
+      this.currentY = y;
+
+      this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+      this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+      this._path.setAttribute( 'display', 'block' );
+
+    },
+
+    onMouseMove: function( graph, x, y, e, mute ) {
+
+      if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
+
+        this.path += " L " + x + " " + y + " ";
+        this.currentX = x;
+        this.currentY = y;
+
+        this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
+        this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
+
+        this._path.setAttribute( 'd', this.path + " z" );
+
+        this.findPoints();
+      }
+    },
+
+    findPoints: function() {
+
+      var data = this.serie.data;
+      var counter = 0,
+        j2;
+      for ( var i = 0, l = data.length; i < l; i += 2 ) {
+
+        counter = 0;
+        for ( var j = 0, k = this.xs.length; j < k; j += 1 ) {
+
+          if ( j == k - 1 ) {
+            j2 = 0;
+          } else {
+            j2 = j + 1;
+          }
+
+          if ( ( ( this.ys[ j ] < data[ i + 1 ] && this.ys[ j2 ] > data[ i + 1 ] ) || ( this.ys[ j ] > data[ i + 1 ] && this.ys[ j2 ] < data[ i + 1 ] ) ) ) {
+
+            if ( data[ i ] > ( ( data[ i + 1 ] - this.ys[ j ] ) / ( this.ys[ j2 ] - this.ys[ j ] ) ) * ( this.xs[ j2 ] - this.xs[ j ] ) + this.xs[ j ] ) {
+              counter++;
+            }
+          }
+        }
+
+        if ( counter % 2 == 1 ) {
+
+          this.serie.selectPoint( i / 2, true, "selected" );
+        }
+
+      }
+    },
+
+    onMouseUp: function( graph, x, y, e, mute ) {
+      this._path.setAttribute( 'display', 'none' );
+    },
+
+    removeZone: function() {
+
+    }
+  }
+
+  return plugin;
+ } ) (  );
+
+
+// Build: End source file (plugins/graph.plugin.selectScatter) 
 
 
 
@@ -10306,6 +10042,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
           selectionType = selectionType ||  "selected";
           this.shapesDetails[ index ][ 2 ] = selectionType;
+
           this.applyStyle( selectionType, index );
 
         }

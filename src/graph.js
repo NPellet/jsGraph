@@ -8,10 +8,8 @@ define( [
     './graph.legend',
 
     './plugins/graph.plugin.drag',
-    './plugins/graph.plugin.linking',
-    './plugins/graph.plugin.nmrpeakpicking',
-    './plugins/graph.plugin.range',
     './plugins/graph.plugin.shape',
+    './plugins/graph.plugin.selectScatter',
     './plugins/graph.plugin.zoom',
 
     './series/graph.serie.contour',
