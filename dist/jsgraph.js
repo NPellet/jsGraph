@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-21
+ * jsGraph JavaScript Graphing Library v1.10.4-22
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-17T23:24Z
+ * Date: 2015-01-18T22:12Z
  */
 
 (function( global, factory ) {
@@ -5361,6 +5361,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
       var coords = self._getXY( e );
       self.cancelClick = true;
+
       _handleDblClick( self, coords.x, coords.y, e );
     } );
 
@@ -5379,8 +5380,15 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
       // Only execute the action after 100ms
       self.clickTimeout = window.setTimeout( function() {
+
+        if ( self.cancelClick ) {
+          self.cancelClick = false;
+          return;
+        }
+
         _handleClick( self, coords.x, coords.y, e );
-      }, 100 );
+
+      }, 200 );
     } );
 
     graph.dom.addEventListener( 'mousewheel', function( e ) {
@@ -5405,7 +5413,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
   function _handleMouseDown( graph, x, y, e ) {
 
     var self = graph,
-      $target = $( e.target ),
       shift = e.shiftKey,
       ctrl = e.ctrlKey,
       keyComb = graph.options.pluginAction,
@@ -5501,7 +5508,8 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
   function _handleClick( graph, x, y, e ) {
 
-    if ( !e.shiftKey ) {
+    graph.emit( 'click', e );
+    if ( e.target == graph.rectEvent && !e.shiftKey ) {
       graph.unselectShapes();
     }
 
@@ -7083,6 +7091,8 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
       if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
         return;
       }
+
+      graph.cancelClick = true;
 
       switch ( this._zoomingMode ) {
         case 'x':
@@ -11095,7 +11105,7 @@ build['./shapes/graph.shape'] = ( function( ) {
         } );
 
         this.group.addEventListener( 'mousedown', function( e ) {
-          console.log( 'down' );
+
           self.graph.focus();
 
           //  e.preventDefault();
@@ -11546,7 +11556,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         if ( !pos ) {
 
-          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ) || {
+            dx: 0,
+            dy: 0
+          }, currPos );
         } else {
           pos = this._getPosition( pos );
         }
@@ -11813,7 +11826,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           var self = this;
           //	e.stopPropagation();
-          e.preventDefault();
+          // e.preventDefault();
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
@@ -11833,8 +11846,8 @@ build['./shapes/graph.shape'] = ( function( ) {
 
         function( e ) {
 
-          e.stopPropagation();
-          e.preventDefault();
+          //  e.stopPropagation();
+          //          e.preventDefault();
 
           if ( !e.shiftKey ) {
             this.graph.unselectShapes();

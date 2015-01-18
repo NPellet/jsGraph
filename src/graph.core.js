@@ -1817,6 +1817,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       var coords = self._getXY( e );
       self.cancelClick = true;
+
       _handleDblClick( self, coords.x, coords.y, e );
     } );
 
@@ -1835,8 +1836,15 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       // Only execute the action after 100ms
       self.clickTimeout = window.setTimeout( function() {
+
+        if ( self.cancelClick ) {
+          self.cancelClick = false;
+          return;
+        }
+
         _handleClick( self, coords.x, coords.y, e );
-      }, 100 );
+
+      }, 200 );
     } );
 
     graph.dom.addEventListener( 'mousewheel', function( e ) {
@@ -1861,7 +1869,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
   function _handleMouseDown( graph, x, y, e ) {
 
     var self = graph,
-      $target = $( e.target ),
       shift = e.shiftKey,
       ctrl = e.ctrlKey,
       keyComb = graph.options.pluginAction,
@@ -1957,7 +1964,8 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
   function _handleClick( graph, x, y, e ) {
 
-    if ( !e.shiftKey ) {
+    graph.emit( 'click', e );
+    if ( e.target == graph.rectEvent && !e.shiftKey ) {
       graph.unselectShapes();
     }
 

@@ -123,6 +123,8 @@ define( [], function() {
         return;
       }
 
+      graph.cancelClick = true;
+
       switch ( this._zoomingMode ) {
         case 'x':
           graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );

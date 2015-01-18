@@ -85,7 +85,7 @@ define( [], function() {
         } );
 
         this.group.addEventListener( 'mousedown', function( e ) {
-          console.log( 'down' );
+
           self.graph.focus();
 
           //  e.preventDefault();
@@ -536,7 +536,10 @@ define( [], function() {
 
         if ( !pos ) {
 
-          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ), currPos );
+          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ) || {
+            dx: 0,
+            dy: 0
+          }, currPos );
         } else {
           pos = this._getPosition( pos );
         }
@@ -803,7 +806,7 @@ define( [], function() {
 
           var self = this;
           //	e.stopPropagation();
-          e.preventDefault();
+          // e.preventDefault();
 
           if ( !this.isLocked() ) {
             this.graph.elementMoving( this );
@@ -823,8 +826,8 @@ define( [], function() {
 
         function( e ) {
 
-          e.stopPropagation();
-          e.preventDefault();
+          //  e.stopPropagation();
+          //          e.preventDefault();
 
           if ( !e.shiftKey ) {
             this.graph.unselectShapes();
