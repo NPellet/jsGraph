@@ -226,10 +226,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       index = index.join();
 
-      var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      var _on;
+      if ( typeof force === 'undefined' ) {
+        _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
+      }
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on || ( force === true && force !== false ) ) {
+      if ( _on || force === true ) {
 
         if ( !el[ index ] ) {
 
@@ -251,7 +254,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           this.markerHovered++;
         }
 
-      } else if ( force === false ||  !_on ) {
+      } else if ( !_on || force === false ) {
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
