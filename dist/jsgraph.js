@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-23
+ * jsGraph JavaScript Graphing Library v1.10.4-24
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-19T20:03Z
+ * Date: 2015-01-19T20:09Z
  */
 
 (function( global, factory ) {
@@ -7582,10 +7582,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       index = index.join();
 
-      var _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      var _on;
+      if ( typeof force === 'undefined' ) {
+        _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
+      }
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on || ( force === true && force !== false ) ) {
+      if ( _on || force === true ) {
 
         if ( !el[ index ] ) {
 
@@ -7608,7 +7611,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           this.markerHovered++;
         }
 
-      } else if ( force === false ||  !_on ) {
+      } else if ( !_on || force === false ) {
 
         if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 

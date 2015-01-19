@@ -230,7 +230,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       var _on;
       if ( typeof force === 'undefined' ) {
-        _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
+        _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
       }
       var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
