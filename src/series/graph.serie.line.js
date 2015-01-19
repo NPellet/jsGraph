@@ -24,7 +24,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       autoPeakPickingFormat: false,
       autoPeakPickingAllowAllY: false,
 
-      selectableOnClick: true
+      selectableOnClick: true,
+
+      markersIndependant: false
     },
 
     init: function( graph, name, options ) {
@@ -102,7 +104,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.groupMain.appendChild( this.markerLabelSquare );
       this.groupMain.appendChild( this.markerLabel );
 
-      this.currentAction = false;
+      this.independantMarkers = [];
 
       if ( this.initExtended1 )
         this.initExtended1();
@@ -234,7 +236,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         if ( !el[ index ] ) {
 
           var dom = document.createElementNS( this.graph.ns, 'path' );
-          this.setMarkerStyleTo( dom, true );
+
+          this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
           this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
           this.groupMarkerSelected.appendChild( dom );
 
@@ -925,16 +928,18 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       }
 
-      this.counter++;
-
       if ( !this.markerPoints ) {
+        this.counter++;
+
         return;
       }
 
       if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
 
-        drawMarkerXY( this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
+
+      this.counter++;
 
     },
 
@@ -1067,6 +1072,37 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
 
       return family.dom;
+    },
+
+    // In case markers are not grouped in families but independant
+    getMarkerDomIndependant: function( index, family ) {
+
+      var self = this;
+      if ( !this.independantMarkers[ index ] ) {
+
+        var dom = document.createElementNS( this.graph.ns, 'path' );
+        this.setMarkerStyleTo( dom, family );
+
+        dom.addEventListener( 'mouseover', function( e ) {
+
+          self.onMouseOverMarker( e, [ index, 0 ] );
+        } );
+
+        dom.addEventListener( 'mouseout', function( e ) {
+
+          self.onMouseOutMarker( e, [ index, 0 ] );
+        } );
+
+        dom.addEventListener( 'click', function( e ) {
+          self.onClickOnMarker( e, [ index, 0 ] );
+        } );
+
+        this.independantMarkers[ index ] = dom;
+      }
+
+      this.groupMain.appendChild( this.independantMarkers[ index ] );
+
+      return this.independantMarkers[ index ];
     },
 
     searchIndexByPxXY: function( x, y ) {
@@ -1518,36 +1554,13 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
       } );
 
-      // OK now let's handle clashes
-
-      /*			for( var i = 0, l = markerPoints.length ; i < l ; i ++ ) {
-
-				// No clash
-				if( markerPoints[ i ][ 1 ] < markerPoints[ i + 1 ][ 1 ] ) {
-					continue;
-				}
-
-				var restartAt = markerPoints[ i + 1 ][ 1 ] + 1;
-				markerPoints[ i ][ 1 ] = markerPoints[ i + 1 ][ 0 ];
-
-				var j = i;
-
-				while( markerPoints[ j ][ 1 ] < restartAt ) {
-					j++;
-				}
-
-				markerPoints.splice( j, 0, [ restartAt, ])
-
-
-			}
-*/
       this.markerPoints = this.markerPoints ||  {};
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
     },
 
     insertMarkers: function() {
 
-      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] ) {
+      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
         return;
       }
 
@@ -1700,15 +1713,22 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
   } );
 
-  function drawMarkerXY( family, x, y ) {
+  function drawMarkerXY( graph, family, x, y ) {
 
     if ( !family ) {
       return;
     }
 
+    if ( graph.options.markersIndependant ) {
+      var dom = graph.getMarkerDomIndependant( graph.counter, family );
+      var p = 'M ' + x + ' ' + y + ' ';
+      p += family.markerPath + ' ';
+
+      dom.setAttribute( 'd', p );
+    }
+
     family.path = family.path ||  "";
     family.path += 'M ' + x + ' ' + y + ' ';
-
     family.path += family.markerPath + ' ';
   }
 
