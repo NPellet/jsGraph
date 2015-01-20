@@ -579,11 +579,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       for ( ; i < l; i++ ) {
 
         toBreak = false;
+        this.counter1 = i;
 
         this.currentLine = "";
         j = 0, k = 0, m = data[ i ].length;
 
         for ( ; j < m; j += 2 ) {
+
+          this.counter2 = j / 2;
 
           if ( this.markersShown() ) {
 
@@ -695,7 +698,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         currentLine = "M ";
         j = 0, k = 0, m = data[ i ].length;
 
+        this.counter1 = i;
+
         for ( ; j < m; j += 1 ) {
+
+          this.counter2 = j;
 
           if ( this.markersShown() ) {
 
@@ -1078,9 +1085,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     // In case markers are not grouped in families but independant
-    getMarkerDomIndependant: function( index, family ) {
+    getMarkerDomIndependant: function( index1, index2, family ) {
 
       var self = this;
+      var index = index1 + "," + index2;
+
       if ( !this.independantMarkers[ index ] ) {
 
         var dom = document.createElementNS( this.graph.ns, 'path' );
@@ -1596,7 +1605,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     eraseMarkers: function() {
 
       var self = this;
-      if ( this.currentMarkersSelectionType ) {
+
+      if ( this.options.markersIndependant ) {
+
+        this.independantMarkers.map( function( el ) {
+          self.groupMain.removeChild( el );
+        } );
+
+      } else if ( this.currentMarkersSelectionType ) {
 
         this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
           self.groupMain.removeChild( el.dom );
@@ -1723,7 +1739,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     }
 
     if ( graph.options.markersIndependant ) {
-      var dom = graph.getMarkerDomIndependant( graph.counter, family );
+      var dom = graph.getMarkerDomIndependant( graph.counter1, graph.counter2, family );
       var p = 'M ' + x + ' ' + y + ' ';
       p += family.markerPath + ' ';
 
