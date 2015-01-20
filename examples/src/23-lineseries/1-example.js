@@ -50,7 +50,7 @@ define( function() {
 
 			serie.showMarkers("selection3");
 					
-			serie.resetStyles();
+			serie.extendStyles();
 
 
 
@@ -68,11 +68,11 @@ define( function() {
 		} );
 		
 
-	}, "Basic", [ 
+	}, "Selection style", [ 
 
-
-	
-
+		"With the line series in jsGraph you can preselect various selection styles: instead of \"Select\" and \"Unselected\", you can define your own ones and assign them your own styles.",
+		"This can be useful if you have multiple traces on a graph with different selection levels available.",
+		"You can also play with markers which can be active in some selections but not in others (see example)"
 	]
 
 	];

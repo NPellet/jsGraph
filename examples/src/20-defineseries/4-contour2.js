@@ -27,7 +27,7 @@ define( function() {
 	}, "Contour plot v2", [ 
 
 
-	"In the version 2, you should include the contour line minimums and maximums, to be taken into account by the axes autoscaling. This is an alternative to the <code>forceMin</code> and <code>forceMax</code> methods in the version 1.",
+	"In the version 2, you should include the contour line minimums and maximums. This is an alternative to the <code>forceMin</code> and <code>forceMax</code> methods in the version 1.",
 	
 
 	] ];

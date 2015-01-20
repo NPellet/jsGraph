@@ -61,8 +61,10 @@ define( function() {
 
 		} );
 		
-	}, "Point selection plugin", [ ]
-
-	];
+	}, "Selection plugin", [
+		"The selection plugin is here to allow you to select with the mouse a subset of the scatter plot.",
+		"The data can then be extracted and used for further analysis, calculations, display, ...",
+		"To begin point selection, click somewhere on the graph and start circling the values you want to select."
+	] ];
 
 } );
