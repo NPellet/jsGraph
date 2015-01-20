@@ -54,6 +54,7 @@ define( function() {
 				}
 
 				index = Math.round( Math.random() * ( series[ 0 ].length / 2 - 1 ) );
+				
 				serie.selectPoint( index );
 				lastIndex = index;
 

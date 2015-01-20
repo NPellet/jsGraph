@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-29
+ * jsGraph JavaScript Graphing Library v1.10.4-30
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-20T08:40Z
+ * Date: 2015-01-20T10:05Z
  */
 
 (function( global, factory ) {
@@ -10397,9 +10397,10 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     applyStyle: function( selection, index ) {
 
+      var i, j;
       var styles = this.getStyle( selection, index );
 
-      for ( var i in styles ) {
+      for ( i in styles ) {
 
         for ( j in styles[ i ] ) {
 
@@ -10523,7 +10524,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 
     selectPoint: function( index, setOn, selectionType ) {
 
-      if ( this.shapesDetails[ index ][ 2 ] == selectionType ) {
+      if ( this.shapesDetails[ index ][ 2 ] && this.shapesDetails[ index ][ 2 ] == selectionType ) {
         return;
       }
 

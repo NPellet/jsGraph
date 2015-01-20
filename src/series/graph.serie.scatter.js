@@ -486,9 +486,10 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     applyStyle: function( selection, index ) {
 
+      var i, j;
       var styles = this.getStyle( selection, index );
 
-      for ( var i in styles ) {
+      for ( i in styles ) {
 
         for ( j in styles[ i ] ) {
 
@@ -612,7 +613,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     selectPoint: function( index, setOn, selectionType ) {
 
-      if ( this.shapesDetails[ index ][ 2 ] == selectionType ) {
+      if ( this.shapesDetails[ index ][ 2 ] && this.shapesDetails[ index ][ 2 ] == selectionType ) {
         return;
       }
 
