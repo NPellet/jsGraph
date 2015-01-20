@@ -39,6 +39,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     drawTick: function( value, label, scaling, options, forcedPos ) {
+      var pos;
+
       var group = this.groupTicks,
         tickLabel,
         labelWidth = 0;

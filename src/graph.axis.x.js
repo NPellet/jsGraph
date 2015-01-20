@@ -35,6 +35,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
     drawTick: function( value, label, scaling, options, forcedPos ) {
       var group = this.groupTicks;
+      var val;
       var tick = document.createElementNS( this.graph.ns, 'line' );
 
       if ( forcedPos !== undefined ) {
