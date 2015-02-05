@@ -334,12 +334,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this._hasChanged = true;
 
       // New method
-      this.emit( "zoom", [ this, this.currentAxisMin, this.currentAxisMax ] );
-
-      // Old method
-      if ( this.options.onZoom && !mute ) {
-        this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
-      }
+      this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
     },
 
     getSerieShift: function() {

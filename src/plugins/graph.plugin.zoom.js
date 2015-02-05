@@ -201,13 +201,11 @@ define( [], function() {
         this.graph.autoscaleAxes();
         this.graph.drawSeries();
 
-        if ( yAxis.options.onZoom ) {
-          yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
-        }
+        this.graph._applyToAxes( function( axis ) {
 
-        if ( xAxis.options.onZoom ) {
-          xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
-        }
+          axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
+
+        }, null, true, true );
 
       } else {
 

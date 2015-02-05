@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-01-20T10:05Z
+ * Date: 2015-02-05T08:57Z
  */
 
 (function( global, factory ) {
@@ -828,12 +828,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this._hasChanged = true;
 
       // New method
-      this.emit( "zoom", [ this, this.currentAxisMin, this.currentAxisMax ] );
-
-      // Old method
-      if ( this.options.onZoom && !mute ) {
-        this.options.onZoom( this.currentAxisMin, this.currentAxisMax );
-      }
+      this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
     },
 
     getSerieShift: function() {
@@ -7121,13 +7116,11 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
         this.graph.autoscaleAxes();
         this.graph.drawSeries();
 
-        if ( yAxis.options.onZoom ) {
-          yAxis.options.onZoom( yAxis.getMinValue(), yAxis.getMaxValue() );
-        }
+        this.graph._applyToAxes( function( axis ) {
 
-        if ( xAxis.options.onZoom ) {
-          xAxis.options.onZoom( xAxis.getMinValue(), xAxis.getMaxValue() );
-        }
+          axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
+          
+        }, null, true, true );
 
       } else {
 
