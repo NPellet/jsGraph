@@ -917,10 +917,15 @@ define( [], function() {
     handleMouseOver: function() {
 
       this.callHandler( 'mouseOver', this );
+
+      this.graph.emit( "shapeMouseOver", this );
+
     },
 
     handleMouseOut: function() {
       this.callHandler( 'mouseOut', this );
+
+      this.graph.emit( "shapeMouseOut", this );
     },
 
     removeHandles: function() {
