@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-30
+ * jsGraph JavaScript Graphing Library v1.10.4-31
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-05T08:57Z
+ * Date: 2015-02-05T09:02Z
  */
 
 (function( global, factory ) {
@@ -7119,7 +7119,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
         this.graph._applyToAxes( function( axis ) {
 
           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
-          
+
         }, null, true, true );
 
       } else {
@@ -11921,10 +11921,15 @@ build['./shapes/graph.shape'] = ( function( ) {
     handleMouseOver: function() {
 
       this.callHandler( 'mouseOver', this );
+
+      this.graph.emit( "shapeMouseOver", this );
+
     },
 
     handleMouseOut: function() {
       this.callHandler( 'mouseOut', this );
+
+      this.graph.emit( "shapeMouseOut", this );
     },
 
     removeHandles: function() {
