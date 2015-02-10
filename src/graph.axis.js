@@ -462,12 +462,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
       var interval = this.getInterval();
 
-      this.currentAxisMin = this.getMinValue() - ( this.options.axisDataSpacing.min * interval );
-      this.currentAxisMax = this.getMaxValue() + ( this.options.axisDataSpacing.max * interval );
-
       if ( this.options.logScale ) {
-        this.currentAxisMin = Math.max( 1e-50, this.currentAxisMin );
-        this.currentAxisMax = Math.max( 1e-50, this.currentAxisMax );
+        this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
+        this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
+      } else {
+
+        this.currentAxisMin = this.getMinValue() - ( this.options.axisDataSpacing.min * interval );
+        this.currentAxisMax = this.getMaxValue() + ( this.options.axisDataSpacing.max * interval );
+
       }
 
       if ( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
@@ -486,11 +488,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     getActualMin: function() {
-      return this.currentAxisMin == this.currentAxisMax ? this.currentAxisMin - 1 : this.currentAxisMin;
+      return this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
     },
 
     getActualMax: function() {
-      return this.currentAxisMax == this.currentAxisMin ? this.currentAxisMax + 1 : this.currentAxisMax;
+      return this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
     },
 
     setCurrentMin: function( val ) {
@@ -734,6 +736,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       var incr = Math.min( min, max );
       var max = Math.max( min, max );
 
+      if ( incr < 1e-50 ) {
+        incr = 1e-50;
+      }
+
+      if ( Math.log( incr ) - Math.log( max ) > 20 ) {
+        max = Math.pow( 10, ( Math.log( incr ) * 20 ) );
+      }
+
       var optsMain = {
         fontSize: '1.0em',
         exponential: true,
@@ -754,11 +764,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
           incr = 1;
           pow++;
         } else {
-          if ( incr != 1 && val > min )
-            this.drawTickWrapper( val, true, 2, {
-              overwrite: incr,
+
+          if ( incr != 1 && val > min ) {
+
+            this.drawTickWrapper( val, false, 2, {
+              overwrite: "",
               fontSize: '0.6em'
             } );
+
+          }
+
           incr++;
         }
       }
@@ -1068,7 +1083,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     setTickContent: function( dom, val, options ) {
       if ( !options ) options = {};
 
-      if ( options.overwrite || !options.exponential ) {
+      if ( options.overwrite ||  !options.exponential ) {
 
         dom.textContent = options.overwrite || this.valueToText( val );
 
@@ -1080,7 +1095,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         var tspan = document.createElementNS( this.graph.ns, 'tspan' );
         tspan.textContent = log;
         tspan.setAttribute( 'font-size', '0.7em' );
-        tspan.setAttribute( 'dy', -3 );
+        tspan.setAttribute( 'dy', 0 );
         dom.appendChild( tspan );
       }
 

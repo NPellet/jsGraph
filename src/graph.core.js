@@ -715,7 +715,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     // Repaints the axis and series
-
     autoscaleAxes: function() {
       this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
       this.redraw();

@@ -345,32 +345,34 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     makeError: function( orientation, level, coord, origin ) {
 
-      switch ( this.errorstyles[  level ].type ) {
+      switch ( this.errorstyles[ level ].type ) {
 
         case 'bar':
-          return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin );
+          return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
           break;
 
         case 'box':
-          return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin );
+          return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
           break;
       }
     },
 
-    makeBarY: function( coordY, origin ) {
-
-      return " V " + coordY + " m -10 0 h 20 m -10 0 V " + origin + " ";
+    makeBarY: function( coordY, origin, style ) {
+      var width = style.width || 10;
+      return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
     },
 
-    makeBoxY: function( coordY, origin ) {
+    makeBoxY: function( coordY, origin, style ) {
       return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
     },
 
-    makeBarX: function( coordX, origin ) {
-      return " H " + coordX + " m 0 -10 v 20 m 0 -10 H " + origin + " ";
+    makeBarX: function( coordX, origin, style ) {
+      var height = style.height || 10;
+      return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
     },
 
-    makeBoxX: function( coordX, origin ) {
+    makeBoxX: function( coordX, origin, style ) {
+
       return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
     },
 
@@ -603,7 +605,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 */
 
       this.errorstyles = styles;
-
+      return this;
     },
 
     unselectPoint: function( index ) {
