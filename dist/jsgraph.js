@@ -1,5 +1,5 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-32
+ * jsGraph JavaScript Graphing Library v1.10.4-33
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
@@ -10276,8 +10276,8 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
     },
 
     makeBarY: function( coordY, origin, style ) {
-    var width = style.width || 10;
-      return " V " + coordY + " m -" + (width/ 2) + " 0 h " + (width) + " m -" + (width/ 2) + " 0 V " + origin + " ";
+      var width = style.width || 10;
+      return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
     },
 
     makeBoxY: function( coordY, origin, style ) {
