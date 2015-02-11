@@ -40,7 +40,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.name = name;
       this.id = this.graph.uniqueId();
 
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) ); // Creates options
       this.graph.mapEventEmission( this.options, this ); // Register events
 
       // Creates an empty style variable
