@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-34
+ * jsGraph JavaScript Graphing Library v1.10.4-35
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-11T15:42Z
+ * Date: 2015-02-24T09:52Z
  */
 
 (function( global, factory ) {
@@ -33,7 +33,7 @@
 /* 
  * Build: new source file 
  * File name : dependencies/eventEmitter/EventEmitter
- * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/dependencies/eventEmitter/EventEmitter.js
  */
 
 build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
@@ -489,7 +489,7 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
 /* 
  * Build: new source file 
  * File name : graph.axis
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.js
  */
 
 build['./graph.axis'] = ( function( $, EventEmitter ) { 
@@ -933,7 +933,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
             /*
   					Example:
   						13'453 (4) (1.345) => 1
-  						0.0000341 (-5) (3.41) => 5 
+  						0.0000341 (-5) (3.41) => 5
   				*/
 
             // Let's scale it back
@@ -1130,6 +1130,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       while ( this.groupGrids.firstChild ) {
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
+
+      this.ticks = [];
     },
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
@@ -1632,7 +1634,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.x.js
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
@@ -1801,7 +1803,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.y.js
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
@@ -2067,7 +2069,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.broken.js
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
@@ -2311,7 +2313,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.x.broken.js
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
@@ -2355,7 +2357,7 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.axis.y.broken.js
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
@@ -2404,7 +2406,7 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.xaxis.time
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.xaxis.time.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.xaxis.time.js
  */
 
 build['./graph.xaxis.time'] = ( function( GraphAxis ) { 
@@ -3166,7 +3168,7 @@ build['./graph.xaxis.time'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.legend
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.legend.js
  */
 
 build['./graph.legend'] = ( function( ) { 
@@ -3451,7 +3453,7 @@ build['./graph.legend'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dynamicdepencies
- * File path : /Users/normanpellet/Documents/Web/graph/src/dynamicdepencies.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/dynamicdepencies.js
  */
 
 build['./dynamicdepencies'] = ( function( ) { 
@@ -3526,7 +3528,7 @@ build['./dynamicdepencies'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph.core
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.core.js
  */
 
 build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) { 
@@ -5635,7 +5637,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 /* 
  * Build: new source file 
  * File name : graph._serie
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph._serie.js
  */
 
 build['./graph._serie'] = ( function( EventEmitter ) { 
@@ -6156,7 +6158,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.drag
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/plugins/graph.plugin.drag.js
  */
 
 build['./plugins/graph.plugin.drag'] = ( function( ) { 
@@ -6208,7 +6210,7 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/plugins/graph.plugin.shape.js
  */
 
 build['./plugins/graph.plugin.shape'] = ( function( ) { 
@@ -6245,9 +6247,9 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
       this.count = this.count || 0;
 
       x -= graph.getPaddingLeft(),
-      y -= graph.getPaddingTop(),
+        y -= graph.getPaddingTop(),
 
-      xVal = graph.getXAxis().getVal( x );
+        xVal = graph.getXAxis().getVal( x );
       yVal = graph.getYAxis().getVal( y );
 
       var shapeInfo = {
@@ -6338,7 +6340,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dependencies/eventEmitter/eventEmitter
- * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/eventEmitter.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/dependencies/eventEmitter/eventEmitter.js
  */
 
 build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
@@ -6794,7 +6796,7 @@ build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.selectScatter
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/plugins/graph.plugin.selectScatter.js
  */
 
 build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter ) { 
@@ -6924,7 +6926,7 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.zoom
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/plugins/graph.plugin.zoom.js
  */
 
 build['./plugins/graph.plugin.zoom'] = ( function( ) { 
@@ -7201,7 +7203,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : series/slotoptimizer
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/slotoptimizer.js
  */
 
 build['./series/slotoptimizer'] = ( function( ) { 
@@ -7307,7 +7309,7 @@ build['./series/slotoptimizer'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/graph.serie.line.js
  */
 
 build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, SlotOptimizer ) { 
@@ -8164,7 +8166,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-          max = this.getX( slotToUse[ j ].max );
+            max = this.getX( slotToUse[ j ].max );
 
           /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -8180,7 +8182,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-          max = this.getY( slotToUse[ j ].max );
+            max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -8977,9 +8979,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
-          px = self.getX( x ),
-          k = 0,
-          y = self.getY( ys[ i ][ 0 ] );
+            px = self.getX( x ),
+            k = 0,
+            y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
             continue;
@@ -9184,8 +9186,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     for ( ; i < l; i++ ) {
 
       j = 0,
-      k = 0,
-      m = graph.data[ i ].length;
+        k = 0,
+        m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;
@@ -9318,7 +9320,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 /* 
  * Build: new source file 
  * File name : series/graph.serie.contour
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/graph.serie.contour.js
  */
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
@@ -9703,7 +9705,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/graph.serie.line.broken.js
  */
 
 build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
@@ -9913,7 +9915,7 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.scatter
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/graph.serie.scatter.js
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) { 
@@ -10588,7 +10590,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable ) 
 /* 
  * Build: new source file 
  * File name : series/graph.serie.zone
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/series/graph.serie.zone.js
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
@@ -10963,7 +10965,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : graph.serieaxis
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.serieaxis.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.serieaxis.js
  */
 
 build['./graph.serieaxis'] = ( function( GraphSerie ) { 
@@ -10972,36 +10974,36 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 
   GraphSerie.prototype,
 
-  $.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
+    $.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
 
-    initExtended1: function() {
-      if ( this.initExtended2 )
-        this.initExtended2();
-    },
+      initExtended1: function() {
+        if ( this.initExtended2 )
+          this.initExtended2();
+      },
 
-    setAxis: function( axis ) {
-      this.axis = axis;
-    },
+      setAxis: function( axis ) {
+        this.axis = axis;
+      },
 
-    kill: function( noRedraw ) {
-      this.getAxis().groupSeries.removeChild( this.groupMain );
-      this.getAxis().series.splice( this.getAxis().series.indexOf( this ), 1 );
-      if ( !noRedraw )
-        this.graph.redraw();
-    },
+      kill: function( noRedraw ) {
+        this.getAxis().groupSeries.removeChild( this.groupMain );
+        this.getAxis().series.splice( this.getAxis().series.indexOf( this ), 1 );
+        if ( !noRedraw )
+          this.graph.redraw();
+      },
 
-    getAxis: function() {
-      return this.axis;
-    },
+      getAxis: function() {
+        return this.axis;
+      },
 
-    getXAxis: function() {
-      return this.axis;
-    },
+      getXAxis: function() {
+        return this.axis;
+      },
 
-    getYAxis: function() {
-      return this.axis;
-    }
-  } );
+      getYAxis: function() {
+        return this.axis;
+      }
+    } );
 
   return GraphSerieAxis;
  } ) ( build["./series/graph.serie.line"] );
@@ -11015,7 +11017,7 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.js
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
@@ -12268,7 +12270,7 @@ build['./shapes/graph.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.areaundercurve
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.areaundercurve.js
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
@@ -12435,7 +12437,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-          y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+            y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
           maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
           minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );
@@ -12543,7 +12545,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.line.js
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
@@ -12755,7 +12757,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.arrow
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.arrow.js
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
@@ -12795,7 +12797,7 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.ellipse
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.ellipse.js
  */
 
 build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) { 
@@ -12909,7 +12911,7 @@ build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.label
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.label.js
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
@@ -12985,7 +12987,7 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.nmrintegral
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.nmrintegral.js
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -13102,7 +13104,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] ),
-          y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
+            y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
 
           if ( this.serie.isFlipped() ) {
             var x2 = x;
@@ -13254,7 +13256,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rect
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.rect.js
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
@@ -13391,7 +13393,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       // At this stage, x and y are in px
 
       x = pos.x,
-      y = pos.y;
+        y = pos.y;
 
       this.currentX = x;
       this.currentY = y;
@@ -13803,7 +13805,7 @@ this.handle1.setAttribute('x', this.currentX);
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakintegration2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.peakintegration2d.js
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
@@ -13855,7 +13857,7 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.peakinterval.js
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
@@ -13901,7 +13903,7 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval2
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.peakinterval2.js
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
@@ -14039,7 +14041,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.data[ i ][ j + 0 ],
-          y = this.serie.data[ i ][ j + 1 ];
+            y = this.serie.data[ i ][ j + 1 ];
 
           if ( !firstX ) {
             firstX = x;
@@ -14126,7 +14128,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rangex
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.rangex.js
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -14252,7 +14254,7 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.cross
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.cross.js
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
@@ -14386,7 +14388,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.zoom2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/shapes/graph.shape.zoom2d.js
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
@@ -14574,7 +14576,7 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : graph.toolbar
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.toolbar.js
  */
 
 build['./graph.toolbar'] = ( function( ) { 
@@ -14735,7 +14737,7 @@ build['./graph.toolbar'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
+ * File path : /Users/transients/Transients/sourcecode/jsGraph/src/graph.js
  */
 
 build[ './graph.core' ].getBuild = function( b ) { return build[ b ]; }
