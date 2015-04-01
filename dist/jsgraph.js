@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-35
+ * jsGraph JavaScript Graphing Library v1.10.4-36
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-24T09:52Z
+ * Date: 2015-04-01T08:06Z
  */
 
 (function( global, factory ) {
@@ -1733,6 +1733,7 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.label.setAttribute( 'text-anchor', 'middle' );
       this.label.setAttribute( 'x', Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + this.getMinPx() );
       this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
+      this.labelTspan.textContent = this.getLabel();
 
       this.line.setAttribute( 'x1', this.getMinPx() );
       this.line.setAttribute( 'x2', this.getMaxPx() );
@@ -1910,6 +1911,9 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       // Place label correctly
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
+
+      console.log( this.labelTspan, this.getLabel() );
+      this.labelTspan.textContent = this.getLabel();
 
       if ( !this.left ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
@@ -7473,13 +7477,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     },
 
-    setAdditionalData: function( data ) {
-      this.additionalData = data;
-      return this;
-    },
-
-    getAdditionalData: function() {
-      return this.additionalData;
+    setOptions: function( options ) {
+      this.options = options;
+      this.applyLineStyles();
     },
 
     calculateSlots: function() {

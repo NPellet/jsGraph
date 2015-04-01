@@ -159,13 +159,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     },
 
-    setAdditionalData: function( data ) {
-      this.additionalData = data;
-      return this;
-    },
-
-    getAdditionalData: function() {
-      return this.additionalData;
+    setOptions: function( options ) {
+      this.options = options;
+      this.applyLineStyles();
     },
 
     calculateSlots: function() {
