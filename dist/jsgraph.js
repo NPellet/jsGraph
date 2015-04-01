@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.10.4-36
+ * jsGraph JavaScript Graphing Library v1.10.4-37
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-04-01T08:06Z
+ * Date: 2015-04-01T08:12Z
  */
 
 (function( global, factory ) {
@@ -7424,8 +7424,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.independantMarkers = [];
 
-      if ( this.initExtended1 )
+      if ( this.initExtended1 ) {
         this.initExtended1();
+      }
 
       if ( this.options.autoPeakPicking ) {
 
@@ -7478,7 +7479,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     },
 
     setOptions: function( options ) {
-      this.options = options;
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
+
       this.applyLineStyles();
     },
 

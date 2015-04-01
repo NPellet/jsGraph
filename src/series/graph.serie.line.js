@@ -106,8 +106,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.independantMarkers = [];
 
-      if ( this.initExtended1 )
+      if ( this.initExtended1 ) {
         this.initExtended1();
+      }
 
       if ( this.options.autoPeakPicking ) {
 
@@ -160,7 +161,14 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     setOptions: function( options ) {
-      this.options = options;
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
+
       this.applyLineStyles();
     },
 
