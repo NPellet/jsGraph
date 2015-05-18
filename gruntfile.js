@@ -149,6 +149,24 @@ module.exports = function(grunt) {
     })
 
 
+
+    grunt.registerTask( "patch", "Make a new patch", function() {
+
+        grunt.task.run("bump:patch:bump-only");
+        grunt.task.run("default");
+        grunt.task.run("bump:patch:commit-only");
+    });
+
+
+    grunt.registerTask( "minor", "Make a minor release", function() {
+
+        grunt.task.run("bump:minor:bump-only");
+        grunt.task.run("default");
+        grunt.task.run("bump:minor:commit-only");
+    });
+
+
+
     grunt.registerTask( "patch", "Make a new release", function() {
 
         grunt.task.run("bump:patch:bump-only");

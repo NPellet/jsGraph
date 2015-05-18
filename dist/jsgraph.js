@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-02-11T15:42Z
+ * Date: 2015-05-17T11:00Z
  */
 
 (function( global, factory ) {
@@ -7873,6 +7873,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         m,
         x,
         y,
+        k,
+        o,
+        lastX,
+        lastY,
         xpx,
         ypx,
         xpx2,
@@ -7880,8 +7884,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         xAxis = this.getXAxis(),
         yAxis = this.getYAxis();
 
+      var xMin = xAxis.getActualMin(),
+        yMin = yAxis.getActualMin(),
+        xMax = xAxis.getActualMax(),
+        yMax = yAxis.getActualMax();
+
       var incrXFlip = 0;
       var incrYFlip = 1;
+
+      var pointOuside = false;
+      var lastPointOutside = false;
 
       if ( this.isFlipped() ) {
         incrXFlip = 1;
@@ -7908,22 +7920,80 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
-          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
-
-            lastPointX = x;
-            lastPointY = y;
-            continue;
-          }
-
-          if ( lastPoint ) {
-            xpx2 = this.getX( lastPointX );
-            ypx2 = this.getY( lastPointY );
-          }
-*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
+          pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+
           if ( xpx2 == xpx && ypx2 == ypx ) {
+            continue;
+          }
+
+          if ( pointOutside || lastPointOutside ) {
+
+            // Y crossing
+            var yLeftCrossing = ( x - xMin ) / ( x - lastX );
+            yLeftCrossing = ( yLeftCrossing <= 1 && yLeftCrossing >= 0 ) ? yLeftCrossing * ( y - lastY ) + lastY : false;
+            var yRightCrossing = ( x - xMax ) / ( x - lastX );
+            yRightCrossing = ( yRightCrossing <= 1 && yRightCrossing >= 0 ) ? yRightCrossing * ( y - lastY ) + lastY : false;
+
+            // X crossing
+            var xTopCrossing = ( y - yMin ) / ( y - lastY );
+            xTopCrossing = ( xTopCrossing <= 1 && xTopCrossing >= 0 ) ? xTopCrossing * ( x - lastX ) + lastX : false;
+            var xBottomCrossing = ( y - yMax ) / ( y - lastY );
+            xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? xTopCrossing * ( x - lastX ) + lastX : false;
+
+            if ( yLeftCrossing && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+              pointOnAxis.push( [ xMin, yLeftCrossing ] );
+            }
+
+            if ( yRightCrossing && yRightCrossing < yMax && yRightCrossing > yMin ) {
+              pointOnAxis.push( [ xMax, yRightCrossing ] );
+            }
+
+            if ( xTopCrossing && xTopCrossing < xMax && xTopCrossing > xMax ) {
+              pointOnAxis.push( [ xMin, yLeftCrossing ] );
+            }
+
+            if ( xBottomCrossing && xBottomCrossing < xMax && xBottomCrossing > xMax ) {
+              pointOnAxis.push( [ xBottomCrossing, yMax ] );
+            }
+
+            if ( !pointOutside ) { // We were outside and now go inside
+
+              if ( pointOnAxis.length > 1 ) {
+                console.error( "Programmation error. Please e-mail me." );
+              }
+
+              lastPointOutside = false;
+
+              this._createLine();
+              this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+              this._addPoint( xpx, ypx );
+
+            } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+              if ( pointOnAxis.length > 1 ) {
+                console.error( "Programmation error. Please e-mail me." );
+              }
+
+              this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+              lastPointOutside = true;
+            } else {
+
+              // No crossing: do nothing
+              if ( pointOnAxis.length > 2 ) {
+                this._createLine();
+                this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ) );
+              }
+              lastPointOutside = true;
+            }
+
+            xpx = xpx2;
+            ypx = ypx2;
+            lastX = x;
+            lastY = y;
             continue;
           }
 
@@ -7956,6 +8026,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           xpx = xpx2;
           ypx = ypx2;
+
+          lastX = x;
+          lastY = y;
         }
 
         this._createLine();

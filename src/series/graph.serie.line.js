@@ -561,6 +561,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         m,
         x,
         y,
+        k,
+        o,
+        lastX,
+        lastY,
         xpx,
         ypx,
         xpx2,
@@ -568,9 +572,17 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         xAxis = this.getXAxis(),
         yAxis = this.getYAxis();
 
+      var xMin = xAxis.getActualMin(),
+        yMin = yAxis.getActualMin(),
+        xMax = xAxis.getActualMax(),
+        yMax = yAxis.getActualMax();
+
       var incrXFlip = 0;
       var incrYFlip = 1;
 
+      var pointOutside = false;
+      var lastPointOutside = false;
+      var pointOnAxis;
       if ( this.isFlipped() ) {
         incrXFlip = 1;
         incrYFlip = 0;
@@ -596,22 +608,95 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           x = data[ i ][ j + incrXFlip ];
           y = data[ i ][ j + incrYFlip ];
 
-          /*   if ( x < xAxis.getMin() || y < yAxis.getMin() || ( ( x > xAxis.getMax() ||  y > yAxis.getMax() ) && !this._optimizeMonotoneous ) ) {
-
-            lastPointX = x;
-            lastPointY = y;
-            continue;
-          }
-
-          if ( lastPoint ) {
-            xpx2 = this.getX( lastPointX );
-            ypx2 = this.getY( lastPointY );
-          }
-*/
           xpx2 = this.getX( x );
           ypx2 = this.getY( y );
 
+          pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+
           if ( xpx2 == xpx && ypx2 == ypx ) {
+            continue;
+          }
+
+          if ( pointOutside || lastPointOutside ) {
+
+            if ( ( !lastX ||  !lastY ) && !lastPointOutside ) {
+              lastPointOutside = true;
+
+              xpx = xpx2;
+              ypx = ypx2;
+              lastX = x;
+              lastY = y;
+
+            } else {
+
+              pointOnAxis = [];
+              // Y crossing
+              var yLeftCrossing = ( x - xMin ) / ( x - lastX );
+              yLeftCrossing = ( yLeftCrossing <= 1 && yLeftCrossing >= 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
+              var yRightCrossing = ( x - xMax ) / ( x - lastX );
+              yRightCrossing = ( yRightCrossing <= 1 && yRightCrossing >= 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+
+              // X crossing
+              var xTopCrossing = ( y - yMin ) / ( y - lastY );
+              xTopCrossing = ( xTopCrossing <= 1 && xTopCrossing >= 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
+              var xBottomCrossing = ( y - yMax ) / ( y - lastY );
+              xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+
+              if ( yLeftCrossing && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                pointOnAxis.push( [ xMin, yLeftCrossing ] );
+              }
+
+              if ( yRightCrossing && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                pointOnAxis.push( [ xMax, yRightCrossing ] );
+              }
+
+              if ( xTopCrossing && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                pointOnAxis.push( [ xTopCrossing, yMin ] );
+              }
+
+              if ( xBottomCrossing && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                pointOnAxis.push( [ xBottomCrossing, yMax ] );
+              }
+
+              if ( pointOnAxis.length > 0 ) {
+
+                if ( !pointOutside ) { // We were outside and now go inside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+                  }
+
+                  lastPointOutside = false;
+
+                  this._createLine();
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  this._addPoint( xpx2, ypx2 );
+
+                } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+                  }
+
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  lastPointOutside = true;
+                } else {
+
+                  // No crossing: do nothing
+                  if ( pointOnAxis.length == 2 ) {
+                    this._createLine();
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ) );
+                  }
+                  lastPointOutside = true;
+                }
+              }
+            }
+
+            xpx = xpx2;
+            ypx = ypx2;
+            lastX = x;
+            lastY = y;
             continue;
           }
 
@@ -644,6 +729,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           xpx = xpx2;
           ypx = ypx2;
+
+          lastX = x;
+          lastY = y;
         }
 
         this._createLine();

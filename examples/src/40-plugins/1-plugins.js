@@ -23,7 +23,7 @@ define( function() {
 			},
 
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'x' },
+				'graph.plugin.zoom': { zoomMode: 'xy' },
 				'graph.plugin.drag': {}
 			},
 
@@ -33,7 +33,7 @@ define( function() {
 			}
 			
 		}, function( graphinstance) {
-	
+
 			graphinstance.newSerie("temp_nh")
 				.autoAxis()
 				.setData( series[ 3 ] );
