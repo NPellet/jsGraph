@@ -133,7 +133,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.data[ i ][ j + 0 ],
-            y = this.serie.data[ i ][ j + 1 ];
+          y = this.serie.data[ i ][ j + 1 ];
 
           if ( !firstX ) {
             firstX = x;
