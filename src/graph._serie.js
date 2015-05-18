@@ -225,6 +225,11 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
       }
     },
 
+    // Default set options
+    setOptions: function( options ) {
+      this.options = options;
+    },
+
     kill: function( noRedraw ) {
 
       this.graph.removeSerieFromDom( this );

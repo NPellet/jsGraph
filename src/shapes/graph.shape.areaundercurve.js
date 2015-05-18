@@ -162,7 +162,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-          y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+            y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
           maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
           minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );

@@ -106,8 +106,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.independantMarkers = [];
 
-      if ( this.initExtended1 )
+      if ( this.initExtended1 ) {
         this.initExtended1();
+      }
 
       if ( this.options.autoPeakPicking ) {
 
@@ -159,13 +160,16 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     },
 
-    setAdditionalData: function( data ) {
-      this.additionalData = data;
-      return this;
-    },
+    setOptions: function( options ) {
+      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      // Unselected style
+      this.styles.unselected = {
+        lineColor: this.options.lineColor,
+        lineStyle: this.options.lineStyle,
+        markers: this.options.markers
+      };
 
-    getAdditionalData: function() {
-      return this.additionalData;
+      this.applyLineStyles();
     },
 
     calculateSlots: function() {
@@ -940,7 +944,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-          max = this.getX( slotToUse[ j ].max );
+            max = this.getX( slotToUse[ j ].max );
 
           /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -956,7 +960,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-          max = this.getY( slotToUse[ j ].max );
+            max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1753,9 +1757,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
-          px = self.getX( x ),
-          k = 0,
-          y = self.getY( ys[ i ][ 0 ] );
+            px = self.getX( x ),
+            k = 0,
+            y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
             continue;
@@ -1960,8 +1964,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     for ( ; i < l; i++ ) {
 
       j = 0,
-      k = 0,
-      m = graph.data[ i ].length;
+        k = 0,
+        m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;

@@ -1,6 +1,6 @@
 {
   "name": "jsGraph",
-  "version": "1.10.4-35",
+  "version": "1.10.4-38",
   "homepage": "http://jsgraph.org",
   "main": [
     "dist/jsgraph.js",
@@ -13,14 +13,8 @@
   ],
   "license": "MIT",
   "ignore": [
-    "examples",
-    "lib",
-    "node_modules",
-    "src",
-    ".bowerrc",
-    ".gitignore",
-    "gruntfile.js",
-    "package.json"
+    "/*",
+    "!dist/*"
   ],
   "devDependencies": {
     "jquery": "~2.1.1",

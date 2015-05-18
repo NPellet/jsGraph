@@ -112,7 +112,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] ),
-          y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
+            y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
 
           if ( this.serie.isFlipped() ) {
             var x2 = x;

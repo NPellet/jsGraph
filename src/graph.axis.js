@@ -439,7 +439,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
             /*
   					Example:
   						13'453 (4) (1.345) => 1
-  						0.0000341 (-5) (3.41) => 5 
+  						0.0000341 (-5) (3.41) => 5
   				*/
 
             // Let's scale it back
@@ -636,6 +636,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       while ( this.groupGrids.firstChild ) {
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
+
+      this.ticks = [];
     },
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
