@@ -71,6 +71,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         }
       };
 
+      // Optimize is no markerPoints => save loops
+      //      this.markerPoints = {};
+
       this.groupLines = document.createElementNS( this.graph.ns, 'g' );
       this.domMarker = document.createElementNS( this.graph.ns, 'path' );
       this.domMarker.style.cursor = 'pointer';
@@ -673,7 +676,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
                   lastPointOutside = false;
 
                   this._createLine();
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                   this._addPoint( xpx2, ypx2 );
 
                 } else if ( !lastPointOutside ) { // We were inside and now go outside
@@ -682,15 +685,15 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
                     console.error( "Programmation error. Please e-mail me." );
                   }
 
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                   lastPointOutside = true;
                 } else {
 
                   // No crossing: do nothing
                   if ( pointOnAxis.length == 2 ) {
                     this._createLine();
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
-                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ) );
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
                   }
                   lastPointOutside = true;
                 }
@@ -896,12 +899,20 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       showPeakPicking( this );
     },
 
+    /**
+     *  @param k Index of the point for which we should get the family
+     */
     getMarkerCurrentFamily: function( k ) {
+
+      if ( !this.markerPoints[ this.selectionType ] ) {
+        return;
+      }
 
       for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
         if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[ this.selectionType ][  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+          if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
             this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
+
           }
         } else {
           break;
@@ -998,7 +1009,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.markerLabelSquare.setAttribute( 'display', 'none' );
     },
 
-    _addPoint: function( xpx, ypx, move ) {
+    _addPoint: function( xpx, ypx, move, allowMarker ) {
       var pos;
 
       /*if( ! this.currentLineId ) {
@@ -1036,8 +1047,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         return;
       }
 
-      if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
-
+      if ( this.markersShown() && allowMarker !== false ) {
+        console.log( 'draw' );
         drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
@@ -1607,16 +1618,19 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.showMarkers( selectionType, true );
 
-      if ( !families ) {
+      if ( !Array.isArray( families ) && typeof families == 'object' ) {
+        families = [  families ];
+      } else if ( !families ) {
 
         families = [ {
           type: 1,
           zoom: 1,
           points: 'all'
-        } ]
+        } ];
       }
 
       var markerPoints = [];
+      // Overwriting any other undefined families
       markerPoints.push( [ 0, Infinity, null ] );
 
       for ( var i = 0, k = families.length; i < k; i++ ) {
@@ -1658,8 +1672,10 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
       } );
 
-      this.markerPoints = this.markerPoints ||  {};
+      this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+
+      return this;
     },
 
     insertMarkers: function() {

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.0
+ * jsGraph JavaScript Graphing Library v1.11.1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-05-18T08:20Z
+ * Date: 2015-05-18T08:40Z
  */
 
 (function( global, factory ) {
@@ -6256,9 +6256,9 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
       this.count = this.count || 0;
 
       x -= graph.getPaddingLeft(),
-        y -= graph.getPaddingTop(),
+      y -= graph.getPaddingTop(),
 
-        xVal = graph.getXAxis().getVal( x );
+      xVal = graph.getXAxis().getVal( x );
       yVal = graph.getYAxis().getVal( y );
 
       var shapeInfo = {
@@ -7394,6 +7394,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
       };
 
+// Optimize is no markerPoints => save loops
+//      this.markerPoints = {};
+
       this.groupLines = document.createElementNS( this.graph.ns, 'g' );
       this.domMarker = document.createElementNS( this.graph.ns, 'path' );
       this.domMarker.style.cursor = 'pointer';
@@ -7996,7 +7999,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
                   lastPointOutside = false;
 
                   this._createLine();
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                   this._addPoint( xpx2, ypx2 );
 
                 } else if ( !lastPointOutside ) { // We were inside and now go outside
@@ -8005,15 +8008,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
                     console.error( "Programmation error. Please e-mail me." );
                   }
 
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                   lastPointOutside = true;
                 } else {
 
                   // No crossing: do nothing
                   if ( pointOnAxis.length == 2 ) {
                     this._createLine();
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ) );
-                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ) );
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
                   }
                   lastPointOutside = true;
                 }
@@ -8219,12 +8222,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       showPeakPicking( this );
     },
 
+    /**
+     *  @param k Index of the point for which we should get the family
+     */
     getMarkerCurrentFamily: function( k ) {
+
+      if( ! this.markerPoints[ this.selectionType ] ) {
+        return;
+      }
 
       for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
         if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[ this.selectionType ][  z ][ 1 ] >= k ) { // Verify that it's in the boundary
+          if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
             this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
+
           }
         } else {
           break;
@@ -8267,7 +8278,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-            max = this.getX( slotToUse[ j ].max );
+          max = this.getX( slotToUse[ j ].max );
 
           /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -8283,7 +8294,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-            max = this.getY( slotToUse[ j ].max );
+          max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -8321,7 +8332,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.markerLabelSquare.setAttribute( 'display', 'none' );
     },
 
-    _addPoint: function( xpx, ypx, move ) {
+    _addPoint: function( xpx, ypx, move, allowMarker ) {
       var pos;
 
       /*if( ! this.currentLineId ) {
@@ -8359,8 +8370,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return;
       }
 
-      if ( this.markersShown() && !( xpx > this.getXAxis().getMaxPx() ||  xpx < this.getXAxis().getMinPx() ) ) {
-
+      if ( this.markersShown() && allowMarker !== false ) {
+console.log('draw');
         drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
@@ -8930,17 +8941,21 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.showMarkers( selectionType, true );
 
-      if ( !families ) {
+      if( ! Array.isArray( families ) && typeof families == 'object') {
+        families = [ families ];
+      } else if( !families ) {
 
         families = [ {
           type: 1,
           zoom: 1,
           points: 'all'
-        } ]
+        } ];
       }
 
       var markerPoints = [];
+      // Overwriting any other undefined families
       markerPoints.push( [ 0, Infinity, null ] );
+
 
       for ( var i = 0, k = families.length; i < k; i++ ) {
 
@@ -8981,8 +8996,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
       } );
 
-      this.markerPoints = this.markerPoints ||  {};
+      this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+
+      return this;
     },
 
     insertMarkers: function() {
@@ -9080,9 +9097,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
-            px = self.getX( x ),
-            k = 0,
-            y = self.getY( ys[ i ][ 0 ] );
+          px = self.getX( x ),
+          k = 0,
+          y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
             continue;
@@ -9287,8 +9304,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     for ( ; i < l; i++ ) {
 
       j = 0,
-        k = 0,
-        m = graph.data[ i ].length;
+      k = 0,
+      m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;
@@ -11075,36 +11092,36 @@ build['./graph.serieaxis'] = ( function( GraphSerie ) {
 
   GraphSerie.prototype,
 
-    $.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
+  $.extend( true, GraphSerieAxis.prototype, GraphSerie.prototype, {
 
-      initExtended1: function() {
-        if ( this.initExtended2 )
-          this.initExtended2();
-      },
+    initExtended1: function() {
+      if ( this.initExtended2 )
+        this.initExtended2();
+    },
 
-      setAxis: function( axis ) {
-        this.axis = axis;
-      },
+    setAxis: function( axis ) {
+      this.axis = axis;
+    },
 
-      kill: function( noRedraw ) {
-        this.getAxis().groupSeries.removeChild( this.groupMain );
-        this.getAxis().series.splice( this.getAxis().series.indexOf( this ), 1 );
-        if ( !noRedraw )
-          this.graph.redraw();
-      },
+    kill: function( noRedraw ) {
+      this.getAxis().groupSeries.removeChild( this.groupMain );
+      this.getAxis().series.splice( this.getAxis().series.indexOf( this ), 1 );
+      if ( !noRedraw )
+        this.graph.redraw();
+    },
 
-      getAxis: function() {
-        return this.axis;
-      },
+    getAxis: function() {
+      return this.axis;
+    },
 
-      getXAxis: function() {
-        return this.axis;
-      },
+    getXAxis: function() {
+      return this.axis;
+    },
 
-      getYAxis: function() {
-        return this.axis;
-      }
-    } );
+    getYAxis: function() {
+      return this.axis;
+    }
+  } );
 
   return GraphSerieAxis;
  } ) ( build["./series/graph.serie.line"] );
@@ -12538,7 +12555,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-            y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+          y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
           maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
           minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );
@@ -13205,7 +13222,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] ),
-            y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
+          y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
 
           if ( this.serie.isFlipped() ) {
             var x2 = x;
@@ -13494,7 +13511,7 @@ build['./shapes/graph.shape.rect'] = ( function( GraphShape ) {
       // At this stage, x and y are in px
 
       x = pos.x,
-        y = pos.y;
+      y = pos.y;
 
       this.currentX = x;
       this.currentY = y;
@@ -14142,7 +14159,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.data[ i ][ j + 0 ],
-            y = this.serie.data[ i ][ j + 1 ];
+          y = this.serie.data[ i ][ j + 1 ];
 
           if ( !firstX ) {
             firstX = x;

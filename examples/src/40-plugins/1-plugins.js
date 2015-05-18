@@ -36,7 +36,13 @@ define( function() {
 
 			graphinstance.newSerie("temp_nh")
 				.autoAxis()
-				.setData( series[ 3 ] );
+				.setData( series[ 3 ] )
+				.setMarkers({ 
+					type: 1,
+					points: [ 'all' ],
+					fill: true
+				});
+
 				
 
 			graphinstance.redraw( );
