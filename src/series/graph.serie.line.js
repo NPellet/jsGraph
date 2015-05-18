@@ -1048,7 +1048,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       }
 
       if ( this.markersShown() && allowMarker !== false ) {
-        console.log( 'draw' );
         drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
@@ -1200,16 +1199,16 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
         dom.addEventListener( 'mouseover', function( e ) {
 
-          self.onMouseOverMarker( e, [ index, 0 ] );
+          self.onMouseOverMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'mouseout', function( e ) {
 
-          self.onMouseOutMarker( e, [ index, 0 ] );
+          self.onMouseOutMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'click', function( e ) {
-          self.onClickOnMarker( e, [ index, 0 ] );
+          self.onClickOnMarker( e, [ index2, index1 ] );
         } );
 
         this.independantMarkers[ index ] = dom;

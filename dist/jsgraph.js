@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.1
+ * jsGraph JavaScript Graphing Library v1.11.2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-05-18T08:40Z
+ * Date: 2015-05-18T08:51Z
  */
 
 (function( global, factory ) {
@@ -8371,7 +8371,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       if ( this.markersShown() && allowMarker !== false ) {
-console.log('draw');
         drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
       }
 
@@ -8523,16 +8522,16 @@ console.log('draw');
 
         dom.addEventListener( 'mouseover', function( e ) {
 
-          self.onMouseOverMarker( e, [ index, 0 ] );
+          self.onMouseOverMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'mouseout', function( e ) {
 
-          self.onMouseOutMarker( e, [ index, 0 ] );
+          self.onMouseOutMarker( e, [ index2, index1 ] );
         } );
 
         dom.addEventListener( 'click', function( e ) {
-          self.onClickOnMarker( e, [ index, 0 ] );
+          self.onClickOnMarker( e, [ index2, index1 ] );
         } );
 
         this.independantMarkers[ index ] = dom;
