@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.2
+ * jsGraph JavaScript Graphing Library v1.11.3-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-05-18T08:51Z
+ * Date: 2015-05-29T22:33Z
  */
 
 (function( global, factory ) {
@@ -6138,7 +6138,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
 
     XMonotoneousDirection: function() {
 
-      return ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
+      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     getLayer: function() {
@@ -7394,8 +7394,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         }
       };
 
-// Optimize is no markerPoints => save loops
-//      this.markerPoints = {};
+      // Optimize is no markerPoints => save loops
+      //      this.markerPoints = {};
 
       this.groupLines = document.createElementNS( this.graph.ns, 'g' );
       this.domMarker = document.createElementNS( this.graph.ns, 'path' );
@@ -7731,8 +7731,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       this._optimizeMonotoneous = this.isXMonotoneous();
-      this._optimizeMaxPxX = this.XMonotoneousDirection() ? this.getXAxis().getMaxPx() : this.getXAxis().getMinPx();
-      this._optimizeMinPxX = this.XMonotoneousDirection() ? this.getXAxis().getMinPx() : this.getXAxis().getMaxPx();
 
       this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
 
@@ -8227,7 +8225,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
      */
     getMarkerCurrentFamily: function( k ) {
 
-      if( ! this.markerPoints[ this.selectionType ] ) {
+      if ( !this.markerPoints[ this.selectionType ] ) {
         return;
       }
 
@@ -8940,9 +8938,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
       this.showMarkers( selectionType, true );
 
-      if( ! Array.isArray( families ) && typeof families == 'object') {
-        families = [ families ];
-      } else if( !families ) {
+      if ( !Array.isArray( families ) && typeof families == 'object' ) {
+        families = [  families ];
+      } else if ( !families ) {
 
         families = [ {
           type: 1,
@@ -8954,7 +8952,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       var markerPoints = [];
       // Overwriting any other undefined families
       markerPoints.push( [ 0, Infinity, null ] );
-
 
       for ( var i = 0, k = families.length; i < k; i++ ) {
 

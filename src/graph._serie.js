@@ -492,7 +492,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
 
     XMonotoneousDirection: function() {
 
-      return ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
+      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     getLayer: function() {
