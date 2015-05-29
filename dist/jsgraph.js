@@ -1,5 +1,5 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-0
+ * jsGraph JavaScript Graphing Library v1.11.3-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
@@ -1912,7 +1912,6 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
-      console.log( this.labelTspan, this.getLabel() );
       this.labelTspan.textContent = this.getLabel();
 
       if ( !this.left ) {
