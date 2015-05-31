@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-1
+ * jsGraph JavaScript Graphing Library v1.11.3-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-05-29T22:33Z
+ * Date: 2015-05-31T20:58Z
  */
 
 (function( global, factory ) {
@@ -3212,6 +3212,7 @@ build['./graph.legend'] = ( function( ) {
 
     this.svg.appendChild( this.subG );
 
+    this.svg.setAttribute( 'display', 'none' );
     this.pos = {
       x: undefined,
       y: undefined,
@@ -3281,6 +3282,10 @@ build['./graph.legend'] = ( function( ) {
         line,
         text,
         g;
+
+      if ( series.length > 0 )  {
+        this.svg.setAttribute( 'display', 'block' );
+      }
 
       for ( var i = 0, l = series.length; i < l; i++ ) {
 
@@ -6316,7 +6321,8 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
           shape.options.onCreate.call( shape );
         }
         shape.draw();
-        shape.select();
+
+        graph.selectShape( shape );
 
         shape.handleMouseDown( self.currentShapeEvent, true );
         shape.handleMouseMove( e, true );
@@ -12578,7 +12584,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.currentLine += /*" V " + this.getYAxis().getPx( 0 ) + " H "*/ "L " + this.firstX + " " + this.firstY + " z";
         this.setDom( 'd', this.currentLine );
       }
 

@@ -36,6 +36,7 @@ define( [], function() {
 
     this.svg.appendChild( this.subG );
 
+    this.svg.setAttribute( 'display', 'none' );
     this.pos = {
       x: undefined,
       y: undefined,
@@ -105,6 +106,10 @@ define( [], function() {
         line,
         text,
         g;
+
+      if ( series.length > 0 )  {
+        this.svg.setAttribute( 'display', 'block' );
+      }
 
       for ( var i = 0, l = series.length; i < l; i++ ) {
 

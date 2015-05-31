@@ -88,11 +88,11 @@ module.exports = function(grunt) {
             },
 
 
-            exportToTest: {
+            exportToGCMS: {
 
                 files: {
-                    '../demo_workshop/lib/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
-                    '../demo_workshop/lib/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js',
+                    '../gcms-module/app/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    '../gcms-module/app/components/dist/jsgraph.min.js': 'dist/jsgraph.min.js',
                     
                 }
             },

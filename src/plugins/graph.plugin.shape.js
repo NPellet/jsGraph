@@ -93,7 +93,8 @@ define( [], function() {
           shape.options.onCreate.call( shape );
         }
         shape.draw();
-        shape.select();
+
+        graph.selectShape( shape );
 
         shape.handleMouseDown( self.currentShapeEvent, true );
         shape.handleMouseMove( e, true );

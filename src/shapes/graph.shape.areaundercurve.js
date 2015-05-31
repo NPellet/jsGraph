@@ -190,7 +190,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
+        this.currentLine += /*" V " + this.getYAxis().getPx( 0 ) + " H "*/ "L " + this.firstX + " " + this.firstY + " z";
         this.setDom( 'd', this.currentLine );
       }
 
