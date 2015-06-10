@@ -1296,7 +1296,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       shape._select();
       this.selectedShapes.push( shape );
-      this.emit( "shapeSelect", shape );
+
+      if ( !mute ) {
+        this.emit( "shapeSelect", shape );
+      }
     },
 
     unselectShape: function( shape ) {

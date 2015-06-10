@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-4
+ * jsGraph JavaScript Graphing Library v1.11.3-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-10T07:48Z
+ * Date: 2015-06-10T08:05Z
  */
 
 (function( global, factory ) {
@@ -4839,7 +4839,10 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
 
       shape._select();
       this.selectedShapes.push( shape );
-      this.emit( "shapeSelect", shape );
+
+      if ( !mute ) {
+        this.emit( "shapeSelect", shape );
+      }
     },
 
     unselectShape: function( shape ) {
