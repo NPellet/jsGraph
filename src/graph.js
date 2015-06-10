@@ -34,6 +34,7 @@ define( [
     './shapes/graph.shape.rect',
     './shapes/graph.shape.cross',
     './shapes/graph.shape.zoom2d',
+    './shapes/graph.shape.peakboundariescenter',
 
     './graph.toolbar',
     './graph.xaxis.time',

@@ -315,7 +315,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     zoom: function( val1, val2 ) {
-      return this._doZoomVal( val1, val2 );
+      return this._doZoomVal( val1, val2, true );
     },
 
     _doZoomVal: function( val1, val2, mute ) {
@@ -334,7 +334,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this._hasChanged = true;
 
       // New method
-      this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
+      if ( !mute ) {
+        this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
+      }
     },
 
     getSerieShift: function() {
