@@ -1758,7 +1758,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       var floatingAxis = axis.getFloatingAxis();
       var floatingValue = axis.getFloatingValue();
       var floatingPx = floatingAxis.getPx( floatingValue );
-      console.log( floatingPx );
+
       axis.setShift( floatingPx );
       axis.draw();
 

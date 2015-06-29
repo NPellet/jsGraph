@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-7
+ * jsGraph JavaScript Graphing Library v1.11.3-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-29T04:16Z
+ * Date: 2015-06-29T06:02Z
  */
 
 (function( global, factory ) {
@@ -5359,7 +5359,7 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
       var floatingAxis = axis.getFloatingAxis();
       var floatingValue = axis.getFloatingValue();
       var floatingPx = floatingAxis.getPx( floatingValue );
-      console.log( floatingPx );
+
       axis.setShift( floatingPx );
       axis.draw();
 
@@ -7107,7 +7107,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( ) {
 
         case 'x':
           this._zoomingSquare.setAttribute( 'y', graph.options.paddingTop );
-          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift[ 0 ] );
+          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift.bottom );
           break;
 
         case 'y':
@@ -14422,8 +14422,8 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
 
-      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
-      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift[ 0 ] ) / 2 - 10 ) + ")" );
+      this.handle1.setAttribute( 'transform', 'translate(' + ( x - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift.bottom ) / 2 - 10 ) + ")" );
+      this.handle2.setAttribute( 'transform', 'translate(' + ( x + w - 6 ) + " " + ( ( this.graph.getDrawingHeight() - this.graph.shift.bottom ) / 2 - 10 ) + ")" );
 
     },
 

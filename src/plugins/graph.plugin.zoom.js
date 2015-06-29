@@ -62,7 +62,7 @@ define( [], function() {
 
         case 'x':
           this._zoomingSquare.setAttribute( 'y', graph.options.paddingTop );
-          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift[ 0 ] );
+          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift.bottom );
           break;
 
         case 'y':
