@@ -26,7 +26,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     },
 
     _setShift: function() {
-      this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' )
+      this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
     },
 
     getMaxSizeTick: function() {
@@ -44,7 +44,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
         val = this.getPos( value );
       }
 
-      if ( val == undefined ) {
+      if ( val == undefined || isNaN( val ) ) {
         return;
       }
 

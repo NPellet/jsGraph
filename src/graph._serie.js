@@ -225,6 +225,10 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
       }
     },
 
+    getData: function() {
+      return this.data;
+    },
+
     // Default set options
     setOptions: function( options ) {
       this.options = options;
@@ -469,6 +473,10 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
 
     setLabel: function( label ) {
       this.options.label = label;
+
+      if ( this.textForLegend ) {
+        this.textForLegend.textContent = label;
+      }
       return this;
     },
 

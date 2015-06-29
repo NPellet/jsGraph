@@ -174,6 +174,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.options.lineAt0 = !!bool;
     },
 
+    // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
     adapt0To: function( axis, mode, value ) {
 
       if ( axis ) {
@@ -200,6 +201,22 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       } else {
         return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMaxValue() / this._adapt0To[ 0 ].getMinValue() )
       }
+    },
+
+    // Floating axis. Adapts axis position orthogonally to another axis at a defined value. Not taken into account for margins
+    setFloating: function( axis, value ) {
+
+      this.floating = true;
+      this.floatingAxis = axis;
+      this.floatingValue = value;
+    },
+
+    getFloatingAxis: function() {
+      return this.floatingAxis;
+    },
+
+    getFloatingValue: function() {
+      return this.floatingValue;
     },
 
     setAxisDataSpacing: function( val1, val2 ) {
@@ -249,6 +266,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
     setMaxValueData: function( max ) {
       this.dataMax = max;
+    },
+
+    getForcedMin: function() {
+      return this.options.forcedMin;
+    },
+
+    getForcedMax: function() {
+      return this.options.forcedMax;
     },
 
     forceMin: function( val ) {
@@ -335,7 +360,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
       // New method
       if ( !mute ) {
-        this.emit( "zoom", this.currentAxisMin, this.currentAxisMax, this );
+        this.emit( "zoom", [ this.currentAxisMin, this.currentAxisMax, this ] );
       }
     },
 
@@ -465,13 +490,22 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       var interval = this.getInterval();
 
       if ( this.options.logScale ) {
+
         this.currentAxisMin = Math.max( 1e-50, this.getMinValue() * 0.9 );
         this.currentAxisMax = Math.max( 1e-50, this.getMaxValue() * 1.1 );
+
       } else {
 
-        this.currentAxisMin = this.getMinValue() - ( this.options.axisDataSpacing.min * interval );
-        this.currentAxisMax = this.getMaxValue() + ( this.options.axisDataSpacing.max * interval );
+        this.currentAxisMin = this.getMinValue();
+        this.currentAxisMax = this.getMaxValue();
 
+        if ( this.getForcedMin() === false ) {
+          this.currentAxisMin -= ( this.options.axisDataSpacing.min * interval );
+        }
+
+        if ( this.getForcedMax() === false ) {
+          this.currentAxisMax += ( this.options.axisDataSpacing.max * interval );
+        }
       }
 
       if ( isNaN( this.currentAxisMin ) || isNaN( this.currentAxisMax ) ) {
@@ -499,6 +533,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     setCurrentMin: function( val ) {
 
+      if ( this.getForcedMin() !== false && val < this.getForcedMin() ) {
+        val = this.getMinValue();
+      }
+
       this.currentAxisMin = val;
       if ( this.options.logScale ) {
         this.currentAxisMin = Math.max( 1e-50, val );
@@ -506,6 +544,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     setCurrentMax: function( val ) {
+
+      if ( this.getForcedMax() !== false && val > this.getForcedMax() ) {
+        val = this.getMaxValue();
+      }
+
       this.currentAxisMax = val;
 
       if ( this.options.logScale )
@@ -520,12 +563,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     /**
      *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
      */
-    _draw: function() { // Redrawing of the axis
+    _draw: function( linkedToAxisOnly ) { // Redrawing of the axis
       var visible;
 
       this.drawInit();
 
-      if ( this.currentAxisMin == undefined || !this.currentAxisMax == undefined ) {
+      if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
         this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
       }
 
@@ -541,7 +584,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 			/* 			10 - 100 => 11.11
 			/*			0 - 2 => 500
 			/*			0 - 0.00005 => 20'000'000
-														*/
+			*/
 
       if ( !this.options.display ) {
         this.line.setAttribute( 'display', 'none' );
@@ -573,6 +616,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         var widthHeight = 0;
       }
 
+      // Looks for axes linked to this current axis
+      var axes = this.graph.findAxesLinkedTo( this );
+      axes.map( function( axis ) {
+
+        axis.draw( true );
+      } );
+
       /************************************/
       /*** DRAWING LABEL ******************/
       /************************************/
@@ -598,9 +648,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       /************************************/
       /*** DRAW CHILDREN IMPL SPECIFIC ****/
       /************************************/
+
       this.drawSpecifics();
-      if ( this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0 )
+      if ( this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0 ) {
         this._draw0Line( this.getPx( 0 ) );
+      }
 
       return widthHeight + ( label ? 20 : 0 );
     },
@@ -659,12 +711,17 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.options.ticklabelratio = tickRatio;
     },
 
-    draw: function() {
+    draw: function( linkedToAxisOnly ) {
 
-      this._widthLabels = 0;
-      var drawn = this._draw();
-      this._widthLabels += drawn;
-      return drawn; // ??? this.series.length > 0 ? 100 : drawn;
+      if ( ( linkedToAxisOnly && this.linkedToAxis ) || ( !linkedToAxisOnly && !this.linkedToAxis ) ) {
+
+        this._widthLabels = 0;
+        var drawn = this._draw();
+        this._widthLabels += drawn;
+        return drawn; // ??? this.series.length > 0 ? 100 : drawn;       
+      }
+
+      return 0;
     },
 
     drawTicks: function( primary, secondary ) {
@@ -811,8 +868,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         l,
         delta2;
 
-      console.warn( "This is a temporary trick. Needs to be removed for efficiency purposes" );
-      opts.axis.draw();
+      // Redrawing the main axis ? Why ?
+      //opts.axis.draw();
 
       if ( !opts.deltaPx ) {
         opts.deltaPx = 10;

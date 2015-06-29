@@ -720,6 +720,19 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       this.redraw();
     },
 
+    findAxesLinkedTo: function( axis ) {
+
+      var axes = [];
+      this._applyToAxes( function( a ) {
+
+        if ( a.linkedToAxis && a.linkedToAxis.axis == axis ) {
+          axes.push( a );
+        }
+      }, {}, axis instanceof GraphXAxis, axis instanceof GraphYAxis );
+
+      return axes;
+    },
+
     refreshMinOrMax: function() {
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) { // Let's remove the serie from the stack
@@ -908,10 +921,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       var self = this,
         response;
 
-      if ( !noDeferred ) {
-        var deferred = $.Deferred();
-      }
-
       shapeData.id = Math.random();
 
       if ( !mute ) {
@@ -993,15 +1002,13 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         self.shapes.push( shape );
         self.triggerEvent( 'onShapeMake', shape, shapeData );
 
-        if ( !noDeferred ) {
-          deferred.resolve( shape );
-        }
-
         if ( !mute ) {
           self.triggerEvent( 'onNewShape', shapeData );
         }
 
         self.emit( "newShape", shape );
+        console.log( 'response' );
+        dynamicLoaderResponse = shape;
 
         return shape;
       }
@@ -1012,12 +1019,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
       }
 
-      if ( !noDeferred ) {
-        return deferred;
-      }
-
       return dynamicLoaderResponse;
-
     },
 
     redrawShapes: function() {
@@ -1276,7 +1278,9 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         return false;
       }
 
-      this.emit( "beforeShapeSelect", shape );
+      if ( !mute ) {
+        this.emit( "beforeShapeSelect", shape );
+      }
 
       if ( this.cancelSelectShape ) {
         this.cancelSelectShape = false;
@@ -1290,11 +1294,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
 
-          this.unselectShape( this.selectedShapes[ 0 ] )
+          this.unselectShape( this.selectedShapes[ 0 ], mute )
         }
       }
 
-      shape._select();
+      shape._select( mute );
       this.selectedShapes.push( shape );
 
       if ( !mute ) {
@@ -1302,13 +1306,15 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       }
     },
 
-    unselectShape: function( shape ) {
+    unselectShape: function( shape, mute ) {
 
       if ( this.selectedShapes.indexOf( shape ) == -1 ) {
         return;
       }
 
-      this.emit( "beforeShapeSelect", shape );
+      if ( !mute ) {
+        this.emit( "beforeShapeSelect", shape );
+      }
 
       if ( this.cancelUnselectShape ) {
         this.cancelUnselectShape = false;
@@ -1318,7 +1324,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       shape._unselect();
 
       this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
-      this.emit( "shapeUnselect", shape );
+
+      if ( !mute ) {
+        this.emit( "shapeUnselect", shape );
+      }
+
     },
 
     unselectShapes: function() {
@@ -1393,6 +1403,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
               if ( !closest ) {
                 console.warn( "Could not find y position. Returning 0 for y." );
+
                 pos[ i ] = 0;
               } else {
                 pos[ i ] = onSerie.getY( closest.yMin );
@@ -1671,87 +1682,102 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
   function refreshDrawingZone( graph ) {
 
-    var i, j, l, xy, min, max;
-    var axisvars = [ 'bottom', 'top', 'left', 'right' ],
-      shift = [ 0, 0, 0, 0 ],
-      axis;
+    var i, j, l, xy, min, max, axis;
+    var shift = {
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0
+    };
 
     graph._painted = true;
     graph.refreshMinOrMax();
 
     // Apply to top and bottom
-    graph._applyToAxes( function( axis ) {
+    graph._applyToAxes( function( axis, position ) {
 
-      if ( axis.disabled ) {
+      if ( axis.disabled ||  axis.floating ) {
         return;
       }
 
-      var axisIndex = axisvars.indexOf( arguments[ 1 ] );
-      axis.setShift( shift[ axisIndex ] + axis.getAxisPosition(), axis.getAxisPosition() );
-      shift[ axisIndex ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+      axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
+      shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 
     }, false, true, false );
 
     // Applied to left and right
-    graph._applyToAxes( function( axis ) {
+    graph._applyToAxes( function( axis, position ) {
 
       if ( axis.disabled ) {
         return;
       }
 
-      axis.setMinPx( shift[ 1 ] );
-      axis.setMaxPx( graph.getDrawingHeight( true ) - shift[ 0 ] );
+      axis.setMinPx( shift.top );
+      axis.setMaxPx( graph.getDrawingHeight( true ) - shift.bottom );
+
+      if ( axis.floating ) {
+        return;
+      }
 
       // First we need to draw it in order to determine the width to allocate
       // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
       var drawn = axis.draw() || 0,
-        axisIndex = axisvars.indexOf( arguments[ 1 ] ),
         axisDim = axis.getAxisPosition();
 
       // Get axis position gives the extra shift that is common
-      axis.setShift( shift[ axisIndex ] + axisDim + drawn, drawn + axisDim );
-      shift[ axisIndex ] += drawn + axisDim;
-
-      axis.drawSeries();
+      shift[ position ] += drawn + axisDim;
+      axis.setShift( shift[ position ], drawn + axisDim );
 
     }, false, false, true );
 
     // Apply to top and bottom
-    graph._applyToAxes( function( axis ) {
+    graph._applyToAxes( function( axis, position ) {
 
       if ( axis.disabled ) {
         return;
       }
 
-      axis.setMinPx( shift[ 2 ] );
-      axis.setMaxPx( graph.getDrawingWidth( true ) - shift[ 3 ] );
-      axis.draw();
+      axis.setMinPx( shift.left );
+      axis.setMaxPx( graph.getDrawingWidth( true ) - shift.right );
 
-      axis.drawSeries();
+      if ( axis.floating ) {
+        return;
+      }
+
+      axis.draw();
 
     }, false, true, false );
 
-    // Apply to all axis
-    /*		graph._applyToAxes(function(axis) {
-			axis.drawSeries();
-		}, false, true, true);
-*/
+    graph._applyToAxes( function( axis ) {
 
-    _closeLine( graph, 'right', graph.getDrawingWidth( true ), graph.getDrawingWidth( true ), shift[ 1 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
-    _closeLine( graph, 'left', 0, 0, shift[ 1 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
-    _closeLine( graph, 'top', shift[ 2 ], graph.getDrawingWidth( true ) - shift[ 3 ], 0, 0 );
-    _closeLine( graph, 'bottom', shift[ 2 ], graph.getDrawingWidth( true ) - shift[ 3 ], graph.getDrawingHeight( true ) - shift[ 0 ], graph.getDrawingHeight( true ) - shift[ 0 ] );
+      if ( !axis.floating ) {
+        return;
+      }
 
-    graph.clipRect.setAttribute( 'y', shift[ 1 ] );
-    graph.clipRect.setAttribute( 'x', shift[ 2 ] );
-    graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift[ 2 ] - shift[ 3 ] );
-    graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift[ 1 ] - shift[ 0 ] );
+      var floatingAxis = axis.getFloatingAxis();
+      var floatingValue = axis.getFloatingValue();
+      var floatingPx = floatingAxis.getPx( floatingValue );
+      console.log( floatingPx );
+      axis.setShift( floatingPx );
+      axis.draw();
 
-    graph.rectEvent.setAttribute( 'x', shift[ 1 ] );
-    graph.rectEvent.setAttribute( 'y', shift[ 2 ] );
-    graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift[ 2 ] - shift[ 3 ] );
-    graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift[ 1 ] - shift[ 0 ] );
+    }, false, true, true );
+
+    _closeLine( graph, 'right', graph.getDrawingWidth( true ), graph.getDrawingWidth( true ), shift.top, graph.getDrawingHeight( true ) - shift.bottom );
+    _closeLine( graph, 'left', 0, 0, shift.top, graph.getDrawingHeight( true ) - shift.bottom );
+    _closeLine( graph, 'top', shift.left, graph.getDrawingWidth( true ) - shift.right, 0, 0 );
+    _closeLine( graph, 'bottom', shift.left, graph.getDrawingWidth( true ) - shift.right, graph.getDrawingHeight( true ) - shift.bottom, graph.getDrawingHeight( true ) - shift.bottom );
+
+    graph.clipRect.setAttribute( 'y', shift.top );
+    graph.clipRect.setAttribute( 'x', shift.left );
+    graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
+    graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
+
+    graph.rectEvent.setAttribute( 'x', shift.top );
+    graph.rectEvent.setAttribute( 'y', shift.left );
+    graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
+    graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
 
     /*
 		graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -1768,8 +1794,9 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     graph._dom.addEventListener( 'keydown', function( e ) {
 
-      e.preventDefault();
-      e.stopPropagation();
+      // Not sure this has to be prevented
+      //e.preventDefault();
+      //e.stopPropagation();
 
       if ( e.keyCode == 8 && self.selectedShape ) {
         self.selectedShape.kill();
@@ -1778,7 +1805,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     } );
 
     graph.dom.addEventListener( 'mousemove', function( e ) {
-      e.preventDefault();
+      //e.preventDefault();
       var coords = self._getXY( e );
       _handleMouseMove( self, coords.x, coords.y, e );
     } );
@@ -1792,7 +1819,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       self.focus();
 
-      e.preventDefault();
+      //   e.preventDefault();
       if ( e.which == 3 || e.ctrlKey ) {
         return;
       }
@@ -1804,24 +1831,26 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     graph.dom.addEventListener( 'mouseup', function( e ) {
 
-      e.preventDefault();
+      //   e.preventDefault();
       var coords = self._getXY( e );
       _handleMouseUp( self, coords.x, coords.y, e );
 
     } );
 
     graph.dom.addEventListener( 'dblclick', function( e ) {
-      e.preventDefault();
+      //      e.preventDefault();
 
-      if ( self.clickTimeout ) {
-        window.clearTimeout( self.clickTimeout );
-      }
+      //      if ( self.clickTimeout ) {
+      //       window.clearTimeout( self.clickTimeout );
+      //    }
 
       var coords = self._getXY( e );
-      self.cancelClick = true;
+      //    self.cancelClick = true;
 
       _handleDblClick( self, coords.x, coords.y, e );
     } );
+
+    // Norman 26 june 2015: Do we really need the click timeout ?
 
     graph.dom.addEventListener( 'click', function( e ) {
 
@@ -1830,23 +1859,23 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         return;
       }
 
-      e.preventDefault();
+      //   e.preventDefault();
       var coords = self._getXY( e );
-      if ( self.clickTimeout ) {
-        window.clearTimeout( self.clickTimeout );
-      }
+      //    if ( self.clickTimeout ) {
+      //     window.clearTimeout( self.clickTimeout );
+      //  }
 
       // Only execute the action after 100ms
-      self.clickTimeout = window.setTimeout( function() {
+      // self.clickTimeout = window.setTimeout( function() {
 
-        if ( self.cancelClick ) {
-          self.cancelClick = false;
-          return;
-        }
+      //  if ( self.cancelClick ) {
+      //   self.cancelClick = false;
+      //   return;
+      // }
 
-        _handleClick( self, coords.x, coords.y, e );
+      _handleClick( self, coords.x, coords.y, e );
 
-      }, 200 );
+      //}, 200 );
     } );
 
     graph.dom.addEventListener( 'mousewheel', function( e ) {
@@ -2026,7 +2055,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     graph.axis[ mode ].map( function( g ) {
 
-      if ( g.isDisplayed() ) {
+      if ( g.isDisplayed() && !g.floating ) {
         l++;
       }
     } );

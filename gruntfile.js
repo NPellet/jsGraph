@@ -135,12 +135,15 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
 
+
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
 
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
     });
 
+    grunt.registerTask( "gcms", [ 'build', 'copy:exportToGCMS' ] );
+    
     grunt.registerTask( "release", "Make a new release", function() {
 
         grunt.task.run("bump:prerelease:bump-only");

@@ -51,8 +51,9 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         pos = this.getPos( value );
       }
 
-      if ( pos == undefined )
+      if ( pos == undefined || isNaN( pos ) ) {
         return;
+      }
 
       var tick = document.createElementNS( this.graph.ns, 'line' );
       tick.setAttribute( 'shape-rendering', 'crispEdges' );
@@ -139,7 +140,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
     _setShift: function() {
 
-      var xshift = this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
+      var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
       this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
 
     },

@@ -627,7 +627,7 @@ define( [], function() {
       return !!this.handles;
     },
 
-    _select: function() {
+    _select: function( mute ) {
 
       if ( !this._selectable ) {
         return;
@@ -644,9 +644,10 @@ define( [], function() {
         this.setHandles();
       }
 
-      this.callHandler( "onSelected", this );
-      this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
-
+      if ( !mute ) {
+        this.callHandler( "onSelected", this );
+        this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
+      }
     },
 
     _unselect: function() {
