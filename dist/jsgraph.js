@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-8
+ * jsGraph JavaScript Graphing Library v1.11.3-9
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-29T06:02Z
+ * Date: 2015-06-29T08:47Z
  */
 
 (function( global, factory ) {
@@ -4608,7 +4608,6 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         }
 
         self.emit( "newShape", shape );
-        console.log( 'response' );
         dynamicLoaderResponse = shape;
 
         return shape;

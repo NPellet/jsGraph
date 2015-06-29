@@ -1007,7 +1007,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         }
 
         self.emit( "newShape", shape );
-        console.log( 'response' );
         dynamicLoaderResponse = shape;
 
         return shape;
