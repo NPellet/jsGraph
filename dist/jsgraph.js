@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-6
+ * jsGraph JavaScript Graphing Library v1.11.3-7
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-29T04:15Z
+ * Date: 2015-06-29T04:16Z
  */
 
 (function( global, factory ) {
@@ -5973,7 +5973,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
 
     // Default set options
     setOptions: function( options ) {
-      this.options = options;
+      this.options = options ||  {};
     },
 
     kill: function( noRedraw ) {
