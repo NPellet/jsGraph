@@ -753,7 +753,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         type = "line";
       }
 
-      var serie = makeSerie( this, name, options, type, function( serie ) {
+      var serie;
+      if ( serie = this.getSerie( name ) ) {
+        return serie;
+      }
+
+      serie = makeSerie( this, name, options, type, function( serie ) {
 
         self.series.push( serie );
 

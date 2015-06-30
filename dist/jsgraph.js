@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-10
+ * jsGraph JavaScript Graphing Library v1.11.3-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-30T03:52Z
+ * Date: 2015-06-30T07:13Z
  */
 
 (function( global, factory ) {
@@ -4354,7 +4354,12 @@ build['./graph.core'] = ( function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken,
         type = "line";
       }
 
-      var serie = makeSerie( this, name, options, type, function( serie ) {
+      var serie;
+      if ( serie = this.getSerie( name ) ) {
+        return serie;
+      }
+
+      serie = makeSerie( this, name, options, type, function( serie ) {
 
         self.series.push( serie );
 
