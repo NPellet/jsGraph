@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.11.3-9
+ * jsGraph JavaScript Graphing Library v1.11.3-10
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-06-29T08:47Z
+ * Date: 2015-06-30T03:52Z
  */
 
 (function( global, factory ) {
@@ -6029,7 +6029,7 @@ build['./graph._serie'] = ( function( EventEmitter ) {
           shapes[ i ].hide();
         }
       }
-
+      return this;
     },
 
     show: function( showShapes ) {
@@ -6049,6 +6049,8 @@ build['./graph._serie'] = ( function( EventEmitter ) {
           shapes[ i ].show();
         }
       }
+
+      return this;
     },
 
     hideImpl: function() {},

@@ -288,7 +288,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
           shapes[ i ].hide();
         }
       }
-
+      return this;
     },
 
     show: function( showShapes ) {
@@ -308,6 +308,8 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
           shapes[ i ].show();
         }
       }
+
+      return this;
     },
 
     hideImpl: function() {},
