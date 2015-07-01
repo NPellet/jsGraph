@@ -119,6 +119,10 @@ define( [], function() {
       this.initImpl();
     },
 
+    getType: function() {
+      return this.type;
+    },
+
     hide: function() {
 
       if ( this.hidden ) {

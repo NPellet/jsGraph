@@ -1805,7 +1805,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         index;
 
       var selected = self.graph.selectedShapes.map( function( shape ) {
-        return shape.data.mz;
+        return shape._data.val;
       } );
 
       ys.sort( function( a, b ) {
@@ -1858,7 +1858,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
           dy: "-10px"
         } );
 
-        self.picks[ m ]._data.mz = x;
+        self.picks[ m ]._data.val = x;
 
         if ( self.options.autoPeakPickingFormat ) {
 

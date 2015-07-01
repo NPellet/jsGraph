@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.0
+ * jsGraph JavaScript Graphing Library v1.12.1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-01T08:07Z
+ * Date: 2015-07-01T08:23Z
  */
 
 (function( global, factory ) {
@@ -1455,6 +1455,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         return util.throwError( "Failed to construct shape." );
       }
 
+      shape.type = shapeType;
       shape.graph = this;
       shape._data = shapeData;
 
@@ -1490,7 +1491,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
           shape.prop( 'labelSize', shapeData.label[ i ].size, i );
           shape.prop( 'labelAngle', shapeData.label[ i ].angle || 0, i );
           shape.prop( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
-          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'middle', i );
+          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'start', i );
         }
 
         shape.setLabelNumber( l );
@@ -9087,7 +9088,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
         index;
 
       var selected = self.graph.selectedShapes.map( function( shape ) {
-        return shape.data.mz;
+        return shape._data.val;
       } );
 
       ys.sort( function( a, b ) {
@@ -9140,7 +9141,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
           dy: "-10px"
         } );
 
-        self.picks[ m ]._data.mz = x;
+        self.picks[ m ]._data.val = x;
 
         if ( self.options.autoPeakPickingFormat ) {
 
@@ -11195,6 +11196,10 @@ build['./shapes/graph.shape'] = ( function( ) {
       //			this.group.appendChild(this.rectEvent);
 
       this.initImpl();
+    },
+
+    getType: function() {
+      return this.type;
     },
 
     hide: function() {
@@ -14666,7 +14671,7 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
       var posRight = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'posCenter' ) );
       var posCenter = this._getPosition( this.getFromData( 'posCenter' ) );
 
-      if ( posLeft.x && posRight.x ) {
+      if ( posLeft.x && posRight.x && posCenter.x ) {
 
         var height = this.lineHeight;
 
@@ -14710,15 +14715,17 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
       var posRight = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'posCenter' ) );
       var posCenter = this._getPosition( this.getFromData( 'posCenter' ) );
 
-      this.handle1.setAttribute( 'x', posLeft.x );
-      this.handle1.setAttribute( 'y', this.posYPx );
+      if ( posLeft.x && posRight.x && posCenter.x ) {
 
-      this.handle2.setAttribute( 'x', posRight.x );
-      this.handle2.setAttribute( 'y', this.posYPx );
+        this.handle1.setAttribute( 'x', posLeft.x );
+        this.handle1.setAttribute( 'y', this.posYPx );
 
-      this.handle3.setAttribute( 'x', posCenter.x );
-      this.handle3.setAttribute( 'y', this.posYPx );
+        this.handle2.setAttribute( 'x', posRight.x );
+        this.handle2.setAttribute( 'y', this.posYPx );
 
+        this.handle3.setAttribute( 'x', posCenter.x );
+        this.handle3.setAttribute( 'y', this.posYPx );
+      }
     },
 
     setY: function( y ) {

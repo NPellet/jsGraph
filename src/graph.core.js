@@ -891,6 +891,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         return util.throwError( "Failed to construct shape." );
       }
 
+      shape.type = shapeType;
       shape.graph = this;
       shape._data = shapeData;
 
@@ -926,7 +927,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
           shape.prop( 'labelSize', shapeData.label[ i ].size, i );
           shape.prop( 'labelAngle', shapeData.label[ i ].angle || 0, i );
           shape.prop( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
-          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'middle', i );
+          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'start', i );
         }
 
         shape.setLabelNumber( l );
