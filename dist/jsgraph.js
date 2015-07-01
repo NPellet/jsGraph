@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.1
+ * jsGraph JavaScript Graphing Library v1.12.2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-01T08:23Z
+ * Date: 2015-07-01T08:40Z
  */
 
 (function( global, factory ) {
@@ -616,6 +616,12 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       options = {};
 
     }
+
+    dom.style[ '-webkit-user-select' ] = 'none';
+    dom.style[ '-moz-user-select' ] = 'none';
+    dom.style[ '-o-user-select' ] = 'none';
+    dom.style[ '-ms-user-select' ] = 'none';
+    dom.style[ 'user-select' ] = 'none';
 
     this.options = $.extend( {}, graphDefaults, options );
     this.axis = {
@@ -6101,7 +6107,9 @@ build['./graph.legend'] = ( function( ) {
     _setPosition: function() {
 
       var pos = this.pos;
-      this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+      if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) ) {
+        this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+      }
     },
 
     applyStyle: function() {
@@ -12420,7 +12428,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else if ( this.serie ) {
+      } else if ( this.serie && this.handleSelected ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
@@ -12434,14 +12442,13 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           this.preventUnselect = true;
 
         this.resizingPosition.x = value.xMin;
-      } else {
+      } else if ( this.handleSelected ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
         this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
       this.position = this.setPosition();
-      this.setHandles();
     },
 
     redrawImpl: function() {
@@ -12541,7 +12548,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-
+      this.setHandles();
       return true;
     },
 

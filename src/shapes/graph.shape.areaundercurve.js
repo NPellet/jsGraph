@@ -74,7 +74,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
         pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
 
-      } else if ( this.serie ) {
+      } else if ( this.serie && this.handleSelected ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
@@ -88,14 +88,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
           this.preventUnselect = true;
 
         this.resizingPosition.x = value.xMin;
-      } else {
+      } else if ( this.handleSelected ) {
 
         this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
         this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
       this.position = this.setPosition();
-      this.setHandles();
     },
 
     redrawImpl: function() {
@@ -195,7 +194,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       }
 
       this.maxY = this.serie.getY( maxY );
-
+      this.setHandles();
       return true;
     },
 

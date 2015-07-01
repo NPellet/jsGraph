@@ -53,6 +53,12 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     }
 
+    dom.style[ '-webkit-user-select' ] = 'none';
+    dom.style[ '-moz-user-select' ] = 'none';
+    dom.style[ '-o-user-select' ] = 'none';
+    dom.style[ '-ms-user-select' ] = 'none';
+    dom.style[ 'user-select' ] = 'none';
+
     this.options = $.extend( {}, graphDefaults, options );
     this.axis = {
       left: [],

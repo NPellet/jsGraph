@@ -257,7 +257,9 @@ define( [], function() {
     _setPosition: function() {
 
       var pos = this.pos;
-      this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+      if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) ) {
+        this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+      }
     },
 
     applyStyle: function() {
