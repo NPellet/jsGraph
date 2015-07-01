@@ -8,7 +8,7 @@ define( function() {
 
 			wheel: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					direction: 'y'
 				}
@@ -16,41 +16,38 @@ define( function() {
 
 			dblclick: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					mode: 'total'
 				}
 			},
 
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'xy' },
-				'graph.plugin.drag': {}
+				'zoom': { zoomMode: 'xy' },
+				'drag': {}
 			},
 
 			pluginAction: {
-				'graph.plugin.drag': { shift: true, ctrl: false },
-				'graph.plugin.zoom': { shift: false, ctrl: false }
+				'drag': { shift: true, ctrl: false },
+				'zoom': { shift: false, ctrl: false }
 			}
 			
-		}, function( graphinstance) {
-
-			graphinstance.newSerie("temp_nh")
-				.autoAxis()
-				.setData( series[ 3 ] )
-				.setMarkers({ 
-					type: 1,
-					points: [ 'all' ],
-					fill: true
-				});
-
-				
-
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-
 		} );
-		
+			
+		graphinstance.newSerie("temp_nh")
+			.autoAxis()
+			.setData( series[ 3 ] )
+			.setMarkers({ 
+				type: 1,
+				points: [ 'all' ],
+				fill: true,
+				fillColor: 'red'
+			});
 
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
+
+		
 	}, "Plugin loading", [ 
 
 

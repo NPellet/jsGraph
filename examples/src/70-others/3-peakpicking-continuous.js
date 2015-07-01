@@ -7,21 +7,19 @@ define( function() {
 
 				dblclick: {
 					type: 'plugin',
-					plugin: 'graph.plugin.zoom',
+					plugin: 'zoom',
 					options: {
 						mode: 'total'
 					}
 				},
 
 				plugins: {
-					'graph.plugin.zoom': { zoomMode: 'x' }
+					'zoom': { zoomMode: 'x' }
 				},
 
 				pluginAction: {
-					'graph.plugin.zoom': { shift: false }
+					'zoom': { shift: false }
 				}
-
-
 
 			} );
 
@@ -16136,16 +16134,13 @@ var serieData = [
 
 // END IGNORE ON BUILD
 
-		graphinstance.newSerie("msdata", { autoPeakPicking: 'continuous' }, 'line', function( serie ) {
+		graphinstance.newSerie("msdata", { autoPeakPicking: 'continuous' }, 'line' )
+			.autoAxis()
+			.setData( serieData )
+			.XIsMonotoneous();
 
-				serie
-					.autoAxis()
-					.setData( serieData )
-					.XIsMonotoneous();
-
-				graphinstance.redraw();
-				graphinstance.drawSeries();
-			});
+		graphinstance.redraw();
+		graphinstance.drawSeries();
 			
 		}, 
 

@@ -51,23 +51,20 @@ define( [], function() {
 
         onChange: function( newData ) {
           graph.triggerEvent( 'onAnnotationChange', newData );
-        }
+        },
+
+        locked: false,
+        selectable: true
       };
 
-      var shape = graph.newShape( $.extend( shapeInfo, this.options ), {}, false );
+      $.extend( shapeInfo, this.options )
+
+      var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
       if ( shape ) {
+        self.currentShape = shape;
+        self.currentShapeEvent = e;
 
-        shape.then( function( shape ) {
-
-          if ( !shape ) {
-            return;
-          }
-
-          self.currentShape = shape;
-          self.currentShapeEvent = e;
-
-        } );
       }
 
     },

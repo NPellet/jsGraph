@@ -8,53 +8,53 @@ define( function() {
 
 			dblclick: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					mode: 'total'
 				}
 			},
 
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'x' },
+				'zoom': { zoomMode: 'x' },
 			},
 
 			pluginAction: {
-				'graph.plugin.zoom': { shift: false, ctrl: false }
+				'zoom': { shift: false, ctrl: false }
 			}
 			
-		}, function( graphinstance) {
-	
-			graphinstance.newSerie("temp_nh")
-				.autoAxis()
-				.setData( series[ 3 ] );
-			
-
-
-
-            graphinstance.newShape({ 
-                type: 'rect', 
-                pos: { x: "60px", y: "80px" },
-                pos2: { x: "20px", y: "20px" },
-               strokeColor: 'red',
-               strokeWidth: 1,
-
-               
-                 shapeOptions: {
-                  locked: true
-                 }
-
-            }).then( function( shape ) {
-
-              shape.draw();
-              shape.redraw();
-            } );
-
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-
 		} );
-		
 
+		graphinstance.newSerie("temp_nh")
+			.autoAxis()
+			.setData( series[ 3 ] );
+		
+        graphinstance.newShape({ 
+           type: 'rect', 
+           pos: { x: "60px", y: "80px" },
+           pos2: { x: "40px", y: "20px" },
+           strokeColor: 'red',
+           strokeWidth: 1,
+           fillColor: 'transparent',
+           locked: true
+        }).draw();
+
+        graphinstance.newShape({ 
+           type: 'rect', 
+           pos: { x: "160px", y: "80px" },
+           pos2: { x: "140px", y: "20px" },
+           strokeColor: 'red',
+           strokeWidth: 1,
+           fillColor: 'white',
+           locked: false,
+           movable: true,
+           selectable: true
+        }).draw();
+        
+
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
+
+		
 	}, "Plugins and shapes", [ 
 
 		

@@ -11,57 +11,42 @@ define( function() {
 		
 			serie.push( date.getTime() );
 			serie.push( Math.sin( date.getHours() / 24 * Math.PI + Math.random() / 5 ) );
-
 			date.setSeconds( date.getSeconds() + 1 );
 		}
 
-		console.log( serie.length );
-
 		var graphinstance = new Graph( domGraph, {
 
-
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'x' }
+				'zoom': { zoomMode: 'x' }
 			},
 
 			pluginAction: {
-				'graph.plugin.zoom': { shift: false, ctrl: false }
+				'zoom': { shift: false, ctrl: false }
 			},
-
 
 			dblclick: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					mode: 'total'
 				}
-			},
-
-			series: ['zone', 'line']
-
-		}, function( graphinstance ) {
+			}
+		} );
 
 
 	//	graphinstance.setBottomAxisAsTime();
 	
-		var s = graphinstance.newSerie()
+		graphinstance.newSerie()
 			.autoAxis()
 			.setData( serie )
 			.XIsMonotoneous()
-			.degrade( 5 );
-
-		s.setFillColor('rgba(200, 0, 0, 0.2)')
-		s.setLineWidth(0)
+			.degrade( 5 )
+			.setFillColor('rgba(200, 0, 0, 0.2)')
+			.setLineWidth(0)
 
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
-		
-
-
-		});
-
-			
-			
+					
 
 		}, 
 

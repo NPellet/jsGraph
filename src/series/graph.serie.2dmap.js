@@ -15,8 +15,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       this.graph = graph;
       this.name = name;
-      this.id = this.graph.uniqueId();
-
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
       this.graph.mapEventEmission( this.options, this ); // Register events
 

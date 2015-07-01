@@ -2,31 +2,34 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
-			var modificators = [];
+		var modificators = [];
+		
+		var serie = graphinstance.newSerie("serieTest", {
+
+			onMouseover: function( idInArray, valueX, valueY ) {
+				console.log( "Mouseover event", idInArray, valueX, valueY );
+			}
+
+		}, 'scatter')
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( series[ 0 ] )
+			.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' } )
 			
-			var serie = graphinstance.newSerie("serieTest", {
 
-				onMouseover: function( idInArray, valueX, valueY ) {
-					console.log( "Mouseover event", idInArray, valueX, valueY );
-				}
+		serie.on("mouseout", function() {
+			console.log( 'mouseout' );
+		});
 
-			}, 'scatter')
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( series[ 0 ] )
-				.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' } )
-				
+		serie.on("mouseover", function() {
+			console.log( 'mouseover' );
+		});
 
-			serie.on("mouseout", function() {
-				console.log( 'mouseout' );
-			})
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
 
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-
-		} );
 
 	}, "Mouse events", [ 
 

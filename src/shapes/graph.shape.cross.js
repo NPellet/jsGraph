@@ -1,21 +1,7 @@
 define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphCross = function( graph, options ) {
-
-    this.options = options ||  {};
-
-    this.init( graph );
-
     this.nbHandles = 1;
-
-    this.createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
-      width: 6,
-      height: 6,
-      stroke: "black",
-      fill: "white",
-      cursor: 'nwse-resize'
-    } );
 
   }
 
@@ -29,6 +15,15 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       this._dom = document.createElementNS( this.graph.ns, 'path' );
       this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '' );
+
+      this.createHandles( this.nbHandles, 'rect', {
+        transform: "translate(-3 -3)",
+        width: 6,
+        height: 6,
+        stroke: "black",
+        fill: "white",
+        cursor: 'nwse-resize'
+      } );
 
     },
 

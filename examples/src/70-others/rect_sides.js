@@ -8,9 +8,6 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
                               window.webkitRequestAnimationFrame || window.oRequestAnimationFrame;
 
 
-
-
-
 		var serie = [];
 		for( var i = 0; i < 500 ; i += 0.02 ) {
 			serie.push( i );
@@ -59,11 +56,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 		graphzoom.cacheOffset();
 		
 		var rectCreated = function( shape ) {
-			shape.staticHandles( true );
-			shape.setSelectable( false );
-			shape.setMovable( false );
-			shape.draw();
-			shape.redraw();
+			
 			return shape;
 		}			
 
@@ -72,18 +65,17 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 			pos: { x: "min", y: "min" },
 			pos2: { x: r, y: "max" },
 			fillColor: 'rgba(100, 100, 100, 0.6)',
-
-			shapeOptions: {
-				handles: {
-					type: 'sides',
-					sides: {
-						top: false,
-						bottom: false,
-						right: false,
-						left: false
-					}
+			handles: {
+				type: 'sides',
+				sides: {
+					top: false,
+					bottom: false,
+					right: false,
+					left: false
 				}
-			}
+			},
+			locked: false,
+			selectable: false
 		};
 
 	    graphzoom.newSerie()
@@ -93,14 +85,21 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
 	    graphzoom.redraw();
 		graphzoom.drawSeries();
 
-		graphzoom.newShape( $.extend( true, {}, rectOptions, { pos: { x: "min" }, pos2: { x: r }, shapeOptions: { handles: { sides: { right: true } } } } ) ).then( rectCreated ).then( function( shape ) {
-			shapeLeft = shape;
-		});
+		shapeLeft = graphzoom
+						.newShape( 'rect', $.extend( true, {}, rectOptions, { pos: { x: "min" }, pos2: { x: r },  handles: { sides: { right: true } } } ) )
+
+		shapeLeft.staticHandles( true );
+		shapeLeft.unselectable();
+		shapeLeft.draw();
+		shapeLeft.redraw();
 
 
-		graphzoom.newShape( $.extend( true, {}, rectOptions, {  pos: { x: l }, pos2: { x: "max" }, shapeOptions: { handles: { sides: { left: true } } } } ) ).then( rectCreated ).then( function( shape ) {
-			shapeRight = shape;
-		});
+		shapeRight = graphzoom
+						.newShape( 'rect', $.extend( true, {}, rectOptions, {  pos: { x: l }, pos2: { x: "max" }, handles: { sides: { left: true } } } ) );
+		shapeRight.staticHandles( true );
+		shapeRight.unselectable();
+		shapeRight.draw();
+		shapeRight.redraw();
 
 
 		function minInt() {

@@ -1,8 +1,7 @@
 define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphLabel = function( graph, options ) {
-    this.init( graph );
-    this.options = options ||  {};
+
   }
   $.extend( GraphLabel.prototype, GraphShape.prototype, {
     createDom: function() {
@@ -10,7 +9,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     setPosition: function() {
-      var pos = this._getPosition( this.get( 'labelPosition' ) );
+      var pos = this._getPosition( this.getprop( 'labelPosition' ) );
 
       if ( !pos )
         return;
@@ -23,9 +22,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       this.everyLabel( function( i ) {
 
-        this.label[ i ].setAttribute( 'x', pos.x );
-        this.label[ i ].setAttribute( 'y', pos.y );
-
+        if ( pos.x && pos.y ) {
+          this.label[ i ].setAttribute( 'x', pos.x );
+          this.label[ i ].setAttribute( 'y', pos.y );
+        }
       } );
 
       return true;

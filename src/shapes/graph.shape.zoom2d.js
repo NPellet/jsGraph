@@ -1,11 +1,6 @@
 define( [ './graph.shape' ], function( GraphShape ) {
 
-  var Zoom2DShape = function( graph, options ) {
-
-    this.init( graph );
-    this.options = options ||  {};
-    this.series = [];
-  }
+  var Zoom2DShape = function() {}
 
   $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 

@@ -1,4 +1,4 @@
-define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter ) {
+define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( EventEmitter, util ) {
 
   "use strict";
 
@@ -44,6 +44,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
       this.maxY = -Infinity;
 
       if ( !data instanceof Array ) {
+        util.throwError( "Data is not an array" );
         return;
       }
 
@@ -103,6 +104,7 @@ define( [ './dependencies/eventEmitter/EventEmitter' ], function( EventEmitter )
           o;
 
         if ( !data[ 0 ].y ) {
+          util.throwError( "No y data" );
           return;
         }
 

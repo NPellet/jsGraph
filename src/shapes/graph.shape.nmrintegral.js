@@ -3,23 +3,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
   "use strict";
 
   var GraphNMRIntegral = function( graph, options ) {
-
-    this.init( graph, "nmrintegral" );
-
-    this.options = options ||  {};
-    this.options.axis = this.options.axis ||  'x';
-
     this.nbHandles = 2;
-
-    this.createHandles(
-      this.nbHandles, 'rect', {
-        transform: "translate(-3 -3)",
-        width: 6,
-        height: 6,
-        stroke: "black",
-        fill: "white",
-        cursor: 'nwse-resize'
-      } );
   }
 
   $.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
@@ -31,7 +15,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       var posXY = this._getPosition( this.getFromData( 'pos' ) ),
         posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
         w, x,
-        axis = this.options.axis;
+        axis = this.getAxis();
 
       if ( !posXY ||  !posXY2 ) {
         return;
@@ -165,7 +149,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
         sum = 1; // Will look line a line anyway
       }
 
-      this.maxPx = this.options.maxPx || 50;
+      this.maxPx = this._data.maxPx || 50;
 
       if ( !this.ratio ) {
         this.ratio = 1;
@@ -217,6 +201,10 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       this.setHandles();
 
       return true;
+    },
+
+    getAxis: function() {
+      return this._data.axis ||  'x';
     },
 
     setScale: function( maxPx, integration ) {

@@ -25,7 +25,7 @@ define( function() {
 					datas.square = datas.square || {};
 					$( this._dom ).children('.data').html( ( 'Interpolated: x: ' + Math.round( datas.square.trueX * 100 ) / 100 ) + "; y: " + ( Math.round( datas.square.interpolatedY * 100 ) / 100 + "<br />X is between " + datas.square.xBefore + " and " + datas.square.xAfter ) ) 
 
-				} }, function( graphinstance ) {
+				} } );
 
 				$( graphinstance._dom ).append("<div class='data'></div>");
 
@@ -46,8 +46,6 @@ define( function() {
 
 				graphinstance.redraw( );
 				graphinstance.drawSeries();	
-
-			} );
 			
 		}, 
 

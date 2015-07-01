@@ -9,20 +9,20 @@ define( function() {
 
         dblclick: {
         type: 'plugin',
-        plugin: 'graph.plugin.zoom',
+        plugin: 'zoom',
         options: {
           mode: 'total'
         }
       },
 
       plugins: {
-        'graph.plugin.zoom': { zoomMode: 'x' },
-        'graph.plugin.drag': {}
+        'zoom': { zoomMode: 'x' },
+        'drag': {}
       },
 
       pluginAction: {
-        'graph.plugin.drag': { shift: true, ctrl: false },
-        'graph.plugin.zoom': { shift: false, ctrl: false }
+        'drag': { shift: true, ctrl: false },
+        'zoom': { shift: false, ctrl: false }
       }
       
 
@@ -41,6 +41,7 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
     .setData( series[ 0 ] )
     .setLineColor('black');
 
+  graphinstance.redraw( ); // Need to force an axis redraw first
 
   xAxis2.linkToAxis( xAxis, function( val ) { return Math.pow( val + 2, 2 ); }, 1 );
   
@@ -53,11 +54,7 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
 
 }, "2 aligned axes", 
 
-[
-[ 'Add more axis', 'Add as many axis on your graph as you want. Axis on the same side of the graph stack on each other automatically'], 
-'You are required to link your series to the axis you want. <code>autoAxis()</code> will bind the serie to the first bottom axis and first left axis.',
-'Use <code>axis.adapt0To( otherAxis[, mode, value ] )</code> to adapt the 0 of the axis to another one. If <code>mode</code> (min/max) and value are specified, the min or the max of the axis will take the value <code>value</code>. The other one will be determined by the position of the zero.'
-]
+[]
 ];
 
 });

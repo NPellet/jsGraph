@@ -3,7 +3,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
   "use strict";
 
   var GraphSurfaceUnderCurve = function( graph ) {
-    this.init( graph );
+
   }
 
   $.extend( GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {

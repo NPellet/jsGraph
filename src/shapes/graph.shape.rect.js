@@ -2,22 +2,25 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphRect = function( graph, options ) {
 
-    this.options = options;
-    this.init( graph );
-
-    this.graph = graph;
     this.nbHandles = 4;
 
-    this.options.handles = this.options.handles ||  {
-      type: 'corners'
-    };
+  }
 
-    if ( !this.isLocked() ) {
-      switch ( this.options.handles.type ) {
+  $.extend( GraphRect.prototype, GraphShape.prototype, {
+
+    createDom: function() {
+      var self = this;
+      this._dom = document.createElementNS( this.graph.ns, 'rect' );
+
+      this._data.handles = this._data.handles ||  {
+        type: 'corners'
+      };
+
+      switch ( this._data.handles.type ) {
 
         case 'sides':
 
-          this.options.handles.sides = this.options.handles.sides || {
+          this._data.handles.sides = this._data.handles.sides || {
             top: true,
             bottom: true,
             left: true,
@@ -25,15 +28,15 @@ define( [ './graph.shape' ], function( GraphShape ) {
           };
 
           var j = 0;
-          for ( var i in this.options.handles.sides ) {
-            if ( this.options.handles.sides[ i ] ) {
+          for ( var i in this._data.handles.sides ) {
+            if ( this._data.handles.sides[ i ] ) {
               j++;
             }
           }
 
           this.createHandles( j, 'g' ).map( function( g ) {
 
-            var r = document.createElementNS( graph.ns, 'rect' );
+            var r = document.createElementNS( self.graph.ns, 'rect' );
             r.setAttribute( 'x', '-3' );
             r.setAttribute( 'width', '6' );
             r.setAttribute( 'y', '-6' );
@@ -48,8 +51,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
           var j = 1;
           this.handles = {};
           this.sides = [];
-          for ( var i in this.options.handles.sides ) {
-            if ( this.options.handles.sides[ i ] ) {
+          for ( var i in this._data.handles.sides ) {
+            if ( this._data.handles.sides[ i ] ) {
               this.handles[ i ] = this[ 'handle' + j ];
               this.sides[ j ] = i;
               j++;
@@ -78,14 +81,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
           break;
 
       }
-    }
 
-  }
-
-  $.extend( GraphRect.prototype, GraphShape.prototype, {
-
-    createDom: function() {
-      this._dom = document.createElementNS( this.graph.ns, 'rect' );
     },
 
     setWidthPx: function( px ) {
@@ -244,7 +240,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        switch ( this.options.handles.type ) {
+        switch ( this._data.handles.type ) {
 
           /*
 this.handle1.setAttribute('x', this.currentX);
@@ -395,7 +391,7 @@ this.handle1.setAttribute('x', this.currentX);
 
         }
 
-        switch ( this.options.handles.type ) {
+        switch ( this._data.handles.type ) {
 
           case 'sides':
             // Do nothing for now
@@ -468,7 +464,7 @@ this.handle1.setAttribute('x', this.currentX);
 
     setHandles: function() {
 
-      if ( this.isLocked() ) {
+      if ( this.isLocked() ||  ( !this.isSelectable() && !this._staticHandles ) ) {
         return;
       }
 
@@ -480,7 +476,7 @@ this.handle1.setAttribute('x', this.currentX);
         return;
       }
 
-      switch ( this.options.handles.type ) {
+      switch ( this._data.handles.type ) {
 
         case 'sides':
 

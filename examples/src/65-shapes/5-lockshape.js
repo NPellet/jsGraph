@@ -4,60 +4,45 @@ define( function() {
 
     function( domGraph ) {
 
-        var graphinstance = new Graph( domGraph, {
+        var graphinstance = new Graph( domGraph );
 
-         
-        },
+        graphinstance.getXAxis().forceMin( 0 );
+        graphinstance.getXAxis().forceMax( 50 );
 
-        function( graphinstance ) {
+        graphinstance.getYAxis().forceMin( 0 );
+        graphinstance.getYAxis().forceMax( 50 );
 
-            graphinstance.getXAxis().forceMin( 0 );
-            graphinstance.getXAxis().forceMax( 50 );
-
-            graphinstance.getYAxis().forceMin( 0 );
-            graphinstance.getYAxis().forceMax( 50 );
-
-            graphinstance.updateAxes();
+        graphinstance.updateAxes();
 
 
-            graphinstance.newShape({ 
-                type: 'rect', 
-                pos: { x: 10, y: 10 },
-                pos2: { x: 20, y: 20 },
-                 fillColor: 'red',
+        graphinstance.newShape({ 
+            type: 'rect', 
+            pos: { x: 10, y: 10 },
+            pos2: { x: 20, y: 20 },
+             fillColor: 'red',
 
-                 locked: true,
-                 selectable: false
+             locked: true,
+             selectable: false
 
-            }).then( function( shape ) {
-
-              shape.draw();
-              shape.redraw();
-            } );
+        }).draw();
 
 
-            graphinstance.newShape({ 
-                type: 'rect', 
-                pos: { x: 30, y: 10 },
-                pos2: { x: 40, y: 20 },
-                 fillColor: 'green',
+        graphinstance.newShape({ 
+            type: 'rect', 
+            pos: { x: 30, y: 10 },
+            pos2: { x: 40, y: 20 },
+             fillColor: 'green',
 
-                 locked: false,
-                 selectable: true
-                 
-            }).then( function( shape ) {
-
-              shape.draw();
-              shape.redraw();
-            } );
+             locked: false,
+             selectable: true
+             
+        }).draw();
 
 
 
-          graphinstance.redraw( );
-          graphinstance.drawSeries();       
+      graphinstance.redraw( );
+      graphinstance.drawSeries();       
 
-
-        } );
 
 
 }, "Lock a shape", 

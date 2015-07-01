@@ -2,7 +2,7 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		new Graph( domGraph, { }, {
+		var graphinstance = new Graph( domGraph, { }, {
 
 				top: [ {
 					flipped: true,
@@ -19,20 +19,18 @@ define( function() {
 					secondaryGrid: false
 				} ]
 
-			}, function( graphinstance ) {	
+			} );
 
-				graphinstance.newSerie("temperatures")
-					.setLabel( "My serie" )
-					.autoAxis()
-					.setData( series[ 0 ] )
-					.setLineColor('red');
+			graphinstance.newSerie("temperatures")
+				.setLabel( "My serie" )
+				.autoAxis()
+				.setData( series[ 0 ] )
+				.setLineColor('red');
 
-				
-				graphinstance.redraw( );
-				graphinstance.drawSeries( );
+			
+			graphinstance.redraw( );
+			graphinstance.drawSeries( );
 
-			}
-		);
 
 
 	}, "Top and right axis", [ 

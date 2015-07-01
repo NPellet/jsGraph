@@ -4,70 +4,50 @@ define( function() {
 
     function( domGraph ) {
 
-        var graphinstance = new Graph( domGraph, function( graphinstance ) {
+        var graphinstance = new Graph( domGraph );
 
-            graphinstance.getXAxis().forceMin( 0 );
-            graphinstance.getXAxis().forceMax( 100 );
+        graphinstance.getXAxis().forceMin( 0 );
+        graphinstance.getXAxis().forceMax( 100 );
 
-            graphinstance.getYAxis().forceMin( 0 );
-            graphinstance.getYAxis().forceMax( 100 );
+        graphinstance.getYAxis().forceMin( 0 );
+        graphinstance.getYAxis().forceMax( 100 );
 
-            for( var i = 0; i < 10; i ++ ) {
+        for( var i = 0; i < 10; i ++ ) {
 
-              for( var j = 0; j < 10 ; j ++ ) {
+          for( var j = 0; j < 10 ; j ++ ) {
 
-
-
-                graphinstance.newShape({
-                 
-                    type: 'rect', 
-                    pos: { x: i * 10, y: j * 10 },
-                    pos2: { x: i * 10 + 8, y: j * 10 + 8 },
-                    fillColor: 'green',
-                    layer: Math.ceil( Math.random() * 2 )
-                    
-                }).then( function( shape ) {
-
-                  shape.draw();
-                  shape.redraw();
-                } );
+            graphinstance.newShape({
+        
+                type: 'rect', 
+                pos: { x: i * 10, y: j * 10 },
+                pos2: { x: i * 10 + 8, y: j * 10 + 8 },
+                fillColor: 'green',
+                layer: Math.ceil( Math.random() * 2 )
+                
+            }).draw();
+          }
+        }
 
 
-              }
-            }
+        for( var i = 0; i < 10; i ++ ) {
 
+          for( var j = 0; j < 10 ; j ++ ) {
 
-            for( var i = 0; i < 10; i ++ ) {
+            graphinstance.newShape({ 
+                type: 'rect', 
+                pos: { x: i * 10 + 4, y: j * 10 + 4 },
+                pos2: { x: i * 10 + 12, y: j * 10 + 12 },
+                fillColor: 'rgba( 0, 0, 200, 0.5 )',
+                layer: Math.ceil( Math.random() * 2 )
+                
+            }).draw();
+          }
+        }
 
-              for( var j = 0; j < 10 ; j ++ ) {
-
-                graphinstance.newShape({ 
-                    type: 'rect', 
-                    pos: { x: i * 10 + 4, y: j * 10 + 4 },
-                    pos2: { x: i * 10 + 12, y: j * 10 + 12 },
-                    fillColor: 'rgba( 0, 0, 200, 0.5 )',
-                    layer: Math.ceil( Math.random() * 2 )
-                    
-                }).then( function( shape ) {
-
-                  shape.draw();
-                  shape.redraw();
-                } );
-
-
-              }
-            }
-
-
-
-            graphinstance.updateAxes();
-
-
+        graphinstance.updateAxes();
         graphinstance.redraw( );
         graphinstance.drawSeries();       
 
-
-        } );
 
 
 }, "Shapes on various layers", 

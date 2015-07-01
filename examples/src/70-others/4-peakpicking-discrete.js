@@ -7,24 +7,24 @@ define( function() {
 
 				dblclick: {
 					type: 'plugin',
-					plugin: 'graph.plugin.zoom',
+					plugin: 'zoom',
 					options: {
 						mode: 'total'
 					}
 				},
 
 				plugins: {
-					'graph.plugin.zoom': { zoomMode: 'x' }
+					'zoom': { zoomMode: 'x' }
 				},
 
 				pluginAction: {
-					'graph.plugin.zoom': { shift: false }
+					'zoom': { shift: false }
 				},
 
 
 				wheel: {
 					type: 'plugin',
-					plugin: 'graph.plugin.zoom',
+					plugin: 'zoom',
 					options: {
 						direction: 'y'
 					}
@@ -423,20 +423,18 @@ var serieData = [
 			{ 
 				autoPeakPicking: true, 
 				autoPeakPickingNb: 10,
-				autoPeakPickingFormat: function( val, index ) {  this.set( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toPrecision( 3 ); },
+				autoPeakPickingFormat: function( val, index ) {  this.prop( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toFixed( 1 ); },
 				autoPeakPickingAllowAllY: true,
 				lineToZero: true 
 
-			}, 'line', function( serie ) {
-
-				serie
+			}, 'line' )
 					.autoAxis()
 					.setData( serieData )
 					.XIsMonotoneous();
 
 				graphinstance.redraw();
 				graphinstance.drawSeries();
-			});
+			
 			
 		}, 
 

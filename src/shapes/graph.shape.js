@@ -42,13 +42,16 @@ define( [], function() {
       this.createDom();
       this.setEvents();
 
+      if ( this._dom ) {
+        this._dom.jsGraphIsShape = true;
+      }
+
+      this.group.jsGraphIsShape = true;
+
       this.classes = [];
       this.transforms = [];
 
-      this._movable = true;
-      this._selectable = false;
-
-      if ( this.options.masker ) {
+      if ( this._data.masker ) {
 
         var maskPath = document.createElementNS( this.graph.ns, 'mask' );
         this.maskingId = Math.random();
@@ -163,15 +166,9 @@ define( [], function() {
 
     initImpl: function() {},
 
-    setOriginalData: function( data, events ) {
-      this.data = data;
-      this.events = events;
-
-    },
-
     triggerChange: function() {
 
-      this.graph.triggerEvent( 'onAnnotationChange', this.data, this );
+      this.graph.triggerEvent( 'onAnnotationChange', this._data, this );
     },
 
     setEvents: function() {},
@@ -242,7 +239,7 @@ define( [], function() {
 
       this.everyLabel( function( i ) {
 
-        if ( this.get( 'labelPosition', i ) ) {
+        if ( this.getprop( 'labelPosition', i ) ) {
 
           this.setLabelText( i );
           this.setLabelSize( i );
@@ -252,12 +249,14 @@ define( [], function() {
 
         }
 
-        if ( this.get( 'labelAnchor', i ) ) {
+        if ( this.getprop( 'labelAnchor', i ) ) {
 
           this._forceLabelAnchor( i );
 
         }
       } );
+
+      return this;
     },
 
     redraw: function() {
@@ -273,7 +272,7 @@ define( [], function() {
 
       this.everyLabel( function( i ) {
 
-        if ( this.get( 'labelPosition', i ) ) {
+        if ( this.getprop( 'labelPosition', i ) ) {
 
           this.setLabelPosition( i );
           this.setLabelAngle( i );
@@ -282,9 +281,9 @@ define( [], function() {
 
       } );
 
-      if ( this.afterDone )
-        this.afterDone();
       //	this.done();
+
+      return this;
     },
 
     redrawImpl: function() {},
@@ -303,7 +302,7 @@ define( [], function() {
       return this.serie;
     },
 
-    set: function( prop, val, index ) {
+    prop: function( prop, val, index ) {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
       this.properties[ prop ][ index || 0 ] = val;
@@ -321,7 +320,7 @@ define( [], function() {
 
     },
 
-    get: function( prop, index ) {
+    getprop: function( prop, index ) {
       this.configuration = this.configuration || {
         sections: {
           shape_cfg: [ {
@@ -335,10 +334,10 @@ define( [], function() {
     },
 
     getFromData: function( prop ) {
-      return this.data[ prop ];
+      return this._data[ prop ];
     },
     setData: function( prop, val ) {
-      return this.data[ prop ] = val;
+      return this._data[ prop ] = val;
     },
     setDom: function( prop, val ) {
       if ( this._dom ) this._dom.setAttribute( prop, val );
@@ -352,22 +351,22 @@ define( [], function() {
     },
 
     setFillColor: function() {
-      this.setDom( 'fill', getColor( this.get( 'fillColor' ) ) );
+      this.setDom( 'fill', getColor( this.getprop( 'fillColor' ) ) );
     },
     setStrokeColor: function() {
-      this.setDom( 'stroke', getColor( this.get( 'strokeColor' ) ) );
+      this.setDom( 'stroke', getColor( this.getprop( 'strokeColor' ) ) );
     },
     setStrokeWidth: function() {
-      this.setDom( 'stroke-width', this.get( 'strokeWidth' ) );
+      this.setDom( 'stroke-width', this.getprop( 'strokeWidth' ) );
     },
     setDashArray: function() {
-      if ( this.get( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.get( 'strokeDashArray' ) );
+      if ( this.getprop( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.getprop( 'strokeDashArray' ) );
     },
 
     setTransform: function() {
 
       var transformString = "";
-      var transforms = this.get( 'transform' );
+      var transforms = this.getprop( 'transform' );
 
       for ( var i = 0; i < this.transforms.length; i++ ) {
 
@@ -405,13 +404,13 @@ define( [], function() {
     },
 
     setLabelText: function( index ) {
-      if ( this.label ) this.label[ index ].textContent = this.data.label[ index ].text;
+      if ( this.label ) this.label[ index ].textContent = this._data.label[ index ].text;
     },
     setLabelColor: function( index ) {
-      if ( this.label ) this.label[ index ].setAttribute( 'fill', this.get( 'labelColor' ) );
+      if ( this.label ) this.label[ index ].setAttribute( 'fill', this.getprop( 'labelColor' ) );
     },
     setLabelSize: function( index ) {
-      if ( this.label ) this.label[ index ].setAttribute( 'font-size', this.get( 'labelSize' ) );
+      if ( this.label ) this.label[ index ].setAttribute( 'font-size', this.getprop( 'labelSize' ) );
     },
     setLabelPosition: function( index ) {
       if ( this.label ) this._setLabelPosition( index );
@@ -492,7 +491,7 @@ define( [], function() {
           } ).bind( 'blur', function() {
 
             $( this ).remove();
-            self.data.label[ i ].text = $( this ).prop( 'value' );
+            self._data.label[ i ].text = $( this ).prop( 'value' );
             self.label[ i ].textContent = $( this ).prop( 'value' );
 
             self.triggerChange();
@@ -536,7 +535,7 @@ define( [], function() {
 
         if ( !pos ) {
 
-          var pos = this._getPosition( this.get( 'labelPosition', labelIndex ) || {
+          var pos = this._getPosition( this.getprop( 'labelPosition', labelIndex ) || {
             dx: 0,
             dy: 0
           }, currPos );
@@ -552,12 +551,12 @@ define( [], function() {
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 
-      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.get( 'labelBaseline', labelIndex ) );
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.getprop( 'labelBaseline', labelIndex ) );
 
     },
 
     _setLabelAngle: function( labelIndex, angle ) {
-      var currAngle = this.get( 'labelAngle', labelIndex ) || 0;
+      var currAngle = this.getprop( 'labelAngle', labelIndex ) || 0;
 
       if ( currAngle == 0 )
         return;
@@ -577,7 +576,7 @@ define( [], function() {
     },
 
     _getLabelAnchor: function() {
-      var anchor = this.get( 'labelAnchor' );
+      var anchor = this.getprop( 'labelAnchor' );
       switch ( anchor ) {
         case 'middle':
         case 'start':
@@ -599,26 +598,6 @@ define( [], function() {
       }
     },
 
-    setSelectable: function( bln ) {
-      this._selectable = bln;
-    },
-
-    setMovable: function( bln ) {
-      this._movable = bln;
-    },
-
-    unselectable: function() {
-      this.setSelectable( false );
-    },
-
-    selectable: function() {
-      this.setSelectable( true );
-    },
-
-    isSelectable: function() {
-      return this._selectable;
-    },
-
     isSelected: function() {
       return this._selected;
     },
@@ -629,7 +608,7 @@ define( [], function() {
 
     _select: function( mute ) {
 
-      if ( !this._selectable ) {
+      if ( !this.isSelectable() ) {
         return;
       }
 
@@ -646,13 +625,13 @@ define( [], function() {
 
       if ( !mute ) {
         this.callHandler( "onSelected", this );
-        this.graph.triggerEvent( 'onAnnotationSelect', this.data, this );
+        this.graph.triggerEvent( 'onAnnotationSelect', this._data, this );
       }
     },
 
     _unselect: function() {
 
-      if ( !this._selectable ) {
+      if ( !this.isSelectable() ) {
         return;
       }
 
@@ -700,6 +679,7 @@ define( [], function() {
         ( function( j ) {
 
           self[ 'handle' + j ] = document.createElementNS( self.graph.ns, type );
+          self[ 'handle' + j ].jsGraphIsShape = true;
 
           if ( attr ) {
             for ( var k in attr ) {
@@ -849,7 +829,7 @@ define( [], function() {
           if ( !( clbks = this._mouseOverCallbacks ) ) {
             return;
           }
-          clbks.fireWith( this, [ this.data, this.parameters ] );
+          clbks.fireWith( this, [ this._data, this.parameters ] );
         }
       ],
 
@@ -864,7 +844,7 @@ define( [], function() {
           if ( !( clbks = this._mouseOutCallbacks ) ) {
             return;
           }
-          clbks.fireWith( this, [ this.data, this.parameters ] );
+          clbks.fireWith( this, [ this._data, this.parameters ] );
         }
       ]
     },
@@ -881,7 +861,7 @@ define( [], function() {
 
     handleMouseMove: function( e ) {
 
-      if ( this.isLocked() && this._movable !== false ) {
+      if ( this.isLocked() && this.isMovable() ) {
 
         this.graph.elementMoving( false );
 
@@ -893,7 +873,7 @@ define( [], function() {
 
       }
 
-      if ( !this._movable ) {
+      if ( !this.isMovable() ) {
         this.moving = false;
       }
 
@@ -1067,26 +1047,55 @@ define( [], function() {
       this.configuration = $.extend( true, this.configuration, configuration );
     },
 
-    isLocked: function() {
-
-      return this.locked ||  this.graph.shapesLocked;
-    },
-
+    /*
+     *  Updated July 1st, 2015
+     */
     lock: function() {
-      this.locked = true;
+      this._data.locked = true;
     },
 
     unlock: function() {
-      this.locked = false;
+      this._data.locked = false;
     },
 
-    isBindable: function() {
+    isLocked: function() {
+      return this._data.locked || this.graph.shapesLocked;
+    },
 
+    movable: function( bln ) {
+      this._data.movable = true;
+    },
+
+    unmovable: function() {
+      this._data.movable = false;
+    },
+
+    isMovable: function() {
+      return this._data.movable;
+    },
+
+    selectable: function() {
+      this._data.selectable = true;
+    },
+
+    unselectable: function() {
+      this._unselect();
+      this._data.selectable = false;
+    },
+
+    isSelectable: function() {
+      return this._data.selectable;
+    },
+
+    /* 
+     *  End Updated July 1st, 2015
+     */
+
+    isBindable: function() {
       return this.options.bindable;
     },
 
     setBindableToDom: function() {
-
       if ( this.isBindable() ) {
         this.addClass( 'bindable' );
       }

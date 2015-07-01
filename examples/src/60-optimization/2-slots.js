@@ -13,17 +13,17 @@ define( function() {
 			close: false,
 			
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'x' }
+				'zoom': { zoomMode: 'x' }
 			},
 
 			pluginAction: {
-				'graph.plugin.zoom': { shift: false, ctrl: false }
+				'zoom': { shift: false, ctrl: false }
 			},
 
 
 			dblclick: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					mode: 'total'
 				}
@@ -31,7 +31,7 @@ define( function() {
 
 			series: ['zone', 'line']
 
-		}, function( graphinstance ) {
+		} );
 
 
 	//	graphinstance.setBottomAxisAsTime();
@@ -55,13 +55,6 @@ define( function() {
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
 		
-
-
-		});
-
-			
-			
-
 		}, 
 
 		"Slot optimization", 

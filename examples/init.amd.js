@@ -8,7 +8,7 @@ requirejs.config({
 	}
 });
 
-require( [ 'jquery', './src/graph.core', './examples/series' ] , function( $, Graph, series ) {
+require( [ 'jquery', './src/graph', './examples/series' ] , function( $, Graph, series ) {
 
 	window.contour = series.contour;
 	window.series = series.numeric;

@@ -1,8 +1,6 @@
 define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
 
-  var GraphRangeX = function( graph ) {
-    this.init( graph );
-  };
+  var GraphRangeX = function( graph ) {};
   $.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
 
     createDom: function() {
@@ -43,7 +41,7 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       this.setDom( 'x', x );
       this.setDom( 'width', w );
       this.setDom( 'y', 0 );
-      this.setDom( 'height', this.graph.getDrawingHeight() - this.graph.shift[ 0 ] );
+      this.setDom( 'height', this.graph.getDrawingHeight() - this.graph.shift.bottom );
 
       this.setHandles( x, w );
 

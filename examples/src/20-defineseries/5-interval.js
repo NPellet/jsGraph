@@ -2,35 +2,21 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { 
+		var graphinstance = new Graph( domGraph );
 
-			plugins: {
-				'graph.plugin.shape': { },
-			},
+		var data = { x: 0.5, dx: 0.2, y: [] };
+		for( var i = 1, l = 30; i < l ; i += 1 ) {
+			data.y.push( Math.sin( i * 0.2 + 0.5 ) );
+		}
 
-			pluginAction: {
-				'graph.plugin.shape': { shift: false, ctrl: false }
-			}
+		graphinstance.newSerie("serieTest")
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( data )
+			.setMarkers();
 
-		}, function( graphinstance ) {
-
-
-			var data = { x: 0.5, dx: 0.2, y: [] };
-
-			for( var i = 1, l = 30; i < l ; i += 1 ) {
-				data.y.push( Math.sin( i * 0.2 + 0.5 ) );
-			}
-
-			graphinstance.newSerie("serieTest")
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( data )
-				.setMarkers();
-
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-
-		} );
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
 		
 
 	}, "Interval data", [ 

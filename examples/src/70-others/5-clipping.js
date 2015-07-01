@@ -40,50 +40,31 @@ define( function() {
     graphzoom.redraw();
     graphzoom.drawSeries();
 
-    $.when(
+    whole = graphzoom.newShape('rect', { pos: { x: 'min', y: 'min' }, pos2: { x: 'max', y: 'max' }, type: 'rect', fillColor: 'rgba( 100, 100, 100, 0.4 )' }).draw().redraw();
+    
 
-        graphzoom.newShape({ pos: { x: 'min', y: 'min' }, pos2: { x: 'max', y: 'max' }, type: 'rect', fillColor: 'rgba( 100, 100, 100, 0.4 )' }).then( function( shape ) {
+    clipper = graphzoom.newShape('rect', { pos: { x: 1850, y: 0 }, pos2: { x: 1950, y: 2 }, selectable: true, locked: false, fillColor: 'transparent', masker: true }).draw().redraw();
+    clipper.staticHandles( true );
 
-        	whole = shape;
-        	shape.draw();
-        	shape.redraw();
-            shape.setSelectable( false );
-            shape.setMovable( false );
-
-        }),
+    whole.maskWith( clipper );
+    
 
 
-        graphzoom.newShape({ pos: { x: 1850, y: 0 }, pos2: { x: 1950, y: 2 }, type: 'rect', fillColor: 'transparent', shapeOptions: { masker: true } }).then( function( shape ) {
+    graphzoom.shapeHandlers.onChange.push( function( shape ) {
 
-            shape.staticHandles( true );
+        if( shape == clipper ) {
 
-            clipper = shape;
-            shape.draw();
-            shape.redraw();
-        })
+            var p = clipper._data.pos;
+            var p2 = clipper._data.pos2;
 
+            graphmain.getXAxis().zoom( p.x, p2.x );
+            graphmain.getYAxis().zoom( p.y, p2.y );
 
+            graphmain.redraw();
+            graphmain.drawSeries();
+        }
 
-    ).then( function() {
-
-    	whole.maskWith( clipper );
-    });
-
-
-  graphzoom.shapeHandlers.onChange.push( function( shape ) {
-
-            if( shape == clipper ) {
-
-                var p = clipper.data.pos;
-                var p2 = clipper.data.pos2;
-
-                graphmain.getXAxis().zoom( p.x, p2.x );
-                graphmain.getYAxis().zoom( p.y, p2.y );
-
-                graphmain.redraw();
-                graphmain.drawSeries();
-            }
-        } );
+    } );
 
 
 		} ,

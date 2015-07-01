@@ -564,6 +564,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
      *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
      */
     _draw: function( linkedToAxisOnly ) { // Redrawing of the axis
+
+      var self = this;
       var visible;
 
       this.drawInit();
@@ -619,6 +621,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       // Looks for axes linked to this current axis
       var axes = this.graph.findAxesLinkedTo( this );
       axes.map( function( axis ) {
+
+        axis.setMinPx( self.getMinPx() );
+        axis.setMaxPx( self.getMaxPx() );
 
         axis.draw( true );
       } );
@@ -884,6 +889,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         }
 
         t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
+
+        if ( !t ) {
+          console.log( val, px, this.getMinPx() );
+          console.error( "Problem here" );
+          break;
+        }
 
         l = String( t[ 1 ].textContent ).length * 8;
         delta2 = Math.round( l / 5 ) * 5;

@@ -1,6 +1,6 @@
-"use strict";
+define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( GraphSerieNonInstanciable, SlotOptimizer, util ) {
 
-define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanciable, SlotOptimizer ) {
+  "use strict";
 
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
@@ -38,10 +38,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       this.graph = graph;
       this.name = name;
-      this.id = this.graph.uniqueId();
 
       this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) ); // Creates options
-      this.graph.mapEventEmission( this.options, this ); // Register events
+      util.mapEventEmission( this.options, this ); // Register events
 
       // Creates an empty style variable
       this.styles = {};
@@ -56,6 +55,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       this.styles.selected = {
         lineWidth: 3
       };
+
+      this.extendStyles();
 
       this.shown = true;
 
@@ -117,11 +118,9 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
         this.picks = this.picks || [];
 
-        this.picksDef = [];
-
         for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
 
-          this.picksDef.push( this.graph.newShape( {
+          var shape = this.graph.newShape( {
 
             type: 'label',
             label: {
@@ -139,12 +138,11 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
               minPosY: 15
             }
 
-          } ).then( function( shape ) {
+          } );
 
-            shape.setSerie( self );
-            self.picks.push( shape );
+          shape.setSerie( self );
+          self.picks.push( shape );
 
-          } ) );
         }
 
       }
@@ -216,6 +214,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     onMouseOverMarker: function( e, index ) {
+
       var toggledOn = this.toggleMarker( index, true, true );
       if ( this.options.onMouseOverMarker ) {
         this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
@@ -255,8 +254,17 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
           dom = el[ index ];
         }
 
-        var x = this.getX( this.data[ k ][ i * 2 ] );
-        var y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+        var x, y;
+        if ( this.mode == 'x_equally_separated' ) {
+          x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
+          y = this.data[ k ][ i ];
+        } else {
+          x = this.getX( this.data[ k ][ i * 2 ] );
+          y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+        }
+
+        x = this.getX( x );
+        y = this.getY( y );
 
         dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
@@ -311,6 +319,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     _getMarkerIndexFromEvent: function( e ) {
       var px = this.graph._getXY( e );
+
+      //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
       return this.searchIndexByPxXY( ( px.x - this.graph.getPaddingLeft() ), ( px.y - this.graph.getPaddingTop() ) );
 
     },
@@ -338,7 +348,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
         this.selectionType = selectionType;
 
-        this.draw();
+        this.draw(); // Drawing is absolutely required here
         this.applyLineStyles();
       } else {
         this.selectionType = selectionType;
@@ -366,7 +376,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     degrade: function( pxPerP, options ) {
 
-      var serie = this.graph.newSerie( this.name, options, 'zone' );
+      var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
+
       this.degradationPx = pxPerP;
 
       if ( !serie ) {
@@ -607,7 +618,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
           if ( this.markersShown() ) {
 
-            this.getMarkerCurrentFamily( this.counter );
+            this.getMarkerCurrentFamily( this.counter2 );
           }
 
           x = data[ i ][ j + incrXFlip ];
@@ -1001,7 +1012,8 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
     setMarkerStyleTo: function( dom, family ) {
 
-      if ( !dom ) {
+      if ( !dom ||  !family ) {
+        console.trace();
         throw "Cannot set marker style. DOM does not exist.";
       }
 
@@ -1232,16 +1244,42 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         xyindex = false,
         dist;
 
-      for ( var i = 0, l = this.data.length; i < l; i++ ) {
-        for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
+      var xData = this._xDataToUse,
+        p_x,
+        p_y;
 
-          dist = Math.pow( ( this.getX( this.data[ i ][ k ] ) - x ), 2 ) + Math.pow( ( this.getY( this.data[ i ][ k + 1 ] ) - y ), 2 );
-          //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
-          if ( !oldDist || dist < oldDist ) {
-            oldDist = dist;
-            xyindex = [ k / 2, i ];
+      if ( this.mode == "x_equally_separated" ) {
+
+        for ( var i = 0, l = this.data.length; i < l; i++ ) {
+          for ( var k = 0, m = this.data[ i ].length; k < m; k += 1 ) {
+
+            p_x = xData[ i ].x + k * xData[ i ].dx;
+            p_y = this.data[ i ][ k ];
+            dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
+            //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+
+            if ( !oldDist || dist < oldDist ) {
+              oldDist = dist;
+              xyindex = [ k, i ];
+            }
           }
         }
+      } 
+      else {
+
+        for ( var i = 0, l = this.data.length; i < l; i++ ) {
+          for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
+
+            p_x = this.data[ i ][ k ],
+            p_y = this.data[ i ][ k + 1 ];
+            dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
+            if ( !oldDist || dist < oldDist ) {
+              oldDist = dist;
+              xyindex = [ k / 2, i ];
+            }
+          }
+        }
+
       }
 
       return xyindex;
@@ -1564,6 +1602,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
     },
 
     getLineColor: function( selectionType ) {
+
       return this.getStyle( selectionType ).lineColor;
     },
 
@@ -1706,7 +1745,7 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
       if ( !this.markerForLegend ) {
 
         var marker = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( marker, this.markerFamilies[ 0 ] );
+        this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
 
         marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
 
@@ -1755,93 +1794,91 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
 
       var self = this;
       var ys = this.detectedPeaks;
-      $.when.apply( $, self.picksDef ).then( function() {
 
-        var x,
-          px,
-          passed = [],
-          px,
-          i = 0,
-          l = ys.length,
-          k, m, y,
-          index;
+      var x,
+        px,
+        passed = [],
+        px,
+        i = 0,
+        l = ys.length,
+        k, m, y,
+        index;
 
-        var selected = self.graph.selectedShapes.map( function( shape ) {
-          return shape.data.mz;
-        } );
+      var selected = self.graph.selectedShapes.map( function( shape ) {
+        return shape.data.mz;
+      } );
 
-        ys.sort( function( a, b ) {
-          return b[ 0 ] - a[ 0 ];
-        } );
+      ys.sort( function( a, b ) {
+        return b[ 0 ] - a[ 0 ];
+      } );
 
-        m = 0;
+      m = 0;
 
-        for ( ; i < l; i++ ) {
+      for ( ; i < l; i++ ) {
 
-          x = ys[ i ][ 1 ],
-          px = self.getX( x ),
-          k = 0,
-          y = self.getY( ys[ i ][ 0 ] );
+        x = ys[ i ][ 1 ],
+        px = self.getX( x ),
+        k = 0,
+        y = self.getY( ys[ i ][ 0 ] );
 
-          if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-            continue;
-          }
+        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+          continue;
+        }
 
-          if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
+        if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
 
-            continue;
-          }
+          continue;
+        }
 
-          // Distance check
-          for ( ; k < passed.length; k++ ) {
-            if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
-              break;
-            }
-          }
-          if ( k < passed.length ) {
-            continue;
-          }
-
-          // Distance check end
-
-          // If the retained one has already been selected somewhere, continue;
-          if ( ( index = selected.indexOf( x ) ) > -1 ) {
-            passed.push( px );
-            continue;
-          }
-
-          if ( !self.picks[ m ] ) {
-            return;
-          }
-
-          //    self.picks[ m ].show();
-          self.picks[ m ].set( 'labelPosition', {
-            x: x,
-            dy: "-10px"
-          } );
-
-          self.picks[ m ].data.mz = x;
-
-          if ( self.options.autoPeakPickingFormat ) {
-
-            self.picks[ m ].data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
-          } else {
-            self.picks[ m ].data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
-          }
-
-          self.picks[ m ].redraw();
-
-          m++;
-          while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
-            m++;
-          }
-
-          if ( passed.length == self.options.autoPeakPickingNb ) {
+        // Distance check
+        for ( ; k < passed.length; k++ ) {
+          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
             break;
           }
         }
+        if ( k < passed.length ) {
+          continue;
+        }
 
-      } );
+        // Distance check end
+
+        // If the retained one has already been selected somewhere, continue;
+        if ( ( index = selected.indexOf( x ) ) > -1 ) {
+          passed.push( px );
+          continue;
+        }
+
+        if ( !self.picks[ m ] ) {
+          return;
+        }
+
+        //    self.picks[ m ].show();
+        self.picks[ m ].prop( 'labelPosition', {
+          x: x,
+          dy: "-10px"
+        } );
+
+        self.picks[ m ]._data.mz = x;
+
+        if ( self.options.autoPeakPickingFormat ) {
+
+          self.picks[ m ]._data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+        } else {
+          self.picks[ m ]._data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+        }
+
+        self.picks[ m ].redraw();
+
+        m++;
+        while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
+          m++;
+        }
+
+        if ( passed.length == self.options.autoPeakPickingNb ) {
+          break;
+        }
+      }
+
     }
 
   } );
@@ -1918,11 +1955,6 @@ define( [ '../graph._serie', './slotoptimizer' ], function( GraphSerieNonInstanc
         degradationMax = -Infinity;
 
         for ( ; j < m; j += 1 ) {
-
-          if ( graph.markerPoints ) {
-
-            graph.getMarkerCurrentFamily( k );
-          }
 
           xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
 

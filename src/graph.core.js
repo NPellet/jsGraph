@@ -1,23 +1,6 @@
-define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken', './graph.axis.y.broken', './graph.xaxis.time', './graph.legend', './dynamicdepencies', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphXAxis, GraphYAxis, GraphXAxisBroken, GraphYAxisBroken, GraphXAxisTime, GraphLegend, DynamicDepencies, EventEmitter ) {
+define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
 
   "use strict";
-
-  var _availableAxes = {
-
-    def: {
-      x: GraphXAxis,
-      y: GraphYAxis
-    },
-
-    broken: {
-      x: GraphXAxisBroken,
-      y: GraphYAxisBroken
-    },
-
-    time: {
-      x: GraphXAxisTime
-    }
-  };
 
   var graphDefaults = {
 
@@ -43,15 +26,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     wheel: {},
     dblclick: {},
 
-    shapeSelection: 'unique',
-
-    dynamicDependencies: {
-      'plugin': './plugins/',
-      'serie': './series/',
-      'shapes': './shapes/'
-    },
-
-    series: [ 'line' ]
+    shapeSelection: 'unique'
   };
 
   var Graph = function( dom, options, axis, callback ) {
@@ -88,6 +63,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     this.shapes = [];
     this.shapesLocked = false;
+    this.plugins = {};
 
     this.selectedShapes = [];
 
@@ -119,9 +95,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     this.setSize( w, h );
     this._resize();
     _registerEvents( this );
-
-    this.dynamicLoader = new DynamicDepencies();
-    this.dynamicLoader.configure( this.options.dynamicDependencies );
 
     this.trackingLines = {
       id: 0,
@@ -161,7 +134,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       } );
     }
 
-    var funcName;
+    // Load all axes
     if ( axis ) {
       for ( var i in axis ) {
         for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
@@ -186,24 +159,12 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     }
 
     this._pluginsInit();
-    this._seriesInit();
+
   }
 
   Graph.prototype = $.extend( {}, EventEmitter.prototype, {
 
-    setAttributeTo: function( to, params, ns ) {
-      var i;
-
-      if ( ns ) {
-        for ( i in params ) {
-          to.setAttributeNS( ns, i, params[ i ] );
-        }
-      } else {
-        for ( i in params ) {
-          to.setAttribute( i, params[ i ] );
-        }
-      }
-    },
+    _constructors: {},
 
     _doDom: function() {
 
@@ -211,7 +172,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       this.dom = document.createElementNS( this.ns, 'svg' );
       this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
       //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);	
-      this.setAttributeTo( this.dom, {
+      util.setAttributeTo( this.dom, {
         'xmlns': this.ns,
         'font-family': this.options.fontFamily,
         'font-size': this.options.fontSize
@@ -227,7 +188,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       this.dom.appendChild( this.defs );
 
       this.rectEvent = document.createElementNS( this.ns, 'rect' );
-      this.setAttributeTo( this.rectEvent, {
+      util.setAttributeTo( this.rectEvent, {
         'pointer-events': 'fill',
         'fill': 'transparent'
       } );
@@ -236,7 +197,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       // Handling graph title
       this.domTitle = document.createElementNS( this.ns, 'text' );
       this.setTitle( this.options.title );
-      this.setAttributeTo( this.domTitle, {
+      util.setAttributeTo( this.domTitle, {
         'text-anchor': 'middle',
         'y': 20
       } );
@@ -244,7 +205,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       //
 
       this.graphingZone = document.createElementNS( this.ns, 'g' );
-      this.setAttributeTo( this.graphingZone, {
+      util.setAttributeTo( this.graphingZone, {
         'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
       } );
       this.dom.appendChild( this.graphingZone );
@@ -332,6 +293,17 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     kill: function() {
       this._dom.removeChild( this.dom );
+    },
+
+    getConstructor: function( constructorName ) {
+
+      var constructor = Graph.prototype._constructors[ constructorName ];
+
+      if ( !constructor ) {
+        return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
+      }
+
+      return constructor;
     },
 
     cacheOffset: function() {
@@ -651,6 +623,10 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       this.domTitle.setAttribute( 'x', this.width / 2 );
 
       refreshDrawingZone( this );
+
+      if ( this.legend ) {
+        this.legend.update();
+      }
     },
 
     canRedraw: function() {
@@ -728,7 +704,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         if ( a.linkedToAxis && a.linkedToAxis.axis == axis ) {
           axes.push( a );
         }
-      }, {}, axis instanceof GraphXAxis, axis instanceof GraphYAxis );
+      }, {}, axis instanceof this.getConstructor( "graph.axis.x" ), axis instanceof this.getConstructor( "graph.axis.y" ) );
 
       return axes;
     },
@@ -740,7 +716,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       }
     },
 
-    newSerie: function( name, options, type, callback ) {
+    newSerie: function( name, options, type ) {
 
       var self = this;
 
@@ -758,21 +734,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         return serie;
       }
 
-      serie = makeSerie( this, name, options, type, function( serie ) {
+      serie = makeSerie( this, name, options, type );
+      self.series.push( serie );
 
-        self.series.push( serie );
+      if ( self.legend ) {
+        self.legend.update();
+      }
 
-        if ( self.legend ) {
-          self.legend.update();
-        }
-
-        if ( callback ) {
-          callback( serie );
-        }
-
-        self.emit( "newSerie", serie );
-      } );
-
+      self.emit( "newSerie", serie );
       return serie;
     },
 
@@ -872,158 +841,101 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       return this.selectedSerie;
     },
 
-    /*
-		checkMinOrMax: function(serie) {
-			var xAxis = serie.getXAxis();
-			var yAxis = serie.getYAxis();
-
-			var minX = serie.getMinX(),
-				maxX = serie.getMaxX(),
-				minY = serie.getMinY(),
-				maxY = serie.getMaxY(),
-				isMinMax = false;
-
-			if(minX <= xAxis.getMinValue()) {
-				isMinMax = true;
-				serie.isMinOrMax(true, 'x', 'min');
-			}
-
-			if(maxX >= xAxis.getMaxValue()) {
-				isMinMax = true;
-				serie.isMinOrMax(true, 'x', 'max');
-			}
-
-			if(minY <= yAxis.getMinValue()) {
-				isMinMax = true;
-				serie.isMinOrMax(true, 'y', 'min');
-			}
-
-			if(maxX >= xAxis.getMaxValue()) {
-				isMinMax = true;
-				serie.isMinOrMax(true, 'y', 'max');
-			}
-
-			return isMinMax;
-		},
-*/
-
     makeToolbar: function( toolbarData ) {
 
-      var self = this,
-        deferred = $.Deferred();
-
-      this.dynamicLoader.load( 'util', './graph.toolbar', function( toolbar ) {
-
-        self.toolbar = new toolbar( self, toolbarData );
-        deferred.resolve( self.toolbar );
-      } );
-
-      return deferred;
+      var constructor = this.getConstructor( "graph.toolbar" );
+      if ( constructor ) {
+        return this.toolbar = new constructor( this, toolbarData );
+      } else {
+        return util.throwError( "No constructor exists for toolbar" );
+      }
     },
 
-    newShape: function( shapeData, events, mute, noDeferred ) {
+    newShape: function( shapeType, shapeData, mute ) {
 
       var self = this,
         response;
 
-      shapeData.id = Math.random();
-
       if ( !mute ) {
 
-        if ( false === ( response = this.triggerEvent( 'onBeforeNewShape', shapeData ) ) ) {
+        if ( false === ( response = this.triggerEvent( 'beforeNewShape', shapeData ) ) ) {
           return false;
+        } else if ( response ) {
+          shapeData = response;
         }
       }
 
-      if ( response ) {
-        shapeData = response;
+      // Backward compatibility
+      if ( typeof shapeType == "object" ) {
+        mute = shapeData;
+        shapeData = shapeType;
+        shapeType = shapeData.type;
       }
 
-      var callback = function( shapeConstructor ) {
+      shapeData._id = util.guid();
 
-        var shape = new shapeConstructor( self, shapeData.shapeOptions );
-
-        //shape.setSerie( self.getSerie( 0 ) );
-
-        if ( !shape ) {
-          return;
-        }
-
-        shape.setOriginalData( shapeData, events );
-        if ( shape.data ) {
-          shape.data.id = self.id;
-        }
-
-        if ( shapeData.fillColor ) {
-          shape.set( 'fillColor', shapeData.fillColor );
-        }
-
-        if ( shapeData.strokeColor ) {
-          shape.set( 'strokeColor', shapeData.strokeColor );
-        }
-
-        if ( shapeData.strokeWidth ) {
-          shape.set( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
-        }
-
-        if ( shapeData.layer ) {
-          shape.setLayer( shapeData.layer );
-        }
-
-        if ( shapeData.locked ) {
-          shape.lock();
-        }
-
-        if ( shapeData.selectOnMouseDown ) {
-          shape._selectOnMouseDown = shapeData.selectOnMouseDown;
-        }
-
-        if ( shapeData.selectable ) {
-          shape.selectable();
-        }
-
-        if ( shapeData.label ) {
-
-          if ( !( shapeData.label instanceof Array ) ) {
-            shapeData.label = [ shapeData.label ];
-          }
-
-          for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
-
-            shape.set( 'labelPosition', shapeData.label[ i ].position, i );
-            shape.set( 'labelColor', shapeData.label[ i ].color || 'black', i );
-            shape.set( 'labelSize', shapeData.label[ i ].size, i );
-            shape.set( 'labelAngle', shapeData.label[ i ].angle || 0, i );
-            shape.set( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
-
-            if ( shapeData.label[ i ].anchor ) {
-              shape.set( 'labelAnchor', shapeData.label[ i ].anchor, i );
-            }
-          }
-
-          shape.setLabelNumber( l );
-        }
-
-        self.shapes.push( shape );
-        self.triggerEvent( 'onShapeMake', shape, shapeData );
-
-        if ( !mute ) {
-          self.triggerEvent( 'onNewShape', shapeData );
-        }
-
-        self.emit( "newShape", shape );
-        dynamicLoaderResponse = shape;
-
-        return shape;
-      }
-
-      if ( shapeData.url ) {
-        var dynamicLoaderResponse = this.dynamicLoader.load( 'external', shapeData.url, callback );
+      var constructor;
+      if ( typeof shapeType == "function" ) {
+        constructor = shapeType;
       } else {
-        var dynamicLoaderResponse = this.dynamicLoader.load( 'shapes', 'graph.shape.' + shapeData.type, callback );
+        constructor = this.getConstructor( "graph.shape." + shapeType );
       }
 
-      return dynamicLoaderResponse;
+      if ( !constructor ) {
+        return util.throwError( "No constructor for this shape" );
+      }
+
+      var shape = new constructor( this, shapeData );
+
+      if ( !shape ) {
+        return util.throwError( "Failed to construct shape." );
+      }
+
+      shape.graph = this;
+      shape._data = shapeData;
+
+      shape.init( this );
+
+      /* Setting shape properties */
+      if ( shapeData.fillColor ) {
+        shape.prop( 'fillColor', shapeData.fillColor );
+      }
+
+      if ( shapeData.strokeColor ) {
+        shape.prop( 'strokeColor', shapeData.strokeColor );
+      }
+
+      if ( shapeData.strokeWidth ) {
+        shape.prop( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
+      }
+
+      if ( shapeData.layer ) {
+        shape.setLayer( shapeData.layer );
+      }
+
+      if ( shapeData.label ) {
+
+        if ( !( shapeData.label instanceof Array ) ) {
+          shapeData.label = [ shapeData.label ];
+        }
+
+        for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
+
+          shape.prop( 'labelPosition', shapeData.label[ i ].position, i );
+          shape.prop( 'labelColor', shapeData.label[ i ].color || 'black', i );
+          shape.prop( 'labelSize', shapeData.label[ i ].size, i );
+          shape.prop( 'labelAngle', shapeData.label[ i ].angle || 0, i );
+          shape.prop( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
+          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'middle', i );
+        }
+
+        shape.setLabelNumber( l );
+      }
+
+      this.shapes.push( shape );
+      this.triggerEvent( 'newShape', shape, shapeData );
+
+      return shape;
     },
 
     redrawShapes: function() {
@@ -1121,33 +1033,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       }
     },
 
-    _seriesInit: function() {
-
-      var self = this,
-        series = this.options.series,
-        nb = series.length;
-
-      if ( nb == 0 ) {
-        return self._seriesReady();
-      }
-
-      series.map( function( serie ) {
-
-        self.dynamicLoader.load( 'serie', 'graph.serie.' + serie, function() {
-
-          if ( ( --nb ) == 0 ) {
-
-            self._seriesReady();
-          }
-        } );
-      } )
-    },
-
-    _seriesReady: function() {
-
-      this.seriesReady.resolve();
-    },
-
     isPluginAllowed: function( e, plugin ) {
 
       if ( this.forcedPlugin == plugin ) {
@@ -1189,11 +1074,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
       //			Array.prototype.splice.apply(args, [0, 0, this]);
 
-      for ( var i in this._plugins ) {
+      for ( var i in this.plugins ) {
 
-        if ( this._plugins[ i ] && this._plugins[ i ][ funcName ] ) {
+        if ( this.plugins[ i ] && this.plugins[ i ][ funcName ] ) {
 
-          this._plugins[ i ][ funcName ].apply( this._plugins[ i ], args );
+          this.plugins[ i ][ funcName ].apply( this.plugins[ i ], args );
 
         }
       }
@@ -1202,62 +1087,43 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     _pluginExecute: function( which, func, args ) {
 
       //Array.prototype.splice.apply( args, [ 0, 0, this ] );
+      if ( !which ) {
+        return;
+      }
 
-      if ( this._plugins[ which ] && this._plugins[ which ][ func ] ) {
+      if ( this.plugins[ which ] && this.plugins[ which ][ func ] ) {
 
-        this._plugins[ which ][ func ].apply( this._plugins[ which ], args );
+        this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
       }
     },
 
     _pluginsInit: function() {
 
-      var self = this,
-        pluginsToLoad,
-        nb;
+      var constructor, pluginName, pluginOptions;
 
-      this._plugins = this._plugins || {};
+      for ( var i in this.options.plugins ) {
 
-      if ( Array.isArray( this.options.plugins ) ) {
-        pluginsToLoad = this.options.plugins
-      } else {
-        pluginsToLoad = [];
+        pluginName = i;
+        pluginOptions = this.options.plugins[ i ];
 
-        for ( var i in this.options.plugins ) {
-          pluginsToLoad.push( i );
+        constructor = this.getConstructor( "graph.plugin." + pluginName );
+        if ( constructor ) {
+          this.plugins[ pluginName ] = new constructor();
+          this.plugins[ pluginName ].init( this, pluginOptions );
+        } else {
+          util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
         }
       }
-
-      if ( ( nb = pluginsToLoad.length ) == 0 ) {
-        return self._pluginsReady();
-      }
-
-      this.pluginsToLoad = pluginsToLoad.length;
-
-      this.dynamicLoader.load( 'plugin', pluginsToLoad, function( plugin, smth, filename ) {
-
-        self._plugins[ filename ] = new plugin();
-        self._plugins[ filename ].init( self, self.options.plugins[ filename ] || {}, filename );
-
-        if ( ( --nb ) == 0 ) {
-
-          self._pluginsReady();
-
-        }
-
-      } );
-      //this._pluginsExecute('init', arguments);
     },
 
     getPlugin: function( pluginName ) {
-      var self = this;
-      return this.pluginsReady.then( function() {
+      var plugin = this.plugins[ pluginName ];
 
-        return self._plugins[ pluginName ] || false;
-      } );
-    },
+      if ( !plugin ) {
+        return util.throwError( "Plugin \"" + pluginName + "\" has not been loaded or properly registered" );
+      }
 
-    _pluginsReady: function() {
-      this.pluginsReady.resolve();
+      return plugin;
     },
 
     triggerEvent: function() {
@@ -1344,7 +1210,14 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     },
 
     makeLegend: function( options ) {
-      this.legend = new GraphLegend( this, options );
+
+      var constructor = this.getConstructor( "graph.legend" );
+      if ( constructor ) {
+        this.legend = new constructor( this, options );
+      } else {
+        return util.throwError( "Graph legend is not available as it has not been registered" );
+      }
+
       this.graphingZone.appendChild( this.legend.getDom() );
       this.legend.update();
 
@@ -1573,23 +1446,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       if ( this.options.onContextMenuListen ) {
         return this.options.onContextMenuListen( target, menuElements, callback );
       }
-
-      if ( !this.context ) {
-
-        this.dynamicLoader.load( 'util', './util/context', function( Context ) {
-
-          var instContext = new Context();
-
-          instContext.init( self._dom );
-          instContext.listen( target, menuElements, callback );
-
-          self.context = instContext;
-        } );
-
-      } else {
-        this.context.listen( target, menuElements, callback );
-      }
-
     },
 
     lockShapes: function() {
@@ -1606,16 +1462,6 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       var x = e.clientX,
         y = e.clientY;
 
-      /*if ( e.offsetX !== undefined && e.offsetY !== undefined ) {
-
-        return {
-          x: e.offsetX,
-          y: e.offsetY
-        };
-      }
-*/
-      y = e.clientY;
-
       var pos = this.offsetCached || $( this._dom ).offset();
 
       x -= pos.left - window.scrollX;
@@ -1625,56 +1471,22 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         x: x,
         y: y
       };
-    },
-
-    mapEventEmission: function( options, source ) {
-
-      if ( !source ) {
-        source = this;
-      }
-
-      var eventName;
-
-      for ( var i in options ) {
-
-        // Starts with onXXX
-        if ( i.indexOf( "on" ) == 0 && typeof options[ i ] == "function" ) {
-          eventName = i.substring( 2 );
-          eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
-
-          if ( source.on ) {
-            source.on( eventName, options[ i ] );
-          }
-        }
-      }
-    },
-
-    uniqueId: function() {
-      // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-        var r = Math.random() * 16 | 0,
-          v = c == 'x' ? r : ( r & 0x3 | 0x8 );
-        return v.toString( 16 );
-      } );
-
     }
 
   } );
 
-  function makeSerie( graph, name, options, type, callback ) {
+  function makeSerie( graph, name, options, type ) {
 
-    return graph.dynamicLoader.load( 'serie', 'graph.serie.' + type, function( Serie ) {
-
-      var serie = new Serie();
+    var constructor = graph.getConstructor( "graph.serie." + type );
+    if ( constructor ) {
+      var serie = new constructor();
       serie.init( graph, name, options );
-
       graph.appendSerieToDom( serie );
+    } else {
+      return util.throwError( "No constructor exists for serie type \"" + type + "\"" );
+    }
 
-      //graph.plotGroup.appendChild( serie.groupMain );
-      callback( serie );
-      return serie;
-
-    } );
+    return serie;
   };
 
   function _parsePx( px ) {
@@ -1730,6 +1542,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
         axisDim = axis.getAxisPosition();
 
       // Get axis position gives the extra shift that is common
+
       shift[ position ] += drawn + axisDim;
       axis.setShift( shift[ position ], drawn + axisDim );
 
@@ -1935,7 +1748,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
       return;
     }
 
-    if ( graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
+    if ( graph.activePlugin && graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
       return;
     };
 
@@ -1975,7 +1788,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         var plugin;
 
-        if ( ( plugin = graph._plugins[ pref.plugin ] ) ) {
+        if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
 
           plugin.onDblClick( graph, x, y, pref.options, e );
         }
@@ -2000,7 +1813,11 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
   function _handleClick( graph, x, y, e ) {
 
     graph.emit( 'click', e );
-    if ( e.target == graph.rectEvent && !e.shiftKey ) {
+
+    // Not on a shape
+
+    if ( !e.target.jsGraphIsShape ) {
+
       graph.unselectShapes();
     }
 
@@ -2010,6 +1827,23 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
     var options = options || {};
     var inst;
+
+    var _availableAxes = {
+
+      def: {
+        x: graph.getConstructor( "graph.axis.x" ),
+        y: graph.getConstructor( "graph.axis.y" )
+      },
+
+      broken: {
+        x: graph.getConstructor( "graph.axis.x.broken" ),
+        y: graph.getConstructor( "graph.axis.y.broken" )
+      },
+
+      time: {
+        x: graph.getConstructor( "graph.axis.x.time" )
+      }
+    };
 
     switch ( options.type ) {
 
@@ -2094,7 +1928,7 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
 
         var plugin;
 
-        if ( plugin = graph._plugins[ graph.options.wheel.plugin ] ) {
+        if ( plugin = graph.plugins[ graph.options.wheel.plugin ] ) {
 
           plugin.onMouseWheel( delta, e, graph.options.wheel.options );
         }
@@ -2127,6 +1961,15 @@ define( [ 'jquery', './graph.axis.x', './graph.axis.y', './graph.axis.x.broken',
     }
 
   }
+
+  Graph.registerConstructor = function( name, constructor ) {
+
+    if ( Graph.prototype._constructors[ name ] ) {
+      return util.throwError( "Constructor " + constructor + " already exists." );
+    }
+
+    Graph.prototype._constructors[ name ] = constructor;
+  };
 
   return Graph;
 } );

@@ -28,11 +28,7 @@ define( function() {
                     locked: true
                   }
                   
-              }).then( function( shape ) {
-
-                shape.draw();
-                shape.redraw();
-              } );
+              }).draw();
             }
           }
 
@@ -51,13 +47,7 @@ define( function() {
                   shapeOptions: {
                     locked: true
                   }
-              }).then( function( shape ) {
-
-                shape.draw();
-                shape.redraw();
-              } );
-
-
+              }).draw();
             }
           }
 

@@ -1,4 +1,4 @@
-define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
+define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
 
   "use strict";
 
@@ -24,7 +24,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.shown = true;
       this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
       this.data = [];
-      this.graph.mapEventEmission( this.options, this );
+      util.mapEventEmission( this.options, this );
 
       this._isMinOrMax = {
         x: {

@@ -4,25 +4,23 @@ define( function() {
 
 	
 		
-		var graphinstance = new Graph( domGraph, { series: [ 'contour' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
-			var serie = graphinstance.newSerie("serieTest", {}, "contour")
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( {
+		var serie = graphinstance.newSerie("serieTest", {}, "contour")
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( {
 
-					minX: -5,
-					maxX: 5,
-					minY: -5,
-					maxY: 5,
-					segments: contour
+				minX: -5,
+				maxX: 5,
+				minY: -5,
+				maxY: 5,
+				segments: contour
 
-				} );
-				
-			graphinstance.redraw( );
-			graphinstance.drawSeries( );	
-
-		} );
+			} );
+			
+		graphinstance.redraw( );
+		graphinstance.drawSeries( );	
 		
 	}, "Contour plot v2", [ 
 

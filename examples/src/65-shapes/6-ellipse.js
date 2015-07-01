@@ -4,49 +4,35 @@ define( function() {
 
     function( domGraph ) {
 
-        var graphinstance = new Graph( domGraph, {
+        var graphinstance = new Graph( domGraph );
 
-         
-        },
+        graphinstance.getXAxis().forceMin( 0 );
+        graphinstance.getXAxis().forceMax( 50 );
 
-        function( graphinstance ) {
+        graphinstance.getYAxis().forceMin( 0 );
+        graphinstance.getYAxis().forceMax( 50 );
 
-            graphinstance.getXAxis().forceMin( 0 );
-            graphinstance.getXAxis().forceMax( 50 );
+        graphinstance.updateAxes();
 
-            graphinstance.getYAxis().forceMin( 0 );
-            graphinstance.getYAxis().forceMax( 50 );
+        var shape = graphinstance.newShape({ 
+            type: 'ellipse', 
+            pos: { x: 10, y: 10 },
+            fillColor: 'rgba(200, 100, 100, 0.5)',
 
-            graphinstance.updateAxes();
+            locked: true,
+            selectable: false
 
+        }).draw();
 
-            var ellipse;
-            graphinstance.newShape({ 
-                type: 'ellipse', 
-                pos: { x: 10, y: 10 },
-                fillColor: 'rgba(200, 100, 100, 0.5)',
+        shape.setR( '50px', '20px') ;
 
-                locked: true,
-                selectable: false
-
-            }).then( function( shape ) {
-
-              shape.draw();
-              shape.redraw();
-
-              shape.setR( '50px', '20px') ;
-
-              shape.addTransform('translate', [ 20, 0 ])
-              shape.addTransform('rotate', [ 20 ])
+        shape.addTransform('translate', [ 20, 0 ])
+        shape.addTransform('rotate', [ 20 ])
               
-            } );
-
 
           graphinstance.redraw( );
           graphinstance.drawSeries();       
 
-
-        } );
 
 
 }, 'Drawing an ellipse', 

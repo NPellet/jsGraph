@@ -1,4 +1,4 @@
-define( [ '../dependencies/eventEmitter/eventEmitter' ], function( EventEmitter ) {
+define( [ '../dependencies/eventEmitter/eventEmitter', '../graph.util' ], function( EventEmitter, util ) {
 
   var plugin = function() {};
 
@@ -8,7 +8,7 @@ define( [ '../dependencies/eventEmitter/eventEmitter' ], function( EventEmitter 
 
       this._path = document.createElementNS( graph.ns, 'path' );
 
-      graph.setAttributeTo( this._path, {
+      util.setAttributeTo( this._path, {
         'display': 'none',
         'fill': 'rgba(0,0,0,0.1)',
         'stroke': 'rgba(0,0,0,1)',

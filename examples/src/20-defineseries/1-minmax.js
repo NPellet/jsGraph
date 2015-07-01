@@ -27,7 +27,6 @@ define( function() {
 			}
 // END IGNORE ON BUILD
 
-
 			var serie = graphinstance.newSerie("serieTest", { }, 'zone')
 				.setLabel( "My serie" )
 				.autoAxis()
@@ -35,14 +34,14 @@ define( function() {
 				.setFillColor('rgba(100, 100, 300, 0.2)')
 				.setLineColor('transparent');
 
-			var serie = graphinstance.newSerie("serieTest", { }, 'zone')
+			var serie = graphinstance.newSerie("serieTest2", { }, 'zone')
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data2 )
 				.setFillColor('rgba(200, 100, 100, 0.6)')
 				.setLineColor('rgba(200, 100, 100, 0.9)');
 
-			var serie = graphinstance.newSerie("serieTest", { }, 'line')
+			var serie = graphinstance.newSerie("serieTest3", { }, 'line')
 				.setLabel( "My serie" )
 				.autoAxis()
 				.setData( data )

@@ -3,31 +3,31 @@ define( function() {
 	return [ function( domGraph ) {
 
 		
-		var graphinstance = new Graph( domGraph, { series: [ 'contour' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
-			var serie = graphinstance.newSerie("serieTest", {}, "contour")
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( contour );
-				
+
+		var serie = graphinstance.newSerie("serieTest", {}, "contour")
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( contour );
+			
 /*
-			var colors = [];
-			for( var i = 0, l = contour.length ; i < l ; i ++ ) {
-				colors.push( hslToRgb(0 + i / l, 1, 0.5) );
-			}
+		var colors = [];
+		for( var i = 0, l = contour.length ; i < l ; i ++ ) {
+			colors.push( hslToRgb(0 + i / l, 1, 0.5) );
+		}
 
-			serie.setColors( colors );
+		serie.setColors( colors );
 */
-			graphinstance.getXAxis().forceMin( -5 );
-			graphinstance.getXAxis().forceMax( 5 );
+		graphinstance.getXAxis().forceMin( -5 );
+		graphinstance.getXAxis().forceMax( 5 );
 
-			graphinstance.getYAxis().forceMin( -5 );
-			graphinstance.getYAxis().forceMax( 5 );
+		graphinstance.getYAxis().forceMin( -5 );
+		graphinstance.getYAxis().forceMax( 5 );
 
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
 
-		} );
 		
 	}, "Contour plot", [ 
 

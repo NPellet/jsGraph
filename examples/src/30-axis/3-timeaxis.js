@@ -20,23 +20,21 @@ define( function() {
 
 
 			plugins: {
-				'graph.plugin.zoom': { zoomMode: 'x' }
+				'zoom': { zoomMode: 'x' }
 			},
 
 			pluginAction: {
-				'graph.plugin.zoom': { shift: false, ctrl: false }
+				'zoom': { shift: false, ctrl: false }
 			},
-
 
 			dblclick: {
 				type: 'plugin',
-				plugin: 'graph.plugin.zoom',
+				plugin: 'zoom',
 				options: {
 					mode: 'total'
 				}
-			},
-
-
+			}
+			
 		}, { bottom: [ { type: 'time' } ] } );
 
 	

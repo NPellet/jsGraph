@@ -4,20 +4,10 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
   var lineHeight = 5;
 
   var GraphPeakInterval2 = function( graph, options ) {
-
-    this.options = options ||  {};
-    this.init( graph );
     this.nbHandles = 2;
-    this.createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
-      width: 6,
-      height: 6,
-      stroke: "black",
-      fill: "white",
-      cursor: 'nwse-resize'
-    } );
 
   }
+
   $.extend( GraphPeakInterval2.prototype, GraphLine.prototype, {
 
     createDom: function() {
@@ -30,6 +20,15 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
       this.line1.setAttribute( 'stroke', 'black' );
       this.line2.setAttribute( 'stroke', 'black' );
+
+      this.createHandles( this.nbHandles, 'rect', {
+        transform: "translate(-3 -3)",
+        width: 6,
+        height: 6,
+        stroke: "black",
+        fill: "white",
+        cursor: 'nwse-resize'
+      } );
 
       this._dom.element = this;
     },

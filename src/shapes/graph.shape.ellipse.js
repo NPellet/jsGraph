@@ -1,13 +1,6 @@
 define( [ './graph.shape' ], function( GraphShape ) {
 
-  var GraphRect = function( graph, options ) {
-
-    this.options = options;
-    this.init( graph );
-
-    this.graph = graph;
-
-  }
+  var GraphRect = function( graph, options ) {}
 
   $.extend( GraphRect.prototype, GraphShape.prototype, {
 

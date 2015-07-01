@@ -2,30 +2,25 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph, { series: [ 'scatter' ] }, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
-			var modificators = [];
-			modificators[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
-			
-			var serie = graphinstance.newSerie("serieTest", { }, 'scatter')
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( series[ 0 ] )
-				.setStyle( 
-					{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
-					modificators
-				);
-
-			var shape = { type: 'line', strokeColor: 'black', strokeWidth: 1, pos: { x: series[ 0 ][ 40 ], y: series[ 0 ][ 41 ] }, pos2: { x: 2000, y: "20px" } };
-			graphinstance.newShape( shape ).then( function( shape ) {
-				shape.draw();
-				shape.redrawImpl();
-			});
-
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-
-		} );
+		var modificators = [];
+		modificators[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+		
+		var serie = graphinstance.newSerie("serieTest", { }, 'scatter')
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( series[ 0 ] )
+			.setStyle( 
+				{ shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' },
+				modificators
+			);
+		var shape = graphinstance.newShape( 'line', { strokeColor: 'black', strokeWidth: 1, pos: { x: series[ 0 ][ 40 ], y: series[ 0 ][ 41 ] }, pos2: { x: 2000, y: "20px" } } );
+		shape.draw();
+		shape.redraw();
+	
+		graphinstance.redraw( );
+		graphinstance.drawSeries();	
 		
 
 	}, "Basic", [ 

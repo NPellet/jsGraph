@@ -1,4 +1,4 @@
-define( [], function() {
+define( [ '../graph.util' ], function( util ) {
 
   var plugin = function() {};
 
@@ -10,7 +10,7 @@ define( [], function() {
       this._zoomingSquare = document.createElementNS( graph.ns, 'rect' );
       this._zoomingSquare.setAttribute( 'display', 'none' );
 
-      graph.setAttributeTo( this._zoomingSquare, {
+      util.setAttributeTo( this._zoomingSquare, {
         'display': 'none',
         'fill': 'rgba(171,12,12,0.2)',
         'stroke': 'rgba(171,12,12,1)',

@@ -27,57 +27,56 @@ define( function() {
 		}
 
 		j++;
-	}
-	// END IGNORE ON BUILD
-var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary: 5 },
-  xAxis = graphinstance.getXAxis( 0, axisProperties ),
-  leftAxis = graphinstance.getLeftAxis( 0, axisProperties ),
-  rightAxis = graphinstance.getRightAxis( 0, axisProperties );
+  }
+  	// END IGNORE ON BUILD
+  var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary: 5 },
+    xAxis = graphinstance.getXAxis( 0, axisProperties ),
+    leftAxis = graphinstance.getLeftAxis( 0, axisProperties ),
+    rightAxis = graphinstance.getRightAxis( 0, axisProperties );
 
-  graphinstance.newSerie( "current" )
-  .autoAxis()
-  .setData( series[ 0 ] )
-  .setLineColor('black');
+    graphinstance.newSerie( "current" )
+    .autoAxis()
+    .setData( series[ 0 ] )
+    .setLineColor('black');
 
-  graphinstance.newSerie( "power" )
-  .autoAxis()
-  .setYAxis( graphinstance.getRightAxis() )
-  .setData( series[ 1 ] )
-  .setLineColor('red');
+    graphinstance.newSerie( "power" )
+    .autoAxis()
+    .setYAxis( graphinstance.getRightAxis() )
+    .setData( series[ 1 ] )
+    .setLineColor('red');
 
-  graphinstance.getYAxis().forceMin( - 21 );
-  graphinstance.getYAxis().forceMax( 5 );
-  graphinstance.getXAxis().forceMin( 0 );
-  graphinstance.getXAxis().forceMax( 1 );
+    graphinstance.getYAxis().forceMin( - 21 );
+    graphinstance.getYAxis().forceMax( 5 );
+    graphinstance.getXAxis().forceMin( 0 );
+    graphinstance.getXAxis().forceMax( 1 );
 
-  graphinstance.newShape({ 
-      type: 'arrow', 
-      pos: { x: jmax },
-      pos2: { dx: "-20px", dy: "-20px" },
-      label: {
-       text: 'Max power point',
-       position: { x: jmax, dx: "-25px", dy: "-25px" },
-       anchor: 'middle' 
-   },
-   strokeColor: 'black',
-   strokeWidth: 1
+    var shape = graphinstance.newShape( 'arrow', { 
+        pos: { x: jmax },
+        pos2: { dx: "-20px", dy: "-20px" },
+        label: {
+         text: 'Max power point',
+         position: { x: jmax, dx: "-25px", dy: "-25px" },
+         anchor: 'middle' 
+     },
+     strokeColor: 'black',
+     strokeWidth: 1
 
-}).then( function( shape ) {
+  });
 
   shape.setSerie( graphinstance.getSerie( 0 ) );
   shape.draw();
   shape.redraw();
-} );
 
-graphinstance.getRightAxis().adapt0To( graphinstance.getYAxis(), 'min', -10 );
 
-graphinstance.getXAxis().setLabel( 'Voltage (V)' );
-graphinstance.getYAxis().setLabel( 'Current (mA cm-2)' );
-graphinstance.getRightAxis().setLabel( 'Power output (mW)' );
+  graphinstance.getRightAxis().adapt0To( graphinstance.getYAxis(), 'min', -10 );
 
-graphinstance.getYAxis().setLineAt0( true );
-graphinstance.redraw( );
-graphinstance.drawSeries();				
+  graphinstance.getXAxis().setLabel( 'Voltage (V)' );
+  graphinstance.getYAxis().setLabel( 'Current (mA cm-2)' );
+  graphinstance.getRightAxis().setLabel( 'Power output (mW)' );
+
+  graphinstance.getYAxis().setLineAt0( true );
+  graphinstance.redraw( );
+  graphinstance.drawSeries();				
 
 
 }, "2 aligned axes", 

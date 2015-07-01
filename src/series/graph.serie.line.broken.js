@@ -32,18 +32,12 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
 
       }
 
-      i++;
-
       this.removeExtraLines();
 
       //insertMarkers( this );
 
       this.insertLinesGroup();
 
-      var label;
-      for ( var i = 0, l = this.labels.length; i < l; i++ ) {
-        this.repositionLabel( this.labels[ i ] );
-      }
     },
 
     _draw_standard: function() { // Serie redrawing

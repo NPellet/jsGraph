@@ -2,23 +2,20 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphLine = function( graph, options ) {
 
-    this.init( graph );
-    this.options = options ||  {};
     this.nbHandles = 2;
-
-    this.createHandles( this.nbHandles, 'rect', {
-      transform: "translate(-3 -3)",
-      width: 6,
-      height: 6,
-      stroke: "black",
-      fill: "white",
-      cursor: 'nwse-resize'
-    } );
-
   }
+
   $.extend( GraphLine.prototype, GraphShape.prototype, {
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'line' );
+      this.createHandles( this.nbHandles, 'rect', {
+        transform: "translate(-3 -3)",
+        width: 6,
+        height: 6,
+        stroke: "black",
+        fill: "white",
+        cursor: 'nwse-resize'
+      } );
     },
 
     setPosition: function() {

@@ -2,7 +2,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
   "use strict";
   var GraphPeakInterval = function( graph ) {
-    this.init( graph );
+
   }
 
   $.extend( GraphPeakInterval.prototype, GraphLine.prototype, {
