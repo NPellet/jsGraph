@@ -64,7 +64,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
         default:
         case 'corners':
-          this.createHandles( this.nbHandles, 'rect', {
+          var handles = this.createHandles( this.nbHandles, 'rect', {
             transform: "translate(-3 -3)",
             width: 6,
             height: 6,
@@ -72,11 +72,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
             fill: "white"
           } );
 
-          this.handle2.setAttribute( 'cursor', 'nesw-resize' );
-          this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+          if ( handles ) {
+            this.handle2.setAttribute( 'cursor', 'nesw-resize' );
+            this.handle4.setAttribute( 'cursor', 'nesw-resize' );
 
-          this.handle1.setAttribute( 'cursor', 'nwse-resize' );
-          this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+            this.handle1.setAttribute( 'cursor', 'nwse-resize' );
+            this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+          }
 
           break;
 
