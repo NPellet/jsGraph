@@ -29,10 +29,12 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       return 15;
     },
 
-
-    isX: function() { return false; },
-    isY: function() { return true; },
-
+    isX: function()  {
+      return false;
+    },
+    isY: function()  {
+      return true;
+    },
 
     resetTicks: function() {
       this.longestTick = [ false, 0 ];

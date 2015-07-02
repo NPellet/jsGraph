@@ -25,10 +25,12 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       return;
     },
 
-
-    isX: function() { return true; },
-    isY: function() { return false; },
-
+    isX: function()  {
+      return true;
+    },
+    isY: function()  {
+      return false;
+    },
 
     _setShift: function() {
       this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
