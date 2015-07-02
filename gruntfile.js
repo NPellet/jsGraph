@@ -116,7 +116,17 @@ module.exports = function(grunt) {
             files: ['src/**/*.js'],
             tasks: ['default', 'copy:exportToNMR', 'copy:exportToVisualizer']
           },
+        },
+
+        jsdoc : {
+            dist : {
+                src: ['src/graph.core.js'],
+                options: {
+                    destination: 'doc'
+                }
+            }
         }
+
 
     });
 
@@ -126,6 +136,7 @@ module.exports = function(grunt) {
     var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
+    
 
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-sloc');
@@ -133,7 +144,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
-
+    grunt.loadNpmTasks('grunt-jsdoc');
 
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
@@ -170,7 +181,7 @@ module.exports = function(grunt) {
 
 
 
-    grunt.registerTask( "patch", "Make a new release", function() {
+    grunt.registerTask( "major", "Make a new release", function() {
 
         grunt.task.run("bump:patch:bump-only");
         grunt.task.run("default");
