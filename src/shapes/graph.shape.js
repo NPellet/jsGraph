@@ -337,6 +337,9 @@ define( [], function() {
       return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [] )[ 0 ];
     },
 
+    getData: function () {
+      return this._data;
+    },
     getFromData: function( prop ) {
       return this._data[ prop ];
     },
