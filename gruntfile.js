@@ -120,9 +120,11 @@ module.exports = function(grunt) {
 
         jsdoc : {
             dist : {
-                src: ['src/graph.core.js'],
+                src: ['src/graph.core.js', 'src/graph._serie.js'],
                 options: {
-                    destination: 'doc'
+                    destination: 'doc',
+                    template : "node_modules/ink-docstrap/template",
+                    configure : "node_modules/ink-docstrap/template/jsdoc.conf.json"
                 }
             }
         }

@@ -1,44 +1,76 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>JSDoc: Source: graph.core.js</title>
+	<meta charset="utf-8">
+	<title>jsGraph Source: graph.core.js</title>
 
-    <script src="scripts/prettify/prettify.js"> </script>
-    <script src="scripts/prettify/lang-css.js"> </script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
 </head>
 
 <body>
 
-<div id="main">
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Graph.html">Graph</a></li><li><a href="Serie.html">Serie</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html">GraphOptionsDefault</a></li><li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#getSelectedSerie">getSelectedSerie</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
 
-    <h1 class="page-title">Source: graph.core.js</h1>
 
+<div class="container">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+    		<h1 class="page-title">Source: graph.core.js</h1>
+			
+
+		<h1 class="page-title">Source: graph.core.js</h1>
     
-
-
-
-    
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>
-define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
 
   /** 
-    * Default graph parameters 
-    * @name GraphOptionsDefault
-    * @object
-    * @private
-    * @static
-    * @prop {String} title - Title of the graph
-    * @prop {Number} paddingTop - The top padding
-    * @prop {Number} paddingLeft - The left padding 
-    */
+   * Default graph parameters
+   * @name GraphOptionsDefault
+   * @object
+   * @private
+   * @static
+   * @prop {String} title - Title of the graph
+   * @prop {Number} paddingTop - The top padding
+   * @prop {Number} paddingLeft - The left padding
+   */
   var GraphOptionsDefault = {
 
     title: '',
@@ -67,17 +99,19 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   };
 
   /** 
-  * Represents a Graph object
-  * @class Graph
-  * @param {HTMLElement} wrapper - The DOM Wrapper element
-  * @param {Graph#options} [ options ] - The options of the graph
-  * @param {Object} [ axis ] - The list of axes
-  * @param {Array} axis.left - The list of left axes
-  * @param {Array} axis.bottom - The list of bottom axes
-  * @param {Array} axis.top - The list of top axes
-  * @param {Array} axis.right - The list of right axes
-  * @augments EventEmitter
-  */
+   * Main class of jsGraph that creates a new graph.
+   * @class Graph
+   * @param {HTMLElement} wrapper - The DOM Wrapper element
+   * @param {Graph#options} [ options ] - The options of the graph
+   * @param {Object} [ axis ] - The list of axes
+   * @param {Array} axis.left - The list of left axes
+   * @param {Array} axis.bottom - The list of bottom axes
+   * @param {Array} axis.top - The list of top axes
+   * @param {Array} axis.right - The list of right axes
+   * @augments EventEmitter
+   * @example var graph = new Graph("someDomID");
+   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', shapeSelection: 'multiple' } );
+   */
   var Graph = function( wrapper, options, axis ) {
 
     var self = this;
@@ -89,12 +123,20 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     */
     this._creation = util.guid();
 
-    if ( typeof dom == "string" ) {
-      dom = document.getElementById( dom );
+    if ( typeof wrapper == "string" ) {
+      wrapper = document.getElementById( wrapper );
     }
 
-    if ( !dom || !dom.appendChild ) {
-      throw "The DOM has not been defined";
+    if ( !wrapper ) {
+      throw "The wrapper parameter is not optional.";
+    }
+
+    if ( wrapper instanceof $ ) {
+      wrapper = wrapper.get( 0 );
+    }
+
+    if ( !wrapper.appendChild ) {
+      throw "The wrapper appears to be an invalid HTMLElement";
     }
 
     wrapper.style[ '-webkit-user-select' ] = 'none';
@@ -103,7 +145,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     wrapper.style[ '-ms-user-select' ] = 'none';
     wrapper.style[ 'user-select' ] = 'none';
 
-
     /** 
      * @object
      * @memberof Graph
@@ -111,8 +152,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @default {@link GraphOptionsDefault}
      */
     this.options = $.extend( {}, GraphOptionsDefault, options );
-
-
 
     this.axis = {
       left: [],
@@ -188,12 +227,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     this.currentAction = false;
 
-    if ( callback ) {
-      $.when( this.pluginsReady, this.seriesReady ).then( function() {
-        callback( self )
-      } );
-    }
-
     // Load all axes
     if ( axis ) {
       for ( var i in axis ) {
@@ -222,138 +255,16 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
   }
 
-
   Graph.prototype = new EventEmitter();
 
   Graph.prototype = $.extend( Graph.prototype, {
-    
-  
-    _constructors: {},
-
-    
-    _doDom: function() {
-
-      // Create SVG element, set the NS
-      this.dom = document.createElementNS( this.ns, 'svg' );
-      this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-      //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);	
-      util.setAttributeTo( this.dom, {
-        'xmlns': this.ns,
-        'font-family': this.options.fontFamily,
-        'font-size': this.options.fontSize
-      } );
-
-      this._dom.appendChild( this.dom );
-
-      this._dom.setAttribute( 'tabindex', 1 );
-
-      this._dom.style.outline = "none";
-
-      this.defs = document.createElementNS( this.ns, 'defs' );
-      this.dom.appendChild( this.defs );
-
-      this.rectEvent = document.createElementNS( this.ns, 'rect' );
-      util.setAttributeTo( this.rectEvent, {
-        'pointer-events': 'fill',
-        'fill': 'transparent'
-      } );
-      this.dom.appendChild( this.rectEvent );
-
-      // Handling graph title
-      this.domTitle = document.createElementNS( this.ns, 'text' );
-      this.setTitle( this.options.title );
-      util.setAttributeTo( this.domTitle, {
-        'text-anchor': 'middle',
-        'y': 20
-      } );
-      this.dom.appendChild( this.domTitle );
-      //
-
-      this.graphingZone = document.createElementNS( this.ns, 'g' );
-      util.setAttributeTo( this.graphingZone, {
-        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
-      } );
-      this.dom.appendChild( this.graphingZone );
-
-      /*	this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-			//this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-			this.shapeZoneRect.setAttribute('fill', 'transparent');
-			this.shapeZone.appendChild(this.shapeZoneRect);
-		*/
-      this.axisGroup = document.createElementNS( this.ns, 'g' );
-      this.graphingZone.appendChild( this.axisGroup );
-
-      this.plotGroup = document.createElementNS( this.ns, 'g' );
-      this.graphingZone.appendChild( this.plotGroup );
-
-      // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-      /*this.shapeZone = document.createElementNS( this.ns, 'g' );
-      this.graphingZone.appendChild( this.shapeZone );
-*/
-
-      this.layers = [];
-
-      this._makeClosingLines();
-
-      this.clip = document.createElementNS( this.ns, 'clipPath' );
-      this.clip.setAttribute( 'id', '_clipplot' + this._creation )
-      this.defs.appendChild( this.clip );
-
-      this.clipRect = document.createElementNS( this.ns, 'rect' );
-      this.clip.appendChild( this.clipRect );
-      this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-
-      this.markerArrow = document.createElementNS( this.ns, 'marker' );
-      this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
-      this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
-      this.markerArrow.setAttribute( 'refX', '6' );
-      this.markerArrow.setAttribute( 'refY', '5' );
-      this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
-      this.markerArrow.setAttribute( 'markerWidth', '8' );
-      this.markerArrow.setAttribute( 'markerHeight', '6' );
-      this.markerArrow.setAttribute( 'orient', 'auto' );
-      //this.markerArrow.setAttribute('fill', 'context-stroke');
-      //this.markerArrow.setAttribute('stroke', 'context-stroke');
-
-      var pathArrow = document.createElementNS( this.ns, 'path' );
-      pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
-      pathArrow.setAttribute( 'fill', 'context-stroke' );
-      this.markerArrow.appendChild( pathArrow );
-
-      this.defs.appendChild( this.markerArrow );
-
-      this.vertLineArrow = document.createElementNS( this.ns, 'marker' );
-      this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
-      this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
-      this.vertLineArrow.setAttribute( 'refX', '0' );
-      this.vertLineArrow.setAttribute( 'refY', '5' );
-      this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
-      this.vertLineArrow.setAttribute( 'markerWidth', '20' );
-      this.vertLineArrow.setAttribute( 'markerHeight', '10' );
-      this.vertLineArrow.setAttribute( 'orient', 'auto' );
-      //this.vertLineArrow.setAttribute('fill', 'context-stroke');
-      //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-      this.vertLineArrow.setAttribute( 'stroke-width', '1px' );
-
-      var pathVertLine = document.createElementNS( this.ns, 'path' );
-      pathVertLine.setAttribute( 'd', 'M 0 -10 L 0 10' );
-      pathVertLine.setAttribute( 'stroke', 'black' );
-
-      this.vertLineArrow.appendChild( pathVertLine );
-
-      this.defs.appendChild( this.vertLineArrow );
-
-      this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-
-      this.bypassHandleMouse = false;
-    },
 
     /** 
-      * Returns the graph wrapper element
-      * @memberof Graph.prototype 
-      * @public
-      * @return {HTMLElement} The DOM element wrapping the graph
-      */
+     * Returns the graph wrapper element
+     * @memberof Graph.prototype
+     * @public
+     * @return {HTMLElement} The DOM element wrapping the graph
+     */
     getDom: function() {
       return this.dom;
     },
@@ -370,61 +281,61 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this;
     },
 
+
     /**
-     * Kills the graph
+     *  Sets the title of the graph
      * @memberof Graph.prototype
-     **/
-    kill: function() {
-      this._dom.removeChild( this.dom );
+     */
+    setTitle: function( title ) {
+      this.options.title = title;
+      this.domTitle.textContent = title;
+    },
+
+
+    /**
+     *  Shows the title of the graph
+     * @memberof Graph.prototype
+     */
+    displayTitle: function() {
+      this.domTitle.setAttribute( 'display', 'inline' );
     },
 
     /**
-     * Returns a registered constructor
+     *  Hides the title of the graph
      * @memberof Graph.prototype
-     * @param {String} constructorName - The constructor name to look for
-     * @returns {Function} The registered constructor
-     * @throws Error
-     * @see Graph.registerConstructor
      */
-    getConstructor: function( constructorName ) {
+    hideTitle: function() {
+      this.domTitle.setAttribute( 'display', 'none' );
+    },
 
-      var constructor = Graph.prototype._constructors[ constructorName ];
 
-      if ( !constructor ) {
-        return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
+
+    /**
+     * Calls a repaint of the container. Used internally when zooming on the graph, or when &lt;code>.autoscaleAxes()&lt;/code> is called (see {@link Graph#autoscaleAxes}).&lt;br />
+     * To be called after axes min/max are expected to have changed (e.g. after an &lt;code>axis.zoom( from, to )&lt;/code>) has been called
+     * @memberof Graph.prototype
+     * @return {Boolean} if the redraw has been successful
+     */
+    redraw: function() {
+
+      if ( ! this.width || ! this.height ) {
+        return;
       }
 
-      return constructor;
-    },
+      if ( !this.sizeSet ) {
 
-    /**
-     * Caches the wrapper offset in the page.&lt;br />
-     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
-     * If performance becomes a critical issue in your application, &lt;code>cacheOffset()&lt;/code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, &lt;code>cacheOffset()&lt;/code> should be called again to update the offset position.
-     * @memberof Graph.prototype
-     * @see Graph#uncacheOffset 
-     */
-    cacheOffset: function() {
-      this.offsetCached = $( this._dom ).offset();
+        this._resize();
+
+      } else {
+
+        refreshDrawingZone( this );
+      }
+
+      return true;
     },
 
 
-    /**
-     * Un-caches the wrapper offset value
-     * @memberof Graph.prototype
-     * @see Graph#cacheOffset 
-     */
-    uncacheOffset: function() {
-      this.offsetCached = false;
-    },
 
-    focus: function()  {
-      this._dom.focus();
-    },
-
-    elementMoving: function( movingElement ) {
-      this.bypassHandleMouse = movingElement;
-    },
 
     /**
      * Sets the total width of the graph
@@ -465,13 +376,12 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @memberof Graph.prototype
      */
     resize: function( w, h ) {
-      if( w &amp;&amp; h ) { 
+      if ( w &amp;&amp; h ) {
         this.setSize( w, h );
       }
 
       this._resize();
     },
-
 
     /**
      * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
@@ -489,7 +399,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.getDrawingWidth();
     },
 
-
     /**
      * Returns the width of the graph (set by setSize, setWidth or resize methods)
      * @return {Number} Width of the graph
@@ -498,7 +407,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     getWidth: function() {
       return this.width;
     },
-
 
     /**
      * Returns the height of the graph (set by setSize, setHeight or resize methods)
@@ -509,7 +417,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.height;
     },
 
-
     /**
      * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
      * @return {Number} paddingTop
@@ -518,7 +425,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     getPaddingTop: function() {
       return this.options.paddingTop;
     },
-
 
     /**
      * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
@@ -529,7 +435,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.options.paddingLeft;
     },
 
-
     /**
      * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
      * @return {Number} paddingTop
@@ -539,7 +444,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.options.paddingBottom;
     },
 
-
     /**
      * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
      * @return {Number} paddingRight
@@ -548,67 +452,55 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     getPaddingRight: function() {
       return this.options.paddingRight;
     },
-    /* END SIZING */
-
-
-    _applyToAxis: {
-      'string': function( type, func, params ) {
-        //    params.splice(1, 0, type);
-
-        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
-          this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
-        }
-      },
-
-      'function': function( type, func, params ) {
-        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
-          func.call( this, this.axis[ type ][ i ], type, params );
-        }
-      }
-    },
-
-
-
-    /** 
-     * Function that is called from {@link Graph#_applyToAxes}
-     * @function
-     * @name AxisCallbackFunction
-     * @param {Axis} axis - The axis of the function
-     * @param {String} type - The type of the axis (left,right,top,bottom)
-     * @param params - The params passed in the _applyToAxis function.
-     * @see Graph#_applyToAxes
-     */
 
 
     /**
-     * Applies a function to axes. The function will be executed once for every axis.
-     * If func is a string, the internal function belonging to &lt;strong>the axis&lt;/strong> will be called, with the params array flattened out (in this case, params must be an array).
-     * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
-     * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
-     * @param params - Extra parameters to pass to the function
-     * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
-     * @param {Boolean} leftright=false - True to apply to function to left and right axes
+     * Returns the height of the drawable zone, including the space used by the axes
+     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+     * @returns {Number} Height of the graph
      * @memberof Graph.prototype
      */
-    _applyToAxes: function( func, params, tb, lr ) {
-
-      var ax = [],
-        i = 0,
-        l;
-
-      if ( tb || tb == undefined ) {
-        ax.push( 'top' );
-        ax.push( 'bottom' );
+    getDrawingHeight: function( useCache ) {
+      if ( useCache &amp;&amp; this.innerHeight ) {
+        return this.innerHeight;
       }
-      if ( lr || lr == undefined ) {
-        ax.push( 'left' );
-        ax.push( 'right' );
-      }
-
-      for ( l = ax.length; i &lt; l; i++ ) {
-        this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
-      }
+      return ( this.innerHeight = ( this.height - this.options.paddingTop - this.options.paddingBottom ) );
     },
+
+    /**
+     * Returns the width of the drawable zone, including the space used by the axes
+     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+     * @returns {Number} Width of the graph
+     * @memberof Graph.prototype
+     */
+    getDrawingWidth: function( useCache ) {
+      if ( useCache &amp;&amp; this.innerWidth ) {
+        return this.innerWidth;
+      }
+      return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
+    },
+
+
+    /**
+     * Caches the wrapper offset in the page.&lt;br />
+     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
+     * If performance becomes a critical issue in your application, &lt;code>cacheOffset()&lt;/code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, &lt;code>cacheOffset()&lt;/code> should be called again to update the offset position.
+     * @memberof Graph.prototype
+     * @see Graph#uncacheOffset
+     */
+    cacheOffset: function() {
+      this.offsetCached = $( this._dom ).offset();
+    },
+
+    /**
+     * Un-caches the wrapper offset value
+     * @memberof Graph.prototype
+     * @see Graph#cacheOffset
+     */
+    uncacheOffset: function() {
+      this.offsetCached = false;
+    },
+
 
     /**
      * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
@@ -658,7 +550,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     getBottomAxis: function( index, options ) {
       return _getAxis( this, index, options, 'bottom' );
     },
-
 
     /**
      * Returns the left axis at a certain index. Creates it if non-existant
@@ -746,56 +637,31 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
 
     /**
-     *  Sets the title of the graph
+     * Autoscales the x and y axes of the graph&lt;br />
+     * Repains the canvas
      * @memberof Graph.prototype
      */
-    setTitle: function( title ) {
-      this.options.title = title;
-      this.domTitle.textContent = title;
+    autoscaleAxes: function() {
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+      this.redraw();
     },
 
+    _applyToAxis: {
+      'string': function( type, func, params ) {
+        //    params.splice(1, 0, type);
 
-    /**
-     *  Shows the title of the graph
-     * @memberof Graph.prototype
-     */
-    displayTitle: function() {
-      this.domTitle.setAttribute( 'display', 'inline' );
-    },
+        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
+          this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
+        }
+      },
 
-    /**
-     *  Hides the title of the graph
-     * @memberof Graph.prototype
-     */
-    hideTitle: function() {
-      this.domTitle.setAttribute( 'display', 'none' );
-    },
-
-    /**
-     * Returns the height of the drawable zone, including the space used by the axes
-     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-     * @returns {Number} Height of the graph
-     * @memberof Graph.prototype
-     */
-    getDrawingHeight: function( useCache ) {
-      if ( useCache &amp;&amp; this.innerHeight ) {
-        return this.innerHeight;
+      'function': function( type, func, params ) {
+        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
+          func.call( this, this.axis[ type ][ i ], type, params );
+        }
       }
-      return ( this.innerHeight = ( this.height - this.options.paddingTop - this.options.paddingBottom ) );
     },
 
-    /**
-     * Returns the width of the drawable zone, including the space used by the axes
-     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-     * @returns {Number} Width of the graph
-     * @memberof Graph.prototype
-     */
-    getDrawingWidth: function( useCache ) {
-      if ( useCache &amp;&amp; this.innerWidth ) {
-        return this.innerWidth;
-      }
-      return ( this.innerWidth = (this.width - this.options.paddingLeft - this.options.paddingRight) );
-    },
 
     /**
      * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
@@ -844,11 +710,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
         val = Math[ minmax ]( val, serieValue );
 
-        if ( val == serieValue &amp;&amp; currentSerie ) {
-          currentSerie.isMinOrMax( false, xy, minmax );
-          currentSerie = serie;
-          serie.isMinOrMax( true, xy, minmax );
-        }
       }
 
       return val;
@@ -872,86 +733,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return series;
     },
 
-    /**
-     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. Position of the shape can then be relative to the same axes as the serie.
-     * @param {Serie} serie - The serie containing the shapes
-     * @returns {Shape[]} An array containing a list of shapes associated to the serie
-     * @memberof Graph.prototype
-     */
-    getShapesOfSerie: function( serie ) {
-
-      var shapes = [];
-      var i = this.shapes.length - 1;
-
-      for ( ; i >= 0; i-- ) {
-
-        if ( this.shapes[ i ].getSerie() == serie ) {
-          shapes.push( this.shapes[ i ] );
-        }
-      }
-
-      return shapes;
-    },
-
-    _resize: function() {
-
-      if ( !this.width || !this.height ) {
-        return;
-      }
-
-      this.getDrawingWidth();
-      this.getDrawingHeight();
-
-      this.sizeSet = true;
-      this.dom.setAttribute( 'width', this.width );
-      this.dom.setAttribute( 'height', this.height );
-      this.domTitle.setAttribute( 'x', this.width / 2 );
-
-      refreshDrawingZone( this );
-
-      if ( this.legend ) {
-        this.legend.update();
-      }
-    },
-
-    canRedraw: function() {
-      return ( this.width &amp;&amp; this.height );
-    },
 
     /**
-     * Calls a repaint of the container. Used internally when the axis have changed. To be called after axes min/max are expected to have changed (e.g. after an &lt;code>axis.zoom( from, to )&lt;/code>) has been called
+     * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
      * @memberof Graph.prototype
-     * @return {Boolean} if the redraw has been successful
+     * @see Graph#getBoundaryAxis
      */
-    redraw: function( ) {
-
-      if ( !this.canRedraw() ) {
-        return;
-      }
-
-      if ( !this.sizeSet ) {
-
-        this._resize();
-
-      } else {
-
-        refreshDrawingZone( this );
-      }
-
-      return true;
-    },
-
-    /*
-     *	Updates the min and max value of the axis according to the data only
-     *	Does not perform autoscale
-     *	But we need to keep track of the data min/max in case of an autoAxis.
-     */
-    updateAxes: function() {
-      this._updateAxes();
-    },
-
-    _updateAxes: function() {
-
+    updateDataMinMaxAxes: function() {
+    
       var axisvars = [ 'bottom', 'top', 'left', 'right' ],
         axis,
         j,
@@ -978,18 +767,58 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
         }
       }
+
     },
+
+
+    /** 
+     * Function that is called from {@link Graph#_applyToAxes}
+     * @function
+     * @name AxisCallbackFunction
+     * @param {Axis} axis - The axis of the function
+     * @param {String} type - The type of the axis (left,right,top,bottom)
+     * @param params - The params passed in the _applyToAxis function.
+     * @see Graph#_applyToAxes
+     */
 
     /**
-     * Autoscales the x and y axes of the graph&lt;br />
-     * Repains the canvas
+     * Applies a function to axes. The function will be executed once for every axis.
+     * If func is a string, the internal function belonging to &lt;strong>the axis&lt;/strong> will be called, with the params array flattened out (in this case, params must be an array).
+     * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
+     * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
+     * @param params - Extra parameters to pass to the function
+     * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
+     * @param {Boolean} leftright=false - True to apply to function to left and right axes
      * @memberof Graph.prototype
      */
-    autoscaleAxes: function() {
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
-      this.redraw();
+    _applyToAxes: function( func, params, tb, lr ) {
+
+      var ax = [],
+        i = 0,
+        l;
+
+      if ( tb || tb == undefined ) {
+        ax.push( 'top' );
+        ax.push( 'bottom' );
+      }
+      if ( lr || lr == undefined ) {
+        ax.push( 'left' );
+        ax.push( 'right' );
+      }
+
+      for ( l = ax.length; i &lt; l; i++ ) {
+        this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
+      }
     },
 
+
+    /**
+     * Axes can be dependant of one another (for instance for unit conversions)
+     * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
+     * @memberof Graph.prototype
+     * @param {Axis} axis - The axis that links one or multiple other dependant axes
+     * @returns {Axis[]} The list of axes linked to the axis passed as parameter
+     */
     findAxesLinkedTo: function( axis ) {
 
       var axes = [];
@@ -1003,12 +832,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return axes;
     },
 
-    refreshMinOrMax: function() {
-      var i = this.series.length - 1;
-      for ( ; i >= 0; i-- ) { // Let's remove the serie from the stack
-        this.series[ i ].isMinOrMax( false );
-      }
-    },
 
     /**
      * Creates a new serie&lt;br />
@@ -1017,7 +840,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * Built-in series types are "line", "contour", "zone" and "scatter".
      * @param {String} name - The name of the serie (unique)
      * @param {Object} options - The serie options
-     * @param {Type} type - The type of the serie. 
+     * @param {Type} type - The type of the serie.
+     * @returns {Serie} The newly created serie
      * @memberof Graph.prototype
      */
     newSerie: function( name, options, type ) {
@@ -1076,10 +900,20 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return false
     },
 
+    /**
+     * Returns all the series
+     * @returns {Serie[]} An array of all the series
+     * @memberof Graph.prototype
+     */
     getSeries: function() {
       return this.series;
     },
 
+    /**
+     * Draws a specific serie
+     * @param {Serie} serie - The serie to redraw
+     * @memberof Graph.prototype
+     */
     drawSerie: function( serie ) {
 
       if ( !serie.draw ) {
@@ -1089,45 +923,59 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       serie.draw();
     },
 
+    /**
+     * Redraws all visible series
+     * @memberof Graph.prototype
+     */
+    drawSeries: function() {
+
+      if ( ! this.width || ! this.height ) {
+        return;
+      }
+
+      var i = this.series.length - 1;
+      for ( ; i >= 0; i-- ) {
+        if ( this.series[ i ].isShown() ) {
+          this.drawSerie( this.series[ i ] );
+        }
+      }
+    },
+
+    /**
+     * @memberof Graph.prototype
+     * @alias Graph#removeSeries
+     */
     resetSeries: function() {
+      this.removeSeries()
+    },
+
+    /**
+     * @memberof Graph.prototype
+     * @alias Graph#removeSeries
+     */
+
+    killSeries: function() {
+      this.resetSeries();
+    },
+  
+    /**
+     * Removes all series from the graph
+     * @memberof Graph.prototype
+     */
+    removeSeries: function() {
       while ( this.series[ 0 ] ) {
         this.series[ 0 ].kill( true );
       }
       this.series = [];
     },
 
-    // Alias to resetSeries
-    removeSeries: function() {
-      this.resetSeries();
-    },
-
-    // Alias to resetSeries
-    killSeries: function() {
-      this.resetSeries();
-    },
-
-    drawSeries: function() {
-
-      if ( !this.width || !this.height ) {
-        return;
-      }
-
-      var i = this.series.length - 1;
-      for ( ; i >= 0; i-- ) {
-
-        if ( this.series[  i ].isShown() ) {
-          this.series[ i ].draw();
-        }
-      }
-    },
-
-    _removeSerie: function( serie ) {
-
-      this.series.splice( this.series.indexOf( serie ), 1 );
-
-    },
-
-    selectSerie: function( serie ) {
+    /**
+     * Selects a serie. Only one serie per graph can be selected.
+     * @param {Serie} serie - The serie to select
+     * @param {String} selectName="selected" - The name of the selection
+     * @memberof Graph.prototype
+     */
+    selectSerie: function( serie, selectName ) {
 
       if ( this.selectedSerie == serie ) {
         return;
@@ -1142,17 +990,48 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       serie.select( "selected" );
     },
 
-    unselectSerie: function( serie ) {
-
-      serie.unselect();
-      this.selectedSerie = false;
-      this.triggerEvent( 'onUnselectSerie', serie );
-
-    },
-
+    /**
+     * Returns the selected serie
+     * @returns {(Serie|undefined)} The selected serie
+     */
     getSelectedSerie: function() {
       return this.selectedSerie;
     },
+
+    /**
+     * Unselects a serie
+     * @param {Serie} serie - The serie to unselect
+     * @memberof Graph.prototype
+     */
+    unselectSerie: function( serie ) {
+      serie.unselect();
+      this.selectedSerie = false;
+      this.triggerEvent( 'onUnselectSerie', serie );
+    },
+
+
+    /**
+     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. Position of the shape can then be relative to the same axes as the serie.
+     * @param {Serie} serie - The serie containing the shapes
+     * @returns {Shape[]} An array containing a list of shapes associated to the serie
+     * @memberof Graph.prototype
+     */
+    getShapesOfSerie: function( serie ) {
+
+      var shapes = [];
+      var i = this.shapes.length - 1;
+
+      for ( ; i >= 0; i-- ) {
+
+        if ( this.shapes[ i ].getSerie() == serie ) {
+          shapes.push( this.shapes[ i ] );
+        }
+      }
+
+      return shapes;
+    },
+
+
 
     makeToolbar: function( toolbarData ) {
 
@@ -1164,6 +1043,15 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
     },
 
+    /**
+     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.&lt;shapeType>".
+     * @param {String} shapeType - The type of the shape
+     * @param {Object} [shapeData] - The options passed to the shape creator
+     * @param {Boolean} [mute=false] - &lt;code>true&lt;/code> to create the shape quietly
+     * @returns {Shape} The created shape
+     * @memberof Graph.prototype
+     * @see Graph#getConstructor
+     */
     newShape: function( shapeType, shapeData, mute ) {
 
       var self = this,
@@ -1252,6 +1140,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return shape;
     },
 
+    /**
+     *  Redraws all shapes. To be called if their definitions have changed
+     *  @memberof Graph.prototype
+     */
     redrawShapes: function() {
 
       //this.graphingZone.removeChild(this.shapeZone);
@@ -1261,6 +1153,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
     },
 
+
+    /**
+     *  Removes all shapes from the graph
+     *  @memberof Graph.prototype
+     */
     removeShapes: function() {
       for ( var i = 0, l = this.shapes.length; i &lt; l; i++ ) {
         if ( this.shapes[ i ] &amp;&amp; this.shapes[ i ].kill ) {
@@ -1269,6 +1166,99 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
       this.shapes = [];
     },
+
+
+    /**
+     * Selects a shape
+     * @param {Shape} shape - The shape to select
+     * @param {Boolean} mute - Select the shape quietly
+     * @memberof Graph.prototype
+     */
+    selectShape: function( shape, mute ) {
+
+      // Already selected. Returns false
+      if ( this.selectedShapes.indexOf( shape ) > -1 ) {
+        return false;
+      }
+
+      if ( !shape.isSelectable() ) {
+        return false;
+      }
+
+      if ( !mute ) {
+        this.emit( "beforeShapeSelect", shape );
+      }
+
+      if ( this.cancelSelectShape ) {
+        this.cancelSelectShape = false;
+        return;
+      }
+
+      this.cancelSelectShape = false;
+
+      if ( this.selectedShapes.length > 0 &amp;&amp; this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+
+        //console.log('Unselect shape');
+        while ( this.selectedShapes[ 0 ] ) {
+
+          this.unselectShape( this.selectedShapes[ 0 ], mute )
+        }
+      }
+
+      shape._select( mute );
+      this.selectedShapes.push( shape );
+
+      if ( !mute ) {
+        this.emit( "shapeSelect", shape );
+      }
+    },
+
+
+    /**
+     * Unselects a shape
+     * @param {Shape} shape - The shape to unselect
+     * @param {Boolean} mute - Unselect the shape quietly
+     * @memberof Graph.prototype
+     */
+    unselectShape: function( shape, mute ) {
+
+      if ( this.selectedShapes.indexOf( shape ) == -1 ) {
+        return;
+      }
+
+      if ( !mute ) {
+        this.emit( "beforeShapeSelect", shape );
+      }
+
+      if ( this.cancelUnselectShape ) {
+        this.cancelUnselectShape = false;
+        return;
+      }
+
+      shape._unselect();
+
+      this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
+
+      if ( !mute ) {
+        this.emit( "shapeUnselect", shape );
+      }
+
+    },
+
+
+    /**
+     * Unselects all shapes
+     * @memberof Graph.prototype
+     */
+    unselectShapes: function() {
+
+      while ( this.selectedShapes[ 0 ] ) {
+        this.unselectShape( this.selectedShapes[  0 ] );
+      }
+
+    },
+
+
 
     _removeShape: function( shape ) {
       this.shapes.splice( this.shapes.indexOf( shape ), 1 );
@@ -1329,6 +1319,15 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     },
 
+
+    focus: function()  {
+      this._dom.focus();
+    },
+
+    elementMoving: function( movingElement ) {
+      this.bypassHandleMouse = movingElement;
+    },
+
     _makeClosingLines: function() {
 
       this.closingLines = {};
@@ -1375,6 +1374,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       return true;
     },
+
 
     forcePlugin: function( plugin ) {
       this.forcedPlugin = plugin;
@@ -1430,6 +1430,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
     },
 
+
+    /**
+     * Returns an initialized plugin
+     * @memberof Graph.prototype
+     * @param {String} pluginName
+     * @returns {Plugin} The plugin which name is &lt;pluginName>
+     */
     getPlugin: function( pluginName ) {
       var plugin = this.plugins[ pluginName ];
 
@@ -1451,79 +1458,17 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return;
     },
 
-    selectShape: function( shape, mute ) {
 
-      // Already selected. Returns false
-      if ( this.selectedShapes.indexOf( shape ) > -1 ) {
-        return false;
-      }
-
-      if ( !shape.isSelectable() ) {
-        return false;
-      }
-
-      if ( !mute ) {
-        this.emit( "beforeShapeSelect", shape );
-      }
-
-      if ( this.cancelSelectShape ) {
-        this.cancelSelectShape = false;
-        return;
-      }
-
-      this.cancelSelectShape = false;
-
-      if ( this.selectedShapes.length > 0 &amp;&amp; this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
-
-        //console.log('Unselect shape');
-        while ( this.selectedShapes[ 0 ] ) {
-
-          this.unselectShape( this.selectedShapes[ 0 ], mute )
-        }
-      }
-
-      shape._select( mute );
-      this.selectedShapes.push( shape );
-
-      if ( !mute ) {
-        this.emit( "shapeSelect", shape );
-      }
-    },
-
-    unselectShape: function( shape, mute ) {
-
-      if ( this.selectedShapes.indexOf( shape ) == -1 ) {
-        return;
-      }
-
-      if ( !mute ) {
-        this.emit( "beforeShapeSelect", shape );
-      }
-
-      if ( this.cancelUnselectShape ) {
-        this.cancelUnselectShape = false;
-        return;
-      }
-
-      shape._unselect();
-
-      this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
-
-      if ( !mute ) {
-        this.emit( "shapeUnselect", shape );
-      }
-
-    },
-
-    unselectShapes: function() {
-
-      while ( this.selectedShapes[ 0 ] ) {
-        this.unselectShape( this.selectedShapes[  0 ] );
-      }
-
-    },
-
+    /**
+     * Creates a legend. Only one legend is allowed per graph
+     * @param {Object} options - The legend options
+     * @memberof Graph.prototype
+     */
     makeLegend: function( options ) {
+
+      if( this.legend ) {
+        return this.legend;
+      }
 
       var constructor = this.getConstructor( "graph.legend" );
       if ( constructor ) {
@@ -1538,6 +1483,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.legend;
     },
 
+
+    /**
+     * Redraw the legend
+     * @memberof Graph.prototype
+     */
     updateLegend: function() {
 
       if ( !this.legend ) {
@@ -1546,6 +1496,21 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       this.legend.update();
     },
+
+
+    /**
+     * Kills the graph
+     * @memberof Graph.prototype
+     **/
+    kill: function() {
+      this._dom.removeChild( this.dom );
+    },
+
+
+    _removeSerie: function( serie ) {
+      this.series.splice( this.series.indexOf( serie ), 1 );
+    },
+
 
     getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
 
@@ -1785,7 +1750,148 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         x: x,
         y: y
       };
+    },
+
+
+    _resize: function() {
+
+      if ( !this.width || !this.height ) {
+        return;
+      }
+
+      this.getDrawingWidth();
+      this.getDrawingHeight();
+
+      this.sizeSet = true;
+      this.dom.setAttribute( 'width', this.width );
+      this.dom.setAttribute( 'height', this.height );
+      this.domTitle.setAttribute( 'x', this.width / 2 );
+
+      refreshDrawingZone( this );
+
+      if ( this.legend ) {
+        this.legend.update();
+      }
+    },
+
+
+    _doDom: function() {
+
+      // Create SVG element, set the NS
+      this.dom = document.createElementNS( this.ns, 'svg' );
+      this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+      //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);  
+      util.setAttributeTo( this.dom, {
+        'xmlns': this.ns,
+        'font-family': this.options.fontFamily,
+        'font-size': this.options.fontSize
+      } );
+
+      this._dom.appendChild( this.dom );
+
+      this._dom.setAttribute( 'tabindex', 1 );
+
+      this._dom.style.outline = "none";
+
+      this.defs = document.createElementNS( this.ns, 'defs' );
+      this.dom.appendChild( this.defs );
+
+      this.rectEvent = document.createElementNS( this.ns, 'rect' );
+      util.setAttributeTo( this.rectEvent, {
+        'pointer-events': 'fill',
+        'fill': 'transparent'
+      } );
+      this.dom.appendChild( this.rectEvent );
+
+      // Handling graph title
+      this.domTitle = document.createElementNS( this.ns, 'text' );
+      this.setTitle( this.options.title );
+      util.setAttributeTo( this.domTitle, {
+        'text-anchor': 'middle',
+        'y': 20
+      } );
+      this.dom.appendChild( this.domTitle );
+      //
+
+      this.graphingZone = document.createElementNS( this.ns, 'g' );
+      util.setAttributeTo( this.graphingZone, {
+        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      } );
+      this.dom.appendChild( this.graphingZone );
+
+      /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+      //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+      this.shapeZoneRect.setAttribute('fill', 'transparent');
+      this.shapeZone.appendChild(this.shapeZoneRect);
+    */
+      this.axisGroup = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.axisGroup );
+
+      this.plotGroup = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.plotGroup );
+
+      // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+      /*this.shapeZone = document.createElementNS( this.ns, 'g' );
+      this.graphingZone.appendChild( this.shapeZone );
+*/
+
+      this.layers = [];
+
+      this._makeClosingLines();
+
+      this.clip = document.createElementNS( this.ns, 'clipPath' );
+      this.clip.setAttribute( 'id', '_clipplot' + this._creation )
+      this.defs.appendChild( this.clip );
+
+      this.clipRect = document.createElementNS( this.ns, 'rect' );
+      this.clip.appendChild( this.clipRect );
+      this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+
+      this.markerArrow = document.createElementNS( this.ns, 'marker' );
+      this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
+      this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
+      this.markerArrow.setAttribute( 'refX', '6' );
+      this.markerArrow.setAttribute( 'refY', '5' );
+      this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+      this.markerArrow.setAttribute( 'markerWidth', '8' );
+      this.markerArrow.setAttribute( 'markerHeight', '6' );
+      this.markerArrow.setAttribute( 'orient', 'auto' );
+      //this.markerArrow.setAttribute('fill', 'context-stroke');
+      //this.markerArrow.setAttribute('stroke', 'context-stroke');
+
+      var pathArrow = document.createElementNS( this.ns, 'path' );
+      pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
+      pathArrow.setAttribute( 'fill', 'context-stroke' );
+      this.markerArrow.appendChild( pathArrow );
+
+      this.defs.appendChild( this.markerArrow );
+
+      this.vertLineArrow = document.createElementNS( this.ns, 'marker' );
+      this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
+      this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
+      this.vertLineArrow.setAttribute( 'refX', '0' );
+      this.vertLineArrow.setAttribute( 'refY', '5' );
+      this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+      this.vertLineArrow.setAttribute( 'markerWidth', '20' );
+      this.vertLineArrow.setAttribute( 'markerHeight', '10' );
+      this.vertLineArrow.setAttribute( 'orient', 'auto' );
+      //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+      //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+      this.vertLineArrow.setAttribute( 'stroke-width', '1px' );
+
+      var pathVertLine = document.createElementNS( this.ns, 'path' );
+      pathVertLine.setAttribute( 'd', 'M 0 -10 L 0 10' );
+      pathVertLine.setAttribute( 'stroke', 'black' );
+
+      this.vertLineArrow.appendChild( pathVertLine );
+
+      this.defs.appendChild( this.vertLineArrow );
+
+      this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+      this.bypassHandleMouse = false;
     }
+
 
   } );
 
@@ -2276,6 +2382,29 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
   }
 
+
+
+
+
+  /**
+   * Returns a registered constructor
+   * @memberof Graph.prototype
+   * @param {String} constructorName - The constructor name to look for
+   * @returns {Function} The registered constructor
+   * @throws Error
+   * @see Graph.registerConstructor
+   * @name Graph#getConstructor
+   */
+  Graph.prototype.getConstructor = function( constructorName ) {
+    var constructor = Graph.prototype._constructors[ constructorName ];
+    if ( !constructor ) {
+      return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
+    }
+    return constructor;
+  };
+
+  Graph.prototype._constructors = {},
+
   /**
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
    * @name Graph.registerConstructor
@@ -2292,26 +2421,106 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   };
 
   return Graph;
-} );</code></pre>
-        </article>
-    </section>
+} );</pre>
+	</article>
+</section>
 
 
 
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
 
 </div>
+</div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Graph.html">Graph</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html">GraphOptionsDefault</a></li></ul>
-</nav>
-
-<br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Thu Jul 02 2015 16:22:38 GMT+0800 (SGT)
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Thu Jul 2nd 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
 </footer>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
 </body>
 </html>

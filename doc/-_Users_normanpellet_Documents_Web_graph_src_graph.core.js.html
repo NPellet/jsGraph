@@ -1,4 +1,65 @@
-define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Source: /Users/normanpellet/Documents/Web/graph/src/graph.core.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Graph.html">Graph</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html">GraphOptionsDefault</a></li><li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#getSelectedSerie">getSelectedSerie</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+    		<h1 class="page-title">Source: /Users/normanpellet/Documents/Web/graph/src/graph.core.js</h1>
+			
+
+		<h1 class="page-title">Source: /Users/normanpellet/Documents/Web/graph/src/graph.core.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
 
   /** 
    * Default graph parameters
@@ -116,13 +177,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     // DOM
     var w, h;
-    if ( wrapper.style.width && wrapper.style.width.indexOf( "%" ) == -1 ) {
+    if ( wrapper.style.width &amp;&amp; wrapper.style.width.indexOf( "%" ) == -1 ) {
       w = parseInt( wrapper.style.width.replace( 'px', '' ) );
     } else {
       w = $( wrapper ).width();
     }
 
-    if ( wrapper.style.height && wrapper.style.height.indexOf( "%" ) == -1 ) {
+    if ( wrapper.style.height &amp;&amp; wrapper.style.height.indexOf( "%" ) == -1 ) {
       h = parseInt( wrapper.style.height.replace( 'px', '' ) );
     } else {
       h = $( wrapper ).height();
@@ -169,7 +230,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     // Load all axes
     if ( axis ) {
       for ( var i in axis ) {
-        for ( var j = 0, l = axis[ i ].length; j < l; j++ ) {
+        for ( var j = 0, l = axis[ i ].length; j &lt; l; j++ ) {
 
           switch ( i ) {
 
@@ -250,8 +311,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
 
     /**
-     * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
-     * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
+     * Calls a repaint of the container. Used internally when zooming on the graph, or when &lt;code>.autoscaleAxes()&lt;/code> is called (see {@link Graph#autoscaleAxes}).&lt;br />
+     * To be called after axes min/max are expected to have changed (e.g. after an &lt;code>axis.zoom( from, to )&lt;/code>) has been called
      * @memberof Graph.prototype
      * @return {Boolean} if the redraw has been successful
      */
@@ -279,7 +340,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Sets the total width of the graph
      * @param {Number} width - The new width of the graph
-     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+     * @param {Boolean} skipResize - &lt;code>true&lt;/code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
      * @see Graph#setHeight
      * @see Graph#resize
      * @memberof Graph.prototype
@@ -294,7 +355,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Sets the total height of the graph
      * @param {Number} height - The new height of the graph
-     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+     * @param {Boolean} skipResize - &lt;code>true&lt;/code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
      * @see Graph#setWidth
      * @see Graph#resize
      * @memberof Graph.prototype
@@ -315,7 +376,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @memberof Graph.prototype
      */
     resize: function( w, h ) {
-      if ( w && h ) {
+      if ( w &amp;&amp; h ) {
         this.setSize( w, h );
       }
 
@@ -400,7 +461,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @memberof Graph.prototype
      */
     getDrawingHeight: function( useCache ) {
-      if ( useCache && this.innerHeight ) {
+      if ( useCache &amp;&amp; this.innerHeight ) {
         return this.innerHeight;
       }
       return ( this.innerHeight = ( this.height - this.options.paddingTop - this.options.paddingBottom ) );
@@ -413,7 +474,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @memberof Graph.prototype
      */
     getDrawingWidth: function( useCache ) {
-      if ( useCache && this.innerWidth ) {
+      if ( useCache &amp;&amp; this.innerWidth ) {
         return this.innerWidth;
       }
       return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
@@ -421,9 +482,9 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
 
     /**
-     * Caches the wrapper offset in the page.<br />
+     * Caches the wrapper offset in the page.&lt;br />
      * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
-     * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
+     * If performance becomes a critical issue in your application, &lt;code>cacheOffset()&lt;/code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, &lt;code>cacheOffset()&lt;/code> should be called again to update the offset position.
      * @memberof Graph.prototype
      * @see Graph#uncacheOffset
      */
@@ -448,7 +509,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @param {Object} [ options={} ] - The options to pass to the axis constructor
      */
     getXAxis: function( index, options ) {
-      if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
+      if ( this.axis.top.length > 0 &amp;&amp; this.axis.bottom.length == 0 ) {
         return this.getTopAxis( index, options );
       }
 
@@ -463,7 +524,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      */
     getYAxis: function( index, options ) {
 
-      if ( this.axis.right.length > 0 && this.axis.left.length == 0 ) {
+      if ( this.axis.right.length > 0 &amp;&amp; this.axis.left.length == 0 ) {
         return this.getRightAxis( index, options );
       }
 
@@ -576,7 +637,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
 
     /**
-     * Autoscales the x and y axes of the graph<br />
+     * Autoscales the x and y axes of the graph&lt;br />
      * Repains the canvas
      * @memberof Graph.prototype
      */
@@ -589,13 +650,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       'string': function( type, func, params ) {
         //    params.splice(1, 0, type);
 
-        for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
           this.axis[ type ][ i ][ func ].apply( this.axis[ type ][ i ], params );
         }
       },
 
       'function': function( type, func, params ) {
-        for ( var i = 0; i < this.axis[ type ].length; i++ ) {
+        for ( var i = 0; i &lt; this.axis[ type ].length; i++ ) {
           func.call( this, this.axis[ type ][ i ], type, params );
         }
       }
@@ -637,7 +698,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
       series = this.getSeriesFromAxis( axis, true );
 
-      for ( i = 0, l = series.length; i < l; i++ ) {
+      for ( i = 0, l = series.length; i &lt; l; i++ ) {
 
         serie = series[ i ];
 
@@ -689,12 +750,12 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       this.refreshMinOrMax();
 
-      for ( j = 0, l = axisvars.length; j < l; j++ ) {
+      for ( j = 0, l = axisvars.length; j &lt; l; j++ ) {
 
         for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
 
           axis = this.axis[ axisvars[ j ] ][ i ];
-          xy = j < 2 ? 'x' : 'y';
+          xy = j &lt; 2 ? 'x' : 'y';
 
           if ( axis.disabled ) {
             continue;
@@ -722,7 +783,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Applies a function to axes. The function will be executed once for every axis.
-     * If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
+     * If func is a string, the internal function belonging to &lt;strong>the axis&lt;/strong> will be called, with the params array flattened out (in this case, params must be an array).
      * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
      * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
      * @param params - Extra parameters to pass to the function
@@ -745,7 +806,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         ax.push( 'right' );
       }
 
-      for ( l = ax.length; i < l; i++ ) {
+      for ( l = ax.length; i &lt; l; i++ ) {
         this._applyToAxis[ typeof func ].call( this, ax[ i ], func, params );
       }
     },
@@ -763,7 +824,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       var axes = [];
       this._applyToAxes( function( a ) {
 
-        if ( a.linkedToAxis && a.linkedToAxis.axis == axis ) {
+        if ( a.linkedToAxis &amp;&amp; a.linkedToAxis.axis == axis ) {
           axes.push( a );
         }
       }, {}, axis instanceof this.getConstructor( "graph.axis.x" ), axis instanceof this.getConstructor( "graph.axis.y" ) );
@@ -773,14 +834,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
 
     /**
-     * Creates a new serie<br />
-     * If the a serie with the same name exists, returns this serie with update options <br />
-     * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
+     * Creates a new serie&lt;br />
+     * If the a serie with the same name exists, returns this serie with update options &lt;br />
+     * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.&lt;type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)&lt;br />
      * Built-in series types are "line", "contour", "zone" and "scatter".
      * @param {String} name - The name of the serie (unique)
      * @param {Object} options - The serie options
      * @param {Type} type - The type of the serie.
-     * @returns {Serie} The newly created serie
      * @memberof Graph.prototype
      */
     newSerie: function( name, options, type ) {
@@ -827,7 +887,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       var i = 0,
         l = this.series.length;
 
-      for ( ; i < l; i++ ) {
+      for ( ; i &lt; l; i++ ) {
 
         if ( this.series[ i ].getName() == name ) {
 
@@ -983,10 +1043,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     },
 
     /**
-     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
+     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.&lt;shapeType>".
      * @param {String} shapeType - The type of the shape
      * @param {Object} [shapeData] - The options passed to the shape creator
-     * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+     * @param {Boolean} [mute=false] - &lt;code>true&lt;/code> to create the shape quietly
      * @returns {Shape} The created shape
      * @memberof Graph.prototype
      * @see Graph#getConstructor
@@ -1060,7 +1120,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
           shapeData.label = [ shapeData.label ];
         }
 
-        for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
+        for ( var i = 0, l = shapeData.label.length; i &lt; l; i++ ) {
 
           shape.prop( 'labelPosition', shapeData.label[ i ].position, i );
           shape.prop( 'labelColor', shapeData.label[ i ].color || 'black', i );
@@ -1086,7 +1146,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     redrawShapes: function() {
 
       //this.graphingZone.removeChild(this.shapeZone);
-      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+      for ( var i = 0, l = this.shapes.length; i &lt; l; i++ ) {
         this.shapes[ i ].redraw();
       }
       //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
@@ -1098,8 +1158,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      *  @memberof Graph.prototype
      */
     removeShapes: function() {
-      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+      for ( var i = 0, l = this.shapes.length; i &lt; l; i++ ) {
+        if ( this.shapes[ i ] &amp;&amp; this.shapes[ i ].kill ) {
           this.shapes[ i ].kill( true );
         }
       }
@@ -1135,7 +1195,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       this.cancelSelectShape = false;
 
-      if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+      if ( this.selectedShapes.length > 0 &amp;&amp; this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
 
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
@@ -1235,7 +1295,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         var i = 1,
           prevLayer;
 
-        while ( !( prevLayer = this.layers[ layer - i ] ) && layer - i >= 0 ) {
+        while ( !( prevLayer = this.layers[ layer - i ] ) &amp;&amp; layer - i >= 0 ) {
           i++;
         }
 
@@ -1274,7 +1334,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         i = 0,
         l = 4,
         line;
-      for ( ; i < l; i++ ) {
+      for ( ; i &lt; l; i++ ) {
         var line = document.createElementNS( this.ns, 'line' );
         line.setAttribute( 'stroke', 'black' );
         line.setAttribute( 'shape-rendering', 'crispEdges' );
@@ -1329,7 +1389,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       for ( var i in this.plugins ) {
 
-        if ( this.plugins[ i ] && this.plugins[ i ][ funcName ] ) {
+        if ( this.plugins[ i ] &amp;&amp; this.plugins[ i ][ funcName ] ) {
 
           this.plugins[ i ][ funcName ].apply( this.plugins[ i ], args );
 
@@ -1344,7 +1404,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         return;
       }
 
-      if ( this.plugins[ which ] && this.plugins[ which ][ func ] ) {
+      if ( this.plugins[ which ] &amp;&amp; this.plugins[ which ][ func ] ) {
 
         this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
       }
@@ -1374,7 +1434,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * Returns an initialized plugin
      * @memberof Graph.prototype
      * @param {String} pluginName
-     * @returns {Plugin} The plugin which name is <pluginName>
+     * @returns {Plugin} The plugin which name is &lt;pluginName>
      */
     getPlugin: function( pluginName ) {
       var plugin = this.plugins[ pluginName ];
@@ -1475,7 +1535,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
         var axis = i == 'x' ? xAxis : yAxis;
 
-        if ( value[ i ] === undefined && ( ( value[ 'd' + i ] !== undefined && relTo === undefined ) || relTo === undefined ) ) {
+        if ( value[ i ] === undefined &amp;&amp; ( ( value[ 'd' + i ] !== undefined &amp;&amp; relTo === undefined ) || relTo === undefined ) ) {
 
           if ( i == 'x' ) {
 
@@ -1485,7 +1545,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
             pos[ i ] = relTo ? relTo[ i ] : axis.getPos( 0 );
 
-          } else if ( value.x && onSerie ) {
+          } else if ( value.x &amp;&amp; onSerie ) {
 
             var val;
 
@@ -1515,7 +1575,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x && !relTo.y ) {
+          if ( i == 'y' &amp;&amp; relTo &amp;&amp; relTo.x &amp;&amp; !relTo.y ) {
 
             if ( !onSerie ) {
               throw "Error. No serie exists. Cannot find y value";
@@ -1568,7 +1628,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     },
 
     _parsePercent: function( percent ) {
-      if ( percent && percent.indexOf && percent.indexOf( '%' ) > -1 ) {
+      if ( percent &amp;&amp; percent.indexOf &amp;&amp; percent.indexOf( '%' ) > -1 ) {
         return percent;
       }
       return false;
@@ -1849,7 +1909,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   };
 
   function _parsePx( px ) {
-    if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
+    if ( px &amp;&amp; px.indexOf &amp;&amp; px.indexOf( 'px' ) > -1 ) {
       return parseInt( px.replace( 'px', '' ) );
     }
     return false;
@@ -1974,7 +2034,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       //e.preventDefault();
       //e.stopPropagation();
 
-      if ( e.keyCode == 8 && self.selectedShape ) {
+      if ( e.keyCode == 8 &amp;&amp; self.selectedShape ) {
         self.selectedShape.kill();
       }
 
@@ -2107,7 +2167,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return;
     }
 
-    if ( graph.activePlugin && graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
+    if ( graph.activePlugin &amp;&amp; graph._pluginExecute( graph.activePlugin, 'onMouseMove', [ graph, x, y, e ] ) ) {
       return;
     };
 
@@ -2121,7 +2181,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       if ( graph.options.onMouseMoveData ) {
 
-        for ( var i = 0; i < graph.series.length; i++ ) {
+        for ( var i = 0; i &lt; graph.series.length; i++ ) {
 
           results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
         }
@@ -2252,12 +2312,12 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     graph.axis[ mode ].map( function( g ) {
 
-      if ( g.isDisplayed() && !g.floating ) {
+      if ( g.isDisplayed() &amp;&amp; !g.floating ) {
         l++;
       }
     } );
 
-    if ( ( graph.options.close === true || graph.options.close[ mode ] ) && l == 0 ) {
+    if ( ( graph.options.close === true || graph.options.close[ mode ] ) &amp;&amp; l == 0 ) {
 
       graph.closingLines[ mode ].setAttribute( 'display', 'block' );
       graph.closingLines[ mode ].setAttribute( 'x1', x1 );
@@ -2296,7 +2356,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       case 'toSeries':
 
-        for ( var i = 0, l = graph.series.length; i < l; i++ ) {
+        for ( var i = 0, l = graph.series.length; i &lt; l; i++ ) {
           graph.series[ i ].onMouseWheel( delta, e );
         }
 
@@ -2360,4 +2420,106 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   };
 
   return Graph;
+} );</pre>
+	</article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Thu Jul 2nd 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
 } );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

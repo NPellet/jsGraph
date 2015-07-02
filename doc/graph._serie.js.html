@@ -1,4 +1,65 @@
-define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( EventEmitter, util ) {
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Source: graph._serie.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Graph.html">Graph</a></li><li><a href="Serie.html">Serie</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html">GraphOptionsDefault</a></li><li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#getSelectedSerie">getSelectedSerie</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+    		<h1 class="page-title">Source: graph._serie.js</h1>
+			
+
+		<h1 class="page-title">Source: graph._serie.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( EventEmitter, util ) {
 
   "use strict";
 
@@ -61,9 +122,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       // Single object
       var datas = [];
-      if ( !( data instanceof Array ) && typeof data == 'object' ) {
+      if ( !( data instanceof Array ) &amp;&amp; typeof data == 'object' ) {
         data = [ data ];
-      } else if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
+      } else if ( data instanceof Array &amp;&amp; !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         arg = "1D";
       }
@@ -71,18 +132,18 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       var _2d = ( arg == "2D" );
 
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      if ( data[ 0 ] instanceof Array &amp;&amp; arg == "2D" &amp;&amp; !( data[ 0 ][ 0 ] instanceof Array ) ) {
         data = [ data ];
       }
 
       if ( data[ 0 ] instanceof Array ) {
-        for ( var i = 0, k = data.length; i < k; i++ ) {
+        for ( var i = 0, k = data.length; i &lt; k; i++ ) {
 
           arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
           datas.push( arr );
           z = 0;
 
-          for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
+          for ( var j = 0, l = data[ i ].length; j &lt; l; j++ ) {
 
             if ( _2d ) {
               arr[ z ] = ( data[ i ][ j ][ 0 ] );
@@ -119,9 +180,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
           return;
         }
 
-        for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
+        for ( var i = 0, l = data.length; i &lt; l; i++ ) { // Several piece of data together
           number += data[ i ].y.length;
-          continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
+          continuous = ( i != 0 ) &amp;&amp; ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
           if ( !continuous ) {
             datas.push( this._addData( type, number ) );
             numbers.push( number );
@@ -133,7 +194,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
         number = 0, k = 0, z = 0;
 
-        for ( var i = 0, l = data.length; i < l; i++ ) {
+        for ( var i = 0, l = data.length; i &lt; l; i++ ) {
           x = data[ i ].x, dx = data[ i ].dx;
 
           this.xData.push( {
@@ -145,7 +206,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
           this._checkX( x );
           this._checkX( x + dx * o );
 
-          for ( var j = 0; j < o; j++ ) {
+          for ( var j = 0; j &lt; o; j++ ) {
             /*datas[k][z] = (x + j * dx);
 						this._checkX(datas[k][z]);
 						z++;*/
@@ -181,7 +242,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       if ( min > 0 ) {
 
-        while ( min < max ) {
+        while ( min &lt; max ) {
           ws.push( min );
           min *= 4;
         }
@@ -251,8 +312,8 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       this.graph.removeSerieFromDom( this );
 
-      if ( this.picks && this.picks.length ) {
-        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+      if ( this.picks &amp;&amp; this.picks.length ) {
+        for ( var i = 0, l = this.picks.length; i &lt; l; i++ ) {
           this.picks[ i ].kill();
         }
       }
@@ -281,7 +342,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       if ( hideShapes ) {
         var shapes = this.graph.getShapesOfSerie( this );
-        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        for ( var i = 0, l = shapes.length; i &lt; l; i++ ) {
           shapes[ i ].hide();
         }
       }
@@ -301,7 +362,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       if ( showShapes ) {
         var shapes = this.graph.getShapesOfSerie( this );
-        for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        for ( var i = 0, l = shapes.length; i &lt; l; i++ ) {
           shapes[ i ].show();
         }
       }
@@ -392,7 +453,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     setAxes: function() {
 
-      for ( var i = 0; i < 2; i++ ) {
+      for ( var i = 0; i &lt; 2; i++ ) {
 
         if ( arguments[ i ] ) {
           this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
@@ -499,7 +560,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     XMonotoneousDirection: function() {
 
-      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
+      return this.data &amp;&amp; this.data[ 0 ] &amp;&amp; ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     getLayer: function() {
@@ -517,4 +578,106 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
   } );
 
   return GraphSerieNonInstanciable;
+} );</pre>
+	</article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Thu Jul 2nd 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
 } );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

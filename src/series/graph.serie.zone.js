@@ -26,16 +26,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
 
       this.groupZones = document.createElementNS( this.graph.ns, 'g' );
       this.groupMain = document.createElementNS( this.graph.ns, 'g' );
@@ -184,7 +174,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
         }
       }
 
-      this.graph._updateAxes();
+      this.graph.updateDataMinMaxAxes();
       this.data = arr;
 
       return this;
