@@ -32,7 +32,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      *	Converts every data type to a 1D array
      */
 
-
     /** 
      * Sets data to the serie
      * @memberof Serie.prototype
@@ -268,7 +267,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         this.graph.legend.update();
       }
     },
-
 
     hide: function( hideShapes ) {
       this.hidden = true;

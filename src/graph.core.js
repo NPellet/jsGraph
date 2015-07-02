@@ -220,7 +220,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this;
     },
 
-
     /**
      *  Sets the title of the graph
      * @memberof Graph.prototype
@@ -229,7 +228,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.options.title = title;
       this.domTitle.textContent = title;
     },
-
 
     /**
      *  Shows the title of the graph
@@ -247,8 +245,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.domTitle.setAttribute( 'display', 'none' );
     },
 
-
-
     /**
      * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
      * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
@@ -257,7 +253,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      */
     redraw: function() {
 
-      if ( ! this.width || ! this.height ) {
+      if ( !this.width || !this.height ) {
         return;
       }
 
@@ -272,9 +268,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       return true;
     },
-
-
-
 
     /**
      * Sets the total width of the graph
@@ -392,7 +385,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.options.paddingRight;
     },
 
-
     /**
      * Returns the height of the drawable zone, including the space used by the axes
      * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
@@ -419,7 +411,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
     },
 
-
     /**
      * Caches the wrapper offset in the page.<br />
      * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
@@ -439,7 +430,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     uncacheOffset: function() {
       this.offsetCached = false;
     },
-
 
     /**
      * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
@@ -574,7 +564,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.axis.bottom[ num ] = axis;
     },
 
-
     /**
      * Autoscales the x and y axes of the graph<br />
      * Repains the canvas
@@ -600,7 +589,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         }
       }
     },
-
 
     /**
      * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
@@ -672,14 +660,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return series;
     },
 
-
     /**
      * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
      * @memberof Graph.prototype
      * @see Graph#getBoundaryAxis
      */
     updateDataMinMaxAxes: function() {
-    
+
       var axisvars = [ 'bottom', 'top', 'left', 'right' ],
         axis,
         j,
@@ -708,7 +695,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
 
     },
-
 
     /** 
      * Function that is called from {@link Graph#_applyToAxes}
@@ -750,7 +736,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
     },
 
-
     /**
      * Axes can be dependant of one another (for instance for unit conversions)
      * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
@@ -770,7 +755,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       return axes;
     },
-
 
     /**
      * Creates a new serie<br />
@@ -868,14 +852,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      */
     drawSeries: function() {
 
-      if ( ! this.width || ! this.height ) {
+      if ( !this.width || !this.height ) {
         return;
       }
 
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
         if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[ i ] );
+          this.drawSerie( this.series[  i ] );
         }
       }
     },
@@ -896,7 +880,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     killSeries: function() {
       this.resetSeries();
     },
-  
+
     /**
      * Removes all series from the graph
      * @memberof Graph.prototype
@@ -948,7 +932,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.triggerEvent( 'onUnselectSerie', serie );
     },
 
-
     /**
      * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. Position of the shape can then be relative to the same axes as the serie.
      * @param {Serie} serie - The serie containing the shapes
@@ -969,8 +952,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       return shapes;
     },
-
-
 
     makeToolbar: function( toolbarData ) {
 
@@ -1092,7 +1073,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
     },
 
-
     /**
      *  Removes all shapes from the graph
      *  @memberof Graph.prototype
@@ -1105,7 +1085,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
       this.shapes = [];
     },
-
 
     /**
      * Selects a shape
@@ -1152,7 +1131,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
     },
 
-
     /**
      * Unselects a shape
      * @param {Shape} shape - The shape to unselect
@@ -1184,7 +1162,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     },
 
-
     /**
      * Unselects all shapes
      * @memberof Graph.prototype
@@ -1196,8 +1173,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
 
     },
-
-
 
     _removeShape: function( shape ) {
       this.shapes.splice( this.shapes.indexOf( shape ), 1 );
@@ -1258,7 +1233,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     },
 
-
     focus: function()  {
       this._dom.focus();
     },
@@ -1314,7 +1288,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return true;
     },
 
-
     forcePlugin: function( plugin ) {
       this.forcedPlugin = plugin;
     },
@@ -1369,7 +1342,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
     },
 
-
     /**
      * Returns an initialized plugin
      * @memberof Graph.prototype
@@ -1397,7 +1369,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return;
     },
 
-
     /**
      * Creates a legend. Only one legend is allowed per graph
      * @param {Object} options - The legend options
@@ -1405,7 +1376,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      */
     makeLegend: function( options ) {
 
-      if( this.legend ) {
+      if ( this.legend ) {
         return this.legend;
       }
 
@@ -1422,7 +1393,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return this.legend;
     },
 
-
     /**
      * Redraw the legend
      * @memberof Graph.prototype
@@ -1436,7 +1406,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.legend.update();
     },
 
-
     /**
      * Kills the graph
      * @memberof Graph.prototype
@@ -1445,11 +1414,9 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this._dom.removeChild( this.dom );
     },
 
-
     _removeSerie: function( serie ) {
       this.series.splice( this.series.indexOf( serie ), 1 );
     },
-
 
     getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
 
@@ -1691,7 +1658,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       };
     },
 
-
     _resize: function() {
 
       if ( !this.width || !this.height ) {
@@ -1712,7 +1678,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         this.legend.update();
       }
     },
-
 
     _doDom: function() {
 
@@ -1830,7 +1795,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       this.bypassHandleMouse = false;
     }
-
 
   } );
 
@@ -2320,10 +2284,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     }
 
   }
-
-
-
-
 
   /**
    * Returns a registered constructor

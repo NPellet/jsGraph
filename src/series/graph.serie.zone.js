@@ -26,7 +26,6 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
-
       this.groupZones = document.createElementNS( this.graph.ns, 'g' );
       this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
