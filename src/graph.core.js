@@ -1,6 +1,5 @@
-
 define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
-  
+
   /** 
    * Default graph parameters
    * @name GraphOptionsDefault
@@ -14,7 +13,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
    * @prop {Number} paddingBottom - The bottom padding
    * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
    * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user 
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
    * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
    * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
    * @prop {Object} wheel - Define the mouse wheel action
@@ -684,8 +683,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         l,
         i,
         xy;
-
-
 
       for ( j = 0, l = axisvars.length; j < l; j++ ) {
 
@@ -1841,7 +1838,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     };
 
     graph._painted = true;
-    
+
     // Apply to top and bottom
     graph._applyToAxes( function( axis, position ) {
 

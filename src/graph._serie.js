@@ -37,7 +37,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      * @memberof Serie.prototype
      * @param {(Object|Array|Array[])} data - The data of the serie
      * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data). 
+     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
      * @memberof Serie.prototype
      * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
      * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
@@ -56,7 +56,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         continuous;
 
       this.empty();
-      
+
       this.minX = +Infinity;
       this.minY = +Infinity;
       this.maxX = -Infinity;
@@ -76,23 +76,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         oneDimensional = true;
       }
 
-      
-
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && ! oneDimensional  && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      if ( data[ 0 ] instanceof Array && !oneDimensional && !( data[ 0 ][ 0 ] instanceof Array ) ) {
         data = [ data ];
       }
 
       if ( data[ 0 ] instanceof Array ) {
         for ( var i = 0, k = data.length; i < k; i++ ) {
 
-          arr = this._addData( type, ! oneDimensional ? data[ i ].length * 2 : data[ i ].length );
+          arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
           datas.push( arr );
           z = 0;
 
           for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-            if ( ! oneDimensional ) {
+            if ( !oneDimensional ) {
               arr[ z ] = ( data[ i ][ j ][ 0 ] );
               this._checkX( arr[ z ] );
               z++;
@@ -221,7 +219,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
-
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -269,7 +266,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
      * @memberof Serie.prototype
      */
-    kill: function( ) {
+    kill: function() {
 
       this.graph.removeSerieFromDom( this );
 
@@ -311,7 +308,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
-
     /**
      * Shows the serie
      * @memberof Serie.prototype
@@ -342,7 +338,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     hideImpl: function() {},
     showImpl: function() {},
 
-
     /**
      * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
      * @memberof Serie.prototype
@@ -351,7 +346,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      */
     toggleDisplay: function() {
 
-      if ( ! this.isShown() ) {
+      if ( !this.isShown() ) {
         this.show();
       } else {
         this.hide();
@@ -369,7 +364,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return !this.hidden;
     },
 
-
     /**
      * Returns the x position of a certain value in pixels position, based on the serie's axis
      * @memberof Serie.prototype
@@ -379,7 +373,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     getX: function( val ) {
       return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
     },
-
 
     /**
      * Returns the y position of a certain value in pixels position, based on the serie's axis
@@ -391,7 +384,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
     },
 
-
     /**
      * Returns the selection state of the serie. Generic for most serie types
      * @memberof Serie.prototype
@@ -400,7 +392,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     isSelected: function() {
       return this.selected || ( this.selectionType !== "unselected" );
     },
-
 
     _checkX: function( val ) {
       this.minX = Math.min( this.minX, val );
@@ -411,7 +402,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.minY = Math.min( this.minY, val );
       this.maxY = Math.max( this.maxY, val );
     },
-
 
     /**
      * Getter for the serie name
@@ -424,22 +414,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     /* AXIS */
 
-
     /**
-     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}. 
+     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
      * @memberof Serie.prototype
      * @returns {Serie} The current serie
      */
     autoAxis: function() {
 
-      if( this.isFlipped() ) {
+      if ( this.isFlipped() ) {
         this.setXAxis( this.graph.getYAxis() );
         this.setYAxis( this.graph.getXAxis() );
       } else {
         this.setXAxis( this.graph.getXAxis() );
         this.setYAxis( this.graph.getYAxis() );
       }
-      
+
       // After axes have been assigned, the graph axes should update their min/max
       this.graph.updateDataMinMaxAxes();
       return this;
@@ -461,7 +450,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       return this;
     },
-
 
     /**
      * Assigns an y axis to the serie
@@ -498,7 +486,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
-
     /**
      * @returns {Axis} The x axis assigned to the serie
      * @memberof Serie.prototype
@@ -506,7 +493,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     getXAxis: function() {
       return this.xaxis;
     },
-
 
     /**
      * @returns {Axis} The y axis assigned to the serie
@@ -528,7 +514,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this.minX;
     },
 
-
     /**
      * @returns {Number} Highest x value of the serie's data
      * @memberof Serie.prototype
@@ -537,7 +522,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this.maxX;
     },
 
-
     /**
      * @returns {Number} Lowest y value of the serie's data
      * @memberof Serie.prototype
@@ -545,7 +529,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     getMinY: function() {
       return this.minY;
     },
-
 
     /**
      * @returns {Number} Highest y value of the serie's data
@@ -557,7 +540,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     /**
      * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      */
     getSymbolForLegend: function() {
@@ -584,7 +567,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     /**
      * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
      * @see Serie#getSymbolForLegend
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      */
     setLegendSymbolStyle: function() {
@@ -599,10 +582,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.setLegendSymbolStyle();
     },
 
-
     /**
      * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      * @see Serie#getLabel
      */
@@ -629,7 +611,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this.graph.series.indexOf( this );
     },
 
-
     /**
      * @returns {String} The label or, alternatively - the name of the serie
      * @memberof Serie.prototype
@@ -637,7 +618,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     getLabel: function() {
       return this.options.label || this.name;
     },
-
 
     /**
      * Sets the label of the serie. Note that this does not automatically updates the legend
@@ -655,7 +635,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     },
 
     /* FLIP */
-
 
     /**
      * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
@@ -684,21 +663,19 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this.options.flip;
     },
 
-
     /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
      * @memberof Serie.prototype
      * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
      * @returns {Serie} The current serie
      */
     setLayer: function( layerIndex ) {
-      this.options.layer = parseInt( layerIndex ) || 1;
+      this.options.layer = parseInt( layerIndex ) ||  1;
       return this;
     },
 
-
     /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
      * @memberof Serie.prototype
      * @returns {Nunber} The index of the layer into which the serie will be drawn
      */

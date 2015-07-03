@@ -9,16 +9,16 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
    */
   var GraphSerieLine = function() {}
   $.extend( GraphSerieLine.prototype, GraphSerieLineNonInstanciable.prototype, {
-  
-  /**
-    * @name SerieLineDefaultOptions
-    * @object
-    * @private
-    * @static
-    * @prop {String} title - Title of the graph
-    * @prop {Number} paddingTop - The top padding
-    * @prop {Number} paddingLeft - The left padding
-    */
+
+    /**
+     * @name SerieLineDefaultOptions
+     * @object
+     * @private
+     * @static
+     * @prop {String} title - Title of the graph
+     * @prop {Number} paddingTop - The top padding
+     * @prop {Number} paddingLeft - The left padding
+     */
     defaults: {
       lineColor: 'black',
       lineStyle: 1,
@@ -175,7 +175,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     },
 
-
     /**
      * Sets the options of the serie
      * @see SerieLineDefaultOptions
@@ -319,7 +318,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return _on;
     },
 
-
     /**
      * Toggles off markers that have the hover mode "on"
      * @memberof SerieLine.prototype
@@ -333,7 +331,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return this;
     },
 
-
     /**
      * Toggles off markers that have the select mode "on"
      * @memberof SerieLine.prototype
@@ -346,7 +343,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
       return this;
     },
-
 
     onClickOnMarker: function( e, index ) {
 
@@ -393,7 +389,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return this;
     },
 
-
     /**
      * Applies a selection to the serie
      * @param {String} [ selectionType = "selected" ] - The selection name
@@ -421,7 +416,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return this;
     },
 
-
     /**
      * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
      * @returns {Serie} The current serie
@@ -431,10 +425,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     unselect: function() {
 
       this.selected = false;
-      return this.select("unselected");
+      return this.select( "unselected" );
     },
-
-
 
     /**
      * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
@@ -548,7 +540,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
       this.currentLineId = 0;
     },
-
 
     detectPeaks: function( x, y ) {
 
@@ -1097,7 +1088,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     },
 
-
     setMarkerStyleTo: function( dom, family ) {
 
       if ( !dom ||  !family ) {
@@ -1109,7 +1099,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
       dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
     },
-
 
     /**
      * Hides the tracking marker (see the trackMouse option)
@@ -1195,7 +1184,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return line;
     },
 
-
     /**
      * Reapply the current style to the serie lines elements. Mostly used internally
      * @memberof SerieLine.prototype
@@ -1206,7 +1194,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         this.applyLineStyle( this.lines[ i ] );
       }
     },
-
 
     /**
      * Applies the current style to a line element. Mostly used internally
@@ -1224,8 +1211,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
-
-
 
     /**
      * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
@@ -1351,7 +1336,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       return this.independantMarkers[ index ];
     },
-
 
     /**
      * Searches the closest point pair (x,y) to the a pair of pixel position

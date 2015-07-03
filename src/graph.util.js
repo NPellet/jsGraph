@@ -54,8 +54,8 @@ define( [], function() {
 
     // Borrowed from jQuery
     isNumeric: function( obj ) {
-      return !Array.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
-    } 
+      return !Array.isArray( obj ) && ( obj - parseFloat( obj ) + 1 ) >= 0;
+    }
 
   }
 

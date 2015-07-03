@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.3
+ * jsGraph JavaScript Graphing Library v1.12.4-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-02T17:57Z
+ * Date: 2015-07-03T15:53Z
  */
 
 (function( global, factory ) {
@@ -88,7 +88,12 @@ build['./graph.util'] = ( function( ) {
 
     throwError: function( message ) {
       console.error( message );
-    }
+    },
+
+    // Borrowed from jQuery
+    isNumeric: function( obj ) {
+      return !Array.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
+    } 
 
   }
 
@@ -564,6 +569,7 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
 
 build['./graph.core'] = ( function( $, util, EventEmitter ) { 
 
+  
   /** 
    * Default graph parameters
    * @name GraphOptionsDefault
@@ -573,6 +579,16 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
    * @prop {String} title - Title of the graph
    * @prop {Number} paddingTop - The top padding
    * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user 
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
    */
   var GraphOptionsDefault = {
 
@@ -593,12 +609,12 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     fontSize: 12,
     fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-    plugins: [],
+    plugins: {},
     pluginAction: {},
     wheel: {},
     dblclick: {},
 
-    shapeSelection: 'unique'
+    uniqueShapeSelection: true
   };
 
   /** 
@@ -613,7 +629,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
    * @param {Array} axis.right - The list of right axes
    * @augments EventEmitter
    * @example var graph = new Graph("someDomID");
-   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', shapeSelection: 'multiple' } );
+   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
    */
   var Graph = function( wrapper, options, axis ) {
 
@@ -674,7 +690,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     this.series = [];
     this._dom = wrapper;
 
-    if ( this.options.hasOwnProperty( 'padding' ) ) {
+    if ( this.options.hasOwnProperty( 'padding' ) && util.isNumeric( this.options.padding ) ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
     }
 
@@ -784,7 +800,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return this;
     },
 
-
     /**
      *  Sets the title of the graph
      * @memberof Graph.prototype
@@ -793,7 +808,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.options.title = title;
       this.domTitle.textContent = title;
     },
-
 
     /**
      *  Shows the title of the graph
@@ -811,8 +825,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.domTitle.setAttribute( 'display', 'none' );
     },
 
-
-
     /**
      * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
      * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
@@ -821,7 +833,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      */
     redraw: function() {
 
-      if ( ! this.width || ! this.height ) {
+      if ( !this.width || !this.height ) {
         return;
       }
 
@@ -836,9 +848,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
       return true;
     },
-
-
-
 
     /**
      * Sets the total width of the graph
@@ -956,7 +965,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return this.options.paddingRight;
     },
 
-
     /**
      * Returns the height of the drawable zone, including the space used by the axes
      * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
@@ -983,7 +991,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
     },
 
-
     /**
      * Caches the wrapper offset in the page.<br />
      * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
@@ -1003,7 +1010,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     uncacheOffset: function() {
       this.offsetCached = false;
     },
-
 
     /**
      * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
@@ -1138,7 +1144,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.axis.bottom[ num ] = axis;
     },
 
-
     /**
      * Autoscales the x and y axes of the graph<br />
      * Repains the canvas
@@ -1164,7 +1169,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         }
       }
     },
-
 
     /**
      * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
@@ -1236,14 +1240,13 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return series;
     },
 
-
     /**
      * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
      * @memberof Graph.prototype
      * @see Graph#getBoundaryAxis
      */
     updateDataMinMaxAxes: function() {
-    
+
       var axisvars = [ 'bottom', 'top', 'left', 'right' ],
         axis,
         j,
@@ -1251,7 +1254,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         i,
         xy;
 
-      this.refreshMinOrMax();
+
 
       for ( j = 0, l = axisvars.length; j < l; j++ ) {
 
@@ -1272,7 +1275,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
 
     },
-
 
     /** 
      * Function that is called from {@link Graph#_applyToAxes}
@@ -1314,7 +1316,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
     },
 
-
     /**
      * Axes can be dependant of one another (for instance for unit conversions)
      * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
@@ -1334,7 +1335,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
       return axes;
     },
-
 
     /**
      * Creates a new serie<br />
@@ -1432,14 +1432,14 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      */
     drawSeries: function() {
 
-      if ( ! this.width || ! this.height ) {
+      if ( !this.width || !this.height ) {
         return;
       }
 
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
         if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[ i ] );
+          this.drawSerie( this.series[  i ] );
         }
       }
     },
@@ -1460,7 +1460,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     killSeries: function() {
       this.resetSeries();
     },
-  
+
     /**
      * Removes all series from the graph
      * @memberof Graph.prototype
@@ -1512,7 +1512,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.triggerEvent( 'onUnselectSerie', serie );
     },
 
-
     /**
      * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. Position of the shape can then be relative to the same axes as the serie.
      * @param {Serie} serie - The serie containing the shapes
@@ -1533,8 +1532,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
       return shapes;
     },
-
-
 
     makeToolbar: function( toolbarData ) {
 
@@ -1656,7 +1653,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
     },
 
-
     /**
      *  Removes all shapes from the graph
      *  @memberof Graph.prototype
@@ -1669,7 +1665,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
       this.shapes = [];
     },
-
 
     /**
      * Selects a shape
@@ -1699,7 +1694,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
       this.cancelSelectShape = false;
 
-      if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+      if ( this.selectedShapes.length > 0 && this.options.uniqueShapeSelection )  { // Only one selected shape at the time
 
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
@@ -1715,7 +1710,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         this.emit( "shapeSelect", shape );
       }
     },
-
 
     /**
      * Unselects a shape
@@ -1748,7 +1742,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     },
 
-
     /**
      * Unselects all shapes
      * @memberof Graph.prototype
@@ -1760,8 +1753,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
 
     },
-
-
 
     _removeShape: function( shape ) {
       this.shapes.splice( this.shapes.indexOf( shape ), 1 );
@@ -1822,7 +1813,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     },
 
-
     focus: function()  {
       this._dom.focus();
     },
@@ -1878,7 +1868,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return true;
     },
 
-
     forcePlugin: function( plugin ) {
       this.forcedPlugin = plugin;
     },
@@ -1933,7 +1922,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
     },
 
-
     /**
      * Returns an initialized plugin
      * @memberof Graph.prototype
@@ -1961,7 +1949,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return;
     },
 
-
     /**
      * Creates a legend. Only one legend is allowed per graph
      * @param {Object} options - The legend options
@@ -1969,7 +1956,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      */
     makeLegend: function( options ) {
 
-      if( this.legend ) {
+      if ( this.legend ) {
         return this.legend;
       }
 
@@ -1986,7 +1973,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return this.legend;
     },
 
-
     /**
      * Redraw the legend
      * @memberof Graph.prototype
@@ -2000,7 +1986,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.legend.update();
     },
 
-
     /**
      * Kills the graph
      * @memberof Graph.prototype
@@ -2009,11 +1994,9 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this._dom.removeChild( this.dom );
     },
 
-
     _removeSerie: function( serie ) {
       this.series.splice( this.series.indexOf( serie ), 1 );
     },
-
 
     getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
 
@@ -2255,7 +2238,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       };
     },
 
-
     _resize: function() {
 
       if ( !this.width || !this.height ) {
@@ -2276,7 +2258,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         this.legend.update();
       }
     },
-
 
     _doDom: function() {
 
@@ -2395,7 +2376,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.bypassHandleMouse = false;
     }
 
-
   } );
 
   function makeSerie( graph, name, options, type ) {
@@ -2430,8 +2410,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     };
 
     graph._painted = true;
-    graph.refreshMinOrMax();
-
+    
     // Apply to top and bottom
     graph._applyToAxes( function( axis, position ) {
 
@@ -2885,10 +2864,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
   }
 
-
-
-
-
   /**
    * Returns a registered constructor
    * @memberof Graph.prototype
@@ -2972,23 +2947,31 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
      *	Converts every data type to a 1D array
      */
 
-
     /** 
      * Sets data to the serie
      * @memberof Serie.prototype
-     * @param data - The data of the serie
+     * @param {(Object|Array|Array[])} data - The data of the serie
+     * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
+     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data). 
+     * @memberof Serie.prototype
+     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
+     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
+     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
+     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
      */
-    setData: function( data, arg, type ) {
+    setData: function( data, oneDimensional, type ) {
 
       var z = 0,
         x,
         dx,
-        arg = arg || "2D",
+        oneDimensional = oneDimensional || false,
         type = type || 'float',
         arr,
         total = 0,
         continuous;
 
+      this.empty();
+      
       this.minX = +Infinity;
       this.minY = +Infinity;
       this.maxX = -Infinity;
@@ -3005,26 +2988,26 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
         data = [ data ];
       } else if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
-        arg = "1D";
+        oneDimensional = true;
       }
 
-      var _2d = ( arg == "2D" );
+      
 
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      if ( data[ 0 ] instanceof Array && ! oneDimensional  && !( data[ 0 ][ 0 ] instanceof Array ) ) {
         data = [ data ];
       }
 
       if ( data[ 0 ] instanceof Array ) {
         for ( var i = 0, k = data.length; i < k; i++ ) {
 
-          arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
+          arr = this._addData( type, ! oneDimensional ? data[ i ].length * 2 : data[ i ].length );
           datas.push( arr );
           z = 0;
 
           for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-            if ( _2d ) {
+            if ( ! oneDimensional ) {
               arr[ z ] = ( data[ i ][ j ][ 0 ] );
               this._checkX( arr[ z ] );
               z++;
@@ -3153,6 +3136,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
+
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -3178,16 +3162,29 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       }
     },
 
+    /**
+     * Returns the data in its current form
+     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
+     * @memberof Serie.prototype
+     */
     getData: function() {
       return this.data;
     },
 
-    // Default set options
+    /**
+     * Sets the options of the serie (no extension of default options)
+     * @param {Object} options - The options of the serie
+     * @memberof Serie.prototype
+     */
     setOptions: function( options ) {
       this.options = options ||  {};
     },
 
-    kill: function( noRedraw ) {
+    /**
+     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+     * @memberof Serie.prototype
+     */
+    kill: function( ) {
 
       this.graph.removeSerieFromDom( this );
 
@@ -3199,17 +3196,18 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
       this.graph._removeSerie( this );
 
-      if ( !noRedraw )  {
-        this.graph.redraw();
-      }
-
       if ( this.graph.legend ) {
 
         this.graph.legend.update();
       }
     },
 
-
+    /**
+     * Hides the serie
+     * @memberof Serie.prototype
+     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
     hide: function( hideShapes ) {
       this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
@@ -3228,6 +3226,13 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
+
+    /**
+     * Shows the serie
+     * @memberof Serie.prototype
+     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
     show: function( showShapes ) {
       this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
@@ -3252,30 +3257,65 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     hideImpl: function() {},
     showImpl: function() {},
 
-    toggleShow: function() {
-      if ( !this.shown ) {
+
+    /**
+     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+     * @memberof Serie.prototype
+     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
+    toggleDisplay: function() {
+
+      if ( ! this.isShown() ) {
         this.show();
-        return;
+      } else {
+        this.hide();
       }
 
-      this.hide();
+      return this;
     },
 
+    /**
+     * Determines if the serie is currently visible
+     * @memberof Serie.prototype
+     * @returns {Boolean} The current visibility status of the serie
+     */
     isShown: function() {
       return !this.hidden;
     },
 
+
+    /**
+     * Returns the x position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie.prototype
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The x position in px corresponding to the x value
+     */
     getX: function( val ) {
       return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
     },
 
+
+    /**
+     * Returns the y position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie.prototype
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The y position in px corresponding to the y value
+     */
     getY: function( val ) {
       return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
     },
 
+
+    /**
+     * Returns the selection state of the serie. Generic for most serie types
+     * @memberof Serie.prototype
+     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
+     */
     isSelected: function() {
-      return this.selected ||  ( this.selectionType !== "unselected" );
+      return this.selected || ( this.selectionType !== "unselected" );
     },
+
 
     _checkX: function( val ) {
       this.minX = Math.min( this.minX, val );
@@ -3287,22 +3327,46 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       this.maxY = Math.max( this.maxY, val );
     },
 
+
+    /**
+     * Getter for the serie name
+     * @memberof Serie.prototype
+     * @returns {String} The serie name
+     */
     getName: function() {
       return this.name;
     },
 
     /* AXIS */
 
+
+    /**
+     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}. 
+     * @memberof Serie.prototype
+     * @returns {Serie} The current serie
+     */
     autoAxis: function() {
 
-      this.setXAxis( !this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
-      this.setYAxis( !this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
-
+      if( this.isFlipped() ) {
+        this.setXAxis( this.graph.getYAxis() );
+        this.setYAxis( this.graph.getXAxis() );
+      } else {
+        this.setXAxis( this.graph.getXAxis() );
+        this.setYAxis( this.graph.getYAxis() );
+      }
+      
+      // After axes have been assigned, the graph axes should update their min/max
       this.graph.updateDataMinMaxAxes();
-
       return this;
     },
 
+    /**
+     * Assigns an x axis to the serie
+     * @memberof Serie.prototype
+     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
+     */
     setXAxis: function( axis ) {
 
       if ( typeof axis == "number" )
@@ -3313,6 +3377,14 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
+
+    /**
+     * Assigns an y axis to the serie
+     * @memberof Serie.prototype
+     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
+     */
     setYAxis: function( axis ) {
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
@@ -3322,14 +3394,13 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
-    getXAxis: function() {
-      return this.xaxis;
-    },
-
-    getYAxis: function() {
-      return this.yaxis;
-    },
-
+    /**
+     * Assigns two axes to the serie
+     * @param {Axis} axis1 - First axis to assign to the serie (x or y)
+     * @param {Axis} axis2 - Second axis to assign to the serie (y or x)
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
     setAxes: function() {
 
       for ( var i = 0; i < 2; i++ ) {
@@ -3342,26 +3413,68 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
+
+    /**
+     * @returns {Axis} The x axis assigned to the serie
+     * @memberof Serie.prototype
+     */
+    getXAxis: function() {
+      return this.xaxis;
+    },
+
+
+    /**
+     * @returns {Axis} The y axis assigned to the serie
+     * @memberof Serie.prototype
+     */
+    getYAxis: function() {
+      return this.yaxis;
+    },
+
     /* */
 
     /* DATA MIN MAX */
 
+    /**
+     * @returns {Number} Lowest x value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMinX: function() {
       return this.minX;
     },
 
+
+    /**
+     * @returns {Number} Highest x value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMaxX: function() {
       return this.maxX;
     },
 
+
+    /**
+     * @returns {Number} Lowest y value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMinY: function() {
       return this.minY;
     },
 
+
+    /**
+     * @returns {Number} Highest y value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMaxY: function() {
       return this.maxY;
     },
 
+    /**
+     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     */
     getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
@@ -3383,6 +3496,31 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
     },
 
+    /**
+     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
+     * @see Serie#getSymbolForLegend
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     */
+    setLegendSymbolStyle: function() {
+      this.applyLineStyle( this.getSymbolForLegend() );
+    },
+
+    /**
+     * @alias Serie#setLegendSymbolStyle
+     * @memberof Serie.prototype
+     */
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
+    },
+
+
+    /**
+     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     * @see Serie#getLabel
+     */
     getTextForLegend: function() {
 
       if ( !this.textForLegend ) {
@@ -3398,18 +3536,30 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this.textForLegend;
     },
 
-    setLegendSymbolStyle: function() {
-      this.applyLineStyle( this.getSymbolForLegend() );
-    },
-
+    /**
+     * @returns {Number} The current index of the serie
+     * @memberof Serie.prototype
+     */
     getIndex: function() {
       return this.graph.series.indexOf( this );
     },
 
+
+    /**
+     * @returns {String} The label or, alternatively - the name of the serie
+     * @memberof Serie.prototype
+     */
     getLabel: function() {
       return this.options.label || this.name;
     },
 
+
+    /**
+     * Sets the label of the serie. Note that this does not automatically updates the legend
+     * @param {String} label - The new label of the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
     setLabel: function( label ) {
       this.options.label = label;
 
@@ -3421,37 +3571,54 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
     /* FLIP */
 
-    setFlip: function( bol ) {
-      this.options.flip = bol;
+
+    /**
+     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
+     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
+    setFlip: function( flipped ) {
+      this.options.flip = flipped;
+      return this;
     },
 
+    /**
+     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
+     * @memberof Serie.prototype
+     */
     getFlip: function() {
       return this.options.flip;
     },
 
+    /**
+     * @alias Serie#getFlip
+     * @memberof Serie.prototype
+     */
     isFlipped: function() {
       return this.options.flip;
     },
 
-    isXMonotoneous: function() {
-      return this.xmonotoneous ||  false;
+
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * @memberof Serie.prototype
+     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
+     * @returns {Serie} The current serie
+     */
+    setLayer: function( layerIndex ) {
+      this.options.layer = parseInt( layerIndex ) || 1;
+      return this;
     },
 
-    XMonotoneousDirection: function() {
 
-      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
-    },
-
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * @memberof Serie.prototype
+     * @returns {Nunber} The index of the layer into which the serie will be drawn
+     */
     getLayer: function() {
       return this.options.layer ||  1;
-    },
-
-    setLayer: function( layer ) {
-      this.options.layer = layer;
-    },
-
-    updateStyle: function() {
-      this.setLegendSymbolStyle();
     }
 
   } );
@@ -7679,13 +7846,27 @@ build['./series/slotoptimizer'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
  */
 
-build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, SlotOptimizer, util ) { 
+build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, SlotOptimizer, util ) { 
 
   
 
-  var GraphSerie = function() {}
-  $.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
-
+  /** 
+   * Represents a serie of the type "line"
+   * @class SerieLine
+   * @augments Serie
+   */
+  var GraphSerieLine = function() {}
+  $.extend( GraphSerieLine.prototype, GraphSerieLineNonInstanciable.prototype, {
+  
+  /**
+    * @name SerieLineDefaultOptions
+    * @object
+    * @private
+    * @static
+    * @prop {String} title - Title of the graph
+    * @prop {Number} paddingTop - The top padding
+    * @prop {Number} paddingLeft - The left padding
+    */
     defaults: {
       lineColor: 'black',
       lineStyle: 1,
@@ -7720,7 +7901,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.graph = graph;
       this.name = name;
 
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) ); // Creates options
+      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) ); // Creates options
       util.mapEventEmission( this.options, this ); // Register events
 
       // Creates an empty style variable
@@ -7842,8 +8023,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     },
 
+
+    /**
+     * Sets the options of the serie
+     * @see SerieLineDefaultOptions
+     * @memberof SerieLine.prototype
+     * @param {Object} options - A object containing the options to set
+     * @return {Serie} The current serie
+     */
     setOptions: function( options ) {
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) );
       // Unselected style
       this.styles.unselected = {
         lineColor: this.options.lineColor,
@@ -7852,19 +8041,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       };
 
       this.applyLineStyles();
+      return this;
     },
 
     calculateSlots: function() {
 
       var self = this;
       this.slotsData = {};
-      //      this.slotWorker = new Worker( './src/slotworker.js' );
-
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
-
-        //this.slotsData[ i ] = $.Deferred();
         this.calculateSlot( this.slots[ i ], i );
-        //        this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
       }
     },
 
@@ -7909,6 +8094,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
     },
 
+    /**
+     * Selects one of the markers of the serie
+     * @memberof SerieLine.prototype
+     * @param {Number} index - The point index to select (starting at 0)
+     * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
+     * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
+     * @returns {Boolean} The new state of the marker
+     */
     toggleMarker: function( index, force, hover ) {
       var i = index[ 0 ],
         k = index[ 1 ] || 0;
@@ -7974,12 +8167,34 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return _on;
     },
 
+
+    /**
+     * Toggles off markers that have the hover mode "on"
+     * @memberof SerieLine.prototype
+     * @returns {Serie} The current serie
+     */
     markersOffHover: function() {
 
       for ( var i in this.domMarkerHover ) {
         this.toggleMarker( i.split( ',' ), false, true );
       }
+      return this;
     },
+
+
+    /**
+     * Toggles off markers that have the select mode "on"
+     * @memberof SerieLine.prototype
+     * @returns {Serie} The current serie
+     */
+    markersOffSelect: function() {
+
+      for ( var i in this.domMarkerSelect ) {
+        this.toggleMarker( i.split( ',' ), false, false );
+      }
+      return this;
+    },
+
 
     onClickOnMarker: function( e, index ) {
 
@@ -8008,23 +8223,37 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     onMouseWheel: function() {},
 
+    /**
+     * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     */
     empty: function() {
 
       for ( var i = 0, l = this.lines.length; i < l; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
-
       }
 
       while ( this.groupMarkers.firstChild ) {
         this.groupMarkers.removeChild( this.groupMarkers.firstChild );
       }
+
+      return this;
     },
 
+
+    /**
+     * Applies a selection to the serie
+     * @param {String} [ selectionType = "selected" ] - The selection name
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     * @see SerieLine#unselect
+     */
     select: function( selectionType ) {
 
       selectionType = selectionType ||  "selected";
 
-      this.selected = true;
+      this.selected = selectionType !== "unselected";
 
       if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
         this.selectionType = selectionType;
@@ -8037,24 +8266,35 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
+      return this;
     },
 
+
+    /**
+     * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     * @see SerieLine#select
+     */
     unselect: function() {
 
       this.selected = false;
-      var selectionType = "unselected";
-      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
-        this.selectionType = selectionType;
-        this.draw();
-        this.applyLineStyles();
-      } else {
-        this.selectionType = selectionType;
-        this.applyLineStyles();
-      }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
+      return this.select("unselected");
     },
 
+
+
+    /**
+     * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
+     * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
+     * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
+     * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+     * @memberof SerieLine.prototype
+     * @param {Object} options - A object containing the options to set
+     * @return {Serie} The newly created zone serie
+     * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
+     * zone.setLineColor('red');
+     */
     degrade: function( pxPerP, options ) {
 
       var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
@@ -8157,6 +8397,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.currentLineId = 0;
     },
 
+
     detectPeaks: function( x, y ) {
 
       if ( this.options.autoPeakPicking ) {
@@ -8199,6 +8440,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
     },
 
+    /**
+     * Draws the serie
+     * @memberof SerieLine.prototype
+     */
     draw: function() { // Serie redrawing
 
       this.drawInit();
@@ -8234,13 +8479,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       this.insertMarkers();
       this.insertLinesGroup();
 
+      // Unhovers everything
       for ( var i in this.domMarkerHover ) {
-        this.toggleMarker( i.split( ',' ), true, true );
+        this.toggleMarker( i.split( ',' ), false, true );
       }
 
+      // Deselects everything
       for ( var i in this.domMarkerSelect ) {
-
-        this.toggleMarker( i.split( ',' ), true, false );
+        this.toggleMarker( i.split( ',' ), false, false );
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
@@ -8580,6 +8826,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     },
 
+    /**
+     * Hides the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine.prototype
+     */
     hidePeakPicking: function( lock ) {
 
       if ( !this._hidePeakPickingLocked ) {
@@ -8589,6 +8839,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       hidePeakPicking( this );
     },
 
+    /**
+     * Shows the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine.prototype
+     */
     showPeakPicking: function( unlock ) {
 
       if ( this._hidePeakPickingLocked && !unlock ) {
@@ -8691,6 +8945,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
 
     },
 
+
     setMarkerStyleTo: function( dom, family ) {
 
       if ( !dom ||  !family ) {
@@ -8703,6 +8958,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
     },
 
+
+    /**
+     * Hides the tracking marker (see the trackMouse option)
+     * @memberof SerieLine.prototype
+     */
     hideTrackingMarker: function() {
       this.marker.setAttribute( 'display', 'none' );
       this.markerLabel.setAttribute( 'display', 'none' );
@@ -8783,6 +9043,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return line;
     },
 
+
+    /**
+     * Reapply the current style to the serie lines elements. Mostly used internally
+     * @memberof SerieLine.prototype
+     */
     applyLineStyles: function() {
 
       for ( var i = 0; i < this.lines.length; i++ ) {
@@ -8790,6 +9055,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
     },
 
+
+    /**
+     * Applies the current style to a line element. Mostly used internally
+     * @memberof SerieLine.prototype
+     */
     applyLineStyle: function( line ) {
 
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -8803,6 +9073,17 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
 
+
+
+    /**
+     * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
+     * @memberof SerieLine.prototype
+     * @example var opts = { lineColor: 'red' };
+     * var s = graph.newSerie( "name", opts ).setData( someData );
+     * opts.lineColor = 'green';
+     * s.updateStyle(); // Sets the lineColor to green
+     * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
+     */
     updateStyle: function() {
       this.applyLineStyles();
       this.setLegendSymbolStyle();
@@ -8919,6 +9200,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return this.independantMarkers[ index ];
     },
 
+
+    /**
+     * Searches the closest point pair (x,y) to the a pair of pixel position
+     * @memberof SerieLine.prototype
+     * @param {Number} x - The x position in pixels (from the left)
+     * @param {Number} y - The y position in pixels (from the left)
+     * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+     */
     searchIndexByPxXY: function( x, y ) {
 
       var oldDist = false,
@@ -8966,6 +9255,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return xyindex;
     },
 
+    /**
+     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+     * @memberof SerieLine.prototype
+     * @param {Number} valX - The x value to search for
+     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+     */
     searchClosestValue: function( valX ) {
 
       var xMinIndex;
@@ -9100,6 +9395,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       }
     },
 
+    /**
+     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+     * @memberof SerieLine.prototype
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     */
     getMax: function( start, end ) {
 
       var start2 = Math.min( start, end ),
@@ -9137,6 +9439,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
       return max;
     },
 
+    /**
+     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+     * @memberof SerieLine.prototype
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     */
     getMin: function( start, end ) {
 
       var start2 = Math.min( start, end ),
@@ -9469,6 +9778,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     XIsMonotoneous: function() {
       this.xmonotoneous = true;
       return this;
+    },
+
+    isXMonotoneous: function() {
+      return this.xmonotoneous ||  false;
+    },
+
+    XMonotoneousDirection: function() {
+
+      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     makePeakPicking: function() {
@@ -9821,7 +10139,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieNonInstanciable, Slot
     }
   }
 
-  return GraphSerie;
+  return GraphSerieLine;
  } ) ( build["./graph._serie"],build["./series/slotoptimizer"],build["./graph.util"] );
 
 
@@ -11128,7 +11446,6 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
-
       this.groupZones = document.createElementNS( this.graph.ns, 'g' );
       this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
@@ -11804,7 +12121,7 @@ build['./shapes/graph.shape'] = ( function( ) {
       return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [] )[ 0 ];
     },
 
-    getData: function () {
+    getData: function() {
       return this._data;
     },
     getFromData: function( prop ) {
