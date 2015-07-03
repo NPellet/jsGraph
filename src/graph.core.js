@@ -1,5 +1,6 @@
-define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
 
+define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
+  
   /** 
    * Default graph parameters
    * @name GraphOptionsDefault
@@ -9,6 +10,16 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
    * @prop {String} title - Title of the graph
    * @prop {Number} paddingTop - The top padding
    * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user 
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
    */
   var GraphOptionsDefault = {
 
@@ -29,12 +40,12 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     fontSize: 12,
     fontFamily: 'Myriad Pro, Helvetica, Arial',
 
-    plugins: [],
+    plugins: {},
     pluginAction: {},
     wheel: {},
     dblclick: {},
 
-    shapeSelection: 'unique'
+    uniqueShapeSelection: true
   };
 
   /** 
@@ -49,7 +60,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
    * @param {Array} axis.right - The list of right axes
    * @augments EventEmitter
    * @example var graph = new Graph("someDomID");
-   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', shapeSelection: 'multiple' } );
+   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
    */
   var Graph = function( wrapper, options, axis ) {
 
@@ -110,7 +121,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     this.series = [];
     this._dom = wrapper;
 
-    if ( this.options.hasOwnProperty( 'padding' ) ) {
+    if ( this.options.hasOwnProperty( 'padding' ) && util.isNumeric( this.options.padding ) ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
     }
 
@@ -674,7 +685,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         i,
         xy;
 
-      this.refreshMinOrMax();
+
 
       for ( j = 0, l = axisvars.length; j < l; j++ ) {
 
@@ -1114,7 +1125,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       this.cancelSelectShape = false;
 
-      if ( this.selectedShapes.length > 0 && this.options.shapeSelection == "unique" )  { // Only one selected shape at the time
+      if ( this.selectedShapes.length > 0 && this.options.uniqueShapeSelection )  { // Only one selected shape at the time
 
         //console.log('Unselect shape');
         while ( this.selectedShapes[ 0 ] ) {
@@ -1830,8 +1841,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     };
 
     graph._painted = true;
-    graph.refreshMinOrMax();
-
+    
     // Apply to top and bottom
     graph._applyToAxes( function( axis, position ) {
 

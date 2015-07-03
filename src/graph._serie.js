@@ -35,19 +35,28 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     /** 
      * Sets data to the serie
      * @memberof Serie.prototype
-     * @param data - The data of the serie
+     * @param {(Object|Array|Array[])} data - The data of the serie
+     * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
+     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data). 
+     * @memberof Serie.prototype
+     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
+     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
+     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
+     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
      */
-    setData: function( data, arg, type ) {
+    setData: function( data, oneDimensional, type ) {
 
       var z = 0,
         x,
         dx,
-        arg = arg || "2D",
+        oneDimensional = oneDimensional || false,
         type = type || 'float',
         arr,
         total = 0,
         continuous;
 
+      this.empty();
+      
       this.minX = +Infinity;
       this.minY = +Infinity;
       this.maxX = -Infinity;
@@ -64,26 +73,26 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         data = [ data ];
       } else if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
-        arg = "1D";
+        oneDimensional = true;
       }
 
-      var _2d = ( arg == "2D" );
+      
 
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && arg == "2D" && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      if ( data[ 0 ] instanceof Array && ! oneDimensional  && !( data[ 0 ][ 0 ] instanceof Array ) ) {
         data = [ data ];
       }
 
       if ( data[ 0 ] instanceof Array ) {
         for ( var i = 0, k = data.length; i < k; i++ ) {
 
-          arr = this._addData( type, _2d ? data[ i ].length * 2 : data[ i ].length );
+          arr = this._addData( type, ! oneDimensional ? data[ i ].length * 2 : data[ i ].length );
           datas.push( arr );
           z = 0;
 
           for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-            if ( _2d ) {
+            if ( ! oneDimensional ) {
               arr[ z ] = ( data[ i ][ j ][ 0 ] );
               this._checkX( arr[ z ] );
               z++;
@@ -212,6 +221,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
+
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -237,16 +247,29 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       }
     },
 
+    /**
+     * Returns the data in its current form
+     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
+     * @memberof Serie.prototype
+     */
     getData: function() {
       return this.data;
     },
 
-    // Default set options
+    /**
+     * Sets the options of the serie (no extension of default options)
+     * @param {Object} options - The options of the serie
+     * @memberof Serie.prototype
+     */
     setOptions: function( options ) {
       this.options = options ||  {};
     },
 
-    kill: function( noRedraw ) {
+    /**
+     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+     * @memberof Serie.prototype
+     */
+    kill: function( ) {
 
       this.graph.removeSerieFromDom( this );
 
@@ -258,16 +281,18 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       this.graph._removeSerie( this );
 
-      if ( !noRedraw )  {
-        this.graph.redraw();
-      }
-
       if ( this.graph.legend ) {
 
         this.graph.legend.update();
       }
     },
 
+    /**
+     * Hides the serie
+     * @memberof Serie.prototype
+     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
     hide: function( hideShapes ) {
       this.hidden = true;
       this.groupMain.setAttribute( 'display', 'none' );
@@ -286,6 +311,13 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
+
+    /**
+     * Shows the serie
+     * @memberof Serie.prototype
+     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
     show: function( showShapes ) {
       this.hidden = false;
       this.groupMain.setAttribute( 'display', 'block' );
@@ -310,30 +342,65 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     hideImpl: function() {},
     showImpl: function() {},
 
-    toggleShow: function() {
-      if ( !this.shown ) {
+
+    /**
+     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+     * @memberof Serie.prototype
+     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
+     * @returns {Serie} The current serie
+     */
+    toggleDisplay: function() {
+
+      if ( ! this.isShown() ) {
         this.show();
-        return;
+      } else {
+        this.hide();
       }
 
-      this.hide();
+      return this;
     },
 
+    /**
+     * Determines if the serie is currently visible
+     * @memberof Serie.prototype
+     * @returns {Boolean} The current visibility status of the serie
+     */
     isShown: function() {
       return !this.hidden;
     },
 
+
+    /**
+     * Returns the x position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie.prototype
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The x position in px corresponding to the x value
+     */
     getX: function( val ) {
       return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
     },
 
+
+    /**
+     * Returns the y position of a certain value in pixels position, based on the serie's axis
+     * @memberof Serie.prototype
+     * @param {Number} val - Value to convert to pixels position
+     * @returns {Number} The y position in px corresponding to the y value
+     */
     getY: function( val ) {
       return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
     },
 
+
+    /**
+     * Returns the selection state of the serie. Generic for most serie types
+     * @memberof Serie.prototype
+     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
+     */
     isSelected: function() {
-      return this.selected ||  ( this.selectionType !== "unselected" );
+      return this.selected || ( this.selectionType !== "unselected" );
     },
+
 
     _checkX: function( val ) {
       this.minX = Math.min( this.minX, val );
@@ -345,22 +412,46 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.maxY = Math.max( this.maxY, val );
     },
 
+
+    /**
+     * Getter for the serie name
+     * @memberof Serie.prototype
+     * @returns {String} The serie name
+     */
     getName: function() {
       return this.name;
     },
 
     /* AXIS */
 
+
+    /**
+     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}. 
+     * @memberof Serie.prototype
+     * @returns {Serie} The current serie
+     */
     autoAxis: function() {
 
-      this.setXAxis( !this.isFlipped() ? this.graph.getXAxis() : this.graph.getYAxis() );
-      this.setYAxis( !this.isFlipped() ? this.graph.getYAxis() : this.graph.getXAxis() );
-
+      if( this.isFlipped() ) {
+        this.setXAxis( this.graph.getYAxis() );
+        this.setYAxis( this.graph.getXAxis() );
+      } else {
+        this.setXAxis( this.graph.getXAxis() );
+        this.setYAxis( this.graph.getYAxis() );
+      }
+      
+      // After axes have been assigned, the graph axes should update their min/max
       this.graph.updateDataMinMaxAxes();
-
       return this;
     },
 
+    /**
+     * Assigns an x axis to the serie
+     * @memberof Serie.prototype
+     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
+     */
     setXAxis: function( axis ) {
 
       if ( typeof axis == "number" )
@@ -371,6 +462,14 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
+
+    /**
+     * Assigns an y axis to the serie
+     * @memberof Serie.prototype
+     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+     * @returns {Serie} The current serie
+     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
+     */
     setYAxis: function( axis ) {
       if ( typeof axis == "number" )
         this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
@@ -380,14 +479,13 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
-    getXAxis: function() {
-      return this.xaxis;
-    },
-
-    getYAxis: function() {
-      return this.yaxis;
-    },
-
+    /**
+     * Assigns two axes to the serie
+     * @param {Axis} axis1 - First axis to assign to the serie (x or y)
+     * @param {Axis} axis2 - Second axis to assign to the serie (y or x)
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
     setAxes: function() {
 
       for ( var i = 0; i < 2; i++ ) {
@@ -400,26 +498,68 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this;
     },
 
+
+    /**
+     * @returns {Axis} The x axis assigned to the serie
+     * @memberof Serie.prototype
+     */
+    getXAxis: function() {
+      return this.xaxis;
+    },
+
+
+    /**
+     * @returns {Axis} The y axis assigned to the serie
+     * @memberof Serie.prototype
+     */
+    getYAxis: function() {
+      return this.yaxis;
+    },
+
     /* */
 
     /* DATA MIN MAX */
 
+    /**
+     * @returns {Number} Lowest x value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMinX: function() {
       return this.minX;
     },
 
+
+    /**
+     * @returns {Number} Highest x value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMaxX: function() {
       return this.maxX;
     },
 
+
+    /**
+     * @returns {Number} Lowest y value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMinY: function() {
       return this.minY;
     },
 
+
+    /**
+     * @returns {Number} Highest y value of the serie's data
+     * @memberof Serie.prototype
+     */
     getMaxY: function() {
       return this.maxY;
     },
 
+    /**
+     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     */
     getSymbolForLegend: function() {
 
       if ( !this.lineForLegend ) {
@@ -441,6 +581,31 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     },
 
+    /**
+     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
+     * @see Serie#getSymbolForLegend
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     */
+    setLegendSymbolStyle: function() {
+      this.applyLineStyle( this.getSymbolForLegend() );
+    },
+
+    /**
+     * @alias Serie#setLegendSymbolStyle
+     * @memberof Serie.prototype
+     */
+    updateStyle: function() {
+      this.setLegendSymbolStyle();
+    },
+
+
+    /**
+     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+     * @returns {SVGElement} 
+     * @memberof Serie.prototype
+     * @see Serie#getLabel
+     */
     getTextForLegend: function() {
 
       if ( !this.textForLegend ) {
@@ -456,18 +621,30 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       return this.textForLegend;
     },
 
-    setLegendSymbolStyle: function() {
-      this.applyLineStyle( this.getSymbolForLegend() );
-    },
-
+    /**
+     * @returns {Number} The current index of the serie
+     * @memberof Serie.prototype
+     */
     getIndex: function() {
       return this.graph.series.indexOf( this );
     },
 
+
+    /**
+     * @returns {String} The label or, alternatively - the name of the serie
+     * @memberof Serie.prototype
+     */
     getLabel: function() {
       return this.options.label || this.name;
     },
 
+
+    /**
+     * Sets the label of the serie. Note that this does not automatically updates the legend
+     * @param {String} label - The new label of the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
     setLabel: function( label ) {
       this.options.label = label;
 
@@ -479,37 +656,54 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     /* FLIP */
 
-    setFlip: function( bol ) {
-      this.options.flip = bol;
+
+    /**
+     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
+     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
+     * @returns {Serie} The current serie
+     * @memberof Serie.prototype
+     */
+    setFlip: function( flipped ) {
+      this.options.flip = flipped;
+      return this;
     },
 
+    /**
+     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
+     * @memberof Serie.prototype
+     */
     getFlip: function() {
       return this.options.flip;
     },
 
+    /**
+     * @alias Serie#getFlip
+     * @memberof Serie.prototype
+     */
     isFlipped: function() {
       return this.options.flip;
     },
 
-    isXMonotoneous: function() {
-      return this.xmonotoneous ||  false;
+
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * @memberof Serie.prototype
+     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
+     * @returns {Serie} The current serie
+     */
+    setLayer: function( layerIndex ) {
+      this.options.layer = parseInt( layerIndex ) || 1;
+      return this;
     },
 
-    XMonotoneousDirection: function() {
 
-      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
-    },
-
+    /**
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * @memberof Serie.prototype
+     * @returns {Nunber} The index of the layer into which the serie will be drawn
+     */
     getLayer: function() {
       return this.options.layer ||  1;
-    },
-
-    setLayer: function( layer ) {
-      this.options.layer = layer;
-    },
-
-    updateStyle: function() {
-      this.setLegendSymbolStyle();
     }
 
   } );

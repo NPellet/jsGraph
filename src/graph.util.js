@@ -50,7 +50,12 @@ define( [], function() {
 
     throwError: function( message ) {
       console.error( message );
-    }
+    },
+
+    // Borrowed from jQuery
+    isNumeric: function( obj ) {
+      return !Array.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
+    } 
 
   }
 

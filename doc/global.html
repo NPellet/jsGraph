@@ -27,14 +27,14 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Graph.html">Graph</a></li><li><a href="Serie.html">Serie</a></li>
+					<li><a href="Graph.html">Graph</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li>
 				</ul>
 			</li>
 			
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html">GraphOptionsDefault</a></li><li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#getSelectedSerie">getSelectedSerie</a></li>
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#getMarkerCurrentFamily">getMarkerCurrentFamily</a></li><li><a href="global.html#getSelectedSerie">getSelectedSerie</a></li><li><a href="global.html">GraphOptionsDefault</a></li><li><a href="global.html">SerieLineDefaultOptions</a></li>
 				</ul>
 			</li>
 			
@@ -241,6 +241,239 @@
         </tr>
 
 	
+
+        <tr>
+            
+                <td class="name"><code>paddingRight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The right padding</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>paddingBottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The bottom padding</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>padding</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>A common padding value for top, bottom, left and right</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>fontSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The basic text size of the graphs</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>paddingLeft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The basic font family. Should be installed on the computer of the user</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>plugins</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>A list of plugins to import with their options</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>pluginAction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The default key combination to access those actions</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>wheel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Define the mouse wheel action</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>dblclick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Define the double click action</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>uniqueShapeSelection</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>true to allow only one shape to be selected at the time</p></td>
+        </tr>
+
+	
 	</tbody>
 </table>
 </dl>
@@ -274,15 +507,158 @@
 
 
 	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="graph.core.js.html">graph.core.js</a>,
-				 <a href="graph.core.js.html#sunlight-1-line-3">line 3</a>
-			</li>
-		</ul>
-	</dd>
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<dt class="name" id="SerieLineDefaultOptions">
+    <h4><span class="type-signature">&lt;private, static> </span>SerieLineDefaultOptions<span class="type-signature"></span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+
+    
+<dl class="details">
+	
+
+	<h5 class="subsection-title">Properties:</h5>
+
+	<dl>
+
+<table class="props table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Title of the graph</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>paddingTop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The top padding</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>paddingLeft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The left padding</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+</dl>
+
+	
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
 	
 
 	
@@ -445,16 +821,6 @@
 
 
 	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="graph.core.js.html">graph.core.js</a>,
-				 <a href="graph.core.js.html#sunlight-1-line-713">line 713</a>
-			</li>
-		</ul>
-	</dd>
-	
 
 	
 
@@ -465,6 +831,123 @@
 			<li><a href="Graph.html#_applyToAxes">Graph#_applyToAxes</a></li>
 			</ul>
 	</dd>
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMarkerCurrentFamily"><span class="type-signature"></span>getMarkerCurrentFamily<span class="signature">(k)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>k</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Index of the point for which we should get the family</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
 	
 
 	
@@ -538,16 +1021,6 @@
 
 
 
-	
-	<dt class="tag-source">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="graph.core.js.html">graph.core.js</a>,
-				 <a href="graph.core.js.html#sunlight-1-line-936">line 936</a>
-			</li>
-		</ul>
-	</dd>
 	
 
 	
@@ -637,7 +1110,7 @@
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Thu Jul 2nd 2015 using the <a
+	on Fri Jul 3rd 2015 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

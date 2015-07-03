@@ -1,10 +1,24 @@
-define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( GraphSerieNonInstanciable, SlotOptimizer, util ) {
+define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( GraphSerieLineNonInstanciable, SlotOptimizer, util ) {
 
   "use strict";
 
-  var GraphSerie = function() {}
-  $.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
-
+  /** 
+   * Represents a serie of the type "line"
+   * @class SerieLine
+   * @augments Serie
+   */
+  var GraphSerieLine = function() {}
+  $.extend( GraphSerieLine.prototype, GraphSerieLineNonInstanciable.prototype, {
+  
+  /**
+    * @name SerieLineDefaultOptions
+    * @object
+    * @private
+    * @static
+    * @prop {String} title - Title of the graph
+    * @prop {Number} paddingTop - The top padding
+    * @prop {Number} paddingLeft - The left padding
+    */
     defaults: {
       lineColor: 'black',
       lineStyle: 1,
@@ -39,7 +53,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.graph = graph;
       this.name = name;
 
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) ); // Creates options
+      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) ); // Creates options
       util.mapEventEmission( this.options, this ); // Register events
 
       // Creates an empty style variable
@@ -161,8 +175,16 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     },
 
+
+    /**
+     * Sets the options of the serie
+     * @see SerieLineDefaultOptions
+     * @memberof SerieLine.prototype
+     * @param {Object} options - A object containing the options to set
+     * @return {Serie} The current serie
+     */
     setOptions: function( options ) {
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, ( options || {} ) );
+      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) );
       // Unselected style
       this.styles.unselected = {
         lineColor: this.options.lineColor,
@@ -171,19 +193,15 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       };
 
       this.applyLineStyles();
+      return this;
     },
 
     calculateSlots: function() {
 
       var self = this;
       this.slotsData = {};
-      //      this.slotWorker = new Worker( './src/slotworker.js' );
-
       for ( var i = 0, l = this.slots.length; i < l; i++ ) {
-
-        //this.slotsData[ i ] = $.Deferred();
         this.calculateSlot( this.slots[ i ], i );
-        //        this.slotsData[ this.slots[ i ] ].max = this.data[ j ][ m ];
       }
     },
 
@@ -228,6 +246,14 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
     },
 
+    /**
+     * Selects one of the markers of the serie
+     * @memberof SerieLine.prototype
+     * @param {Number} index - The point index to select (starting at 0)
+     * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
+     * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
+     * @returns {Boolean} The new state of the marker
+     */
     toggleMarker: function( index, force, hover ) {
       var i = index[ 0 ],
         k = index[ 1 ] || 0;
@@ -293,12 +319,34 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return _on;
     },
 
+
+    /**
+     * Toggles off markers that have the hover mode "on"
+     * @memberof SerieLine.prototype
+     * @returns {Serie} The current serie
+     */
     markersOffHover: function() {
 
       for ( var i in this.domMarkerHover ) {
         this.toggleMarker( i.split( ',' ), false, true );
       }
+      return this;
     },
+
+
+    /**
+     * Toggles off markers that have the select mode "on"
+     * @memberof SerieLine.prototype
+     * @returns {Serie} The current serie
+     */
+    markersOffSelect: function() {
+
+      for ( var i in this.domMarkerSelect ) {
+        this.toggleMarker( i.split( ',' ), false, false );
+      }
+      return this;
+    },
+
 
     onClickOnMarker: function( e, index ) {
 
@@ -327,23 +375,37 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     onMouseWheel: function() {},
 
+    /**
+     * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     */
     empty: function() {
 
       for ( var i = 0, l = this.lines.length; i < l; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
-
       }
 
       while ( this.groupMarkers.firstChild ) {
         this.groupMarkers.removeChild( this.groupMarkers.firstChild );
       }
+
+      return this;
     },
 
+
+    /**
+     * Applies a selection to the serie
+     * @param {String} [ selectionType = "selected" ] - The selection name
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     * @see SerieLine#unselect
+     */
     select: function( selectionType ) {
 
       selectionType = selectionType ||  "selected";
 
-      this.selected = true;
+      this.selected = selectionType !== "unselected";
 
       if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
         this.selectionType = selectionType;
@@ -356,24 +418,35 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
+      return this;
     },
 
+
+    /**
+     * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
+     * @returns {Serie} The current serie
+     * @memberof SerieLine.prototype
+     * @see SerieLine#select
+     */
     unselect: function() {
 
       this.selected = false;
-      var selectionType = "unselected";
-      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
-        this.selectionType = selectionType;
-        this.draw();
-        this.applyLineStyles();
-      } else {
-        this.selectionType = selectionType;
-        this.applyLineStyles();
-      }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
+      return this.select("unselected");
     },
 
+
+
+    /**
+     * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
+     * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
+     * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
+     * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+     * @memberof SerieLine.prototype
+     * @param {Object} options - A object containing the options to set
+     * @return {Serie} The newly created zone serie
+     * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
+     * zone.setLineColor('red');
+     */
     degrade: function( pxPerP, options ) {
 
       var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
@@ -476,6 +549,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.currentLineId = 0;
     },
 
+
     detectPeaks: function( x, y ) {
 
       if ( this.options.autoPeakPicking ) {
@@ -518,6 +592,10 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
     },
 
+    /**
+     * Draws the serie
+     * @memberof SerieLine.prototype
+     */
     draw: function() { // Serie redrawing
 
       this.drawInit();
@@ -553,13 +631,14 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.insertMarkers();
       this.insertLinesGroup();
 
+      // Unhovers everything
       for ( var i in this.domMarkerHover ) {
-        this.toggleMarker( i.split( ',' ), true, true );
+        this.toggleMarker( i.split( ',' ), false, true );
       }
 
+      // Deselects everything
       for ( var i in this.domMarkerSelect ) {
-
-        this.toggleMarker( i.split( ',' ), true, false );
+        this.toggleMarker( i.split( ',' ), false, false );
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
@@ -899,6 +978,10 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     },
 
+    /**
+     * Hides the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine.prototype
+     */
     hidePeakPicking: function( lock ) {
 
       if ( !this._hidePeakPickingLocked ) {
@@ -908,6 +991,10 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       hidePeakPicking( this );
     },
 
+    /**
+     * Shows the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine.prototype
+     */
     showPeakPicking: function( unlock ) {
 
       if ( this._hidePeakPickingLocked && !unlock ) {
@@ -1010,6 +1097,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     },
 
+
     setMarkerStyleTo: function( dom, family ) {
 
       if ( !dom ||  !family ) {
@@ -1022,6 +1110,11 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
     },
 
+
+    /**
+     * Hides the tracking marker (see the trackMouse option)
+     * @memberof SerieLine.prototype
+     */
     hideTrackingMarker: function() {
       this.marker.setAttribute( 'display', 'none' );
       this.markerLabel.setAttribute( 'display', 'none' );
@@ -1102,6 +1195,11 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return line;
     },
 
+
+    /**
+     * Reapply the current style to the serie lines elements. Mostly used internally
+     * @memberof SerieLine.prototype
+     */
     applyLineStyles: function() {
 
       for ( var i = 0; i < this.lines.length; i++ ) {
@@ -1109,6 +1207,11 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
     },
 
+
+    /**
+     * Applies the current style to a line element. Mostly used internally
+     * @memberof SerieLine.prototype
+     */
     applyLineStyle: function( line ) {
 
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -1122,6 +1225,17 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
 
+
+
+    /**
+     * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
+     * @memberof SerieLine.prototype
+     * @example var opts = { lineColor: 'red' };
+     * var s = graph.newSerie( "name", opts ).setData( someData );
+     * opts.lineColor = 'green';
+     * s.updateStyle(); // Sets the lineColor to green
+     * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
+     */
     updateStyle: function() {
       this.applyLineStyles();
       this.setLegendSymbolStyle();
@@ -1238,6 +1352,14 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return this.independantMarkers[ index ];
     },
 
+
+    /**
+     * Searches the closest point pair (x,y) to the a pair of pixel position
+     * @memberof SerieLine.prototype
+     * @param {Number} x - The x position in pixels (from the left)
+     * @param {Number} y - The y position in pixels (from the left)
+     * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+     */
     searchIndexByPxXY: function( x, y ) {
 
       var oldDist = false,
@@ -1285,6 +1407,12 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return xyindex;
     },
 
+    /**
+     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+     * @memberof SerieLine.prototype
+     * @param {Number} valX - The x value to search for
+     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+     */
     searchClosestValue: function( valX ) {
 
       var xMinIndex;
@@ -1419,6 +1547,13 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
     },
 
+    /**
+     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+     * @memberof SerieLine.prototype
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     */
     getMax: function( start, end ) {
 
       var start2 = Math.min( start, end ),
@@ -1456,6 +1591,13 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       return max;
     },
 
+    /**
+     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+     * @memberof SerieLine.prototype
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     */
     getMin: function( start, end ) {
 
       var start2 = Math.min( start, end ),
@@ -1788,6 +1930,15 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     XIsMonotoneous: function() {
       this.xmonotoneous = true;
       return this;
+    },
+
+    isXMonotoneous: function() {
+      return this.xmonotoneous ||  false;
+    },
+
+    XMonotoneousDirection: function() {
+
+      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
     },
 
     makePeakPicking: function() {
@@ -2140,5 +2291,5 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     }
   }
 
-  return GraphSerie;
+  return GraphSerieLine;
 } );
