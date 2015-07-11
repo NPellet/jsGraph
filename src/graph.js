@@ -39,8 +39,7 @@ define( [
     './shapes/graph.shape.zoom2d',
     './shapes/graph.shape.peakboundariescenter',
 
-    './graph.toolbar',
-    './graph.legend'
+    './graph.toolbar'
 
   ],
 
@@ -81,8 +80,7 @@ define( [
     GraphShapeZoom2D,
     GraphShapePeakBoundariesCenter,
 
-    GraphToolbar,
-    GraphLegend
+    GraphToolbar
 
   ) {
 
