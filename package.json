@@ -4,32 +4,24 @@
   "devDependencies": {
     "bower": "^1.3.5",
     "grunt": "^0.4.5",
-    "grunt-bump": "^0.0.16",
+    "grunt-bump": "^0.3.1",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.5.0",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-uglify": "^0.9.1",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-jsdoc": "^0.6.7",
     "grunt-requirejs": "^0.4.2",
-    "grunt-sass": "^0.14.0",
-    "grunt-sloc": "^0.5.2",
+    "grunt-sass": "^1.0.0",
+    "grunt-sloc": "^0.6.0",
     "install": "^0.1.7",
     "js-beautify": "^1.5.1",
-    "ncp": "^0.6.0",
-    "npm": "^2.1.6",
-    "path": "^0.4.9",
-    "requirejs": "2.1.14",
+    "ncp": "^2.0.0",
+    "path": "^0.11.14",
+    "requirejs": "^2.1.18",
     "wrench": "^1.5.8"
   },
-  "dependencies": {
-    "grunt-bump": "^0.3.0",
-    "grunt-contrib-copy": "^0.8.0",
-    "grunt-contrib-uglify": "^0.8.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-sass": "^0.18.1",
-    "grunt-sloc": "^0.5.2",
-    "requirejs": "^2.1.16",
-    "wrench": "^1.5.8"
-  }
+  "dependencies": {},
+  "repository": "NPellet/jsGraph",
+  "license": "MIT"
 }
