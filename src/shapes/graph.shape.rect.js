@@ -130,7 +130,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       // At this stage, x and y are in px
 
       x = pos.x,
-      y = pos.y;
+        y = pos.y;
 
       this.currentX = x;
       this.currentY = y;

@@ -382,9 +382,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         this.groupLines.removeChild( this.lines[ i ] );
       }
 
-      if (this.groupMarkers) {
-        while (this.groupMarkers.firstChild) {
-          this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+      if ( this.groupMarkers ) {
+        while ( this.groupMarkers.firstChild ) {
+          this.groupMarkers.removeChild( this.groupMarkers.firstChild );
         }
       }
 
@@ -1053,7 +1053,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         if ( this.isFlipped() ) {
 
           ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-          max = this.getX( slotToUse[ j ].max );
+            max = this.getX( slotToUse[ j ].max );
 
           /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1069,7 +1069,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
           xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-          max = this.getY( slotToUse[ j ].max );
+            max = this.getY( slotToUse[ j ].max );
 
           if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1379,7 +1379,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
           for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
             p_x = this.data[ i ][ k ],
-            p_y = this.data[ i ][ k + 1 ];
+              p_y = this.data[ i ][ k + 1 ];
             dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
             if ( !oldDist || dist < oldDist ) {
               oldDist = dist;
@@ -1954,9 +1954,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       for ( ; i < l; i++ ) {
 
         x = ys[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0,
-        y = self.getY( ys[ i ][ 0 ] );
+          px = self.getX( x ),
+          k = 0,
+          y = self.getY( ys[ i ][ 0 ] );
 
         if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
           continue;
@@ -2155,8 +2155,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     for ( ; i < l; i++ ) {
 
       j = 0,
-      k = 0,
-      m = graph.data[ i ].length;
+        k = 0,
+        m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;

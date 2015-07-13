@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-0
+ * jsGraph JavaScript Graphing Library v1.12.4-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-03T15:53Z
+ * Date: 2015-07-13T20:42Z
  */
 
 (function( global, factory ) {
@@ -23,7 +23,7 @@
 // Pass this if window is not defined yet
 }( ( typeof window !== "undefined" ? window : this ) , function( window ) {
 
-	
+	"use strict";
 
 	var Graph = function( $ ) {
 
@@ -33,7 +33,7 @@
 /* 
  * Build: new source file 
  * File name : graph.util
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.util.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.util.js
  */
 
 build['./graph.util'] = ( function( ) { 
@@ -92,8 +92,8 @@ build['./graph.util'] = ( function( ) {
 
     // Borrowed from jQuery
     isNumeric: function( obj ) {
-      return !Array.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
-    } 
+      return !Array.isArray( obj ) && ( obj - parseFloat( obj ) + 1 ) >= 0;
+    }
 
   }
 
@@ -108,7 +108,7 @@ build['./graph.util'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dependencies/eventEmitter/EventEmitter
- * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/dependencies/eventEmitter/EventEmitter.js
  */
 
 build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
@@ -119,7 +119,7 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
  */
 
 
-  
+  'use strict';
 
   /**
    * Class for managing events.
@@ -564,12 +564,11 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
 /* 
  * Build: new source file 
  * File name : graph.core
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.core.js
  */
 
 build['./graph.core'] = ( function( $, util, EventEmitter ) { 
 
-  
   /** 
    * Default graph parameters
    * @name GraphOptionsDefault
@@ -583,7 +582,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
    * @prop {Number} paddingBottom - The bottom padding
    * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
    * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user 
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
    * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
    * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
    * @prop {Object} wheel - Define the mouse wheel action
@@ -1253,8 +1252,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         l,
         i,
         xy;
-
-
 
       for ( j = 0, l = axisvars.length; j < l; j++ ) {
 
@@ -2410,7 +2407,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     };
 
     graph._painted = true;
-    
+
     // Apply to top and bottom
     graph._applyToAxes( function( axis, position ) {
 
@@ -2910,12 +2907,12 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 /* 
  * Build: new source file 
  * File name : graph._serie
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph._serie.js
  */
 
 build['./graph._serie'] = ( function( EventEmitter, util ) { 
 
-  
+  "use strict";
 
   /** 
    * Main class of jsGraph that creates a new graph. Should not be instanciated directly.
@@ -2952,7 +2949,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
      * @memberof Serie.prototype
      * @param {(Object|Array|Array[])} data - The data of the serie
      * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data). 
+     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
      * @memberof Serie.prototype
      * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
      * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
@@ -2971,7 +2968,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
         continuous;
 
       this.empty();
-      
+
       this.minX = +Infinity;
       this.minY = +Infinity;
       this.maxX = -Infinity;
@@ -2991,23 +2988,21 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
         oneDimensional = true;
       }
 
-      
-
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && ! oneDimensional  && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      if ( data[ 0 ] instanceof Array && !oneDimensional && !( data[ 0 ][ 0 ] instanceof Array ) ) {
         data = [ data ];
       }
 
       if ( data[ 0 ] instanceof Array ) {
         for ( var i = 0, k = data.length; i < k; i++ ) {
 
-          arr = this._addData( type, ! oneDimensional ? data[ i ].length * 2 : data[ i ].length );
+          arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
           datas.push( arr );
           z = 0;
 
           for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-            if ( ! oneDimensional ) {
+            if ( !oneDimensional ) {
               arr[ z ] = ( data[ i ][ j ][ 0 ] );
               this._checkX( arr[ z ] );
               z++;
@@ -3136,7 +3131,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
-
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -3184,7 +3178,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
      * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
      * @memberof Serie.prototype
      */
-    kill: function( ) {
+    kill: function() {
 
       this.graph.removeSerieFromDom( this );
 
@@ -3226,7 +3220,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
-
     /**
      * Shows the serie
      * @memberof Serie.prototype
@@ -3257,7 +3250,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     hideImpl: function() {},
     showImpl: function() {},
 
-
     /**
      * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
      * @memberof Serie.prototype
@@ -3266,7 +3258,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
      */
     toggleDisplay: function() {
 
-      if ( ! this.isShown() ) {
+      if ( !this.isShown() ) {
         this.show();
       } else {
         this.hide();
@@ -3284,7 +3276,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return !this.hidden;
     },
 
-
     /**
      * Returns the x position of a certain value in pixels position, based on the serie's axis
      * @memberof Serie.prototype
@@ -3294,7 +3285,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     getX: function( val ) {
       return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
     },
-
 
     /**
      * Returns the y position of a certain value in pixels position, based on the serie's axis
@@ -3306,7 +3296,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
     },
 
-
     /**
      * Returns the selection state of the serie. Generic for most serie types
      * @memberof Serie.prototype
@@ -3315,7 +3304,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     isSelected: function() {
       return this.selected || ( this.selectionType !== "unselected" );
     },
-
 
     _checkX: function( val ) {
       this.minX = Math.min( this.minX, val );
@@ -3326,7 +3314,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       this.minY = Math.min( this.minY, val );
       this.maxY = Math.max( this.maxY, val );
     },
-
 
     /**
      * Getter for the serie name
@@ -3339,22 +3326,21 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
     /* AXIS */
 
-
     /**
-     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}. 
+     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
      * @memberof Serie.prototype
      * @returns {Serie} The current serie
      */
     autoAxis: function() {
 
-      if( this.isFlipped() ) {
+      if ( this.isFlipped() ) {
         this.setXAxis( this.graph.getYAxis() );
         this.setYAxis( this.graph.getXAxis() );
       } else {
         this.setXAxis( this.graph.getXAxis() );
         this.setYAxis( this.graph.getYAxis() );
       }
-      
+
       // After axes have been assigned, the graph axes should update their min/max
       this.graph.updateDataMinMaxAxes();
       return this;
@@ -3376,7 +3362,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
       return this;
     },
-
 
     /**
      * Assigns an y axis to the serie
@@ -3413,7 +3398,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this;
     },
 
-
     /**
      * @returns {Axis} The x axis assigned to the serie
      * @memberof Serie.prototype
@@ -3421,7 +3405,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     getXAxis: function() {
       return this.xaxis;
     },
-
 
     /**
      * @returns {Axis} The y axis assigned to the serie
@@ -3443,7 +3426,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this.minX;
     },
 
-
     /**
      * @returns {Number} Highest x value of the serie's data
      * @memberof Serie.prototype
@@ -3452,7 +3434,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this.maxX;
     },
 
-
     /**
      * @returns {Number} Lowest y value of the serie's data
      * @memberof Serie.prototype
@@ -3460,7 +3441,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     getMinY: function() {
       return this.minY;
     },
-
 
     /**
      * @returns {Number} Highest y value of the serie's data
@@ -3472,7 +3452,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
     /**
      * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      */
     getSymbolForLegend: function() {
@@ -3499,7 +3479,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     /**
      * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
      * @see Serie#getSymbolForLegend
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      */
     setLegendSymbolStyle: function() {
@@ -3514,10 +3494,9 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       this.setLegendSymbolStyle();
     },
 
-
     /**
      * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
-     * @returns {SVGElement} 
+     * @returns {SVGElement}
      * @memberof Serie.prototype
      * @see Serie#getLabel
      */
@@ -3544,7 +3523,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this.graph.series.indexOf( this );
     },
 
-
     /**
      * @returns {String} The label or, alternatively - the name of the serie
      * @memberof Serie.prototype
@@ -3552,7 +3530,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     getLabel: function() {
       return this.options.label || this.name;
     },
-
 
     /**
      * Sets the label of the serie. Note that this does not automatically updates the legend
@@ -3570,7 +3547,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     },
 
     /* FLIP */
-
 
     /**
      * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
@@ -3599,21 +3575,19 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       return this.options.flip;
     },
 
-
     /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
      * @memberof Serie.prototype
      * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
      * @returns {Serie} The current serie
      */
     setLayer: function( layerIndex ) {
-      this.options.layer = parseInt( layerIndex ) || 1;
+      this.options.layer = parseInt( layerIndex ) ||  1;
       return this;
     },
 
-
     /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw. 
+     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
      * @memberof Serie.prototype
      * @returns {Nunber} The index of the layer into which the serie will be drawn
      */
@@ -3635,7 +3609,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 /* 
  * Build: new source file 
  * File name : graph.axis
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.js
  */
 
 build['./graph.axis'] = ( function( $, EventEmitter ) { 
@@ -4850,12 +4824,12 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.x.js
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
 
-  
+  "use strict";
 
   var GraphXAxis = function( graph, topbottom, options ) {
     this.init( graph, options );
@@ -5027,12 +5001,12 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.y.js
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
 
-  
+  "use strict";
 
   var GraphYAxis = function( graph, leftright, options ) {
 
@@ -5303,12 +5277,12 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.broken.js
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
 
-  
+  "use strict";
 
   var GraphAxis = function() {}
 
@@ -5547,12 +5521,12 @@ build['./graph.axis.broken'] = ( function( $ ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.x.broken.js
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
 
-  
+  "use strict";
 
   var GraphXAxisBroken = function( graph, topbottom, options ) {
     this.init( graph, options );
@@ -5591,12 +5565,12 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.y.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.y.broken.js
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
 
-  
+  "use strict";
 
   var GraphYAxisBroken = function( graph, leftright, options ) {
 
@@ -5640,12 +5614,12 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.axis.x.time
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.time.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.axis.x.time.js
  */
 
 build['./graph.axis.x.time'] = ( function( GraphAxis ) { 
 
-  
+  "use strict";
 
   var GraphXAxis = function( graph, topbottom, options ) {
 
@@ -6402,7 +6376,7 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 /* 
  * Build: new source file 
  * File name : graph.legend
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.legend.js
  */
 
 build['./graph.legend'] = ( function( ) { 
@@ -6694,7 +6668,7 @@ build['./graph.legend'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.drag
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.drag.js
  */
 
 build['./plugins/graph.plugin.drag'] = ( function( ) { 
@@ -6746,12 +6720,12 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.shape.js
  */
 
 build['./plugins/graph.plugin.shape'] = ( function( ) { 
 
-  
+  "use strict";
 
   var plugin = function() {};
 
@@ -6874,7 +6848,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : dependencies/eventEmitter/eventEmitter
- * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/eventEmitter.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/dependencies/eventEmitter/eventEmitter.js
  */
 
 build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
@@ -6885,7 +6859,7 @@ build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
  */
 
 
-  
+  'use strict';
 
   /**
    * Class for managing events.
@@ -7330,7 +7304,7 @@ build['./dependencies/eventEmitter/eventEmitter'] = ( function( ) { /*!
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.selectScatter
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.selectScatter.js
  */
 
 build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter, util ) { 
@@ -7460,7 +7434,7 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter, util )
 /* 
  * Build: new source file 
  * File name : plugins/graph.plugin.zoom
- * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.zoom.js
  */
 
 build['./plugins/graph.plugin.zoom'] = ( function( util ) { 
@@ -7737,7 +7711,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
 /* 
  * Build: new source file 
  * File name : series/slotoptimizer
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/slotoptimizer.js
  */
 
 build['./series/slotoptimizer'] = ( function( ) { 
@@ -7843,12 +7817,12 @@ build['./series/slotoptimizer'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.js
  */
 
 build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, SlotOptimizer, util ) { 
 
-  
+  "use strict";
 
   /** 
    * Represents a serie of the type "line"
@@ -7857,16 +7831,16 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
    */
   var GraphSerieLine = function() {}
   $.extend( GraphSerieLine.prototype, GraphSerieLineNonInstanciable.prototype, {
-  
-  /**
-    * @name SerieLineDefaultOptions
-    * @object
-    * @private
-    * @static
-    * @prop {String} title - Title of the graph
-    * @prop {Number} paddingTop - The top padding
-    * @prop {Number} paddingLeft - The left padding
-    */
+
+    /**
+     * @name SerieLineDefaultOptions
+     * @object
+     * @private
+     * @static
+     * @prop {String} title - Title of the graph
+     * @prop {Number} paddingTop - The top padding
+     * @prop {Number} paddingLeft - The left padding
+     */
     defaults: {
       lineColor: 'black',
       lineStyle: 1,
@@ -8023,7 +7997,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
     },
 
-
     /**
      * Sets the options of the serie
      * @see SerieLineDefaultOptions
@@ -8167,7 +8140,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       return _on;
     },
 
-
     /**
      * Toggles off markers that have the hover mode "on"
      * @memberof SerieLine.prototype
@@ -8181,7 +8153,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       return this;
     },
 
-
     /**
      * Toggles off markers that have the select mode "on"
      * @memberof SerieLine.prototype
@@ -8194,7 +8165,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       }
       return this;
     },
-
 
     onClickOnMarker: function( e, index ) {
 
@@ -8234,13 +8204,14 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
         this.groupLines.removeChild( this.lines[ i ] );
       }
 
-      while ( this.groupMarkers.firstChild ) {
-        this.groupMarkers.removeChild( this.groupMarkers.firstChild );
+      if (this.groupMarkers) {
+        while (this.groupMarkers.firstChild) {
+          this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+        }
       }
 
       return this;
     },
-
 
     /**
      * Applies a selection to the serie
@@ -8269,7 +8240,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       return this;
     },
 
-
     /**
      * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
      * @returns {Serie} The current serie
@@ -8279,10 +8249,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
     unselect: function() {
 
       this.selected = false;
-      return this.select("unselected");
+      return this.select( "unselected" );
     },
-
-
 
     /**
      * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
@@ -8396,7 +8364,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
       this.currentLineId = 0;
     },
-
 
     detectPeaks: function( x, y ) {
 
@@ -8945,7 +8912,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
     },
 
-
     setMarkerStyleTo: function( dom, family ) {
 
       if ( !dom ||  !family ) {
@@ -8957,7 +8923,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
       dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
     },
-
 
     /**
      * Hides the tracking marker (see the trackMouse option)
@@ -9043,7 +9008,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       return line;
     },
 
-
     /**
      * Reapply the current style to the serie lines elements. Mostly used internally
      * @memberof SerieLine.prototype
@@ -9054,7 +9018,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
         this.applyLineStyle( this.lines[ i ] );
       }
     },
-
 
     /**
      * Applies the current style to a line element. Mostly used internally
@@ -9072,8 +9035,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       line.setAttribute( 'fill', 'none' );
       //	line.setAttribute('shape-rendering', 'optimizeSpeed');
     },
-
-
 
     /**
      * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
@@ -9199,7 +9160,6 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       return this.independantMarkers[ index ];
     },
-
 
     /**
      * Searches the closest point pair (x,y) to the a pair of pixel position
@@ -10151,12 +10111,12 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 /* 
  * Build: new source file 
  * File name : series/graph.serie.contour
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/graph.serie.contour.js
  */
 
 build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
 
-  
+  "use strict";
   // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
   /**
    * Converts an HSL color value to RGB. Conversion formula
@@ -10536,12 +10496,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.line.broken
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.broken.js
  */
 
 build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
 
-  
+  "use strict";
 
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
@@ -10740,12 +10700,12 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : series/graph.serie.scatter
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/graph.serie.scatter.js
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, util ) { 
 
-  
+  "use strict";
 
   var GraphSerieScatter = function() {}
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
@@ -11415,12 +11375,12 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
 /* 
  * Build: new source file 
  * File name : series/graph.serie.zone
- * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/series/graph.serie.zone.js
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
 
-  
+  "use strict";
 
   var GraphSerieZone = function() {}
   $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
@@ -11779,12 +11739,12 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.js
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
 
-  
+  "use strict";
 
   function getColor( color ) {
 
@@ -13049,12 +13009,12 @@ build['./shapes/graph.shape'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.areaundercurve
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.areaundercurve.js
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
 
-  
+  "use strict";
 
   var GraphSurfaceUnderCurve = function( graph ) {
 
@@ -13323,7 +13283,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.line
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.line.js
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
@@ -13532,7 +13492,7 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.arrow
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.arrow.js
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
@@ -13573,7 +13533,7 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.ellipse
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.ellipse.js
  */
 
 build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) { 
@@ -13680,7 +13640,7 @@ build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.label
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.label.js
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
@@ -13756,12 +13716,12 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.nmrintegral
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.nmrintegral.js
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
 
-  
+  "use strict";
 
   var GraphNMRIntegral = function( graph, options ) {
     this.nbHandles = 2;
@@ -14013,7 +13973,7 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rect
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rect.js
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
@@ -14560,7 +14520,7 @@ this.handle1.setAttribute('x', this.currentX);
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakintegration2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakintegration2d.js
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
@@ -14610,12 +14570,12 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval.js
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
 
-  
+  "use strict";
   var GraphPeakInterval = function( graph ) {
 
   }
@@ -14656,12 +14616,12 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakinterval2
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval2.js
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
 
-  
+  "use strict";
   var lineHeight = 5;
 
   var GraphPeakInterval2 = function( graph, options ) {
@@ -14880,7 +14840,7 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.rangex
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rangex.js
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
@@ -15004,7 +14964,7 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.cross
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.cross.js
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
@@ -15133,7 +15093,7 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.zoom2d
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.zoom2d.js
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
@@ -15316,12 +15276,12 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
 /* 
  * Build: new source file 
  * File name : shapes/graph.shape.peakboundariescenter
- * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakboundariescenter.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakboundariescenter.js
  */
 
 build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) { 
 
-  
+  "use strict";
 
   var GraphPeakBoundariesCenter = function( graph, options ) {
     this.nbHandles = 3;
@@ -15511,7 +15471,7 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 /* 
  * Build: new source file 
  * File name : graph.toolbar
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.toolbar.js
  */
 
 build['./graph.toolbar'] = ( function( ) { 
@@ -15672,7 +15632,7 @@ build['./graph.toolbar'] = ( function( ) {
 /* 
  * Build: new source file 
  * File name : graph
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
+ * File path : /Users/mzasso/git/npellet/jsGraph/src/graph.js
  */
 
 return ( function( Graph,
@@ -15711,8 +15671,7 @@ return ( function( Graph,
     GraphShapeZoom2D,
     GraphShapePeakBoundariesCenter,
 
-    GraphToolbar,
-    GraphLegend
+    GraphToolbar
 
   ) { 
 
@@ -15755,7 +15714,7 @@ return ( function( Graph,
 
     return Graph;
 
-   } ) ( build["./graph.core"],build["./graph._serie"],build["./graph.axis"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.axis.x.time"],build["./graph.legend"],build["./plugins/graph.plugin.drag"],build["./plugins/graph.plugin.shape"],build["./plugins/graph.plugin.selectScatter"],build["./plugins/graph.plugin.zoom"],build["./series/graph.serie.contour"],build["./series/graph.serie.line"],build["./series/graph.serie.line.broken"],build["./series/graph.serie.scatter"],build["./series/graph.serie.zone"],build["./shapes/graph.shape"],build["./shapes/graph.shape.areaundercurve"],build["./shapes/graph.shape.arrow"],build["./shapes/graph.shape.ellipse"],build["./shapes/graph.shape.label"],build["./shapes/graph.shape.line"],build["./shapes/graph.shape.nmrintegral"],build["./shapes/graph.shape.peakintegration2d"],build["./shapes/graph.shape.peakinterval"],build["./shapes/graph.shape.peakinterval2"],build["./shapes/graph.shape.rangex"],build["./shapes/graph.shape.rect"],build["./shapes/graph.shape.cross"],build["./shapes/graph.shape.zoom2d"],build["./shapes/graph.shape.peakboundariescenter"],build["./graph.toolbar"],build["./graph.legend"] );
+   } ) ( build["./graph.core"],build["./graph._serie"],build["./graph.axis"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.axis.x.time"],build["./graph.legend"],build["./plugins/graph.plugin.drag"],build["./plugins/graph.plugin.shape"],build["./plugins/graph.plugin.selectScatter"],build["./plugins/graph.plugin.zoom"],build["./series/graph.serie.contour"],build["./series/graph.serie.line"],build["./series/graph.serie.line.broken"],build["./series/graph.serie.scatter"],build["./series/graph.serie.zone"],build["./shapes/graph.shape"],build["./shapes/graph.shape.areaundercurve"],build["./shapes/graph.shape.arrow"],build["./shapes/graph.shape.ellipse"],build["./shapes/graph.shape.label"],build["./shapes/graph.shape.line"],build["./shapes/graph.shape.nmrintegral"],build["./shapes/graph.shape.peakintegration2d"],build["./shapes/graph.shape.peakinterval"],build["./shapes/graph.shape.peakinterval2"],build["./shapes/graph.shape.rangex"],build["./shapes/graph.shape.rect"],build["./shapes/graph.shape.cross"],build["./shapes/graph.shape.zoom2d"],build["./shapes/graph.shape.peakboundariescenter"],build["./graph.toolbar"] );
 
 
 // Build: End source file (graph) 
