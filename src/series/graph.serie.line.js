@@ -382,8 +382,10 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         this.groupLines.removeChild( this.lines[ i ] );
       }
 
-      while ( this.groupMarkers.firstChild ) {
-        this.groupMarkers.removeChild( this.groupMarkers.firstChild );
+      if (this.groupMarkers) {
+        while (this.groupMarkers.firstChild) {
+          this.groupMarkers.removeChild(this.groupMarkers.firstChild);
+        }
       }
 
       return this;
