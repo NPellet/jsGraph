@@ -1,4 +1,5 @@
-define( [ '../dependencies/eventEmitter/eventEmitter', '../graph.util' ], function( EventEmitter, util ) {
+define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( EventEmitter, util ) {
+
 
   var plugin = function() {};
 
