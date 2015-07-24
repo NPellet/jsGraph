@@ -69,7 +69,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       var isDataArray = isArray( data );
 
-
       // Single object
       var datas = [];
 
@@ -78,7 +77,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         oneDimensional = true;
-      } else if( ! isDataArray ) {
+      } else if ( !isDataArray ) {
         util.throwError( "Data is not an array" );
         return;
       }

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-1
+ * jsGraph JavaScript Graphing Library v1.12.4-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-24T11:15Z
+ * Date: 2015-07-24T11:30Z
  */
 
 (function( global, factory ) {
@@ -2959,8 +2959,8 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
     setData: function( data, oneDimensional, type ) {
 
       function isArray( arr ) {
-         var stringed = Object.prototype.toString.call( arr );
-         return stringed === '[object Array]' || stringed === '[object Int16Array]' ||  stringed === '[object Int32Array]' || stringed === '[object Float32Array]' || stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' ||  stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
+        var stringed = Object.prototype.toString.call( arr );
+        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
       }
 
       var z = 0,
@@ -2979,24 +2979,24 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       this.maxX = -Infinity;
       this.maxY = -Infinity;
 
-      if ( !isArray ) {
-        util.throwError( "Data is not an array" );
-        return;
-      }
+      var isDataArray = isArray( data );
+
 
       // Single object
       var datas = [];
-      var isDataArray = isArray( data );
-      var isData0Array = isArray( data[ 0 ] );
 
       if ( !isDataArray && typeof data == 'object' ) {
         data = [ data ];
       } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         oneDimensional = true;
+      } else if( ! isDataArray ) {
+        util.throwError( "Data is not an array" );
+        return;
       }
 
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
+      var isData0Array = isArray( data[ 0 ] );
 
       var isData00Array = isArray( data[ 0 ][ 0 ] );
       if ( isData0Array && !oneDimensional && !isData00Array ) {
@@ -6872,7 +6872,6 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
  */
 
 build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter, util ) { 
-
 
   var plugin = function() {};
 
