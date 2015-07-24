@@ -46,6 +46,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      */
     setData: function( data, oneDimensional, type ) {
 
+      function isArray( arr ) {
+        var stringed = Object.prototype.toString.call( arr );
+        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
+      }
+
       var z = 0,
         x,
         dx,
@@ -62,26 +67,31 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.maxX = -Infinity;
       this.maxY = -Infinity;
 
-      if ( !data instanceof Array ) {
+      var isDataArray = isArray( data );
+
+
+      // Single object
+      var datas = [];
+
+      if ( !isDataArray && typeof data == 'object' ) {
+        data = [ data ];
+      } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
+        data = [ data ];
+        oneDimensional = true;
+      } else if( ! isDataArray ) {
         util.throwError( "Data is not an array" );
         return;
       }
 
-      // Single object
-      var datas = [];
-      if ( !( data instanceof Array ) && typeof data == 'object' ) {
-        data = [ data ];
-      } else if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
-        data = [ data ];
-        oneDimensional = true;
-      }
-
       // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      if ( data[ 0 ] instanceof Array && !oneDimensional && !( data[ 0 ][ 0 ] instanceof Array ) ) {
+      var isData0Array = isArray( data[ 0 ] );
+
+      var isData00Array = isArray( data[ 0 ][ 0 ] );
+      if ( isData0Array && !oneDimensional && !isData00Array ) {
         data = [ data ];
       }
 
-      if ( data[ 0 ] instanceof Array ) {
+      if ( isData0Array ) {
         for ( var i = 0, k = data.length; i < k; i++ ) {
 
           arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );

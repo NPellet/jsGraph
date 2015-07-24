@@ -1,6 +1,5 @@
 define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( EventEmitter, util ) {
 
-
   var plugin = function() {};
 
   plugin.prototype = $.extend( plugin.prototype, EventEmitter.prototype, {
