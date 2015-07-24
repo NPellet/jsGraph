@@ -121,6 +121,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
           o;
 
         if ( !data[ 0 ].y ) {
+          console.log( data );
           util.throwError( "No y data" );
           return;
         }

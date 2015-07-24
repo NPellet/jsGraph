@@ -382,6 +382,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     getUnitPerTick: function( px, nbTick, valrange ) {
 
+      var umin;
       var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
       if ( !nbTick ) {
         nbTick = px / 10;

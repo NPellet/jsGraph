@@ -32,9 +32,9 @@ define( [], function() {
       this.count = this.count || 0;
 
       x -= graph.getPaddingLeft(),
-        y -= graph.getPaddingTop(),
+      y -= graph.getPaddingTop(),
 
-        xVal = graph.getXAxis().getVal( x );
+      xVal = graph.getXAxis().getVal( x );
       yVal = graph.getYAxis().getVal( y );
 
       var shapeInfo = {

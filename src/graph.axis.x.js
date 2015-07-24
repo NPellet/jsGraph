@@ -33,6 +33,10 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     },
 
     _setShift: function() {
+      if ( !this.getShift() ||  !this.graph.getDrawingHeight() ) {
+        return;
+      }
+
       this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
     },
 

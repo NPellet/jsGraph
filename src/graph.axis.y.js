@@ -147,6 +147,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
     _setShift: function() {
 
+      if ( !this.getShift() ||  !this.graph.getWidth() ) {
+        return;
+      }
+
       var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
       this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
 
