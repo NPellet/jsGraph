@@ -381,6 +381,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       for ( var i = 0, l = this.lines.length; i < l; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
       }
+      this.lines = [];
 
       return this;
     },

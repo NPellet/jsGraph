@@ -107,9 +107,6 @@ module.exports = function(grunt) {
             }
         },
 
-        sass: {
-            './examples/style.css': './examples/style.scss'
-        },
 
         watch: {
           scripts: {
@@ -139,8 +136,6 @@ module.exports = function(grunt) {
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
     
-
-    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-contrib-copy');

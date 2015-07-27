@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-24T11:30Z
+ * Date: 2015-07-27T07:35Z
  */
 
 (function( global, factory ) {
@@ -2219,6 +2219,14 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       this.shapesLocked = false;
     },
 
+    prevent: function( arg ) {
+      var curr = this.prevented;
+      if ( arg != -1 ) {
+        this.prevented = ( arg == undefined ) || arg;
+      }
+      return curr;
+    },
+
     _getXY: function( e ) {
 
       var x = e.clientX,
@@ -2715,11 +2723,9 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     // Not on a shape
 
-    if ( !e.target.jsGraphIsShape ) {
-
+    if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
       graph.unselectShapes();
     }
-
   }
 
   function _getAxis( graph, num, options, pos ) {
@@ -2972,7 +2978,9 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
         total = 0,
         continuous;
 
-      this.empty();
+      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
+      // We shouldn't need that for the lines
+      //this.empty();
 
       this.minX = +Infinity;
       this.minY = +Infinity;
@@ -2980,7 +2988,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       this.maxY = -Infinity;
 
       var isDataArray = isArray( data );
-
 
       // Single object
       var datas = [];
@@ -2990,7 +2997,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
       } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         oneDimensional = true;
-      } else if( ! isDataArray ) {
+      } else if ( !isDataArray ) {
         util.throwError( "Data is not an array" );
         return;
       }
@@ -7767,6 +7774,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       for ( var i = 0, l = this.lines.length; i < l; i++ ) {
         this.groupLines.removeChild( this.lines[ i ] );
       }
+      this.lines = [];
 
       return this;
     },
@@ -12118,6 +12126,11 @@ build['./shapes/graph.shape'] = ( function( ) {
 
           //  e.stopPropagation();
           //          e.preventDefault();
+
+          // If this is not a selectable shape, do not bother go forward (and unselect other shapes)
+          if ( !this.isSelectable() ) {
+            return false;
+          }
 
           if ( !e.shiftKey ) {
             this.graph.unselectShapes();

@@ -817,6 +817,11 @@ define( [], function() {
           //  e.stopPropagation();
           //          e.preventDefault();
 
+          // If this is not a selectable shape, do not bother go forward (and unselect other shapes)
+          if ( !this.isSelectable() ) {
+            return false;
+          }
+
           if ( !e.shiftKey ) {
             this.graph.unselectShapes();
           }

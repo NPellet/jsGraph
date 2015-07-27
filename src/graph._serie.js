@@ -60,7 +60,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         total = 0,
         continuous;
 
-      this.empty();
+      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
+      // We shouldn't need that for the lines
+      //this.empty();
 
       this.minX = +Infinity;
       this.minY = +Infinity;

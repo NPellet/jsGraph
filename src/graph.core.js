@@ -1650,6 +1650,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       this.shapesLocked = false;
     },
 
+    prevent: function( arg ) {
+      var curr = this.prevented;
+      if ( arg != -1 ) {
+        this.prevented = ( arg == undefined ) || arg;
+      }
+      return curr;
+    },
+
     _getXY: function( e ) {
 
       var x = e.clientX,
@@ -2146,11 +2154,9 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     // Not on a shape
 
-    if ( !e.target.jsGraphIsShape ) {
-
+    if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
       graph.unselectShapes();
     }
-
   }
 
   function _getAxis( graph, num, options, pos ) {
