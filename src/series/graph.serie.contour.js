@@ -92,7 +92,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         } );
       }
       this.data = datas;
-      this.graph._updateAxes();
+      this.graph.updateDataMinMaxAxes();
 
       return this;
     },

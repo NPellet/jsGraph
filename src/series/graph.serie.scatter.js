@@ -158,7 +158,7 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
         }
       }
 
-      this.graph._updateAxes();
+      this.graph.updateDataMinMaxAxes();
 
       this.data = arr;
 
