@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-3
+ * jsGraph JavaScript Graphing Library v1.12.4-4
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-28T14:16Z
+ * Date: 2015-07-28T14:25Z
  */
 
 (function( global, factory ) {
@@ -7629,6 +7629,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       var toggledOn = this.toggleMarker( index, true, true );
       if ( this.options.onMouseOverMarker ) {
+
         this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
       }
     },
@@ -7649,6 +7650,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
      * @returns {Boolean} The new state of the marker
      */
     toggleMarker: function( index, force, hover ) {
+
       var i = index[ 0 ],
         k = index[ 1 ] || 0;
 
@@ -7675,12 +7677,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
         }
 
         var x, y;
+
         if ( this.mode == 'x_equally_separated' ) {
           x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
           y = this.data[ k ][ i ];
         } else {
-          x = this.getX( this.data[ k ][ i * 2 ] );
-          y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+          x = this.data[ k ][ i * 2 ];
+          y = this.data[ k ][ i * 2 + 1 ];
         }
 
         x = this.getX( x );
