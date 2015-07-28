@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-27T07:35Z
+ * Date: 2015-07-27T23:17Z
  */
 
 (function( global, factory ) {
@@ -670,6 +670,8 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * @default {@link GraphOptionsDefault}
      */
     this.options = $.extend( {}, GraphOptionsDefault, options );
+
+    this.prevented = false;
 
     this.axis = {
       left: [],
@@ -11581,17 +11583,15 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.redrawImpl();
 
-      if ( !this.position )
+      if ( !this.position ) {
+
         return;
+      }
 
       this.everyLabel( function( i ) {
 
-        if ( this.getprop( 'labelPosition', i ) ) {
-
-          this.setLabelPosition( i );
-          this.setLabelAngle( i );
-
-        }
+        this.setLabelPosition( i );
+        this.setLabelAngle( i );
 
       } );
 
@@ -11620,31 +11620,10 @@ build['./shapes/graph.shape'] = ( function( ) {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
       this.properties[ prop ][ index || 0 ] = val;
-
-      this.configuration = this.configuration || {
-        sections: {
-          shape_cfg: [ {
-            groups: {
-              shape_cfg: [ {}  ]
-            }
-          } ]
-        }
-      };
-      this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
-
     },
 
     getprop: function( prop, index ) {
-      this.configuration = this.configuration || {
-        sections: {
-          shape_cfg: [ {
-            groups: {
-              shape_cfg: [ {}  ]
-            }
-          } ]
-        }
-      };
-      return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [] )[ 0 ];
+      return ( this.properties[ prop ] || [] )[ index ||  0 ];
     },
 
     getData: function() {
@@ -11851,13 +11830,15 @@ build['./shapes/graph.shape'] = ( function( ) {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
-
           var pos = this._getPosition( this.getprop( 'labelPosition', labelIndex ) || {
+
             dx: 0,
             dy: 0
           }, currPos );
+
         } else {
           pos = this._getPosition( pos );
+
         }
       }
 
@@ -12809,14 +12790,16 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
     setLabelPosition: function( labelIndex )  {
 
-      var x = ( this.firstX + this.lastX ) / 2 + "px";
-      var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
-      var flip = this.serie ? this.serie.isFlipped() :  false;
+      if ( this.firstX, this.lastX, this.lastPointY, this.firstPointY ) {
+        var x = ( this.firstX + this.lastX ) / 2 + "px";
+        var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
+        var flip = this.serie ? this.serie.isFlipped() :  false;
 
-      this._setLabelPosition( labelIndex, {
-        x: flip ? y : x,
-        y: flip ? x : y
-      } );
+        this._setLabelPosition( labelIndex, {
+          x: flip ? y : x,
+          y: flip ? x : y
+        } );
+      }
     },
 
     getFieldsConfig: function() {
@@ -14911,10 +14894,9 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
       var posRight = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'posCenter' ) );
       var posCenter = this._getPosition( this.getFromData( 'posCenter' ) );
 
-      if ( posLeft.x && posRight.x && posCenter.x ) {
+      if ( posLeft.x && posRight.x && posCenter.x && this.posYPx ) {
 
         var height = this.lineHeight;
-
         this.rectBoundary.setAttribute( 'd', 'M ' + posLeft.x + ' ' + ( this.posYPx - height ) + ' v ' + ( 2 * height ) + ' H ' + posRight.x + " v " + ( -2 * height ) + "z" );
         this.line1.setAttribute( 'x1', posLeft.x );
         this.line1.setAttribute( 'x2', posLeft.x );
@@ -14935,6 +14917,10 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 
     setLinesY: function( height ) {
 
+      if ( !this.posYPx ) {
+        return;
+      }
+
       this.line1.setAttribute( 'y1', this.posYPx - height );
       this.line1.setAttribute( 'y2', this.posYPx + height );
 
@@ -14950,6 +14936,10 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
     },
 
     setHandles: function() {
+
+      if ( !this.posYPx ) {
+        return;
+      }
 
       var posLeft = this._getPosition( this.getFromData( 'pos' ), this.getFromData( 'posCenter' ) );
       var posRight = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'posCenter' ) );
@@ -15017,15 +15007,33 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 
       }
 
-      this.set( 'labelPosition', {
-        y: this.get( 'labelPosition', 0 ).y,
+      
+      this.prop( 'labelPosition', {
+        y: this.getprop( 'labelPosition', 0 ).y,
         x: posCenter.x
       }, 0 );
+      
 
       this.setLabelPosition( 0 );
 
       this.redrawLines();
       this.setHandles();
+    },
+
+    setPosition: function() {
+      var position = this._getPosition( this.getFromData( 'pos' ) );
+
+      if ( !position || !position.x || !position.y ) {
+        return true;
+      }
+
+      this.setDom( 'x2', position.x );
+      this.setDom( 'y2', position.y );
+
+      this.currentPos1x = position.x;
+      this.currentPos1y = position.y;
+
+      return true;
     },
 
   } );

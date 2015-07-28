@@ -224,14 +224,16 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     setLabelPosition: function( labelIndex )  {
 
-      var x = ( this.firstX + this.lastX ) / 2 + "px";
-      var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
-      var flip = this.serie ? this.serie.isFlipped() :  false;
+      if ( this.firstX, this.lastX, this.lastPointY, this.firstPointY ) {
+        var x = ( this.firstX + this.lastX ) / 2 + "px";
+        var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
+        var flip = this.serie ? this.serie.isFlipped() :  false;
 
-      this._setLabelPosition( labelIndex, {
-        x: flip ? y : x,
-        y: flip ? x : y
-      } );
+        this._setLabelPosition( labelIndex, {
+          x: flip ? y : x,
+          y: flip ? x : y
+        } );
+      }
     },
 
     getFieldsConfig: function() {

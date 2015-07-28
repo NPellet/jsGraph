@@ -271,17 +271,15 @@ define( [], function() {
 
       this.redrawImpl();
 
-      if ( !this.position )
+      if ( !this.position ) {
+
         return;
+      }
 
       this.everyLabel( function( i ) {
 
-        if ( this.getprop( 'labelPosition', i ) ) {
-
-          this.setLabelPosition( i );
-          this.setLabelAngle( i );
-
-        }
+        this.setLabelPosition( i );
+        this.setLabelAngle( i );
 
       } );
 
@@ -310,31 +308,10 @@ define( [], function() {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
       this.properties[ prop ][ index || 0 ] = val;
-
-      this.configuration = this.configuration || {
-        sections: {
-          shape_cfg: [ {
-            groups: {
-              shape_cfg: [ {}  ]
-            }
-          } ]
-        }
-      };
-      this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ][ prop ] = [ val ];
-
     },
 
     getprop: function( prop, index ) {
-      this.configuration = this.configuration || {
-        sections: {
-          shape_cfg: [ {
-            groups: {
-              shape_cfg: [ {}  ]
-            }
-          } ]
-        }
-      };
-      return ( ( this.configuration.sections.shape_cfg[ 0 ].groups.shape_cfg[ 0 ] || [] )[ prop ] || [] )[ 0 ];
+      return ( this.properties[ prop ] || [] )[ index ||  0 ];
     },
 
     getData: function() {
@@ -541,13 +518,15 @@ define( [], function() {
         var parsedCurrPos = this._getPosition( currPos );
 
         if ( !pos ) {
-
           var pos = this._getPosition( this.getprop( 'labelPosition', labelIndex ) || {
+
             dx: 0,
             dy: 0
           }, currPos );
+
         } else {
           pos = this._getPosition( pos );
+
         }
       }
 

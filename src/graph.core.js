@@ -102,6 +102,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      */
     this.options = $.extend( {}, GraphOptionsDefault, options );
 
+    this.prevented = false;
+
     this.axis = {
       left: [],
       top: [],
