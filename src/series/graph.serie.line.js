@@ -234,6 +234,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       var toggledOn = this.toggleMarker( index, true, true );
       if ( this.options.onMouseOverMarker ) {
+
         this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
       }
     },
@@ -254,6 +255,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
      * @returns {Boolean} The new state of the marker
      */
     toggleMarker: function( index, force, hover ) {
+
       var i = index[ 0 ],
         k = index[ 1 ] || 0;
 
@@ -280,12 +282,13 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         }
 
         var x, y;
+
         if ( this.mode == 'x_equally_separated' ) {
           x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
           y = this.data[ k ][ i ];
         } else {
-          x = this.getX( this.data[ k ][ i * 2 ] );
-          y = this.getY( this.data[ k ][ i * 2 + 1 ] );
+          x = this.data[ k ][ i * 2 ];
+          y = this.data[ k ][ i * 2 + 1 ];
         }
 
         x = this.getX( x );
