@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-2
+ * jsGraph JavaScript Graphing Library v1.12.4-3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-27T23:17Z
+ * Date: 2015-07-28T14:16Z
  */
 
 (function( global, factory ) {
@@ -9776,7 +9776,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
         } );
       }
       this.data = datas;
-      this.graph._updateAxes();
+      this.graph.updateDataMinMaxAxes();
 
       return this;
     },
@@ -10431,7 +10431,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
         }
       }
 
-      this.graph._updateAxes();
+      this.graph.updateDataMinMaxAxes();
 
       this.data = arr;
 
@@ -15007,12 +15007,10 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 
       }
 
-      
       this.prop( 'labelPosition', {
         y: this.getprop( 'labelPosition', 0 ).y,
         x: posCenter.x
       }, 0 );
-      
 
       this.setLabelPosition( 0 );
 

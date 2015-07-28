@@ -33,7 +33,7 @@ define( function() {
 				'selected'
 			);
 
-		var plugin = graphinstance.getPlugin('selectScatter')
+		var plugin = graphinstance.getPlugin('selectScatter');
 		plugin.setSerie( serie );
 
 		plugin.on('selectionProcess', function( selectedIndices ) {
