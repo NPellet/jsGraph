@@ -76,7 +76,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       if ( !isDataArray && typeof data == 'object' ) {
         data = [ data ];
-      } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
+      } else if ( isDataArray && !isArray( data[ 0 ] ) ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         oneDimensional = true;
       } else if ( !isDataArray ) {
