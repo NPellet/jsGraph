@@ -816,7 +816,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     getSerie: function( name ) {
 
       if ( typeof name == 'number' ) {
-        return this.series[ name ];
+        return this.series[ name ] ||  false;
       }
       var i = 0,
         l = this.series.length;
@@ -1474,8 +1474,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
               var closest = onSerie.searchClosestValue( value.x );
 
               if ( !closest ) {
-                console.warn( "Could not find y position. Returning 0 for y." );
-
+                console.warn( "Could not find y position for x = " + ( value.x ) + " on serie \"" + onSerie.getName() + "\". Returning 0 for y." );
                 pos[ i ] = 0;
               } else {
                 pos[ i ] = onSerie.getY( closest.yMin );

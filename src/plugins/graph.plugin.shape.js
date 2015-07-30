@@ -78,6 +78,7 @@ define( [], function() {
         self.count++;
 
         var shape = self.currentShape;
+
         self.currentShape = false;
 
         if ( graph.selectedSerie ) {
@@ -85,6 +86,8 @@ define( [], function() {
         }
 
         shape.created();
+        shape.handleSelected = 1;
+        shape.resizing = true;
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );

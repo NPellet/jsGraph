@@ -46,8 +46,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     handleCreateImpl: function() {
-      this.resize = true;
-      this.resizingElement = 2;
+      this.resizing = true;
+      this.handleSelected = 2;
     },
 
     handleMouseDownImpl: function( e ) {

@@ -65,14 +65,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     handleCreateImpl: function() {
-
-      this.resize = true;
       this.handleSelected = 2;
-
     },
 
     handleMouseDownImpl: function( e ) {
-
       return true;
     },
 

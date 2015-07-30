@@ -95,7 +95,14 @@ define( [], function() {
           //    e.stopPropagation();
 
           self.handleSelected = false;
-          self.moving = true;
+
+          if ( !self.resizing && self.isMovable() ) {
+            self.graph.emit( "beforeShapeMove", self );
+
+            if ( !self.graph.prevent( false ) ) {
+              self.moving = true;
+            }
+          }
 
           self.handleMouseDown( e );
         } );
@@ -678,8 +685,19 @@ define( [], function() {
             e.preventDefault();
             e.stopPropagation();
 
-            self.handleSelected = j;
-            self.handleMouseDown( e );
+            if ( self.isResizable() ) {
+
+              self.graph.emit( "beforeShapeResize", self );
+
+              if ( !self.graph.prevent( false ) ) {
+
+                self.resizing = true;
+                self.handleSelected = j;
+                self.handleMouseDown( e );
+
+              }
+            }
+
           } );
 
           handles.push( self[ 'handle' + j ] );
@@ -851,8 +869,8 @@ define( [], function() {
     },
 
     handleMouseMove: function( e ) {
-
-      if ( this.isLocked() && this.isMovable() ) {
+      /*
+      if ( this.moving ) {
 
         this.graph.elementMoving( false );
 
@@ -867,8 +885,10 @@ define( [], function() {
       if ( !this.isMovable() ) {
         this.moving = false;
       }
+*/
 
-      if ( this.moving && !this.isSelected() ) {
+      console.log( this.resizing, this.moving );
+      if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
         this.graph.selectShape( this );
       }
 
@@ -1063,6 +1083,18 @@ define( [], function() {
 
     isMovable: function() {
       return this._data.movable;
+    },
+
+    isResizable: function() {
+      return this._data.resizable;
+    },
+
+    resizable: function() {
+      this._data.resizable = true;
+    },
+
+    unresizable: function() {
+      this._data.resizable = false;
     },
 
     selectable: function() {

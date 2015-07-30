@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-4
+ * jsGraph JavaScript Graphing Library v1.12.4-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-28T14:25Z
+ * Date: 2015-07-30T08:38Z
  */
 
 (function( global, factory ) {
@@ -1385,7 +1385,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     getSerie: function( name ) {
 
       if ( typeof name == 'number' ) {
-        return this.series[ name ];
+        return this.series[ name ] ||  false;
       }
       var i = 0,
         l = this.series.length;
@@ -2043,8 +2043,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
               var closest = onSerie.searchClosestValue( value.x );
 
               if ( !closest ) {
-                console.warn( "Could not find y position. Returning 0 for y." );
-
+                console.warn( "Could not find y position for x = " + ( value.x ) + " on serie \"" + onSerie.getName() + "\". Returning 0 for y." );
                 pos[ i ] = 0;
               } else {
                 pos[ i ] = onSerie.getY( closest.yMin );
@@ -2996,7 +2995,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
       if ( !isDataArray && typeof data == 'object' ) {
         data = [ data ];
-      } else if ( isDataArray && !isData0Array ) { // [100, 103, 102, 2143, ...]
+      } else if ( isDataArray && !isArray( data[ 0 ] ) ) { // [100, 103, 102, 2143, ...]
         data = [ data ];
         oneDimensional = true;
       } else if ( !isDataArray ) {
@@ -6832,6 +6831,7 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         self.count++;
 
         var shape = self.currentShape;
+
         self.currentShape = false;
 
         if ( graph.selectedSerie ) {
@@ -6839,6 +6839,8 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         }
 
         shape.created();
+        shape.handleSelected = 1;
+        shape.resizing = true;
 
         if ( shape.options && shape.options.onCreate ) {
           shape.options.onCreate.call( shape );
@@ -11410,7 +11412,14 @@ build['./shapes/graph.shape'] = ( function( ) {
           //    e.stopPropagation();
 
           self.handleSelected = false;
-          self.moving = true;
+
+          if ( !self.resizing && self.isMovable() ) {
+            self.graph.emit( "beforeShapeMove", self );
+
+            if ( !self.graph.prevent( false ) ) {
+              self.moving = true;
+            }
+          }
 
           self.handleMouseDown( e );
         } );
@@ -11993,8 +12002,19 @@ build['./shapes/graph.shape'] = ( function( ) {
             e.preventDefault();
             e.stopPropagation();
 
-            self.handleSelected = j;
-            self.handleMouseDown( e );
+            if ( self.isResizable() ) {
+
+              self.graph.emit( "beforeShapeResize", self );
+
+              if ( !self.graph.prevent( false ) ) {
+
+                self.resizing = true;
+                self.handleSelected = j;
+                self.handleMouseDown( e );
+
+              }
+            }
+
           } );
 
           handles.push( self[ 'handle' + j ] );
@@ -12166,8 +12186,8 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     handleMouseMove: function( e ) {
-
-      if ( this.isLocked() && this.isMovable() ) {
+      /*
+      if ( this.moving ) {
 
         this.graph.elementMoving( false );
 
@@ -12182,8 +12202,10 @@ build['./shapes/graph.shape'] = ( function( ) {
       if ( !this.isMovable() ) {
         this.moving = false;
       }
+*/
 
-      if ( this.moving && !this.isSelected() ) {
+      console.log( this.resizing, this.moving );
+      if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
         this.graph.selectShape( this );
       }
 
@@ -12378,6 +12400,18 @@ build['./shapes/graph.shape'] = ( function( ) {
 
     isMovable: function() {
       return this._data.movable;
+    },
+
+    isResizable: function() {
+      return this._data.resizable;
+    },
+
+    resizable: function() {
+      this._data.resizable = true;
+    },
+
+    unresizable: function() {
+      this._data.resizable = false;
     },
 
     selectable: function() {
@@ -12615,8 +12649,8 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
     },
 
     handleCreateImpl: function() {
-      this.resize = true;
-      this.resizingElement = 2;
+      this.resizing = true;
+      this.handleSelected = 2;
     },
 
     handleMouseDownImpl: function( e ) {
@@ -12910,14 +12944,10 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
     },
 
     handleCreateImpl: function() {
-
-      this.resize = true;
       this.handleSelected = 2;
-
     },
 
     handleMouseDownImpl: function( e ) {
-
       return true;
     },
 
