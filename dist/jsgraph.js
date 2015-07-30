@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-7
+ * jsGraph JavaScript Graphing Library v1.12.4-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-30T08:56Z
+ * Date: 2015-07-30T08:59Z
  */
 
 (function( global, factory ) {
