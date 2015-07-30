@@ -12,7 +12,7 @@ define( function() {
 			},
 
 			pluginAction: {
-				'selectScatter': { shift: false, ctrl: false }
+				'selectScatter': { shift: false, ctrl: false, alt: true }
 			}
 		} );
 

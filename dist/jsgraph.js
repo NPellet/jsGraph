@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-5
+ * jsGraph JavaScript Graphing Library v1.12.4-6
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-30T08:38Z
+ * Date: 2015-07-30T08:55Z
  */
 
 (function( global, factory ) {
@@ -1844,9 +1844,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         return true;
       }
 
-      var act = this.options.pluginAction[ plugin ] || plugin,
-        shift = e.shiftKey,
-        ctrl = e.ctrlKey;
+      var act = this.options.pluginAction[ plugin ] || plugin;
 
       if ( act.shift === undefined ) {
         act.shift = false;
@@ -1856,15 +1854,15 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
         act.ctrl = false;
       }
 
-      if ( shift !== act.shift ) {
-        return false;
+      if ( act.meta === undefined ) {
+        act.meta = false;
       }
 
-      if ( ctrl !== act.ctrl ) {
-        return false;
+      if ( act.alt === undefined ) {
+        act.alt = false;
       }
 
-      return true;
+      return ( e.shiftKey == act.shift && e.ctrlKey == act.ctrl && e.metaKey == act.meta && e.altKey == act.alt );
     },
 
     forcePlugin: function( plugin ) {
@@ -2625,8 +2623,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
   function _handleMouseDown( graph, x, y, e ) {
 
     var self = graph,
-      shift = e.shiftKey,
-      ctrl = e.ctrlKey,
       keyComb = graph.options.pluginAction,
       i;
 

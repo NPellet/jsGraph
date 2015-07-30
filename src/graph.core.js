@@ -1275,9 +1275,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         return true;
       }
 
-      var act = this.options.pluginAction[ plugin ] || plugin,
-        shift = e.shiftKey,
-        ctrl = e.ctrlKey;
+      var act = this.options.pluginAction[ plugin ] || plugin;
 
       if ( act.shift === undefined ) {
         act.shift = false;
@@ -1287,15 +1285,15 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         act.ctrl = false;
       }
 
-      if ( shift !== act.shift ) {
-        return false;
+      if ( act.meta === undefined ) {
+        act.meta = false;
       }
 
-      if ( ctrl !== act.ctrl ) {
-        return false;
+      if ( act.alt === undefined ) {
+        act.alt = false;
       }
 
-      return true;
+      return ( e.shiftKey == act.shift && e.ctrlKey == act.ctrl && e.metaKey == act.meta && e.altKey == act.alt );
     },
 
     forcePlugin: function( plugin ) {
@@ -2056,8 +2054,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   function _handleMouseDown( graph, x, y, e ) {
 
     var self = graph,
-      shift = e.shiftKey,
-      ctrl = e.ctrlKey,
       keyComb = graph.options.pluginAction,
       i;
 
