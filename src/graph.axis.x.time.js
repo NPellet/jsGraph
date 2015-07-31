@@ -729,6 +729,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
     },
 
+    isX: function() {
+      return true
+    },
+
     getWrapper: function( level ) {
       return this.wrapper[ level ]
     },

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-11
+ * jsGraph JavaScript Graphing Library v1.12.4-12
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-31T19:36Z
+ * Date: 2015-07-31T19:38Z
  */
 
 (function( global, factory ) {
@@ -6380,6 +6380,8 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
       }
 
     },
+
+    isX: function() { return true },
 
     getWrapper: function( level ) {
       return this.wrapper[ level ]
