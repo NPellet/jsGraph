@@ -9,11 +9,39 @@ define( function() {
 			s.push( 2 * Math.pow( 10, ( - i / 1000 ) ) );
 		}
 
-		var graphinstance = new Graph( domGraph, { }, {
+		var graphinstance = new Graph( domGraph, {
+
+
+				wheel: {
+					type: 'plugin',
+					plugin: 'zoom',
+					options: {
+						direction: 'y'
+					}
+				},
+
+				dblclick: {
+					type: 'plugin',
+					plugin: 'zoom',
+					options: {
+						mode: 'total'
+					}
+				},
+
+				plugins: {
+					'zoom': { zoomMode: 'xy' },
+				},
+
+				pluginAction: {
+					'zoom': { shift: false, ctrl: false }
+				}
+				
+
+				 }, {
 
 				bottom: [ {
 					logScale: true
-				} ],
+				} ]
 
 			} );
 

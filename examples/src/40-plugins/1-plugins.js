@@ -33,18 +33,17 @@ define( function() {
 			}
 			
 		} );
-				
-		var serie = [];
-
-		for( var i = 0, l = 1000; i < l; i ++ ) {
-			serie.push( i );
-			serie.push( Math.round( i % 20 / 20 )  );
-		}
-
+			
 		graphinstance.newSerie("temp_nh")
 			.autoAxis()
-			.setData( serie )
-			
+			.setData( series[ 3 ] )
+			.setMarkers({ 
+				type: 1,
+				points: [ 'all' ],
+				fill: true,
+				fillColor: 'red'
+			});
+
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
 
