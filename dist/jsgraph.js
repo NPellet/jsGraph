@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-10
+ * jsGraph JavaScript Graphing Library v1.12.4-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-31T19:10Z
+ * Date: 2015-07-31T19:36Z
  */
 
 (function( global, factory ) {
@@ -4581,8 +4581,17 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
     getVal: function( px ) {
 
+      if ( !this.options.logScale ) {
+
+        return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
+
+      } else {
+
+        return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getActualMax() ) - Math.log( this.getActualMin() ) ) + Math.log( this.getActualMin() ) )
+      }
+
       // Ex 50 / (100) * (1000 - 700) + 700
-      return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
+
     },
 
     valueToText: function( value ) {
