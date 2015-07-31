@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-9
+ * jsGraph JavaScript Graphing Library v1.12.4-10
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-30T09:00Z
+ * Date: 2015-07-31T19:10Z
  */
 
 (function( global, factory ) {
@@ -8042,8 +8042,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
         y,
         k,
         o,
-        lastX,
-        lastY,
+        lastX = false,
+        lastY = false,
         xpx,
         ypx,
         xpx2,
@@ -8106,7 +8106,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
             if ( pointOutside || lastPointOutside ) {
 
-              if ( ( !lastX ||  !lastY ) && !lastPointOutside ) {
+              if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
                 lastPointOutside = true;
 
                 xpx = xpx2;
@@ -8129,19 +8129,19 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
                 var xBottomCrossing = ( y - yMax ) / ( y - lastY );
                 xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
 
-                if ( yLeftCrossing && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                   pointOnAxis.push( [ xMin, yLeftCrossing ] );
                 }
 
-                if ( yRightCrossing && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
                   pointOnAxis.push( [ xMax, yRightCrossing ] );
                 }
 
-                if ( xTopCrossing && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
                   pointOnAxis.push( [ xTopCrossing, yMin ] );
                 }
 
-                if ( xBottomCrossing && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
                   pointOnAxis.push( [ xBottomCrossing, yMax ] );
                 }
 

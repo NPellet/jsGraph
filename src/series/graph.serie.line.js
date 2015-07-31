@@ -649,8 +649,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         y,
         k,
         o,
-        lastX,
-        lastY,
+        lastX = false,
+        lastY = false,
         xpx,
         ypx,
         xpx2,
@@ -713,7 +713,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
             if ( pointOutside || lastPointOutside ) {
 
-              if ( ( !lastX ||  !lastY ) && !lastPointOutside ) {
+              if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
                 lastPointOutside = true;
 
                 xpx = xpx2;
@@ -736,19 +736,19 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
                 var xBottomCrossing = ( y - yMax ) / ( y - lastY );
                 xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
 
-                if ( yLeftCrossing && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                   pointOnAxis.push( [ xMin, yLeftCrossing ] );
                 }
 
-                if ( yRightCrossing && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
                   pointOnAxis.push( [ xMax, yRightCrossing ] );
                 }
 
-                if ( xTopCrossing && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
                   pointOnAxis.push( [ xTopCrossing, yMin ] );
                 }
 
-                if ( xBottomCrossing && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
                   pointOnAxis.push( [ xBottomCrossing, yMax ] );
                 }
 
