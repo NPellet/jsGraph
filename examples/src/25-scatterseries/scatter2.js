@@ -36,24 +36,21 @@ for( var i = 0; i < 300; i ++ ) {
 
 dataL.sort( function(a,b) { return a[ 0 ] - b[ 0 ] } );
 
-var g = new Graph( domGraph );
-var s = g.newSerie("s1", {}, "scatter").autoAxis().setData( data ).setStyle( 
-	{ shape: 'circle', cx: 0, cy: 0, r: 2, stroke: 'black', fill: 'rgba( 100, 100, 100, 0.3 )' },
-	modifiers
-);
+var graph = new Graph( domGraph );
+var s = graph
+	.newSerie("s1", {}, "scatter")
+	.autoAxis()
+	.setData( data )
+	.setStyle( 
+		{ shape: 'circle', cx: 0, cy: 0, r: 2, stroke: 'black', fill: 'rgba( 100, 100, 100, 0.3 )' },
+		modifiers
+	);
 
-g.newSerie("s2", {}, "line").autoAxis().setData( dataL );
+graph.newSerie("s2", {}, "line").autoAxis().setData( dataL );
+graph.draw();
 
-g.redraw();
-g.drawSeries();
-
-
-		
 
 	}, "Setstyle Modifiers", [ 
-
-
-	
 
 	]
 

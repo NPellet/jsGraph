@@ -19,8 +19,7 @@ define( function() {
 
 			} );
 			
-		graphinstance.redraw( );
-		graphinstance.drawSeries( );	
+		graphinstance.draw();
 		
 	}, "Contour plot v2", [ 
 

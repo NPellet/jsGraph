@@ -47,8 +47,8 @@ define( function() {
 			.setLineColor('transparent');
 
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 			
 			
 		},

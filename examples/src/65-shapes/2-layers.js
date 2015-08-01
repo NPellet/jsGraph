@@ -44,10 +44,9 @@ define( function() {
           }
         }
 
-        graphinstance.updateAxes();
-        graphinstance.redraw( );
-        graphinstance.drawSeries();       
-
+        
+        graphinstance.draw( );
+        
 
 
 }, "Shapes on various layers", 

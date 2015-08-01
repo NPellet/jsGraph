@@ -15,8 +15,8 @@ define( function() {
 			.setData( data )
 			.setMarkers();
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 		
 
 	}, "Interval data", [ 

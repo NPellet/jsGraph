@@ -35,10 +35,8 @@ define( function() {
 			serie.selectPoint( index, "hover" );
 		});
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
-
+		graphinstance.draw( );
+		
 		serie.selectPoint( 100, "specialSelection" );
 
 		var index, lastIndex;

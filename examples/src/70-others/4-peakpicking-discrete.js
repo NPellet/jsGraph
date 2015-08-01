@@ -432,8 +432,8 @@ var serieData = [
 					.setData( serieData )
 					.XIsMonotoneous();
 
-				graphinstance.redraw();
-				graphinstance.drawSeries();
+				graphinstance.draw();
+				
 			
 			
 		}, 

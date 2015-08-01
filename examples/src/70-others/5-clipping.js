@@ -24,8 +24,7 @@ define( function() {
         .autoAxis()
         .setData( series[ 0 ] );
 
-    graphmain.redraw();
-    graphmain.drawSeries();
+    graphmain.draw();
     
 
     // Zoom graph
@@ -37,13 +36,13 @@ define( function() {
 
     var clipper, whole;
 
-    graphzoom.redraw();
-    graphzoom.drawSeries();
+    graphzoom.draw();
+    
 
     whole = graphzoom.newShape('rect', { pos: { x: 'min', y: 'min' }, pos2: { x: 'max', y: 'max' }, type: 'rect', fillColor: 'rgba( 100, 100, 100, 0.4 )' }).draw().redraw();
     
 
-    clipper = graphzoom.newShape('rect', { pos: { x: 1850, y: 0 }, pos2: { x: 1950, y: 2 }, selectable: true, locked: false, fillColor: 'transparent', masker: true }).draw().redraw();
+    clipper = graphzoom.newShape('rect', { pos: { x: 1850, y: 0 }, pos2: { x: 1950, y: 2 }, selectable: true, resizable: true, locked: false, fillColor: 'transparent', masker: true }).draw().redraw();
     clipper.staticHandles( true );
 
     whole.maskWith( clipper );
@@ -60,8 +59,8 @@ define( function() {
             graphmain.getXAxis().zoom( p.x, p2.x );
             graphmain.getYAxis().zoom( p.y, p2.y );
 
-            graphmain.redraw();
-            graphmain.drawSeries();
+            graphmain.draw();
+            
         }
 
     } );

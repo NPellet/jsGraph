@@ -121,8 +121,7 @@ define( function() {
 
 			]);
 			
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
 
 		
 	}, "Display markers", [ 

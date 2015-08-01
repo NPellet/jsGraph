@@ -75,8 +75,8 @@ define( function() {
   graphinstance.getRightAxis().setLabel( 'Power output (mW)' );
 
   graphinstance.getYAxis().setLineAt0( true );
-  graphinstance.redraw( );
-  graphinstance.drawSeries();				
+  graphinstance.draw( );
+  
 
 
 }, "2 aligned axes", 

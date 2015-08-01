@@ -12,18 +12,16 @@ define( function() {
 
 		var graphinstance = new Graph( domGraph );
 
-		graphinstance.newSerie("serieTest", {}, "scatter", function( serie ) {
+		var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
 
-			serie
-				.setLabel( "My serie" )
-				.autoAxis()
-				.setData( seriedata )
-				.setDataError( error )
-				.setErrorStyle( [ 'box', 'bar' ] );
+		serie
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( seriedata )
+			.setDataError( error )
+			.setErrorStyle( [ 'box', 'bar' ] );
 
-			graphinstance.redraw( );
-			graphinstance.drawSeries();	
-		});
+		graphinstance.draw( );
 		
 
 	}, "Error bars", [ 

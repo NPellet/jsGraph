@@ -22,8 +22,8 @@ define( function() {
 			.autoAxis()
 			.setData( serie )
 				
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 	
 		},
 

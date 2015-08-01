@@ -12,8 +12,6 @@ define( function() {
         graphinstance.getYAxis().forceMin( 0 );
         graphinstance.getYAxis().forceMax( 50 );
 
-        graphinstance.updateAxes();
-
 
         graphinstance.newShape({ 
             type: 'rect', 
@@ -40,8 +38,8 @@ define( function() {
 
 
 
-      graphinstance.redraw( );
-      graphinstance.drawSeries();       
+      graphinstance.draw( );
+      
 
 
 

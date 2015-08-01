@@ -226,6 +226,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         this.minY = minX;
       }
 
+      this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
 
       return this;
@@ -693,7 +694,36 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
      */
     getLayer: function() {
       return this.options.layer ||  1;
+    },
+
+    styleHasChanged: function( selectionType ) {
+      this._changedStyles = this._changedStyles || {};
+
+      if( selectionType === false ) {
+        for( var i in this._changedStyles ) {
+          this._changedStyles[ i ] = false;
+        }
+
+      } else {
+        this._changedStyles[ selectionType || "unselected" ] = true;
+      }
+    },
+
+    hasStyleChanged: function( selectionType ) {
+      this._changedStyles = this._changedStyles || {};
+
+      return this._changedStyles[ selectionType || "unselected" ];
+      
+    },
+
+    dataHasChanged: function( arg ) {
+      this._dataHasChanged = arg === undefined || arg;
+    },
+
+    hasDataChanged: function() {
+      return this._dataHasChanged;
     }
+
 
   } );
 

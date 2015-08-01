@@ -44,8 +44,7 @@ define( function() {
 			.setFillColor('rgba(200, 0, 0, 0.2)')
 			.setLineWidth(0)
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
 					
 
 		}, 

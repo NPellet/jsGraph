@@ -587,40 +587,39 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
      * Draws the serie
      * @memberof SerieLine.prototype
      */
-    draw: function() { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
 
-      this.drawInit();
+      if( force || this.hasDataChanged() ) {
+        this.drawInit();
 
-      var data = this._dataToUse;
-      var xData = this._xDataToUse;
-      var slotToUse = this._slotToUse;
+        var data = this._dataToUse,
+          xData = this._xDataToUse,
+          slotToUse = this._slotToUse;
 
-      var shape, self = this;
+        this.removeLinesGroup();
+        this.eraseMarkers();
 
-      this.removeLinesGroup();
+        this.lookForMaxima = true;
+        this.lookForMinima = false;
 
-      this.eraseMarkers();
+        if ( !this._draw_slot() ) {
 
-      this.lookForMaxima = true;
-      this.lookForMinima = false;
+          if ( this.mode == 'x_equally_separated' ) {
 
-      if ( !this._draw_slot() ) {
+            this._draw_equally_separated();
 
-        if ( this.mode == 'x_equally_separated' ) {
+          } else {
 
-          this._draw_equally_separated();
+            this._draw_standard();
 
-        } else {
-
-          this._draw_standard();
-
+          }
         }
-      }
 
-      this.makePeakPicking();
-      this.removeExtraLines();
-      this.insertMarkers();
-      this.insertLinesGroup();
+        this.makePeakPicking();
+        this.removeExtraLines();
+        this.insertMarkers();
+        this.insertLinesGroup();
+      }
 
       // Unhovers everything
       for ( var i in this.domMarkerHover ) {
@@ -633,6 +632,10 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
+
+      if( this.hasStyleChanged( this.selectionType ) ) {
+        this.updateStyle();
+      }
     },
 
     _draw_standard: function() {
@@ -1224,6 +1227,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     updateStyle: function() {
       this.applyLineStyles();
       this.setLegendSymbolStyle();
+
+      this.styleHasChanged( false );
     },
 
     // Revised August 2014. Ok
@@ -1507,8 +1512,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       while ( true ) {
         i++;
-        if ( i > 100 )
+        if ( i > 100 ) {
           throw "Error loop";
+        }
 
         seedInt = ( seedA + seedB ) / 2;
         seedInt -= seedInt % 2; // Always looks for an x.
@@ -1622,6 +1628,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
     setStyle: function( style, selectionType ) {
 
       this.styles[ selectionType ] = style;
+      this.styleHasChanged( selectionType );
+
     },
 
     setLineStyle: function( number, selectionType ) {
@@ -1629,6 +1637,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       selectionType = selectionType ||  "unselected";
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineStyle = number;
+
+      this.styleHasChanged( selectionType );
 
       return this;
     },
@@ -1686,6 +1696,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
           return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
           break;
       }
+
+      this.styleHasChanged( selectionType );
+
     },
 
     getStyle: function( selectionType ) {
@@ -1709,6 +1722,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineWidth = width;
 
+      this.styleHasChanged( selectionType );
+      
       return this;
     },
 
@@ -1723,6 +1738,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       selectionType = selectionType ||  "unselected";
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineColor = color;
+
+      this.styleHasChanged( selectionType );
 
       return this;
     },
@@ -1742,6 +1759,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       if ( redraw && this._drawn ) {
         this.draw();
+      } else {
+        this.styleHasChanged( selectionType );
       }
 
       return this;
@@ -1754,8 +1773,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       if ( redraw && this._drawn ) {
         this.draw();
+      } else {
+        this.styleHasChanged( selectionType );
       }
-
       return this;
     },
 
@@ -1787,7 +1807,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
-      this.showMarkers( selectionType, true );
+      this.showMarkers( selectionType, false );
 
       if ( !Array.isArray( families ) && typeof families == 'object' ) {
         families = [  families ];
@@ -1846,6 +1866,9 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
 
+      this.styleHasChanged( selectionType );
+      this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+
       return this;
     },
 
@@ -1901,6 +1924,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         this.currentMarkersSelectionType = false;
       }
 
+      
     },
 
     showImpl: function() {

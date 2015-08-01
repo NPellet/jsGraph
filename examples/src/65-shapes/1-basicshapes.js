@@ -34,9 +34,9 @@ define( function() {
             fillColor: 'transparent'
         }).draw();
 
-        graphinstance.updateAxes();
-        graphinstance.redraw();
-        graphinstance.drawSeries();       
+        
+        graphinstance.draw();
+        
 
 
 

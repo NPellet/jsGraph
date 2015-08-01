@@ -59,8 +59,7 @@ var s = g
 		[ { stroke: 'blue' }, undefined, { stroke: 'red' } ]
 	);
 
-g.redraw();
-g.drawSeries();
+g.draw();
 		
 	}, "Setstyle advanced", [ 
 

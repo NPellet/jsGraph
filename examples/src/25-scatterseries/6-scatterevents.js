@@ -27,8 +27,8 @@ define( function() {
 			console.log( 'mouseover' );
 		});
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 
 
 	}, "Mouse events", [ 

@@ -77,7 +77,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     }
 
     if ( !wrapper ) {
-      throw "The wrapper parameter is not optional.";
+      throw "The wrapper DOM element was not found.";
     }
 
     if ( wrapper instanceof $ ) {
@@ -121,6 +121,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
     this._dom = wrapper;
+    this._axesHaveChanged = true;
 
     if ( this.options.hasOwnProperty( 'padding' ) && util.isNumeric( this.options.padding ) ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
@@ -211,13 +212,23 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
   Graph.prototype = $.extend( Graph.prototype, {
 
     /** 
-     * Returns the graph wrapper element
+     * Returns the graph SVG wrapper element
+     * @memberof Graph.prototype
+     * @public
+     * @return {SVGElement} The DOM element wrapping the graph
+     */
+    getDom: function() {
+      return this.dom;
+    },
+
+    /** 
+     * Returns the graph wrapper element passed during the graph creation
      * @memberof Graph.prototype
      * @public
      * @return {HTMLElement} The DOM element wrapping the graph
      */
-    getDom: function() {
-      return this.dom;
+    getWrapper: function() {
+      return this._dom;
     },
 
     /**
@@ -261,9 +272,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
      * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
      * @memberof Graph.prototype
+     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
      * @return {Boolean} if the redraw has been successful
      */
-    redraw: function() {
+    redraw: function( onlyIfAxesHaveChanged ) {
 
       if ( !this.width || !this.height ) {
         return;
@@ -272,14 +284,25 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       if ( !this.sizeSet ) {
 
         this._resize();
+        return true;
 
       } else {
 
-        refreshDrawingZone( this );
+        if( ! onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+          refreshDrawingZone( this );
+          return true;
+        }
       }
 
-      return true;
+      return false;
     },
+
+
+    draw: function() {
+      
+      this.drawSeries( this.redraw( true ) );
+    },
+
 
     /**
      * Sets the total width of the graph
@@ -766,6 +789,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return axes;
     },
 
+    _axisHasChanged: function( axis ) {
+      this._axesHaveChanged = true;
+    },
+
     /**
      * Creates a new serie<br />
      * If the a serie with the same name exists, returns this serie with update options <br />
@@ -845,22 +872,24 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Draws a specific serie
      * @param {Serie} serie - The serie to redraw
+     * @param {Boolean} force - Forces redraw even if no data has changed
      * @memberof Graph.prototype
      */
-    drawSerie: function( serie ) {
+    drawSerie: function( serie, force ) {
 
       if ( !serie.draw ) {
         throw "Serie has no method draw";
       }
 
-      serie.draw();
+      serie.draw( force );
     },
 
     /**
      * Redraws all visible series
      * @memberof Graph.prototype
+     * @param {Boolean} force - Forces redraw even if no data has changed
      */
-    drawSeries: function() {
+    drawSeries: function( force ) {
 
       if ( !this.width || !this.height ) {
         return;
@@ -869,7 +898,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
         if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[  i ] );
+          this.drawSerie( this.series[ i ], force );
         }
       }
     },
@@ -1489,7 +1518,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x && !relTo.y ) {
+          if ( i == 'y' && relTo && relTo.x !== undefined && relTo.y == undefined ) {
 
             if ( !onSerie ) {
               throw "Error. No serie exists. Cannot find y value";
@@ -2294,6 +2323,13 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     }
 
   }
+
+  function haveAxesChanged( graph ) {
+    var temp = graph._axesHaveChanged;
+    graph._axesHaveChanged = false;
+    return temp;
+  }
+
 
   /**
    * Returns a registered constructor

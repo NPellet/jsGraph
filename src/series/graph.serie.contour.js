@@ -94,125 +94,134 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       this.data = datas;
       this.graph.updateDataMinMaxAxes();
 
+      this.dataHasChanged( true );
+
       return this;
     },
 
-    draw: function( doNotRedrawZone ) {
+    draw: function( force ) {
 
-      this.currentLine = 0;
-      var x, y, xpx, ypx, xpx2, ypx2, i = 0,
-        l = this.data.length,
-        j = 0,
-        k, m, currentLine, domLine, arr;
-      this.minZ = Infinity;
-      this.maxZ = -Infinity;
+      if( force || this.hasDataChanged() ) {
 
-      var next = this.groupLines.nextSibling;
-      this.groupMain.removeChild( this.groupLines );
-      this.zValues = {};
+        this.currentLine = 0;
+        var x, y, xpx, ypx, xpx2, ypx2, i = 0,
+          l = this.data.length,
+          j = 0,
+          k, m, currentLine, domLine, arr;
+        this.minZ = Infinity;
+        this.maxZ = -Infinity;
 
-      var incrXFlip = 0;
-      var incrYFlip = 1;
-      if ( this.getFlip() ) {
-        incrXFlip = 0;
-        incrYFlip = 1;
-      }
+        var next = this.groupLines.nextSibling;
+        this.groupMain.removeChild( this.groupLines );
+        this.zValues = {};
 
-      var minY = this.getYAxis().getActualMin();
-      var minX = this.getXAxis().getActualMin();
-
-      var maxX = this.getXAxis().getActualMax();
-      var maxY = this.getYAxis().getActualMax();
-
-      this.counter = 0;
-      this.currentLineId = 0;
-
-      for ( ; i < l; i++ ) {
-        this.currentLine = "";
-        j = 0, k = 0;
-
-        for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
-
-          var lastxpx, lastypx;
-
-          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
-            continue;
-          }
-
-          xpx2 = this.getX( arr[ j + incrXFlip ] );
-          ypx2 = this.getY( arr[ j + incrYFlip ] );
-
-          xpx = this.getX( arr[ j + 2 + incrXFlip ] );
-          ypx = this.getY( arr[ j + 2 + incrYFlip ] );
-
-          if ( xpx == xpx2 && ypx == ypx2 ) {
-            continue;
-          }
-
-          /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
-						currentLine += "L";
-					} else {
-						currentLine += "M";	
-					}
-*/
-
-          this.currentLine += "M ";
-          this.currentLine += xpx2;
-          this.currentLine += " ";
-          this.currentLine += ypx2;
-
-          this.currentLine += "L ";
-          this.currentLine += xpx;
-          this.currentLine += " ";
-          this.currentLine += ypx;
-
-          this.counter++;
-
-          lastxpx = xpx;
-          lastypx = ypx;
-
-          k++;
+        var incrXFlip = 0;
+        var incrYFlip = 1;
+        if ( this.getFlip() ) {
+          incrXFlip = 0;
+          incrYFlip = 1;
         }
 
-        this.currentLine += " z";
+        var minY = this.getYAxis().getActualMin();
+        var minX = this.getXAxis().getActualMin();
 
-        domLine = this._createLine();
-        domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
+        var maxX = this.getXAxis().getActualMax();
+        var maxY = this.getYAxis().getActualMax();
 
-        if ( this.zoneColors && this.zoneColors[ i ] ) {
+        this.counter = 0;
+        this.currentLineId = 0;
 
-          domLine.setAttribute( 'fill', this.zoneColors[  i ] );
+        for ( ; i < l; i++ ) {
+          this.currentLine = "";
+          j = 0, k = 0;
+
+          for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
+
+            var lastxpx, lastypx;
+
+            if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
+              continue;
+            }
+
+            xpx2 = this.getX( arr[ j + incrXFlip ] );
+            ypx2 = this.getY( arr[ j + incrYFlip ] );
+
+            xpx = this.getX( arr[ j + 2 + incrXFlip ] );
+            ypx = this.getY( arr[ j + 2 + incrYFlip ] );
+
+            if ( xpx == xpx2 && ypx == ypx2 ) {
+              continue;
+            }
+
+            /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
+  						currentLine += "L";
+  					} else {
+  						currentLine += "M";	
+  					}
+  */
+
+            this.currentLine += "M ";
+            this.currentLine += xpx2;
+            this.currentLine += " ";
+            this.currentLine += ypx2;
+
+            this.currentLine += "L ";
+            this.currentLine += xpx;
+            this.currentLine += " ";
+            this.currentLine += ypx;
+
+            this.counter++;
+
+            lastxpx = xpx;
+            lastypx = ypx;
+
+            k++;
+          }
+
+          this.currentLine += " z";
+
+          domLine = this._createLine();
+          domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
+
+          this.zValues[ this.data[ i ].zValue ] = {
+            dom: domLine
+          };
+
+          this.minZ = Math.min( this.minZ, this.data[ i ].zValue );
+          this.maxZ = Math.max( this.maxZ, this.data[ i ].zValue );
         }
 
-        this.zValues[ this.data[ i ].zValue ] = {
-          dom: domLine
-        };
+        i++;
 
-        this.minZ = Math.min( this.minZ, this.data[ i ].zValue );
-        this.maxZ = Math.max( this.maxZ, this.data[ i ].zValue );
+        for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
+          this.groupLines.removeChild( this.lines[ i ] );
+          this.lines.splice( i, 1 );
+        }
+
+        i = 0;
+
+        for ( ; i < l; i++ ) {
+          this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
+        }
+
+
+        this.onMouseWheel( 0, {
+          shiftKey: false
+        } );
+        this.groupMain.insertBefore( this.groupLines, next );
+
+      } else if( this.hasStyleChanged( this.selectionType ) ) {
+        
+        for ( ; i < l; i++ ) {
+          this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
+        }
+
+
       }
 
-      i++;
+      
 
-      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
-        this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
-      }
 
-      i = 0;
-
-      for ( ; i < l; i++ ) {
-        this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
-      }
-
-      if ( this.graph.legend ) {
-        this.graph.legend.update();
-      }
-
-      this.onMouseWheel( 0, {
-        shiftKey: false
-      } );
-      this.groupMain.insertBefore( this.groupLines, next );
     },
 
     initimpl: function() {
@@ -283,14 +292,11 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       }
     },
 
-    setColors: function( colors ) {
-      this.zoneColors = colors;
-    },
 
     setDynamicColor: function( colors ) {
-
       this.lineColors = colors;
 
+      this.styleHasChanged();
     },
 
     setNegative: function( bln ) {
@@ -353,12 +359,15 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
     applyLineStyle: function( line, overwriteValue ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-      if ( this.getLineDashArray() )
+      if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      }
       line.setAttribute( 'fill', 'none' );
 
       this.setColorTo( line, ( ( overwriteValue !== undefined ) ? overwriteValue : line.getAttribute( 'data-zvalue' ) ), this.minZ, this.maxZ );
       //  line.setAttribute('shape-rendering', 'optimizeSpeed');
+
+      this.hasStyleChanged( false );
     },
 
     setShapeZoom: function( shape ) {

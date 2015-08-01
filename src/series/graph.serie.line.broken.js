@@ -5,38 +5,43 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
 
-    draw: function() { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
 
-      this.drawInit();
+      if( force || this.hasDataChanged() ) {
 
-      var data = this._dataToUse;
-      var xData = this._xDataToUse;
-      var slotToUse = this._slotToUse;
+        this.drawInit();
 
-      var shape, self = this;
+        var data = this._dataToUse;
+        var xData = this._xDataToUse;
+        var slotToUse = this._slotToUse;
 
-      this.removeLinesGroup();
+        var shape, self = this;
 
-      this.eraseMarkers();
+        this.removeLinesGroup();
 
-      this.lookForMaxima = true;
-      this.lookForMinima = false;
+        this.eraseMarkers();
 
-      if ( this.mode == 'x_equally_separated' ) {
+        this.lookForMaxima = true;
+        this.lookForMinima = false;
 
-        throw "Not supported";
+        if ( this.mode == 'x_equally_separated' ) {
 
-      } else {
+          throw "Not supported";
 
-        this._draw_standard();
+        } else {
+
+          this._draw_standard();
+
+        }
+
+        this.removeExtraLines();
+        this.insertLinesGroup();
 
       }
 
-      this.removeExtraLines();
-
-      //insertMarkers( this );
-
-      this.insertLinesGroup();
+      if( this.hasStyleChanged( this.selectionType ) ) {
+        this.updateStyle();
+      }
 
     },
 
@@ -183,7 +188,7 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
       }
 
       return this._addPoint( xpx, ypx );
-    },
+    }
 
   } );
 

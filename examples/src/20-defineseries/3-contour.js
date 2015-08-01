@@ -25,9 +25,7 @@ define( function() {
 		graphinstance.getYAxis().forceMin( -5 );
 		graphinstance.getYAxis().forceMax( 5 );
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
+		graphinstance.draw();
 		
 	}, "Contour plot", [ 
 

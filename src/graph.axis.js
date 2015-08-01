@@ -486,7 +486,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return [ unitPerTickCorrect, nbTicks, pxPerTick ];
     },
 
-    setMinMaxToFitSeries: function() {
+    setMinMaxToFitSeries: function( noNotify ) {
 
       var interval = this.getInterval();
 
@@ -514,6 +514,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         this.currentAxisMin = undefined;
       }
 
+      if( ! noNotify ) {
+        this.graph._axisHasChanged( this );
+      }
     },
 
     getInterval: function() {
@@ -542,6 +545,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       if ( this.options.logScale ) {
         this.currentAxisMin = Math.max( 1e-50, val );
       }
+
+      this.graph._axisHasChanged( this );
     },
 
     setCurrentMax: function( val ) {
@@ -552,8 +557,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
       this.currentAxisMax = val;
 
-      if ( this.options.logScale )
+      if ( this.options.logScale ) {
         this.currentAxisMax = Math.max( 1e-50, val );
+      }
+
+      this.graph._axisHasChanged( this );
     },
 
     flip: function( bool ) {
@@ -572,7 +580,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.drawInit();
 
       if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
-        this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+        this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
+
       }
 
       //   this.setSlaveAxesBoundaries();

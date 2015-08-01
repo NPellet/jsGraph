@@ -35,7 +35,8 @@ define( function() {
            strokeColor: 'red',
            strokeWidth: 1,
            fillColor: 'transparent',
-           locked: true
+           locked: true,
+           selectable: true
         }).draw();
 
         graphinstance.newShape({ 
@@ -51,8 +52,8 @@ define( function() {
         }).draw();
         
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 
 		
 	}, "Plugins and shapes", [ 

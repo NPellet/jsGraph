@@ -44,9 +44,8 @@ define( function() {
 				fillColor: 'red'
 			});
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
+		graphinstance.draw( );
+		
 		
 	}, "Plugin loading", [ 
 

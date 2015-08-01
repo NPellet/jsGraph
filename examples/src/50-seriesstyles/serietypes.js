@@ -51,9 +51,8 @@ define( function() {
 
 
 	
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
-
+		graphinstance.draw( );
+		
 		
 
 	}, "Various series", [ 

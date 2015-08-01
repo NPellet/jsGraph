@@ -60,10 +60,9 @@ define( function() {
         }
 
         graphinstance.newSerie("", { layer: 2 } ).setData( serie ).autoAxis().setLineWidth( 3 ).setLineColor('red');
-        graphinstance.updateAxes();
-        graphinstance.redraw( );
-        graphinstance.drawSeries( );
-
+        
+        graphinstance.draw( );
+        
       
 
 }, "Z-sorting of shapes/series", 

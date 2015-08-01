@@ -52,8 +52,8 @@ define( function() {
 		graphinstance.getYAxis().setDisplay( false );
 		graphinstance.getXAxis().toggleGrids( false );
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 		
 		}, 
 

@@ -18,8 +18,8 @@ define( function() {
             points: 'all'
         }]);
 
-        graphinstance.redraw();
-        graphinstance.drawSeries();
+        graphinstance.draw();
+        
 
 	}, "Independant markers", [ 
 

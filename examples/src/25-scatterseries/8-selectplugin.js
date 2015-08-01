@@ -44,8 +44,8 @@ define( function() {
 			selectedDom.html( "Selection has ended. Number of selection: " + selectedIndices.length );		
 		} );
 	
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		graphinstance.draw( );
+		
 
 		
 	}, "Selection plugin", [

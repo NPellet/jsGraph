@@ -158,6 +158,7 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
         }
       }
 
+      this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
 
       this.data = arr;
@@ -204,10 +205,16 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       this.styles[ mode ].all = all;
       this.styles[ mode ].modifiers = modifiers;
 
+      this.styleHasChanged( mode );
+
       return this;
     },
 
-    draw: function() { // Serie redrawing
+  draw: function( force ) { // Serie redrawing
+
+      if( ! force && ! this.hasDataChanged( ) && ! this.hasStyleChanged( 'unselected' ) ) {
+        return;
+      }
 
       var x,
         y,
@@ -221,6 +228,9 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
         self = this;
 
       this._drawn = true;
+
+      this.dataHasChanged( false );
+      this.styleHasChanged( false );
 
       this.groupMain.removeChild( this.groupPoints );
 
@@ -517,6 +527,7 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
 
     setDataError: function( error ) {
       this.error = error;
+      this.dataHasChanged();
       return this;
     },
 

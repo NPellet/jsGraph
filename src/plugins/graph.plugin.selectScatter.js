@@ -1,8 +1,10 @@
-define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( EventEmitter, util ) {
+define( [ 'jquery', '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( $, EventEmitter, util ) {
 
   var plugin = function() {};
 
-  plugin.prototype = $.extend( plugin.prototype, EventEmitter.prototype, {
+  plugin.prototype = new EventEmitter();
+
+  $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 

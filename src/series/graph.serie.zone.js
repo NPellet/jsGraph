@@ -176,6 +176,8 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.graph.updateDataMinMaxAxes();
       this.data = arr;
 
+      this.dataHasChanged();
+
       return this;
     },
 
@@ -220,87 +222,90 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.selected = false;
     },
 
-    setDataStyle: function( std, extra ) {
-      this.stdStylePerso = std;
-      this.extraStyle = extra;
+    draw: function( force ) { // Serie redrawing
 
-      return this;
-    },
+      if( force || this.hasDataChanged() ) {
 
-    draw: function() { // Serie redrawing
+        var x,
+          y,
+          xpx,
+          ypx1,
+          ypx2,
+          j = 0,
+          k,
+          m,
+          currentLine,
+          max,
+          self = this;
 
-      var x,
-        y,
-        xpx,
-        ypx1,
-        ypx2,
-        j = 0,
-        k,
-        m,
-        currentLine,
-        max,
-        self = this;
+        this._drawn = true;
 
-      this._drawn = true;
+        this.groupMain.removeChild( this.groupZones );
 
-      this.groupMain.removeChild( this.groupZones );
+        var totalLength = this.data.length / 2;
 
-      var totalLength = this.data.length / 2;
+        j = 0, k = 0, m = this.data.length;
 
-      j = 0, k = 0, m = this.data.length;
+        var error;
+        var pathError = "";
 
-      var error;
-      var pathError = "";
+        var pathTop = "";
+        var pathBottom = "";
 
-      var pathTop = "";
-      var pathBottom = "";
+        var lineTop = [];
+        var lineBottom = [];
 
-      var lineTop = [];
-      var lineBottom = [];
+        var buffer;
 
-      var buffer;
+        for ( ; j < m; j += 3 ) {
 
-      for ( ; j < m; j += 3 ) {
+          xpx = this.getX( this.data[ j ] );
+          ypx1 = this.getY( this.data[ j + 1 ] );
+          ypx2 = this.getY( this.data[ j + 2 ] );
 
-        xpx = this.getX( this.data[ j ] );
-        ypx1 = this.getY( this.data[ j + 1 ] );
-        ypx2 = this.getY( this.data[ j + 2 ] );
+          if ( xpx < 0 ) {
+            buffer = [ xpx, ypx1, ypx2 ]
+            continue;
+          }
 
-        if ( xpx < 0 ) {
-          buffer = [ xpx, ypx1, ypx2 ]
-          continue;
+          if ( buffer ) {
+
+            lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
+            lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
+
+            buffer = false;
+            k++;
+          }
+
+          if ( ypx2 > ypx1 ) {
+            lineTop.push( [ xpx, ypx1 ] );
+            lineBottom.push( [ xpx, ypx2 ] );
+          } else {
+            lineTop.push( [ xpx, ypx2 ] );
+            lineBottom.push( [ xpx, ypx1 ] );
+          }
+
+          if ( xpx > this.getXAxis().getMaxPx() ) {
+            break;
+          }
         }
 
-        if ( buffer ) {
+        lineBottom.reverse();
 
-          lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
-          lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
-
-          buffer = false;
-          k++;
+        if ( lineTop.length > 0 && lineBottom.length > 0 ) {
+          this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
         }
 
-        if ( ypx2 > ypx1 ) {
-          lineTop.push( [ xpx, ypx1 ] );
-          lineBottom.push( [ xpx, ypx2 ] );
-        } else {
-          lineTop.push( [ xpx, ypx2 ] );
-          lineBottom.push( [ xpx, ypx1 ] );
-        }
+        
+        this.groupMain.appendChild( this.groupZones );
 
-        if ( xpx > this.getXAxis().getMaxPx() ) {
-          break;
-        }
       }
 
-      lineBottom.reverse();
 
-      if ( lineTop.length > 0 && lineBottom.length > 0 ) {
-        this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      if( this.hasStyleChanged( this.selectionType ) ) {
+        this.applyLineStyle( this.lineZone );
       }
 
-      this.applyLineStyle( this.lineZone );
-      this.groupMain.appendChild( this.groupZones );
     },
 
     applyLineStyle: function( line ) {
@@ -308,10 +313,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() );
       line.setAttribute( 'fill', this.getFillColor() );
+
+      this.styleHasChanged( false );
     },
 
     setLineWidth: function( width ) {
       this.options.lineWidth = width;
+      this.styleHasChanged( );
       return this;
     },
 
@@ -323,6 +331,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     setLineColor: function( color ) {
       this.options.lineColor = color;
+      this.styleHasChanged( );
       return this;
     },
 
@@ -332,10 +341,11 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     /* */
 
-    /* LINE COLOR */
+    /* FILL COLOR */
 
     setFillColor: function( color ) {
       this.options.fillColor = color;
+      this.styleHasChanged( );
       return this;
     },
 

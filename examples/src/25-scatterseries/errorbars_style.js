@@ -10,26 +10,27 @@ define( function() {
 			error.push( [ [ false, [  ( 1 + Math.random() ) / 5, ( 1 + Math.random() )  / 5 ] ], [ [ Math.random() / 2, Math.random() / 2 ] ] ] );
 		}
 
-		var graphinstance = new Graph( domGraph, function( graphinstance ) {
+		var graphinstance = new Graph( domGraph );
 
 
 
-			graphinstance.newSerie("serieTest", {}, "scatter", function( serie ) {
+			var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
 
-				serie
-					.setLabel( "My serie" )
-					.autoAxis()
-					.setData( seriedata )
-					.setDataError( error )
-					.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+			serie
+				.setLabel( "My serie" )
+				.autoAxis()
+				.setData( seriedata )
+				.setDataError( error )
+				.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
 
-				graphinstance.redraw( );
-				graphinstance.drawSeries();	
-			});
-		
-
-		} );
-
+			graphinstance.draw( );
+			graphinstance.draw( );
+			graphinstance.draw( );
+			graphinstance.draw( );
+			graphinstance.draw( );
+			graphinstance.draw( );
+			graphinstance.draw( );
+			
 
 	}, "Error bars (style)", [ 
 

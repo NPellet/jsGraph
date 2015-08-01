@@ -10,7 +10,7 @@ define( function() {
 		console.log( serie );
 	})
 
-	graphinstance.newSerie("temp_nh", { useSlots: true } )
+	graphinstance.newSerie("temp_nh", { useSlots: false } )
         .autoAxis()
         .setData( series[ 0 ] );
 

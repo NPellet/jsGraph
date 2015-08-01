@@ -54,8 +54,8 @@ define( function() {
 			.setLineColor('red');
 
 		
-		graphinstance.redraw( );
-		graphinstance.drawSeries( );
+		graphinstance.draw( );
+		
 
 
 

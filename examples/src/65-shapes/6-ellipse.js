@@ -12,7 +12,6 @@ define( function() {
         graphinstance.getYAxis().forceMin( 0 );
         graphinstance.getYAxis().forceMax( 50 );
 
-        graphinstance.updateAxes();
 
         var shape = graphinstance.newShape({ 
             type: 'ellipse', 
@@ -30,9 +29,8 @@ define( function() {
         shape.addTransform('rotate', [ 20 ])
               
 
-          graphinstance.redraw( );
-          graphinstance.drawSeries();       
-
+        graphinstance.draw( );
+          
 
 
 }, 'Drawing an ellipse', 

@@ -43,13 +43,14 @@ var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary:
 
   graphinstance.redraw( ); // Need to force an axis redraw first
 
-  xAxis2.linkToAxis( xAxis, function( val ) { return Math.pow( val + 2, 2 ); }, 1 );
+  xAxis2.linkToAxis( xAxis, function( val ) { return val - new Date().getFullYear() }, 1 );
   
-  graphinstance.getXAxis().setLabel( 'Voltage (V)' );
-  graphinstance.getYAxis().setLabel( 'Current (mA cm-2)' );
+  graphinstance.getXAxis().setLabel( 'Year' );
+  graphinstance.getXAxis( 1 ).setLabel( 'Year till now' );
 
-  graphinstance.redraw( );
-  graphinstance.drawSeries();				
+
+  graphinstance.draw( );
+  
 
 
 }, "2 aligned axes", 

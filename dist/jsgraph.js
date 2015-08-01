@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-31T19:38Z
+ * Date: 2015-07-31T20:05Z
  */
 
 (function( global, factory ) {
@@ -646,7 +646,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     }
 
     if ( !wrapper ) {
-      throw "The wrapper parameter is not optional.";
+      throw "The wrapper DOM element was not found.";
     }
 
     if ( wrapper instanceof $ ) {
@@ -780,14 +780,25 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
   Graph.prototype = $.extend( Graph.prototype, {
 
     /** 
-     * Returns the graph wrapper element
+     * Returns the graph SVG wrapper element
      * @memberof Graph.prototype
      * @public
-     * @return {HTMLElement} The DOM element wrapping the graph
+     * @return {SVGElement} The DOM element wrapping the graph
      */
     getDom: function() {
       return this.dom;
     },
+    
+    /** 
+     * Returns the graph wrapper element passed during the graph creation
+     * @memberof Graph.prototype
+     * @public
+     * @return {HTMLElement} The DOM element wrapping the graph
+     */
+    getWrapper: function() {
+      return this._dom;
+    },
+    
 
     /**
      * Sets an option of the graph
@@ -6381,7 +6392,9 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 
     },
 
-    isX: function() { return true },
+    isX: function() {
+      return true
+    },
 
     getWrapper: function( level ) {
       return this.wrapper[ level ]
