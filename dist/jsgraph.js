@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-01T18:19Z
+ * Date: 2015-08-03T07:27Z
  */
 
 (function( global, factory ) {
@@ -7080,7 +7080,7 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( $, EventEmitter, uti
   } );
 
   return plugin;
- } ) ( build["./plugins/jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
+ } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
 
 
 // Build: End source file (plugins/graph.plugin.selectScatter) 
@@ -12205,11 +12205,14 @@ build['./shapes/graph.shape'] = ( function( ) {
             deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
             deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
+          console.log( deltaX, deltaY );
+
           if ( deltaX != 0 ||  deltaY !== 0 ) {
             this.preventUnselect = true;
           }
 
           this.mouseCoords = coords;
+          console.log( "handle" );
           var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
 
           if ( this.options ) {

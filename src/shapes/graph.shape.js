@@ -756,11 +756,14 @@ define( [], function() {
             deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
             deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
+          console.log( deltaX, deltaY );
+
           if ( deltaX != 0 ||  deltaY !== 0 ) {
             this.preventUnselect = true;
           }
 
           this.mouseCoords = coords;
+          console.log( "handle" );
           var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
 
           if ( this.options ) {

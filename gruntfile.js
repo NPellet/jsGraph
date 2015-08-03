@@ -263,11 +263,13 @@ module.exports = function(grunt) {
                     }
 
                     var val = val.replace(/^\s*?['"]([^'"]*)['"]\s*?$/, "$1");
-                    val = npmpath.resolve( npmpath.dirname( path ), val );
-
-
+                    
+                    if( externalLibraries.indexOf( val ) == -1 ) {
+                        val = npmpath.resolve( npmpath.dirname( path ), val );
+                    
+                    }
                     val = "./" + val.replace( basePath, "" ).replace( /^src\//, "" );
-
+                    
                     return 'build["' + val + '"]';
 
                 } );
@@ -325,7 +327,7 @@ module.exports = function(grunt) {
         }
 
 
-
+        var externalLibraries = [ 'jquery' ];
 
        var requirejsConfig = {
 
@@ -346,13 +348,13 @@ module.exports = function(grunt) {
 
 
             paths: {
-                'jquery': './dependencies/jquery/dist/jquery.min'
+                'jquery': 'dependencies/jquery/dist/jquery.min'
             },
 
             // Taken from the jquery build task
             onBuildWrite: buildConvert,
 
-            exclude: [ 'jquery' ],
+            exclude: externalLibraries,
             //useStrict: true,
 
             out: function( compiled ) {
