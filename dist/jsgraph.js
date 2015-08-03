@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-12
+ * jsGraph JavaScript Graphing Library v1.12.4-13
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-03T07:27Z
+ * Date: 2015-08-03T08:24Z
  */
 
 (function( global, factory ) {
@@ -1585,10 +1585,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
       if ( !mute ) {
 
-        if ( false === ( response = this.triggerEvent( 'beforeNewShape', shapeData ) ) ) {
+        this.emit( 'beforeNewShape', shapeData );
+
+        if ( this.prevent( false ) ) {
           return false;
-        } else if ( response ) {
-          shapeData = response;
         }
       }
 
@@ -1661,7 +1661,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
 
       this.shapes.push( shape );
-      this.triggerEvent( 'newShape', shape, shapeData );
+
+      if ( !mute ) {
+        this.emit( 'newShape', shape, shapeData );
+      }
 
       return shape;
     },
@@ -6831,13 +6834,15 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
  */
 
-build['./plugins/graph.plugin.shape'] = ( function( ) { 
+build['./plugins/graph.plugin.shape'] = ( function( $, EventEmitter, util ) { 
 
   "use strict";
 
   var plugin = function() {};
 
-  plugin.prototype = {
+  plugin.prototype = new EventEmitter();
+
+  plugin.prototype = $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 
@@ -6887,10 +6892,18 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         },
 
         locked: false,
-        selectable: true
+        selectable: true,
+        resizable: true,
+        movable: true
       };
 
-      $.extend( shapeInfo, this.options )
+      $.extend( shapeInfo, this.options );
+
+      this.emit( "beforeNewShape", shapeInfo );
+
+      if ( this.graph.prevent( false ) ) {
+        return;
+      }
 
       var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
@@ -6898,8 +6911,8 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
         self.currentShape = shape;
         self.currentShapeEvent = e;
 
+        this.emit( "newShape", shape );
       }
-
     },
 
     onMouseMove: function( graph, x, y, e ) {
@@ -6944,11 +6957,11 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
       }
     }
 
-  }
+  } );
 
   return plugin;
 
- } ) (  );
+ } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
 
 
 // Build: End source file (plugins/graph.plugin.shape) 
@@ -12205,14 +12218,12 @@ build['./shapes/graph.shape'] = ( function( ) {
             deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
             deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
 
-          console.log( deltaX, deltaY );
-
           if ( deltaX != 0 ||  deltaY !== 0 ) {
             this.preventUnselect = true;
           }
 
           this.mouseCoords = coords;
-          console.log( "handle" );
+
           var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
 
           if ( this.options ) {
@@ -12813,7 +12824,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
       } else if ( this.serie && this.handleSelected ) {
 
-        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
         var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
@@ -12821,13 +12832,14 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
           return;
         }
 
-        if ( this.resizingPosition.x != value.xMin )
+        if ( this.resizingPosition.x != value.xMin ) {
           this.preventUnselect = true;
+        }
 
         this.resizingPosition.x = value.xMin;
       } else if ( this.handleSelected ) {
 
-        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
         this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
@@ -12855,7 +12867,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
 
-      this.reversed = x == posXY2.x;
+      //  this.reversed = x == posXY2.x;
 
       if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
         return false;
@@ -12885,8 +12897,10 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
         v3 = v1;
         v1 = v2;
         v2 = v3;
-      }
 
+        //this.handleSelected = ( this.handleSelected == 1 ) ? 2 : 1;
+      }
+      
       this.counter = 0;
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {

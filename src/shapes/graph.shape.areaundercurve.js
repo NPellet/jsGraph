@@ -76,7 +76,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       } else if ( this.serie && this.handleSelected ) {
 
-        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
 
         var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
@@ -84,13 +84,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        if ( this.resizingPosition.x != value.xMin )
+        if ( this.resizingPosition.x != value.xMin ) {
           this.preventUnselect = true;
+        }
 
         this.resizingPosition.x = value.xMin;
       } else if ( this.handleSelected ) {
 
-        this.resizingPosition = ( ( this.reversed && this.handleSelected == 2 ) || ( !this.reversed && this.handleSelected == 1 ) ) ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
         this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
       }
 
@@ -118,7 +119,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
 
-      this.reversed = x == posXY2.x;
+      //  this.reversed = x == posXY2.x;
 
       if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
         return false;
@@ -148,6 +149,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
         v3 = v1;
         v1 = v2;
         v2 = v3;
+
+        //this.handleSelected = ( this.handleSelected == 1 ) ? 2 : 1;
       }
 
       this.counter = 0;

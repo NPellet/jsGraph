@@ -1016,10 +1016,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       if ( !mute ) {
 
-        if ( false === ( response = this.triggerEvent( 'beforeNewShape', shapeData ) ) ) {
+        this.emit( 'beforeNewShape', shapeData );
+
+        if ( this.prevent( false ) ) {
           return false;
-        } else if ( response ) {
-          shapeData = response;
         }
       }
 
@@ -1092,7 +1092,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
 
       this.shapes.push( shape );
-      this.triggerEvent( 'newShape', shape, shapeData );
+
+      if ( !mute ) {
+        this.emit( 'newShape', shape, shapeData );
+      }
 
       return shape;
     },

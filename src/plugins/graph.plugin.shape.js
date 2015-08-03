@@ -1,10 +1,12 @@
-define( [], function() {
+define( [ 'jquery', '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( $, EventEmitter, util ) {
 
   "use strict";
 
   var plugin = function() {};
 
-  plugin.prototype = {
+  plugin.prototype = new EventEmitter();
+
+  plugin.prototype = $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 
@@ -54,10 +56,18 @@ define( [], function() {
         },
 
         locked: false,
-        selectable: true
+        selectable: true,
+        resizable: true,
+        movable: true
       };
 
-      $.extend( shapeInfo, this.options )
+      $.extend( shapeInfo, this.options );
+
+      this.emit( "beforeNewShape", shapeInfo );
+
+      if ( this.graph.prevent( false ) ) {
+        return;
+      }
 
       var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
@@ -65,8 +75,8 @@ define( [], function() {
         self.currentShape = shape;
         self.currentShapeEvent = e;
 
+        this.emit( "newShape", shape );
       }
-
     },
 
     onMouseMove: function( graph, x, y, e ) {
@@ -111,7 +121,7 @@ define( [], function() {
       }
     }
 
-  }
+  } );
 
   return plugin;
 
