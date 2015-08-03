@@ -7,7 +7,7 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
 
     draw: function( force ) { // Serie redrawing
 
-      if( force || this.hasDataChanged() ) {
+      if ( force || this.hasDataChanged() ) {
 
         this.drawInit();
 
@@ -39,7 +39,7 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
 
       }
 
-      if( this.hasStyleChanged( this.selectionType ) ) {
+      if ( this.hasStyleChanged( this.selectionType ) ) {
         this.updateStyle();
       }
 

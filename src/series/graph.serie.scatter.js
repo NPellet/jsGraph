@@ -210,9 +210,9 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       return this;
     },
 
-  draw: function( force ) { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
 
-      if( ! force && ! this.hasDataChanged( ) && ! this.hasStyleChanged( 'unselected' ) ) {
+      if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ) {
         return;
       }
 

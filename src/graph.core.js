@@ -288,7 +288,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       } else {
 
-        if( ! onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+        if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
           refreshDrawingZone( this );
           return true;
         }
@@ -297,12 +297,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return false;
     },
 
-
     draw: function() {
-      
+
       this.drawSeries( this.redraw( true ) );
     },
-
 
     /**
      * Sets the total width of the graph
@@ -898,7 +896,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
         if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[ i ], force );
+          this.drawSerie( this.series[  i ], force );
         }
       }
     },
@@ -2329,7 +2327,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     graph._axesHaveChanged = false;
     return temp;
   }
-
 
   /**
    * Returns a registered constructor

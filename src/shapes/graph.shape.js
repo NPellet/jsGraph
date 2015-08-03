@@ -887,7 +887,6 @@ define( [], function() {
       }
 */
 
-      
       if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
         this.graph.selectShape( this );
       }

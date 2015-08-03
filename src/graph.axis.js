@@ -514,7 +514,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         this.currentAxisMin = undefined;
       }
 
-      if( ! noNotify ) {
+      if ( !noNotify ) {
         this.graph._axisHasChanged( this );
       }
     },

@@ -589,7 +589,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
      */
     draw: function( force ) { // Serie redrawing
 
-      if( force || this.hasDataChanged() ) {
+      if ( force || this.hasDataChanged() ) {
         this.drawInit();
 
         var data = this._dataToUse,
@@ -633,7 +633,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       this.applyLineStyle( this.getSymbolForLegend() );
 
-      if( this.hasStyleChanged( this.selectionType ) ) {
+      if ( this.hasStyleChanged( this.selectionType ) ) {
         this.updateStyle();
       }
     },
@@ -1723,7 +1723,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
       this.styles[ selectionType ].lineWidth = width;
 
       this.styleHasChanged( selectionType );
-      
+
       return this;
     },
 
@@ -1924,7 +1924,6 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         this.currentMarkersSelectionType = false;
       }
 
-      
     },
 
     showImpl: function() {

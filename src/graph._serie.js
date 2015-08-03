@@ -699,21 +699,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     styleHasChanged: function( selectionType ) {
       this._changedStyles = this._changedStyles || {};
 
-      if( selectionType === false ) {
-        for( var i in this._changedStyles ) {
+      if ( selectionType === false ) {
+        for ( var i in this._changedStyles ) {
           this._changedStyles[ i ] = false;
         }
 
       } else {
-        this._changedStyles[ selectionType || "unselected" ] = true;
+        this._changedStyles[ selectionType ||  "unselected" ] = true;
       }
     },
 
     hasStyleChanged: function( selectionType ) {
       this._changedStyles = this._changedStyles || {};
 
-      return this._changedStyles[ selectionType || "unselected" ];
-      
+      return this._changedStyles[ selectionType ||  "unselected" ];
+
     },
 
     dataHasChanged: function( arg ) {
@@ -723,7 +723,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     hasDataChanged: function() {
       return this._dataHasChanged;
     }
-
 
   } );
 

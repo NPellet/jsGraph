@@ -224,7 +224,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     draw: function( force ) { // Serie redrawing
 
-      if( force || this.hasDataChanged() ) {
+      if ( force || this.hasDataChanged() ) {
 
         var x,
           y,
@@ -296,13 +296,11 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
           this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
         }
 
-        
         this.groupMain.appendChild( this.groupZones );
 
       }
 
-
-      if( this.hasStyleChanged( this.selectionType ) ) {
+      if ( this.hasStyleChanged( this.selectionType ) ) {
         this.applyLineStyle( this.lineZone );
       }
 
@@ -319,7 +317,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     setLineWidth: function( width ) {
       this.options.lineWidth = width;
-      this.styleHasChanged( );
+      this.styleHasChanged();
       return this;
     },
 
@@ -331,7 +329,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     setLineColor: function( color ) {
       this.options.lineColor = color;
-      this.styleHasChanged( );
+      this.styleHasChanged();
       return this;
     },
 
@@ -345,7 +343,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     setFillColor: function( color ) {
       this.options.fillColor = color;
-      this.styleHasChanged( );
+      this.styleHasChanged();
       return this;
     },
 

@@ -101,7 +101,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     draw: function( force ) {
 
-      if( force || this.hasDataChanged() ) {
+      if ( force || this.hasDataChanged() ) {
 
         this.currentLine = 0;
         var x, y, xpx, ypx, xpx2, ypx2, i = 0,
@@ -204,23 +204,18 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
         }
 
-
         this.onMouseWheel( 0, {
           shiftKey: false
         } );
         this.groupMain.insertBefore( this.groupLines, next );
 
-      } else if( this.hasStyleChanged( this.selectionType ) ) {
-        
+      } else if ( this.hasStyleChanged( this.selectionType ) ) {
+
         for ( ; i < l; i++ ) {
           this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
         }
 
-
       }
-
-      
-
 
     },
 
@@ -291,7 +286,6 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
         this._shapeZoom.setHandlePos( ( Math.pow( this.positiveDelta, 3 ) ), this.maxZ );
       }
     },
-
 
     setDynamicColor: function( colors ) {
       this.lineColors = colors;

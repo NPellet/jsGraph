@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-07-31T20:05Z
+ * Date: 2015-08-01T18:19Z
  */
 
 (function( global, factory ) {
@@ -690,6 +690,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
     this._dom = wrapper;
+    this._axesHaveChanged = true;
 
     if ( this.options.hasOwnProperty( 'padding' ) && util.isNumeric( this.options.padding ) ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
@@ -788,7 +789,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     getDom: function() {
       return this.dom;
     },
-    
+
     /** 
      * Returns the graph wrapper element passed during the graph creation
      * @memberof Graph.prototype
@@ -798,7 +799,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     getWrapper: function() {
       return this._dom;
     },
-    
 
     /**
      * Sets an option of the graph
@@ -841,9 +841,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
      * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
      * @memberof Graph.prototype
+     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
      * @return {Boolean} if the redraw has been successful
      */
-    redraw: function() {
+    redraw: function( onlyIfAxesHaveChanged ) {
 
       if ( !this.width || !this.height ) {
         return;
@@ -852,13 +853,22 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       if ( !this.sizeSet ) {
 
         this._resize();
+        return true;
 
       } else {
 
-        refreshDrawingZone( this );
+        if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+          refreshDrawingZone( this );
+          return true;
+        }
       }
 
-      return true;
+      return false;
+    },
+
+    draw: function() {
+
+      this.drawSeries( this.redraw( true ) );
     },
 
     /**
@@ -1346,6 +1356,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return axes;
     },
 
+    _axisHasChanged: function( axis ) {
+      this._axesHaveChanged = true;
+    },
+
     /**
      * Creates a new serie<br />
      * If the a serie with the same name exists, returns this serie with update options <br />
@@ -1425,22 +1439,24 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     /**
      * Draws a specific serie
      * @param {Serie} serie - The serie to redraw
+     * @param {Boolean} force - Forces redraw even if no data has changed
      * @memberof Graph.prototype
      */
-    drawSerie: function( serie ) {
+    drawSerie: function( serie, force ) {
 
       if ( !serie.draw ) {
         throw "Serie has no method draw";
       }
 
-      serie.draw();
+      serie.draw( force );
     },
 
     /**
      * Redraws all visible series
      * @memberof Graph.prototype
+     * @param {Boolean} force - Forces redraw even if no data has changed
      */
-    drawSeries: function() {
+    drawSeries: function( force ) {
 
       if ( !this.width || !this.height ) {
         return;
@@ -1449,7 +1465,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       var i = this.series.length - 1;
       for ( ; i >= 0; i-- ) {
         if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[  i ] );
+          this.drawSerie( this.series[  i ], force );
         }
       }
     },
@@ -2069,7 +2085,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
           var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
 
-          if ( i == 'y' && relTo && relTo.x && !relTo.y ) {
+          if ( i == 'y' && relTo && relTo.x !== undefined && relTo.y == undefined ) {
 
             if ( !onSerie ) {
               throw "Error. No serie exists. Cannot find y value";
@@ -2875,6 +2891,12 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
   }
 
+  function haveAxesChanged( graph ) {
+    var temp = graph._axesHaveChanged;
+    graph._axesHaveChanged = false;
+    return temp;
+  }
+
   /**
    * Returns a registered constructor
    * @memberof Graph.prototype
@@ -3152,6 +3174,7 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
         this.minY = minX;
       }
 
+      this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
 
       return this;
@@ -3619,6 +3642,34 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
      */
     getLayer: function() {
       return this.options.layer ||  1;
+    },
+
+    styleHasChanged: function( selectionType ) {
+      this._changedStyles = this._changedStyles || {};
+
+      if ( selectionType === false ) {
+        for ( var i in this._changedStyles ) {
+          this._changedStyles[ i ] = false;
+        }
+
+      } else {
+        this._changedStyles[ selectionType ||  "unselected" ] = true;
+      }
+    },
+
+    hasStyleChanged: function( selectionType ) {
+      this._changedStyles = this._changedStyles || {};
+
+      return this._changedStyles[ selectionType ||  "unselected" ];
+
+    },
+
+    dataHasChanged: function( arg ) {
+      this._dataHasChanged = arg === undefined || arg;
+    },
+
+    hasDataChanged: function() {
+      return this._dataHasChanged;
     }
 
   } );
@@ -4126,7 +4177,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return [ unitPerTickCorrect, nbTicks, pxPerTick ];
     },
 
-    setMinMaxToFitSeries: function() {
+    setMinMaxToFitSeries: function( noNotify ) {
 
       var interval = this.getInterval();
 
@@ -4154,6 +4205,9 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
         this.currentAxisMin = undefined;
       }
 
+      if ( !noNotify ) {
+        this.graph._axisHasChanged( this );
+      }
     },
 
     getInterval: function() {
@@ -4182,6 +4236,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       if ( this.options.logScale ) {
         this.currentAxisMin = Math.max( 1e-50, val );
       }
+
+      this.graph._axisHasChanged( this );
     },
 
     setCurrentMax: function( val ) {
@@ -4192,8 +4248,11 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
       this.currentAxisMax = val;
 
-      if ( this.options.logScale )
+      if ( this.options.logScale ) {
         this.currentAxisMax = Math.max( 1e-50, val );
+      }
+
+      this.graph._axisHasChanged( this );
     },
 
     flip: function( bool ) {
@@ -4212,7 +4271,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.drawInit();
 
       if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
-        this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+        this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
+
       }
 
       //   this.setSlaveAxesBoundaries();
@@ -6902,11 +6962,13 @@ build['./plugins/graph.plugin.shape'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
  */
 
-build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter, util ) { 
+build['./plugins/graph.plugin.selectScatter'] = ( function( $, EventEmitter, util ) { 
 
   var plugin = function() {};
 
-  plugin.prototype = $.extend( plugin.prototype, EventEmitter.prototype, {
+  plugin.prototype = new EventEmitter();
+
+  $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 
@@ -7018,7 +7080,7 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( EventEmitter, util )
   } );
 
   return plugin;
- } ) ( build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
+ } ) ( build["./plugins/jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
 
 
 // Build: End source file (plugins/graph.plugin.selectScatter) 
@@ -8004,40 +8066,39 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
      * Draws the serie
      * @memberof SerieLine.prototype
      */
-    draw: function() { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
 
-      this.drawInit();
+      if ( force || this.hasDataChanged() ) {
+        this.drawInit();
 
-      var data = this._dataToUse;
-      var xData = this._xDataToUse;
-      var slotToUse = this._slotToUse;
+        var data = this._dataToUse,
+          xData = this._xDataToUse,
+          slotToUse = this._slotToUse;
 
-      var shape, self = this;
+        this.removeLinesGroup();
+        this.eraseMarkers();
 
-      this.removeLinesGroup();
+        this.lookForMaxima = true;
+        this.lookForMinima = false;
 
-      this.eraseMarkers();
+        if ( !this._draw_slot() ) {
 
-      this.lookForMaxima = true;
-      this.lookForMinima = false;
+          if ( this.mode == 'x_equally_separated' ) {
 
-      if ( !this._draw_slot() ) {
+            this._draw_equally_separated();
 
-        if ( this.mode == 'x_equally_separated' ) {
+          } else {
 
-          this._draw_equally_separated();
+            this._draw_standard();
 
-        } else {
-
-          this._draw_standard();
-
+          }
         }
-      }
 
-      this.makePeakPicking();
-      this.removeExtraLines();
-      this.insertMarkers();
-      this.insertLinesGroup();
+        this.makePeakPicking();
+        this.removeExtraLines();
+        this.insertMarkers();
+        this.insertLinesGroup();
+      }
 
       // Unhovers everything
       for ( var i in this.domMarkerHover ) {
@@ -8050,6 +8111,10 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       }
 
       this.applyLineStyle( this.getSymbolForLegend() );
+
+      if ( this.hasStyleChanged( this.selectionType ) ) {
+        this.updateStyle();
+      }
     },
 
     _draw_standard: function() {
@@ -8641,6 +8706,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
     updateStyle: function() {
       this.applyLineStyles();
       this.setLegendSymbolStyle();
+
+      this.styleHasChanged( false );
     },
 
     // Revised August 2014. Ok
@@ -8924,8 +8991,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       while ( true ) {
         i++;
-        if ( i > 100 )
+        if ( i > 100 ) {
           throw "Error loop";
+        }
 
         seedInt = ( seedA + seedB ) / 2;
         seedInt -= seedInt % 2; // Always looks for an x.
@@ -9039,6 +9107,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
     setStyle: function( style, selectionType ) {
 
       this.styles[ selectionType ] = style;
+      this.styleHasChanged( selectionType );
+
     },
 
     setLineStyle: function( number, selectionType ) {
@@ -9046,6 +9116,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       selectionType = selectionType ||  "unselected";
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineStyle = number;
+
+      this.styleHasChanged( selectionType );
 
       return this;
     },
@@ -9103,6 +9175,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
           return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
           break;
       }
+
+      this.styleHasChanged( selectionType );
+
     },
 
     getStyle: function( selectionType ) {
@@ -9126,6 +9201,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineWidth = width;
 
+      this.styleHasChanged( selectionType );
+
       return this;
     },
 
@@ -9140,6 +9217,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
       selectionType = selectionType ||  "unselected";
       this.styles[ selectionType ] = this.styles[ selectionType ] || {};
       this.styles[ selectionType ].lineColor = color;
+
+      this.styleHasChanged( selectionType );
 
       return this;
     },
@@ -9159,6 +9238,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       if ( redraw && this._drawn ) {
         this.draw();
+      } else {
+        this.styleHasChanged( selectionType );
       }
 
       return this;
@@ -9171,8 +9252,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       if ( redraw && this._drawn ) {
         this.draw();
+      } else {
+        this.styleHasChanged( selectionType );
       }
-
       return this;
     },
 
@@ -9204,7 +9286,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
-      this.showMarkers( selectionType, true );
+      this.showMarkers( selectionType, false );
 
       if ( !Array.isArray( families ) && typeof families == 'object' ) {
         families = [  families ];
@@ -9262,6 +9344,9 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
       this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
       this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+
+      this.styleHasChanged( selectionType );
+      this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
 
       return this;
     },
@@ -9803,125 +9888,129 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       this.data = datas;
       this.graph.updateDataMinMaxAxes();
 
+      this.dataHasChanged( true );
+
       return this;
     },
 
-    draw: function( doNotRedrawZone ) {
+    draw: function( force ) {
 
-      this.currentLine = 0;
-      var x, y, xpx, ypx, xpx2, ypx2, i = 0,
-        l = this.data.length,
-        j = 0,
-        k, m, currentLine, domLine, arr;
-      this.minZ = Infinity;
-      this.maxZ = -Infinity;
+      if ( force || this.hasDataChanged() ) {
 
-      var next = this.groupLines.nextSibling;
-      this.groupMain.removeChild( this.groupLines );
-      this.zValues = {};
+        this.currentLine = 0;
+        var x, y, xpx, ypx, xpx2, ypx2, i = 0,
+          l = this.data.length,
+          j = 0,
+          k, m, currentLine, domLine, arr;
+        this.minZ = Infinity;
+        this.maxZ = -Infinity;
 
-      var incrXFlip = 0;
-      var incrYFlip = 1;
-      if ( this.getFlip() ) {
-        incrXFlip = 0;
-        incrYFlip = 1;
-      }
+        var next = this.groupLines.nextSibling;
+        this.groupMain.removeChild( this.groupLines );
+        this.zValues = {};
 
-      var minY = this.getYAxis().getActualMin();
-      var minX = this.getXAxis().getActualMin();
-
-      var maxX = this.getXAxis().getActualMax();
-      var maxY = this.getYAxis().getActualMax();
-
-      this.counter = 0;
-      this.currentLineId = 0;
-
-      for ( ; i < l; i++ ) {
-        this.currentLine = "";
-        j = 0, k = 0;
-
-        for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
-
-          var lastxpx, lastypx;
-
-          if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
-            continue;
-          }
-
-          xpx2 = this.getX( arr[ j + incrXFlip ] );
-          ypx2 = this.getY( arr[ j + incrYFlip ] );
-
-          xpx = this.getX( arr[ j + 2 + incrXFlip ] );
-          ypx = this.getY( arr[ j + 2 + incrYFlip ] );
-
-          if ( xpx == xpx2 && ypx == ypx2 ) {
-            continue;
-          }
-
-          /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
-						currentLine += "L";
-					} else {
-						currentLine += "M";	
-					}
-*/
-
-          this.currentLine += "M ";
-          this.currentLine += xpx2;
-          this.currentLine += " ";
-          this.currentLine += ypx2;
-
-          this.currentLine += "L ";
-          this.currentLine += xpx;
-          this.currentLine += " ";
-          this.currentLine += ypx;
-
-          this.counter++;
-
-          lastxpx = xpx;
-          lastypx = ypx;
-
-          k++;
+        var incrXFlip = 0;
+        var incrYFlip = 1;
+        if ( this.getFlip() ) {
+          incrXFlip = 0;
+          incrYFlip = 1;
         }
 
-        this.currentLine += " z";
+        var minY = this.getYAxis().getActualMin();
+        var minX = this.getXAxis().getActualMin();
 
-        domLine = this._createLine();
-        domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
+        var maxX = this.getXAxis().getActualMax();
+        var maxY = this.getYAxis().getActualMax();
 
-        if ( this.zoneColors && this.zoneColors[ i ] ) {
+        this.counter = 0;
+        this.currentLineId = 0;
 
-          domLine.setAttribute( 'fill', this.zoneColors[  i ] );
+        for ( ; i < l; i++ ) {
+          this.currentLine = "";
+          j = 0, k = 0;
+
+          for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
+
+            var lastxpx, lastypx;
+
+            if ( ( arr[ j + incrXFlip ] < minX && arr[ j + 2 + incrXFlip ] < minX ) ||  ( arr[ j + incrYFlip ] < minY && arr[ j + 2 + incrYFlip ] < minY ) ||  ( arr[ j + incrYFlip ] > maxY && arr[ j + 2 + incrYFlip ] > maxY || ( arr[ j + incrXFlip ] > maxX && arr[ j + 2 + incrXFlip ] > maxX ) ) ) {
+              continue;
+            }
+
+            xpx2 = this.getX( arr[ j + incrXFlip ] );
+            ypx2 = this.getY( arr[ j + incrYFlip ] );
+
+            xpx = this.getX( arr[ j + 2 + incrXFlip ] );
+            ypx = this.getY( arr[ j + 2 + incrYFlip ] );
+
+            if ( xpx == xpx2 && ypx == ypx2 ) {
+              continue;
+            }
+
+            /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
+  						currentLine += "L";
+  					} else {
+  						currentLine += "M";	
+  					}
+  */
+
+            this.currentLine += "M ";
+            this.currentLine += xpx2;
+            this.currentLine += " ";
+            this.currentLine += ypx2;
+
+            this.currentLine += "L ";
+            this.currentLine += xpx;
+            this.currentLine += " ";
+            this.currentLine += ypx;
+
+            this.counter++;
+
+            lastxpx = xpx;
+            lastypx = ypx;
+
+            k++;
+          }
+
+          this.currentLine += " z";
+
+          domLine = this._createLine();
+          domLine.setAttribute( 'data-zvalue', this.data[ i ].zValue );
+
+          this.zValues[ this.data[ i ].zValue ] = {
+            dom: domLine
+          };
+
+          this.minZ = Math.min( this.minZ, this.data[ i ].zValue );
+          this.maxZ = Math.max( this.maxZ, this.data[ i ].zValue );
         }
 
-        this.zValues[ this.data[ i ].zValue ] = {
-          dom: domLine
-        };
+        i++;
 
-        this.minZ = Math.min( this.minZ, this.data[ i ].zValue );
-        this.maxZ = Math.max( this.maxZ, this.data[ i ].zValue );
+        for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
+          this.groupLines.removeChild( this.lines[ i ] );
+          this.lines.splice( i, 1 );
+        }
+
+        i = 0;
+
+        for ( ; i < l; i++ ) {
+          this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
+        }
+
+        this.onMouseWheel( 0, {
+          shiftKey: false
+        } );
+        this.groupMain.insertBefore( this.groupLines, next );
+
+      } else if ( this.hasStyleChanged( this.selectionType ) ) {
+
+        for ( ; i < l; i++ ) {
+          this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
+        }
+
       }
 
-      i++;
-
-      for ( i = this.currentLine + 1; i < this.lines.length; i++ ) {
-        this.groupLines.removeChild( this.lines[ i ] );
-        this.lines.splice( i, 1 );
-      }
-
-      i = 0;
-
-      for ( ; i < l; i++ ) {
-        this.setColorTo( this.lines[ i ], this.data[ i ].zValue, this.minZ, this.maxZ );
-      }
-
-      if ( this.graph.legend ) {
-        this.graph.legend.update();
-      }
-
-      this.onMouseWheel( 0, {
-        shiftKey: false
-      } );
-      this.groupMain.insertBefore( this.groupLines, next );
     },
 
     initimpl: function() {
@@ -9992,14 +10081,10 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       }
     },
 
-    setColors: function( colors ) {
-      this.zoneColors = colors;
-    },
-
     setDynamicColor: function( colors ) {
-
       this.lineColors = colors;
 
+      this.styleHasChanged();
     },
 
     setNegative: function( bln ) {
@@ -10062,12 +10147,15 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
     applyLineStyle: function( line, overwriteValue ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() + ( this.isSelected() ? 2 : 0 ) );
-      if ( this.getLineDashArray() )
+      if ( this.getLineDashArray() ) {
         line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+      }
       line.setAttribute( 'fill', 'none' );
 
       this.setColorTo( line, ( ( overwriteValue !== undefined ) ? overwriteValue : line.getAttribute( 'data-zvalue' ) ), this.minZ, this.maxZ );
       //  line.setAttribute('shape-rendering', 'optimizeSpeed');
+
+      this.hasStyleChanged( false );
     },
 
     setShapeZoom: function( shape ) {
@@ -10099,38 +10187,43 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
   var GraphSerie = function() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
 
-    draw: function() { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
 
-      this.drawInit();
+      if ( force || this.hasDataChanged() ) {
 
-      var data = this._dataToUse;
-      var xData = this._xDataToUse;
-      var slotToUse = this._slotToUse;
+        this.drawInit();
 
-      var shape, self = this;
+        var data = this._dataToUse;
+        var xData = this._xDataToUse;
+        var slotToUse = this._slotToUse;
 
-      this.removeLinesGroup();
+        var shape, self = this;
 
-      this.eraseMarkers();
+        this.removeLinesGroup();
 
-      this.lookForMaxima = true;
-      this.lookForMinima = false;
+        this.eraseMarkers();
 
-      if ( this.mode == 'x_equally_separated' ) {
+        this.lookForMaxima = true;
+        this.lookForMinima = false;
 
-        throw "Not supported";
+        if ( this.mode == 'x_equally_separated' ) {
 
-      } else {
+          throw "Not supported";
 
-        this._draw_standard();
+        } else {
+
+          this._draw_standard();
+
+        }
+
+        this.removeExtraLines();
+        this.insertLinesGroup();
 
       }
 
-      this.removeExtraLines();
-
-      //insertMarkers( this );
-
-      this.insertLinesGroup();
+      if ( this.hasStyleChanged( this.selectionType ) ) {
+        this.updateStyle();
+      }
 
     },
 
@@ -10277,7 +10370,7 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
       }
 
       return this._addPoint( xpx, ypx );
-    },
+    }
 
   } );
 
@@ -10456,6 +10549,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
         }
       }
 
+      this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
 
       this.data = arr;
@@ -10502,10 +10596,16 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
       this.styles[ mode ].all = all;
       this.styles[ mode ].modifiers = modifiers;
 
+      this.styleHasChanged( mode );
+
       return this;
     },
 
-    draw: function() { // Serie redrawing
+    draw: function( force ) { // Serie redrawing
+
+      if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ) {
+        return;
+      }
 
       var x,
         y,
@@ -10519,6 +10619,9 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
         self = this;
 
       this._drawn = true;
+
+      this.dataHasChanged( false );
+      this.styleHasChanged( false );
 
       this.groupMain.removeChild( this.groupPoints );
 
@@ -10815,6 +10918,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
 
     setDataError: function( error ) {
       this.error = error;
+      this.dataHasChanged();
       return this;
     },
 
@@ -11149,6 +11253,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.graph.updateDataMinMaxAxes();
       this.data = arr;
 
+      this.dataHasChanged();
+
       return this;
     },
 
@@ -11193,87 +11299,88 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.selected = false;
     },
 
-    setDataStyle: function( std, extra ) {
-      this.stdStylePerso = std;
-      this.extraStyle = extra;
+    draw: function( force ) { // Serie redrawing
 
-      return this;
-    },
+      if ( force || this.hasDataChanged() ) {
 
-    draw: function() { // Serie redrawing
+        var x,
+          y,
+          xpx,
+          ypx1,
+          ypx2,
+          j = 0,
+          k,
+          m,
+          currentLine,
+          max,
+          self = this;
 
-      var x,
-        y,
-        xpx,
-        ypx1,
-        ypx2,
-        j = 0,
-        k,
-        m,
-        currentLine,
-        max,
-        self = this;
+        this._drawn = true;
 
-      this._drawn = true;
+        this.groupMain.removeChild( this.groupZones );
 
-      this.groupMain.removeChild( this.groupZones );
+        var totalLength = this.data.length / 2;
 
-      var totalLength = this.data.length / 2;
+        j = 0, k = 0, m = this.data.length;
 
-      j = 0, k = 0, m = this.data.length;
+        var error;
+        var pathError = "";
 
-      var error;
-      var pathError = "";
+        var pathTop = "";
+        var pathBottom = "";
 
-      var pathTop = "";
-      var pathBottom = "";
+        var lineTop = [];
+        var lineBottom = [];
 
-      var lineTop = [];
-      var lineBottom = [];
+        var buffer;
 
-      var buffer;
+        for ( ; j < m; j += 3 ) {
 
-      for ( ; j < m; j += 3 ) {
+          xpx = this.getX( this.data[ j ] );
+          ypx1 = this.getY( this.data[ j + 1 ] );
+          ypx2 = this.getY( this.data[ j + 2 ] );
 
-        xpx = this.getX( this.data[ j ] );
-        ypx1 = this.getY( this.data[ j + 1 ] );
-        ypx2 = this.getY( this.data[ j + 2 ] );
+          if ( xpx < 0 ) {
+            buffer = [ xpx, ypx1, ypx2 ]
+            continue;
+          }
 
-        if ( xpx < 0 ) {
-          buffer = [ xpx, ypx1, ypx2 ]
-          continue;
+          if ( buffer ) {
+
+            lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
+            lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
+
+            buffer = false;
+            k++;
+          }
+
+          if ( ypx2 > ypx1 ) {
+            lineTop.push( [ xpx, ypx1 ] );
+            lineBottom.push( [ xpx, ypx2 ] );
+          } else {
+            lineTop.push( [ xpx, ypx2 ] );
+            lineBottom.push( [ xpx, ypx1 ] );
+          }
+
+          if ( xpx > this.getXAxis().getMaxPx() ) {
+            break;
+          }
         }
 
-        if ( buffer ) {
+        lineBottom.reverse();
 
-          lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
-          lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
-
-          buffer = false;
-          k++;
+        if ( lineTop.length > 0 && lineBottom.length > 0 ) {
+          this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
         }
 
-        if ( ypx2 > ypx1 ) {
-          lineTop.push( [ xpx, ypx1 ] );
-          lineBottom.push( [ xpx, ypx2 ] );
-        } else {
-          lineTop.push( [ xpx, ypx2 ] );
-          lineBottom.push( [ xpx, ypx1 ] );
-        }
+        this.groupMain.appendChild( this.groupZones );
 
-        if ( xpx > this.getXAxis().getMaxPx() ) {
-          break;
-        }
       }
 
-      lineBottom.reverse();
-
-      if ( lineTop.length > 0 && lineBottom.length > 0 ) {
-        this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+      if ( this.hasStyleChanged( this.selectionType ) ) {
+        this.applyLineStyle( this.lineZone );
       }
 
-      this.applyLineStyle( this.lineZone );
-      this.groupMain.appendChild( this.groupZones );
     },
 
     applyLineStyle: function( line ) {
@@ -11281,10 +11388,13 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() );
       line.setAttribute( 'fill', this.getFillColor() );
+
+      this.styleHasChanged( false );
     },
 
     setLineWidth: function( width ) {
       this.options.lineWidth = width;
+      this.styleHasChanged();
       return this;
     },
 
@@ -11296,6 +11406,7 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
     setLineColor: function( color ) {
       this.options.lineColor = color;
+      this.styleHasChanged();
       return this;
     },
 
@@ -11305,10 +11416,11 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
     /* */
 
-    /* LINE COLOR */
+    /* FILL COLOR */
 
     setFillColor: function( color ) {
       this.options.fillColor = color;
+      this.styleHasChanged();
       return this;
     },
 
@@ -12224,7 +12336,6 @@ build['./shapes/graph.shape'] = ( function( ) {
       }
 */
 
-      console.log( this.resizing, this.moving );
       if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
         this.graph.selectShape( this );
       }

@@ -19,9 +19,7 @@ describe('Simple graph creation tests', function () {
         var graph = new window.Graph(div);
         var serie = graph.newSerie('serie1');
         serie.setData([1, 100, 2, 80, 3, 55, 4, 65]);
-        graph.redraw();
-        graph.drawSeries();
-
+        graph.draw();
     });
 
 
