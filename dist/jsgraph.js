@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-13
+ * jsGraph JavaScript Graphing Library v1.12.4-14
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-03T08:24Z
+ * Date: 2015-08-03T09:00Z
  */
 
 (function( global, factory ) {
@@ -5955,6 +5955,10 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
         //date.setYear( getClosest( date.getDate(), format.increment ) );
 
         break;
+
+      default:
+        throw "Date format not recognized"
+        break;
     }
 
     return date;
@@ -6011,7 +6015,7 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 
       case 'y':
 
-        date.setYear( date.getYear() + format.increment );
+        date.setFullYear( date.getFullYear() + format.increment );
 
         date.setMinutes( 0 );
         date.setSeconds( 0 );
@@ -6020,6 +6024,10 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
         date.setDate( 1 );
         date.setMonth( 0 );
 
+        break;
+
+      default:
+        throw "Date format not recognized"
         break;
     }
 
@@ -6105,6 +6113,10 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
         var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
           x2B = Math.max( minPx, Math.min( maxPx, x2 ) );
 
+        if ( isNaN( x2B ) ||  isNaN( x1B ) ) {
+          return;
+        }
+
         group.line1.setAttribute( 'x1', x1B );
         group.line2.setAttribute( 'x1', x2B );
 
@@ -6113,8 +6125,14 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 
         group.text.setAttribute( 'x', ( x1B + x2B ) / 2 );
 
-        if ( text.length * 8 > x2B - x1B ) {
-          text = "";
+        while ( text.length * 8 > x2B - x1B ) {
+
+          text = text.substr( 0, text.length - 2 ) + ".";
+
+          if ( text.length == 1 ) {
+            text = "";
+            break;
+          }
         }
 
         group.text.textContent = text;
@@ -6390,7 +6408,7 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 
         { // One day
 
-          threshold: 86400000,
+          threshold: 86400000 * 0.5,
           increments: {
 
             1: {
@@ -6409,6 +6427,110 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
           }
         },
 
+        { // One day
+
+          threshold: 86400000 * 0.8,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'm',
+              format: 'mmmm'
+            },
+
+            2: {
+
+              increment: 15, // One day on the first axis
+              unit: 'd',
+              format: 'dd'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 1,
+          increments: {
+
+            1: {
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 3, // One day on the first axis
+              unit: 'm',
+              format: 'mm/yyyy'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 2,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 4, // One day on the first axis
+              unit: 'm',
+              format: 'mm/yyyy'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 10,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 6, // One day on the first axis
+              unit: 'm',
+              format: 'dd/mm'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 12,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 1, // One day on the first axis
+              unit: 'y',
+              format: 'dd/mm'
+            }
+          }
+        },
+
       ];
 
       var currentFormat;
@@ -6417,9 +6539,14 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
 
         if ( axisFormat[ i ].threshold > timePerPx ) {
           currentFormat = axisFormat[ i ];
+
           break;
         }
 
+      }
+
+      if ( !currentFormat ) {
+        currentFormat = axisFormat[ axisFormat.length - 1 ];
       }
 
       var xVal1,
@@ -6447,7 +6574,9 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
           renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
 
           i++;
-
+          if ( i > 100 ) {
+            break;
+          }
         } while ( currentDate.getTime() < maxVal );
 
         hideGroups( this, level, i );
@@ -12900,7 +13029,7 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
 
         //this.handleSelected = ( this.handleSelected == 1 ) ? 2 : 1;
       }
-      
+
       this.counter = 0;
 
       for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {

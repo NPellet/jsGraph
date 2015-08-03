@@ -229,6 +229,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         //date.setYear( getClosest( date.getDate(), format.increment ) );
 
         break;
+
+      default:
+        throw "Date format not recognized"
+        break;
     }
 
     return date;
@@ -285,7 +289,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
       case 'y':
 
-        date.setYear( date.getYear() + format.increment );
+        date.setFullYear( date.getFullYear() + format.increment );
 
         date.setMinutes( 0 );
         date.setSeconds( 0 );
@@ -294,6 +298,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         date.setDate( 1 );
         date.setMonth( 0 );
 
+        break;
+
+      default:
+        throw "Date format not recognized"
         break;
     }
 
@@ -379,6 +387,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         var x1B = Math.max( minPx, Math.min( maxPx, x1 ) ),
           x2B = Math.max( minPx, Math.min( maxPx, x2 ) );
 
+        if ( isNaN( x2B ) ||  isNaN( x1B ) ) {
+          return;
+        }
+
         group.line1.setAttribute( 'x1', x1B );
         group.line2.setAttribute( 'x1', x2B );
 
@@ -387,8 +399,14 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         group.text.setAttribute( 'x', ( x1B + x2B ) / 2 );
 
-        if ( text.length * 8 > x2B - x1B ) {
-          text = "";
+        while ( text.length * 8 > x2B - x1B ) {
+
+          text = text.substr( 0, text.length - 2 ) + ".";
+
+          if ( text.length == 1 ) {
+            text = "";
+            break;
+          }
         }
 
         group.text.textContent = text;
@@ -664,7 +682,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         { // One day
 
-          threshold: 86400000,
+          threshold: 86400000 * 0.5,
           increments: {
 
             1: {
@@ -683,6 +701,110 @@ define( [ './graph.axis' ], function( GraphAxis ) {
           }
         },
 
+        { // One day
+
+          threshold: 86400000 * 0.8,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'm',
+              format: 'mmmm'
+            },
+
+            2: {
+
+              increment: 15, // One day on the first axis
+              unit: 'd',
+              format: 'dd'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 1,
+          increments: {
+
+            1: {
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 3, // One day on the first axis
+              unit: 'm',
+              format: 'mm/yyyy'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 2,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 4, // One day on the first axis
+              unit: 'm',
+              format: 'mm/yyyy'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 10,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 6, // One day on the first axis
+              unit: 'm',
+              format: 'dd/mm'
+            }
+          }
+        },
+
+        { // One month
+
+          threshold: 86400000 * 12,
+          increments: {
+
+            1: {
+
+              increment: 1,
+              unit: 'y',
+              format: 'yyyy'
+            },
+
+            2: {
+
+              increment: 1, // One day on the first axis
+              unit: 'y',
+              format: 'dd/mm'
+            }
+          }
+        },
+
       ];
 
       var currentFormat;
@@ -691,9 +813,14 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         if ( axisFormat[ i ].threshold > timePerPx ) {
           currentFormat = axisFormat[ i ];
+
           break;
         }
 
+      }
+
+      if ( !currentFormat ) {
+        currentFormat = axisFormat[ axisFormat.length - 1 ];
       }
 
       var xVal1,
@@ -721,7 +848,9 @@ define( [ './graph.axis' ], function( GraphAxis ) {
           renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
 
           i++;
-
+          if ( i > 100 ) {
+            break;
+          }
         } while ( currentDate.getTime() < maxVal );
 
         hideGroups( this, level, i );
