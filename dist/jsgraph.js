@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.12.4-14
+ * jsGraph JavaScript Graphing Library v1.13.0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-03T09:00Z
+ * Date: 2015-08-09T19:58Z
  */
 
 (function( global, factory ) {
@@ -866,6 +866,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       return false;
     },
 
+    /**
+     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
+     * @memberof Graph.prototype
+     */
     draw: function() {
 
       this.drawSeries( this.redraw( true ) );
@@ -1172,8 +1176,8 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * @memberof Graph.prototype
      */
     autoscaleAxes: function() {
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
-      this.redraw();
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+      this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     },
 
     _applyToAxis: {
@@ -2626,7 +2630,9 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       //   return;
       // }
 
-      _handleClick( self, coords.x, coords.y, e );
+      if ( !self.prevent( false ) ) {
+        _handleClick( self, coords.x, coords.y, e );
+      }
 
       //}, 200 );
     } );
@@ -3179,7 +3185,6 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
       this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
-
       return this;
     },
 
@@ -3948,11 +3953,11 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
     // Returns the true minimum of the axis. Either forced in options or the one from the data
     getMinValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMin || ( this.options.forcedMin === 0 ? 0 : this.dataMin ) ) : ( this.getAdapt0ToMin() );
+      return !this._adapt0To ? ( this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin ) : this.getAdapt0ToMin();
     },
 
     getMaxValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMax || ( this.options.forcedMax === 0 ? 0 : this.dataMax ) ) : ( this.getAdapt0ToMax() );
+      return !this._adapt0To ? ( this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax ) : ( this.getAdapt0ToMax() );
     },
 
     setMinValueData: function( min ) {
@@ -6655,6 +6660,8 @@ build['./graph.legend'] = ( function( ) {
     this.rectBottom.setAttribute( 'x', 0 );
     this.rectBottom.setAttribute( 'y', 0 );
 
+    this.series = false;
+
     this.svg.appendChild( this.subG );
 
     this.svg.setAttribute( 'display', 'none' );
@@ -6715,7 +6722,6 @@ build['./graph.legend'] = ( function( ) {
       var self = this;
 
       this.applyStyle();
-      this.calculatePosition();
 
       while ( this.subG.hasChildNodes() ) {
         this.subG.removeChild( this.subG.lastChild );
@@ -6723,7 +6729,7 @@ build['./graph.legend'] = ( function( ) {
 
       this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
 
-      var series = this.graph.getSeries(),
+      var series = this.series || this.graph.getSeries(),
         line,
         text,
         g;
@@ -6799,6 +6805,8 @@ build['./graph.legend'] = ( function( ) {
 
       this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
       this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+
+      this.calculatePosition();
 
       this.svg.appendChild( this.rect );
     },
@@ -6892,7 +6900,29 @@ build['./graph.legend'] = ( function( ) {
 
       this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );
 
+    },
+
+    fixSeries: function() {
+      var series = [];
+
+      if ( arguments[ 0 ] === false ) {
+        this.series = false;
+        this.update();
+        return;
+      }
+
+      for ( var i = 0, l = arguments.length; i < l; i++ ) {
+        if ( Array.isArray( arguments[  i ] ) ) {
+          series = series.concat( arguments[  i ] );
+        } else {
+          series.push( arguments[  i ] );
+        }
+      }
+
+      this.update();
+      this.series = series;
     }
+
   };
 
   return Legend;
@@ -7236,11 +7266,13 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( $, EventEmitter, uti
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
  */
 
-build['./plugins/graph.plugin.zoom'] = ( function( util ) { 
+build['./plugins/graph.plugin.zoom'] = ( function( $, util, EventEmitter ) { 
 
   var plugin = function() {};
 
-  plugin.prototype = {
+  plugin.prototype = new EventEmitter();
+
+  $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 
@@ -7308,6 +7340,12 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
           this._zoomingSquare.setAttribute( 'width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/ );
           break;
 
+        case 'forceY2':
+
+          this.y2 = graph.getYAxis().getPx( this.options.forcedY ) + graph.options.paddingTop;
+
+          break;
+
       }
 
       if ( this.options.onZoomStart && !mute ) {
@@ -7331,6 +7369,15 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
 
           break;
 
+        case 'forceY2':
+
+          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
+          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
+          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+
+          break;
+
         case 'x':
           this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
           this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
@@ -7341,6 +7388,7 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
           this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
           this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
           break;
+
       }
 
       if ( this.options.onZoomMove && !mute ) {
@@ -7374,8 +7422,15 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
           graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
           graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
           break;
+
+        case 'forceY2':
+          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+
+          break;
       }
 
+      graph.prevent( true );
       graph.redraw( true );
       graph.drawSeries();
 
@@ -7421,30 +7476,44 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
 
     onDblClick: function( graph, x, y, pref, e, mute ) {
 
+      this.emit( "beforeDblClick", {
+        graph: graph,
+        x: x,
+        y: y,
+        pref: pref,
+        e: e,
+        mute: mute
+      } );
+
+      if ( graph.prevent( false ) ) {
+        return;
+      }
+
       var xAxis = this.graph.getXAxis(),
         yAxis = this.graph.getYAxis();
 
       if ( pref.mode == 'xtotal' ) {
 
         this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-        this.graph.drawSeries();
+        this.graph.draw();
 
       } else if ( pref.mode == 'ytotal' ) {
 
         this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
-        this.graph.drawSeries();
+        this.graph.draw();
 
       } else if ( pref.mode == 'total' ) {
 
         this.graph.autoscaleAxes();
-        this.graph.drawSeries();
+        this.graph.draw();
 
-        this.graph._applyToAxes( function( axis ) {
+        // Nothing to do here
+        /*        this.graph._applyToAxes( function( axis ) {
 
           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
 
         }, null, true, true );
-
+*/
       } else {
 
         x -= this.graph.options.paddingLeft;
@@ -7496,10 +7565,10 @@ build['./plugins/graph.plugin.zoom'] = ( function( util ) {
         this.options.onDblClick( x, y, pref, e );
       }
     }
-  }
+  } );
 
   return plugin;
- } ) ( build["./graph.util"] );
+ } ) ( build["./jquery"],build["./graph.util"],build["./dependencies/eventEmitter/EventEmitter"],build["./plugins/ "] );
 
 
 // Build: End source file (plugins/graph.plugin.zoom) 
@@ -8350,15 +8419,15 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
                 pointOnAxis = [];
                 // Y crossing
                 var yLeftCrossing = ( x - xMin ) / ( x - lastX );
-                yLeftCrossing = ( yLeftCrossing <= 1 && yLeftCrossing >= 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
+                yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
                 var yRightCrossing = ( x - xMax ) / ( x - lastX );
-                yRightCrossing = ( yRightCrossing <= 1 && yRightCrossing >= 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+                yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
 
                 // X crossing
                 var xTopCrossing = ( y - yMin ) / ( y - lastY );
-                xTopCrossing = ( xTopCrossing <= 1 && xTopCrossing >= 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
+                xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
                 var xBottomCrossing = ( y - yMax ) / ( y - lastY );
-                xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+                xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
 
                 if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                   pointOnAxis.push( [ xMin, yLeftCrossing ] );
@@ -8382,6 +8451,7 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
                     if ( pointOnAxis.length > 1 ) {
                       console.error( "Programmation error. Please e-mail me." );
+                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                     }
 
                     lastPointOutside = false;
@@ -8394,6 +8464,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
                     if ( pointOnAxis.length > 1 ) {
                       console.error( "Programmation error. Please e-mail me." );
+
+                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                     }
 
                     this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );

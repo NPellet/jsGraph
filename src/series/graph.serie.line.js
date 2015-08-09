@@ -729,15 +729,15 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
                 pointOnAxis = [];
                 // Y crossing
                 var yLeftCrossing = ( x - xMin ) / ( x - lastX );
-                yLeftCrossing = ( yLeftCrossing <= 1 && yLeftCrossing >= 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
+                yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
                 var yRightCrossing = ( x - xMax ) / ( x - lastX );
-                yRightCrossing = ( yRightCrossing <= 1 && yRightCrossing >= 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+                yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
 
                 // X crossing
                 var xTopCrossing = ( y - yMin ) / ( y - lastY );
-                xTopCrossing = ( xTopCrossing <= 1 && xTopCrossing >= 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
+                xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
                 var xBottomCrossing = ( y - yMax ) / ( y - lastY );
-                xBottomCrossing = ( xBottomCrossing <= 1 && xBottomCrossing >= 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+                xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
 
                 if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                   pointOnAxis.push( [ xMin, yLeftCrossing ] );
@@ -761,6 +761,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
                     if ( pointOnAxis.length > 1 ) {
                       console.error( "Programmation error. Please e-mail me." );
+                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                     }
 
                     lastPointOutside = false;
@@ -773,6 +774,8 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
                     if ( pointOnAxis.length > 1 ) {
                       console.error( "Programmation error. Please e-mail me." );
+
+                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                     }
 
                     this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );

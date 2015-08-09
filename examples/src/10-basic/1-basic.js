@@ -5,17 +5,44 @@ define( function() {
 
 	var graphinstance = new Graph( domGraph, { }, { } );
 		graphinstance.redraw( );
-			
+		
 	graphinstance.on("newSerie", function( serie ) {
 		console.log( serie );
 	})
 
-	graphinstance.newSerie("temp_nh", { useSlots: false } )
-        .autoAxis()
-        .setData( series[ 0 ] );
+	var serie = [
+  [
+    2,
+    0.20172022811706417
+  ],
+  [
+    3,
+    0.29849959996151115
+  ],
+  [
+    4,
+    0.331488021989808
+  ],
+  [
+    5,
+    0.36291957080114007
+  ],
+  [
+    6,
+    0.3967407038427501
+  ],
+  [
+    7,
+    0.4238313004507036
+  ]
+]
 
-	graphinstance.redraw();
-	graphinstance.drawSeries();
+	graphinstance.newSerie("temp_nh", { lineToZero: true } )
+        .autoAxis()
+        .setData( serie );
+
+	graphinstance.draw();
+	
 
 	//graphinstance.drawSeries();
 

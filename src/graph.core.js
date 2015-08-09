@@ -297,6 +297,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       return false;
     },
 
+    /**
+     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
+     * @memberof Graph.prototype
+     */
     draw: function() {
 
       this.drawSeries( this.redraw( true ) );
@@ -603,8 +607,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @memberof Graph.prototype
      */
     autoscaleAxes: function() {
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
-      this.redraw();
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+      this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     },
 
     _applyToAxis: {
@@ -2057,7 +2061,9 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       //   return;
       // }
 
-      _handleClick( self, coords.x, coords.y, e );
+      if ( !self.prevent( false ) ) {
+        _handleClick( self, coords.x, coords.y, e );
+      }
 
       //}, 200 );
     } );

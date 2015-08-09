@@ -1,8 +1,10 @@
-define( [ '../graph.util' ], function( util ) {
+define( [ 'jquery', '../graph.util', '../dependencies/eventEmitter/EventEmitter', ], function( $, util, EventEmitter ) {
 
   var plugin = function() {};
 
-  plugin.prototype = {
+  plugin.prototype = new EventEmitter();
+
+  $.extend( plugin.prototype, {
 
     init: function( graph, options ) {
 
@@ -70,6 +72,12 @@ define( [ '../graph.util' ], function( util ) {
           this._zoomingSquare.setAttribute( 'width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/ );
           break;
 
+        case 'forceY2':
+
+          this.y2 = graph.getYAxis().getPx( this.options.forcedY ) + graph.options.paddingTop;
+
+          break;
+
       }
 
       if ( this.options.onZoomStart && !mute ) {
@@ -93,6 +101,15 @@ define( [ '../graph.util' ], function( util ) {
 
           break;
 
+        case 'forceY2':
+
+          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
+          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
+          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+
+          break;
+
         case 'x':
           this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
           this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
@@ -103,6 +120,7 @@ define( [ '../graph.util' ], function( util ) {
           this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
           this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
           break;
+
       }
 
       if ( this.options.onZoomMove && !mute ) {
@@ -136,8 +154,15 @@ define( [ '../graph.util' ], function( util ) {
           graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
           graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
           break;
+
+        case 'forceY2':
+          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+
+          break;
       }
 
+      graph.prevent( true );
       graph.redraw( true );
       graph.drawSeries();
 
@@ -183,30 +208,44 @@ define( [ '../graph.util' ], function( util ) {
 
     onDblClick: function( graph, x, y, pref, e, mute ) {
 
+      this.emit( "beforeDblClick", {
+        graph: graph,
+        x: x,
+        y: y,
+        pref: pref,
+        e: e,
+        mute: mute
+      } );
+
+      if ( graph.prevent( false ) ) {
+        return;
+      }
+
       var xAxis = this.graph.getXAxis(),
         yAxis = this.graph.getYAxis();
 
       if ( pref.mode == 'xtotal' ) {
 
         this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-        this.graph.drawSeries();
+        this.graph.draw();
 
       } else if ( pref.mode == 'ytotal' ) {
 
         this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
-        this.graph.drawSeries();
+        this.graph.draw();
 
       } else if ( pref.mode == 'total' ) {
 
         this.graph.autoscaleAxes();
-        this.graph.drawSeries();
+        this.graph.draw();
 
-        this.graph._applyToAxes( function( axis ) {
+        // Nothing to do here
+        /*        this.graph._applyToAxes( function( axis ) {
 
           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
 
         }, null, true, true );
-
+*/
       } else {
 
         x -= this.graph.options.paddingLeft;
@@ -258,7 +297,7 @@ define( [ '../graph.util' ], function( util ) {
         this.options.onDblClick( x, y, pref, e );
       }
     }
-  }
+  } );
 
   return plugin;
 } );

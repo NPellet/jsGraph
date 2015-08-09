@@ -254,11 +254,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     // Returns the true minimum of the axis. Either forced in options or the one from the data
     getMinValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMin || ( this.options.forcedMin === 0 ? 0 : this.dataMin ) ) : ( this.getAdapt0ToMin() );
+      return !this._adapt0To ? ( this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin ) : this.getAdapt0ToMin();
     },
 
     getMaxValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMax || ( this.options.forcedMax === 0 ? 0 : this.dataMax ) ) : ( this.getAdapt0ToMax() );
+      return !this._adapt0To ? ( this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax ) : ( this.getAdapt0ToMax() );
     },
 
     setMinValueData: function( min ) {

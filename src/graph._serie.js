@@ -228,7 +228,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
-
       return this;
     },
 

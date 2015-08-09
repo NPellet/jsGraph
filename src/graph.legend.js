@@ -34,6 +34,8 @@ define( [], function() {
     this.rectBottom.setAttribute( 'x', 0 );
     this.rectBottom.setAttribute( 'y', 0 );
 
+    this.series = false;
+
     this.svg.appendChild( this.subG );
 
     this.svg.setAttribute( 'display', 'none' );
@@ -94,7 +96,6 @@ define( [], function() {
       var self = this;
 
       this.applyStyle();
-      this.calculatePosition();
 
       while ( this.subG.hasChildNodes() ) {
         this.subG.removeChild( this.subG.lastChild );
@@ -102,7 +103,7 @@ define( [], function() {
 
       this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
 
-      var series = this.graph.getSeries(),
+      var series = this.series || this.graph.getSeries(),
         line,
         text,
         g;
@@ -178,6 +179,8 @@ define( [], function() {
 
       this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
       this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+
+      this.calculatePosition();
 
       this.svg.appendChild( this.rect );
     },
@@ -271,7 +274,29 @@ define( [], function() {
 
       this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );
 
+    },
+
+    fixSeries: function() {
+      var series = [];
+
+      if ( arguments[ 0 ] === false ) {
+        this.series = false;
+        this.update();
+        return;
+      }
+
+      for ( var i = 0, l = arguments.length; i < l; i++ ) {
+        if ( Array.isArray( arguments[  i ] ) ) {
+          series = series.concat( arguments[  i ] );
+        } else {
+          series.push( arguments[  i ] );
+        }
+      }
+
+      this.update();
+      this.series = series;
     }
+
   };
 
   return Legend;
