@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.0
+ * jsGraph JavaScript Graphing Library v1.13.1-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-09T19:58Z
+ * Date: 2015-08-19T22:25Z
  */
 
 (function( global, factory ) {
@@ -3678,6 +3678,16 @@ build['./graph._serie'] = ( function( EventEmitter, util ) {
 
     hasDataChanged: function() {
       return this._dataHasChanged;
+    },
+
+    setInfo: function( prop, value ) {
+      this.infos = this.infos || {};
+      this.infos[ prop ] = value;
+      return this;
+    },
+
+    getInfo: function( prop, value ) {
+      return ( this.infos || {} )[ prop ];
     }
 
   } );
@@ -3701,31 +3711,55 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
   var GraphAxis = function() {}
 
-  GraphAxis.prototype = $.extend( GraphAxis.prototype, EventEmitter.prototype, {
-
-    defaults: {
-      lineAt0: false,
-      display: true,
-      flipped: false,
-      axisDataSpacing: {
-        min: 0.1,
-        max: 0.1
-      },
-      unitModification: false,
-      primaryGrid: true,
-      secondaryGrid: true,
-      shiftToZero: false,
-      tickPosition: 1,
-      nbTicksPrimary: 3,
-      nbTicksSecondary: 10,
-      ticklabelratio: 1,
-      exponentialFactor: 0,
-      exponentialLabelFactor: 0,
-      logScale: false,
-      allowedPxSerie: 100,
-      forcedMin: false,
-      forcedMax: false
+  /** 
+   * Default graph parameters
+   * @name GraphOptionsDefault
+   * @object
+   * @private
+   * @static
+   * @prop {Boolean} display - Whether to display or not the axis
+   * @prop {Boolean} flipped - The top padding
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   */
+  var defaultAxisParameters = {
+    lineAt0: false,
+    display: true,
+    flipped: false,
+    axisDataSpacing: {
+      min: 0.1,
+      max: 0.1
     },
+    unitModification: false,
+    primaryGrid: true,
+    secondaryGrid: true,
+    shiftToZero: false,
+    tickPosition: 1,
+    nbTicksPrimary: 3,
+    nbTicksSecondary: 10,
+    ticklabelratio: 1,
+    exponentialFactor: 0,
+    exponentialLabelFactor: 0,
+    logScale: false,
+    allowedPxSerie: 100,
+    forcedMin: false,
+    forcedMax: false
+  }
+
+  GraphAxis.prototype = new EventEmitter();
+
+  $.extend( GraphAxis.prototype, {
+
+    defaults: defaultAxisParameters,
 
     init: function( graph, options, overwriteoptions ) {
 
@@ -7856,9 +7890,11 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
         if ( self.options.selectableOnClick ) {
 
           if ( self.isSelected() ) {
-            self.unselect();
+
+            self.graph.unselectSerie( self );
+
           } else {
-            self.select( "selected" );
+            self.graph.selectSerie( self );
           }
         }
       } );
@@ -8233,43 +8269,44 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 
     detectPeaks: function( x, y ) {
 
-      if ( this.options.autoPeakPicking ) {
+      if ( !this.options.autoPeakPicking ) {
+        return;
+      }
 
-        if ( !this.options.lineToZero ) {
+      if ( !this.options.lineToZero ) {
 
-          if ( !this.lastYPeakPicking ) {
+        if ( !this.lastYPeakPicking ) {
+
+          this.lastYPeakPicking = [ y, x ];
+
+        } else {
+
+          if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+
+            this.lastYPeakPicking = [ y, x ]
+
+          } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+
+            if ( this.lookForMinima ) {
+              this.lookForMinima = false;
+              this.lookForMaxima = true;
+
+            } else {
+
+              this.lookForMinima = true;
+              this.lookForMaxima = false;
+
+              this.detectedPeaks.push( this.lastYPeakPicking );
+              this.lastYPeakPicking = false;
+            }
 
             this.lastYPeakPicking = [ y, x ];
 
-          } else {
-
-            if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-              this.lastYPeakPicking = [ y, x ]
-
-            } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-              if ( this.lookForMinima ) {
-                this.lookForMinima = false;
-                this.lookForMaxima = true;
-
-              } else {
-
-                this.lookForMinima = true;
-                this.lookForMaxima = false;
-
-                this.detectedPeaks.push( this.lastYPeakPicking );
-                this.lastYPeakPicking = false;
-              }
-
-              this.lastYPeakPicking = [ y, x ];
-
-            }
           }
-
-        } else {
-          this.detectedPeaks.push( [ y, x ] );
         }
+
+      } else {
+        this.detectedPeaks.push( [ y, x ] );
       }
     },
 
@@ -9703,10 +9740,13 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
           return;
         }
 
+        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getActualMin(), y );
         //    self.picks[ m ].show();
+
         self.picks[ m ].prop( 'labelPosition', {
           x: x,
-          dy: "-10px"
+          dy: this.getYAxis().getActualMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
+          y: Math.min( this.getYAxis().getActualMax() * 0.9, ys[ i ][ 0 ] )
         } );
 
         self.picks[ m ]._data.val = x;
@@ -11934,6 +11974,7 @@ build['./shapes/graph.shape'] = ( function( ) {
     },
 
     redraw: function() {
+
       //	this.kill();
       var variable;
       this.position = this.setPosition();
@@ -15221,7 +15262,7 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 
   var GraphPeakBoundariesCenter = function( graph, options ) {
     this.nbHandles = 3;
-    this.lineHeight = 3;
+    this.lineHeight = 6;
   }
 
   $.extend( GraphPeakBoundariesCenter.prototype, GraphLine.prototype, {
@@ -15235,9 +15276,11 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
 
       this.rectBoundary = document.createElementNS( this.graph.ns, 'path' );
 
-      this.rectBoundary.setAttribute( 'fill', 'none' );
+      this.rectBoundary.setAttribute( 'fill', 'transparent' );
       this.rectBoundary.setAttribute( 'stroke', 'none' );
       this.rectBoundary.setAttribute( 'pointer-events', 'fill' );
+
+      this.rectBoundary.jsGraphIsShape = true;
 
       this.group.appendChild( this.rectBoundary );
       this.group.appendChild( this.line1 );

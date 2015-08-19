@@ -166,9 +166,11 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
         if ( self.options.selectableOnClick ) {
 
           if ( self.isSelected() ) {
-            self.unselect();
+
+            self.graph.unselectSerie( self );
+
           } else {
-            self.select( "selected" );
+            self.graph.selectSerie( self );
           }
         }
       } );
@@ -543,43 +545,44 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
     detectPeaks: function( x, y ) {
 
-      if ( this.options.autoPeakPicking ) {
+      if ( !this.options.autoPeakPicking ) {
+        return;
+      }
 
-        if ( !this.options.lineToZero ) {
+      if ( !this.options.lineToZero ) {
 
-          if ( !this.lastYPeakPicking ) {
+        if ( !this.lastYPeakPicking ) {
+
+          this.lastYPeakPicking = [ y, x ];
+
+        } else {
+
+          if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+
+            this.lastYPeakPicking = [ y, x ]
+
+          } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+
+            if ( this.lookForMinima ) {
+              this.lookForMinima = false;
+              this.lookForMaxima = true;
+
+            } else {
+
+              this.lookForMinima = true;
+              this.lookForMaxima = false;
+
+              this.detectedPeaks.push( this.lastYPeakPicking );
+              this.lastYPeakPicking = false;
+            }
 
             this.lastYPeakPicking = [ y, x ];
 
-          } else {
-
-            if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-              this.lastYPeakPicking = [ y, x ]
-
-            } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-              if ( this.lookForMinima ) {
-                this.lookForMinima = false;
-                this.lookForMaxima = true;
-
-              } else {
-
-                this.lookForMinima = true;
-                this.lookForMaxima = false;
-
-                this.detectedPeaks.push( this.lastYPeakPicking );
-                this.lastYPeakPicking = false;
-              }
-
-              this.lastYPeakPicking = [ y, x ];
-
-            }
           }
-
-        } else {
-          this.detectedPeaks.push( [ y, x ] );
         }
+
+      } else {
+        this.detectedPeaks.push( [ y, x ] );
       }
     },
 
@@ -2013,10 +2016,13 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
           return;
         }
 
+        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getActualMin(), y );
         //    self.picks[ m ].show();
+
         self.picks[ m ].prop( 'labelPosition', {
           x: x,
-          dy: "-10px"
+          dy: this.getYAxis().getActualMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
+          y: Math.min( this.getYAxis().getActualMax() * 0.9, ys[ i ][ 0 ] )
         } );
 
         self.picks[ m ]._data.val = x;

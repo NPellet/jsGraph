@@ -271,6 +271,7 @@ define( [], function() {
     },
 
     redraw: function() {
+
       //	this.kill();
       var variable;
       this.position = this.setPosition();

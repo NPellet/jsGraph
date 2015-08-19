@@ -721,6 +721,16 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     hasDataChanged: function() {
       return this._dataHasChanged;
+    },
+
+    setInfo: function( prop, value ) {
+      this.infos = this.infos || {};
+      this.infos[ prop ] = value;
+      return this;
+    },
+
+    getInfo: function( prop, value ) {
+      return ( this.infos || {} )[ prop ];
     }
 
   } );

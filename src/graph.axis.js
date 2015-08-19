@@ -2,31 +2,55 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
   var GraphAxis = function() {}
 
-  GraphAxis.prototype = $.extend( GraphAxis.prototype, EventEmitter.prototype, {
-
-    defaults: {
-      lineAt0: false,
-      display: true,
-      flipped: false,
-      axisDataSpacing: {
-        min: 0.1,
-        max: 0.1
-      },
-      unitModification: false,
-      primaryGrid: true,
-      secondaryGrid: true,
-      shiftToZero: false,
-      tickPosition: 1,
-      nbTicksPrimary: 3,
-      nbTicksSecondary: 10,
-      ticklabelratio: 1,
-      exponentialFactor: 0,
-      exponentialLabelFactor: 0,
-      logScale: false,
-      allowedPxSerie: 100,
-      forcedMin: false,
-      forcedMax: false
+  /** 
+   * Default graph parameters
+   * @name GraphOptionsDefault
+   * @object
+   * @private
+   * @static
+   * @prop {Boolean} display - Whether to display or not the axis
+   * @prop {Boolean} flipped - The top padding
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   */
+  var defaultAxisParameters = {
+    lineAt0: false,
+    display: true,
+    flipped: false,
+    axisDataSpacing: {
+      min: 0.1,
+      max: 0.1
     },
+    unitModification: false,
+    primaryGrid: true,
+    secondaryGrid: true,
+    shiftToZero: false,
+    tickPosition: 1,
+    nbTicksPrimary: 3,
+    nbTicksSecondary: 10,
+    ticklabelratio: 1,
+    exponentialFactor: 0,
+    exponentialLabelFactor: 0,
+    logScale: false,
+    allowedPxSerie: 100,
+    forcedMin: false,
+    forcedMax: false
+  }
+
+  GraphAxis.prototype = new EventEmitter();
+
+  $.extend( GraphAxis.prototype, {
+
+    defaults: defaultAxisParameters,
 
     init: function( graph, options, overwriteoptions ) {
 

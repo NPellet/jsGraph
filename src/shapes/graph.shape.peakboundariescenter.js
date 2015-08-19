@@ -4,7 +4,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
   var GraphPeakBoundariesCenter = function( graph, options ) {
     this.nbHandles = 3;
-    this.lineHeight = 3;
+    this.lineHeight = 6;
   }
 
   $.extend( GraphPeakBoundariesCenter.prototype, GraphLine.prototype, {
@@ -18,9 +18,11 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
       this.rectBoundary = document.createElementNS( this.graph.ns, 'path' );
 
-      this.rectBoundary.setAttribute( 'fill', 'none' );
+      this.rectBoundary.setAttribute( 'fill', 'transparent' );
       this.rectBoundary.setAttribute( 'stroke', 'none' );
       this.rectBoundary.setAttribute( 'pointer-events', 'fill' );
+
+      this.rectBoundary.jsGraphIsShape = true;
 
       this.group.appendChild( this.rectBoundary );
       this.group.appendChild( this.line1 );

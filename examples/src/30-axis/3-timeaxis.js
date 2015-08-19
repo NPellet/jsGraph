@@ -145,7 +145,8 @@ define( function() {
 			.XIsMonotoneous()
 			.degrade( 2 )
 			.setFillColor('rgba(0,0,0,0.1)')
-			.setLineColor('transparent');
+			.setLineColor('transparent')
+     
 
 
 		graphinstance.draw( );
