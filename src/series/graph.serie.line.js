@@ -1916,9 +1916,11 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
 
       if ( this.options.markersIndependant ) {
 
-        this.independantMarkers.map( function( el ) {
-          self.groupMain.removeChild( el );
-        } );
+        for ( var i in this.independantMarkers ) {
+          self.groupMain.removeChild( this.independantMarkers[ i ] );
+        }
+
+        this.independantMarkers = {};
 
       } else if ( this.currentMarkersSelectionType ) {
 
@@ -2241,6 +2243,7 @@ define( [ '../graph._serie', './slotoptimizer', '../graph.util' ], function( Gra
           degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
 
           if ( degradeFirstXPx > optimizeMaxPxX ) {
+            console.log( degradeFirstXPx, optimizeMaxPxX );
             break;
           }
 
