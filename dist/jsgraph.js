@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.1-1
+ * jsGraph JavaScript Graphing Library v1.13.2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-21T16:32Z
+ * Date: 2015-08-23T16:33Z
  */
 
 (function( global, factory ) {
@@ -37,9 +37,21 @@
  */
 
 build['./graph.util'] = ( function( ) { 
+/** @global */ /** @ignore */
 
-  return {
 
+  /**
+   * Some general utilitary functions that are useful for jsGraph
+   * @object
+   */
+  var util = {
+
+    /**
+     *  Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
+     * @param {SVGElement} to - The SVG element to apply the attributes to
+     * @param {Object<String,Any>} attr - A key/value hashmap of attributes
+     * @param {String} [ ns = undefined ] - The namespace to use (with <code>setAttributeNS</code>). Default if without namespacing
+     */
     setAttributeTo: function( to, params, ns ) {
       var i;
 
@@ -54,6 +66,13 @@ build['./graph.util'] = ( function( ) {
       }
     },
 
+    /**
+     * Maps old-style events defined within the creation (i.e. <code>{ onMouseOver: function() }</code>) to modern event listening <code>.on("mouseover")</code>
+     * The function will read any object and select the ones starting with "on"
+     * @params {Object} options - An option object to read the events from
+     * @param {Object} source - The source object to which the options belong
+     * @example util.mapEventEmission( this.options, this );
+     */
     mapEventEmission: function( options, source ) {
 
       if ( !source ) {
@@ -76,8 +95,12 @@ build['./graph.util'] = ( function( ) {
       }
     },
 
+    /**
+     * @link http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+     * @return {String} a random id
+     */
     guid: function() {
-      // http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+      // 
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
         var r = Math.random() * 16 | 0,
           v = c == 'x' ? r : ( r & 0x3 | 0x8 );
@@ -90,12 +113,55 @@ build['./graph.util'] = ( function( ) {
       console.error( message );
     },
 
-    // Borrowed from jQuery
+    /**
+     * Checks if a variable is a numeric or not
+     * @return {Boolean} <code>true</code> for a numeric value, false otherwise
+     */
     isNumeric: function( obj ) {
       return !Array.isArray( obj ) && ( obj - parseFloat( obj ) + 1 ) >= 0;
+    },
+
+    /**
+     * @see http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
+     * Converts an HSL color value to RGB. Conversion formula
+     * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+     * Assumes h, s, and l are contained in the set [0, 1] and
+     * returns r, g, and b in the set [0, 255].
+     *
+     * @param   Number  h       The hue
+     * @param   Number  s       The saturation
+     * @param   Number  l       The lightness
+     * @return  Array           The RGB representation
+     */
+    hue2rgb: function( p, q, t ) {
+      if ( t < 0 ) t += 1;
+      if ( t > 1 ) t -= 1;
+      if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
+      if ( t < 1 / 2 ) return q;
+      if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
+      return p;
+    },
+
+    hslToRgb: function( h, s, l ) {
+      var r, g, b;
+
+      if ( s == 0 ) {
+        r = g = b = l; // achromatic
+      } else {
+
+        var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
+        var p = 2 * l - q;
+        r = util.hue2rgb( p, q, h + 1 / 3 );
+        g = util.hue2rgb( p, q, h );
+        b = util.hue2rgb( p, q, h - 1 / 3 );
+      }
+
+      return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
     }
 
-  }
+  };
+
+  return util;
 
  } ) (  );
 
@@ -111,7 +177,9 @@ build['./graph.util'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
  */
 
-build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
+build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { 
+/** @global */ /** @ignore */
+/*!
  * EventEmitter v4.2.9 - git.io/ee
  * Oliver Caldwell
  * MIT license
@@ -568,53 +636,8 @@ build['./dependencies/eventEmitter/EventEmitter'] = ( function( ) { /*!
  */
 
 build['./graph.core'] = ( function( $, util, EventEmitter ) { 
+/** @global */ /** @ignore */
 
-  /** 
-   * Default graph parameters
-   * @name GraphOptionsDefault
-   * @object
-   * @private
-   * @static
-   * @prop {String} title - Title of the graph
-   * @prop {Number} paddingTop - The top padding
-   * @prop {Number} paddingLeft - The left padding
-   * @prop {Number} paddingRight - The right padding
-   * @prop {Number} paddingBottom - The bottom padding
-   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
-   * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
-   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
-   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
-   * @prop {Object} wheel - Define the mouse wheel action
-   * @prop {Object} dblclick - Define the double click action
-   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
-   */
-  var GraphOptionsDefault = {
-
-    title: '',
-
-    paddingTop: 30,
-    paddingBottom: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
-
-    close: {
-      left: true,
-      right: true,
-      top: true,
-      bottom: true
-    },
-
-    fontSize: 12,
-    fontFamily: 'Myriad Pro, Helvetica, Arial',
-
-    plugins: {},
-    pluginAction: {},
-    wheel: {},
-    dblclick: {},
-
-    uniqueShapeSelection: true
-  };
 
   /** 
    * Main class of jsGraph that creates a new graph.
@@ -629,6 +652,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
    * @augments EventEmitter
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
+   * @tutorial basic
    */
   var Graph = function( wrapper, options, axis ) {
 
@@ -776,6 +800,53 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
   }
 
+  /** 
+   * Default graph parameters
+   * @name Graph~GraphOptionsDefault
+   * @object
+   * @static
+   * @memberof Graph
+   * @prop {String} title - Title of the graph
+   * @prop {Number} paddingTop - The top padding
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} fontFamily - The basic font family. Should be installed on the computer of the user
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   */
+  var GraphOptionsDefault = {
+
+    title: '',
+
+    paddingTop: 30,
+    paddingBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
+
+    close: {
+      left: true,
+      right: true,
+      top: true,
+      bottom: true
+    },
+
+    fontSize: 12,
+    fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+    plugins: {},
+    pluginAction: {},
+    wheel: {},
+    dblclick: {},
+
+    uniqueShapeSelection: true
+  };
+
   Graph.prototype = new EventEmitter();
 
   Graph.prototype = $.extend( Graph.prototype, {
@@ -912,6 +983,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * @see Graph#setWidth
      * @see Graph#setHeight
      * @memberof Graph.prototype
+     * @return {Graph} The current graph
      */
     resize: function( w, h ) {
       if ( w && h ) {
@@ -919,6 +991,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       }
 
       this._resize();
+      return this;
     },
 
     /**
@@ -1039,6 +1112,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
      * @memberof Graph.prototype
      * @param {Number} [ index=0 ] - The index of the axis
      * @param {Object} [ options={} ] - The options to pass to the axis constructor
@@ -1053,6 +1127,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
      * @memberof Graph.prototype
      * @param {Number} [ index=0 ] - The index of the axis
      * @param {Object} [ options={} ] - The options to pass to the axis constructor
@@ -1108,7 +1183,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1118,7 +1193,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1128,7 +1203,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1139,7 +1214,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a right axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1150,7 +1225,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a top axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1161,7 +1236,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     /**
      * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ number=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -1173,11 +1248,14 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     /**
      * Autoscales the x and y axes of the graph<br />
      * Repains the canvas
+     * @todo Find a solution for rescaling the y axis: if the x axis is
      * @memberof Graph.prototype
      */
     autoscaleAxes: function() {
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-      this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+
+      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+      // X is not always ascending... 
     },
 
     _applyToAxis: {
@@ -1212,7 +1290,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     /**
      * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
      * @memberof Graph.prototype
-     * @param {Axis} axis - The axis for which the value should be computed
+     * @param {GraphAxis} axis - The axis for which the value should be computed
      * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
      * @returns {Number} The minimimum or maximum of the axis based on its series
      */
@@ -1251,7 +1329,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     /**
      *  Returns all the series associated to an axis
      *  @memberof Graph.prototype
-     *  @param {Axis} axis - The axis to which the series belong
+     *  @param {GraphAxis} axis - The axis to which the series belong
      *  @returns {Serie[]} An array containing the list of series that belong to the axis
      */
     getSeriesFromAxis: function( axis ) {
@@ -1304,7 +1382,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * Function that is called from {@link Graph#_applyToAxes}
      * @function
      * @name AxisCallbackFunction
-     * @param {Axis} axis - The axis of the function
+     * @param {GraphAxis} axis - The axis of the function
      * @param {String} type - The type of the axis (left,right,top,bottom)
      * @param params - The params passed in the _applyToAxis function.
      * @see Graph#_applyToAxes
@@ -1344,7 +1422,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
      * Axes can be dependant of one another (for instance for unit conversions)
      * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
      * @memberof Graph.prototype
-     * @param {Axis} axis - The axis that links one or multiple other dependant axes
+     * @param {GraphAxis} axis - The axis that links one or multiple other dependant axes
      * @returns {Axis[]} The list of axes linked to the axis passed as parameter
      */
     findAxesLinkedTo: function( axis ) {
@@ -1526,6 +1604,7 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     /**
      * Returns the selected serie
      * @returns {(Serie|undefined)} The selected serie
+     * @memberof Graph.prototype
      */
     getSelectedSerie: function() {
       return this.selectedSerie;
@@ -2951,785 +3030,47 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 ;
 /* 
  * Build: new source file 
- * File name : graph._serie
- * File path : /Users/normanpellet/Documents/Web/graph/src/graph._serie.js
- */
-
-build['./graph._serie'] = ( function( EventEmitter, util ) { 
-
-  "use strict";
-
-  /** 
-   * Main class of jsGraph that creates a new graph. Should not be instanciated directly.
-   * @class Serie
-   * @static
-   */
-  var GraphSerieNonInstanciable = function() {
-    throw "This serie is not instanciable";
-  }
-
-  GraphSerieNonInstanciable.prototype = $.extend( {}, EventEmitter.prototype, {
-
-    setAdditionalData: function( data ) {
-      this.additionalData = data;
-      return this;
-    },
-
-    getAdditionalData: function() {
-      return this.additionalData;
-    },
-
-    /*
-     *	Possible data types
-     *	[100, 0.145, 101, 0.152, 102, 0.153]
-     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-     *
-     *	Converts every data type to a 1D array
-     */
-
-    /** 
-     * Sets data to the serie
-     * @memberof Serie.prototype
-     * @param {(Object|Array|Array[])} data - The data of the serie
-     * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-     * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-     * @memberof Serie.prototype
-     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-     * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-     * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-     */
-    setData: function( data, oneDimensional, type ) {
-
-      function isArray( arr ) {
-        var stringed = Object.prototype.toString.call( arr );
-        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
-      }
-
-      var z = 0,
-        x,
-        dx,
-        oneDimensional = oneDimensional || false,
-        type = type || 'float',
-        arr,
-        total = 0,
-        continuous;
-
-      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
-      // We shouldn't need that for the lines
-      //this.empty();
-
-      this.minX = +Infinity;
-      this.minY = +Infinity;
-      this.maxX = -Infinity;
-      this.maxY = -Infinity;
-
-      var isDataArray = isArray( data );
-
-      // Single object
-      var datas = [];
-
-      if ( !isDataArray && typeof data == 'object' ) {
-        data = [ data ];
-      } else if ( isDataArray && !isArray( data[ 0 ] ) ) { // [100, 103, 102, 2143, ...]
-        data = [ data ];
-        oneDimensional = true;
-      } else if ( !isDataArray ) {
-        util.throwError( "Data is not an array" );
-        return;
-      }
-
-      // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-      var isData0Array = isArray( data[ 0 ] );
-
-      var isData00Array = isArray( data[ 0 ][ 0 ] );
-      if ( isData0Array && !oneDimensional && !isData00Array ) {
-        data = [ data ];
-      }
-
-      if ( isData0Array ) {
-        for ( var i = 0, k = data.length; i < k; i++ ) {
-
-          arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
-          datas.push( arr );
-          z = 0;
-
-          for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
-
-            if ( !oneDimensional ) {
-              arr[ z ] = ( data[ i ][ j ][ 0 ] );
-              this._checkX( arr[ z ] );
-              z++;
-              arr[ z ] = ( data[ i ][ j ][ 1 ] );
-              this._checkY( arr[ z ] );
-              z++;
-              total++;
-
-            } else { // 1D Array
-              arr[ z ] = data[ i ][ j ];
-              this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
-
-              z++;
-              total += j % 2 ? 1 : 0;
-
-            }
-          }
-        }
-
-      } else if ( typeof data[ 0 ] == 'object' ) {
-
-        this.mode = 'x_equally_separated';
-
-        var number = 0,
-          numbers = [],
-          datas = [],
-          k = 0,
-          o;
-
-        if ( !data[ 0 ].y ) {
-          console.log( data );
-          util.throwError( "No y data" );
-          return;
-        }
-
-        for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
-          number += data[ i ].y.length;
-          continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
-          if ( !continuous ) {
-            datas.push( this._addData( type, number ) );
-            numbers.push( number );
-            number = 0;
-          }
-        }
-
-        this.xData = [];
-
-        number = 0, k = 0, z = 0;
-
-        for ( var i = 0, l = data.length; i < l; i++ ) {
-          x = data[ i ].x, dx = data[ i ].dx;
-
-          this.xData.push( {
-            x: x,
-            dx: dx
-          } );
-
-          o = data[ i ].y.length;
-          this._checkX( x );
-          this._checkX( x + dx * o );
-
-          for ( var j = 0; j < o; j++ ) {
-            /*datas[k][z] = (x + j * dx);
-						this._checkX(datas[k][z]);
-						z++;*/
-            // 30 june 2014. To save memory I suggest that we do not add this stupid data.
-
-            datas[ k ][ z ] = ( data[ i ].y[ j ] );
-            this._checkY( datas[ k ][ z ] );
-            z++;
-            total++;
-
-          }
-          number += data[ i ].y.length;
-
-          if ( numbers[ k ] == number ) {
-            k++;
-            number = 0;
-            z = 0;
-          }
-        }
-      }
-
-      // Determination of slots for low res spectrum
-      var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth(),
-        ws = [];
-
-      var min = this.graph.getDrawingWidth() * 4;
-      var max = total / 4;
-
-      var min = this.graph.getDrawingWidth();
-      var max = total;
-
-      this.data = datas;
-
-      if ( min > 0 ) {
-
-        while ( min < max ) {
-          ws.push( min );
-          min *= 4;
-        }
-
-        this.slots = ws;
-
-        if ( this.options.useSlots ) {
-
-          this.calculateSlots();
-        }
-      }
-
-      if ( this.isFlipped() ) {
-
-        var maxX = this.maxX;
-        var maxY = this.maxY;
-        var minX = this.minX;
-        var minY = this.minY;
-
-        this.maxX = maxY;
-        this.maxY = maxX;
-
-        this.minX = minY;
-        this.minY = minX;
-      }
-
-      this.dataHasChanged();
-      this.graph.updateDataMinMaxAxes();
-      return this;
-    },
-
-    _addData: function( type, howmany ) {
-
-      switch ( type ) {
-        case 'int':
-          var size = howmany * 4; // 4 byte per number (32 bits)
-          break;
-        case 'float':
-          var size = howmany * 8; // 4 byte per number (64 bits)
-          break;
-      }
-
-      var arr = new ArrayBuffer( size );
-
-      switch ( type ) {
-        case 'int':
-          return new Int32Array( arr );
-          break;
-
-        default:
-        case 'float':
-          return new Float64Array( arr );
-          break;
-      }
-    },
-
-    /**
-     * Returns the data in its current form
-     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
-     * @memberof Serie.prototype
-     */
-    getData: function() {
-      return this.data;
-    },
-
-    /**
-     * Sets the options of the serie (no extension of default options)
-     * @param {Object} options - The options of the serie
-     * @memberof Serie.prototype
-     */
-    setOptions: function( options ) {
-      this.options = options ||  {};
-    },
-
-    /**
-     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
-     * @memberof Serie.prototype
-     */
-    kill: function() {
-
-      this.graph.removeSerieFromDom( this );
-
-      if ( this.picks && this.picks.length ) {
-        for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-          this.picks[ i ].kill();
-        }
-      }
-
-      this.graph._removeSerie( this );
-
-      if ( this.graph.legend ) {
-
-        this.graph.legend.update();
-      }
-    },
-
-    /**
-     * Hides the serie
-     * @memberof Serie.prototype
-     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    hide: function( hideShapes ) {
-      this.hidden = true;
-      this.groupMain.setAttribute( 'display', 'none' );
-
-      this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
-      this.getTextForLegend().setAttribute( 'opacity', 0.5 );
-
-      this.hideImpl();
-
-      if ( hideShapes ) {
-        var shapes = this.graph.getShapesOfSerie( this );
-        for ( var i = 0, l = shapes.length; i < l; i++ ) {
-          shapes[ i ].hide();
-        }
-      }
-      return this;
-    },
-
-    /**
-     * Shows the serie
-     * @memberof Serie.prototype
-     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    show: function( showShapes ) {
-      this.hidden = false;
-      this.groupMain.setAttribute( 'display', 'block' );
-
-      this.getSymbolForLegend().setAttribute( 'opacity', 1 );
-      this.getTextForLegend().setAttribute( 'opacity', 1 );
-
-      this.showImpl();
-
-      this.draw();
-
-      if ( showShapes ) {
-        var shapes = this.graph.getShapesOfSerie( this );
-        for ( var i = 0, l = shapes.length; i < l; i++ ) {
-          shapes[ i ].show();
-        }
-      }
-
-      return this;
-    },
-
-    hideImpl: function() {},
-    showImpl: function() {},
-
-    /**
-     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
-     * @memberof Serie.prototype
-     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
-     * @returns {Serie} The current serie
-     */
-    toggleDisplay: function() {
-
-      if ( !this.isShown() ) {
-        this.show();
-      } else {
-        this.hide();
-      }
-
-      return this;
-    },
-
-    /**
-     * Determines if the serie is currently visible
-     * @memberof Serie.prototype
-     * @returns {Boolean} The current visibility status of the serie
-     */
-    isShown: function() {
-      return !this.hidden;
-    },
-
-    /**
-     * Returns the x position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie.prototype
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The x position in px corresponding to the x value
-     */
-    getX: function( val ) {
-      return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
-    },
-
-    /**
-     * Returns the y position of a certain value in pixels position, based on the serie's axis
-     * @memberof Serie.prototype
-     * @param {Number} val - Value to convert to pixels position
-     * @returns {Number} The y position in px corresponding to the y value
-     */
-    getY: function( val ) {
-      return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
-    },
-
-    /**
-     * Returns the selection state of the serie. Generic for most serie types
-     * @memberof Serie.prototype
-     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
-     */
-    isSelected: function() {
-      return this.selected || ( this.selectionType !== "unselected" );
-    },
-
-    _checkX: function( val ) {
-      this.minX = Math.min( this.minX, val );
-      this.maxX = Math.max( this.maxX, val );
-    },
-
-    _checkY: function( val ) {
-      this.minY = Math.min( this.minY, val );
-      this.maxY = Math.max( this.maxY, val );
-    },
-
-    /**
-     * Getter for the serie name
-     * @memberof Serie.prototype
-     * @returns {String} The serie name
-     */
-    getName: function() {
-      return this.name;
-    },
-
-    /* AXIS */
-
-    /**
-     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
-     * @memberof Serie.prototype
-     * @returns {Serie} The current serie
-     */
-    autoAxis: function() {
-
-      if ( this.isFlipped() ) {
-        this.setXAxis( this.graph.getYAxis() );
-        this.setYAxis( this.graph.getXAxis() );
-      } else {
-        this.setXAxis( this.graph.getXAxis() );
-        this.setYAxis( this.graph.getYAxis() );
-      }
-
-      // After axes have been assigned, the graph axes should update their min/max
-      this.graph.updateDataMinMaxAxes();
-      return this;
-    },
-
-    /**
-     * Assigns an x axis to the serie
-     * @memberof Serie.prototype
-     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-     * @returns {Serie} The current serie
-     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
-     */
-    setXAxis: function( axis ) {
-
-      if ( typeof axis == "number" )
-        this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
-      else
-        this.xaxis = axis;
-
-      return this;
-    },
-
-    /**
-     * Assigns an y axis to the serie
-     * @memberof Serie.prototype
-     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-     * @returns {Serie} The current serie
-     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
-     */
-    setYAxis: function( axis ) {
-      if ( typeof axis == "number" )
-        this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
-      else
-        this.yaxis = axis;
-
-      return this;
-    },
-
-    /**
-     * Assigns two axes to the serie
-     * @param {Axis} axis1 - First axis to assign to the serie (x or y)
-     * @param {Axis} axis2 - Second axis to assign to the serie (y or x)
-     * @returns {Serie} The current serie
-     * @memberof Serie.prototype
-     */
-    setAxes: function() {
-
-      for ( var i = 0; i < 2; i++ ) {
-
-        if ( arguments[ i ] ) {
-          this[ ( arguments[ i ].isXY() == 'x' ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
-        }
-      }
-
-      return this;
-    },
-
-    /**
-     * @returns {Axis} The x axis assigned to the serie
-     * @memberof Serie.prototype
-     */
-    getXAxis: function() {
-      return this.xaxis;
-    },
-
-    /**
-     * @returns {Axis} The y axis assigned to the serie
-     * @memberof Serie.prototype
-     */
-    getYAxis: function() {
-      return this.yaxis;
-    },
-
-    /* */
-
-    /* DATA MIN MAX */
-
-    /**
-     * @returns {Number} Lowest x value of the serie's data
-     * @memberof Serie.prototype
-     */
-    getMinX: function() {
-      return this.minX;
-    },
-
-    /**
-     * @returns {Number} Highest x value of the serie's data
-     * @memberof Serie.prototype
-     */
-    getMaxX: function() {
-      return this.maxX;
-    },
-
-    /**
-     * @returns {Number} Lowest y value of the serie's data
-     * @memberof Serie.prototype
-     */
-    getMinY: function() {
-      return this.minY;
-    },
-
-    /**
-     * @returns {Number} Highest y value of the serie's data
-     * @memberof Serie.prototype
-     */
-    getMaxY: function() {
-      return this.maxY;
-    },
-
-    /**
-     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-     * @returns {SVGElement}
-     * @memberof Serie.prototype
-     */
-    getSymbolForLegend: function() {
-
-      if ( !this.lineForLegend ) {
-
-        var line = document.createElementNS( this.graph.ns, 'line' );
-        this.applyLineStyle( line );
-
-        line.setAttribute( 'x1', 5 );
-        line.setAttribute( 'x2', 25 );
-        line.setAttribute( 'y1', 0 );
-        line.setAttribute( 'y2', 0 );
-
-        line.setAttribute( 'cursor', 'pointer' );
-
-        this.lineForLegend = line;
-      }
-
-      return this.lineForLegend;
-
-    },
-
-    /**
-     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
-     * @see Serie#getSymbolForLegend
-     * @returns {SVGElement}
-     * @memberof Serie.prototype
-     */
-    setLegendSymbolStyle: function() {
-      this.applyLineStyle( this.getSymbolForLegend() );
-    },
-
-    /**
-     * @alias Serie#setLegendSymbolStyle
-     * @memberof Serie.prototype
-     */
-    updateStyle: function() {
-      this.setLegendSymbolStyle();
-    },
-
-    /**
-     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
-     * @returns {SVGElement}
-     * @memberof Serie.prototype
-     * @see Serie#getLabel
-     */
-    getTextForLegend: function() {
-
-      if ( !this.textForLegend ) {
-
-        var text = document.createElementNS( this.graph.ns, 'text' );
-        text.setAttribute( 'transform', 'translate(35, 3)' );
-        text.setAttribute( 'cursor', 'pointer' );
-        text.textContent = this.getLabel();
-
-        this.textForLegend = text;
-      }
-
-      return this.textForLegend;
-    },
-
-    /**
-     * @returns {Number} The current index of the serie
-     * @memberof Serie.prototype
-     */
-    getIndex: function() {
-      return this.graph.series.indexOf( this );
-    },
-
-    /**
-     * @returns {String} The label or, alternatively - the name of the serie
-     * @memberof Serie.prototype
-     */
-    getLabel: function() {
-      return this.options.label || this.name;
-    },
-
-    /**
-     * Sets the label of the serie. Note that this does not automatically updates the legend
-     * @param {String} label - The new label of the serie
-     * @returns {Serie} The current serie
-     * @memberof Serie.prototype
-     */
-    setLabel: function( label ) {
-      this.options.label = label;
-
-      if ( this.textForLegend ) {
-        this.textForLegend.textContent = label;
-      }
-      return this;
-    },
-
-    /* FLIP */
-
-    /**
-     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
-     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
-     * @returns {Serie} The current serie
-     * @memberof Serie.prototype
-     */
-    setFlip: function( flipped ) {
-      this.options.flip = flipped;
-      return this;
-    },
-
-    /**
-     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
-     * @memberof Serie.prototype
-     */
-    getFlip: function() {
-      return this.options.flip;
-    },
-
-    /**
-     * @alias Serie#getFlip
-     * @memberof Serie.prototype
-     */
-    isFlipped: function() {
-      return this.options.flip;
-    },
-
-    /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-     * @memberof Serie.prototype
-     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
-     * @returns {Serie} The current serie
-     */
-    setLayer: function( layerIndex ) {
-      this.options.layer = parseInt( layerIndex ) ||  1;
-      return this;
-    },
-
-    /**
-     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-     * @memberof Serie.prototype
-     * @returns {Nunber} The index of the layer into which the serie will be drawn
-     */
-    getLayer: function() {
-      return this.options.layer ||  1;
-    },
-
-    styleHasChanged: function( selectionType ) {
-      this._changedStyles = this._changedStyles || {};
-
-      if ( selectionType === false ) {
-        for ( var i in this._changedStyles ) {
-          this._changedStyles[ i ] = false;
-        }
-
-      } else {
-        this._changedStyles[ selectionType ||  "unselected" ] = true;
-      }
-    },
-
-    hasStyleChanged: function( selectionType ) {
-      this._changedStyles = this._changedStyles || {};
-
-      return this._changedStyles[ selectionType ||  "unselected" ];
-
-    },
-
-    dataHasChanged: function( arg ) {
-      this._dataHasChanged = arg === undefined || arg;
-    },
-
-    hasDataChanged: function() {
-      return this._dataHasChanged;
-    },
-
-    setInfo: function( prop, value ) {
-      this.infos = this.infos || {};
-      this.infos[ prop ] = value;
-      return this;
-    },
-
-    getInfo: function( prop, value ) {
-      return ( this.infos || {} )[ prop ];
-    }
-
-  } );
-
-  return GraphSerieNonInstanciable;
- } ) ( build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
-
-
-// Build: End source file (graph._serie) 
-
-
-
-;
-/* 
- * Build: new source file 
  * File name : graph.axis
  * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
  */
 
-build['./graph.axis'] = ( function( $, EventEmitter ) { 
+build['./graph.axis'] = ( function( $, EventEmitter, util ) { 
+/** @global */ /** @ignore */
 
+
+  /** 
+   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
+   * @class Axis
+   * @static
+   * @example function myAxis() {};
+   * myAxis.prototype = new Graph.getConstructor("axis");
+   * graph.setBottomAxis( new myAxis( { } ) );
+   */
   var GraphAxis = function() {}
 
   /** 
    * Default graph parameters
-   * @name GraphOptionsDefault
+   * @name AxisOptionsDefault
    * @object
    * @private
    * @static
    * @prop {Boolean} display - Whether to display or not the axis
    * @prop {Boolean} flipped - The top padding
-   * @prop {Number} paddingLeft - The left padding
-   * @prop {Number} paddingRight - The right padding
-   * @prop {Number} paddingBottom - The bottom padding
-   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
-   * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
-   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
-   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
-   * @prop {Object} wheel - Define the mouse wheel action
-   * @prop {Object} dblclick - Define the double click action
-   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+   * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+   * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
+   * @prop {Boolean} primaryGrid - Whether or not to display the primary grid (on the main ticks)
+   * @prop {Boolean} secondaryGrid - Whether or not to display the secondary grid (on the secondary ticks)
+   * @prop {Number} tickPosition - Sets the position of the ticks with regards to the axis ( 1 = inside, 2 = centered, 3 = outside ).
+   * @prop {Number} nbTicksPrimary - The number of primary ticks to use (approximately)
+   * @prop {Number} nbTicksSecondary - The number of secondary ticks to use (approximately)
+   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+   * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
+   * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
+   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+   * @prop {Boolean} logScale - Display the axis in log scale (base 10)
+   * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
+   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
    */
   var defaultAxisParameters = {
     lineAt0: false,
@@ -3750,7 +3091,6 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     exponentialFactor: 0,
     exponentialLabelFactor: 0,
     logScale: false,
-    allowedPxSerie: 100,
     forcedMin: false,
     forcedMax: false
   }
@@ -3799,14 +3139,21 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.labelValue;
 
       this.label = document.createElementNS( this.graph.ns, 'text' );
-      this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' );
-      this.label.appendChild( this.labelTspan );
 
-      this.expTspan = document.createElementNS( this.graph.ns, 'tspan' );
+      this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
+      this.preunitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
+      this.unitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the unit
+      this.expTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent (x10)
+      this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent value
+
+      this.label.appendChild( this.labelTspan );
+      this.label.appendChild( this.preunitTspan );
+      this.label.appendChild( this.unitTspan );
       this.label.appendChild( this.expTspan );
-      this.expTspan.setAttribute( 'dx', 10 );
-      this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' );
       this.label.appendChild( this.expTspanExp );
+
+      this.preunitTspan.setAttribute( 'dx', 6 );
+      this.expTspan.setAttribute( 'dx', 6 );
       this.expTspanExp.setAttribute( 'dy', -5 );
       this.expTspanExp.setAttribute( 'font-size', "0.8em" );
 
@@ -3831,24 +3178,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
         for ( var i = 0, l = self.series.length; i < l; i++ ) {
           self.series[ i ].handleMouseMove( false, true );
-
-          if ( self.currentAction == 'labelDragging' )
-            self.series[ i ].handleLabelMove( coords.x, coords.y );
-
-          if ( self.currentAction == 'labelDraggingMain' )
-            self.series[ i ].handleLabelMainMove( coords.x, coords.y );
         }
-      } );
-
-      this.group.addEventListener( 'mouseup', function( e ) {
-        e.preventDefault();
-        self.handleMouseUp();
-      } );
-
-      this.group.addEventListener( 'mouseout', function( e ) {
-        e.preventDefault();
-        var coords = self.graph._getXY( e );
-        self.handleMouseOutLocal( coords.x, coords.y, e );
       } );
 
       this.labels = [];
@@ -3870,97 +3200,211 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
     handleMouseMoveLocal: function() {},
 
-    addLabel: function( x ) {
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) {
-
-        if ( this.series[ i ].currentAction !== false ) {
-          continue;
-        }
-
-        this.series[ i ].addLabelObj( {
-          x: x
-        } );
-      }
-    },
-
+    /**
+     * Hides the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     hide: function() {
       this.options.display = false;
       return this;
     },
 
+    /**
+     * Shows the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     show: function() {
       this.options.display = true;
       return this;
     },
 
+    /**
+     * Shows or hides the axis
+     * @memberof Axis.prototype
+     * @param {Boolean} display - true to display the axis, false to hide it
+     * @return {Axis} The current axis
+     */
     setDisplay: function( bool ) {
       this.options.display = !!bool;
       return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Boolean} A boolean indicating the displayed state of the axis
+     */
     isDisplayed: function() {
       return this.options.display;
     },
 
+    /**
+     * Forces the appearence of a straight perpendicular line at value 0
+     * @param {Boolean} lineAt0 - true to display the line, false not to.
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setLineAt0: function( bool ) {
       this.options.lineAt0 = !!bool;
     },
 
     // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
-    adapt0To: function( axis, mode, value ) {
 
-      if ( axis ) {
-        this._adapt0To = [ axis, mode, value ];
-      } else {
-        this._adapt0To = false;
+    /**
+     * Forces the alignment of the 0 of the axis to the zero of another axis
+     * @param {(Axis|Boolean)} axis - The axis with which the 0 should be aligned. Use "false" to deactivate the adapt to 0 mode.
+     * @param {Number} thisValue - The value of the current axis that should be aligned
+     * @param {Number} foreignValue - The value of the reference axis that should be aligned
+     * @param {String} preference - "min" or "max". Defined the boundary that should behave the more normally
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    adaptTo: function( axis, thisValue, foreignValue, preference ) {
+
+      if ( !axis ) {
+        this.options.adaptTo = false;
+        return this;
       }
 
+      this.options.adaptTo = {
+        axis: axis,
+        thisValue: thisValue,
+        foreignValue: foreignValue,
+        preference: preference
+      };
+
+      this.adapt();
+
+      return this;
     },
 
-    getAdapt0ToMin: function() {
+    /**
+     * Adapts maximum and minimum of the axis if options.adaptTo is defined
+     * @memberof Axis.prototype
+     * @returns {Axis} The current axis
+     * @since 1.13.2
+     */
+    adapt: function() {
 
-      if ( this._adapt0To[ 1 ] == "min" ) {
-        return this._adapt0To[ 2 ]
-      } else {
-        return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMinValue() / this._adapt0To[ 0 ].getMaxValue() )
+      if ( !this.options.adaptTo ) {
+        return;
       }
-    },
 
-    getAdapt0ToMax: function() {
+      if ( !axis )
+        var val;
 
-      if ( this._adapt0To[ 1 ] == "max" ) {
-        return this._adapt0To[ 2 ]
-      } else {
-        return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMaxValue() / this._adapt0To[ 0 ].getMinValue() )
+      var axis = this.options.adaptTo.axis,
+        current = this.options.adaptTo.thisValue,
+        foreign = this.options.adaptTo.foreignValue;
+
+      if ( axis.currentAxisMin === undefined ||  axis.currentAxisMax === undefined ) {
+        axis.setMinMaxToFitSeries();
       }
+
+      if ( ( this.options.forcedMin !== false && this.options.forcedMax == false ) ||  ( this.options.adaptTo.preference !== "max" ) ) {
+
+        if ( this.options.forcedMin !== false ) {
+          this.currentAxisMin = this.options.forcedMin;
+        } else {
+          this.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - ( current - this.getMinValue() ) * ( this.options.axisDataSpacing.min * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) );
+        }
+
+        if ( this.currentAxisMin == current ) {
+          this.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
+        }
+
+        var use = this.options.forcedMin !== false ? this.options.forcedMin : this.currentAxisMin;
+        this.currentAxisMax = ( current - use ) * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) + use;
+
+      } else {
+
+        if ( this.options.forcedMax !== false ) {
+          this.currentAxisMax = this.options.forcedMax;
+        } else {
+          this.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + ( this.getMaxValue() - current ) * ( this.options.axisDataSpacing.max * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( axis.getCurrentMax() - foreign ) );
+        }
+
+        if ( this.currentAxisMax == current ) {
+          this.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+        }
+
+        var use = this.options.forcedMax !== false ? this.options.forcedMax : this.currentAxisMax;
+
+        this.currentAxisMin = ( current - use ) * ( axis.getCurrentMin() - axis.getCurrentMax() ) / ( foreign - axis.getCurrentMax() ) + use;
+      }
+
+      this.graph._axisHasChanged( this );
     },
 
     // Floating axis. Adapts axis position orthogonally to another axis at a defined value. Not taken into account for margins
+
+    /**
+     * Makes the axis floating (not aligned to the right or the left anymore). You need to specify another axis (perpendicular) and a value at which this axis should be located
+     * @param {Axis} axis - The axis on which the current axis should be aligned to
+     * @param {Number} value - The value on which the current axis should be aligned
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
+     */
     setFloating: function( axis, value ) {
 
       this.floating = true;
       this.floatingAxis = axis;
       this.floatingValue = value;
+
+      return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Axis} The axis referencing the floating value of the current axis
+     */
     getFloatingAxis: function() {
       return this.floatingAxis;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Axis} The value to which the current axis is aligned to
+     */
     getFloatingValue: function() {
       return this.floatingValue;
     },
 
+    /**
+     * Sets the axis data spacing
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} min - The spacing at the axis min value
+     * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacing: function( val1, val2 ) {
       this.options.axisDataSpacing.min = val1;
       this.options.axisDataSpacing.max = val2 || val1;
+      return this;
     },
 
+    /**
+     * Sets the axis data spacing at the minimum of the axis
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} min - The spacing at the axis min value
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacingMin: function( val ) {
       this.options.axisDataSpacing.min = val;
     },
 
+    /**
+     * Sets the axis data spacing at the maximum of the axis
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} max - The spacing at the axis max value
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacingMax: function( val ) {
       this.options.axisDataSpacing.max = val;
     },
@@ -3971,12 +3415,23 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     setMaxPx: function( px ) {
       this.maxPx = px;
     },
+
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The position in px of the bottom of the axis
+     */
     getMinPx: function() {
       return this.isFlipped() ? this.maxPx : this.minPx;
     },
+
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The position in px of the top of the axis
+     */
     getMaxPx: function( px ) {
       return this.isFlipped() ? this.minPx : this.maxPx;
     },
+
     getMathMaxPx: function() {
       return this.maxPx;
     },
@@ -3986,43 +3441,86 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     },
 
     // Returns the true minimum of the axis. Either forced in options or the one from the data
+
+    /**
+     * Retrieves the minimum possible value of the axis. Can be set by "forcedMin", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+     * @memberof Axis.prototype
+     * @return {Number} The minimum possible value of the axis
+     */
     getMinValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin ) : this.getAdapt0ToMin();
+      return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
     },
 
+    /**
+     * Retrieves the maximum possible value of the axis. Can be set by "forcedMax", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getMaxValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax ) : ( this.getAdapt0ToMax() );
+      return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
     },
 
     setMinValueData: function( min ) {
       this.dataMin = min;
     },
+
     setMaxValueData: function( max ) {
       this.dataMax = max;
     },
 
+    /**
+     * Forces the minimum value of the axis (no more dependant on the serie values)
+     * @memberof Axis.prototype
+     * @param {Number} min - The minimum value of the axis
+     * @return {Axis} The current axis
+     */
+    forceMin: function( min ) {
+      this.options.forcedMin = min;
+      return this;
+    },
+
+    /**
+     * Forces the maximum value of the axis (no more dependant on the serie values)
+     * @memberof Axis.prototype
+     * @param {Number} max - The maximum value of the axis
+     * @return {Axis} The current axis
+     */
+    forceMax: function( max ) {
+      this.options.forcedMax = max;
+      return this;
+    },
+
+    /**
+     * Retrieves the forced minimum of the axis
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getForcedMin: function() {
       return this.options.forcedMin;
     },
 
+    /**
+     * Retrieves the forced minimum of the axis
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getForcedMax: function() {
       return this.options.forcedMax;
     },
 
-    forceMin: function( val ) {
-      this.options.forcedMin = val;
-      return this;
-    },
-    forceMax: function( val ) {
-      this.options.forcedMax = val;
-      return this;
-    },
-
-    force: function( axis ) {
+    /**
+     * Forces the min and max values of the axis to the min / max values of another axis
+     * @param {Axis} axis - The axis from which the min / max values are retrieved.
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    forceToAxis: function( axis ) {
       if ( axis.getMaxValue && axis.getMinValue ) {
         this.options.forcedMin = axis.getMinValue();
         this.options.forcedMax = axis.getMaxValue();
       }
+
+      return this;
     },
 
     getNbTicksPrimary: function() {
@@ -4050,7 +3548,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       }
 
       this._doZoomVal(
-        ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
+        ( ( this.getCurrentMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getCurrentMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
       this.graph.redraw();
@@ -4072,6 +3570,21 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
     },
 
+    /**
+     * Performs a zoom on the axis, without redraw afterwards
+     * @param {Number} val1 - The new axis minimum
+     * @param {Number} val2 - The new axis maximum
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @example
+     * graph.getBottomAxis().zoom( 50, 70 ); // Axis boundaries will be 50 and 70 after next redraw
+     * graph.redraw();
+     * @example
+     * graph.getBottomAxis().forceMin( 0 ).forceMax( 100 ).zoom( 50, 70 );  // Axis boundaries will be 50 and 70 after next redraw
+     * graph.draw();
+     * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
+     * graph.draw();
+     */
     zoom: function( val1, val2 ) {
       return this._doZoomVal( val1, val2, true );
     },
@@ -4086,8 +3599,13 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       //if(this.options.display || 1 == 1) {
       var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
       var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
+
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
+
+      this._zoomed = true;
+
+      this.adapt();
 
       this._hasChanged = true;
 
@@ -4095,6 +3613,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       if ( !mute ) {
         this.emit( "zoom", [ this.currentAxisMin, this.currentAxisMax, this ] );
       }
+
+      return this;
     },
 
     getSerieShift: function() {
@@ -4107,10 +3627,6 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
     getMouseVal: function() {
       return this.mouseVal;
-    },
-
-    isFlipped: function() {
-      return this.options.flipped;
     },
 
     getUnitPerTick: function( px, nbTick, valrange ) {
@@ -4219,6 +3735,11 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return [ unitPerTickCorrect, nbTicks, pxPerTick ];
     },
 
+    /**
+     * Resets the min and max of the serie to fit the series it contains
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setMinMaxToFitSeries: function( noNotify ) {
 
       var interval = this.getInterval();
@@ -4247,27 +3768,55 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
         this.currentAxisMin = undefined;
       }
 
+      this._zoomed = false;
+
+      this.adapt();
+
       if ( !noNotify ) {
         this.graph._axisHasChanged( this );
       }
+
+      return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+     */
     getInterval: function() {
       return this.getMaxValue() - this.getMinValue()
     },
 
-    _getActualInterval: function() {
-      return this.getActualMax() - this.getActualMin();
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+     */
+    getCurrentInterval: function() {
+      return this.getCurrentMax() - this.getCurrentMin();
     },
 
-    getActualMin: function() {
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The current minimum value of the axis
+     */
+    getCurrentMin: function() {
       return this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
     },
 
-    getActualMax: function() {
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The current maximum value of the axis
+     */
+    getCurrentMax: function() {
       return this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
     },
 
+    /**
+     * Sets the current minimum value of the axis. If lower that the forced value, the forced value is used
+     * @memberof Axis.prototype
+     * @param {Number} val - The new minimum value
+     * @return {Axis} The current axis
+     */
     setCurrentMin: function( val ) {
 
       if ( this.getForcedMin() !== false && val < this.getForcedMin() ) {
@@ -4280,8 +3829,15 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       }
 
       this.graph._axisHasChanged( this );
+      return this;
     },
 
+    /**
+     * Sets the current maximum value of the axis. If higher that the forced value, the forced value is used
+     * @memberof Axis.prototype
+     * @param {Number} val - The new maximum value
+     * @return {Axis} The current axis
+     */
     setCurrentMax: function( val ) {
 
       if ( this.getForcedMax() !== false && val > this.getForcedMax() ) {
@@ -4297,14 +3853,25 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.graph._axisHasChanged( this );
     },
 
-    flip: function( bool ) {
-      this.options.flipped = bool;
+    /**
+     * Sets the flipping state of the axis. If enabled, the axis is descending rather than ascending.
+     * @memberof Axis.prototype
+     * @param {Boolean} flip - The new flipping state of the axis
+     * @return {Axis} The current axis
+     */
+    flip: function( flip ) {
+      this.options.flipped = flip;
       return this;
     },
 
     /**
-     *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
+     * @memberof Axis.prototype
+     * @return {Boolean} The current flipping state of the axis
      */
+    isFlipped: function() {
+      return this.options.flipped;
+    },
+
     _draw: function( linkedToAxisOnly ) { // Redrawing of the axis
 
       var self = this;
@@ -4322,7 +3889,7 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       // The data min max is stored in this.dataMin, this.dataMax
 
       var widthPx = this.maxPx - this.minPx;
-      var valrange = this._getActualInterval();
+      var valrange = this.getCurrentInterval();
 
       /* Number of px per unit */
       /* Example: width: 1000px
@@ -4338,6 +3905,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
 
       this.line.setAttribute( 'display', 'block' );
 
+      var scientificExponent = 0;
+
       if ( !this.options.hideTicks ) {
 
         if ( this.linkedToAxis ) { // px defined, linked to another axis
@@ -4348,8 +3917,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
         } else if ( !this.options.logScale ) {
           // So the setting is: How many ticks in total ? Then we have to separate it
 
-          if ( this.options.scientificTicks ) {
-            this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
+          if ( this.options.scientificTicks === true ) {
+            scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
           }
 
           var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
@@ -4375,22 +3944,63 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       /*** DRAWING LABEL ******************/
       /************************************/
 
+      if ( this.options.scientificTicks && util.isNumeric( this.options.scientificTicks ) ) {
+        scientificExponent = this.options.scientificTicks;
+      }
+
+      this.scientificExponent = scientificExponent;
+
       var label;
       if ( label = this.getLabel() ) {
+        // Sets the label
         this.labelTspan.textContent = label;
-        if ( this.getExponentialLabelFactor() ) {
-          this.expTspan.nodeValue = 'x10';
-          this.expTspanExp.nodeValue = this.getExponentialLabelFactor();
-          visible = true;
-        } else if ( this.options.scientificTicks ) {
-          this.expTspan.textContent = 'x10';
-          this.expTspanExp.textContent = this.scientificExp;
-          visible = true;
-        } else
-          visible = false;
 
-        this.expTspan.setAttribute( 'display', visible ? 'block' : 'none' );
-        this.expTspanExp.setAttribute( 'display', visible ? 'block' : 'none' );
+        if ( this.options.unit ) {
+
+          if ( this.scientificExponent > 0 ) {
+            this.scientificExponent -= ( this.scientificExponent % 3 );
+          } else {
+            this.scientificExponent += ( this.scientificExponent % 3 );
+          }
+
+          this.unitTspan.setAttribute( 'display', 'visible' );
+          this.expTspan.setAttribute( 'display', 'none' );
+          this.expTspanExp.setAttribute( 'display', 'none' );
+
+          if ( this.scientificExponent == 0 ) {
+            this.preunitTspan.textContent = "";
+            this.preunitTspan.setAttribute( 'display', 'none' );
+            this.unitTspan.setAttribute( 'dx', 5 );
+          } else {
+            this.preunitTspan.textContent = this.getExponentGreekLetter( this.scientificExponent );
+            this.preunitTspan.setAttribute( 'display', 'visible' );
+            this.unitTspan.setAttribute( 'dx', 0 );
+          }
+
+          this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
+
+        } else {
+
+          if ( this.scientificExponent === 0 )  {
+
+            this.unitTspan.setAttribute( 'display', 'none' );
+            this.preunitTspan.setAttribute( 'display', 'none' );
+            this.expTspan.setAttribute( 'display', 'none' );
+            this.expTspanExp.setAttribute( 'display', 'none' );
+
+          } else {
+
+            this.expTspan.setAttribute( 'display', 'visible' );
+            this.expTspanExp.setAttribute( 'display', 'visible' );
+
+            this.unitTspan.setAttribute( 'display', 'none' );
+            this.preunitTspan.setAttribute( 'display', 'none' );
+
+            this.expTspan.textContent = "x10";
+            this.preunitTspan.textContent = this.scientificExponent;
+          }
+        }
+
       }
 
       /************************************/
@@ -4398,11 +4008,54 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       /************************************/
 
       this.drawSpecifics();
-      if ( this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0 ) {
+      if ( this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0 ) {
         this._draw0Line( this.getPx( 0 ) );
       }
 
       return widthHeight + ( label ? 20 : 0 );
+    },
+
+    getExponentGreekLetter: function( val ) {
+
+      switch ( val ) {
+
+        case 3:
+          return "k";
+          break;
+
+        case 6:
+          return "M";
+          break;
+
+        case 9:
+          return 'G';
+          break;
+
+        case 12:
+          return "T";
+          break;
+
+        case -3:
+          return "m";
+          break;
+
+        case -6:
+          return "&mu;";
+          break;
+
+        case -9:
+          return 'n';
+          break;
+
+        case -12:
+          return 'p';
+          break;
+
+        case -15:
+          return 'f';
+          break;
+      }
+
     },
 
     drawInit: function() {
@@ -4475,8 +4128,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     drawTicks: function( primary, secondary ) {
 
       var unitPerTick = primary[ 0 ],
-        min = this.getActualMin(),
-        max = this.getActualMax(),
+        min = this.getCurrentMin(),
+        max = this.getCurrentMax(),
         widthHeight = 0,
         secondaryIncr,
         incrTick,
@@ -4540,8 +4193,8 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
     },
 
     drawLogTicks: function() {
-      var min = this.getActualMin(),
-        max = this.getActualMax();
+      var min = this.getCurrentMin(),
+        max = this.getCurrentMax();
       var incr = Math.min( min, max );
       var max = Math.max( min, max );
 
@@ -4596,6 +4249,21 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       this.drawTick( value, label, scaling, options );
     },
 
+    /**
+     * Used to scale the master axis into the slave axis
+     * @function SlaveAxisScalingFunction
+     * @param {Number} val - The master value to convert into a slave value
+     * @returns undefined
+     */
+
+    /**
+     * Makes this axis a slave. This can be used to show the same data with different units, specifically when a conversion function exists from axis -> slaveAxis but not in reverse. This axis should actually have no series.
+     * @param {Axis} axis - The master axis
+     * @param {SlaveAxisScalingFunction} scalingFunction - The scaling function used to map masterValue -> slaveValue
+     * @param {Number} decimals - The number of decimals to round the value to
+     * @memberof Axis.prototype
+     * @return {Number} The width or height used by the axis (used internally)
+     */
     linkToAxis: function( axis, scalingFunction, decimals ) {
 
       this.linkedToAxis = {
@@ -4656,62 +4324,92 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       } while ( px < widthPx );
     },
 
+    /**
+     * Transform a value into pixels, according to the axis scaling. The value is referenced to the drawing wrapper, not the the axis minimal value
+     * @param {Number} value - The value to translate into pixels
+     * @memberof Axis.prototype
+     * @return {Number} The value transformed into pixels
+     */
     getPx: function( value ) {
       return this.getPos( value );
     },
 
+    /**
+     * @alias Axis~getPx
+     */
     getPos: function( value ) {
       //			if(this.getMaxPx() == undefined)
       //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
+      //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
       // Ex 50 / (100) * (1000 - 700) + 700
 
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
       if ( !this.options.logScale ) {
 
-        return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
+        return ( value - this.getCurrentMin() ) / ( this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min
         // 1 if value = max
         if ( value < 0 )
           return;
 
-        var value = ( ( Math.log( value ) - Math.log( this.getActualMin() ) ) / ( Math.log( this.getActualMax() ) - Math.log( this.getActualMin() ) ) ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
+        var value = ( ( Math.log( value ) - Math.log( this.getCurrentMin() ) ) / ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
 
         return value;
       }
     },
 
-    getRelPx: function( value ) {
-
-      return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
-    },
-
-    getRelVal: function( px ) {
-
-      return px / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval();
-    },
-
+    /**
+     * Transform a pixel position (referenced to the graph zone, not to the axis minimum) into a value, according to the axis scaling.
+     * @param {Number} pixels - The number of pixels to translate into a value
+     * @memberof Axis.prototype
+     * @return {Number} The axis value corresponding to the pixel position
+     */
     getVal: function( px ) {
 
       if ( !this.options.logScale ) {
 
-        return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
+        return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval() + this.getCurrentMin();
 
       } else {
 
-        return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getActualMax() ) - Math.log( this.getActualMin() ) ) + Math.log( this.getActualMin() ) )
+        return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) + Math.log( this.getCurrentMin() ) )
       }
 
       // Ex 50 / (100) * (1000 - 700) + 700
 
     },
 
+    /**
+     * Transform a delta value into pixels
+     * @param {Number} value - The value to translate into pixels
+     * @memberof Axis.prototype
+     * @return {Number} The value transformed into pixels
+     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
+     */
+    getRelPx: function( delta ) {
+
+      return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
+    },
+
+    /**
+     * Transform a delta pixels value into value
+     * @param {Number} pixels - The pixel to convert into a value
+     * @memberof Axis.prototype
+     * @return {Number} The delta value corresponding to delta pixels
+     * @see Axis~getRelPx
+     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
+     */
+    getRelVal: function( px ) {
+
+      return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
+    },
+
     valueToText: function( value ) {
 
-      if ( this.options.scientificTicks ) {
+      if ( this.scientificExponent ) {
 
-        value /= Math.pow( 10, this.scientificExp );
+        value /= Math.pow( 10, this.scientificExponent );
         return value.toFixed( 1 );
 
       } else {
@@ -4826,11 +4524,21 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this.options.exponentialLabelFactor;
     },
 
-    setLabel: function( value ) {
-      this.options.labelValue = value;
+    /**
+     * Sets the label of the axis
+     * @param {Number} label - The label to display under the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setLabel: function( label ) {
+      this.options.labelValue = label;
       return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {String} The label value
+     */
     getLabel: function() {
       return this.options.labelValue;
     },
@@ -4845,6 +4553,12 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this.shift;
     },
 
+    /**
+     * Changes the tick position
+     * @param {Number} pos - The new position ( "outside", "centered" or "inside" )
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setTickPosition: function( pos ) {
       switch ( pos ) {
         case 3:
@@ -4868,20 +4582,201 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       return this;
     },
 
-    toggleGrids: function( bool ) {
-      this.options.primaryGrid = bool;
-      this.options.secondaryGrid = bool;
+    /**
+     * Displays or hides the axis grids
+     * @param {Boolean} on - true to enable the grids, false to disable them
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setGrids: function( on ) {
+      this.options.primaryGrid = on;
+      this.options.secondaryGrid = on;
       return this;
     },
 
-    togglePrimaryGrid: function( bool ) {
-      this.options.primaryGrid = bool;
+    /**
+     * Displays or hides the axis primary grid
+     * @param {Boolean} on - true to enable the grids, false to disable it
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setPrimaryGrid: function( on ) {
+      this.options.primaryGrid = on;
       return this;
     },
 
-    toggleSecondaryGrid: function( bool ) {
-      this.options.secondaryGrid = bool;
+    /**
+     * Displays or hides the axis secondary grid
+     * @param {Boolean} on - true to enable the grids, false to disable it
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setSecondaryGrid: function( on ) {
+      this.options.secondaryGrid = on;
       return this;
+    },
+
+    /**
+     * Enables primary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    primaryGridOn: function() {
+      return this.setPrimaryGrid( true );
+    },
+
+    /**
+     * Disables primary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    primaryGridOff: function() {
+      return this.setPrimaryGrid( false );
+    },
+
+    /**
+     * Enables secondary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    secondaryGridOn: function() {
+      return this.setSecondaryGrid( true );
+    },
+
+    /**
+     * Disables secondary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    secondaryGridOff: function() {
+      return this.setSecondaryGrid( false );
+    },
+
+    /**
+     * Enables all the grids
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    gridsOn: function() {
+      return this.setGrids( true );
+    },
+
+    /**
+     * Disables all the grids
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    gridsOff: function() {
+      return this.setGrids( false );
+    },
+
+    /**
+     * Sets the axis color
+     * @memberof Axis.prototype
+     * @param {String} color - The color to set the axis
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setAxisColor: function( color ) {
+      this.options.axisColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the axis color
+     * @memberof Axis.prototype
+     * @return {String} The color of the axis
+     * @since 1.13.2
+     */
+    getAxisColor: function( color ) {
+      return this.options.axisColor || 'black';
+    },
+
+    /**
+     * Sets the color of the main ticks
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the primary ticks
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setPrimaryTicksColor: function( color ) {
+      this.options.primaryTicksColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the main ticks
+     * @memberof Axis.prototype
+     * @return {String} The color of the primary ticks
+     * @since 1.13.2
+     */
+    getPrimaryTicksColor: function( color ) {
+      return this.options.primaryTicksColor || 'black';
+    },
+
+    /**
+     * Sets the color of the secondary ticks
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the secondary ticks
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setSecondaryTicksColor: function( color ) {
+      this.options.secondaryTicksColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the secondary ticks
+     * @memberof Axis.prototype
+     * @return {String} The color of the secondary ticks
+     * @since 1.13.2
+     */
+    getSecondaryTicksColor: function( color ) {
+      return this.options.secondaryTicksColor || 'black';
+    },
+
+    /**
+     * Sets the color of the tick labels
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the tick labels
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setTicksLabelColor: function( color ) {
+      this.options.ticksLabelColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the tick labels
+     * @memberof Axis.prototype
+     * @return {String} The color of the tick labels
+     * @since 1.13.2
+     */
+    getTicksLabelColor: function( color ) {
+      return this.options.ticksLabelColor || 'black';
+    },
+
+    /**
+     * Sets the color of the label
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the label
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setLabelColor: function( color ) {
+      this.options.labelColor = color;
+    },
+
+    /**
+     * Gets the color of the label
+     * @memberof Axis.prototype
+     * @return {String} The color of the label
+     * @since 1.13.2
+     */
+    getLabelColor: function() {
+      return this.options.labelColor;
     },
 
     doGridLine: function( primary, x1, x2, y1, y2 ) {
@@ -4928,30 +4823,38 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
       }
     },
 
-    removeSerie: function( serie ) {
-      this.series.splice( this.series.indexOf( serie ), 1 );
+    /**
+     * @memberof Axis.prototype
+     * @returns {Boolean} true if it is an x axis, false otherwise
+     */
+    isX: function() {
+      return false;
     },
 
-    killSeries: function( noRedraw ) {
-      for ( var i = 0; i < this.series.length; i++ ) {
-        this.series[ i ].kill( noRedraw );
-      }
-      this.series = [];
+    /**
+     * @memberof Axis.prototype
+     * @returns {Boolean} true if it is an y axis, false otherwise
+     */
+    isY: function() {
+      return false;
     },
 
-    removeSeries: function() {
-      this.killSeries();
-    },
-
-    handleMouseOutLocal: function( x, y, e ) {
-      for ( var i = 0, l = this.series.length; i < l; i++ )
-        this.series[ i ].hideTrackingMarker();
+    /**
+     * Sets the unit of the axis
+     * The units will allow the axis to scale down to the
+     * @param {String} unit - The unit of the axis
+     * @return {Axis} The current axis
+     */
+    setUnit: function( unit ) {
+      this.options.unit = unit;
+      return this;
     }
+
   } );
 
   return GraphAxis;
 
- } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"] );
+ } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
 
 
 // Build: End source file (graph.axis) 
@@ -4966,9 +4869,16 @@ build['./graph.axis'] = ( function( $, EventEmitter ) {
  */
 
 build['./graph.axis.x'] = ( function( $, GraphAxis ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
+  /** 
+   * Generic constructor of a y axis
+   * @class GraphXAxis
+   * @augments GraphAxis
+   */
   var GraphXAxis = function( graph, topbottom, options ) {
     this.init( graph, options );
     this.top = topbottom == 'top';
@@ -5043,7 +4953,15 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
 
       }
 
-      tick.setAttribute( 'stroke', 'black' );
+      if ( label ) {
+
+        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
+
+      } else {
+
+        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
+
+      }
 
       this.groupTicks.appendChild( tick );
       if ( label ) {
@@ -5052,6 +4970,11 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
         tickLabel.setAttribute( 'x', val );
         tickLabel.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 8 : 20 ) + ( this.top ? 10 : 0 ) ) );
         tickLabel.setAttribute( 'text-anchor', 'middle' );
+
+        if ( this.getTicksLabelColor() !== 'black' ) {
+          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
+        }
+
         tickLabel.style.dominantBaseline = 'hanging';
 
         this.setTickContent( tickLabel, value, options );
@@ -5079,32 +5002,16 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
       this.line.setAttribute( 'y1', 0 );
       this.line.setAttribute( 'y2', 0 );
 
+      this.line.setAttribute( 'stroke', this.getAxisColor() );
+
       if ( !this.top ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
         this.expTspan.style.dominantBaseline = 'hanging';
         this.expTspanExp.style.dominantBaseline = 'hanging';
-      }
-    },
 
-    drawSeries: function() {
+        this.unitTspan.style.dominantBaseline = 'hanging';
+        this.preunitTspan.style.dominantBaseline = 'hanging';
 
-      if ( !this.shift ) {
-        return;
-      }
-
-      this.rectEvent.setAttribute( 'y', !this.top ? 0 : -this.shift );
-      this.rectEvent.setAttribute( 'height', this.totalDimension );
-      this.rectEvent.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.rectEvent.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-      //this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
-      //console.log(this.clipRect);
-      this.clipRect.setAttribute( 'y', !this.top ? 0 : -this.shift );
-      this.clipRect.setAttribute( 'height', this.totalDimension );
-      this.clipRect.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.clipRect.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
-        this.series[ i ].draw();
       }
     },
 
@@ -5123,10 +5030,6 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
     handleMouseMoveLocal: function( x, y, e ) {
       x -= this.graph.getPaddingLeft();
       this.mouseVal = this.getVal( x );
-    },
-
-    isXY: function() {
-      return 'x';
     }
 
   } );
@@ -5147,9 +5050,16 @@ build['./graph.axis.x'] = ( function( $, GraphAxis ) {
  */
 
 build['./graph.axis.y'] = ( function( GraphAxis ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
+  /** 
+   * Generic constructor of a y axis
+   * @class GraphYAxis
+   * @augments GraphAxis
+   */
   var GraphYAxis = function( graph, leftright, options ) {
 
     this.init( graph, options );
@@ -5162,15 +5072,11 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
   $.extend( GraphYAxis.prototype, GraphAxis.prototype, {
 
     getAxisPosition: function() {
-      var size = 0;
 
       if ( !this.options.display ) {
         return 0;
       }
-
-      if ( this.options.allowedPxSerie && this.series.length > 0 )
-        size = this.options.allowedPxSerie;
-      return size;
+      return ( this.options.tickPosition == 1 ? 15 : 0 );
     },
 
     getAxisWidthHeight: function() {
@@ -5218,12 +5124,25 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      tick.setAttribute( 'stroke', 'black' );
+      if ( label ) {
 
-      if ( label && this.options.primaryGrid )
+        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
+
+      } else {
+
+        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
+
+      }
+
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
+
+      }
 
       this.groupTicks.appendChild( tick );
 
@@ -5232,6 +5151,10 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
         tickLabel = document.createElementNS( this.graph.ns, 'text' );
         tickLabel.setAttribute( 'y', pos );
         tickLabel.setAttribute( 'x', this.left ? -10 : 10 );
+
+        if ( this.getTicksLabelColor() !== 'black' ) {
+          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
+        }
 
         if ( this.left ) {
           tickLabel.setAttribute( 'text-anchor', 'end' );
@@ -5259,37 +5182,28 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
+      if ( this.getLabelColor() !== 'black' ) {
+        this.label.setAttribute( 'fill', this.getLabelColor() );
+      }
+
       this.labelTspan.textContent = this.getLabel();
 
       if ( !this.left ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
         this.expTspan.style.dominantBaseline = 'hanging';
         this.expTspanExp.style.dominantBaseline = 'hanging';
+
+        this.unitTspan.style.dominantBaseline = 'hanging';
+        this.preunitTspan.style.dominantBaseline = 'hanging';
+
       }
 
       this.line.setAttribute( 'y1', this.getMinPx() );
       this.line.setAttribute( 'y2', this.getMaxPx() );
       this.line.setAttribute( 'x1', 0 );
       this.line.setAttribute( 'x2', 0 );
-    },
 
-    drawSeries: function() {
-      if ( !this.shift )
-        return;
-
-      this.rectEvent.setAttribute( 'x', ( this.left ? -this.shift : 0 ) );
-      this.rectEvent.setAttribute( 'width', this.totalDimension );
-      this.rectEvent.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.rectEvent.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      this.clipRect.setAttribute( 'x', -this.shift );
-      this.clipRect.setAttribute( 'width', this.totalDimension );
-      this.clipRect.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.clipRect.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
-        this.series[ i ].draw();
-      }
+      this.line.setAttribute( 'stroke', this.getAxisColor() );
 
     },
 
@@ -5300,8 +5214,7 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       }
 
       var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
-      this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
-
+      this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
     },
 
     isLeft: function() {
@@ -5333,19 +5246,29 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       this.mouseVal = this.getVal( y );
     },
 
-    // TODO: Get the min value as well
+    /**
+     * Scales the axis with respect to the series contained in an x axis
+     * @memberof GraphYAxis.prototype
+     * @param {GraphAxis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
+     * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
+     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
+     * @param {Boolean} [ min = true ] - Adapt the min
+     * @param {Boolean} [ max = true ] - Adapt the max
+     * @returns {GraphAxis} The current axis
+     */
     scaleToFitAxis: function( axis, excludeSerie, start, end, min, max ) {
       //console.log( axis instanceof GraphAxis );
-      if ( !axis ) {
+      if ( !axis ||  !axis.isX() ) {
         axis = this.graph.getXAxis();
       }
 
       if ( isNaN( start ) ) {
-        start = axis.getActualMin();
+        start = axis.getCurrentMin();
       }
 
       if ( isNaN( end ) ) {
-        end = axis.getActualMax();
+        end = axis.getCurrentMax();
       }
 
       if ( min === undefined ) {
@@ -5392,8 +5315,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
       } else {
 
         // If we wanted originally to resize min and max. Otherwise we use the current value
-        minV = min ? minV : this.getActualMin();
-        maxV = max ? maxV : this.getActualMax();
+        minV = min ? minV : this.getCurrentMin();
+        maxV = max ? maxV : this.getCurrentMax();
 
         var interval = maxV - minV;
 
@@ -5402,10 +5325,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
 
         this._doZoomVal( minV, maxV );
       }
-    },
 
-    isXY: function() {
-      return 'y';
+      return this;
     }
 
   } );
@@ -5427,6 +5348,8 @@ build['./graph.axis.y'] = ( function( GraphAxis ) {
  */
 
 build['./graph.axis.broken'] = ( function( $ ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -5595,7 +5518,7 @@ build['./graph.axis.broken'] = ( function( $ ) {
     },
 
     getRelPx: function( value ) {
-      return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
+      return ( value / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 
     getRelVal: function( px ) {
@@ -5671,6 +5594,8 @@ build['./graph.axis.broken'] = ( function( $ ) {
  */
 
 build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -5715,6 +5640,8 @@ build['./graph.axis.x.broken'] = ( function( GraphXAxis, GraphBrokenAxis ) {
  */
 
 build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -5764,6 +5691,8 @@ build['./graph.axis.y.broken'] = ( function( GraphYAxis, GraphBrokenAxis ) {
  */
 
 build['./graph.axis.x.time'] = ( function( GraphAxis ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -6210,12 +6139,12 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
       this.line.setAttribute( 'y2', 0 );
 
       var widthPx = this.maxPx - this.minPx;
-      var widthTime = this._getActualInterval();
+      var widthTime = this.getCurrentInterval();
 
       var timePerPx = widthTime / widthPx;
 
-      var maxVal = this.getActualMax();
-      var minVal = this.getActualMin();
+      var maxVal = this.getCurrentMax();
+      var minVal = this.getCurrentMin();
 
       this.rect.setAttribute( 'width', widthPx );
       this.rect.setAttribute( 'x', this.minPx );
@@ -6589,25 +6518,28 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
       }
 
       var xVal1,
-        xVal2;
-
-      var level = 0;
+        xVal2,
+        level = 0,
+        dateFirst,
+        currentDate,
+        text,
+        group,
+        i;
 
       for ( level = 1; level <= 2; level++ ) {
 
-        var dateFirst = new Date( minVal );
+        dateFirst = new Date( minVal );
 
-        var currentDate = roundDate( dateFirst, currentFormat.increments[ level ] ),
-          i = 0;
+        currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+        i = 0;
 
         do {
-
-          xVal1 = this.getPx( currentDate.getTime() );
-
-          var text = getDateText( currentDate, currentFormat.increments[ level ].format );
-          var group = getGroup( this, level, i );
+          /** @ignore */
+          text = getDateText( currentDate, currentFormat.increments[ level ].format );
+          group = getGroup( this, level, i );
 
           currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
+          xVal1 = this.getPx( currentDate.getTime() );
           xVal2 = this.getPx( currentDate.getTime() );
 
           renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
@@ -6659,7 +6591,25 @@ build['./graph.axis.x.time'] = ( function( GraphAxis ) {
  */
 
 build['./graph.legend'] = ( function( ) { 
+/** @global */ /** @ignore */
 
+
+  /** 
+   * Default legend configuration
+   * @name LegendOptionsDefault
+   * @object
+   * @static
+   * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
+   * @prop {Number} frameWidth - The width of the frame stroke
+   * @prop {String} frameColor - The stroke color of the frame
+   * @prop {String} backgroundColor - The background color of the frame
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingTop - The top padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {Boolean} shapesToggleable - <code>true</code> to allow series to be selected through the legend
+   * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+   */
   var legendDefaults = {
     frame: false,
     backgroundColor: 'transparent',
@@ -6677,6 +6627,12 @@ build['./graph.legend'] = ( function( ) {
 
   }
 
+  /** 
+   * Legend constructor
+   * @class Legend
+   * @private
+   * @example var legend = graph.makeLegend( {} );
+   */
   var Legend = function( graph, options ) {
 
     this.options = $.extend( {}, legendDefaults, options );
@@ -6713,6 +6669,14 @@ build['./graph.legend'] = ( function( ) {
 
   Legend.prototype = {
 
+    /** 
+     * Sets the position of the legend
+     * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
+     * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
+     * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
+     * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
+     * @memberof Legend.prototype
+     */
     setPosition: function( position, alignToX, alignToY ) {
 
       if ( !position ) {
@@ -6751,6 +6715,10 @@ build['./graph.legend'] = ( function( ) {
       this._setPosition();
     },
 
+    /** 
+     * Updates the legend position and content
+     * @memberof Legend.prototype
+     */
     update: function() {
 
       var self = this;
@@ -6845,14 +6813,26 @@ build['./graph.legend'] = ( function( ) {
       this.svg.appendChild( this.rect );
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {Boolean} true or false depending if the series can be hidden or not
+     */
     isHideable: function() {
       return this.options.isSerieHideable;
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {Boolean} true or false depending if the series can be t or not
+     */
     isToggleShapes: function() {
       return this.options.shapesToggleable;
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {SVGGroupElement} The SVG group element wrapping the legend
+     */
     getDom: function() {
       return this.svg;
     },
@@ -6925,6 +6905,10 @@ build['./graph.legend'] = ( function( ) {
       }
     },
 
+    /** 
+     * Re-applies the legend style
+     * @memberof Legend.prototype
+     */
     applyStyle: function() {
 
       if ( this.options.frame ) {
@@ -6936,6 +6920,11 @@ build['./graph.legend'] = ( function( ) {
 
     },
 
+    /** 
+     * Re-applies the legend style
+     * @memberof Legend.prototype
+     * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
+     */
     fixSeries: function() {
       var series = [];
 
@@ -6971,49 +6960,133 @@ build['./graph.legend'] = ( function( ) {
 ;
 /* 
  * Build: new source file 
+ * File name : plugins/graph.plugin
+ * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.js
+ */
+
+build['./plugins/graph.plugin'] = ( function( EventEmitter ) { 
+/** @global */ /** @ignore */
+
+
+  /**
+   * @class Plugin
+   * @interface
+   */
+  var Plugin = function() {};
+
+  Plugin.prototype = new EventEmitter();
+
+  /**
+   * Init function called by jsGraph on load
+   * @memberof Plugin
+   */
+  Plugin.prototype.init = function() {}
+
+  /**
+   * Handles the mousedown event from jsGraph
+   * @param {Graph} graph - The graph instance
+   * @param {Number} x - The x position in px
+   * @param {Number} y - The y position in px
+   * @param {Event} e - The original event
+   * @param {SVGElement} target - The target element
+   * @memberof Plugin
+   */
+  Plugin.prototype.onMouseDown = function() {}
+
+  /**
+   * Handles the mouseup event from jsGraph
+   * @param {Graph} graph - The graph instance
+   * @param {Number} x - The x position in px
+   * @param {Number} y - The y position in px
+   * @param {Event} e - The original event
+   * @param {SVGElement} target - The target element
+   * @memberof Plugin
+   */
+  Plugin.prototype.onMouseUp = function() {}
+
+  /**
+   * Handles the mousemove event from jsGraph
+   * @param {Graph} graph - The graph instance
+   * @param {Number} x - The x position in px
+   * @param {Number} y - The y position in px
+   * @param {Event} e - The original event
+   * @param {SVGElement} target - The target element
+   * @memberof Plugin
+   */
+  Plugin.prototype.onMouseMove = function() {}
+
+  return Plugin;
+ } ) ( build["./dependencies/eventEmitter/EventEmitter"] );
+
+
+// Build: End source file (plugins/graph.plugin) 
+
+
+
+;
+/* 
+ * Build: new source file 
  * File name : plugins/graph.plugin.drag
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
  */
 
-build['./plugins/graph.plugin.drag'] = ( function( ) { 
+build['./plugins/graph.plugin.drag'] = ( function( Plugin ) { 
+/** @global */ /** @ignore */
 
-  var plugin = function() {};
 
-  plugin.prototype = {
+  /** 
+   * Constructor for the drag plugin. Do not use this constructor directly.
+   * @class PluginDrag
+   * @implements Plugin
+   */
+  var PluginDrag = function() {};
 
-    init: function() {},
+  PluginDrag.prototype = new Plugin();
 
-    onMouseDown: function( graph, x, y, e, target ) {
-      this._draggingX = x;
-      this._draggingY = y;
+  /**
+   * @memberof PluginDrag
+   * @private
+   */
+  PluginDrag.prototype.init = function() {};
 
-      return true;
-    },
+  /**
+   * @memberof PluginDrag
+   * @private
+   */
+  PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
+    this._draggingX = x;
+    this._draggingY = y;
 
-    onMouseMove: function( graph, x, y, e, target ) {
-      var deltaX = x - this._draggingX;
-      var deltaY = y - this._draggingY;
+    return true;
+  },
 
-      graph._applyToAxes( function( axis ) {
-        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-      }, false, true, false );
+  /**
+   * @memberof PluginDrag
+   * @private
+   */
+  PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+    var deltaX = x - this._draggingX;
+    var deltaY = y - this._draggingY;
 
-      graph._applyToAxes( function( axis ) {
-        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-      }, false, false, true );
+    graph._applyToAxes( function( axis ) {
+      axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+      axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+    }, false, true, false );
 
-      this._draggingX = x;
-      this._draggingY = y;
+    graph._applyToAxes( function( axis ) {
+      axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+      axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+    }, false, false, true );
 
-      graph.redraw( true );
-      graph.drawSeries();
-    }
+    this._draggingX = x;
+    this._draggingY = y;
+
+    graph.redraw( true );
+    graph.drawSeries();
   }
 
-  return plugin;
- } ) (  );
+  return PluginDrag;
+ } ) ( build["./plugins/graph.plugin"] );
 
 
 // Build: End source file (plugins/graph.plugin.drag) 
@@ -7027,134 +7100,158 @@ build['./plugins/graph.plugin.drag'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
  */
 
-build['./plugins/graph.plugin.shape'] = ( function( $, EventEmitter, util ) { 
+build['./plugins/graph.plugin.shape'] = ( function( $, Plugin ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
-  var plugin = function() {};
+  /**
+   * @class PluginShape
+   * @implements Plugin
+   */
+  var PluginShape = function() {};
 
-  plugin.prototype = new EventEmitter();
+  PluginShape.prototype = new Plugin();
 
-  plugin.prototype = $.extend( plugin.prototype, {
+  /**
+   * Init method
+   * @private
+   * @memberof PluginShape
+   */
+  PluginShape.prototype.init = function( graph, options ) {
 
-    init: function( graph, options ) {
+    this.options = options;
+    this.graph = graph;
+    this.shapeType = options.type;
 
-      this.options = options;
-      this.graph = graph;
-      this.shapeType = options.type;
+  };
 
-    },
+  /**
+   * Sets the shape that is created by the plugin
+   * @param {String} shapeType - The type of the shape
+   * @memberof PluginShape
+   */
+  PluginShape.prototype.setShape = function( shapeType ) {
+    this.shapeInfo.shapeType = shapeType;
+  };
 
-    setShape: function( shapeType ) {
-      this.shapeInfo.shapeType = shapeType;
-    },
+  /**
+   * @private
+   * @memberof PluginShape
+   */
+  PluginShape.prototype.onMouseDown = function( graph, x, y, e, target ) {
 
-    onMouseDown: function( graph, x, y, e, target ) {
-
-      if ( !this.shapeType && !this.options.url ) {
-        return;
-      }
-
-      var self = this,
-        selfPlugin = this;
-
-      var xVal, yVal;
-
-      this.count = this.count || 0;
-
-      x -= graph.getPaddingLeft(),
-      y -= graph.getPaddingTop(),
-
-      xVal = graph.getXAxis().getVal( x );
-      yVal = graph.getYAxis().getVal( y );
-
-      var shapeInfo = {
-
-        pos: {
-          x: xVal,
-          y: yVal
-        },
-
-        pos2: {
-          x: xVal,
-          y: yVal
-        },
-
-        onChange: function( newData ) {
-          graph.triggerEvent( 'onAnnotationChange', newData );
-        },
-
-        locked: false,
-        selectable: true,
-        resizable: true,
-        movable: true
-      };
-
-      $.extend( shapeInfo, this.options );
-
-      this.emit( "beforeNewShape", shapeInfo );
-
-      if ( this.graph.prevent( false ) ) {
-        return;
-      }
-
-      var shape = graph.newShape( shapeInfo.type, shapeInfo );
-
-      if ( shape ) {
-        self.currentShape = shape;
-        self.currentShapeEvent = e;
-
-        this.emit( "newShape", shape );
-      }
-    },
-
-    onMouseMove: function( graph, x, y, e ) {
-
-      var self = this;
-
-      if ( self.currentShape ) {
-
-        self.count++;
-
-        var shape = self.currentShape;
-
-        self.currentShape = false;
-
-        if ( graph.selectedSerie ) {
-          shape.setSerie( graph.selectedSerie );
-        }
-
-        shape.created();
-        shape.handleSelected = 1;
-        shape.resizing = true;
-
-        if ( shape.options && shape.options.onCreate ) {
-          shape.options.onCreate.call( shape );
-        }
-        shape.draw();
-
-        graph.selectShape( shape );
-
-        shape.handleMouseDown( self.currentShapeEvent, true );
-        shape.handleMouseMove( e, true );
-      }
-    },
-
-    onMouseUp: function() {
-
-      var self = this;
-      if ( self.currentShape ) {
-        // No need to kill it as it hasn't been actually put in the dom right now
-        //self.currentShape.kill();
-        self.currentShape = false;
-      }
+    if ( !this.shapeType && !this.options.url ) {
+      return;
     }
 
-  } );
+    var self = this,
+      selfPlugin = this;
 
-  return plugin;
+    var xVal, yVal;
 
- } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
+    this.count = this.count || 0;
+
+    x -= graph.getPaddingLeft(),
+    y -= graph.getPaddingTop(),
+
+    xVal = graph.getXAxis().getVal( x );
+    yVal = graph.getYAxis().getVal( y );
+
+    var shapeInfo = {
+
+      pos: {
+        x: xVal,
+        y: yVal
+      },
+
+      pos2: {
+        x: xVal,
+        y: yVal
+      },
+
+      onChange: function( newData ) {
+        graph.triggerEvent( 'onAnnotationChange', newData );
+      },
+
+      locked: false,
+      selectable: true,
+      resizable: true,
+      movable: true
+    };
+
+    $.extend( shapeInfo, this.options );
+
+    this.emit( "beforeNewShape", shapeInfo );
+
+    if ( this.graph.prevent( false ) ) {
+      return;
+    }
+
+    var shape = graph.newShape( shapeInfo.type, shapeInfo );
+
+    if ( shape ) {
+      self.currentShape = shape;
+      self.currentShapeEvent = e;
+
+      this.emit( "newShape", shape );
+    }
+  };
+
+  /**
+   * @private
+   * @memberof PluginShape
+   */
+  PluginShape.prototype.onMouseMove = function( graph, x, y, e ) {
+
+    var self = this;
+
+    if ( self.currentShape ) {
+
+      self.count++;
+
+      var shape = self.currentShape;
+
+      self.currentShape = false;
+
+      if ( graph.selectedSerie ) {
+        shape.setSerie( graph.selectedSerie );
+      }
+
+      shape.created();
+      shape.handleSelected = 1;
+      shape.resizing = true;
+
+      if ( shape.options && shape.options.onCreate ) {
+        shape.options.onCreate.call( shape );
+      }
+      shape.draw();
+
+      graph.selectShape( shape );
+
+      shape.handleMouseDown( self.currentShapeEvent, true );
+      shape.handleMouseMove( e, true );
+    }
+  };
+
+  /**
+   * @private
+   * @memberof PluginShape
+   */
+  PluginShape.prototype.onMouseUp = function() {
+
+    var self = this;
+    if ( self.currentShape ) {
+      // No need to kill it as it hasn't been actually put in the dom right now
+      //self.currentShape.kill();
+      self.currentShape = false;
+    }
+  }
+
+  return PluginShape;
+
+ } ) ( build["./jquery"],build["./plugins/graph.plugin"] );
 
 
 // Build: End source file (plugins/graph.plugin.shape) 
@@ -7168,125 +7265,151 @@ build['./plugins/graph.plugin.shape'] = ( function( $, EventEmitter, util ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
  */
 
-build['./plugins/graph.plugin.selectScatter'] = ( function( $, EventEmitter, util ) { 
+build['./plugins/graph.plugin.selectScatter'] = ( function( Plugin, util ) { 
+/** @global */ /** @ignore */
 
-  var plugin = function() {};
 
-  plugin.prototype = new EventEmitter();
+  /**
+   * @class PluginSelectScatter
+   * @implements Plugin
+   */
+  var PluginSelectScatter = function() {};
 
-  $.extend( plugin.prototype, {
+  PluginSelectScatter.prototype = new Plugin();
 
-    init: function( graph, options ) {
+  /**
+   * Init method
+   * @private
+   * @memberof PluginSelectScatter
+   */
+  PluginSelectScatter.prototype.init = function( graph, options ) {
 
-      this._path = document.createElementNS( graph.ns, 'path' );
+    this._path = document.createElementNS( graph.ns, 'path' );
 
-      util.setAttributeTo( this._path, {
-        'display': 'none',
-        'fill': 'rgba(0,0,0,0.1)',
-        'stroke': 'rgba(0,0,0,1)',
-        'shape-rendering': 'crispEdges',
-        'x': 0,
-        'y': 0,
-        'height': 0,
-        'width': 0,
-        'd': ''
-      } );
+    util.setAttributeTo( this._path, {
+      'display': 'none',
+      'fill': 'rgba(0,0,0,0.1)',
+      'stroke': 'rgba(0,0,0,1)',
+      'shape-rendering': 'crispEdges',
+      'x': 0,
+      'y': 0,
+      'height': 0,
+      'width': 0,
+      'd': ''
+    } );
 
-      this.options = options;
-      this.graph = graph;
+    this.options = options;
+    this.graph = graph;
 
-      graph.dom.appendChild( this._path );
+    graph.dom.appendChild( this._path );
 
-    },
+  };
 
-    setSerie: function( serie ) {
-      this.serie = serie;
-    },
+  /**
+   * Assigns the scatter serie that should be selected to the plugin
+   * @param {ScatterSerie} serie - The serie
+   * @memberof PluginSelectScatter
+   */
+  PluginSelectScatter.prototype.setSerie = function( serie ) {
+    this.serie = serie;
+  },
 
-    onMouseDown: function( graph, x, y, e, mute ) {
+  /**
+   * @memberof PluginSelectScatter
+   * @private
+   */
+  PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
 
-      if ( !this.serie ) {
-        return;
-      }
+    if ( !this.serie ) {
+      return;
+    }
 
-      this.path = 'M ' + x + ' ' + y + ' ';
+    this.path = 'M ' + x + ' ' + y + ' ';
+    this.currentX = x;
+    this.currentY = y;
+
+    this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+    this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+    this._path.setAttribute( 'd', '' );
+    this._path.setAttribute( 'display', 'block' );
+
+  };
+
+  /**
+   * @memberof PluginSelectScatter
+   * @private
+   */
+  PluginSelectScatter.prototype.onMouseMove = function( graph, x, y, e, mute ) {
+
+    if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
+
+      this.path += " L " + x + " " + y + " ";
       this.currentX = x;
       this.currentY = y;
 
-      this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
-      this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
-      this._path.setAttribute( 'd', '' );
-      this._path.setAttribute( 'display', 'block' );
+      this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
+      this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
 
-    },
+      this._path.setAttribute( 'd', this.path + " z" );
 
-    onMouseMove: function( graph, x, y, e, mute ) {
+      this.findPoints();
+    }
+  };
 
-      if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
+  /**
+   * @memberof PluginSelectScatter
+   * @private
+   */
+  PluginSelectScatter.prototype.findPoints = function() {
 
-        this.path += " L " + x + " " + y + " ";
-        this.currentX = x;
-        this.currentY = y;
+    var data = this.serie.data;
+    var selected = [];
+    var counter = 0,
+      j2;
+    for ( var i = 0, l = data.length; i < l; i += 2 ) {
 
-        this.xs.push( this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) );
-        this.ys.push( this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) );
+      counter = 0;
+      for ( var j = 0, k = this.xs.length; j < k; j += 1 ) {
 
-        this._path.setAttribute( 'd', this.path + " z" );
-
-        this.findPoints();
-      }
-    },
-
-    findPoints: function() {
-
-      var data = this.serie.data;
-      var selected = [];
-      var counter = 0,
-        j2;
-      for ( var i = 0, l = data.length; i < l; i += 2 ) {
-
-        counter = 0;
-        for ( var j = 0, k = this.xs.length; j < k; j += 1 ) {
-
-          if ( j == k - 1 ) {
-            j2 = 0;
-          } else {
-            j2 = j + 1;
-          }
-
-          if ( ( ( this.ys[ j ] < data[ i + 1 ] && this.ys[ j2 ] > data[ i + 1 ] ) || ( this.ys[ j ] > data[ i + 1 ] && this.ys[ j2 ] < data[ i + 1 ] ) ) ) {
-
-            if ( data[ i ] > ( ( data[ i + 1 ] - this.ys[ j ] ) / ( this.ys[ j2 ] - this.ys[ j ] ) ) * ( this.xs[ j2 ] - this.xs[ j ] ) + this.xs[ j ] ) {
-              counter++;
-            }
-          }
-        }
-
-        if ( counter % 2 == 1 ) {
-          selected.push( i / 2 );
-          this.serie.selectPoint( i / 2, true, "selected" );
+        if ( j == k - 1 ) {
+          j2 = 0;
         } else {
-          this.serie.unselectPoint( i / 2 );
+          j2 = j + 1;
         }
 
+        if ( ( ( this.ys[ j ] < data[ i + 1 ] && this.ys[ j2 ] > data[ i + 1 ] ) || ( this.ys[ j ] > data[ i + 1 ] && this.ys[ j2 ] < data[ i + 1 ] ) ) ) {
+
+          if ( data[ i ] > ( ( data[ i + 1 ] - this.ys[ j ] ) / ( this.ys[ j2 ] - this.ys[ j ] ) ) * ( this.xs[ j2 ] - this.xs[ j ] ) + this.xs[ j ] ) {
+            counter++;
+          }
+        }
       }
 
-      this.selected = selected;
-      this.emit( "selectionProcess", selected );
-    },
-
-    onMouseUp: function( graph, x, y, e, mute ) {
-      this._path.setAttribute( 'display', 'none' );
-      this.emit( "selectionEnd", this.selected );
-    },
-
-    removeZone: function() {
+      if ( counter % 2 == 1 ) {
+        selected.push( i / 2 );
+        this.serie.selectPoint( i / 2, true, "selected" );
+      } else {
+        this.serie.unselectPoint( i / 2 );
+      }
 
     }
-  } );
 
-  return plugin;
- } ) ( build["./jquery"],build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
+    this.selected = selected;
+    this.emit( "selectionProcess", selected );
+  };
+
+  /**
+   * @memberof PluginSelectScatter
+   * @private
+   */
+  PluginSelectScatter.prototype.onMouseUp = function( graph, x, y, e ) {
+    this._path.setAttribute( 'display', 'none' );
+    this.emit( "selectionEnd", this.selected );
+  };
+
+  return PluginSelectScatter;
+
+ } ) ( build["./plugins/graph.plugin"],build["./graph.util"] );
 
 
 // Build: End source file (plugins/graph.plugin.selectScatter) 
@@ -7300,312 +7423,1151 @@ build['./plugins/graph.plugin.selectScatter'] = ( function( $, EventEmitter, uti
  * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
  */
 
-build['./plugins/graph.plugin.zoom'] = ( function( $, util, EventEmitter ) { 
+build['./plugins/graph.plugin.zoom'] = ( function( $, util, Plugin ) { 
+/** @global */ /** @ignore */
 
-  var plugin = function() {};
 
-  plugin.prototype = new EventEmitter();
+  /**
+   * @class PluginZoom
+   * @implements Plugin
+   */
+  var PluginZoom = function() {};
 
-  $.extend( plugin.prototype, {
+  PluginZoom.prototype = new Plugin();
 
-    init: function( graph, options ) {
+  /**
+   * Init method
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.init = function( graph, options ) {
 
-      this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
-      this._zoomingSquare = document.createElementNS( graph.ns, 'rect' );
-      this._zoomingSquare.setAttribute( 'display', 'none' );
+    this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
+    this._zoomingSquare = document.createElementNS( graph.ns, 'rect' );
+    this._zoomingSquare.setAttribute( 'display', 'none' );
 
-      util.setAttributeTo( this._zoomingSquare, {
-        'display': 'none',
-        'fill': 'rgba(171,12,12,0.2)',
-        'stroke': 'rgba(171,12,12,1)',
-        'shape-rendering': 'crispEdges',
-        'x': 0,
-        'y': 0,
-        'height': 0,
-        'width': 0
-      } );
+    util.setAttributeTo( this._zoomingSquare, {
+      'display': 'none',
+      'fill': 'rgba(171,12,12,0.2)',
+      'stroke': 'rgba(171,12,12,1)',
+      'shape-rendering': 'crispEdges',
+      'x': 0,
+      'y': 0,
+      'height': 0,
+      'width': 0
+    } );
 
-      this.options = options;
-      this.graph = graph;
-      graph.dom.appendChild( this._zoomingGroup );
-      this._zoomingGroup.appendChild( this._zoomingSquare );
-    },
+    this.options = options;
+    this.graph = graph;
+    graph.dom.appendChild( this._zoomingGroup );
+    this._zoomingGroup.appendChild( this._zoomingSquare );
+  };
 
-    onMouseDown: function( graph, x, y, e, mute ) {
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.onMouseDown = function( graph, x, y, e, mute ) {
 
-      var zoomMode = this.options.zoomMode;
+    var zoomMode = this.options.zoomMode;
 
-      if ( !zoomMode ) {
+    if ( !zoomMode ) {
+      return;
+    }
+
+    this._zoomingMode = zoomMode;
+
+    if ( x === undefined ) {
+      this._backedUpZoomMode = this._zoomingMode;
+      this._zoomingMode = 'y';
+      x = 0;
+    }
+
+    if ( y === undefined ) {
+      this._backedUpZoomMode = this._zoomingMode;
+      this._zoomingMode = 'x';
+      y = 0;
+    }
+
+    this._zoomingXStart = x;
+    this._zoomingYStart = y;
+    this.x1 = x - graph.getPaddingLeft();
+    this.y1 = y - graph.getPaddingTop();
+
+    this._zoomingSquare.setAttribute( 'width', 0 );
+    this._zoomingSquare.setAttribute( 'height', 0 );
+    this._zoomingSquare.setAttribute( 'display', 'block' );
+
+    switch ( this._zoomingMode ) {
+
+      case 'x':
+        this._zoomingSquare.setAttribute( 'y', graph.options.paddingTop );
+        this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift.bottom );
+        break;
+
+      case 'y':
+        this._zoomingSquare.setAttribute( 'x', graph.options.paddingLeft /* + this.shift[1]*/ );
+        this._zoomingSquare.setAttribute( 'width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/ );
+        break;
+
+      case 'forceY2':
+
+        this.y2 = graph.getYAxis().getPx( this.options.forcedY ) + graph.options.paddingTop;
+
+        break;
+
+    }
+
+    if ( this.options.onZoomStart && !mute ) {
+      this.options.onZoomStart( graph, x, y, e, mute );
+    }
+  };
+
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.onMouseMove = function( graph, x, y, e, mute ) {
+
+    //	this._zoomingSquare.setAttribute('display', 'none');
+
+    //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
+
+    switch ( this._zoomingMode ) {
+
+      case 'xy':
+        this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+        this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
+        this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+        this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
+
+        break;
+
+      case 'forceY2':
+
+        this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
+        this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
+        this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+        this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+
+        break;
+
+      case 'x':
+        this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
+        this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
+
+        break;
+
+      case 'y':
+        this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
+        this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
+        break;
+
+    }
+
+    if ( this.options.onZoomMove && !mute ) {
+
+      this.options.onZoomMove( graph, x, y, e, mute );
+    }
+    //		this._zoomingSquare.setAttribute('display', 'block');
+
+  };
+
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.onMouseUp = function( graph, x, y, e, mute ) {
+
+    this.removeZone();
+    var _x = x - graph.options.paddingLeft;
+    var _y = y - graph.options.paddingTop;
+
+    if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
+      return;
+    }
+
+    graph.cancelClick = true;
+
+    switch ( this._zoomingMode ) {
+      case 'x':
+        graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+        break;
+      case 'y':
+        graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+        break;
+      case 'xy':
+        graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+        graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+        break;
+
+      case 'forceY2':
+        graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+        graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+
+        break;
+    }
+
+    graph.prevent( true );
+    graph.redraw( true );
+    graph.drawSeries();
+
+    if ( this.options.onZoomEnd && !mute ) {
+      this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
+    }
+
+    if ( this._backedUpZoomMode ) {
+      this._zoomingMode = this._backedUpZoomMode;
+    }
+  };
+
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.removeZone = function() {
+    this._zoomingSquare.setAttribute( 'display', 'none' );
+  };
+
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.onMouseWheel = function( delta, e, options ) {
+
+    if ( !options ) {
+      options = {};
+    }
+
+    if ( !options.baseline ) {
+      options.baseline = 0;
+    }
+
+    var serie;
+    if ( ( serie = this.graph.getSelectedSerie() ) ) {
+
+      if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
         return;
       }
+    }
 
-      this._zoomingMode = zoomMode;
+    var doX = ( options.direction == 'x' );
+    var doY = !( options.direction !== 'y' );
 
-      if ( x === undefined ) {
-        this._backedUpZoomMode = this._zoomingMode;
-        this._zoomingMode = 'y';
-        x = 0;
-      }
+    this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
-      if ( y === undefined ) {
-        this._backedUpZoomMode = this._zoomingMode;
-        this._zoomingMode = 'x';
-        y = 0;
-      }
+    this.graph.drawSeries();
 
-      this._zoomingXStart = x;
-      this._zoomingYStart = y;
-      this.x1 = x - graph.getPaddingLeft();
-      this.y1 = y - graph.getPaddingTop();
+  };
 
-      this._zoomingSquare.setAttribute( 'width', 0 );
-      this._zoomingSquare.setAttribute( 'height', 0 );
-      this._zoomingSquare.setAttribute( 'display', 'block' );
+  /**
+   * @private
+   * @memberof PluginZoom
+   */
+  PluginZoom.prototype.onDblClick = function( graph, x, y, pref, e, mute ) {
 
-      switch ( this._zoomingMode ) {
+    this.emit( "beforeDblClick", {
+      graph: graph,
+      x: x,
+      y: y,
+      pref: pref,
+      e: e,
+      mute: mute
+    } );
 
-        case 'x':
-          this._zoomingSquare.setAttribute( 'y', graph.options.paddingTop );
-          this._zoomingSquare.setAttribute( 'height', graph.getDrawingHeight() - graph.shift.bottom );
-          break;
+    if ( graph.prevent( false ) ) {
+      return;
+    }
 
-        case 'y':
-          this._zoomingSquare.setAttribute( 'x', graph.options.paddingLeft /* + this.shift[1]*/ );
-          this._zoomingSquare.setAttribute( 'width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/ );
-          break;
+    var xAxis = this.graph.getXAxis(),
+      yAxis = this.graph.getYAxis();
 
-        case 'forceY2':
+    if ( pref.mode == 'xtotal' ) {
 
-          this.y2 = graph.getYAxis().getPx( this.options.forcedY ) + graph.options.paddingTop;
+      this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+      this.graph.draw();
 
-          break;
+    } else if ( pref.mode == 'ytotal' ) {
 
-      }
+      this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+      this.graph.draw();
 
-      if ( this.options.onZoomStart && !mute ) {
-        this.options.onZoomStart( graph, x, y, e, mute );
-      }
-    },
+    } else if ( pref.mode == 'total' ) {
 
-    onMouseMove: function( graph, x, y, e, mute ) {
+      this.graph.autoscaleAxes();
+      this.graph.draw();
 
-      //	this._zoomingSquare.setAttribute('display', 'none');
-
-      //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
-
-      switch ( this._zoomingMode ) {
-
-        case 'xy':
-          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
-          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
-          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
-          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
-
-          break;
-
-        case 'forceY2':
-
-          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
-          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
-          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
-          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
-
-          break;
-
-        case 'x':
-          this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
-          this._zoomingSquare.setAttribute( 'width', Math.abs( this._zoomingXStart - x ) );
-
-          break;
-
-        case 'y':
-          this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, y ) );
-          this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - y ) );
-          break;
-
-      }
-
-      if ( this.options.onZoomMove && !mute ) {
-
-        this.options.onZoomMove( graph, x, y, e, mute );
-      }
-      //		this._zoomingSquare.setAttribute('display', 'block');
-
-    },
-
-    onMouseUp: function( graph, x, y, e, mute ) {
-
-      this.removeZone();
-      var _x = x - graph.options.paddingLeft;
-      var _y = y - graph.options.paddingTop;
-
-      if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
-        return;
-      }
-
-      graph.cancelClick = true;
-
-      switch ( this._zoomingMode ) {
-        case 'x':
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-          break;
-        case 'y':
-          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
-          break;
-        case 'xy':
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
-          break;
-
-        case 'forceY2':
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-          graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
-
-          break;
-      }
-
-      graph.prevent( true );
-      graph.redraw( true );
-      graph.drawSeries();
-
-      if ( this.options.onZoomEnd && !mute ) {
-        this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
-      }
-
-      if ( this._backedUpZoomMode ) {
-        this._zoomingMode = this._backedUpZoomMode;
-      }
-    },
-
-    removeZone: function() {
-      this._zoomingSquare.setAttribute( 'display', 'none' );
-    },
-
-    onMouseWheel: function( delta, e, options ) {
-
-      if ( !options ) {
-        options = {};
-      }
-
-      if ( !options.baseline ) {
-        options.baseline = 0;
-      }
-
-      var serie;
-      if ( ( serie = this.graph.getSelectedSerie() ) ) {
-
-        if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
-          return;
-        }
-      }
-
-      var doX = ( options.direction == 'x' );
-      var doY = !( options.direction !== 'y' );
-
-      this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
-
-      this.graph.drawSeries();
-
-    },
-
-    onDblClick: function( graph, x, y, pref, e, mute ) {
-
-      this.emit( "beforeDblClick", {
-        graph: graph,
-        x: x,
-        y: y,
-        pref: pref,
-        e: e,
-        mute: mute
-      } );
-
-      if ( graph.prevent( false ) ) {
-        return;
-      }
-
-      var xAxis = this.graph.getXAxis(),
-        yAxis = this.graph.getYAxis();
-
-      if ( pref.mode == 'xtotal' ) {
-
-        this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-        this.graph.draw();
-
-      } else if ( pref.mode == 'ytotal' ) {
-
-        this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
-        this.graph.draw();
-
-      } else if ( pref.mode == 'total' ) {
-
-        this.graph.autoscaleAxes();
-        this.graph.draw();
-
-        // Nothing to do here
-        /*        this.graph._applyToAxes( function( axis ) {
+      // Nothing to do here
+      /*        this.graph._applyToAxes( function( axis ) {
 
           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
 
         }, null, true, true );
 */
-      } else {
+    } else {
 
-        x -= this.graph.options.paddingLeft;
-        y -= this.graph.options.paddingTop;
+      x -= this.graph.options.paddingLeft;
+      y -= this.graph.options.paddingTop;
 
-        var
-          xMin = xAxis.getActualMin(),
-          xMax = xAxis.getActualMax(),
-          xActual = xAxis.getVal( x ),
-          diffX = xMax - xMin,
+      var
+        xMin = xAxis.getCurrentMin(),
+        xMax = xAxis.getCurrentMax(),
+        xActual = xAxis.getVal( x ),
+        diffX = xMax - xMin,
 
-          yMin = yAxis.getActualMin(),
-          yMax = yAxis.getActualMax(),
-          yActual = yAxis.getVal( y ),
-          diffY = yMax - yMin;
+        yMin = yAxis.getCurrentMin(),
+        yMax = yAxis.getCurrentMax(),
+        yActual = yAxis.getVal( y ),
+        diffY = yMax - yMin;
 
-        if ( pref.mode == 'gradualXY' || pref.mode == 'gradualX' ) {
+      if ( pref.mode == 'gradualXY' || pref.mode == 'gradualX' ) {
 
-          var ratio = ( xActual - xMin ) / ( xMax - xMin );
-          xMin = Math.max( xAxis.getMinValue(), xMin - diffX * ratio );
-          xMax = Math.min( xAxis.getMaxValue(), xMax + diffX * ( 1 - ratio ) );
-          xAxis.setCurrentMin( xMin );
-          xAxis.setCurrentMax( xMax );
+        var ratio = ( xActual - xMin ) / ( xMax - xMin );
+        xMin = Math.max( xAxis.getMinValue(), xMin - diffX * ratio );
+        xMax = Math.min( xAxis.getMaxValue(), xMax + diffX * ( 1 - ratio ) );
+        xAxis.setCurrentMin( xMin );
+        xAxis.setCurrentMax( xMax );
 
-          if ( xAxis.options.onZoom ) {
-            xAxis.options.onZoom( xMin, xMax );
-          }
+        if ( xAxis.options.onZoom ) {
+          xAxis.options.onZoom( xMin, xMax );
         }
-
-        if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
-
-          var ratio = ( yActual - yMin ) / ( yMax - yMin );
-          yMin = Math.max( yAxis.getMinValue(), yMin - diffY * ratio );
-          yMax = Math.min( yAxis.getMaxValue(), yMax + diffY * ( 1 - ratio ) );
-          yAxis.setCurrentMin( yMin );
-          yAxis.setCurrentMax( yMax );
-
-          if ( yAxis.options.onZoom ) {
-            yAxis.options.onZoom( yMin, yMax );
-          }
-        }
-
-        this.graph.redraw();
-        this.graph.drawSeries();
       }
 
-      if ( this.options.onDblClick && !mute ) {
+      if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
 
-        this.options.onDblClick( x, y, pref, e );
+        var ratio = ( yActual - yMin ) / ( yMax - yMin );
+        yMin = Math.max( yAxis.getMinValue(), yMin - diffY * ratio );
+        yMax = Math.min( yAxis.getMaxValue(), yMax + diffY * ( 1 - ratio ) );
+        yAxis.setCurrentMin( yMin );
+        yAxis.setCurrentMax( yMax );
+
+        if ( yAxis.options.onZoom ) {
+          yAxis.options.onZoom( yMin, yMax );
+        }
       }
+
+      this.graph.redraw();
+      this.graph.drawSeries();
     }
-  } );
 
-  return plugin;
- } ) ( build["./jquery"],build["./graph.util"],build["./dependencies/eventEmitter/EventEmitter"],build["./plugins/ "] );
+    if ( this.options.onDblClick && !mute ) {
+
+      this.options.onDblClick( x, y, pref, e );
+    }
+  };
+
+  return PluginZoom;
+ } ) ( build["./jquery"],build["./graph.util"],build["./plugins/graph.plugin"],build["./plugins/ "] );
 
 
 // Build: End source file (plugins/graph.plugin.zoom) 
+
+
+
+;
+/* 
+ * Build: new source file 
+ * File name : series/graph.serie
+ * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.js
+ */
+
+build['./series/graph.serie'] = ( function( EventEmitter, util ) { 
+/** @global */ /** @ignore */
+
+
+  "use strict";
+
+  /** 
+   * Serie class to be extended
+   * @class Serie
+   * @static
+   */
+  var Serie = function() {}
+
+  Serie.prototype = new EventEmitter();
+
+  /** 
+   * Sets data to the serie
+   * @memberof Serie
+   * @param {(Object|Array|Array[])} data - The data of the serie
+   * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
+   * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
+   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
+   * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
+   * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
+   * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
+   */
+  Serie.prototype.setData = function( data, oneDimensional, type ) {
+
+    function isArray( arr ) {
+      var stringed = Object.prototype.toString.call( arr );
+      return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
+    }
+
+    var z = 0,
+      x,
+      dx,
+      oneDimensional = oneDimensional || false,
+      type = type || 'float',
+      arr,
+      total = 0,
+      continuous;
+
+    // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
+    // We shouldn't need that for the lines
+    //this.empty();
+
+    this.minX = +Infinity;
+    this.minY = +Infinity;
+    this.maxX = -Infinity;
+    this.maxY = -Infinity;
+
+    var isDataArray = isArray( data );
+
+    // Single object
+    var datas = [];
+
+    if ( !isDataArray && typeof data == 'object' ) {
+      data = [ data ];
+    } else if ( isDataArray && !isArray( data[ 0 ] ) ) { // [100, 103, 102, 2143, ...]
+      data = [ data ];
+      oneDimensional = true;
+    } else if ( !isDataArray ) {
+      util.throwError( "Data is not an array" );
+      return;
+    }
+
+    // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
+    var isData0Array = isArray( data[ 0 ] );
+
+    var isData00Array = isArray( data[ 0 ][ 0 ] );
+    if ( isData0Array && !oneDimensional && !isData00Array ) {
+      data = [ data ];
+    }
+
+    if ( isData0Array ) {
+      for ( var i = 0, k = data.length; i < k; i++ ) {
+
+        arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
+        datas.push( arr );
+        z = 0;
+
+        for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
+
+          if ( !oneDimensional ) {
+            arr[ z ] = ( data[ i ][ j ][ 0 ] );
+            this._checkX( arr[ z ] );
+            z++;
+            arr[ z ] = ( data[ i ][ j ][ 1 ] );
+            this._checkY( arr[ z ] );
+            z++;
+            total++;
+
+          } else { // 1D Array
+            arr[ z ] = data[ i ][ j ];
+            this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+
+            z++;
+            total += j % 2 ? 1 : 0;
+
+          }
+        }
+      }
+
+    } else if ( typeof data[ 0 ] == 'object' ) {
+
+      this.mode = 'x_equally_separated';
+
+      var number = 0,
+        numbers = [],
+        datas = [],
+        k = 0,
+        o;
+
+      if ( !data[ 0 ].y ) {
+        console.log( data );
+        util.throwError( "No y data" );
+        return;
+      }
+
+      for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
+        number += data[ i ].y.length;
+        continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
+        if ( !continuous ) {
+          datas.push( this._addData( type, number ) );
+          numbers.push( number );
+          number = 0;
+        }
+      }
+
+      this.xData = [];
+
+      number = 0, k = 0, z = 0;
+
+      for ( var i = 0, l = data.length; i < l; i++ ) {
+        x = data[ i ].x, dx = data[ i ].dx;
+
+        this.xData.push( {
+          x: x,
+          dx: dx
+        } );
+
+        o = data[ i ].y.length;
+        this._checkX( x );
+        this._checkX( x + dx * o );
+
+        for ( var j = 0; j < o; j++ ) {
+          /*datas[k][z] = (x + j * dx);
+						this._checkX(datas[k][z]);
+						z++;*/
+          // 30 june 2014. To save memory I suggest that we do not add this stupid data.
+
+          datas[ k ][ z ] = ( data[ i ].y[ j ] );
+          this._checkY( datas[ k ][ z ] );
+          z++;
+          total++;
+
+        }
+        number += data[ i ].y.length;
+
+        if ( numbers[ k ] == number ) {
+          k++;
+          number = 0;
+          z = 0;
+        }
+      }
+    }
+
+    // Determination of slots for low res spectrum
+    var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth(),
+      ws = [];
+
+    var min = this.graph.getDrawingWidth() * 4;
+    var max = total / 4;
+
+    var min = this.graph.getDrawingWidth();
+    var max = total;
+
+    this.data = datas;
+
+    if ( min > 0 ) {
+
+      while ( min < max ) {
+        ws.push( min );
+        min *= 4;
+      }
+
+      this.slots = ws;
+
+      if ( this.options.useSlots ) {
+
+        this.calculateSlots();
+      }
+    }
+
+    if ( this.isFlipped() ) {
+
+      var maxX = this.maxX;
+      var maxY = this.maxY;
+      var minX = this.minX;
+      var minY = this.minY;
+
+      this.maxX = maxY;
+      this.maxY = maxX;
+
+      this.minX = minY;
+      this.minY = minX;
+    }
+
+    this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
+    return this;
+  };
+
+  Serie.prototype._addData = function( type, howmany ) {
+
+    switch ( type ) {
+      case 'int':
+        var size = howmany * 4; // 4 byte per number (32 bits)
+        break;
+      case 'float':
+        var size = howmany * 8; // 4 byte per number (64 bits)
+        break;
+    }
+
+    var arr = new ArrayBuffer( size );
+
+    switch ( type ) {
+      case 'int':
+        return new Int32Array( arr );
+        break;
+
+      default:
+      case 'float':
+        return new Float64Array( arr );
+        break;
+    }
+  };
+
+  /**
+   * Returns the data in its current form
+   * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
+   * @memberof Serie
+   */
+  Serie.prototype.getData = function() {
+    return this.data;
+  };
+
+  /**
+   * Sets the options of the serie (no extension of default options)
+   * @param {Object} options - The options of the serie
+   * @memberof Serie
+   */
+  Serie.prototype.setOptions = function( options ) {
+    this.options = options ||  {};
+  };
+
+  /**
+   * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+   * @memberof Serie
+   */
+  Serie.prototype.kill = function() {
+
+    this.graph.removeSerieFromDom( this );
+
+    if ( this.picks && this.picks.length ) {
+      for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+        this.picks[ i ].kill();
+      }
+    }
+
+    this.graph._removeSerie( this );
+
+    if ( this.graph.legend ) {
+
+      this.graph.legend.update();
+    }
+  };
+
+  /**
+   * Hides the serie
+   * @memberof Serie
+   * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
+   * @returns {Serie} The current serie
+   */
+  Serie.prototype.hide = function( hideShapes ) {
+    this.hidden = true;
+    this.groupMain.setAttribute( 'display', 'none' );
+
+    this.getSymbolForLegend().setAttribute( 'opacity', 0.5 );
+    this.getTextForLegend().setAttribute( 'opacity', 0.5 );
+
+    this.hideImpl();
+
+    if ( hideShapes ) {
+      var shapes = this.graph.getShapesOfSerie( this );
+      for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        shapes[ i ].hide();
+      }
+    }
+    return this;
+  };
+
+  /**
+   * Shows the serie
+   * @memberof Serie
+   * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
+   * @returns {Serie} The current serie
+   */
+  Serie.prototype.show = function( showShapes ) {
+    this.hidden = false;
+    this.groupMain.setAttribute( 'display', 'block' );
+
+    this.getSymbolForLegend().setAttribute( 'opacity', 1 );
+    this.getTextForLegend().setAttribute( 'opacity', 1 );
+
+    this.showImpl();
+
+    this.draw();
+
+    if ( showShapes ) {
+      var shapes = this.graph.getShapesOfSerie( this );
+      for ( var i = 0, l = shapes.length; i < l; i++ ) {
+        shapes[ i ].show();
+      }
+    }
+
+    return this;
+  };
+
+  Serie.prototype.hideImpl = function() {};
+  Serie.prototype.showImpl = function() {};
+
+  /**
+   * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+   * @memberof Serie
+   * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
+   * @returns {Serie} The current serie
+   */
+  Serie.prototype.toggleDisplay = function() {
+
+    if ( !this.isShown() ) {
+      this.show();
+    } else {
+      this.hide();
+    }
+
+    return this;
+  };
+
+  /**
+   * Determines if the serie is currently visible
+   * @memberof Serie
+   * @returns {Boolean} The current visibility status of the serie
+   */
+  Serie.prototype.isShown = function() {
+    return !this.hidden;
+  };
+
+  /**
+   * Returns the x position of a certain value in pixels position, based on the serie's axis
+   * @memberof Serie
+   * @param {Number} val - Value to convert to pixels position
+   * @returns {Number} The x position in px corresponding to the x value
+   */
+  Serie.prototype.getX = function( val ) {
+    return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
+  };
+
+  /**
+   * Returns the y position of a certain value in pixels position, based on the serie's axis
+   * @memberof Serie
+   * @param {Number} val - Value to convert to pixels position
+   * @returns {Number} The y position in px corresponding to the y value
+   */
+  Serie.prototype.getY = function( val ) {
+    return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
+  };
+
+  /**
+   * Returns the selection state of the serie. Generic for most serie types
+   * @memberof Serie
+   * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
+   */
+  Serie.prototype.isSelected = function() {
+    return this.selected || ( this.selectionType !== "unselected" );
+  };
+
+  Serie.prototype._checkX = function( val ) {
+    this.minX = Math.min( this.minX, val );
+    this.maxX = Math.max( this.maxX, val );
+  };
+
+  Serie.prototype._checkY = function( val ) {
+    this.minY = Math.min( this.minY, val );
+    this.maxY = Math.max( this.maxY, val );
+  };
+
+  /**
+   * Getter for the serie name
+   * @memberof Serie
+   * @returns {String} The serie name
+   */
+  Serie.prototype.getName = function() {
+    return this.name;
+  };
+
+  /* AXIS */
+
+  /**
+   * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
+   * @memberof Serie
+   * @returns {Serie} The current serie
+   */
+  Serie.prototype.autoAxis = function() {
+
+    if ( this.isFlipped() ) {
+      this.setXAxis( this.graph.getYAxis() );
+      this.setYAxis( this.graph.getXAxis() );
+    } else {
+      this.setXAxis( this.graph.getXAxis() );
+      this.setYAxis( this.graph.getYAxis() );
+    }
+
+    // After axes have been assigned, the graph axes should update their min/max
+    this.graph.updateDataMinMaxAxes();
+    return this;
+  };
+
+  /**
+   * Assigns an x axis to the serie
+   * @memberof Serie
+   * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+   * @returns {Serie} The current serie
+   * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
+   */
+  Serie.prototype.setXAxis = function( axis ) {
+
+    if ( typeof axis == "number" )
+      this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
+    else
+      this.xaxis = axis;
+
+    return this;
+  };
+
+  /**
+   * Assigns an y axis to the serie
+   * @memberof Serie
+   * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+   * @returns {Serie} The current serie
+   * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
+   */
+  Serie.prototype.setYAxis = function( axis ) {
+    if ( typeof axis == "number" )
+      this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
+    else
+      this.yaxis = axis;
+
+    return this;
+  };
+
+  /**
+   * Assigns two axes to the serie
+   * @param {GraphAxis} axis1 - First axis to assign to the serie (x or y)
+   * @param {GraphAxis} axis2 - Second axis to assign to the serie (y or x)
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.setAxes = function() {
+
+    for ( var i = 0; i < 2; i++ ) {
+
+      if ( arguments[ i ] ) {
+        this[ ( arguments[ i ].isX() ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
+      }
+    }
+
+    return this;
+  };
+
+  /**
+   * @returns {GraphAxis} The x axis assigned to the serie
+   * @memberof Serie
+   */
+  Serie.prototype.getXAxis = function() {
+    return this.xaxis;
+  };
+
+  /**
+   * @returns {GraphAxis} The y axis assigned to the serie
+   * @memberof Serie
+   */
+  Serie.prototype.getYAxis = function() {
+    return this.yaxis;
+  };
+
+  /* */
+
+  /* DATA MIN MAX */
+
+  /**
+   * @returns {Number} Lowest x value of the serie's data
+   * @memberof Serie
+   */
+  Serie.prototype.getMinX = function() {
+    return this.minX;
+  };
+
+  /**
+   * @returns {Number} Highest x value of the serie's data
+   * @memberof Serie
+   */
+  Serie.prototype.getMaxX = function() {
+    return this.maxX;
+  };
+
+  /**
+   * @returns {Number} Lowest y value of the serie's data
+   * @memberof Serie
+   */
+  Serie.prototype.getMinY = function() {
+    return this.minY;
+  };
+
+  /**
+   * @returns {Number} Highest y value of the serie's data
+   * @memberof Serie
+   */
+  Serie.prototype.getMaxY = function() {
+    return this.maxY;
+  };
+
+  /**
+   * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+   * @returns {SVGElement}
+   * @memberof Serie
+   */
+  Serie.prototype.getSymbolForLegend = function() {
+
+    if ( !this.lineForLegend ) {
+
+      var line = document.createElementNS( this.graph.ns, 'line' );
+      this.applyLineStyle( line );
+
+      line.setAttribute( 'x1', 5 );
+      line.setAttribute( 'x2', 25 );
+      line.setAttribute( 'y1', 0 );
+      line.setAttribute( 'y2', 0 );
+
+      line.setAttribute( 'cursor', 'pointer' );
+
+      this.lineForLegend = line;
+    }
+
+    return this.lineForLegend;
+
+  };
+
+  /**
+   * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
+   * @see Serie#getSymbolForLegend
+   * @returns {SVGElement}
+   * @memberof Serie
+   */
+  Serie.prototype.setLegendSymbolStyle = function() {
+    this.applyLineStyle( this.getSymbolForLegend() );
+  };
+
+  /**
+   * @alias Serie#setLegendSymbolStyle
+   * @memberof Serie
+   */
+  Serie.prototype.updateStyle = function() {
+    this.setLegendSymbolStyle();
+  };
+
+  /**
+   * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+   * @returns {SVGElement}
+   * @memberof Serie
+   * @see Serie#getLabel
+   */
+  Serie.prototype.getTextForLegend = function() {
+
+    if ( !this.textForLegend ) {
+
+      var text = document.createElementNS( this.graph.ns, 'text' );
+      text.setAttribute( 'transform', 'translate(35, 3)' );
+      text.setAttribute( 'cursor', 'pointer' );
+      text.textContent = this.getLabel();
+
+      this.textForLegend = text;
+    }
+
+    return this.textForLegend;
+  };
+
+  /**
+   * @returns {Number} The current index of the serie
+   * @memberof Serie
+   */
+  Serie.prototype.getIndex = function() {
+    return this.graph.series.indexOf( this );
+  };
+
+  /**
+   * @returns {String} The label or, alternatively - the name of the serie
+   * @memberof Serie
+   */
+  Serie.prototype.getLabel = function() {
+    return this.options.label || this.name;
+  };
+
+  /**
+   * Sets the label of the serie. Note that this does not automatically updates the legend
+   * @param {String} label - The new label of the serie
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.setLabel = function( label ) {
+    this.options.label = label;
+
+    if ( this.textForLegend ) {
+      this.textForLegend.textContent = label;
+    }
+    return this;
+  };
+
+  /* FLIP */
+
+  /**
+   * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
+   * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.setFlip = function( flipped ) {
+    this.options.flip = flipped;
+    return this;
+  };
+
+  /**
+   * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
+   * @memberof Serie
+   */
+  Serie.prototype.getFlip = function() {
+    return this.options.flip;
+  };
+
+  /**
+   * @alias Serie#getFlip
+   * @memberof Serie
+   */
+  Serie.prototype.isFlipped = function() {
+    return this.options.flip;
+  };
+
+  /**
+   * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+   * @memberof Serie
+   * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
+   * @returns {Serie} The current serie
+   */
+  Serie.prototype.setLayer = function( layerIndex ) {
+    this.options.layer = parseInt( layerIndex ) ||  1;
+    return this;
+  };
+
+  /**
+   * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+   * @memberof Serie
+   * @returns {Nunber} The index of the layer into which the serie will be drawn
+   */
+  Serie.prototype.getLayer = function() {
+    return this.options.layer ||  1;
+  };
+
+  /**
+   * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
+   * @param {String} selectionType - The selection for which the style may have changed
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.styleHasChanged = function( selectionType ) {
+    this._changedStyles = this._changedStyles || {};
+
+    if ( selectionType === false ) {
+      for ( var i in this._changedStyles ) {
+        this._changedStyles[ i ] = false;
+      }
+
+    } else {
+      this._changedStyles[ selectionType ||  "unselected" ] = true;
+    }
+
+    return this;
+  };
+
+  /**
+   * Checks if the style has changed for a selection type
+   * @param {String} selectionType - The selection for which the style may have changed
+   * @returns {Boolean} <code>true</code> if the style has changed
+   * @private
+   * @memberof Serie
+   */
+  Serie.prototype.hasStyleChanged = function( selectionType ) {
+    this._changedStyles = this._changedStyles || {};
+    return this._changedStyles[ selectionType ||  "unselected" ];
+  };
+
+  /**
+   * Notifies jsGraph that the data of the serie has changed
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.dataHasChanged = function( arg ) {
+    this._dataHasChanged = arg === undefined || arg;
+    return this;
+  };
+
+  /**
+   * Checks if the data has changed
+   * @returns {Boolean} <code>true</code> if the data has changed
+   * @private
+   * @memberof Serie
+   */
+  Serie.prototype.hasDataChanged = function() {
+    return this._dataHasChanged;
+  };
+
+  /**
+   * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
+   * @param {String} prop - The property
+   * @param value - The value
+   * @returns {Serie} The current serie
+   * @see Serie#getInfo
+   * @memberof Serie
+   */
+  Serie.prototype.setInfo = function( prop, value ) {
+    this.infos = this.infos || {};
+    this.infos[ prop ] = value;
+    return this;
+  };
+
+  /**
+   * Retrives an information value from its key
+   * @param {String} prop - The property
+   * @returns The value associated to the prop parameter
+   * @see Serie#setInfo
+   * @memberof Serie
+   */
+  Serie.prototype.getInfo = function( prop, value ) {
+    return ( this.infos || {} )[ prop ];
+  };
+
+  /**
+   * @deprecated
+   * @memberof Serie
+   */
+  Serie.prototype.setAdditionalData = function( data ) {
+    this.additionalData = data;
+    return this;
+  };
+
+  /**
+   * @deprecated
+   * @memberof Serie
+   */
+  Serie.prototype.getAdditionalData = function() {
+    return this.additionalData;
+  };
+
+  /**
+   * Flags the serie as selected
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.select = function() {
+    this.selected = true;
+    return this;
+  };
+
+  /**
+   * Flags the serie as unselected
+   * @returns {Serie} The current serie
+   * @memberof Serie
+   */
+  Serie.prototype.unselect = function() {
+    this.selected = false;
+    return this;
+  };
+
+  return Serie;
+ } ) ( build["./dependencies/eventEmitter/EventEmitter"],build["./graph.util"] );
+
+
+// Build: End source file (series/graph.serie) 
 
 
 
@@ -7616,7 +8578,9 @@ build['./plugins/graph.plugin.zoom'] = ( function( $, util, EventEmitter ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
  */
 
-build['./series/slotoptimizer'] = ( function( ) { 
+build['./series/slotoptimizer'] = ( function( util ) { 
+/** @global */ /** @ignore */
+
 
   var slotWorker;
   var queue = {};
@@ -7685,22 +8649,13 @@ build['./series/slotoptimizer'] = ( function( ) {
     }
   }
 
-  // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-  function guid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-      var r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : ( r & 0x3 | 0x8 );
-      return v.toString( 16 );
-    } );
-  }
-
   return function( toOptimize ) {
 
     if ( !slotWorker ) {
       createWorker();
     }
 
-    var requestId = guid();
+    var requestId = util.guid();
     toOptimize._queueId = requestId;
     queue[ requestId ] = $.Deferred();
 
@@ -7708,7 +8663,7 @@ build['./series/slotoptimizer'] = ( function( ) {
     return queue[ requestId ];
   }
 
- } ) (  );
+ } ) ( build["./graph.util"] );
 
 
 // Build: End source file (series/slotoptimizer) 
@@ -7722,1810 +8677,1829 @@ build['./series/slotoptimizer'] = ( function( ) {
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
  */
 
-build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, SlotOptimizer, util ) { 
+build['./series/graph.serie.line'] = ( function( SerieLineNonInstanciable, SlotOptimizer, util ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
   /** 
-   * Represents a serie of the type "line"
+   * Serie line
    * @class SerieLine
+   * @example graph.newSerie( name, options, "line" );
+   * @see Graph#newSerie
    * @augments Serie
    */
-  var GraphSerieLine = function() {}
-  $.extend( GraphSerieLine.prototype, GraphSerieLineNonInstanciable.prototype, {
+  var SerieLine = function() {}
 
-    /**
-     * @name SerieLineDefaultOptions
-     * @object
-     * @private
-     * @static
-     * @prop {String} title - Title of the graph
-     * @prop {Number} paddingTop - The top padding
-     * @prop {Number} paddingLeft - The left padding
-     */
-    defaults: {
-      lineColor: 'black',
-      lineStyle: 1,
-      flip: false,
-      label: "",
-      lineWidth: 1,
+  SerieLine.prototype = new SerieLineNonInstanciable();
 
-      markers: false,
-      trackMouse: false,
-      trackMouseLabel: false,
-      trackMouseLabelRouding: 1,
-      lineToZero: false,
+  /**
+   * Initializes the serie
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.init = function( graph, name, options ) {
 
-      autoPeakPicking: false,
-      autoPeakPickingNb: 4,
-      autoPeakPickingMinDistance: 10,
-      autoPeakPickingFormat: false,
-      autoPeakPickingAllowAllY: false,
+    var self = this;
 
-      selectableOnClick: true,
+    this.selectionType = "unselected";
+    this.markerFamilies = {};
 
-      markersIndependant: false
-    },
+    this.graph = graph;
+    this.name = name;
 
-    init: function( graph, name, options ) {
+    this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) ); // Creates options
+    util.mapEventEmission( this.options, this ); // Register events
 
-      var self = this;
+    // Creates an empty style variable
+    this.styles = {};
 
-      this.selectionType = "unselected";
-      this.markerFamilies = {};
+    // Unselected style
+    this.styles.unselected = {
+      lineColor: this.options.lineColor,
+      lineStyle: this.options.lineStyle,
+      markers: this.options.markers
+    };
 
-      this.graph = graph;
-      this.name = name;
+    this.styles.selected = {
+      lineWidth: 3
+    };
 
-      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) ); // Creates options
-      util.mapEventEmission( this.options, this ); // Register events
+    this.extendStyles();
 
-      // Creates an empty style variable
-      this.styles = {};
+    if ( this.options.markers ) {
+      this.setMarkers( this.options.markers, "unselected" );
+    }
 
-      // Unselected style
-      this.styles.unselected = {
-        lineColor: this.options.lineColor,
-        lineStyle: this.options.lineStyle,
-        markers: this.options.markers
-      };
+    this.shown = true;
 
-      this.styles.selected = {
-        lineWidth: 3
-      };
-
-      this.extendStyles();
-
-      this.shown = true;
-
-      this.data = [];
-      this._isMinOrMax = {
-        x: {
-          min: false,
-          max: false
-        },
-        y: {
-          min: false,
-          max: false
-        }
-      };
-
-      // Optimize is no markerPoints => save loops
-      //      this.markerPoints = {};
-
-      this.groupLines = document.createElementNS( this.graph.ns, 'g' );
-      this.domMarker = document.createElementNS( this.graph.ns, 'path' );
-      this.domMarker.style.cursor = 'pointer';
-
-      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-      this.additionalData = {};
-
-      this.marker = document.createElementNS( this.graph.ns, 'circle' );
-      this.marker.setAttribute( 'fill', 'black' );
-      this.marker.setAttribute( 'r', 3 );
-      this.marker.setAttribute( 'display', 'none' );
-
-      this.markerLabel = document.createElementNS( this.graph.ns, 'text' );
-      this.markerLabelSquare = document.createElementNS( this.graph.ns, 'rect' );
-      this.markerLabelSquare.setAttribute( 'fill', 'white' );
-      this.domMarkerHover = {};
-      this.domMarkerSelect = {};
-      this.markerHovered = 0;
-      this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
-
-      this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
-      //this.scale = 1;
-      //this.shift = 0;
-      this.lines = [];
-
-      this.groupMain.appendChild( this.groupLines );
-      this.groupMain.appendChild( this.groupLabels );
-      this.groupMain.appendChild( this.marker );
-
-      this.groupMain.appendChild( this.groupMarkerSelected );
-      this.groupMain.appendChild( this.markerLabelSquare );
-      this.groupMain.appendChild( this.markerLabel );
-
-      this.independantMarkers = [];
-
-      if ( this.initExtended1 ) {
-        this.initExtended1();
+    this.data = [];
+    this._isMinOrMax = {
+      x: {
+        min: false,
+        max: false
+      },
+      y: {
+        min: false,
+        max: false
       }
+    };
 
-      if ( this.options.autoPeakPicking ) {
+    // Optimize is no markerPoints => save loops
+    //      this.markerPoints = {};
 
-        this.picks = this.picks || [];
+    this.groupLines = document.createElementNS( this.graph.ns, 'g' );
+    this.domMarker = document.createElementNS( this.graph.ns, 'path' );
+    this.domMarker.style.cursor = 'pointer';
 
-        for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
+    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+    this.additionalData = {};
 
-          var shape = this.graph.newShape( {
+    this.marker = document.createElementNS( this.graph.ns, 'circle' );
+    this.marker.setAttribute( 'fill', 'black' );
+    this.marker.setAttribute( 'r', 3 );
+    this.marker.setAttribute( 'display', 'none' );
 
-            type: 'label',
-            label: {
-              text: "",
-              position: {
-                x: 0
-              },
-              anchor: 'middle',
+    this.markerLabel = document.createElementNS( this.graph.ns, 'text' );
+    this.markerLabelSquare = document.createElementNS( this.graph.ns, 'rect' );
+    this.markerLabelSquare.setAttribute( 'fill', 'white' );
+    this.domMarkerHover = {};
+    this.domMarkerSelect = {};
+    this.markerHovered = 0;
+    this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
+    this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
+    //this.scale = 1;
+    //this.shift = 0;
+    this.lines = [];
+
+    this.groupMain.appendChild( this.groupLines );
+    this.groupMain.appendChild( this.groupLabels );
+    this.groupMain.appendChild( this.marker );
+
+    this.groupMain.appendChild( this.groupMarkerSelected );
+    this.groupMain.appendChild( this.markerLabelSquare );
+    this.groupMain.appendChild( this.markerLabel );
+
+    this.independantMarkers = [];
+
+    if ( this.initExtended1 ) {
+      this.initExtended1();
+    }
+
+    if ( this.options.autoPeakPicking ) {
+
+      this.picks = this.picks || [];
+
+      for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
+
+        var shape = this.graph.newShape( {
+
+          type: 'label',
+          label: {
+            text: "",
+            position: {
+              x: 0
             },
+            anchor: 'middle',
 
-            selectable: true,
+          },
 
-            shapeOptions: {
-              minPosY: 15
-            }
+          selectable: true,
 
-          } );
-
-          shape.setSerie( self );
-          self.picks.push( shape );
-
-        }
-
-      }
-
-      this.groupLines.addEventListener( 'click', function( e ) {
-
-        if ( self.options.selectableOnClick ) {
-
-          if ( self.isSelected() ) {
-
-            self.graph.unselectSerie( self );
-
-          } else {
-            self.graph.selectSerie( self );
+          shapeOptions: {
+            minPosY: 15
           }
+
+        } );
+
+        shape.setSerie( self );
+        self.picks.push( shape );
+
+      }
+
+    }
+
+    this.groupLines.addEventListener( 'click', function( e ) {
+
+      if ( self.options.selectableOnClick ) {
+
+        if ( self.isSelected() ) {
+
+          self.graph.unselectSerie( self );
+
+        } else {
+          self.graph.selectSerie( self );
         }
-      } );
-
-    },
-
-    /**
-     * Sets the options of the serie
-     * @see SerieLineDefaultOptions
-     * @memberof SerieLine.prototype
-     * @param {Object} options - A object containing the options to set
-     * @return {Serie} The current serie
-     */
-    setOptions: function( options ) {
-      this.options = $.extend( true, {}, GraphSerieLine.prototype.defaults, ( options || {} ) );
-      // Unselected style
-      this.styles.unselected = {
-        lineColor: this.options.lineColor,
-        lineStyle: this.options.lineStyle,
-        markers: this.options.markers
-      };
-
-      this.applyLineStyles();
-      return this;
-    },
-
-    calculateSlots: function() {
-
-      var self = this;
-      this.slotsData = {};
-      for ( var i = 0, l = this.slots.length; i < l; i++ ) {
-        this.calculateSlot( this.slots[ i ], i );
       }
-    },
+    } );
 
-    slotCalculator: function( slot, slotNumber ) {
+  };
 
-      return SlotOptimizer( {
+  /**
+   * @name SerieLineDefaultOptions
+   * @object
+   * @static
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.defaults = {
 
-        min: this.minX,
-        max: this.maxX,
-        data: this.data,
-        slot: slot,
-        slotNumber: slotNumber,
-        flip: this.getFlip()
+    lineColor: 'black',
+    lineStyle: 1,
+    flip: false,
+    label: "",
+    lineWidth: 1,
 
-      } );
+    markers: false,
+    trackMouse: false,
+    trackMouseLabel: false,
+    trackMouseLabelRouding: 1,
+    lineToZero: false,
 
-    },
+    autoPeakPicking: false,
+    autoPeakPickingNb: 4,
+    autoPeakPickingMinDistance: 10,
+    autoPeakPickingFormat: false,
+    autoPeakPickingAllowAllY: false,
 
-    calculateSlot: function( slot, slotNumber ) {
-      var self = this;
-      this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
-      this.slotsData[ slot ].pipe( function( data ) {
+    selectableOnClick: true,
 
-        self.slotsData[ slot ] = data;
-        return data;
-      } );
+    markersIndependant: false
+  };
 
-    },
+  /**
+   * Sets the options of the serie
+   * @see SerieLineDefaultOptions
+   * @param {Object} options - A object containing the options to set
+   * @return {SerieLine} The current serie
+   * @memberof SerieLine
+   
+*/
+  SerieLine.prototype.setOptions = function( options ) {
+    this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
+    // Unselected style
+    this.styles.unselected = {
+      lineColor: this.options.lineColor,
+      lineStyle: this.options.lineStyle,
+      markers: this.options.markers
+    };
 
-    onMouseOverMarker: function( e, index ) {
+    this.applyLineStyles();
+    return this;
+  };
 
-      var toggledOn = this.toggleMarker( index, true, true );
-      if ( this.options.onMouseOverMarker ) {
+  SerieLine.prototype.calculateSlots = function() {
 
-        this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+    var self = this;
+    this.slotsData = {};
+    for ( var i = 0, l = this.slots.length; i < l; i++ ) {
+      this.calculateSlot( this.slots[ i ], i );
+    }
+  };
+
+  SerieLine.prototype.slotCalculator = function( slot, slotNumber ) {
+
+    return SlotOptimizer( {
+
+      min: this.minX,
+      max: this.maxX,
+      data: this.data,
+      slot: slot,
+      slotNumber: slotNumber,
+      flip: this.getFlip()
+
+    } );
+
+  };
+
+  SerieLine.prototype.calculateSlot = function( slot, slotNumber ) {
+    var self = this;
+    this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
+    this.slotsData[ slot ].pipe( function( data ) {
+
+      self.slotsData[ slot ] = data;
+      return data;
+    } );
+  };
+
+  SerieLine.prototype.onMouseOverMarker = function( e, index ) {
+
+    var toggledOn = this.toggleMarker( index, true, true );
+    if ( this.options.onMouseOverMarker ) {
+
+      this.options.onMouseOverMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+    }
+  };
+
+  SerieLine.prototype.onMouseOutMarker = function( e, index ) {
+    this.markersOffHover();
+    if ( this.options.onMouseOutMarker ) {
+      this.options.onMouseOutMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+    }
+  };
+
+  /**
+   * Selects one of the markers of the serie
+   * @param {Number} index - The point index to select (starting at 0)
+   * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
+   * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
+   * @returns {Boolean} The new state of the marker
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.toggleMarker = function( index, force, hover ) {
+
+    var i = index[ 0 ],
+      k = index[ 1 ] || 0;
+
+    index = index.join();
+
+    var _on;
+    if ( typeof force === 'undefined' ) {
+      _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+    }
+    var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
+
+    if ( _on || force === true ) {
+
+      if ( !el[ index ] ) {
+
+        var dom = document.createElementNS( this.graph.ns, 'path' );
+
+        this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
+        this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
+        this.groupMarkerSelected.appendChild( dom );
+
+      } else {
+        dom = el[ index ];
       }
-    },
 
-    onMouseOutMarker: function( e, index ) {
-      this.markersOffHover();
-      if ( this.options.onMouseOutMarker ) {
-        this.options.onMouseOutMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, [ this.data[ index[ 1 ] ][ index[ 0 ] * 2 ], this.data[ index[ 1 ] ][ index[ 0 ] * 2 + 1 ] ] );
+      var x, y;
+
+      if ( this.mode == 'x_equally_separated' ) {
+        x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
+        y = this.data[ k ][ i ];
+      } else {
+        x = this.data[ k ][ i * 2 ];
+        y = this.data[ k ][ i * 2 + 1 ];
       }
-    },
 
-    /**
-     * Selects one of the markers of the serie
-     * @memberof SerieLine.prototype
-     * @param {Number} index - The point index to select (starting at 0)
-     * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
-     * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
-     * @returns {Boolean} The new state of the marker
-     */
-    toggleMarker: function( index, force, hover ) {
+      x = this.getX( x );
+      y = this.getY( y );
 
-      var i = index[ 0 ],
-        k = index[ 1 ] || 0;
+      dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
 
-      index = index.join();
-
-      var _on;
-      if ( typeof force === 'undefined' ) {
-        _on = !hover ? !this.domMarkerSelect[ index ] : !this.domMarkerHover[ index ];
+      if ( hover ) {
+        this.markerHovered++;
       }
-      var el = this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ];
 
-      if ( _on || force === true ) {
+    } else if ( !_on || force === false ) {
+
+      if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
 
         if ( !el[ index ] ) {
-
-          var dom = document.createElementNS( this.graph.ns, 'path' );
-
-          this.setMarkerStyleTo( dom, this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ] );
-          this[ 'domMarker' + ( hover ? 'Hover' : 'Select' ) ][ index ] = dom;
-          this.groupMarkerSelected.appendChild( dom );
-
-        } else {
-          dom = el[ index ];
+          return;
         }
 
-        var x, y;
+        this.groupMarkerSelected.removeChild( el[ index ] );
 
-        if ( this.mode == 'x_equally_separated' ) {
-          x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
-          y = this.data[ k ][ i ];
-        } else {
-          x = this.data[ k ][ i * 2 ];
-          y = this.data[ k ][ i * 2 + 1 ];
-        }
+        delete el[ index ];
 
-        x = this.getX( x );
-        y = this.getY( y );
-
-        dom.setAttribute( 'd', "M " + x + " " + y + " " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ this.getMarkerCurrentFamily( i ) ], 1 ) );
-
-        if ( hover ) {
-          this.markerHovered++;
-        }
-
-      } else if ( !_on || force === false ) {
-
-        if ( ( hover && this.domMarkerHover[ index ] && !this.domMarkerSelect[ index ] ) || this.domMarkerSelect[ index ] ) {
-
-          if ( !el[ index ] ) {
-            return;
-          }
-
-          this.groupMarkerSelected.removeChild( el[ index ] );
-
-          delete el[ index ];
-
-          if ( hover )
-            this.markerHovered--;
-        }
-
+        if ( hover )
+          this.markerHovered--;
       }
 
-      return _on;
-    },
+    }
 
-    /**
-     * Toggles off markers that have the hover mode "on"
-     * @memberof SerieLine.prototype
-     * @returns {Serie} The current serie
-     */
-    markersOffHover: function() {
+    return _on;
+  };
 
-      for ( var i in this.domMarkerHover ) {
-        this.toggleMarker( i.split( ',' ), false, true );
-      }
-      return this;
-    },
+  /**
+   * Toggles off markers that have the hover mode "on"
+   * @returns {SerieLine} The current serie
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.markersOffHover = function() {
 
-    /**
-     * Toggles off markers that have the select mode "on"
-     * @memberof SerieLine.prototype
-     * @returns {Serie} The current serie
-     */
-    markersOffSelect: function() {
+    for ( var i in this.domMarkerHover ) {
+      this.toggleMarker( i.split( ',' ), false, true );
+    }
+    return this;
+  };
 
-      for ( var i in this.domMarkerSelect ) {
-        this.toggleMarker( i.split( ',' ), false, false );
-      }
-      return this;
-    },
+  /**
+   * Toggles off markers that have the select mode "on"
+   * @returns {SerieLine} The current serie
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.markersOffSelect = function() {
 
-    onClickOnMarker: function( e, index ) {
+    for ( var i in this.domMarkerSelect ) {
+      this.toggleMarker( i.split( ',' ), false, false );
+    }
+    return this;
+  };
 
-      var toggledOn = this.toggleMarker( index );
+  SerieLine.prototype.onClickOnMarker = function( e, index ) {
 
-      if ( toggledOn && this.options.onSelectMarker ) {
-        this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
-      }
+    var toggledOn = this.toggleMarker( index );
 
-      if ( !toggledOn && this.options.onUnselectMarker ) {
-        this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
-      }
+    if ( toggledOn && this.options.onSelectMarker ) {
+      this.options.onSelectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+    }
 
-      if ( this.options.onToggleMarker ) {
-        this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
-      }
-    },
+    if ( !toggledOn && this.options.onUnselectMarker ) {
+      this.options.onUnselectMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false );
+    }
 
-    _getMarkerIndexFromEvent: function( e ) {
-      var px = this.graph._getXY( e );
+    if ( this.options.onToggleMarker ) {
+      this.options.onToggleMarker( index, this.infos ? ( this.infos[ index[ 0 ] ] ||  false ) : false, toggledOn );
+    }
+  };
 
-      //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
-      return this.searchIndexByPxXY( ( px.x - this.graph.getPaddingLeft() ), ( px.y - this.graph.getPaddingTop() ) );
+  SerieLine.prototype._getMarkerIndexFromEvent = function( e ) {
+    var px = this.graph._getXY( e );
 
-    },
+    //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
+    return this.searchIndexByPxXY( ( px.x - this.graph.getPaddingLeft() ), ( px.y - this.graph.getPaddingTop() ) );
+  };
 
-    onMouseWheel: function() {},
+  SerieLine.prototype.onMouseWheel = function() {};
 
-    /**
-     * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
-     * @returns {Serie} The current serie
-     * @memberof SerieLine.prototype
-     */
-    empty: function() {
+  /**
+   * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
+   * @returns {SerieLine} The current serie
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.empty = function() {
 
-      for ( var i = 0, l = this.lines.length; i < l; i++ ) {
-        this.groupLines.removeChild( this.lines[ i ] );
-      }
-      this.lines = [];
+    for ( var i = 0, l = this.lines.length; i < l; i++ ) {
+      this.groupLines.removeChild( this.lines[ i ] );
+    }
+    this.lines = [];
 
-      return this;
-    },
+    return this;
+  };
 
-    /**
-     * Applies a selection to the serie
-     * @param {String} [ selectionType = "selected" ] - The selection name
-     * @returns {Serie} The current serie
-     * @memberof SerieLine.prototype
-     * @see SerieLine#unselect
-     */
-    select: function( selectionType ) {
+  /**
+   * Applies a selection to the serie
+   * @param {String} [ selectionType = "selected" ] - The selection name
+   * @returns {SerieLine} The current serie
+   * @see SerieLine#unselect
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.select = function( selectionType ) {
 
-      selectionType = selectionType ||  "selected";
+    selectionType = selectionType ||  "selected";
 
-      this.selected = selectionType !== "unselected";
+    this.selected = selectionType !== "unselected";
 
-      if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
-        this.selectionType = selectionType;
+    if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+      this.selectionType = selectionType;
 
-        this.draw(); // Drawing is absolutely required here
-        this.applyLineStyles();
+      this.draw(); // Drawing is absolutely required here
+      this.applyLineStyles();
+    } else {
+      this.selectionType = selectionType;
+      this.applyLineStyles();
+    }
+
+    this.applyLineStyle( this.getSymbolForLegend() );
+    return this;
+  };
+
+  /**
+   * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
+   * @returns {SerieLine} The current serie
+   * @see SerieLine#select
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.unselect = function() {
+
+    this.selected = false;
+    return this.select( "unselected" );
+  };
+
+  /**
+   * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
+   * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
+   * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
+   * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+   * @param {Object} options - A object containing the options to set
+   * @return {SerieLine} The newly created zone serie
+   * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
+   * zone.setLineColor('red');
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.degrade = function( pxPerP, options ) {
+
+    var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
+
+    this.degradationPx = pxPerP;
+
+    if ( !serie ) {
+      return;
+    }
+
+    serie.setData( [] );
+
+    serie.setXAxis( this.getXAxis() );
+    serie.setYAxis( this.getYAxis() );
+
+    this.degradationSerie = serie;
+
+    return serie;
+  };
+
+  SerieLine.prototype.drawInit = function() {
+
+    var data, xData;
+
+    this.currentLineId = 0;
+    this.counter = 0;
+    this._drawn = true;
+    this.currentLine = "";
+
+    // Degradation
+    if ( this.degradationPx ) {
+
+      data = getDegradedData( this );
+      xData = data[ 1 ];
+      data = data[ 0 ];
+      this._dataToUse = data;
+      this._xDataToUse = xData;
+
+    } else {
+
+      this._dataToUse = this.data;
+      this._xDataToUse = this.xData;
+    }
+
+    this._optimizeMonotoneous = this.isXMonotoneous();
+
+    this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
+
+    this._optimizeBreak;
+    this._optimizeBuffer;
+
+    // Slots
+    this._slotToUse = false;
+    if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
+      if ( this.isFlipped() ) {
+        var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() );
       } else {
-        this.selectionType = selectionType;
-        this.applyLineStyles();
+        var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() );
       }
 
-      this.applyLineStyle( this.getSymbolForLegend() );
-      return this;
-    },
-
-    /**
-     * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
-     * @returns {Serie} The current serie
-     * @memberof SerieLine.prototype
-     * @see SerieLine#select
-     */
-    unselect: function() {
-
-      this.selected = false;
-      return this.select( "unselected" );
-    },
-
-    /**
-     * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
-     * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-     * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-     * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
-     * @memberof SerieLine.prototype
-     * @param {Object} options - A object containing the options to set
-     * @return {Serie} The newly created zone serie
-     * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
-     * zone.setLineColor('red');
-     */
-    degrade: function( pxPerP, options ) {
-
-      var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
-
-      this.degradationPx = pxPerP;
-
-      if ( !serie ) {
-        return;
+      for ( var y = 0, z = this.slots.length; y < z; y++ ) {
+        if ( slot < this.slots[ y ] ) {
+          this._slotToUse = this.slotsData[ this.slots[ y ] ];
+          this._slotId = y;
+          break;
+        }
       }
+    }
 
-      serie.setData( [] );
+    this.detectedPeaks = [];
+    this.lastYPeakPicking = false;
 
-      serie.setXAxis( this.getXAxis() );
-      serie.setYAxis( this.getYAxis() );
+  };
 
-      this.degradationSerie = serie;
+  SerieLine.prototype.removeLinesGroup = function() {
+    this._afterLinesGroup = this.groupLines.nextSibling;
+    this.groupMain.removeChild( this.groupLines );
+  };
 
-      return serie;
-    },
+  SerieLine.prototype.insertLinesGroup = function() {
 
-    drawInit: function() {
+    if ( !this._afterLinesGroup ) {
+      throw "Could not find group after lines to insertion."
+    }
 
-      var data, xData;
+    this.groupMain.insertBefore( this.groupLines, this._afterLinesGroup );
+    this._afterLinesGroup = false;
+  };
 
-      this.currentLineId = 0;
-      this.counter = 0;
-      this._drawn = true;
-      this.currentLine = "";
+  SerieLine.prototype.removeExtraLines = function() {
 
-      // Degradation
-      if ( this.degradationPx ) {
+    var i = this.currentLineId,
+      l = this.lines.length;
 
-        data = getDegradedData( this );
-        xData = data[ 1 ];
-        data = data[ 0 ];
-        this._dataToUse = data;
-        this._xDataToUse = xData;
+    for ( ; i < l; i++ ) {
+      this.groupLines.removeChild( this.lines[ i ] );
+    }
+
+    this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
+    this.currentLineId = 0;
+  };
+
+  SerieLine.prototype.detectPeaks = function( x, y ) {
+
+    if ( !this.options.autoPeakPicking ) {
+      return;
+    }
+
+    if ( !this.options.lineToZero ) {
+
+      if ( !this.lastYPeakPicking ) {
+
+        this.lastYPeakPicking = [ y, x ];
 
       } else {
 
-        this._dataToUse = this.data;
-        this._xDataToUse = this.xData;
-      }
+        if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
 
-      this._optimizeMonotoneous = this.isXMonotoneous();
+          this.lastYPeakPicking = [ y, x ]
 
-      this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
+        } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
 
-      this._optimizeBreak;
-      this._optimizeBuffer;
+          if ( this.lookForMinima ) {
+            this.lookForMinima = false;
+            this.lookForMaxima = true;
 
-      // Slots
-      this._slotToUse = false;
-      if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
-        if ( this.isFlipped() ) {
-          var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getActualMax() - this.getYAxis().getActualMin() );
-        } else {
-          var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getActualMax() - this.getXAxis().getActualMin() );
-        }
+          } else {
 
-        for ( var y = 0, z = this.slots.length; y < z; y++ ) {
-          if ( slot < this.slots[ y ] ) {
-            this._slotToUse = this.slotsData[ this.slots[ y ] ];
-            this._slotId = y;
-            break;
+            this.lookForMinima = true;
+            this.lookForMaxima = false;
+
+            this.detectedPeaks.push( this.lastYPeakPicking );
+            this.lastYPeakPicking = false;
           }
-        }
-      }
-
-      this.detectedPeaks = [];
-      this.lastYPeakPicking = false;
-
-    },
-
-    removeLinesGroup: function() {
-      this._afterLinesGroup = this.groupLines.nextSibling;
-      this.groupMain.removeChild( this.groupLines );
-    },
-
-    insertLinesGroup: function() {
-
-      if ( !this._afterLinesGroup ) {
-        throw "Could not find group after lines to insertion."
-      }
-
-      this.groupMain.insertBefore( this.groupLines, this._afterLinesGroup );
-      this._afterLinesGroup = false;
-    },
-
-    removeExtraLines: function() {
-
-      var i = this.currentLineId,
-        l = this.lines.length;
-
-      for ( ; i < l; i++ ) {
-        this.groupLines.removeChild( this.lines[ i ] );
-      }
-
-      this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
-      this.currentLineId = 0;
-    },
-
-    detectPeaks: function( x, y ) {
-
-      if ( !this.options.autoPeakPicking ) {
-        return;
-      }
-
-      if ( !this.options.lineToZero ) {
-
-        if ( !this.lastYPeakPicking ) {
 
           this.lastYPeakPicking = [ y, x ];
 
+        }
+      }
+
+    } else {
+      this.detectedPeaks.push( [ y, x ] );
+    }
+  };
+
+  /**
+   * Draws the serie
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.draw = function( force ) { // Serie redrawing
+
+    if ( force || this.hasDataChanged() ) {
+      this.drawInit();
+
+      var data = this._dataToUse,
+        xData = this._xDataToUse,
+        slotToUse = this._slotToUse;
+
+      this.removeLinesGroup();
+      this.eraseMarkers();
+
+      this.lookForMaxima = true;
+      this.lookForMinima = false;
+
+      if ( !this._draw_slot() ) {
+
+        if ( this.mode == 'x_equally_separated' ) {
+
+          this._draw_equally_separated();
+
         } else {
 
-          if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+          this._draw_standard();
 
-            this.lastYPeakPicking = [ y, x ]
+        }
+      }
 
-          } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
+      this.makePeakPicking();
+      this.removeExtraLines();
+      this.insertMarkers();
+      this.insertLinesGroup();
+    }
 
-            if ( this.lookForMinima ) {
-              this.lookForMinima = false;
-              this.lookForMaxima = true;
+    // Unhovers everything
+    for ( var i in this.domMarkerHover ) {
+      this.toggleMarker( i.split( ',' ), false, true );
+    }
 
-            } else {
+    // Deselects everything
+    for ( var i in this.domMarkerSelect ) {
+      this.toggleMarker( i.split( ',' ), false, false );
+    }
 
-              this.lookForMinima = true;
-              this.lookForMaxima = false;
+    this.applyLineStyle( this.getSymbolForLegend() );
 
-              this.detectedPeaks.push( this.lastYPeakPicking );
-              this.lastYPeakPicking = false;
-            }
+    if ( this.hasStyleChanged( this.selectionType ) ) {
+      this.updateStyle();
+    }
+  };
 
-            this.lastYPeakPicking = [ y, x ];
+  SerieLine.prototype._draw_standard = function() {
 
-          }
+    var self = this,
+      data = this._dataToUse,
+      toBreak,
+      i = 0,
+      l = data.length,
+      j,
+      k,
+      m,
+      x,
+      y,
+      k,
+      o,
+      lastX = false,
+      lastY = false,
+      xpx,
+      ypx,
+      xpx2,
+      ypx2,
+      xAxis = this.getXAxis(),
+      yAxis = this.getYAxis();
+
+    var xMin = xAxis.getCurrentMin(),
+      yMin = yAxis.getCurrentMin(),
+      xMax = xAxis.getCurrentMax(),
+      yMax = yAxis.getCurrentMax();
+
+    var incrXFlip = 0;
+    var incrYFlip = 1;
+
+    var pointOutside = false;
+    var lastPointOutside = false;
+    var pointOnAxis;
+    if ( this.isFlipped() ) {
+      incrXFlip = 1;
+      incrYFlip = 0;
+    }
+
+    for ( ; i < l; i++ ) {
+
+      toBreak = false;
+      this.counter1 = i;
+
+      this.currentLine = "";
+      j = 0, k = 0, m = data[ i ].length;
+
+      for ( ; j < m; j += 2 ) {
+
+        this.counter2 = j / 2;
+
+        if ( this.markersShown() ) {
+
+          this.getMarkerCurrentFamily( this.counter2 );
         }
 
-      } else {
-        this.detectedPeaks.push( [ y, x ] );
-      }
-    },
+        x = data[ i ][ j + incrXFlip ];
+        y = data[ i ][ j + incrYFlip ];
 
-    /**
-     * Draws the serie
-     * @memberof SerieLine.prototype
-     */
-    draw: function( force ) { // Serie redrawing
+        xpx2 = this.getX( x );
+        ypx2 = this.getY( y );
 
-      if ( force || this.hasDataChanged() ) {
-        this.drawInit();
+        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
 
-        var data = this._dataToUse,
-          xData = this._xDataToUse,
-          slotToUse = this._slotToUse;
-
-        this.removeLinesGroup();
-        this.eraseMarkers();
-
-        this.lookForMaxima = true;
-        this.lookForMinima = false;
-
-        if ( !this._draw_slot() ) {
-
-          if ( this.mode == 'x_equally_separated' ) {
-
-            this._draw_equally_separated();
-
-          } else {
-
-            this._draw_standard();
-
-          }
+        if ( xpx2 == xpx && ypx2 == ypx ) {
+          continue;
         }
 
-        this.makePeakPicking();
-        this.removeExtraLines();
-        this.insertMarkers();
-        this.insertLinesGroup();
-      }
+        if ( this.options.lineToZero ) {
+          pointOutside = ( x < xMin || x > xMax );
 
-      // Unhovers everything
-      for ( var i in this.domMarkerHover ) {
-        this.toggleMarker( i.split( ',' ), false, true );
-      }
-
-      // Deselects everything
-      for ( var i in this.domMarkerSelect ) {
-        this.toggleMarker( i.split( ',' ), false, false );
-      }
-
-      this.applyLineStyle( this.getSymbolForLegend() );
-
-      if ( this.hasStyleChanged( this.selectionType ) ) {
-        this.updateStyle();
-      }
-    },
-
-    _draw_standard: function() {
-
-      var self = this,
-        data = this._dataToUse,
-        toBreak,
-        i = 0,
-        l = data.length,
-        j,
-        k,
-        m,
-        x,
-        y,
-        k,
-        o,
-        lastX = false,
-        lastY = false,
-        xpx,
-        ypx,
-        xpx2,
-        ypx2,
-        xAxis = this.getXAxis(),
-        yAxis = this.getYAxis();
-
-      var xMin = xAxis.getActualMin(),
-        yMin = yAxis.getActualMin(),
-        xMax = xAxis.getActualMax(),
-        yMax = yAxis.getActualMax();
-
-      var incrXFlip = 0;
-      var incrYFlip = 1;
-
-      var pointOutside = false;
-      var lastPointOutside = false;
-      var pointOnAxis;
-      if ( this.isFlipped() ) {
-        incrXFlip = 1;
-        incrYFlip = 0;
-      }
-
-      for ( ; i < l; i++ ) {
-
-        toBreak = false;
-        this.counter1 = i;
-
-        this.currentLine = "";
-        j = 0, k = 0, m = data[ i ].length;
-
-        for ( ; j < m; j += 2 ) {
-
-          this.counter2 = j / 2;
-
-          if ( this.markersShown() ) {
-
-            this.getMarkerCurrentFamily( this.counter2 );
-          }
-
-          x = data[ i ][ j + incrXFlip ];
-          y = data[ i ][ j + incrYFlip ];
-
-          xpx2 = this.getX( x );
-          ypx2 = this.getY( y );
-
-          pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
-
-          if ( xpx2 == xpx && ypx2 == ypx ) {
+          if ( pointOutside ) {
             continue;
           }
+        } else {
 
-          if ( this.options.lineToZero ) {
-            pointOutside = ( x < xMin || x > xMax );
+          if ( pointOutside || lastPointOutside ) {
 
-            if ( pointOutside ) {
-              continue;
-            }
-          } else {
-
-            if ( pointOutside || lastPointOutside ) {
-
-              if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
-                lastPointOutside = true;
-
-                xpx = xpx2;
-                ypx = ypx2;
-                lastX = x;
-                lastY = y;
-
-              } else {
-
-                pointOnAxis = [];
-                // Y crossing
-                var yLeftCrossing = ( x - xMin ) / ( x - lastX );
-                yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
-                var yRightCrossing = ( x - xMax ) / ( x - lastX );
-                yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
-
-                // X crossing
-                var xTopCrossing = ( y - yMin ) / ( y - lastY );
-                xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
-                var xBottomCrossing = ( y - yMax ) / ( y - lastY );
-                xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
-
-                if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
-                  pointOnAxis.push( [ xMin, yLeftCrossing ] );
-                }
-
-                if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
-                  pointOnAxis.push( [ xMax, yRightCrossing ] );
-                }
-
-                if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
-                  pointOnAxis.push( [ xTopCrossing, yMin ] );
-                }
-
-                if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
-                  pointOnAxis.push( [ xBottomCrossing, yMax ] );
-                }
-
-                if ( pointOnAxis.length > 0 ) {
-
-                  if ( !pointOutside ) { // We were outside and now go inside
-
-                    if ( pointOnAxis.length > 1 ) {
-                      console.error( "Programmation error. Please e-mail me." );
-                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                    }
-
-                    lastPointOutside = false;
-
-                    this._createLine();
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                    this._addPoint( xpx2, ypx2 );
-
-                  } else if ( !lastPointOutside ) { // We were inside and now go outside
-
-                    if ( pointOnAxis.length > 1 ) {
-                      console.error( "Programmation error. Please e-mail me." );
-
-                      console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                    }
-
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                    lastPointOutside = true;
-                  } else {
-
-                    // No crossing: do nothing
-                    if ( pointOnAxis.length == 2 ) {
-                      this._createLine();
-                      this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                      this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
-                    }
-                    lastPointOutside = true;
-                  }
-                }
-              }
+            if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
+              lastPointOutside = true;
 
               xpx = xpx2;
               ypx = ypx2;
               lastX = x;
               lastY = y;
-              continue;
+
+            } else {
+
+              pointOnAxis = [];
+              // Y crossing
+              var yLeftCrossing = ( x - xMin ) / ( x - lastX );
+              yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
+              var yRightCrossing = ( x - xMax ) / ( x - lastX );
+              yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+
+              // X crossing
+              var xTopCrossing = ( y - yMin ) / ( y - lastY );
+              xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
+              var xBottomCrossing = ( y - yMax ) / ( y - lastY );
+              xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+
+              if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                pointOnAxis.push( [ xMin, yLeftCrossing ] );
+              }
+
+              if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                pointOnAxis.push( [ xMax, yRightCrossing ] );
+              }
+
+              if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                pointOnAxis.push( [ xTopCrossing, yMin ] );
+              }
+
+              if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                pointOnAxis.push( [ xBottomCrossing, yMax ] );
+              }
+
+              if ( pointOnAxis.length > 0 ) {
+
+                if ( !pointOutside ) { // We were outside and now go inside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+                    console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                  }
+
+                  lastPointOutside = false;
+
+                  this._createLine();
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                  this._addPoint( xpx2, ypx2 );
+
+                } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+                  if ( pointOnAxis.length > 1 ) {
+                    console.error( "Programmation error. Please e-mail me." );
+
+                    console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                  }
+
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                  lastPointOutside = true;
+                } else {
+
+                  // No crossing: do nothing
+                  if ( pointOnAxis.length == 2 ) {
+                    this._createLine();
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
+                  }
+                  lastPointOutside = true;
+                }
+              }
             }
-          }
 
-          if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
-            if ( this.counter > 0 ) {
-
-              this._createLine();
-            }
+            xpx = xpx2;
+            ypx = ypx2;
+            lastX = x;
+            lastY = y;
             continue;
           }
-
-          // OPTIMIZATION START
-          if ( !this._optimize_before( xpx2, ypx2 ) ) {
-            continue;
-
-          }
-          // OPTIMIZATION END
-
-          this._addPoint( xpx2, ypx2 );
-
-          this.detectPeaks( x, y );
-
-          // OPTIMIZATION START
-          if ( !this._optimize_after( xpx2, ypx2 ) ) {
-            toBreak = true;
-            break;
-
-          }
-          // OPTIMIZATION END
-
-          xpx = xpx2;
-          ypx = ypx2;
-
-          lastX = x;
-          lastY = y;
         }
 
-        this._createLine();
+        if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
+          if ( this.counter > 0 ) {
 
-        if ( toBreak ) {
-          break;
-        }
-
-      }
-
-    },
-
-    _draw_slot: function() {
-
-      var self = this;
-      if ( this._slotToUse ) {
-
-        if ( this._slotToUse.done ) {
-
-          this._slotToUse.done( function( data ) {
-            self.drawSlot( data, self._slotId );
-          } );
-
-        } else {
-
-          this.drawSlot( this._slotToUse, self._slotId );
-
-        }
-        return true;
-
-      }
-
-      return false;
-    },
-
-    _draw_equally_separated: function() {
-
-      var i = 0,
-        data = this._dataToUse,
-        xData = this._xDataToUse,
-        l = data.length,
-        j,
-        k,
-        m,
-        xpx,
-        ypx,
-        toBreak,
-        currentLine;
-
-      for ( ; i < l; i++ ) {
-
-        currentLine = "M ";
-        j = 0, k = 0, m = data[ i ].length;
-
-        this.counter1 = i;
-
-        for ( ; j < m; j += 1 ) {
-
-          this.counter2 = j;
-
-          if ( this.markersShown() ) {
-
-            this.getMarkerCurrentFamily( k );
+            this._createLine();
           }
-
-          if ( !this.isFlipped() ) {
-
-            xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-            ypx = this.getY( data[ i ][ j ] );
-
-          } else {
-
-            ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-            xpx = this.getY( data[ i ][ j ] );
-
-          }
-
-          // OPTIMIZATION START
-          if ( !this._optimize_before( xpx, ypx ) ) {
-            continue;
-          }
-          // OPTIMIZATION END
-
-          this._addPoint( xpx, ypx );
-
-          // OPTIMIZATION START
-          if ( !this._optimize_after( xpx, ypx ) ) {
-            toBreak = true;
-            break;
-          }
-          // OPTIMIZATION END
-
-        }
-
-        this._createLine();
-
-        if ( toBreak ) {
-          break;
-        }
-      }
-
-    },
-
-    _optimize_before: function( xpx, ypx ) {
-
-      if ( !this._optimizeMonotoneous ) {
-        return true;
-      }
-
-      if ( ( this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) || ( !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) ) {
-
-        //      if ( xpx < this._optimizeMinPxX ) {
-
-        this._optimizeBuffer = [ xpx, ypx ];
-        return false;
-      }
-
-      if ( this._optimizeBuffer ) {
-
-        this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
-        this._optimizeBuffer = false;
-
-      }
-
-      return true;
-    },
-
-    _optimize_after: function( xpx, ypx ) {
-
-      if ( !this._optimizeMonotoneous ) {
-        return true;
-      }
-
-      if ( ( this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) || ( !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) ) {
-
-        return false;
-      }
-
-      return true;
-
-    },
-
-    /**
-     * Hides the automatic peak picking (see the autoPeakPicking option)
-     * @memberof SerieLine.prototype
-     */
-    hidePeakPicking: function( lock ) {
-
-      if ( !this._hidePeakPickingLocked ) {
-        this._hidePeakPickingLocked = lock;
-      }
-
-      hidePeakPicking( this );
-    },
-
-    /**
-     * Shows the automatic peak picking (see the autoPeakPicking option)
-     * @memberof SerieLine.prototype
-     */
-    showPeakPicking: function( unlock ) {
-
-      if ( this._hidePeakPickingLocked && !unlock ) {
-        return;
-      }
-
-      showPeakPicking( this );
-    },
-
-    /**
-     *  @param k Index of the point for which we should get the family
-     */
-    getMarkerCurrentFamily: function( k ) {
-
-      if ( !this.markerPoints[ this.selectionType ] ) {
-        return;
-      }
-
-      for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
-        if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
-          if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
-            this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
-
-          }
-        } else {
-          break;
-        }
-
-      }
-
-      return this.markerCurrentFamily;
-
-    },
-
-    drawSlot: function( slotToUse, y ) {
-
-      var k = 0;
-      var i = 0,
-        xpx, max;
-      var j;
-
-      if ( this.isFlipped() ) {
-
-        var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
-
-        var slotInit = Math.floor( ( this.getYAxis().getActualMin() - this.minY ) * dataPerSlot );
-        var slotFinal = Math.ceil( ( this.getYAxis().getActualMax() - this.minY ) * dataPerSlot );
-
-      } else {
-
-        var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
-
-        var slotInit = Math.floor( ( this.getXAxis().getActualMin() - this.minX ) * dataPerSlot );
-        var slotFinal = Math.ceil( ( this.getXAxis().getActualMax() - this.minX ) * dataPerSlot );
-      }
-
-      for ( j = slotInit; j <= slotFinal; j++ ) {
-
-        if ( !slotToUse[ j ] ) {
           continue;
         }
 
-        if ( this.isFlipped() ) {
+        // OPTIMIZATION START
+        if ( !this._optimize_before( xpx2, ypx2 ) ) {
+          continue;
 
-          ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-          max = this.getX( slotToUse[ j ].max );
+        }
+        // OPTIMIZATION END
 
-          /*if ( this.options.autoPeakPicking ) {
-            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-          }
-*/
-          this._addPoint( this.getX( slotToUse[ j ].start ), ypx );
-          this._addPoint( max, ypx, true );
-          this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
-          this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
+        this._addPoint( xpx2, ypx2 );
 
-          //    k++;
+        this.detectPeaks( x, y );
+
+        // OPTIMIZATION START
+        if ( !this._optimize_after( xpx2, ypx2 ) ) {
+          toBreak = true;
+          break;
+
+        }
+        // OPTIMIZATION END
+
+        xpx = xpx2;
+        ypx = ypx2;
+
+        lastX = x;
+        lastY = y;
+      }
+
+      this._createLine();
+
+      if ( toBreak ) {
+        break;
+      }
+
+    }
+
+  };
+
+  SerieLine.prototype._draw_slot = function() {
+
+    var self = this;
+    if ( this._slotToUse ) {
+
+      if ( this._slotToUse.done ) {
+
+        this._slotToUse.done( function( data ) {
+          self.drawSlot( data, self._slotId );
+        } );
+
+      } else {
+
+        this.drawSlot( this._slotToUse, self._slotId );
+
+      }
+      return true;
+
+    }
+
+    return false;
+  };
+
+  SerieLine.prototype._draw_equally_separated = function() {
+
+    var i = 0,
+      data = this._dataToUse,
+      xData = this._xDataToUse,
+      l = data.length,
+      j,
+      k,
+      m,
+      xpx,
+      ypx,
+      toBreak,
+      currentLine;
+
+    for ( ; i < l; i++ ) {
+
+      currentLine = "M ";
+      j = 0, k = 0, m = data[ i ].length;
+
+      this.counter1 = i;
+
+      for ( ; j < m; j += 1 ) {
+
+        this.counter2 = j;
+
+        if ( this.markersShown() ) {
+
+          this.getMarkerCurrentFamily( k );
+        }
+
+        if ( !this.isFlipped() ) {
+
+          xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+          ypx = this.getY( data[ i ][ j ] );
+
         } else {
 
-          xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+          ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
+          xpx = this.getY( data[ i ][ j ] );
 
-          max = this.getY( slotToUse[ j ].max );
-
-          if ( this.options.autoPeakPicking ) {
-            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-          }
-
-          this._addPoint( xpx, this.getY( slotToUse[ j ].start ) );
-          this._addPoint( xpx, max, true );
-          this._addPoint( xpx, this.getY( slotToUse[ j ].min ) );
-          this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true );
-
-          //this.counter ++;
         }
+
+        // OPTIMIZATION START
+        if ( !this._optimize_before( xpx, ypx ) ) {
+          continue;
+        }
+        // OPTIMIZATION END
+
+        this._addPoint( xpx, ypx );
+
+        // OPTIMIZATION START
+        if ( !this._optimize_after( xpx, ypx ) ) {
+          toBreak = true;
+          break;
+        }
+        // OPTIMIZATION END
 
       }
 
       this._createLine();
-      i++;
 
-    },
+      if ( toBreak ) {
+        break;
+      }
+    }
 
-    setMarkerStyleTo: function( dom, family ) {
+  };
 
-      if ( !dom ||  !family ) {
-        console.trace();
-        throw "Cannot set marker style. DOM does not exist.";
+  SerieLine.prototype._optimize_before = function( xpx, ypx ) {
+
+    if ( !this._optimizeMonotoneous ) {
+      return true;
+    }
+
+    if ( ( this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) || ( !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) ) {
+
+      //      if ( xpx < this._optimizeMinPxX ) {
+
+      this._optimizeBuffer = [ xpx, ypx ];
+      return false;
+    }
+
+    if ( this._optimizeBuffer ) {
+
+      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
+      this._optimizeBuffer = false;
+
+    }
+
+    return true;
+  };
+
+  SerieLine.prototype._optimize_after = function( xpx, ypx ) {
+
+    if ( !this._optimizeMonotoneous ) {
+      return true;
+    }
+
+    if ( ( this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) || ( !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) ) {
+
+      return false;
+    }
+
+    return true;
+  };
+
+  /**
+   * Hides the automatic peak picking (see the autoPeakPicking option)
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.hidePeakPicking = function( lock ) {
+
+    if ( !this._hidePeakPickingLocked ) {
+      this._hidePeakPickingLocked = lock;
+    }
+
+    hidePeakPicking( this );
+  };
+
+  /**
+   * Shows the automatic peak picking (see the autoPeakPicking option)
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.showPeakPicking = function( unlock ) {
+
+    if ( this._hidePeakPickingLocked && !unlock ) {
+      return;
+    }
+
+    showPeakPicking( this );
+  };
+
+  /**
+   * @param {Number} k - Index of the point for which we should get the family
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.getMarkerCurrentFamily = function( k ) {
+
+    if ( !this.markerPoints[ this.selectionType ] ) {
+      return;
+    }
+
+    for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
+      if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
+        if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
+          this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
+
+        }
+      } else {
+        break;
       }
 
-      dom.setAttribute( 'fill', family.fillColor ||  'transparent' );
-      dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
-      dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
-    },
+    }
 
-    /**
-     * Hides the tracking marker (see the trackMouse option)
-     * @memberof SerieLine.prototype
-     */
-    hideTrackingMarker: function() {
-      this.marker.setAttribute( 'display', 'none' );
-      this.markerLabel.setAttribute( 'display', 'none' );
-      this.markerLabelSquare.setAttribute( 'display', 'none' );
-    },
+    return this.markerCurrentFamily;
 
-    _addPoint: function( xpx, ypx, move, allowMarker ) {
-      var pos;
+  };
 
-      /*if( ! this.currentLineId ) {
-        throw "No current line"
-      }*/
+  SerieLine.prototype.drawSlot = function( slotToUse, y ) {
 
-      if ( this.counter == 0 ) {
-        this.currentLine = 'M ';
+    var k = 0;
+    var i = 0,
+      xpx, max;
+    var j;
+
+    if ( this.isFlipped() ) {
+
+      var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
+
+      var slotInit = Math.floor( ( this.getYAxis().getCurrentMin() - this.minY ) * dataPerSlot );
+      var slotFinal = Math.ceil( ( this.getYAxis().getCurrentMax() - this.minY ) * dataPerSlot );
+
+    } else {
+
+      var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
+
+      var slotInit = Math.floor( ( this.getXAxis().getCurrentMin() - this.minX ) * dataPerSlot );
+      var slotFinal = Math.ceil( ( this.getXAxis().getCurrentMax() - this.minX ) * dataPerSlot );
+    }
+
+    for ( j = slotInit; j <= slotFinal; j++ ) {
+
+      if ( !slotToUse[ j ] ) {
+        continue;
+      }
+
+      if ( this.isFlipped() ) {
+
+        ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
+        max = this.getX( slotToUse[ j ].max );
+
+        /*if ( this.options.autoPeakPicking ) {
+            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+          }
+* @memberof SerieLine
+*/
+        this._addPoint( this.getX( slotToUse[ j ].start ), ypx );
+        this._addPoint( max, ypx, true );
+        this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
+        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
+
+        //    k++;
       } else {
 
-        if ( this.options.lineToZero || move )
-          this.currentLine += 'M ';
-        else
-          this.currentLine += "L ";
+        xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
+
+        max = this.getY( slotToUse[ j ].max );
+
+        if ( this.options.autoPeakPicking ) {
+          allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
+        }
+
+        this._addPoint( xpx, this.getY( slotToUse[ j ].start ) );
+        this._addPoint( xpx, max, true );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].min ) );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true );
+
+        //this.counter ++;
       }
 
+    }
+
+    this._createLine();
+    i++;
+
+  };
+
+  SerieLine.prototype.setMarkerStyleTo = function( dom, family ) {
+
+    if ( !dom ||  !family ) {
+      console.trace();
+      throw "Cannot set marker style. DOM does not exist.";
+    }
+
+    dom.setAttribute( 'fill', family.fillColor ||  'transparent' );
+    dom.setAttribute( 'stroke', family.strokeColor || this.getLineColor() );
+    dom.setAttribute( 'stroke-width', family.strokeWidth ||  1 );
+  };
+
+  /**
+   * Hides the tracking marker (see the trackMouse option)
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.hideTrackingMarker = function() {
+    this.marker.setAttribute( 'display', 'none' );
+    this.markerLabel.setAttribute( 'display', 'none' );
+    this.markerLabelSquare.setAttribute( 'display', 'none' );
+  };
+
+  SerieLine.prototype._addPoint = function( xpx, ypx, move, allowMarker ) {
+    var pos;
+
+    /*if( ! this.currentLineId ) {
+        throw "No current line"
+      }* @memberof SerieLine
+*/
+
+    if ( this.counter == 0 ) {
+      this.currentLine = 'M ';
+    } else {
+
+      if ( this.options.lineToZero || move )
+        this.currentLine += 'M ';
+      else
+        this.currentLine += "L ";
+    }
+
+    this.currentLine += xpx;
+    this.currentLine += " ";
+    this.currentLine += ypx;
+    this.currentLine += " ";
+
+    if ( this.options.lineToZero && ( pos = this.getYAxis().getPos( 0 ) ) !== undefined ) {
+
+      this.currentLine += "L ";
       this.currentLine += xpx;
       this.currentLine += " ";
-      this.currentLine += ypx;
+      this.currentLine += pos;
       this.currentLine += " ";
 
-      if ( this.options.lineToZero && ( pos = this.getYAxis().getPos( 0 ) ) !== undefined ) {
+    }
 
-        this.currentLine += "L ";
-        this.currentLine += xpx;
-        this.currentLine += " ";
-        this.currentLine += pos;
-        this.currentLine += " ";
-
-      }
-
-      if ( !this.markerPoints ) {
-        this.counter++;
-
-        return;
-      }
-
-      if ( this.markersShown() && allowMarker !== false ) {
-        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
-      }
-
+    if ( !this.markerPoints ) {
       this.counter++;
 
-    },
+      return;
+    }
 
-    // Returns the DOM
-    _createLine: function() {
+    if ( this.markersShown() && allowMarker !== false ) {
+      drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+    }
 
-      var i = this.currentLineId++,
-        line;
+    this.counter++;
 
-      // Creates a line if needed
-      if ( this.lines[ i ] ) {
-        line = this.lines[ i ];
-      } else {
-        line = document.createElementNS( this.graph.ns, 'path' );
-        this.applyLineStyle( line );
-        this.groupLines.appendChild( line );
-        this.lines[ i ] = line;
-      }
+  };
 
-      if ( this.counter == 0 ) {
-        line.setAttribute( 'd', '' );
-      } else {
-        line.setAttribute( 'd', this.currentLine );
-      }
+  // Returns the DOM
+  SerieLine.prototype._createLine = function() {
 
-      this.currentLine = "M ";
-      this.counter = 0;
+    var i = this.currentLineId++,
+      line;
 
-      return line;
-    },
+    // Creates a line if needed
+    if ( this.lines[ i ] ) {
+      line = this.lines[ i ];
+    } else {
+      line = document.createElementNS( this.graph.ns, 'path' );
+      this.applyLineStyle( line );
+      this.groupLines.appendChild( line );
+      this.lines[ i ] = line;
+    }
 
-    /**
-     * Reapply the current style to the serie lines elements. Mostly used internally
-     * @memberof SerieLine.prototype
-     */
-    applyLineStyles: function() {
+    if ( this.counter == 0 ) {
+      line.setAttribute( 'd', '' );
+    } else {
+      line.setAttribute( 'd', this.currentLine );
+    }
 
-      for ( var i = 0; i < this.lines.length; i++ ) {
-        this.applyLineStyle( this.lines[ i ] );
-      }
-    },
+    this.currentLine = "M ";
+    this.counter = 0;
 
-    /**
-     * Applies the current style to a line element. Mostly used internally
-     * @memberof SerieLine.prototype
-     */
-    applyLineStyle: function( line ) {
+    return line;
+  };
 
-      line.setAttribute( 'stroke', this.getLineColor() );
-      line.setAttribute( 'stroke-width', this.getLineWidth() );
-      if ( this.getLineDashArray() ) {
-        line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
-      } else {
-        line.removeAttribute( 'stroke-dasharray' );
-      }
-      line.setAttribute( 'fill', 'none' );
-      //	line.setAttribute('shape-rendering', 'optimizeSpeed');
-    },
+  /**
+   * Reapply the current style to the serie lines elements. Mostly used internally
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.applyLineStyles = function() {
 
-    /**
-     * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
-     * @memberof SerieLine.prototype
-     * @example var opts = { lineColor: 'red' };
-     * var s = graph.newSerie( "name", opts ).setData( someData );
-     * opts.lineColor = 'green';
-     * s.updateStyle(); // Sets the lineColor to green
-     * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
-     */
-    updateStyle: function() {
-      this.applyLineStyles();
-      this.setLegendSymbolStyle();
+    for ( var i = 0; i < this.lines.length; i++ ) {
+      this.applyLineStyle( this.lines[ i ] );
+    }
+  };
 
-      this.styleHasChanged( false );
-    },
+  /**
+   * Applies the current style to a line element. Mostly used internally
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.applyLineStyle = function( line ) {
 
-    // Revised August 2014. Ok
-    getMarkerPath: function( family, add ) {
+    line.setAttribute( 'stroke', this.getLineColor() );
+    line.setAttribute( 'stroke-width', this.getLineWidth() );
+    if ( this.getLineDashArray() ) {
+      line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+    } else {
+      line.removeAttribute( 'stroke-dasharray' );
+    }
+    line.setAttribute( 'fill', 'none' );
+    //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+  };
 
-      var z = family.zoom  ||  1,
-        add = add || 0,
-        el;
+  /**
+   * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
+   * @example var opts = { lineColor: 'red' };
+   * var s = graph.newSerie( "name", opts ).setData( someData );
+   * opts.lineColor = 'green';
+   * s.updateStyle(); // Sets the lineColor to green
+   * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.updateStyle = function() {
+    this.applyLineStyles();
+    this.setLegendSymbolStyle();
 
-      switch ( family.type ) {
-        case 1:
-          el = [ 'm', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z' ];
-          break;
+    this.styleHasChanged( false );
+  };
 
-        case 2:
-          el = [ 'm', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
-          break;
+  // Revised August 2014. Ok
+  SerieLine.prototype.getMarkerPath = function( family, add ) {
 
-        case 3:
-          el = [ 'm', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
-          break;
+    var z = family.zoom  ||  1,
+      add = add || 0,
+      el = [];
 
-        case 4:
-          el = [ 'm', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
-          break;
+    switch ( family.type ) {
 
-      }
+      case 2:
+        el = [ 'm', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4 ];
+        break;
 
-      if ( ( z == 1 ||  !z ) && !add ) {
-        return el.join( " " );
-      }
+      case 3:
+        el = [ 'm', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4 ];
+        break;
 
-      var num = "number";
+      case 4:
+        el = [ 'm', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z' ];
+        break;
 
-      if ( !el ) {
-        return;
-      }
+      default:
+      case 1:
+        el = [ 'm', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z' ];
+        break;
 
-      for ( var i = 0, l = el.length; i < l; i++ ) {
+    }
 
-        if ( typeof el[ i ] == num ) {
-
-          el[ i ] *= ( z + add );
-        }
-      }
-
+    if ( ( z == 1 ||  !z ) && !add ) {
       return el.join( " " );
+    }
 
-    },
+    var num = "number";
 
-    // Revised August 2014. Ok
-    getMarkerDom: function( family )  {
+    if ( !el ) {
+      return;
+    }
 
-      var self = this;
-      if ( !family.dom ) {
-        var dom = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( dom, family );
-        family.dom = dom;
-        family.path = "";
+    for ( var i = 0, l = el.length; i < l; i++ ) {
 
-        dom.addEventListener( 'mouseover', function( e ) {
-          var closest = self._getMarkerIndexFromEvent( e );
-          self.onMouseOverMarker( e, closest );
-        } );
+      if ( typeof el[ i ] == num ) {
 
-        dom.addEventListener( 'mouseout', function( e ) {
-          var closest = self._getMarkerIndexFromEvent( e );
-          self.onMouseOutMarker( e, closest );
-        } );
-
-        dom.addEventListener( 'click', function( e ) {
-          var closest = self._getMarkerIndexFromEvent( e );
-          self.onClickOnMarker( e, closest );
-        } );
-
+        el[ i ] *= ( z + add );
       }
+    }
 
-      return family.dom;
-    },
+    return el.join( " " );
 
-    // In case markers are not grouped in families but independant
-    getMarkerDomIndependant: function( index1, index2, family ) {
+  };
 
-      var self = this;
-      var index = index1 + "," + index2;
+  // Revised August 2014. Ok
+  SerieLine.prototype.getMarkerDom = function( family )  {
 
-      if ( !this.independantMarkers[ index ] ) {
+    var self = this;
+    if ( !family.dom ) {
+      var dom = document.createElementNS( this.graph.ns, 'path' );
+      this.setMarkerStyleTo( dom, family );
+      family.dom = dom;
+      family.path = "";
 
-        var dom = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( dom, family );
+      dom.addEventListener( 'mouseover', function( e ) {
+        var closest = self._getMarkerIndexFromEvent( e );
+        self.onMouseOverMarker( e, closest );
+      } );
 
-        dom.addEventListener( 'mouseover', function( e ) {
+      dom.addEventListener( 'mouseout', function( e ) {
+        var closest = self._getMarkerIndexFromEvent( e );
+        self.onMouseOutMarker( e, closest );
+      } );
 
-          self.onMouseOverMarker( e, [ index2, index1 ] );
-        } );
+      dom.addEventListener( 'click', function( e ) {
+        var closest = self._getMarkerIndexFromEvent( e );
+        self.onClickOnMarker( e, closest );
+      } );
 
-        dom.addEventListener( 'mouseout', function( e ) {
+    }
 
-          self.onMouseOutMarker( e, [ index2, index1 ] );
-        } );
+    return family.dom;
+  };
 
-        dom.addEventListener( 'click', function( e ) {
-          self.onClickOnMarker( e, [ index2, index1 ] );
-        } );
+  // In case markers are not grouped in families but independant
+  SerieLine.prototype.getMarkerDomIndependant = function( index1, index2, family ) {
 
-        this.independantMarkers[ index ] = dom;
-      }
+    var self = this;
+    var index = index1 + "," + index2;
 
-      this.groupMain.appendChild( this.independantMarkers[ index ] );
+    if ( !this.independantMarkers[ index ] ) {
 
-      return this.independantMarkers[ index ];
-    },
+      var dom = document.createElementNS( this.graph.ns, 'path' );
+      this.setMarkerStyleTo( dom, family );
 
-    /**
-     * Searches the closest point pair (x,y) to the a pair of pixel position
-     * @memberof SerieLine.prototype
-     * @param {Number} x - The x position in pixels (from the left)
-     * @param {Number} y - The y position in pixels (from the left)
-     * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-     */
-    searchIndexByPxXY: function( x, y ) {
+      dom.addEventListener( 'mouseover', function( e ) {
 
-      var oldDist = false,
-        xyindex = false,
-        dist;
+        self.onMouseOverMarker( e, [ index2, index1 ] );
+      } );
 
-      var xData = this._xDataToUse,
-        p_x,
-        p_y;
+      dom.addEventListener( 'mouseout', function( e ) {
 
-      if ( this.mode == "x_equally_separated" ) {
+        self.onMouseOutMarker( e, [ index2, index1 ] );
+      } );
 
-        for ( var i = 0, l = this.data.length; i < l; i++ ) {
-          for ( var k = 0, m = this.data[ i ].length; k < m; k += 1 ) {
+      dom.addEventListener( 'click', function( e ) {
+        self.onClickOnMarker( e, [ index2, index1 ] );
+      } );
 
-            p_x = xData[ i ].x + k * xData[ i ].dx;
-            p_y = this.data[ i ][ k ];
-            dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
-            //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+      this.independantMarkers[ index ] = dom;
+    }
 
-            if ( !oldDist || dist < oldDist ) {
-              oldDist = dist;
-              xyindex = [ k, i ];
-            }
+    this.groupMain.appendChild( this.independantMarkers[ index ] );
+
+    return this.independantMarkers[ index ];
+  };
+
+  /**
+   * Searches the closest point pair (x,y) to the a pair of pixel position
+   * @param {Number} x - The x position in pixels (from the left)
+   * @param {Number} y - The y position in pixels (from the left)
+   * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.searchIndexByPxXY = function( x, y ) {
+
+    var oldDist = false,
+      xyindex = false,
+      dist;
+
+    var xData = this._xDataToUse,
+      p_x,
+      p_y;
+
+    if ( this.mode == "x_equally_separated" ) {
+
+      for ( var i = 0, l = this.data.length; i < l; i++ ) {
+        for ( var k = 0, m = this.data[ i ].length; k < m; k += 1 ) {
+
+          p_x = xData[ i ].x + k * xData[ i ].dx;
+          p_y = this.data[ i ][ k ];
+          dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
+          //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+
+          if ( !oldDist || dist < oldDist ) {
+            oldDist = dist;
+            xyindex = [ k, i ];
           }
         }
-      } 
-      else {
+      }
+    } 
+    else {
 
-        for ( var i = 0, l = this.data.length; i < l; i++ ) {
-          for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
+      for ( var i = 0, l = this.data.length; i < l; i++ ) {
+        for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
-            p_x = this.data[ i ][ k ],
-            p_y = this.data[ i ][ k + 1 ];
-            dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
-            if ( !oldDist || dist < oldDist ) {
-              oldDist = dist;
-              xyindex = [ k / 2, i ];
-            }
+          p_x = this.data[ i ][ k ],
+          p_y = this.data[ i ][ k + 1 ];
+          dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
+          if ( !oldDist || dist < oldDist ) {
+            oldDist = dist;
+            xyindex = [ k / 2, i ];
           }
         }
-
       }
 
-      return xyindex;
-    },
+    }
 
-    /**
-     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-     * @memberof SerieLine.prototype
-     * @param {Number} valX - The x value to search for
-     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-     */
-    searchClosestValue: function( valX ) {
+    return xyindex;
+  };
 
-      var xMinIndex;
+  /**
+   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+   * @param {Number} valX - The x value to search for
+   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.searchClosestValue = function( valX ) {
 
-      for ( var i = 0; i < this.data.length; i++ ) {
+    var xMinIndex;
 
-        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
-          xMinIndex = this._searchBinary( valX, this.data[ i ], false );
-        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
-          xMinIndex = this._searchBinary( valX, this.data[ i ], true );
-        } else {
-          continue;
-        }
+    for ( var i = 0; i < this.data.length; i++ ) {
 
-        return {
-          dataIndex: i,
-          xMin: this.data[ i ][ xMinIndex ],
-          xMax: this.data[ i ][ xMinIndex + 2 ],
-          yMin: this.data[ i ][ xMinIndex + 1 ],
-          yMax: this.data[ i ][ xMinIndex + 3 ],
-
-          xBeforeIndex: xMinIndex / 2,
-          xAfterIndex: xMinIndex / 2 + 2,
-          xBeforeIndexArr: xMinIndex
-        }
-      }
-    },
-
-    handleMouseMove: function( x, doMarker ) {
-
-      var valX = x || this.getXAxis().getMouseVal(),
-        xMinIndex,
-        xMin,
-        yMin,
-        xMax,
-        yMax;
-
-      var value = this.searchClosestValue( valX );
-
-      if ( !value )
-        return;
-
-      var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-      var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
-
-      if ( doMarker && this.options.trackMouse ) {
-
-        if ( value.xMin == undefined ) {
-
-          return false;
-
-        } else {
-
-          var x = this.getX( this.getFlip() ? intY : valX );
-          var y = this.getY( this.getFlip() ? valX : intY );
-
-          this.marker.setAttribute( 'display', 'block' );
-          this.marker.setAttribute( 'cx', x );
-          this.marker.setAttribute( 'cy', y );
-
-          this.markerLabel.setAttribute( 'display', 'block' );
-          this.markerLabelSquare.setAttribute( 'display', 'block' );
-          switch ( this.options.trackMouseLabel ) {
-            case false:
-              break;
-
-            default:
-              this.markerLabel.textContent = this.options.trackMouseLabel
-                .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
-                .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
-              break;
-          }
-
-          this.markerLabel.setAttribute( 'x', x + 5 );
-          this.markerLabel.setAttribute( 'y', y - 5 );
-
-          this.markerLabelSquare.setAttribute( 'x', x + 5 );
-          this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
-          this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
-          this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
-        }
+      if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
+        xMinIndex = this._searchBinary( valX, this.data[ i ], false );
+      } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
+        xMinIndex = this._searchBinary( valX, this.data[ i ], true );
+      } else {
+        continue;
       }
 
       return {
-        xBefore: value.xMin,
-        xAfter: value.xMax,
-        yBefore: value.yMin,
-        yAfter: value.yMax,
-        trueX: valX,
-        interpolatedY: intY,
-        xBeforeIndex: value.xBeforeIndex
-      };
-    },
+        dataIndex: i,
+        xMin: this.data[ i ][ xMinIndex ],
+        xMax: this.data[ i ][ xMinIndex + 2 ],
+        yMin: this.data[ i ][ xMinIndex + 1 ],
+        yMax: this.data[ i ][ xMinIndex + 3 ],
 
-    _searchBinary: function( target, haystack, reverse ) {
-      var seedA = 0,
-        length = haystack.length,
-        seedB = ( length - 2 );
-
-      if ( haystack[ seedA ] == target )
-        return seedA;
-
-      if ( haystack[ seedB ] == target )
-        return seedB;
-
-      var seedInt;
-      var i = 0;
-
-      while ( true ) {
-        i++;
-        if ( i > 100 ) {
-          throw "Error loop";
-        }
-
-        seedInt = ( seedA + seedB ) / 2;
-        seedInt -= seedInt % 2; // Always looks for an x.
-
-        if ( seedInt == seedA || haystack[ seedInt ] == target )
-          return seedInt;
-
-        //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-        if ( haystack[ seedInt ] <= target ) {
-          if ( reverse )
-            seedB = seedInt;
-          else
-            seedA = seedInt;
-        } else if ( haystack[ seedInt ] > target ) {
-          if ( reverse )
-            seedA = seedInt;
-          else
-            seedB = seedInt;
-        }
+        xBeforeIndex: xMinIndex / 2,
+        xAfterIndex: xMinIndex / 2 + 2,
+        xBeforeIndexArr: xMinIndex
       }
-    },
+    }
+  };
 
-    /**
-     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-     * @memberof SerieLine.prototype
-     * @param {Number} startX - The start of the x values
-     * @param {Number} endX - The end of the x values
-     * @returns {Number} Maximal y value in between startX and endX
-     */
-    getMax: function( start, end ) {
+  SerieLine.prototype.handleMouseMove = function( x, doMarker ) {
 
-      var start2 = Math.min( start, end ),
-        end2 = Math.max( start, end ),
-        v1 = this.searchClosestValue( start2 ),
-        v2 = this.searchClosestValue( end2 ),
-        i, j, max = -Infinity,
-        initJ, maxJ;
+    var valX = x || this.getXAxis().getMouseVal(),
+      xMinIndex,
+      xMin,
+      yMin,
+      xMax,
+      yMax;
 
-      //      console.log( start2, end2, v1, v2 );
+    var value = this.searchClosestValue( valX );
 
-      if ( !v1 ) {
-        start2 = this.minX;
-        v1 = this.searchClosestValue( start2 );
-      }
+    if ( !value )
+      return;
 
-      if ( !v2 ) {
-        end2 = this.maxX;
-        v2 = this.searchClosestValue( end2 );
-      }
+    var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+    var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
 
-      if ( !v1 ||  !v2 ) {
-        return -Infinity;
-      }
+    if ( doMarker && this.options.trackMouse ) {
 
-      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+      if ( value.xMin == undefined ) {
 
-        for ( j = initJ; j <= maxJ; j += 2 ) {
-          max = Math.max( max, this.data[ i ][ j + 1 ] );
-        }
-      }
+        return false;
 
-      return max;
-    },
-
-    /**
-     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-     * @memberof SerieLine.prototype
-     * @param {Number} startX - The start of the x values
-     * @param {Number} endX - The end of the x values
-     * @returns {Number} Maximal y value in between startX and endX
-     */
-    getMin: function( start, end ) {
-
-      var start2 = Math.min( start, end ),
-        end2 = Math.max( start, end ),
-        v1 = this.searchClosestValue( start2 ),
-        v2 = this.searchClosestValue( end2 ),
-        i, j, min = Infinity,
-        initJ, maxJ;
-
-      if ( !v1 ) {
-        start2 = this.minX;
-        v1 = this.searchClosestValue( start2 );
-      }
-
-      if ( !v2 ) {
-        end2 = this.maxX;
-        v2 = this.searchClosestValue( end2 );
-      }
-
-      if ( !v1 ||  !v2 ) {
-        return Infinity;
-      }
-
-      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
-
-        for ( j = initJ; j <= maxJ; j += 2 ) {
-          min = Math.min( min, this.data[ i ][ j + 1 ] );
-        }
-      }
-
-      return min;
-    },
-
-    /* LINE STYLE */
-
-    setStyle: function( style, selectionType ) {
-
-      this.styles[ selectionType ] = style;
-      this.styleHasChanged( selectionType );
-
-    },
-
-    setLineStyle: function( number, selectionType ) {
-
-      selectionType = selectionType ||  "unselected";
-      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-      this.styles[ selectionType ].lineStyle = number;
-
-      this.styleHasChanged( selectionType );
-
-      return this;
-    },
-
-    getLineStyle: function( selectionType ) {
-      return this.getStyle( selectionType ).lineStyle;
-    },
-
-    getLineDashArray: function( selectionType ) {
-
-      switch ( this.getStyle( selectionType ).lineStyle ) {
-
-        case 2:
-          return "1, 1";
-          break;
-        case 3:
-          return "2, 2";
-          break;
-        case 3:
-          return "3, 3";
-          break;
-        case 4:
-          return "4, 4";
-          break;
-        case 5:
-          return "5, 5";
-          break;
-
-        case 6:
-          return "5 2";
-          break
-        case 7:
-          return "2 5";
-          break
-
-        case 8:
-          return "4 2 4 4";
-          break;
-        case 9:
-          return "1,3,1";
-          break;
-        case 10:
-          return "9 2";
-          break;
-        case 11:
-          return "2 9";
-          break;
-
-        case false:
-        case 1:
-          return false;
-          break;
-
-        default:
-          return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
-          break;
-      }
-
-      this.styleHasChanged( selectionType );
-
-    },
-
-    getStyle: function( selectionType ) {
-      return this.styles[ selectionType || this.selectionType || "unselected" ];
-    },
-
-    extendStyles: function() {
-      for ( var i in this.styles ) {
-
-        var s = this.styles[ i ];
-        if ( s ) {
-          this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
-        }
-      }
-    },
-    /*  */
-
-    setLineWidth: function( width, selectionType ) {
-
-      selectionType = selectionType ||  "unselected";
-      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-      this.styles[ selectionType ].lineWidth = width;
-
-      this.styleHasChanged( selectionType );
-
-      return this;
-    },
-
-    getLineWidth: function( selectionType ) {
-
-      return this.getStyle( selectionType ).lineWidth;
-    },
-
-    /* LINE COLOR */
-    setLineColor: function( color, selectionType ) {
-
-      selectionType = selectionType ||  "unselected";
-      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-      this.styles[ selectionType ].lineColor = color;
-
-      this.styleHasChanged( selectionType );
-
-      return this;
-    },
-
-    getLineColor: function( selectionType ) {
-
-      return this.getStyle( selectionType ).lineColor;
-    },
-
-    /* */
-
-    /* MARKERS */
-    showMarkers: function( selectionType, redraw ) {
-      selectionType = selectionType ||  "unselected";
-      this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-      this.styles[ selectionType ].markers = true;
-
-      if ( redraw && this._drawn ) {
-        this.draw();
       } else {
-        this.styleHasChanged( selectionType );
+
+        var x = this.getX( this.getFlip() ? intY : valX );
+        var y = this.getY( this.getFlip() ? valX : intY );
+
+        this.marker.setAttribute( 'display', 'block' );
+        this.marker.setAttribute( 'cx', x );
+        this.marker.setAttribute( 'cy', y );
+
+        this.markerLabel.setAttribute( 'display', 'block' );
+        this.markerLabelSquare.setAttribute( 'display', 'block' );
+        switch ( this.options.trackMouseLabel ) {
+          case false:
+            break;
+
+          default:
+            this.markerLabel.textContent = this.options.trackMouseLabel
+              .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
+              .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
+            break;
+        }
+
+        this.markerLabel.setAttribute( 'x', x + 5 );
+        this.markerLabel.setAttribute( 'y', y - 5 );
+
+        this.markerLabelSquare.setAttribute( 'x', x + 5 );
+        this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
+        this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
+        this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
+      }
+    }
+
+    return {
+      xBefore: value.xMin,
+      xAfter: value.xMax,
+      yBefore: value.yMin,
+      yAfter: value.yMax,
+      trueX: valX,
+      interpolatedY: intY,
+      xBeforeIndex: value.xBeforeIndex
+    };
+  };
+
+  SerieLine.prototype._searchBinary = function( target, haystack, reverse ) {
+    var seedA = 0,
+      length = haystack.length,
+      seedB = ( length - 2 );
+
+    if ( haystack[ seedA ] == target )
+      return seedA;
+
+    if ( haystack[ seedB ] == target )
+      return seedB;
+
+    var seedInt;
+    var i = 0;
+
+    while ( true ) {
+      i++;
+      if ( i > 100 ) {
+        throw "Error loop";
       }
 
-      return this;
-    },
+      seedInt = ( seedA + seedB ) / 2;
+      seedInt -= seedInt % 2; // Always looks for an x.
 
-    hideMarkers: function( selectionType, redraw ) {
+      if ( seedInt == seedA || haystack[ seedInt ] == target )
+        return seedInt;
 
-      selectionType = selectionType ||  "unselected";
-      this.styles[ selectionType ].markers = false;
-
-      if ( redraw && this._drawn ) {
-        this.draw();
-      } else {
-        this.styleHasChanged( selectionType );
+      //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
+      if ( haystack[ seedInt ] <= target ) {
+        if ( reverse )
+          seedB = seedInt;
+        else
+          seedA = seedInt;
+      } else if ( haystack[ seedInt ] > target ) {
+        if ( reverse )
+          seedA = seedInt;
+        else
+          seedB = seedInt;
       }
-      return this;
-    },
+    }
+  };
 
-    markersShown: function( selectionType ) {
-      return this.getStyle( selectionType ).markers;
-    },
+  /**
+   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+   * @param {Number} startX - The start of the x values
+   * @param {Number} endX - The end of the x values
+   * @returns {Number} Maximal y value in between startX and endX
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.getMax = function( start, end ) {
 
-    areMarkersShown: function() {
-      return this.markersShown.apply( this, arguments );
-    },
+    var start2 = Math.min( start, end ),
+      end2 = Math.max( start, end ),
+      v1 = this.searchClosestValue( start2 ),
+      v2 = this.searchClosestValue( end2 ),
+      i, j, max = -Infinity,
+      initJ, maxJ;
 
-    isMarkersShown: function() {
-      return this.markersShown.apply( this, arguments );
-    },
+    //      console.log( start2, end2, v1, v2 );
 
-    // Multiple markers
-    setMarkers: function( families, selectionType ) {
-      // Family has to be an object
-      // Family looks like
-      /*
+    if ( !v1 ) {
+      start2 = this.minX;
+      v1 = this.searchClosestValue( start2 );
+    }
+
+    if ( !v2 ) {
+      end2 = this.maxX;
+      v2 = this.searchClosestValue( end2 );
+    }
+
+    if ( !v1 ||  !v2 ) {
+      return -Infinity;
+    }
+
+    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+      for ( j = initJ; j <= maxJ; j += 2 ) {
+        max = Math.max( max, this.data[ i ][ j + 1 ] );
+      }
+    }
+
+    return max;
+  };
+
+  /**
+   * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+   * @param {Number} startX - The start of the x values
+   * @param {Number} endX - The end of the x values
+   * @returns {Number} Maximal y value in between startX and endX
+   * @memberof SerieLine
+   */
+  SerieLine.prototype.getMin = function( start, end ) {
+
+    var start2 = Math.min( start, end ),
+      end2 = Math.max( start, end ),
+      v1 = this.searchClosestValue( start2 ),
+      v2 = this.searchClosestValue( end2 ),
+      i, j, min = Infinity,
+      initJ, maxJ;
+
+    if ( !v1 ) {
+      start2 = this.minX;
+      v1 = this.searchClosestValue( start2 );
+    }
+
+    if ( !v2 ) {
+      end2 = this.maxX;
+      v2 = this.searchClosestValue( end2 );
+    }
+
+    if ( !v1 ||  !v2 ) {
+      return Infinity;
+    }
+
+    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+      for ( j = initJ; j <= maxJ; j += 2 ) {
+        min = Math.min( min, this.data[ i ][ j + 1 ] );
+      }
+    }
+
+    return min;
+  };
+
+  /* LINE STYLE * @memberof SerieLine
+   */
+
+  SerieLine.prototype.setStyle = function( style, selectionType ) {
+
+    this.styles[ selectionType ] = style;
+    this.styleHasChanged( selectionType );
+
+  };
+
+  SerieLine.prototype.setLineStyle = function( number, selectionType ) {
+
+    selectionType = selectionType ||  "unselected";
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineStyle = number;
+
+    this.styleHasChanged( selectionType );
+
+    return this;
+  };
+
+  SerieLine.prototype.getLineStyle = function( selectionType ) {
+    return this.getStyle( selectionType ).lineStyle;
+  };
+
+  SerieLine.prototype.getLineDashArray = function( selectionType ) {
+
+    switch ( this.getStyle( selectionType ).lineStyle ) {
+
+      case 2:
+        return "1, 1";
+        break;
+      case 3:
+        return "2, 2";
+        break;
+      case 3:
+        return "3, 3";
+        break;
+      case 4:
+        return "4, 4";
+        break;
+      case 5:
+        return "5, 5";
+        break;
+
+      case 6:
+        return "5 2";
+        break
+      case 7:
+        return "2 5";
+        break
+
+      case 8:
+        return "4 2 4 4";
+        break;
+      case 9:
+        return "1,3,1";
+        break;
+      case 10:
+        return "9 2";
+        break;
+      case 11:
+        return "2 9";
+        break;
+
+      case false:
+      case 1:
+        return false;
+        break;
+
+      default:
+        return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
+        break;
+    }
+
+    this.styleHasChanged( selectionType );
+
+  };
+
+  SerieLine.prototype.getStyle = function( selectionType ) {
+    return this.styles[ selectionType || this.selectionType || "unselected" ];
+  };
+
+  SerieLine.prototype.extendStyles = function() {
+    for ( var i in this.styles ) {
+
+      var s = this.styles[ i ];
+      if ( s ) {
+        this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+      }
+    }
+  };
+  /*  * @memberof SerieLine
+   */
+
+  SerieLine.prototype.setLineWidth = function( width, selectionType ) {
+
+    selectionType = selectionType ||  "unselected";
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineWidth = width;
+
+    this.styleHasChanged( selectionType );
+
+    return this;
+  };
+
+  SerieLine.prototype.getLineWidth = function( selectionType ) {
+
+    return this.getStyle( selectionType ).lineWidth;
+  };
+
+  /* LINE COLOR * @memberof SerieLine
+   */
+  SerieLine.prototype.setLineColor = function( color, selectionType ) {
+
+    selectionType = selectionType ||  "unselected";
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].lineColor = color;
+
+    this.styleHasChanged( selectionType );
+
+    return this;
+  };
+
+  SerieLine.prototype.getLineColor = function( selectionType ) {
+
+    return this.getStyle( selectionType ).lineColor;
+  };
+
+  /* * @memberof SerieLine
+   */
+
+  /* MARKERS * @memberof SerieLine
+   */
+  SerieLine.prototype.showMarkers = function( selectionType, redraw ) {
+    selectionType = selectionType ||  "unselected";
+    this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+    this.styles[ selectionType ].markers = true;
+
+    if ( redraw && this._drawn ) {
+      this.draw();
+    } else {
+      this.styleHasChanged( selectionType );
+    }
+
+    return this;
+  };
+
+  SerieLine.prototype.hideMarkers = function( selectionType, redraw ) {
+
+    selectionType = selectionType ||  "unselected";
+    this.styles[ selectionType ].markers = false;
+
+    if ( redraw && this._drawn ) {
+      this.draw();
+    } else {
+      this.styleHasChanged( selectionType );
+    }
+    return this;
+  };
+
+  SerieLine.prototype.markersShown = function( selectionType ) {
+    return this.getStyle( selectionType ).markers;
+  };
+
+  SerieLine.prototype.areMarkersShown = function() {
+    return this.markersShown.apply( this, arguments );
+  };
+
+  SerieLine.prototype.isMarkersShown = function() {
+    return this.markersShown.apply( this, arguments );
+  };
+
+  // Multiple markers
+  SerieLine.prototype.setMarkers = function( families, selectionType ) {
+    // Family has to be an object
+    // Family looks like
+    /*
 				{
 					type: 1,
 					zoom: 1,
@@ -9533,248 +10507,249 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
 					strokeColor: ''
 					fillColor: '',
 				}
-			*/
+			* @memberof SerieLine
+*/
 
-      //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
+    //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
-      this.showMarkers( selectionType, false );
+    this.showMarkers( selectionType, false );
 
-      if ( !Array.isArray( families ) && typeof families == 'object' ) {
-        families = [  families ];
-      } else if ( !families ) {
+    if ( !Array.isArray( families ) && typeof families == 'object' ) {
+      families = [  families ];
+    } else if ( !families ) {
 
-        families = [ {
-          type: 1,
-          zoom: 1,
-          points: 'all'
-        } ];
+      families = [ {
+        type: 1,
+        zoom: 1,
+        points: 'all'
+      } ];
+    }
+
+    var markerPoints = [];
+    // Overwriting any other undefined families
+    markerPoints.push( [ 0, Infinity, null ] );
+
+    for ( var i = 0, k = families.length; i < k; i++ ) {
+
+      this.getMarkerDom( families[ i ] );
+      families[ i ].markerPath = this.getMarkerPath( families[ i ] );
+
+      if ( !families[ i ].points ) {
+        families[ i ].points = 'all';
       }
 
-      var markerPoints = [];
-      // Overwriting any other undefined families
-      markerPoints.push( [ 0, Infinity, null ] );
-
-      for ( var i = 0, k = families.length; i < k; i++ ) {
-
-        this.getMarkerDom( families[ i ] );
-        families[ i ].markerPath = this.getMarkerPath( families[ i ] );
-
-        if ( !families[ i ].points ) {
-          continue;
-        }
-
-        if ( !Array.isArray( families[ i ].points ) ) {
-          families[ i ].points = [ families[ i ].points ];
-        }
-
-        for ( var j = 0, l = families[ i ].points.length; j < l; j++ ) {
-
-          if ( families[ i ].points[ j ] == 'all' ) {
-
-            markerPoints.push( [ 0, Infinity, i ] );
-
-          } else if ( !Array.isArray( families[ i ].points[ j ] ) ) {
-
-            markerPoints.push( [ families[ i ].points[ j ], families[ i ].points[ j ], i ] );
-            //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-          } else {
-
-            markerPoints.push( [ families[ i ].points[ j ][ 0 ], families[ i ].points[ j ][ 1 ], i ] );
-
-          }
-        }
+      if ( !Array.isArray( families[ i ].points ) ) {
+        families[ i ].points = [ families[ i ].points ];
       }
 
-      this.markerFamilies = this.markerFamilies || {};
-      this.markerFamilies[ selectionType || "unselected" ] = families;
+      for ( var j = 0, l = families[ i ].points.length; j < l; j++ ) {
 
-      // Let's sort if by the first index.
-      markerPoints.sort( function( a, b ) { 
-        return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
-      } );
+        if ( families[ i ].points[ j ] == 'all' ) {
 
-      this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
-      this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+          markerPoints.push( [ 0, Infinity, i ] );
 
-      this.styleHasChanged( selectionType );
-      this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+        } else if ( !Array.isArray( families[ i ].points[ j ] ) ) {
 
-      return this;
-    },
-
-    insertMarkers: function() {
-
-      if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
-        return;
-      }
-
-      for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
-        this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
-        this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
-        this.currentMarkersSelectionType = this.selectionType;
-      }
-    },
-
-    getMarkerForLegend: function() {
-
-      if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
-        return;
-      }
-
-      if ( !this.markerForLegend ) {
-
-        var marker = document.createElementNS( this.graph.ns, 'path' );
-        this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
-
-        marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
-
-        this.markerForLegend = marker;
-      }
-
-      return this.markerForLegend;
-    },
-
-    eraseMarkers: function() {
-
-      var self = this;
-
-      if ( this.options.markersIndependant ) {
-        
-        for( var i in this.independantMarkers ) {
-           self.groupMain.removeChild( this.independantMarkers[ i ] );
-        }
-         
-        this.independantMarkers = {};
-
-      } else if ( this.currentMarkersSelectionType ) {
-
-        this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
-          self.groupMain.removeChild( el.dom );
-          el.path = "";
-        } );
-
-        this.currentMarkersSelectionType = false;
-      }
-
-    },
-
-    showImpl: function() {
-      this.showPeakPicking();
-    },
-
-    hideImpl: function() {
-      this.hidePeakPicking();
-    },
-
-    XIsMonotoneous: function() {
-      this.xmonotoneous = true;
-      return this;
-    },
-
-    isXMonotoneous: function() {
-      return this.xmonotoneous ||  false;
-    },
-
-    XMonotoneousDirection: function() {
-
-      return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
-    },
-
-    makePeakPicking: function() {
-
-      var self = this;
-      var ys = this.detectedPeaks;
-
-      var x,
-        px,
-        passed = [],
-        px,
-        i = 0,
-        l = ys.length,
-        k, m, y,
-        index;
-
-      var selected = self.graph.selectedShapes.map( function( shape ) {
-        return shape._data.val;
-      } );
-
-      ys.sort( function( a, b ) {
-        return b[ 0 ] - a[ 0 ];
-      } );
-
-      m = 0;
-
-      for ( ; i < l; i++ ) {
-
-        x = ys[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0,
-        y = self.getY( ys[ i ][ 0 ] );
-
-        if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-          continue;
-        }
-
-        if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
-
-          continue;
-        }
-
-        // Distance check
-        for ( ; k < passed.length; k++ ) {
-          if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
-            break;
-          }
-        }
-        if ( k < passed.length ) {
-          continue;
-        }
-
-        // Distance check end
-
-        // If the retained one has already been selected somewhere, continue;
-        if ( ( index = selected.indexOf( x ) ) > -1 ) {
-          passed.push( px );
-          continue;
-        }
-
-        if ( !self.picks[ m ] ) {
-          return;
-        }
-
-        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getActualMin(), y );
-        //    self.picks[ m ].show();
-
-        self.picks[ m ].prop( 'labelPosition', {
-          x: x,
-          dy: this.getYAxis().getActualMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
-          y: Math.min( this.getYAxis().getActualMax() * 0.9, ys[ i ][ 0 ] )
-        } );
-
-        self.picks[ m ]._data.val = x;
-
-        if ( self.options.autoPeakPickingFormat ) {
-
-          self.picks[ m ]._data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+          markerPoints.push( [ families[ i ].points[ j ], families[ i ].points[ j ], i ] );
+          //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
         } else {
-          self.picks[ m ]._data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+
+          markerPoints.push( [ families[ i ].points[ j ][ 0 ], families[ i ].points[ j ][ 1 ], i ] );
+
         }
+      }
+    }
 
-        self.picks[ m ].redraw();
+    this.markerFamilies = this.markerFamilies || {};
+    this.markerFamilies[ selectionType || "unselected" ] = families;
 
-        m++;
-        while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
-          m++;
-        }
+    // Let's sort if by the first index.
+    markerPoints.sort( function( a, b ) { 
+      return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
+    } );
 
-        if ( passed.length == self.options.autoPeakPickingNb ) {
+    this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
+    this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+
+    this.styles[ selectionType || "unselected" ].markers = families;
+
+    this.styleHasChanged( selectionType );
+    this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+
+    return this;
+  };
+
+  SerieLine.prototype.insertMarkers = function() {
+
+    if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
+      return;
+    }
+
+    for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
+      this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
+      this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+      this.currentMarkersSelectionType = this.selectionType;
+    }
+  };
+
+  SerieLine.prototype.getMarkerForLegend = function() {
+
+    if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
+      return;
+    }
+
+    if ( !this.markerForLegend ) {
+
+      var marker = document.createElementNS( this.graph.ns, 'path' );
+      this.setMarkerStyleTo( marker, this.markerFamilies[ this.selectionType ][ 0 ] );
+
+      marker.setAttribute( 'd', "M 14 0 " + this.getMarkerPath( this.markerFamilies[ this.selectionType ][ 0 ] ) );
+
+      this.markerForLegend = marker;
+    }
+
+    return this.markerForLegend;
+  };
+
+  SerieLine.prototype.eraseMarkers = function() {
+
+    var self = this;
+
+    if ( this.options.markersIndependant ) {
+
+      for ( var i in this.independantMarkers ) {
+        self.groupMain.removeChild( this.independantMarkers[ i ] );
+      }
+
+      this.independantMarkers = {};
+
+    } else if ( this.currentMarkersSelectionType ) {
+
+      this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
+        self.groupMain.removeChild( el.dom );
+        el.path = "";
+      } );
+
+      this.currentMarkersSelectionType = false;
+    }
+
+  };
+
+  SerieLine.prototype.showImpl = function() {
+    this.showPeakPicking();
+  };
+
+  SerieLine.prototype.hideImpl = function() {
+    this.hidePeakPicking();
+  };
+
+  SerieLine.prototype.XIsMonotoneous = function() {
+    this.xmonotoneous = true;
+    return this;
+  };
+
+  SerieLine.prototype.isXMonotoneous = function() {
+    return this.xmonotoneous ||  false;
+  };
+
+  SerieLine.prototype.XMonotoneousDirection = function() {
+
+    return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
+  };
+
+  SerieLine.prototype.makePeakPicking = function() {
+
+    var self = this;
+    var ys = this.detectedPeaks;
+
+    var x,
+      px,
+      passed = [],
+      px,
+      i = 0,
+      l = ys.length,
+      k, m, y,
+      index;
+
+    var selected = self.graph.selectedShapes.map( function( shape ) {
+      return shape._data.val;
+    } );
+
+    ys.sort( function( a, b ) {
+      return b[ 0 ] - a[ 0 ];
+    } );
+
+    m = 0;
+
+    for ( ; i < l; i++ ) {
+
+      x = ys[ i ][ 1 ],
+      px = self.getX( x ),
+      k = 0,
+      y = self.getY( ys[ i ][ 0 ] );
+
+      if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
+        continue;
+      }
+
+      if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
+
+        continue;
+      }
+
+      // Distance check
+      for ( ; k < passed.length; k++ ) {
+        if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
           break;
         }
       }
+      if ( k < passed.length ) {
+        continue;
+      }
 
+      // Distance check end
+
+      // If the retained one has already been selected somewhere, continue;
+      if ( ( index = selected.indexOf( x ) ) > -1 ) {
+        passed.push( px );
+        continue;
+      }
+
+      if ( !self.picks[ m ] ) {
+        return;
+      }
+
+      //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
+      //    self.picks[ m ].show();
+
+      self.picks[ m ].prop( 'labelPosition', {
+        x: x,
+        dy: this.getYAxis().getCurrentMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
+        y: Math.min( this.getYAxis().getCurrentMax() * 0.9, ys[ i ][ 0 ] )
+      } );
+
+      self.picks[ m ]._data.val = x;
+
+      if ( self.options.autoPeakPickingFormat ) {
+
+        self.picks[ m ]._data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+      } else {
+        self.picks[ m ]._data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+      }
+
+      self.picks[ m ].redraw();
+
+      m++;
+      while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
+        m++;
+      }
+
+      if ( passed.length == self.options.autoPeakPickingNb ) {
+        break;
+      }
     }
 
-  } );
+  };
 
   function drawMarkerXY( graph, family, x, y ) {
 
@@ -10034,8 +11009,8 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
     }
   }
 
-  return GraphSerieLine;
- } ) ( build["./graph._serie"],build["./series/slotoptimizer"],build["./graph.util"] );
+  return SerieLine;
+ } ) ( build["./series/graph.serie"],build["./series/slotoptimizer"],build["./graph.util"] );
 
 
 // Build: End source file (series/graph.serie.line) 
@@ -10049,47 +11024,20 @@ build['./series/graph.serie.line'] = ( function( GraphSerieLineNonInstanciable, 
  * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
  */
 
-build['./series/graph.serie.contour'] = ( function( GraphSerie ) { 
+build['./series/graph.serie.contour'] = ( function( GraphSerie, util ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
-  // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
-  /**
-   * Converts an HSL color value to RGB. Conversion formula
-   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-   * Assumes h, s, and l are contained in the set [0, 1] and
-   * returns r, g, and b in the set [0, 255].
-   *
-   * @param   Number  h       The hue
-   * @param   Number  s       The saturation
-   * @param   Number  l       The lightness
-   * @return  Array           The RGB representation
+
+  /** 
+   * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
+   * @private
+   * @class SerieContour
+   * @inherits Serie
+   * @example graph.newSerie( name, options, "contour" );
+   * @see Graph#newSerie
    */
-  function hue2rgb( p, q, t ) {
-    if ( t < 0 ) t += 1;
-    if ( t > 1 ) t -= 1;
-    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
-    if ( t < 1 / 2 ) return q;
-    if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
-    return p;
-  }
-
-  function hslToRgb( h, s, l ) {
-    var r, g, b;
-
-    if ( s == 0 ) {
-      r = g = b = l; // achromatic
-    } else {
-
-      var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
-      var p = 2 * l - q;
-      r = hue2rgb( p, q, h + 1 / 3 );
-      g = hue2rgb( p, q, h );
-      b = hue2rgb( p, q, h - 1 / 3 );
-    }
-
-    return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
-  }
-
   var GraphSerieContour = function() {
 
     this.negativeDelta = 0;
@@ -10100,8 +11048,23 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
   };
 
-  $.extend( GraphSerieContour.prototype, GraphSerie.prototype, {
+  GraphSerieContour.prototype = new GraphSerie();
 
+  $.extend( GraphSerieContour.prototype, {
+
+    /**
+     * Sets the contour lines
+     * @memberof SerieContour.prototype
+     * @param {Object} data - The object data
+     * @param {Number} data.minX - The minimum x value
+     * @param {Number} data.maxX - The maximum x value
+     * @param {Number} data.minY - The minimum y value
+     * @param {Number} data.maxY - The maximum y value
+     * @param {Object[]} data.segments - The segments making up the contour lines
+     * @param {Number[]} data.segments.lines - An array of alternating (x1,y1,x2,y2) quadruplet
+     * @param {Number} data.segments.zValue - The corresponding z-value of this array
+     * @return {Serie} The current serie
+     */
     setData: function( data, arg, type ) {
 
       var z = 0;
@@ -10150,6 +11113,12 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       return this;
     },
 
+    /**
+     * Draws the serie if the data has changed
+     * @memberof SerieContour.prototype
+     * @param {Boolean} force - Forces redraw even if the data hasn't changed
+     * @return {Serie} The current serie
+     */
     draw: function( force ) {
 
       if ( force || this.hasDataChanged() ) {
@@ -10173,11 +11142,11 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
           incrYFlip = 1;
         }
 
-        var minY = this.getYAxis().getActualMin();
-        var minX = this.getXAxis().getActualMin();
+        var minY = this.getYAxis().getCurrentMin();
+        var minX = this.getXAxis().getCurrentMin();
 
-        var maxX = this.getXAxis().getActualMax();
-        var maxY = this.getYAxis().getActualMax();
+        var maxX = this.getXAxis().getCurrentMax();
+        var maxY = this.getYAxis().getCurrentMax();
 
         this.counter = 0;
         this.currentLineId = 0;
@@ -10270,14 +11239,6 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
     },
 
-    initimpl: function() {
-
-      if ( !this.options.hasNegative ) {
-        this.negativeThreshold = 0;
-      }
-
-    },
-
     onMouseWheel: function( delta, e, fixed, positive ) {
 
       delta /= 250;
@@ -10338,6 +11299,33 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
       }
     },
 
+    /**
+     * Sets rainbow colors based on hsl format
+     * @memberof SerieContour.prototype
+     * @param {Object} colors
+     * @param {Object} colors.fromPositive
+     * @param {Number} colors.fromPositive.h
+     * @param {Number} colors.fromPositive.s
+     * @param {Number} colors.fromPositive.l
+     
+     * @param {Object} colors.toPositive
+     * @param {Number} colors.toPositive.h
+     * @param {Number} colors.toPositive.s
+     * @param {Number} colors.toPositive.l
+     
+
+     * @param {Object} colors.fromNegative
+     * @param {Number} colors.fromNegative.h
+     * @param {Number} colors.fromNegative.s
+     * @param {Number} colors.fromNegative.l
+     
+
+     * @param {Object} colors.toNegative
+     * @param {Number} colors.toNegative.h
+     * @param {Number} colors.toNegative.s
+     * @param {Number} colors.toNegative.l
+     * @return {Serie} The current serie
+     */
     setDynamicColor: function( colors ) {
       this.lineColors = colors;
 
@@ -10375,7 +11363,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
       hsl.h /= 360;
 
-      var rgb = hslToRgb( hsl.h, hsl.s, hsl.l );
+      var rgb = util.hslToRgb( hsl.h, hsl.s, hsl.l );
 
       line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')' );
     },
@@ -10423,7 +11411,7 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
 
   return GraphSerieContour;
 
- } ) ( build["./series/graph.serie.line"] );
+ } ) ( build["./series/graph.serie.line"],build["./graph.util"] );
 
 
 // Build: End source file (series/graph.serie.contour) 
@@ -10438,6 +11426,8 @@ build['./series/graph.serie.contour'] = ( function( GraphSerie ) {
  */
 
 build['./series/graph.serie.line.broken'] = ( function( GraphLine ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -10647,17 +11637,35 @@ build['./series/graph.serie.line.broken'] = ( function( GraphLine ) {
  */
 
 build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, util ) { 
+/** @global */ /** @ignore */
 
-  "use strict";
 
+
+
+  /** 
+   * @class SerieScatter
+   * @static
+   * @augments Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
   var GraphSerieScatter = function() {}
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
+    /**
+     * @name SerieScatterDefaultOptions
+     * @object
+     * @static
+     */
     defaults: {
-      label: "",
-      onHover: false
+
     },
 
+    /**
+     * Initializes the seriesfsdfsdasdasd
+     * @memberof SerieScatter.prototype
+     * @private
+     */
     init: function( graph, name, options ) {
 
       var self = this;
@@ -10749,21 +11757,17 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
 
     },
 
-    /**
-     *	Possible data types
-     *	[100, 0.145, 101, 0.152, 102, 0.153]
-     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-     *
-     *	Converts every data type to a 1D array
+    /** 
+     * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
+     * @memberof SerieScatter.prototype
+     * @see GraphSerie#setData
      */
-    setData: function( data, arg, type ) {
+    setData: function( data, oneDimensional, type ) {
 
       var z = 0,
         x,
         dx,
-        arg = arg || "2D",
+        oneDimensional = oneDimensional || "2D",
         type = type || 'float',
         arr,
         total = 0,
@@ -10778,10 +11782,10 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
       }
 
       if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
-        arg = "1D";
+        oneDimensional = "1D";
       }
 
-      var _2d = ( arg == "2D" );
+      var _2d = ( oneDimensional == "2D" );
 
       arr = this._addData( type, _2d ? data.length * 2 : data.length );
 
@@ -10814,6 +11818,11 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
       return this;
     },
 
+    /**
+     * Removes all DOM points
+     * @private
+     * @memberof SerieScatter.prototype
+     */
     empty: function() {
 
       while ( this.groupPoints.firstChild ) {
@@ -10821,15 +11830,23 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
       }
     },
 
-    select: function() {
-      this.selected = true;
-
-    },
-
-    unselect: function() {
-      this.selected = false;
-    },
-
+    /**
+     * Sets style to the scatter points
+     * First argument is the style applied by default to all points
+     * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+     * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+     *
+     * @example
+     * var modifiers = [];
+     * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+     * serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
+     *
+     * @memberof SerieScatter.prototype
+     * @param {Object} allStyles - The general style for all markers
+     * @param {Object} [ modifiers ] - The general style for all markers
+     * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
+     *
+     */
     setStyle: function( all, modifiers, mode ) {
 
       if ( typeof modifiers == "string" ) {
@@ -10858,6 +11875,13 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
       return this;
     },
 
+    /**
+     * Redraws the serie
+     * @private
+     * @memberof SerieScatter.prototype
+     *
+     * @param {force} Boolean - Forces redraw even if the data hasn't changed
+     */
     draw: function( force ) { // Serie redrawing
 
       if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ) {
@@ -11318,7 +12342,7 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
   } );
 
   return GraphSerieScatter;
- } ) ( build["./graph._serie"],build["./graph.util"] );
+ } ) ( build["./series/graph.serie"],build["./graph.util"] );
 
 
 // Build: End source file (series/graph.serie.scatter) 
@@ -11333,15 +12357,31 @@ build['./series/graph.serie.scatter'] = ( function( GraphSerieNonInstanciable, u
  */
 
 build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) { 
+/** @global */ /** @ignore */
 
-  "use strict";
 
+
+
+  /** 
+   * @class SerieZone
+   * @static
+   * @augments Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
   var GraphSerieZone = function() {}
+
   $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
+    /**
+     * @name SerieZoneDefaultOptions
+     * @object
+     * @static
+     * @param {String} fillColor - The color to fill the zone with
+     * @param {String} lineColor - The line color
+     * @param {String} lineWidth - The line width (in px)
+     */
     defaults: {
-      label: "",
-
       fillColor: 'rgba( 0, 0, 0, 0.1 )',
       lineColor: 'rgba( 0, 0, 0, 1 )',
       lineWidth: '1px',
@@ -11395,7 +12435,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
      *
      *	Converts every data type to a 1D array
      */
-    setData: function( data, arg, type ) {
+    // Should be handled properly by the default setData method
+     setData: function( data, arg, type ) {
 
       var z = 0,
         x,
@@ -11515,6 +12556,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       return this;
     },
 
+
+
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -11540,6 +12583,11 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       }
     },
 
+
+    /**
+     * Removes all the dom concerning this serie from the drawing zone
+     * @memberof SerieZone.prototype
+     */
     empty: function() {
 
       while ( this.group.firstChild ) {
@@ -11547,15 +12595,13 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       }
     },
 
-    select: function() {
-      this.selected = true;
-
-    },
-
-    unselect: function() {
-      this.selected = false;
-    },
-
+    /**
+     * Redraws the serie
+     * @private
+     * @memberof SerieZone.prototype
+     *
+     * @param {force} Boolean - Forces redraw even if the data hasn't changed
+     */
     draw: function( force ) { // Serie redrawing
 
       if ( force || this.hasDataChanged() ) {
@@ -11640,6 +12686,13 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
 
     },
 
+    /**
+     * Applies the computed style to the DOM element fed as a parameter
+     * @private
+     * @memberof SerieZone.prototype
+     *
+     * @param {SVGLineElement} line - The line to which the style has to be applied to
+     */
     applyLineStyle: function( line ) {
 
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -11649,48 +12702,79 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       this.styleHasChanged( false );
     },
 
+    /**
+     * Sets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} width - The line width
+     * @returns {SerieZone} - The current serie
+     */
     setLineWidth: function( width ) {
       this.options.lineWidth = width;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The line width
+     */
     getLineWidth: function() {
       return this.options.lineWidth;
     },
 
-    /* LINE COLOR */
-
+    /**
+     * Sets the line color
+     * @memberof SerieZone.prototype
+     *
+     * @param {String} color - The line color
+     * @returns {SerieZone} - The current serie
+     */
     setLineColor: function( color ) {
       this.options.lineColor = color;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The line width
+     */
     getLineColor: function() {
       return this.options.lineColor;
     },
 
-    /* */
-
-    /* FILL COLOR */
-
+    /**
+     * Sets the fill color
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} width - The line width
+     * @returns {Number} - The line width
+     */
     setFillColor: function( color ) {
       this.options.fillColor = color;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the fill color
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The fill color
+     */
     getFillColor: function() {
       return this.options.fillColor;
     },
 
-    /* */
-
   } );
 
   return GraphSerieZone;
- } ) ( build["./graph._serie"] );
+ } ) ( build["./series/graph.serie"] );
 
 
 // Build: End source file (series/graph.serie.zone) 
@@ -11705,6 +12789,8 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
  */
 
 build['./shapes/graph.shape'] = ( function( ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -12992,6 +14078,8 @@ build['./shapes/graph.shape'] = ( function( ) {
  */
 
 build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -13271,6 +14359,8 @@ build['./shapes/graph.shape.areaundercurve'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.line'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var GraphLine = function( graph, options ) {
 
@@ -13476,6 +14566,8 @@ build['./shapes/graph.shape.line'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) { 
+/** @global */ /** @ignore */
+
 
   var GraphArrow = function( graph ) {
 
@@ -13517,6 +14609,8 @@ build['./shapes/graph.shape.arrow'] = ( function( GraphLine ) {
  */
 
 build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var GraphRect = function( graph, options ) {}
 
@@ -13624,6 +14718,8 @@ build['./shapes/graph.shape.ellipse'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.label'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var GraphLabel = function( graph, options ) {
 
@@ -13700,6 +14796,8 @@ build['./shapes/graph.shape.label'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -13957,6 +15055,8 @@ build['./shapes/graph.shape.nmrintegral'] = ( function( GraphSurfaceUnderCurve )
  */
 
 build['./shapes/graph.shape.rect'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var GraphRect = function( graph, options ) {
 
@@ -14504,6 +15604,8 @@ this.handle1.setAttribute('x', this.currentX);
  */
 
 build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) { 
+/** @global */ /** @ignore */
+
 
   var lineHeight = 5;
 
@@ -14554,6 +15656,8 @@ build['./shapes/graph.shape.peakintegration2d'] = ( function( GraphRect ) {
  */
 
 build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
   var GraphPeakInterval = function( graph ) {
@@ -14600,6 +15704,8 @@ build['./shapes/graph.shape.peakinterval'] = ( function( GraphLine ) {
  */
 
 build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
   var lineHeight = 5;
@@ -14824,6 +15930,8 @@ build['./shapes/graph.shape.peakinterval2'] = ( function( GraphLine ) {
  */
 
 build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) { 
+/** @global */ /** @ignore */
+
 
   var GraphRangeX = function( graph ) {};
   $.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
@@ -14948,6 +16056,8 @@ build['./shapes/graph.shape.rangex'] = ( function( GraphSurfaceUnderCurve ) {
  */
 
 build['./shapes/graph.shape.cross'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var GraphCross = function( graph, options ) {
     this.nbHandles = 1;
@@ -15077,6 +16187,8 @@ build['./shapes/graph.shape.cross'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) { 
+/** @global */ /** @ignore */
+
 
   var Zoom2DShape = function() {}
 
@@ -15260,6 +16372,8 @@ build['./shapes/graph.shape.zoom2d'] = ( function( GraphShape ) {
  */
 
 build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) { 
+/** @global */ /** @ignore */
+
 
   "use strict";
 
@@ -15480,6 +16594,8 @@ build['./shapes/graph.shape.peakboundariescenter'] = ( function( GraphLine ) {
  */
 
 build['./graph.toolbar'] = ( function( ) { 
+/** @global */ /** @ignore */
+
 
   var toolbarDefaults = {
 
@@ -15641,7 +16757,7 @@ build['./graph.toolbar'] = ( function( ) {
  */
 
 return ( function( Graph,
-    _serie,
+
     _axis,
     GraphXAxis,
     GraphYAxis,
@@ -15649,11 +16765,14 @@ return ( function( Graph,
     GraphYAxisBroken,
     GraphXAxisTime,
     GraphLegend,
+
+    GraphPlugin,
     GraphPluginDrag,
     GraphPluginShape,
     GraphPluginSelectScatter,
     GraphPluginZoom,
 
+    GraphSerie,
     GraphSerieContour,
     GraphSerieLine,
     GraphSerieLineBroken,
@@ -15679,6 +16798,11 @@ return ( function( Graph,
     GraphToolbar
 
   ) { 
+/** @global */ /** @ignore */
+/**
+ * @module jsGraph
+ */
+
 
     // Corrent naming is important here !
 
@@ -15719,7 +16843,7 @@ return ( function( Graph,
 
     return Graph;
 
-   } ) ( build["./graph.core"],build["./graph._serie"],build["./graph.axis"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.axis.x.time"],build["./graph.legend"],build["./plugins/graph.plugin.drag"],build["./plugins/graph.plugin.shape"],build["./plugins/graph.plugin.selectScatter"],build["./plugins/graph.plugin.zoom"],build["./series/graph.serie.contour"],build["./series/graph.serie.line"],build["./series/graph.serie.line.broken"],build["./series/graph.serie.scatter"],build["./series/graph.serie.zone"],build["./shapes/graph.shape"],build["./shapes/graph.shape.areaundercurve"],build["./shapes/graph.shape.arrow"],build["./shapes/graph.shape.ellipse"],build["./shapes/graph.shape.label"],build["./shapes/graph.shape.line"],build["./shapes/graph.shape.nmrintegral"],build["./shapes/graph.shape.peakintegration2d"],build["./shapes/graph.shape.peakinterval"],build["./shapes/graph.shape.peakinterval2"],build["./shapes/graph.shape.rangex"],build["./shapes/graph.shape.rect"],build["./shapes/graph.shape.cross"],build["./shapes/graph.shape.zoom2d"],build["./shapes/graph.shape.peakboundariescenter"],build["./graph.toolbar"] );
+   } ) ( build["./graph.core"],build["./graph.axis"],build["./graph.axis.x"],build["./graph.axis.y"],build["./graph.axis.x.broken"],build["./graph.axis.y.broken"],build["./graph.axis.x.time"],build["./graph.legend"],build["./plugins/graph.plugin"],build["./plugins/graph.plugin.drag"],build["./plugins/graph.plugin.shape"],build["./plugins/graph.plugin.selectScatter"],build["./plugins/graph.plugin.zoom"],build["./series/graph.serie"],build["./series/graph.serie.contour"],build["./series/graph.serie.line"],build["./series/graph.serie.line.broken"],build["./series/graph.serie.scatter"],build["./series/graph.serie.zone"],build["./shapes/graph.shape"],build["./shapes/graph.shape.areaundercurve"],build["./shapes/graph.shape.arrow"],build["./shapes/graph.shape.ellipse"],build["./shapes/graph.shape.label"],build["./shapes/graph.shape.line"],build["./shapes/graph.shape.nmrintegral"],build["./shapes/graph.shape.peakintegration2d"],build["./shapes/graph.shape.peakinterval"],build["./shapes/graph.shape.peakinterval2"],build["./shapes/graph.shape.rangex"],build["./shapes/graph.shape.rect"],build["./shapes/graph.shape.cross"],build["./shapes/graph.shape.zoom2d"],build["./shapes/graph.shape.peakboundariescenter"],build["./graph.toolbar"] );
 
 
 // Build: End source file (graph) 

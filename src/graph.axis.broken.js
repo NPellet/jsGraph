@@ -167,7 +167,7 @@ define( [ 'jquery' ], function( $ ) {
     },
 
     getRelPx: function( value ) {
-      return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
+      return ( value / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
     },
 
     getRelVal: function( px ) {

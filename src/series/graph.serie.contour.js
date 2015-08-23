@@ -1,44 +1,15 @@
-define( [ './graph.serie.line' ], function( GraphSerie ) {
+define( [ './graph.serie.line', '../graph.util' ], function( GraphSerie, util ) {
 
   "use strict";
-  // http://stackoverflow.com/questions/2353211/hsl-to-rgb-color-conversion
-  /**
-   * Converts an HSL color value to RGB. Conversion formula
-   * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
-   * Assumes h, s, and l are contained in the set [0, 1] and
-   * returns r, g, and b in the set [0, 255].
-   *
-   * @param   Number  h       The hue
-   * @param   Number  s       The saturation
-   * @param   Number  l       The lightness
-   * @return  Array           The RGB representation
+
+  /** 
+   * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
+   * @private
+   * @class SerieContour
+   * @inherits Serie
+   * @example graph.newSerie( name, options, "contour" );
+   * @see Graph#newSerie
    */
-  function hue2rgb( p, q, t ) {
-    if ( t < 0 ) t += 1;
-    if ( t > 1 ) t -= 1;
-    if ( t < 1 / 6 ) return p + ( q - p ) * 6 * t;
-    if ( t < 1 / 2 ) return q;
-    if ( t < 2 / 3 ) return p + ( q - p ) * ( 2 / 3 - t ) * 6;
-    return p;
-  }
-
-  function hslToRgb( h, s, l ) {
-    var r, g, b;
-
-    if ( s == 0 ) {
-      r = g = b = l; // achromatic
-    } else {
-
-      var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
-      var p = 2 * l - q;
-      r = hue2rgb( p, q, h + 1 / 3 );
-      g = hue2rgb( p, q, h );
-      b = hue2rgb( p, q, h - 1 / 3 );
-    }
-
-    return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
-  }
-
   var GraphSerieContour = function() {
 
     this.negativeDelta = 0;
@@ -49,8 +20,23 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
   };
 
-  $.extend( GraphSerieContour.prototype, GraphSerie.prototype, {
+  GraphSerieContour.prototype = new GraphSerie();
 
+  $.extend( GraphSerieContour.prototype, {
+
+    /**
+     * Sets the contour lines
+     * @memberof SerieContour.prototype
+     * @param {Object} data - The object data
+     * @param {Number} data.minX - The minimum x value
+     * @param {Number} data.maxX - The maximum x value
+     * @param {Number} data.minY - The minimum y value
+     * @param {Number} data.maxY - The maximum y value
+     * @param {Object[]} data.segments - The segments making up the contour lines
+     * @param {Number[]} data.segments.lines - An array of alternating (x1,y1,x2,y2) quadruplet
+     * @param {Number} data.segments.zValue - The corresponding z-value of this array
+     * @return {Serie} The current serie
+     */
     setData: function( data, arg, type ) {
 
       var z = 0;
@@ -99,6 +85,12 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       return this;
     },
 
+    /**
+     * Draws the serie if the data has changed
+     * @memberof SerieContour.prototype
+     * @param {Boolean} force - Forces redraw even if the data hasn't changed
+     * @return {Serie} The current serie
+     */
     draw: function( force ) {
 
       if ( force || this.hasDataChanged() ) {
@@ -122,11 +114,11 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
           incrYFlip = 1;
         }
 
-        var minY = this.getYAxis().getActualMin();
-        var minX = this.getXAxis().getActualMin();
+        var minY = this.getYAxis().getCurrentMin();
+        var minX = this.getXAxis().getCurrentMin();
 
-        var maxX = this.getXAxis().getActualMax();
-        var maxY = this.getYAxis().getActualMax();
+        var maxX = this.getXAxis().getCurrentMax();
+        var maxY = this.getYAxis().getCurrentMax();
 
         this.counter = 0;
         this.currentLineId = 0;
@@ -219,14 +211,6 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
     },
 
-    initimpl: function() {
-
-      if ( !this.options.hasNegative ) {
-        this.negativeThreshold = 0;
-      }
-
-    },
-
     onMouseWheel: function( delta, e, fixed, positive ) {
 
       delta /= 250;
@@ -287,6 +271,33 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
       }
     },
 
+    /**
+     * Sets rainbow colors based on hsl format
+     * @memberof SerieContour.prototype
+     * @param {Object} colors
+     * @param {Object} colors.fromPositive
+     * @param {Number} colors.fromPositive.h
+     * @param {Number} colors.fromPositive.s
+     * @param {Number} colors.fromPositive.l
+     
+     * @param {Object} colors.toPositive
+     * @param {Number} colors.toPositive.h
+     * @param {Number} colors.toPositive.s
+     * @param {Number} colors.toPositive.l
+     
+
+     * @param {Object} colors.fromNegative
+     * @param {Number} colors.fromNegative.h
+     * @param {Number} colors.fromNegative.s
+     * @param {Number} colors.fromNegative.l
+     
+
+     * @param {Object} colors.toNegative
+     * @param {Number} colors.toNegative.h
+     * @param {Number} colors.toNegative.s
+     * @param {Number} colors.toNegative.l
+     * @return {Serie} The current serie
+     */
     setDynamicColor: function( colors ) {
       this.lineColors = colors;
 
@@ -324,7 +335,7 @@ define( [ './graph.serie.line' ], function( GraphSerie ) {
 
       hsl.h /= 360;
 
-      var rgb = hslToRgb( hsl.h, hsl.s, hsl.l );
+      var rgb = util.hslToRgb( hsl.h, hsl.s, hsl.l );
 
       line.setAttribute( 'stroke', 'rgb(' + rgb.join() + ')' );
     },

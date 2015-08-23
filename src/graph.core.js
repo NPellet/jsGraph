@@ -1,53 +1,6 @@
 define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
 
   /** 
-   * Default graph parameters
-   * @name GraphOptionsDefault
-   * @object
-   * @private
-   * @static
-   * @prop {String} title - Title of the graph
-   * @prop {Number} paddingTop - The top padding
-   * @prop {Number} paddingLeft - The left padding
-   * @prop {Number} paddingRight - The right padding
-   * @prop {Number} paddingBottom - The bottom padding
-   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
-   * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
-   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
-   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
-   * @prop {Object} wheel - Define the mouse wheel action
-   * @prop {Object} dblclick - Define the double click action
-   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
-   */
-  var GraphOptionsDefault = {
-
-    title: '',
-
-    paddingTop: 30,
-    paddingBottom: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
-
-    close: {
-      left: true,
-      right: true,
-      top: true,
-      bottom: true
-    },
-
-    fontSize: 12,
-    fontFamily: 'Myriad Pro, Helvetica, Arial',
-
-    plugins: {},
-    pluginAction: {},
-    wheel: {},
-    dblclick: {},
-
-    uniqueShapeSelection: true
-  };
-
-  /** 
    * Main class of jsGraph that creates a new graph.
    * @class Graph
    * @param {HTMLElement} wrapper - The DOM Wrapper element
@@ -60,6 +13,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
    * @augments EventEmitter
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
+   * @tutorial basic
    */
   var Graph = function( wrapper, options, axis ) {
 
@@ -207,6 +161,53 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
   }
 
+  /** 
+   * Default graph parameters
+   * @name Graph~GraphOptionsDefault
+   * @object
+   * @static
+   * @memberof Graph
+   * @prop {String} title - Title of the graph
+   * @prop {Number} paddingTop - The top padding
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
+   * @prop {Number} fontSize - The basic text size of the graphs
+   * @prop {Number} fontFamily - The basic font family. Should be installed on the computer of the user
+   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
+   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object} wheel - Define the mouse wheel action
+   * @prop {Object} dblclick - Define the double click action
+   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   */
+  var GraphOptionsDefault = {
+
+    title: '',
+
+    paddingTop: 30,
+    paddingBottom: 5,
+    paddingLeft: 20,
+    paddingRight: 20,
+
+    close: {
+      left: true,
+      right: true,
+      top: true,
+      bottom: true
+    },
+
+    fontSize: 12,
+    fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+    plugins: {},
+    pluginAction: {},
+    wheel: {},
+    dblclick: {},
+
+    uniqueShapeSelection: true
+  };
+
   Graph.prototype = new EventEmitter();
 
   Graph.prototype = $.extend( Graph.prototype, {
@@ -343,6 +344,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @see Graph#setWidth
      * @see Graph#setHeight
      * @memberof Graph.prototype
+     * @return {Graph} The current graph
      */
     resize: function( w, h ) {
       if ( w && h ) {
@@ -350,6 +352,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
 
       this._resize();
+      return this;
     },
 
     /**
@@ -470,6 +473,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
      * @memberof Graph.prototype
      * @param {Number} [ index=0 ] - The index of the axis
      * @param {Object} [ options={} ] - The options to pass to the axis constructor
@@ -484,6 +488,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
      * @memberof Graph.prototype
      * @param {Number} [ index=0 ] - The index of the axis
      * @param {Object} [ options={} ] - The options to pass to the axis constructor
@@ -539,7 +544,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -549,7 +554,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -559,7 +564,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -570,7 +575,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a right axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -581,7 +586,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a top axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -592,7 +597,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     /**
      * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
+     * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ number=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -604,11 +609,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Autoscales the x and y axes of the graph<br />
      * Repains the canvas
+     * @todo Find a solution for rescaling the y axis: if the x axis is
      * @memberof Graph.prototype
      */
     autoscaleAxes: function() {
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-      this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+
+      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+      // X is not always ascending... 
     },
 
     _applyToAxis: {
@@ -643,7 +651,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
      * @memberof Graph.prototype
-     * @param {Axis} axis - The axis for which the value should be computed
+     * @param {GraphAxis} axis - The axis for which the value should be computed
      * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
      * @returns {Number} The minimimum or maximum of the axis based on its series
      */
@@ -682,7 +690,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      *  Returns all the series associated to an axis
      *  @memberof Graph.prototype
-     *  @param {Axis} axis - The axis to which the series belong
+     *  @param {GraphAxis} axis - The axis to which the series belong
      *  @returns {Serie[]} An array containing the list of series that belong to the axis
      */
     getSeriesFromAxis: function( axis ) {
@@ -735,7 +743,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * Function that is called from {@link Graph#_applyToAxes}
      * @function
      * @name AxisCallbackFunction
-     * @param {Axis} axis - The axis of the function
+     * @param {GraphAxis} axis - The axis of the function
      * @param {String} type - The type of the axis (left,right,top,bottom)
      * @param params - The params passed in the _applyToAxis function.
      * @see Graph#_applyToAxes
@@ -775,7 +783,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * Axes can be dependant of one another (for instance for unit conversions)
      * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
      * @memberof Graph.prototype
-     * @param {Axis} axis - The axis that links one or multiple other dependant axes
+     * @param {GraphAxis} axis - The axis that links one or multiple other dependant axes
      * @returns {Axis[]} The list of axes linked to the axis passed as parameter
      */
     findAxesLinkedTo: function( axis ) {
@@ -957,6 +965,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     /**
      * Returns the selected serie
      * @returns {(Serie|undefined)} The selected serie
+     * @memberof Graph.prototype
      */
     getSelectedSerie: function() {
       return this.selectedSerie;

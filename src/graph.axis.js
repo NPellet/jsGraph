@@ -1,26 +1,38 @@
-define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, EventEmitter ) {
+define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( $, EventEmitter, util ) {
 
+  /** 
+   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
+   * @class Axis
+   * @static
+   * @example function myAxis() {};
+   * myAxis.prototype = new Graph.getConstructor("axis");
+   * graph.setBottomAxis( new myAxis( { } ) );
+   */
   var GraphAxis = function() {}
 
   /** 
    * Default graph parameters
-   * @name GraphOptionsDefault
+   * @name AxisOptionsDefault
    * @object
    * @private
    * @static
    * @prop {Boolean} display - Whether to display or not the axis
    * @prop {Boolean} flipped - The top padding
-   * @prop {Number} paddingLeft - The left padding
-   * @prop {Number} paddingRight - The right padding
-   * @prop {Number} paddingBottom - The bottom padding
-   * @prop {(Number|Boolean)} padding - A common padding value for top, bottom, left and right
-   * @prop {Number} fontSize - The basic text size of the graphs
-   * @prop {Number} paddingLeft - The basic font family. Should be installed on the computer of the user
-   * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
-   * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
-   * @prop {Object} wheel - Define the mouse wheel action
-   * @prop {Object} dblclick - Define the double click action
-   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+   * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+   * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
+   * @prop {Boolean} primaryGrid - Whether or not to display the primary grid (on the main ticks)
+   * @prop {Boolean} secondaryGrid - Whether or not to display the secondary grid (on the secondary ticks)
+   * @prop {Number} tickPosition - Sets the position of the ticks with regards to the axis ( 1 = inside, 2 = centered, 3 = outside ).
+   * @prop {Number} nbTicksPrimary - The number of primary ticks to use (approximately)
+   * @prop {Number} nbTicksSecondary - The number of secondary ticks to use (approximately)
+   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+   * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
+   * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
+   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+   * @prop {Boolean} logScale - Display the axis in log scale (base 10)
+   * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
+   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
    */
   var defaultAxisParameters = {
     lineAt0: false,
@@ -41,7 +53,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     exponentialFactor: 0,
     exponentialLabelFactor: 0,
     logScale: false,
-    allowedPxSerie: 100,
     forcedMin: false,
     forcedMax: false
   }
@@ -90,14 +101,21 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.labelValue;
 
       this.label = document.createElementNS( this.graph.ns, 'text' );
-      this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' );
-      this.label.appendChild( this.labelTspan );
 
-      this.expTspan = document.createElementNS( this.graph.ns, 'tspan' );
+      this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
+      this.preunitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
+      this.unitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the unit
+      this.expTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent (x10)
+      this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent value
+
+      this.label.appendChild( this.labelTspan );
+      this.label.appendChild( this.preunitTspan );
+      this.label.appendChild( this.unitTspan );
       this.label.appendChild( this.expTspan );
-      this.expTspan.setAttribute( 'dx', 10 );
-      this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' );
       this.label.appendChild( this.expTspanExp );
+
+      this.preunitTspan.setAttribute( 'dx', 6 );
+      this.expTspan.setAttribute( 'dx', 6 );
       this.expTspanExp.setAttribute( 'dy', -5 );
       this.expTspanExp.setAttribute( 'font-size', "0.8em" );
 
@@ -122,24 +140,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
         for ( var i = 0, l = self.series.length; i < l; i++ ) {
           self.series[ i ].handleMouseMove( false, true );
-
-          if ( self.currentAction == 'labelDragging' )
-            self.series[ i ].handleLabelMove( coords.x, coords.y );
-
-          if ( self.currentAction == 'labelDraggingMain' )
-            self.series[ i ].handleLabelMainMove( coords.x, coords.y );
         }
-      } );
-
-      this.group.addEventListener( 'mouseup', function( e ) {
-        e.preventDefault();
-        self.handleMouseUp();
-      } );
-
-      this.group.addEventListener( 'mouseout', function( e ) {
-        e.preventDefault();
-        var coords = self.graph._getXY( e );
-        self.handleMouseOutLocal( coords.x, coords.y, e );
       } );
 
       this.labels = [];
@@ -161,97 +162,211 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     handleMouseMoveLocal: function() {},
 
-    addLabel: function( x ) {
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) {
-
-        if ( this.series[ i ].currentAction !== false ) {
-          continue;
-        }
-
-        this.series[ i ].addLabelObj( {
-          x: x
-        } );
-      }
-    },
-
+    /**
+     * Hides the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     hide: function() {
       this.options.display = false;
       return this;
     },
 
+    /**
+     * Shows the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     show: function() {
       this.options.display = true;
       return this;
     },
 
+    /**
+     * Shows or hides the axis
+     * @memberof Axis.prototype
+     * @param {Boolean} display - true to display the axis, false to hide it
+     * @return {Axis} The current axis
+     */
     setDisplay: function( bool ) {
       this.options.display = !!bool;
       return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Boolean} A boolean indicating the displayed state of the axis
+     */
     isDisplayed: function() {
       return this.options.display;
     },
 
+    /**
+     * Forces the appearence of a straight perpendicular line at value 0
+     * @param {Boolean} lineAt0 - true to display the line, false not to.
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setLineAt0: function( bool ) {
       this.options.lineAt0 = !!bool;
     },
 
     // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
-    adapt0To: function( axis, mode, value ) {
 
-      if ( axis ) {
-        this._adapt0To = [ axis, mode, value ];
-      } else {
-        this._adapt0To = false;
+    /**
+     * Forces the alignment of the 0 of the axis to the zero of another axis
+     * @param {(Axis|Boolean)} axis - The axis with which the 0 should be aligned. Use "false" to deactivate the adapt to 0 mode.
+     * @param {Number} thisValue - The value of the current axis that should be aligned
+     * @param {Number} foreignValue - The value of the reference axis that should be aligned
+     * @param {String} preference - "min" or "max". Defined the boundary that should behave the more normally
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    adaptTo: function( axis, thisValue, foreignValue, preference ) {
+
+      if ( !axis ) {
+        this.options.adaptTo = false;
+        return this;
       }
 
+      this.options.adaptTo = {
+        axis: axis,
+        thisValue: thisValue,
+        foreignValue: foreignValue,
+        preference: preference
+      };
+
+      this.adapt();
+
+      return this;
     },
 
-    getAdapt0ToMin: function() {
+    /**
+     * Adapts maximum and minimum of the axis if options.adaptTo is defined
+     * @memberof Axis.prototype
+     * @returns {Axis} The current axis
+     * @since 1.13.2
+     */
+    adapt: function() {
 
-      if ( this._adapt0To[ 1 ] == "min" ) {
-        return this._adapt0To[ 2 ]
-      } else {
-        return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMinValue() / this._adapt0To[ 0 ].getMaxValue() )
+      if ( !this.options.adaptTo ) {
+        return;
       }
-    },
 
-    getAdapt0ToMax: function() {
+      if ( !axis )
+        var val;
 
-      if ( this._adapt0To[ 1 ] == "max" ) {
-        return this._adapt0To[ 2 ]
-      } else {
-        return this._adapt0To[ 2 ] * ( this._adapt0To[ 0 ].getMaxValue() / this._adapt0To[ 0 ].getMinValue() )
+      var axis = this.options.adaptTo.axis,
+        current = this.options.adaptTo.thisValue,
+        foreign = this.options.adaptTo.foreignValue;
+
+      if ( axis.currentAxisMin === undefined ||  axis.currentAxisMax === undefined ) {
+        axis.setMinMaxToFitSeries();
       }
+
+      if ( ( this.options.forcedMin !== false && this.options.forcedMax == false ) ||  ( this.options.adaptTo.preference !== "max" ) ) {
+
+        if ( this.options.forcedMin !== false ) {
+          this.currentAxisMin = this.options.forcedMin;
+        } else {
+          this.currentAxisMin = this._zoomed ? this.getCurrentMin() : this.getMinValue() - ( current - this.getMinValue() ) * ( this.options.axisDataSpacing.min * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) );
+        }
+
+        if ( this.currentAxisMin == current ) {
+          this.currentAxisMin -= this.options.axisDataSpacing.min * this.getInterval();
+        }
+
+        var use = this.options.forcedMin !== false ? this.options.forcedMin : this.currentAxisMin;
+        this.currentAxisMax = ( current - use ) * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( foreign - axis.getCurrentMin() ) + use;
+
+      } else {
+
+        if ( this.options.forcedMax !== false ) {
+          this.currentAxisMax = this.options.forcedMax;
+        } else {
+          this.currentAxisMax = this._zoomed ? this.getCurrentMax() : this.getMaxValue() + ( this.getMaxValue() - current ) * ( this.options.axisDataSpacing.max * ( axis.getCurrentMax() - axis.getCurrentMin() ) / ( axis.getCurrentMax() - foreign ) );
+        }
+
+        if ( this.currentAxisMax == current ) {
+          this.currentAxisMax += this.options.axisDataSpacing.max * this.getInterval();
+        }
+
+        var use = this.options.forcedMax !== false ? this.options.forcedMax : this.currentAxisMax;
+
+        this.currentAxisMin = ( current - use ) * ( axis.getCurrentMin() - axis.getCurrentMax() ) / ( foreign - axis.getCurrentMax() ) + use;
+      }
+
+      this.graph._axisHasChanged( this );
     },
 
     // Floating axis. Adapts axis position orthogonally to another axis at a defined value. Not taken into account for margins
+
+    /**
+     * Makes the axis floating (not aligned to the right or the left anymore). You need to specify another axis (perpendicular) and a value at which this axis should be located
+     * @param {Axis} axis - The axis on which the current axis should be aligned to
+     * @param {Number} value - The value on which the current axis should be aligned
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
+     */
     setFloating: function( axis, value ) {
 
       this.floating = true;
       this.floatingAxis = axis;
       this.floatingValue = value;
+
+      return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Axis} The axis referencing the floating value of the current axis
+     */
     getFloatingAxis: function() {
       return this.floatingAxis;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Axis} The value to which the current axis is aligned to
+     */
     getFloatingValue: function() {
       return this.floatingValue;
     },
 
+    /**
+     * Sets the axis data spacing
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} min - The spacing at the axis min value
+     * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacing: function( val1, val2 ) {
       this.options.axisDataSpacing.min = val1;
       this.options.axisDataSpacing.max = val2 || val1;
+      return this;
     },
 
+    /**
+     * Sets the axis data spacing at the minimum of the axis
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} min - The spacing at the axis min value
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacingMin: function( val ) {
       this.options.axisDataSpacing.min = val;
     },
 
+    /**
+     * Sets the axis data spacing at the maximum of the axis
+     * @memberof Axis.prototype
+     * @see AxisOptionsDefault
+     * @param {Number} max - The spacing at the axis max value
+     * @return {Axis} The current axis
+     */
     setAxisDataSpacingMax: function( val ) {
       this.options.axisDataSpacing.max = val;
     },
@@ -262,12 +377,23 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     setMaxPx: function( px ) {
       this.maxPx = px;
     },
+
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The position in px of the bottom of the axis
+     */
     getMinPx: function() {
       return this.isFlipped() ? this.maxPx : this.minPx;
     },
+
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The position in px of the top of the axis
+     */
     getMaxPx: function( px ) {
       return this.isFlipped() ? this.minPx : this.maxPx;
     },
+
     getMathMaxPx: function() {
       return this.maxPx;
     },
@@ -277,43 +403,86 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     // Returns the true minimum of the axis. Either forced in options or the one from the data
+
+    /**
+     * Retrieves the minimum possible value of the axis. Can be set by "forcedMin", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+     * @memberof Axis.prototype
+     * @return {Number} The minimum possible value of the axis
+     */
     getMinValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin ) : this.getAdapt0ToMin();
+      return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
     },
 
+    /**
+     * Retrieves the maximum possible value of the axis. Can be set by "forcedMax", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getMaxValue: function() {
-      return !this._adapt0To ? ( this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax ) : ( this.getAdapt0ToMax() );
+      return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
     },
 
     setMinValueData: function( min ) {
       this.dataMin = min;
     },
+
     setMaxValueData: function( max ) {
       this.dataMax = max;
     },
 
+    /**
+     * Forces the minimum value of the axis (no more dependant on the serie values)
+     * @memberof Axis.prototype
+     * @param {Number} min - The minimum value of the axis
+     * @return {Axis} The current axis
+     */
+    forceMin: function( min ) {
+      this.options.forcedMin = min;
+      return this;
+    },
+
+    /**
+     * Forces the maximum value of the axis (no more dependant on the serie values)
+     * @memberof Axis.prototype
+     * @param {Number} max - The maximum value of the axis
+     * @return {Axis} The current axis
+     */
+    forceMax: function( max ) {
+      this.options.forcedMax = max;
+      return this;
+    },
+
+    /**
+     * Retrieves the forced minimum of the axis
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getForcedMin: function() {
       return this.options.forcedMin;
     },
 
+    /**
+     * Retrieves the forced minimum of the axis
+     * @memberof Axis.prototype
+     * @return {Number} The maximum possible value of the axis
+     */
     getForcedMax: function() {
       return this.options.forcedMax;
     },
 
-    forceMin: function( val ) {
-      this.options.forcedMin = val;
-      return this;
-    },
-    forceMax: function( val ) {
-      this.options.forcedMax = val;
-      return this;
-    },
-
-    force: function( axis ) {
+    /**
+     * Forces the min and max values of the axis to the min / max values of another axis
+     * @param {Axis} axis - The axis from which the min / max values are retrieved.
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    forceToAxis: function( axis ) {
       if ( axis.getMaxValue && axis.getMinValue ) {
         this.options.forcedMin = axis.getMinValue();
         this.options.forcedMax = axis.getMaxValue();
       }
+
+      return this;
     },
 
     getNbTicksPrimary: function() {
@@ -341,7 +510,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       }
 
       this._doZoomVal(
-        ( ( this.getActualMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getActualMin() - baseline ) * ( 1 + delta ) ) + baseline
+        ( ( this.getCurrentMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getCurrentMin() - baseline ) * ( 1 + delta ) ) + baseline
       );
 
       this.graph.redraw();
@@ -363,6 +532,21 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     },
 
+    /**
+     * Performs a zoom on the axis, without redraw afterwards
+     * @param {Number} val1 - The new axis minimum
+     * @param {Number} val2 - The new axis maximum
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     * @example
+     * graph.getBottomAxis().zoom( 50, 70 ); // Axis boundaries will be 50 and 70 after next redraw
+     * graph.redraw();
+     * @example
+     * graph.getBottomAxis().forceMin( 0 ).forceMax( 100 ).zoom( 50, 70 );  // Axis boundaries will be 50 and 70 after next redraw
+     * graph.draw();
+     * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
+     * graph.draw();
+     */
     zoom: function( val1, val2 ) {
       return this._doZoomVal( val1, val2, true );
     },
@@ -377,8 +561,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       //if(this.options.display || 1 == 1) {
       var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
       var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
+
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
+
+      this._zoomed = true;
+
+      this.adapt();
 
       this._hasChanged = true;
 
@@ -386,6 +575,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       if ( !mute ) {
         this.emit( "zoom", [ this.currentAxisMin, this.currentAxisMax, this ] );
       }
+
+      return this;
     },
 
     getSerieShift: function() {
@@ -398,10 +589,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
     getMouseVal: function() {
       return this.mouseVal;
-    },
-
-    isFlipped: function() {
-      return this.options.flipped;
     },
 
     getUnitPerTick: function( px, nbTick, valrange ) {
@@ -510,6 +697,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return [ unitPerTickCorrect, nbTicks, pxPerTick ];
     },
 
+    /**
+     * Resets the min and max of the serie to fit the series it contains
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setMinMaxToFitSeries: function( noNotify ) {
 
       var interval = this.getInterval();
@@ -538,27 +730,55 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         this.currentAxisMin = undefined;
       }
 
+      this._zoomed = false;
+
+      this.adapt();
+
       if ( !noNotify ) {
         this.graph._axisHasChanged( this );
       }
+
+      return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+     */
     getInterval: function() {
       return this.getMaxValue() - this.getMinValue()
     },
 
-    _getActualInterval: function() {
-      return this.getActualMax() - this.getActualMin();
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+     */
+    getCurrentInterval: function() {
+      return this.getCurrentMax() - this.getCurrentMin();
     },
 
-    getActualMin: function() {
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The current minimum value of the axis
+     */
+    getCurrentMin: function() {
       return this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
     },
 
-    getActualMax: function() {
+    /**
+     * @memberof Axis.prototype
+     * @return {Number} The current maximum value of the axis
+     */
+    getCurrentMax: function() {
       return this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
     },
 
+    /**
+     * Sets the current minimum value of the axis. If lower that the forced value, the forced value is used
+     * @memberof Axis.prototype
+     * @param {Number} val - The new minimum value
+     * @return {Axis} The current axis
+     */
     setCurrentMin: function( val ) {
 
       if ( this.getForcedMin() !== false && val < this.getForcedMin() ) {
@@ -571,8 +791,15 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       }
 
       this.graph._axisHasChanged( this );
+      return this;
     },
 
+    /**
+     * Sets the current maximum value of the axis. If higher that the forced value, the forced value is used
+     * @memberof Axis.prototype
+     * @param {Number} val - The new maximum value
+     * @return {Axis} The current axis
+     */
     setCurrentMax: function( val ) {
 
       if ( this.getForcedMax() !== false && val > this.getForcedMax() ) {
@@ -588,14 +815,25 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.graph._axisHasChanged( this );
     },
 
-    flip: function( bool ) {
-      this.options.flipped = bool;
+    /**
+     * Sets the flipping state of the axis. If enabled, the axis is descending rather than ascending.
+     * @memberof Axis.prototype
+     * @param {Boolean} flip - The new flipping state of the axis
+     * @return {Axis} The current axis
+     */
+    flip: function( flip ) {
+      this.options.flipped = flip;
       return this;
     },
 
     /**
-     *	@param doNotResetMinMax Whether min max of the axis should fit the one of the series
+     * @memberof Axis.prototype
+     * @return {Boolean} The current flipping state of the axis
      */
+    isFlipped: function() {
+      return this.options.flipped;
+    },
+
     _draw: function( linkedToAxisOnly ) { // Redrawing of the axis
 
       var self = this;
@@ -613,7 +851,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       // The data min max is stored in this.dataMin, this.dataMax
 
       var widthPx = this.maxPx - this.minPx;
-      var valrange = this._getActualInterval();
+      var valrange = this.getCurrentInterval();
 
       /* Number of px per unit */
       /* Example: width: 1000px
@@ -629,6 +867,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
 
       this.line.setAttribute( 'display', 'block' );
 
+      var scientificExponent = 0;
+
       if ( !this.options.hideTicks ) {
 
         if ( this.linkedToAxis ) { // px defined, linked to another axis
@@ -639,8 +879,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
         } else if ( !this.options.logScale ) {
           // So the setting is: How many ticks in total ? Then we have to separate it
 
-          if ( this.options.scientificTicks ) {
-            this.scientificExp = Math.floor( Math.log( Math.max( Math.abs( this.getActualMax() ), Math.abs( this.getActualMin() ) ) ) / Math.log( 10 ) );
+          if ( this.options.scientificTicks === true ) {
+            scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
           }
 
           var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
@@ -666,22 +906,63 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       /*** DRAWING LABEL ******************/
       /************************************/
 
+      if ( this.options.scientificTicks && util.isNumeric( this.options.scientificTicks ) ) {
+        scientificExponent = this.options.scientificTicks;
+      }
+
+      this.scientificExponent = scientificExponent;
+
       var label;
       if ( label = this.getLabel() ) {
+        // Sets the label
         this.labelTspan.textContent = label;
-        if ( this.getExponentialLabelFactor() ) {
-          this.expTspan.nodeValue = 'x10';
-          this.expTspanExp.nodeValue = this.getExponentialLabelFactor();
-          visible = true;
-        } else if ( this.options.scientificTicks ) {
-          this.expTspan.textContent = 'x10';
-          this.expTspanExp.textContent = this.scientificExp;
-          visible = true;
-        } else
-          visible = false;
 
-        this.expTspan.setAttribute( 'display', visible ? 'block' : 'none' );
-        this.expTspanExp.setAttribute( 'display', visible ? 'block' : 'none' );
+        if ( this.options.unit ) {
+
+          if ( this.scientificExponent > 0 ) {
+            this.scientificExponent -= ( this.scientificExponent % 3 );
+          } else {
+            this.scientificExponent += ( this.scientificExponent % 3 );
+          }
+
+          this.unitTspan.setAttribute( 'display', 'visible' );
+          this.expTspan.setAttribute( 'display', 'none' );
+          this.expTspanExp.setAttribute( 'display', 'none' );
+
+          if ( this.scientificExponent == 0 ) {
+            this.preunitTspan.textContent = "";
+            this.preunitTspan.setAttribute( 'display', 'none' );
+            this.unitTspan.setAttribute( 'dx', 5 );
+          } else {
+            this.preunitTspan.textContent = this.getExponentGreekLetter( this.scientificExponent );
+            this.preunitTspan.setAttribute( 'display', 'visible' );
+            this.unitTspan.setAttribute( 'dx', 0 );
+          }
+
+          this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
+
+        } else {
+
+          if ( this.scientificExponent === 0 )  {
+
+            this.unitTspan.setAttribute( 'display', 'none' );
+            this.preunitTspan.setAttribute( 'display', 'none' );
+            this.expTspan.setAttribute( 'display', 'none' );
+            this.expTspanExp.setAttribute( 'display', 'none' );
+
+          } else {
+
+            this.expTspan.setAttribute( 'display', 'visible' );
+            this.expTspanExp.setAttribute( 'display', 'visible' );
+
+            this.unitTspan.setAttribute( 'display', 'none' );
+            this.preunitTspan.setAttribute( 'display', 'none' );
+
+            this.expTspan.textContent = "x10";
+            this.preunitTspan.textContent = this.scientificExponent;
+          }
+        }
+
       }
 
       /************************************/
@@ -689,11 +970,54 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       /************************************/
 
       this.drawSpecifics();
-      if ( this.options.lineAt0 && this.getActualMin() < 0 && this.getActualMax() > 0 ) {
+      if ( this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0 ) {
         this._draw0Line( this.getPx( 0 ) );
       }
 
       return widthHeight + ( label ? 20 : 0 );
+    },
+
+    getExponentGreekLetter: function( val ) {
+
+      switch ( val ) {
+
+        case 3:
+          return "k";
+          break;
+
+        case 6:
+          return "M";
+          break;
+
+        case 9:
+          return 'G';
+          break;
+
+        case 12:
+          return "T";
+          break;
+
+        case -3:
+          return "m";
+          break;
+
+        case -6:
+          return "&mu;";
+          break;
+
+        case -9:
+          return 'n';
+          break;
+
+        case -12:
+          return 'p';
+          break;
+
+        case -15:
+          return 'f';
+          break;
+      }
+
     },
 
     drawInit: function() {
@@ -766,8 +1090,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     drawTicks: function( primary, secondary ) {
 
       var unitPerTick = primary[ 0 ],
-        min = this.getActualMin(),
-        max = this.getActualMax(),
+        min = this.getCurrentMin(),
+        max = this.getCurrentMax(),
         widthHeight = 0,
         secondaryIncr,
         incrTick,
@@ -831,8 +1155,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
     },
 
     drawLogTicks: function() {
-      var min = this.getActualMin(),
-        max = this.getActualMax();
+      var min = this.getCurrentMin(),
+        max = this.getCurrentMax();
       var incr = Math.min( min, max );
       var max = Math.max( min, max );
 
@@ -887,6 +1211,21 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       this.drawTick( value, label, scaling, options );
     },
 
+    /**
+     * Used to scale the master axis into the slave axis
+     * @function SlaveAxisScalingFunction
+     * @param {Number} val - The master value to convert into a slave value
+     * @returns undefined
+     */
+
+    /**
+     * Makes this axis a slave. This can be used to show the same data with different units, specifically when a conversion function exists from axis -> slaveAxis but not in reverse. This axis should actually have no series.
+     * @param {Axis} axis - The master axis
+     * @param {SlaveAxisScalingFunction} scalingFunction - The scaling function used to map masterValue -> slaveValue
+     * @param {Number} decimals - The number of decimals to round the value to
+     * @memberof Axis.prototype
+     * @return {Number} The width or height used by the axis (used internally)
+     */
     linkToAxis: function( axis, scalingFunction, decimals ) {
 
       this.linkedToAxis = {
@@ -947,62 +1286,92 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       } while ( px < widthPx );
     },
 
+    /**
+     * Transform a value into pixels, according to the axis scaling. The value is referenced to the drawing wrapper, not the the axis minimal value
+     * @param {Number} value - The value to translate into pixels
+     * @memberof Axis.prototype
+     * @return {Number} The value transformed into pixels
+     */
     getPx: function( value ) {
       return this.getPos( value );
     },
 
+    /**
+     * @alias Axis~getPx
+     */
     getPos: function( value ) {
       //			if(this.getMaxPx() == undefined)
       //				console.log(this);
-      //console.log(this.getMaxPx(), this.getMinPx(), this._getActualInterval());
+      //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
       // Ex 50 / (100) * (1000 - 700) + 700
 
-      //console.log( value, this.getActualMin(), this.getMaxPx(), this.getMinPx(), this._getActualInterval() );
+      //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
       if ( !this.options.logScale ) {
 
-        return ( value - this.getActualMin() ) / ( this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
+        return ( value - this.getCurrentMin() ) / ( this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
       } else {
         // 0 if value = min
         // 1 if value = max
         if ( value < 0 )
           return;
 
-        var value = ( ( Math.log( value ) - Math.log( this.getActualMin() ) ) / ( Math.log( this.getActualMax() ) - Math.log( this.getActualMin() ) ) ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
+        var value = ( ( Math.log( value ) - Math.log( this.getCurrentMin() ) ) / ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
 
         return value;
       }
     },
 
-    getRelPx: function( value ) {
-
-      return ( value / this._getActualInterval() ) * ( this.getMaxPx() - this.getMinPx() );
-    },
-
-    getRelVal: function( px ) {
-
-      return px / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval();
-    },
-
+    /**
+     * Transform a pixel position (referenced to the graph zone, not to the axis minimum) into a value, according to the axis scaling.
+     * @param {Number} pixels - The number of pixels to translate into a value
+     * @memberof Axis.prototype
+     * @return {Number} The axis value corresponding to the pixel position
+     */
     getVal: function( px ) {
 
       if ( !this.options.logScale ) {
 
-        return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this._getActualInterval() + this.getActualMin();
+        return ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval() + this.getCurrentMin();
 
       } else {
 
-        return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getActualMax() ) - Math.log( this.getActualMin() ) ) + Math.log( this.getActualMin() ) )
+        return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) + Math.log( this.getCurrentMin() ) )
       }
 
       // Ex 50 / (100) * (1000 - 700) + 700
 
     },
 
+    /**
+     * Transform a delta value into pixels
+     * @param {Number} value - The value to translate into pixels
+     * @memberof Axis.prototype
+     * @return {Number} The value transformed into pixels
+     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
+     */
+    getRelPx: function( delta ) {
+
+      return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
+    },
+
+    /**
+     * Transform a delta pixels value into value
+     * @param {Number} pixels - The pixel to convert into a value
+     * @memberof Axis.prototype
+     * @return {Number} The delta value corresponding to delta pixels
+     * @see Axis~getRelPx
+     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
+     */
+    getRelVal: function( px ) {
+
+      return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
+    },
+
     valueToText: function( value ) {
 
-      if ( this.options.scientificTicks ) {
+      if ( this.scientificExponent ) {
 
-        value /= Math.pow( 10, this.scientificExp );
+        value /= Math.pow( 10, this.scientificExponent );
         return value.toFixed( 1 );
 
       } else {
@@ -1117,11 +1486,21 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return this.options.exponentialLabelFactor;
     },
 
-    setLabel: function( value ) {
-      this.options.labelValue = value;
+    /**
+     * Sets the label of the axis
+     * @param {Number} label - The label to display under the axis
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setLabel: function( label ) {
+      this.options.labelValue = label;
       return this;
     },
 
+    /**
+     * @memberof Axis.prototype
+     * @return {String} The label value
+     */
     getLabel: function() {
       return this.options.labelValue;
     },
@@ -1136,6 +1515,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return this.shift;
     },
 
+    /**
+     * Changes the tick position
+     * @param {Number} pos - The new position ( "outside", "centered" or "inside" )
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
     setTickPosition: function( pos ) {
       switch ( pos ) {
         case 3:
@@ -1159,20 +1544,201 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       return this;
     },
 
-    toggleGrids: function( bool ) {
-      this.options.primaryGrid = bool;
-      this.options.secondaryGrid = bool;
+    /**
+     * Displays or hides the axis grids
+     * @param {Boolean} on - true to enable the grids, false to disable them
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setGrids: function( on ) {
+      this.options.primaryGrid = on;
+      this.options.secondaryGrid = on;
       return this;
     },
 
-    togglePrimaryGrid: function( bool ) {
-      this.options.primaryGrid = bool;
+    /**
+     * Displays or hides the axis primary grid
+     * @param {Boolean} on - true to enable the grids, false to disable it
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setPrimaryGrid: function( on ) {
+      this.options.primaryGrid = on;
       return this;
     },
 
-    toggleSecondaryGrid: function( bool ) {
-      this.options.secondaryGrid = bool;
+    /**
+     * Displays or hides the axis secondary grid
+     * @param {Boolean} on - true to enable the grids, false to disable it
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    setSecondaryGrid: function( on ) {
+      this.options.secondaryGrid = on;
       return this;
+    },
+
+    /**
+     * Enables primary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    primaryGridOn: function() {
+      return this.setPrimaryGrid( true );
+    },
+
+    /**
+     * Disables primary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    primaryGridOff: function() {
+      return this.setPrimaryGrid( false );
+    },
+
+    /**
+     * Enables secondary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    secondaryGridOn: function() {
+      return this.setSecondaryGrid( true );
+    },
+
+    /**
+     * Disables secondary grid
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    secondaryGridOff: function() {
+      return this.setSecondaryGrid( false );
+    },
+
+    /**
+     * Enables all the grids
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    gridsOn: function() {
+      return this.setGrids( true );
+    },
+
+    /**
+     * Disables all the grids
+     * @memberof Axis.prototype
+     * @return {Axis} The current axis
+     */
+    gridsOff: function() {
+      return this.setGrids( false );
+    },
+
+    /**
+     * Sets the axis color
+     * @memberof Axis.prototype
+     * @param {String} color - The color to set the axis
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setAxisColor: function( color ) {
+      this.options.axisColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the axis color
+     * @memberof Axis.prototype
+     * @return {String} The color of the axis
+     * @since 1.13.2
+     */
+    getAxisColor: function( color ) {
+      return this.options.axisColor || 'black';
+    },
+
+    /**
+     * Sets the color of the main ticks
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the primary ticks
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setPrimaryTicksColor: function( color ) {
+      this.options.primaryTicksColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the main ticks
+     * @memberof Axis.prototype
+     * @return {String} The color of the primary ticks
+     * @since 1.13.2
+     */
+    getPrimaryTicksColor: function( color ) {
+      return this.options.primaryTicksColor || 'black';
+    },
+
+    /**
+     * Sets the color of the secondary ticks
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the secondary ticks
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setSecondaryTicksColor: function( color ) {
+      this.options.secondaryTicksColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the secondary ticks
+     * @memberof Axis.prototype
+     * @return {String} The color of the secondary ticks
+     * @since 1.13.2
+     */
+    getSecondaryTicksColor: function( color ) {
+      return this.options.secondaryTicksColor || 'black';
+    },
+
+    /**
+     * Sets the color of the tick labels
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the tick labels
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setTicksLabelColor: function( color ) {
+      this.options.ticksLabelColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the tick labels
+     * @memberof Axis.prototype
+     * @return {String} The color of the tick labels
+     * @since 1.13.2
+     */
+    getTicksLabelColor: function( color ) {
+      return this.options.ticksLabelColor || 'black';
+    },
+
+    /**
+     * Sets the color of the label
+     * @memberof Axis.prototype
+     * @param {String} color - The new color of the label
+     * @return {Axis} The current axis
+     * @since 1.13.2
+     */
+    setLabelColor: function( color ) {
+      this.options.labelColor = color;
+    },
+
+    /**
+     * Gets the color of the label
+     * @memberof Axis.prototype
+     * @return {String} The color of the label
+     * @since 1.13.2
+     */
+    getLabelColor: function() {
+      return this.options.labelColor;
     },
 
     doGridLine: function( primary, x1, x2, y1, y2 ) {
@@ -1219,25 +1785,33 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter' ], function( $, E
       }
     },
 
-    removeSerie: function( serie ) {
-      this.series.splice( this.series.indexOf( serie ), 1 );
+    /**
+     * @memberof Axis.prototype
+     * @returns {Boolean} true if it is an x axis, false otherwise
+     */
+    isX: function() {
+      return false;
     },
 
-    killSeries: function( noRedraw ) {
-      for ( var i = 0; i < this.series.length; i++ ) {
-        this.series[ i ].kill( noRedraw );
-      }
-      this.series = [];
+    /**
+     * @memberof Axis.prototype
+     * @returns {Boolean} true if it is an y axis, false otherwise
+     */
+    isY: function() {
+      return false;
     },
 
-    removeSeries: function() {
-      this.killSeries();
-    },
-
-    handleMouseOutLocal: function( x, y, e ) {
-      for ( var i = 0, l = this.series.length; i < l; i++ )
-        this.series[ i ].hideTrackingMarker();
+    /**
+     * Sets the unit of the axis
+     * The units will allow the axis to scale down to the
+     * @param {String} unit - The unit of the axis
+     * @return {Axis} The current axis
+     */
+    setUnit: function( unit ) {
+      this.options.unit = unit;
+      return this;
     }
+
   } );
 
   return GraphAxis;

@@ -117,11 +117,16 @@ module.exports = function(grunt) {
 
         jsdoc : {
             dist : {
-                src: ['src/graph.core.js', 'src/graph._serie.js', 'src/series/graph.serie.line.js'],
+                src: [
+                    'dist/jsgraph.js', 
+                    ],
                 options: {
                     destination: 'doc',
                     template : "node_modules/ink-docstrap/template",
-                    configure : "node_modules/ink-docstrap/template/jsdoc.conf.json"
+                    configure : "node_modules/ink-docstrap/template/jsdoc.conf.json",
+                    private: false,
+                    "tutorials":"./tutorials/"
+
                 }
             }
         }
@@ -144,7 +149,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
 
 
-    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
+    grunt.registerTask( 'default', [ 'build',/* 'minify',*/ 'copy:dist', 'jsdoc' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
 
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
@@ -281,6 +286,8 @@ module.exports = function(grunt) {
                     contents = "build['" + defineName + "'] = ";
                     
                 }
+
+                body =  "\n/** @global */ /** @ignore */\n" + body;
 
                 contents += "( function( " + objects + ") { " + body + " } ) ( " + dependencies.join() + " );\n";
 

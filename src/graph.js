@@ -1,7 +1,10 @@
+/**
+ * @module jsGraph
+ */
 define( [
 
     './graph.core',
-    './graph._serie',
+
     './graph.axis',
     './graph.axis.x',
     './graph.axis.y',
@@ -12,11 +15,13 @@ define( [
 
     './graph.legend',
 
+    './plugins/graph.plugin',
     './plugins/graph.plugin.drag',
     './plugins/graph.plugin.shape',
     './plugins/graph.plugin.selectScatter',
     './plugins/graph.plugin.zoom',
 
+    './series/graph.serie',
     './series/graph.serie.contour',
     './series/graph.serie.line',
     './series/graph.serie.line.broken',
@@ -45,7 +50,7 @@ define( [
 
   function(
     Graph,
-    _serie,
+
     _axis,
     GraphXAxis,
     GraphYAxis,
@@ -53,11 +58,14 @@ define( [
     GraphYAxisBroken,
     GraphXAxisTime,
     GraphLegend,
+
+    GraphPlugin,
     GraphPluginDrag,
     GraphPluginShape,
     GraphPluginSelectScatter,
     GraphPluginZoom,
 
+    GraphSerie,
     GraphSerieContour,
     GraphSerieLine,
     GraphSerieLineBroken,

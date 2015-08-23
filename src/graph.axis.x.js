@@ -2,6 +2,11 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
   "use strict";
 
+  /** 
+   * Generic constructor of a y axis
+   * @class GraphXAxis
+   * @augments GraphAxis
+   */
   var GraphXAxis = function( graph, topbottom, options ) {
     this.init( graph, options );
     this.top = topbottom == 'top';
@@ -76,7 +81,15 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
       }
 
-      tick.setAttribute( 'stroke', 'black' );
+      if ( label ) {
+
+        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
+
+      } else {
+
+        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
+
+      }
 
       this.groupTicks.appendChild( tick );
       if ( label ) {
@@ -85,6 +98,11 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
         tickLabel.setAttribute( 'x', val );
         tickLabel.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 8 : 20 ) + ( this.top ? 10 : 0 ) ) );
         tickLabel.setAttribute( 'text-anchor', 'middle' );
+
+        if ( this.getTicksLabelColor() !== 'black' ) {
+          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
+        }
+
         tickLabel.style.dominantBaseline = 'hanging';
 
         this.setTickContent( tickLabel, value, options );
@@ -112,32 +130,16 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       this.line.setAttribute( 'y1', 0 );
       this.line.setAttribute( 'y2', 0 );
 
+      this.line.setAttribute( 'stroke', this.getAxisColor() );
+
       if ( !this.top ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
         this.expTspan.style.dominantBaseline = 'hanging';
         this.expTspanExp.style.dominantBaseline = 'hanging';
-      }
-    },
 
-    drawSeries: function() {
+        this.unitTspan.style.dominantBaseline = 'hanging';
+        this.preunitTspan.style.dominantBaseline = 'hanging';
 
-      if ( !this.shift ) {
-        return;
-      }
-
-      this.rectEvent.setAttribute( 'y', !this.top ? 0 : -this.shift );
-      this.rectEvent.setAttribute( 'height', this.totalDimension );
-      this.rectEvent.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.rectEvent.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-      //this.rectEvent.setAttribute('fill', 'rgba(0, 0, 0, 0.5)');
-      //console.log(this.clipRect);
-      this.clipRect.setAttribute( 'y', !this.top ? 0 : -this.shift );
-      this.clipRect.setAttribute( 'height', this.totalDimension );
-      this.clipRect.setAttribute( 'x', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.clipRect.setAttribute( 'width', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
-        this.series[ i ].draw();
       }
     },
 
@@ -156,10 +158,6 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     handleMouseMoveLocal: function( x, y, e ) {
       x -= this.graph.getPaddingLeft();
       this.mouseVal = this.getVal( x );
-    },
-
-    isXY: function() {
-      return 'x';
     }
 
   } );

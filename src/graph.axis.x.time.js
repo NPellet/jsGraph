@@ -445,12 +445,12 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       this.line.setAttribute( 'y2', 0 );
 
       var widthPx = this.maxPx - this.minPx;
-      var widthTime = this._getActualInterval();
+      var widthTime = this.getCurrentInterval();
 
       var timePerPx = widthTime / widthPx;
 
-      var maxVal = this.getActualMax();
-      var minVal = this.getActualMin();
+      var maxVal = this.getCurrentMax();
+      var minVal = this.getCurrentMin();
 
       this.rect.setAttribute( 'width', widthPx );
       this.rect.setAttribute( 'x', this.minPx );
@@ -824,25 +824,28 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       }
 
       var xVal1,
-        xVal2;
-
-      var level = 0;
+        xVal2,
+        level = 0,
+        dateFirst,
+        currentDate,
+        text,
+        group,
+        i;
 
       for ( level = 1; level <= 2; level++ ) {
 
-        var dateFirst = new Date( minVal );
+        dateFirst = new Date( minVal );
 
-        var currentDate = roundDate( dateFirst, currentFormat.increments[ level ] ),
-          i = 0;
+        currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+        i = 0;
 
         do {
-
-          xVal1 = this.getPx( currentDate.getTime() );
-
-          var text = getDateText( currentDate, currentFormat.increments[ level ].format );
-          var group = getGroup( this, level, i );
+          /** @ignore */
+          text = getDateText( currentDate, currentFormat.increments[ level ].format );
+          group = getGroup( this, level, i );
 
           currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
+          xVal1 = this.getPx( currentDate.getTime() );
           xVal2 = this.getPx( currentDate.getTime() );
 
           renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );

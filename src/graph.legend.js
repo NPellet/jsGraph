@@ -1,5 +1,21 @@
 define( [], function() {
 
+  /** 
+   * Default legend configuration
+   * @name LegendOptionsDefault
+   * @object
+   * @static
+   * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
+   * @prop {Number} frameWidth - The width of the frame stroke
+   * @prop {String} frameColor - The stroke color of the frame
+   * @prop {String} backgroundColor - The background color of the frame
+   * @prop {Number} paddingLeft - The left padding
+   * @prop {Number} paddingRight - The right padding
+   * @prop {Number} paddingTop - The top padding
+   * @prop {Number} paddingBottom - The bottom padding
+   * @prop {Boolean} shapesToggleable - <code>true</code> to allow series to be selected through the legend
+   * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+   */
   var legendDefaults = {
     frame: false,
     backgroundColor: 'transparent',
@@ -17,6 +33,12 @@ define( [], function() {
 
   }
 
+  /** 
+   * Legend constructor
+   * @class Legend
+   * @private
+   * @example var legend = graph.makeLegend( {} );
+   */
   var Legend = function( graph, options ) {
 
     this.options = $.extend( {}, legendDefaults, options );
@@ -53,6 +75,14 @@ define( [], function() {
 
   Legend.prototype = {
 
+    /** 
+     * Sets the position of the legend
+     * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
+     * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
+     * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
+     * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
+     * @memberof Legend.prototype
+     */
     setPosition: function( position, alignToX, alignToY ) {
 
       if ( !position ) {
@@ -91,6 +121,10 @@ define( [], function() {
       this._setPosition();
     },
 
+    /** 
+     * Updates the legend position and content
+     * @memberof Legend.prototype
+     */
     update: function() {
 
       var self = this;
@@ -185,14 +219,26 @@ define( [], function() {
       this.svg.appendChild( this.rect );
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {Boolean} true or false depending if the series can be hidden or not
+     */
     isHideable: function() {
       return this.options.isSerieHideable;
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {Boolean} true or false depending if the series can be t or not
+     */
     isToggleShapes: function() {
       return this.options.shapesToggleable;
     },
 
+    /** 
+     * @memberof Legend.prototype
+     * @return {SVGGroupElement} The SVG group element wrapping the legend
+     */
     getDom: function() {
       return this.svg;
     },
@@ -265,6 +311,10 @@ define( [], function() {
       }
     },
 
+    /** 
+     * Re-applies the legend style
+     * @memberof Legend.prototype
+     */
     applyStyle: function() {
 
       if ( this.options.frame ) {
@@ -276,6 +326,11 @@ define( [], function() {
 
     },
 
+    /** 
+     * Re-applies the legend style
+     * @memberof Legend.prototype
+     * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
+     */
     fixSeries: function() {
       var series = [];
 

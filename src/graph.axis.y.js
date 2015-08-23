@@ -2,6 +2,11 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
   "use strict";
 
+  /** 
+   * Generic constructor of a y axis
+   * @class GraphYAxis
+   * @augments GraphAxis
+   */
   var GraphYAxis = function( graph, leftright, options ) {
 
     this.init( graph, options );
@@ -14,15 +19,11 @@ define( [ './graph.axis' ], function( GraphAxis ) {
   $.extend( GraphYAxis.prototype, GraphAxis.prototype, {
 
     getAxisPosition: function() {
-      var size = 0;
 
       if ( !this.options.display ) {
         return 0;
       }
-
-      if ( this.options.allowedPxSerie && this.series.length > 0 )
-        size = this.options.allowedPxSerie;
-      return size;
+      return ( this.options.tickPosition == 1 ? 15 : 0 );
     },
 
     getAxisWidthHeight: function() {
@@ -70,12 +71,25 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * scaling );
       tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * scaling );
 
-      tick.setAttribute( 'stroke', 'black' );
+      if ( label ) {
 
-      if ( label && this.options.primaryGrid )
+        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
+
+      } else {
+
+        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
+
+      }
+
+      if ( label && this.options.primaryGrid ) {
+
         this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
-      else if ( !label && this.options.secondaryGrid )
+
+      } else if ( !label && this.options.secondaryGrid ) {
+
         this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
+
+      }
 
       this.groupTicks.appendChild( tick );
 
@@ -84,6 +98,10 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         tickLabel = document.createElementNS( this.graph.ns, 'text' );
         tickLabel.setAttribute( 'y', pos );
         tickLabel.setAttribute( 'x', this.left ? -10 : 10 );
+
+        if ( this.getTicksLabelColor() !== 'black' ) {
+          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
+        }
 
         if ( this.left ) {
           tickLabel.setAttribute( 'text-anchor', 'end' );
@@ -111,37 +129,28 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
+      if ( this.getLabelColor() !== 'black' ) {
+        this.label.setAttribute( 'fill', this.getLabelColor() );
+      }
+
       this.labelTspan.textContent = this.getLabel();
 
       if ( !this.left ) {
         this.labelTspan.style.dominantBaseline = 'hanging';
         this.expTspan.style.dominantBaseline = 'hanging';
         this.expTspanExp.style.dominantBaseline = 'hanging';
+
+        this.unitTspan.style.dominantBaseline = 'hanging';
+        this.preunitTspan.style.dominantBaseline = 'hanging';
+
       }
 
       this.line.setAttribute( 'y1', this.getMinPx() );
       this.line.setAttribute( 'y2', this.getMaxPx() );
       this.line.setAttribute( 'x1', 0 );
       this.line.setAttribute( 'x2', 0 );
-    },
 
-    drawSeries: function() {
-      if ( !this.shift )
-        return;
-
-      this.rectEvent.setAttribute( 'x', ( this.left ? -this.shift : 0 ) );
-      this.rectEvent.setAttribute( 'width', this.totalDimension );
-      this.rectEvent.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.rectEvent.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      this.clipRect.setAttribute( 'x', -this.shift );
-      this.clipRect.setAttribute( 'width', this.totalDimension );
-      this.clipRect.setAttribute( 'y', Math.min( this.getMinPx(), this.getMaxPx() ) );
-      this.clipRect.setAttribute( 'height', Math.abs( this.getMinPx() - this.getMaxPx() ) );
-
-      for ( var i = 0, l = this.series.length; i < l; i++ ) { // These are the series on the axis itself !!
-        this.series[ i ].draw();
-      }
+      this.line.setAttribute( 'stroke', this.getAxisColor() );
 
     },
 
@@ -152,8 +161,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       }
 
       var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
-      this.group.setAttribute( 'transform', 'translate(' + xshift + ' 0)' );
-
+      this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
     },
 
     isLeft: function() {
@@ -185,19 +193,29 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       this.mouseVal = this.getVal( y );
     },
 
-    // TODO: Get the min value as well
+    /**
+     * Scales the axis with respect to the series contained in an x axis
+     * @memberof GraphYAxis.prototype
+     * @param {GraphAxis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
+     * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
+     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
+     * @param {Boolean} [ min = true ] - Adapt the min
+     * @param {Boolean} [ max = true ] - Adapt the max
+     * @returns {GraphAxis} The current axis
+     */
     scaleToFitAxis: function( axis, excludeSerie, start, end, min, max ) {
       //console.log( axis instanceof GraphAxis );
-      if ( !axis ) {
+      if ( !axis ||  !axis.isX() ) {
         axis = this.graph.getXAxis();
       }
 
       if ( isNaN( start ) ) {
-        start = axis.getActualMin();
+        start = axis.getCurrentMin();
       }
 
       if ( isNaN( end ) ) {
-        end = axis.getActualMax();
+        end = axis.getCurrentMax();
       }
 
       if ( min === undefined ) {
@@ -244,8 +262,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       } else {
 
         // If we wanted originally to resize min and max. Otherwise we use the current value
-        minV = min ? minV : this.getActualMin();
-        maxV = max ? maxV : this.getActualMax();
+        minV = min ? minV : this.getCurrentMin();
+        maxV = max ? maxV : this.getCurrentMax();
 
         var interval = maxV - minV;
 
@@ -254,10 +272,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
         this._doZoomVal( minV, maxV );
       }
-    },
 
-    isXY: function() {
-      return 'y';
+      return this;
     }
 
   } );

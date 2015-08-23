@@ -1,15 +1,31 @@
-define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
+"use strict";
 
-  "use strict";
+define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
 
+  /** 
+   * @class SerieScatter
+   * @static
+   * @augments Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
   var GraphSerieScatter = function() {}
   $.extend( GraphSerieScatter.prototype, GraphSerieNonInstanciable.prototype, {
 
+    /**
+     * @name SerieScatterDefaultOptions
+     * @object
+     * @static
+     */
     defaults: {
-      label: "",
-      onHover: false
+
     },
 
+    /**
+     * Initializes the seriesfsdfsdasdasd
+     * @memberof SerieScatter.prototype
+     * @private
+     */
     init: function( graph, name, options ) {
 
       var self = this;
@@ -101,21 +117,17 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
 
     },
 
-    /**
-     *	Possible data types
-     *	[100, 0.145, 101, 0.152, 102, 0.153]
-     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-     *
-     *	Converts every data type to a 1D array
+    /** 
+     * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
+     * @memberof SerieScatter.prototype
+     * @see GraphSerie#setData
      */
-    setData: function( data, arg, type ) {
+    setData: function( data, oneDimensional, type ) {
 
       var z = 0,
         x,
         dx,
-        arg = arg || "2D",
+        oneDimensional = oneDimensional || "2D",
         type = type || 'float',
         arr,
         total = 0,
@@ -130,10 +142,10 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       }
 
       if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
-        arg = "1D";
+        oneDimensional = "1D";
       }
 
-      var _2d = ( arg == "2D" );
+      var _2d = ( oneDimensional == "2D" );
 
       arr = this._addData( type, _2d ? data.length * 2 : data.length );
 
@@ -166,6 +178,11 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       return this;
     },
 
+    /**
+     * Removes all DOM points
+     * @private
+     * @memberof SerieScatter.prototype
+     */
     empty: function() {
 
       while ( this.groupPoints.firstChild ) {
@@ -173,15 +190,23 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       }
     },
 
-    select: function() {
-      this.selected = true;
-
-    },
-
-    unselect: function() {
-      this.selected = false;
-    },
-
+    /**
+     * Sets style to the scatter points
+     * First argument is the style applied by default to all points
+     * Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+     * All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+     *
+     * @example
+     * var modifiers = [];
+     * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+     * serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
+     *
+     * @memberof SerieScatter.prototype
+     * @param {Object} allStyles - The general style for all markers
+     * @param {Object} [ modifiers ] - The general style for all markers
+     * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
+     *
+     */
     setStyle: function( all, modifiers, mode ) {
 
       if ( typeof modifiers == "string" ) {
@@ -210,6 +235,13 @@ define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstancia
       return this;
     },
 
+    /**
+     * Redraws the serie
+     * @private
+     * @memberof SerieScatter.prototype
+     *
+     * @param {force} Boolean - Forces redraw even if the data hasn't changed
+     */
     draw: function( force ) { // Serie redrawing
 
       if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ) {

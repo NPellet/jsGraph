@@ -1,13 +1,27 @@
-define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
+"use strict";
 
-  "use strict";
+define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
+  /** 
+   * @class SerieZone
+   * @static
+   * @augments Serie
+   * @example graph.newSerie( name, options, "scatter" );
+   * @see Graph#newSerie
+   */
   var GraphSerieZone = function() {}
+
   $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
+    /**
+     * @name SerieZoneDefaultOptions
+     * @object
+     * @static
+     * @param {String} fillColor - The color to fill the zone with
+     * @param {String} lineColor - The line color
+     * @param {String} lineWidth - The line width (in px)
+     */
     defaults: {
-      label: "",
-
       fillColor: 'rgba( 0, 0, 0, 0.1 )',
       lineColor: 'rgba( 0, 0, 0, 1 )',
       lineWidth: '1px',
@@ -61,6 +75,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
      *
      *	Converts every data type to a 1D array
      */
+    // Should be handled properly by the default setData method
     setData: function( data, arg, type ) {
 
       var z = 0,
@@ -206,6 +221,10 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       }
     },
 
+    /**
+     * Removes all the dom concerning this serie from the drawing zone
+     * @memberof SerieZone.prototype
+     */
     empty: function() {
 
       while ( this.group.firstChild ) {
@@ -213,15 +232,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       }
     },
 
-    select: function() {
-      this.selected = true;
-
-    },
-
-    unselect: function() {
-      this.selected = false;
-    },
-
+    /**
+     * Redraws the serie
+     * @private
+     * @memberof SerieZone.prototype
+     *
+     * @param {force} Boolean - Forces redraw even if the data hasn't changed
+     */
     draw: function( force ) { // Serie redrawing
 
       if ( force || this.hasDataChanged() ) {
@@ -306,6 +323,13 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
     },
 
+    /**
+     * Applies the computed style to the DOM element fed as a parameter
+     * @private
+     * @memberof SerieZone.prototype
+     *
+     * @param {SVGLineElement} line - The line to which the style has to be applied to
+     */
     applyLineStyle: function( line ) {
 
       line.setAttribute( 'stroke', this.getLineColor() );
@@ -315,43 +339,74 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
       this.styleHasChanged( false );
     },
 
+    /**
+     * Sets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} width - The line width
+     * @returns {SerieZone} - The current serie
+     */
     setLineWidth: function( width ) {
       this.options.lineWidth = width;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The line width
+     */
     getLineWidth: function() {
       return this.options.lineWidth;
     },
 
-    /* LINE COLOR */
-
+    /**
+     * Sets the line color
+     * @memberof SerieZone.prototype
+     *
+     * @param {String} color - The line color
+     * @returns {SerieZone} - The current serie
+     */
     setLineColor: function( color ) {
       this.options.lineColor = color;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the line width
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The line width
+     */
     getLineColor: function() {
       return this.options.lineColor;
     },
 
-    /* */
-
-    /* FILL COLOR */
-
+    /**
+     * Sets the fill color
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} width - The line width
+     * @returns {Number} - The line width
+     */
     setFillColor: function( color ) {
       this.options.fillColor = color;
       this.styleHasChanged();
       return this;
     },
 
+    /**
+     * Gets the fill color
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The fill color
+     */
     getFillColor: function() {
       return this.options.fillColor;
     },
-
-    /* */
 
   } );
 

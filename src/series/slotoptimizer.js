@@ -1,4 +1,4 @@
-define( [], function() {
+define( [ '../graph.util' ], function( util ) {
 
   var slotWorker;
   var queue = {};
@@ -67,22 +67,13 @@ define( [], function() {
     }
   }
 
-  // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-  function guid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
-      var r = Math.random() * 16 | 0,
-        v = c == 'x' ? r : ( r & 0x3 | 0x8 );
-      return v.toString( 16 );
-    } );
-  }
-
   return function( toOptimize ) {
 
     if ( !slotWorker ) {
       createWorker();
     }
 
-    var requestId = guid();
+    var requestId = util.guid();
     toOptimize._queueId = requestId;
     queue[ requestId ] = $.Deferred();
 

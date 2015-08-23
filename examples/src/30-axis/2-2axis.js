@@ -12,7 +12,7 @@ define( function() {
 	min = 0,
 	jmax = 0;
 
-	for( var i = -1; i < 1.5 ; i += 0.01 ) {
+	for( var i = -1; i < 1.5 ; i += 0.05 ) {
 
 		series[ 0 ].push( i );
 		series[ 0 ].push( -20.5 + Math.pow( 2.71, ( i * 6 ) ) / 10 );
@@ -28,6 +28,8 @@ define( function() {
 
 		j++;
   }
+
+  console.log( series );
   	// END IGNORE ON BUILD
   var axisProperties = { primaryGrid: false, secondaryGrid: false, nbTicksPrimary: 5 },
     xAxis = graphinstance.getXAxis( 0, axisProperties ),
