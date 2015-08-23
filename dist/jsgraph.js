@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.2
+ * jsGraph JavaScript Graphing Library v1.13.3-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-23T16:33Z
+ * Date: 2015-08-23T20:35Z
  */
 
 (function( global, factory ) {
@@ -2716,7 +2716,11 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
       //}, 200 );
     } );
 
-    graph.dom.addEventListener( 'mousewheel', function( e ) {
+    graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+
+      if ( !graph.options.wheel.type ) {
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -2726,6 +2730,10 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
     } );
 
     graph.rectEvent.addEventListener( 'wheel', function( e ) {
+
+      if ( !graph.options.wheel.type ) {
+        return;
+      }
       e.stopPropagation();
       e.preventDefault();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -2934,10 +2942,6 @@ build['./graph.core'] = ( function( $, util, EventEmitter ) {
 
     e.preventDefault();
     e.stopPropagation();
-
-    if ( !graph.options.wheel.type ) {
-      return;
-    }
 
     switch ( graph.options.wheel.type ) {
 
@@ -4844,6 +4848,7 @@ build['./graph.axis'] = ( function( $, EventEmitter, util ) {
      * The units will allow the axis to scale down to the
      * @param {String} unit - The unit of the axis
      * @return {Axis} The current axis
+     * @memberof Axis.prototype
      */
     setUnit: function( unit ) {
       this.options.unit = unit;
@@ -12427,16 +12432,10 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
     },
 
     /**
-     *	Possible data types
-     *	[100, 0.145, 101, 0.152, 102, 0.153]
-     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-     *
-     *	Converts every data type to a 1D array
+     * Sets the data
+     * @memberof SerieZone.prototype
      */
-    // Should be handled properly by the default setData method
-     setData: function( data, arg, type ) {
+    setData: function( data, arg, type ) {
 
       var z = 0,
         x,
@@ -12556,8 +12555,6 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
       return this;
     },
 
-
-
     _addData: function( type, howmany ) {
 
       switch ( type ) {
@@ -12582,7 +12579,6 @@ build['./series/graph.serie.zone'] = ( function( GraphSerieNonInstanciable ) {
           break;
       }
     },
-
 
     /**
      * Removes all the dom concerning this serie from the drawing zone

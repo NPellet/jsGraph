@@ -67,15 +67,9 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
     },
 
     /**
-     *	Possible data types
-     *	[100, 0.145, 101, 0.152, 102, 0.153]
-     *	[[100, 0.145, 101, 0.152], [104, 0.175, 106, 0.188]]
-     *	[[100, 0.145], [101, 0.152], [102, 0.153], [...]]
-     *	[{ x: 100, dx: 1, y: [0.145, 0.152, 0.153]}]
-     *
-     *	Converts every data type to a 1D array
+     * Sets the data
+     * @memberof SerieZone.prototype
      */
-    // Should be handled properly by the default setData method
     setData: function( data, arg, type ) {
 
       var z = 0,

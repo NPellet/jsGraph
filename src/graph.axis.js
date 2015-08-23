@@ -1806,6 +1806,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * The units will allow the axis to scale down to the
      * @param {String} unit - The unit of the axis
      * @return {Axis} The current axis
+     * @memberof Axis.prototype
      */
     setUnit: function( unit ) {
       this.options.unit = unit;

@@ -2077,7 +2077,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       //}, 200 );
     } );
 
-    graph.dom.addEventListener( 'mousewheel', function( e ) {
+    graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+
+      if ( !graph.options.wheel.type ) {
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -2087,6 +2091,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     } );
 
     graph.rectEvent.addEventListener( 'wheel', function( e ) {
+
+      if ( !graph.options.wheel.type ) {
+        return;
+      }
       e.stopPropagation();
       e.preventDefault();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
@@ -2295,10 +2303,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     e.preventDefault();
     e.stopPropagation();
-
-    if ( !graph.options.wheel.type ) {
-      return;
-    }
 
     switch ( graph.options.wheel.type ) {
 
