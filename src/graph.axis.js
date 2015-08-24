@@ -867,50 +867,15 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.line.setAttribute( 'display', 'block' );
 
-      var scientificExponent = 0;
-
-      if ( !this.options.hideTicks ) {
-
-        if ( this.linkedToAxis ) { // px defined, linked to another axis
-
-          this.linkedToAxis.deltaPx = 10;
-          var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
-
-        } else if ( !this.options.logScale ) {
-          // So the setting is: How many ticks in total ? Then we have to separate it
-
-          if ( this.options.scientificTicks === true ) {
-            scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
-          }
-
-          var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
-
-        } else {
-          var widthHeight = this.drawLogTicks();
-        }
-      } else {
-        var widthHeight = 0;
+      if ( this.options.scientific == true ||  this.options.unitDecade ) {
+        this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
+      } else if ( this.options.scientificScale ) {
+        this.scientificExponent = this.options.scientificScale;
       }
-
-      // Looks for axes linked to this current axis
-      var axes = this.graph.findAxesLinkedTo( this );
-      axes.map( function( axis ) {
-
-        axis.setMinPx( self.getMinPx() );
-        axis.setMaxPx( self.getMaxPx() );
-
-        axis.draw( true );
-      } );
 
       /************************************/
       /*** DRAWING LABEL ******************/
       /************************************/
-
-      if ( this.options.scientificTicks && util.isNumeric( this.options.scientificTicks ) ) {
-        scientificExponent = this.options.scientificTicks;
-      }
-
-      this.scientificExponent = scientificExponent;
 
       var label;
       if ( label = this.getLabel() ) {
@@ -924,16 +889,18 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           } else {
             this.scientificExponent += ( this.scientificExponent % 3 );
           }
-
+          console.log( this.scientificExponent );
           this.unitTspan.setAttribute( 'display', 'visible' );
           this.expTspan.setAttribute( 'display', 'none' );
           this.expTspanExp.setAttribute( 'display', 'none' );
 
-          if ( this.scientificExponent == 0 ) {
+          if ( this.scientificExponent == 0 ||  !this.options.unitDecade ) {
             this.preunitTspan.textContent = "";
             this.preunitTspan.setAttribute( 'display', 'none' );
             this.unitTspan.setAttribute( 'dx', 5 );
+            this.scientificExponent = 0;
           } else {
+
             this.preunitTspan.textContent = this.getExponentGreekLetter( this.scientificExponent );
             this.preunitTspan.setAttribute( 'display', 'visible' );
             this.unitTspan.setAttribute( 'dx', 0 );
@@ -964,6 +931,35 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         }
 
       }
+
+      if ( !this.options.hideTicks ) {
+
+        if ( this.linkedToAxis ) { // px defined, linked to another axis
+
+          this.linkedToAxis.deltaPx = 10;
+          var widthHeight = this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
+
+        } else if ( !this.options.logScale ) {
+          // So the setting is: How many ticks in total ? Then we have to separate it
+
+          var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
+
+        } else {
+          var widthHeight = this.drawLogTicks();
+        }
+      } else {
+        var widthHeight = 0;
+      }
+
+      // Looks for axes linked to this current axis
+      var axes = this.graph.findAxesLinkedTo( this );
+      axes.map( function( axis ) {
+
+        axis.setMinPx( self.getMinPx() );
+        axis.setMaxPx( self.getMaxPx() );
+
+        axis.draw( true );
+      } );
 
       /************************************/
       /*** DRAW CHILDREN IMPL SPECIFIC ****/
@@ -1368,7 +1364,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     valueToText: function( value ) {
-
+      console.log( this.scientificExponent, this );
       if ( this.scientificExponent ) {
 
         value /= Math.pow( 10, this.scientificExponent );
@@ -1803,14 +1799,25 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     /**
      * Sets the unit of the axis
-     * The units will allow the axis to scale down to the
      * @param {String} unit - The unit of the axis
      * @return {Axis} The current axis
      * @memberof Axis.prototype
+     * @since 1.13.3
      */
     setUnit: function( unit ) {
       this.options.unit = unit;
       return this;
+    },
+
+    /**
+     * Allows the unit to scale with thousands
+     * @param {Boolean} on - Enables this mode
+     * @return {Axis} The current axis
+     * @memberof Axis.prototype
+     * @since 1.13.3
+     */
+    setUnitDecade: function( on ) {
+      this.options.unitDecade = on;
     }
 
   } );
