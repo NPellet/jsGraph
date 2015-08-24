@@ -149,7 +149,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
 
 
-    grunt.registerTask( 'default', [ 'build',/* 'minify',*/ 'copy:dist', 'jsdoc' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
+    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] ); // , 'copy:exportToNMR', 'copy:exportToVisualizer', 'copy:exportToTest', 'buildExampleList'
 
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
