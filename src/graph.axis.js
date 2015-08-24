@@ -867,10 +867,17 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.line.setAttribute( 'display', 'block' );
 
-      if ( this.options.scientific == true ||  this.options.unitDecade ) {
-        this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
-      } else if ( this.options.scientificScale ) {
-        this.scientificExponent = this.options.scientificScale;
+      if ( this.options.scientific == true ) {
+
+        if ( this.options.scientificScale ) {
+
+          this.scientificExponent = this.options.scientificScale;
+        } else {
+          console.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) );
+          console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) );
+          console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
+          this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
+        }
       }
 
       /************************************/
@@ -884,50 +891,49 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
         if ( this.options.unit ) {
 
-          if ( this.scientificExponent > 0 ) {
-            this.scientificExponent -= ( this.scientificExponent % 3 );
-          } else {
-            this.scientificExponent += ( this.scientificExponent % 3 );
-          }
-          console.log( this.scientificExponent );
           this.unitTspan.setAttribute( 'display', 'visible' );
           this.expTspan.setAttribute( 'display', 'none' );
           this.expTspanExp.setAttribute( 'display', 'none' );
-
-          if ( this.scientificExponent == 0 ||  !this.options.unitDecade ) {
-            this.preunitTspan.textContent = "";
-            this.preunitTspan.setAttribute( 'display', 'none' );
-            this.unitTspan.setAttribute( 'dx', 5 );
-            this.scientificExponent = 0;
-          } else {
-
-            this.preunitTspan.textContent = this.getExponentGreekLetter( this.scientificExponent );
-            this.preunitTspan.setAttribute( 'display', 'visible' );
-            this.unitTspan.setAttribute( 'dx', 0 );
-          }
-
           this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
 
         } else {
+          this.unitTspan.setAttribute( 'display', 'none' );
+        }
 
-          if ( this.scientificExponent === 0 )  {
+        if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 ) {
 
-            this.unitTspan.setAttribute( 'display', 'none' );
-            this.preunitTspan.setAttribute( 'display', 'none' );
-            this.expTspan.setAttribute( 'display', 'none' );
-            this.expTspanExp.setAttribute( 'display', 'none' );
-
+          if ( this.scientificExponent > 0 ) {
+            this.scientificExponent -= ( this.scientificExponent % 3 );
           } else {
 
-            this.expTspan.setAttribute( 'display', 'visible' );
-            this.expTspanExp.setAttribute( 'display', 'visible' );
-
-            this.unitTspan.setAttribute( 'display', 'none' );
-            this.preunitTspan.setAttribute( 'display', 'none' );
-
-            this.expTspan.textContent = "x10";
-            this.preunitTspan.textContent = this.scientificExponent;
+            this.scientificExponent += -3 - ( this.scientificExponent % 3 );
           }
+
+          this.preunitTspan.innerHTML = this.getExponentGreekLetter( this.scientificExponent );
+          this.preunitTspan.setAttribute( 'display', 'visible' );
+          this.unitTspan.setAttribute( 'dx', 0 );
+
+        } else if ( this.scientificExponent !== 0 ) {
+
+          this.preunitTspan.textContent = "";
+          this.preunitTspan.setAttribute( 'display', 'none' );
+
+          if ( this.options.unit ) {
+            this.unitTspan.setAttribute( 'dx', 5 );
+          }
+
+          this.expTspan.setAttribute( 'display', 'visible' );
+          this.expTspanExp.setAttribute( 'display', 'visible' );
+
+          this.expTspan.textContent = "x10";
+          this.expTspanExp.textContent = this.scientificExponent;
+
+        } else {
+
+          this.unitTspan.setAttribute( 'display', 'none' );
+          this.preunitTspan.setAttribute( 'display', 'none' );
+          this.expTspan.setAttribute( 'display', 'none' );
+          this.expTspanExp.setAttribute( 'display', 'none' );
         }
 
       }
@@ -974,7 +980,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     getExponentGreekLetter: function( val ) {
-
+      console.log( val );
       switch ( val ) {
 
         case 3:
@@ -1364,7 +1370,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     valueToText: function( value ) {
-      console.log( this.scientificExponent, this );
+
       if ( this.scientificExponent ) {
 
         value /= Math.pow( 10, this.scientificExponent );
@@ -1818,6 +1824,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     setUnitDecade: function( on ) {
       this.options.unitDecade = on;
+    },
+
+    setScientific: function( on ) {
+      this.options.scientific = on;
+    },
+
+    setScientificScale: function( number ) {
+      this.options.scientificScale = number;
     }
 
   } );
