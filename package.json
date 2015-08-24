@@ -1,6 +1,6 @@
 {
   "name": "graphs",
-  "version": "1.13.3-4",
+  "version": "1.13.3-5",
   "scripts": {
     "test": "grunt && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"
@@ -16,7 +16,6 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-jsdoc": "^0.6.7",
     "grunt-requirejs": "^0.4.2",
-    "grunt-sass": "^1.0.0",
     "grunt-sloc": "^0.6.0",
     "install": "^0.1.7",
     "js-beautify": "^1.5.1",
