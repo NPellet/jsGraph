@@ -1,0 +1,12 @@
+{
+     "1_basic": {
+         "title": "Basic introduction"
+     },
+
+     "2_adaptto": {
+         "title": "Adapt axes"
+    },
+    "3-axesadvanced": {
+         "title": "Advanced axes techniques"
+    }
+ }
