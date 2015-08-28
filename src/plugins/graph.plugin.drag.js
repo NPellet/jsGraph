@@ -20,36 +20,36 @@ define( [ './graph.plugin' ], function( Plugin ) {
    * @private
    */
   PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
-    this._draggingX = x;
-    this._draggingY = y;
+      this._draggingX = x;
+      this._draggingY = y;
 
-    return true;
-  },
+      return true;
+    },
 
-  /**
-   * @memberof PluginDrag
-   * @private
-   */
-  PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
-    var deltaX = x - this._draggingX;
-    var deltaY = y - this._draggingY;
+    /**
+     * @memberof PluginDrag
+     * @private
+     */
+    PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+      var deltaX = x - this._draggingX;
+      var deltaY = y - this._draggingY;
 
-    graph._applyToAxes( function( axis ) {
-      axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-      axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-    }, false, true, false );
+      graph._applyToAxes( function( axis ) {
+        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+      }, false, true, false );
 
-    graph._applyToAxes( function( axis ) {
-      axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-      axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-    }, false, false, true );
+      graph._applyToAxes( function( axis ) {
+        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+      }, false, false, true );
 
-    this._draggingX = x;
-    this._draggingY = y;
+      this._draggingX = x;
+      this._draggingY = y;
 
-    graph.redraw( true );
-    graph.drawSeries();
-  }
+      graph.redraw( true );
+      graph.drawSeries();
+    }
 
   return PluginDrag;
 } );

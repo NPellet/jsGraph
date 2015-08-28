@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-10
+ * jsGraph JavaScript Graphing Library v1.13.3-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-24T20:14Z
+ * Date: 2015-08-28T11:02Z
  */
 
 ( function( global, factory ) {
@@ -32,9 +32,9 @@
     build[ './jquery' ] = $;
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.util
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.util.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.util.js
      */
 
     build[ './graph.util' ] = ( function() {
@@ -167,9 +167,9 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : dependencies/eventEmitter/EventEmitter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/dependencies/eventEmitter/EventEmitter.js
      */
 
     build[ './dependencies/eventEmitter/EventEmitter' ] = ( function() {
@@ -619,9 +619,9 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.core
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.core.js
      */
 
     build[ './graph.core' ] = ( function( $, util, EventEmitter ) {
@@ -648,10 +648,10 @@
         var self = this;
 
         /**
-      The unique ID of the graph
-      @name Graph#uniqueid
-      @type String
-    */
+          The unique ID of the graph
+          @name Graph#uniqueid
+          @type String
+        */
         this._creation = util.guid();
 
         if ( typeof wrapper == "string" ) {
@@ -2957,10 +2957,10 @@
 
         // Redraw not obvious at all !!
         /*
-    graph.redraw();
-    graph.drawSeries( true );
+        graph.redraw();
+        graph.drawSeries( true );
 
-    */
+        */
       }
 
       function _handleMouseLeave( graph ) {
@@ -2997,28 +2997,28 @@
 
       Graph.prototype._constructors = {},
 
-      /**
-       * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-       * @name Graph.registerConstructor
-       * @param {String} name - The name of the constructor
-       * @see Graph#newSerie
-       */
-      Graph.registerConstructor = function( name, constructor ) {
+        /**
+         * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+         * @name Graph.registerConstructor
+         * @param {String} name - The name of the constructor
+         * @see Graph#newSerie
+         */
+        Graph.registerConstructor = function( name, constructor ) {
 
-        if ( Graph.prototype._constructors[ name ] ) {
-          return util.throwError( "Constructor " + constructor + " already exists." );
-        }
+          if ( Graph.prototype._constructors[ name ] ) {
+            return util.throwError( "Constructor " + constructor + " already exists." );
+          }
 
-        Graph.prototype._constructors[ name ] = constructor;
-      };
+          Graph.prototype._constructors[ name ] = constructor;
+        };
 
       return Graph;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.js
      */
 
     build[ './graph.axis' ] = ( function( $, EventEmitter, util ) {
@@ -4866,9 +4866,9 @@
     } )( build[ "./jquery" ], build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.js
      */
 
     build[ './graph.axis.x' ] = ( function( $, GraphAxis ) {
@@ -5041,9 +5041,9 @@
     } )( build[ "./jquery" ], build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.y
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.y.js
      */
 
     build[ './graph.axis.y' ] = ( function( GraphAxis ) {
@@ -5333,9 +5333,9 @@
     } )( build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.broken.js
      */
 
     build[ './graph.axis.broken' ] = ( function( $ ) {
@@ -5573,9 +5573,9 @@
     } )( build[ "./jquery" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.broken.js
      */
 
     build[ './graph.axis.x.broken' ] = ( function( GraphXAxis, GraphBrokenAxis ) {
@@ -5613,9 +5613,9 @@
     } )( build[ "./graph.axis.x" ], build[ "./graph.axis.broken" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.y.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.y.broken.js
      */
 
     build[ './graph.axis.y.broken' ] = ( function( GraphYAxis, GraphBrokenAxis ) {
@@ -5658,9 +5658,9 @@
     } )( build[ "./graph.axis.y" ], build[ "./graph.axis.broken" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x.time
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.time.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.time.js
      */
 
     build[ './graph.axis.x.time' ] = ( function( GraphAxis ) {
@@ -6552,9 +6552,9 @@
     } )( build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.legend
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.legend.js
      */
 
     build[ './graph.legend' ] = ( function() {
@@ -6920,9 +6920,9 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.js
      */
 
     build[ './plugins/graph.plugin' ] = ( function( EventEmitter ) {
@@ -6980,9 +6980,9 @@
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.drag
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.drag.js
      */
 
     build[ './plugins/graph.plugin.drag' ] = ( function( Plugin ) {
@@ -7009,44 +7009,44 @@
        * @private
        */
       PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
-        this._draggingX = x;
-        this._draggingY = y;
+          this._draggingX = x;
+          this._draggingY = y;
 
-        return true;
-      },
+          return true;
+        },
 
-      /**
-       * @memberof PluginDrag
-       * @private
-       */
-      PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
-        var deltaX = x - this._draggingX;
-        var deltaY = y - this._draggingY;
+        /**
+         * @memberof PluginDrag
+         * @private
+         */
+        PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+          var deltaX = x - this._draggingX;
+          var deltaY = y - this._draggingY;
 
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-        }, false, true, false );
+          graph._applyToAxes( function( axis ) {
+            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+          }, false, true, false );
 
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-        }, false, false, true );
+          graph._applyToAxes( function( axis ) {
+            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+          }, false, false, true );
 
-        this._draggingX = x;
-        this._draggingY = y;
+          this._draggingX = x;
+          this._draggingY = y;
 
-        graph.redraw( true );
-        graph.drawSeries();
-      }
+          graph.redraw( true );
+          graph.drawSeries();
+        }
 
       return PluginDrag;
     } )( build[ "./plugins/graph.plugin" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.shape
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.shape.js
      */
 
     build[ './plugins/graph.plugin.shape' ] = ( function( $, Plugin ) {
@@ -7103,9 +7103,9 @@
         this.count = this.count || 0;
 
         x -= graph.getPaddingLeft(),
-        y -= graph.getPaddingTop(),
+          y -= graph.getPaddingTop(),
 
-        xVal = graph.getXAxis().getVal( x );
+          xVal = graph.getXAxis().getVal( x );
         yVal = graph.getYAxis().getVal( y );
 
         var shapeInfo = {
@@ -7203,9 +7203,9 @@
     } )( build[ "./jquery" ], build[ "./plugins/graph.plugin" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.selectScatter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.selectScatter.js
      */
 
     build[ './plugins/graph.plugin.selectScatter' ] = ( function( Plugin, util ) {
@@ -7254,29 +7254,29 @@
        * @memberof PluginSelectScatter
        */
       PluginSelectScatter.prototype.setSerie = function( serie ) {
-        this.serie = serie;
-      },
+          this.serie = serie;
+        },
 
-      /**
-       * @memberof PluginSelectScatter
-       * @private
-       */
-      PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
+        /**
+         * @memberof PluginSelectScatter
+         * @private
+         */
+        PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
 
-        if ( !this.serie ) {
-          return;
-        }
+          if ( !this.serie ) {
+            return;
+          }
 
-        this.path = 'M ' + x + ' ' + y + ' ';
-        this.currentX = x;
-        this.currentY = y;
+          this.path = 'M ' + x + ' ' + y + ' ';
+          this.currentX = x;
+          this.currentY = y;
 
-        this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
-        this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
-        this._path.setAttribute( 'd', '' );
-        this._path.setAttribute( 'display', 'block' );
+          this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+          this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+          this._path.setAttribute( 'd', '' );
+          this._path.setAttribute( 'display', 'block' );
 
-      };
+        };
 
       /**
        * @memberof PluginSelectScatter
@@ -7355,9 +7355,9 @@
     } )( build[ "./plugins/graph.plugin" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.zoom
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.zoom.js
      */
 
     build[ './plugins/graph.plugin.zoom' ] = ( function( $, util, Plugin ) {
@@ -7697,9 +7697,9 @@
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.js
      */
 
     build[ './series/graph.serie' ] = ( function( EventEmitter, util ) {
@@ -8498,9 +8498,9 @@
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/slotoptimizer
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/slotoptimizer.js
      */
 
     build[ './series/slotoptimizer' ] = ( function( util ) {
@@ -8591,9 +8591,9 @@
     } )( build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.line
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.js
      */
 
     build[ './series/graph.serie.line' ] = ( function( SerieLineNonInstanciable, SlotOptimizer, util ) {
@@ -9668,7 +9668,7 @@
           if ( this.isFlipped() ) {
 
             ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-            max = this.getX( slotToUse[ j ].max );
+              max = this.getX( slotToUse[ j ].max );
 
             /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -9685,7 +9685,7 @@
 
             xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-            max = this.getY( slotToUse[ j ].max );
+              max = this.getY( slotToUse[ j ].max );
 
             if ( this.options.autoPeakPicking ) {
               allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -9999,7 +9999,7 @@
             for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
               p_x = this.data[ i ][ k ],
-              p_y = this.data[ i ][ k + 1 ];
+                p_y = this.data[ i ][ k + 1 ];
               dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
               if ( !oldDist || dist < oldDist ) {
                 oldDist = dist;
@@ -10602,9 +10602,9 @@
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
-          px = self.getX( x ),
-          k = 0,
-          y = self.getY( ys[ i ][ 0 ] );
+            px = self.getX( x ),
+            k = 0,
+            y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
             continue;
@@ -10804,8 +10804,8 @@
         for ( ; i < l; i++ ) {
 
           j = 0,
-          k = 0,
-          m = graph.data[ i ].length;
+            k = 0,
+            m = graph.data[ i ].length;
 
           degradationNb = 0;
           degradationValue = 0;
@@ -10931,9 +10931,9 @@
     } )( build[ "./series/graph.serie" ], build[ "./series/slotoptimizer" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.contour
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.contour.js
      */
 
     build[ './series/graph.serie.contour' ] = ( function( GraphSerie, util ) {
@@ -11212,32 +11212,32 @@
         },
 
         /**
-     * Sets rainbow colors based on hsl format
-     * @memberof SerieContour.prototype
-     * @param {Object} colors
-     * @param {Object} colors.fromPositive
-     * @param {Number} colors.fromPositive.h
-     * @param {Number} colors.fromPositive.s
-     * @param {Number} colors.fromPositive.l
-     
-     * @param {Object} colors.toPositive
-     * @param {Number} colors.toPositive.h
-     * @param {Number} colors.toPositive.s
-     * @param {Number} colors.toPositive.l
-     
+         * Sets rainbow colors based on hsl format
+         * @memberof SerieContour.prototype
+         * @param {Object} colors
+         * @param {Object} colors.fromPositive
+         * @param {Number} colors.fromPositive.h
+         * @param {Number} colors.fromPositive.s
+         * @param {Number} colors.fromPositive.l
+         
+         * @param {Object} colors.toPositive
+         * @param {Number} colors.toPositive.h
+         * @param {Number} colors.toPositive.s
+         * @param {Number} colors.toPositive.l
+         
 
-     * @param {Object} colors.fromNegative
-     * @param {Number} colors.fromNegative.h
-     * @param {Number} colors.fromNegative.s
-     * @param {Number} colors.fromNegative.l
-     
+         * @param {Object} colors.fromNegative
+         * @param {Number} colors.fromNegative.h
+         * @param {Number} colors.fromNegative.s
+         * @param {Number} colors.fromNegative.l
+         
 
-     * @param {Object} colors.toNegative
-     * @param {Number} colors.toNegative.h
-     * @param {Number} colors.toNegative.s
-     * @param {Number} colors.toNegative.l
-     * @return {Serie} The current serie
-     */
+         * @param {Object} colors.toNegative
+         * @param {Number} colors.toNegative.h
+         * @param {Number} colors.toNegative.s
+         * @param {Number} colors.toNegative.l
+         * @return {Serie} The current serie
+         */
         setDynamicColor: function( colors ) {
           this.lineColors = colors;
 
@@ -11326,9 +11326,9 @@
     } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.line.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.broken.js
      */
 
     build[ './series/graph.serie.line.broken' ] = ( function( GraphLine ) {
@@ -11531,9 +11531,9 @@
     } )( build[ "./series/graph.serie.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.scatter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.scatter.js
      */
 
     build[ './series/graph.serie.scatter' ] = ( function( GraphSerieNonInstanciable, util ) {
@@ -12243,9 +12243,9 @@
     } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.zone
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.zone.js
      */
 
     build[ './series/graph.serie.zone' ] = ( function( GraphSerieNonInstanciable ) {
@@ -12658,9 +12658,9 @@
     } )( build[ "./series/graph.serie" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.js
      */
 
     build[ './shapes/graph.shape' ] = ( function() {
@@ -13941,9 +13941,9 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.areaundercurve
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.areaundercurve.js
      */
 
     build[ './shapes/graph.shape.areaundercurve' ] = ( function( GraphShape ) {
@@ -14114,7 +14114,7 @@
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-              y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+                y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
               maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
               minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );
@@ -14216,9 +14216,9 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.line
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.line.js
      */
 
     build[ './shapes/graph.shape.line' ] = ( function( GraphShape ) {
@@ -14417,9 +14417,9 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.arrow
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.arrow.js
      */
 
     build[ './shapes/graph.shape.arrow' ] = ( function( GraphLine ) {
@@ -14454,9 +14454,9 @@
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.ellipse
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.ellipse.js
      */
 
     build[ './shapes/graph.shape.ellipse' ] = ( function( GraphShape ) {
@@ -14557,9 +14557,9 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.label
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.label.js
      */
 
     build[ './shapes/graph.shape.label' ] = ( function( GraphShape ) {
@@ -14629,9 +14629,9 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.nmrintegral
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.nmrintegral.js
      */
 
     build[ './shapes/graph.shape.nmrintegral' ] = ( function( GraphSurfaceUnderCurve ) {
@@ -14734,7 +14734,7 @@
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] ),
-              y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
+                y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
 
               if ( this.serie.isFlipped() ) {
                 var x2 = x;
@@ -14882,9 +14882,9 @@
     } )( build[ "./shapes/graph.shape.areaundercurve" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.rect
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rect.js
      */
 
     build[ './shapes/graph.shape.rect' ] = ( function( GraphShape ) {
@@ -15021,7 +15021,7 @@
           // At this stage, x and y are in px
 
           x = pos.x,
-          y = pos.y;
+            y = pos.y;
 
           this.currentX = x;
           this.currentY = y;
@@ -15425,9 +15425,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakintegration2d
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakintegration2d.js
      */
 
     build[ './shapes/graph.shape.peakintegration2d' ] = ( function( GraphRect ) {
@@ -15471,9 +15471,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.rect" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakinterval
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval.js
      */
 
     build[ './shapes/graph.shape.peakinterval' ] = ( function( GraphLine ) {
@@ -15513,9 +15513,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakinterval2
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval2.js
      */
 
     build[ './shapes/graph.shape.peakinterval2' ] = ( function( GraphLine ) {
@@ -15654,7 +15654,7 @@ this.handle1.setAttribute('x', this.currentX);
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.data[ i ][ j + 0 ],
-              y = this.serie.data[ i ][ j + 1 ];
+                y = this.serie.data[ i ][ j + 1 ];
 
               if ( !firstX ) {
                 firstX = x;
@@ -15733,9 +15733,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.rangex
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rangex.js
      */
 
     build[ './shapes/graph.shape.rangex' ] = ( function( GraphSurfaceUnderCurve ) {
@@ -15853,9 +15853,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.areaundercurve" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.cross
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.cross.js
      */
 
     build[ './shapes/graph.shape.cross' ] = ( function( GraphShape ) {
@@ -15978,9 +15978,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.zoom2d
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.zoom2d.js
      */
 
     build[ './shapes/graph.shape.zoom2d' ] = ( function( GraphShape ) {
@@ -16157,9 +16157,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakboundariescenter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakboundariescenter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakboundariescenter.js
      */
 
     build[ './shapes/graph.shape.peakboundariescenter' ] = ( function( GraphLine ) {
@@ -16373,9 +16373,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.toolbar
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.toolbar.js
      */
 
     build[ './graph.toolbar' ] = ( function() {
@@ -16530,9 +16530,9 @@ this.handle1.setAttribute('x', this.currentX);
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.js
      */
 
     return ( function( Graph,
