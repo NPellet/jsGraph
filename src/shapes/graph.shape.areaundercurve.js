@@ -164,7 +164,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-          y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+            y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
           maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
           minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );
@@ -206,12 +206,27 @@ define( [ './graph.shape' ], function( GraphShape ) {
       if ( !this.firstX ) {
         return;
       }
-      this.handle1.setAttribute( 'x1', this.firstX );
-      this.handle1.setAttribute( 'x2', this.firstX );
 
-      this.handle2.setAttribute( 'x1', this.lastX );
-      this.handle2.setAttribute( 'x2', this.lastX );
+      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
 
+      if ( posXY.x < posXY2.x ) {
+
+        this.handle1.setAttribute( 'x1', this.firstX );
+        this.handle1.setAttribute( 'x2', this.firstX );
+
+        this.handle2.setAttribute( 'x1', this.lastX );
+        this.handle2.setAttribute( 'x2', this.lastX );
+
+      } else {
+
+        this.handle1.setAttribute( 'x1', this.lastX );
+        this.handle1.setAttribute( 'x2', this.lastX );
+
+        this.handle2.setAttribute( 'x1', this.firstX );
+        this.handle2.setAttribute( 'x2', this.firstX );
+
+      }
       this.handle1.setAttribute( 'y1', this.getYAxis().getMaxPx() );
       this.handle1.setAttribute( 'y2', this.serie.getY( 0 ) );
 

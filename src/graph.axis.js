@@ -878,6 +878,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
           this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
         }
+      } else {
+        this.scientificExponent = 0;
       }
 
       /************************************/

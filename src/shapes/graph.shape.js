@@ -681,25 +681,26 @@ define( [], function() {
             }
           }
 
-          self[ 'handle' + j ].addEventListener( 'mousedown', function( e ) {
+          self[ 'handle' + j ]
+            .addEventListener( 'mousedown', function( e ) {
 
-            e.preventDefault();
-            e.stopPropagation();
+              e.preventDefault();
+              e.stopPropagation();
 
-            if ( self.isResizable() ) {
+              if ( self.isResizable() ) {
 
-              self.graph.emit( "beforeShapeResize", self );
+                self.graph.emit( "beforeShapeResize", self );
 
-              if ( !self.graph.prevent( false ) ) {
+                if ( !self.graph.prevent( false ) ) {
 
-                self.resizing = true;
-                self.handleSelected = j;
-                self.handleMouseDown( e );
+                  self.resizing = true;
+                  self.handleSelected = j;
+                  self.handleMouseDown( e );
 
+                }
               }
-            }
 
-          } );
+            } );
 
           handles.push( self[ 'handle' + j ] );
 

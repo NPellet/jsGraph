@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-10
+ * jsGraph JavaScript Graphing Library v1.13.3-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-24T20:14Z
+ * Date: 2015-08-28T12:54Z
  */
 
 ( function( global, factory ) {
@@ -32,7 +32,7 @@
     build[ './jquery' ] = $;
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.util
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.util.js
      */
@@ -167,7 +167,7 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : dependencies/eventEmitter/EventEmitter
      * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
      */
@@ -619,7 +619,7 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.core
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
      */
@@ -648,10 +648,10 @@
         var self = this;
 
         /**
-      The unique ID of the graph
-      @name Graph#uniqueid
-      @type String
-    */
+          The unique ID of the graph
+          @name Graph#uniqueid
+          @type String
+        */
         this._creation = util.guid();
 
         if ( typeof wrapper == "string" ) {
@@ -1776,6 +1776,11 @@
         selectShape: function( shape, mute ) {
 
           // Already selected. Returns false
+
+          if ( !shape ) {
+            return;
+          }
+
           if ( this.selectedShapes.indexOf( shape ) > -1 ) {
             return false;
           }
@@ -2957,10 +2962,10 @@
 
         // Redraw not obvious at all !!
         /*
-    graph.redraw();
-    graph.drawSeries( true );
+        graph.redraw();
+        graph.drawSeries( true );
 
-    */
+        */
       }
 
       function _handleMouseLeave( graph ) {
@@ -2997,26 +3002,26 @@
 
       Graph.prototype._constructors = {},
 
-      /**
-       * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-       * @name Graph.registerConstructor
-       * @param {String} name - The name of the constructor
-       * @see Graph#newSerie
-       */
-      Graph.registerConstructor = function( name, constructor ) {
+        /**
+         * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+         * @name Graph.registerConstructor
+         * @param {String} name - The name of the constructor
+         * @see Graph#newSerie
+         */
+        Graph.registerConstructor = function( name, constructor ) {
 
-        if ( Graph.prototype._constructors[ name ] ) {
-          return util.throwError( "Constructor " + constructor + " already exists." );
-        }
+          if ( Graph.prototype._constructors[ name ] ) {
+            return util.throwError( "Constructor " + constructor + " already exists." );
+          }
 
-        Graph.prototype._constructors[ name ] = constructor;
-      };
+          Graph.prototype._constructors[ name ] = constructor;
+        };
 
       return Graph;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
      */
@@ -3903,6 +3908,8 @@
               console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
               this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
             }
+          } else {
+            this.scientificExponent = 0;
           }
 
           /************************************/
@@ -4866,7 +4873,7 @@
     } )( build[ "./jquery" ], build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
      */
@@ -5041,7 +5048,7 @@
     } )( build[ "./jquery" ], build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.y
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
      */
@@ -5333,7 +5340,7 @@
     } )( build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.broken
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
      */
@@ -5573,7 +5580,7 @@
     } )( build[ "./jquery" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x.broken
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
      */
@@ -5613,7 +5620,7 @@
     } )( build[ "./graph.axis.x" ], build[ "./graph.axis.broken" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.y.broken
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
      */
@@ -5658,7 +5665,7 @@
     } )( build[ "./graph.axis.y" ], build[ "./graph.axis.broken" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.axis.x.time
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.time.js
      */
@@ -6552,7 +6559,7 @@
     } )( build[ "./graph.axis" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.legend
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
      */
@@ -6920,7 +6927,7 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin
      * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.js
      */
@@ -6980,7 +6987,7 @@
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.drag
      * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
      */
@@ -7009,42 +7016,42 @@
        * @private
        */
       PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
-        this._draggingX = x;
-        this._draggingY = y;
+          this._draggingX = x;
+          this._draggingY = y;
 
-        return true;
-      },
+          return true;
+        },
 
-      /**
-       * @memberof PluginDrag
-       * @private
-       */
-      PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
-        var deltaX = x - this._draggingX;
-        var deltaY = y - this._draggingY;
+        /**
+         * @memberof PluginDrag
+         * @private
+         */
+        PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+          var deltaX = x - this._draggingX;
+          var deltaY = y - this._draggingY;
 
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-        }, false, true, false );
+          graph._applyToAxes( function( axis ) {
+            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+          }, false, true, false );
 
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-        }, false, false, true );
+          graph._applyToAxes( function( axis ) {
+            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+          }, false, false, true );
 
-        this._draggingX = x;
-        this._draggingY = y;
+          this._draggingX = x;
+          this._draggingY = y;
 
-        graph.redraw( true );
-        graph.drawSeries();
-      }
+          graph.redraw( true );
+          graph.drawSeries();
+        }
 
       return PluginDrag;
     } )( build[ "./plugins/graph.plugin" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.shape
      * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
      */
@@ -7103,9 +7110,9 @@
         this.count = this.count || 0;
 
         x -= graph.getPaddingLeft(),
-        y -= graph.getPaddingTop(),
+          y -= graph.getPaddingTop(),
 
-        xVal = graph.getXAxis().getVal( x );
+          xVal = graph.getXAxis().getVal( x );
         yVal = graph.getYAxis().getVal( y );
 
         var shapeInfo = {
@@ -7203,7 +7210,7 @@
     } )( build[ "./jquery" ], build[ "./plugins/graph.plugin" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.selectScatter
      * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
      */
@@ -7254,29 +7261,29 @@
        * @memberof PluginSelectScatter
        */
       PluginSelectScatter.prototype.setSerie = function( serie ) {
-        this.serie = serie;
-      },
+          this.serie = serie;
+        },
 
-      /**
-       * @memberof PluginSelectScatter
-       * @private
-       */
-      PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
+        /**
+         * @memberof PluginSelectScatter
+         * @private
+         */
+        PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
 
-        if ( !this.serie ) {
-          return;
-        }
+          if ( !this.serie ) {
+            return;
+          }
 
-        this.path = 'M ' + x + ' ' + y + ' ';
-        this.currentX = x;
-        this.currentY = y;
+          this.path = 'M ' + x + ' ' + y + ' ';
+          this.currentX = x;
+          this.currentY = y;
 
-        this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
-        this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
-        this._path.setAttribute( 'd', '' );
-        this._path.setAttribute( 'display', 'block' );
+          this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+          this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+          this._path.setAttribute( 'd', '' );
+          this._path.setAttribute( 'display', 'block' );
 
-      };
+        };
 
       /**
        * @memberof PluginSelectScatter
@@ -7355,7 +7362,7 @@
     } )( build[ "./plugins/graph.plugin" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : plugins/graph.plugin.zoom
      * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
      */
@@ -7697,7 +7704,7 @@
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.js
      */
@@ -8498,7 +8505,7 @@
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/slotoptimizer
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
      */
@@ -8591,7 +8598,7 @@
     } )( build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.line
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
      */
@@ -9339,16 +9346,16 @@
 
                   pointOnAxis = [];
                   // Y crossing
-                  var yLeftCrossing = ( x - xMin ) / ( x - lastX );
-                  yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
-                  var yRightCrossing = ( x - xMax ) / ( x - lastX );
-                  yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+                  var yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+                  var yLeftCrossing = ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 ) ? y - yLeftCrossingRatio * ( y - lastY ) : false;
+                  var yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+                  var yRightCrossing = ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 ) ? y - yRightCrossingRatio * ( y - lastY ) : false;
 
                   // X crossing
-                  var xTopCrossing = ( y - yMin ) / ( y - lastY );
-                  xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
-                  var xBottomCrossing = ( y - yMax ) / ( y - lastY );
-                  xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+                  var xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+                  var xTopCrossing = ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 ) ? x - xTopCrossingRatio * ( x - lastX ) : false;
+                  var xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+                  var xBottomCrossing = ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 ) ? x - xBottomCrossingRatio * ( x - lastX ) : false;
 
                   if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                     pointOnAxis.push( [ xMin, yLeftCrossing ] );
@@ -9401,15 +9408,36 @@
                       }
                       lastPointOutside = true;
                     }
-                  }
+                  } // else {
+                  // Norman:
+                  // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
+                  // However, there's no need to draw anything because the point is on the axis and will already be covered.
+                  // 28 Aug 2015
+
+                  /*
+                    if ( lastPointOutside !== pointOutside ) {
+                      console.error( "Programmation error. A crossing should have been found" );
+                      console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
+                      console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
+                      console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
+                      console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
+                      console.log( pointOutside, lastPointOutside )
+
+                    }
+                    */
+                  // }
                 }
 
                 xpx = xpx2;
                 ypx = ypx2;
                 lastX = x;
                 lastY = y;
+
+                lastPointOutside = pointOutside;
+
                 continue;
               }
+
             }
 
             if ( isNaN( xpx2 ) || isNaN( ypx2 ) ) {
@@ -9668,7 +9696,7 @@
           if ( this.isFlipped() ) {
 
             ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-            max = this.getX( slotToUse[ j ].max );
+              max = this.getX( slotToUse[ j ].max );
 
             /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -9685,7 +9713,7 @@
 
             xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-            max = this.getY( slotToUse[ j ].max );
+              max = this.getY( slotToUse[ j ].max );
 
             if ( this.options.autoPeakPicking ) {
               allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -9999,7 +10027,7 @@
             for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
               p_x = this.data[ i ][ k ],
-              p_y = this.data[ i ][ k + 1 ];
+                p_y = this.data[ i ][ k + 1 ];
               dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
               if ( !oldDist || dist < oldDist ) {
                 oldDist = dist;
@@ -10602,9 +10630,9 @@
         for ( ; i < l; i++ ) {
 
           x = ys[ i ][ 1 ],
-          px = self.getX( x ),
-          k = 0,
-          y = self.getY( ys[ i ][ 0 ] );
+            px = self.getX( x ),
+            k = 0,
+            y = self.getY( ys[ i ][ 0 ] );
 
           if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
             continue;
@@ -10804,8 +10832,8 @@
         for ( ; i < l; i++ ) {
 
           j = 0,
-          k = 0,
-          m = graph.data[ i ].length;
+            k = 0,
+            m = graph.data[ i ].length;
 
           degradationNb = 0;
           degradationValue = 0;
@@ -10931,7 +10959,7 @@
     } )( build[ "./series/graph.serie" ], build[ "./series/slotoptimizer" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.contour
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
      */
@@ -11212,32 +11240,32 @@
         },
 
         /**
-     * Sets rainbow colors based on hsl format
-     * @memberof SerieContour.prototype
-     * @param {Object} colors
-     * @param {Object} colors.fromPositive
-     * @param {Number} colors.fromPositive.h
-     * @param {Number} colors.fromPositive.s
-     * @param {Number} colors.fromPositive.l
-     
-     * @param {Object} colors.toPositive
-     * @param {Number} colors.toPositive.h
-     * @param {Number} colors.toPositive.s
-     * @param {Number} colors.toPositive.l
-     
+         * Sets rainbow colors based on hsl format
+         * @memberof SerieContour.prototype
+         * @param {Object} colors
+         * @param {Object} colors.fromPositive
+         * @param {Number} colors.fromPositive.h
+         * @param {Number} colors.fromPositive.s
+         * @param {Number} colors.fromPositive.l
+         
+         * @param {Object} colors.toPositive
+         * @param {Number} colors.toPositive.h
+         * @param {Number} colors.toPositive.s
+         * @param {Number} colors.toPositive.l
+         
 
-     * @param {Object} colors.fromNegative
-     * @param {Number} colors.fromNegative.h
-     * @param {Number} colors.fromNegative.s
-     * @param {Number} colors.fromNegative.l
-     
+         * @param {Object} colors.fromNegative
+         * @param {Number} colors.fromNegative.h
+         * @param {Number} colors.fromNegative.s
+         * @param {Number} colors.fromNegative.l
+         
 
-     * @param {Object} colors.toNegative
-     * @param {Number} colors.toNegative.h
-     * @param {Number} colors.toNegative.s
-     * @param {Number} colors.toNegative.l
-     * @return {Serie} The current serie
-     */
+         * @param {Object} colors.toNegative
+         * @param {Number} colors.toNegative.h
+         * @param {Number} colors.toNegative.s
+         * @param {Number} colors.toNegative.l
+         * @return {Serie} The current serie
+         */
         setDynamicColor: function( colors ) {
           this.lineColors = colors;
 
@@ -11326,7 +11354,7 @@
     } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.line.broken
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
      */
@@ -11531,7 +11559,7 @@
     } )( build[ "./series/graph.serie.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.scatter
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
      */
@@ -12243,7 +12271,7 @@
     } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : series/graph.serie.zone
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
      */
@@ -12658,7 +12686,7 @@
     } )( build[ "./series/graph.serie" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
      */
@@ -13348,25 +13376,26 @@
                 }
               }
 
-              self[ 'handle' + j ].addEventListener( 'mousedown', function( e ) {
+              self[ 'handle' + j ]
+                .addEventListener( 'mousedown', function( e ) {
 
-                e.preventDefault();
-                e.stopPropagation();
+                  e.preventDefault();
+                  e.stopPropagation();
 
-                if ( self.isResizable() ) {
+                  if ( self.isResizable() ) {
 
-                  self.graph.emit( "beforeShapeResize", self );
+                    self.graph.emit( "beforeShapeResize", self );
 
-                  if ( !self.graph.prevent( false ) ) {
+                    if ( !self.graph.prevent( false ) ) {
 
-                    self.resizing = true;
-                    self.handleSelected = j;
-                    self.handleMouseDown( e );
+                      self.resizing = true;
+                      self.handleSelected = j;
+                      self.handleMouseDown( e );
 
+                    }
                   }
-                }
 
-              } );
+                } );
 
               handles.push( self[ 'handle' + j ] );
 
@@ -13941,7 +13970,7 @@
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.areaundercurve
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
      */
@@ -14114,7 +14143,7 @@
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
-              y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
+                y = this.serie.getY( this.serie.data[ i ][ j + 1 ] );
 
               maxY = Math.max( this.serie.data[ i ][ j + 1 ], maxY );
               minY = Math.min( this.serie.data[ i ][ j + 1 ], minY );
@@ -14156,12 +14185,27 @@
           if ( !this.firstX ) {
             return;
           }
-          this.handle1.setAttribute( 'x1', this.firstX );
-          this.handle1.setAttribute( 'x2', this.firstX );
 
-          this.handle2.setAttribute( 'x1', this.lastX );
-          this.handle2.setAttribute( 'x2', this.lastX );
+          var posXY = this._getPosition( this.getFromData( 'pos' ) ),
+            posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
 
+          if ( posXY.x < posXY2.x ) {
+
+            this.handle1.setAttribute( 'x1', this.firstX );
+            this.handle1.setAttribute( 'x2', this.firstX );
+
+            this.handle2.setAttribute( 'x1', this.lastX );
+            this.handle2.setAttribute( 'x2', this.lastX );
+
+          } else {
+
+            this.handle1.setAttribute( 'x1', this.lastX );
+            this.handle1.setAttribute( 'x2', this.lastX );
+
+            this.handle2.setAttribute( 'x1', this.firstX );
+            this.handle2.setAttribute( 'x2', this.firstX );
+
+          }
           this.handle1.setAttribute( 'y1', this.getYAxis().getMaxPx() );
           this.handle1.setAttribute( 'y2', this.serie.getY( 0 ) );
 
@@ -14216,7 +14260,7 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.line
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
      */
@@ -14417,7 +14461,7 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.arrow
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
      */
@@ -14454,7 +14498,7 @@
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.ellipse
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
      */
@@ -14557,7 +14601,7 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.label
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
      */
@@ -14629,7 +14673,7 @@
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.nmrintegral
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
      */
@@ -14734,7 +14778,7 @@
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] ),
-              y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
+                y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
 
               if ( this.serie.isFlipped() ) {
                 var x2 = x;
@@ -14882,7 +14926,7 @@
     } )( build[ "./shapes/graph.shape.areaundercurve" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.rect
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
      */
@@ -15021,7 +15065,7 @@
           // At this stage, x and y are in px
 
           x = pos.x,
-          y = pos.y;
+            y = pos.y;
 
           this.currentX = x;
           this.currentY = y;
@@ -15425,7 +15469,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakintegration2d
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
      */
@@ -15471,7 +15515,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.rect" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakinterval
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
      */
@@ -15513,7 +15557,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakinterval2
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
      */
@@ -15654,7 +15698,7 @@ this.handle1.setAttribute('x', this.currentX);
             for ( j = init; j <= max; j += 2 ) {
 
               x = this.serie.data[ i ][ j + 0 ],
-              y = this.serie.data[ i ][ j + 1 ];
+                y = this.serie.data[ i ][ j + 1 ];
 
               if ( !firstX ) {
                 firstX = x;
@@ -15733,7 +15777,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.rangex
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
      */
@@ -15853,7 +15897,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.areaundercurve" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.cross
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
      */
@@ -15978,7 +16022,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.zoom2d
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
      */
@@ -16157,7 +16201,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : shapes/graph.shape.peakboundariescenter
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakboundariescenter.js
      */
@@ -16373,7 +16417,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph.toolbar
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
      */
@@ -16530,7 +16574,7 @@ this.handle1.setAttribute('x', this.currentX);
     } )();
 
     /* 
-     * Build: new source file
+     * Build: new source file 
      * File name : graph
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
      */

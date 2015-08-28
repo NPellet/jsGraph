@@ -739,16 +739,16 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
               pointOnAxis = [];
               // Y crossing
-              var yLeftCrossing = ( x - xMin ) / ( x - lastX );
-              yLeftCrossing = ( yLeftCrossing < 1 && yLeftCrossing > 0 ) ? y - yLeftCrossing * ( y - lastY ) : false;
-              var yRightCrossing = ( x - xMax ) / ( x - lastX );
-              yRightCrossing = ( yRightCrossing < 1 && yRightCrossing > 0 ) ? y - yRightCrossing * ( y - lastY ) : false;
+              var yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+              var yLeftCrossing = ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 ) ? y - yLeftCrossingRatio * ( y - lastY ) : false;
+              var yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+              var yRightCrossing = ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 ) ? y - yRightCrossingRatio * ( y - lastY ) : false;
 
               // X crossing
-              var xTopCrossing = ( y - yMin ) / ( y - lastY );
-              xTopCrossing = ( xTopCrossing < 1 && xTopCrossing > 0 ) ? x - xTopCrossing * ( x - lastX ) : false;
-              var xBottomCrossing = ( y - yMax ) / ( y - lastY );
-              xBottomCrossing = ( xBottomCrossing < 1 && xBottomCrossing > 0 ) ? x - xBottomCrossing * ( x - lastX ) : false;
+              var xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+              var xTopCrossing = ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 ) ? x - xTopCrossingRatio * ( x - lastX ) : false;
+              var xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+              var xBottomCrossing = ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 ) ? x - xBottomCrossingRatio * ( x - lastX ) : false;
 
               if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                 pointOnAxis.push( [ xMin, yLeftCrossing ] );
@@ -801,15 +801,36 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                   }
                   lastPointOutside = true;
                 }
-              }
+              } // else {
+              // Norman:
+              // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
+              // However, there's no need to draw anything because the point is on the axis and will already be covered.
+              // 28 Aug 2015
+
+              /*
+                if ( lastPointOutside !== pointOutside ) {
+                  console.error( "Programmation error. A crossing should have been found" );
+                  console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
+                  console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
+                  console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
+                  console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
+                  console.log( pointOutside, lastPointOutside )
+
+                }
+                */
+              // }
             }
 
             xpx = xpx2;
             ypx = ypx2;
             lastX = x;
             lastY = y;
+
+            lastPointOutside = pointOutside;
+
             continue;
           }
+
         }
 
         if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
@@ -1068,7 +1089,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       if ( this.isFlipped() ) {
 
         ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-        max = this.getX( slotToUse[ j ].max );
+          max = this.getX( slotToUse[ j ].max );
 
         /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1085,7 +1106,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
         xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
 
-        max = this.getY( slotToUse[ j ].max );
+          max = this.getY( slotToUse[ j ].max );
 
         if ( this.options.autoPeakPicking ) {
           allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1400,7 +1421,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
         for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
           p_x = this.data[ i ][ k ],
-          p_y = this.data[ i ][ k + 1 ];
+            p_y = this.data[ i ][ k + 1 ];
           dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
           if ( !oldDist || dist < oldDist ) {
             oldDist = dist;
@@ -2003,9 +2024,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
     for ( ; i < l; i++ ) {
 
       x = ys[ i ][ 1 ],
-      px = self.getX( x ),
-      k = 0,
-      y = self.getY( ys[ i ][ 0 ] );
+        px = self.getX( x ),
+        k = 0,
+        y = self.getY( ys[ i ][ 0 ] );
 
       if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
         continue;
@@ -2205,8 +2226,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
     for ( ; i < l; i++ ) {
 
       j = 0,
-      k = 0,
-      m = graph.data[ i ].length;
+        k = 0,
+        m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;

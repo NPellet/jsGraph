@@ -42,29 +42,29 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
    * @memberof PluginSelectScatter
    */
   PluginSelectScatter.prototype.setSerie = function( serie ) {
-    this.serie = serie;
-  },
+      this.serie = serie;
+    },
 
-  /**
-   * @memberof PluginSelectScatter
-   * @private
-   */
-  PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
+    /**
+     * @memberof PluginSelectScatter
+     * @private
+     */
+    PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
 
-    if ( !this.serie ) {
-      return;
-    }
+      if ( !this.serie ) {
+        return;
+      }
 
-    this.path = 'M ' + x + ' ' + y + ' ';
-    this.currentX = x;
-    this.currentY = y;
+      this.path = 'M ' + x + ' ' + y + ' ';
+      this.currentX = x;
+      this.currentY = y;
 
-    this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
-    this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
-    this._path.setAttribute( 'd', '' );
-    this._path.setAttribute( 'display', 'block' );
+      this.xs = [ this.serie.getXAxis().getVal( x - graph.getPaddingLeft() ) ];
+      this.ys = [ this.serie.getYAxis().getVal( y - graph.getPaddingTop() ) ];
+      this._path.setAttribute( 'd', '' );
+      this._path.setAttribute( 'display', 'block' );
 
-  };
+    };
 
   /**
    * @memberof PluginSelectScatter

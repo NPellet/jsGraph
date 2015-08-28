@@ -1148,6 +1148,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     selectShape: function( shape, mute ) {
 
       // Already selected. Returns false
+
+      if ( !shape ) {
+        return;
+      }
+
       if ( this.selectedShapes.indexOf( shape ) > -1 ) {
         return false;
       }
@@ -2369,20 +2374,20 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
   Graph.prototype._constructors = {},
 
-  /**
-   * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-   * @name Graph.registerConstructor
-   * @param {String} name - The name of the constructor
-   * @see Graph#newSerie
-   */
-  Graph.registerConstructor = function( name, constructor ) {
+    /**
+     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+     * @name Graph.registerConstructor
+     * @param {String} name - The name of the constructor
+     * @see Graph#newSerie
+     */
+    Graph.registerConstructor = function( name, constructor ) {
 
-    if ( Graph.prototype._constructors[ name ] ) {
-      return util.throwError( "Constructor " + constructor + " already exists." );
-    }
+      if ( Graph.prototype._constructors[ name ] ) {
+        return util.throwError( "Constructor " + constructor + " already exists." );
+      }
 
-    Graph.prototype._constructors[ name ] = constructor;
-  };
+      Graph.prototype._constructors[ name ] = constructor;
+    };
 
   return Graph;
 } );

@@ -149,6 +149,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] );
 
+    grunt.registerTask( 'gcms', [ 'default', 'copy:exportToGCMS'] );
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
     });
@@ -181,6 +182,8 @@ module.exports = function(grunt) {
         grunt.task.run("default");
         grunt.task.run("bump:major:commit-only");
     })
+
+
 
     grunt.registerMultiTask( 'build', 'Build jsGraph distributions', function() {
 
