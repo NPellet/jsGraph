@@ -438,6 +438,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     forceMin: function( min ) {
       this.options.forcedMin = min;
+      this.graph._axisHasChanged( this );
       return this;
     },
 
@@ -449,6 +450,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     forceMax: function( max ) {
       this.options.forcedMax = max;
+      this.graph._axisHasChanged( this );
       return this;
     },
 
@@ -873,9 +875,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
           this.scientificExponent = this.options.scientificScale;
         } else {
-          console.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) );
-          console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) );
-          console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
           this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
         }
       } else {

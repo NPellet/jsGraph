@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-12
+ * jsGraph JavaScript Graphing Library v1.13.3-13
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-28T12:56Z
+ * Date: 2015-08-28T13:06Z
  */
 
 ( function( global, factory ) {
@@ -3468,6 +3468,7 @@
          */
         forceMin: function( min ) {
           this.options.forcedMin = min;
+          this.graph._axisHasChanged( this );
           return this;
         },
 
@@ -3479,6 +3480,7 @@
          */
         forceMax: function( max ) {
           this.options.forcedMax = max;
+          this.graph._axisHasChanged( this );
           return this;
         },
 
@@ -3903,9 +3905,6 @@
 
               this.scientificExponent = this.options.scientificScale;
             } else {
-              console.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) );
-              console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) );
-              console.log( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
               this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
             }
           } else {
