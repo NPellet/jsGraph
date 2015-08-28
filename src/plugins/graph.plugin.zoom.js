@@ -319,14 +319,18 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         }
       }
 
-      this.graph.redraw();
-      this.graph.drawSeries();
+      this.graph.draw();
     }
 
-    if ( this.options.onDblClick && !mute ) {
+    this.emit( "dblClick", {
+      graph: graph,
+      x: x,
+      y: y,
+      pref: pref,
+      e: e,
+      mute: mute
+    } );
 
-      this.options.onDblClick( x, y, pref, e );
-    }
   };
 
   return PluginZoom;
