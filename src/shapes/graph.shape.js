@@ -545,8 +545,6 @@ define( [], function() {
       }
       //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 
-      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.getprop( 'labelBaseline', labelIndex ) );
-
     },
 
     _setLabelAngle: function( labelIndex, angle ) {
@@ -562,15 +560,16 @@ define( [], function() {
 
     _setLabelBaseline: function( labelIndex, angle ) {
 
-      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
+      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this._getLabelBaseline( labelIndex ) );
+
     },
 
     _forceLabelAnchor: function( i ) {
-      this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor() );
+      this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor( i ) );
     },
 
-    _getLabelAnchor: function() {
-      var anchor = this.getprop( 'labelAnchor' );
+    _getLabelAnchor: function( i ) {
+      var anchor = this.getprop( 'labelAnchor', i );
       switch ( anchor ) {
         case 'middle':
         case 'start':
@@ -590,6 +589,10 @@ define( [], function() {
           return 'start';
           break;
       }
+    },
+
+    _getLabelBaseline: function( i ) {
+      return this.getprop( 'labelBaseline', i );
     },
 
     isSelected: function() {

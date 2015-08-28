@@ -235,6 +235,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     selectStyle: function() {
+
       this.setDom( 'stroke', 'red' );
       this.setDom( 'stroke-width', '2' );
       this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );

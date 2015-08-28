@@ -9,26 +9,26 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     setPosition: function() {
-      var pos = this._getPosition( this.getprop( 'labelPosition' ) );
-
-      if ( !pos )
-        return;
-
-      if ( this.options.minPosY !== undefined ) {
-        if ( pos.y < this.options.minPosY ) {
-          pos.y = this.options.minPosY;
-        }
-      }
 
       this.everyLabel( function( i ) {
 
-        if ( pos.x && pos.y ) {
+        var pos = this._getPosition( this.getprop( 'labelPosition', i ) );
+
+        if ( this.options.minPosY !== undefined ) {
+          if ( pos.y < this.options.minPosY ) {
+            pos.y = this.options.minPosY;
+          }
+        }
+
+        if ( pos.x !== false && pos.y !== false ) {
           this.label[ i ].setAttribute( 'x', pos.x );
           this.label[ i ].setAttribute( 'y', pos.y );
         }
-      } );
 
-      return true;
+        this._setLabelBaseline( i );
+        this._setLabelAngle( i );
+      } );
+      return false;
 
     },
 

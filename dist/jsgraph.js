@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-14
+ * jsGraph JavaScript Graphing Library v1.13.3-15
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-28T13:32Z
+ * Date: 2015-08-28T16:26Z
  */
 
 ( function( global, factory ) {
@@ -2528,7 +2528,7 @@
           if ( axis.disabled || axis.floating ) {
             return;
           }
-
+          console.log( shift[ position ], axis.getAxisPosition() );
           axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
           shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 
@@ -2604,8 +2604,8 @@
         graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
         graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
 
-        graph.rectEvent.setAttribute( 'x', shift.top );
-        graph.rectEvent.setAttribute( 'y', shift.left );
+        graph.rectEvent.setAttribute( 'y', shift.top + graph.getPaddingTop() );
+        graph.rectEvent.setAttribute( 'x', shift.left + graph.getPaddingLeft() );
         graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
         graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
 
@@ -2833,7 +2833,7 @@
 
       function _handleClick( graph, x, y, e ) {
 
-        graph.emit( 'click', e );
+        graph.emit( 'click', [ graph, x, y, e ] );
 
         // Not on a shape
 
@@ -4901,9 +4901,8 @@
             return 0;
           }
 
-          var size = ( this.options.tickPosition == 1 ? 15 : 25 ) + this.graph.options.fontSize * 2;
-          if ( this.options.allowedPxSerie && this.series.length > 0 )
-            size += this.options.allowedPxSerie;
+          var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
+
           return size;
         },
 
@@ -10671,11 +10670,26 @@
           //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
           //    self.picks[ m ].show();
 
-          self.picks[ m ].prop( 'labelPosition', {
-            x: x,
-            dy: this.getYAxis().getCurrentMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
-            y: Math.min( this.getYAxis().getCurrentMax() * 0.9, ys[ i ][ 0 ] )
-          } );
+          if ( this.getYAxis().getPx( ys[ i ][ 0 ] ) - 20 < 0 ) {
+
+            self.picks[ m ].prop( 'labelPosition', {
+              x: x,
+              y: "5px",
+            } );
+
+            self.picks[ m ].prop( 'labelBaseline', 'hanging' );
+
+          } else {
+
+            self.picks[ m ].prop( 'labelBaseline', 'no-change' );
+
+            self.picks[ m ].prop( 'labelPosition', {
+              x: x,
+              y: ys[ i ][ 0 ],
+              dy: "-15px"
+            } );
+
+          }
 
           self.picks[ m ]._data.val = x;
 
@@ -10891,7 +10905,7 @@
               degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
 
               if ( degradeFirstXPx > optimizeMaxPxX ) {
-                console.log( degradeFirstXPx, optimizeMaxPxX );
+
                 break;
               }
 
@@ -13243,8 +13257,6 @@
           }
           //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
 
-          this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.getprop( 'labelBaseline', labelIndex ) );
-
         },
 
         _setLabelAngle: function( labelIndex, angle ) {
@@ -13260,15 +13272,16 @@
 
         _setLabelBaseline: function( labelIndex, angle ) {
 
-          this.label[ labelIndex ].setAttribute( 'dominant-baseline', this.label[ labelIndex ].baseline );
+          this.label[ labelIndex ].setAttribute( 'dominant-baseline', this._getLabelBaseline( labelIndex ) );
+
         },
 
         _forceLabelAnchor: function( i ) {
-          this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor() );
+          this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor( i ) );
         },
 
-        _getLabelAnchor: function() {
-          var anchor = this.getprop( 'labelAnchor' );
+        _getLabelAnchor: function( i ) {
+          var anchor = this.getprop( 'labelAnchor', i );
           switch ( anchor ) {
             case 'middle':
             case 'start':
@@ -13288,6 +13301,10 @@
               return 'start';
               break;
           }
+        },
+
+        _getLabelBaseline: function( i ) {
+          return this.getprop( 'labelBaseline', i );
         },
 
         isSelected: function() {
@@ -14217,6 +14234,7 @@
         },
 
         selectStyle: function() {
+
           this.setDom( 'stroke', 'red' );
           this.setDom( 'stroke-width', '2' );
           this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
@@ -14622,26 +14640,26 @@
         },
 
         setPosition: function() {
-          var pos = this._getPosition( this.getprop( 'labelPosition' ) );
-
-          if ( !pos )
-            return;
-
-          if ( this.options.minPosY !== undefined ) {
-            if ( pos.y < this.options.minPosY ) {
-              pos.y = this.options.minPosY;
-            }
-          }
 
           this.everyLabel( function( i ) {
 
-            if ( pos.x && pos.y ) {
+            var pos = this._getPosition( this.getprop( 'labelPosition', i ) );
+
+            if ( this.options.minPosY !== undefined ) {
+              if ( pos.y < this.options.minPosY ) {
+                pos.y = this.options.minPosY;
+              }
+            }
+
+            if ( pos.x !== false && pos.y !== false ) {
               this.label[ i ].setAttribute( 'x', pos.x );
               this.label[ i ].setAttribute( 'y', pos.y );
             }
-          } );
 
-          return true;
+            this._setLabelBaseline( i );
+            this._setLabelAngle( i );
+          } );
+          return false;
 
         },
 

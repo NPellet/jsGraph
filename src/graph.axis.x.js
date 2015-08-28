@@ -20,9 +20,8 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
         return 0;
       }
 
-      var size = ( this.options.tickPosition == 1 ? 15 : 25 ) + this.graph.options.fontSize * 2;
-      if ( this.options.allowedPxSerie && this.series.length > 0 )
-        size += this.options.allowedPxSerie;
+      var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
+
       return size;
     },
 

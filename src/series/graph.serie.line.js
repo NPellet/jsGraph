@@ -2062,11 +2062,26 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
       //    self.picks[ m ].show();
 
-      self.picks[ m ].prop( 'labelPosition', {
-        x: x,
-        dy: this.getYAxis().getCurrentMax() * 0.9 < ys[ i ][ 0 ] ? "15px" : "-10px",
-        y: Math.min( this.getYAxis().getCurrentMax() * 0.9, ys[ i ][ 0 ] )
-      } );
+      if ( this.getYAxis().getPx( ys[ i ][ 0 ] ) - 20 < 0 ) {
+
+        self.picks[ m ].prop( 'labelPosition', {
+          x: x,
+          y: "5px",
+        } );
+
+        self.picks[ m ].prop( 'labelBaseline', 'hanging' );
+
+      } else {
+
+        self.picks[ m ].prop( 'labelBaseline', 'no-change' );
+
+        self.picks[ m ].prop( 'labelPosition', {
+          x: x,
+          y: ys[ i ][ 0 ],
+          dy: "-15px"
+        } );
+
+      }
 
       self.picks[ m ]._data.val = x;
 
@@ -2282,7 +2297,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
 
           if ( degradeFirstXPx > optimizeMaxPxX ) {
-            console.log( degradeFirstXPx, optimizeMaxPxX );
+
             break;
           }
 

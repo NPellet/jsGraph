@@ -1900,7 +1900,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       if ( axis.disabled ||  axis.floating ) {
         return;
       }
-
+      console.log( shift[ position ], axis.getAxisPosition() );
       axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
       shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 
@@ -1976,8 +1976,8 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
     graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
     graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
 
-    graph.rectEvent.setAttribute( 'x', shift.top );
-    graph.rectEvent.setAttribute( 'y', shift.left );
+    graph.rectEvent.setAttribute( 'y', shift.top + graph.getPaddingTop() );
+    graph.rectEvent.setAttribute( 'x', shift.left + graph.getPaddingLeft() );
     graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
     graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
 
@@ -2205,7 +2205,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
   function _handleClick( graph, x, y, e ) {
 
-    graph.emit( 'click', e );
+    graph.emit( 'click', [ graph, x, y, e ] );
 
     // Not on a shape
 
