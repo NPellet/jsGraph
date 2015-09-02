@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-15
+ * jsGraph JavaScript Graphing Library v1.13.3-16
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-08-28T16:26Z
+ * Date: 2015-09-02T21:39Z
  */
 
 ( function( global, factory ) {
@@ -1582,7 +1582,7 @@
           }
 
           if ( this.selectedSerie ) {
-            this.selectedSerie.unselect();
+            this.unselectSerie( serie );
           }
 
           this.selectedSerie = serie;
@@ -1639,6 +1639,14 @@
           } else {
             return util.throwError( "No constructor exists for toolbar" );
           }
+        },
+
+        /**
+         *  Returns all shapes from the graph
+         *  @memberof Graph.prototype
+         */
+        getShapes: function() {
+          return this.shapes || [];
         },
 
         /**
@@ -2267,6 +2275,10 @@
             return axis.getMinValue();
           }
 
+          if ( rel == 'min' ) {
+            return axis.getMinValue();
+          }
+
           return rel;
         },
 
@@ -2291,6 +2303,14 @@
             } else if ( value == "max" ) {
 
               return axis.getMaxPx();
+
+            } else if ( value == "maxGlobal" ) {
+
+              return axis.isY() ? this.getHeight() : this.getWidth();
+
+            } else if ( value == "minGlobal" ) {
+
+              return 0;
 
             } else if ( rel ) {
 
@@ -6579,8 +6599,9 @@
        * @prop {Number} paddingRight - The right padding
        * @prop {Number} paddingTop - The top padding
        * @prop {Number} paddingBottom - The bottom padding
-       * @prop {Boolean} shapesToggleable - <code>true</code> to allow series to be selected through the legend
+       * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
        * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+       * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
        */
       var legendDefaults = {
         frame: false,
@@ -6595,7 +6616,8 @@
         movable: false,
 
         shapesToggleable: true,
-        isSerieHideable: true
+        isSerieHideable: true,
+        isSerieSelectable: true
 
       }
 
@@ -6710,6 +6732,8 @@
 
           if ( series.length > 0 ) {
             this.svg.setAttribute( 'display', 'block' );
+          } else {
+            return;
           }
 
           for ( var i = 0, l = series.length; i < l; i++ ) {
@@ -6738,19 +6762,29 @@
 
                 var serie = series[ j ];
 
-                if ( serie.isSelected() && self.isHideable() ) {
+                if ( serie.isShown() && self.isHideable() ) {
 
-                  serie.hide( self.isToggleShapes() );
-                  self.graph.unselectSerie( serie );
+                  if ( self.isSelectable() && !serie.isSelected() ) {
 
-                } else if ( serie.isShown() ) {
+                    self.graph.selectSerie( serie );
+                  } else {
 
-                  self.graph.selectSerie( serie );
+                    serie.hide( self.isToggleShapes() );
+                    serie.unselect();
+                  }
+                } else if ( !serie.isShown() && self.isHideable() ) {
 
-                } else if ( self.isHideable() ) {
+                  serie.show();
+                } else {
 
-                  serie.show( self.isToggleShapes() );
+                  if ( self.isSelectable() ) {
 
+                    if ( serie.isSelected() ) {
+                      self.graph.unselectSerie( serie );
+                    } else {
+                      self.graph.selectSerie( serie );
+                    }
+                  }
                 }
 
               } );
@@ -6791,6 +6825,14 @@
          */
         isHideable: function() {
           return this.options.isSerieHideable;
+        },
+
+        /** 
+         * @memberof Legend.prototype
+         * @return {Boolean} true or false depending if the series can be selected or not
+         */
+        isSelectable: function() {
+          return this.options.isSerieSelectable;
         },
 
         /** 
@@ -7486,7 +7528,7 @@
             break;
 
           case 'forceY2':
-
+            console.log( this._zoomingYStart, this.y2 );
             this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
             this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
             this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
@@ -9337,7 +9379,6 @@
               if ( pointOutside || lastPointOutside ) {
 
                 if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
-                  lastPointOutside = true;
 
                   xpx = xpx2;
                   ypx = ypx2;
@@ -9384,8 +9425,6 @@
                         console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                       }
 
-                      lastPointOutside = false;
-
                       this._createLine();
                       this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                       this._addPoint( xpx2, ypx2 );
@@ -9394,12 +9433,11 @@
 
                       if ( pointOnAxis.length > 1 ) {
                         console.error( "Programmation error. Please e-mail me." );
-
                         console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                       }
 
                       this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                      lastPointOutside = true;
+
                     } else {
 
                       // No crossing: do nothing
@@ -9408,7 +9446,7 @@
                         this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                         this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
                       }
-                      lastPointOutside = true;
+
                     }
                   } // else {
                   // Norman:

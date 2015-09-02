@@ -954,7 +954,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       }
 
       if ( this.selectedSerie ) {
-        this.selectedSerie.unselect();
+        this.unselectSerie( serie );
       }
 
       this.selectedSerie = serie;
@@ -1011,6 +1011,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       } else {
         return util.throwError( "No constructor exists for toolbar" );
       }
+    },
+
+    /**
+     *  Returns all shapes from the graph
+     *  @memberof Graph.prototype
+     */
+    getShapes: function() {
+      return this.shapes ||  [];
     },
 
     /**
@@ -1639,6 +1647,10 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         return axis.getMinValue();
       }
 
+      if ( rel == 'min' ) {
+        return axis.getMinValue();
+      }
+
       return rel;
     },
 
@@ -1663,6 +1675,14 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
         } else if ( value == "max" ) {
 
           return axis.getMaxPx();
+
+        } else if ( value == "maxGlobal" ) {
+
+          return axis.isY() ? this.getHeight() : this.getWidth();
+
+        } else if ( value == "minGlobal" ) {
+
+          return 0;
 
         } else if ( rel ) {
 

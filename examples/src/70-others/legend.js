@@ -23,6 +23,19 @@ define( function() {
 			leftAxis = graphinstance.getLeftAxis( 0, axisProperties ),
 			rightAxis = graphinstance.getRightAxis( 0, axisProperties );
 
+
+		var legend = graphinstance.makeLegend( {
+
+			backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
+			frame: true,
+			frameWidth: '1',
+			frameColor: 'rgba( 100, 100, 100, 0.5 )',
+
+			movable: true
+
+		});
+
+
 		graphinstance.newSerie( "sin" )
 			.setLabel( "f(x) = sin(x)" )
 			.autoAxis()
@@ -47,17 +60,6 @@ define( function() {
 		graphinstance.getYAxis().setLabel( 'y' );
 		graphinstance.getYAxis().setLineAt0( true );
 
-		var legend = graphinstance.makeLegend( {
-
-			backgroundColor: 'rgba( 255, 255, 255, 0.8 )',
-			frame: true,
-			frameWidth: '1',
-			frameColor: 'rgba( 100, 100, 100, 0.5 )',
-
-			movable: true
-
-		});
-
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
 		
@@ -69,6 +71,7 @@ define( function() {
 
 		);
 
+		legend.update();
 
 	}, "Legend", [ 
 
