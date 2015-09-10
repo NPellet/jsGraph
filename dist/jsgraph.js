@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-16
+ * jsGraph JavaScript Graphing Library v1.13.3-17
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-09-10T07:27Z
+ * Date: 2015-09-10T07:34Z
  */
 
 ( function( global, factory ) {
@@ -4031,7 +4031,6 @@
         },
 
         getExponentGreekLetter: function( val ) {
-          console.log( val );
           switch ( val ) {
 
             case 3:
@@ -7532,7 +7531,6 @@
             break;
 
           case 'forceY2':
-            console.log( this._zoomingYStart, this.y2 );
             this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
             this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
             this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
@@ -9452,6 +9450,8 @@
                       }
 
                     }
+                  } else if ( !pointOutside ) {
+                    this._addPoint( xpx2, ypx2 );
                   } // else {
                   // Norman:
                   // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true

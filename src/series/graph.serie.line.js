@@ -797,7 +797,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                   }
 
                 }
-              } else if( ! pointOutside ) {
+              } else if ( !pointOutside ) {
                 this._addPoint( xpx2, ypx2 );
               } // else {
               // Norman:
