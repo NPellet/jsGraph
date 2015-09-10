@@ -981,7 +981,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     getExponentGreekLetter: function( val ) {
-      console.log( val );
       switch ( val ) {
 
         case 3:

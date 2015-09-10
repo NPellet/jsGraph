@@ -117,7 +117,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         break;
 
       case 'forceY2':
-        console.log( this._zoomingYStart, this.y2 );
         this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
         this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
         this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
