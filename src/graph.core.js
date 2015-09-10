@@ -1920,7 +1920,7 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
       if ( axis.disabled ||  axis.floating ) {
         return;
       }
-      console.log( shift[ position ], axis.getAxisPosition() );
+
       axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
       shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 

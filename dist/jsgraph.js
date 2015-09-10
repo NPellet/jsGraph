@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-09-02T21:39Z
+ * Date: 2015-09-10T07:27Z
  */
 
 ( function( global, factory ) {
@@ -2548,7 +2548,7 @@
           if ( axis.disabled || axis.floating ) {
             return;
           }
-          console.log( shift[ position ], axis.getAxisPosition() );
+
           axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
           shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 
@@ -4922,6 +4922,10 @@
           }
 
           var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
+
+          if ( this.getLabel() ) {
+            size += this.graph.options.fontSize;
+          }
 
           return size;
         },

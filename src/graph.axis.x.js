@@ -22,6 +22,10 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
       var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
 
+      if ( this.getLabel() ) {
+        size += this.graph.options.fontSize;
+      }
+
       return size;
     },
 
