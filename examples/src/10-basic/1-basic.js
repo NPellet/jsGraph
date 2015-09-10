@@ -3,76 +3,19 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-	var graphinstance = new Graph( domGraph, { 
-
-  plugins: {
-        'zoom': { zoomMode: 'x' },
-      },
-
-      pluginAction: {
-        'zoom': { shift: false, ctrl: false }
-      },
-
-      
-      wheel: {
-        type: 'plugin',
-        plugin: 'zoom',
-        options: {
-          direction: 'y'
-        }
-      },
-
-      dblclick: {
-        type: 'plugin',
-        plugin: 'zoom',
-        options: {
-          mode: 'total'
-        }
-      },
-
-    }, { } );
-		graphinstance.redraw( );
-		
-
-  var series2 = [
-
-    [ 1, 1, 2, 3, 3, 1],
-    [ 1, 2, 2, 3, 3, 2],
-    [ 1, 3, 2, 2, 3, 3]
-  ]
-
-
-
-	graphinstance.newSerie("temp_nh" )
-        .autoAxis()
-        .XIsMonotoneous()
-;
-
-	graphinstance.draw();
-
-  var i = 0;
-  setInterval( function() {
-    i++;
-console.log( i % 3 );
-    graphinstance.newSerie("temp_nh" ).setData( series2[ i % 3 ] );
-
-    if(i % 3 == 0 ) {
-      graphinstance.autoscaleAxes();
-    }
-    graphinstance.draw();
-  }, 3000 )
+	var graph = new Graph( domGraph );
 	
+  var serie = graph.newSerie('test');
+  serie.setData([0, 0, 1, 1, 2, 2, 3, 1, 4, 0]);
+  serie.autoAxis();
+  graph.draw();
 
-	//graphinstance.drawSeries();
+  var xAxis = graph.getXAxis();
+  var yAxis = graph.getYAxis();
 
-/*
-      var serie2 = [ 1850, 100, 1900 , 0, 1950, -100 ];
-      graphinstance.newSerie("222")
-        .autoAxis()
-        .setData( serie2 )
-        .setMarkers();
-  */    
-	
+  xAxis.zoom(1, 3);
+  yAxis.zoom(1, 2);
+  graph.draw();
 
 		}, 
 

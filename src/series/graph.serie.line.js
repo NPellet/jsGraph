@@ -797,6 +797,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                   }
 
                 }
+              } else if( ! pointOutside ) {
+                this._addPoint( xpx2, ypx2 );
               } // else {
               // Norman:
               // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
