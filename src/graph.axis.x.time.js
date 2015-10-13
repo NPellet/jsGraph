@@ -844,8 +844,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
           text = getDateText( currentDate, currentFormat.increments[ level ].format );
           group = getGroup( this, level, i );
 
-          currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
           xVal1 = this.getPx( currentDate.getTime() );
+          currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
           xVal2 = this.getPx( currentDate.getTime() );
 
           renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
