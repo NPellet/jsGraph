@@ -181,8 +181,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     }
 
     graph.prevent( true );
-    graph.redraw( true );
-    graph.drawSeries();
+    graph.draw();
 
     if ( this.options.onZoomEnd && !mute ) {
       this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
