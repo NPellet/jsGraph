@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-19
+ * jsGraph JavaScript Graphing Library v1.13.3-20
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-10-17T21:13Z
+ * Date: 2015-10-17T21:37Z
  */
 
 ( function( global, factory ) {
@@ -3953,18 +3953,17 @@
 
             if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 ) {
 
-              if ( this.scientificExponent > 0 ) {
-                this.scientificExponent -= ( this.scientificExponent % 3 );
-              } else {
-
-                this.scientificExponent += -3 - ( this.scientificExponent % 3 );
-              }
+              this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
 
               this.preunitTspan.innerHTML = this.getExponentGreekLetter( this.scientificExponent );
               this.preunitTspan.setAttribute( 'display', 'visible' );
               this.unitTspan.setAttribute( 'dx', 0 );
 
             } else if ( this.scientificExponent !== 0 ) {
+
+              if ( this.options.engineering ) {
+                this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+              }
 
               this.preunitTspan.textContent = "";
               this.preunitTspan.setAttribute( 'display', 'none' );
@@ -4876,12 +4875,62 @@
           this.options.unitDecade = on;
         },
 
+        /**
+         * Enable the scientific mode for the axis values. This way, big numbers can be avoided, e.g. "1000000000" would be displayed 1 with 10<sup>9</sup> or "G" shown on near the axis unit.
+         * @param {Boolean} on - Enables the scientific mode
+         * @return {Axis} The current axis
+         * @memberof Axis.prototype
+         * @since 1.13.3
+         */
         setScientific: function( on ) {
           this.options.scientific = on;
+          return this;
         },
 
-        setScientificScale: function( number ) {
-          this.options.scientificScale = number;
+        /**
+         * In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
+         * @param {Number} scientificScale - Forces the scientific scale to take a defined power of ten
+         * @return {Axis} The current axis
+         * @memberof Axis.prototype
+         * @since 1.13.3
+         * @see Axis#setScientific
+         */
+        setScientificScale: function( scientificScale ) {
+          this.options.scientificScale = scientificScale;
+          return this;
+        },
+
+        /**
+         * The engineer scaling is similar to the scientific scaling ({@link Axis#setScientificScale}) but allowing only mupltiples of 3 to be used to scale the axis (for instance, go from grams to kilograms while skipping decagrams and hexagrams)
+         * @param {Boolean} engineeringScaling - <code>true</code> to turn on the engineering scaling
+         * @return {Axis} The current axis
+         * @memberof Axis.prototype
+         * @since 1.13.3
+         * @see Axis#setScientific
+         */
+        setEngineering: function( engineeringScaling ) {
+          this.options.scientific = engineeringScaling;
+          this.options.engineering = engineeringScaling;
+          return this;
+        },
+
+        /**
+         * Calculates the closest engineering exponent from a scientific exponent
+         * @param {Number} scientificExponent - The exponent of 10 based on which the axis will be scaled
+         * @return {Number} The appropriate engineering exponent
+         * @memberof Axis.prototype
+         * @since 1.13.3
+         * @private
+         */
+        getEngineeringExponent: function( scientificExponent ) {
+
+          if ( scientificExponent > 0 ) {
+            scientificExponent -= ( scientificExponent % 3 );
+          } else {
+            scientificExponent += -3 - ( scientificExponent % 3 );
+          }
+
+          return scientificExponent
         }
 
       } );
