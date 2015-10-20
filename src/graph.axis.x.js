@@ -4,15 +4,15 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
   /** 
    * Generic constructor of a y axis
-   * @class GraphXAxis
+   * @class XAxis
    * @augments GraphAxis
    */
-  var GraphXAxis = function( graph, topbottom, options ) {
+  var XAxis = function( graph, topbottom, options ) {
     this.init( graph, options );
     this.top = topbottom == 'top';
   }
 
-  $.extend( GraphXAxis.prototype, GraphAxis.prototype, {
+  $.extend( XAxis.prototype, GraphAxis.prototype, {
 
     getAxisPosition: function() {
 
@@ -161,5 +161,5 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
   } );
 
-  return GraphXAxis;
+  return XAxis;
 } );

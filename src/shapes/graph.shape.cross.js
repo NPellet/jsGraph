@@ -74,7 +74,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
       }
 
       var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
 
       if ( this.moving ) {
 
