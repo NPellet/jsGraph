@@ -1,7 +1,8 @@
 {
   "name": "graphs",
-  "version": "1.13.3-15",
+  "version": "1.13.3-20",
   "scripts": {
+    "build": "grunt",
     "test": "grunt && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"
   },

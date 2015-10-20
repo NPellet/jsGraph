@@ -728,7 +728,6 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           if ( pointOutside || lastPointOutside ) {
 
             if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
-              lastPointOutside = true;
 
               xpx = xpx2;
               ypx = ypx2;
@@ -775,8 +774,6 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                     console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                   }
 
-                  lastPointOutside = false;
-
                   this._createLine();
                   this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                   this._addPoint( xpx2, ypx2 );
@@ -785,12 +782,11 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
                   if ( pointOnAxis.length > 1 ) {
                     console.error( "Programmation error. Please e-mail me." );
-
                     console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                   }
 
                   this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                  lastPointOutside = true;
+
                 } else {
 
                   // No crossing: do nothing
@@ -799,8 +795,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                     this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
                     this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
                   }
-                  lastPointOutside = true;
+
                 }
+              } else if ( !pointOutside ) {
+                this._addPoint( xpx2, ypx2 );
               } // else {
               // Norman:
               // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true

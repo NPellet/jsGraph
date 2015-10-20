@@ -117,7 +117,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         break;
 
       case 'forceY2':
-
         this._zoomingSquare.setAttribute( 'y', Math.min( this._zoomingYStart, this.y2 ) );
         this._zoomingSquare.setAttribute( 'height', Math.abs( this._zoomingYStart - this.y2 ) );
         this._zoomingSquare.setAttribute( 'x', Math.min( this._zoomingXStart, x ) );
@@ -182,8 +181,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     }
 
     graph.prevent( true );
-    graph.redraw( true );
-    graph.drawSeries();
+    graph.draw();
 
     if ( this.options.onZoomEnd && !mute ) {
       this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );

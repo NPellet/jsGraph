@@ -119,10 +119,51 @@ g.draw();
 </script>
 
 
+
+## Engineering scale
+
+The engineering scaling is similar to the scientific scaling, however 10 to the power of only multiple of 3 are used to scale the axis values. For example, this would be used to scale grams to kilograms or to tons, while avoiding the impractical decagrams or hexagrams. This makes usually more sense than scientific scaling for quantities that represent something that can be measured (time, weight, distances, strength, power, ...)
+
+
+```
+g.getLeftAxis().setLabel("Distance");
+g.getLeftAxis().setUnit("m");
+
+g.getLeftAxis().setEngineering( true ); // Turn engineering mode on
+
+g.draw();
+```
+
+<div id="example-3-2" class="jsgraph-example"></div>
+<script>
+
+
+var g = new Graph("example-3-2") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+g.newSerie() // Creates a new seire
+ .autoAxis() // Assigns automatic axes to the serie
+ .setData( serie1 ); // Assigns the data to the serie
+
+g.getLeftAxis().setLabel("Distance");
+g.getLeftAxis().setUnit("m");
+g.getLeftAxis().setEngineering( true ); // Turns scientific mode on
+g.draw();
+
+</script>
+
+
+
+
+
+
+
+
+
 <script>
 	var serie1 = [0, 0.00000001, 1, 0.00000002 ];
 </script>
-
 ## Values smaller than 0
 
 Of course it also works for very small values (here the "n" stands for "nano")

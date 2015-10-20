@@ -36,7 +36,26 @@ for( var i = 0; i < 300; i ++ ) {
 
 dataL.sort( function(a,b) { return a[ 0 ] - b[ 0 ] } );
 
-var graph = new Graph( domGraph );
+var graph = new Graph( domGraph, {
+
+	dblclick: {
+		type: 'plugin',
+		plugin: 'zoom',
+		options: {
+			mode: 'total'
+		}
+	},
+
+	plugins: {
+		'zoom': { zoomMode: 'xy' }
+	},
+
+	pluginAction: {
+		'zoom': { shift: false, ctrl: false }
+	}
+
+
+} );
 var s = graph
 	.newSerie("s1", {}, "scatter")
 	.autoAxis()

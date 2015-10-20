@@ -1039,7 +1039,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
 
       if ( this.selectedSerie ) {
-        this.selectedSerie.unselect();
+        this.unselectSerie( serie );
       }
 
       this.selectedSerie = serie;
@@ -1096,6 +1096,14 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       } else {
         return util.throwError( "No constructor exists for toolbar" );
       }
+    },
+
+    /**
+     *  Returns all shapes from the graph
+     *  @memberof Graph.prototype
+     */
+    getShapes: function() {
+      return this.shapes ||  [];
     },
 
     /**
@@ -1781,7 +1789,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       if ( axis.disabled ||  axis.floating ) {
         return;
       }
-      console.log( shift[ position ], axis.getAxisPosition() );
+
       axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
       shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
 

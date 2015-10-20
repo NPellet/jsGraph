@@ -13,8 +13,9 @@ define( [], function() {
    * @prop {Number} paddingRight - The right padding
    * @prop {Number} paddingTop - The top padding
    * @prop {Number} paddingBottom - The bottom padding
-   * @prop {Boolean} shapesToggleable - <code>true</code> to allow series to be selected through the legend
+   * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
    * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+   * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
    */
   var legendDefaults = {
     frame: false,
@@ -29,7 +30,8 @@ define( [], function() {
     movable: false,
 
     shapesToggleable: true,
-    isSerieHideable: true
+    isSerieHideable: true,
+    isSerieSelectable: true
 
   }
 
@@ -144,6 +146,8 @@ define( [], function() {
 
       if ( series.length > 0 )  {
         this.svg.setAttribute( 'display', 'block' );
+      } else {
+        return;
       }
 
       for ( var i = 0, l = series.length; i < l; i++ ) {
@@ -172,19 +176,29 @@ define( [], function() {
 
             var serie = series[ j ];
 
-            if ( serie.isSelected() && self.isHideable() ) {
+            if ( serie.isShown() && self.isHideable() ) {
 
-              serie.hide( self.isToggleShapes() );
-              self.graph.unselectSerie( serie );
+              if ( self.isSelectable() && !serie.isSelected() ) {
 
-            } else if ( serie.isShown() ) {
+                self.graph.selectSerie( serie );
+              } else {
 
-              self.graph.selectSerie( serie );
+                serie.hide( self.isToggleShapes() );
+                serie.unselect();
+              }
+            } else if ( !serie.isShown() && self.isHideable() ) {
 
-            } else if ( self.isHideable() ) {
+              serie.show();
+            } else {
 
-              serie.show( self.isToggleShapes() );
+              if ( self.isSelectable() ) {
 
+                if ( serie.isSelected() ) {
+                  self.graph.unselectSerie( serie );
+                } else {
+                  self.graph.selectSerie( serie );
+                }
+              }
             }
 
           } );
@@ -225,6 +239,14 @@ define( [], function() {
      */
     isHideable: function() {
       return this.options.isSerieHideable;
+    },
+
+    /** 
+     * @memberof Legend.prototype
+     * @return {Boolean} true or false depending if the series can be selected or not
+     */
+    isSelectable: function() {
+      return this.options.isSerieSelectable;
     },
 
     /** 
