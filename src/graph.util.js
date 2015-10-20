@@ -117,6 +117,24 @@ define( [], function() {
       }
 
       return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
+    },
+
+    saveDomAttributes: function( to, attributes ) {
+
+      to._savedAttributes = {};
+
+      for ( var i in attributes ) {
+        this._savedAttributes[ i ] = to.getAttribute( i );
+        to.setAttribute( i, attributes[ i ] );
+      }
+
+    },
+
+    restoreDomAttibutes: function( to ) {
+
+      for ( var i in to._savedAttributes ) {
+        to.setAttribute( i, to._savedAttributes[ i ] );
+      }
     }
 
   };

@@ -1,473 +1,793 @@
-define( [], function() {
+define( [ '../graph.position' ], function( GraphPosition ) {
 
   "use strict";
 
-  function getColor( color ) {
+  /** 
+   * Shape class that should be extended
+   * @class Shape
+   * @static
+   */
+  var Shape = function() {};
 
-    if ( Array.isArray( color ) ) {
-      switch ( color.length ) {
-        case 3:
-          return 'rgb(' + color.join( ',' ) + ')';
-          break;
-        case 4:
-          return 'rgba(' + color.join( ',' ) + ')';
-          break;
-      }
-    } else if ( typeof( color ) == "object" ) {
-      return "rgb(" + Math.round( color.r * 255 ) + ", " + Math.round( color.g * 255 ) + ", " + Math.round( color.b * 255 ) + ")";
+  /**
+   * Initializes the shape
+   * @memberof Shape
+   * @param {Graph} graph - The graph containing the shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.init = function( graph ) {
+
+    var self = this;
+
+    this.graph = graph;
+    this.properties = {};
+    this.handles = [];
+    this.options = this.options || {};
+
+    this.group = document.createElementNS( this.graph.ns, 'g' );
+
+    this._selected = false;
+    this.createDom();
+    this.setEvents();
+
+    if ( this._dom ) {
+      this._dom.jsGraphIsShape = true;
     }
 
-    return color;
-  }
+    this.group.jsGraphIsShape = true;
 
-  var GraphShape = function() {};
+    this.classes = [];
+    this.transforms = [];
 
-  GraphShape.prototype = {
+    if ( this._data.masker ) {
 
-    init: function( graph, groupName ) {
+      var maskPath = document.createElementNS( this.graph.ns, 'mask' );
+      this.maskingId = Math.random();
+      maskPath.setAttribute( 'id', this.maskingId );
 
-      var self = this;
+      this.maskDomWrapper = document.createElementNS( this.graph.ns, 'rect' );
+      this.maskDomWrapper.setAttribute( 'fill', 'white' );
+      maskPath.appendChild( this.maskDomWrapper );
 
-      this.graph = graph;
-      this.properties = {};
-      this.group = document.createElementNS( this.graph.ns, 'g' );
+      var maskDom = this._dom.cloneNode();
+      maskPath.appendChild( maskDom );
 
-      this.options = this.options || {};
+      this.maskDom = maskDom;
 
-      if ( groupName ) {
-        this.group.setAttribute( 'data-groupname', groupName );
-      }
+      this.graph.defs.appendChild( maskPath );
+    }
 
-      this._selected = false;
-      this.createDom();
-      this.setEvents();
-
-      if ( this._dom ) {
-        this._dom.jsGraphIsShape = true;
-      }
-
-      this.group.jsGraphIsShape = true;
-
-      this.classes = [];
-      this.transforms = [];
-
-      if ( this._data.masker ) {
-
-        var maskPath = document.createElementNS( this.graph.ns, 'mask' );
-        this.maskingId = Math.random();
-        maskPath.setAttribute( 'id', this.maskingId );
-
-        this.maskDomWrapper = document.createElementNS( this.graph.ns, 'rect' );
-        this.maskDomWrapper.setAttribute( 'fill', 'white' );
-        maskPath.appendChild( this.maskDomWrapper );
-
-        var maskDom = this._dom.cloneNode();
-        maskPath.appendChild( maskDom );
-
-        this.maskDom = maskDom;
-
-        this.graph.defs.appendChild( maskPath );
-      }
-
-      if ( this.group ) {
-
-        if ( this._dom ) {
-          this.group.appendChild( this._dom );
-        }
-
-        this.group.addEventListener( 'mouseover', function( e ) {
-
-          self.handleMouseOver( e );
-
-        } );
-
-        this.group.addEventListener( 'mouseout', function( e ) {
-
-          self.handleMouseOut( e );
-
-        } );
-
-        this.group.addEventListener( 'mousedown', function( e ) {
-
-          self.graph.focus();
-
-          //  e.preventDefault();
-          //    e.stopPropagation();
-
-          self.handleSelected = false;
-
-          if ( !self.resizing && self.isMovable() ) {
-            self.graph.emit( "beforeShapeMove", self );
-
-            if ( !self.graph.prevent( false ) ) {
-              self.moving = true;
-            }
-          }
-
-          self.handleMouseDown( e );
-        } );
-
-        this.group.addEventListener( 'click', function( e ) {
-
-          self.handleClick( e );
-        } );
-
-        this.group.addEventListener( 'dblclick', function( e ) {
-
-          //e.preventDefault();
-          // e.stopPropagation();
-
-          self.handleDblClick( e );
-        } );
-      }
-
-      //			this.group.appendChild(this.rectEvent);
-
-      this.initImpl();
-    },
-
-    getType: function() {
-      return this.type;
-    },
-
-    hide: function() {
-
-      if ( this.hidden ) {
-        return;
-      }
-
-      this.hidden = true;
-      this.group.style.display = 'none';
-    },
-
-    show: function() {
-
-      if ( !this.hidden ) {
-        return;
-      }
-
-      this.hidden = false;
-      this.group.style.display = 'block';
-    },
-
-    addClass: function( className ) {
-
-      this.classes = this.classes || [];
-
-      if ( this.classes.indexOf( className ) == -1 ) {
-        this.classes.push( className );
-      }
-
-      this.makeClasses();
-    },
-
-    removeClass: function( className ) {
-
-      this.classes.splice( this.classes.indexOf( className ), 1 );
-
-      this.makeClasses();
-    },
-
-    makeClasses: function() {
+    if ( this.group ) {
 
       if ( this._dom ) {
-        this._dom.setAttribute( 'class', this.classes.join( " " ) );
+        this.group.appendChild( this._dom );
       }
-    },
 
-    initImpl: function() {},
+      this.group.addEventListener( 'mouseover', function( e ) {
 
-    triggerChange: function() {
+        self.handleMouseOver( e );
 
-      this.graph.triggerEvent( 'onAnnotationChange', this._data, this );
-    },
+      } );
 
-    setEvents: function() {},
+      this.group.addEventListener( 'mouseout', function( e ) {
 
-    setSelectableOnClick: function() {
+        self.handleMouseOut( e );
+
+      } );
+
+      this.group.addEventListener( 'mousedown', function( e ) {
+
+        self.graph.focus();
+
+        self.handleMouseDown( e );
+      } );
+
+      this.group.addEventListener( 'click', function( e ) {
+
+        self.handleClick( e );
+      } );
+
+      this.group.addEventListener( 'dblclick', function( e ) {
+
+        //e.preventDefault();
+        // e.stopPropagation();
+
+        self.handleDblClick( e );
+      } );
+    }
+
+    //			this.group.appendChild(this.rectEvent);
+
+    this.initImpl();
+
+    this.graph.emit( "shapeNew", this );
+    return this;
+  };
+
+  /**
+   * Implentation of the init method. To be extended if necessary on extended Shape classes
+   * @memberof Shape
+   */
+  Shape.prototype.initImpl = function() {};
+
+  /**
+   * @memberof Shape
+   * @returns {String} The type of the shape
+   */
+  Shape.prototype.getType = function() {
+    return this.type;
+  };
+
+  /**
+   * Removes the shape from the DOM and unlinks it from the graph
+   * @memberof Shape
+   */
+  Shape.prototype.kill = function( keepDom ) {
+
+    this.graph.removeShapeFromDom( this );
+
+    if ( !keepInStack ) {
+      this.graph._removeShape( this );
+    }
+
+    this.graph.emit( "shapeRemoved", this );
+
+    _inDom = false;
+  };
+
+  /**
+   * @memberof Shape
+   * @alias Shape#kill
+   */
+  Shape.prototype.remove = Shape.prototype.kill;
+
+  /**
+   * Hides the shape
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.hide = function() {
+
+    if ( this.hidden ) {
       return;
-      var self = this;
-      this._dom.addEventListener( 'click', function() {
-        if ( !self._selectable )
-          return;
-        self._selected = !self._selected;
-        self[ self._selected ? 'select' : 'unselect' ]();
-      } );
-    },
+    }
 
-    setBBox: function() {
+    this.hidden = true;
+    this.group.style.display = 'none';
+    return this;
+  };
 
-      if ( !this.rectEvent ) {
-        this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
-        this.rectEvent.setAttribute( 'pointer-events', 'fill' );
-        this.rectEvent.setAttribute( 'fill', 'transparent' );
-      }
+  /**
+   * Shows the shape
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.show = function() {
 
-      this.group.removeChild( this.rectEvent );
-      var box = this.group.getBBox();
-      this.rectEvent.setAttribute( 'x', box.x );
-      this.rectEvent.setAttribute( 'y', box.y - 10 );
-      this.rectEvent.setAttribute( 'width', box.width );
-      this.rectEvent.setAttribute( 'height', box.height + 20 );
+    if ( !this.hidden ) {
+      return;
+    }
 
-      this.group.appendChild( this.rectEvent );
-    },
+    this.hidden = false;
+    this.group.style.display = 'block';
+  };
 
-    kill: function( keepInStack ) {
+  /**
+   * Adds a class to the shape DOM
+   * @memberof Shape
+   * @param {String} className - The class to add
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.addClass = function( className ) {
+    this.classes = this.classes || [];
+    if ( this.classes.indexOf( className ) == -1 ) {
+      this.classes.push( className );
+    }
+    this.makeClasses();
+    return this;
+  };
 
-      this.graph.removeShapeFromDom( this );
+  /**
+   * Removes a class from the shape DOM
+   * @memberof Shape
+   * @param {String} className - The class to remove
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.removeClass = function( className ) {
+    this.classes.splice( this.classes.indexOf( className ), 1 );
+    this.makeClasses();
+    return this;
+  };
 
-      if ( !keepInStack ) {
-        this.graph._removeShape( this );
-      }
+  /**
+   * Builds the classes
+   * @memberof Shape
+   * @private
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.makeClasses = function() {
 
-      this._inDom = false;
-      this.callHandler( "onRemoved", this );
+    if ( this._dom ) {
+      this._dom.setAttribute( 'class', this.classes.join( " " ) );
+    }
 
-    },
+    return this;
+  };
 
-    /*	applyAll: function() {
-			for(var i in this.properties)
-				this._dom.setAttribute(i, this.properties[i]);
-		},
-*/
-    draw: function() {
+  /**
+   * Triggers a ```shapeChanged``` event on the graph
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.changed = function() {
 
-      if ( this.labelNumber == undefined ) {
-        this.setLabelNumber( 1 );
-      }
+    this.graph.emit( 'shapeChanged', this );
+    return this;
+  };
 
-      if ( !this._inDom ) {
-        this.graph.appendShapeToDom( this );
-        this._inDom = true;
-      }
+  Shape.prototype.setEvents = function() {};
 
-      this.setFillColor();
-      this.setStrokeColor();
-      this.setStrokeWidth();
-      this.setDashArray();
-      this.setTransform();
+  /**
+   * Creates an even receptacle with the coordinates of the shape bounding box
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setEventReceptacle = function() {
 
-      this.everyLabel( function( i ) {
+    if ( !this.rectEvent ) {
+      this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
+      this.rectEvent.setAttribute( 'pointer-events', 'fill' );
+      this.rectEvent.setAttribute( 'fill', 'transparent' );
+    }
 
-        if ( this.getprop( 'labelPosition', i ) ) {
+    this.group.removeChild( this.rectEvent );
+    var box = this.group.getBBox();
+    this.rectEvent.setAttribute( 'x', box.x );
+    this.rectEvent.setAttribute( 'y', box.y - 10 );
+    this.rectEvent.setAttribute( 'width', box.width );
+    this.rectEvent.setAttribute( 'height', box.height + 20 );
 
-          this.setLabelText( i );
-          this.setLabelSize( i );
-          //this.setLabelAngle(i);
-          this.setLabelColor( i );
-          this.setLabelPosition( i );
+    this.group.appendChild( this.rectEvent );
+  };
 
-        }
-
-        if ( this.getprop( 'labelAnchor', i ) ) {
-
-          this._forceLabelAnchor( i );
-
-        }
-      } );
-
-      return this;
-    },
-
-    redraw: function() {
-
-      //	this.kill();
-      var variable;
-      this.position = this.setPosition();
-      this.setTransform();
-
-      this.redrawImpl();
-
-      if ( !this.position ) {
-
-        return;
-      }
-
-      this.everyLabel( function( i ) {
-
-        this.setLabelPosition( i );
-        this.setLabelAngle( i );
-
-      } );
-
-      //	this.done();
-
-      return this;
-    },
-
-    redrawImpl: function() {},
-
-    done: function() {
-      //this.applyAll();
-      //;
-
-    },
-
-    setSerie: function( serie ) {
+  /**
+   * Assigns a serie to the shape
+   * @memberof Shape
+   * @param {Serie} The serie that owns the shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setSerie = function( serie ) {
       this.serie = serie;
+      this.xAxis = serie.getXAxis();
+      this.yAxis = serie.getYAxis();
+      return this;
     },
 
-    getSerie: function() {
+    /**
+     * @memberof Shape
+     * @return {Serie} The serie associated to the shape
+     */
+    Shape.prototype.getSerie = function() {
       return this.serie;
     },
 
-    prop: function( prop, val, index ) {
+    /**
+     * Assigns the shape to the default x and y axes of the graph, only if they don't exist yet
+     * @memberof Shape
+     * @return {Shape} The current shape
+     * @see Graph#getXAxis
+     * @see Graph#getYAxis
+     */
+    Shape.prototype.autoAxes = function() {
+
+      if ( !this.xAxis ) {
+        this.xAxis = this.graph.getXAxis();
+      }
+
+      if ( !this.yAxis ) {
+        this.yAxis = this.graph.getYAxis();
+      }
+
+      return this;
+    };
+
+  /**
+   * Assigns the shape to an x axis
+   * @memberof Shape
+   * @param {XAxis} The X axis related to the shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setXAxis = function( axis ) {
+    this.xAxis = axis;
+    return this;
+  };
+
+  /**
+   * Assigns the shape to an y axis
+   * @memberof Shape
+   * @param {YAxis} The Y axis related to the shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setYAxis = function( axis ) {
+    this.yAxis = axis;
+  };
+
+  /**
+   * Returns the x axis associated to the shape. If non-existent, assigns it automatically
+   * @memberof Shape
+   * @return {XAxis} The x axis associated to the shape. 
+   */
+  Shape.prototype.getXAxis = function() {
+
+    if ( !this.xAxis ) {
+      this.autoAxes();
+    }
+
+    return this.xAxis;
+  };
+
+  /**
+   * Returns the y axis associated to the shape. If non-existent, assigns it automatically
+   * @memberof Shape
+   * @return {YAxis} The y axis associated to the shape. 
+   */
+  Shape.prototype.getYAxis = function() {
+
+    if ( !this.yAxis ) {
+      this.autoAxes();
+    }
+
+    return this.yAxis;
+  };
+
+  /**
+   * Sets the layer of the shape
+   * @memberof Shape
+   * @param {Number} layer - The layer number (1 being the lowest)
+   * @return {Shape} The current shape
+   * @see Shape#getLayer
+   */
+  Shape.prototype.setLayer = function( layer ) {
+    this.setProp( 'layer', layer );
+    return this;
+  };
+
+  /**
+   * Returns the layer on which the shape is placed
+   * @memberof Shape
+   * @return {Number} The layer number (1 being the lowest layer)
+   */
+  Shape.prototype.getLayer = function() {
+    var layer = this.getProp( 'layer' );
+
+    if ( layer !== undefined ) {
+      return layer;
+    }
+
+    return 1;
+  };
+
+  /**
+   * Initial drawing of the shape. Adds it to the DOM and creates the labels
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.draw = function() {
+
+    if ( !this._inDom ) {
+      this.graph.appendShapeToDom( this );
+      this._inDom = true;
+    }
+
+    this._makeLabels();
+
+    this.redraw();
+    this.applyStyle();
+
+    return this;
+  };
+
+  /**
+   * Redraws the shape. Repositions it, applies the style and updates the labels
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.redraw = function() {
+
+    this.position = this.applyPosition();
+
+    this.redrawImpl();
+    if ( !this.position ) {
+      return;
+    }
+
+    this._applyLabelData();
+    this._applyTransforms();
+    return this;
+  };
+
+  /**
+   * Implementation of the redraw method. Extended Shape classes should override this method
+   * @memberof Shape
+   */
+  Shape.prototype.redrawImpl = function() {},
+
+    /**
+     * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
+     * @param {String} prop - The property to save
+     * @param val - The value to save
+     * @param [ index = 0 ] - The index of the property array to save the property
+     * @memberof Shape
+     */
+    Shape.prototype.setProp = function( prop, val, index ) {
 
       this.properties[ prop ] = this.properties[ prop ] || [];
       this.properties[ prop ][ index || 0 ] = val;
+    };
+
+  /**
+   * Returns a property of the shape
+   * @param {String} prop - The property to retrieve
+   * @param [ index = 0 ] - The index of the property array
+   * @memberof Shape
+   */
+  Shape.prototype.getProp = function( prop, index ) {
+    return ( this.properties[ prop ] || [] )[ index ||  0 ];
+  };
+
+  /**
+   * Adds a property to the property array
+   * @param {String} prop - The property to add
+   * @param val - The value to save
+   * @memberof Shape
+   */
+  Shape.prototype.addProp = function( prop, value ) {
+    this.properties[ prop ] = this.properties[ prop ] || [];
+    this.properties[ prop ].push( value );
+  };
+
+  /**
+   * Resets the property array
+   * @param {String} prop - The property to reset
+   * @memberof Shape
+   */
+  Shape.prototype.resetProp = function( prop ) {
+    this.properties[ prop ] = [];
+  }
+
+  /**
+   * Sets a DOM property to the shape
+   * @memberof Shape
+   */
+  Object.defineProperty( Shape.prototype, 'setDom', {
+    enumerable: true,
+    writable: false,
+    configurable: false,
+    value: function( prop, val ) {
+      if ( this._dom ) {
+        this._dom.setAttribute( prop, val );
+      }
+    }
+  } );
+
+  /**
+   * Sets a DOM property to the shape group
+   * @memberof Shape
+   */
+  Object.defineProperty( Shape.prototype, 'setDomGroup', {
+    enumerable: true,
+    writable: false,
+    configurable: false,
+    value: function( prop, val ) {
+      if ( this.group ) {
+        this.group.setAttribute( prop, val );
+      }
+    }
+  } )
+
+  /**
+   * Saves the stroke color
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setStrokeColor = function( color ) {
+    this.setProp( 'strokeColor', color );
+    return this;
+  };
+
+  /**
+   * Saves the fill color
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setFillColor = function( color ) {
+    this.setProp( 'fillColor', color );
+    return this;
+  };
+
+  /**
+   * Saves the stroke width
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setStrokeWidth = function( width ) {
+    this.setProp( 'strokeWidth', width );
+    return this;
+  };
+
+  /**
+   * Saves the stroke dash array
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setStrokeDasharray = function( dasharray ) {
+      this.setProp( 'strokeDasharray', width );
+      return this;
     },
 
-    getprop: function( prop, index ) {
-      return ( this.properties[ prop ] || [] )[ index ||  0 ];
-    },
+    /**
+     * Adds a transform property to the shape.
+     * @param {String} type - The transform type ("rotate", "transform" or "scale")
+     * @param {String} args - The arguments following the transform
+     * @memberof Shape
+     * @return {Shape} The current shape
+     */
+    Shape.prototype.addTransform = function( type, args ) {
+      this.addProp( 'transforms', {
+        type: type,
+        arguments: Array.isArray( args ) ? args : [ args ]
+      } );
+    }
 
-    getData: function() {
-      return this._data;
-    },
-    getFromData: function( prop ) {
-      return this._data[ prop ];
-    },
-    setData: function( prop, val ) {
-      return this._data[ prop ] = val;
-    },
-    setDom: function( prop, val ) {
-      if ( this._dom ) this._dom.setAttribute( prop, val );
-    },
+  /**
+   * Resets the transforms
+   * @memberof Shape
+   * @see Shape#addTransform
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.resetTransforms = function() {
+    this.resetProp( 'transforms' );
+    return this;
+  }
 
-    setPosition: function() {
-      var position = this._getPosition( this.getFromData( 'pos' ) );
-      this.setDom( 'x', position.x );
-      this.setDom( 'y', position.y );
-      return true;
-    },
+  /**
+   * Sets the text of the label
+   * @memberof Shape
+   * @param {String} text - The text of the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelText = function( text, index ) {
+    this.setProp( 'labelText', text, index || 0 );
+    return this;
+  };
 
-    setFillColor: function() {
-      this.setDom( 'fill', getColor( this.getprop( 'fillColor' ) ) );
-    },
-    setStrokeColor: function() {
-      this.setDom( 'stroke', getColor( this.getprop( 'strokeColor' ) ) );
-    },
-    setStrokeWidth: function() {
-      this.setDom( 'stroke-width', this.getprop( 'strokeWidth' ) );
-    },
-    setDashArray: function() {
-      if ( this.getprop( 'strokeDashArray' ) ) this.setDom( 'stroke-dasharray', this.getprop( 'strokeDashArray' ) );
-    },
+  /**
+   * Displays a hidden label
+   * @memberof Shape
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.displayLabel = function( index ) {
+    this.setProp( 'labelVisible', true, index || 0 );
+  }
 
-    setTransform: function() {
+  /**
+   * Hides a displayed label
+   * @memberof Shape
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.hideLabel = function( index ) {
+    this.setProp( 'labelVisible', false, index || 0 );
+  }
 
-      var transformString = "";
-      var transforms = this.getprop( 'transform' );
+  /**
+   * Sets the color of the label
+   * @memberof Shape
+   * @param {String} color - The color of the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelColor = function( color, index ) {
+    this.setProp( 'labelColor', text, index || 0 );
+    return this;
+  };
 
-      for ( var i = 0; i < this.transforms.length; i++ ) {
+  /**
+   * Sets the font size of the label
+   * @memberof Shape
+   * @param {String} size - The font size (in px) of the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelFontSize = function( size, index ) {
+    this.setProp( 'labelFontSize', size, index || 0 );
+    return this;
+  };
 
-        transformString += this.transforms[ i ].type + "(";
+  /**
+   * Sets the position of the label
+   * @memberof Shape
+   * @param {String} size - The font size (in px) of the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelPosition = function( position, index ) {
+    this.setProp( 'labelPosition', position, index || 0 );
+  };
 
-        switch ( this.transforms[ i ].type ) {
+  /**
+   * Sets the angle of the label
+   * @memberof Shape
+   * @param {Number} angle - The angle of the label in degrees (0 to 360°)
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelAngle = function( angle, index ) {
+    this.setProp( 'labelAngle', angle, index || 0 );
+  };
 
-          case 'translate':
+  /**
+   * Sets the baseline of the label
+   * @memberof Shape
+   * @param {String} baseline - The baseline of the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelBaseline = function( baseline, index ) {
+    this.setProp( 'labelBaseline', baseline, index || 0 );
+  };
 
-            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+  /**
+   * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.applyGenericStyle = function() {
+
+    this.setDom( "fill", this.getProp( "fillColor" ) );
+    this.setDom( "stroke", this.getProp( "strokeColor" ) );
+    this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
+    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
+
+    this._applyTransforms();
+
+    return this;
+  };
+
+  /**
+   * Applies the style to the shape. This method can be extended to apply specific style to the shapes
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.applyStyle = function() {
+    return this.applyGenericStyle();
+  }
+
+  /**
+   * Returns a computed position object
+   * @memberof Shape
+   * @param {(Number|Position)} [ index = 0 ] - The index of the position to compute
+   * @param {Position} relToPosition - A base position from which to compute the position (useful for <code>dx</code> values)
+   * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
+   */
+  Shape.prototype.calculatePosition = function( index, relTo ) {
+
+    var position;
+
+    position = ( index instanceof Position ) ? index : this.getPosition( index );
+
+    if ( position && position.compute ) {
+      return position.compute( this.getXAxis(), this.getYAxis(), this.getSerie(), relTo );
+    }
+
+    this.graph.throw();
+  };
+
+  /**
+   * Returns a stored position object
+   * @memberof Shape
+   * @param {Number} [ index = 0 ] - The index of the position to compute
+   * @return {Position} The current shape
+   */
+  Shape.prototype.getPosition = function( index ) {
+
+    return GraphPosition.check( this.getProp( 'position', ( index || 0 ) ) );
+  };
+
+  /**
+   * Sets a position object
+   * @memberof Shape
+   * @param {Position} position - The position object to store
+   * @param {Number} [ index = 0 ] - The index of the position to store
+   * @return {Position} The current shape
+   */
+  Shape.prototype.setPosition = function( position, index ) {
+
+    return this.setProp( 'position', GraphPosition.check( position ), ( index || 0 ) );
+  };
+
+  /**
+   * Applies the style to the shape. This method can be extended to apply specific style to the shapes
+   * @memberof Shape
+   * @private
+   * @return {Shape} The current shape
+   */
+  Shape.prototype._applyTransforms = function() {
+
+    var transforms = this.getProp( 'transform' ),
+      transformString = "";
+
+    transforms = Array.isArray( transforms ) ? transforms : [ transforms ];
+
+    for ( var i = 0; i < this.transforms.length; i++ ) {
+
+      transformString += this.transforms[ i ].type + "(";
+
+      switch ( this.transforms[ i ].type ) {
+
+        case 'translate':
+
+          transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+          transformString += ", ";
+          transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
+          break;
+
+        case 'rotate':
+
+          transformString += this.transforms[ i ].arguments[ 0 ];
+          transformString += ", ";
+
+          if ( this.transforms[ i ].arguments.length == 1 ) {
+            var p = this._getPosition( this.getFromData( 'pos' ) );
+            transformString += p.x + ", " + p.y;
+
+          } else {
+
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
             transformString += ", ";
-            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
-            break;
+            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
+          }
 
-          case 'rotate':
-            transformString += this.transforms[ i ].arguments[ 0 ];
-            transformString += ", ";
-
-            if ( this.transforms[ i ].arguments.length == 1 ) {
-              var p = this._getPosition( this.getFromData( 'pos' ) );
-              transformString += p.x + ", " + p.y;
-
-            } else {
-              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
-              transformString += ", ";
-              transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
-            }
-            break;
-        }
-
-        transformString += ") ";
+          break;
       }
 
-      this.group.setAttribute( 'transform', transformString );
-    },
+      transformString += ") ";
+    }
 
-    setLabelText: function( index ) {
-      if ( this.label ) this.label[ index ].textContent = this._data.label[ index ].text;
-    },
-    setLabelColor: function( index ) {
-      if ( this.label ) this.label[ index ].setAttribute( 'fill', this.getprop( 'labelColor' ) );
-    },
-    setLabelSize: function( index ) {
-      if ( this.label ) this.label[ index ].setAttribute( 'font-size', this.getprop( 'labelSize' ) );
-    },
-    setLabelPosition: function( index ) {
-      if ( this.label ) this._setLabelPosition( index );
-    },
-    setLabelAngle: function( index ) {
-      if ( this.label ) this._setLabelAngle( index );
-    },
-    setLabelBaseline: function( index ) {
-      if ( this.label ) this._setLabelBaseline( index );
-    },
+    this.setDomGroup( 'transform', transformString );
+    return this;
+  };
 
-    _getPosition: function( value, relTo ) {
+  /**
+   * Creates all the labels
+   * @memberof Shape
+   * @private
+   * @returns {Shape} The current shape
+   */
+  Shape.prototype._makeLabels = function() {
 
-      var xAxis = this.getXAxis(),
-        yAxis = this.getYAxis();
-      return this.graph.getPosition( value, relTo, xAxis, yAxis, this.serie );
-    },
+    var self = this;
+    this._labels = this._labels || [];
 
-    setLabelNumber: function( nb ) {
-      this.labelNumber = nb;
-      this._makeLabel();
-    },
+    this._labels.map( function( label ) {
+      self.group.removeChild( label );
+    } );
 
-    everyLabel: function( callback ) {
-      for ( var i = 0; i < this.labelNumber; i++ ) {
-        callback.call( this, i );
-      }
-    },
+    this._labels = [];
 
-    toggleLabel: function( labelId, visible ) {
-      if ( this.labelNumber && this.label[ labelId ] ) {
-        this.label[ labelId ].setAttribute( 'display', visible ? 'block' : 'none' );
-      }
-    },
+    var i = 0;
+    while ( this.getProp( "labelText", i ) ) {
 
-    checkMinMax: function() {
+      ( function( j ) {
 
-      var pos = this.get
+        self._labels[ j ] = document.createElementNS( self.graph.ns, 'text' );
+        self._labels[ j ].addEventListener( 'dblclick', function( e ) {
 
-    },
-
-    _makeLabel: function() {
-
-      var self = this;
-      this.label = this.label || [];
-
-      this.everyLabel( function( i ) {
-
-        this.label[ i ] = document.createElementNS( this.graph.ns, 'text' );
-
-        /* this.label[ i ].addEventListener( 'mouseover', function( e ) {
-
-          //self.doHover( true );
-          //e.stopPropagation();
-
-        } );
-
-        this.label[ i ].addEventListener( 'mouseout', function( e ) {
-
-          //self.doHover( false );
-          //e.stopPropagation();
-
-        } );
-*/
-        this.label[ i ].addEventListener( 'dblclick', function( e ) {
+          if ( !self.isLabelEditable( i ) ) {
+            return;
+          }
 
           e.preventDefault();
           e.stopPropagation();
@@ -483,8 +803,8 @@ define( [], function() {
           } ).bind( 'blur', function() {
 
             $( this ).remove();
-            self._data.label[ i ].text = $( this ).prop( 'value' );
-            self.label[ i ].textContent = $( this ).prop( 'value' );
+            self._data.label[ i ].text = $( this ).setProp( 'value' );
+            self._labels[ i ].textContent = $( this ).setProp( 'value' );
 
             self.triggerChange();
 
@@ -508,771 +828,686 @@ define( [], function() {
 
         } );
 
-        self.group.appendChild( this.label[ i ] );
-      } );
-    },
+      } ).call( this, i );
 
-    _setLabelPosition: function( labelIndex, pos ) {
+      self.group.appendChild( this._labels[ i ] );
 
-      var currPos = this.getFromData( 'pos' );
+      i++;
+    }
 
-      if ( !currPos ) {
-        pos = {
-          x: -1000,
-          y: -1000
-        };
-      } else {
+    return this;
+  };
 
-        var parsedCurrPos = this._getPosition( currPos );
+  /**
+   * Determines if the label is editable
+   * @param {Number} labelIndex - The index of the label
+   * @return {Boolean} ```true``` if the label is editable, ```false``` otherwise
+   * @memberof Shape
+   */
+  Shape.prototype.isLabelEditable = function( labelIndex ) {
+    return this.getProp( 'labelEditable', labelIndex );
+  };
 
-        if ( !pos ) {
-          var pos = this._getPosition( this.getprop( 'labelPosition', labelIndex ) || {
+  /**
+   * Applies the label data to the dom object
+   * @memberof Shape
+   * @private
+   * @param {Number} labelIndex - The index of the label
+   * @returns {Shape} The current shape
+   */
+  Shape.prototype._applyLabelData = function( labelIndex ) {
 
-            dx: 0,
-            dy: 0
-          }, currPos );
+    labelIndex = labelIndex || 0;
 
-        } else {
-          pos = this._getPosition( pos );
+    /** Sets the position */
+    var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
+    if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" ) {
+
+      this._labels[ labelIndex ].setAttribute( 'x', pos.x );
+      this._labels[ labelIndex ].setAttribute( 'y', pos.y );
+    }
+
+    /** Sets the angle */
+    var currAngle = this.getProp( 'labelAngle', labelIndex ) || 0;
+    if ( currAngle != 0 ) {
+
+      var x = this._labels[ labelIndex ].getAttribute( 'x' ),
+        y = this._labels[ labelIndex ].getAttribute( 'y' );
+
+      this._labels[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    }
+
+    /** Sets the baseline */
+    this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) ||  'no-change' );
+
+    /** Sets the anchor */
+    this._label[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
+
+    return this;
+  };
+
+  /**
+   * Returns the anchor of the label
+   * @memberof Shape
+   * @private
+   * @param {Number} labelIndex - The index of the label
+   * @returns {String} The anchor in SVG string
+   */
+  Shape.prototype._getLabelAnchor = function( labelIndex ) {
+    var anchor = this.getProp( 'labelAnchor', labelIndex );
+    switch ( anchor ) {
+      case 'middle':
+      case 'start':
+      case 'end':
+        return anchor;
+        break;
+
+      case 'right':
+        return 'end';
+        break;
+
+      case 'left':
+        return 'start';
+        break;
+
+      default:
+        return 'start';
+        break;
+    }
+  };
+
+  /**
+   * Returns the shape selection status
+   * @memberof Shape
+   * @returns {Boolean} true is the shape is selected, false otherwise
+   */
+  Shape.prototype.isSelected = function() {
+    return this._selectStatus ||  false;
+  }
+
+  /**
+   * @memberof Shape
+   * @returns {Boolean} true is the shape has handles, false otherwise
+   */
+  Shape.prototype.hasHandles = function() {
+    return !!this.getProp( 'handles' ) || !!this.getProp( 'statichandles' );
+  }
+
+  /**
+   * Adds shape handles 
+   * @private 
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.addHandles = function() {
+
+    if ( this.isLocked() ) {
+      return;
+    }
+
+    if ( !this.handlesInDom ) {
+
+      this.handlesInDom = true;
+
+      for ( var i = 1; i <= this.nbHandles; i++ ) {
+        if ( this[ 'handle' + i ] ) {
+          this.group.appendChild( this[ 'handle' + i ] );
         }
       }
+    }
 
-      if ( pos.x != "NaNpx" && !isNaN( pos.x ) && pos.x !== "NaN" ) {
+    return this;
+  };
 
-        this.label[ labelIndex ].setAttribute( 'x', pos.x );
-        this.label[ labelIndex ].setAttribute( 'y', pos.y );
-      }
-      //this.label.setAttribute('text-anchor', pos.x < parsedCurrPos.x ? 'end' : (pos.x == parsedCurrPos.x ? 'middle' : 'start'));
+  /**
+   * Remove shape handles 
+   * @private 
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.removeHandles = function() {
+    for ( var i = 1; i <= this.nbHandles; i++ ) {
+      this.group.removeChild( this[ 'handle' + i ] );
+    }
 
-    },
+    this.handlesInDom = false;
 
-    _setLabelAngle: function( labelIndex, angle ) {
-      var currAngle = this.getprop( 'labelAngle', labelIndex ) || 0;
+    return false;
+  }
 
-      if ( currAngle == 0 )
-        return;
+  /**
+   * Selects the shape. Should only be called from jsGraph main instance
+   * @private
+   * @memberof Shape
+   * @returns {Shape} the current shape
+   */
+  Shape.prototype._select = function() {
 
-      var x = this.label[ labelIndex ].getAttribute( 'x' );
-      var y = this.label[ labelIndex ].getAttribute( 'y' );
-      this.label[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
-    },
+    if ( !this.isSelectable() ) {
+      return false;
+    }
 
-    _setLabelBaseline: function( labelIndex, angle ) {
+    // Put on the stack
+    this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
-      this.label[ labelIndex ].setAttribute( 'dominant-baseline', this._getLabelBaseline( labelIndex ) );
+    this._selectStatus = true;
+    this.selectStyle();
 
-    },
+    if ( this.hasHandles() && !this.hasStaticHandles() ) {
+      this.addHandles();
+      this.setHandles();
+    }
 
-    _forceLabelAnchor: function( i ) {
-      this.label[ i ].setAttribute( 'text-anchor', this._getLabelAnchor( i ) );
-    },
+  };
 
-    _getLabelAnchor: function( i ) {
-      var anchor = this.getprop( 'labelAnchor', i );
-      switch ( anchor ) {
-        case 'middle':
-        case 'start':
-        case 'end':
-          return anchor;
-          break;
+  /**
+   * Unselects the shape. Should only be called from jsGraph main instance
+   * @private
+   * @memberof Shape
+   * @returns {Shape} the current shape
+   */
+  Shape.prototype._unselect = function() {
 
-        case 'right':
-          return 'end';
-          break;
+    this._selectStatus = false;
+    this.unselectStyle();
 
-        case 'left':
-          return 'start';
-          break;
+    if ( this.hasHandles() && !this.hasStaticHandles() ) {
 
-        default:
-          return 'start';
-          break;
-      }
-    },
+      this.removeHandles();
+    }
 
-    _getLabelBaseline: function( i ) {
-      return this.getprop( 'labelBaseline', i );
-    },
+    this.graph.emit( "shapeUnselected", this );
+  };
 
-    isSelected: function() {
-      return this._selected;
-    },
+  Shape.prototype.selectStyle = function() {
 
-    hasHandles: function() {
-      return !!this.handles;
-    },
+  };
 
-    _select: function( mute ) {
+  Shape.prototype.unselectStyle = function() {
 
-      if ( !this.isSelectable() ) {
-        return;
-      }
+  };
 
-      // Put on the stack
-      this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+  /**
+   * Assigns static handles to the shape. In this mode, handles will not disappear
+   * @memberof Shape
+   * @param {Boolean} staticHandles - true to enable static handles, false to disable them.
+   * @returns {Shape} the current shape
+   */
+  Shape.prototype.setStaticHandles = function( staticHandles ) {
+    this.setProp( 'staticHandles', staticHandles );
+  };
 
-      this._selected = true;
-      this.selectStyle();
+  /**
+   * Creates the handles for the shape
+   * @memberof Shape
+   * @param {Number} nb - The number of handles
+   * @param {String} type - The type of SVG shape to use
+   * @param {Object<String,String>} [ attr = {} ] - The SVG attributes to apply to the handles
+   * @param {Function} [ callbackEach ] - An additional callback the user can provide to further personalize the handles
+   * @returns {Shape} the current shape
+   */
+  Shape.prototype._createHandles = function( nb, type, attr, callbackEach ) {
 
-      if ( this.hasHandles() && !this._staticHandles ) {
-        this.addHandles();
-        this.setHandles();
-      }
+    if ( this.hasHandles() ) {
+      return;
+    }
 
-      if ( !mute ) {
-        this.callHandler( "onSelected", this );
-        this.graph.triggerEvent( 'onAnnotationSelect', this._data, this );
-      }
-    },
+    var self = this,
+      handles = [];
 
-    _unselect: function() {
+    for ( var i = 1, l = nb; i <= l; i++ ) {
 
-      if ( !this.isSelectable() ) {
-        return;
-      }
+      ( function( j ) {
 
-      this._selected = false;
-      this.unselectStyle();
+        var self = this;
 
-      this.setStrokeWidth();
-      this.setStrokeColor();
-      this.setDashArray();
-      this.setFillColor();
-      this.setTransform();
+        self.handles[  j ] = document.createElementNS( self.graph.ns, type );
+        self.handles[  j ].jsGraphIsShape = true;
 
-      if ( this.handlesInDom && !this._staticHandles ) {
-        this.handlesInDom = false;
-        this.removeHandles();
-      }
-
-      this.callHandler( "onUnselected", this );
-
-    },
-
-    staticHandles: function( bool ) {
-      this._staticHandles = bool;
-
-      if ( bool ) {
-        this.addHandles();
-        this.setHandles();
-      } else {
-        this.removeHandles();
-      }
-
-    },
-
-    createHandles: function( nb, type, attr, callbackEach ) {
-
-      if ( this.isLocked() ) {
-        return;
-      }
-
-      var self = this,
-        handles = [];
-
-      for ( var i = 1; i <= nb; i++ ) {
-
-        ( function( j ) {
-
-          self[ 'handle' + j ] = document.createElementNS( self.graph.ns, type );
-          self[ 'handle' + j ].jsGraphIsShape = true;
-
-          if ( attr ) {
-            for ( var k in attr ) {
-              self[ 'handle' + j ].setAttribute( k, attr[ k ] );
-            }
+        if ( attr ) {
+          for ( var k in attr ) {
+            this.handles[  j ].setAttribute( k, attr[ k ] );
           }
+        }
 
-          self[ 'handle' + j ]
-            .addEventListener( 'mousedown', function( e ) {
+        self.handles[  j ]
+          .addEventListener( 'mousedown', function( e ) {
+
+            if ( self.isResizable() ) {
 
               e.preventDefault();
               e.stopPropagation();
 
-              if ( self.isResizable() ) {
+              self.graph.emit( "beforeShapeResize", self );
 
-                self.graph.emit( "beforeShapeResize", self );
+              if ( !self.graph.prevent( false ) ) {
 
-                if ( !self.graph.prevent( false ) ) {
-
-                  self.resizing = true;
-                  self.handleSelected = j;
-                  self.handleMouseDown( e );
-
-                }
-              }
-
-            } );
-
-          handles.push( self[ 'handle' + j ] );
-
-          if ( callbackEach ) {
-            callbackEach( self[ 'handle' + j ] );
-          }
-
-        } )( i );
-
-      }
-
-      return this.handles = handles;
-    },
-
-    created: function() {
-
-      this.callHandler( "onCreated", this );
-      this.handleCreateImpl();
-    },
-
-    handleMouseDownImpl: function() {},
-    handleMouseMoveImpl: function() {},
-    handleMouseUpImpl: function() {},
-    handleCreateImpl: function() {},
-
-    handlers: {
-
-      mouseUp: [
-
-        function( e ) {
-
-          if ( this.moving ) {
-            this.callHandler( "onAfterMoved", this );
-          }
-
-          if ( this.handleSelected || this.resize ) {
-            this.callHandler( "onAfterResized", this );
-          }
-
-          this.moving = false;
-          this.resize = false;
-          this.handleSelected = false;
-          this.graph.elementMoving( false );
-
-          return this.handleMouseUpImpl( e );
-        }
-      ],
-
-      mouseMove: [
-
-        function( e ) {
-
-          var coords = this.graph._getXY( e );
-          var
-            deltaX = this.getXAxis().getRelVal( coords.x - this.mouseCoords.x ),
-            deltaY = this.getYAxis().getRelVal( coords.y - this.mouseCoords.y );
-
-          if ( deltaX != 0 ||  deltaY !== 0 ) {
-            this.preventUnselect = true;
-          }
-
-          this.mouseCoords = coords;
-
-          var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this.mouseCoords.x, coords.y - this.mouseCoords.y );
-
-          if ( this.options ) {
-
-            if ( this.moving ) {
-
-              if ( this.options.onMove ) {
-                this.options.onMove.call( this );
-              }
-
-            } else {
-
-              if ( this.options.onResize ) {
-                this.options.onResize.call( this );
+                self._resizing = true;
+                self.handleSelected = j;
+                self.handleMouseDown( e );
               }
             }
 
-            this.callHandler( 'onChange', this );
-          }
+          } );
 
-          return ret;
+        handles.push( self.handles[  j ] );
+
+        if ( callbackEach ) {
+          callbackEach( self.handles[ j ] );
         }
-      ],
 
-      mouseDown: [
+      } ).call( this, i );
 
-        function( e ) {
+    }
 
-          var self = this;
-          //	e.stopPropagation();
-          // e.preventDefault();
+    return this.handles = handles;
+  };
 
-          if ( !this.isLocked() ) {
-            this.graph.elementMoving( this );
+  /**
+   * Handles mouse down event
+   * @private
+   * @param {Event} e - The native event
+   * @memberof Shape.prototype
+   */
+  Shape.prototype.handleMouseDownImpl = function() {};
 
-            if ( this._selectOnMouseDown ) {
-              this.graph.selectShape( this );
-            }
-          }
+  /**
+   * Handles the mouse move event
+   * @private
+   * @param {Event} e - The native event
+   * @memberof Shape.prototype
+   */
+  Shape.prototype.handleMouseMoveImpl = function() {};
 
-          this.mouseCoords = this.graph._getXY( e );
+  /**
+   * Handles mouse up event
+   * @private
+   * @param {Event} e - The native event
+   * @memberof Shape.prototype
+   */
+  Shape.prototype.handleMouseUpImpl = function() {};
 
-          return this.handleMouseDownImpl( e, this.mouseCoords );
+  /**
+   * Called when the shape is created
+   * @private
+   * @param {Event} e - The native event
+   * @memberof Shape.prototype
+   */
+  Shape.prototype.handleCreateImpl = function() {};
+
+  /**
+   * Handles mouse down events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseDownImpl} method
+   * @memberof Shape.prototype
+   */
+  Shape.prototype.handleMouseDown = function( e ) {
+
+    self.handleSelected = false;
+
+    if ( self.isMovable() ) {
+      if ( !self.resizing ) {
+        self.graph.emit( "beforeShapeMove", self );
+
+        if ( !self.graph.prevent( false ) ) {
+          self.moving = true;
         }
-      ],
+      } else {
 
-      click: [
+        this.graph.elementMoving( this );
 
-        function( e ) {
-
-          //  e.stopPropagation();
-          //          e.preventDefault();
-
-          // If this is not a selectable shape, do not bother go forward (and unselect other shapes)
-          if ( !this.isSelectable() ) {
-            return false;
-          }
-
-          if ( !e.shiftKey ) {
-            this.graph.unselectShapes();
-          }
-
+        if ( this.getProp( 'selectOnMouseDown' ) ) {
           this.graph.selectShape( this );
         }
-      ],
+      }
+    }
 
-      mouseOver: [
+    this._mouseCoords = this.graph._getXY( e );
+    return this.handleMouseDownImpl( e, this._mouseCoords );
+  };
 
-        function( e ) {
-          var clbks;
+  /**
+   * Handles mouse click events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseDownClick} method
+   * @private
+   */
+  Shape.prototype.handleClick = function( e ) {
+    if ( !this.isSelectable() ) {
+      return false;
+    }
 
-          //this.highlight();
-          this.addClass( 'hover' );
+    if ( !e.shiftKey ) {
+      this.graph.unselectShapes();
+    }
 
-          if ( !( clbks = this._mouseOverCallbacks ) ) {
-            return;
-          }
-          clbks.fireWith( this, [ this._data, this.parameters ] );
-        }
-      ],
+    this.graph.selectShape( this );
+  };
 
-      mouseOut: [
+  /**
+   * Handles mouse click events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseUpImpl} method
+   * @private
+   */
+  Shape.prototype.handleMouseMove = function( e ) {
 
-        function( e ) {
-          var clbks;
+    if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
+      this.graph.selectShape( this );
+    }
 
-          //    this.unHighlight();
-          this.removeClass( 'hover' );
+    this.graph.emit( "beforeShapeMouseMove" );
 
-          if ( !( clbks = this._mouseOutCallbacks ) ) {
-            return;
-          }
-          clbks.fireWith( this, [ this._data, this.parameters ] );
-        }
-      ]
-    },
+    if ( this.graph.prevent() ) {
+      return false;
+    }
 
-    handleMouseDown: function( e ) {
+    var coords = this.graph._getXY( e );
+    var
+      deltaX = this.getXAxis().getRelVal( coords.x - this._mouseCoords.x ),
+      deltaY = this.getYAxis().getRelVal( coords.y - this._mouseCoords.y );
 
-      return this.callHandler( 'mouseDown', e );
-    },
+    if ( deltaX != 0 ||  deltaY !== 0 ) {
+      this.preventUnselect = true;
+    }
 
-    handleClick: function( e ) {
+    this._mouseCoords = coords;
 
-      return this.callHandler( 'click', e );
-    },
+    var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this._mouseCoords.x, coords.y - this._mouseCoords.y );
 
-    handleMouseMove: function( e ) {
-      /*
+    if ( this.options ) {
+
       if ( this.moving ) {
 
-        this.graph.elementMoving( false );
-
-        if ( this.isLocked() ) {
-          this.handleSelected = false;
+        if ( this.options.onMove ) {
+          this.options.onMove.call( this );
         }
 
-        this.moving = true;
+      } else {
 
-      }
-
-      if ( !this.isMovable() ) {
-        this.moving = false;
-      }
-*/
-
-      if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
-        this.graph.selectShape( this );
-      }
-
-      if ( this.callHandler( 'beforeMouseMove', e ) === false ) {
-        return;
-      }
-
-      this.callHandler( 'mouseMove', e );
-
-    },
-
-    handleMouseUp: function( e ) {
-      this.callHandler( 'mouseUp', e );
-      this.handleSelected = false;
-      //			this.triggerChange();
-    },
-
-    handleMouseOver: function() {
-
-      this.callHandler( 'mouseOver', this );
-
-      this.graph.emit( "shapeMouseOver", this );
-
-    },
-
-    handleMouseOut: function() {
-      this.callHandler( 'mouseOut', this );
-
-      this.graph.emit( "shapeMouseOut", this );
-    },
-
-    removeHandles: function() {
-
-      for ( var i = 1; i <= this.nbHandles; i++ ) {
-        this.group.removeChild( this[ 'handle' + i ] );
-      }
-    },
-
-    callHandler: function( handlerType ) {
-      var handler = handlerType;
-      var args = Array.prototype.shift.call( arguments );
-      var resp;
-
-      var handlers;
-
-      if ( ( handlers = this.graph.shapeHandlers[ handler ] ) ) {
-        for ( var i = 0, l = handlers.length; i < l; i++ ) {
-
-          if ( ( resp = handlers[ i ].apply( this, arguments ) ) !== undefined ) {
-            return resp;
-          }
+        if ( this.options.onResize ) {
+          this.options.onResize.call( this );
         }
       }
+    }
 
-      if ( ( handlers = GraphShape.prototype.handlers[ handler ] ) ) {
-        for ( var i = 0, l = handlers.length; i < l; i++ ) {
-          if ( handlers[ i ].apply( this, arguments ) ) {
-            //	return;
-          }
-        }
-      }
+    return ret;
 
-    },
+  };
 
-    addHandles: function() {
+  /**
+   * Handles mouse up events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseUpImpl} method
+   * @private
+   */
+  Shape.prototype.handleMouseUp = function( e ) {
 
-      if ( this.isLocked() ) {
-        return;
-      }
+    if ( this.moving ) {
 
-      if ( !this.handlesInDom ) {
+      this.graph.emit( "afterShapeMoved" );
 
-        this.handlesInDom = true;
+    }
 
-        for ( var i = 1; i <= this.nbHandles; i++ ) {
-          if ( this[ 'handle' + i ] ) {
-            this.group.appendChild( this[ 'handle' + i ] );
-          }
-        }
-      }
-    },
+    if ( this.handleSelected || this.resize ) {
 
-    handleDblClick: function( e ) {
+      this.graph.emit( "afterShapeResized" );
 
-      if ( this.options.configurable ) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.configure();
-      }
-    },
+    }
 
-    configure: function() {
+    this.moving = false;
+    this.resize = false;
+    this.handleSelected = false;
+    this.graph.elementMoving( false );
 
-      var self = this;
-      var div = $( '<div></div>' ).dialog( {
-        modal: true,
-        position: [ 'center', 50 ],
-        width: '80%'
-      } );
-      div.prev().remove();
-      div.parent().css( 'z-index', 1000 );
+    return this.handleMouseUpImpl( e );
+  };
 
-      require( [ 'require', 'lib/lib/forms/form' ], function( require, Form ) {
+  /**
+   * Handles double click events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseDblClickImpl} method
+   * @private
+   */
+  Shape.prototype.handleDblClick = function( e ) {
 
-        var form = new Form( {} );
-        form.init();
+  };
 
-        var structure = {
+  /**
+   * Handles mouse over events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseOverImpl} method
+   * @private
+   */
+  Shape.prototype.handleMouseOver = function() {
+    this.graph.emit( "shapeMouseOver", this );
+  };
 
-          sections: {
+  /**
+   * Handles mouse out events
+   * @param {Event} e - The native event
+   * @return The result of the {@link Shape#handleMouseOutImpl} method
+   * @private
+   */
+  Shape.prototype.handleMouseOut = function() {
+    this.graph.emit( "shapeMouseOut", this );
+  };
 
-            shape_cfg: {
+  /*
+   *  Updated July 1st, 2015
+   */
 
-              options: {
-                title: 'Shape',
-                icon: 'info_rhombus'
-              },
+  /**
+   * Locks the shape (prevents selection, resizing and moving)
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.lock = function() {
+    this.setProp( 'locked', true );
+    return this;
+  };
 
-              groups: {
+  /**
+   * Unlocks the shape (prevents selection, resizing and moving)
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.unlock = function() {
+    this.setProp( 'locked', false );
+    return this;
+  };
 
-                shape_cfg: {
-                  options: {
-                    type: 'list'
-                  },
+  /**
+   * @return {Boolean} True if the shape is locked, false otherwise
+   * @memberof Shape
+   */
+  Shape.prototype.isLocked = function() {
+    return this.getProp( 'locked' ) || this.graph.shapesLocked;
+  };
 
-                  fields: self.getFieldsConfig()
-                }
-              }
-            }
-          }
-        };
+  /**
+   * Makes the shape moveable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.movable = function( bln ) {
+    this.setProp( 'movable', true );
+  };
 
-        form.setStructure( structure );
+  /**
+   * Makes the shape non-moveable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.unmovable = function() {
+    this.setProp( 'movable', false );
+    return false;
+  };
 
-        form.onStructureLoaded().done( function() {
-          form.fill( self.getConfiguration() );
-        } );
+  /**
+   * @return {Boolean} True if the shape is movable, false otherwise
+   * @memberof Shape
+   */
+  Shape.prototype.isMovable = function() {
+    return this.getProp( 'movable' );
+  };
 
-        form.addButton( 'Cancel', {
-          color: 'blue'
-        }, function() {
-          div.dialog( 'close' );
-        } );
+  /**
+   * Makes the shape resizable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.resizable = function() {
+    this.setProp( 'resizable', true );
+  };
 
-        form.addButton( 'Save', {
-          color: 'green'
-        }, function() {
-          self.setConfiguration( form.getValue() );
-          div.dialog( 'close' );
+  /**
+   * Makes the shape non-resizable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.unresizable = function() {
+    this.setProp( 'resizable', false );
+  };
 
-        } );
+  /**
+   * @return {Boolean} True if the shape is resizable, false otherwise
+   * @memberof Shape
+   */
+  Shape.prototype.isResizable = function() {
+    return this.getProp( 'resizable' );
+  };
 
-        form.onLoaded().done( function() {
+  /**
+   * Makes the shape selectable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.selectable = function() {
+    this.setProp( 'selectable', true );
+  };
 
-          div.html( form.makeDom() );
-          form.inDom();
-        } );
-      } );
-    },
+  /**
+   * Makes the shape non-selectable
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.unselectable = function() {
+    this.graph.unselectShape( this );
+    this.setProp( 'selectable', false );
+  };
 
-    getConfiguration: function() {
-      return this.configuration = this.configuration ||  {};
-    },
+  /**
+   * @return {Boolean} True if the shape is selectable, false otherwise
+   * @memberof Shape
+   */
+  Shape.prototype.isSelectable = function() {
+    return this.setProp( 'selectable', true );
+  };
 
-    setConfiguration: function( configuration ) {
+  /**
+   * Highlights the shape with attributes
+   * @memberof Shape
+   * @returns {Shape} The current shape
+   * @param {Object<String,String>} attributes - A hashmap of attributes to apply
+   * @example shape.highlight( { fill: 'red', 'fill-opacity': 0.5 } );
+   * @see Shape#unhighlight
+   */
+  Shape.prototype.highlight = function( attributes ) {
 
-      this.configuration = $.extend( true, this.configuration, configuration );
-    },
+    util.saveDomAttributes( this, attributes );
+    this.highlightImpl();
+    return this;
+  };
 
-    /*
-     *  Updated July 1st, 2015
+  /**
+   * Removes the highlight properties from the same
+   * @memberof Shape
+   * @returns {Shape} The current shape
+   * @param {Object<String,String>} attributes - A hashmap of attributes to apply
+   * @example shape.highlight( { fill: 'red', 'fill-opacity': 0.5 } );
+   * @see Shape#highlight
+   */
+  Shape.prototype.unHighlight = function() {
+
+    util.restoreDomAttributes();
+    this.unHighlightImpl();
+    return this;
+  };
+
+  Shape.prototype.highlightImpl = function() {},
+    Shape.prototype.unHighlightImpl = function() {},
+
+    /**
+     * Returns the masking id of the shape. Returns null if the shape does not behave as a mask
+     * @memberof Shape
+     * @returns {String} The ```id``` attribute of the shape
      */
-    lock: function() {
-      this._data.locked = true;
-    },
-
-    unlock: function() {
-      this._data.locked = false;
-    },
-
-    isLocked: function() {
-      return this._data.locked || this.graph.shapesLocked;
-    },
-
-    movable: function( bln ) {
-      this._data.movable = true;
-    },
-
-    unmovable: function() {
-      this._data.movable = false;
-    },
-
-    isMovable: function() {
-      return this._data.movable;
-    },
-
-    isResizable: function() {
-      return this._data.resizable;
-    },
-
-    resizable: function() {
-      this._data.resizable = true;
-    },
-
-    unresizable: function() {
-      this._data.resizable = false;
-    },
-
-    selectable: function() {
-      this._data.selectable = true;
-    },
-
-    unselectable: function() {
-      this._unselect();
-      this._data.selectable = false;
-    },
-
-    isSelectable: function() {
-      return this._data.selectable;
-    },
-
-    /* 
-     *  End Updated July 1st, 2015
-     */
-
-    isBindable: function() {
-      return this.options.bindable;
-    },
-
-    setBindableToDom: function() {
-      if ( this.isBindable() ) {
-        this.addClass( 'bindable' );
-      }
-    },
-
-    highlight: function( params ) {
-
-      this.savedHighlight = {};
-      for ( var i in params ) {
-        this.savedHighlight[ i ] = this._dom.getAttribute( i );
-        this._dom.setAttribute( i, params[ i ] );
-      }
-
-      this.highlightImpl();
-    },
-
-    unHighlight: function() {
-
-      for ( var i in this.savedHighlight ) {
-        this._dom.setAttribute( i, this.savedHighlight[ i ] );
-      }
-
-    },
-
-    highlightImpl: function() {},
-    unHighlightImpl: function() {},
-
-    getMaskingID: function() {
+    Shape.prototype.getMaskingID = function() {
       return this.maskingId;
     },
 
-    maskWith: function( otherShape ) {
+    /**
+     * Masks the current shape with another shape passed as the first parameter of the method
+     * @memberof Shape
+     * @param {Shape} maskingShape - The shape used to mask the current shape
+     * @return {Shape} The current shape
+     */
+    Shape.prototype.maskWith = function( maskingShape ) {
 
       var maskingId;
-      if ( maskingId = otherShape.getMaskingID() ) {
+
+      if ( maskingId = maskingShape.getMaskingID() ) {
+
         this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+
       } else {
+
         this._dom.removeAttribute( 'mask' );
       }
-    },
+    };
 
-    updateMask: function() {
-      if ( this.maskDom ) {
+  /**
+   * Manually updates the mask of the shape. This is needed because the shape needs to be surrounded by a white rectangle (because transparent is treated as black and will not render the shape)
+   * This method will work well for rectangles but should be overridden for other shapes
+   * @memberof Shape
+   * @return {Shape} The current shape
+   * @todo Explore a way to make it compatible for all kinds of shapes. Maybe the masker position should span the whole graph...
+   */
+  Shape.prototype.updateMask = function() {
 
-        var position = {
-          x: 'min',
-          y: 'min'
-        };
-        var position2 = {
-          x: 'max',
-          y: 'max'
-        };
-
-        position = this._getPosition( position );
-        position2 = this._getPosition( position2 );
-
-        this.maskDomWrapper.setAttribute( 'x', Math.min( position.x, position2.x ) );
-        this.maskDomWrapper.setAttribute( 'y', Math.min( position.y, position2.y ) );
-
-        this.maskDomWrapper.setAttribute( 'width', Math.abs( position2.x - position.x ) );
-        this.maskDomWrapper.setAttribute( 'height', Math.abs( position2.y - position.y ) );
-
-        for ( var i = 0; i < this._dom.attributes.length; i++ ) {
-          this.maskDom.setAttribute( this._dom.attributes[ i ].name, this._dom.attributes[ i ].value );
-        }
-
-        this.maskDom.setAttribute( 'fill', 'black' );
-
-      }
-    },
-
-    setXAxis: function( axis ) {
-      this.xAxis = axis;
-    },
-
-    setYAxis: function( axis ) {
-      this.yAxis = axis;
-    },
-
-    autoAxes: function() {
-      this.xAxis = this.graph.getXAxis();
-      this.yAxis = this.graph.getYAxis();
-    },
-
-    getXAxis: function() {
-
-      if ( !this.xAxis ) {
-        this.autoAxes();
-      }
-
-      return this.xAxis;
-    },
-
-    getYAxis: function() {
-
-      if ( !this.yAxis ) {
-        this.autoAxes();
-      }
-
-      return this.yAxis;
-    },
-
-    getMinX: function() {
-      return this.minX;
-    },
-
-    getMaxX: function() {
-      return this.maxX;
-    },
-
-    getMinY: function() {
-      return this.minY;
-    },
-
-    getMaxY: function() {
-      return this.maxY;
-    },
-
-    // Layers
-
-    getLayer: function() {
-      return this._layer ||  1;
-    },
-
-    setLayer: function( layer ) {
-      this._layer = layer;
-    },
-
-    selectStyle: function() {
-
-    },
-
-    unselectStyle: function() {
-
-    },
-
-    resetTransforms: function() {
-      this.transforms = [];
-    },
-
-    addTransform: function( type, args ) {
-      this.transforms.push( {
-        type: type,
-        arguments: Array.isArray( args ) ? args : [ args ]
-      } );
+    if ( !this.maskDom ) {
+      return;
     }
 
-  }
+    var position = {
+      x: 'min',
+      y: 'min'
+    };
+    var position2 = {
+      x: 'max',
+      y: 'max'
+    };
 
-  return GraphShape;
+    position = this._getPosition( position );
+    position2 = this._getPosition( position2 );
+
+    this.maskDomWrapper.setAttribute( 'x', Math.min( position.x, position2.x ) );
+    this.maskDomWrapper.setAttribute( 'y', Math.min( position.y, position2.y ) );
+
+    this.maskDomWrapper.setAttribute( 'width', Math.abs( position2.x - position.x ) );
+    this.maskDomWrapper.setAttribute( 'height', Math.abs( position2.y - position.y ) );
+
+    for ( var i = 0; i < this._dom.attributes.length; i++ ) {
+      this.maskDom.setAttribute( this._dom.attributes[ i ].name, this._dom.attributes[ i ].value );
+    }
+
+    this.maskDom.setAttribute( 'fill', 'black' );
+
+    return this;
+  };
+
+  return Shape;
 
 } );

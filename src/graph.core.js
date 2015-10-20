@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, util, EventEmitter ) {
+define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphPosition, util, EventEmitter ) {
 
   /** 
    * Main class of jsGraph that creates a new graph.
@@ -567,6 +567,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
+     * @see Graph#setBottomAxis
+     * @see Graph#setTopAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getLeftAxis
+     * @see Graph#getYAxis
      */
     setLeftAxis: function( axis, index ) {
       index = index || 0;
@@ -578,6 +583,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
+     * @see Graph#setBottomAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setTopAxis
+     * @see Graph#getRightAxis
+     * @see Graph#getYAxis
      */
     setRightAxis: function( axis, index ) {
       index = index || 0;
@@ -589,6 +599,11 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
+     * @see Graph#setBottomAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getBottomAxis
+     * @see Graph#getXAxis
      */
     setTopAxis: function( axis, index ) {
       index = index || 0;
@@ -600,10 +615,80 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
      * @param {GraphAxis} axis - The axis instance to set
      * @param {Number} [ number=0 ] - The index of the axis
      * @memberof Graph.prototype
+     * @see Graph#setTopAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getTopAxis
+     * @see Graph#getXAxis
      */
     setBottomAxis: function( axis, num ) {
       num = num || 0;
       this.axis.bottom[ num ] = axis;
+    },
+
+    /**
+     * Determines if an x axis belongs to the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasXAxis: function( axis ) {
+      return this.hasTopAxis( axis ) ||  this.hasBottomAxis( axis );
+    },
+
+    /**
+     * Determines if an x axis belongs to the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasYAxis: function( axis ) {
+      return this.hasLeftAxis( axis ) ||  this.hasRightAxis( axis );
+    },
+
+    /**
+     * Determines if an x axis belongs to top axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasTopAxis: function( axis ) {
+      return this.hasAxis( axis, this.axis.top );
+    },
+
+    /**
+     * Determines if an x axis belongs to bottom axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasBottomAxis: function( axis ) {
+      return this.hasAxis( axis, this.axis.bottom );
+    },
+
+    /**
+     * Determines if a y axis belongs to left axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasLeftAxis: function( axis ) {
+      return this.hasAxis( axis, this.axis.left );
+    },
+
+    /**
+     * Determines if a y axis belongs to right axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     * @memberof Graph.prototype
+     */
+    hasRightAxis: function( axis ) {
+      return this.hasAxis( axis, this.axis.right );
+    },
+
+    /**
+     * Determines if an axis belongs to a list of axes
+     * @param {Axis} axis - The axis instance to check
+     * @param {Array} axisList - The list of axes to check
+     * @memberof Graph.prototype
+     * @private
+     */
+    hasRightAxis: function( axis, axisList ) {
+      return axisList.indexOf( axis ) > -1;
     },
 
     /**
@@ -1076,17 +1161,24 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       shape.init( this );
 
+      if ( shapeData.position ) {
+
+        for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
+          shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
+        }
+      }
+
       /* Setting shape properties */
       if ( shapeData.fillColor ) {
-        shape.prop( 'fillColor', shapeData.fillColor );
+        shape.setFillColor( shapeData.fillColor );
       }
 
       if ( shapeData.strokeColor ) {
-        shape.prop( 'strokeColor', shapeData.strokeColor );
+        shape.setStrokeColor( shapeData.strokeColor );
       }
 
       if ( shapeData.strokeWidth ) {
-        shape.prop( 'strokeWidth', shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
+        shape.setStrokeWidth( shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
       }
 
       if ( shapeData.layer ) {
@@ -1095,21 +1187,15 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
       if ( shapeData.label ) {
 
-        if ( !( shapeData.label instanceof Array ) ) {
-          shapeData.label = [ shapeData.label ];
-        }
-
         for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
 
-          shape.prop( 'labelPosition', shapeData.label[ i ].position, i );
-          shape.prop( 'labelColor', shapeData.label[ i ].color || 'black', i );
-          shape.prop( 'labelSize', shapeData.label[ i ].size, i );
-          shape.prop( 'labelAngle', shapeData.label[ i ].angle || 0, i );
-          shape.prop( 'labelBaseline', shapeData.label[ i ].baseline || 'no-change', i );
-          shape.prop( 'labelAnchor', shapeData.label[ i ].anchor ||  'start', i );
+          shape.setLabelPosition( shapeData.label[ i ].position, i );
+          shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
+          shape.setLabelSize( shapeData.label[ i ].size, i );
+          shape.setLabelAngle( shapeData.label[ i ].angle || 0, i );
+          shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
+          shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
         }
-
-        shape.setLabelNumber( l );
       }
 
       this.shapes.push( shape );
@@ -1480,223 +1566,6 @@ define( [ 'jquery', './graph.util', './dependencies/eventEmitter/EventEmitter' ]
 
     _removeSerie: function( serie ) {
       this.series.splice( this.series.indexOf( serie ), 1 );
-    },
-
-    getPosition: function( value, relTo, xAxis, yAxis, onSerie ) {
-
-      var parsed,
-        pos = {
-          x: false,
-          y: false
-        };
-
-      if ( !xAxis ) {
-        xAxis = this.getXAxis();
-      }
-
-      if ( !yAxis ) {
-        yAxis = this.getYAxis();
-      }
-
-      if ( !value ) {
-        return;
-      }
-
-      for ( var i in pos ) {
-
-        var axis = i == 'x' ? xAxis : yAxis;
-
-        if ( value[ i ] === undefined && ( ( value[ 'd' + i ] !== undefined && relTo === undefined ) || relTo === undefined ) ) {
-
-          if ( i == 'x' ) {
-
-            if ( value[ 'd' + i ] === undefined ) {
-              continue;
-            }
-
-            pos[ i ] = relTo ? relTo[ i ] : axis.getPos( 0 );
-
-          } else if ( value.x && onSerie ) {
-
-            var val;
-
-            if ( _parsePx( value.x ) !== false ) {
-              console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
-              pos[ i ] = 0;
-            } else {
-
-              var closest = onSerie.searchClosestValue( value.x );
-
-              if ( !closest ) {
-                console.warn( "Could not find y position for x = " + ( value.x ) + " on serie \"" + onSerie.getName() + "\". Returning 0 for y." );
-                pos[ i ] = 0;
-              } else {
-                pos[ i ] = onSerie.getY( closest.yMin );
-              }
-            }
-          }
-
-        } else if ( value[ i ] !== undefined ) {
-
-          pos[ i ] = this.getPx( value[ i ], axis );
-        }
-
-        if ( value[ 'd' + i ] !== undefined ) {
-
-          var def = ( value[ i ] !== undefined || relTo == undefined || relTo[ i ] == undefined ) ? pos[ i ] : ( this._getPositionPx( relTo[ i ], true, axis ) || 0 );
-
-          if ( i == 'y' && relTo && relTo.x !== undefined && relTo.y == undefined ) {
-
-            if ( !onSerie ) {
-              throw "Error. No serie exists. Cannot find y value";
-              return;
-            }
-
-            var closest = onSerie.searchClosestValue( relTo.x );
-            if ( closest ) {
-              def = onSerie.getY( closest.yMin );
-            }
-
-            //console.log( relTo.x, closest, onSerie.getY( closest.yMin ), def );
-          }
-
-          if ( ( parsed = _parsePx( value[ 'd' + i ] ) ) !== false ) { // dx in px => val + 10px
-
-            pos[ i ] = def + parsed; // return integer (will be interpreted as px)
-
-          } else if ( parsed = this._parsePercent( value[ 'd' + i ] ) ) {
-
-            pos[ i ] = def + this._getPositionPx( parsed, true, axis ); // returns xx%
-
-          } else if ( axis ) {
-
-            pos[ i ] = def + axis.getRelPx( value[ 'd' + i ] ); // px + unittopx
-
-          }
-        }
-      }
-
-      return pos;
-    },
-
-    _getPositionPx: function( value, x, axis ) {
-
-      var parsed;
-
-      if ( ( parsed = _parsePx( value ) ) !== false ) {
-        return parsed; // return integer (will be interpreted as px)
-      }
-
-      if ( ( parsed = this._parsePercent( value ) ) !== false ) {
-
-        return parsed / 100 * ( x ? this.graph.getDrawingWidth() : this.graph.getDrawingHeight() );
-
-      } else if ( axis ) {
-
-        return axis.getPos( value );
-      }
-    },
-
-    _parsePercent: function( percent ) {
-      if ( percent && percent.indexOf && percent.indexOf( '%' ) > -1 ) {
-        return percent;
-      }
-      return false;
-    },
-
-    getDeltaPx: function( value, axis ) {
-      var v;
-      if ( ( v = _parsePx( value ) ) !== false ) {
-        return ( v ) + "px";
-      } else {
-
-        return ( axis.getRelPx( value ) ) + "px";
-      }
-    },
-
-    deltaPosition: function( ref, delta, axis ) {
-
-      var refPx, deltaPx;
-
-      if ( ( refPx = _parsePx( ref ) ) !== false ) {
-
-        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          return ( refPx + deltaPx ) + "px";
-        } else {
-          return ( refPx + axis.getRelPx( delta ) ) + "px";
-        }
-      } else {
-
-        ref = this.getValPosition( ref, axis );
-
-        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-          return ( ref + axis.getRelVal( deltaPx ) );
-        } else {
-          return ( ref + delta );
-        }
-      }
-    },
-
-    getValPosition: function( rel, axis ) {
-
-      if ( rel == 'max' ) {
-        return axis.getMaxValue();
-      }
-
-      if ( rel == 'min' ) {
-        return axis.getMinValue();
-      }
-
-      if ( rel == 'min' ) {
-        return axis.getMinValue();
-      }
-
-      return rel;
-    },
-
-    getPx: function( value, axis, rel ) {
-
-      var parsed;
-
-      if ( ( parsed = _parsePx( value ) ) !== false ) {
-
-        return parsed; // return integer (will be interpreted as px)
-
-      } else if ( parsed = this._parsePercent( value ) ) {
-
-        return parsed; // returns xx%
-
-      } else if ( axis ) {
-
-        if ( value == "min" ) {
-
-          return axis.getMinPx();
-
-        } else if ( value == "max" ) {
-
-          return axis.getMaxPx();
-
-        } else if ( value == "maxGlobal" ) {
-
-          return axis.isY() ? this.getHeight() : this.getWidth();
-
-        } else if ( value == "minGlobal" ) {
-
-          return 0;
-
-        } else if ( rel ) {
-
-          return axis.getRelPx( value );
-        } else {
-
-          return axis.getPos( value );
-        }
-      }
-    },
-
-    getPxRel: function( value, axis ) {
-
-      return this.getPx( value, axis, true );
     },
 
     contextListen: function( target, menuElements, callback ) {

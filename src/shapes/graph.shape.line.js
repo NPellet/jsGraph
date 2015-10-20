@@ -18,8 +18,9 @@ define( [ './graph.shape' ], function( GraphShape ) {
       } );
     },
 
-    setPosition: function() {
-      var position = this._getPosition( this.getFromData( 'pos' ) );
+    applyPosition: function() {
+      var position = this.getPosition( 0 );
+      var position2 = this.getPosition( 2 );
 
       if ( !position || !position.x || !position.y ) {
         return;
@@ -28,32 +29,20 @@ define( [ './graph.shape' ], function( GraphShape ) {
       this.setDom( 'x2', position.x );
       this.setDom( 'y2', position.y );
 
+      this.setDom( 'y1', position2.y );
+      this.setDom( 'x1', position2.x );
+
+      this.currentPos2x = position2.x;
+      this.currentPos2y = position2.y;
+
       this.currentPos1x = position.x;
       this.currentPos1y = position.y;
 
       return true;
     },
 
-    setPosition2: function() {
-
-      var position = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
-
-      if ( !position.x || !position.y ) {
-        return;
-      }
-
-      this.setDom( 'y1', position.y );
-      this.setDom( 'x1', position.x );
-
-      this.currentPos2x = position.x;
-      this.currentPos2y = position.y;
-    },
-
     redrawImpl: function() {
-      this.setPosition();
-      this.setPosition2();
       this.setHandles();
-
     },
 
     getLinkingCoords: function() {

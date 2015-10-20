@@ -4,6 +4,7 @@
 define( [
 
     './graph.core',
+    './graph.position',
 
     './graph.axis',
     './graph.axis.x',
@@ -51,6 +52,8 @@ define( [
   function(
     Graph,
 
+    GraphPosition,
+
     _axis,
     GraphXAxis,
     GraphYAxis,
@@ -93,6 +96,8 @@ define( [
   ) {
 
     // Corrent naming is important here !
+
+    Graph.registerConstructor( "graph.position", GraphPosition );
 
     Graph.registerConstructor( "graph.axis.x", GraphXAxis );
     Graph.registerConstructor( "graph.axis.y", GraphYAxis );

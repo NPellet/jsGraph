@@ -14,7 +14,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       //this._dom.setAttribute( 'pointer-events', 'stroke' );
 
       this.nbHandles = 2;
-      this.createHandles( this.nbHandles, 'line', {
+      this._createHandles( this.nbHandles, 'line', {
         'stroke-width': '3',
         'stroke': 'transparent',
         'pointer-events': 'stroke',
