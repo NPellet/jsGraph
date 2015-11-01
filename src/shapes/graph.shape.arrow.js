@@ -7,8 +7,6 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    */
   var ArrowShape = function( graph ) {
 
-    this.setStrokeColor( 'black' );
-    this.setStrokeWidth( 1 );
   }
 
   ArrowShape.prototype = new GraphLine();
@@ -26,6 +24,9 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
+
+    this.setStrokeColor( 'black' );
+    this.setStrokeWidth( 1 );
 
   }
 

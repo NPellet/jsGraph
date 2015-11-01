@@ -2,7 +2,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphRect = function( graph, options ) {
 
-    this.nbHandles = 4;
+    //this.nbHandles = 4;
 
   }
 
@@ -11,16 +11,17 @@ define( [ './graph.shape' ], function( GraphShape ) {
     createDom: function() {
       var self = this;
       this._dom = document.createElementNS( this.graph.ns, 'rect' );
-
-      this._data.handles = this._data.handles ||  {
-        type: 'corners'
-      };
-
-      switch ( this._data.handles.type ) {
+      /*
+            this._data.handles = this._data.handles ||  {
+              type: 'corners'
+            };
+      */
+      var handles;
+      switch ( ( handles = this.getProp( 'handles' ) ) ) {
 
         case 'sides':
 
-          this._data.handles.sides = this._data.handles.sides || {
+          handles = handles || {
             top: true,
             bottom: true,
             left: true,
@@ -28,13 +29,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
           };
 
           var j = 0;
-          for ( var i in this._data.handles.sides ) {
+          for ( var i in handles ) {
             if ( this._data.handles.sides[ i ] ) {
               j++;
             }
           }
 
-          this.createHandles( j, 'g' ).map( function( g ) {
+          this._createHandles( j, 'g' ).map( function( g ) {
 
             var r = document.createElementNS( self.graph.ns, 'rect' );
             r.setAttribute( 'x', '-3' );
@@ -49,22 +50,21 @@ define( [ './graph.shape' ], function( GraphShape ) {
           } );
 
           var j = 1;
-          this.handles = {};
-          this.sides = [];
-          for ( var i in this._data.handles.sides ) {
+          //this.handles = {};
+          //this.sides = [];
+          /*for ( var i in handles.sides ) {
             if ( this._data.handles.sides[ i ] ) {
               this.handles[ i ] = this[ 'handle' + j ];
               this.sides[ j ] = i;
               j++;
             }
 
-          }
+          }*/
 
           break;
 
-        default:
         case 'corners':
-          var handles = this.createHandles( this.nbHandles, 'rect', {
+          this._createHandles( 4, 'rect', {
             transform: "translate(-3 -3)",
             width: 6,
             height: 6,
@@ -73,11 +73,11 @@ define( [ './graph.shape' ], function( GraphShape ) {
           } );
 
           if ( handles ) {
-            this.handle2.setAttribute( 'cursor', 'nesw-resize' );
-            this.handle4.setAttribute( 'cursor', 'nesw-resize' );
+            this.handles[ 2 ].setAttribute( 'cursor', 'nesw-resize' );
+            this.handles[ 4 ].setAttribute( 'cursor', 'nesw-resize' );
 
-            this.handle1.setAttribute( 'cursor', 'nwse-resize' );
-            this.handle3.setAttribute( 'cursor', 'nwse-resize' );
+            this.handles[ 1 ].setAttribute( 'cursor', 'nwse-resize' );
+            this.handles[ 3 ].setAttribute( 'cursor', 'nwse-resize' );
           }
 
           break;
@@ -101,61 +101,33 @@ define( [ './graph.shape' ], function( GraphShape ) {
       this.set( 'height', Math.abs( this.getYAxis().getMaxPx() - this.getYAxis().getMinPx() ) );
     },
 
-    setPosition: function() {
+    applyPosition: function() {
 
-      var width = this.getFromData( 'width' ),
-        height = this.getFromData( 'height' );
+      var pos = this.computePosition( 0 );
+      var pos2 = this.computePosition( 1 );
 
-      var pos = this._getPosition( this.getFromData( 'pos' ) ),
+      var x, y, width, height;
+
+      if ( pos.x < pos2.x ) {
         x = pos.x,
-        y = pos.y;
-
-      if ( width == undefined || height == undefined ) {
-
-        var position2 = this._getPosition( this.getFromData( 'pos2' ) );
-
-        if ( !position2 ) {
-          throw "Position 2 was undefined";
-          return;
-        }
-
-        width = position2.x - pos.x;
-        height = position2.y - pos.y;
-
+          width = pos2.x - pos.x;
       } else {
-        width = this.graph.getPxRel( width, this.getXAxis() );
-        height = this.graph.getPxRel( height, this.getYAxis() );
+        x = pos2.x,
+          width = pos.x - pos2.x;
       }
 
-      // At this stage, x and y are in px
-
-      x = pos.x,
-        y = pos.y;
+      if ( pos.y < pos2.y ) {
+        y = pos.y,
+          height = pos2.y - pos.y;
+      } else {
+        y = pos2.y,
+          height = pos.y - pos2.y;
+      }
 
       this.currentX = x;
       this.currentY = y;
       this.currentW = width;
       this.currentH = height;
-
-      this.valX = this.getXAxis().getVal( x );
-      this.valY = this.getYAxis().getVal( x );
-      this.valWidth = this.getXAxis().getRelVal( width );
-      this.valHeight = this.getYAxis().getRelVal( height );
-
-      this.minX = this.valX;
-      this.minY = this.valY;
-      this.maxX = this.valX + this.valWidth;
-      this.maxY = this.valY + this.valHeight;
-
-      if ( width < 0 ) {
-        x += width;
-        width *= -1;
-      }
-
-      if ( height < 0 ) {
-        y += height;
-        height *= -1;
-      }
 
       if ( !isNaN( x ) && !isNaN( y ) && x !== false && y !== false ) {
 
@@ -173,24 +145,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       return false;
     },
 
-    getLinkingCoords: function() {
-
-      return {
-        x: this.currentX + this.currentW / 2,
-        y: this.currentY + this.currentH / 2
-      };
-    },
-
     redrawImpl: function() {
-
-    },
-
-    handleCreateImpl: function() {
-      this.resize = true;
-      this.handleSelected = 3;
-    },
-
-    handleMouseDownImpl: function( e ) {
 
     },
 
@@ -503,28 +458,22 @@ this.handle1.setAttribute('x', this.currentX);
         case 'corners':
         default:
 
-          this.handle1.setAttribute( 'x', this.currentX );
-          this.handle1.setAttribute( 'y', this.currentY );
+          this.handles[ 1 ].setAttribute( 'x', this.currentX );
+          this.handles[ 1 ].setAttribute( 'y', this.currentY );
 
-          this.handle2.setAttribute( 'x', this.currentX + this.currentW );
-          this.handle2.setAttribute( 'y', this.currentY );
+          this.handles[ 2 ].setAttribute( 'x', this.currentX + this.currentW );
+          this.handles[ 2 ].setAttribute( 'y', this.currentY );
 
-          this.handle3.setAttribute( 'x', this.currentX + this.currentW );
-          this.handle3.setAttribute( 'y', this.currentY + this.currentH );
+          this.handles[ 3 ].setAttribute( 'x', this.currentX + this.currentW );
+          this.handles[ 3 ].setAttribute( 'y', this.currentY + this.currentH );
 
-          this.handle4.setAttribute( 'x', this.currentX );
-          this.handle4.setAttribute( 'y', this.currentY + this.currentH );
+          this.handles[ 4 ].setAttribute( 'x', this.currentX );
+          this.handles[ 4 ].setAttribute( 'y', this.currentY + this.currentH );
 
           break;
 
       }
 
-    },
-
-    selectStyle: function() {
-      this.setDom( 'stroke', 'red' );
-      this.setDom( 'stroke-width', '2' );
-      this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
     }
 
   } );

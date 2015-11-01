@@ -3,18 +3,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
   "use strict";
 
   /** 
-   * Line shape
+   * Represents a line that extends the Shape class
    * @class LineShape
-   * @static
+   * @augments Shape
+   * @see Graph#newShape
    */
   var LineShape = function( graph, options ) {
-
-    this.selectStyle = {
-      stroke: 'red'
-    };
-
-    this.setStrokeColor( 'black' );
-    this.setStrokeWidth( 1 );
 
   }
 
@@ -22,13 +16,25 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   /**
    * Creates the DOM
-   * @memberof Shape
+   * @memberof LineShape
    * @private
    * @return {Shape} The current shape
    */
   LineShape.prototype.createDom = function() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
+
+    this.setStrokeColor( 'black' );
+    this.setStrokeWidth( 1 );
+  };
+
+  /**
+   * Creates the handles
+   * @memberof LineShape
+   * @private
+   * @return {Shape} The current shape
+   */
+  LineShape.prototype.createHandles = function() {
 
     this._createHandles( 2, 'rect', {
       transform: "translate(-3 -3)",
@@ -38,19 +44,18 @@ define( [ './graph.shape' ], function( GraphShape ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-
-  };
+  }
 
   /**
    * Recalculates the positions and applies them
-   * @memberof Shape
+   * @memberof LineShape
    * @private
    * @return {Boolean} Whether the shape should be redrawn
    */
   LineShape.prototype.applyPosition = function() {
 
     var position = this.calculatePosition( 0 );
-    var position2 = this.calculatePosition( 1, 0 );
+    var position2 = this.calculatePosition( 1 );
 
     if ( !position || !position.x || !position.y ) {
       return;
@@ -73,7 +78,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   /**
    * Handles mouse move events
-   * @memberof Shape
+   * @memberof LineShape
    * @private
    */
   LineShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
@@ -84,17 +89,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     var pos = this.getPosition( 0 );
     var pos2 = this.getPosition( 1 );
-
-    if ( pos2.dx ) {
-
-      pos2.deltaPosition( 'x', pos2.dx, this.getXAxis() );
-      pos2.dx = false;
-    }
-
-    if ( pos2.dy ) {
-      pos2.deltaPosition( 'y', pos2.dy, this.getYAxis() );
-      pos2.dy = false;
-    }
 
     var posToChange;
     if ( this.handleSelected == 1 ) {
@@ -119,10 +113,22 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     if ( this.moving ) {
 
-      pos.deltaPosition( 'x', deltaX, this.getXAxis() );
-      pos.deltaPosition( 'y', deltaY, this.getYAxis() );
-      pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
-      pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos.x ) {
+        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+      if ( pos.y ) {
+        pos.deltaPosition( 'y', deltaY, this.getYAxis() );
+      }
+
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos2.x ) {
+        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+      if ( pos2.y ) {
+        pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
+      }
+
     }
 
     if ( this._data.forcedCoords ) {
@@ -150,6 +156,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
       }
     }
 
+    if ( this.rectEvent ) {
+      this.setEventReceptacle();
+    }
+
     this.redraw();
     this.changed();
     this.setHandles();
@@ -160,7 +170,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   /**
    * Sets the handle position
-   * @memberof Shape
+   * @memberof LineShape
    * @private
    */
   LineShape.prototype.setHandles = function() {
@@ -178,6 +188,32 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     this.handles[ 2 ].setAttribute( 'x', this.currentPos2x );
     this.handles[ 2 ].setAttribute( 'y', this.currentPos2y );
+  };
+
+  /**
+   * Creates an line receptacle with the coordinates of the line, but continuous and thicker
+   * @memberof LineShape
+   * @return {Shape} The current shape
+   */
+  LineShape.prototype.setEventReceptacle = function() {
+
+    if ( !this.currentPos1x ) {
+      return;
+    }
+
+    if ( !this.rectEvent ) {
+      this.rectEvent = document.createElementNS( this.graph.ns, 'line' );
+      this.rectEvent.setAttribute( 'pointer-events', 'stroke' );
+      this.rectEvent.setAttribute( 'stroke', 'transparent' );
+      this.rectEvent.jsGraphIsShape = this;
+      this.group.appendChild( this.rectEvent );
+    }
+
+    this.rectEvent.setAttribute( 'x1', this.currentPos1x );
+    this.rectEvent.setAttribute( 'y1', this.currentPos1y );
+    this.rectEvent.setAttribute( 'x2', this.currentPos2x );
+    this.rectEvent.setAttribute( 'y2', this.currentPos2y );
+    this.rectEvent.setAttribute( "stroke-width", this.getProp( "strokeWidth" ) + 2 );
   };
 
   return LineShape;
