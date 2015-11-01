@@ -157,8 +157,9 @@ makeGraph( "example-1" );
 line.draw();</code></pre><p><div id="example-2" class="jsgraph-example"></div></p>
 <script>
 
+( function() {
 
-var graph = makeGraph( "example-2" );
+var graph = makeGraph( 'example-2' );
 var line = graph.newShape( 'line', {
 
     selectable: true,
@@ -192,7 +193,56 @@ var line = graph.newShape( 'line', {
 
 line.draw();
 
+
+}) ();
+
 </script>
+
+
+<h2>Rectangles</h2><p>Rectangles with the type <code>rect</code> and only two positions (two opposite corners)</p>
+<p><div id="example-3" class="jsgraph-example"></div></p>
+<p><pre id="example-3-pos"></pre></p>
+<script>
+
+( function() {
+
+    var graph = makeGraph( "example-3" );
+    var rect = graph.newShape( 'rect', {
+
+        selectable: true,
+        handles: true,
+        resizable: true,
+        movable: true,
+
+        strokeWidth: 2,
+        strokeColor: "ForestGreen",
+        fill: 'GreenSnake',
+        fillOpacity: 0.2,
+
+        position: [
+            { x: 1950, y: 3000 },
+            { x: 1960, y: "50px" }
+        ]
+    });
+
+    graph.on("shapeChanged", function( shape ) {
+        updatePre( shape );
+
+    });
+
+    function updatePre( shape ) {
+        $("#example-3-pos").html( JSON.stringify( { position1: shape.getPosition( 0 ), position2: shape.getPosition( 1 ) }, false, "\t") );
+    }
+
+    updatePre( rect );
+    rect.draw();
+
+}) ();
+
+</script>
+
+<p>a</p>
+<h3>asd</h3><p>sdasd</p>
 </article>
 
 </section>

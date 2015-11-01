@@ -89,8 +89,9 @@ line.draw();
 <div id="example-2" class="jsgraph-example"></div>
 <script>
 
+( function() {
 
-var graph = makeGraph( "example-2" );
+var graph = makeGraph( 'example-2' );
 var line = graph.newShape( 'line', {
 	
 	selectable: true,
@@ -124,4 +125,60 @@ var line = graph.newShape( 'line', {
 
 line.draw();
 
+
+}) ();
+
 </script>
+
+
+## Rectangles
+
+Rectangles with the type ```rect``` and only two positions (two opposite corners)
+
+
+
+<div id="example-3" class="jsgraph-example"></div>
+<pre id="example-3-pos"></pre>
+<script>
+
+( function() {
+
+	var graph = makeGraph( "example-3" );
+	var rect = graph.newShape( 'rect', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
+
+		strokeWidth: 2,
+		strokeColor: "ForestGreen",
+		fill: 'GreenSnake',
+		fillOpacity: 0.2,
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		]
+	});
+
+	graph.on("shapeChanged", function( shape ) {
+		updatePre( shape );
+		
+	});
+
+	function updatePre( shape ) {
+		$("#example-3-pos").html( JSON.stringify( { position1: shape.getPosition( 0 ), position2: shape.getPosition( 1 ) }, false, "\t") );
+	}
+	
+	updatePre( rect );
+	rect.draw();
+
+}) ();
+
+</script>
+
+a
+
+### asd
+sdasd

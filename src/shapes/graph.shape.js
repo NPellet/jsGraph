@@ -1178,10 +1178,6 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype._createHandles = function( nb, type, attr, callbackEach ) {
 
-    if ( !this.hasHandles() ) {
-      return;
-    }
-
     if ( this.handles && this.handles.length > 0 ) {
       return;
     }
@@ -1232,7 +1228,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       } ).call( this, i );
 
     }
-    console.log( this.handles );
+
     return this.handles;
   };
 

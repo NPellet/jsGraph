@@ -1,4 +1,4 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   var GraphRect = function( graph, options ) {
 
@@ -11,26 +11,45 @@ define( [ './graph.shape' ], function( GraphShape ) {
     createDom: function() {
       var self = this;
       this._dom = document.createElementNS( this.graph.ns, 'rect' );
+
+    },
+
+    createHandles: function() {
+      if ( !this.hasHandles() ) {
+        return;
+      }
+
       /*
             this._data.handles = this._data.handles ||  {
               type: 'corners'
             };
       */
-      var handles;
-      switch ( ( handles = this.getProp( 'handles' ) ) ) {
+      var handles = this.getProp( 'handles' );
+
+      if ( typeof handles != "object" ) {
+        handles = {};
+      }
+
+      if ( !handles.type ) {
+        handles.type = "corners";
+      }
+
+      switch ( handles.type ) {
 
         case 'sides':
 
-          handles = handles || {
-            top: true,
-            bottom: true,
-            left: true,
-            right: true
-          };
+          util.extend( handles, {
+            sides: {
+              top: true,
+              bottom: true,
+              left: true,
+              right: true
+            }
+          } );
 
           var j = 0;
-          for ( var i in handles ) {
-            if ( this._data.handles.sides[ i ] ) {
+          for ( var i in handles.sides ) {
+            if ( handles.sides[ i ] ) {
               j++;
             }
           }
@@ -47,19 +66,18 @@ define( [ './graph.shape' ], function( GraphShape ) {
             r.setAttribute( 'cursor', 'pointer' );
 
             g.appendChild( r );
+
           } );
 
           var j = 1;
-          //this.handles = {};
-          //this.sides = [];
-          /*for ( var i in handles.sides ) {
-            if ( this._data.handles.sides[ i ] ) {
+
+          for ( var i in handles.sides ) {
+            if ( handles.sides[ i ] ) {
               this.handles[ i ] = this[ 'handle' + j ];
               this.sides[ j ] = i;
               j++;
             }
-
-          }*/
+          }
 
           break;
 
@@ -72,7 +90,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
             fill: "white"
           } );
 
-          if ( handles ) {
+          if ( this.handles ) {
             this.handles[ 2 ].setAttribute( 'cursor', 'nesw-resize' );
             this.handles[ 4 ].setAttribute( 'cursor', 'nesw-resize' );
 
@@ -84,21 +102,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       }
 
-    },
-
-    setWidthPx: function( px ) {
-      this.set( 'width', px );
-    },
-    setHeightPx: function( px ) {
-      this.set( 'height', px );
-    },
-    setFullWidth: function() {
-      this.set( 'x', Math.min( this.getXAxis().getMinPx(), this.getXAxis().getMaxPx() ) );
-      this.set( 'width', Math.abs( this.getXAxis().getMaxPx() - this.getXAxis().getMinPx() ) );
-    },
-    setFullHeight: function() {
-      this.set( 'y', Math.min( this.getYAxis().getMinPx(), this.getYAxis().getMaxPx() ) );
-      this.set( 'height', Math.abs( this.getYAxis().getMaxPx() - this.getYAxis().getMinPx() ) );
     },
 
     applyPosition: function() {
@@ -145,210 +148,35 @@ define( [ './graph.shape' ], function( GraphShape ) {
       return false;
     },
 
-    redrawImpl: function() {
-
-    },
-
-    handleMouseUpImpl: function() {
-
-      var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
-
-      /*	if( pos2.y < pos.y ) {
-				var y = pos.y;
-				pos.y = pos2.y;
-				pos2.y = y;
-			}
-		*/
-      this.triggerChange();
-    },
-
     handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+
+      var handles = this.getProp( 'handles' );
 
       if ( !this.moving && !this.handleSelected ) {
         return;
       }
 
-      var w = this.getFromData( 'width' );
-      var h = this.getFromData( 'height' );
-      var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
+      var pos = this.getPosition( 0 );
+      var pos2 = this.getPosition( 1 );
 
-      if ( pos2.dx ) {
+      var invX = this.getXAxis().isFlipped(),
+        invY = this.getYAxis().isFlipped(),
+        posX = pos.x,
+        posY = pos.y,
+        pos2X = pos2.x,
+        pos2Y = pos2.y
 
-        pos2.x = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
-        pos2.dx = false;
-      }
+      if ( this.moving ) {
 
-      if ( pos2.dy ) {
-        pos2.y = this.graph.deltaPosition( pos2.x ||  pos.x, pos2.dx, this.getXAxis() );
-        pos2.dy = false;
-      }
+        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+        pos.deltaPosition( 'y', deltaY, this.getYAxis() );
 
-      if ( w !== undefined && h !== undefined ) {
-
-        if ( this.moving ) {
-
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-
-          this.setData( 'pos', pos );
-          this.setPosition();
-          return;
-        }
-
-        switch ( this._data.handles.type ) {
-
-          /*
-this.handle1.setAttribute('x', this.currentX);
-					this.handle1.setAttribute('y', this.currentY + this.currentH / 2);
-
-					this.handle2.setAttribute('x', this.currentX + this.currentW );
-					this.handle2.setAttribute('y', this.currentY + this.currentH / 2);
-
-					this.handle3.setAttribute('x', this.currentX + this.currentW / 2);
-					this.handle3.setAttribute('y', this.currentY);
-
-					this.handle4.setAttribute('x', this.currentX + this.currentH / 2);
-					this.handle4.setAttribute('y', this.currentY + this.currentH);
-					*/
-          case 'sides':
-
-            switch ( this.sides[ this.handleSelected ] ) {
-
-              case 'left':
-                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-                w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
-                break;
-
-              case 'right':
-                w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
-                break;
-
-              case 'top':
-                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-                h = this.graph.deltaPosition( h, -deltaX, this.getYAxis() );
-                break;
-
-              case 'bottom':
-                h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
-                break;
-
-            }
-
-            break;
-
-          case 'corners':
-          default:
-
-            if ( this.handleSelected == 1 ) {
-
-              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-
-              w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
-              h = this.graph.deltaPosition( h, -deltaY, this.getYAxis() );
-
-            }
-
-            if ( this.handleSelected == 2 ) {
-
-              pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-
-              w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
-              h = this.graph.deltaPosition( h, -deltaY, this.getYAxis() );
-
-            }
-
-            if ( this.handleSelected == 3 ) {
-
-              w = this.graph.deltaPosition( w, deltaX, this.getXAxis() );
-              h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
-
-            }
-
-            if ( this.handleSelected == 4 ) {
-
-              pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-
-              w = this.graph.deltaPosition( w, -deltaX, this.getXAxis() );
-              h = this.graph.deltaPosition( h, deltaY, this.getYAxis() );
-            }
-            break;
-        }
-
-        var wpx = this.graph.getPxRel( w, this.getXAxis() );
-        var hpx = this.graph.getPxRel( h, this.getYAxis() );
-        /*
-
-				if( wpx < 0 ) {
-					
-					pos.x = this.graph.deltaPosition( pos.x, w );
-					w = - w;	
-
-					switch( this.options.handles.type ) {
-
-						case 'corners':
-							if( this.handleSelected == 1 ) this.handleSelected = 2;
-							else if( this.handleSelected == 2 ) this.handleSelected = 1;
-							else if( this.handleSelected == 3 ) this.handleSelected = 4;
-							else if( this.handleSelected == 4 ) this.handleSelected = 3;	
-						break;
-					}
-					
-				}
-
-
-				if( hpx < 0 ) {
-					
-					pos.y = this.graph.deltaPosition( pos.y, h );
-					h = - h;
-				
-
-
-					switch( this.options.handles.type ) {
-
-
-						case 'corners':
-							if( this.handleSelected == 1 ) this.handleSelected = 4;
-							else if( this.handleSelected == 2 ) this.handleSelected = 3;
-							else if( this.handleSelected == 3 ) this.handleSelected = 2;
-							else if( this.handleSelected == 4 ) this.handleSelected = 1;	
-						break;
-					}
-
-					
-				}*/
-
-        this.setData( 'width', w );
-        this.setData( 'height', h );
+        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+        pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
 
       } else {
 
-        var invX = this.getXAxis().isFlipped(),
-          invY = this.getYAxis().isFlipped(),
-          posX = pos.x,
-          posY = pos.y,
-          pos2X = pos2.x,
-          pos2Y = pos2.y
-
-        if ( this.moving ) {
-
-          pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-          pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-
-          pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
-          pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
-
-          this.setData( 'pos', pos );
-          this.setData( 'pos2', pos2 );
-          this.setPosition();
-
-          return;
-
-        }
-
-        switch ( this._data.handles.type ) {
+        switch ( handles.type ) {
 
           case 'sides':
             // Do nothing for now
@@ -356,19 +184,19 @@ this.handle1.setAttribute('x', this.currentX);
             switch ( this.sides[ this.handleSelected ] ) {
 
               case 'left':
-                pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+                pos.deltaPosition( 'x', deltaX, this.getXAxis() );
                 break;
 
               case 'right':
-                pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
+                pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
                 break;
 
               case 'top':
-                pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+                pos.deltaPosition( 'y', deltaY, this.getYAxis() );
                 break;
 
               case 'bottom':
-                pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
+                pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
                 break;
 
             }
@@ -380,42 +208,36 @@ this.handle1.setAttribute('x', this.currentX);
 
             if ( this.handleSelected == 1 ) {
 
-              posX = this.graph.deltaPosition( posX, deltaX, this.getXAxis() );
-              posY = this.graph.deltaPosition( posY, deltaY, this.getYAxis() );
+              pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+              pos.deltaPosition( 'y', deltaY, this.getYAxis() );
 
             } else if ( this.handleSelected == 2 ) {
 
-              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.getXAxis() );
-              posY = this.graph.deltaPosition( posY, deltaY, this.getYAxis() );
+              pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+              pos.deltaPosition( 'y', deltaY, this.getYAxis() );
 
             } else if ( this.handleSelected == 3 ) {
 
-              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.getYAxis() );
-              pos2X = this.graph.deltaPosition( pos2X, deltaX, this.getXAxis() );
+              pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
+              pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
 
             } else if ( this.handleSelected == 4 ) {
 
-              posX = this.graph.deltaPosition( posX, deltaX, this.getXAxis() );
-              pos2Y = this.graph.deltaPosition( pos2Y, deltaY, this.getYAxis() );
+              pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+              pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
 
             }
-
-            pos2.x = pos2X;
-            pos2.y = pos2Y;
-
-            pos.x = posX;
-            pos.y = posY;
 
             break;
 
         }
-
-        this.setData( 'pos2', pos2 );
       }
 
-      this.setData( 'pos', pos );
+      this.redraw();
+      this.changed();
+      this.setHandles();
 
-      this.setPosition();
+      return true;
 
     },
 
@@ -429,11 +251,12 @@ this.handle1.setAttribute('x', this.currentX);
         return;
       }
 
-      if ( this.currentX == undefined ) {
-        return;
-      }
+      var pos = this.computePosition( 0 );
+      var pos2 = this.computePosition( 1 );
 
-      switch ( this._data.handles.type ) {
+      var handles = this.getProp( 'handles' );
+
+      switch ( handles.type ) {
 
         case 'sides':
 
@@ -458,17 +281,17 @@ this.handle1.setAttribute('x', this.currentX);
         case 'corners':
         default:
 
-          this.handles[ 1 ].setAttribute( 'x', this.currentX );
-          this.handles[ 1 ].setAttribute( 'y', this.currentY );
+          this.handles[ 1 ].setAttribute( 'x', pos.x );
+          this.handles[ 1 ].setAttribute( 'y', pos.y );
 
-          this.handles[ 2 ].setAttribute( 'x', this.currentX + this.currentW );
-          this.handles[ 2 ].setAttribute( 'y', this.currentY );
+          this.handles[ 2 ].setAttribute( 'x', pos2.x );
+          this.handles[ 2 ].setAttribute( 'y', pos.y );
 
-          this.handles[ 3 ].setAttribute( 'x', this.currentX + this.currentW );
-          this.handles[ 3 ].setAttribute( 'y', this.currentY + this.currentH );
+          this.handles[ 3 ].setAttribute( 'x', pos2.x );
+          this.handles[ 3 ].setAttribute( 'y', pos2.y );
 
-          this.handles[ 4 ].setAttribute( 'x', this.currentX );
-          this.handles[ 4 ].setAttribute( 'y', this.currentY + this.currentH );
+          this.handles[ 4 ].setAttribute( 'x', pos.x );
+          this.handles[ 4 ].setAttribute( 'y', pos2.y );
 
           break;
 
