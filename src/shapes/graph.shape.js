@@ -552,6 +552,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.setAttributes = function( attributes ) {
     this.setProp( "attributes", shapeData.attributes );
+    return this;
   }
 
   /**
@@ -566,6 +567,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       type: type,
       arguments: Array.isArray( args ) ? args : [ args ]
     } );
+    return this;
   }
 
   /**
@@ -599,6 +601,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.displayLabel = function( index ) {
     this.setProp( 'labelVisible', true, index || 0 );
+    return this;
   }
 
   /**
@@ -609,6 +612,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.hideLabel = function( index ) {
     this.setProp( 'labelVisible', false, index || 0 );
+    return this;
   }
 
   /**
@@ -644,6 +648,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.setLabelPosition = function( position, index ) {
     this.setProp( 'labelPosition', position, index || 0 );
+    return this;
   };
 
   /**
@@ -655,6 +660,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.setLabelAngle = function( angle, index ) {
     this.setProp( 'labelAngle', angle, index || 0 );
+    return this;
   };
 
   /**
@@ -666,6 +672,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.setLabelBaseline = function( baseline, index ) {
     this.setProp( 'labelBaseline', baseline, index || 0 );
+    return this;
   };
 
   /**
@@ -677,6 +684,19 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.setLabelAnchor = function( anchor, index ) {
     this.setProp( 'labelAnchor', anchor, index || 0 );
+    return this;
+  };
+
+  /**
+   * Sets the anchoring of the label. 
+   * @memberof Shape
+   * @param {String} size - The font size in px
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelSize = function( size, index ) {
+    this.setProp( 'labelSize', size, index || 0 );
+    return this;
   };
 
   /**
@@ -929,6 +949,9 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     /** Sets the color */
     this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) ||  'black' );
 
+    /** Sets the color */
+    this._labels[ labelIndex ].setAttribute( "font-size", this.getProp( 'labelSize', labelIndex ) + "px" ||  "12px" );
+
     /** Sets the anchor */
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
@@ -1155,7 +1178,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype._createHandles = function( nb, type, attr, callbackEach ) {
 
-    if ( this.hasHandles() ) {
+    if ( !this.hasHandles() ) {
       return;
     }
 
@@ -1163,8 +1186,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       return;
     }
 
-    var self = this,
-      handles = [];
+    var self = this;
 
     for ( var i = 1, l = nb; i <= l; i++ ) {
 
@@ -1210,7 +1232,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       } ).call( this, i );
 
     }
-
+    console.log( this.handles );
     return this.handles;
   };
 

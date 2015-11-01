@@ -1222,10 +1222,15 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shape.setProp( "highlightOnMouseOver", true );
       }
 
+      if ( shapeData.labels && !shapeData.label ) {
+        shapeData.label = shapeData.labels;
+      }
+
       if ( shapeData.label ) {
 
         for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
 
+          shape.setLabelText( shapeData.label[ i ].text, i );
           shape.setLabelPosition( shapeData.label[ i ].position, i );
           shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
           shape.setLabelSize( shapeData.label[ i ].size, i );

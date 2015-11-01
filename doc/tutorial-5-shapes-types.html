@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>jsGraph Class: PluginDrag</title>
+	<title>jsGraph Types of shapes</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -64,154 +64,138 @@
 	<div class="row">
 
 		
-			<div class="col-md-3">
-				<div id="toc" class="col-md-3"></div>
-			</div>
-		
 
 
 		
-		<div class="col-md-9">
+		<div class="col-md-12">
 		
 			<div id="main">
-	    		<h1 class="page-title">Class: PluginDrag</h1>
-				
-
-	<!--<h1 class="page-title">Class: PluginDrag</h1>-->
-<section>
+	    		<h1 class="page-title">Types of shapes</h1>
+				<section class="tutorial-section">
 
 <header>
     
-        <h2>
-        PluginDrag
-        </h2>
-        
+
     
 </header>
 
-
 <article>
-    <div class="container-overview">
-    
-        
-<dt>
-    <h4 class="name" id="PluginDrag"><span class="type-signature"></span>new <span class='mainname'>PluginDrag</span><span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Constructor for the drag plugin. Do not use this constructor directly.</p>
-    </div>
-    
+    <script src="../dist/jquery.min.js"></script>
+<script src="../dist/jsgraph.js"></script>
 
-    
+<script>
 
-    
-    
-    
-    
-    
-    
-<dl class="details">
-	
+</script>
 
-	
+<p>In the previous tutorial (<a href="tutorial-4-shapes.html">Handling shapes (basic)</a>) we have shown the basics of shape creation, styling and modifications. Here, we simply showcase the different provided with jsGraph with their specificities.
+Let us consider the following graph as a basic:</p>
+<pre class="prettyprint source"><code>var g = new Graph(&quot;example-1&quot;) // Creates a new graph
+g.resize( 400, 300 ); // Resizes the graph
+var s = g.newSerie(&quot;employment_nb&quot;).setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+    .autoAxis()
+    .setLineColor('purple')
+    .setLineWidth( 2 );
 
-	
+g.setTitle(&quot;Number of employed people in Switzerland (yearly average)&quot;);
+g.getXAxis().setLabel('Year').gridsOff();
+g.getYAxis().setLabel(&quot;Number of people (in thousands)&quot;).secondaryGridOff();
+g.draw();</code></pre><p><div id="example-1" class="jsgraph-example"></div></p>
+<script>
 
-	
+function makeGraph( dom ) {
 
-    
+    var g = new Graph( dom ) // Creates a new graph
+    g.resize( 400, 300 ); // Resizes the graph
+    var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+        .autoAxis()
+        .setLineColor('purple')
+        .setLineWidth( 2 );
 
-    
+    g.setTitle("Number of employed people in Switzerland (yearly average)");
+    g.getXAxis().setLabel('Year').gridsOff();
+    g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+    g.draw();
 
-    
-    <h5 class="implements">Implements:</h5>
-    <p class="implements"><ul>
-        
-            <li><a href="Plugin.html">Plugin</a></li>
-        
-    </ul></p>
-    
+    return g;
+}
 
-    
 
-	
-
-	
-
-	
-
-	
-
-	
+makeGraph( "example-1" );
+</script>
 
 
 
-	
-	<h5 class="tag-source">Source:</h5>
-	<p class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-7388">line 7388</a>
-			</li>
-		</ul>
-	</p>
-	
+<h2>Lines</h2><p>The basic line with the type <code>line</code> and only two positions (the start and the end of the line)</p>
+<pre class="prettyprint source"><code>var line = graph.newShape( 'line', {
 
-	
+    selectable: true,
+    handles: true,
+    resizable: true,
+    movable: true,
 
-	
+    position: [
+        { x: 1950, y: 3000 },
+        { x: 1960, y: &quot;50px&quot; }
+    ],
 
-	
-</dl>
+    labels: [
+        {
+            text: &quot;Shape label&quot;,
+            color: &quot;braun&quot;,
+            size: 2,
+            angle: 10,
+            baseline: &quot;hanging&quot;,
+            anchor: &quot;end&quot;,
+            position: {
+                x: 1950,
+                y: 3200
+            }
+        }
+    ]
+});
 
-    
-    
+line.draw();</code></pre><p><div id="example-2" class="jsgraph-example"></div></p>
+<script>
 
-    
 
-    
+var graph = makeGraph( "example-2" );
+var line = graph.newShape( 'line', {
 
-    
-    
-    
-    
-    
-    
-    
-</dd>
+    selectable: true,
+    handles: true,
+    resizable: true,
+    movable: true,
 
-    
-    </div>
+    strokeWidth: 3,
+    strokeColor: "ForestGreen",
 
-    
+    position: [
+        { x: 1950, y: 3000 },
+        { x: 1960, y: "50px" }
+    ],
 
-    
+    labels: [
+        {
+            text: "Shape label",
+            color: "ForestGreen",
+            size: 12,
+            angle: 10,
+            baseline: "hanging",
+            anchor: "end",
+            position: {
+                x: 1950,
+                y: 3200
+            }
+        }
+    ]
+});
 
-    
+line.draw();
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
+</script>
 </article>
 
 </section>
-
-
-
 
 			</div>
 		</div>

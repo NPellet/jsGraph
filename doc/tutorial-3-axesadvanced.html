@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>jsGraph Advanced axes techniques</title>
+	<title>jsGraph Axes unit and scientific scaling</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -41,7 +41,7 @@
 			<li class="dropdown">
 				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Advanced axes techniques</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li>
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li>
 				</ul>
 			</li>
 			
@@ -70,7 +70,7 @@
 		<div class="col-md-12">
 		
 			<div id="main">
-	    		<h1 class="page-title">Advanced axes techniques</h1>
+	    		<h1 class="page-title">Axes unit and scientific scaling</h1>
 				<section class="tutorial-section">
 
 <header>
@@ -206,29 +206,17 @@ g.draw();
 <script>
     var serie1 = [0, 0.00000001, 1, 0.00000002 ];
 </script>
-## Values smaller than 0
 
-Of course it also works for very small values (here the "n" stands for "nano")
-
-Let us use another serie:
-
-```
-var serie2 = [0, 0.00000001, 1, 0.00000002 ];
-```
-
-And use the first example again
-
-```
-g.getLeftAxis().setLabel("Distance");
-g.getLeftAxis().setUnit("m");
+<h2>Values smaller than 1</h2><p>Of course it also works for very small values (here the &quot;n&quot; stands for &quot;nano&quot;)</p>
+<p>Let us use another serie:</p>
+<pre class="prettyprint source"><code>var serie2 = [0, 0.00000001, 1, 0.00000002 ];</code></pre><p>And use the first example again</p>
+<pre class="prettyprint source"><code>g.getLeftAxis().setLabel(&quot;Distance&quot;);
+g.getLeftAxis().setUnit(&quot;m&quot;);
 
 g.getLeftAxis().setScientific( true ); // Turn scientific mode on
 g.getLeftAxis().setUnitDecade( true ); // Ask for unit scaling
 
-g.draw();
-```
-
-<div id="example-4" class="jsgraph-example"></div>
+g.draw();</code></pre><p><div id="example-4" class="jsgraph-example"></div></p>
 <script>
 
 

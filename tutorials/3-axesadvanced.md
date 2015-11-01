@@ -164,7 +164,8 @@ g.draw();
 <script>
 	var serie1 = [0, 0.00000001, 1, 0.00000002 ];
 </script>
-## Values smaller than 0
+
+## Values smaller than 1
 
 Of course it also works for very small values (here the "n" stands for "nano")
 

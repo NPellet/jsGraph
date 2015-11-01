@@ -7,11 +7,16 @@
          "title": "Adapt axes"
     },
     "3-axesadvanced": {
-         "title": "Advanced axes techniques"
+         "title": "Axes unit and scientific scaling"
     },
 
 
     "4-shapes": {
          "title": "Handling shapes (basic)"
+    },
+
+
+    "5-shapes-types": {
+         "title": "Types of shapes"
     }
  }

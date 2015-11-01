@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-01T18:26Z
+ * Date: 2015-11-01T21:23Z
  */
 
 ( function( global, factory ) {
@@ -2204,10 +2204,15 @@
             shape.setProp( "highlightOnMouseOver", true );
           }
 
+          if ( shapeData.labels && !shapeData.label ) {
+            shapeData.label = shapeData.labels;
+          }
+
           if ( shapeData.label ) {
 
             for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
 
+              shape.setLabelText( shapeData.label[ i ].text, i );
               shape.setLabelPosition( shapeData.label[ i ].position, i );
               shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
               shape.setLabelSize( shapeData.label[ i ].size, i );
@@ -13644,6 +13649,7 @@
        */
       Shape.prototype.setAttributes = function( attributes ) {
         this.setProp( "attributes", shapeData.attributes );
+        return this;
       }
 
       /**
@@ -13658,6 +13664,7 @@
           type: type,
           arguments: Array.isArray( args ) ? args : [ args ]
         } );
+        return this;
       }
 
       /**
@@ -13691,6 +13698,7 @@
        */
       Shape.prototype.displayLabel = function( index ) {
         this.setProp( 'labelVisible', true, index || 0 );
+        return this;
       }
 
       /**
@@ -13701,6 +13709,7 @@
        */
       Shape.prototype.hideLabel = function( index ) {
         this.setProp( 'labelVisible', false, index || 0 );
+        return this;
       }
 
       /**
@@ -13736,6 +13745,7 @@
        */
       Shape.prototype.setLabelPosition = function( position, index ) {
         this.setProp( 'labelPosition', position, index || 0 );
+        return this;
       };
 
       /**
@@ -13747,6 +13757,7 @@
        */
       Shape.prototype.setLabelAngle = function( angle, index ) {
         this.setProp( 'labelAngle', angle, index || 0 );
+        return this;
       };
 
       /**
@@ -13758,6 +13769,7 @@
        */
       Shape.prototype.setLabelBaseline = function( baseline, index ) {
         this.setProp( 'labelBaseline', baseline, index || 0 );
+        return this;
       };
 
       /**
@@ -13769,6 +13781,19 @@
        */
       Shape.prototype.setLabelAnchor = function( anchor, index ) {
         this.setProp( 'labelAnchor', anchor, index || 0 );
+        return this;
+      };
+
+      /**
+       * Sets the anchoring of the label. 
+       * @memberof Shape
+       * @param {String} size - The font size in px
+       * @param {Number} [ index = 0 ] - The index of the label
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.setLabelSize = function( size, index ) {
+        this.setProp( 'labelSize', size, index || 0 );
+        return this;
       };
 
       /**
@@ -14021,6 +14046,9 @@
         /** Sets the color */
         this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) || 'black' );
 
+        /** Sets the color */
+        this._labels[ labelIndex ].setAttribute( "font-size", this.getProp( 'labelSize', labelIndex ) + "px" || "12px" );
+
         /** Sets the anchor */
         this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
@@ -14247,7 +14275,7 @@
        */
       Shape.prototype._createHandles = function( nb, type, attr, callbackEach ) {
 
-        if ( this.hasHandles() ) {
+        if ( !this.hasHandles() ) {
           return;
         }
 
@@ -14255,8 +14283,7 @@
           return;
         }
 
-        var self = this,
-          handles = [];
+        var self = this;
 
         for ( var i = 1, l = nb; i <= l; i++ ) {
 
@@ -14302,7 +14329,7 @@
           } ).call( this, i );
 
         }
-
+        console.log( this.handles );
         return this.handles;
       };
 
@@ -15329,9 +15356,9 @@
       LineShape.prototype.setEventReceptacle = function() {
 
         if ( !this.currentPos1x ) {
-          console.trace();
           return;
         }
+
         if ( !this.rectEvent ) {
           this.rectEvent = document.createElementNS( this.graph.ns, 'line' );
           this.rectEvent.setAttribute( 'pointer-events', 'stroke' );
