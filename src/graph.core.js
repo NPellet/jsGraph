@@ -1174,6 +1174,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shape.setFillColor( shapeData.fillColor );
       }
 
+      if ( shapeData.fillOpacity ) {
+        shape.setFillOpacity( shapeData.fillOpacity );
+      }
+
       if ( shapeData.strokeColor ) {
         shape.setStrokeColor( shapeData.strokeColor );
       }
@@ -1207,7 +1211,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
 
       if ( shapeData.handles ) {
-        shape.setProp( 'handles', true );
+        shape.setProp( 'handles', shapeData.handles );
       }
 
       if ( shapeData.selectOnMouseDown ) {
@@ -1230,6 +1234,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
           shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
         }
       }
+
+      shape.createHandles();
 
       this.shapes.push( shape );
 
@@ -1395,6 +1401,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         this.layers[ layer ] = [];
 
         this.layers[ layer ][ 0 ] = document.createElementNS( this.ns, 'g' );
+        this.layers[ layer ][ 0 ].setAttribute( 'data-layer', layer );
         this.layers[ layer ][ 1 ] = document.createElementNS( this.ns, 'g' );
         this.layers[ layer ][ 2 ] = document.createElementNS( this.ns, 'g' );
 
@@ -1774,7 +1781,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       var pathArrow = document.createElementNS( this.ns, 'path' );
       pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
-      pathArrow.setAttribute( 'fill', 'context-stroke' );
+      //pathArrow.setAttribute( 'fill', 'context-stroke' );
       this.markerArrow.appendChild( pathArrow );
 
       this.defs.appendChild( this.markerArrow );
