@@ -687,7 +687,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @memberof Graph.prototype
      * @private
      */
-    hasRightAxis: function( axis, axisList ) {
+    hasAxis: function( axis, axisList ) {
       return axisList.indexOf( axis ) > -1;
     },
 
@@ -1068,7 +1068,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     },
 
     /**
-     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. Position of the shape can then be relative to the same axes as the serie.
+     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
      * @param {Serie} serie - The serie containing the shapes
      * @returns {Shape[]} An array containing a list of shapes associated to the serie
      * @memberof Graph.prototype
@@ -1136,6 +1136,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shapeType = shapeData.type;
       }
 
+      shapeData = shapeData || {};
       shapeData._id = util.guid();
 
       var constructor;
@@ -1185,6 +1186,38 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shape.setLayer( shapeData.layer );
       }
 
+      if ( shapeData.locked ) {
+        shape.lock();
+      }
+
+      if ( shapeData.movable ) {
+        shape.movable();
+      }
+
+      if ( shapeData.selectable ) {
+        shape.selectable();
+      }
+
+      if ( shapeData.resizable ) {
+        shape.resizable();
+      }
+
+      if ( shapeData.attributes ) {
+        shape.setProp( "attributes", shapeData.attributes );
+      }
+
+      if ( shapeData.handles ) {
+        shape.setProp( 'handles', true );
+      }
+
+      if ( shapeData.selectOnMouseDown ) {
+        shape.setProp( "selectOnMouseDown", true );
+      }
+
+      if ( shapeData.highlightOnMouseOver ) {
+        shape.setProp( "highlightOnMouseOver", true );
+      }
+
       if ( shapeData.label ) {
 
         for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
@@ -1205,6 +1238,18 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
 
       return shape;
+    },
+
+    /**
+     * Creates a new position. Arguments are passed to the position constructor
+     * @param {...*} var_args
+     * @memberof Graph.prototype
+     * @see Position
+     */
+    newPosition: function( var_args ) {
+
+      Array.prototype.unshift.call( arguments, null );
+      return new( Function.prototype.bind.apply( GraphPosition, arguments ) );
     },
 
     /**
@@ -1259,12 +1304,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         this.emit( "beforeShapeSelect", shape );
       }
 
-      if ( this.cancelSelectShape ) {
-        this.cancelSelectShape = false;
+      if ( this.prevent( false ) ) {
         return;
       }
-
-      this.cancelSelectShape = false;
 
       if ( this.selectedShapes.length > 0 && this.options.uniqueShapeSelection )  { // Only one selected shape at the time
 
@@ -1391,6 +1433,15 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     elementMoving: function( movingElement ) {
       this.bypassHandleMouse = movingElement;
+    },
+
+    stopElementMoving: function( element ) {
+
+      if ( element && element == this.bypassHandleMouse ) {
+        this.bypassHandleMouse = false;
+      } else if ( !element ) {
+        this.bypassHandleMouse = false;
+      }
     },
 
     _makeClosingLines: function() {
@@ -1579,6 +1630,12 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     lockShapes: function() {
       this.shapesLocked = true;
+
+      // Removes the current actions of the shapes
+      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+        this.shapes[ i ].moving = false;
+        this.shapes[ i ].resizing = false;
+      }
     },
 
     unlockShapes: function() {
@@ -1764,13 +1821,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     return serie;
   };
 
-  function _parsePx( px ) {
-    if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
-      return parseInt( px.replace( 'px', '' ) );
-    }
-    return false;
-  };
-
   function refreshDrawingZone( graph ) {
 
     var i, j, l, xy, min, max, axis;
@@ -1886,11 +1936,15 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     graph._dom.addEventListener( 'keydown', function( e ) {
 
       // Not sure this has to be prevented
-      //e.preventDefault();
-      //e.stopPropagation();
 
-      if ( e.keyCode == 8 && self.selectedShape ) {
-        self.selectedShape.kill();
+      if ( e.keyCode == 8 && self.selectedShapes ) {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        self.selectedShapes.map( function( shape ) {
+          shape.kill();
+        } );
       }
 
     } );
@@ -2099,6 +2153,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     // Not on a shape
 
     if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
+      console.log( "CLICKING" );
       graph.unselectShapes();
     }
   }
@@ -2245,6 +2300,21 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
   }
 
   /**
+   * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+   * @name Graph.registerConstructor
+   * @param {String} name - The name of the constructor
+   * @see Graph#newSerie
+   */
+  Graph.registerConstructor = function( name, constructor ) {
+
+    if ( Graph._constructors[ name ] ) {
+      return util.throwError( "Constructor " + constructor + " already exists." );
+    }
+
+    Graph._constructors[ name ] = constructor;
+  };
+
+  /**
    * Returns a registered constructor
    * @memberof Graph.prototype
    * @param {String} constructorName - The constructor name to look for
@@ -2253,30 +2323,20 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
    * @see Graph.registerConstructor
    * @name Graph#getConstructor
    */
-  Graph.prototype.getConstructor = function( constructorName ) {
-    var constructor = Graph.prototype._constructors[ constructorName ];
+  Graph.getConstructor = function( constructorName ) {
+    var constructor = Graph._constructors[ constructorName ];
     if ( !constructor ) {
       return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
     }
     return constructor;
   };
 
-  Graph.prototype._constructors = {},
+  /**
+   * @alias Graph~getConstructor
+   */
+  Graph.prototype.getConstructor = Graph.getConstructor;
 
-    /**
-     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-     * @name Graph.registerConstructor
-     * @param {String} name - The name of the constructor
-     * @see Graph#newSerie
-     */
-    Graph.registerConstructor = function( name, constructor ) {
-
-      if ( Graph.prototype._constructors[ name ] ) {
-        return util.throwError( "Constructor " + constructor + " already exists." );
-      }
-
-      Graph.prototype._constructors[ name ] = constructor;
-    };
+  Graph._constructors = {};
 
   return Graph;
 } );

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Handling shapes (basic)</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="fluid">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Plugin.html">Plugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Advanced axes techniques</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieScatterDefaultOptions</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+
+	
+	<div class="row">
+
+		
+
+
+		
+		<div class="col-md-12">
+		
+			<div id="main">
+	    		<h1 class="page-title">Handling shapes (basic)</h1>
+				<section class="tutorial-section">
+
+<header>
+    
+
+    
+</header>
+
+<article>
+    <script src="../dist/jquery.min.js"></script>
+<script src="../dist/jsgraph.js"></script>
+
+<script>
+
+</script>
+
+<p>jsGraph can be used not only to display data in series, but it can also be used to create shapes associated to this data. In this tutorial, we demonstrate how to create various shapes, position them on your graph, change their style and allow manipulation.</p>
+<p>Let us start by creating an empty graph, and since no serie will be used for now, force the X and Y axes boundaries:</p>
+<pre class="prettyprint source"><code>
+var g = new Graph(&quot;example-1&quot;) // Creates a new graph
+g.resize( 400, 300 ); // Resizes the graph
+var s = g.newSerie(&quot;employment_nb&quot;).setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+    .autoAxis()
+    .setLineColor('purple')
+    .setLineWidth( 2 );
+
+g.setTitle(&quot;Number of employed people in Switzerland (yearly average)&quot;);
+g.getXAxis().setLabel('Year').gridsOff();
+g.getYAxis().setLabel(&quot;Number of people (in thousands)&quot;).secondaryGridOff();
+g.draw();</code></pre><p><div id="example-1" class="jsgraph-example"></div></p>
+<script>
+
+function makeGraph( dom ) {
+
+    var g = new Graph( dom ) // Creates a new graph
+    g.resize( 400, 300 ); // Resizes the graph
+    var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+        .autoAxis()
+        .setLineColor('purple')
+        .setLineWidth( 2 );
+
+    g.setTitle("Number of employed people in Switzerland (yearly average)");
+    g.getXAxis().setLabel('Year').gridsOff();
+    g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+    g.draw();
+
+    return g;
+}
+
+
+makeGraph( "example-1" );
+</script>
+
+
+<h2>Graph.newShape</h2><p>To create a new shape, there is only a single method to remember: <code>graph.newShape</code>. <a href="Graph.html#newShape">Graph#newShape</a> belongs to the <a href="Graph.html">Graph</a> class and it is as of today the only way to create a new shape and assign it to the graph. The syntax of the <code>newShape</code> method is the following</p>
+<p><code>Graph.newShape( String shapeType, Object&lt;String,String&gt; shapeOptions, Boolean mute );</code></p>
+<p>Where :</p>
+<ul>
+<li><code>shapeType</code> is the type of the shape (e.g. <code>line</code>, <code>rectangle</code>, <code>arrow</code>, ... ). The types are defined by the constructor registering (see later)</li>
+<li><code>shapeOptions</code> is a map (key/value) of options associated to the shape. Except for shape-specific options, the default available ones are:<ul>
+<li><code>Array&lt;Position&gt; position</code> - An array of position elements (see explanations later in this tutorial)</li>
+<li><code>String fillColor</code> - The <code>fill</code> attribute of the shape</li>
+<li><code>String strokeColor</code> - The <code>stroke</code> attribute of the shape</li>
+<li><code>Number strokeWidth</code> - The <code>stroke-width</code> attribute of the shape</li>
+<li><code>Number layer</code> - The layer on which the shape should be places</li>
+<li><code>Boolean locked</code> - <code>true</code> to locks the shape (prevents selecting, moving, resizing).</li>
+<li><code>Boolean movable</code> - <code>true</code> to allow the shape to be moved (can be nullified by <code>locked</code>)</li>
+<li><code>Boolean resizable</code> - <code>true</code> to allow the shape to be resized (can be nullified by <code>locked</code>)</li>
+<li><code>Boolean selectable</code> - <code>true</code> to allow the shape to be selected (can be nullified by <code>locked</code>)</li>
+<li><code>Object&lt;String,String&gt; attributes</code> - Additional attributes added to the main DOM of the shape</li>
+<li><code>Boolean handles</code> - Notifies that the shape should have handles (used for resizing)</li>
+<li><code>Boolean selectOnMouseDown</code> - <code>true</code> if the shape should be selected when the user clicks on it</li>
+<li><code>Boolean highlightOnMouseOver</code> - <code>true</code> if the shape should be highlighted when the mouse hovers the shape (see later in the tutorial for more explanation)</li>
+<li><code>Array&lt;Object&gt;</code> label - The labels of the shape<ul>
+<li><code>Position position</code> - The position of the label</li>
+<li><code>String color</code> - The color of the label</li>
+<li><code>String angle</code> - The angle of the label</li>
+<li><code>String basline</code> - The dominant baseline of the shape (see <a href="Shape.html#setLabelBaseline">Shape#setLabelBaseline</a>)</li>
+<li><code>String anchor</code> - The anchor of the label (see <a href="Shape.html#setLabelAnchor">Shape#setLabelAnchor</a>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><code>Boolean mute</code> cancels event emission from the graph</li>
+</ul>
+<p>Many of these options can be changed after shape creation. They have been documented in the <a href="Shape.html">shape reference API</a>.</p>
+<h3>Shape types</h3><p>The <code>shapeType</code> option defined which kind of shape will be drawn. A number of default shapes are shipped with the standard distribution of jsGraph, but it is not excluded to create your own shape. As of the writing of this tutorial, jsGraph supports :</p>
+<ul>
+<li>Lines (<code>shapeType = &quot;line&quot;</code>)</li>
+<li>Arrows (<code>shapeType = &quot;arrow&quot;</code>)</li>
+<li>Rectangles (<code>shapeType = &quot;rect&quot;</code> or <code>shapeType = &quot;rectangle&quot;</code>)</li>
+<li>Ellipses (<code>shapeType = &quot;ellipse&quot;</code>)</li>
+<li>Label (<code>shapeType = &quot;label&quot;</code>)</li>
+<li>Area under the curve (<code>shapeType = &quot;areaundercurve&quot;</code>)</li>
+<li>X range (<code>shapeType = &quot;rangex&quot;</code>)</li>
+</ul>
+<p>From now on in this tutorial, we will use the default shape arrow to explain the features of the shapes.</p>
+<h3>Creating a new arrow</h3><p>Creating a new arrow is as simple as this:</p>
+<p><code>var arrow = graph.newShape(&quot;arrow&quot;);</code></p>
+<p>However, at this stage, the arrow is not drawn. Its instance is simply created. To add it on the graph, you must use <code>arrow.draw();</code></p>
+<p><div id="example-2" class="jsgraph-example"></div></p>
+<script>
+
+var g = makeGraph("example-2");
+var arrow = g.newShape("arrow");
+arrow.draw();
+g.draw();
+
+</script>
+
+<p>Annnnnd... nothing happened ! The reason is simple: your arrow has no set position. Ok, let's create two positions (one for the start or the arrow, the other for the end) and assign them to the arrow. We then use the <code>redraw</code> method to update the shape.</p>
+<pre class="prettyprint source"><code>var position1 = g.newPosition( &quot;150px&quot;, &quot;30px&quot; );
+var position2 = g.newPosition( &quot;190px&quot;, &quot;80px&quot; );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();</code></pre><p><div id="example-3" class="jsgraph-example"></div></p>
+<script>
+
+var g = makeGraph("example-3");
+var arrow = g.newShape("arrow");
+arrow.draw();
+g.draw();
+
+var position1 = g.newPosition( "150px", "30px" );
+var position2 = g.newPosition( "190px", "80px" );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();
+g.draw();
+
+</script>
+
+
+<h3>Assign positions relative to the axes</h3><p>However most of the time you do not want to reference the shape position with respect to the graph screen coordinates. Imagine you want to zoom inside the graph: the shapes will not move. Although it might be ok for some applications, you might want to place some shapes with respect to the axes coordinates. In our example, we want to point the arrow towards the data at a particular year to, say, note an event that happened then. To do so, you need to attach the shape to the axes. One way to do that is to assign the serie
+<code>arrow.setSerie( g.getSerie(&quot;employment_nb&quot;) );</code>
+and the axes of the serie will be used as the axes for the shape. Alternatively, you can use the <code>setXAxis</code> and <code>setYAxis</code> methods.</p>
+<pre class="prettyprint source"><code>arrow.setSerie( g.getSerie( &quot;employment_nb&quot; ) );
+var position1 = g.newPosition( 1990, 3821 );
+var position2 = g.newPosition( &quot;190px&quot;, &quot;80px&quot; );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();</code></pre><p><div id="example-4" class="jsgraph-example"></div></p>
+<script>
+
+var g = makeGraph("example-4");
+var arrow = g.newShape("arrow");
+arrow.draw();
+g.draw();
+
+arrow.setSerie( g.getSerie( "employment_nb" ) );
+var position1 = g.newPosition( 1990, 3821 );
+var position2 = g.newPosition( "190px", "80px" );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();
+g.draw();
+
+</script>
+
+<p>You see here in the example, we specified the y value corresponding to the year (the x value). You actually don't have to that:</p>
+<p><code>var position1 = g.newPosition( 1990 );</code> will do, and the y value will be automatically selected from the serie you have specified with <code>setSerie</code>. In addition, we want the arrow to stand back a bit from the data. We can use the 3rd and 4th parameter of the <code>GraphPosition</code> constructor, which specify delta values that are applied to the main value:</p>
+<p><code>var position1 = g.newPosition( 1990, false, -3, &quot;-5px&quot; );</code></p>
+<p>Here, <code>-3</code> refers to the position relative to the axis (no string and no &quot;px&quot; in the end) and therefore, -3 years will be subtracted from 1990, so the arrow will point at 1987. Honestly it makes little sense here, and perhaps &quot;-5px&quot; would be more logical, like I did with the y-coordinate.</p>
+<pre class="prettyprint source"><code>arrow.setSerie( g.getSerie( &quot;employment_nb&quot; ) );
+var position1 = g.newPosition( 1990, undefined, -3, &quot;-5px&quot; );
+var position2 = g.newPosition( &quot;190px&quot;, &quot;80px&quot; );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();</code></pre><p><div id="example-5" class="jsgraph-example"></div></p>
+<script>
+
+var g = makeGraph("example-5");
+var arrow = g.newShape("arrow");
+arrow.draw();
+g.draw();
+
+arrow.setSerie( g.getSerie( "employment_nb" ) );
+var position1 = g.newPosition( 1990, undefined, -3, "-5px" );
+var position2 = g.newPosition( "190px", "80px" );
+arrow.setPosition( position1, 0 );
+arrow.setPosition( position2, 1 );
+arrow.redraw();
+g.draw();
+
+</script>
+</article>
+
+</section>
+
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Sun Nov 1st 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		headerText: function(i, heading, $heading) {
+			var main;
+			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
+		  },
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		console.log( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : false,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

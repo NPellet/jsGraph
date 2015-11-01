@@ -2,8 +2,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   var GraphLabel = function( graph, options ) {
 
+    this.selectStyle = {
+      stroke: 'red'
+    };
+
   }
+
   $.extend( GraphLabel.prototype, GraphShape.prototype, {
+
     createDom: function() {
       this._dom = false;
     },

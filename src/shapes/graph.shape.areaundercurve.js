@@ -108,14 +108,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
       }
     },
 
-    setPosition: function() {
+    applyPosition: function() {
 
       if ( !this.serie ) {
         return;
       }
 
-      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
-        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
+      var posXY = this.computePosition( 0 ),
+        posXY2 = this.computePosition( 1 ),
         w = Math.abs( posXY.x - posXY2.x ),
         x = Math.min( posXY.x, posXY2.x );
 
@@ -240,20 +240,20 @@ define( [ './graph.shape' ], function( GraphShape ) {
       this.setDom( 'stroke-width', '2' );
       this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
     },
+    /*
+        setLabelPosition: function( labelIndex )  {
 
-    setLabelPosition: function( labelIndex )  {
+          if ( this.firstX, this.lastX, this.lastPointY, this.firstPointY ) {
+            var x = ( this.firstX + this.lastX ) / 2 + "px";
+            var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
+            var flip = this.serie ? this.serie.isFlipped() :  false;
 
-      if ( this.firstX, this.lastX, this.lastPointY, this.firstPointY ) {
-        var x = ( this.firstX + this.lastX ) / 2 + "px";
-        var y = ( this.lastPointY + this.firstPointY ) / 2 + "px";
-        var flip = this.serie ? this.serie.isFlipped() :  false;
-
-        this._setLabelPosition( labelIndex, {
-          x: flip ? y : x,
-          y: flip ? x : y
-        } );
-      }
-    },
+            this._setLabelPosition( labelIndex, {
+              x: flip ? y : x,
+              y: flip ? x : y
+            } );
+          }
+        },*/
 
     getFieldsConfig: function() {
 

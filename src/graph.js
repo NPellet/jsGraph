@@ -1,6 +1,3 @@
-/**
- * @module jsGraph
- */
 define( [
 
     './graph.core',
@@ -54,7 +51,7 @@ define( [
 
     GraphPosition,
 
-    _axis,
+    GraphAxis,
     GraphXAxis,
     GraphYAxis,
     GraphXAxisBroken,
@@ -75,7 +72,7 @@ define( [
     GraphSerieScatter,
     GraphSerieZone,
 
-    _shape,
+    GraphShape,
     GraphShapeAreaUnderCurve,
     GraphShapeArrow,
     GraphShapeEllipse,
@@ -116,17 +113,19 @@ define( [
     Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
     Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
 
+    Graph.registerConstructor( "graph.shape", GraphShape );
     Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );
     Graph.registerConstructor( "graph.shape.arrow", GraphShapeArrow );
     Graph.registerConstructor( "graph.shape.ellipse", GraphShapeEllipse );
     Graph.registerConstructor( "graph.shape.label", GraphShapeLabel );
     Graph.registerConstructor( "graph.shape.line", GraphShapeLine );
-    Graph.registerConstructor( "graph.shape.nmrintergral", GraphShapeNMRIntegral );
+    Graph.registerConstructor( "graph.shape.nmrintegral", GraphShapeNMRIntegral );
     Graph.registerConstructor( "graph.shape.peakintegration2d", GraphShapePeakIntegration2D );
     Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
     Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
     Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
     Graph.registerConstructor( "graph.shape.rect", GraphShapeRect );
+    Graph.registerConstructor( "graph.shape.rectangle", GraphShapeRect );
     Graph.registerConstructor( "graph.shape.cross", GraphShapeCross );
     Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
     Graph.registerConstructor( "graph.shape.peakboundariescenter", GraphShapePeakBoundariesCenter );

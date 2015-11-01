@@ -49,23 +49,21 @@ define( [ 'jquery', './graph.plugin' ], function( $, Plugin ) {
 
     this.count = this.count || 0;
 
-    x -= graph.getPaddingLeft(),
-      y -= graph.getPaddingTop(),
+    x -= graph.getPaddingLeft();
+    y -= graph.getPaddingTop();
 
-      xVal = graph.getXAxis().getVal( x );
+    xVal = graph.getXAxis().getVal( x );
     yVal = graph.getYAxis().getVal( y );
 
     var shapeInfo = {
 
-      pos: {
+      position: [ {
         x: xVal,
         y: yVal
-      },
-
-      pos2: {
+      }, {
         x: xVal,
         y: yVal
-      },
+      } ],
 
       onChange: function( newData ) {
         graph.triggerEvent( 'onAnnotationChange', newData );
@@ -84,7 +82,7 @@ define( [ 'jquery', './graph.plugin' ], function( $, Plugin ) {
     if ( this.graph.prevent( false ) ) {
       return;
     }
-
+    console.log( shapeInfo );
     var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
     if ( shape ) {
@@ -115,18 +113,18 @@ define( [ 'jquery', './graph.plugin' ], function( $, Plugin ) {
         shape.setSerie( graph.selectedSerie );
       }
 
-      shape.created();
-      shape.handleSelected = 1;
       shape.resizing = true;
 
       if ( shape.options && shape.options.onCreate ) {
         shape.options.onCreate.call( shape );
       }
+
       shape.draw();
 
       graph.selectShape( shape );
 
       shape.handleMouseDown( self.currentShapeEvent, true );
+      shape.handleSelected = 1;
       shape.handleMouseMove( e, true );
     }
   };

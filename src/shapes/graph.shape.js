@@ -1,4 +1,4 @@
-define( [ '../graph.position' ], function( GraphPosition ) {
+define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util ) {
 
   "use strict";
 
@@ -20,7 +20,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     var self = this;
 
     this.graph = graph;
-    this.properties = {};
+    this.properties = this.properties || {};
     this.handles = [];
     this.options = this.options || {};
 
@@ -31,10 +31,10 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     this.setEvents();
 
     if ( this._dom ) {
-      this._dom.jsGraphIsShape = true;
+      this._dom.jsGraphIsShape = this;
     }
 
-    this.group.jsGraphIsShape = true;
+    this.group.jsGraphIsShape = this;
 
     this.classes = [];
     this.transforms = [];
@@ -126,13 +126,14 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
     this.graph.removeShapeFromDom( this );
 
-    if ( !keepInStack ) {
+    if ( !keepDom ) {
       this.graph._removeShape( this );
     }
 
+    this.graph.stopElementMoving( this );
     this.graph.emit( "shapeRemoved", this );
 
-    _inDom = false;
+    this._inDom = false;
   };
 
   /**
@@ -375,6 +376,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   Shape.prototype.draw = function() {
 
     if ( !this._inDom ) {
+
       this.graph.appendShapeToDom( this );
       this._inDom = true;
     }
@@ -401,7 +403,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
       return;
     }
 
-    this._applyLabelData();
+    this.updateLabels();
     this._applyTransforms();
     return this;
   };
@@ -410,20 +412,20 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * Implementation of the redraw method. Extended Shape classes should override this method
    * @memberof Shape
    */
-  Shape.prototype.redrawImpl = function() {},
+  Shape.prototype.redrawImpl = function() {};
 
-    /**
-     * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
-     * @param {String} prop - The property to save
-     * @param val - The value to save
-     * @param [ index = 0 ] - The index of the property array to save the property
-     * @memberof Shape
-     */
-    Shape.prototype.setProp = function( prop, val, index ) {
-
-      this.properties[ prop ] = this.properties[ prop ] || [];
-      this.properties[ prop ][ index || 0 ] = val;
-    };
+  /**
+   * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
+   * @param {String} prop - The property to save
+   * @param val - The value to save
+   * @param [ index = 0 ] - The index of the property array to save the property
+   * @memberof Shape
+   */
+  Shape.prototype.setProp = function( prop, val, index ) {
+    this.properties = this.properties || {};
+    this.properties[ prop ] = this.properties[ prop ] || [];
+    this.properties[ prop ][ index || 0 ] = val;
+  };
 
   /**
    * Returns a property of the shape
@@ -498,6 +500,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   /**
    * Saves the fill color
    * @memberof Shape
+   * @param {String} color - The filling color
    * @return {Shape} The current shape
    */
   Shape.prototype.setFillColor = function( color ) {
@@ -508,6 +511,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   /**
    * Saves the stroke width
    * @memberof Shape
+   * @param {String} width - The stroke width
    * @return {Shape} The current shape
    */
   Shape.prototype.setStrokeWidth = function( width ) {
@@ -518,26 +522,41 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   /**
    * Saves the stroke dash array
    * @memberof Shape
+   * @param {String} dasharray - The dasharray string
+   * @example shape.setStrokeDasharray("5,5,1,4");
+   * shape.applyStyle();
    * @return {Shape} The current shape
    */
   Shape.prototype.setStrokeDasharray = function( dasharray ) {
-      this.setProp( 'strokeDasharray', width );
-      return this;
-    },
+    this.setProp( 'strokeDasharray', dasharray );
+    return this;
+  };
 
-    /**
-     * Adds a transform property to the shape.
-     * @param {String} type - The transform type ("rotate", "transform" or "scale")
-     * @param {String} args - The arguments following the transform
-     * @memberof Shape
-     * @return {Shape} The current shape
-     */
-    Shape.prototype.addTransform = function( type, args ) {
-      this.addProp( 'transforms', {
-        type: type,
-        arguments: Array.isArray( args ) ? args : [ args ]
-      } );
-    }
+  /**
+   * Sets any extra attributes to the DOM element of the shape
+   * @memberof Shape
+   * @param {Object<String,String>} attributes - An extra attribute array to apply to the shape DOM
+   * @example shape.setAttributes( { "data-bindable" : true } );
+   * shape.applyStyle();
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setAttributes = function( attributes ) {
+    this.setProp( "attributes", shapeData.attributes );
+  }
+
+  /**
+   * Adds a transform property to the shape.
+   * @param {String} type - The transform type ("rotate", "transform" or "scale")
+   * @param {String} args - The arguments following the transform
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.addTransform = function( type, args ) {
+    this.addProp( 'transforms', {
+      type: type,
+      arguments: Array.isArray( args ) ? args : [ args ]
+    } );
+  }
 
   /**
    * Resets the transforms
@@ -629,14 +648,25 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   };
 
   /**
-   * Sets the baseline of the label
+   * Sets the baseline of the label, which affects its y position with respect to the text direction. For text along the x direction, different baselines will reference differently the text to the ```y``` coordinate.
    * @memberof Shape
-   * @param {String} baseline - The baseline of the label
+   * @param {String} baseline - The baseline of the label. Most common baselines are ```no-change```, ```central```, ```middle``` and ```hanging```. You will find an explanation of those significations on the [corresponding MDN article]{@link https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/dominant-baseline}
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
   Shape.prototype.setLabelBaseline = function( baseline, index ) {
     this.setProp( 'labelBaseline', baseline, index || 0 );
+  };
+
+  /**
+   * Sets the anchoring of the label. 
+   * @memberof Shape
+   * @param {String} anchor - The anchor of the label. Values can be ```start```, ```middle```, ```end``` or ```inherit```.
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelAnchor = function( anchor, index ) {
+    this.setProp( 'labelAnchor', anchor, index || 0 );
   };
 
   /**
@@ -650,6 +680,12 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     this.setDom( "stroke", this.getProp( "strokeColor" ) );
     this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
     this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
+
+    var attributes = this.getProp( "attributes" ) || {};
+
+    for ( var i in attributes ) {
+      this.setDom( i, typeof attributes[ i ] == "function" ? attributes[ i ].call( this, i ) : attributes[ i ] );
+    }
 
     this._applyTransforms();
 
@@ -676,14 +712,20 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
     var position;
 
-    position = ( index instanceof Position ) ? index : this.getPosition( index );
+    position = ( index instanceof GraphPosition ) ? index : this.getPosition( index );
+    relTo = ( relTo instanceof GraphPosition ) ? relTo : ( typeof relTo == "number" ? this.getPosition( relTo ) : GraphPosition.check( relTo ) );
 
     if ( position && position.compute ) {
-      return position.compute( this.getXAxis(), this.getYAxis(), this.getSerie(), relTo );
+      return position.compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie(), relTo );
     }
 
     this.graph.throw();
   };
+
+  /**
+   * @alias Shape#calculatePosition
+   */
+  Shape.prototype.computePosition = Shape.prototype.calculatePosition;
 
   /**
    * Returns a stored position object
@@ -778,60 +820,14 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     this._labels = [];
 
     var i = 0;
+
     while ( this.getProp( "labelText", i ) ) {
 
-      ( function( j ) {
-
-        self._labels[ j ] = document.createElementNS( self.graph.ns, 'text' );
-        self._labels[ j ].addEventListener( 'dblclick', function( e ) {
-
-          if ( !self.isLabelEditable( i ) ) {
-            return;
-          }
-
-          e.preventDefault();
-          e.stopPropagation();
-
-          $( '<input type="text" />' ).attr( 'value', e.target.textContent ).prependTo( self.graph._dom ).css( {
-
-            position: 'absolute',
-            'margin-top': ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + "px",
-            'margin-left': ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + "px",
-            textAlign: 'center',
-            width: '100px'
-
-          } ).bind( 'blur', function() {
-
-            $( this ).remove();
-            self._data.label[ i ].text = $( this ).setProp( 'value' );
-            self._labels[ i ].textContent = $( this ).setProp( 'value' );
-
-            self.triggerChange();
-
-          } ).bind( 'keyup', function( e ) {
-
-            e.stopPropagation();
-            e.preventDefault();
-
-            if ( e.keyCode == 13 ) {
-              $( this ).trigger( 'blur' );
-            }
-
-          } ).bind( 'keypress', function( e ) {
-
-            e.stopPropagation();
-          } ).bind( 'keydown', function( e ) {
-
-            e.stopPropagation();
-
-          } ).focus().get( 0 ).select();
-
-        } );
-
-      } ).call( this, i );
-
-      self.group.appendChild( this._labels[ i ] );
-
+      if ( !self._labels[ i ] ) {
+        self._labels[ i ] = document.createElementNS( self.graph.ns, 'text' );
+        self._labels[ i ].setAttribute( 'data-label-i', i );
+        self.group.appendChild( this._labels[ i ] );
+      }
       i++;
     }
 
@@ -855,17 +851,47 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * @param {Number} labelIndex - The index of the label
    * @returns {Shape} The current shape
    */
+  Shape.prototype.updateLabels = function() {
+
+    var self = this;
+    this._labels = this._labels || [];
+
+    for ( var i = 0, l = this._labels.length; i < l; i++ ) {
+      this._applyLabelData( i );
+
+      this._labels[  i ].removeEventListener( "dblclick", labelDblClickListener );
+      this._labels[ i ].addEventListener( 'dblclick', labelDblClickListener );
+    }
+
+  };
+
+  /**
+   * Applies the label data to the dom object
+   * @memberof Shape
+   * @private
+   * @param {Number} labelIndex - The index of the label
+   * @returns {Shape} The current shape
+   */
   Shape.prototype._applyLabelData = function( labelIndex ) {
 
     labelIndex = labelIndex || 0;
 
     /** Sets the position */
+
     var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
+
+    if ( !position.x ||  !position.y ) {
+      console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
+      console.log( this, this._labels );
+      console.trace();
+      return;
+
+    }
 
     if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" ) {
 
-      this._labels[ labelIndex ].setAttribute( 'x', pos.x );
-      this._labels[ labelIndex ].setAttribute( 'y', pos.y );
+      this._labels[ labelIndex ].setAttribute( 'x', position.x );
+      this._labels[ labelIndex ].setAttribute( 'y', position.y );
     }
 
     /** Sets the angle */
@@ -881,8 +907,11 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     /** Sets the baseline */
     this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) ||  'no-change' );
 
+    /** Sets the baseline */
+    this._labels[ labelIndex ].textContent = this.getProp( 'labelText', labelIndex );
+
     /** Sets the anchor */
-    this._label[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
+    this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
     return this;
   };
@@ -950,9 +979,10 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
       this.handlesInDom = true;
 
-      for ( var i = 1; i <= this.nbHandles; i++ ) {
-        if ( this[ 'handle' + i ] ) {
-          this.group.appendChild( this[ 'handle' + i ] );
+      for ( var i = 1; i < this.handles.length; i++ ) {
+
+        if ( this.handles[ i ] ) {
+          this.group.appendChild( this.handles[ i ] );
         }
       }
     }
@@ -967,13 +997,24 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * @return {Shape} The current shape
    */
   Shape.prototype.removeHandles = function() {
-    for ( var i = 1; i <= this.nbHandles; i++ ) {
-      this.group.removeChild( this[ 'handle' + i ] );
+
+    for ( var i = 1; i < this.handles.length; i++ ) {
+      this.group.removeChild( this.handles[ i ] );
     }
 
     this.handlesInDom = false;
 
     return false;
+  }
+
+  /**
+   * @protected
+   * @memberof Shape
+   * @return {Boolean} ```true``` if the handles are in the DOM
+   */
+  Shape.prototype.areHandlesInDom = function() {
+
+    return this.handlesInDom;
   }
 
   /**
@@ -992,7 +1033,9 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
     this._selectStatus = true;
-    this.selectStyle();
+    var style = this.getSelectStyle();
+
+    util.saveDomAttributes( this._dom, style, 'select' );
 
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
       this.addHandles();
@@ -1010,22 +1053,36 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   Shape.prototype._unselect = function() {
 
     this._selectStatus = false;
-    this.unselectStyle();
+
+    util.restoreDomAttributes( this._dom, 'select' );
 
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
-
       this.removeHandles();
     }
 
     this.graph.emit( "shapeUnselected", this );
   };
 
-  Shape.prototype.selectStyle = function() {
-
+  /**
+   * Returns the special style of the shape when it is selected.
+   * @memberof Shape
+   * @see Shape#setSelectStyle
+   * @param {Object<String,String>} The SVG attributes to apply to the shape
+   */
+  Shape.prototype.getSelectStyle = function() {
+    return this.selectStyle;
   };
 
-  Shape.prototype.unselectStyle = function() {
-
+  /**
+   * Defines the style that is applied to the shape when it is selected. The style extends the default style of the shape
+   * @memberof Shape
+   * @param {Object<String,String>} [ attr = {} ] - The SVG attributes to apply to the shape
+   * @example rectangle.setSelectStyle( { fill: 'red' } );
+   * @returns {Shape} the current shape
+   */
+  Shape.prototype.setSelectStyle = function( attr ) {
+    this.selectStyle = style;
+    return this;
   };
 
   /**
@@ -1036,6 +1093,14 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    */
   Shape.prototype.setStaticHandles = function( staticHandles ) {
     this.setProp( 'staticHandles', staticHandles );
+  };
+
+  /**
+   * @memberof Shape
+   * @returns {Boolean} ```true``` if the shape has static handles, ```false``` otherwise
+   */
+  Shape.prototype.hasStaticHandles = function( staticHandles ) {
+    return !!this.getProp( 'staticHandles' );
   };
 
   /**
@@ -1062,16 +1127,16 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
         var self = this;
 
-        self.handles[  j ] = document.createElementNS( self.graph.ns, type );
-        self.handles[  j ].jsGraphIsShape = true;
+        var handle = document.createElementNS( self.graph.ns, type );
+        handle.jsGraphIsShape = true;
 
         if ( attr ) {
           for ( var k in attr ) {
-            this.handles[  j ].setAttribute( k, attr[ k ] );
+            handle.setAttribute( k, attr[ k ] );
           }
         }
 
-        self.handles[  j ]
+        handle
           .addEventListener( 'mousedown', function( e ) {
 
             if ( self.isResizable() ) {
@@ -1083,7 +1148,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
               if ( !self.graph.prevent( false ) ) {
 
-                self._resizing = true;
+                self.resizing = true;
                 self.handleSelected = j;
                 self.handleMouseDown( e );
               }
@@ -1091,17 +1156,17 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
           } );
 
-        handles.push( self.handles[  j ] );
-
         if ( callbackEach ) {
           callbackEach( self.handles[ j ] );
         }
+
+        self.handles[  j ] = handle;
 
       } ).call( this, i );
 
     }
 
-    return this.handles = handles;
+    return this.handles;
   };
 
   /**
@@ -1144,22 +1209,32 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    */
   Shape.prototype.handleMouseDown = function( e ) {
 
-    self.handleSelected = false;
+    //this.handleSelected = false;
 
-    if ( self.isMovable() ) {
-      if ( !self.resizing ) {
-        self.graph.emit( "beforeShapeMove", self );
+    if ( this.isLocked() ) {
+      return;
+    }
 
-        if ( !self.graph.prevent( false ) ) {
-          self.moving = true;
+    if ( this.isMovable() || this.isResizable() ) {
+
+      this.graph.elementMoving( this );
+    }
+
+    if ( this.getProp( 'selectOnMouseDown' ) ) {
+      this.graph.selectShape( this );
+    }
+
+    if ( this.isMovable() ) {
+      if ( !this.resizing ) {
+
+        this.graph.emit( "beforeShapeMove", self );
+
+        if ( !this.graph.prevent( false ) ) {
+
+          this.moving = true;
         }
       } else {
 
-        this.graph.elementMoving( this );
-
-        if ( this.getProp( 'selectOnMouseDown' ) ) {
-          this.graph.selectShape( this );
-        }
       }
     }
 
@@ -1197,9 +1272,9 @@ define( [ '../graph.position' ], function( GraphPosition ) {
       this.graph.selectShape( this );
     }
 
-    this.graph.emit( "beforeShapeMouseMove" );
+    this.graph.emit( "beforeShapeMouseMove", this );
 
-    if ( this.graph.prevent() ) {
+    if ( this.graph.prevent( false ) || !this._mouseCoords ) {
       return false;
     }
 
@@ -1257,7 +1332,7 @@ define( [ '../graph.position' ], function( GraphPosition ) {
     }
 
     this.moving = false;
-    this.resize = false;
+    this.resizing = false;
     this.handleSelected = false;
     this.graph.elementMoving( false );
 
@@ -1281,6 +1356,14 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * @private
    */
   Shape.prototype.handleMouseOver = function() {
+
+    if ( this.getProp( "highlightOnMouseOver" ) ) {
+
+      if ( !this.moving && !this.resizing ) {
+        this.highlight();
+      }
+    }
+
     this.graph.emit( "shapeMouseOver", this );
   };
 
@@ -1291,6 +1374,11 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * @private
    */
   Shape.prototype.handleMouseOut = function() {
+
+    if ( this.getProp( "highlightOnMouseOver" ) ) {
+      this.unHighlight();
+    }
+
     this.graph.emit( "shapeMouseOut", this );
   };
 
@@ -1403,20 +1491,29 @@ define( [ '../graph.position' ], function( GraphPosition ) {
    * @memberof Shape
    */
   Shape.prototype.isSelectable = function() {
-    return this.setProp( 'selectable', true );
+    return this.getProp( 'selectable' );
   };
 
   /**
    * Highlights the shape with attributes
    * @memberof Shape
    * @returns {Shape} The current shape
-   * @param {Object<String,String>} attributes - A hashmap of attributes to apply
+   * @param {Object<String,String>} [ attributes ] - A hashmap of attributes to apply. If omitted, {@link Shape#getHighlightAttributes} will be called
+   * @param {String} [ saveDomName=highlight ] - The name to which the current shape attributes will be saved to be recovered later with the {@link Shape#unHighlight} method
    * @example shape.highlight( { fill: 'red', 'fill-opacity': 0.5 } );
-   * @see Shape#unhighlight
+   * @see Shape#unHighlight
    */
-  Shape.prototype.highlight = function( attributes ) {
+  Shape.prototype.highlight = function( attributes, saveDomName ) {
 
-    util.saveDomAttributes( this, attributes );
+    if ( !attributes ) {
+      attributes = this.getHighlightAttributes();
+    }
+
+    if ( !saveDomName ) {
+      saveDomName = "highlight";
+    }
+
+    util.saveDomAttributes( this._dom, attributes, saveDomName );
     this.highlightImpl();
     return this;
   };
@@ -1424,49 +1521,73 @@ define( [ '../graph.position' ], function( GraphPosition ) {
   /**
    * Removes the highlight properties from the same
    * @memberof Shape
-   * @returns {Shape} The current shape
-   * @param {Object<String,String>} attributes - A hashmap of attributes to apply
-   * @example shape.highlight( { fill: 'red', 'fill-opacity': 0.5 } );
+   * @returns {Shape} The current shape 
+   * @param {String} [ saveDomName=highlight ] - The name to which the current shape attributes will be saved to be recovered later with the {@link Shape#unHighlight} method
    * @see Shape#highlight
    */
-  Shape.prototype.unHighlight = function() {
+  Shape.prototype.unHighlight = function( saveDomName ) {
 
-    util.restoreDomAttributes();
+    if ( !saveDomName ) {
+      saveDomName = "highlight";
+    }
+
+    util.restoreDomAttributes( this._dom, saveDomName );
     this.unHighlightImpl();
     return this;
   };
 
-  Shape.prototype.highlightImpl = function() {},
-    Shape.prototype.unHighlightImpl = function() {},
+  Shape.prototype.highlightImpl = function() {};
+  Shape.prototype.unHighlightImpl = function() {};
 
-    /**
-     * Returns the masking id of the shape. Returns null if the shape does not behave as a mask
-     * @memberof Shape
-     * @returns {String} The ```id``` attribute of the shape
-     */
-    Shape.prototype.getMaskingID = function() {
-      return this.maskingId;
-    },
+  /**
+   * @memberof Shape
+   * @returns {Object} The attributes taken by the shape when highlighted
+   * @see Shape#highlight
+   */
+  Shape.prototype.getHighlightAttributes = function() {
+    return this._highlightAttributes;
+  };
 
-    /**
-     * Masks the current shape with another shape passed as the first parameter of the method
-     * @memberof Shape
-     * @param {Shape} maskingShape - The shape used to mask the current shape
-     * @return {Shape} The current shape
-     */
-    Shape.prototype.maskWith = function( maskingShape ) {
+  /**
+   * Sets the attributes the shape will take when highlighted
+   * @memberof Shape
+   * @param {Object<String,String>} [ attributes ] - A hashmap of attributes to apply when the shape is highlighted
+   * @returns {Shape} The current shape
+   * @see Shape#highlight
+   */
+  Shape.prototype.setHighlightAttributes = function( attributes ) {
+    this._highlightAttributes = attributes;
+    return this;
+  };
 
-      var maskingId;
+  /**
+   * Returns the masking id of the shape. Returns null if the shape does not behave as a mask
+   * @memberof Shape
+   * @returns {String} The ```id``` attribute of the shape
+   */
+  Shape.prototype.getMaskingID = function() {
+    return this.maskingId;
+  };
 
-      if ( maskingId = maskingShape.getMaskingID() ) {
+  /**
+   * Masks the current shape with another shape passed as the first parameter of the method
+   * @memberof Shape
+   * @param {Shape} maskingShape - The shape used to mask the current shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.maskWith = function( maskingShape ) {
 
-        this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+    var maskingId;
 
-      } else {
+    if ( maskingId = maskingShape.getMaskingID() ) {
 
-        this._dom.removeAttribute( 'mask' );
-      }
-    };
+      this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
+
+    } else {
+
+      this._dom.removeAttribute( 'mask' );
+    }
+  };
 
   /**
    * Manually updates the mask of the shape. This is needed because the shape needs to be surrounded by a white rectangle (because transparent is treated as black and will not render the shape)
@@ -1507,6 +1628,58 @@ define( [ '../graph.position' ], function( GraphPosition ) {
 
     return this;
   };
+
+  function labelDblClickListener( e ) {
+
+    var i = parseInt( e.target.getAttribute( 'data-label-i' ) );
+
+    if ( !i ) {
+      return;
+    }
+
+    if ( !self.isLabelEditable( i ) ) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+
+    $( '<input type="text" />' ).attr( 'value', self.getProp( 'labelText', i ) ).prependTo( self.graph._dom ).css( {
+
+      position: 'absolute',
+      'margin-top': ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + "px",
+      'margin-left': ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + "px",
+      textAlign: 'center',
+      width: '100px'
+
+    } ).bind( 'blur', function() {
+
+      $( this ).remove();
+
+      self.setLabelText( $( this ).setProp( 'value' ), i );
+      self._labels[ i ].textContent = $( this ).setProp( 'value' );
+
+      self.triggerChange();
+
+    } ).bind( 'keyup', function( e ) {
+
+      e.stopPropagation();
+      e.preventDefault();
+
+      if ( e.keyCode == 13 ) {
+        $( this ).trigger( 'blur' );
+      }
+
+    } ).bind( 'keypress', function( e ) {
+
+      e.stopPropagation();
+    } ).bind( 'keydown', function( e ) {
+
+      e.stopPropagation();
+
+    } ).focus().get( 0 ).select();
+
+  }
 
   return Shape;
 

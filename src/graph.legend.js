@@ -1,4 +1,4 @@
-define( [], function() {
+define( [ "graph.position" ], function( GraphPosition ) {
 
   /** 
    * Default legend configuration
@@ -103,7 +103,9 @@ define( [], function() {
         alignToY = this.alignToY,
         alignToX = this.alignToX;
 
-      var pos = this.graph.getPosition( position, undefined, this.graph.getXAxis(), this.graph.getYAxis() );
+      var pos = new GraphPosition( position );
+
+      var pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
 
       if ( !pos ) {
         return;

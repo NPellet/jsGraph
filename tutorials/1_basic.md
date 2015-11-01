@@ -537,7 +537,7 @@ g
 
 </script>
 
-###Aligning the axes
+### Aligning the axes
 
 Sometimes, if you have two axes that should be aligned on a common value, it would be nice to force the axes to behave accordingly. For example, in our example, it makes sense to align the 0 of the current density with the 0 of the power output. So one of the axis will have to behave differently. Let's pick the power output. A more detailed tutorial {@tutorial adaptto} has been written to detail the behavior of the ```adaptTo``` method.
 
@@ -600,7 +600,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 
 </script>
 
-###Coloring the axes
+### Coloring the axes
 
 Since v1.13.2, you have the possibility to change the color of the axes. Use the {@link Axis#setAxisColor} method. The color of the ticks can be changed using {@link Axis#setPrimaryTicksColor} and {@link Axis#setSecondaryTicksColor}. The color of the tick labels can be changed using {@link Axis#setTicksLabelColor}. The color of the label can be selected using {@link Axis#setLabelColor}.
 

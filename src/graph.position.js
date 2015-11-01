@@ -8,7 +8,7 @@ define( [], function() {
    */
   var Position = function( x, y, dx, dy ) {
 
-    if ( !x instanceof Number && x instanceof Object ) {
+    if ( !( x instanceof Number ) && x instanceof Object ) {
       this.x = x.x;
       this.y = x.y;
       this.dx = x.dx;
@@ -16,6 +16,8 @@ define( [], function() {
     } else {
       this.x = x;
       this.y = y;
+      this.dx = dx;
+      this.dy = dy;
     }
   };
 
@@ -33,7 +35,7 @@ define( [], function() {
       graph.throw( "Graph does not contain the x axis that was used as a parameter" )
     }
 
-    return this._compute();
+    return this._compute( graph, xAxis, yAxis, serie, relativeTo );
   }
 
   Position.prototype._compute = function( graph, xAxis, yAxis, serie, relativeTo ) {
@@ -90,7 +92,7 @@ define( [], function() {
 
         pos[ i ] = this.getPx( val, axis );
       }
-
+      console.log( dval );
       if ( dval !== undefined ) {
 
         var def = ( val !== undefined || relativeTo == undefined || relativeTo[ i ] == undefined ) ? pos[ i ] : ( relativeTo[ i ]._getPositionPx( relativeTo[ i ], true, axis, graph ) || 0 );
@@ -164,25 +166,27 @@ define( [], function() {
     }
   };
 
-  Position.prototype.deltaPosition = function( ref, delta, axis ) {
+  Position.prototype.deltaPosition = function( mode, delta, axis ) {
 
-    var refPx, deltaPx;
+    mode = mode == 'y' ? 'y' : 'x';
+    var ref = this[ mode ],
+      refPx, deltaPx;
 
     if ( ( refPx = _parsePx( ref ) ) !== false ) {
 
       if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-        return ( refPx + deltaPx ) + "px";
+        this[ mode ] = ( refPx + deltaPx ) + "px";
       } else {
-        return ( refPx + axis.getRelPx( delta ) ) + "px";
+        this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
       }
     } else {
 
       ref = this.getValPosition( ref, axis );
 
       if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-        return ( ref + axis.getRelVal( deltaPx ) );
+        this[ mode ] = ( ref + axis.getRelVal( deltaPx ) );
       } else {
-        return ( ref + delta );
+        this[ mode ] = ( ref + delta );
       }
     }
   };
@@ -246,6 +250,13 @@ define( [], function() {
     return new Position( pos );
 
   }
+
+  function _parsePx( px ) {
+    if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
+      return parseInt( px.replace( 'px', '' ) );
+    }
+    return false;
+  };
 
   return Position;
 } );

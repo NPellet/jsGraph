@@ -1,4 +1,4 @@
-define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
+define( [ './graph.shape.areaundercurve', '../graph.position' ], function( GraphSurfaceUnderCurve, GraphPosition ) {
 
   "use strict";
 
@@ -8,14 +8,14 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
 
   $.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
 
-    setPosition: function() {
+    applyPosition: function() {
 
-      var baseLine = this.yBaseline ||  30;
-
-      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
-        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) ),
+      var posXY = this.calculatePosition( 0 ),
+        posXY2 = this.calculatePosition( 1 ),
         w, x,
         axis = this.getAxis();
+
+      var baseLine = this.yBaseline || 30;
 
       if ( !posXY ||  !posXY2 ) {
         return;
@@ -49,8 +49,11 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
         }
       }
 
-      var v1 = this.serie.searchClosestValue( this.getFromData( 'pos' )[ axis ] ),
-        v2 = this.serie.searchClosestValue( this.getFromData( 'pos2' )[ axis ] ),
+      var pos1 = this.getPosition( 0 );
+      var pos2 = this.getPosition( 1 );
+
+      var v1 = this.serie.searchClosestValue( pos1[ axis ] ),
+        v2 = this.serie.searchClosestValue( pos2[ axis ] ),
         v3,
         i,
         j,
@@ -197,6 +200,11 @@ define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
       if ( this._selected ) {
         this.select();
       }
+
+      this.setLabelPosition( new GraphPosition( {
+        x: ( pos1.x + pos2.x ) / 2,
+        y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
+      } ) );
 
       this.setHandles();
 
