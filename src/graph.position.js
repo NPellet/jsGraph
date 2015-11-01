@@ -21,7 +21,7 @@ define( [], function() {
     }
   };
 
-  Position.prototype.compute = function( graph, xAxis, yAxis, serie, relativeTo ) {
+  Position.prototype.compute = function( graph, xAxis, yAxis, serie ) {
 
     if ( !graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis ) {
       this.graph.throw();
@@ -35,10 +35,15 @@ define( [], function() {
       graph.throw( "Graph does not contain the x axis that was used as a parameter" )
     }
 
-    return this._compute( graph, xAxis, yAxis, serie, relativeTo );
+    return this._compute( graph, xAxis, yAxis, serie );
   }
 
-  Position.prototype._compute = function( graph, xAxis, yAxis, serie, relativeTo ) {
+  Position.prototype._compute = function( graph, xAxis, yAxis, serie ) {
+
+    var relativeTo = this._relativeTo;
+    if ( relativeTo ) {
+      var relativeToComputed = relativeTo._compute( graph, xAxis, yAxis, serie );
+    }
 
     var parsed,
       pos = {
@@ -91,13 +96,14 @@ define( [], function() {
       } else if ( val !== undefined ) {
 
         pos[ i ] = this.getPx( val, axis );
+
       }
-      console.log( dval );
+
       if ( dval !== undefined ) {
 
-        var def = ( val !== undefined || relativeTo == undefined || relativeTo[ i ] == undefined ) ? pos[ i ] : ( relativeTo[ i ]._getPositionPx( relativeTo[ i ], true, axis, graph ) || 0 );
+        var def = ( val !== undefined || relativeToComputed == undefined || relativeToComputed[ i ] == undefined ) ? pos[ i ] : ( relativeToComputed[ i ] );
 
-        if ( i == 'y' && relativeTo && relativeTo.x !== undefined && relativeTo.y == undefined ) {
+        if ( i == 'y' && relativeToComputed && relativeToComputed.x !== undefined && relativeToComputed.y == undefined ) {
 
           if ( !serie ) {
             throw "Error. No serie exists. Cannot find y value";
@@ -170,24 +176,53 @@ define( [], function() {
 
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[ mode ],
-      refPx, deltaPx;
+      refd = this[  'd' + mode ],
+      refPx,
+      deltaPx;
 
-    if ( ( refPx = _parsePx( ref ) ) !== false ) {
+    if ( ref !== undefined ) {
+      if ( ( refPx = _parsePx( ref ) ) !== false ) {
 
-      if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-        this[ mode ] = ( refPx + deltaPx ) + "px";
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          this[ mode ] = ( refPx + deltaPx ) + "px";
+        } else {
+          this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
+        }
       } else {
-        this[ mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
+
+        ref = this.getValPosition( ref, axis );
+
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          this[ mode ] = ( ref + axis.getRelVal( deltaPx ) );
+        } else {
+          this[ mode ] = ( ref + delta );
+        }
       }
-    } else {
+    } else if ( refd !== "undefined" ) {
 
-      ref = this.getValPosition( ref, axis );
+      if ( mode == 'y' && ref === undefined && !this._relativeTo ) { // This means that the shape is placed by the x value. Therefore, the dy is only a stand-off.
+        // Therefore, we do nothing
+        return;
+      }
 
-      if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
-        this[ mode ] = ( ref + axis.getRelVal( deltaPx ) );
+      if ( ( refPx = _parsePx( refd ) ) !== false ) {
+
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          this[ 'd' + mode ] = ( refPx + deltaPx ) + "px";
+        } else {
+          this[ 'd' + mode ] = ( refPx + axis.getRelPx( delta ) ) + "px";
+        }
       } else {
-        this[ mode ] = ( ref + delta );
+
+        refd = this.getValPosition( refd, axis );
+
+        if ( ( deltaPx = _parsePx( delta ) ) !== false ) {
+          this[ 'd' + mode ] = ( refd + axis.getRelVal( deltaPx ) );
+        } else {
+          this[ 'd' + mode ] = ( refd + delta );
+        }
       }
+
     }
   };
 
@@ -237,18 +272,19 @@ define( [], function() {
   };
 
   Position.prototype.getPxRel = function( value, axis ) {
-
     return this.getPx( value, axis, true );
   };
 
-  Position.check = function( pos, graph ) {
+  Position.prototype.relativeTo = function( pos ) {
+    this._relativeTo = Position.check( pos );
+    return this;
+  };
 
+  Position.check = function( pos ) {
     if ( pos instanceof Position ) {
       return pos;
     }
-
     return new Position( pos );
-
   }
 
   function _parsePx( px ) {
