@@ -20,7 +20,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     var self = this;
 
     this.graph = graph;
-    this.properties = this.properties || {};
+    this.properties = {};
     this.handles = [];
     this.options = this.options || {};
 
@@ -83,7 +83,6 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       } );
 
       this.group.addEventListener( 'click', function( e ) {
-
         self.handleClick( e );
       } );
 
@@ -229,7 +228,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   Shape.prototype.setEvents = function() {};
 
   /**
-   * Creates an even receptacle with the coordinates of the shape bounding box
+   * Creates an event receptacle with the coordinates of the shape bounding box
    * @memberof Shape
    * @return {Shape} The current shape
    */
@@ -239,16 +238,16 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
       this.rectEvent.setAttribute( 'pointer-events', 'fill' );
       this.rectEvent.setAttribute( 'fill', 'transparent' );
+      this.group.appendChild( this.rectEvent );
+      this.rectEvent.jsGraphIsShape = this;
     }
 
-    this.group.removeChild( this.rectEvent );
     var box = this.group.getBBox();
     this.rectEvent.setAttribute( 'x', box.x );
     this.rectEvent.setAttribute( 'y', box.y - 10 );
     this.rectEvent.setAttribute( 'width', box.width );
     this.rectEvent.setAttribute( 'height', box.height + 20 );
 
-    this.group.appendChild( this.rectEvent );
   };
 
   /**
@@ -369,20 +368,20 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   };
 
   /**
-   * Initial drawing of the shape. Adds it to the DOM and creates the labels
+   * Initial drawing of the shape. Adds it to the DOM and creates the labels. If the shape was already in the DOM, the method simply recreates the labels and reapplies the shape style, unless ```force``` is set to ```true```
+   * @param {Boolean} force - Forces adding the shape to the DOM (useful if the shape has changed layer)
    * @memberof Shape
    * @return {Shape} The current shape
    */
-  Shape.prototype.draw = function() {
+  Shape.prototype.draw = function( force ) {
 
-    if ( !this._inDom ) {
+    if ( !this._inDom || force ) {
 
       this.graph.appendShapeToDom( this );
       this._inDom = true;
     }
 
-    this._makeLabels();
-
+    this.makeLabels();
     this.redraw();
     this.applyStyle();
 
@@ -509,6 +508,17 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   };
 
   /**
+   * Saves the opacity of the filling color of the shape
+   * @memberof Shape
+   * @param {Number} opacity - The filling opacity (0 to 1)
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setFillOpacity = function( color ) {
+    this.setProp( 'fillOpacity', color );
+    return this;
+  };
+
+  /**
    * Saves the stroke width
    * @memberof Shape
    * @param {String} width - The stroke width
@@ -609,7 +619,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @return {Shape} The current shape
    */
   Shape.prototype.setLabelColor = function( color, index ) {
-    this.setProp( 'labelColor', text, index || 0 );
+    this.setProp( 'labelColor', color, index || 0 );
     return this;
   };
 
@@ -677,6 +687,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   Shape.prototype.applyGenericStyle = function() {
 
     this.setDom( "fill", this.getProp( "fillColor" ) );
+    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ) );
     this.setDom( "stroke", this.getProp( "strokeColor" ) );
     this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
     this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
@@ -708,15 +719,18 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @param {Position} relToPosition - A base position from which to compute the position (useful for <code>dx</code> values)
    * @return {Object} The computed position object in the format <code>{ x: x_in_px, y: y_in_px }</code>
    */
-  Shape.prototype.calculatePosition = function( index, relTo ) {
+  Shape.prototype.calculatePosition = function( index ) {
 
     var position;
 
     position = ( index instanceof GraphPosition ) ? index : this.getPosition( index );
-    relTo = ( relTo instanceof GraphPosition ) ? relTo : ( typeof relTo == "number" ? this.getPosition( relTo ) : GraphPosition.check( relTo ) );
+
+    if ( !position ) {
+      return;
+    }
 
     if ( position && position.compute ) {
-      return position.compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie(), relTo );
+      return position.compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie() );
     }
 
     this.graph.throw();
@@ -808,7 +822,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @private
    * @returns {Shape} The current shape
    */
-  Shape.prototype._makeLabels = function() {
+  Shape.prototype.makeLabels = function() {
 
     var self = this;
     this._labels = this._labels || [];
@@ -830,6 +844,8 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       }
       i++;
     }
+
+    this.updateLabels();
 
     return this;
   };
@@ -880,7 +896,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
-    if ( !position.x ||  !position.y ) {
+    if ( isNaN( position.x ) || isNaN( position.y ) ) {
       console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
       console.log( this, this._labels );
       console.trace();
@@ -909,6 +925,9 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     /** Sets the baseline */
     this._labels[ labelIndex ].textContent = this.getProp( 'labelText', labelIndex );
+
+    /** Sets the color */
+    this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) ||  'black' );
 
     /** Sets the anchor */
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
@@ -956,10 +975,20 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   }
 
   /**
+   * Sets or queries whether the shape can have handles. Even if the property is set to false, the getter can return true if the property ```statichandles``` is true (used when handles never disappear)
    * @memberof Shape
+   * @param {Boolean} setter - If used, defined if the shape has handles or not
    * @returns {Boolean} true is the shape has handles, false otherwise
+   * @example Shape.hasHandles( true ); // Sets that the shape has handles
+   * @example Shape.hasHandles( false ); // Sets that the shape has no handles
+   * @example Shape.hasHandles( ); // Queries the shape to determine if it has handles or not. Also returns true if handles are static
    */
-  Shape.prototype.hasHandles = function() {
+  Shape.prototype.hasHandles = function( setter ) {
+
+    if ( setter !== undefined ) {
+      this.setProp( 'handles', setter );
+    }
+
     return !!this.getProp( 'handles' ) || !!this.getProp( 'statichandles' );
   }
 
@@ -998,12 +1027,23 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.removeHandles = function() {
 
+    this.hideHandles();
+    this.handles = [];
+  }
+
+  /**
+   * Hide shape handles 
+   * @private 
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.hideHandles = function() {
+
     for ( var i = 1; i < this.handles.length; i++ ) {
       this.group.removeChild( this.handles[ i ] );
     }
 
     this.handlesInDom = false;
-
     return false;
   }
 
@@ -1057,7 +1097,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     util.restoreDomAttributes( this._dom, 'select' );
 
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
-      this.removeHandles();
+      this.hideHandles();
     }
 
     this.graph.emit( "shapeUnselected", this );
@@ -1081,7 +1121,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @returns {Shape} the current shape
    */
   Shape.prototype.setSelectStyle = function( attr ) {
-    this.selectStyle = style;
+    this.selectStyle = attr;
     return this;
   };
 
@@ -1111,10 +1151,15 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @param {Object<String,String>} [ attr = {} ] - The SVG attributes to apply to the handles
    * @param {Function} [ callbackEach ] - An additional callback the user can provide to further personalize the handles
    * @returns {Shape} the current shape
+   * @private
    */
   Shape.prototype._createHandles = function( nb, type, attr, callbackEach ) {
 
     if ( this.hasHandles() ) {
+      return;
+    }
+
+    if ( this.handles && this.handles.length > 0 ) {
       return;
     }
 
@@ -1168,6 +1213,14 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     return this.handles;
   };
+
+  /**
+   * Creates the handles for the shape. Should be implemented by the children shapes classes.
+   * @memberof Shape
+   */
+  Shape.prototype.createHandles = function() {
+
+  }
 
   /**
    * Handles mouse down event
