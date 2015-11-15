@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Shape events</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="fluid">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Plugin.html">Plugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieScatterDefaultOptions</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+
+	
+	<div class="row">
+
+		
+
+
+		
+		<div class="col-md-12">
+		
+			<div id="main">
+	    		<h1 class="page-title">Shape events</h1>
+				<section class="tutorial-section">
+
+<header>
+    
+
+    
+</header>
+
+<article>
+    <script src="../dist/jquery.min.js"></script>
+<script src="../dist/jsgraph.js"></script>
+
+<script>
+
+</script>
+
+<p>Shapes feature events. However those events are fired at the <a href="Graph.html">Graph</a> level, to avoid registering too many event handlers which would slow down jsGraph and use up too much memory.</p>
+<p><em>NB: In the future, shape-specific event emitting will likely be introduced as well. Stay tuned for updates</em></p>
+<p>The events that shape fire are the following</p>
+<ul>
+<li><code>shapeNew</code> - Fired when a shape is created</li>
+<li><code>shapeRemoved</code> - Fired when a shape is removed</li>
+<li><code>shapeChanged</code> - Fired whenever a shape has changed (color, style, position, size, ...). This event depends partly on the inherited shape implementation code and may therefore not be fired properly.</li>
+<li><code>shapeBeforeMove</code> - Fired before a shape is set for moving. Use <code>graph.prevent()</code> to prevent the subsequent shape moving.</li>
+<li><code>shapeMoved</code> - Fired after a shape has moved</li>
+<li><code>shapeBeforeResize</code> - Fired before a shape is set for resizing. Use <code>graph.prevent()</code> to prevent the subsequent shape moving.</li>
+<li><code>shapeResized</code> - Fired after a shape has been resized</li>
+<li><code>shapeSelected</code> - Fired when a shape is selected</li>
+<li><code>shapeUnselected</code> - Fired when a shape is unselected</li>
+<li><code>beforeShapeMouseMove</code> - Fired when the shape has focus and before any mouse move event is implemented (resize, move or anything else, really). Use <code>graph.prevent()</code> to prevent the shape from performing any further action at this stage</li>
+<li><code>shapeMouseOver</code> - Fired when the mouse enters the shape perimeter. The perimeter depends on the shape type and whether you are using a bounding box.</li>
+<li><code>shapeMouseOut</code> - Fired when the mouse leaves the shape perimeter.</li>
+</ul>
+<h2>Attaching event listeners</h2><p>Like mentionned above, attaching event listeners is done at the {@see Graph} level. The first argument in the event callback is the shape instance that you can use to compare with a known reference:</p>
+<pre class="prettyprint source"><code>var rectangle = graph.newShape(&quot;rect&quot;, { selectable: true, position: [ { x: &quot;100px&quot;, y: &quot;100px&quot; }, { dx: &quot;100px&quot;, dy: &quot;100px&quot; } ] } ).draw();
+rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) ); // Just fix the positioning of pos2 vs pos1
+graph.on(&quot;shapeSelected&quot;, function( shape ) {
+
+    if( shape == rectangle ) {
+        // Do something for this specific rectangle
+    }
+
+    if( shape.getType() == &quot;rect&quot; ) {
+        // Do something for all rectangles
+    }
+});</code></pre><p>
+    <em><span id="action-1">Select the rectangle to trigger the <code>shapeSelected</code> event</span></em>
+</p>
+
+<p><div id="example-1" class="jsgraph-example"></div></p>
+<script>
+
+function makeGraph( dom ) {
+
+    var g = new Graph( dom ) // Creates a new graph
+    g.resize( 400, 300 ); // Resizes the graph
+    var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+        .autoAxis()
+        .setLineColor('purple')
+        .setLineWidth( 2 );
+
+    g.setTitle("Number of employed people in Switzerland (yearly average)");
+    g.getXAxis().setLabel('Year').gridsOff();
+    g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+    g.draw();
+
+    return g;
+}
+
+var g = makeGraph( "example-1" );
+
+var rectangle = g.newShape("rect", { selectable: true, position: [ { x: "150px", y: "100px" }, { dx: "100px", dy: "100px" } ] } );
+rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) );
+rectangle.draw();
+
+g.on("shapeSelected", function( shape ) {
+
+    if( shape == rectangle ) {        
+        $("#action-1").html("Rectangle selected !");
+    }
+
+    if( shape.getType() == "rect" ) {
+        // Do something for all rectangles
+    }
+});
+
+
+
+</script>
+</article>
+
+</section>
+
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Sun Nov 15th 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		headerText: function(i, heading, $heading) {
+			var main;
+			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
+		  },
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		console.log( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : false,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

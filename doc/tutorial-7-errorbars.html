@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Error bars</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="fluid">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Plugin.html">Plugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieScatterDefaultOptions</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+
+	
+	<div class="row">
+
+		
+
+
+		
+		<div class="col-md-12">
+		
+			<div id="main">
+	    		<h1 class="page-title">Error bars</h1>
+				<section class="tutorial-section">
+
+<header>
+    
+
+    
+</header>
+
+<article>
+    <script src="../dist/jquery.min.js"></script>
+<script src="../dist/jsgraph.js"></script>
+
+
+<script>
+var data = {"x":[1447597298000,1447596769000,1447596423000,1447596077000,1447595732000,1447595204000,1447594858000,1447594513000,1447594177000,1447593639000,1447593293000,1447592947000,1447592612000,1447592074000,1447591728000,1447591382000,1447591047000,1447590509000,1447590163000,1447589817000,1447589481000,1447588944000,1447588598000,1447588262000,1447587916000,1447587377000,1447587032000,1447586696000,1447586351000,1447585813000,1447585467000,1447585131000,1447584786000,1447584249000,1447583903000,1447583567000,1447583221000,1447582682000,1447582337000,1447582001000,1447581655000,1447581116000,1447580781000,1447580436000,1447580090000,1447579550000,1447579215000,1447578869000,1447578524000,1447577985000,1447577650000,1447577304000,1447576958000,1447576429000,1447576084000,1447575738000,1447575392000,1447574864000,1447574519000,1447574173000,1447573827000,1447573297000,1447572952000,1447572606000,1447572271000,1447571732000,1447571387000,1447571041000,1447570705000,1447570165000,1447569820000,1447569474000,1447569139000,1447568601000,1447568255000,1447567909000,1447567573000,1447567033000,1447566688000,1447566352000,1447566006000,1447565467000,1447565122000,1447564787000,1447564441000,1447563902000,1447563556000,1447563221000,1447562875000,1447562335000,1447561989000,1447561654000,1447561308000,1447560770000,1447560424000,1447560088000,1447559742000,1447559203000,1447558867000,1447558522000,1447558176000,1447557636000,1447557300000,1447556954000,1447556609000,1447556070000,1447555734000,1447555388000,1447555043000,1447554504000,1447554168000,1447553822000,1447553477000,1447552937000,1447552601000,1447552255000,1447551910000,1447551381000,1447551035000,1447550689000,1447550344000,1447549814000,1447549468000,1447549122000,1447548776000,1447548247000,1447547901000,1447547555000,1447547220000,1447546680000,1447546334000,1447545988000,1447545653000,1447545114000,1447544768000,1447544422000,1447544087000,1447543546000,1447543201000,1447542855000,1447542519000,1447541979000,1447541634000,1447541288000,1447540952000,1447540413000,1447540068000,1447539722000,1447539386000,1447538845000,1447538499000,1447538164000,1447537818000,1447537278000,1447536932000,1447536596000,1447536251000,1447535710000,1447535364000,1447535029000,1447534683000,1447534143000,1447533807000,1447533461000,1447533116000,1447532575000,1447532239000,1447531893000,1447531548000,1447531009000,1447530673000,1447530327000,1447529981000,1447529441000,1447529105000,1447528759000,1447528414000,1447527874000,1447527538000,1447527192000,1447526846000,1447526307000,1447525971000,1447525625000,1447525279000,1447524749000,1447524403000,1447524058000,1447523712000,1447523182000,1447522837000,1447522491000,1447522145000,1447521614000,1447521269000,1447520923000,1447520588000,1447520049000,1447519703000,1447519357000,1447519022000,1447518482000,1447518136000,1447517790000,1447517455000,1447516916000,1447516570000,1447516225000,1447515889000,1447515349000,1447515004000,1447514668000,1447514322000,1447513784000,1447513438000,1447513102000,1447512756000,1447512218000,1447511872000,1447511536000,1447511191000,1447510650000,1447510315000,1447509969000,1447509624000,1447509086000,1447508750000,1447508404000,1447508059000,1447507518000,1447507183000,1447506837000,1447506492000,1447505963000,1447505618000,1447505272000,1447504926000,1447504396000,1447504050000,1447503705000,1447503360000,1447502830000,1447502485000,1447502139000,1447501794000,1447501264000,1447500918000,1447500572000,1447500227000,1447499698000,1447499353000,1447499007000,1447498661000,1447498131000,1447497786000,1447497440000,1447496901000,1447496566000,1447496220000,1447495874000,1447495538000,1447494999000,1447494654000,1447494308000,1447493972000,1447493432000,1447493087000,1447492741000,1447492405000,1447491866000,1447491520000,1447491175000,1447490839000,1447490298000,1447489953000,1447489607000,1447489271000,1447488732000,1447488386000,1447488050000,1447487705000,1447487165000,1447486819000,1447486484000,1447486138000,1447485598000,1447485252000,1447484916000,1447484571000,1447484031000,1447483685000,1447483349000,1447483003000,1447482464000,1447482128000,1447481783000,1447481437000,1447480896000,1447480560000,1447480214000],"y":[27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.5,27.5,27.5,27.5,27.5,27.560000000000002,27.5,27.5,27.560000000000002,27.560000000000002,27.560000000000002,27.560000000000002,27.62,27.62,27.62,27.68,27.71,27.75,27.68,27.75,27.78,27.810000000000002,27.810000000000002,27.810000000000002,27.84,27.87,27.87,27.87,27.900000000000002,27.93,27.93,27.93,28,28,28,28,28,28.060000000000002,28.03,28.060000000000002,28.060000000000002,28.12,28.12,28.18,28.18,28.25,28.25,28.25,28.310000000000002,28.310000000000002,28.310000000000002,28.34,28.37,28.43,28.400000000000002,28.43,28.43,28.5,28.46,28.5,28.53,28.560000000000002,28.560000000000002,28.560000000000002,28.62,28.62,28.62,28.68,28.68,28.68,28.68,28.68,28.71,28.75,28.75,28.75,28.810000000000002,28.810000000000002,28.810000000000002,28.87,28.87,28.87,28.87,28.87,28.93,28.93,28.93,28.93,29,29.03,29,29.060000000000002,29.060000000000002,29.060000000000002,28.900000000000002,29.060000000000002,29.060000000000002,29.09,29.060000000000002,29.060000000000002,29.12,29.12,29.12,29.12,29.12,29.18,29.12,29.12,29.12,29.12,29.09,29.18,29.25,29.25,29.28,29.310000000000002,29.34,29.37,29.37,29.43,29.5,29.53,29.560000000000002,29.62,29.75,29.810000000000002,29.810000000000002,29.87,29.87,29.93,29.93,29.93,30,30.060000000000002,30.060000000000002,30.12,30.12,30.18,30.150000000000002,30.18,30.21,30.25,30.18,30.18,30.150000000000002,30.18,30.18,30.18,30.18,30.18,30.150000000000002,30.18,30.18,30.18,30.18,30.18,30.18,30.12,30.060000000000002,30.03,30,29.96,29.900000000000002,29.87,29.84,29.810000000000002,29.68,29.62,29.53,29.46,29.37,29.310000000000002,29.25,29.18,29.060000000000002,29,28.93,28.87,28.810000000000002,28.75,28.650000000000002,28.59,28.53,28.46,28.400000000000002,28.37,28.28,28.18,28.12,28.12,28.03,28,27.93,27.93,27.810000000000002,27.810000000000002,27.78,27.75,27.68,27.68,27.650000000000002,27.62,27.560000000000002,27.560000000000002,27.560000000000002,27.560000000000002,27.5,27.5,27.5,27.5,27.43,27.43,27.5,27.46,27.43,27.43,27.46,27.5,27.43,27.43,27.5,27.5,27.46,27.5,27.53,27.560000000000002,27.53,27.560000000000002,27.560000000000002,27.62,27.62,27.62,27.68,27.68,27.68,27.71,27.75,27.810000000000002,27.75,27.810000000000002,27.810000000000002,27.87,27.87,27.87,27.93,27.93,27.93,27.93,28,28.060000000000002,28,28.060000000000002,28.09,28.12,28.12,28.12,28.18,28.25,28.18,28.25,28.25,28.310000000000002,28.310000000000002,28.310000000000002,28.37,28.43,28.37,28.400000000000002,28.43,28.5,28.46,28.5,28.560000000000002,28.62,28.46,28.62,28.68,28.68,28.68,28.75,28.78,28.810000000000002]}
+</script>
+
+
+<p>jsGraph can display error bars and error boxes in <code>scatter</code> and <code>line</code> series. Such error bars are useful to describe the statistical accuracy of your data point and usually represents some multiple of the standard deviation of your system. For instance, you could assign 1 &sigma; to the box and 3 &sigma; to the bars. (<strong>Note: </strong> The syntax used to define error bars in line and scatter series is exactly <strong>the same</strong>. It can be used interchangeably.)</p>
+<h2>A simple example</h2><p>Here we show how to add a single level error in the y direction. The error here will be defined as <code>1 / y</code> where <code>y = sin(x)</code>.</p>
+<pre class="prettyprint source"><code>    var error = [];
+
+    for( var i = 0; i &lt; data.x.length; i ++  ) {
+
+        if( i % 10 == 0 ) {
+            error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );    
+        } else {
+            error.push( null );
+        }
+    }
+
+    var graph = new Graph( &quot;example-1&quot;, {}, { bottom: [ { type: 'time' } ] } );
+    graph.resize( 700, 300 ); // Resizes the graph
+
+    var serie = graph.newSerie(&quot;example&quot;, {}, &quot;line&quot; )
+        .setLabel( &quot;Room light&quot; )
+        .autoAxis()
+        .setData( data )
+        .setLineColor('DarkOrange')
+        .setMarkers( {
+            strokeWidth: 1,
+            fillColor: 'orange',
+            strokeColor: '#E56717'
+        } )
+        .setDataError( error ) // Adds the error data
+        .setErrorStyle( [ 'bar' ] ); // Display bar errors
+
+    graph.draw( );</code></pre><div id="example-1" class="jsgraph-example"></div>
+
+<script>
+
+    var error = [];
+
+    for( var i = 0; i < data.x.length; i ++  ) {
+
+        if( i % 10 == 0 ) {
+            error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );    
+        } else {
+            error.push( null );
+        }
+    }
+
+    var graph = new Graph( "example-1", {}, { bottom: [ { type: 'time' } ] } );
+    graph.resize( 700, 300 ); // Resizes the graph
+    var serie = graph.newSerie("example", {}, "line" )
+        .setLabel( "Room light" )
+        .autoAxis()
+        .setData( data )
+        .setLineColor('DarkOrange')
+        .setMarkers( {
+            strokeWidth: 1,
+            fillColor: 'orange',
+            strokeColor: '#E56717'
+        } )
+        .setDataError( error )
+        .setErrorStyle( [ 'bar' ] );
+
+    graph.draw( );
+</script>
+
+<p>Defining the error data is a bit cryptic, to say the least. But here is a detailed explanation which hopefully will make things clearer. 
+Error data are essentially stored in multi-level array, such as : <code>[ [ [ [ 0.5, 0.2 ], [ 0.8, 0.2 ] ] ] ]</code></p>
+<ul>
+<li>The first level corresponds to your data. Error at index n will be assigned to dat at index n</li>
+<li>The second level differentiates error bars in the x or the y direction. First argument is y, second is x</li>
+<li>The third level reprensents bars or boxes. To know which one is which, refer to the order you specified in the <code>setErrorStyle</code> function. Use <code>false</code> or <code>null</code> not to display errors of this level for this particular point</li>
+<li>The fourth level represents above/below or lefthand/righthand error bars/boxes. Use only one argument to make it symmetric.</li>
+</ul>
+</article>
+
+</section>
+
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Sun Nov 15th 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		headerText: function(i, heading, $heading) {
+			var main;
+			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
+		  },
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		console.log( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : false,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>
