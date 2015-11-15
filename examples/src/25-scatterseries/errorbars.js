@@ -2,20 +2,17 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var seriedata = { x: [], y: [] },
+		var seriedata = [],
 			error = [];
 
 		for( var i = 0; i < 5; i += 0.5  ) {
-			
-			seriedata.x.push( i );
-			seriedata.y.push( Math.sin( i ) );
-
+			seriedata.push([ i , Math.sin( i ) ]);
 			error.push( [ [ [ Math.random() / 10, Math.random() / 10 ], [  ( 1 + Math.random() ) / 5, ( 1 + Math.random() )  / 5 ] ] ] );
 		}
 
 		var graphinstance = new Graph( domGraph );
 
-		var serie = graphinstance.newSerie("serieTest", {}, "line" );
+		var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
 
 		serie
 			.setLabel( "My serie" )

@@ -1,4 +1,4 @@
-define( [], function() {
+define( [ '../graph.util' ], function( util ) {
 
   return function() {
 
@@ -22,52 +22,55 @@ define( [], function() {
 
           j = bars[ 0 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
 
           j = bars[ 1 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
 
         } else {
 
           j = bars[ 0 ];
 
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
           j = bars[ 1 ];
           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
         }
       }
     };
 
-    this.makeError = function( orientation, level, coord, origin ) {
+    this.makeError = function( orientation, level, coord, origin, quadOrientation ) {
 
+      var method;
       switch ( this.errorstyles[ level ].type ) {
-
         case 'bar':
-          return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
+          method = "makeBar";
           break;
 
         case 'box':
-          return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
+          method = "makeBox";
           break;
       }
+
+      return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+
     };
 
     this.makeBarY = function( coordY, origin, style ) {
-      var width = style.width || 10;
+      var width = !util.isNumeric( style.width ) ? 10 : style.width;
       return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
     };
 
     this.makeBoxY = function( coordY, origin, style ) {
-        return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
-      },
+      return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
+    };
 
-      this.makeBarX = function( coordX, origin, style ) {
-        var height = style.height || 10;
-        return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
-      };
+    this.makeBarX = function( coordX, origin, style ) {
+      var width = !util.isNumeric( style.width ) ? 10 : style.width;
+      return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
+    };
 
     this.makeBoxX = function( coordX, origin, style ) {
 
@@ -102,6 +105,9 @@ define( [], function() {
         style.dom = document.createElementNS( self.graph.ns, 'path' );
         style.dom.setAttribute( 'fill', style.fillColor || 'none' );
         style.dom.setAttribute( 'stroke', style.strokeColor || 'black' );
+        style.dom.setAttribute( 'stroke-opacity', style.strokeOpacity || 1 );
+        style.dom.setAttribute( 'fill-opacity', style.fillOpacity || 1 );
+        style.dom.setAttribute( 'stroke-width', style.strokeWidth || 1 );
 
         self.groupMain.appendChild( style.dom );
       }
@@ -165,6 +171,7 @@ define( [], function() {
   */
 
       this.errorstyles = styles;
+
       return this;
     };
 

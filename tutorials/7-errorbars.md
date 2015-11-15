@@ -40,7 +40,7 @@ Here we show how to add a single level error in the y direction. The error here 
 			strokeColor: '#E56717'
 		} )
 		.setDataError( error ) // Adds the error data
-		.setErrorStyle( [ 'bar' ] ); // Display bar errors
+		.setErrorStyle( [ { type: 'bar', width: 0, strokeColor: '#E56717', strokeOpacity: 0.3 } ] ) // Display bar errors
 
 	graph.draw( );
 
@@ -55,14 +55,30 @@ Here we show how to add a single level error in the y direction. The error here 
 
 	for( var i = 0; i < data.x.length; i ++  ) {
 		
-		if( i % 10 == 0 ) {
-			error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );	
-		} else {
-			error.push( null );
-		}
+		
+		error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );	
+		
 	}
 
-	var graph = new Graph( "example-1", {}, { bottom: [ { type: 'time' } ] } );
+	var graph = new Graph( "example-1", {
+
+		dblclick: {
+			type: 'plugin',
+			plugin: 'zoom',
+			options: {
+				mode: 'total'
+			}
+		},
+
+		plugins: {
+			'zoom': { zoomMode: 'xy' }
+		},
+
+		pluginAction: {
+			'zoom': { shift: false, ctrl: false }
+		}
+
+	}, { bottom: [ { type: 'time' } ] } );
 	graph.resize( 700, 300 ); // Resizes the graph
 	var serie = graph.newSerie("example", {}, "line" )
 		.setLabel( "Room light" )
@@ -75,7 +91,7 @@ Here we show how to add a single level error in the y direction. The error here 
 			strokeColor: '#E56717'
 		} )
 		.setDataError( error )
-		.setErrorStyle( [ 'bar' ] );
+		.setErrorStyle( [ { type: 'bar', y: { width: 0, strokeColor: '#E56717', strokeOpacity: 0.3 } }  ] ) // Display bar errors
 
 	graph.draw( );
 </script>
