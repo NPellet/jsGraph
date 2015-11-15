@@ -21,6 +21,11 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
   RectangleShape.prototype.createDom = function() {
     var self = this;
     this._dom = document.createElementNS( this.graph.ns, 'rect' );
+
+    this.setStrokeColor( 'black' );
+    this.setStrokeWidth( 1 );
+    this.setFillColor( 'transparent' );
+
     return this;
   };
 

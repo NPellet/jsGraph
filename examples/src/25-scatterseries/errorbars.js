@@ -12,7 +12,7 @@ define( function() {
 
 		var graphinstance = new Graph( domGraph );
 
-		var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
+		var serie = graphinstance.newSerie("serieTest", {}, "line" );
 
 		serie
 			.setLabel( "My serie" )

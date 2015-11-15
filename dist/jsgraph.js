@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-21
+ * jsGraph JavaScript Graphing Library v1.13.3-22
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-15T12:23Z
+ * Date: 2015-11-15T14:34Z
  */
 
 ( function( global, factory ) {
@@ -9198,11 +9198,248 @@
 
     /* 
      * Build: new source file 
+     * File name : mixins/graph.mixin.errorbars
+     * File path : /Users/normanpellet/Documents/Web/graph/src/mixins/graph.mixin.errorbars.js
+     */
+
+    build[ './mixins/graph.mixin.errorbars' ] = ( function() {
+      /** @global */
+      /** @ignore */
+
+      return function() {
+
+        this.doErrorDraw = function( orientation, error, originVal, originPx, xpx, ypx ) {
+
+          if ( !( error instanceof Array ) ) {
+            error = [ error ];
+          }
+
+          var functionName = orientation == 'y' ? 'getY' : 'getX';
+          var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+          var j;
+
+          if ( isNaN( xpx ) || isNaN( ypx ) ) {
+            return;
+          }
+
+          for ( var i = 0, l = error.length; i < l; i++ ) {
+
+            if ( error[ i ] instanceof Array ) { // TOP
+
+              j = bars[ 0 ];
+              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
+
+              j = bars[ 1 ];
+              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
+
+            } else {
+
+              j = bars[ 0 ];
+
+              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
+              j = bars[ 1 ];
+              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
+            }
+          }
+        };
+
+        this.makeError = function( orientation, level, coord, origin ) {
+
+          switch ( this.errorstyles[ level ].type ) {
+
+            case 'bar':
+              return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
+              break;
+
+            case 'box':
+              return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
+              break;
+          }
+        };
+
+        this.makeBarY = function( coordY, origin, style ) {
+          var width = style.width || 10;
+          return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
+        };
+
+        this.makeBoxY = function( coordY, origin, style ) {
+            return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
+          },
+
+          this.makeBarX = function( coordX, origin, style ) {
+            var height = style.height || 10;
+            return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
+          };
+
+        this.makeBoxX = function( coordX, origin, style ) {
+
+          return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
+        };
+
+        this.setDataError = function( error ) {
+          this.error = error;
+          this.dataHasChanged();
+          return this;
+        };
+
+        this.setErrorStyle = function( errorstyles ) {
+
+          var self = this;
+
+          errorstyles = errorstyles || [ 'box', 'bar' ];
+
+          // Ensure array
+          if ( !Array.isArray( errorstyles ) ) {
+            errorstyles = [ errorstyles ];
+          }
+
+          var styles = [];
+          var pairs = [
+            [ 'y', 'top', 'bottom' ],
+            [ 'x', 'left', 'right' ]
+          ];
+
+          function makePath( style ) {
+
+            style.dom = document.createElementNS( self.graph.ns, 'path' );
+            style.dom.setAttribute( 'fill', style.fillColor || 'none' );
+            style.dom.setAttribute( 'stroke', style.strokeColor || 'black' );
+
+            self.groupMain.appendChild( style.dom );
+          }
+
+          for ( var i = 0; i < errorstyles.length; i++ ) {
+            // i is bar or box
+
+            styles[ i ] = {};
+
+            if ( typeof errorstyles[ i ] == "string" ) {
+
+              errorstyles[ i ] = {
+                type: errorstyles[ i ],
+                y: {}
+              };
+
+            }
+
+            styles[ i ].type = errorstyles[ i ].type;
+
+            for ( var j = 0, l = pairs.length; j < l; j++ ) {
+
+              if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
+
+                errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+                errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+
+              }
+
+              for ( var k = 1; k <= 2; k++ ) {
+
+                if ( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
+
+                  styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
+                  makePath( styles[ i ][ pairs[ j ][ k ] ] );
+                }
+              }
+            }
+          }
+          /*
+          // None is defined
+          if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
+
+            styles[ i ].top = errorstyles[ i ];
+            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
+            styles[ i ].bottom = errorstyles[ i ];
+            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
+
+          } else if( errrostyles[ i ].top ) {
+
+            styles[ i ].bottom = null; // No bottom displayed
+            styles[ i ].top = errrostyles[ i ].top;
+            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
+
+          } else {
+
+            styles[ i ].bottom = errorstyles[ i ].bottom;
+            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
+            styles[ i ].top = null;
+          }
+  */
+
+          this.errorstyles = styles;
+          return this;
+        };
+
+        this.errorDrawInit = function() {
+          var error;
+          //  var pathError = "M 0 0 ";
+
+          if ( this.errorstyles ) {
+
+            for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+
+              this.errorstyles[ i ].paths = {
+                top: "",
+                bottom: "",
+                left: "",
+                right: ""
+              };
+
+            }
+
+          }
+        }
+
+        this.errorAddPoint = function( j, dataX, dataY, xpx, ypx ) {
+
+          var error;
+          if ( this.error && ( error = this.error[ j / 2 ] ) ) {
+
+            //    pathError += "M " + xpx + " " + ypx;
+
+            if ( error[ 0 ] ) {
+              this.doErrorDraw( 'y', error[ 0 ], dataY, ypx, xpx, ypx );
+            }
+
+            if ( error[ 1 ] ) {
+              this.doErrorDraw( 'x', error[ 1 ], dataX, xpx, xpx, ypx );
+            }
+
+          }
+
+        }
+
+        this.errorDraw = function() {
+
+          if ( this.error && this.errorstyles ) {
+
+            for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+
+              for ( var j in this.errorstyles[ i ].paths ) {
+
+                if ( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
+                  this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
+                }
+              }
+            }
+          }
+        }
+
+      };
+
+    } )();
+
+    /* 
+     * Build: new source file 
      * File name : series/graph.serie.line
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
      */
 
-    build[ './series/graph.serie.line' ] = ( function( SerieLineNonInstanciable, SlotOptimizer, util ) {
+    build[ './series/graph.serie.line' ] = ( function( SerieLineNonInstanciable, SlotOptimizer, util, ErrorBarMixin ) {
       /** @global */
       /** @ignore */
 
@@ -9819,6 +10056,10 @@
           this.lookForMaxima = true;
           this.lookForMinima = false;
 
+          if ( this.error ) {
+            this.errorDrawInit();
+          }
+
           if ( !this._draw_slot() ) {
 
             if ( this.mode == 'x_equally_separated' ) {
@@ -9830,6 +10071,10 @@
               this._draw_standard();
 
             }
+          }
+
+          if ( this.error ) {
+            this.errorDraw();
           }
 
           this.makePeakPicking();
@@ -9981,8 +10226,8 @@
                       }
 
                       this._createLine();
-                      this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                      this._addPoint( xpx2, ypx2, false, false );
+                      this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                      this._addPoint( xpx2, ypx2, lastX, lastY, false, false, false );
 
                     } else if ( !lastPointOutside ) { // We were inside and now go outside
 
@@ -9991,20 +10236,20 @@
                         console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                       }
 
-                      this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                      this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
 
                     } else {
 
                       // No crossing: do nothing
                       if ( pointOnAxis.length == 2 ) {
                         this._createLine();
-                        this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                        this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
+                        this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                        this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                       }
 
                     }
                   } else if ( !pointOutside ) {
-                    this._addPoint( xpx2, ypx2, false, false );
+                    this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
                   } // else {
                   // Norman:
                   // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
@@ -10052,7 +10297,7 @@
             }
             // OPTIMIZATION END
 
-            this._addPoint( xpx2, ypx2, false, false );
+            this._addPoint( xpx2, ypx2, x, y, j, false, false );
 
             this.detectPeaks( x, y );
 
@@ -10115,6 +10360,8 @@
           j,
           k,
           m,
+          x,
+          y,
           xpx,
           ypx,
           toBreak,
@@ -10138,13 +10385,19 @@
 
             if ( !this.isFlipped() ) {
 
-              xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-              ypx = this.getY( data[ i ][ j ] );
+              x = xData[ i ].x + j * xData[ i ].dx;
+              y = data[ i ][ j ];
+
+              xpx = this.getX( x );
+              ypx = this.getY( y );
 
             } else {
 
-              ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-              xpx = this.getY( data[ i ][ j ] );
+              y = xData[ i ].x + j * xData[ i ].dx;
+              x = data[ i ][ j ];
+
+              ypx = this.getX( y );
+              xpx = this.getY( x );
 
             }
 
@@ -10154,7 +10407,7 @@
             }
             // OPTIMIZATION END
 
-            this._addPoint( xpx, ypx, false, false );
+            this._addPoint( xpx, ypx, x, y, j, false, false );
 
             // OPTIMIZATION START
             if ( !this._optimize_after( xpx, ypx ) ) {
@@ -10190,7 +10443,7 @@
 
         if ( this._optimizeBuffer ) {
 
-          this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false );
+          this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false, false, false, false );
           this._optimizeBuffer = false;
 
         }
@@ -10302,10 +10555,10 @@
           }
 * @memberof SerieLine
 */
-            this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false );
+            this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false, false, false, false );
             this._addPoint( max, ypx, true, false );
-            this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false );
-            this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true, false );
+            this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false, false, false, false );
+            this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, false, false, false, true, false );
 
             //    k++;
           } else {
@@ -10318,10 +10571,10 @@
               allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
             }
 
-            this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false );
+            this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false, false, false, false );
             this._addPoint( xpx, max, true, false );
-            this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false );
-            this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true, false );
+            this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false, false, false, false );
+            this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), false, false, false, true, false );
 
             //this.counter ++;
           }
@@ -10355,7 +10608,7 @@
         this.markerLabelSquare.setAttribute( 'display', 'none' );
       };
 
-      SerieLine.prototype._addPoint = function( xpx, ypx, move, allowMarker ) {
+      SerieLine.prototype._addPoint = function( xpx, ypx, x, y, j, move, allowMarker ) {
         var pos;
 
         /*if( ! this.currentLineId ) {
@@ -10386,6 +10639,10 @@
           this.currentLine += pos;
           this.currentLine += " ";
 
+        }
+
+        if ( this.error ) {
+          this.errorAddPoint( j, x, y, xpx, ypx );
         }
 
         if ( !this.markerPoints ) {
@@ -11569,8 +11826,10 @@
         }
       }
 
+      ErrorBarMixin.call( SerieLine.prototype ); // Add error bar mixin
+
       return SerieLine;
-    } )( build[ "./series/graph.serie" ], build[ "./series/slotoptimizer" ], build[ "./graph.util" ] );
+    } )( build[ "./series/graph.serie" ], build[ "./series/slotoptimizer" ], build[ "./graph.util" ], build[ "./mixins/graph.mixin.errorbars" ] );
 
     /* 
      * Build: new source file 
@@ -12178,7 +12437,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
      */
 
-    build[ './series/graph.serie.scatter' ] = ( function( GraphSerieNonInstanciable, util ) {
+    build[ './series/graph.serie.scatter' ] = ( function( GraphSerieNonInstanciable, util, ErrorBarMixin ) {
       /** @global */
       /** @ignore */
 
@@ -12459,22 +12718,8 @@
 
           j = 0, k = 0, m = this.data.length;
 
-          var error;
-          //	var pathError = "M 0 0 ";
-
-          if ( this.errorstyles ) {
-
-            for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
-
-              this.errorstyles[ i ].paths = {
-                top: "",
-                bottom: "",
-                left: "",
-                right: ""
-              };
-
-            }
-
+          if ( this.error ) {
+            this.errorDrawInit();
           }
 
           for ( ; j < m; j += 2 ) {
@@ -12485,18 +12730,8 @@
             var valY = this.data[ j + incrYFlip ],
               coordY;
 
-            if ( this.error && ( error = this.error[ j / 2 ] ) ) {
-
-              //		pathError += "M " + xpx + " " + ypx;
-
-              if ( error[ 0 ] ) {
-                this.doErrorDraw( 'y', error[ 0 ], this.data[ j + incrYFlip ], ypx, xpx, ypx );
-              }
-
-              if ( error[ 1 ] ) {
-                this.doErrorDraw( 'x', error[ 1 ], this.data[ j + incrXFlip ], xpx, xpx, ypx );
-              }
-
+            if ( this.error ) {
+              this.errorAddPoint( j, this.data[ j + incrXFlip ], this.data[ j + incrYFlip ], xpx, ypx );
             }
 
             this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
@@ -12507,95 +12742,14 @@
             //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
           }
 
-          if ( this.errorstyles ) {
-
-            for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
-
-              for ( var j in this.errorstyles[ i ].paths ) {
-
-                if ( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
-                  this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
-                }
-              }
-            }
+          if ( this.error ) {
+            this.errorDraw();
           }
 
           // This will automatically create the shapes      
           this.applyStyle( "unselected", keys );
 
           this.groupMain.appendChild( this.groupPoints );
-        },
-
-        doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
-
-          if ( !( error instanceof Array ) ) {
-            error = [ error ];
-          }
-
-          var functionName = orientation == 'y' ? 'getY' : 'getX';
-          var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
-          var j;
-
-          if ( isNaN( xpx ) || isNaN( ypx ) ) {
-            return;
-          }
-
-          for ( var i = 0, l = error.length; i < l; i++ ) {
-
-            if ( error[ i ] instanceof Array ) { // TOP
-
-              j = bars[ 0 ];
-              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx );
-
-              j = bars[ 1 ];
-              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx );
-
-            } else {
-
-              j = bars[ 0 ];
-
-              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx );
-              j = bars[ 1 ];
-              this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-              this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx );
-            }
-          }
-        },
-
-        makeError: function( orientation, level, coord, origin ) {
-
-          switch ( this.errorstyles[ level ].type ) {
-
-            case 'bar':
-              return this[ "makeBar" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
-              break;
-
-            case 'box':
-              return this[ "makeBox" + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ] );
-              break;
-          }
-        },
-
-        makeBarY: function( coordY, origin, style ) {
-          var width = style.width || 10;
-          return " V " + coordY + " m -" + ( width / 2 ) + " 0 h " + ( width ) + " m -" + ( width / 2 ) + " 0 V " + origin + " ";
-        },
-
-        makeBoxY: function( coordY, origin, style ) {
-          return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
-        },
-
-        makeBarX: function( coordX, origin, style ) {
-          var height = style.height || 10;
-          return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
-        },
-
-        makeBoxX: function( coordX, origin, style ) {
-
-          return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
         },
 
         _addPoint: function( xpx, ypx, k ) {
@@ -12737,100 +12891,6 @@
 
         },
 
-        setDataError: function( error ) {
-          this.error = error;
-          this.dataHasChanged();
-          return this;
-        },
-
-        setErrorStyle: function( errorstyles ) {
-
-          var self = this;
-
-          errorstyles = errorstyles || [ 'box', 'bar' ];
-
-          // Ensure array
-          if ( !Array.isArray( errorstyles ) ) {
-            errorstyles = [ errorstyles ];
-          }
-
-          var styles = [];
-          var pairs = [
-            [ 'y', 'top', 'bottom' ],
-            [ 'x', 'left', 'right' ]
-          ];
-
-          function makePath( style ) {
-
-            style.dom = document.createElementNS( self.graph.ns, 'path' );
-            style.dom.setAttribute( 'fill', style.fillColor || 'none' );
-            style.dom.setAttribute( 'stroke', style.strokeColor || 'black' );
-
-            self.groupMain.appendChild( style.dom );
-          }
-
-          for ( var i = 0; i < errorstyles.length; i++ ) {
-            // i is bar or box
-
-            styles[ i ] = {};
-
-            if ( typeof errorstyles[ i ] == "string" ) {
-
-              errorstyles[ i ] = {
-                type: errorstyles[ i ],
-                y: {}
-              };
-
-            }
-
-            styles[ i ].type = errorstyles[ i ].type;
-
-            for ( var j = 0, l = pairs.length; j < l; j++ ) {
-
-              if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
-
-                errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-                errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-
-              }
-
-              for ( var k = 1; k <= 2; k++ ) {
-
-                if ( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
-
-                  styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
-                  makePath( styles[ i ][ pairs[ j ][ k ] ] );
-                }
-              }
-            }
-          }
-          /*
-				// None is defined
-				if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
-
-					styles[ i ].top = errorstyles[ i ];
-					styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-					styles[ i ].bottom = errorstyles[ i ];
-					styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-
-				} else if( errrostyles[ i ].top ) {
-
-					styles[ i ].bottom = null; // No bottom displayed
-					styles[ i ].top = errrostyles[ i ].top;
-					styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-
-				} else {
-
-					styles[ i ].bottom = errorstyles[ i ].bottom;
-					styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-					styles[ i ].top = null;
-				}
-*/
-
-          this.errorstyles = styles;
-          return this;
-        },
-
         unselectPoint: function( index ) {
           this.selectPoint( index, false );
 
@@ -12881,8 +12941,10 @@
 
       } );
 
+      ErrorBarMixin.call( GraphSerieScatter.prototype ); // Add error bar mixin
+
       return GraphSerieScatter;
-    } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
+    } )( build[ "./series/graph.serie" ], build[ "./graph.util" ], build[ "./mixins/graph.mixin.errorbars" ] );
 
     /* 
      * Build: new source file 
@@ -14728,22 +14790,6 @@
 
         var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this._mouseCoords.x, coords.y - this._mouseCoords.y );
 
-        if ( this.options ) {
-
-          if ( this.moving ) {
-
-            if ( this.options.onMove ) {
-              this.options.onMove.call( this );
-            }
-
-          } else {
-
-            if ( this.options.onResize ) {
-              this.options.onResize.call( this );
-            }
-          }
-        }
-
         return ret;
 
       };
@@ -15785,7 +15831,9 @@
           return false;
         },
 
-        applyPosition: function() {}
+        applyPosition: function() {
+
+        }
 
       } );
 
@@ -16085,6 +16133,11 @@
       RectangleShape.prototype.createDom = function() {
         var self = this;
         this._dom = document.createElementNS( this.graph.ns, 'rect' );
+
+        this.setStrokeColor( 'black' );
+        this.setStrokeWidth( 1 );
+        this.setFillColor( 'transparent' );
+
         return this;
       };
 

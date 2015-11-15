@@ -51,7 +51,8 @@ makeGraph( "example-1" );
 
 ## Lines
 
-The basic line with the type ```line``` and only two positions (the start and the end of the line)
+The basic line with the type ```line``` and only two positions (the start and the end of the line).
+
 
 ```
 var line = graph.newShape( 'line', {
@@ -91,39 +92,39 @@ line.draw();
 
 ( function() {
 
-var graph = makeGraph( 'example-2' );
-var line = graph.newShape( 'line', {
-	
-	selectable: true,
-	handles: true,
-	resizable: true,
-	movable: true,
+	var graph = makeGraph( 'example-2' );
+	var line = graph.newShape( 'line', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
 
-	strokeWidth: 3,
-	strokeColor: "ForestGreen",
-	
-	position: [
-		{ x: 1950, y: 3000 },
-		{ x: 1960, y: "50px" }
-	],
+		strokeWidth: 3,
+		strokeColor: "ForestGreen",
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		],
 
-	labels: [
-		{
-			text: "Shape label",
-			color: "ForestGreen",
-			size: 12,
-			angle: 10,
-			baseline: "hanging",
-			anchor: "end",
-			position: {
-				x: 1950,
-				y: 3200
+		labels: [
+			{
+				text: "Shape label",
+				color: "ForestGreen",
+				size: 12,
+				angle: 20,
+				baseline: "hanging",
+				anchor: "end",
+				position: {
+					x: 1950,
+					y: 3200
+				}
 			}
-		}
-	]
-});
+		]
+	});
 
-line.draw();
+	line.draw();
 
 
 }) ();
@@ -133,8 +134,7 @@ line.draw();
 
 ## Rectangles
 
-Rectangles with the type ```rect``` and only two positions (two opposite corners)
-
+Rectangles with the type ```rect``` and only two positions (two opposite corners). 
 
 
 <div id="example-3" class="jsgraph-example"></div>
@@ -164,7 +164,6 @@ Rectangles with the type ```rect``` and only two positions (two opposite corners
 
 	graph.on("shapeChanged", function( shape ) {
 		updatePre( shape );
-		
 	});
 
 	function updatePre( shape ) {
@@ -178,7 +177,91 @@ Rectangles with the type ```rect``` and only two positions (two opposite corners
 
 </script>
 
-a
 
-### asd
-sdasd
+## Arrows
+
+Arrows with the type ```arrow``` and only two positions (the start and the end position). 
+
+
+<div id="example-4" class="jsgraph-example"></div>
+<script>
+( function() {
+
+	var graph = makeGraph( "example-4" );
+	var arrow = graph.newShape( 'arrow', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
+
+		strokeWidth: 2,
+		strokeColor: "ForestGreen",
+		fill: 'GreenSnake',
+		fillOpacity: 0.2,
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		]
+	});
+
+	arrow.draw();
+
+}) ();
+
+</script>
+
+
+
+## Label
+
+The label shape (type ```label```) displays a label without particular shape. It can be used as simply as:
+
+```
+graph.newShape( 'label', {
+	
+	labels: [ {
+		text: "Shape label",
+		color: "ForestGreen",
+		size: 12,
+		angle: 20,
+		baseline: "hanging",
+		anchor: "end",
+		position: {
+			x: 1950,
+			y: 3200
+		}
+	} ]
+} ).draw();
+```
+
+<div id="example-5" class="jsgraph-example"></div>
+<script>
+( function() {
+
+	var graph = makeGraph( "example-5" );
+	graph.newShape( 'label', {
+
+		labels: [ {
+			text: "Shape label",
+			color: "ForestGreen",
+			size: 12,
+			angle: 20,
+			baseline: "hanging",
+			anchor: "end",
+			position: {
+				x: 1950,
+				y: 3200
+			}
+		} ]
+
+	}).draw();
+
+
+}) ();
+
+</script>
+
+
+asasdasd

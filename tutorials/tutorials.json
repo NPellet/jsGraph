@@ -18,5 +18,10 @@
 
     "5-shapes-types": {
          "title": "Types of shapes"
+    },
+
+
+    "6-shapes-events": {
+         "title": "Shape events"
     }
  }

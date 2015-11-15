@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
 				</ul>
 			</li>
 			
@@ -41,7 +41,7 @@
 			<li class="dropdown">
 				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li>
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li>
 				</ul>
 			</li>
 			
@@ -125,7 +125,7 @@ makeGraph( "example-1" );
 
 
 
-<h2>Lines</h2><p>The basic line with the type <code>line</code> and only two positions (the start and the end of the line)</p>
+<h2>Lines</h2><p>The basic line with the type <code>line</code> and only two positions (the start and the end of the line).</p>
 <pre class="prettyprint source"><code>var line = graph.newShape( 'line', {
 
     selectable: true,
@@ -159,39 +159,39 @@ line.draw();</code></pre><p><div id="example-2" class="jsgraph-example"></div></
 
 ( function() {
 
-var graph = makeGraph( 'example-2' );
-var line = graph.newShape( 'line', {
+    var graph = makeGraph( 'example-2' );
+    var line = graph.newShape( 'line', {
 
-    selectable: true,
-    handles: true,
-    resizable: true,
-    movable: true,
+        selectable: true,
+        handles: true,
+        resizable: true,
+        movable: true,
 
-    strokeWidth: 3,
-    strokeColor: "ForestGreen",
+        strokeWidth: 3,
+        strokeColor: "ForestGreen",
 
-    position: [
-        { x: 1950, y: 3000 },
-        { x: 1960, y: "50px" }
-    ],
+        position: [
+            { x: 1950, y: 3000 },
+            { x: 1960, y: "50px" }
+        ],
 
-    labels: [
-        {
-            text: "Shape label",
-            color: "ForestGreen",
-            size: 12,
-            angle: 10,
-            baseline: "hanging",
-            anchor: "end",
-            position: {
-                x: 1950,
-                y: 3200
+        labels: [
+            {
+                text: "Shape label",
+                color: "ForestGreen",
+                size: 12,
+                angle: 20,
+                baseline: "hanging",
+                anchor: "end",
+                position: {
+                    x: 1950,
+                    y: 3200
+                }
             }
-        }
-    ]
-});
+        ]
+    });
 
-line.draw();
+    line.draw();
 
 
 }) ();
@@ -199,7 +199,7 @@ line.draw();
 </script>
 
 
-<h2>Rectangles</h2><p>Rectangles with the type <code>rect</code> and only two positions (two opposite corners)</p>
+<h2>Rectangles</h2><p>Rectangles with the type <code>rect</code> and only two positions (two opposite corners). </p>
 <p><div id="example-3" class="jsgraph-example"></div></p>
 <p><pre id="example-3-pos"></pre></p>
 <script>
@@ -227,7 +227,6 @@ line.draw();
 
     graph.on("shapeChanged", function( shape ) {
         updatePre( shape );
-
     });
 
     function updatePre( shape ) {
@@ -241,8 +240,83 @@ line.draw();
 
 </script>
 
-<p>a</p>
-<h3>asd</h3><p>sdasd</p>
+
+<h2>Arrows</h2><p>Arrows with the type <code>arrow</code> and only two positions (the start and the end position). </p>
+<p><div id="example-4" class="jsgraph-example"></div></p>
+<script>
+( function() {
+
+    var graph = makeGraph( "example-4" );
+    var arrow = graph.newShape( 'arrow', {
+
+        selectable: true,
+        handles: true,
+        resizable: true,
+        movable: true,
+
+        strokeWidth: 2,
+        strokeColor: "ForestGreen",
+        fill: 'GreenSnake',
+        fillOpacity: 0.2,
+
+        position: [
+            { x: 1950, y: 3000 },
+            { x: 1960, y: "50px" }
+        ]
+    });
+
+    arrow.draw();
+
+}) ();
+
+</script>
+
+
+
+<h2>Label</h2><p>The label shape (type <code>label</code>) displays a label without particular shape. It can be used as simply as:</p>
+<pre class="prettyprint source"><code>graph.newShape( 'label', {
+
+    labels: [ {
+        text: &quot;Shape label&quot;,
+        color: &quot;ForestGreen&quot;,
+        size: 12,
+        angle: 20,
+        baseline: &quot;hanging&quot;,
+        anchor: &quot;end&quot;,
+        position: {
+            x: 1950,
+            y: 3200
+        }
+    } ]
+} ).draw();</code></pre><p><div id="example-5" class="jsgraph-example"></div></p>
+<script>
+( function() {
+
+    var graph = makeGraph( "example-5" );
+    graph.newShape( 'label', {
+
+        labels: [ {
+            text: "Shape label",
+            color: "ForestGreen",
+            size: 12,
+            angle: 20,
+            baseline: "hanging",
+            anchor: "end",
+            position: {
+                x: 1950,
+                y: 3200
+            }
+        } ]
+
+    }).draw();
+
+
+}) ();
+
+</script>
+
+
+<p>asasdasd</p>
 </article>
 
 </section>
@@ -265,7 +339,7 @@ line.draw();
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Mon Nov 2nd 2015 using the <a
+	on Sun Nov 15th 2015 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

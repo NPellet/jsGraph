@@ -1419,22 +1419,6 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     var ret = this.handleMouseMoveImpl( e, deltaX, deltaY, coords.x - this._mouseCoords.x, coords.y - this._mouseCoords.y );
 
-    if ( this.options ) {
-
-      if ( this.moving ) {
-
-        if ( this.options.onMove ) {
-          this.options.onMove.call( this );
-        }
-
-      } else {
-
-        if ( this.options.onResize ) {
-          this.options.onResize.call( this );
-        }
-      }
-    }
-
     return ret;
 
   };

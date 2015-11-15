@@ -1,4 +1,4 @@
-define( [ "graph.position" ], function( GraphPosition ) {
+define( [ "./graph.position" ], function( GraphPosition ) {
 
   /** 
    * Default legend configuration

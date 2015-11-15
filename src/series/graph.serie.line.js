@@ -1,4 +1,4 @@
-define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( SerieLineNonInstanciable, SlotOptimizer, util ) {
+define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( SerieLineNonInstanciable, SlotOptimizer, util, ErrorBarMixin ) {
 
   "use strict";
 
@@ -613,6 +613,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
+      if ( this.error ) {
+        this.errorDrawInit();
+      }
+
       if ( !this._draw_slot() ) {
 
         if ( this.mode == 'x_equally_separated' ) {
@@ -624,6 +628,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           this._draw_standard();
 
         }
+      }
+
+      if ( this.error ) {
+        this.errorDraw();
       }
 
       this.makePeakPicking();
@@ -775,8 +783,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                   }
 
                   this._createLine();
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                  this._addPoint( xpx2, ypx2, false, false );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                  this._addPoint( xpx2, ypx2, lastX, lastY, false, false, false );
 
                 } else if ( !lastPointOutside ) { // We were inside and now go outside
 
@@ -785,20 +793,20 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
                     console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
                   }
 
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
 
                 } else {
 
                   // No crossing: do nothing
                   if ( pointOnAxis.length == 2 ) {
                     this._createLine();
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                   }
 
                 }
               } else if ( !pointOutside ) {
-                this._addPoint( xpx2, ypx2, false, false );
+                this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
               } // else {
               // Norman:
               // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
@@ -846,7 +854,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
         }
         // OPTIMIZATION END
 
-        this._addPoint( xpx2, ypx2, false, false );
+        this._addPoint( xpx2, ypx2, x, y, j, false, false );
 
         this.detectPeaks( x, y );
 
@@ -909,6 +917,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       j,
       k,
       m,
+      x,
+      y,
       xpx,
       ypx,
       toBreak,
@@ -932,13 +942,19 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
         if ( !this.isFlipped() ) {
 
-          xpx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-          ypx = this.getY( data[ i ][ j ] );
+          x = xData[ i ].x + j * xData[ i ].dx;
+          y = data[ i ][ j ];
+
+          xpx = this.getX( x );
+          ypx = this.getY( y );
 
         } else {
 
-          ypx = this.getX( xData[ i ].x + j * xData[ i ].dx );
-          xpx = this.getY( data[ i ][ j ] );
+          y = xData[ i ].x + j * xData[ i ].dx;
+          x = data[ i ][ j ];
+
+          ypx = this.getX( y );
+          xpx = this.getY( x );
 
         }
 
@@ -948,7 +964,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
         }
         // OPTIMIZATION END
 
-        this._addPoint( xpx, ypx, false, false );
+        this._addPoint( xpx, ypx, x, y, j, false, false );
 
         // OPTIMIZATION START
         if ( !this._optimize_after( xpx, ypx ) ) {
@@ -984,7 +1000,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
     if ( this._optimizeBuffer ) {
 
-      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false );
+      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false, false, false, false );
       this._optimizeBuffer = false;
 
     }
@@ -1096,10 +1112,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           }
 * @memberof SerieLine
 */
-        this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false );
+        this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false, false, false, false );
         this._addPoint( max, ypx, true, false );
-        this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false );
-        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true, false );
+        this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false, false, false, false );
+        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, false, false, false, true, false );
 
         //    k++;
       } else {
@@ -1112,10 +1128,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
         }
 
-        this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false, false, false, false );
         this._addPoint( xpx, max, true, false );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true, false );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false, false, false, false );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), false, false, false, true, false );
 
         //this.counter ++;
       }
@@ -1149,7 +1165,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
     this.markerLabelSquare.setAttribute( 'display', 'none' );
   };
 
-  SerieLine.prototype._addPoint = function( xpx, ypx, move, allowMarker ) {
+  SerieLine.prototype._addPoint = function( xpx, ypx, x, y, j, move, allowMarker ) {
     var pos;
 
     /*if( ! this.currentLineId ) {
@@ -1180,6 +1196,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       this.currentLine += pos;
       this.currentLine += " ";
 
+    }
+
+    if ( this.error ) {
+      this.errorAddPoint( j, x, y, xpx, ypx );
     }
 
     if ( !this.markerPoints ) {
@@ -2363,6 +2383,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       graph.picks[ i ].show();
     }
   }
+
+  ErrorBarMixin.call( SerieLine.prototype ); // Add error bar mixin
 
   return SerieLine;
 } );

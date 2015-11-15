@@ -21,7 +21,9 @@ define( [ './graph.shape' ], function( GraphShape ) {
       return false;
     },
 
-    applyPosition: function() {}
+    applyPosition: function() {
+
+    }
 
   } );
 
