@@ -101,64 +101,86 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     } else if ( typeof data[ 0 ] == 'object' ) {
 
-      this.mode = 'x_equally_separated';
+      if ( data[ 0 ].x ) {
 
-      var number = 0,
-        numbers = [],
-        datas = [],
-        k = 0,
-        o;
+        for ( var i = 0, l = data.length; i < l; i++ ) {
 
-      if ( !data[ 0 ].y ) {
-        console.log( data );
-        util.throwError( "No y data" );
-        return;
-      }
+          var arr = this._addData( type, data[ i ].x.length * 2 );
+          datas.push( arr );
 
-      for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
-        number += data[ i ].y.length;
-        continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
-        if ( !continuous ) {
-          datas.push( this._addData( type, number ) );
-          numbers.push( number );
-          number = 0;
-        }
-      }
-
-      this.xData = [];
-
-      number = 0, k = 0, z = 0;
-
-      for ( var i = 0, l = data.length; i < l; i++ ) {
-        x = data[ i ].x, dx = data[ i ].dx;
-
-        this.xData.push( {
-          x: x,
-          dx: dx
-        } );
-
-        o = data[ i ].y.length;
-        this._checkX( x );
-        this._checkX( x + dx * o );
-
-        for ( var j = 0; j < o; j++ ) {
-          /*datas[k][z] = (x + j * dx);
-						this._checkX(datas[k][z]);
-						z++;*/
-          // 30 june 2014. To save memory I suggest that we do not add this stupid data.
-
-          datas[ k ][ z ] = ( data[ i ].y[ j ] );
-          this._checkY( datas[ k ][ z ] );
-          z++;
-          total++;
-
-        }
-        number += data[ i ].y.length;
-
-        if ( numbers[ k ] == number ) {
-          k++;
-          number = 0;
           z = 0;
+          for ( var j = 0, m = data[ 0 ].x.length; j < m; j++ ) { // Several piece of data together
+            arr[ z ] = ( data[ i ].x[ j ] );
+            z++;
+            arr[ z ] = ( data[ i ].y[ j ] );
+            z++;
+            this._checkX( data[ i ].x[ j ] );
+            this._checkY( data[ i ].y[ j ] );
+            total++;
+          }
+        }
+
+      } else {
+
+        this.mode = 'x_equally_separated';
+
+        var number = 0,
+          numbers = [],
+          datas = [],
+          k = 0,
+          o;
+
+        if ( !data[ 0 ].y ) {
+          console.log( data );
+          util.throwError( "No y data" );
+          return;
+        }
+
+        for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
+          number += data[ i ].y.length;
+          continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
+          if ( !continuous ) {
+            datas.push( this._addData( type, number ) );
+            numbers.push( number );
+            number = 0;
+          }
+        }
+
+        this.xData = [];
+
+        number = 0, k = 0, z = 0;
+
+        for ( var i = 0, l = data.length; i < l; i++ ) {
+          x = data[ i ].x, dx = data[ i ].dx;
+
+          this.xData.push( {
+            x: x,
+            dx: dx
+          } );
+
+          o = data[ i ].y.length;
+          this._checkX( x );
+          this._checkX( x + dx * o );
+
+          for ( var j = 0; j < o; j++ ) {
+            /*datas[k][z] = (x + j * dx);
+  						this._checkX(datas[k][z]);
+  						z++;*/
+            // 30 june 2014. To save memory I suggest that we do not add this stupid data.
+
+            datas[ k ][ z ] = ( data[ i ].y[ j ] );
+            this._checkY( datas[ k ][ z ] );
+            z++;
+            total++;
+
+          }
+          number += data[ i ].y.length;
+
+          if ( numbers[ k ] == number ) {
+            k++;
+            number = 0;
+            z = 0;
+          }
         }
       }
     }

@@ -23,5 +23,9 @@
 
     "6-shapes-events": {
          "title": "Shape events"
+    },
+
+    "7-errorbars": {
+         "title": "Error bars"
     }
  }

@@ -854,7 +854,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         }
         // OPTIMIZATION END
 
-        this._addPoint( xpx2, ypx2, x, y, j, false, false );
+        this._addPoint( xpx2, ypx2, x, y, j, false, true );
 
         this.detectPeaks( x, y );
 
@@ -1113,7 +1113,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 * @memberof SerieLine
 */
         this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false, false, false, false );
-        this._addPoint( max, ypx, true, false );
+        this._addPoint( max, ypx, false, false, false, true, false );
         this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false, false, false, false );
         this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, false, false, false, true, false );
 
@@ -1129,7 +1129,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         }
 
         this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false, false, false, false );
-        this._addPoint( xpx, max, true, false );
+        this._addPoint( xpx, max, false, false, false, true, false );
         this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false, false, false, false );
         this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), false, false, false, true, false );
 
