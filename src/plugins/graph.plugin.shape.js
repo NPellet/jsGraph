@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.plugin' ], function( $, Plugin ) {
+define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, util ) {
 
   "use strict";
 
@@ -75,22 +75,24 @@ define( [ 'jquery', './graph.plugin' ], function( $, Plugin ) {
       movable: true
     };
 
-    $.extend( shapeInfo, this.options );
+    util.extend( true, shapeInfo, this.options );
 
     this.emit( "beforeNewShape", shapeInfo );
 
     if ( this.graph.prevent( false ) ) {
       return;
     }
-    console.log( shapeInfo );
+
     var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
     if ( shape ) {
       self.currentShape = shape;
       self.currentShapeEvent = e;
-
-      this.emit( "newShape", shape );
     }
+
+    graph.once( "mouseUp", function() {
+      self.emit( "newShape", shape );
+    } )
   };
 
   /**

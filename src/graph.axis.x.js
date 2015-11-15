@@ -52,67 +52,61 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
     },
 
-    drawTick: function( value, label, scaling, options, forcedPos ) {
-      var group = this.groupTicks;
-      var val;
-      var tick = document.createElementNS( this.graph.ns, 'line' );
+    drawTick: function( value, label, level, options, forcedPos ) {
 
-      if ( forcedPos !== undefined ) {
-        val = forcedPos;
-      } else {
-        val = this.getPos( value );
-      }
+      var self = this,
+        val;
+
+      val = forcedPos || this.getPos( value );
 
       if ( val == undefined || isNaN( val ) ) {
         return;
       }
 
-      tick.setAttribute( 'shape-rendering', 'crispEdges' );
+      var tick = this.nextTick( level, function( tick ) {
+
+        tick.setAttribute( 'y1', ( self.top ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
+        tick.setAttribute( 'y2', ( self.top ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
+
+        if ( level == 1 ) {
+          tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
+        } else {
+          tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
+        }
+
+      } );
+
+      //      tick.setAttribute( 'shape-rendering', 'crispEdges' );
       tick.setAttribute( 'x1', val );
       tick.setAttribute( 'x2', val );
 
-      tick.setAttribute( 'y1', ( this.top ? 1 : -1 ) * this.tickPx1 * scaling );
-      tick.setAttribute( 'y2', ( this.top ? 1 : -1 ) * this.tickPx2 * scaling );
-
-      if ( label && this.options.primaryGrid ) {
+      if ( level == 1 && this.options.primaryGrid ) {
 
         this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
 
-      } else if ( !label && this.options.secondaryGrid ) {
+      } else if ( level > 1 && this.options.secondaryGrid ) {
 
         this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
 
       }
 
-      if ( label ) {
+      //  this.groupTicks.appendChild( tick );
+      if ( level == 1 ) {
+        var tickLabel = this.nextTickLabel( function( tickLabel ) {
 
-        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
+          tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
+          tickLabel.setAttribute( 'text-anchor', 'middle' );
+          if ( self.getTicksLabelColor() !== 'black' ) {
+            tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+          }
+          tickLabel.style.dominantBaseline = 'hanging';
+        } );
 
-      } else {
-
-        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
-
-      }
-
-      this.groupTicks.appendChild( tick );
-      if ( label ) {
-        var groupLabel = this.groupTickLabels;
-        var tickLabel = document.createElementNS( this.graph.ns, 'text' );
         tickLabel.setAttribute( 'x', val );
-        tickLabel.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 8 : 20 ) + ( this.top ? 10 : 0 ) ) );
-        tickLabel.setAttribute( 'text-anchor', 'middle' );
-
-        if ( this.getTicksLabelColor() !== 'black' ) {
-          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
-        }
-
-        tickLabel.style.dominantBaseline = 'hanging';
-
         this.setTickContent( tickLabel, value, options );
 
-        this.groupTickLabels.appendChild( tickLabel );
       }
-      this.ticks.push( tick );
+      //    this.ticks.push( tick );
 
       return [ tick, tickLabel ];
     },

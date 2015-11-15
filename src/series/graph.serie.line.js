@@ -776,7 +776,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
                   this._createLine();
                   this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), false, false );
-                  this._addPoint( xpx2, ypx2 );
+                  this._addPoint( xpx2, ypx2, false, false );
 
                 } else if ( !lastPointOutside ) { // We were inside and now go outside
 
@@ -798,7 +798,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
                 }
               } else if ( !pointOutside ) {
-                this._addPoint( xpx2, ypx2 );
+                this._addPoint( xpx2, ypx2, false, false );
               } // else {
               // Norman:
               // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
@@ -846,7 +846,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
         }
         // OPTIMIZATION END
 
-        this._addPoint( xpx2, ypx2 );
+        this._addPoint( xpx2, ypx2, false, false );
 
         this.detectPeaks( x, y );
 
@@ -872,6 +872,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       }
 
     }
+
+    return this;
 
   };
 
@@ -946,7 +948,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
         }
         // OPTIMIZATION END
 
-        this._addPoint( xpx, ypx );
+        this._addPoint( xpx, ypx, false, false );
 
         // OPTIMIZATION START
         if ( !this._optimize_after( xpx, ypx ) ) {
@@ -982,7 +984,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
     if ( this._optimizeBuffer ) {
 
-      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ] );
+      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false );
       this._optimizeBuffer = false;
 
     }
@@ -1094,10 +1096,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           }
 * @memberof SerieLine
 */
-        this._addPoint( this.getX( slotToUse[ j ].start ), ypx );
-        this._addPoint( max, ypx, true );
-        this._addPoint( this.getX( slotToUse[ j ].min ), ypx );
-        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true );
+        this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false );
+        this._addPoint( max, ypx, true, false );
+        this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false );
+        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, true, false );
 
         //    k++;
       } else {
@@ -1110,10 +1112,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
           allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
         }
 
-        this._addPoint( xpx, this.getY( slotToUse[ j ].start ) );
-        this._addPoint( xpx, max, true );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].min ) );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false );
+        this._addPoint( xpx, max, true, false );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false );
+        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), true, false );
 
         //this.counter ++;
       }
@@ -2010,7 +2012,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
       index;
 
     var selected = self.graph.selectedShapes.map( function( shape ) {
-      return shape._data.val;
+      return shape.getProp( 'xval' );
     } );
 
     ys.sort( function( a, b ) {
@@ -2062,18 +2064,18 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
       if ( this.getYAxis().getPx( ys[ i ][ 0 ] ) - 20 < 0 ) {
 
-        self.picks[ m ].prop( 'labelPosition', {
+        self.picks[ m ].setLabelPosition( {
           x: x,
           y: "5px",
         } );
 
-        self.picks[ m ].prop( 'labelBaseline', 'hanging' );
+        self.picks[ m ].setLabelBaseline( 'hanging' );
 
       } else {
 
-        self.picks[ m ].prop( 'labelBaseline', 'no-change' );
+        self.picks[ m ].setLabelBaseline( 'no-change' );
 
-        self.picks[ m ].prop( 'labelPosition', {
+        self.picks[ m ].setLabelPosition( {
           x: x,
           y: ys[ i ][ 0 ],
           dy: "-15px"
@@ -2081,16 +2083,16 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util' ], function( Serie
 
       }
 
-      self.picks[ m ]._data.val = x;
+      self.picks[ m ].setProp( 'xval', x );
 
       if ( self.options.autoPeakPickingFormat ) {
 
-        self.picks[ m ]._data.label[ 0 ].text = self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m );
+        self.picks[ m ].setLabelText( self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m ) );
       } else {
-        self.picks[ m ]._data.label[ 0 ].text = String( Math.round( x * 1000 ) / 1000 );
+        self.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
       }
 
-      self.picks[ m ].redraw();
+      self.picks[ m ].updateLabels();
 
       m++;
       while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {

@@ -37,82 +37,74 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       return true;
     },
 
-    resetTicks: function() {
+    resetTicksLength: function() {
       this.longestTick = [ false, 0 ];
     },
 
     getMaxSizeTick: function() {
 
-      return ( this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
+      return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].offsetWidth : 0 ) + 10; //(this.left ? 10 : 0);
     },
 
-    drawTick: function( value, label, scaling, options, forcedPos ) {
+    drawTick: function( value, label, level, options, forcedPos ) {
       var pos;
 
-      var group = this.groupTicks,
-        tickLabel,
-        labelWidth = 0;
+      var self = this,
+        group = this.groupTicks,
+        tickLabel;
 
-      if ( forcedPos !== undefined ) {
-        pos = forcedPos;
-      } else {
-        pos = this.getPos( value );
-      }
+      pos = forcedPos || this.getPos( value );
 
       if ( pos == undefined || isNaN( pos ) ) {
         return;
       }
 
-      var tick = document.createElementNS( this.graph.ns, 'line' );
-      tick.setAttribute( 'shape-rendering', 'crispEdges' );
+      var tick = this.nextTick( level, function( tick ) {
+
+        tick.setAttribute( 'x1', ( self.left ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
+        tick.setAttribute( 'x2', ( self.left ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
+
+        if ( level == 1 ) {
+          tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
+        } else {
+          tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
+        }
+
+      } );
+
       tick.setAttribute( 'y1', pos );
       tick.setAttribute( 'y2', pos );
 
-      tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * scaling );
-      tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * scaling );
-
-      if ( label ) {
-
-        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
-
-      } else {
-
-        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
-
-      }
-
-      if ( label && this.options.primaryGrid ) {
+      if ( level == 1 && this.options.primaryGrid ) {
 
         this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
 
-      } else if ( !label && this.options.secondaryGrid ) {
+      } else if ( level > 1 && this.options.secondaryGrid ) {
 
         this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
 
       }
 
-      this.groupTicks.appendChild( tick );
+      //  this.groupTicks.appendChild( tick );
+      if ( level == 1 ) {
+        var tickLabel = this.nextTickLabel( function( tickLabel ) {
 
-      if ( label ) {
-        var groupLabel = this.groupTickLabels;
-        tickLabel = document.createElementNS( this.graph.ns, 'text' );
+          tickLabel.setAttribute( 'x', self.left ? -10 : 10 );
+          if ( self.getTicksLabelColor() !== 'black' ) {
+            tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+          }
+
+          if ( self.left ) {
+            tickLabel.setAttribute( 'text-anchor', 'end' );
+          } else {
+            tickLabel.setAttribute( 'text-anchor', 'start' );
+          }
+          tickLabel.style.dominantBaseline = 'central';
+
+        } );
+
         tickLabel.setAttribute( 'y', pos );
-        tickLabel.setAttribute( 'x', this.left ? -10 : 10 );
-
-        if ( this.getTicksLabelColor() !== 'black' ) {
-          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
-        }
-
-        if ( this.left ) {
-          tickLabel.setAttribute( 'text-anchor', 'end' );
-        } else {
-          tickLabel.setAttribute( 'text-anchor', 'start' );
-        }
-        tickLabel.style.dominantBaseline = 'central';
-
         this.setTickContent( tickLabel, value, options );
-
-        this.groupTickLabels.appendChild( tickLabel );
 
         if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
           this.longestTick[ 0 ] = tickLabel;
@@ -121,7 +113,6 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         }
       }
 
-      this.ticks.push( tick );
     },
 
     drawSpecifics: function() {

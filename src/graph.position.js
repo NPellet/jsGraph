@@ -162,7 +162,7 @@ define( [], function() {
     return false;
   };
 
-  Position.prototype.getDeltaPx = function( value, axis ) {
+  Position.getDeltaPx = function( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
       return ( v ) + "px";
@@ -198,7 +198,7 @@ define( [], function() {
           this[ mode ] = ( ref + delta );
         }
       }
-    } else if ( refd !== "undefined" ) {
+    } else if ( refd !== undefined ) {
 
       if ( mode == 'y' && ref === undefined && !this._relativeTo ) { // This means that the shape is placed by the x value. Therefore, the dy is only a stand-off.
         // Therefore, we do nothing

@@ -190,6 +190,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     if ( this._backedUpZoomMode ) {
       this._zoomingMode = this._backedUpZoomMode;
     }
+
+    this.emit( "zoomed" );
   };
 
   /**
@@ -256,17 +258,14 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     if ( pref.mode == 'xtotal' ) {
 
       this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
-      this.graph.draw();
 
     } else if ( pref.mode == 'ytotal' ) {
 
       this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
-      this.graph.draw();
 
     } else if ( pref.mode == 'total' ) {
 
       this.graph.autoscaleAxes();
-      this.graph.draw();
 
       // Nothing to do here
       /*        this.graph._applyToAxes( function( axis ) {
@@ -316,9 +315,9 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
           yAxis.options.onZoom( yMin, yMax );
         }
       }
-
-      this.graph.draw();
     }
+
+    this.graph.draw();
 
     this.emit( "dblClick", {
       graph: graph,

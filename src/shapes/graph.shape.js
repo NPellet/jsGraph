@@ -170,6 +170,8 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     this.hidden = false;
     this.group.style.display = 'block';
+    this.redraw();
+
   };
 
   /**
@@ -395,6 +397,10 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.redraw = function() {
 
+    if ( this.hidden ) {
+      return;
+    }
+
     this.position = this.applyPosition();
 
     this.redrawImpl();
@@ -497,6 +503,15 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   };
 
   /**
+   * Returns the stroke color
+   * @memberof Shape
+   * @return {String} The stroke color of the shape
+   */
+  Shape.prototype.getStrokeColor = function() {
+    return this.getProp( 'strokeColor' );
+  };
+
+  /**
    * Saves the fill color
    * @memberof Shape
    * @param {String} color - The filling color
@@ -527,6 +542,15 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   Shape.prototype.setStrokeWidth = function( width ) {
     this.setProp( 'strokeWidth', width );
     return this;
+  };
+
+  /**
+   * Returns the stroke width
+   * @memberof Shape
+   * @return {String} The stroke width of the shape
+   */
+  Shape.prototype.getStrokeWidth = function() {
+    return this.getProp( 'strokeWidth' );
   };
 
   /**
@@ -605,6 +629,11 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   }
 
   /**
+   * @alias Shape#displayLabel
+   */
+  Shape.prototype.showLabel = Shape.prototype.displayLabel;
+
+  /**
    * Hides a displayed label
    * @memberof Shape
    * @param {Number} [ index = 0 ] - The index of the label
@@ -640,14 +669,24 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   };
 
   /**
+   * Returns the position of the label
+   * @memberof Shape
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Position} The current position of the label
+   */
+  Shape.prototype.getLabelPosition = function( index ) {
+    return this.getProp( 'labelPosition', index || 0 );
+  };
+
+  /**
    * Sets the position of the label
    * @memberof Shape
-   * @param {String} size - The font size (in px) of the label
+   * @param {Position} position - The position of the label
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
    */
   Shape.prototype.setLabelPosition = function( position, index ) {
-    this.setProp( 'labelPosition', position, index || 0 );
+    this.setProp( 'labelPosition', GraphPosition.check( position ), index || 0 );
     return this;
   };
 
@@ -792,38 +831,45 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype._applyTransforms = function() {
 
-    var transforms = this.getProp( 'transform' ),
+    var transforms = this.getProp( 'transforms' ),
       transformString = "";
 
+    if ( !transforms ) {
+      return;
+    }
     transforms = Array.isArray( transforms ) ? transforms : [ transforms ];
 
-    for ( var i = 0; i < this.transforms.length; i++ ) {
+    if ( transforms.length == 0 ) {
+      return;
+    }
 
-      transformString += this.transforms[ i ].type + "(";
+    for ( var i = 0; i < transforms.length; i++ ) {
 
-      switch ( this.transforms[ i ].type ) {
+      transformString += transforms[ i ].type + "(";
+
+      switch ( transforms[ i ].type ) {
 
         case 'translate':
 
-          transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+          transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
           transformString += ", ";
-          transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
+          transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
           break;
 
         case 'rotate':
 
-          transformString += this.transforms[ i ].arguments[ 0 ];
+          transformString += transforms[ i ].arguments[ 0 ];
           transformString += ", ";
 
           if ( this.transforms[ i ].arguments.length == 1 ) {
-            var p = this._getPosition( this.getFromData( 'pos' ) );
+            var p = this.getPosition( 0 );
             transformString += p.x + ", " + p.y;
 
           } else {
 
-            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
+            transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 1 ], this.getXAxis() ).replace( 'px', '' );
             transformString += ", ";
-            transformString += this.graph.getDeltaPx( this.transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
+            transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 2 ], this.getYAxis() ).replace( 'px', '' );
           }
 
           break;
@@ -860,6 +906,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       if ( !self._labels[ i ] ) {
         self._labels[ i ] = document.createElementNS( self.graph.ns, 'text' );
         self._labels[ i ].setAttribute( 'data-label-i', i );
+        self._labels[ i ].jsGraphIsShape = self;
         self.group.appendChild( this._labels[ i ] );
       }
       i++;
@@ -913,6 +960,15 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     labelIndex = labelIndex || 0;
 
     /** Sets the position */
+
+    var visible = this.getProp( 'labelVisible', labelIndex );
+
+    if ( !visible ) {
+      this._labels[  labelIndex ].setAttribute( 'display', 'none' );
+      return;
+    } else {
+      this._labels[  labelIndex ].setAttribute( 'display', 'initial' );
+    }
 
     var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
@@ -1105,6 +1161,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       this.setHandles();
     }
 
+    this.graph.emit( "shapeSelected", this );
   };
 
   /**
@@ -1392,13 +1449,13 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     if ( this.moving ) {
 
-      this.graph.emit( "afterShapeMoved" );
+      this.graph.emit( "shapeMoved", this );
 
     }
 
     if ( this.handleSelected || this.resize ) {
 
-      this.graph.emit( "afterShapeResized" );
+      this.graph.emit( "shapeResized", this );
 
     }
 

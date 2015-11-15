@@ -13,14 +13,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
       this._dom = document.createElementNS( this.graph.ns, 'path' );
       //this._dom.setAttribute( 'pointer-events', 'stroke' );
 
-      this.nbHandles = 2;
-      this._createHandles( this.nbHandles, 'line', {
-        'stroke-width': '3',
-        'stroke': 'transparent',
-        'pointer-events': 'stroke',
-        'cursor': 'ew-resize'
-      } );
-
       /*			this.handle1 = document.createElementNS(this.graph.ns, 'line');
 			this.handle1.setAttribute(');
 
@@ -45,16 +37,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     },
 
-    handleCreateImpl: function() {
-      this.resizing = true;
-      this.handleSelected = 2;
-    },
+    createHandles: function() {
 
-    handleMouseDownImpl: function( e ) {
-
-    },
-
-    handleMouseUpImpl: function() {
+      this._createHandles( 2, 'line', {
+        'stroke-width': '3',
+        'stroke': 'transparent',
+        'pointer-events': 'stroke',
+        'cursor': 'ew-resize'
+      } );
 
     },
 
@@ -64,19 +54,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
         return;
       }
 
-      var pos = this.getFromData( 'pos' );
-      var pos2 = this.getFromData( 'pos2' );
-
       if ( this.moving ) {
 
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-        pos2.x = this.graph.deltaPosition( pos2.x, deltaX, this.getXAxis() );
-        pos2.y = this.graph.deltaPosition( pos2.y, deltaY, this.getYAxis() );
+        this.getPosition( 0 ).deltaPosition( 'x', deltaX, this.getXAxis() );
+        this.getPosition( 1 ).deltaPosition( 'x', deltaX, this.getXAxis() );
 
       } else if ( this.serie && this.handleSelected ) {
 
-        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
+        this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
 
         var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
 
@@ -89,25 +74,26 @@ define( [ './graph.shape' ], function( GraphShape ) {
         }
 
         this.resizingPosition.x = value.xMin;
+
       } else if ( this.handleSelected ) {
 
-        this.resizingPosition = this.handleSelected == 1 ? this.getFromData( 'pos' ) : this.getFromData( 'pos2' );
-        this.resizingPosition.x = this.graph.deltaPosition( this.resizingPosition.x, deltaX, this.getXAxis() );
+        this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
+        this.resizingPosition.deltaPosition( 'x', deltaX, this.getXAxis() );
       }
 
-      this.position = this.setPosition();
+      this.applyPosition();
     },
+    /*
+        redrawImpl: function() {
+          //var doDraw = this.setPosition();
+          //	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
 
-    redrawImpl: function() {
-      //var doDraw = this.setPosition();
-      //	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
-
-      if ( this.position != this.doDraw ) {
-        this.group.setAttribute( "visibility", this.position ? "visible" : 'hidden' );
-        this.doDraw = this.position;
-      }
-    },
-
+          if ( this.position != this.doDraw ) {
+            this.group.setAttribute( "visibility", this.position ? "visible" : 'hidden' );
+            this.doDraw = this.position;
+          }
+        },
+    */
     applyPosition: function() {
 
       if ( !this.serie ) {
@@ -122,11 +108,12 @@ define( [ './graph.shape' ], function( GraphShape ) {
       //  this.reversed = x == posXY2.x;
 
       if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
+        this.setDom( 'd', "" );
         return false;
       }
 
-      var v1 = this.serie.searchClosestValue( this.getFromData( 'pos' ).x ),
-        v2 = this.serie.searchClosestValue( this.getFromData( 'pos2' ).x ),
+      var v1 = this.serie.searchClosestValue( this.getPosition( 0 ).x ),
+        v2 = this.serie.searchClosestValue( this.getPosition( 1 ).x ),
         v3,
         i,
         j,
@@ -161,6 +148,10 @@ define( [ './graph.shape' ], function( GraphShape ) {
         max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
         k = 0;
 
+        if ( init == max ) {
+          max++;
+        }
+
         for ( j = init; j <= max; j += 2 ) {
 
           x = this.serie.getX( this.serie.data[ i ][ j + 0 ] ),
@@ -192,7 +183,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
           return;
         }
 
-        this.currentLine += /*" V " + this.getYAxis().getPx( 0 ) + " H "*/ "L " + this.firstX + " " + this.firstY + " z";
+        this.currentLine += " V " + this.getYAxis().getPx( 0 ) + " H " + this.firstX + " z";
         this.setDom( 'd', this.currentLine );
       }
 
@@ -207,39 +198,33 @@ define( [ './graph.shape' ], function( GraphShape ) {
         return;
       }
 
-      var posXY = this._getPosition( this.getFromData( 'pos' ) ),
-        posXY2 = this._getPosition( this.getFromData( 'pos2' ), this.getFromData( 'pos' ) );
+      var posXY = this.computePosition( 0 ),
+        posXY2 = this.computePosition( 1 );
 
       if ( posXY.x < posXY2.x ) {
 
-        this.handle1.setAttribute( 'x1', this.firstX );
-        this.handle1.setAttribute( 'x2', this.firstX );
+        this.handles[ 1 ].setAttribute( 'x1', this.firstX );
+        this.handles[ 1 ].setAttribute( 'x2', this.firstX );
 
-        this.handle2.setAttribute( 'x1', this.lastX );
-        this.handle2.setAttribute( 'x2', this.lastX );
+        this.handles[ 2 ].setAttribute( 'x1', this.lastX );
+        this.handles[ 2 ].setAttribute( 'x2', this.lastX );
 
       } else {
 
-        this.handle1.setAttribute( 'x1', this.lastX );
-        this.handle1.setAttribute( 'x2', this.lastX );
+        this.handles[ 1 ].setAttribute( 'x1', this.lastX );
+        this.handles[ 1 ].setAttribute( 'x2', this.lastX );
 
-        this.handle2.setAttribute( 'x1', this.firstX );
-        this.handle2.setAttribute( 'x2', this.firstX );
+        this.handles[ 2 ].setAttribute( 'x1', this.firstX );
+        this.handles[ 2 ].setAttribute( 'x2', this.firstX );
 
       }
-      this.handle1.setAttribute( 'y1', this.getYAxis().getMaxPx() );
-      this.handle1.setAttribute( 'y2', this.serie.getY( 0 ) );
+      this.handles[ 1 ].setAttribute( 'y1', this.getYAxis().getMaxPx() );
+      this.handles[ 1 ].setAttribute( 'y2', this.serie.getY( 0 ) );
 
-      this.handle2.setAttribute( 'y1', this.getYAxis().getMaxPx() );
-      this.handle2.setAttribute( 'y2', this.serie.getY( 0 ) );
+      this.handles[ 2 ].setAttribute( 'y1', this.getYAxis().getMaxPx() );
+      this.handles[ 2 ].setAttribute( 'y2', this.serie.getY( 0 ) );
     },
 
-    selectStyle: function() {
-
-      this.setDom( 'stroke', 'red' );
-      this.setDom( 'stroke-width', '2' );
-      this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
-    },
     /*
         setLabelPosition: function( labelIndex )  {
 
@@ -255,27 +240,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
           }
         },*/
 
-    getFieldsConfig: function() {
-
-      return {
-
-        'strokeWidth': {
-          type: 'float',
-          default: 1,
-          title: "Stroke width"
-        },
-
-        'strokeColor': {
-          type: 'color',
-          title: "Stroke color"
-        },
-
-        'fillColor': {
-          type: 'color',
-          title: "Fill color"
-        }
-      }
-    }
   } );
 
   return GraphSurfaceUnderCurve;

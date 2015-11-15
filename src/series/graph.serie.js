@@ -361,7 +361,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Number} The x position in px corresponding to the x value
    */
   Serie.prototype.getX = function( val ) {
-    return Math.round( this.getXAxis().getPx( val ) * 5 ) / 5;
+    return ( val = this.getXAxis().getPx( val ) ) - val % 0.2;
   };
 
   /**
@@ -371,7 +371,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Number} The y position in px corresponding to the y value
    */
   Serie.prototype.getY = function( val ) {
-    return Math.round( this.getYAxis().getPx( val ) * 5 ) / 5;
+    return ( val = this.getYAxis().getPx( val ) ) - val % 0.2;
   };
 
   /**

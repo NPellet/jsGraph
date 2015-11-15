@@ -128,7 +128,18 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       this.groupSeries = document.createElementNS( this.graph.ns, 'g' );
       this.group.appendChild( this.groupSeries );
 
-      this.ticks = [];
+      this.ticks = {};
+      this.ticksLabels = [];
+      this.tickScaling = {
+        1: 3,
+        2: 2,
+        3: 1,
+        4: 0.5
+      };
+
+      this.currentTick = {};
+      this.lastCurrentTick = {};
+
       this.series = [];
       this.totalDelta = 0;
       this.currentAction = false;
@@ -434,22 +445,28 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * Forces the minimum value of the axis (no more dependant on the serie values)
      * @memberof Axis.prototype
      * @param {Number} min - The minimum value of the axis
+     * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value
      * @return {Axis} The current axis
      */
-    forceMin: function( min ) {
+    forceMin: function( min, noRescale ) {
       this.options.forcedMin = min;
+
+      this.setCurrentMin( noRescale ? this.getCurrentMin() : undefined );
       this.graph._axisHasChanged( this );
       return this;
     },
 
     /**
-     * Forces the maximum value of the axis (no more dependant on the serie values)
+     * Forces the maximum value of the axis (no more dependant on the serie values).
      * @memberof Axis.prototype
      * @param {Number} max - The maximum value of the axis
+     * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value
      * @return {Axis} The current axis
      */
-    forceMax: function( max ) {
+    forceMax: function( max, noRescale ) {
       this.options.forcedMax = max;
+
+      this.setCurrentMax( noRescale ? this.getCurrentMax() : undefined );
       this.graph._axisHasChanged( this );
       return this;
     },
@@ -732,6 +749,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         this.currentAxisMin = undefined;
       }
 
+      this.cacheCurrentMin();
+      this.cacheCurrentMax();
+
       this._zoomed = false;
 
       this.adapt();
@@ -764,7 +784,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @return {Number} The current minimum value of the axis
      */
     getCurrentMin: function() {
-      return this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
+      return this.cachedCurrentMin;
     },
 
     /**
@@ -772,7 +792,23 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @return {Number} The current maximum value of the axis
      */
     getCurrentMax: function() {
-      return this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
+      return this.cachedCurrentMax;
+    },
+
+    /**
+     * Caches the current axis minimum
+     * @memberof Axis.prototype
+     */
+    cacheCurrentMin: function() {
+      this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
+    },
+
+    /**
+     * Caches the current axis maximum
+     * @memberof Axis.prototype
+     */
+    cacheCurrentMax: function() {
+      this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
     },
 
     /**
@@ -783,7 +819,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     setCurrentMin: function( val ) {
 
-      if ( this.getForcedMin() !== false && val < this.getForcedMin() ) {
+      if ( val === undefined || ( this.getForcedMin() !== false && val < this.getForcedMin() ) ) {
         val = this.getMinValue();
       }
 
@@ -804,7 +840,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     setCurrentMax: function( val ) {
 
-      if ( this.getForcedMax() !== false && val > this.getForcedMax() ) {
+      if ( val === undefined || ( this.getForcedMax() !== false && val > this.getForcedMax() ) ) {
         val = this.getMaxValue();
       }
 
@@ -842,6 +878,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       var visible;
 
       this.drawInit();
+
+      this.cacheCurrentMax();
+      this.cacheCurrentMin();
 
       if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
         this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
@@ -957,6 +996,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         var widthHeight = 0;
       }
 
+      this.removeUselessTicks();
+      this.removeUselessTickLabels();
+
       // Looks for axes linked to this current axis
       var axes = this.graph.findAxesLinkedTo( this );
       axes.map( function( axis ) {
@@ -1041,21 +1083,22 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       }
 
       // Remove all ticks
-      while ( this.groupTicks.firstChild ) {
-        this.groupTicks.removeChild( this.groupTicks.firstChild );
-      }
+      //   while ( this.groupTicks.firstChild ) {
+      //    this.groupTicks.removeChild( this.groupTicks.firstChild );
+      // }
+
+      //    this.removeTicks();
 
       // Remove all ticks
-      while ( this.groupTickLabels.firstChild ) {
+      /*while ( this.groupTickLabels.firstChild ) {
         this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
-      }
+      }*/
 
       // Remove all grids
       while ( this.groupGrids.firstChild ) {
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
 
-      this.ticks = [];
     },
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
@@ -1103,9 +1146,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         secondaryIncr = unitPerTick / secondary;
       }
 
+      this.resetTicksLength();
+
       incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
       this.incrTick = primary[ 0 ];
-      this.resetTicks();
 
       while ( incrTick < max ) {
 
@@ -1130,7 +1174,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
               continue;
             }
 
-            this.drawTickWrapper( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+            this.drawTickWrapper( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 2 : 3 );
 
             subIncrTick += secondaryIncr;
           }
@@ -1141,7 +1185,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           continue;
         }
 
-        this.drawTickWrapper( incrTick, true, 4 );
+        this.drawTickWrapper( incrTick, true, 1 );
         incrTick += primary[ 0 ];
       }
 
@@ -1149,7 +1193,84 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       return this.widthHeightTick;
     },
 
-    resetTicks: function() {},
+    nextTick: function( level, callback ) {
+
+      this.ticks[ level ] = this.ticks[ level ] || [];
+      this.lastCurrentTick[ level ] = this.lastCurrentTick[ level ] || 0;
+      this.currentTick[ level ] = this.currentTick[ level ] ||  0;
+
+      if ( this.currentTick[ level ] >= this.ticks[ level ].length ) {
+        var tick = document.createElementNS( this.graph.ns, 'line' );
+        this.groupTicks.appendChild( tick );
+        this.ticks[ level ].push( tick );
+
+        callback( tick );
+      }
+
+      var tick = this.ticks[ level ][ this.currentTick[ level ] ];
+
+      if ( this.currentTick[ level ] > this.lastCurrentTick[ level ] ) {
+        tick.setAttribute( 'display', 'visible' );
+      }
+
+      this.currentTick[ level ]++;
+
+      return tick;
+    },
+
+    nextTickLabel: function( callback ) {
+
+      var tickLabel = document.createElementNS( this.graph.ns, 'text' );
+      this.groupTickLabels.appendChild( tickLabel );
+
+      this.ticksLabels = this.ticksLabels || [];
+      this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
+      this.currentTickLabel = this.currentTickLabel || 0;
+
+      if ( this.currentTickLabel >= this.ticksLabels.length ) {
+
+        var tickLabel = document.createElementNS( this.graph.ns, 'text' );
+        this.groupTickLabels.appendChild( tickLabel );
+        this.ticksLabels.push( tickLabel );
+        callback( tickLabel );
+      }
+
+      var tickLabel = this.ticksLabels[ this.currentTickLabel ];
+
+      if ( this.currentTickLabel > this.lastCurrentTickLabel ) {
+        tickLabel.setAttribute( 'display', 'visible' );
+      }
+
+      this.currentTickLabel++;
+
+      return tickLabel;
+    },
+
+    removeUselessTicks: function() {
+
+      for ( var j in this.currentTick ) {
+
+        for ( var i = this.currentTick[ j ]; i < this.ticks[ j ].length; i++ ) {
+          this.ticks[ j ][ i ].setAttribute( 'display', 'none' );
+        }
+
+        this.lastCurrentTick[ j ] = this.currentTick[ j ];
+        this.currentTick[ j ] = 0;
+      }
+    },
+
+    removeUselessTickLabels: function() {
+
+      for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
+        this.ticksLabels[ i ].setAttribute( 'display', 'none' );
+      }
+
+      this.lastCurrentTickLabel = this.currentTickLabel;
+      this.currentTickLabel = 0;
+
+    },
+
+    resetTicksLength: function() {},
 
     secondaryTicks: function() {
       return this.options.nbTicksSecondary;
@@ -1183,7 +1304,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       while ( ( val = incr * Math.pow( 10, pow ) ) < max ) {
         if ( incr == 1 ) { // Superior power
           if ( val > min )
-            this.drawTickWrapper( val, true, 5, optsMain );
+            this.drawTickWrapper( val, true, 1, optsMain );
         }
         if ( incr == 10 ) {
           incr = 1;
@@ -1205,11 +1326,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       return 5;
     },
 
-    drawTickWrapper: function( value, label, scaling, options ) {
+    drawTickWrapper: function( value, label, level, options ) {
 
       //var pos = this.getPos( value );
 
-      this.drawTick( value, label, scaling, options );
+      this.drawTick( value, label, level, options );
     },
 
     /**

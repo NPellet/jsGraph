@@ -146,6 +146,10 @@ define( [], function() {
 
   util.restoreDomAttributes = function( to, identification ) {
 
+    if ( !to._savedAttributesIds ) {
+      return;
+    }
+
     to._savedAttributesIds.splice( to._savedAttributesIds.indexOf( identification ), 1 );
     delete to._attributes[  identification ];
 

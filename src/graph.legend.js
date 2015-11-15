@@ -330,7 +330,7 @@ define( [ "graph.position" ], function( GraphPosition ) {
     _setPosition: function() {
 
       var pos = this.pos;
-      if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) ) {
+      if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) && pos.transformX !== false && pos.transformY !== false ) {
         this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
       }
     },

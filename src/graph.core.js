@@ -15,6 +15,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
    * @tutorial basic
    */
+
+  var profiling = [];
+
   var Graph = function( wrapper, options, axis ) {
 
     var self = this;
@@ -1228,8 +1231,13 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       if ( shapeData.label ) {
 
+        if ( !Array.isArray( shapeData.label ) ) {
+          shapeData.label = [  shapeData.label ];
+        }
+
         for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
 
+          shape.showLabel( i );
           shape.setLabelText( shapeData.label[ i ].text, i );
           shape.setLabelPosition( shapeData.label[ i ].position, i );
           shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
@@ -1988,6 +1996,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     graph.dom.addEventListener( 'mouseup', function( e ) {
 
+      graph.emit( "mouseUp", e );
       //   e.preventDefault();
       var coords = self._getXY( e );
       _handleMouseUp( self, coords.x, coords.y, e );
@@ -1995,6 +2004,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     } );
 
     graph.dom.addEventListener( 'dblclick', function( e ) {
+
+      graph.emit( "dblClick", e );
+
       //      e.preventDefault();
 
       //      if ( self.clickTimeout ) {
@@ -2165,7 +2177,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     // Not on a shape
 
     if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
-      console.log( "CLICKING" );
+
       graph.unselectShapes();
     }
   }
