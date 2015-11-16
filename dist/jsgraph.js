@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-25
+ * jsGraph JavaScript Graphing Library v1.13.3-26
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-15T17:00Z
+ * Date: 2015-11-16T21:31Z
  */
 
 ( function( global, factory ) {
@@ -607,6 +607,23 @@
         return true;
       }
 
+      // https://davidwalsh.name/function-debounce
+      util.debounce = function( func, wait, immediate ) {
+        var timeout;
+        return function() {
+          var context = this,
+            args = arguments;
+          var later = function() {
+            timeout = null;
+            if ( !immediate ) func.apply( context, args );
+          };
+          var callNow = immediate && !timeout;
+          clearTimeout( timeout );
+          timeout = setTimeout( later, wait );
+          if ( callNow ) func.apply( context, args );
+        };
+      };
+
       return util;
 
     } )();
@@ -1176,15 +1193,6 @@
         this.setSize( w, h );
         this._resize();
         _registerEvents( this );
-
-        this.trackingLines = {
-          id: 0,
-          current: false,
-          dasharray: [ false, "5, 5", "5, 1", "1, 5" ],
-          currentDasharray: [],
-          vertical: [],
-          horizontal: []
-        };
 
         this.shapeHandlers = {
           mouseDown: [],
@@ -2896,6 +2904,25 @@
           this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
           this.bypassHandleMouse = false;
+        },
+
+        trackingLine: function( options ) {
+
+          if ( options ) {
+            this.options.trackingLine = options;
+          }
+
+          this.trackingLine = this.newShape( 'line', util.extend( true, {
+            position: [ {
+              y: 'min'
+            }, {
+              y: 'max'
+            } ],
+            stroke: 'black'
+          }, options.shapeOptions ) );
+          this.trackingLine.draw();
+          return this.trackingLine;
+
         }
 
       } );
@@ -3192,18 +3219,227 @@
 
         if ( !graph.activePlugin ) {
           var results = {};
+          var index;
+
+          if ( graph.options.trackingLine ) {
+
+            if ( graph.options.trackingLine.snapToSerie ) {
+
+              snapToSerie = graph.options.trackingLine.snapToSerie;
+              index = snapToSerie.handleMouseMove( false, true );
+
+              if ( !index ) {
+
+                graph.trackingLine.hide();
+
+              } else {
+
+                graph.trackingLine.show();
+                var closestIndex = index.xIndexClosest;
+                graph.trackingLine.getPosition( 0 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+                graph.trackingLine.getPosition( 1 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+                graph.trackingLine.redraw();
+              }
+
+            } else {
+
+              graph.trackingLine.getPosition( 0 ).x = x + "px"
+              graph.trackingLine.getPosition( 1 ).x = x + "px";
+              graph.trackingLine.redraw();
+            }
+
+            var series = graph.options.trackingLine.series;
+
+            if ( !graph.options.trackingLine.series ) {
+
+              series = graph.getSeries().map( function( serie ) {
+                return {
+                  serie: serie,
+                  withinPx: 20,
+                  withinVal: -1
+                };
+              } );
+            }
+
+            var index,
+              output = [];
+
+            var getter;
+            switch ( graph.options.trackingLine.returnValue ) {
+
+              case 'before':
+                getter = function( serie, indices ) {
+                  return {
+
+                    positionXPx: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 ],
+                    xIndex: indices.xBeforeIndex,
+                    yValue: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 + 1 ],
+
+                    serie: serie,
+                    indices: indices
+                  };
+                }
+
+                break;
+
+              case 'after':
+                getter = function( serie, indices ) {
+
+                  return {
+
+                    positionXPx: serie.getData()[ 0 ][ indices.xAfterIndex * 2 ],
+                    xIndex: indices.xAfterIndex,
+                    yValue: serie.getData()[ 0 ][ indices.xAfterIndex * 2 + 1 ],
+
+                    serie: serie,
+                    indices: indices
+                  };
+                }
+                break;
+
+              case 'interpolatation':
+                getter = function( serie, indices ) {
+
+                  return {
+                    positionXPx: indices.trueX,
+                    xIndex: false,
+                    yValue: indices.interpolatedY,
+
+                    serie: serie,
+                    indices: indices
+                  };
+                }
+                break;
+
+              default:
+              case 'closest':
+                getter = function( serie, indices ) {
+
+                  return {
+                    positionXPx: serie.getData()[ 0 ][ indices.xIndexClosest * 2 ],
+                    xIndex: indices.xIndexClosest,
+                    yValue: serie.getData()[ 0 ][ indices.xIndexClosest * 2 + 1 ],
+
+                    serie: serie,
+                    indices: indices
+                  };
+                }
+                break;
+            }
+
+            for ( var i = 0, l = series.length; i < l; i++ ) {
+
+              index = series[ i ].serie.handleMouseMove( false, true );
+
+              if ( !index ) {
+
+                if ( series[ i ].serie.trackingShape ) {
+                  series[ i ].serie.trackingShape.hide();
+                }
+
+                continue;
+              }
+
+              if (
+                ( series[ i ].withinPx > 0 && Math.abs( x - graph.options.paddingLeft - series[ i ].serie.getXAxis().getPx( series[ i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) > series[ i ].withinPx ) ||
+                ( series[ i ].withinVal > 0 && Math.abs( series[ i ].serie.getXAxis().getVal( x - graph.options.paddingLeft ) - series[ i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) > series[ i ].withinVal )
+              ) {
+                // Do nothing
+              } else {
+                output[ series[ i ].serie.getName() ] = getter( series[ i ].serie, index );
+
+                if ( !series[ i ].serie.trackingShape ) {
+                  series[ i ].serie.trackingShape = graph.newShape( "ellipse", {
+                      fillColor: series[ i ].serie.getLineColor(),
+                      strokeColor: "White",
+                      strokeWidth: series[ i ].serie.getLineWidth()
+                    } )
+                    .setSerie( series[ i ].serie )
+                    .draw()
+                    .setProp( 'rx', series[ i ].serie.getLineWidth() * 3 )
+                    .setProp( 'ry', series[ i ].serie.getLineWidth() * 3 );
+
+                }
+
+                series[ i ].serie.trackingShape.show();
+                series[ i ].serie.trackingShape.getPosition( 0 ).x = output[ series[ i ].serie.getName() ].positionXPx;
+                series[ i ].serie.trackingShape.redraw();
+              }
+            }
+
+            if ( graph.options.trackingLine.independentLegends ) {
+
+              var text = graph.options.trackingLine.independentLegendsText( output );
+
+              if ( !graph._trackingLegend ) {
+                graph._trackingLegend = _makeTrackingLegend( graph );
+              }
+
+              graph._trackingLegend.innerHTML = text;
+              var h = graph._trackingLegend.offsetHeight;
+
+              _trackingLegendMove( graph._trackingLegend, ( x > graph.getWidth() / 2 ) ? ( ( x - x % 10 - 20 ) - graph._trackingLegend.offsetWidth ) : ( x - x % 10 + 30 ), ( y - y % 10 + h / 2 ) );
+            }
+          }
 
           if ( graph.options.onMouseMoveData ) {
 
             for ( var i = 0; i < graph.series.length; i++ ) {
 
               results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+
             }
 
             graph.options.onMouseMoveData.call( graph, e, results );
           }
           return;
         }
+      }
+
+      var _trackingLegendMove = util.debounce( function( legend, toX, toY ) {
+
+        var ratio = 0;
+        var start = Date.now();
+        var startX = parseInt( legend.style.left.replace( "px", "" ) || 0 ),
+          startY = parseInt( legend.style.top.replace( "px", "" ) || 0 );
+
+        function next() {
+
+          var progress = ( Date.now() - start ) / 200;
+          if ( progress > 1 ) {
+            progress = 1;
+          }
+
+          legend.style.left = ( ( toX - startX ) * progress + startX ) + "px";
+          legend.style.top = ( ( toY - startY ) * progress + startY ) + "px";
+
+          if ( progress < 1 ) {
+            window.requestAnimationFrame( next );
+          }
+        }
+
+        window.requestAnimationFrame( next );
+
+      }, 50 );
+
+      function _makeTrackingLegend( graph ) {
+
+        var group = document.createElement( 'div' );
+        group.setAttribute( 'class', 'trackingLegend' );
+        group.style.position = 'absolute';
+        group.style.borderRadius = '4px';
+        group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
+        group.style.border = "2px solid #333333";
+        group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
+        group.style.pointerEvents = "none";
+        group.style.paddingTop = "5px";
+        group.style.paddingBottom = "5px";
+        group.style.paddingLeft = "10px";
+        group.style.paddingRight = "10px";
+
+        graph.getWrapper().insertBefore( group, graph.getDom() );
+
+        return group;
       }
 
       function _handleDblClick( graph, x, y, e ) {
@@ -5291,6 +5527,40 @@
         },
 
         /**
+         * Sets the color of the primary grid
+         * @memberof Axis.prototype
+         * @param {String} color - The primary grid color
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setPrimaryGridColor: function( color ) {
+          this.options.primaryGridColor = color;
+          return this;
+        },
+
+        /**
+         * Sets the color of the primary grid
+         * @memberof Axis.prototype
+         * @param {String} color - The primary grid color
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setSecondaryGridColor: function( color ) {
+          this.options.secondaryGridColor = color;
+          return this;
+        },
+
+        /**
+         * Gets the color of the tick labels
+         * @memberof Axis.prototype
+         * @return {String} The color of the tick labels
+         * @since 1.13.2
+         */
+        getTicksLabelColor: function( color ) {
+          return this.options.ticksLabelColor || 'black';
+        },
+
+        /**
          * Sets the color of the label
          * @memberof Axis.prototype
          * @param {String} color - The new color of the label
@@ -5324,11 +5594,11 @@
         },
 
         getColorPrimaryGrid: function() {
-          return '#c0c0c0';
+          return this.options.primaryGridColor || "#f0f0f0";
         },
 
         getColorSecondaryGrid: function() {
-          return '#f0f0f0';
+          return this.options.secondaryGridColor || "#f0f0f0";
         },
 
         setTickContent: function( dom, val, options ) {
@@ -10955,10 +11225,10 @@
             xMax: this.data[ i ][ xMinIndex + 2 ],
             yMin: this.data[ i ][ xMinIndex + 1 ],
             yMax: this.data[ i ][ xMinIndex + 3 ],
-
             xBeforeIndex: xMinIndex / 2,
             xAfterIndex: xMinIndex / 2 + 2,
-            xBeforeIndexArr: xMinIndex
+            xBeforeIndexArr: xMinIndex,
+            xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
           }
         }
       };
@@ -11025,7 +11295,8 @@
           yAfter: value.yMax,
           trueX: valX,
           interpolatedY: intY,
-          xBeforeIndex: value.xBeforeIndex
+          xBeforeIndex: value.xBeforeIndex,
+          xIndexClosest: value.xClosest
         };
       };
 
@@ -11244,7 +11515,7 @@
 
           var s = this.styles[ i ];
           if ( s ) {
-            this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+            this.styles[ i ] = $.extend( true, {}, this.styles.unselected, s );
           }
         }
       };
@@ -11293,7 +11564,7 @@
       SerieLine.prototype.showMarkers = function( selectionType, redraw ) {
         selectionType = selectionType || "unselected";
         this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-        this.styles[ selectionType ].markers = true;
+        this.styles[ selectionType ].showMarkers = true;
 
         if ( redraw && this._drawn ) {
           this.draw();
@@ -11307,7 +11578,7 @@
       SerieLine.prototype.hideMarkers = function( selectionType, redraw ) {
 
         selectionType = selectionType || "unselected";
-        this.styles[ selectionType ].markers = false;
+        this.styles[ selectionType ].showMarkers = false;
 
         if ( redraw && this._drawn ) {
           this.draw();
@@ -11318,7 +11589,7 @@
       };
 
       SerieLine.prototype.markersShown = function( selectionType ) {
-        return this.getStyle( selectionType ).markers;
+        return this.getStyle( selectionType ).showMarkers;
       };
 
       SerieLine.prototype.areMarkersShown = function() {
@@ -11344,7 +11615,7 @@
 			* @memberof SerieLine
 */
 
-        //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
+        this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
         this.showMarkers( selectionType, false );
 
@@ -11358,6 +11629,31 @@
             points: 'all'
           } ];
         }
+
+        this.styles[ selectionType || "unselected" ].markers = families;
+
+        this._recalculateMarkerPoints( selectionType, families );
+
+        this.styleHasChanged( selectionType );
+        this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+
+        return this;
+      };
+
+      SerieLine.prototype.setMarkersPoints = function( points, family, selectionType ) {
+
+        family = family || 0;
+        selectionType = selectionType || "unselected";
+
+        if ( !this.styles[ selectionType ] || !this.styles[ selectionType ].markers ) {
+          return;
+        }
+
+        this.styles[ selectionType ].markers[ family ].points = points;
+        this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+      }
+
+      SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
 
         var markerPoints = [];
         // Overwriting any other undefined families
@@ -11404,24 +11700,17 @@
 
         this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
         this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+      }
 
-        this.styles[ selectionType || "unselected" ].markers = families;
+      SerieLine.prototype.insertMarkers = function( selectionType ) {
 
-        this.styleHasChanged( selectionType );
-        this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-
-        return this;
-      };
-
-      SerieLine.prototype.insertMarkers = function() {
-
-        if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
+        if ( !this.markerFamilies || !this.markerFamilies[ selectionType || this.selectionType ] || this.options.markersIndependant ) {
           return;
         }
 
-        for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
-          this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
-          this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+        for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i < l; i++ ) {
+          this.markerFamilies[ selectionType || this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ selectionType || this.selectionType ][ i ].path );
+          this.groupMain.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
           this.currentMarkersSelectionType = this.selectionType;
         }
       };
@@ -13827,12 +14116,14 @@
        * @param {String} prop - The property to save
        * @param val - The value to save
        * @param [ index = 0 ] - The index of the property array to save the property
+       * @return {Shape} The current shape
        * @memberof Shape
        */
       Shape.prototype.setProp = function( prop, val, index ) {
         this.properties = this.properties || {};
         this.properties[ prop ] = this.properties[ prop ] || [];
         this.properties[ prop ][ index || 0 ] = val;
+        return this;
       };
 
       /**
@@ -14211,7 +14502,9 @@
        */
       Shape.prototype.getPosition = function( index ) {
 
-        return GraphPosition.check( this.getProp( 'position', ( index || 0 ) ) );
+        var pos = this.getProp( 'position', ( index || 0 ) );
+        this.setProp( 'position', ( pos = GraphPosition.check( pos ) ), index );
+        return pos;
       };
 
       /**
@@ -15747,57 +16040,17 @@
           this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
         },
 
-        setPosition: function() {
+        applyPosition: function() {
 
-          var pos = this._getPosition( this.getFromData( 'pos' ) ),
-            x = pos.x,
-            y = pos.y;
+          var pos = this.computePosition( 0 );
 
-          if ( !isNaN( x ) && !isNaN( y ) && x !== false && y !== false ) {
+          this.setDom( 'cx', pos.x );
+          this.setDom( 'cy', pos.y );
 
-            this.setDom( 'cx', x );
-            this.setDom( 'cy', y );
+          this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
+          this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
 
-            this.setDom( 'rx', this.rx || 0 );
-            this.setDom( 'ry', this.ry || 0 );
-
-            return true;
-          }
-
-          return false;
-        },
-
-        setRX: function( rx ) {
-          this.rx = rx;
-        },
-
-        setRY: function( ry ) {
-          this.ry = ry;
-        },
-
-        setR: function( rx, ry ) {
-          this.rx = rx;
-          this.ry = ry;
-        },
-
-        getLinkingCoords: function() {
-
-          return {
-            x: this.currentX + this.currentW / 2,
-            y: this.currentY + this.currentH / 2
-          };
-        },
-
-        redrawImpl: function() {
-
-        },
-
-        handleCreateImpl: function() {
-          this.resize = true;
-        },
-
-        handleMouseDownImpl: function( e ) {
-
+          return true;
         },
 
         handleMouseUpImpl: function() {
@@ -15814,16 +16067,6 @@
         handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
           return;
 
-        },
-
-        setHandles: function() {
-
-        },
-
-        selectStyle: function() {
-          this.setDom( 'stroke', 'red' );
-          this.setDom( 'stroke-width', '2' );
-          this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
         }
 
       } );

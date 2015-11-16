@@ -104,15 +104,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     this._resize();
     _registerEvents( this );
 
-    this.trackingLines = {
-      id: 0,
-      current: false,
-      dasharray: [ false, "5, 5", "5, 1", "1, 5" ],
-      currentDasharray: [],
-      vertical: [],
-      horizontal: []
-    };
-
     this.shapeHandlers = {
       mouseDown: [],
       mouseUp: [],
@@ -1823,6 +1814,25 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
       this.bypassHandleMouse = false;
+    },
+
+    trackingLine: function( options ) {
+
+      if ( options ) {
+        this.options.trackingLine = options;
+      }
+
+      this.trackingLine = this.newShape( 'line', util.extend( true, { 
+        position: [ {
+          y: 'min'
+        }, {
+          y: 'max'
+        } ],
+        stroke: 'black'
+      }, options.shapeOptions ) );
+      this.trackingLine.draw();
+      return this.trackingLine;
+
     }
 
   } );
@@ -2119,18 +2129,227 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     if ( !graph.activePlugin ) {
       var results = {};
+      var index;
+
+      if ( graph.options.trackingLine ) {
+
+        if ( graph.options.trackingLine.snapToSerie ) {
+
+          snapToSerie = graph.options.trackingLine.snapToSerie;
+          index = snapToSerie.handleMouseMove( false, true );
+
+          if ( !index ) {
+
+            graph.trackingLine.hide();
+
+          } else {
+
+            graph.trackingLine.show();
+            var closestIndex = index.xIndexClosest;
+            graph.trackingLine.getPosition( 0 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+            graph.trackingLine.getPosition( 1 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+            graph.trackingLine.redraw();
+          }
+
+        } else {
+
+          graph.trackingLine.getPosition( 0 ).x = x + "px"
+          graph.trackingLine.getPosition( 1 ).x = x + "px";
+          graph.trackingLine.redraw();
+        }
+
+        var series = graph.options.trackingLine.series;
+
+        if ( !graph.options.trackingLine.series ) {
+
+          series = graph.getSeries().map( function( serie ) {
+            return {
+              serie: serie,
+              withinPx: 20,
+              withinVal: -1
+            };
+          } );
+        }
+
+        var index,
+          output = [];
+
+        var getter;
+        switch ( graph.options.trackingLine.returnValue ) {
+
+          case 'before':
+            getter = function( serie, indices ) {
+              return {
+
+                positionXPx: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 ],
+                xIndex: indices.xBeforeIndex,
+                yValue: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 + 1 ],
+
+                serie: serie,
+                indices: indices
+              };
+            }
+
+            break;
+
+          case 'after':
+            getter = function( serie, indices ) {
+
+              return {
+
+                positionXPx: serie.getData()[ 0 ][ indices.xAfterIndex * 2 ],
+                xIndex: indices.xAfterIndex,
+                yValue: serie.getData()[ 0 ][ indices.xAfterIndex * 2 + 1 ],
+
+                serie: serie,
+                indices: indices
+              };
+            }
+            break;
+
+          case 'interpolatation':
+            getter = function( serie, indices ) {
+
+              return {
+                positionXPx: indices.trueX,
+                xIndex: false,
+                yValue: indices.interpolatedY,
+
+                serie: serie,
+                indices: indices
+              };
+            }
+            break;
+
+          default:
+          case 'closest':
+            getter = function( serie, indices ) {
+
+              return {
+                positionXPx: serie.getData()[ 0 ][ indices.xIndexClosest * 2 ],
+                xIndex: indices.xIndexClosest,
+                yValue: serie.getData()[ 0 ][ indices.xIndexClosest * 2 + 1 ],
+
+                serie: serie,
+                indices: indices
+              };
+            }
+            break;
+        }
+
+        for ( var i = 0, l = series.length; i < l; i++ ) {
+
+          index = series[ i ].serie.handleMouseMove( false, true );
+
+          if ( !index ) {
+
+            if ( series[  i ].serie.trackingShape ) {
+              series[  i ].serie.trackingShape.hide();
+            }
+
+            continue;
+          }
+
+          if (
+            ( series[ i ].withinPx > 0 && Math.abs( x - graph.options.paddingLeft - series[ i ].serie.getXAxis().getPx( series[  i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) > series[ i ].withinPx ) ||
+            ( series[ i ].withinVal > 0 && Math.abs( series[  i ].serie.getXAxis().getVal( x - graph.options.paddingLeft ) - series[  i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) > series[ i ].withinVal )
+          ) {
+            // Do nothing
+          } else {
+            output[ series[ i ].serie.getName() ] = getter( series[ i ].serie, index );
+
+            if ( !series[  i ].serie.trackingShape ) {
+              series[  i ].serie.trackingShape = graph.newShape( "ellipse", {
+                  fillColor: series[ i ].serie.getLineColor(),
+                  strokeColor: "White",
+                  strokeWidth: series[ i ].serie.getLineWidth()
+                } )
+                .setSerie( series[  i ].serie )
+                .draw()
+                .setProp( 'rx', series[  i ].serie.getLineWidth() * 3 )
+                .setProp( 'ry', series[  i ].serie.getLineWidth() * 3 );
+
+            }
+
+            series[  i ].serie.trackingShape.show();
+            series[  i ].serie.trackingShape.getPosition( 0 ).x = output[ series[ i ].serie.getName() ].positionXPx;
+            series[  i ].serie.trackingShape.redraw();
+          }
+        }
+
+        if ( graph.options.trackingLine.independentLegends ) {
+
+          var text = graph.options.trackingLine.independentLegendsText( output );
+
+          if ( !graph._trackingLegend ) {
+            graph._trackingLegend = _makeTrackingLegend( graph );
+          }
+
+          graph._trackingLegend.innerHTML = text;
+          var h = graph._trackingLegend.offsetHeight;
+
+          _trackingLegendMove( graph._trackingLegend, ( x > graph.getWidth() / 2 ) ? ( ( x - x % 10 - 20 ) - graph._trackingLegend.offsetWidth ) : ( x - x % 10 + 30 ), ( y - y % 10 + h / 2 ) );
+        }
+      }
 
       if ( graph.options.onMouseMoveData ) {
 
         for ( var i = 0; i < graph.series.length; i++ ) {
 
           results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+
         }
 
         graph.options.onMouseMoveData.call( graph, e, results );
       }
       return;
     }
+  }
+
+  var _trackingLegendMove = util.debounce( function( legend, toX, toY ) {
+
+    var ratio = 0;
+    var start = Date.now();
+    var startX = parseInt( legend.style.left.replace( "px", "" ) ||  0 ),
+      startY = parseInt( legend.style.top.replace( "px", "" ) ||  0 );
+
+    function next() {
+
+      var progress = ( Date.now() - start ) / 200;
+      if ( progress > 1 ) {
+        progress = 1;
+      }
+
+      legend.style.left = ( ( toX - startX ) * progress + startX ) + "px";
+      legend.style.top = ( ( toY - startY ) * progress + startY ) + "px";
+
+      if ( progress < 1 ) {
+        window.requestAnimationFrame( next );
+      }
+    }
+
+    window.requestAnimationFrame( next );
+
+  }, 50 );
+
+  function _makeTrackingLegend( graph ) {
+
+    var group = document.createElement( 'div' );
+    group.setAttribute( 'class', 'trackingLegend' );
+    group.style.position = 'absolute';
+    group.style.borderRadius = '4px';
+    group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
+    group.style.border = "2px solid #333333";
+    group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
+    group.style.pointerEvents = "none";
+    group.style.paddingTop = "5px";
+    group.style.paddingBottom = "5px";
+    group.style.paddingLeft = "10px";
+    group.style.paddingRight = "10px";
+
+    graph.getWrapper().insertBefore( group, graph.getDom() );
+
+    return group;
   }
 
   function _handleDblClick( graph, x, y, e ) {

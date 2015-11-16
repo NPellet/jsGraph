@@ -424,12 +424,14 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @param {String} prop - The property to save
    * @param val - The value to save
    * @param [ index = 0 ] - The index of the property array to save the property
+   * @return {Shape} The current shape
    * @memberof Shape
    */
   Shape.prototype.setProp = function( prop, val, index ) {
     this.properties = this.properties || {};
     this.properties[ prop ] = this.properties[ prop ] || [];
     this.properties[ prop ][ index || 0 ] = val;
+    return this;
   };
 
   /**
@@ -808,7 +810,9 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.getPosition = function( index ) {
 
-    return GraphPosition.check( this.getProp( 'position', ( index || 0 ) ) );
+    var pos = this.getProp( 'position', ( index || 0 ) );
+    this.setProp( 'position', ( pos = GraphPosition.check( pos ) ), index );
+    return pos;
   };
 
   /**

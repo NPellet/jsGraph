@@ -1843,6 +1843,40 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     /**
+     * Sets the color of the primary grid
+     * @memberof Axis.prototype
+     * @param {String} color - The primary grid color
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setPrimaryGridColor: function( color ) {
+      this.options.primaryGridColor = color;
+      return this;
+    },
+
+    /**
+     * Sets the color of the primary grid
+     * @memberof Axis.prototype
+     * @param {String} color - The primary grid color
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setSecondaryGridColor: function( color ) {
+      this.options.secondaryGridColor = color;
+      return this;
+    },
+
+    /**
+     * Gets the color of the tick labels
+     * @memberof Axis.prototype
+     * @return {String} The color of the tick labels
+     * @since 1.13.2
+     */
+    getTicksLabelColor: function( color ) {
+      return this.options.ticksLabelColor || 'black';
+    },
+
+    /**
      * Sets the color of the label
      * @memberof Axis.prototype
      * @param {String} color - The new color of the label
@@ -1876,11 +1910,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     getColorPrimaryGrid: function() {
-      return '#c0c0c0';
+      return this.options.primaryGridColor || "#f0f0f0";
     },
 
     getColorSecondaryGrid: function() {
-      return '#f0f0f0';
+      return this.options.secondaryGridColor || "#f0f0f0";
     },
 
     setTickContent: function( dom, val, options ) {

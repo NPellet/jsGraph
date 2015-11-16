@@ -1481,10 +1481,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         xMax: this.data[ i ][ xMinIndex + 2 ],
         yMin: this.data[ i ][ xMinIndex + 1 ],
         yMax: this.data[ i ][ xMinIndex + 3 ],
-
         xBeforeIndex: xMinIndex / 2,
         xAfterIndex: xMinIndex / 2 + 2,
-        xBeforeIndexArr: xMinIndex
+        xBeforeIndexArr: xMinIndex,
+        xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
       }
     }
   };
@@ -1551,7 +1551,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       yAfter: value.yMax,
       trueX: valX,
       interpolatedY: intY,
-      xBeforeIndex: value.xBeforeIndex
+      xBeforeIndex: value.xBeforeIndex,
+      xIndexClosest: value.xClosest
     };
   };
 
@@ -1770,7 +1771,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       var s = this.styles[ i ];
       if ( s ) {
-        this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+        this.styles[ i ] = $.extend( true, {}, this.styles.unselected, s );
       }
     }
   };
@@ -1819,7 +1820,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   SerieLine.prototype.showMarkers = function( selectionType, redraw ) {
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-    this.styles[ selectionType ].markers = true;
+    this.styles[ selectionType ].showMarkers = true;
 
     if ( redraw && this._drawn ) {
       this.draw();
@@ -1833,7 +1834,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   SerieLine.prototype.hideMarkers = function( selectionType, redraw ) {
 
     selectionType = selectionType ||  "unselected";
-    this.styles[ selectionType ].markers = false;
+    this.styles[ selectionType ].showMarkers = false;
 
     if ( redraw && this._drawn ) {
       this.draw();
@@ -1844,7 +1845,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   };
 
   SerieLine.prototype.markersShown = function( selectionType ) {
-    return this.getStyle( selectionType ).markers;
+    return this.getStyle( selectionType ).showMarkers;
   };
 
   SerieLine.prototype.areMarkersShown = function() {
@@ -1870,7 +1871,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 			* @memberof SerieLine
 */
 
-    //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
+    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
     this.showMarkers( selectionType, false );
 
@@ -1884,6 +1885,31 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         points: 'all'
       } ];
     }
+
+    this.styles[ selectionType || "unselected" ].markers = families;
+
+    this._recalculateMarkerPoints( selectionType, families );
+
+    this.styleHasChanged( selectionType );
+    this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+
+    return this;
+  };
+
+  SerieLine.prototype.setMarkersPoints = function( points, family, selectionType ) {
+
+    family = family ||  0;
+    selectionType = selectionType ||  "unselected";
+
+    if ( !this.styles[ selectionType ] ||  !this.styles[ selectionType ].markers ) {
+      return;
+    }
+
+    this.styles[ selectionType ].markers[ family ].points = points;
+    this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+  }
+
+  SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
 
     var markerPoints = [];
     // Overwriting any other undefined families
@@ -1930,24 +1956,17 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
     this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+  }
 
-    this.styles[ selectionType || "unselected" ].markers = families;
+  SerieLine.prototype.insertMarkers = function( selectionType ) {
 
-    this.styleHasChanged( selectionType );
-    this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-
-    return this;
-  };
-
-  SerieLine.prototype.insertMarkers = function() {
-
-    if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
+    if ( !this.markerFamilies || !this.markerFamilies[ selectionType || this.selectionType ] || this.options.markersIndependant ) {
       return;
     }
 
-    for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i < l; i++ ) {
-      this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
-      this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+    for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i < l; i++ ) {
+      this.markerFamilies[ selectionType || this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ selectionType || this.selectionType ][ i ].path );
+      this.groupMain.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
       this.currentMarkersSelectionType = this.selectionType;
     }
   };
