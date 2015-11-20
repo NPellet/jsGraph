@@ -87,13 +87,12 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     this.markerHovered = 0;
     this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
-    this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
     //this.scale = 1;
     //this.shift = 0;
     this.lines = [];
 
     this.groupMain.appendChild( this.groupLines );
-    this.groupMain.appendChild( this.groupLabels );
+
     this.groupMain.appendChild( this.marker );
 
     this.groupMain.appendChild( this.groupMarkerSelected );
@@ -132,6 +131,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
         } );
 
+        shape.draw();
         shape.setSerie( self );
         self.picks.push( shape );
 
@@ -881,6 +881,34 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     }
 
+    if ( this._tracker ) {
+
+      if ( this._trackerDom ) {
+        this.groupLines.removeChild( this._trackerDom );
+      }
+
+      var cloned = this.groupLines.cloneNode( true );
+      this.groupMain.appendChild( cloned );
+
+      for ( var i = 0, l = cloned.children.length; i < l; i++ ) {
+
+        cloned.children[ i ].setAttribute( 'stroke', 'transparent' );
+        cloned.children[ i ].setAttribute( 'stroke-width', '25px' );
+        cloned.children[ i ].setAttribute( 'pointer-events', 'stroke' );
+      }
+
+      self._trackerDom = cloned;
+
+      cloned.addEventListener( "mousemove", function( e ) {
+        var coords = self.graph._getXY( e ),
+          ret = self.handleMouseMove( false, false );
+        self._trackingCallback( self, ret, coords.x, coords.y );
+      } );
+
+      cloned.addEventListener( "mouseleave", function( e ) {
+        self._trackingOutCallback( self );
+      } );
+    }
     return this;
 
   };
@@ -2131,7 +2159,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         self.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
       }
 
-      self.picks[ m ].updateLabels();
+      self.picks[ m ].makeLabels();
 
       m++;
       while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {

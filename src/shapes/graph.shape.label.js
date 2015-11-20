@@ -22,7 +22,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
     },
 
     applyPosition: function() {
-
+      return true;
     }
 
   } );

@@ -19,8 +19,6 @@ $.when(
     serie.setData( data.series[ 0 ].data );
     serie.autoAxis();
 
-    graph.autoscaleAxes();
-    graph.draw();
   } ),
 
   $.getJSON("http://api.eia.gov/series/?api_key=060737529563C657DFA3E60961449915&series_id=ELEC.CONS_TOT.COW-CA-99.A", {}, function( data ) {
@@ -37,8 +35,7 @@ $.when(
     serie.autoAxis();
 
 
-    graph.autoscaleAxes();
-    graph.draw();
+    
     
 
   } )
@@ -46,8 +43,10 @@ $.when(
 
 
   var trackLine = graph.trackingLine( {
-    
+      
+    mode: "individual",
     snapToSerie: graph.getSerie("CA"),
+
     textMethod: function( output ) {
       var txt = "";
       if( output[ "CA" ] ) {
@@ -72,12 +71,14 @@ $.when(
       {
         serie: graph.getSerie("CO"),
         withinPx: 10
-
       } 
     ]
 
   });
 
+
+    graph.autoscaleAxes();
+    graph.draw();
 
 } );
 

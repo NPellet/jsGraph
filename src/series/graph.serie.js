@@ -282,12 +282,6 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     this.graph.removeSerieFromDom( this );
 
-    if ( this.picks && this.picks.length ) {
-      for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-        this.picks[ i ].kill();
-      }
-    }
-
     this.graph._removeSerie( this );
 
     if ( this.graph.legend ) {
@@ -809,6 +803,22 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.selected = false;
     return this;
   };
+
+  Serie.prototype.enableTracking = function( hoverCallback, outCallback ) {
+    this._tracker = true;
+    this._trackingCallback = hoverCallback;
+    this._trackingOutCallback = outCallback;
+  }
+
+  Serie.prototype.disableTracking = function() {
+
+    if ( this._trackerDom ) {
+      this._trackerDom.parentNode.removeChild( this._trackerDom );
+    }
+
+    this._tracker = false;
+    this._trackingCallback = null;
+  }
 
   return Serie;
 } );

@@ -580,9 +580,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       //if(this.options.display || 1 == 1) {
       var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
       var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
-      console.log( val1, val2 );
+
       this.setCurrentMin( Math.min( val1, val2 ) );
       this.setCurrentMax( Math.max( val1, val2 ) );
+
+      this.cacheCurrentMin();
+      this.cacheCurrentMax();
 
       this._zoomed = true;
 
@@ -1209,7 +1212,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       var tick = this.ticks[ level ][ this.currentTick[ level ] ];
 
-      if ( this.currentTick[ level ] > this.lastCurrentTick[ level ] ) {
+      if ( this.currentTick[ level ] >= this.lastCurrentTick[ level ] ) {
         tick.setAttribute( 'display', 'visible' );
       }
 
@@ -1237,7 +1240,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       var tickLabel = this.ticksLabels[ this.currentTickLabel ];
 
-      if ( this.currentTickLabel > this.lastCurrentTickLabel ) {
+      if ( this.currentTickLabel >= this.lastCurrentTickLabel ) {
         tickLabel.setAttribute( 'display', 'visible' );
       }
 

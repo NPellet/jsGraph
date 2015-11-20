@@ -12,8 +12,8 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       var pos = this.computePosition( 0 );
 
-      this.setDom( 'cx', pos.x );
-      this.setDom( 'cy', pos.y );
+      this.setDom( 'cx', pos.x ||  0 );
+      this.setDom( 'cy', pos.y ||  0 );
 
       this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
       this.setDom( 'ry', this.getProp( 'ry' ) || 0 );

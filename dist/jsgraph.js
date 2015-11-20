@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-16T21:31Z
+ * Date: 2015-11-20T00:37Z
  */
 
 ( function( global, factory ) {
@@ -2754,8 +2754,8 @@
 
         _getXY: function( e ) {
 
-          var x = e.clientX,
-            y = e.clientY;
+          var x = e.pageX,
+            y = e.pageY;
 
           var pos = this.offsetCached || $( this._dom ).offset();
 
@@ -2810,12 +2810,16 @@
           this.defs = document.createElementNS( this.ns, 'defs' );
           this.dom.appendChild( this.defs );
 
+          this.groupEvent = document.createElementNS( this.ns, 'g' );
+
           this.rectEvent = document.createElementNS( this.ns, 'rect' );
           util.setAttributeTo( this.rectEvent, {
             'pointer-events': 'fill',
             'fill': 'transparent'
           } );
-          this.dom.appendChild( this.rectEvent );
+          this.groupEvent.appendChild( this.rectEvent );
+
+          this.dom.appendChild( this.groupEvent );
 
           // Handling graph title
           this.domTitle = document.createElementNS( this.ns, 'text' );
@@ -2824,14 +2828,14 @@
             'text-anchor': 'middle',
             'y': 20
           } );
-          this.dom.appendChild( this.domTitle );
+          this.groupEvent.appendChild( this.domTitle );
           //
 
           this.graphingZone = document.createElementNS( this.ns, 'g' );
           util.setAttributeTo( this.graphingZone, {
             'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
           } );
-          this.dom.appendChild( this.graphingZone );
+          this.groupEvent.appendChild( this.graphingZone );
 
           /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
       //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
@@ -2908,8 +2912,52 @@
 
         trackingLine: function( options ) {
 
+          var self = this;
+
           if ( options ) {
             this.options.trackingLine = options;
+          }
+
+          if ( options.mode == "individual" ) {
+
+            options.series.map( function( sOptions ) {
+
+              sOptions.serie.enableTracking( function( serie, index, x, y ) {
+
+                if ( index ) {
+                  self.trackingLine.show();
+                  var closestIndex = index.xIndexClosest;
+                  self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  self.trackingLine.getPosition( 1 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  self.trackingLine.redraw();
+
+                  serie._trackingLegend = _trackingLegendSerie( self, {
+                    serie: serie
+                  }, x, y, serie._trackingLegend, sOptions.method ? sOptions.method : function( output ) {
+
+                    for ( var i in output ) {
+                      return output[ i ].serie.serie.getName();
+                      break;
+                    }
+
+                  } );
+
+                  serie._trackingLegend.style.display = "block";
+                }
+              }, function( serie ) {
+                self.trackingLine.hide();
+                console.log( serie._trackingLegend );
+                serie._trackingLegend.style.display = "none";
+                serie._trackingLegend = _trackingLegendSerie( self, {
+                  serie: serie
+                }, false, false, serie._trackingLegend, false );
+
+              } );
+            } );
+          } else {
+            options.series.map( function( serie ) {
+              serie.serie.disableTracking();
+            } );
           }
 
           this.trackingLine = this.newShape( 'line', util.extend( true, {
@@ -2919,8 +2967,9 @@
               y: 'max'
             } ],
             stroke: 'black'
-          }, options.shapeOptions ) );
+          }, options.trackingLineShapeOptions ) );
           this.trackingLine.draw();
+
           return this.trackingLine;
 
         }
@@ -3069,7 +3118,7 @@
 
         } );
 
-        graph.dom.addEventListener( 'mousemove', function( e ) {
+        graph.groupEvent.addEventListener( 'mousemove', function( e ) {
           //e.preventDefault();
           var coords = self._getXY( e );
           _handleMouseMove( self, coords.x, coords.y, e );
@@ -3099,6 +3148,7 @@
           graph.emit( "mouseUp", e );
           //   e.preventDefault();
           var coords = self._getXY( e );
+          console.log( "UP" );
           _handleMouseUp( self, coords.x, coords.y, e );
 
         } );
@@ -3149,7 +3199,7 @@
           //}, 200 );
         } );
 
-        graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+        graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
 
           if ( !graph.options.wheel.type ) {
             return;
@@ -3162,7 +3212,7 @@
           return false;
         } );
 
-        graph.rectEvent.addEventListener( 'wheel', function( e ) {
+        graph.groupEvent.addEventListener( 'wheel', function( e ) {
 
           if ( !graph.options.wheel.type ) {
             return;
@@ -3221,9 +3271,9 @@
           var results = {};
           var index;
 
-          if ( graph.options.trackingLine ) {
+          if ( graph.options.trackingLine && graph.options.trackingLine.snapToSerie ) {
 
-            if ( graph.options.trackingLine.snapToSerie ) {
+            if ( graph.options.trackingLine.mode == "common" ) {
 
               snapToSerie = graph.options.trackingLine.snapToSerie;
               index = snapToSerie.handleMouseMove( false, true );
@@ -3241,167 +3291,126 @@
                 graph.trackingLine.redraw();
               }
 
-            } else {
+              var series = graph.options.trackingLine.series;
 
-              graph.trackingLine.getPosition( 0 ).x = x + "px"
-              graph.trackingLine.getPosition( 1 ).x = x + "px";
-              graph.trackingLine.redraw();
-            }
+              if ( !graph.options.trackingLine.series ) {
 
-            var series = graph.options.trackingLine.series;
-
-            if ( !graph.options.trackingLine.series ) {
-
-              series = graph.getSeries().map( function( serie ) {
-                return {
-                  serie: serie,
-                  withinPx: 20,
-                  withinVal: -1
-                };
-              } );
-            }
-
-            var index,
-              output = [];
-
-            var getter;
-            switch ( graph.options.trackingLine.returnValue ) {
-
-              case 'before':
-                getter = function( serie, indices ) {
+                series = graph.getSeries().map( function( serie ) {
                   return {
-
-                    positionXPx: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 ],
-                    xIndex: indices.xBeforeIndex,
-                    yValue: serie.getData()[ 0 ][ indices.xBeforeIndex * 2 + 1 ],
-
                     serie: serie,
-                    indices: indices
+                    withinPx: 20,
+                    withinVal: -1
                   };
-                }
-
-                break;
-
-              case 'after':
-                getter = function( serie, indices ) {
-
-                  return {
-
-                    positionXPx: serie.getData()[ 0 ][ indices.xAfterIndex * 2 ],
-                    xIndex: indices.xAfterIndex,
-                    yValue: serie.getData()[ 0 ][ indices.xAfterIndex * 2 + 1 ],
-
-                    serie: serie,
-                    indices: indices
-                  };
-                }
-                break;
-
-              case 'interpolatation':
-                getter = function( serie, indices ) {
-
-                  return {
-                    positionXPx: indices.trueX,
-                    xIndex: false,
-                    yValue: indices.interpolatedY,
-
-                    serie: serie,
-                    indices: indices
-                  };
-                }
-                break;
-
-              default:
-              case 'closest':
-                getter = function( serie, indices ) {
-
-                  return {
-                    positionXPx: serie.getData()[ 0 ][ indices.xIndexClosest * 2 ],
-                    xIndex: indices.xIndexClosest,
-                    yValue: serie.getData()[ 0 ][ indices.xIndexClosest * 2 + 1 ],
-
-                    serie: serie,
-                    indices: indices
-                  };
-                }
-                break;
-            }
-
-            for ( var i = 0, l = series.length; i < l; i++ ) {
-
-              index = series[ i ].serie.handleMouseMove( false, true );
-
-              if ( !index ) {
-
-                if ( series[ i ].serie.trackingShape ) {
-                  series[ i ].serie.trackingShape.hide();
-                }
-
-                continue;
+                } );
               }
 
-              if (
-                ( series[ i ].withinPx > 0 && Math.abs( x - graph.options.paddingLeft - series[ i ].serie.getXAxis().getPx( series[ i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) > series[ i ].withinPx ) ||
-                ( series[ i ].withinVal > 0 && Math.abs( series[ i ].serie.getXAxis().getVal( x - graph.options.paddingLeft ) - series[ i ].serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) > series[ i ].withinVal )
-              ) {
-                // Do nothing
-              } else {
-                output[ series[ i ].serie.getName() ] = getter( series[ i ].serie, index );
-
-                if ( !series[ i ].serie.trackingShape ) {
-                  series[ i ].serie.trackingShape = graph.newShape( "ellipse", {
-                      fillColor: series[ i ].serie.getLineColor(),
-                      strokeColor: "White",
-                      strokeWidth: series[ i ].serie.getLineWidth()
-                    } )
-                    .setSerie( series[ i ].serie )
-                    .draw()
-                    .setProp( 'rx', series[ i ].serie.getLineWidth() * 3 )
-                    .setProp( 'ry', series[ i ].serie.getLineWidth() * 3 );
-
-                }
-
-                series[ i ].serie.trackingShape.show();
-                series[ i ].serie.trackingShape.getPosition( 0 ).x = output[ series[ i ].serie.getName() ].positionXPx;
-                series[ i ].serie.trackingShape.redraw();
-              }
-            }
-
-            if ( graph.options.trackingLine.independentLegends ) {
-
-              var text = graph.options.trackingLine.independentLegendsText( output );
-
-              if ( !graph._trackingLegend ) {
-                graph._trackingLegend = _makeTrackingLegend( graph );
-              }
-
-              graph._trackingLegend.innerHTML = text;
-              var h = graph._trackingLegend.offsetHeight;
-
-              _trackingLegendMove( graph._trackingLegend, ( x > graph.getWidth() / 2 ) ? ( ( x - x % 10 - 20 ) - graph._trackingLegend.offsetWidth ) : ( x - x % 10 + 30 ), ( y - y % 10 + h / 2 ) );
+              graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod );
             }
           }
-
-          if ( graph.options.onMouseMoveData ) {
-
-            for ( var i = 0; i < graph.series.length; i++ ) {
-
-              results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
-
-            }
-
-            graph.options.onMouseMoveData.call( graph, e, results );
-          }
-          return;
         }
+
+        if ( graph.options.onMouseMoveData ) {
+
+          for ( var i = 0; i < graph.series.length; i++ ) {
+
+            results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+
+          }
+
+          graph.options.onMouseMoveData.call( graph, e, results );
+        }
+        return;
+
       }
 
-      var _trackingLegendMove = util.debounce( function( legend, toX, toY ) {
+      var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod ) {
 
-        var ratio = 0;
-        var start = Date.now();
-        var startX = parseInt( legend.style.left.replace( "px", "" ) || 0 ),
+        if ( !Array.isArray( serie ) ) {
+          serie = [ serie ];
+        }
+
+        var output = [];
+
+        if ( !legend ) {
+          legend = _makeTrackingLegend( graph );
+        }
+
+        serie.map( function( serie ) {
+
+          var index = serie.serie.handleMouseMove( false, false );
+
+          if ( !index ) {
+
+            if ( serie.serie.trackingShape ) {
+              serie.serie.trackingShape.hide();
+            }
+
+            return legend;
+          }
+
+          // Should we display the dot ?
+          if (
+            ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) > serie.withinPx ) ||
+            ( serie.withinVal > 0 && Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) > serie.withinVal )
+          ) {
+            // Do nothing
+          } else {
+
+            output[ serie.serie.getName() ] = {
+
+              positionXPx: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ],
+              xIndex: index.xIndexClosest,
+              yValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 + 1 ],
+              serie: serie,
+              index: index
+
+            };
+
+            if ( !serie.serie.trackingShape ) {
+
+              serie.serie.trackingShape = graph.newShape( "ellipse", {
+
+                  fillColor: serie.serie.getLineColor(),
+                  strokeColor: "White",
+                  strokeWidth: serie.serie.getLineWidth()
+
+                } )
+                .setSerie( serie.serie )
+                .draw()
+                .setProp( 'rx', serie.serie.getLineWidth() * 3 )
+                .setProp( 'ry', serie.serie.getLineWidth() * 3 );
+            }
+
+            serie.serie.trackingShape.show();
+            serie.serie.trackingShape.getPosition( 0 ).x = serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ];
+            serie.serie.trackingShape.redraw();
+          }
+
+        } ); // End map
+
+        if ( Object.keys( output ).length == 0 || !textMethod ) {
+          legend.style.display = "none";
+        } else {
+          legend.style.display = "block";
+          legend.innerHTML = textMethod( output );
+          _trackingLegendMove( graph, legend, x, y );
+
+        }
+
+        return legend;
+
+      };
+
+      var _trackingLegendMove = util.debounce( function( graph, legend, toX, toY ) {
+
+        var ratio = 0,
+          start = Date.now(),
+          h = legend.offsetHeight,
+          startX = parseInt( legend.style.left.replace( "px", "" ) || 0 ),
           startY = parseInt( legend.style.top.replace( "px", "" ) || 0 );
+
+        toX = ( toX > graph.getWidth() / 2 ) ? ( ( toX - toX % 10 - 20 ) - legend.offsetWidth ) : ( toX - toX % 10 + 30 );
+        toY = ( toY - toY % 10 + h / 2 );
 
         function next() {
 
@@ -4264,9 +4273,12 @@
           //if(this.options.display || 1 == 1) {
           var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
           var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
-          console.log( val1, val2 );
+
           this.setCurrentMin( Math.min( val1, val2 ) );
           this.setCurrentMax( Math.max( val1, val2 ) );
+
+          this.cacheCurrentMin();
+          this.cacheCurrentMax();
 
           this._zoomed = true;
 
@@ -4893,7 +4905,7 @@
 
           var tick = this.ticks[ level ][ this.currentTick[ level ] ];
 
-          if ( this.currentTick[ level ] > this.lastCurrentTick[ level ] ) {
+          if ( this.currentTick[ level ] >= this.lastCurrentTick[ level ] ) {
             tick.setAttribute( 'display', 'visible' );
           }
 
@@ -4921,7 +4933,7 @@
 
           var tickLabel = this.ticksLabels[ this.currentTickLabel ];
 
-          if ( this.currentTickLabel > this.lastCurrentTickLabel ) {
+          if ( this.currentTickLabel >= this.lastCurrentTickLabel ) {
             tickLabel.setAttribute( 'display', 'visible' );
           }
 
@@ -5839,7 +5851,7 @@
               }
               tickLabel.style.dominantBaseline = 'hanging';
             } );
-
+            console.log( val, value );
             tickLabel.setAttribute( 'x', val );
             this.setTickContent( tickLabel, value, options );
 
@@ -8274,7 +8286,7 @@
 
         this.options = options;
         this.graph = graph;
-        graph.dom.appendChild( this._zoomingGroup );
+        graph.groupEvent.appendChild( this._zoomingGroup );
         this._zoomingGroup.appendChild( this._zoomingSquare );
       };
 
@@ -8867,12 +8879,6 @@
 
         this.graph.removeSerieFromDom( this );
 
-        if ( this.picks && this.picks.length ) {
-          for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-            this.picks[ i ].kill();
-          }
-        }
-
         this.graph._removeSerie( this );
 
         if ( this.graph.legend ) {
@@ -9395,6 +9401,22 @@
         return this;
       };
 
+      Serie.prototype.enableTracking = function( hoverCallback, outCallback ) {
+        this._tracker = true;
+        this._trackingCallback = hoverCallback;
+        this._trackingOutCallback = outCallback;
+      }
+
+      Serie.prototype.disableTracking = function() {
+
+        if ( this._trackerDom ) {
+          this._trackerDom.parentNode.removeChild( this._trackerDom );
+        }
+
+        this._tracker = false;
+        this._trackingCallback = null;
+      }
+
       return Serie;
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
@@ -9832,13 +9854,12 @@
         this.markerHovered = 0;
         this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
-        this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
         //this.scale = 1;
         //this.shift = 0;
         this.lines = [];
 
         this.groupMain.appendChild( this.groupLines );
-        this.groupMain.appendChild( this.groupLabels );
+
         this.groupMain.appendChild( this.marker );
 
         this.groupMain.appendChild( this.groupMarkerSelected );
@@ -9877,6 +9898,7 @@
 
             } );
 
+            shape.draw();
             shape.setSerie( self );
             self.picks.push( shape );
 
@@ -10626,6 +10648,34 @@
 
         }
 
+        if ( this._tracker ) {
+
+          if ( this._trackerDom ) {
+            this.groupLines.removeChild( this._trackerDom );
+          }
+
+          var cloned = this.groupLines.cloneNode( true );
+          this.groupMain.appendChild( cloned );
+
+          for ( var i = 0, l = cloned.children.length; i < l; i++ ) {
+
+            cloned.children[ i ].setAttribute( 'stroke', 'transparent' );
+            cloned.children[ i ].setAttribute( 'stroke-width', '25px' );
+            cloned.children[ i ].setAttribute( 'pointer-events', 'stroke' );
+          }
+
+          self._trackerDom = cloned;
+
+          cloned.addEventListener( "mousemove", function( e ) {
+            var coords = self.graph._getXY( e ),
+              ret = self.handleMouseMove( false, false );
+            self._trackingCallback( self, ret, coords.x, coords.y );
+          } );
+
+          cloned.addEventListener( "mouseleave", function( e ) {
+            self._trackingOutCallback( self );
+          } );
+        }
         return this;
 
       };
@@ -11875,7 +11925,7 @@
             self.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
           }
 
-          self.picks[ m ].updateLabels();
+          self.picks[ m ].makeLabels();
 
           m++;
           while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
@@ -16044,8 +16094,8 @@
 
           var pos = this.computePosition( 0 );
 
-          this.setDom( 'cx', pos.x );
-          this.setDom( 'cy', pos.y );
+          this.setDom( 'cx', pos.x || 0 );
+          this.setDom( 'cy', pos.y || 0 );
 
           this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
           this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
@@ -16107,7 +16157,7 @@
         },
 
         applyPosition: function() {
-
+          return true;
         }
 
       } );
