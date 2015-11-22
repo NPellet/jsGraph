@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-26
+ * jsGraph JavaScript Graphing Library v1.13.3-27
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-20T00:37Z
+ * Date: 2015-11-22T12:33Z
  */
 
 ( function( global, factory ) {
@@ -5851,7 +5851,7 @@
               }
               tickLabel.style.dominantBaseline = 'hanging';
             } );
-            console.log( val, value );
+
             tickLabel.setAttribute( 'x', val );
             this.setTickContent( tickLabel, value, options );
 

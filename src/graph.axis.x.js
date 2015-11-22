@@ -101,7 +101,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
           }
           tickLabel.style.dominantBaseline = 'hanging';
         } );
-        console.log( val, value );
+
         tickLabel.setAttribute( 'x', val );
         this.setTickContent( tickLabel, value, options );
 
