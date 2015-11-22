@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-27
+ * jsGraph JavaScript Graphing Library v1.13.3-28
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-22T12:33Z
+ * Date: 2015-11-22T20:50Z
  */
 
 ( function( global, factory ) {
@@ -1112,7 +1112,7 @@
 
         var self = this;
 
-        /**
+        /*
           The unique ID of the graph
           @name Graph#uniqueid
           @type String
@@ -2759,8 +2759,8 @@
 
           var pos = this.offsetCached || $( this._dom ).offset();
 
-          x -= pos.left - window.scrollX;
-          y -= pos.top - window.scrollY;
+          x -= pos.left /* - window.scrollX*/ ;
+          y -= pos.top /* - window.scrollY*/ ;
 
           return {
             x: x,

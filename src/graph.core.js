@@ -22,7 +22,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     var self = this;
 
-    /**
+    /*
       The unique ID of the graph
       @name Graph#uniqueid
       @type String
@@ -1669,8 +1669,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       var pos = this.offsetCached || $( this._dom ).offset();
 
-      x -= pos.left - window.scrollX;
-      y -= pos.top - window.scrollY;
+      x -= pos.left /* - window.scrollX*/ ;
+      y -= pos.top /* - window.scrollY*/ ;
 
       return {
         x: x,
