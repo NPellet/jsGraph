@@ -1510,7 +1510,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         yMin: this.data[ i ][ xMinIndex + 1 ],
         yMax: this.data[ i ][ xMinIndex + 3 ],
         xBeforeIndex: xMinIndex / 2,
-        xAfterIndex: xMinIndex / 2 + 2,
+        xAfterIndex: xMinIndex / 2 + 1,
         xBeforeIndexArr: xMinIndex,
         xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
       }

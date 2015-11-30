@@ -1122,12 +1122,16 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    */
   Shape.prototype.hideHandles = function() {
 
+    if ( !this.handlesInDom ) {
+      return this;
+    }
+
     for ( var i = 1; i < this.handles.length; i++ ) {
       this.group.removeChild( this.handles[ i ] );
     }
 
     this.handlesInDom = false;
-    return false;
+    return this;
   }
 
   /**
@@ -1144,9 +1148,10 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * Selects the shape. Should only be called from jsGraph main instance
    * @private
    * @memberof Shape
+   * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
    * @returns {Shape} the current shape
    */
-  Shape.prototype._select = function() {
+  Shape.prototype._select = function( mute ) {
 
     if ( !this.isSelectable() ) {
       return false;
@@ -1165,17 +1170,20 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       this.setHandles();
     }
 
-    this.graph.emit( "shapeSelected", this );
+    if ( !mute ) {
+      this.graph.emit( "shapeSelected", this );
+    }
   };
 
   /**
    * Unselects the shape. Should only be called from jsGraph main instance
    * @private
    * @memberof Shape
+   * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
    * @returns {Shape} the current shape
    */
-  Shape.prototype._unselect = function() {
-
+  Shape.prototype._unselect = function( mute ) {
+    console.trace();
     this._selectStatus = false;
 
     util.restoreDomAttributes( this._dom, 'select' );
@@ -1184,7 +1192,9 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
       this.hideHandles();
     }
 
-    this.graph.emit( "shapeUnselected", this );
+    if ( !mute ) {
+      this.graph.emit( "shapeUnselected", this );
+    }
   };
 
   /**
@@ -1381,6 +1391,11 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @private
    */
   Shape.prototype.handleClick = function( e ) {
+
+    if ( this.getProp( 'selectOnClick' ) ) {
+      this.graph.selectShape( this );
+    }
+
     if ( !this.isSelectable() ) {
       return false;
     }

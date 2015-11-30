@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-28
+ * jsGraph JavaScript Graphing Library v1.13.3-29
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-22T20:50Z
+ * Date: 2015-11-30T17:53Z
  */
 
 ( function( global, factory ) {
@@ -472,7 +472,7 @@
         to._savedAttributesIds = to._savedAttributesIds || [];
 
         if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
-          throw "";
+          util.restoreDomAttributes( to, identification );
         }
 
         to._savedAttributes = to._savedAttributes || {};
@@ -1102,7 +1102,7 @@
        * @param {Array} axis.right - The list of right axes
        * @augments EventEmitter
        * @example var graph = new Graph("someDomID");
-       * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
+       * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
        * @tutorial basic
        */
 
@@ -1194,24 +1194,6 @@
         this._resize();
         _registerEvents( this );
 
-        this.shapeHandlers = {
-          mouseDown: [],
-          mouseUp: [],
-          mouseMove: [],
-          mouseOver: [],
-          mouseOut: [],
-          beforeMouseMove: [],
-          onChange: [],
-          onCreated: [],
-          onResizing: [],
-          onMoving: [],
-          onAfterResized: [],
-          onAfterMoved: [],
-          onSelected: [],
-          onUnselected: [],
-          onRemoved: []
-        };
-
         this.pluginsReady = $.Deferred();
         this.seriesReady = $.Deferred();
 
@@ -1263,7 +1245,8 @@
        * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
        * @prop {Object} wheel - Define the mouse wheel action
        * @prop {Object} dblclick - Define the double click action
-       * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+       * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
+       * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
        */
       var GraphOptionsDefault = {
 
@@ -1289,7 +1272,8 @@
         wheel: {},
         dblclick: {},
 
-        uniqueShapeSelection: true
+        shapesUnselectOnClick: true,
+        shapesUniqueSelection: true
       };
 
       Graph.prototype = new EventEmitter();
@@ -2302,6 +2286,10 @@
             shape.setProp( "selectOnMouseDown", true );
           }
 
+          if ( shapeData.selectOnClick ) {
+            shape.setProp( "selectOnClick", true );
+          }
+
           if ( shapeData.highlightOnMouseOver ) {
             shape.setProp( "highlightOnMouseOver", true );
           }
@@ -2408,13 +2396,9 @@
             return;
           }
 
-          if ( this.selectedShapes.length > 0 && this.options.uniqueShapeSelection ) { // Only one selected shape at the time
+          if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection ) { // Only one selected shape at the time
 
-            //console.log('Unselect shape');
-            while ( this.selectedShapes[ 0 ] ) {
-
-              this.unselectShape( this.selectedShapes[ 0 ], mute )
-            }
+            this.unselectShapes( mute );
           }
 
           shape._select( mute );
@@ -2438,7 +2422,7 @@
           }
 
           if ( !mute ) {
-            this.emit( "beforeShapeSelect", shape );
+            this.emit( "beforeShapeUnselect", shape );
           }
 
           if ( this.cancelUnselectShape ) {
@@ -2459,13 +2443,16 @@
         /**
          * Unselects all shapes
          * @memberof Graph.prototype
+         * @param {Boolean} [ mute = false ] - Mutes all unselection events
+         * @return {Graph} The current graph instance
          */
-        unselectShapes: function() {
+        unselectShapes: function( mute ) {
 
           while ( this.selectedShapes[ 0 ] ) {
-            this.unselectShape( this.selectedShapes[ 0 ] );
+            this.unselectShape( this.selectedShapes[ 0 ], mute );
           }
 
+          return this;
         },
 
         _removeShape: function( shape ) {
@@ -3494,10 +3481,11 @@
 
         // Not on a shape
 
-        if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
+        if ( !e.target.jsGraphIsShape && !graph.prevent( false ) && graph.options.shapesUnselectOnClick ) {
 
           graph.unselectShapes();
         }
+
       }
 
       function _getAxis( graph, num, options, pos ) {
@@ -4269,7 +4257,7 @@
         },
 
         _doZoom: function( px1, px2, val1, val2, mute ) {
-          console.log( px1, px2, val1, val2, mute );
+
           //if(this.options.display || 1 == 1) {
           var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
           var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
@@ -11276,7 +11264,7 @@
             yMin: this.data[ i ][ xMinIndex + 1 ],
             yMax: this.data[ i ][ xMinIndex + 3 ],
             xBeforeIndex: xMinIndex / 2,
-            xAfterIndex: xMinIndex / 2 + 2,
+            xAfterIndex: xMinIndex / 2 + 1,
             xBeforeIndexArr: xMinIndex,
             xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
           }
@@ -14864,12 +14852,16 @@
        */
       Shape.prototype.hideHandles = function() {
 
+        if ( !this.handlesInDom ) {
+          return this;
+        }
+
         for ( var i = 1; i < this.handles.length; i++ ) {
           this.group.removeChild( this.handles[ i ] );
         }
 
         this.handlesInDom = false;
-        return false;
+        return this;
       }
 
       /**
@@ -14886,9 +14878,10 @@
        * Selects the shape. Should only be called from jsGraph main instance
        * @private
        * @memberof Shape
+       * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
        * @returns {Shape} the current shape
        */
-      Shape.prototype._select = function() {
+      Shape.prototype._select = function( mute ) {
 
         if ( !this.isSelectable() ) {
           return false;
@@ -14907,17 +14900,20 @@
           this.setHandles();
         }
 
-        this.graph.emit( "shapeSelected", this );
+        if ( !mute ) {
+          this.graph.emit( "shapeSelected", this );
+        }
       };
 
       /**
        * Unselects the shape. Should only be called from jsGraph main instance
        * @private
        * @memberof Shape
+       * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
        * @returns {Shape} the current shape
        */
-      Shape.prototype._unselect = function() {
-
+      Shape.prototype._unselect = function( mute ) {
+        console.trace();
         this._selectStatus = false;
 
         util.restoreDomAttributes( this._dom, 'select' );
@@ -14926,7 +14922,9 @@
           this.hideHandles();
         }
 
-        this.graph.emit( "shapeUnselected", this );
+        if ( !mute ) {
+          this.graph.emit( "shapeUnselected", this );
+        }
       };
 
       /**
@@ -15123,6 +15121,11 @@
        * @private
        */
       Shape.prototype.handleClick = function( e ) {
+
+        if ( this.getProp( 'selectOnClick' ) ) {
+          this.graph.selectShape( this );
+        }
+
         if ( !this.isSelectable() ) {
           return false;
         }

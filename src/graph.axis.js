@@ -576,7 +576,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     _doZoom: function( px1, px2, val1, val2, mute ) {
-      console.log( px1, px2, val1, val2, mute );
+
       //if(this.options.display || 1 == 1) {
       var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
       var val2 = val2 !== undefined ? val2 : this.getVal( px2 );

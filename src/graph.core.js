@@ -12,7 +12,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
    * @param {Array} axis.right - The list of right axes
    * @augments EventEmitter
    * @example var graph = new Graph("someDomID");
-   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
+   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    * @tutorial basic
    */
 
@@ -104,24 +104,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     this._resize();
     _registerEvents( this );
 
-    this.shapeHandlers = {
-      mouseDown: [],
-      mouseUp: [],
-      mouseMove: [],
-      mouseOver: [],
-      mouseOut: [],
-      beforeMouseMove: [],
-      onChange: [],
-      onCreated: [],
-      onResizing: [],
-      onMoving: [],
-      onAfterResized: [],
-      onAfterMoved: [],
-      onSelected: [],
-      onUnselected: [],
-      onRemoved: []
-    };
-
     this.pluginsReady = $.Deferred();
     this.seriesReady = $.Deferred();
 
@@ -173,7 +155,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
    * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
    * @prop {Object} wheel - Define the mouse wheel action
    * @prop {Object} dblclick - Define the double click action
-   * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+   * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
+   * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
    */
   var GraphOptionsDefault = {
 
@@ -199,7 +182,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     wheel: {},
     dblclick: {},
 
-    uniqueShapeSelection: true
+    shapesUnselectOnClick: true,
+    shapesUniqueSelection: true
   };
 
   Graph.prototype = new EventEmitter();
@@ -1212,6 +1196,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shape.setProp( "selectOnMouseDown", true );
       }
 
+      if ( shapeData.selectOnClick ) {
+        shape.setProp( "selectOnClick", true );
+      }
+
       if ( shapeData.highlightOnMouseOver ) {
         shape.setProp( "highlightOnMouseOver", true );
       }
@@ -1318,13 +1306,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         return;
       }
 
-      if ( this.selectedShapes.length > 0 && this.options.uniqueShapeSelection )  { // Only one selected shape at the time
+      if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection )  { // Only one selected shape at the time
 
-        //console.log('Unselect shape');
-        while ( this.selectedShapes[ 0 ] ) {
-
-          this.unselectShape( this.selectedShapes[ 0 ], mute )
-        }
+        this.unselectShapes( mute );
       }
 
       shape._select( mute );
@@ -1348,7 +1332,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
 
       if ( !mute ) {
-        this.emit( "beforeShapeSelect", shape );
+        this.emit( "beforeShapeUnselect", shape );
       }
 
       if ( this.cancelUnselectShape ) {
@@ -1369,13 +1353,16 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     /**
      * Unselects all shapes
      * @memberof Graph.prototype
+     * @param {Boolean} [ mute = false ] - Mutes all unselection events
+     * @return {Graph} The current graph instance
      */
-    unselectShapes: function() {
+    unselectShapes: function( mute ) {
 
       while ( this.selectedShapes[ 0 ] ) {
-        this.unselectShape( this.selectedShapes[  0 ] );
+        this.unselectShape( this.selectedShapes[  0 ], mute );
       }
 
+      return this;
     },
 
     _removeShape: function( shape ) {
@@ -2404,10 +2391,11 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     // Not on a shape
 
-    if ( !e.target.jsGraphIsShape && !graph.prevent( false ) ) {
+    if ( !e.target.jsGraphIsShape && !graph.prevent( false ) && graph.options.shapesUnselectOnClick ) {
 
       graph.unselectShapes();
     }
+
   }
 
   function _getAxis( graph, num, options, pos ) {

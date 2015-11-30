@@ -124,7 +124,7 @@ define( [], function() {
     to._savedAttributesIds = to._savedAttributesIds || [];
 
     if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
-      throw "";
+      util.restoreDomAttributes( to, identification );
     }
 
     to._savedAttributes = to._savedAttributes || {};
