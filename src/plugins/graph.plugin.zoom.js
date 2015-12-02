@@ -163,17 +163,25 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
     switch ( this._zoomingMode ) {
       case 'x':
+        this.fullX = false;
         graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
         break;
       case 'y':
+        this.fullY = false;
         graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
         break;
       case 'xy':
+        this.fullX = false;
+        this.fullY = false;
         graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
         graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
         break;
 
       case 'forceY2':
+
+        this.fullX = false;
+        this.fullY = false;
+
         graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
         graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
 
@@ -258,15 +266,20 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     if ( pref.mode == 'xtotal' ) {
 
       this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+      this.fullX = true;
+      this.fullY = false;
 
     } else if ( pref.mode == 'ytotal' ) {
 
       this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+      this.fullX = false;
+      this.fullY = true;
 
     } else if ( pref.mode == 'total' ) {
 
       this.graph.autoscaleAxes();
-
+      this.fullX = true;
+      this.fullY = true;
       // Nothing to do here
       /*        this.graph._applyToAxes( function( axis ) {
 
@@ -329,6 +342,14 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     } );
 
   };
+
+  PluginZoom.prototype.isFullX = function() {
+    return this.fullX;
+  }
+
+  PluginZoom.prototype.isFullY = function() {
+    return this.fullY;
+  }
 
   return PluginZoom;
 } );

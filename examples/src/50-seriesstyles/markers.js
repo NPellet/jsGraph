@@ -12,8 +12,22 @@ define( function() {
 				}
 			},
 
+			dblclick: {
+				type: 'plugin',
+				plugin: 'zoom',
+				options: {
+					mode: 'total'
+				}
+			},
+
 			plugins: {
-				'zoom': {  }
+				'zoom': { zoomMode: 'xy' },
+				'drag': {}
+			},
+
+			pluginAction: {
+				'drag': { shift: true, ctrl: false },
+				'zoom': { shift: false, ctrl: false }
 			}
 
 		 } );

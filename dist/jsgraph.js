@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-29
+ * jsGraph JavaScript Graphing Library v1.13.3-30
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-30T17:53Z
+ * Date: 2015-12-02T15:15Z
  */
 
 ( function( global, factory ) {
@@ -4624,15 +4624,15 @@
               this.unitTspan.setAttribute( 'display', 'none' );
             }
 
-            if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 ) {
+            var letter;
 
-              this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+            if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
-              this.preunitTspan.innerHTML = this.getExponentGreekLetter( this.scientificExponent );
+              this.preunitTspan.innerHTML = letter;
               this.preunitTspan.setAttribute( 'display', 'visible' );
               this.unitTspan.setAttribute( 'dx', 0 );
 
-            } else if ( this.scientificExponent !== 0 ) {
+            } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
               if ( this.options.engineering ) {
                 this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
@@ -4722,6 +4722,10 @@
 
             case 12:
               return "T";
+              break;
+
+            case 15:
+              return "E";
               break;
 
             case -3:
@@ -8405,17 +8409,25 @@
 
         switch ( this._zoomingMode ) {
           case 'x':
+            this.fullX = false;
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             break;
           case 'y':
+            this.fullY = false;
             graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
             break;
           case 'xy':
+            this.fullX = false;
+            this.fullY = false;
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
             break;
 
           case 'forceY2':
+
+            this.fullX = false;
+            this.fullY = false;
+
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
 
@@ -8500,15 +8512,20 @@
         if ( pref.mode == 'xtotal' ) {
 
           this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+          this.fullX = true;
+          this.fullY = false;
 
         } else if ( pref.mode == 'ytotal' ) {
 
           this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+          this.fullX = false;
+          this.fullY = true;
 
         } else if ( pref.mode == 'total' ) {
 
           this.graph.autoscaleAxes();
-
+          this.fullX = true;
+          this.fullY = true;
           // Nothing to do here
           /*        this.graph._applyToAxes( function( axis ) {
 
@@ -8571,6 +8588,14 @@
         } );
 
       };
+
+      PluginZoom.prototype.isFullX = function() {
+        return this.fullX;
+      }
+
+      PluginZoom.prototype.isFullY = function() {
+        return this.fullY;
+      }
 
       return PluginZoom;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
@@ -10539,7 +10564,7 @@
 
                       this._createLine();
                       this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                      this._addPoint( xpx2, ypx2, lastX, lastY, false, false, false );
+                      this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
 
                     } else if ( !lastPointOutside ) { // We were inside and now go outside
 

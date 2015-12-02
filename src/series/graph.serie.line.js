@@ -784,7 +784,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
                   this._createLine();
                   this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                  this._addPoint( xpx2, ypx2, lastX, lastY, false, false, false );
+                  this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
 
                 } else if ( !lastPointOutside ) { // We were inside and now go outside
 

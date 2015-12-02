@@ -943,15 +943,15 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           this.unitTspan.setAttribute( 'display', 'none' );
         }
 
-        if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 ) {
+        var letter;
 
-          this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+        if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
-          this.preunitTspan.innerHTML = this.getExponentGreekLetter( this.scientificExponent );
+          this.preunitTspan.innerHTML = letter;
           this.preunitTspan.setAttribute( 'display', 'visible' );
           this.unitTspan.setAttribute( 'dx', 0 );
 
-        } else if ( this.scientificExponent !== 0 ) {
+        } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
           if ( this.options.engineering ) {
             this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
@@ -1041,6 +1041,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
         case 12:
           return "T";
+          break;
+
+        case 15:
+          return "E";
           break;
 
         case -3:
