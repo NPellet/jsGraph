@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-30
+ * jsGraph JavaScript Graphing Library v1.13.3-31
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-02T15:15Z
+ * Date: 2015-12-09T19:41Z
  */
 
 ( function( global, factory ) {
@@ -9430,6 +9430,10 @@
         this._trackingCallback = null;
       }
 
+      Serie.prototype.getMarkerForLegend = function() {
+        return false;
+      }
+
       return Serie;
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
@@ -13926,6 +13930,7 @@
         this.hidden = false;
         this.group.style.display = 'block';
         this.redraw();
+        return this;
 
       };
 
@@ -14732,9 +14737,9 @@
         var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
         if ( isNaN( position.x ) || isNaN( position.y ) ) {
-          console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
+          /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
           console.log( this, this._labels );
-          console.trace();
+          console.trace();*/
           return;
 
         }

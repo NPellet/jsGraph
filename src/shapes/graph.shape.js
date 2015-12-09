@@ -171,6 +171,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     this.hidden = false;
     this.group.style.display = 'block';
     this.redraw();
+    return this;
 
   };
 
@@ -977,9 +978,9 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
     if ( isNaN( position.x ) || isNaN( position.y ) ) {
-      console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
+      /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
       console.log( this, this._labels );
-      console.trace();
+      console.trace();*/
       return;
 
     }

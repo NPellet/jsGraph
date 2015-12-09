@@ -820,5 +820,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this._trackingCallback = null;
   }
 
+  Serie.prototype.getMarkerForLegend = function() {
+    return false;
+  }
+
   return Serie;
 } );
