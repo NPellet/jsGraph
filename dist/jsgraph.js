@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-33
+ * jsGraph JavaScript Graphing Library v1.13.3-34
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-12T15:52Z
+ * Date: 2015-12-12T20:54Z
  */
 
 ( function( global, factory ) {
@@ -8054,7 +8054,14 @@
        * @memberof PluginDrag
        * @private
        */
-      PluginDrag.prototype.init = function() {};
+      PluginDrag.prototype.init = function() {
+
+        this.time = null;
+        this.totaltime = 2000;
+
+        // x = ( 1 / 2 a t^2 + v0 * t * x0 );
+
+      };
 
       /**
        * @memberof PluginDrag
@@ -8064,6 +8071,8 @@
           this._draggingX = x;
           this._draggingY = y;
 
+          this.stopAnimation = true;
+
           return true;
         },
 
@@ -8072,6 +8081,7 @@
          * @private
          */
         PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+
           var deltaX = x - this._draggingX;
           var deltaY = y - this._draggingY;
 
@@ -8085,14 +8095,81 @@
             axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
           }, false, false, true );
 
+          this._lastDraggingX = this._draggingX;
+          this._lastDraggingY = this._draggingY;
+
           this._draggingX = x;
           this._draggingY = y;
 
-          graph.redraw( true );
-          graph.drawSeries();
+          this.time = Date.now();
+
+          graph.draw( true );
+
         }
 
+      PluginDrag.prototype.onMouseUp = function( graph, x, y, e, target ) {
+
+        var dt = ( Date.now() - this.time );
+
+        console.log( x - this._lastDraggingX );
+        this.speedX = ( x - this._lastDraggingX ) / dt;
+        this.speedY = ( y - this._lastDraggingY ) / dt;
+
+        graph._applyToAxes( function( axis ) {
+          axis._pluginDragMin = axis.getCurrentMin();
+          axis._pluginDragMax = axis.getCurrentMax();
+
+        }, false, true, true );
+        console.log( 'sdf' );
+
+        this.stopAnimation = false;
+        this.accelerationX = -this.speedX / this.totaltime;
+        this.accelerationY = -this.speedY / this.totaltime;
+
+        this._move( graph );
+
+      }
+
+      PluginDrag.prototype._move = function( graph ) {
+
+        var self = this;
+
+        if ( self.stopAnimation ) {
+          return;
+        }
+
+        window.requestAnimationFrame( function() {
+
+          var dt = Date.now() - self.time;
+          var dx = ( 0.5 * self.accelerationX * dt + self.speedX ) * dt;
+          var dy = ( 0.5 * self.accelerationY * dt + self.speedY ) * dt;
+
+          graph._applyToAxes( function( axis ) {
+
+            axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
+            axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
+
+          }, false, true, false );
+
+          graph._applyToAxes( function( axis ) {
+
+            axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
+            axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
+
+          }, false, false, true );
+
+          graph.draw( true );
+
+          if ( dt < self.totaltime ) {
+            self._move( graph );
+          }
+
+        } );
+
+      }
+
       return PluginDrag;
+
     } )( build[ "./plugins/graph.plugin" ] );
 
     /* 
