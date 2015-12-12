@@ -65,7 +65,10 @@ $.when(
 
     series: [ 
       {
-        serie: graph.getSerie("CA")
+        serie: graph.getSerie("CA"),
+        textMethod: function( data ) {
+          return "Coal consumption in California: " + data.CA.yValue + " (in " + data.CA.xValue + ")";
+        }
       },
 
       {

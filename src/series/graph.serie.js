@@ -824,5 +824,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     return false;
   }
 
+  Serie.prototype.getType = function() {
+    return this.type;
+  }
   return Serie;
+
 } );

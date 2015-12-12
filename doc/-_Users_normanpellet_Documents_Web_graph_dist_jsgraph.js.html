@@ -41,7 +41,7 @@
 			<li class="dropdown">
 				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li>
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li><li><a href="tutorial-8-trackingline.html">Tracking line</a></li>
 				</ul>
 			</li>
 			
@@ -79,13 +79,13 @@
 	<article>
 		<pre
 			class="sunlight-highlight-javascript linenums">/*!
- * jsGraph JavaScript Graphing Library v1.13.3-24
+ * jsGraph JavaScript Graphing Library v1.13.3-31
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-11-15T16:48Z
+ * Date: 2015-12-09T23:41Z
  */
 
 ( function( global, factory ) {
@@ -552,7 +552,7 @@
         to._savedAttributesIds = to._savedAttributesIds || [];
 
         if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
-          throw "";
+          util.restoreDomAttributes( to, identification );
         }
 
         to._savedAttributes = to._savedAttributes || {};
@@ -686,6 +686,23 @@
         // |obj| is a plain object, created by {} or constructed with new Object
         return true;
       }
+
+      // https://davidwalsh.name/function-debounce
+      util.debounce = function( func, wait, immediate ) {
+        var timeout;
+        return function() {
+          var context = this,
+            args = arguments;
+          var later = function() {
+            timeout = null;
+            if ( !immediate ) func.apply( context, args );
+          };
+          var callNow = immediate &amp;&amp; !timeout;
+          clearTimeout( timeout );
+          timeout = setTimeout( later, wait );
+          if ( callNow ) func.apply( context, args );
+        };
+      };
 
       return util;
 
@@ -1165,7 +1182,7 @@
        * @param {Array} axis.right - The list of right axes
        * @augments EventEmitter
        * @example var graph = new Graph("someDomID");
-       * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', uniqueShapeSelection: true } );
+       * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
        * @tutorial basic
        */
 
@@ -1175,7 +1192,7 @@
 
         var self = this;
 
-        /**
+        /*
           The unique ID of the graph
           @name Graph#uniqueid
           @type String
@@ -1257,33 +1274,6 @@
         this._resize();
         _registerEvents( this );
 
-        this.trackingLines = {
-          id: 0,
-          current: false,
-          dasharray: [ false, "5, 5", "5, 1", "1, 5" ],
-          currentDasharray: [],
-          vertical: [],
-          horizontal: []
-        };
-
-        this.shapeHandlers = {
-          mouseDown: [],
-          mouseUp: [],
-          mouseMove: [],
-          mouseOver: [],
-          mouseOut: [],
-          beforeMouseMove: [],
-          onChange: [],
-          onCreated: [],
-          onResizing: [],
-          onMoving: [],
-          onAfterResized: [],
-          onAfterMoved: [],
-          onSelected: [],
-          onUnselected: [],
-          onRemoved: []
-        };
-
         this.pluginsReady = $.Deferred();
         this.seriesReady = $.Deferred();
 
@@ -1335,7 +1325,8 @@
        * @prop {Object.&lt;String,Object>} pluginAction - The default key combination to access those actions
        * @prop {Object} wheel - Define the mouse wheel action
        * @prop {Object} dblclick - Define the double click action
-       * @prop {Boolean} uniqueShapeSelection - true to allow only one shape to be selected at the time
+       * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
+       * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
        */
       var GraphOptionsDefault = {
 
@@ -1361,7 +1352,8 @@
         wheel: {},
         dblclick: {},
 
-        uniqueShapeSelection: true
+        shapesUnselectOnClick: true,
+        shapesUniqueSelection: true
       };
 
       Graph.prototype = new EventEmitter();
@@ -2374,6 +2366,10 @@
             shape.setProp( "selectOnMouseDown", true );
           }
 
+          if ( shapeData.selectOnClick ) {
+            shape.setProp( "selectOnClick", true );
+          }
+
           if ( shapeData.highlightOnMouseOver ) {
             shape.setProp( "highlightOnMouseOver", true );
           }
@@ -2480,13 +2476,9 @@
             return;
           }
 
-          if ( this.selectedShapes.length > 0 &amp;&amp; this.options.uniqueShapeSelection ) { // Only one selected shape at the time
+          if ( this.selectedShapes.length > 0 &amp;&amp; this.options.shapesUniqueSelection ) { // Only one selected shape at the time
 
-            //console.log('Unselect shape');
-            while ( this.selectedShapes[ 0 ] ) {
-
-              this.unselectShape( this.selectedShapes[ 0 ], mute )
-            }
+            this.unselectShapes( mute );
           }
 
           shape._select( mute );
@@ -2510,7 +2502,7 @@
           }
 
           if ( !mute ) {
-            this.emit( "beforeShapeSelect", shape );
+            this.emit( "beforeShapeUnselect", shape );
           }
 
           if ( this.cancelUnselectShape ) {
@@ -2531,13 +2523,16 @@
         /**
          * Unselects all shapes
          * @memberof Graph.prototype
+         * @param {Boolean} [ mute = false ] - Mutes all unselection events
+         * @return {Graph} The current graph instance
          */
-        unselectShapes: function() {
+        unselectShapes: function( mute ) {
 
           while ( this.selectedShapes[ 0 ] ) {
-            this.unselectShape( this.selectedShapes[ 0 ] );
+            this.unselectShape( this.selectedShapes[ 0 ], mute );
           }
 
+          return this;
         },
 
         _removeShape: function( shape ) {
@@ -2826,13 +2821,13 @@
 
         _getXY: function( e ) {
 
-          var x = e.clientX,
-            y = e.clientY;
+          var x = e.pageX,
+            y = e.pageY;
 
           var pos = this.offsetCached || $( this._dom ).offset();
 
-          x -= pos.left - window.scrollX;
-          y -= pos.top - window.scrollY;
+          x -= pos.left /* - window.scrollX*/ ;
+          y -= pos.top /* - window.scrollY*/ ;
 
           return {
             x: x,
@@ -2882,12 +2877,16 @@
           this.defs = document.createElementNS( this.ns, 'defs' );
           this.dom.appendChild( this.defs );
 
+          this.groupEvent = document.createElementNS( this.ns, 'g' );
+
           this.rectEvent = document.createElementNS( this.ns, 'rect' );
           util.setAttributeTo( this.rectEvent, {
             'pointer-events': 'fill',
             'fill': 'transparent'
           } );
-          this.dom.appendChild( this.rectEvent );
+          this.groupEvent.appendChild( this.rectEvent );
+
+          this.dom.appendChild( this.groupEvent );
 
           // Handling graph title
           this.domTitle = document.createElementNS( this.ns, 'text' );
@@ -2896,14 +2895,14 @@
             'text-anchor': 'middle',
             'y': 20
           } );
-          this.dom.appendChild( this.domTitle );
+          this.groupEvent.appendChild( this.domTitle );
           //
 
           this.graphingZone = document.createElementNS( this.ns, 'g' );
           util.setAttributeTo( this.graphingZone, {
             'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
           } );
-          this.dom.appendChild( this.graphingZone );
+          this.groupEvent.appendChild( this.graphingZone );
 
           /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
       //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
@@ -2976,6 +2975,76 @@
           this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
           this.bypassHandleMouse = false;
+        },
+
+        trackingLine: function( options ) {
+
+          var self = this;
+
+          if ( options ) {
+            this.options.trackingLine = options;
+          }
+
+          if ( options.mode == "individual" ) {
+
+            options.series.map( function( sOptions ) {
+
+              sOptions.serie.enableTracking( function( serie, index, x, y ) {
+
+                if ( index ) {
+
+                  self.trackingLine.show();
+                  var closestIndex = index.xIndexClosest;
+                  self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  self.trackingLine.getPosition( 1 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+                  self.trackingLine.redraw();
+
+                  serie._trackingLegend = _trackingLegendSerie( self, {
+                    serie: serie
+                  }, x, y, serie._trackingLegend, sOptions.textMethod ? sOptions.textMethod : function( output ) {
+
+                    for ( var i in output ) {
+                      return output[ i ].serie.serie.getName();
+                      break;
+                    }
+
+                  }, self.trackingLine.getPosition( 0 ).x );
+
+                  serie._trackingLegend.style.display = "block";
+                }
+              }, function( serie ) {
+                self.trackingLine.hide();
+
+                if ( serie.trackingShape ) {
+                  serie.trackingShape.hide();
+                }
+
+                serie._trackingLegend.style.display = "none";
+                serie._trackingLegend = _trackingLegendSerie( self, {
+                  serie: serie
+                }, false, false, serie._trackingLegend, false, false );
+
+              } );
+            } );
+          } else {
+            options.series.map( function( serie ) {
+              serie.serie.disableTracking();
+            } );
+          }
+
+          this.trackingLine = this.newShape( 'line', util.extend( true, {
+            position: [ {
+              y: 'min'
+            }, {
+              y: 'max'
+            } ],
+            stroke: 'black',
+            layer: -1
+          }, options.trackingLineShapeOptions ) );
+          this.trackingLine.draw();
+
+          return this.trackingLine;
+
         }
 
       } );
@@ -3122,7 +3191,7 @@
 
         } );
 
-        graph.dom.addEventListener( 'mousemove', function( e ) {
+        graph.groupEvent.addEventListener( 'mousemove', function( e ) {
           //e.preventDefault();
           var coords = self._getXY( e );
           _handleMouseMove( self, coords.x, coords.y, e );
@@ -3152,6 +3221,7 @@
           graph.emit( "mouseUp", e );
           //   e.preventDefault();
           var coords = self._getXY( e );
+          console.log( "UP" );
           _handleMouseUp( self, coords.x, coords.y, e );
 
         } );
@@ -3202,7 +3272,7 @@
           //}, 200 );
         } );
 
-        graph.rectEvent.addEventListener( 'mousewheel', function( e ) {
+        graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
 
           if ( !graph.options.wheel.type ) {
             return;
@@ -3215,7 +3285,7 @@
           return false;
         } );
 
-        graph.rectEvent.addEventListener( 'wheel', function( e ) {
+        graph.groupEvent.addEventListener( 'wheel', function( e ) {
 
           if ( !graph.options.wheel.type ) {
             return;
@@ -3272,18 +3342,211 @@
 
         if ( !graph.activePlugin ) {
           var results = {};
+          var index;
 
-          if ( graph.options.onMouseMoveData ) {
+          if ( graph.options.trackingLine &amp;&amp; graph.options.trackingLine.snapToSerie ) {
 
-            for ( var i = 0; i &lt; graph.series.length; i++ ) {
+            if ( graph.options.trackingLine.mode == "common" ) {
 
-              results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+              var snapToSerie = graph.options.trackingLine.snapToSerie;
+              index = snapToSerie.handleMouseMove( false, true );
+
+              if ( !index ) {
+
+                graph.trackingLine.hide();
+
+              } else {
+
+                graph.trackingLine.show();
+                var closestIndex = index.xIndexClosest;
+                graph.trackingLine.getPosition( 0 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+                graph.trackingLine.getPosition( 1 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
+                graph.trackingLine.redraw();
+
+                var x = snapToSerie.getXAxis().getPx( graph.trackingLine.getPosition( 0 ).x ) + graph.options.paddingLeft;
+
+              }
+
+              var series = graph.options.trackingLine.series;
+
+              if ( !graph.options.trackingLine.series ) {
+
+                series = graph.getSeries().map( function( serie ) {
+                  return {
+                    serie: serie,
+                    withinPx: 20,
+                    withinVal: -1
+                  };
+                } );
+              }
+
+              graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, graph.trackingLine.getPosition( 1 ).x );
+            }
+          }
+        }
+
+        if ( graph.options.onMouseMoveData ) {
+
+          for ( var i = 0; i &lt; graph.series.length; i++ ) {
+
+            results[ graph.series[ i ].getName() ] = graph.series[ i ].handleMouseMove( false, true );
+
+          }
+
+          graph.options.onMouseMoveData.call( graph, e, results );
+        }
+        return;
+
+      }
+
+      var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xValue ) {
+
+        var justCreated = false;
+
+        if ( !Array.isArray( serie ) ) {
+          serie = [ serie ];
+        }
+
+        var output = [];
+
+        if ( !legend ) {
+          justCreated = true;
+          legend = _makeTrackingLegend( graph );
+        }
+
+        serie.map( function( serie ) {
+
+          var index = serie.serie.handleMouseMove( xValue, false );
+
+          if ( !index || !textMethod ) {
+
+            if ( serie.serie.trackingShape ) {
+              serie.serie.trackingShape.hide();
             }
 
-            graph.options.onMouseMoveData.call( graph, e, results );
+            return legend;
           }
+
+          // Should we display the dot ?
+          if (
+            ( serie.withinPx > 0 &amp;&amp; Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) - serie.withinPx > 1e-14 ) ||
+            ( serie.withinVal > 0 &amp;&amp; Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) - serie.withinVal > serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) / 100000 )
+          ) {
+
+            if ( serie.serie.trackingShape ) {
+              serie.serie.trackingShape.hide();
+            }
+
+          } else {
+
+            output[ serie.serie.getName() ] = {
+
+              xIndex: index.xIndexClosest,
+              yValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 + 1 ],
+              xValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ],
+              serie: serie,
+              index: index
+
+            };
+
+            if ( !serie.serie.trackingShape ) {
+
+              serie.serie.trackingShape = graph.newShape( "ellipse", {
+
+                  fillColor: serie.serie.getLineColor(),
+                  strokeColor: "White",
+                  strokeWidth: serie.serie.getLineWidth()
+
+                } )
+                .setSerie( serie.serie )
+                .setProp( 'rx', serie.serie.getLineWidth() * 3 )
+                .setProp( 'ry', serie.serie.getLineWidth() * 3 )
+                .forceParentDom( serie.serie.groupMain )
+                .draw();
+            }
+
+            serie.serie.trackingShape.show();
+            serie.serie.trackingShape.getPosition( 0 ).x = serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ];
+            serie.serie.trackingShape.redraw();
+          }
+
+        } ); // End map
+
+        if ( Object.keys( output ).length == 0 || !textMethod ) {
+          legend.style.display = "none";
+        } else {
+
+          if ( legend.style.display == "none" || justCreated ) {
+            console.log( x, y );
+            forceTrackingLegendMode( graph, legend, x, y, true );
+          } else {
+            _trackingLegendMove( graph, legend, x, y );
+          }
+
+          legend.style.display = "block";
+          legend.innerHTML = textMethod( output, xValue, x, y );
+
+        }
+
+        return legend;
+
+      };
+
+      var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
+
+        var ratio = 0,
+          start = Date.now(),
+          h = legend.offsetHeight,
+          startX = parseInt( legend.style.marginLeft.replace( "px", "" ) || 0 ),
+          startY = parseInt( legend.style.marginTop.replace( "px", "" ) || 0 );
+
+        toX = ( toX > graph.getWidth() / 2 ) ? ( ( toX - toX % 10 - 20 ) - legend.offsetWidth ) : ( toX - toX % 10 + 30 );
+        toY = ( toY - toY % 10 + h / 2 );
+
+        if ( skip ) {
+          legend.style.marginLeft = ( toX ) + "px";
+          legend.style.marginTop = ( toY ) + "px";
           return;
         }
+
+        function next() {
+
+          var progress = ( Date.now() - start ) / 200;
+          if ( progress > 1 ) {
+            progress = 1;
+          }
+
+          legend.style.marginLeft = ( ( toX - startX ) * progress + startX ) + "px";
+          legend.style.marginTop = ( ( toY - startY ) * progress + startY ) + "px";
+
+          if ( progress &lt; 1 ) {
+            window.requestAnimationFrame( next );
+          }
+        }
+
+        window.requestAnimationFrame( next );
+      };
+
+      var _trackingLegendMove = util.debounce( forceTrackingLegendMode, 50 );
+
+      function _makeTrackingLegend( graph ) {
+
+        var group = document.createElement( 'div' );
+        group.setAttribute( 'class', 'trackingLegend' );
+        group.style.position = 'absolute';
+        group.style.borderRadius = '4px';
+        group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
+        group.style.border = "2px solid #333333";
+        group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
+        group.style.pointerEvents = "none";
+        group.style.paddingTop = "5px";
+        group.style.paddingBottom = "5px";
+        group.style.paddingLeft = "10px";
+        group.style.paddingRight = "10px";
+
+        graph.getWrapper().insertBefore( group, graph.getDom() );
+
+        return group;
       }
 
       function _handleDblClick( graph, x, y, e ) {
@@ -3329,10 +3592,11 @@
 
         // Not on a shape
 
-        if ( !e.target.jsGraphIsShape &amp;&amp; !graph.prevent( false ) ) {
+        if ( !e.target.jsGraphIsShape &amp;&amp; !graph.prevent( false ) &amp;&amp; graph.options.shapesUnselectOnClick ) {
 
           graph.unselectShapes();
         }
+
       }
 
       function _getAxis( graph, num, options, pos ) {
@@ -4104,13 +4368,16 @@
         },
 
         _doZoom: function( px1, px2, val1, val2, mute ) {
-          console.log( px1, px2, val1, val2, mute );
+
           //if(this.options.display || 1 == 1) {
           var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
           var val2 = val2 !== undefined ? val2 : this.getVal( px2 );
-          console.log( val1, val2 );
+
           this.setCurrentMin( Math.min( val1, val2 ) );
           this.setCurrentMax( Math.max( val1, val2 ) );
+
+          this.cacheCurrentMin();
+          this.cacheCurrentMax();
 
           this._zoomed = true;
 
@@ -4468,15 +4735,15 @@
               this.unitTspan.setAttribute( 'display', 'none' );
             }
 
-            if ( this.options.unitDecade &amp;&amp; this.options.unit &amp;&amp; this.scientificExponent !== 0 ) {
+            var letter;
 
-              this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+            if ( this.options.unitDecade &amp;&amp; this.options.unit &amp;&amp; this.scientificExponent !== 0 &amp;&amp; ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) &amp;&amp; ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
-              this.preunitTspan.innerHTML = this.getExponentGreekLetter( this.scientificExponent );
+              this.preunitTspan.innerHTML = letter;
               this.preunitTspan.setAttribute( 'display', 'visible' );
               this.unitTspan.setAttribute( 'dx', 0 );
 
-            } else if ( this.scientificExponent !== 0 ) {
+            } else if ( this.scientificExponent !== 0 &amp;&amp; !isNaN( this.scientificExponent ) ) {
 
               if ( this.options.engineering ) {
                 this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
@@ -4566,6 +4833,10 @@
 
             case 12:
               return "T";
+              break;
+
+            case 15:
+              return "E";
               break;
 
             case -3:
@@ -4737,7 +5008,7 @@
 
           var tick = this.ticks[ level ][ this.currentTick[ level ] ];
 
-          if ( this.currentTick[ level ] > this.lastCurrentTick[ level ] ) {
+          if ( this.currentTick[ level ] >= this.lastCurrentTick[ level ] ) {
             tick.setAttribute( 'display', 'visible' );
           }
 
@@ -4765,7 +5036,7 @@
 
           var tickLabel = this.ticksLabels[ this.currentTickLabel ];
 
-          if ( this.currentTickLabel > this.lastCurrentTickLabel ) {
+          if ( this.currentTickLabel >= this.lastCurrentTickLabel ) {
             tickLabel.setAttribute( 'display', 'visible' );
           }
 
@@ -5371,6 +5642,30 @@
         },
 
         /**
+         * Sets the color of the primary grid
+         * @memberof Axis.prototype
+         * @param {String} color - The primary grid color
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setPrimaryGridColor: function( color ) {
+          this.options.primaryGridColor = color;
+          return this;
+        },
+
+        /**
+         * Sets the color of the primary grid
+         * @memberof Axis.prototype
+         * @param {String} color - The primary grid color
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setSecondaryGridColor: function( color ) {
+          this.options.secondaryGridColor = color;
+          return this;
+        },
+
+        /**
          * Sets the color of the label
          * @memberof Axis.prototype
          * @param {String} color - The new color of the label
@@ -5404,11 +5699,11 @@
         },
 
         getColorPrimaryGrid: function() {
-          return '#c0c0c0';
+          return this.options.primaryGridColor || "#f0f0f0";
         },
 
         getColorSecondaryGrid: function() {
-          return '#f0f0f0';
+          return this.options.secondaryGridColor || "#f0f0f0";
         },
 
         setTickContent: function( dom, val, options ) {
@@ -6763,8 +7058,14 @@
       GraphXAxis.prototype.draw = function() { // Redrawing of the axis
         var visible;
 
-        if ( this.currentAxisMin == undefined || !this.currentAxisMax == undefined ) {
-          this.setMinMaxToFitSeries(); // We reset the min max as a function of the series
+        this.drawInit();
+
+        this.cacheCurrentMax();
+        this.cacheCurrentMin();
+
+        if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
+          this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
+
         }
 
         this.line.setAttribute( 'x1', this.getMinPx() );
@@ -8078,7 +8379,7 @@
 
         this.options = options;
         this.graph = graph;
-        graph.dom.appendChild( this._zoomingGroup );
+        graph.groupEvent.appendChild( this._zoomingGroup );
         this._zoomingGroup.appendChild( this._zoomingSquare );
       };
 
@@ -8209,17 +8510,25 @@
 
         switch ( this._zoomingMode ) {
           case 'x':
+            this.fullX = false;
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             break;
           case 'y':
+            this.fullY = false;
             graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
             break;
           case 'xy':
+            this.fullX = false;
+            this.fullY = false;
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
             break;
 
           case 'forceY2':
+
+            this.fullX = false;
+            this.fullY = false;
+
             graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
             graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
 
@@ -8304,15 +8613,20 @@
         if ( pref.mode == 'xtotal' ) {
 
           this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+          this.fullX = true;
+          this.fullY = false;
 
         } else if ( pref.mode == 'ytotal' ) {
 
           this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+          this.fullX = false;
+          this.fullY = true;
 
         } else if ( pref.mode == 'total' ) {
 
           this.graph.autoscaleAxes();
-
+          this.fullX = true;
+          this.fullY = true;
           // Nothing to do here
           /*        this.graph._applyToAxes( function( axis ) {
 
@@ -8375,6 +8689,14 @@
         } );
 
       };
+
+      PluginZoom.prototype.isFullX = function() {
+        return this.fullX;
+      }
+
+      PluginZoom.prototype.isFullY = function() {
+        return this.fullY;
+      }
 
       return PluginZoom;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
@@ -8670,12 +8992,6 @@
       Serie.prototype.kill = function() {
 
         this.graph.removeSerieFromDom( this );
-
-        if ( this.picks &amp;&amp; this.picks.length ) {
-          for ( var i = 0, l = this.picks.length; i &lt; l; i++ ) {
-            this.picks[ i ].kill();
-          }
-        }
 
         this.graph._removeSerie( this );
 
@@ -9199,6 +9515,26 @@
         return this;
       };
 
+      Serie.prototype.enableTracking = function( hoverCallback, outCallback ) {
+        this._tracker = true;
+        this._trackingCallback = hoverCallback;
+        this._trackingOutCallback = outCallback;
+      }
+
+      Serie.prototype.disableTracking = function() {
+
+        if ( this._trackerDom ) {
+          this._trackerDom.parentNode.removeChild( this._trackerDom );
+        }
+
+        this._tracker = false;
+        this._trackingCallback = null;
+      }
+
+      Serie.prototype.getMarkerForLegend = function() {
+        return false;
+      }
+
       return Serie;
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
@@ -9636,13 +9972,12 @@
         this.markerHovered = 0;
         this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
-        this.groupLabels = document.createElementNS( this.graph.ns, 'g' );
         //this.scale = 1;
         //this.shift = 0;
         this.lines = [];
 
         this.groupMain.appendChild( this.groupLines );
-        this.groupMain.appendChild( this.groupLabels );
+
         this.groupMain.appendChild( this.marker );
 
         this.groupMain.appendChild( this.groupMarkerSelected );
@@ -9681,6 +10016,7 @@
 
             } );
 
+            shape.draw();
             shape.setSerie( self );
             self.picks.push( shape );
 
@@ -10333,7 +10669,7 @@
 
                       this._createLine();
                       this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                      this._addPoint( xpx2, ypx2, lastX, lastY, false, false, false );
+                      this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
 
                     } else if ( !lastPointOutside ) { // We were inside and now go outside
 
@@ -10430,6 +10766,34 @@
 
         }
 
+        if ( this._tracker ) {
+
+          if ( this._trackerDom ) {
+            this.groupLines.removeChild( this._trackerDom );
+          }
+
+          var cloned = this.groupLines.cloneNode( true );
+          this.groupMain.appendChild( cloned );
+
+          for ( var i = 0, l = cloned.children.length; i &lt; l; i++ ) {
+
+            cloned.children[ i ].setAttribute( 'stroke', 'transparent' );
+            cloned.children[ i ].setAttribute( 'stroke-width', '25px' );
+            cloned.children[ i ].setAttribute( 'pointer-events', 'stroke' );
+          }
+
+          self._trackerDom = cloned;
+
+          self.groupMain.addEventListener( "mousemove", function( e ) {
+            var coords = self.graph._getXY( e ),
+              ret = self.handleMouseMove( false, false );
+            self._trackingCallback( self, ret, coords.x, coords.y );
+          } );
+
+          self.groupMain.addEventListener( "mouseleave", function( e ) {
+            self._trackingOutCallback( self );
+          } );
+        }
         return this;
 
       };
@@ -11029,17 +11393,17 @@
             xMax: this.data[ i ][ xMinIndex + 2 ],
             yMin: this.data[ i ][ xMinIndex + 1 ],
             yMax: this.data[ i ][ xMinIndex + 3 ],
-
             xBeforeIndex: xMinIndex / 2,
-            xAfterIndex: xMinIndex / 2 + 2,
-            xBeforeIndexArr: xMinIndex
+            xAfterIndex: xMinIndex / 2 + 1,
+            xBeforeIndexArr: xMinIndex,
+            xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) &lt; Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
           }
         }
       };
 
-      SerieLine.prototype.handleMouseMove = function( x, doMarker ) {
+      SerieLine.prototype.handleMouseMove = function( xValue, doMarker ) {
 
-        var valX = x || this.getXAxis().getMouseVal(),
+        var valX = xValue || this.getXAxis().getMouseVal(),
           xMinIndex,
           xMin,
           yMin,
@@ -11099,7 +11463,8 @@
           yAfter: value.yMax,
           trueX: valX,
           interpolatedY: intY,
-          xBeforeIndex: value.xBeforeIndex
+          xBeforeIndex: value.xBeforeIndex,
+          xIndexClosest: value.xClosest
         };
       };
 
@@ -11318,7 +11683,7 @@
 
           var s = this.styles[ i ];
           if ( s ) {
-            this.styles[ i ] = $.extend( {}, this.styles.unselected, s );
+            this.styles[ i ] = $.extend( true, {}, this.styles.unselected, s );
           }
         }
       };
@@ -11367,7 +11732,7 @@
       SerieLine.prototype.showMarkers = function( selectionType, redraw ) {
         selectionType = selectionType || "unselected";
         this.styles[ selectionType ] = this.styles[ selectionType ] || {};
-        this.styles[ selectionType ].markers = true;
+        this.styles[ selectionType ].showMarkers = true;
 
         if ( redraw &amp;&amp; this._drawn ) {
           this.draw();
@@ -11381,7 +11746,7 @@
       SerieLine.prototype.hideMarkers = function( selectionType, redraw ) {
 
         selectionType = selectionType || "unselected";
-        this.styles[ selectionType ].markers = false;
+        this.styles[ selectionType ].showMarkers = false;
 
         if ( redraw &amp;&amp; this._drawn ) {
           this.draw();
@@ -11392,7 +11757,7 @@
       };
 
       SerieLine.prototype.markersShown = function( selectionType ) {
-        return this.getStyle( selectionType ).markers;
+        return this.getStyle( selectionType ).showMarkers;
       };
 
       SerieLine.prototype.areMarkersShown = function() {
@@ -11418,7 +11783,7 @@
 			* @memberof SerieLine
 */
 
-        //    this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
+        this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
         this.showMarkers( selectionType, false );
 
@@ -11432,6 +11797,31 @@
             points: 'all'
           } ];
         }
+
+        this.styles[ selectionType || "unselected" ].markers = families;
+
+        this._recalculateMarkerPoints( selectionType, families );
+
+        this.styleHasChanged( selectionType );
+        this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
+
+        return this;
+      };
+
+      SerieLine.prototype.setMarkersPoints = function( points, family, selectionType ) {
+
+        family = family || 0;
+        selectionType = selectionType || "unselected";
+
+        if ( !this.styles[ selectionType ] || !this.styles[ selectionType ].markers ) {
+          return;
+        }
+
+        this.styles[ selectionType ].markers[ family ].points = points;
+        this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+      }
+
+      SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
 
         var markerPoints = [];
         // Overwriting any other undefined families
@@ -11478,24 +11868,17 @@
 
         this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
         this.markerPoints[ selectionType || "unselected" ] = markerPoints;
+      }
 
-        this.styles[ selectionType || "unselected" ].markers = families;
+      SerieLine.prototype.insertMarkers = function( selectionType ) {
 
-        this.styleHasChanged( selectionType );
-        this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-
-        return this;
-      };
-
-      SerieLine.prototype.insertMarkers = function() {
-
-        if ( !this.markerFamilies || !this.markerFamilies[ this.selectionType ] || this.options.markersIndependant ) {
+        if ( !this.markerFamilies || !this.markerFamilies[ selectionType || this.selectionType ] || this.options.markersIndependant ) {
           return;
         }
 
-        for ( var i = 0, l = this.markerFamilies[ this.selectionType ].length; i &lt; l; i++ ) {
-          this.markerFamilies[ this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ this.selectionType ][ i ].path );
-          this.groupMain.appendChild( this.markerFamilies[ this.selectionType ][ i ].dom );
+        for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i &lt; l; i++ ) {
+          this.markerFamilies[ selectionType || this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ selectionType || this.selectionType ][ i ].path );
+          this.groupMain.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
           this.currentMarkersSelectionType = this.selectionType;
         }
       };
@@ -11660,7 +12043,7 @@
             self.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
           }
 
-          self.picks[ m ].updateLabels();
+          self.picks[ m ].makeLabels();
 
           m++;
           while ( self.picks[ m ] &amp;&amp; self.picks[ m ].isSelected() ) {
@@ -13648,6 +14031,7 @@
         this.hidden = false;
         this.group.style.display = 'block';
         this.redraw();
+        return this;
 
       };
 
@@ -13856,7 +14240,7 @@
 
         if ( !this._inDom || force ) {
 
-          this.graph.appendShapeToDom( this );
+          this.appendToDom();
           this._inDom = true;
         }
 
@@ -13901,12 +14285,14 @@
        * @param {String} prop - The property to save
        * @param val - The value to save
        * @param [ index = 0 ] - The index of the property array to save the property
+       * @return {Shape} The current shape
        * @memberof Shape
        */
       Shape.prototype.setProp = function( prop, val, index ) {
         this.properties = this.properties || {};
         this.properties[ prop ] = this.properties[ prop ] || [];
         this.properties[ prop ][ index || 0 ] = val;
+        return this;
       };
 
       /**
@@ -14285,7 +14671,9 @@
        */
       Shape.prototype.getPosition = function( index ) {
 
-        return GraphPosition.check( this.getProp( 'position', ( index || 0 ) ) );
+        var pos = this.getProp( 'position', ( index || 0 ) );
+        this.setProp( 'position', ( pos = GraphPosition.check( pos ) ), index );
+        return pos;
       };
 
       /**
@@ -14450,9 +14838,9 @@
         var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
 
         if ( isNaN( position.x ) || isNaN( position.y ) ) {
-          console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
+          /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
           console.log( this, this._labels );
-          console.trace();
+          console.trace();*/
           return;
 
         }
@@ -14595,12 +14983,16 @@
        */
       Shape.prototype.hideHandles = function() {
 
+        if ( !this.handlesInDom ) {
+          return this;
+        }
+
         for ( var i = 1; i &lt; this.handles.length; i++ ) {
           this.group.removeChild( this.handles[ i ] );
         }
 
         this.handlesInDom = false;
-        return false;
+        return this;
       }
 
       /**
@@ -14617,16 +15009,18 @@
        * Selects the shape. Should only be called from jsGraph main instance
        * @private
        * @memberof Shape
+       * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
        * @returns {Shape} the current shape
        */
-      Shape.prototype._select = function() {
+      Shape.prototype._select = function( mute ) {
 
         if ( !this.isSelectable() ) {
           return false;
         }
 
         // Put on the stack
-        this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+        this.appendToDom();
+        //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
         this._selectStatus = true;
         var style = this.getSelectStyle();
@@ -14638,17 +15032,20 @@
           this.setHandles();
         }
 
-        this.graph.emit( "shapeSelected", this );
+        if ( !mute ) {
+          this.graph.emit( "shapeSelected", this );
+        }
       };
 
       /**
        * Unselects the shape. Should only be called from jsGraph main instance
        * @private
        * @memberof Shape
+       * @param {Boolean} [ mute = false ] - Mutes the method (no event emission)
        * @returns {Shape} the current shape
        */
-      Shape.prototype._unselect = function() {
-
+      Shape.prototype._unselect = function( mute ) {
+        console.trace();
         this._selectStatus = false;
 
         util.restoreDomAttributes( this._dom, 'select' );
@@ -14657,7 +15054,9 @@
           this.hideHandles();
         }
 
-        this.graph.emit( "shapeUnselected", this );
+        if ( !mute ) {
+          this.graph.emit( "shapeUnselected", this );
+        }
       };
 
       /**
@@ -14854,6 +15253,11 @@
        * @private
        */
       Shape.prototype.handleClick = function( e ) {
+
+        if ( this.getProp( 'selectOnClick' ) ) {
+          this.graph.selectShape( this );
+        }
+
         if ( !this.isSelectable() ) {
           return false;
         }
@@ -15262,6 +15666,7 @@
         } ).bind( 'keypress', function( e ) {
 
           e.stopPropagation();
+
         } ).bind( 'keydown', function( e ) {
 
           e.stopPropagation();
@@ -15269,6 +15674,35 @@
         } ).focus().get( 0 ).select();
 
       }
+
+      /**
+       * Appends the shape DOM to its parent
+       * @memberof Shape
+       * @private
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.appendToDom = function() {
+
+        if ( this._forcedParentDom ) {
+
+          this._forcedParentDom.appendChild( this.group );
+        } else {
+          this.graph.appendShapeToDom( this );
+        }
+        return this;
+      };
+
+      /**
+       * Forces the DOM parent (instead of the normal layer)
+       * @memberof Shape
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.forceParentDom = function( dom ) {
+
+        this._forcedParentDom = dom;
+
+        return this;
+      };
 
       return Shape;
 
@@ -15821,57 +16255,17 @@
           this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
         },
 
-        setPosition: function() {
+        applyPosition: function() {
 
-          var pos = this._getPosition( this.getFromData( 'pos' ) ),
-            x = pos.x,
-            y = pos.y;
+          var pos = this.computePosition( 0 );
 
-          if ( !isNaN( x ) &amp;&amp; !isNaN( y ) &amp;&amp; x !== false &amp;&amp; y !== false ) {
+          this.setDom( 'cx', pos.x || 0 );
+          this.setDom( 'cy', pos.y || 0 );
 
-            this.setDom( 'cx', x );
-            this.setDom( 'cy', y );
+          this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
+          this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
 
-            this.setDom( 'rx', this.rx || 0 );
-            this.setDom( 'ry', this.ry || 0 );
-
-            return true;
-          }
-
-          return false;
-        },
-
-        setRX: function( rx ) {
-          this.rx = rx;
-        },
-
-        setRY: function( ry ) {
-          this.ry = ry;
-        },
-
-        setR: function( rx, ry ) {
-          this.rx = rx;
-          this.ry = ry;
-        },
-
-        getLinkingCoords: function() {
-
-          return {
-            x: this.currentX + this.currentW / 2,
-            y: this.currentY + this.currentH / 2
-          };
-        },
-
-        redrawImpl: function() {
-
-        },
-
-        handleCreateImpl: function() {
-          this.resize = true;
-        },
-
-        handleMouseDownImpl: function( e ) {
-
+          return true;
         },
 
         handleMouseUpImpl: function() {
@@ -15888,16 +16282,6 @@
         handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
           return;
 
-        },
-
-        setHandles: function() {
-
-        },
-
-        selectStyle: function() {
-          this.setDom( 'stroke', 'red' );
-          this.setDom( 'stroke-width', '2' );
-          this.setDom( 'fill', 'rgba(255, 0, 0, 0.1)' );
         }
 
       } );
@@ -15938,7 +16322,7 @@
         },
 
         applyPosition: function() {
-
+          return true;
         }
 
       } );
@@ -17797,7 +18181,7 @@
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Sun Nov 15th 2015 using the <a
+	on Thu Dec 10th 2015 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

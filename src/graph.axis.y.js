@@ -118,6 +118,8 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     drawSpecifics: function() {
       // Place label correctly
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+
+      console.log( this.widthHeightTick, this.getMaxPx(), this.getMinPx() );
       this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
       if ( this.getLabelColor() !== 'black' ) {

@@ -27,5 +27,9 @@
 
     "7-errorbars": {
          "title": "Error bars"
+    },
+
+    "8-trackingline": {
+         "title": "Tracking line"
     }
  }

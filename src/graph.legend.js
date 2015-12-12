@@ -18,14 +18,16 @@ define( [ "./graph.position" ], function( GraphPosition ) {
    * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
    */
   var legendDefaults = {
-    frame: false,
-    backgroundColor: 'transparent',
-    frameWidth: 0,
-    frameColor: 'transparent',
+
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    frame: true,
+    frameWidth: 1,
+    frameColor: 'black',
     paddingTop: 10,
     paddingLeft: 10,
     paddingBottom: 10,
     paddingRight: 10,
+    frameRounding: 3,
 
     movable: false,
 
@@ -49,6 +51,7 @@ define( [ "./graph.position" ], function( GraphPosition ) {
     this.svg = document.createElementNS( this.graph.ns, 'g' );
     this.subG = document.createElementNS( this.graph.ns, 'g' );
 
+    this.groups = [];
     this.rect = document.createElementNS( this.graph.ns, 'rect' );
     this.rectBottom = document.createElementNS( this.graph.ns, 'rect' );
 
@@ -97,15 +100,115 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
     },
 
+    setDraggable: function( bln ) {
+      this.options.movable = bln;
+
+    },
+
+    setAutoPosition: function( position ) {
+
+      if ( [ 'bottom', 'left', 'top', 'right' ].indexOf( ( position = position.toLowerCase() ) ) > -1 ) {
+        this.autoPosition = position;
+        return this;
+      }
+
+      this.autoPosition = false;
+    },
+
     calculatePosition: function() {
 
-      var position = this.position,
+      var series = this.series || this.graph.getSeries(),
+        posX = 0,
+        posY = this.options.paddingTop;
+
+      for ( var i = 0, l = series.length; i < l; i++ ) {
+
+        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+
+          var bbox = this.groups[ i ].getBBox();
+
+          if ( posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight ) {
+            posY += 16;
+            posX = 0;
+          }
+        }
+
+        this.groups[  i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
+
+        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+
+          posX += bbox.width + 10;
+          posY += 0;
+
+        } else {
+
+          posX = 0;
+          posY += 16;
+        }
+      }
+
+      var bbox = this.subG.getBBox();
+
+      /* Independant on box position */
+      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
+      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
+
+      this.rect.setAttribute( 'width', this.width );
+      this.rect.setAttribute( 'height', this.height );
+      this.rect.setAttribute( 'fill', 'none' );
+      this.rect.setAttribute( 'pointer-events', 'fill' );
+
+      this.rect.setAttribute( 'display', 'none' );
+
+      if ( this.options.movable ) {
+        this.rectBottom.style.cursor = "move";
+      }
+
+      this.rectBottom.setAttribute( 'width', this.width );
+      this.rectBottom.setAttribute( 'height', this.height );
+
+      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
+      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+      /* End independant on box position */
+
+      this.position = this.position || {};
+
+      switch ( this.autoPosition ) {
+
+        case 'bottom':
+          this.position.y = this.graph.getHeight() + "px";
+          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px"
+          this.alignToY = "bottom";
+          this.alignToX = false;
+          break;
+
+        case 'left':
+          this.position.x = "6px";
+          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px"
+          this.alignToX = "left";
+          this.alignToY = false;
+          break;
+
+        case 'right':
+          this.position.x = this.graph.getWidth() + "px";
+          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px"
+          this.alignToX = "right";
+          this.alignToY = false;
+          break;
+
+        case 'top':
+          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px"
+          this.position.y = "10px";
+          this.alignToY = "top";
+          this.alignToX = false;
+          break;
+      }
+
+      var pos = new GraphPosition( this.position ),
         alignToY = this.alignToY,
         alignToX = this.alignToX;
 
-      var pos = new GraphPosition( position );
-
-      var pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
+      pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
 
       if ( !pos ) {
         return;
@@ -123,6 +226,34 @@ define( [ "./graph.position" ], function( GraphPosition ) {
       this.pos.transformY = pos.y;
 
       this._setPosition();
+
+      if ( !this.autoPosition ) {
+        this.graph.graphingZone.appendChild( this.getDom() );
+      } else {
+
+        switch ( this.autoPosition ) {
+
+          case 'bottom':
+            this.graph.options.paddingBottom = this.height + 10;
+            break;
+
+          case 'left':
+            this.graph.options.paddingLeft = this.width + 5;
+            break;
+
+          case 'right':
+            this.graph.options.paddingRight = this.width + 10;
+            break;
+
+          case 'top':
+            this.graph.options.paddingTop = this.height + 14;
+            break;
+        }
+
+        this.graph.updateGraphingZone();
+
+        this.graph.getDom().appendChild( this.getDom() );
+      }
     },
 
     /** 
@@ -152,27 +283,40 @@ define( [ "./graph.position" ], function( GraphPosition ) {
         return;
       }
 
+      if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+        var fullWidth = this.graph.getDrawingWidth();
+      }
+
+      var posX, posY;
+
       for ( var i = 0, l = series.length; i < l; i++ ) {
 
         ( function( j ) {
 
-          var g, line, text;
+          var g, line, text, xPadding = 0;
+
+          if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+            var fullWidth = this.graph.getDrawingWidth();
+          }
 
           g = document.createElementNS( self.graph.ns, 'g' );
-          g.setAttribute( 'transform', "translate(0, " + ( i * 16 + self.options.paddingTop ) + ")" );
-
           self.subG.appendChild( g );
-
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
           var text = series[ j ].getTextForLegend();
-
           g.appendChild( line );
+
+          if ( series[ i ].getType() == "scatter" ) {
+            line.setAttribute( 'transform', 'translate( 20, 0 )' );
+          }
+
           if ( marker ) {
             g.appendChild( marker );
           }
 
           g.appendChild( text );
+
+          self.groups[ j ] = g;
 
           g.addEventListener( 'click', function( e ) {
 
@@ -205,30 +349,8 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
           } );
 
-        } )( i );
+        } ).call( this, i );
       }
-
-      var bbox = this.subG.getBBox();
-
-      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
-      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
-
-      this.rect.setAttribute( 'width', this.width );
-      this.rect.setAttribute( 'height', this.height );
-      this.rect.setAttribute( 'fill', 'none' );
-      this.rect.setAttribute( 'pointer-events', 'fill' );
-
-      this.rect.setAttribute( 'display', 'none' );
-
-      if ( this.options.movable ) {
-        this.rectBottom.style.cursor = "move";
-      }
-
-      this.rectBottom.setAttribute( 'width', this.width );
-      this.rectBottom.setAttribute( 'height', this.height );
-
-      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
-      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
 
       this.calculatePosition();
 
@@ -344,6 +466,8 @@ define( [ "./graph.position" ], function( GraphPosition ) {
       if ( this.options.frame ) {
         this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
         this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + "px" );
+        this.rectBottom.setAttribute( 'rx', this.options.frameRounding );
+        this.rectBottom.setAttribute( 'ry', this.options.frameRounding );
       }
 
       this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );

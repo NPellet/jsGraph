@@ -128,6 +128,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       this.groupSeries = document.createElementNS( this.graph.ns, 'g' );
       this.group.appendChild( this.groupSeries );
 
+      this.widthHeightTick = 0;
+
       this.ticks = {};
       this.ticksLabels = [];
       this.tickScaling = {
@@ -982,6 +984,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       if ( !this.options.hideTicks ) {
 
+        this.resetTicksLength();
+
         if ( this.linkedToAxis ) { // px defined, linked to another axis
 
           this.linkedToAxis.deltaPx = 10;
@@ -993,7 +997,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           var widthHeight = this.drawLinearTicksWrapper( widthPx, valrange );
 
         } else {
+
           var widthHeight = this.drawLogTicks();
+
         }
       } else {
         var widthHeight = 0;
@@ -1152,8 +1158,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       if ( secondary ) {
         secondaryIncr = unitPerTick / secondary;
       }
-
-      this.resetTicksLength();
 
       incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
       this.incrTick = primary[ 0 ];
@@ -1330,7 +1334,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
           incr++;
         }
       }
-      return 5;
+
+      this.widthHeightTick = this.getMaxSizeTick();
+      return this.widthHeightTick;
     },
 
     drawTickWrapper: function( value, label, level, options ) {
@@ -1441,6 +1447,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       } else {
         // 0 if value = min
         // 1 if value = max
+
         if ( value < 0 )
           return;
 
@@ -1874,16 +1881,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     /**
-     * Gets the color of the tick labels
-     * @memberof Axis.prototype
-     * @return {String} The color of the tick labels
-     * @since 1.13.2
-     */
-    getTicksLabelColor: function( color ) {
-      return this.options.ticksLabelColor || 'black';
-    },
-
-    /**
      * Sets the color of the label
      * @memberof Axis.prototype
      * @param {String} color - The new color of the label
@@ -1939,7 +1936,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         var tspan = document.createElementNS( this.graph.ns, 'tspan' );
         tspan.textContent = log;
         tspan.setAttribute( 'font-size', '0.7em' );
-        tspan.setAttribute( 'dy', 0 );
+        tspan.setAttribute( 'dy', -5 );
         dom.appendChild( tspan );
       }
 
@@ -2037,12 +2034,24 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     getEngineeringExponent: function( scientificExponent ) {
 
       if ( scientificExponent > 0 ) {
-        scientificExponent -= ( scientificExponent % 3 );
+        scientificEfxponent -= ( scientificExponent % 3 );
       } else {
-        scientificExponent += -3 - ( scientificExponent % 3 );
+        scientificExponent -= ( 3 - ( -scientificExponent ) % 3 ) % 3;
       }
 
       return scientificExponent
+    },
+
+    /**
+     * Enables log scaling
+     * @param {Boolean} logScale - ```true``` to enable the log scaling, ```false``` to disable it
+     * @return {Axis} The current axis
+     * @memberof Axis.prototype
+     * @since 1.13.3
+     */
+    setLogScale: function( log ) {
+      this.options.logScale = log;
+      return this;
     }
 
   } );

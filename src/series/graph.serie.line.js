@@ -899,13 +899,13 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       self._trackerDom = cloned;
 
-      cloned.addEventListener( "mousemove", function( e ) {
+      self.groupMain.addEventListener( "mousemove", function( e ) {
         var coords = self.graph._getXY( e ),
           ret = self.handleMouseMove( false, false );
         self._trackingCallback( self, ret, coords.x, coords.y );
       } );
 
-      cloned.addEventListener( "mouseleave", function( e ) {
+      self.groupMain.addEventListener( "mouseleave", function( e ) {
         self._trackingOutCallback( self );
       } );
     }
@@ -1517,9 +1517,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     }
   };
 
-  SerieLine.prototype.handleMouseMove = function( x, doMarker ) {
+  SerieLine.prototype.handleMouseMove = function( xValue, doMarker ) {
 
-    var valX = x || this.getXAxis().getMouseVal(),
+    var valX = xValue || this.getXAxis().getMouseVal(),
       xMinIndex,
       xMin,
       yMin,

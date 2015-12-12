@@ -896,6 +896,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
 
       serie = makeSerie( this, name, options, type );
+      serie.type = type;
       self.series.push( serie );
 
       if ( self.legend ) {
@@ -1586,7 +1587,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         return util.throwError( "Graph legend is not available as it has not been registered" );
       }
 
-      this.graphingZone.appendChild( this.legend.getDom() );
       this.legend.update();
 
       return this.legend;
@@ -1729,9 +1729,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       //
 
       this.graphingZone = document.createElementNS( this.ns, 'g' );
-      util.setAttributeTo( this.graphingZone, {
-        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
-      } );
+      this.updateGraphingZone();
+
       this.groupEvent.appendChild( this.graphingZone );
 
       /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
@@ -1807,6 +1806,12 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.bypassHandleMouse = false;
     },
 
+    updateGraphingZone: function() {
+      util.setAttributeTo( this.graphingZone, {
+        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      } );
+    },
+
     trackingLine: function( options ) {
 
       var self = this;
@@ -1822,6 +1827,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
           sOptions.serie.enableTracking( function( serie, index, x, y ) {
 
             if ( index ) {
+
               self.trackingLine.show();
               var closestIndex = index.xIndexClosest;
               self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -1830,24 +1836,28 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
               serie._trackingLegend = _trackingLegendSerie( self, {
                 serie: serie
-              }, x, y, serie._trackingLegend, sOptions.method ? sOptions.method : function( output ) {
+              }, x, y, serie._trackingLegend, sOptions.textMethod ? sOptions.textMethod : function( output ) {
 
                 for ( var i in output ) {
                   return output[ i ].serie.serie.getName();
                   break;
                 }
 
-              } );
+              }, self.trackingLine.getPosition( 0 ).x );
 
               serie._trackingLegend.style.display = "block";
             }
           }, function( serie ) {
             self.trackingLine.hide();
-            console.log( serie._trackingLegend );
+
+            if ( serie.trackingShape ) {
+              serie.trackingShape.hide();
+            }
+
             serie._trackingLegend.style.display = "none";
             serie._trackingLegend = _trackingLegendSerie( self, {
               serie: serie
-            }, false, false, serie._trackingLegend, false );
+            }, false, false, serie._trackingLegend, false, false );
 
           } );
         } );
@@ -1863,7 +1873,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         }, {
           y: 'max'
         } ],
-        stroke: 'black'
+        stroke: 'black',
+        layer: -1
       }, options.trackingLineShapeOptions ) );
       this.trackingLine.draw();
 
@@ -2172,7 +2183,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
         if ( graph.options.trackingLine.mode == "common" ) {
 
-          snapToSerie = graph.options.trackingLine.snapToSerie;
+          var snapToSerie = graph.options.trackingLine.snapToSerie;
           index = snapToSerie.handleMouseMove( false, true );
 
           if ( !index ) {
@@ -2186,6 +2197,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
             graph.trackingLine.getPosition( 0 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
             graph.trackingLine.getPosition( 1 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
             graph.trackingLine.redraw();
+
+            var x = snapToSerie.getXAxis().getPx( graph.trackingLine.getPosition( 0 ).x ) + graph.options.paddingLeft;
+
           }
 
           var series = graph.options.trackingLine.series;
@@ -2201,7 +2215,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
             } );
           }
 
-          graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod );
+          graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, graph.trackingLine.getPosition( 1 ).x );
         }
       }
     }
@@ -2220,7 +2234,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   }
 
-  var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod ) {
+  var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xValue ) {
+
+    var justCreated = false;
 
     if ( !Array.isArray( serie ) ) {
       serie = [ serie ];
@@ -2229,14 +2245,15 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     var output = [];
 
     if ( !legend ) {
+      justCreated = true;
       legend = _makeTrackingLegend( graph );
     }
 
     serie.map( function( serie ) {
 
-      var index = serie.serie.handleMouseMove( false, false );
+      var index = serie.serie.handleMouseMove( xValue, false );
 
-      if ( !index ) {
+      if ( !index ||  !textMethod ) {
 
         if ( serie.serie.trackingShape ) {
           serie.serie.trackingShape.hide();
@@ -2247,17 +2264,21 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       // Should we display the dot ?
       if (
-        ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) > serie.withinPx ) ||
-        ( serie.withinVal > 0 && Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) > serie.withinVal )
+        ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) - serie.withinPx > 1e-14 ) ||
+        ( serie.withinVal > 0 && Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) - serie.withinVal > serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) / 100000 )
       ) {
-        // Do nothing
+
+        if ( serie.serie.trackingShape ) {
+          serie.serie.trackingShape.hide();
+        }
+
       } else {
 
         output[ serie.serie.getName() ] = {
 
-          positionXPx: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ],
           xIndex: index.xIndexClosest,
           yValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 + 1 ],
+          xValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ],
           serie: serie,
           index: index
 
@@ -2273,9 +2294,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
             } )
             .setSerie( serie.serie )
-            .draw()
             .setProp( 'rx', serie.serie.getLineWidth() * 3 )
-            .setProp( 'ry', serie.serie.getLineWidth() * 3 );
+            .setProp( 'ry', serie.serie.getLineWidth() * 3 )
+            .forceParentDom( serie.serie.groupMain )
+            .draw();
         }
 
         serie.serie.trackingShape.show();
@@ -2288,9 +2310,16 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     if ( Object.keys( output ).length == 0 ||  !textMethod ) {
       legend.style.display = "none";
     } else {
+
+      if ( legend.style.display == "none" ||  justCreated ) {
+        console.log( x, y );
+        forceTrackingLegendMode( graph, legend, x, y, true );
+      } else {
+        _trackingLegendMove( graph, legend, x, y );
+      }
+
       legend.style.display = "block";
-      legend.innerHTML = textMethod( output );
-      _trackingLegendMove( graph, legend, x, y );
+      legend.innerHTML = textMethod( output, xValue, x, y );
 
     }
 
@@ -2298,16 +2327,22 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   };
 
-  var _trackingLegendMove = util.debounce( function( graph, legend, toX, toY ) {
+  var forceTrackingLegendMode = function( graph, legend, toX, toY, skip ) {
 
     var ratio = 0,
       start = Date.now(),
       h = legend.offsetHeight,
-      startX = parseInt( legend.style.left.replace( "px", "" ) ||  0 ),
-      startY = parseInt( legend.style.top.replace( "px", "" ) ||  0 );
+      startX = parseInt( legend.style.marginLeft.replace( "px", "" ) ||  0 ),
+      startY = parseInt( legend.style.marginTop.replace( "px", "" ) ||  0 );
 
     toX = ( toX > graph.getWidth() / 2 ) ? ( ( toX - toX % 10 - 20 ) - legend.offsetWidth ) : ( toX - toX % 10 + 30 );
     toY = ( toY - toY % 10 + h / 2 );
+
+    if ( skip ) {
+      legend.style.marginLeft = ( toX ) + "px";
+      legend.style.marginTop = ( toY ) + "px";
+      return;
+    }
 
     function next() {
 
@@ -2316,8 +2351,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         progress = 1;
       }
 
-      legend.style.left = ( ( toX - startX ) * progress + startX ) + "px";
-      legend.style.top = ( ( toY - startY ) * progress + startY ) + "px";
+      legend.style.marginLeft = ( ( toX - startX ) * progress + startX ) + "px";
+      legend.style.marginTop = ( ( toY - startY ) * progress + startY ) + "px";
 
       if ( progress < 1 ) {
         window.requestAnimationFrame( next );
@@ -2325,8 +2360,9 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     }
 
     window.requestAnimationFrame( next );
+  };
 
-  }, 50 );
+  var _trackingLegendMove = util.debounce( forceTrackingLegendMode, 50 );
 
   function _makeTrackingLegend( graph ) {
 

@@ -380,7 +380,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     if ( !this._inDom || force ) {
 
-      this.graph.appendShapeToDom( this );
+      this.appendToDom();
       this._inDom = true;
     }
 
@@ -1159,7 +1159,8 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     }
 
     // Put on the stack
-    this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
+    this.appendToDom();
+    //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
     this._selectStatus = true;
     var style = this.getSelectStyle();
@@ -1805,6 +1806,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     } ).bind( 'keypress', function( e ) {
 
       e.stopPropagation();
+
     } ).bind( 'keydown', function( e ) {
 
       e.stopPropagation();
@@ -1812,6 +1814,35 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     } ).focus().get( 0 ).select();
 
   }
+
+  /**
+   * Appends the shape DOM to its parent
+   * @memberof Shape
+   * @private
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.appendToDom = function() {
+
+    if ( this._forcedParentDom ) {
+
+      this._forcedParentDom.appendChild( this.group );
+    } else {
+      this.graph.appendShapeToDom( this );
+    }
+    return this;
+  };
+
+  /**
+   * Forces the DOM parent (instead of the normal layer)
+   * @memberof Shape
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.forceParentDom = function( dom ) {
+
+    this._forcedParentDom = dom;
+
+    return this;
+  };
 
   return Shape;
 
