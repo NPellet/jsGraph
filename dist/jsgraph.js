@@ -1,5 +1,5 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-32
+ * jsGraph JavaScript Graphing Library v1.13.3-33
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
@@ -3146,7 +3146,7 @@
           graph.emit( "mouseUp", e );
           //   e.preventDefault();
           var coords = self._getXY( e );
-          console.log( "UP" );
+
           _handleMouseUp( self, coords.x, coords.y, e );
 
         } );
@@ -3402,7 +3402,7 @@
         } else {
 
           if ( legend.style.display == "none" || justCreated ) {
-            console.log( x, y );
+
             forceTrackingLegendMode( graph, legend, x, y, true );
           } else {
             _trackingLegendMove( graph, legend, x, y );
@@ -6078,7 +6078,6 @@
           // Place label correctly
           //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
 
-          console.log( this.widthHeightTick, this.getMaxPx(), this.getMinPx() );
           this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
 
           if ( this.getLabelColor() !== 'black' ) {

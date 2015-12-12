@@ -2056,7 +2056,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       graph.emit( "mouseUp", e );
       //   e.preventDefault();
       var coords = self._getXY( e );
-      console.log( "UP" );
+
       _handleMouseUp( self, coords.x, coords.y, e );
 
     } );
@@ -2312,7 +2312,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     } else {
 
       if ( legend.style.display == "none" ||  justCreated ) {
-        console.log( x, y );
+
         forceTrackingLegendMode( graph, legend, x, y, true );
       } else {
         _trackingLegendMove( graph, legend, x, y );
