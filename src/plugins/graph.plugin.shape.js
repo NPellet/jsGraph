@@ -17,7 +17,6 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
    */
   PluginShape.prototype.init = function( graph, options ) {
 
-    this.options = options;
     this.graph = graph;
     this.shapeType = options.type;
 

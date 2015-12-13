@@ -678,12 +678,21 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       xpx2,
       ypx2,
       xAxis = this.getXAxis(),
-      yAxis = this.getYAxis();
-
-    var xMin = xAxis.getCurrentMin(),
+      yAxis = this.getYAxis(),
+      xMin = xAxis.getCurrentMin(),
       yMin = yAxis.getCurrentMin(),
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
+
+    // Y crossing
+    var yLeftCrossingRatio,
+      yLeftCrossing,
+      yRightCrossingRatio,
+      yRightCrossing,
+      xTopCrossingRatio,
+      xTopCrossing,
+      xBottomCrossingRatio,
+      xBottomCrossing;
 
     var incrXFlip = 0;
     var incrYFlip = 1;
@@ -691,12 +700,13 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     var pointOutside = false;
     var lastPointOutside = false;
     var pointOnAxis;
+
     if ( this.isFlipped() ) {
       incrXFlip = 1;
       incrYFlip = 0;
     }
 
-    for ( ; i < l; i++ ) {
+    for ( i = 0; i < l; i++ ) {
 
       toBreak = false;
       this.counter1 = i;
@@ -704,26 +714,31 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       this.currentLine = "";
       j = 0, k = 0, m = data[ i ].length;
 
-      for ( ; j < m; j += 2 ) {
-
-        this.counter2 = j / 2;
-
-        if ( this.markersShown() ) {
-
-          this.getMarkerCurrentFamily( this.counter2 );
-        }
+      for ( j = 0; j < m; j += 2 ) {
 
         x = data[ i ][ j + incrXFlip ];
         y = data[ i ][ j + incrYFlip ];
 
+        if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) ||  ( y > yMax && lastY > yMax ) ) {
+          lastX = x;
+          lastY = y;
+          continue;
+        }
+
+        this.counter2 = j / 2;
+
+        if ( this.markersShown() ) {
+          this.getMarkerCurrentFamily( this.counter2 );
+        }
+
         xpx2 = this.getX( x );
         ypx2 = this.getY( y );
-
-        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
 
         if ( xpx2 == xpx && ypx2 == ypx ) {
           continue;
         }
+
+        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
 
         if ( this.options.lineToZero ) {
           pointOutside = ( x < xMin || x > xMax );
@@ -746,30 +761,30 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
               pointOnAxis = [];
               // Y crossing
-              var yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
-              var yLeftCrossing = ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 ) ? y - yLeftCrossingRatio * ( y - lastY ) : false;
-              var yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
-              var yRightCrossing = ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 ) ? y - yRightCrossingRatio * ( y - lastY ) : false;
+              yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+              yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+              yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+              yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
 
               // X crossing
-              var xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
-              var xTopCrossing = ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 ) ? x - xTopCrossingRatio * ( x - lastX ) : false;
-              var xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
-              var xBottomCrossing = ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 ) ? x - xBottomCrossingRatio * ( x - lastX ) : false;
+              xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+              xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+              xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+              xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
 
-              if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+              if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                 pointOnAxis.push( [ xMin, yLeftCrossing ] );
               }
 
-              if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+              if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
                 pointOnAxis.push( [ xMax, yRightCrossing ] );
               }
 
-              if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+              if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
                 pointOnAxis.push( [ xTopCrossing, yMin ] );
               }
 
-              if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+              if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
                 pointOnAxis.push( [ xBottomCrossing, yMax ] );
               }
 
@@ -800,6 +815,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
                   // No crossing: do nothing
                   if ( pointOnAxis.length == 2 ) {
                     this._createLine();
+
                     this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                     this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                   }
@@ -1254,6 +1270,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     if ( this.lines[ i ] ) {
       line = this.lines[ i ];
     } else {
+      console.log( 'dsf' );
       line = document.createElementNS( this.graph.ns, 'path' );
       this.applyLineStyle( line );
       this.groupLines.appendChild( line );

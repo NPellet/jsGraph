@@ -80,15 +80,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       tick.setAttribute( 'x1', val );
       tick.setAttribute( 'x2', val );
 
-      if ( level == 1 && this.options.primaryGrid ) {
-
-        this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-
-      } else if ( level > 1 && this.options.secondaryGrid ) {
-
-        this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
-
-      }
+      this.nextGridLine( level == 1, val, val, 0, this.graph.getDrawingHeight() );
 
       //  this.groupTicks.appendChild( tick );
       if ( level == 1 ) {

@@ -43,7 +43,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
     getMaxSizeTick: function() {
 
-      return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].offsetWidth : 0 ) + 10; //(this.left ? 10 : 0);
+      return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
     },
 
     drawTick: function( value, label, level, options, forcedPos ) {
@@ -75,15 +75,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       tick.setAttribute( 'y1', pos );
       tick.setAttribute( 'y2', pos );
 
-      if ( level == 1 && this.options.primaryGrid ) {
-
-        this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
-
-      } else if ( level > 1 && this.options.secondaryGrid ) {
-
-        this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
-
-      }
+      this.nextGridLine( level == 1, 0, this.graph.getDrawingWidth(), pos, pos );
 
       //  this.groupTicks.appendChild( tick );
       if ( level == 1 ) {

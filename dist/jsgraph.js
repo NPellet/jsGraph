@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-34
+ * jsGraph JavaScript Graphing Library v1.13.3-35
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-12T20:54Z
+ * Date: 2015-12-13T00:07Z
  */
 
 ( function( global, factory ) {
@@ -2623,9 +2623,13 @@
             pluginOptions = this.options.plugins[ i ];
 
             constructor = this.getConstructor( "graph.plugin." + pluginName );
+
             if ( constructor ) {
+
               this.plugins[ pluginName ] = new constructor();
               this.plugins[ pluginName ].init( this, pluginOptions );
+              this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+
             } else {
               util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
             }
@@ -4103,9 +4107,16 @@
 
         setMinPx: function( px ) {
           this.minPx = px;
+          this.setMinMaxFlipped();
         },
         setMaxPx: function( px ) {
           this.maxPx = px;
+          this.setMinMaxFlipped();
+        },
+
+        setMinMaxFlipped: function() {
+          this.minPxFlipped = this.isFlipped() ? this.maxPx : this.minPx;
+          this.maxPxFlipped = this.isFlipped() ? this.minPx : this.maxPx;
         },
 
         /**
@@ -4113,7 +4124,7 @@
          * @return {Number} The position in px of the bottom of the axis
          */
         getMinPx: function() {
-          return this.isFlipped() ? this.maxPx : this.minPx;
+          return this.minPxFlipped;
         },
 
         /**
@@ -4121,7 +4132,7 @@
          * @return {Number} The position in px of the top of the axis
          */
         getMaxPx: function( px ) {
-          return this.isFlipped() ? this.minPx : this.maxPx;
+          return this.maxPxFlipped;
         },
 
         getMathMaxPx: function() {
@@ -4305,6 +4316,7 @@
 
           this.cacheCurrentMin();
           this.cacheCurrentMax();
+          this.cacheInterval();
 
           this._zoomed = true;
 
@@ -4473,6 +4485,7 @@
 
           this.cacheCurrentMin();
           this.cacheCurrentMax();
+          this.cacheInterval();
 
           this._zoomed = false;
 
@@ -4498,7 +4511,7 @@
          * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
          */
         getCurrentInterval: function() {
-          return this.getCurrentMax() - this.getCurrentMin();
+          return this.cachedInterval;
         },
 
         /**
@@ -4531,6 +4544,14 @@
          */
         cacheCurrentMax: function() {
           this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
+        },
+
+        /**
+         * Caches the current interval
+         * @memberof Axis.prototype
+         */
+        cacheInterval: function() {
+          this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
         },
 
         /**
@@ -4583,6 +4604,7 @@
          */
         flip: function( flip ) {
           this.options.flipped = flip;
+          this.setMinMaxFlipped();
           return this;
         },
 
@@ -4603,6 +4625,7 @@
 
           this.cacheCurrentMax();
           this.cacheCurrentMin();
+          this.cacheInterval();
 
           if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
             this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
@@ -4724,6 +4747,7 @@
 
           this.removeUselessTicks();
           this.removeUselessTickLabels();
+          this.removeUselessGridLines();
 
           // Looks for axes linked to this current axis
           var axes = this.graph.findAxesLinkedTo( this );
@@ -4825,10 +4849,10 @@
           }*/
 
           // Remove all grids
-          while ( this.groupGrids.firstChild ) {
-            this.groupGrids.removeChild( this.groupGrids.firstChild );
-          }
-
+          /*    while ( this.groupGrids.firstChild ) {
+        this.groupGrids.removeChild( this.groupGrids.firstChild );
+      }
+*/
         },
 
         drawLinearTicksWrapper: function( widthPx, valrange ) {
@@ -4948,9 +4972,6 @@
 
         nextTickLabel: function( callback ) {
 
-          var tickLabel = document.createElementNS( this.graph.ns, 'text' );
-          this.groupTickLabels.appendChild( tickLabel );
-
           this.ticksLabels = this.ticksLabels || [];
           this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
           this.currentTickLabel = this.currentTickLabel || 0;
@@ -4996,6 +5017,51 @@
           this.lastCurrentTickLabel = this.currentTickLabel;
           this.currentTickLabel = 0;
 
+        },
+
+        doGridLine: function() {
+          var gridLine = document.createElementNS( this.graph.ns, 'line' );
+          this.groupGrids.appendChild( gridLine );
+          return gridLine;
+        },
+
+        nextGridLine: function( primary, x1, x2, y1, y2 ) {
+
+          this.gridLines = this.gridLines || [];
+          this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
+          this.currentGridLine = this.currentGridLine || 0;
+
+          if ( this.currentGridLine >= this.gridLines.length ) {
+
+            var gridLine = this.doGridLine();
+            this.gridLines.push( gridLine );
+
+          }
+
+          var gridLine = this.gridLines[ this.currentGridLine ];
+
+          if ( this.currentGridLine >= this.lastCurrentGridLine ) {
+            gridLine.setAttribute( 'display', 'visible' );
+          }
+
+          gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
+          gridLine.setAttribute( 'y1', y1 );
+          gridLine.setAttribute( 'y2', y2 );
+          gridLine.setAttribute( 'x1', x1 );
+          gridLine.setAttribute( 'x2', x2 );
+          gridLine.setAttribute( 'stroke', primary ? this.getColorPrimaryGrid() : this.getColorSecondaryGrid() );
+
+          this.currentGridLine++;
+
+          return gridLine;
+        },
+
+        removeUselessGridLines: function() {
+          for ( var i = this.currentGridLine; i < this.gridLines.length; i++ ) {
+            this.gridLines[ i ].setAttribute( 'display', 'none' );
+          }
+          this.lastCurrentGridLine = this.currentGridLine;
+          this.currentGridLine = 0;
         },
 
         resetTicksLength: function() {},
@@ -5144,14 +5210,14 @@
          * @memberof Axis.prototype
          * @return {Number} The value transformed into pixels
          */
-        getPx: function( value ) {
-          return this.getPos( value );
+        getPos: function( value ) {
+          return this.getPx( value );
         },
 
         /**
-         * @alias Axis~getPx
+         * @alias Axis~getPos
          */
-        getPos: function( value ) {
+        getPx: function( value ) {
           //			if(this.getMaxPx() == undefined)
           //				console.log(this);
           //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -5618,18 +5684,6 @@
           return this.options.labelColor;
         },
 
-        doGridLine: function( primary, x1, x2, y1, y2 ) {
-          var gridLine = document.createElementNS( this.graph.ns, 'line' );
-          gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
-          gridLine.setAttribute( 'y1', y1 );
-          gridLine.setAttribute( 'y2', y2 );
-          gridLine.setAttribute( 'x1', x1 );
-          gridLine.setAttribute( 'x2', x2 );
-
-          gridLine.setAttribute( 'stroke', primary ? this.getColorPrimaryGrid() : this.getColorSecondaryGrid() );
-          this.groupGrids.appendChild( gridLine );
-        },
-
         getColorPrimaryGrid: function() {
           return this.options.primaryGridColor || "#f0f0f0";
         },
@@ -5867,15 +5921,7 @@
           tick.setAttribute( 'x1', val );
           tick.setAttribute( 'x2', val );
 
-          if ( level == 1 && this.options.primaryGrid ) {
-
-            this.doGridLine( true, val, val, 0, this.graph.getDrawingHeight() );
-
-          } else if ( level > 1 && this.options.secondaryGrid ) {
-
-            this.doGridLine( false, val, val, 0, this.graph.getDrawingHeight() );
-
-          }
+          this.nextGridLine( level == 1, val, val, 0, this.graph.getDrawingHeight() );
 
           //  this.groupTicks.appendChild( tick );
           if ( level == 1 ) {
@@ -6002,7 +6048,7 @@
 
         getMaxSizeTick: function() {
 
-          return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].offsetWidth : 0 ) + 10; //(this.left ? 10 : 0);
+          return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
         },
 
         drawTick: function( value, label, level, options, forcedPos ) {
@@ -6034,15 +6080,7 @@
           tick.setAttribute( 'y1', pos );
           tick.setAttribute( 'y2', pos );
 
-          if ( level == 1 && this.options.primaryGrid ) {
-
-            this.doGridLine( true, 0, this.graph.getDrawingWidth(), pos, pos );
-
-          } else if ( level > 1 && this.options.secondaryGrid ) {
-
-            this.doGridLine( false, 0, this.graph.getDrawingWidth(), pos, pos );
-
-          }
+          this.nextGridLine( level == 1, 0, this.graph.getDrawingWidth(), pos, pos );
 
           //  this.groupTicks.appendChild( tick );
           if ( level == 1 ) {
@@ -8050,11 +8088,19 @@
 
       PluginDrag.prototype = new Plugin();
 
+      PluginDrag.prototype.defaults = {
+
+        dragX: true,
+        dragY: true,
+        persistanceX: false,
+        persistanceY: false
+      };
+
       /**
        * @memberof PluginDrag
        * @private
        */
-      PluginDrag.prototype.init = function() {
+      PluginDrag.prototype.init = function( graph ) {
 
         this.time = null;
         this.totaltime = 2000;
@@ -8085,15 +8131,20 @@
           var deltaX = x - this._draggingX;
           var deltaY = y - this._draggingY;
 
-          graph._applyToAxes( function( axis ) {
-            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-          }, false, true, false );
+          if ( this.options.dragX ) {
+            graph._applyToAxes( function( axis ) {
+              axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+              axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+            }, false, true, false );
+          }
 
-          graph._applyToAxes( function( axis ) {
-            axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-            axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-          }, false, false, true );
+          if ( this.options.dragY ) {
+
+            graph._applyToAxes( function( axis ) {
+              axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+              axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+            }, false, false, true );
+          }
 
           this._lastDraggingX = this._draggingX;
           this._lastDraggingY = this._draggingY;
@@ -8111,26 +8162,25 @@
 
         var dt = ( Date.now() - this.time );
 
-        console.log( x - this._lastDraggingX );
         this.speedX = ( x - this._lastDraggingX ) / dt;
         this.speedY = ( y - this._lastDraggingY ) / dt;
 
         graph._applyToAxes( function( axis ) {
           axis._pluginDragMin = axis.getCurrentMin();
           axis._pluginDragMax = axis.getCurrentMax();
-
         }, false, true, true );
-        console.log( 'sdf' );
 
         this.stopAnimation = false;
         this.accelerationX = -this.speedX / this.totaltime;
         this.accelerationY = -this.speedY / this.totaltime;
 
-        this._move( graph );
+        if ( this.options.persistanceX || this.options.persistanceY ) {
+          this._persistanceMove( graph );
+        }
 
       }
 
-      PluginDrag.prototype._move = function( graph ) {
+      PluginDrag.prototype._persistanceMove = function( graph ) {
 
         var self = this;
 
@@ -8144,24 +8194,30 @@
           var dx = ( 0.5 * self.accelerationX * dt + self.speedX ) * dt;
           var dy = ( 0.5 * self.accelerationY * dt + self.speedY ) * dt;
 
-          graph._applyToAxes( function( axis ) {
+          if ( self.options.persistanceX ) {
 
-            axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
-            axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
+            graph._applyToAxes( function( axis ) {
 
-          }, false, true, false );
+              axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
+              axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
 
-          graph._applyToAxes( function( axis ) {
+            }, false, true, false );
+          }
 
-            axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
-            axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
+          if ( self.options.persistanceY ) {
 
-          }, false, false, true );
+            graph._applyToAxes( function( axis ) {
+
+              axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
+              axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
+
+            }, false, false, true );
+          }
 
           graph.draw( true );
 
           if ( dt < self.totaltime ) {
-            self._move( graph );
+            self._persistanceMove( graph );
           }
 
         } );
@@ -8199,7 +8255,6 @@
        */
       PluginShape.prototype.init = function( graph, options ) {
 
-        this.options = options;
         this.graph = graph;
         this.shapeType = options.type;
 
@@ -8370,7 +8425,6 @@
           'd': ''
         } );
 
-        this.options = options;
         this.graph = graph;
 
         graph.dom.appendChild( this._path );
@@ -8523,7 +8577,6 @@
           'width': 0
         } );
 
-        this.options = options;
         this.graph = graph;
         graph.groupEvent.appendChild( this._zoomingGroup );
         this._zoomingGroup.appendChild( this._zoomingSquare );
@@ -10713,12 +10766,21 @@
           xpx2,
           ypx2,
           xAxis = this.getXAxis(),
-          yAxis = this.getYAxis();
-
-        var xMin = xAxis.getCurrentMin(),
+          yAxis = this.getYAxis(),
+          xMin = xAxis.getCurrentMin(),
           yMin = yAxis.getCurrentMin(),
           xMax = xAxis.getCurrentMax(),
           yMax = yAxis.getCurrentMax();
+
+        // Y crossing
+        var yLeftCrossingRatio,
+          yLeftCrossing,
+          yRightCrossingRatio,
+          yRightCrossing,
+          xTopCrossingRatio,
+          xTopCrossing,
+          xBottomCrossingRatio,
+          xBottomCrossing;
 
         var incrXFlip = 0;
         var incrYFlip = 1;
@@ -10726,12 +10788,13 @@
         var pointOutside = false;
         var lastPointOutside = false;
         var pointOnAxis;
+
         if ( this.isFlipped() ) {
           incrXFlip = 1;
           incrYFlip = 0;
         }
 
-        for ( ; i < l; i++ ) {
+        for ( i = 0; i < l; i++ ) {
 
           toBreak = false;
           this.counter1 = i;
@@ -10739,26 +10802,31 @@
           this.currentLine = "";
           j = 0, k = 0, m = data[ i ].length;
 
-          for ( ; j < m; j += 2 ) {
-
-            this.counter2 = j / 2;
-
-            if ( this.markersShown() ) {
-
-              this.getMarkerCurrentFamily( this.counter2 );
-            }
+          for ( j = 0; j < m; j += 2 ) {
 
             x = data[ i ][ j + incrXFlip ];
             y = data[ i ][ j + incrYFlip ];
 
+            if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) {
+              lastX = x;
+              lastY = y;
+              continue;
+            }
+
+            this.counter2 = j / 2;
+
+            if ( this.markersShown() ) {
+              this.getMarkerCurrentFamily( this.counter2 );
+            }
+
             xpx2 = this.getX( x );
             ypx2 = this.getY( y );
-
-            pointOutside = ( x < xMin || y < yMin || x > xMax || y > yMax );
 
             if ( xpx2 == xpx && ypx2 == ypx ) {
               continue;
             }
+
+            pointOutside = ( x < xMin || y < yMin || x > xMax || y > yMax );
 
             if ( this.options.lineToZero ) {
               pointOutside = ( x < xMin || x > xMax );
@@ -10781,30 +10849,30 @@
 
                   pointOnAxis = [];
                   // Y crossing
-                  var yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
-                  var yLeftCrossing = ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 ) ? y - yLeftCrossingRatio * ( y - lastY ) : false;
-                  var yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
-                  var yRightCrossing = ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 ) ? y - yRightCrossingRatio * ( y - lastY ) : false;
+                  yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+                  yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+                  yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+                  yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
 
                   // X crossing
-                  var xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
-                  var xTopCrossing = ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 ) ? x - xTopCrossingRatio * ( x - lastX ) : false;
-                  var xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
-                  var xBottomCrossing = ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 ) ? x - xBottomCrossingRatio * ( x - lastX ) : false;
+                  xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+                  xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+                  xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+                  xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
 
-                  if ( yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                  if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
                     pointOnAxis.push( [ xMin, yLeftCrossing ] );
                   }
 
-                  if ( yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                  if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
                     pointOnAxis.push( [ xMax, yRightCrossing ] );
                   }
 
-                  if ( xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                  if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
                     pointOnAxis.push( [ xTopCrossing, yMin ] );
                   }
 
-                  if ( xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                  if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
                     pointOnAxis.push( [ xBottomCrossing, yMax ] );
                   }
 
@@ -10835,6 +10903,7 @@
                       // No crossing: do nothing
                       if ( pointOnAxis.length == 2 ) {
                         this._createLine();
+
                         this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                         this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
                       }
@@ -11289,6 +11358,7 @@
         if ( this.lines[ i ] ) {
           line = this.lines[ i ];
         } else {
+          console.log( 'dsf' );
           line = document.createElementNS( this.graph.ns, 'path' );
           this.applyLineStyle( line );
           this.groupLines.appendChild( line );

@@ -9,11 +9,19 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
   PluginDrag.prototype = new Plugin();
 
+  PluginDrag.prototype.defaults = {
+
+    dragX: true,
+    dragY: true,
+    persistanceX: false,
+    persistanceY: false
+  };
+
   /**
    * @memberof PluginDrag
    * @private
    */
-  PluginDrag.prototype.init = function() {
+  PluginDrag.prototype.init = function( graph ) {
 
     this.time = null;
     this.totaltime = 2000;
@@ -44,15 +52,20 @@ define( [ './graph.plugin' ], function( Plugin ) {
       var deltaX = x - this._draggingX;
       var deltaY = y - this._draggingY;
 
-      graph._applyToAxes( function( axis ) {
-        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-      }, false, true, false );
+      if ( this.options.dragX ) {
+        graph._applyToAxes( function( axis ) {
+          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+        }, false, true, false );
+      }
 
-      graph._applyToAxes( function( axis ) {
-        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-      }, false, false, true );
+      if ( this.options.dragY ) {
+
+        graph._applyToAxes( function( axis ) {
+          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+        }, false, false, true );
+      }
 
       this._lastDraggingX = this._draggingX;
       this._lastDraggingY = this._draggingY;
@@ -70,26 +83,25 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
     var dt = ( Date.now() - this.time );
 
-    console.log( x - this._lastDraggingX );
     this.speedX = ( x - this._lastDraggingX ) / dt;
     this.speedY = ( y - this._lastDraggingY ) / dt;
 
     graph._applyToAxes( function( axis ) {
       axis._pluginDragMin = axis.getCurrentMin();
       axis._pluginDragMax = axis.getCurrentMax();
-
     }, false, true, true );
-    console.log( 'sdf' );
 
     this.stopAnimation = false;
     this.accelerationX = -this.speedX / this.totaltime;
     this.accelerationY = -this.speedY / this.totaltime;
 
-    this._move( graph );
+    if ( this.options.persistanceX ||  this.options.persistanceY ) {
+      this._persistanceMove( graph );
+    }
 
   }
 
-  PluginDrag.prototype._move = function( graph ) {
+  PluginDrag.prototype._persistanceMove = function( graph ) {
 
     var self = this;
 
@@ -103,24 +115,30 @@ define( [ './graph.plugin' ], function( Plugin ) {
       var dx = ( 0.5 * self.accelerationX * dt + self.speedX ) * dt;
       var dy = ( 0.5 * self.accelerationY * dt + self.speedY ) * dt;
 
-      graph._applyToAxes( function( axis ) {
+      if ( self.options.persistanceX ) {
 
-        axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
-        axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
+        graph._applyToAxes( function( axis ) {
 
-      }, false, true, false );
+          axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
+          axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
 
-      graph._applyToAxes( function( axis ) {
+        }, false, true, false );
+      }
 
-        axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
-        axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
+      if ( self.options.persistanceY ) {
 
-      }, false, false, true );
+        graph._applyToAxes( function( axis ) {
+
+          axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
+          axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
+
+        }, false, false, true );
+      }
 
       graph.draw( true );
 
       if ( dt < self.totaltime ) {
-        self._move( graph );
+        self._persistanceMove( graph );
       }
 
     } );

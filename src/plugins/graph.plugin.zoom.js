@@ -30,7 +30,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       'width': 0
     } );
 
-    this.options = options;
     this.graph = graph;
     graph.groupEvent.appendChild( this._zoomingGroup );
     this._zoomingGroup.appendChild( this._zoomingSquare );

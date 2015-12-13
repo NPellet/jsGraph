@@ -29,7 +29,6 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
       'd': ''
     } );
 
-    this.options = options;
     this.graph = graph;
 
     graph.dom.appendChild( this._path );

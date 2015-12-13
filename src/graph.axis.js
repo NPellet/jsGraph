@@ -386,9 +386,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     setMinPx: function( px ) {
       this.minPx = px;
+      this.setMinMaxFlipped();
     },
     setMaxPx: function( px ) {
       this.maxPx = px;
+      this.setMinMaxFlipped();
+    },
+
+    setMinMaxFlipped: function() {
+      this.minPxFlipped = this.isFlipped() ? this.maxPx : this.minPx;
+      this.maxPxFlipped = this.isFlipped() ? this.minPx : this.maxPx;
     },
 
     /**
@@ -396,7 +403,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @return {Number} The position in px of the bottom of the axis
      */
     getMinPx: function() {
-      return this.isFlipped() ? this.maxPx : this.minPx;
+      return this.minPxFlipped;
     },
 
     /**
@@ -404,7 +411,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @return {Number} The position in px of the top of the axis
      */
     getMaxPx: function( px ) {
-      return this.isFlipped() ? this.minPx : this.maxPx;
+      return this.maxPxFlipped;
     },
 
     getMathMaxPx: function() {
@@ -588,6 +595,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.cacheCurrentMin();
       this.cacheCurrentMax();
+      this.cacheInterval();
 
       this._zoomed = true;
 
@@ -756,6 +764,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.cacheCurrentMin();
       this.cacheCurrentMax();
+      this.cacheInterval();
 
       this._zoomed = false;
 
@@ -781,7 +790,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
      */
     getCurrentInterval: function() {
-      return this.getCurrentMax() - this.getCurrentMin();
+      return this.cachedInterval;
     },
 
     /**
@@ -814,6 +823,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     cacheCurrentMax: function() {
       this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
+    },
+
+    /**
+     * Caches the current interval
+     * @memberof Axis.prototype
+     */
+    cacheInterval: function() {
+      this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
     },
 
     /**
@@ -866,6 +883,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     flip: function( flip ) {
       this.options.flipped = flip;
+      this.setMinMaxFlipped();
       return this;
     },
 
@@ -886,6 +904,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.cacheCurrentMax();
       this.cacheCurrentMin();
+      this.cacheInterval();
 
       if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
         this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
@@ -1007,6 +1026,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.removeUselessTicks();
       this.removeUselessTickLabels();
+      this.removeUselessGridLines();
 
       // Looks for axes linked to this current axis
       var axes = this.graph.findAxesLinkedTo( this );
@@ -1108,10 +1128,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       }*/
 
       // Remove all grids
-      while ( this.groupGrids.firstChild ) {
+      /*    while ( this.groupGrids.firstChild ) {
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
-
+*/
     },
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
@@ -1231,9 +1251,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     nextTickLabel: function( callback ) {
 
-      var tickLabel = document.createElementNS( this.graph.ns, 'text' );
-      this.groupTickLabels.appendChild( tickLabel );
-
       this.ticksLabels = this.ticksLabels || [];
       this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
       this.currentTickLabel = this.currentTickLabel || 0;
@@ -1279,6 +1296,51 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       this.lastCurrentTickLabel = this.currentTickLabel;
       this.currentTickLabel = 0;
 
+    },
+
+    doGridLine: function() {
+      var gridLine = document.createElementNS( this.graph.ns, 'line' );
+      this.groupGrids.appendChild( gridLine );
+      return gridLine;
+    },
+
+    nextGridLine: function( primary, x1, x2, y1, y2 ) {
+
+      this.gridLines = this.gridLines || [];
+      this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
+      this.currentGridLine = this.currentGridLine || 0;
+
+      if ( this.currentGridLine >= this.gridLines.length ) {
+
+        var gridLine = this.doGridLine();
+        this.gridLines.push( gridLine );
+
+      }
+
+      var gridLine = this.gridLines[ this.currentGridLine ];
+
+      if ( this.currentGridLine >= this.lastCurrentGridLine ) {
+        gridLine.setAttribute( 'display', 'visible' );
+      }
+
+      gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
+      gridLine.setAttribute( 'y1', y1 );
+      gridLine.setAttribute( 'y2', y2 );
+      gridLine.setAttribute( 'x1', x1 );
+      gridLine.setAttribute( 'x2', x2 );
+      gridLine.setAttribute( 'stroke', primary ? this.getColorPrimaryGrid() : this.getColorSecondaryGrid() );
+
+      this.currentGridLine++;
+
+      return gridLine;
+    },
+
+    removeUselessGridLines: function() {
+      for ( var i = this.currentGridLine; i < this.gridLines.length; i++ ) {
+        this.gridLines[ i ].setAttribute( 'display', 'none' );
+      }
+      this.lastCurrentGridLine = this.currentGridLine;
+      this.currentGridLine = 0;
     },
 
     resetTicksLength: function() {},
@@ -1427,14 +1489,14 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @memberof Axis.prototype
      * @return {Number} The value transformed into pixels
      */
-    getPx: function( value ) {
-      return this.getPos( value );
+    getPos: function( value ) {
+      return this.getPx( value );
     },
 
     /**
-     * @alias Axis~getPx
+     * @alias Axis~getPos
      */
-    getPos: function( value ) {
+    getPx: function( value ) {
       //			if(this.getMaxPx() == undefined)
       //				console.log(this);
       //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -1899,18 +1961,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     getLabelColor: function() {
       return this.options.labelColor;
-    },
-
-    doGridLine: function( primary, x1, x2, y1, y2 ) {
-      var gridLine = document.createElementNS( this.graph.ns, 'line' );
-      gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
-      gridLine.setAttribute( 'y1', y1 );
-      gridLine.setAttribute( 'y2', y2 );
-      gridLine.setAttribute( 'x1', x1 );
-      gridLine.setAttribute( 'x2', x2 );
-
-      gridLine.setAttribute( 'stroke', primary ? this.getColorPrimaryGrid() : this.getColorSecondaryGrid() );
-      this.groupGrids.appendChild( gridLine );
     },
 
     getColorPrimaryGrid: function() {
