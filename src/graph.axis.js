@@ -1336,6 +1336,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     removeUselessGridLines: function() {
+
+      this.gridLines = this.gridLines ||  [];
+      this.currentGridLine = this.currentGridLine ||  0;
+
       for ( var i = this.currentGridLine; i < this.gridLines.length; i++ ) {
         this.gridLines[ i ].setAttribute( 'display', 'none' );
       }

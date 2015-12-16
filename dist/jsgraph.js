@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-35
+ * jsGraph JavaScript Graphing Library v1.13.3-36
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-13T00:07Z
+ * Date: 2015-12-16T20:08Z
  */
 
 ( function( global, factory ) {
@@ -5057,6 +5057,10 @@
         },
 
         removeUselessGridLines: function() {
+
+          this.gridLines = this.gridLines || [];
+          this.currentGridLine = this.currentGridLine || 0;
+
           for ( var i = this.currentGridLine; i < this.gridLines.length; i++ ) {
             this.gridLines[ i ].setAttribute( 'display', 'none' );
           }
