@@ -1270,7 +1270,6 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     if ( this.lines[ i ] ) {
       line = this.lines[ i ];
     } else {
-      console.log( 'dsf' );
       line = document.createElementNS( this.graph.ns, 'path' );
       this.applyLineStyle( line );
       this.groupLines.appendChild( line );
