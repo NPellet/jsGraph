@@ -2088,7 +2088,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     getEngineeringExponent: function( scientificExponent ) {
 
       if ( scientificExponent > 0 ) {
-        scientificEfxponent -= ( scientificExponent % 3 );
+        scientificExponent -= ( scientificExponent % 3 );
       } else {
         scientificExponent -= ( 3 - ( -scientificExponent ) % 3 ) % 3;
       }
@@ -2106,6 +2106,10 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     setLogScale: function( log ) {
       this.options.logScale = log;
       return this;
+    },
+
+    isZoomed: function() {
+      return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
     }
 
   } );

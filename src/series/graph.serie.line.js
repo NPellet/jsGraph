@@ -722,6 +722,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) ||  ( y > yMax && lastY > yMax ) ) {
           lastX = x;
           lastY = y;
+          lastPointOutside = true;
           continue;
         }
 
@@ -1217,6 +1218,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       }* @memberof SerieLine
 */
 
+    if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+      return;
+    }
+
     if ( this.counter == 0 ) {
       this.currentLine = 'M ';
     } else {
@@ -1270,7 +1275,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     if ( this.lines[ i ] ) {
       line = this.lines[ i ];
     } else {
-      console.log( 'dsf' );
+
       line = document.createElementNS( this.graph.ns, 'path' );
       this.applyLineStyle( line );
       this.groupLines.appendChild( line );

@@ -81,6 +81,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
           if ( !oneDimensional ) {
             arr[ z ] = ( data[ i ][ j ][ 0 ] );
+
             this._checkX( arr[ z ] );
             z++;
             arr[ z ] = ( data[ i ][ j ][ 1 ] );
@@ -586,6 +587,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    */
   Serie.prototype.updateStyle = function() {
     this.setLegendSymbolStyle();
+    this.graph.updateLegend();
   };
 
   /**
@@ -819,6 +821,14 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this._tracker = false;
     this._trackingCallback = null;
   }
+
+  Serie.prototype.setLegend = function( bln ) {
+    this._legend = bln;
+  };
+
+  Serie.prototype.isInLegend = function() {
+    return this._legend === false ? false : true;
+  };
 
   Serie.prototype.getMarkerForLegend = function() {
     return false;

@@ -148,7 +148,7 @@ define( [ "./graph.position" ], function( GraphPosition ) {
       }
 
       var bbox = this.subG.getBBox();
-
+      console.log( this.subG, bbox, bbox.width );
       /* Independant on box position */
       this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
       this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -291,6 +291,10 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
       for ( var i = 0, l = series.length; i < l; i++ ) {
 
+        if ( !series[  i ].isInLegend() && !this.series ) {
+          continue;
+        }
+
         ( function( j ) {
 
           var g, line, text, xPadding = 0;
@@ -353,8 +357,8 @@ define( [ "./graph.position" ], function( GraphPosition ) {
       }
 
       this.calculatePosition();
-
       this.svg.appendChild( this.rect );
+
     },
 
     /** 

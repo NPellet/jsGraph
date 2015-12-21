@@ -5,7 +5,7 @@ define( function() {
 
 		var serie = [];
 		var date = new Date();
-		date.setTime( date.getTime() - 86400000 * 3)
+		date.setTime( date.getTime() - 8640000 * 3)
 		
 		while( date.getTime() < Date.now() ) {
 		
@@ -38,36 +38,17 @@ define( function() {
 		}, { bottom: [ { type: 'time' } ] } );
 
 	
-		var s = graphinstance.newSerie( "name", {
+		var s = graphinstance.newSerie( "sf", {
   
-      "trackMouse": false,
-      "markersIndependant": false,
-      "lineToZero": false,
-      "useSlots": false,
-      "strokeWidth": 1
-
     })
-			.autoAxis()
-			.setData( serie )
-			.XIsMonotoneous();
-
-      s
-			.degrade( 2 )
-			.setFillColor('rgba(0,0,0,0.1)')
-			.setLineColor('transparent')
-
-      s
-      .showMarkers()
-      .setMarkers(     
-        {
-
-          type: 1,
-          points: [ 'all' ],
-          fill: true
-
-        } );
+			.autoAxis();
 
 
+    graphinstance.draw();
+
+		graphinstance.getSerie("sf").setData( serie )
+		
+    graphinstance.autoscaleAxes();
 		graphinstance.draw( );
 		
 			

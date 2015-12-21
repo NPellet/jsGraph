@@ -133,7 +133,10 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     },
 
     _draw0Line: function( px ) {
-      this._0line = document.createElementNS( this.graph.ns, 'line' );
+
+      if ( !this._0line ) {
+        this._0line = document.createElementNS( this.graph.ns, 'line' );
+      }
       this._0line.setAttribute( 'x1', px );
       this._0line.setAttribute( 'x2', px );
 

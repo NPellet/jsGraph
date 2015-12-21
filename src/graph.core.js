@@ -723,6 +723,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         val,
         func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
         func2use = func[ min ? 0 : 1 ],
+        infinity2use = min ? +Infinity : -Infinity,
         currentSerie,
         serie,
         series,
@@ -743,7 +744,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
         serieValue = serie[ func2use ]();
 
-        val = Math[ minmax ]( val, serieValue );
+        val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
       }
 
@@ -794,6 +795,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
           }
 
           //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
           axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min' ) );
           axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max' ) );
 

@@ -1,4 +1,4 @@
-define( [ './graph.axis' ], function( GraphAxis ) {
+define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
   "use strict";
 
@@ -74,7 +74,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
       // Passing date through Date applies Date.parse, if necessary
       date = date ? new Date( date ) : new Date;
-      if ( isNaN( date ) ) throw SyntaxError( "invalid date" );
+      if ( isNaN( date ) ) throw SyntaxError( "invalid date:" + date );
 
       mask = String( dF.masks[ mask ] || mask || dF.masks[ "default" ] );
 
@@ -840,9 +840,15 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
     for ( level = 1; level <= 2; level++ ) {
 
+      if ( !util.isNumeric( minVal ) ) {
+        hideGroups( this, level, 0 );
+        break;
+      }
+
       dateFirst = new Date( minVal );
 
       currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+
       i = 0;
 
       do {

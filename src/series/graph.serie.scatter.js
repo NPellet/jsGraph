@@ -58,6 +58,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     this.selectedStyleGeneral = {};
     this.selectedStyleModifiers = {};
+
     /*
       this.groupPoints.addEventListener('mouseover', function(e) {
       

@@ -161,7 +161,11 @@ define( [ './graph.axis' ], function( GraphAxis ) {
     },
 
     _draw0Line: function( px ) {
-      this._0line = document.createElementNS( this.graph.ns, 'line' );
+
+      if ( !this._0line ) {
+        this._0line = document.createElementNS( this.graph.ns, 'line' );
+      }
+
       this._0line.setAttribute( 'y1', px );
       this._0line.setAttribute( 'y2', px );
 

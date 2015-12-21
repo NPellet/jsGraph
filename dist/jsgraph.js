@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-36
+ * jsGraph JavaScript Graphing Library v1.13.3-37
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-16T20:08Z
+ * Date: 2015-12-21T15:54Z
  */
 
 ( function( global, factory ) {
@@ -1813,6 +1813,7 @@
             val,
             func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
             func2use = func[ min ? 0 : 1 ],
+            infinity2use = min ? +Infinity : -Infinity,
             currentSerie,
             serie,
             series,
@@ -1833,7 +1834,7 @@
 
             serieValue = serie[ func2use ]();
 
-            val = Math[ minmax ]( val, serieValue );
+            val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
           }
 
@@ -1884,6 +1885,7 @@
               }
 
               //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
               axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min' ) );
               axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max' ) );
 
@@ -5809,7 +5811,7 @@
         getEngineeringExponent: function( scientificExponent ) {
 
           if ( scientificExponent > 0 ) {
-            scientificEfxponent -= ( scientificExponent % 3 );
+            scientificExponent -= ( scientificExponent % 3 );
           } else {
             scientificExponent -= ( 3 - ( -scientificExponent ) % 3 ) % 3;
           }
@@ -5827,6 +5829,10 @@
         setLogScale: function( log ) {
           this.options.logScale = log;
           return this;
+        },
+
+        isZoomed: function() {
+          return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
         }
 
       } );
@@ -5978,7 +5984,10 @@
         },
 
         _draw0Line: function( px ) {
-          this._0line = document.createElementNS( this.graph.ns, 'line' );
+
+          if ( !this._0line ) {
+            this._0line = document.createElementNS( this.graph.ns, 'line' );
+          }
           this._0line.setAttribute( 'x1', px );
           this._0line.setAttribute( 'x2', px );
 
@@ -6170,7 +6179,11 @@
         },
 
         _draw0Line: function( px ) {
-          this._0line = document.createElementNS( this.graph.ns, 'line' );
+
+          if ( !this._0line ) {
+            this._0line = document.createElementNS( this.graph.ns, 'line' );
+          }
+
           this._0line.setAttribute( 'y1', px );
           this._0line.setAttribute( 'y2', px );
 
@@ -6606,7 +6619,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.time.js
      */
 
-    build[ './graph.axis.x.time' ] = ( function( GraphAxis ) {
+    build[ './graph.axis.x.time' ] = ( function( GraphAxis, util ) {
       /** @global */
       /** @ignore */
 
@@ -6684,7 +6697,7 @@
 
           // Passing date through Date applies Date.parse, if necessary
           date = date ? new Date( date ) : new Date;
-          if ( isNaN( date ) ) throw SyntaxError( "invalid date" );
+          if ( isNaN( date ) ) throw SyntaxError( "invalid date:" + date );
 
           mask = String( dF.masks[ mask ] || mask || dF.masks[ "default" ] );
 
@@ -7450,9 +7463,15 @@
 
         for ( level = 1; level <= 2; level++ ) {
 
+          if ( !util.isNumeric( minVal ) ) {
+            hideGroups( this, level, 0 );
+            break;
+          }
+
           dateFirst = new Date( minVal );
 
           currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+
           i = 0;
 
           do {
@@ -7495,7 +7514,7 @@
       };
 
       return GraphXAxis;
-    } )( build[ "./graph.axis" ] );
+    } )( build[ "./graph.axis" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
@@ -7655,7 +7674,7 @@
           }
 
           var bbox = this.subG.getBBox();
-
+          console.log( this.subG, bbox, bbox.width );
           /* Independant on box position */
           this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
           this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -7798,6 +7817,10 @@
 
           for ( var i = 0, l = series.length; i < l; i++ ) {
 
+            if ( !series[ i ].isInLegend() && !this.series ) {
+              continue;
+            }
+
             ( function( j ) {
 
               var g, line, text, xPadding = 0;
@@ -7860,8 +7883,8 @@
           }
 
           this.calculatePosition();
-
           this.svg.appendChild( this.rect );
+
         },
 
         /** 
@@ -8891,6 +8914,10 @@
           mute: mute
         } );
 
+        if ( this.options.onDblClick && !mute ) {
+          this.options.onDblClick( graph, x, y, e, mute );
+        }
+
       };
 
       PluginZoom.prototype.isFullX = function() {
@@ -8995,6 +9022,7 @@
 
               if ( !oneDimensional ) {
                 arr[ z ] = ( data[ i ][ j ][ 0 ] );
+
                 this._checkX( arr[ z ] );
                 z++;
                 arr[ z ] = ( data[ i ][ j ][ 1 ] );
@@ -9500,6 +9528,7 @@
        */
       Serie.prototype.updateStyle = function() {
         this.setLegendSymbolStyle();
+        this.graph.updateLegend();
       };
 
       /**
@@ -9733,6 +9762,14 @@
         this._tracker = false;
         this._trackingCallback = null;
       }
+
+      Serie.prototype.setLegend = function( bln ) {
+        this._legend = bln;
+      };
+
+      Serie.prototype.isInLegend = function() {
+        return this._legend === false ? false : true;
+      };
 
       Serie.prototype.getMarkerForLegend = function() {
         return false;
@@ -10814,6 +10851,7 @@
             if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) {
               lastX = x;
               lastY = y;
+              lastPointOutside = true;
               continue;
             }
 
@@ -11309,6 +11347,10 @@
       }* @memberof SerieLine
 */
 
+        if ( isNaN( xpx ) || isNaN( ypx ) ) {
+          return;
+        }
+
         if ( this.counter == 0 ) {
           this.currentLine = 'M ';
         } else {
@@ -11362,7 +11404,7 @@
         if ( this.lines[ i ] ) {
           line = this.lines[ i ];
         } else {
-          console.log( 'dsf' );
+
           line = document.createElementNS( this.graph.ns, 'path' );
           this.applyLineStyle( line );
           this.groupLines.appendChild( line );
@@ -13210,6 +13252,7 @@
 
         this.selectedStyleGeneral = {};
         this.selectedStyleModifiers = {};
+
         /*
       this.groupPoints.addEventListener('mouseover', function(e) {
       
@@ -13722,6 +13765,8 @@
           this.graph = graph;
           this.name = name;
 
+          this.selectionType = "unselected";
+
           this.id = Math.random() + Date.now();
 
           this.shown = true;
@@ -13748,10 +13793,8 @@
 
           this.currentAction = false;
 
-          if ( this.initExtended1 ) {
-            this.initExtended1();
-          }
-
+          this.applyLineStyle( this.lineZone );
+          this.styleHasChanged();
         },
 
         /**
@@ -13768,6 +13811,9 @@
             arr,
             total = 0,
             continuous;
+
+          this.data = [];
+          this.dataHasChanged();
 
           if ( !data instanceof Array ) {
             return;
@@ -13872,7 +13918,6 @@
 
           this.graph.updateDataMinMaxAxes();
           this.data = arr;
-
           this.dataHasChanged();
 
           return this;
@@ -13993,14 +14038,16 @@
 
             if ( lineTop.length > 0 && lineBottom.length > 0 ) {
               this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+            } else {
+              this.lineZone.setAttribute( 'd', "" );
             }
 
             this.groupMain.appendChild( this.groupZones );
-
           }
 
           if ( this.hasStyleChanged( this.selectionType ) ) {
             this.applyLineStyle( this.lineZone );
+            this.styleHasChanged( false );
           }
 
         },
@@ -14017,8 +14064,7 @@
           line.setAttribute( 'stroke', this.getLineColor() );
           line.setAttribute( 'stroke-width', this.getLineWidth() );
           line.setAttribute( 'fill', this.getFillColor() );
-
-          this.styleHasChanged( false );
+          line.setAttribute( 'fill-opacity', this.getFillOpacity() );
         },
 
         /**
@@ -14068,6 +14114,29 @@
         },
 
         /**
+         * Sets the fill opacity
+         * @memberof SerieZone.prototype
+         *
+         * @param {Number} opacity - The fill opacity
+         * @returns {SerieZone} - The current serie
+         */
+        setFillOpacity: function( opacity ) {
+          this.options.fillOpacity = opacity;
+          this.styleHasChanged();
+          return this;
+        },
+
+        /**
+         * Gets the fill opacity
+         * @memberof SerieZone.prototype
+         *
+         * @returns {Number} - The fill opacity
+         */
+        getFillOpacity: function() {
+          return this.options.fillOpacity;
+        },
+
+        /**
          * Sets the fill color
          * @memberof SerieZone.prototype
          *
@@ -14089,6 +14158,167 @@
         getFillColor: function() {
           return this.options.fillColor;
         },
+
+        /**
+         * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+         * @param {Number} startX - The start of the x values
+         * @param {Number} endX - The end of the x values
+         * @returns {Number} Maximal y value in between startX and endX
+         * @memberof SerieLine
+         */
+        getMax: function( start, end ) {
+
+          var start2 = Math.min( start, end ),
+            end2 = Math.max( start, end ),
+            v1 = this.searchClosestValue( start2 ),
+            v2 = this.searchClosestValue( end2 ),
+            i, j, max = -Infinity,
+            initJ, maxJ;
+
+          //      console.log( start2, end2, v1, v2 );
+
+          if ( !v1 ) {
+            start2 = this.minX;
+            v1 = this.searchClosestValue( start2 );
+          }
+
+          if ( !v2 ) {
+            end2 = this.maxX;
+            v2 = this.searchClosestValue( end2 );
+          }
+
+          if ( !v1 || !v2 ) {
+            return -Infinity;
+          }
+
+          for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+            initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+            maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+            for ( j = initJ; j <= maxJ; j += 3 ) {
+              max = Math.max( max, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
+            }
+          }
+
+          return max;
+        },
+
+        /**
+         * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+         * @param {Number} startX - The start of the x values
+         * @param {Number} endX - The end of the x values
+         * @returns {Number} Maximal y value in between startX and endX
+         * @memberof SerieLine
+         */
+        getMin: function( start, end ) {
+
+          var start2 = Math.min( start, end ),
+            end2 = Math.max( start, end ),
+            v1 = this.searchClosestValue( start2 ),
+            v2 = this.searchClosestValue( end2 ),
+            i, j, min = Infinity,
+            initJ, maxJ;
+
+          if ( !v1 ) {
+            start2 = this.minX;
+            v1 = this.searchClosestValue( start2 );
+          }
+
+          if ( !v2 ) {
+            end2 = this.maxX;
+            v2 = this.searchClosestValue( end2 );
+          }
+
+          if ( !v1 || !v2 ) {
+            return Infinity;
+          }
+
+          for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+            initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+            maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+            for ( j = initJ; j <= maxJ; j += 3 ) {
+              min = Math.min( min, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
+            }
+          }
+
+          return min;
+        },
+
+        /**
+         * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+         * @param {Number} valX - The x value to search for
+         * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+         * @memberof SerieLine
+         */
+        searchClosestValue: function( valX ) {
+
+          var xMinIndex;
+
+          for ( var i = 0; i < this.data.length; i++ ) {
+
+            if ( ( valX <= this.data[ i ][ this.data[ i ].length - 3 ] && valX >= this.data[ i ][ 0 ] ) ) {
+              xMinIndex = this._searchBinary( valX, this.data[ i ], false );
+            } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 3 ] && valX <= this.data[ i ][ 0 ] ) ) {
+              xMinIndex = this._searchBinary( valX, this.data[ i ], true );
+            } else {
+              continue;
+            }
+
+            return {
+              dataIndex: i,
+              xMin: this.data[ i ][ xMinIndex ],
+              xMax: this.data[ i ][ xMinIndex + 3 ],
+              yMin: this.data[ i ][ xMinIndex + 1 ],
+              yMax: this.data[ i ][ xMinIndex + 4 ],
+              xBeforeIndex: xMinIndex / 3,
+              xAfterIndex: xMinIndex / 3 + 1,
+              xBeforeIndexArr: xMinIndex,
+              xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 3 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 3 : xMinIndex ) / 2
+            }
+          }
+        },
+
+        _searchBinary: function( target, haystack, reverse ) {
+          var seedA = 0,
+            length = haystack.length,
+            seedB = ( length - 3 );
+
+          if ( haystack[ seedA ] == target )
+            return seedA;
+
+          if ( haystack[ seedB ] == target )
+            return seedB;
+
+          var seedInt;
+          var i = 0;
+
+          while ( true ) {
+            i++;
+            if ( i > 100 ) {
+              throw "Error loop";
+            }
+
+            seedInt = ( seedA + seedB ) / 3;
+            seedInt -= seedInt % 3; // Always looks for an x.
+
+            if ( seedInt == seedA || haystack[ seedInt ] == target )
+              return seedInt;
+
+            //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+            if ( haystack[ seedInt ] <= target ) {
+              if ( reverse )
+                seedB = seedInt;
+              else
+                seedA = seedInt;
+            } else if ( haystack[ seedInt ] > target ) {
+              if ( reverse )
+                seedA = seedInt;
+              else
+                seedB = seedInt;
+            }
+          }
+        }
 
       } );
 

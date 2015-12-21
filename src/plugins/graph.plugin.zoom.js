@@ -340,6 +340,10 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       mute: mute
     } );
 
+    if ( this.options.onDblClick && !mute ) {
+      this.options.onDblClick( graph, x, y, e, mute );
+    }
+
   };
 
   PluginZoom.prototype.isFullX = function() {

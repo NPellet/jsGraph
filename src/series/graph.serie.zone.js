@@ -34,6 +34,8 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
       this.graph = graph;
       this.name = name;
 
+      this.selectionType = "unselected";
+
       this.id = Math.random() + Date.now();
 
       this.shown = true;
@@ -60,10 +62,8 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
       this.currentAction = false;
 
-      if ( this.initExtended1 ) {
-        this.initExtended1();
-      }
-
+      this.applyLineStyle( this.lineZone );
+      this.styleHasChanged();
     },
 
     /**
@@ -80,6 +80,9 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
         arr,
         total = 0,
         continuous;
+
+      this.data = [];
+      this.dataHasChanged();
 
       if ( !data instanceof Array ) {
         return;
@@ -184,7 +187,6 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
       this.graph.updateDataMinMaxAxes();
       this.data = arr;
-
       this.dataHasChanged();
 
       return this;
@@ -305,14 +307,16 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
         if ( lineTop.length > 0 && lineBottom.length > 0 ) {
           this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+        } else {
+          this.lineZone.setAttribute( 'd', "" );
         }
 
         this.groupMain.appendChild( this.groupZones );
-
       }
 
       if ( this.hasStyleChanged( this.selectionType ) ) {
         this.applyLineStyle( this.lineZone );
+        this.styleHasChanged( false );
       }
 
     },
@@ -329,8 +333,7 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
       line.setAttribute( 'stroke', this.getLineColor() );
       line.setAttribute( 'stroke-width', this.getLineWidth() );
       line.setAttribute( 'fill', this.getFillColor() );
-
-      this.styleHasChanged( false );
+      line.setAttribute( 'fill-opacity', this.getFillOpacity() );
     },
 
     /**
@@ -380,6 +383,29 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
     },
 
     /**
+     * Sets the fill opacity
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} opacity - The fill opacity
+     * @returns {SerieZone} - The current serie
+     */
+    setFillOpacity: function( opacity ) {
+      this.options.fillOpacity = opacity;
+      this.styleHasChanged();
+      return this;
+    },
+
+    /**
+     * Gets the fill opacity
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The fill opacity
+     */
+    getFillOpacity: function() {
+      return this.options.fillOpacity;
+    },
+
+    /**
      * Sets the fill color
      * @memberof SerieZone.prototype
      *
@@ -401,6 +427,167 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
     getFillColor: function() {
       return this.options.fillColor;
     },
+
+    /**
+     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     * @memberof SerieLine
+     */
+    getMax: function( start, end ) {
+
+      var start2 = Math.min( start, end ),
+        end2 = Math.max( start, end ),
+        v1 = this.searchClosestValue( start2 ),
+        v2 = this.searchClosestValue( end2 ),
+        i, j, max = -Infinity,
+        initJ, maxJ;
+
+      //      console.log( start2, end2, v1, v2 );
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return -Infinity;
+      }
+
+      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+        for ( j = initJ; j <= maxJ; j += 3 ) {
+          max = Math.max( max, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
+        }
+      }
+
+      return max;
+    },
+
+    /**
+     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     * @memberof SerieLine
+     */
+    getMin: function( start, end ) {
+
+      var start2 = Math.min( start, end ),
+        end2 = Math.max( start, end ),
+        v1 = this.searchClosestValue( start2 ),
+        v2 = this.searchClosestValue( end2 ),
+        i, j, min = Infinity,
+        initJ, maxJ;
+
+      if ( !v1 ) {
+        start2 = this.minX;
+        v1 = this.searchClosestValue( start2 );
+      }
+
+      if ( !v2 ) {
+        end2 = this.maxX;
+        v2 = this.searchClosestValue( end2 );
+      }
+
+      if ( !v1 ||  !v2 ) {
+        return Infinity;
+      }
+
+      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
+        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
+        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
+
+        for ( j = initJ; j <= maxJ; j += 3 ) {
+          min = Math.min( min, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
+        }
+      }
+
+      return min;
+    },
+
+    /**
+     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
+     * @param {Number} valX - The x value to search for
+     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
+     * @memberof SerieLine
+     */
+    searchClosestValue: function( valX ) {
+
+      var xMinIndex;
+
+      for ( var i = 0; i < this.data.length; i++ ) {
+
+        if ( ( valX <= this.data[ i ][ this.data[ i ].length - 3 ] && valX >= this.data[ i ][ 0 ] ) ) {
+          xMinIndex = this._searchBinary( valX, this.data[ i ], false );
+        } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 3 ] && valX <= this.data[ i ][ 0 ] ) ) {
+          xMinIndex = this._searchBinary( valX, this.data[ i ], true );
+        } else {
+          continue;
+        }
+
+        return {
+          dataIndex: i,
+          xMin: this.data[ i ][ xMinIndex ],
+          xMax: this.data[ i ][ xMinIndex + 3 ],
+          yMin: this.data[ i ][ xMinIndex + 1 ],
+          yMax: this.data[ i ][ xMinIndex + 4 ],
+          xBeforeIndex: xMinIndex / 3,
+          xAfterIndex: xMinIndex / 3 + 1,
+          xBeforeIndexArr: xMinIndex,
+          xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 3 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 3 : xMinIndex ) / 2
+        }
+      }
+    },
+
+    _searchBinary: function( target, haystack, reverse ) {
+      var seedA = 0,
+        length = haystack.length,
+        seedB = ( length - 3 );
+
+      if ( haystack[ seedA ] == target )
+        return seedA;
+
+      if ( haystack[ seedB ] == target )
+        return seedB;
+
+      var seedInt;
+      var i = 0;
+
+      while ( true ) {
+        i++;
+        if ( i > 100 ) {
+          throw "Error loop";
+        }
+
+        seedInt = ( seedA + seedB ) / 3;
+        seedInt -= seedInt % 3; // Always looks for an x.
+
+        if ( seedInt == seedA || haystack[ seedInt ] == target )
+          return seedInt;
+
+        //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+        if ( haystack[ seedInt ] <= target ) {
+          if ( reverse )
+            seedB = seedInt;
+          else
+            seedA = seedInt;
+        } else if ( haystack[ seedInt ] > target ) {
+          if ( reverse )
+            seedA = seedInt;
+          else
+            seedB = seedInt;
+        }
+      }
+    }
 
   } );
 
