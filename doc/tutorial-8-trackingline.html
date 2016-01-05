@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Tracking line</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="fluid">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Plugin.html">Plugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li><li><a href="tutorial-8-trackingline.html">Tracking line</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieScatterDefaultOptions</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+
+	
+	<div class="row">
+
+		
+
+
+		
+		<div class="col-md-12">
+		
+			<div id="main">
+	    		<h1 class="page-title">Tracking line</h1>
+				<section class="tutorial-section">
+
+<header>
+    
+
+    
+</header>
+
+<article>
+    <script src="../dist/jquery.min.js"></script>
+<script src="../dist/jsgraph.js"></script>
+
+
+
+<p>jsGraph allows you to display a vertical line as a tracker and to display information about the series at the x point of the tracker. Obviously your x data must be monotoneously increasing for this feature to work. I will show you through a serie of examples how to work with the tracking features.</p>
+<h2>Blank example</h2><p>Let's start by a standard blank example</p>
+<script>
+    function makeGraph( dom ) {
+
+      var graph = new Graph( dom );
+        graph.resize( 700, 300 ); // Resizes the graph
+      graph.getYAxis().secondaryGridOff();
+      graph.getXAxis().secondaryGridOff();
+
+      graph.getYAxis().setPrimaryGridColor("#f0f0f0");
+      graph.getXAxis().setSecondaryGridColor("#f0f0f0");
+
+      var colorado = [["2014",17944.255],["2013",18881.823],["2012",19263.158],["2011",18744.067],["2010",18978.981],["2009",17351.28],["2008",18961.826],["2007",19532.855],["2006",19707.00899],["2005",19013.11703],["2004",19251.20903],["2003",19595.836],["2002",19446.04],["2001",19764.973]];
+      var california = [["2014",878.434],["2013",915.246],["2012",1183.112],["2011",1539.699],["2010",1542.78],["2009",1521.939],["2008",1723.062],["2007",1752.384],["2006",1710.887],["2005",1676.522],["2004",1731.218],["2003",1727.233],["2002",1821.618],["2001",1739.07]];
+
+      var serie = graph.newSerie('CA').setLineColor("#2B65EC").setLineWidth( 2 );
+      serie.setData( california );
+      serie.autoAxis();
+
+      var serie = graph.newSerie('CO').setLineColor("#E42217").setLineWidth( 2 )
+      serie.setData( colorado );
+      serie.autoAxis();
+
+      graph.draw();
+      return graph;
+    }
+
+</script>
+
+
+<div id="example-1" class="jsgraph-example"></div>
+
+<script>
+    var g = makeGraph("example-1");
+</script>
+
+<pre class="prettyprint source"><code>
+  var graph = new Graph( &quot;example-1&quot; );
+  graph.resize( 700, 300 ); // Resizes the graph
+  graph.getYAxis().secondaryGridOff();
+  graph.getXAxis().secondaryGridOff();
+
+  graph.getYAxis().setPrimaryGridColor(&quot;#f0f0f0&quot;);
+  graph.getXAxis().setSecondaryGridColor(&quot;#f0f0f0&quot;);
+
+  var colorado = [[&quot;2014&quot;,17944.255],[&quot;2013&quot;,18881.823],[&quot;2012&quot;,19263.158],[&quot;2011&quot;,18744.067],[&quot;2010&quot;,18978.981],[&quot;2009&quot;,17351.28],[&quot;2008&quot;,18961.826],[&quot;2007&quot;,19532.855],[&quot;2006&quot;,19707.00899],[&quot;2005&quot;,19013.11703],[&quot;2004&quot;,19251.20903],[&quot;2003&quot;,19595.836],[&quot;2002&quot;,19446.04],[&quot;2001&quot;,19764.973]];
+  var california = [[&quot;2014&quot;,878.434],[&quot;2013&quot;,915.246],[&quot;2012&quot;,1183.112],[&quot;2011&quot;,1539.699],[&quot;2010&quot;,1542.78],[&quot;2009&quot;,1521.939],[&quot;2008&quot;,1723.062],[&quot;2007&quot;,1752.384],[&quot;2006&quot;,1710.887],[&quot;2005&quot;,1676.522],[&quot;2004&quot;,1731.218],[&quot;2003&quot;,1727.233],[&quot;2002&quot;,1821.618],[&quot;2001&quot;,1739.07]];
+
+  var serie = graph.newSerie('CA').setLineColor(&quot;#2B65EC&quot;).setLineWidth( 2 );
+  serie.setData( california );
+  serie.autoAxis();
+
+  var serie = graph.newSerie('CO').setLineColor(&quot;#E42217&quot;).setLineWidth( 2 )
+  serie.setData( colorado );
+  serie.autoAxis();</code></pre><p>There are two modes of tracking available: <code>individual</code> and <code>common</code>:</p>
+<h2>Common mode</h2><p>In the common mode, no matter where the mouse is, jsGraph will try to find the closest x value for each serie and process them all together. If there is no computable data for any serie (outside of any serie range), nothing is displayed. Otherwise, a vertical line is shown, the closest point in each serie is highlighted and a single text box appears (common to all series). Here's how to do:</p>
+<div id="example-2" class="jsgraph-example"></div>
+
+<script>
+    var graph = makeGraph("example-2");
+
+    graph.trackingLine( {
+
+        mode: "common", // Defines the mode, individual or common
+        snapToSerie: graph.getSerie("CA"), // In the common mode, choses the serie onto which the tracking line will snap
+
+        textMethod: function( output ) { // Method that should return the content of the text box
+          var txt = "";
+          if( output[ "CA" ] ) {
+            txt += "California: " + Math.round( output[ "CA" ].yValue ) + " ktons<br />";
+          }
+          if( output[ "CO" ] ) {
+            txt += "Colorado: " + Math.round( output[ "CO" ].yValue ) + " ktons";
+          }
+
+          return txt;
+        },
+
+        trackingLineShapeOptions: { // Parameters of the tracking line
+          strokeColor: '#c0c0c0'
+        },
+
+        series: [ // A list of series that can be tracked
+          {
+            serie: graph.getSerie("CA")
+          },
+
+          {
+            serie: graph.getSerie("CO"),
+            withinPx: 10 // Allows to be within a 10px range
+          } 
+        ]
+      }
+  );
+
+
+</script>
+
+
+<pre class="prettyprint source"><code>
+  graph.trackingLine( {
+
+    mode: &quot;common&quot;, // Defines the mode, individual or common
+    snapToSerie: graph.getSerie(&quot;CA&quot;), // In the common mode, choses the serie onto which the tracking line will snap
+
+    textMethod: function( output ) { // Method that should return the content of the text box
+      var txt = &quot;&quot;;
+      if( output[ &quot;CA&quot; ] ) {
+        txt += &quot;California: &quot; + Math.round( output[ &quot;CA&quot; ].yValue ) + &quot; ktons&lt;br />&quot;;
+      }
+      if( output[ &quot;CO&quot; ] ) {
+        txt += &quot;Colorado: &quot; + Math.round( output[ &quot;CO&quot; ].yValue ) + &quot; ktons&quot;;
+      }
+
+      return txt;
+    },
+
+    trackingLineShapeOptions: { // Parameters of the tracking line
+      strokeColor: '#c0c0c0'
+    },
+
+    series: [ // A list of series that can be tracked
+      {
+        serie: graph.getSerie(&quot;CA&quot;)
+      },
+
+      {
+        serie: graph.getSerie(&quot;CO&quot;),
+        withinPx: 10 // Allows to be within a 10px range
+      } 
+    ]
+  });</code></pre><ul>
+<li>The <code>snapToSerie</code> option defined which serie will reference the available x values for the tracking line. The other series will look for the best point around the snapped value to return their closest value.</li>
+<li>The <code>textMethod</code> option defined a method used to generate the text located inside the legend box.</li>
+<li>The <code>trackingLineShapeOptions</code> applies its members to the line shape element. See ShapeLine for more details</li>
+<li>The <code>series</code> option lists all the series accepting tracking. The <code>withinPx</code> option defined the position range in which it is acceptable for the serie to show a tracking point. The <code>withinVal</code> option is also available for the same feature but in axis unit.</li>
+</ul>
+<h3>withinVal and withinPx</h3><p>To demonstrate the <code>within</code> feature, let us use another example. In this example, the <code>snapToSerie</code> option is set to the red </p>
+<p><div id="example-3" class="jsgraph-example"></div></p>
+<script>
+  var graph = new Graph( "example-3" );
+
+  graph.resize( 700, 300 ); // Resizes the graph
+  graph.getYAxis().secondaryGridOff();
+  graph.getXAxis().secondaryGridOff();
+
+  graph.getYAxis().setPrimaryGridColor("#f0f0f0");
+  graph.getXAxis().setSecondaryGridColor("#f0f0f0");
+
+  var s1 = [ 1, 1, 2, 2, 3, 1, 4, 2, 5, 1, 6, 2, 7, 1, 8, 2, 9, 1, 10, 2, 11, 1, 12, 2, 13, 1 ];
+  var s2 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 0.5; return value; });
+  var s3 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1; return value; });
+  var s4 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1.5; return value; });
+
+  var serie = graph.newSerie('s1').setLineColor("#2B65EC").setLineWidth( 2 );
+  serie.setData( s1 );
+  serie.autoAxis();
+
+  var serie = graph.newSerie('s2').setLineColor("#E42217").setLineWidth( 2 )
+  serie.setData( s2 );
+  serie.autoAxis();
+
+
+  var serie = graph.newSerie('s3').setLineColor("#369173").setLineWidth( 2 )
+  serie.setData( s3 );
+  serie.autoAxis();
+
+  var serie = graph.newSerie('s4').setLineColor("#DB810B").setLineWidth( 2 )
+  serie.setData( s4 );
+  serie.autoAxis();
+
+  graph.trackingLine( {
+
+    mode: "common", // Defines the mode, individual or common
+    snapToSerie: graph.getSerie("s1"), // In the common mode, choses the serie onto which the tracking line will snap
+
+    textMethod: function( output, x, xpx ) { // Method that should return the content of the text box
+      var text = "Series tracked (x = " + x + ")<br /><ul>";
+      var j = 0;
+      for( var i in output ) {
+          j++;
+          switch( i ) {
+
+              case "s2":
+                  text += "<li>Serie 2: x = " + output[ i ].xValue + "</li>";
+              break;
+
+
+              case "s3":
+                  text += "<li>Serie 3: x = " + output[ i ].xValue + "</li>";
+              break;
+
+
+              case "s4":
+                  text += "<li>Serie 4: x = " + output[ i ].xValue + "</li>";
+              break;
+          }
+      }
+
+      if( j == 0 ) {
+          text += "<li>No serie tracked</li>";
+      }
+      text += "</ul>";
+      console.log(output);
+      return text;
+    },
+
+    trackingLineShapeOptions: { // Parameters of the tracking line
+      strokeColor: '#c0c0c0'
+    },
+
+    series: [ // A list of series that can be tracked
+
+      {
+        serie: graph.getSerie("s2"),
+        withinPx: 10 // Allows to be within a 10px range
+      },
+
+      {
+        serie: graph.getSerie("s3"),
+        withinPx: 30 // Allows to be within a 10px range
+      },
+
+      {
+        serie: graph.getSerie("s4"),
+        withinVal: 0.2 // Allows to be within a 10px range
+      } 
+    ]
+  });
+
+
+  graph.draw();
+ </script>
+
+<pre class="prettyprint source"><code> var graph = new Graph( &quot;example-3&quot; );
+
+  graph.resize( 700, 300 ); // Resizes the graph
+  graph.getYAxis().secondaryGridOff();
+  graph.getXAxis().secondaryGridOff();
+
+  graph.getYAxis().setPrimaryGridColor(&quot;#f0f0f0&quot;);
+  graph.getXAxis().setSecondaryGridColor(&quot;#f0f0f0&quot;);
+
+  var s1 = [ 1, 1, 2, 2, 3, 1, 4, 2, 5, 1, 6, 2, 7, 1, 8, 2, 9, 1, 10, 2, 11, 1, 12, 2, 13, 1 ];
+  var s2 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 0.5; return value; });
+  var s3 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1; return value; });
+  var s4 = [ 1, 1, 2.2, 2, 3.4, 1, 4.6, 2, 5.8, 1, 7, 2, 8.2, 1, 9.4, 2, 10.6, 1, 11.8, 2, 13, 1 ].map( function( value, index ) { if( index % 2 == 1 ) return value - 1.5; return value; });
+
+  var serie = graph.newSerie('s1').setLineColor(&quot;#2B65EC&quot;).setLineWidth( 2 );
+  serie.setData( s1 );
+  serie.autoAxis();
+
+  var serie = graph.newSerie('s2').setLineColor(&quot;#E42217&quot;).setLineWidth( 2 )
+  serie.setData( s2 );
+  serie.autoAxis();
+
+
+  var serie = graph.newSerie('s3').setLineColor(&quot;#369173&quot;).setLineWidth( 2 )
+  serie.setData( s3 );
+  serie.autoAxis();
+
+  var serie = graph.newSerie('s4').setLineColor(&quot;#DB810B&quot;).setLineWidth( 2 )
+  serie.setData( s4 );
+  serie.autoAxis();
+
+  graph.trackingLine( {
+
+    mode: &quot;common&quot;, // Defines the mode, individual or common
+    snapToSerie: graph.getSerie(&quot;s1&quot;), // In the common mode, choses the serie onto which the tracking line will snap
+
+    textMethod: function( output ) { // Method that should return the content of the text box
+      var txt = &quot;&quot;;
+
+      return txt;
+    },
+
+    trackingLineShapeOptions: { // Parameters of the tracking line
+      strokeColor: '#c0c0c0'
+    },
+
+    series: [ // A list of series that can be tracked
+
+      {
+        serie: graph.getSerie(&quot;s2&quot;),
+        withinPx: 10 // Allows to be within a 10px range
+      },
+
+      {
+        serie: graph.getSerie(&quot;s3&quot;),
+        withinPx: 20 // Allows to be within a 10px range
+      },
+
+      {
+        serie: graph.getSerie(&quot;s4&quot;),
+        withinVal: 0.2 // Allows to be within a 10px range
+      } 
+    ]
+  });
+
+
+  graph.draw();</code></pre><p>  In this example, the second serie (red) will only highlight if the snapped point on the blue serie is less than 10px than the closest point on the red serie. With this particular graph width, it happens when the x value of the red point is either exactly on the blue one or shifted by one. The third serie (green) will highlight a point only if it is within 20px of the snapped point on the blue serie. Therefore, more points compared to the red serie are selected. In the fourth serie (orange), only points not further than 0.2 (included) will be tracked. If no point is within 0.2 (in x axis value), then no tracking is done and the dot is not showed. The only tracked points are the first two (0, +0.2), the three in the middle (-0.2, 0, +0.2) and the last two (-0.2, 0).</p>
+<p>  You may also note that the serie 1 is used for snapping but is not in the tracked series list. It therefore doesn't show up in the list !</p>
+</article>
+
+</section>
+
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Thu Dec 10th 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		headerText: function(i, heading, $heading) {
+			var main;
+			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
+		  },
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		console.log( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : false,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

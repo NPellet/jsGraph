@@ -37,6 +37,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     this.styles.unselected = {
       lineColor: this.options.lineColor,
       lineStyle: this.options.lineStyle,
+      lineWidth: this.options.lineWidth,
       markers: this.options.markers
     };
 

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-37
+ * jsGraph JavaScript Graphing Library v1.13.3-38
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2015-12-21T15:54Z
+ * Date: 2015-12-21T19:19Z
  */
 
 ( function( global, factory ) {
@@ -7643,11 +7643,21 @@
 
         calculatePosition: function() {
 
+          if ( !this.autoPosition ) {
+            this.graph.graphingZone.appendChild( this.getDom() );
+          } else {
+            this.graph.getDom().appendChild( this.getDom() );
+          }
+
           var series = this.series || this.graph.getSeries(),
             posX = 0,
             posY = this.options.paddingTop;
 
           for ( var i = 0, l = series.length; i < l; i++ ) {
+
+            if ( !series[ i ].isInLegend() && !this.series ) {
+              continue;
+            }
 
             if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
 
@@ -7674,7 +7684,7 @@
           }
 
           var bbox = this.subG.getBBox();
-          console.log( this.subG, bbox, bbox.width );
+
           /* Independant on box position */
           this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
           this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -7753,10 +7763,7 @@
 
           this._setPosition();
 
-          if ( !this.autoPosition ) {
-            this.graph.graphingZone.appendChild( this.getDom() );
-          } else {
-
+          if ( this.autoPosition ) {
             switch ( this.autoPosition ) {
 
               case 'bottom':
@@ -7778,7 +7785,6 @@
 
             this.graph.updateGraphingZone();
 
-            this.graph.getDom().appendChild( this.getDom() );
           }
         },
 
@@ -7882,9 +7888,8 @@
             } ).call( this, i );
           }
 
-          this.calculatePosition();
           this.svg.appendChild( this.rect );
-
+          this.calculatePosition();
         },
 
         /** 
@@ -10166,6 +10171,7 @@
         this.styles.unselected = {
           lineColor: this.options.lineColor,
           lineStyle: this.options.lineStyle,
+          lineWidth: this.options.lineWidth,
           markers: this.options.markers
         };
 

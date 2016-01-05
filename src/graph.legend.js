@@ -117,11 +117,21 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
     calculatePosition: function() {
 
+      if ( !this.autoPosition ) {
+        this.graph.graphingZone.appendChild( this.getDom() );
+      } else {
+        this.graph.getDom().appendChild( this.getDom() );
+      }
+
       var series = this.series || this.graph.getSeries(),
         posX = 0,
         posY = this.options.paddingTop;
 
       for ( var i = 0, l = series.length; i < l; i++ ) {
+
+        if ( !series[  i ].isInLegend() && !this.series ) {
+          continue;
+        }
 
         if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
 
@@ -148,7 +158,7 @@ define( [ "./graph.position" ], function( GraphPosition ) {
       }
 
       var bbox = this.subG.getBBox();
-      console.log( this.subG, bbox, bbox.width );
+
       /* Independant on box position */
       this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
       this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -227,10 +237,7 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
       this._setPosition();
 
-      if ( !this.autoPosition ) {
-        this.graph.graphingZone.appendChild( this.getDom() );
-      } else {
-
+      if ( this.autoPosition ) {
         switch ( this.autoPosition ) {
 
           case 'bottom':
@@ -252,7 +259,6 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
         this.graph.updateGraphingZone();
 
-        this.graph.getDom().appendChild( this.getDom() );
       }
     },
 
@@ -356,9 +362,8 @@ define( [ "./graph.position" ], function( GraphPosition ) {
         } ).call( this, i );
       }
 
-      this.calculatePosition();
       this.svg.appendChild( this.rect );
-
+      this.calculatePosition();
     },
 
     /** 
