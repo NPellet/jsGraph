@@ -18,8 +18,8 @@ return function generateContourLines(zData) {
     var povarHeight = new Float32Array(4);
     var isOver = [];
 
-    var nbSubSpectra=z.length;
-    var nbPovars=z[0].length;
+    var nbSubSpectra=z[0].length;
+    var nbPovars=z.length;
     var pAx, pAy, pBx, pBy;
 
     var x0 = zData.minX;
@@ -60,10 +60,10 @@ return function generateContourLines(zData) {
         
         for (var iSubSpectra = 0; iSubSpectra < nbSubSpectra - 1; iSubSpectra++) {
             for (var povar = 0; povar < nbPovars - 1; povar++) {
-                povarHeight[0] = z[iSubSpectra][povar];
-                povarHeight[1] = z[iSubSpectra][povar + 1];
-                povarHeight[2] = z[(iSubSpectra + 1)][povar];
-                povarHeight[3] = z[(iSubSpectra + 1)][(povar + 1)];
+                povarHeight[0] = z[povar][iSubSpectra];
+                povarHeight[1] = z[povar][iSubSpectra + 1];
+                povarHeight[2] = z[(povar + 1)][iSubSpectra];
+                povarHeight[3] = z[(povar + 1)][(iSubSpectra + 1)];
 
                 for (var i = 0; i < 4; i++) {
                     isOver[i] = (povarHeight[i] > lineZValue);
