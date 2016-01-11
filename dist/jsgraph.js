@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-39
+ * jsGraph JavaScript Graphing Library v1.13.3-40
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-05T15:51Z
+ * Date: 2016-01-11T20:36Z
  */
 
 ( function( global, factory ) {
@@ -5033,11 +5033,13 @@
           this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
           this.currentGridLine = this.currentGridLine || 0;
 
-          if ( this.currentGridLine >= this.gridLines.length ) {
+          if ( !( ( primary && this.options.primaryGrid ) || ( !primary && this.options.secondaryGrid ) ) ) {
+            return;
+          }
 
+          if ( this.currentGridLine >= this.gridLines.length ) {
             var gridLine = this.doGridLine();
             this.gridLines.push( gridLine );
-
           }
 
           var gridLine = this.gridLines[ this.currentGridLine ];

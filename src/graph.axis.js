@@ -1310,11 +1310,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
       this.currentGridLine = this.currentGridLine || 0;
 
-      if ( this.currentGridLine >= this.gridLines.length ) {
+      if ( !( ( primary && this.options.primaryGrid ) || ( !primary && this.options.secondaryGrid ) ) ) {
+        return;
+      }
 
+      if ( this.currentGridLine >= this.gridLines.length ) {
         var gridLine = this.doGridLine();
         this.gridLines.push( gridLine );
-
       }
 
       var gridLine = this.gridLines[ this.currentGridLine ];
