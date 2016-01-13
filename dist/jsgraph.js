@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-11T20:36Z
+ * Date: 2016-01-13T19:50Z
  */
 
 ( function( global, factory ) {
@@ -14869,6 +14869,15 @@
       };
 
       /**
+       * Returns the fill color
+       * @memberof Shape
+       * @return {String} The fill color of the shape
+       */
+      Shape.prototype.getFillColor = function() {
+        return this.getProp( 'fillColor' );
+      };
+
+      /**
        * Saves the opacity of the filling color of the shape
        * @memberof Shape
        * @param {Number} opacity - The filling opacity (0 to 1)
@@ -15507,8 +15516,16 @@
 
         this._selectStatus = true;
         var style = this.getSelectStyle();
+        var style2 = {};
+        for ( var i in style ) {
+          if ( typeof style[ i ] == "function" ) {
+            style2[ i ] = style[ i ].call( this );
+          } else {
+            style2[ i ] = style[ i ];
+          }
+        }
 
-        util.saveDomAttributes( this._dom, style, 'select' );
+        util.saveDomAttributes( this._dom, style2, 'select' );
 
         if ( this.hasHandles() && !this.hasStaticHandles() ) {
           this.addHandles();
