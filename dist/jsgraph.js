@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-41
+ * jsGraph JavaScript Graphing Library v1.13.3-42
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-16T08:09Z
+ * Date: 2016-01-16T08:57Z
  */
 
 ( function( global, factory ) {
@@ -2056,7 +2056,7 @@
          * @param {Boolean} force - Forces redraw even if no data has changed
          */
         drawSeries: function( force ) {
-          console.log( force );
+
           if ( !this.width || !this.height ) {
             return;
           }
@@ -4845,15 +4845,23 @@
 
         drawLinearTicksWrapper: function( widthPx, valrange ) {
 
-          var nbTicks1 = this.getNbTicksPrimary();
-          var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange );
-          var nbSecondaryTicks = this.secondaryTicks();
-          if ( nbSecondaryTicks ) {
-            var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-          }
+          var tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
 
+          if ( this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit ) {
+            tickPrimaryUnit = this.options.maxPrimaryTickUnit;
+          } else if ( this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit ) {
+            tickPrimaryUnit = this.options.minPrimaryTickUnit;
+          }
           // We need to get here the width of the ticks to display the axis properly, with the correct shift
-          return this.drawTicks( primaryTicks, nbSecondaryTicks );
+          return this.drawTicks( tickPrimaryUnit, this.secondaryTicks() );
+        },
+
+        forcePrimaryTickUnitMax: function( value ) {
+          this.options.maxPrimaryTickUnit = value;
+        },
+
+        forcePrimaryTickUnitMin: function( value ) {
+          this.options.minPrimaryTickUnit = value;
         },
 
         setTickLabelRatio: function( tickRatio ) {
@@ -4875,7 +4883,7 @@
 
         drawTicks: function( primary, secondary ) {
 
-          var unitPerTick = primary[ 0 ],
+          var unitPerTick = primary,
             min = this.getCurrentMin(),
             max = this.getCurrentMax(),
             widthHeight = 0,
@@ -4889,7 +4897,7 @@
           }
 
           incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
-          this.incrTick = primary[ 0 ];
+          this.incrTick = primary;
 
           while ( incrTick < max ) {
 
@@ -4921,12 +4929,12 @@
             }
 
             if ( incrTick < min || incrTick > max ) {
-              incrTick += primary[ 0 ];
+              incrTick += primary;
               continue;
             }
 
             this.drawTickWrapper( incrTick, true, 1 );
-            incrTick += primary[ 0 ];
+            incrTick += primary;
           }
 
           this.widthHeightTick = this.getMaxSizeTick();

@@ -1122,15 +1122,23 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     drawLinearTicksWrapper: function( widthPx, valrange ) {
 
-      var nbTicks1 = this.getNbTicksPrimary();
-      var primaryTicks = this.getUnitPerTick( widthPx, nbTicks1, valrange );
-      var nbSecondaryTicks = this.secondaryTicks();
-      if ( nbSecondaryTicks ) {
-        var nbSecondaryTicks = nbSecondaryTicks; // Math.min(nbSecondaryTicks, primaryTicks[2] / 5);
-      }
+      var tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
 
+      if ( this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit ) {
+        tickPrimaryUnit = this.options.maxPrimaryTickUnit;
+      } else if ( this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit ) {
+        tickPrimaryUnit = this.options.minPrimaryTickUnit;
+      }
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
-      return this.drawTicks( primaryTicks, nbSecondaryTicks );
+      return this.drawTicks( tickPrimaryUnit, this.secondaryTicks() );
+    },
+
+    forcePrimaryTickUnitMax: function( value ) {
+      this.options.maxPrimaryTickUnit = value;
+    },
+
+    forcePrimaryTickUnitMin: function( value ) {
+      this.options.minPrimaryTickUnit = value;
     },
 
     setTickLabelRatio: function( tickRatio ) {
@@ -1152,7 +1160,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     drawTicks: function( primary, secondary ) {
 
-      var unitPerTick = primary[ 0 ],
+      var unitPerTick = primary,
         min = this.getCurrentMin(),
         max = this.getCurrentMax(),
         widthHeight = 0,
@@ -1166,7 +1174,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       }
 
       incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
-      this.incrTick = primary[ 0 ];
+      this.incrTick = primary;
 
       while ( incrTick < max ) {
 
@@ -1198,12 +1206,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
         }
 
         if ( incrTick < min || incrTick > max ) {
-          incrTick += primary[ 0 ];
+          incrTick += primary;
           continue;
         }
 
         this.drawTickWrapper( incrTick, true, 1 );
-        incrTick += primary[ 0 ];
+        incrTick += primary;
       }
 
       this.widthHeightTick = this.getMaxSizeTick();

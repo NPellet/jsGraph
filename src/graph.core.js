@@ -966,7 +966,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @param {Boolean} force - Forces redraw even if no data has changed
      */
     drawSeries: function( force ) {
-      console.log( force );
+
       if ( !this.width || !this.height ) {
         return;
       }
