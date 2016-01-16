@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-40
+ * jsGraph JavaScript Graphing Library v1.13.3-41
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-13T19:50Z
+ * Date: 2016-01-16T08:09Z
  */
 
 ( function( global, factory ) {
@@ -2056,7 +2056,7 @@
          * @param {Boolean} force - Forces redraw even if no data has changed
          */
         drawSeries: function( force ) {
-
+          console.log( force );
           if ( !this.width || !this.height ) {
             return;
           }
@@ -4264,22 +4264,8 @@
             ( ( this.getCurrentMax() - baseline ) * ( 1 + delta ) ) + baseline, ( ( this.getCurrentMin() - baseline ) * ( 1 + delta ) ) + baseline
           );
 
-          this.graph.redraw();
+          this.graph.draw();
           //	this.graph.drawSeries(true);
-
-        },
-
-        handleMouseUp: function( px, e ) {
-
-          if ( this.currentAction == 'labelDragging' || this.currentAction == 'labelDraggingMain' ) {
-            for ( var i = 0, l = this.series.length; i < l; i++ ) {
-              this.series[ i ].handleLabelUp();
-            }
-            this.currentAction = false;
-
-          }
-          /* else if(this.graph.isZooming())
-				this._handleZoom(px);*/
 
         },
 
@@ -10792,6 +10778,8 @@
         if ( this.hasStyleChanged( this.selectionType ) ) {
           this.updateStyle();
         }
+
+        this.dataHasChanged( false );
       };
 
       SerieLine.prototype._draw_standard = function() {

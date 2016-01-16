@@ -656,6 +656,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     if ( this.hasStyleChanged( this.selectionType ) ) {
       this.updateStyle();
     }
+
+    this.dataHasChanged( false );
   };
 
   SerieLine.prototype._draw_standard = function() {
