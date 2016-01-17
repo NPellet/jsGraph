@@ -48,7 +48,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieScatterDefaultOptions</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
 				</ul>
 			</li>
 			
@@ -146,7 +146,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-12853">line 12853</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-13312">line 13312</a>
 			</li>
 		</ul>
 	</p>
@@ -220,7 +220,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="setData"><span class="type-signature"></span><span class='mainname'>setData</span><span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="setData"><span class="type-signature"></span><span class='mainname'>setData</span><span class="signature">(data, <span class="optional">oneDimensional</span>, <span class="optional">type</span>)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -228,109 +228,7 @@
     
     
     <div class="description">
-        <p>Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here</p>
-    </div>
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-    
-    <h5 class="tag-overrides">Overrides:</h5>
-    <p class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></p>
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<h5 class="tag-source">Source:</h5>
-	<p class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-12973">line 12973</a>
-			</li>
-		</ul>
-	</p>
-	
-
-	
-
-	
-	<h5 class="tag-see">See:</h5>
-	<p class="tag-see">
-		<ul>
-			<li>GraphSerie#setData</li>
-			</ul>
-	</p>
-	
-
-	
-</dl>
-
-    
-    
-
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="setStyle"><span class="type-signature"></span><span class='mainname'>setStyle</span><span class="signature">(allStyles, <span class="optional">modifiers</span>, <span class="optional">selectionMode</span>)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Sets style to the scatter points
-First argument is the style applied by default to all points
-Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
-All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape</p>
+        <p>Sets data to the serie</p>
     </div>
     
 
@@ -369,13 +267,19 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
 
         <tr>
             
-                <td class="name"><code>allStyles</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">Object</span>
+|
+
+<span class="param-type">Array</span>
+|
+
+<span class="param-type">Array.&lt;Array></span>
 
 
             
@@ -397,20 +301,20 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
                 </td>
             
 
-            <td class="description last"><p>The general style for all markers</p></td>
+            <td class="description last"><p>The data of the serie</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>modifiers</code></td>
+                <td class="name"><code>oneDimensional</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Boolean</span>
 
 
             
@@ -431,17 +335,19 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
             
                 <td class="default">
                 
+                    false
+                
                 </td>
             
 
-            <td class="description last"><p>The general style for all markers</p></td>
+            <td class="description last"><p>In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</p></td>
         </tr>
 
 	
 
         <tr>
             
-                <td class="name"><code>selectionMode</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
@@ -468,12 +374,12 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
             
                 <td class="default">
                 
-                    "unselected"
+                    float
                 
                 </td>
             
 
-            <td class="description last"><p>The selection mode to which this style corresponds. Default is unselected</p></td>
+            <td class="description last"><p>Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</p></td>
         </tr>
 
 	
@@ -490,6 +396,16 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
 
 	
 
+	
+	
+	<h5 class="inherited-from">Inherited From:</h5>
+	<p class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="Serie.html#setData">Serie#setData</a>
+			</li>
+		</ul>
+	</p>
 	
 
     
@@ -518,7 +434,7 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-13058">line 13058</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9076">line 9076</a>
 			</li>
 		</ul>
 	</p>
@@ -545,11 +461,15 @@ All parameters - except <code>shape</code> - will be set as parameters to the DO
     
     
     
-        <h5>Example</h5>
+        <h5>Examples</h5>
         
-    <pre class="sunlight-highlight-javascript">var modifiers = [];
-modifiers[ 20 ] = { shape: &#x27;circle&#x27;, r: 12, fill: &#x27;rgba(0, 100, 255, 0.3)&#x27;, stroke: &#x27;rgb(0, 150, 255)&#x27; };
-serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0.3)&#x27;, stroke: &#x27;rgb(255, 100, 0)&#x27; }, modifiers ); // Will modify scatter point n°20</pre>
+    <pre class="sunlight-highlight-javascript">serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );</pre>
+
+    <pre class="sunlight-highlight-javascript">serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster</pre>
+
+    <pre class="sunlight-highlight-javascript">serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle</pre>
+
+    <pre class="sunlight-highlight-javascript">serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way</pre>
 
 
     
@@ -623,7 +543,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8895">line 8895</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9316">line 9316</a>
 			</li>
 		</ul>
 	</p>
@@ -786,7 +706,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8904">line 8904</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9325">line 9325</a>
 			</li>
 		</ul>
 	</p>
@@ -883,7 +803,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8912">line 8912</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9333">line 9333</a>
 			</li>
 		</ul>
 	</p>
@@ -1049,7 +969,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8930">line 8930</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9351">line 9351</a>
 			</li>
 		</ul>
 	</p>
@@ -1232,7 +1152,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8954">line 8954</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9375">line 9375</a>
 			</li>
 		</ul>
 	</p>
@@ -1415,7 +1335,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-8984">line 8984</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9405">line 9405</a>
 			</li>
 		</ul>
 	</p>
@@ -1529,7 +1449,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9000">line 9000</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9421">line 9421</a>
 			</li>
 		</ul>
 	</p>
@@ -1692,7 +1612,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9010">line 9010</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9431">line 9431</a>
 			</li>
 		</ul>
 	</p>
@@ -1855,7 +1775,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9020">line 9020</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9441">line 9441</a>
 			</li>
 		</ul>
 	</p>
@@ -1969,7 +1889,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9029">line 9029</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9450">line 9450</a>
 			</li>
 		</ul>
 	</p>
@@ -2083,7 +2003,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9048">line 9048</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9469">line 9469</a>
 			</li>
 		</ul>
 	</p>
@@ -2197,7 +2117,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9059">line 9059</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9480">line 9480</a>
 			</li>
 		</ul>
 	</p>
@@ -2363,7 +2283,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9081">line 9081</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9502">line 9502</a>
 			</li>
 		</ul>
 	</p>
@@ -2535,7 +2455,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9098">line 9098</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9519">line 9519</a>
 			</li>
 		</ul>
 	</p>
@@ -2727,7 +2647,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9114">line 9114</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9535">line 9535</a>
 			</li>
 		</ul>
 	</p>
@@ -2837,7 +2757,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9130">line 9130</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9551">line 9551</a>
 			</li>
 		</ul>
 	</p>
@@ -2947,7 +2867,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9138">line 9138</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9559">line 9559</a>
 			</li>
 		</ul>
 	</p>
@@ -3057,7 +2977,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9150">line 9150</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9571">line 9571</a>
 			</li>
 		</ul>
 	</p>
@@ -3167,7 +3087,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9158">line 9158</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9579">line 9579</a>
 			</li>
 		</ul>
 	</p>
@@ -3277,7 +3197,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9166">line 9166</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9587">line 9587</a>
 			</li>
 		</ul>
 	</p>
@@ -3387,7 +3307,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9174">line 9174</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9595">line 9595</a>
 			</li>
 		</ul>
 	</p>
@@ -3501,7 +3421,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9183">line 9183</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9604">line 9604</a>
 			</li>
 		</ul>
 	</p>
@@ -3608,7 +3528,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9210">line 9210</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9631">line 9631</a>
 			</li>
 		</ul>
 	</p>
@@ -3717,7 +3637,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9228">line 9228</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9650">line 9650</a>
 			</li>
 		</ul>
 	</p>
@@ -3822,7 +3742,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9247">line 9247</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9669">line 9669</a>
 			</li>
 		</ul>
 	</p>
@@ -3932,7 +3852,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9255">line 9255</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9677">line 9677</a>
 			</li>
 		</ul>
 	</p>
@@ -4095,7 +4015,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9265">line 9265</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9687">line 9687</a>
 			</li>
 		</ul>
 	</p>
@@ -4278,7 +4198,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9282">line 9282</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9704">line 9704</a>
 			</li>
 		</ul>
 	</p>
@@ -4393,7 +4313,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9291">line 9291</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9713">line 9713</a>
 			</li>
 		</ul>
 	</p>
@@ -4564,7 +4484,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9309">line 9309</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9731">line 9731</a>
 			</li>
 		</ul>
 	</p>
@@ -4678,7 +4598,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9319">line 9319</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9741">line 9741</a>
 			</li>
 		</ul>
 	</p>
@@ -4841,7 +4761,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9329">line 9329</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9751">line 9751</a>
 			</li>
 		</ul>
 	</p>
@@ -4955,7 +4875,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9361">line 9361</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9783">line 9783</a>
 			</li>
 		</ul>
 	</p>
@@ -5136,7 +5056,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9384">line 9384</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9806">line 9806</a>
 			</li>
 		</ul>
 	</p>
@@ -5306,7 +5226,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9397">line 9397</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9819">line 9819</a>
 			</li>
 		</ul>
 	</p>
@@ -5425,7 +5345,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9405">line 9405</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9827">line 9827</a>
 			</li>
 		</ul>
 	</p>
@@ -5527,7 +5447,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9414">line 9414</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9836">line 9836</a>
 			</li>
 		</ul>
 	</p>
@@ -5624,7 +5544,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9423">line 9423</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9845">line 9845</a>
 			</li>
 		</ul>
 	</p>
@@ -5738,7 +5658,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 		<ul class="dummy">
 			<li>
 				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9433">line 9433</a>
+				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-9855">line 9855</a>
 			</li>
 		</ul>
 	</p>
@@ -5815,7 +5735,7 @@ serie.setStyle( { shape: &#x27;circle&#x27;, r: 2, fill: &#x27;rgba(255, 0, 0, 0
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Thu Dec 10th 2015 using the <a
+	on Sun Jan 17th 2016 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

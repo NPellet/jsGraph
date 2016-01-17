@@ -45,6 +45,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     unitModification: false,
     primaryGrid: true,
     secondaryGrid: true,
+
+    primaryGridColor: "#f0f0f0",
+    secondaryGridColor: "#f0f0f0",
+
+    primaryGridWidth: 1,
+    secondaryGridWidth: 1,
+
     shiftToZero: false,
     tickPosition: 1,
     nbTicksPrimary: 3,
@@ -1324,7 +1331,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       gridLine.setAttribute( 'y2', y2 );
       gridLine.setAttribute( 'x1', x1 );
       gridLine.setAttribute( 'x2', x2 );
-      gridLine.setAttribute( 'stroke', primary ? this.getColorPrimaryGrid() : this.getColorSecondaryGrid() );
+      gridLine.setAttribute( 'stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor() );
+      gridLine.setAttribute( 'stroke-width', primary ? this.getPrimaryGridWidth() : this.getSecondaryGridWidth() );
+      gridLine.setAttribute( 'stroke-opacity', primary ? this.getPrimaryGridOpacity() : this.getSecondaryGridOpacity() );
 
       this.currentGridLine++;
 
@@ -1931,6 +1940,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     },
 
     /**
+     * Gets the color of the primary grid
+     * @memberof Axis.prototype
+     * @return {String} color - The primary grid color
+     * @since 1.13.3
+     */
+    getPrimaryGridColor: function() {
+      return this.options.primaryGridColor;
+    },
+
+    /**
      * Sets the color of the primary grid
      * @memberof Axis.prototype
      * @param {String} color - The primary grid color
@@ -1940,6 +1959,104 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     setSecondaryGridColor: function( color ) {
       this.options.secondaryGridColor = color;
       return this;
+    },
+
+    /**
+     * Gets the color of the secondary grid
+     * @memberof Axis.prototype
+     * @return {String} color - The secondary grid color
+     * @since 1.13.3
+     */
+    getSecondaryGridColor: function() {
+      return this.options.secondaryGridColor;
+    },
+
+    /**
+     * Sets the width of the primary grid lines
+     * @memberof Axis.prototype
+     * @param {Number} width - The width of the primary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setPrimaryGridWidth: function( width ) {
+      this.options.primaryGridWidth = width;
+      return this;
+    },
+
+    /**
+     * Gets the width of the primary grid lines
+     * @memberof Axis.prototype
+     * @return {Number} width - The width of the primary grid lines
+     * @since 1.13.3
+     */
+    getPrimaryGridWidth: function() {
+      return this.options.primaryGridWidth;
+    },
+
+    /**
+     * Sets the width of the secondary grid lines
+     * @memberof Axis.prototype
+     * @param {Number} width - The width of the secondary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setSecondaryGridWidth: function( width ) {
+      this.options.secondaryGridWidth = width;
+      return this;
+    },
+
+    /**
+     * Gets the width of the secondary grid lines
+     * @memberof Axis.prototype
+     * @return {Number} width - The width of the secondary grid lines
+     * @since 1.13.3
+     */
+    getSecondaryGridWidth: function() {
+      return this.options.secondaryGridWidth;
+    },
+
+    /**
+     * Sets the opacity of the primary grid lines
+     * @memberof Axis.prototype
+     * @param {Number} opacity - The opacity of the primary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setPrimaryGridOpacity: function( opacity ) {
+      this.options.primaryGridOpacity = opacity;
+      return this;
+    },
+
+    /**
+     * Gets the opacity of the primary grid lines
+     * @memberof Axis.prototype
+     * @return {Number} opacity - The opacity of the primary grid lines
+     * @since 1.13.3
+     */
+    getPrimaryGridOpacity: function() {
+      return this.options.primaryGridOpacity;
+    },
+
+    /**
+     * Sets the opacity of the secondary grid lines
+     * @memberof Axis.prototype
+     * @param {Number} opacity - The opacity of the secondary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setSecondaryGridOpacity: function( opacity ) {
+      this.options.secondaryGridOpacity = opacity;
+      return this;
+    },
+
+    /**
+     * Gets the opacity of the secondary grid lines
+     * @memberof Axis.prototype
+     * @return {Number} opacity - The opacity of the secondary grid lines
+     * @since 1.13.3
+     */
+    getSecondaryGridOpacity: function() {
+      return this.options.secondaryGridOpacity;
     },
 
     /**
@@ -1961,14 +2078,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     getLabelColor: function() {
       return this.options.labelColor;
-    },
-
-    getColorPrimaryGrid: function() {
-      return this.options.primaryGridColor || "#f0f0f0";
-    },
-
-    getColorSecondaryGrid: function() {
-      return this.options.secondaryGridColor || "#f0f0f0";
     },
 
     setTickContent: function( dom, val, options ) {
