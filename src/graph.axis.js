@@ -128,7 +128,20 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.label.setAttribute( 'text-anchor', 'middle' );
 
+      this.gridLinePath = {
+        primary: "",
+        secondary: ""
+      };
+
+      this.gridPrimary = document.createElementNS( this.graph.ns, "path" );
+      this.gridSecondary = document.createElementNS( this.graph.ns, "path" );
+
       this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
+
+      this.groupGrids.appendChild( this.gridSecondary );
+      this.groupGrids.appendChild( this.gridPrimary );
+
+      this.setGridLinesStyle();
 
       this.group.appendChild( this.label );
 
@@ -941,6 +954,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       /*** DRAWING LABEL ******************/
       /************************************/
 
+      this.gridLinePath.primary = "";
+      this.gridLinePath.secondary = "";
+
       var label;
       if ( label = this.getLabel() ) {
         // Sets the label
@@ -1019,7 +1035,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.removeUselessTicks();
       this.removeUselessTickLabels();
-      this.removeUselessGridLines();
+
+      this.gridPrimary.setAttribute( 'd', this.gridLinePath.primary );
+      this.gridSecondary.setAttribute( 'd', this.gridLinePath.secondary );
 
       // Looks for axes linked to this current axis
       var axes = this.graph.findAxesLinkedTo( this );
@@ -1307,49 +1325,30 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     nextGridLine: function( primary, x1, x2, y1, y2 ) {
 
-      this.gridLines = this.gridLines || [];
-      this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
-      this.currentGridLine = this.currentGridLine || 0;
-
       if ( !( ( primary && this.options.primaryGrid ) || ( !primary && this.options.secondaryGrid ) ) ) {
         return;
       }
 
-      if ( this.currentGridLine >= this.gridLines.length ) {
-        var gridLine = this.doGridLine();
-        this.gridLines.push( gridLine );
-      }
+      this.gridLinePath[ primary ? "primary" : "secondary" ] += "M " + x1 + " " + y1 + " L " + x2 + " " + y2;
+    },
 
-      var gridLine = this.gridLines[ this.currentGridLine ];
-
-      if ( this.currentGridLine >= this.lastCurrentGridLine ) {
-        gridLine.setAttribute( 'display', 'visible' );
-      }
+    setGridLineStyle: function( gridLine, primary ) {
 
       gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
-      gridLine.setAttribute( 'y1', y1 );
-      gridLine.setAttribute( 'y2', y2 );
-      gridLine.setAttribute( 'x1', x1 );
-      gridLine.setAttribute( 'x2', x2 );
       gridLine.setAttribute( 'stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor() );
       gridLine.setAttribute( 'stroke-width', primary ? this.getPrimaryGridWidth() : this.getSecondaryGridWidth() );
       gridLine.setAttribute( 'stroke-opacity', primary ? this.getPrimaryGridOpacity() : this.getSecondaryGridOpacity() );
 
-      this.currentGridLine++;
+      var dasharray;
+      if ( ( dasharray = primary ? this.getPrimaryGridDasharray() : this.getSecondaryGridDasharray() ) ) {
+        gridLine.setAttribute( 'stroke-dasharray', dasharray );
+      }
 
-      return gridLine;
     },
 
-    removeUselessGridLines: function() {
-
-      this.gridLines = this.gridLines ||  [];
-      this.currentGridLine = this.currentGridLine ||  0;
-
-      for ( var i = this.currentGridLine; i < this.gridLines.length; i++ ) {
-        this.gridLines[ i ].setAttribute( 'display', 'none' );
-      }
-      this.lastCurrentGridLine = this.currentGridLine;
-      this.currentGridLine = 0;
+    setGridLinesStyle: function() {
+      this.setGridLineStyle( this.gridPrimary, true );
+      this.setGridLineStyle( this.gridSecondary, false );
     },
 
     resetTicksLength: function() {},
@@ -2057,6 +2056,50 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      */
     getSecondaryGridOpacity: function() {
       return this.options.secondaryGridOpacity;
+    },
+
+    /**
+     * Sets the dasharray of the primary grid lines
+     * @memberof Axis.prototype
+     * @param {String} dasharray - The dasharray of the primary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setPrimaryGridDasharray: function( dasharray ) {
+      this.options.primaryGridDasharray = dasharray;
+      return this;
+    },
+
+    /**
+     * Gets the dasharray of the primary grid lines
+     * @memberof Axis.prototype
+     * @return {String} dasharray - The dasharray of the primary grid lines
+     * @since 1.13.3
+     */
+    getPrimaryGridDasharray: function() {
+      return this.options.primaryGridDasharray;
+    },
+
+    /**
+     * Sets the dasharray of the secondary grid lines
+     * @memberof Axis.prototype
+     * @param {String} dasharray - The dasharray of the secondary grid lines
+     * @return {Axis} The current axis
+     * @since 1.13.3
+     */
+    setSecondaryGridDasharray: function( dasharray ) {
+      this.options.secondaryGridDasharray = dasharray;
+      return this;
+    },
+
+    /**
+     * Gets the dasharray of the secondary grid lines
+     * @memberof Axis.prototype
+     * @return {String} dasharray - The dasharray of the secondary grid lines
+     * @since 1.13.3
+     */
+    getSecondaryGridDasharray: function() {
+      return this.options.secondaryGridDasharray;
     },
 
     /**
