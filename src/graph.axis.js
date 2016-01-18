@@ -1349,6 +1349,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     setGridLinesStyle: function() {
       this.setGridLineStyle( this.gridPrimary, true );
       this.setGridLineStyle( this.gridSecondary, false );
+      return this;
     },
 
     resetTicksLength: function() {},
