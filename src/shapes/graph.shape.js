@@ -111,6 +111,14 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
   /**
    * @memberof Shape
+   * @return {Object} The shape's underlying data object
+   */
+  Shape.prototype.getData = function() {
+    return this._data;
+  };
+
+  /**
+   * @memberof Shape
    * @returns {String} The type of the shape
    */
   Shape.prototype.getType = function() {
