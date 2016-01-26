@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-45
+ * jsGraph JavaScript Graphing Library v1.13.3-46
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-26T22:01Z
+ * Date: 2016-01-26T22:02Z
  */
 
 ( function( global, factory ) {
@@ -5072,6 +5072,7 @@
         setGridLinesStyle: function() {
           this.setGridLineStyle( this.gridPrimary, true );
           this.setGridLineStyle( this.gridSecondary, false );
+          return this;
         },
 
         resetTicksLength: function() {},
@@ -15125,6 +15126,14 @@
        * @memberof Shape
        */
       Shape.prototype.initImpl = function() {};
+
+      /**
+       * @memberof Shape
+       * @return {Object} The shape's underlying data object
+       */
+      Shape.prototype.getData = function() {
+        return this._data;
+      };
 
       /**
        * @memberof Shape
