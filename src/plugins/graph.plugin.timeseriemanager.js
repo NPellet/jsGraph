@@ -13,7 +13,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     this.requestLevels = {};
     this.update = function() {
-      console.log( 'updated' );
+
       self.series.forEach( function( serie ) {
 
         self.updateSerie( serie );
