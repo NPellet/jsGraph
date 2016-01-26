@@ -1539,8 +1539,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         if ( constructor ) {
 
           this.plugins[ pluginName ] = new constructor();
-          this.plugins[ pluginName ].init( this, pluginOptions );
           this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+          this.plugins[ pluginName ].init( this, pluginOptions );
 
         } else {
           util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );

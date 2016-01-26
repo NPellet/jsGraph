@@ -4,14 +4,14 @@ define( function() {
 	return [ function( domGraph ) {
 
 	var graph = new Graph( domGraph );
-  graph.getYAxis().secondaryGridOff();
-  graph.getXAxis().secondaryGridOff();
+  graph.getYAxis().secondaryGridOff().setLabel("fgg");
+  graph.getXAxis().secondaryGridOff().setLabel("fgg");
 
-  graph.getYAxis().setPrimaryGridColor("#000000");
-  graph.getYAxis().setPrimaryGridWidth(3);
-  graph.getYAxis().setPrimaryGridOpacity(0.9);
-
-  graph.getYAxis().setGridLinesStyle();
+  graph.getYAxis().setPrimaryGridColor("#000000")
+    .setPrimaryGridWidth(3)
+    .setPrimaryGridOpacity(0.9)
+    .setPrimaryGridDasharray( "5,5" )
+    .setGridLinesStyle();
 
   graph.getXAxis().forcePrimaryTickUnitMax(3);
 

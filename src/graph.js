@@ -18,6 +18,7 @@ define( [
     './plugins/graph.plugin.shape',
     './plugins/graph.plugin.selectScatter',
     './plugins/graph.plugin.zoom',
+    './plugins/graph.plugin.timeseriemanager',
 
     './series/graph.serie',
     './series/graph.serie.contour',
@@ -64,6 +65,7 @@ define( [
     GraphPluginShape,
     GraphPluginSelectScatter,
     GraphPluginZoom,
+    GraphPluginTimeSerieManager,
 
     GraphSerie,
     GraphSerieContour,
@@ -112,6 +114,7 @@ define( [
     Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
     Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
     Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
+    Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
 
     Graph.registerConstructor( "graph.shape", GraphShape );
     Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );

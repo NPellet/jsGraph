@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-44
+ * jsGraph JavaScript Graphing Library v1.13.3-45
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-17T20:28Z
+ * Date: 2016-01-26T22:01Z
  */
 
 ( function( global, factory ) {
@@ -2629,8 +2629,8 @@
             if ( constructor ) {
 
               this.plugins[ pluginName ] = new constructor();
-              this.plugins[ pluginName ].init( this, pluginOptions );
               this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+              this.plugins[ pluginName ].init( this, pluginOptions );
 
             } else {
               util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
@@ -8986,6 +8986,19 @@
           return;
         }
 
+        if ( pref.mode == 'gradualXTransition' ) {
+          this.gradualUnzoomStart = Date.now();
+
+          graph._applyToAxes( function( axis ) {
+            axis._pluginZoomMin = axis.getCurrentMin();
+            axis._pluginZoomMax = axis.getCurrentMax();
+          }, false, true, true );
+
+          this.gradualUnzoom( 'x' );
+
+          return;
+        }
+
         var xAxis = this.graph.getXAxis(),
           yAxis = this.graph.getYAxis();
 
@@ -9054,6 +9067,7 @@
               yAxis.options.onZoom( yMin, yMax );
             }
           }
+
         }
 
         this.graph.draw();
@@ -9073,6 +9087,43 @@
 
       };
 
+      PluginZoom.prototype.gradualUnzoom = function( mode ) {
+
+        var self = this;
+
+        window.requestAnimationFrame( function() {
+
+          var dt = Date.now() - self.gradualUnzoomStart;
+          var progress = Math.sin( dt / 1000 * Math.PI / 2 );
+
+          switch ( mode ) {
+
+            case 'x':
+
+              self.graph._applyToAxes( function( axis ) {
+
+                axis.setCurrentMin( axis._pluginZoomMin - ( axis._pluginZoomMax - axis._pluginZoomMin ) * progress );
+                axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMax - axis._pluginZoomMin ) * progress );
+
+              }, false, true, false );
+
+              break;
+          }
+
+          self.graph.draw( true );
+
+          if ( dt < 1000 ) {
+            self.gradualUnzoom( mode );
+            self.emit( "zooming" );
+          } else {
+
+            self.emit( "dblClick" );
+
+          }
+
+        } );
+      }
+
       PluginZoom.prototype.isFullX = function() {
         return this.fullX;
       }
@@ -9083,6 +9134,481 @@
 
       return PluginZoom;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
+
+    /* 
+     * Build: new source file 
+     * File name : graph.lru
+     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.lru.js
+     */
+
+    build[ './graph.lru' ] = ( function() {
+      /** @global */
+      /** @ignore */
+
+      var memory = {},
+        memoryHead = {},
+        memoryCount = {},
+        memoryLimit = {};
+
+      function createStoreMemory( store, limit ) {
+        limit = limit || 50;
+        if ( !memory[ store ] ) {
+          memory[ store ] = {};
+          memoryCount[ store ] = 0;
+        }
+
+        memoryLimit[ store ] = limit;
+      }
+
+      function getFromMemory( store, index ) {
+        var obj, head;
+
+        if ( memory[ store ] && memory[ store ][ index ] ) {
+
+          head = memoryHead[ store ];
+
+          obj = memory[ store ][ index ];
+          obj.prev = head;
+          obj.next = head.next;
+          head.next.prev = obj;
+          head.next = obj;
+
+          memoryHead[ store ] = obj;
+          return obj.data;
+        }
+      }
+
+      function storeInMemory( store, index, data ) {
+
+        var toStore, toDelete, head;
+        if ( memory[ store ] && memoryCount[ store ] !== undefined && memoryLimit[ store ] ) {
+          head = memoryHead[ store ];
+
+          if ( memory[ store ][ index ] ) {
+            return getFromMemory( store, index );
+          }
+
+          toStore = {
+            data: {
+              data: data,
+              timeout: Date.now()
+            }
+          };
+
+          if ( typeof head == 'undefined' ) {
+            toStore.prev = toStore;
+            toStore.next = toStore;
+          } else {
+            toStore.prev = head.prev;
+            toStore.next = head.next;
+            head.next.prev = toStore;
+            head.next = toStore;
+          }
+
+          memoryHead[ store ] = toStore;
+          memory[ store ][ index ] = toStore;
+          memoryCount[ store ]++;
+
+          // Remove oldest one
+          if ( memoryCount[ store ] > memoryLimit[ store ] && head ) {
+            toDelete = head.next;
+            head.next.next.prev = head;
+            head.next = head.next.next;
+            toDelete.next.next = undefined;
+            toDelete.next.prev = undefined;
+            memoryCount[ store ]--;
+          }
+
+          return data;
+        }
+      }
+
+      return {
+
+        create: function( store, limitMemory ) {
+          createStoreMemory( store, limitMemory );
+        },
+
+        get: function( store, index ) {
+          var result;
+          if ( ( result = getFromMemory( store, index ) ) != undefined ) {
+            return result;
+          }
+
+        },
+
+        store: function( store, index, value ) {
+          storeInMemory( store, index, value );
+          return value;
+        },
+
+        empty: function( store ) {
+          emptyMemory( store );
+        },
+
+        exists: function( store ) {
+          return ( memory[ store ] );
+        }
+      }
+    } )();
+
+    /* 
+     * Build: new source file 
+     * File name : plugins/graph.plugin.timeseriemanager
+     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.timeseriemanager.js
+     */
+
+    build[ './plugins/graph.plugin.timeseriemanager' ] = ( function( $, LRU, Plugin ) {
+      /** @global */
+      /** @ignore */
+
+      /**
+       * @class PluginTimeSerieManager
+       * @implements Plugin
+       */
+      var PluginTimeSerieManager = function() {
+
+        var self = this;
+
+        this.series = [];
+        this.plugins = [];
+
+        this.requestLevels = {};
+        this.update = function() {
+          console.log( 'updated' );
+          self.series.forEach( function( serie ) {
+
+            self.updateSerie( serie );
+
+          } );
+
+          self.recalculateSeries();
+        }
+
+      };
+
+      PluginTimeSerieManager.prototype = new Plugin();
+
+      PluginTimeSerieManager.prototype.defaults = {
+
+        LRUName: "PluginTimeSerieManager",
+        intervals: [ 1, 60, 900, 3600, 8640 ],
+        maxParallelRequests: 6,
+        optimalPxPerPoint: 1,
+        nbPoints: 5000,
+        url: ""
+      }
+
+      /**
+       * Init method
+       * @private
+       * @memberof PluginTimeSerieManager
+       */
+      PluginTimeSerieManager.prototype.init = function( graph, options ) {
+        this.graph = graph;
+        LRU.create( this.options.LRUName, 200 );
+
+      };
+
+      PluginTimeSerieManager.prototype.setURL = function( url ) {
+        this.options.url = url;
+        return this;
+      }
+
+      PluginTimeSerieManager.prototype.setAvailableIntervals = function() {
+        this.options.intervals = arguments;
+      }
+
+      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions ) {
+        var s = this.graph.newSerie( serieName, serieOptions );
+        this.series.push( s );
+        return s;
+      }
+
+      PluginTimeSerieManager.prototype.registerPlugin = function( plugin, event ) {
+
+        var index;
+        if ( ( index = this.plugins.indexOf( plugin ) ) > -1 ) {
+
+          for ( var i = 1; i < arguments.length; i++ ) {
+            plugin.removeListener( arguments[ i ], this.update );
+          }
+        }
+
+        for ( var i = 1; i < arguments.length; i++ ) {
+          plugin.on( arguments[ i ], this.update );
+        }
+      }
+
+      PluginTimeSerieManager.prototype.updateSerie = function( serie ) {
+
+        var self = this;
+        var from = serie.getXAxis().getCurrentMin();
+        var to = serie.getXAxis().getCurrentMax();
+        var priority = 1;
+
+        var optimalInterval = this.getOptimalInterval( to - from );
+
+        this.options.intervals.forEach( function( interval ) {
+
+          var startSlotId = self.computeSlotID( from, interval );
+          var endSlotId = self.computeSlotID( to, interval );
+
+          var intervalMultipliers = [
+            [ 2, 5, 6 ],
+            [ 1, 2, 4 ],
+            [ 0, 1, 3 ]
+          ];
+
+          intervalMultipliers.forEach( function( multiplier ) {
+
+            var firstSlotId = startSlotId - multiplier[ 0 ] * ( endSlotId - startSlotId );
+            var lastSlotId = endSlotId + multiplier[ 0 ] * ( endSlotId - startSlotId );
+
+            var slotId = firstSlotId;
+
+            while ( slotId <= lastSlotId ) {
+
+              self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true );
+              slotId++;
+            }
+
+          } );
+
+        } );
+
+        this.processRequests();
+      }
+
+      PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess ) {
+
+        var id = this.computeUniqueID( serie, slotId, interval );
+
+        var data = LRU.get( this.options.LRUName, id );
+
+        if ( !data ) {
+
+          this.request( serie, slotId, interval, priority, id, noProcess );
+        }
+      }
+
+      PluginTimeSerieManager.prototype.request = function( serie, slotId, interval, priority, slotName, noProcess ) {
+
+        for ( var i in this.requestLevels ) {
+
+          if ( i == priority ) {
+            continue;
+          }
+
+          if ( this.requestLevels[ i ][ slotId ] ) {
+
+            if ( this.requestLevels[ i ][ slotId ][ 0 ] !== 1 ) { // If the request is not pending
+
+              delete this.requestLevels[ i ][ slotId ];
+
+            } else {
+              this.requestLevels[ i ][ slotId ][ 5 ] = priority;
+            }
+
+          }
+        }
+
+        if ( this.requestLevels[ priority ] && this.requestLevels[ priority ][ slotId ] ) {
+          return;
+        }
+
+        this.requestLevels[ priority ] = this.requestLevels[ priority ] || {};
+        this.requestLevels[ priority ][ slotId ] = [ 0, slotName, serie.getName(), slotId, interval, priority ];
+
+        if ( !noProcess ) {
+          this.processRequests();
+        }
+      }
+
+      PluginTimeSerieManager.prototype.processRequests = function() {
+
+        if ( this.requestsRunning == this.options.maxParallelRequests ) {
+          return;
+        }
+
+        var self = this,
+          currentLevelChecking = 1,
+          requestToMake;
+
+        while ( true ) {
+
+          for ( var i in this.requestLevels[ currentLevelChecking ] ) {
+
+            if ( this.requestLevels[ currentLevelChecking ][ i ][ 0 ] == 1 ) { // Running request
+              continue;
+            }
+
+            requestToMake = this.requestLevels[ currentLevelChecking ][ i ];
+            break;
+          }
+
+          if ( requestToMake ) {
+            break;
+          }
+
+          currentLevelChecking++;
+
+          if ( currentLevelChecking > 10 ) {
+            return;
+          }
+
+        }
+
+        this.requestsRunning++;
+
+        if ( !requestToMake ) {
+          return;
+        }
+
+        requestToMake[ 0 ] = 1;
+
+        $.ajax( {
+
+          url: this.getURL( requestToMake ),
+          method: 'get',
+          dataType: 'json'
+
+        } ).done( function( data ) {
+
+          self.requestsRunning--;
+
+          LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
+          self.processRequests();
+
+          if ( requestToMake[ 5 ] == 1 ) {
+            self.recalculateSeries();
+          }
+
+        } );
+      }
+
+      PluginTimeSerieManager.prototype.getURL = function( requestElements ) {
+
+        return this.options.url
+          .replace( "<measurementid>", requestElements[ 2 ] )
+          .replace( '<from>', requestElements[ 3 ] * ( requestElements[ 4 ] * this.options.nbPoints ) )
+          .replace( '<to>', ( requestElements[ 3 ] + 1 ) * ( requestElements[ 4 ] * this.options.nbPoints ) )
+          .replace( '<interval>', requestElements[ 4 ] );
+      }
+
+      PluginTimeSerieManager.prototype.getOptimalInterval = function( totalspan ) {
+
+        var optimalInterval = ( this.options.optimalPxPerPoint || 1 ) * totalspan / this.graph.getDrawingWidth(),
+          diff = Infinity,
+          optimalIntervalAmongAvailable;
+
+        this.options.intervals.forEach( function( interval ) {
+
+          var newDiff = Math.min( diff, Math.abs( interval - optimalInterval ) );
+          if ( diff !== newDiff ) {
+
+            optimalIntervalAmongAvailable = interval;
+            diff = newDiff;
+          }
+        } );
+
+        return optimalIntervalAmongAvailable || 1000;
+      }
+
+      PluginTimeSerieManager.prototype.computeUniqueID = function( serie, slotId, interval ) {
+        return serie.getName() + ";" + slotId + ";" + interval;
+      }
+
+      PluginTimeSerieManager.prototype.computeSlotID = function( time, interval ) {
+        return Math.floor( time / ( interval * this.options.nbPoints ) );
+      }
+
+      PluginTimeSerieManager.prototype.computeSlotTime = function( slotId, interval ) {
+        return slotId * ( interval * this.options.nbPoints );
+      }
+
+      PluginTimeSerieManager.prototype.recalculateSeries = function() {
+
+        var self = this;
+        this.series.map( function( serie ) {
+          self.recalculateSerie( serie );
+        } );
+
+        self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, true, true, true, true ], false, true );
+
+        //self.graph.autoscaleAxes();
+
+        self.graph.draw();
+      }
+
+      PluginTimeSerieManager.prototype.recalculateSerie = function( serie ) {
+
+        var from = serie.getXAxis().getCurrentMin(),
+          to = serie.getXAxis().getCurrentMax(),
+          interval = this.getOptimalInterval( to - from );
+
+        var startSlotId = this.computeSlotID( from, interval );
+        var endSlotId = this.computeSlotID( to, interval );
+        var slotId = startSlotId;
+        var data = [];
+        var lruData;
+
+        while ( slotId <= endSlotId ) {
+
+          if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, slotId, interval ) ) ) {
+
+            data = data.concat( lruData.data );
+
+          } else {
+
+            data = data.concat( this.recalculateSerieUpwards( serie, slotId, interval ) );
+          }
+
+          slotId++;
+        }
+
+        serie.setData( data );
+      }
+
+      PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval ) {
+
+        var intervals = this.options.intervals.slice( 0 );
+        intervals.sort();
+
+        var nextInterval = intervals[ intervals.indexOf( downInterval ) + 1 ] || -1;
+        var lruData;
+        if ( nextInterval < 0 ) {
+          return [];
+        }
+
+        var newSlotTime = this.computeSlotTime( downSlotId, downInterval );
+        var newSlotTimeEnd = this.computeSlotTime( downSlotId + 1, downInterval );
+        var newSlotId = this.computeSlotID( newSlotTime, nextInterval ),
+          start = false;
+
+        if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, newSlotId, nextInterval ) ) ) {
+
+          for ( var i = 0, l = lruData.length; i < l; i += 2 ) {
+
+            if ( lruData[ i ] < newSlotTime ) {
+              continue;
+
+            } else if ( start === false ) {
+              start = i;
+            }
+
+            if ( lruData[ i ] >= newSlotTimeEnd ) {
+
+              return lruData.slice( start, i );
+            }
+          }
+        }
+
+        return this.recalculateSerieUpwards( serie, newSlotId, nextInterval );
+      }
+
+      return PluginTimeSerieManager;
+    } )( build[ "./jquery" ], build[ "./graph.lru" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
 
     /* 
      * Build: new source file 
@@ -18712,6 +19238,7 @@
       GraphPluginShape,
       GraphPluginSelectScatter,
       GraphPluginZoom,
+      GraphPluginTimeSerieManager,
 
       GraphSerie,
       GraphSerieContour,
@@ -18762,6 +19289,7 @@
       Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
       Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
       Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
+      Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
 
       Graph.registerConstructor( "graph.shape", GraphShape );
       Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );
@@ -18785,7 +19313,7 @@
 
       return Graph;
 
-    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
+    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
 
   };
 

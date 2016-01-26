@@ -259,6 +259,19 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       return;
     }
 
+    if ( pref.mode == 'gradualXTransition' ) {
+      this.gradualUnzoomStart = Date.now();
+
+      graph._applyToAxes( function( axis ) {
+        axis._pluginZoomMin = axis.getCurrentMin();
+        axis._pluginZoomMax = axis.getCurrentMax();
+      }, false, true, true );
+
+      this.gradualUnzoom( 'x' );
+
+      return;
+    }
+
     var xAxis = this.graph.getXAxis(),
       yAxis = this.graph.getYAxis();
 
@@ -327,6 +340,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
           yAxis.options.onZoom( yMin, yMax );
         }
       }
+
     }
 
     this.graph.draw();
@@ -345,6 +359,43 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     }
 
   };
+
+  PluginZoom.prototype.gradualUnzoom = function( mode ) {
+
+    var self = this;
+
+    window.requestAnimationFrame( function() {
+
+      var dt = Date.now() - self.gradualUnzoomStart;
+      var progress = Math.sin( dt / 1000 * Math.PI / 2 );
+
+      switch ( mode ) {
+
+        case 'x':
+
+          self.graph._applyToAxes( function( axis ) {
+
+            axis.setCurrentMin( axis._pluginZoomMin - ( axis._pluginZoomMax - axis._pluginZoomMin ) * progress );
+            axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMax - axis._pluginZoomMin ) * progress );
+
+          }, false, true, false );
+
+          break;
+      }
+
+      self.graph.draw( true );
+
+      if ( dt < 1000 ) {
+        self.gradualUnzoom( mode );
+        self.emit( "zooming" );
+      } else {
+
+        self.emit( "dblClick" );
+
+      }
+
+    } );
+  }
 
   PluginZoom.prototype.isFullX = function() {
     return this.fullX;

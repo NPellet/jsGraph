@@ -722,7 +722,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         x = data[ i ][ j + incrXFlip ];
         y = data[ i ][ j + incrYFlip ];
 
-        if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) ||  ( y > yMax && lastY > yMax ) ) {
+        if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) {
           lastX = x;
           lastY = y;
           lastPointOutside = true;
