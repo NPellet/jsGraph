@@ -40,29 +40,34 @@ define( [], function() {
       head = memoryHead[ store ];
 
       if ( memory[ store ][ index ] ) {
-        return getFromMemory( store, index );
-      }
 
-      toStore = {
-        data: {
-          data: data,
-          timeout: Date.now()
-        }
-      };
+        getFromMemory( store, index );
+        memory[ store ][ index ].data.data = data;
+        memory[ store ][ index ].data.timeout = Date.now();
 
-      if ( typeof head == 'undefined' ) {
-        toStore.prev = toStore;
-        toStore.next = toStore;
       } else {
-        toStore.prev = head.prev;
-        toStore.next = head.next;
-        head.next.prev = toStore;
-        head.next = toStore;
-      }
 
-      memoryHead[ store ] = toStore;
-      memory[ store ][ index ] = toStore;
-      memoryCount[ store ]++;
+        toStore = {
+          data: {
+            data: data,
+            timeout: Date.now()
+          }
+        };
+
+        if ( typeof head == 'undefined' ) {
+          toStore.prev = toStore;
+          toStore.next = toStore;
+        } else {
+          toStore.prev = head.prev;
+          toStore.next = head.next;
+          head.next.prev = toStore;
+          head.next = toStore;
+        }
+
+        memoryHead[ store ] = toStore;
+        memory[ store ][ index ] = toStore;
+        memoryCount[ store ]++;
+      }
 
       // Remove oldest one
       if ( memoryCount[ store ] > memoryLimit[ store ] && head ) {

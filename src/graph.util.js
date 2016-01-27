@@ -49,7 +49,9 @@ define( [], function() {
         eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
 
         if ( source.on ) {
-          source.on( eventName, options[ i ] );
+          source.on( eventName, function() {
+            options[ i ].call( source )
+          } );
         }
       }
     }

@@ -1540,6 +1540,8 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
           this.plugins[ pluginName ] = new constructor();
           this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+
+          util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
           this.plugins[ pluginName ].init( this, pluginOptions );
 
         } else {

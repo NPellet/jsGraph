@@ -23,6 +23,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
    */
   PluginDrag.prototype.init = function( graph ) {
 
+    this.graph = graph;
     this.time = null;
     this.totaltime = 2000;
 
@@ -37,6 +38,9 @@ define( [ './graph.plugin' ], function( Plugin ) {
   PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
       this._draggingX = x;
       this._draggingY = y;
+
+      this._lastDraggingX = this._draggingX;
+      this._lastDraggingY = this._draggingY;
 
       this.stopAnimation = true;
 
@@ -75,6 +79,8 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
       this.time = Date.now();
 
+      this.emit( "dragging" );
+
       graph.draw( true );
 
     }
@@ -83,8 +89,18 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
     var dt = ( Date.now() - this.time );
 
+    if ( x == this._lastDraggingX ||  y == this._lastDraggingY ) {
+      this.emit( "dragged" );
+      return;
+    }
+
     this.speedX = ( x - this._lastDraggingX ) / dt;
     this.speedY = ( y - this._lastDraggingY ) / dt;
+
+    if ( isNaN( this.speedX ) ||  isNaN( this.speedY ) ) {
+      this.emit( "dragged" );
+      return;
+    }
 
     graph._applyToAxes( function( axis ) {
       axis._pluginDragMin = axis.getCurrentMin();
@@ -96,7 +112,12 @@ define( [ './graph.plugin' ], function( Plugin ) {
     this.accelerationY = -this.speedY / this.totaltime;
 
     if ( this.options.persistanceX ||  this.options.persistanceY ) {
+
       this._persistanceMove( graph );
+
+    } else {
+
+      this.emit( "dragged" );
     }
 
   }
@@ -106,6 +127,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
     var self = this;
 
     if ( self.stopAnimation ) {
+      self.emit( "dragged" );
       return;
     }
 
@@ -122,6 +144,10 @@ define( [ './graph.plugin' ], function( Plugin ) {
           axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
           axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
 
+          axis.cacheCurrentMin();
+          axis.cacheCurrentMax();
+          axis.cacheInterval();
+
         }, false, true, false );
       }
 
@@ -132,13 +158,20 @@ define( [ './graph.plugin' ], function( Plugin ) {
           axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
           axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
 
+          axis.cacheCurrentMin();
+          axis.cacheCurrentMax();
+          axis.cacheInterval();
+
         }, false, false, true );
       }
 
-      graph.draw( true );
+      graph.draw();
 
       if ( dt < self.totaltime ) {
+        self.emit( "dragging" );
         self._persistanceMove( graph );
+      } else {
+        self.emit( "dragged" );
       }
 
     } );

@@ -467,21 +467,78 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
     var axisFormat = [
 
+      {
+
+        threshold: 100,
+        increments: {
+
+          1: {
+            increment: 1, // 1 minute
+            unit: 'i',
+            format: 'HH"h"MM (dd/mm/yy)'
+          },
+
+          2: { // 10 seconds
+            increment: 1,
+            unit: 's',
+            format: 'MM:ss"s"'
+          }
+        }
+      },
+
+      {
+
+        threshold: 200,
+        increments: {
+
+          1: {
+            increment: 1, // 1 minute
+            unit: 'i',
+            format: 'HH"h"MM (dd/mm/yy)'
+          },
+
+          2: { // 10 seconds
+            increment: 5,
+            unit: 's',
+            format: 'MM:ss"s"'
+          }
+        }
+      },
+
+      {
+
+        threshold: 600,
+        increments: {
+
+          1: {
+            increment: 10, // 1 minute
+            unit: 'i',
+            format: 'HH"h"MM (dd/mm/yy)'
+          },
+
+          2: { // 10 seconds
+            increment: 30,
+            unit: 's',
+            format: 'MM:ss"s"'
+          }
+        }
+      },
+
       { // One day
 
         threshold: 1000,
         increments: {
 
-          1: {
-            increment: 1, // One day on the first axis
-            unit: 'd',
-            format: 'HH:MM (dd/mm)'
+          1: { // 1h
+            increment: 1,
+            unit: 'h',
+            format: 'HH"h"MM (dd/mm/yy)'
           },
 
-          2: {
-            increment: 1,
+          2: { // 10 minutes
+            increment: 10,
             unit: 'i',
-            format: 'MM:ss'
+            format: 'MM"min"'
           }
         }
       },
@@ -494,7 +551,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
             increment: 1, // One day on the first axis
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -513,7 +570,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
             increment: 1, // One day on the first axis
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -532,7 +589,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
             increment: 1, // One day on the first axis
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -551,7 +608,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
             increment: 1, // One day on the first axis
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -570,7 +627,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
             increment: 1, // One day on the first axis
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -590,7 +647,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -611,7 +668,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -632,7 +689,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'd',
-            format: 'dd/mm'
+            format: 'dd/mm/yyyy'
           },
 
           2: {
@@ -653,7 +710,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'm',
-            format: 'mmmm'
+            format: 'mmmm yyyy'
           },
 
           2: {
@@ -674,7 +731,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'm',
-            format: 'mmmm'
+            format: 'mmmm yyyy'
           },
 
           2: {
@@ -695,7 +752,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'm',
-            format: 'mmmm'
+            format: 'mmmm yyyy'
           },
 
           2: {
@@ -716,7 +773,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
             increment: 1,
             unit: 'm',
-            format: 'mmmm'
+            format: 'mmmm yyyy'
           },
 
           2: {
@@ -756,15 +813,15 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'y',
-            format: 'yyyy'
+            unit: 'm',
+            format: 'mm'
           },
 
           2: {
 
             increment: 4, // One day on the first axis
             unit: 'm',
-            format: 'mm/yyyy'
+            format: 'yyyy'
           }
         }
       },
@@ -777,15 +834,15 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'y',
-            format: 'yyyy'
+            unit: 'm',
+            format: 'mm'
           },
 
           2: {
 
             increment: 6, // One day on the first axis
             unit: 'm',
-            format: 'dd/mm'
+            format: 'yyyy'
           }
         }
       },
@@ -798,15 +855,15 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'y',
-            format: 'yyyy'
+            unit: 'm',
+            format: 'mmmm'
           },
 
           2: {
 
             increment: 1, // One day on the first axis
             unit: 'y',
-            format: 'dd/mm'
+            format: 'yyyy'
           }
         }
       },

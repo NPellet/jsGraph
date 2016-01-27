@@ -163,7 +163,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
     if ( this.options.transition ) {
 
-      var modeX = modeY = false;
+      var modeX = false,
+        modeY = false;
 
       if ( this._zoomingMode == 'x' ||  this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
@@ -175,7 +176,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
           axis._pluginZoomMinFinal = Math.min( axis.getVal( _x ), axis.getVal( self.x1 ) );
           axis._pluginZoomMaxFinal = Math.max( axis.getVal( _x ), axis.getVal( self.x1 ) );
-
+          console.log( axis._pluginZoomMin, axis._pluginZoomMinFinal );
         }, false, true, false );
 
         modeX = true;
@@ -214,7 +215,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         modeY = true;
       }
 
-      this.transition( modeX, modeY );
+      this.transition( modeX, modeY, "zoomEnd" );
 
     } else {
 
@@ -318,7 +319,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
     if ( this.options.transition ) {
 
-      var modeX = modeY = false;
+      var modeX = false,
+        modeY = false;
 
       if ( pref.mode == 'xtotal' ||  pref.mode == 'total' ) {
 
@@ -383,7 +385,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       }
 
-      this.transition( modeX, modeY );
+      this.transition( modeX, modeY, "dblClick" );
     }
 
     var xAxis = this.graph.getXAxis(),
@@ -440,6 +442,11 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         if ( xAxis.options.onZoom ) {
           xAxis.options.onZoom( xMin, xMax );
         }
+
+        xAxis.cacheCurrentMin();
+        xAxis.cacheCurrentMax();
+        xAxis.cacheInterval();
+
       }
 
       if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
@@ -453,28 +460,33 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         if ( yAxis.options.onZoom ) {
           yAxis.options.onZoom( yMin, yMax );
         }
+
+        yAxis.cacheCurrentMin();
+        yAxis.cacheCurrentMax();
+        yAxis.cacheInterval();
+
       }
 
     }
 
     this.graph.draw();
+    /*
+        this.emit( "dblClick", {
+          graph: graph,
+          x: x,
+          y: y,
+          pref: pref,
+          e: e,
+          mute: mute
+        } );
 
-    this.emit( "dblClick", {
-      graph: graph,
-      x: x,
-      y: y,
-      pref: pref,
-      e: e,
-      mute: mute
-    } );
-
-    if ( this.options.onDblClick && !mute ) {
-      this.options.onDblClick( graph, x, y, e, mute );
-    }
+        if ( this.options.onDblClick && !mute ) {
+          this.options.onDblClick( graph, x, y, e, mute );
+        }*/
 
   };
 
-  PluginZoom.prototype.transition = function( modeX, modeY ) {
+  PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
 
     var self = this;
 
@@ -492,18 +504,26 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
         axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
         axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );
 
+        axis.cacheCurrentMin();
+        axis.cacheCurrentMax();
+        axis.cacheInterval();
+
       }, false, modeX, modeY );
 
-      self.graph.draw( true );
+      self.graph.draw();
 
       if ( dt < 500 ) {
 
-        self.transition( modeX, modeY );
+        self.transition( modeX, modeY, eventName );
         self.emit( "zooming" );
 
       } else {
 
         self.emit( "zoomed" );
+
+        if ( eventName ) {
+          self.emit( eventName )
+        }
         self.gradualUnzoomStart = 0;
 
       }

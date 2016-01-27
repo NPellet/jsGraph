@@ -10,17 +10,20 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     this.series = [];
     this.plugins = [];
+    this.currentSlots = {};
 
     this.requestLevels = {};
-    this.update = function() {
+    this.update = function( noRecalculate, force ) {
 
       self.series.forEach( function( serie ) {
 
-        self.updateSerie( serie );
+        self.updateSerie( serie, noRecalculate );
 
       } );
 
-      self.recalculateSeries();
+      if ( !noRecalculate ) {
+        self.recalculateSeries( force );
+      }
     }
 
   };
@@ -30,8 +33,8 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
   PluginTimeSerieManager.prototype.defaults = {
 
     LRUName: "PluginTimeSerieManager",
-    intervals: [ 1, 60, 900, 3600, 8640 ],
-    maxParallelRequests: 6,
+    intervals: [ 1000, 60000, 900000, 3600000, 8640000 ],
+    maxParallelRequests: 3,
     optimalPxPerPoint: 1,
     nbPoints: 5000,
     url: ""
@@ -57,8 +60,16 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     this.options.intervals = arguments;
   }
 
-  PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions ) {
-    var s = this.graph.newSerie( serieName, serieOptions );
+  PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements ) {
+    var s = this.graph.newSerie( serieName, serieOptions, serieType );
+
+    this.currentSlots[ serieName ] = { 
+      min: 0,
+      max: 0,
+      interval: 0
+    };
+
+    s.setInfo( "timeSerieManagerDBElements", dbElements );
     this.series.push( s );
     return s;
   }
@@ -78,7 +89,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     }
   }
 
-  PluginTimeSerieManager.prototype.updateSerie = function( serie ) {
+  PluginTimeSerieManager.prototype.updateSerie = function( serie, noRecalculate ) {
 
     var self = this;
     var from = serie.getXAxis().getCurrentMin();
@@ -107,7 +118,11 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
         while ( slotId <= lastSlotId ) {
 
-          self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true );
+          if ( self.computeTimeMin( slotId, interval ) > Date.now() ) {
+            break;
+          }
+
+          self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true, noRecalculate );
           slotId++;
         }
 
@@ -118,13 +133,13 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     this.processRequests();
   }
 
-  PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess ) {
+  PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess, noRecalculate ) {
 
     var id = this.computeUniqueID( serie, slotId, interval );
 
     var data = LRU.get( this.options.LRUName, id );
 
-    if ( !data ) {
+    if ( !data || ( this.computeTimeMax( slotId, interval ) > Date.now() && data.timeout < ( Date.now() - ( noRecalculate ? 5000 : 100000 ) ) ) && priority == 1 ) {
 
       this.request( serie, slotId, interval, priority, id, noProcess );
     }
@@ -138,25 +153,25 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
         continue;
       }
 
-      if ( this.requestLevels[ i ][ slotId ] ) {
+      if ( this.requestLevels[ i ][ slotName ] ) {
 
-        if ( this.requestLevels[ i ][ slotId ][ 0 ] !== 1 ) { // If the request is not pending
+        if ( this.requestLevels[ i ][ slotName ][ 0 ] !== 1 ) { // If the request is not pending
 
-          delete this.requestLevels[ i ][ slotId ];
+          delete this.requestLevels[ i ][ slotName ];
 
         } else {
-          this.requestLevels[ i ][ slotId ][ 5 ] = priority;
+          this.requestLevels[ i ][ slotName ][ 5 ] = priority;
         }
 
       }
     }
 
-    if ( this.requestLevels[ priority ] && this.requestLevels[ priority ][ slotId ] ) {
+    if ( this.requestLevels[ priority ] && this.requestLevels[ priority ][ slotName ] ) {
       return;
     }
 
     this.requestLevels[ priority ] = this.requestLevels[ priority ] || {};
-    this.requestLevels[ priority ][ slotId ] = [ 0, slotName, serie.getName(), slotId, interval, priority ];
+    this.requestLevels[ priority ][ slotName ] = [ 0, slotName, serie.getName(), slotId, interval, priority, serie.getInfo( 'timeSerieManagerDBElements' ) ];
 
     if ( !noProcess ) {
       this.processRequests();
@@ -215,23 +230,42 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
       self.requestsRunning--;
 
+      delete self.requestLevels[ currentLevelChecking ][ i ];
+
       LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
       self.processRequests();
 
-      if ( requestToMake[ 5 ] == 1 ) {
-        self.recalculateSeries();
+      if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+
+        self.recalculateSeries( true );
       }
 
     } );
   }
 
+  PluginTimeSerieManager.prototype.computeTimeMax = function( slotId, interval ) {
+    return ( slotId + 1 ) * ( interval * this.options.nbPoints );
+  }
+
+  PluginTimeSerieManager.prototype.computeTimeMin = function( slotId, interval ) {
+    return ( slotId ) * ( interval * this.options.nbPoints );
+  }
+
   PluginTimeSerieManager.prototype.getURL = function( requestElements ) {
 
-    return this.options.url
+    var url = this.options.url
       .replace( "<measurementid>", requestElements[  2 ] )
-      .replace( '<from>', requestElements[  3 ] * ( requestElements[ 4 ] * this.options.nbPoints ) )
-      .replace( '<to>', ( requestElements[  3 ] + 1 ) * ( requestElements[ 4 ] * this.options.nbPoints ) )
+      .replace( '<from>', this.computeTimeMin( requestElements[  3 ], requestElements[ 4 ] ) )
+      .replace( '<to>', this.computeTimeMax( requestElements[  3 ], requestElements[ 4 ] ) )
       .replace( '<interval>', requestElements[  4 ] );
+
+    var dbElements = requestElements[ 6 ] || {};
+
+    for ( var i in dbElements ) {
+      url = url.replace( "<" + i + ">", dbElements[ i ] );
+    }
+
+    return url;
   }
 
   PluginTimeSerieManager.prototype.getOptimalInterval = function( totalspan ) {
@@ -254,7 +288,13 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
   }
 
   PluginTimeSerieManager.prototype.computeUniqueID = function( serie, slotId, interval ) {
-    return serie.getName() + ";" + slotId + ";" + interval;
+    var extra = "";
+    var info = serie.getInfo( 'timeSerieManagerDBElements' );
+    for ( var i in info ) {
+      extra += ";" + i + ":" + info[ i ];
+    }
+
+    return serie.getName() + ";" + slotId + ";" + interval + extra;
   }
 
   PluginTimeSerieManager.prototype.computeSlotID = function( time, interval ) {
@@ -265,11 +305,11 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     return slotId * ( interval * this.options.nbPoints );
   }
 
-  PluginTimeSerieManager.prototype.recalculateSeries = function() {
+  PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
 
     var self = this;
     this.series.map( function( serie ) {
-      self.recalculateSerie( serie );
+      self.recalculateSerie( serie, force );
     } );
 
     self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, true, true, true, true ], false, true );
@@ -279,7 +319,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     self.graph.draw();
   }
 
-  PluginTimeSerieManager.prototype.recalculateSerie = function( serie ) {
+  PluginTimeSerieManager.prototype.recalculateSerie = function( serie, force ) {
 
     var from = serie.getXAxis().getCurrentMin(),
       to = serie.getXAxis().getCurrentMax(),
@@ -287,9 +327,24 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     var startSlotId = this.computeSlotID( from, interval );
     var endSlotId = this.computeSlotID( to, interval );
-    var slotId = startSlotId;
+
     var data = [];
     var lruData;
+
+    if ( !force && interval == this.currentSlots[ serie.getName() ].interval && this.currentSlots[ serie.getName() ].min <= startSlotId && this.currentSlots[ serie.getName() ].max >= endSlotId ) {
+      return;
+    }
+
+    startSlotId -= 2;
+    endSlotId += 2;
+
+    this.currentSlots[ serie.getName() ].min = startSlotId;
+    this.currentSlots[ serie.getName() ].max = endSlotId;
+    this.currentSlots[ serie.getName() ].interval = interval;
+
+    var slotId = startSlotId;
+
+    console.log( 'effectively' );
 
     while ( slotId <= endSlotId ) {
 
@@ -306,6 +361,19 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     }
 
     serie.setData( data );
+  }
+
+  PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
+
+    if ( this.interval ) {
+      clearInterval( this.interval )
+    }
+
+    var self = this;
+
+    this.interval = setInterval( function() {
+      self.update( true, false );
+    }, interval );
   }
 
   PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval ) {

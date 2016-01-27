@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-47
+ * jsGraph JavaScript Graphing Library v1.13.3-48
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-26T22:41Z
+ * Date: 2016-01-27T13:35Z
  */
 
 ( function( global, factory ) {
@@ -397,7 +397,9 @@
             eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
 
             if ( source.on ) {
-              source.on( eventName, options[ i ] );
+              source.on( eventName, function() {
+                options[ i ].call( source )
+              } );
             }
           }
         }
@@ -2630,6 +2632,8 @@
 
               this.plugins[ pluginName ] = new constructor();
               this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+
+              util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[ pluginName ] );
               this.plugins[ pluginName ].init( this, pluginOptions );
 
             } else {
@@ -7239,21 +7243,78 @@
 
         var axisFormat = [
 
+          {
+
+            threshold: 100,
+            increments: {
+
+              1: {
+                increment: 1, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 1,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
+          {
+
+            threshold: 200,
+            increments: {
+
+              1: {
+                increment: 1, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 5,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
+          {
+
+            threshold: 600,
+            increments: {
+
+              1: {
+                increment: 10, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 30,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
           { // One day
 
             threshold: 1000,
             increments: {
 
-              1: {
-                increment: 1, // One day on the first axis
-                unit: 'd',
-                format: 'HH:MM (dd/mm)'
+              1: { // 1h
+                increment: 1,
+                unit: 'h',
+                format: 'HH"h"MM (dd/mm/yy)'
               },
 
-              2: {
-                increment: 1,
+              2: { // 10 minutes
+                increment: 10,
                 unit: 'i',
-                format: 'MM:ss'
+                format: 'MM"min"'
               }
             }
           },
@@ -7266,7 +7327,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7285,7 +7346,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7304,7 +7365,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7323,7 +7384,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7342,7 +7403,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7362,7 +7423,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7383,7 +7444,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7404,7 +7465,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7425,7 +7486,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7446,7 +7507,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7467,7 +7528,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7488,7 +7549,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7528,15 +7589,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mm'
               },
 
               2: {
 
                 increment: 4, // One day on the first axis
                 unit: 'm',
-                format: 'mm/yyyy'
+                format: 'yyyy'
               }
             }
           },
@@ -7549,15 +7610,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mm'
               },
 
               2: {
 
                 increment: 6, // One day on the first axis
                 unit: 'm',
-                format: 'dd/mm'
+                format: 'yyyy'
               }
             }
           },
@@ -7570,15 +7631,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mmmm'
               },
 
               2: {
 
                 increment: 1, // One day on the first axis
                 unit: 'y',
-                format: 'dd/mm'
+                format: 'yyyy'
               }
             }
           },
@@ -8283,6 +8344,7 @@
        */
       PluginDrag.prototype.init = function( graph ) {
 
+        this.graph = graph;
         this.time = null;
         this.totaltime = 2000;
 
@@ -8297,6 +8359,9 @@
       PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
           this._draggingX = x;
           this._draggingY = y;
+
+          this._lastDraggingX = this._draggingX;
+          this._lastDraggingY = this._draggingY;
 
           this.stopAnimation = true;
 
@@ -8335,6 +8400,8 @@
 
           this.time = Date.now();
 
+          this.emit( "dragging" );
+
           graph.draw( true );
 
         }
@@ -8343,8 +8410,18 @@
 
         var dt = ( Date.now() - this.time );
 
+        if ( x == this._lastDraggingX || y == this._lastDraggingY ) {
+          this.emit( "dragged" );
+          return;
+        }
+
         this.speedX = ( x - this._lastDraggingX ) / dt;
         this.speedY = ( y - this._lastDraggingY ) / dt;
+
+        if ( isNaN( this.speedX ) || isNaN( this.speedY ) ) {
+          this.emit( "dragged" );
+          return;
+        }
 
         graph._applyToAxes( function( axis ) {
           axis._pluginDragMin = axis.getCurrentMin();
@@ -8356,7 +8433,12 @@
         this.accelerationY = -this.speedY / this.totaltime;
 
         if ( this.options.persistanceX || this.options.persistanceY ) {
+
           this._persistanceMove( graph );
+
+        } else {
+
+          this.emit( "dragged" );
         }
 
       }
@@ -8366,6 +8448,7 @@
         var self = this;
 
         if ( self.stopAnimation ) {
+          self.emit( "dragged" );
           return;
         }
 
@@ -8382,6 +8465,10 @@
               axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
               axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
 
+              axis.cacheCurrentMin();
+              axis.cacheCurrentMax();
+              axis.cacheInterval();
+
             }, false, true, false );
           }
 
@@ -8392,13 +8479,20 @@
               axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
               axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
 
+              axis.cacheCurrentMin();
+              axis.cacheCurrentMax();
+              axis.cacheInterval();
+
             }, false, false, true );
           }
 
-          graph.draw( true );
+          graph.draw();
 
           if ( dt < self.totaltime ) {
+            self.emit( "dragging" );
             self._persistanceMove( graph );
+          } else {
+            self.emit( "dragged" );
           }
 
         } );
@@ -8891,7 +8985,8 @@
 
         if ( this.options.transition ) {
 
-          var modeX = modeY = false;
+          var modeX = false,
+            modeY = false;
 
           if ( this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
@@ -8903,7 +8998,7 @@
 
               axis._pluginZoomMinFinal = Math.min( axis.getVal( _x ), axis.getVal( self.x1 ) );
               axis._pluginZoomMaxFinal = Math.max( axis.getVal( _x ), axis.getVal( self.x1 ) );
-
+              console.log( axis._pluginZoomMin, axis._pluginZoomMinFinal );
             }, false, true, false );
 
             modeX = true;
@@ -8942,7 +9037,7 @@
             modeY = true;
           }
 
-          this.transition( modeX, modeY );
+          this.transition( modeX, modeY, "zoomEnd" );
 
         } else {
 
@@ -9046,7 +9141,8 @@
 
         if ( this.options.transition ) {
 
-          var modeX = modeY = false;
+          var modeX = false,
+            modeY = false;
 
           if ( pref.mode == 'xtotal' || pref.mode == 'total' ) {
 
@@ -9111,7 +9207,7 @@
 
           }
 
-          this.transition( modeX, modeY );
+          this.transition( modeX, modeY, "dblClick" );
         }
 
         var xAxis = this.graph.getXAxis(),
@@ -9168,6 +9264,11 @@
             if ( xAxis.options.onZoom ) {
               xAxis.options.onZoom( xMin, xMax );
             }
+
+            xAxis.cacheCurrentMin();
+            xAxis.cacheCurrentMax();
+            xAxis.cacheInterval();
+
           }
 
           if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
@@ -9181,28 +9282,33 @@
             if ( yAxis.options.onZoom ) {
               yAxis.options.onZoom( yMin, yMax );
             }
+
+            yAxis.cacheCurrentMin();
+            yAxis.cacheCurrentMax();
+            yAxis.cacheInterval();
+
           }
 
         }
 
         this.graph.draw();
+        /*
+            this.emit( "dblClick", {
+              graph: graph,
+              x: x,
+              y: y,
+              pref: pref,
+              e: e,
+              mute: mute
+            } );
 
-        this.emit( "dblClick", {
-          graph: graph,
-          x: x,
-          y: y,
-          pref: pref,
-          e: e,
-          mute: mute
-        } );
-
-        if ( this.options.onDblClick && !mute ) {
-          this.options.onDblClick( graph, x, y, e, mute );
-        }
+            if ( this.options.onDblClick && !mute ) {
+              this.options.onDblClick( graph, x, y, e, mute );
+            }*/
 
       };
 
-      PluginZoom.prototype.transition = function( modeX, modeY ) {
+      PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
 
         var self = this;
 
@@ -9220,18 +9326,26 @@
             axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
             axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );
 
+            axis.cacheCurrentMin();
+            axis.cacheCurrentMax();
+            axis.cacheInterval();
+
           }, false, modeX, modeY );
 
-          self.graph.draw( true );
+          self.graph.draw();
 
           if ( dt < 500 ) {
 
-            self.transition( modeX, modeY );
+            self.transition( modeX, modeY, eventName );
             self.emit( "zooming" );
 
           } else {
 
             self.emit( "zoomed" );
+
+            if ( eventName ) {
+              self.emit( eventName )
+            }
             self.gradualUnzoomStart = 0;
 
           }
@@ -9300,29 +9414,34 @@
           head = memoryHead[ store ];
 
           if ( memory[ store ][ index ] ) {
-            return getFromMemory( store, index );
-          }
 
-          toStore = {
-            data: {
-              data: data,
-              timeout: Date.now()
-            }
-          };
+            getFromMemory( store, index );
+            memory[ store ][ index ].data.data = data;
+            memory[ store ][ index ].data.timeout = Date.now();
 
-          if ( typeof head == 'undefined' ) {
-            toStore.prev = toStore;
-            toStore.next = toStore;
           } else {
-            toStore.prev = head.prev;
-            toStore.next = head.next;
-            head.next.prev = toStore;
-            head.next = toStore;
-          }
 
-          memoryHead[ store ] = toStore;
-          memory[ store ][ index ] = toStore;
-          memoryCount[ store ]++;
+            toStore = {
+              data: {
+                data: data,
+                timeout: Date.now()
+              }
+            };
+
+            if ( typeof head == 'undefined' ) {
+              toStore.prev = toStore;
+              toStore.next = toStore;
+            } else {
+              toStore.prev = head.prev;
+              toStore.next = head.next;
+              head.next.prev = toStore;
+              head.next = toStore;
+            }
+
+            memoryHead[ store ] = toStore;
+            memory[ store ][ index ] = toStore;
+            memoryCount[ store ]++;
+          }
 
           // Remove oldest one
           if ( memoryCount[ store ] > memoryLimit[ store ] && head ) {
@@ -9387,17 +9506,20 @@
 
         this.series = [];
         this.plugins = [];
+        this.currentSlots = {};
 
         this.requestLevels = {};
-        this.update = function() {
+        this.update = function( noRecalculate, force ) {
 
           self.series.forEach( function( serie ) {
 
-            self.updateSerie( serie );
+            self.updateSerie( serie, noRecalculate );
 
           } );
 
-          self.recalculateSeries();
+          if ( !noRecalculate ) {
+            self.recalculateSeries( force );
+          }
         }
 
       };
@@ -9407,8 +9529,8 @@
       PluginTimeSerieManager.prototype.defaults = {
 
         LRUName: "PluginTimeSerieManager",
-        intervals: [ 1, 60, 900, 3600, 8640 ],
-        maxParallelRequests: 6,
+        intervals: [ 1000, 60000, 900000, 3600000, 8640000 ],
+        maxParallelRequests: 3,
         optimalPxPerPoint: 1,
         nbPoints: 5000,
         url: ""
@@ -9434,8 +9556,16 @@
         this.options.intervals = arguments;
       }
 
-      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions ) {
-        var s = this.graph.newSerie( serieName, serieOptions );
+      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements ) {
+        var s = this.graph.newSerie( serieName, serieOptions, serieType );
+
+        this.currentSlots[ serieName ] = {
+          min: 0,
+          max: 0,
+          interval: 0
+        };
+
+        s.setInfo( "timeSerieManagerDBElements", dbElements );
         this.series.push( s );
         return s;
       }
@@ -9455,7 +9585,7 @@
         }
       }
 
-      PluginTimeSerieManager.prototype.updateSerie = function( serie ) {
+      PluginTimeSerieManager.prototype.updateSerie = function( serie, noRecalculate ) {
 
         var self = this;
         var from = serie.getXAxis().getCurrentMin();
@@ -9484,7 +9614,11 @@
 
             while ( slotId <= lastSlotId ) {
 
-              self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true );
+              if ( self.computeTimeMin( slotId, interval ) > Date.now() ) {
+                break;
+              }
+
+              self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true, noRecalculate );
               slotId++;
             }
 
@@ -9495,13 +9629,13 @@
         this.processRequests();
       }
 
-      PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess ) {
+      PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess, noRecalculate ) {
 
         var id = this.computeUniqueID( serie, slotId, interval );
 
         var data = LRU.get( this.options.LRUName, id );
 
-        if ( !data ) {
+        if ( !data || ( this.computeTimeMax( slotId, interval ) > Date.now() && data.timeout < ( Date.now() - ( noRecalculate ? 5000 : 100000 ) ) ) && priority == 1 ) {
 
           this.request( serie, slotId, interval, priority, id, noProcess );
         }
@@ -9515,25 +9649,25 @@
             continue;
           }
 
-          if ( this.requestLevels[ i ][ slotId ] ) {
+          if ( this.requestLevels[ i ][ slotName ] ) {
 
-            if ( this.requestLevels[ i ][ slotId ][ 0 ] !== 1 ) { // If the request is not pending
+            if ( this.requestLevels[ i ][ slotName ][ 0 ] !== 1 ) { // If the request is not pending
 
-              delete this.requestLevels[ i ][ slotId ];
+              delete this.requestLevels[ i ][ slotName ];
 
             } else {
-              this.requestLevels[ i ][ slotId ][ 5 ] = priority;
+              this.requestLevels[ i ][ slotName ][ 5 ] = priority;
             }
 
           }
         }
 
-        if ( this.requestLevels[ priority ] && this.requestLevels[ priority ][ slotId ] ) {
+        if ( this.requestLevels[ priority ] && this.requestLevels[ priority ][ slotName ] ) {
           return;
         }
 
         this.requestLevels[ priority ] = this.requestLevels[ priority ] || {};
-        this.requestLevels[ priority ][ slotId ] = [ 0, slotName, serie.getName(), slotId, interval, priority ];
+        this.requestLevels[ priority ][ slotName ] = [ 0, slotName, serie.getName(), slotId, interval, priority, serie.getInfo( 'timeSerieManagerDBElements' ) ];
 
         if ( !noProcess ) {
           this.processRequests();
@@ -9592,23 +9726,42 @@
 
           self.requestsRunning--;
 
+          delete self.requestLevels[ currentLevelChecking ][ i ];
+
           LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
           self.processRequests();
 
-          if ( requestToMake[ 5 ] == 1 ) {
-            self.recalculateSeries();
+          if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+
+            self.recalculateSeries( true );
           }
 
         } );
       }
 
+      PluginTimeSerieManager.prototype.computeTimeMax = function( slotId, interval ) {
+        return ( slotId + 1 ) * ( interval * this.options.nbPoints );
+      }
+
+      PluginTimeSerieManager.prototype.computeTimeMin = function( slotId, interval ) {
+        return ( slotId ) * ( interval * this.options.nbPoints );
+      }
+
       PluginTimeSerieManager.prototype.getURL = function( requestElements ) {
 
-        return this.options.url
+        var url = this.options.url
           .replace( "<measurementid>", requestElements[ 2 ] )
-          .replace( '<from>', requestElements[ 3 ] * ( requestElements[ 4 ] * this.options.nbPoints ) )
-          .replace( '<to>', ( requestElements[ 3 ] + 1 ) * ( requestElements[ 4 ] * this.options.nbPoints ) )
+          .replace( '<from>', this.computeTimeMin( requestElements[ 3 ], requestElements[ 4 ] ) )
+          .replace( '<to>', this.computeTimeMax( requestElements[ 3 ], requestElements[ 4 ] ) )
           .replace( '<interval>', requestElements[ 4 ] );
+
+        var dbElements = requestElements[ 6 ] || {};
+
+        for ( var i in dbElements ) {
+          url = url.replace( "<" + i + ">", dbElements[ i ] );
+        }
+
+        return url;
       }
 
       PluginTimeSerieManager.prototype.getOptimalInterval = function( totalspan ) {
@@ -9631,7 +9784,13 @@
       }
 
       PluginTimeSerieManager.prototype.computeUniqueID = function( serie, slotId, interval ) {
-        return serie.getName() + ";" + slotId + ";" + interval;
+        var extra = "";
+        var info = serie.getInfo( 'timeSerieManagerDBElements' );
+        for ( var i in info ) {
+          extra += ";" + i + ":" + info[ i ];
+        }
+
+        return serie.getName() + ";" + slotId + ";" + interval + extra;
       }
 
       PluginTimeSerieManager.prototype.computeSlotID = function( time, interval ) {
@@ -9642,11 +9801,11 @@
         return slotId * ( interval * this.options.nbPoints );
       }
 
-      PluginTimeSerieManager.prototype.recalculateSeries = function() {
+      PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
 
         var self = this;
         this.series.map( function( serie ) {
-          self.recalculateSerie( serie );
+          self.recalculateSerie( serie, force );
         } );
 
         self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, true, true, true, true ], false, true );
@@ -9656,7 +9815,7 @@
         self.graph.draw();
       }
 
-      PluginTimeSerieManager.prototype.recalculateSerie = function( serie ) {
+      PluginTimeSerieManager.prototype.recalculateSerie = function( serie, force ) {
 
         var from = serie.getXAxis().getCurrentMin(),
           to = serie.getXAxis().getCurrentMax(),
@@ -9664,9 +9823,24 @@
 
         var startSlotId = this.computeSlotID( from, interval );
         var endSlotId = this.computeSlotID( to, interval );
-        var slotId = startSlotId;
+
         var data = [];
         var lruData;
+
+        if ( !force && interval == this.currentSlots[ serie.getName() ].interval && this.currentSlots[ serie.getName() ].min <= startSlotId && this.currentSlots[ serie.getName() ].max >= endSlotId ) {
+          return;
+        }
+
+        startSlotId -= 2;
+        endSlotId += 2;
+
+        this.currentSlots[ serie.getName() ].min = startSlotId;
+        this.currentSlots[ serie.getName() ].max = endSlotId;
+        this.currentSlots[ serie.getName() ].interval = interval;
+
+        var slotId = startSlotId;
+
+        console.log( 'effectively' );
 
         while ( slotId <= endSlotId ) {
 
@@ -9683,6 +9857,19 @@
         }
 
         serie.setData( data );
+      }
+
+      PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
+
+        if ( this.interval ) {
+          clearInterval( this.interval )
+        }
+
+        var self = this;
+
+        this.interval = setInterval( function() {
+          self.update( true, false );
+        }, interval );
       }
 
       PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval ) {
