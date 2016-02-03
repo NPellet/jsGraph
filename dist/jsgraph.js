@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-50
+ * jsGraph JavaScript Graphing Library v1.13.3-51
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-02-03T22:21Z
+ * Date: 2016-02-03T22:28Z
  */
 
 ( function( global, factory ) {
@@ -10267,7 +10267,13 @@
 
           this.graph.legend.update();
         }
+
+        this.killImpl();
       };
+
+      Serie.prototype.killImpl = function() {
+
+      }
 
       /**
        * Hides the serie
@@ -12261,6 +12267,19 @@
 
         showPeakPicking( this );
       };
+
+      SerieLine.prototype.killPeakPicking = function() {
+
+        if ( this.picks ) {
+          for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+            this.picks[ i ].kill();
+          }
+        }
+      }
+
+      SerieLine.prototype.killImpl = function() {
+        this.killPeakPicking();
+      }
 
       /**
        * @param {Number} k - Index of the point for which we should get the family

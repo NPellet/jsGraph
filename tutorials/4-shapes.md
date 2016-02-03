@@ -691,8 +691,9 @@ Any change of property should trigger the event ```propertyChanged``` which you 
 	made.arrow.hasHandles( true );
 	made.arrow.setEventReceptacle();
 	made.arrow.setSelectStyle( {
-			stroke: 'red'
+		stroke: 'red'
 	} );
+	
 	made.arrow.createHandles();
 	
 	made.arrow.on("propertyChanged", function( property ) {

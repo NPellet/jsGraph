@@ -289,7 +289,13 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
       this.graph.legend.update();
     }
+
+    this.killImpl();
   };
+
+  Serie.prototype.killImpl = function() {
+
+  }
 
   /**
    * Hides the serie

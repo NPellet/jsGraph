@@ -1096,6 +1096,19 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     showPeakPicking( this );
   };
 
+  SerieLine.prototype.killPeakPicking = function() {
+
+    if ( this.picks ) {
+      for ( var i = 0, l = this.picks.length; i < l; i++ ) {
+        this.picks[ i ].kill();
+      }
+    }
+  }
+
+  SerieLine.prototype.killImpl = function() {
+    this.killPeakPicking();
+  }
+
   /**
    * @param {Number} k - Index of the point for which we should get the family
    * @memberof SerieLine
