@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-48
+ * jsGraph JavaScript Graphing Library v1.13.3-49
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-27T13:35Z
+ * Date: 2016-02-03T17:23Z
  */
 
 ( function( global, factory ) {
@@ -397,9 +397,15 @@
             eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
 
             if ( source.on ) {
-              source.on( eventName, function() {
-                options[ i ].call( source )
-              } );
+
+              ( function( j ) {
+
+                source.on( eventName, function() {
+                  options[ j ].apply( source, arguments );
+                } );
+
+              } )( i )
+
             }
           }
         }
@@ -2705,6 +2711,14 @@
           this.legend.update();
         },
 
+        getLegend: function() {
+          if ( !this.legend ) {
+            return;
+          }
+
+          return this.legend;
+
+        },
         /**
          * Kills the graph
          * @memberof Graph.prototype
@@ -6410,8 +6424,9 @@
             }
 
             j++;
-            maxV = Math.max( maxV, this.graph.series[ i ].getMax( start, end ) );
-            minV = Math.min( minV, this.graph.series[ i ].getMin( start, end ) );
+
+            maxV = max ? Math.max( maxV, this.graph.series[ i ].getMax( start, end ) ) : 0;
+            minV = min ? Math.min( minV, this.graph.series[ i ].getMin( start, end ) ) : 0;
           }
 
           if ( j == 0 ) {
@@ -7245,7 +7260,7 @@
 
           {
 
-            threshold: 100,
+            threshold: 40,
             increments: {
 
               1: {
@@ -7264,7 +7279,7 @@
 
           {
 
-            threshold: 200,
+            threshold: 150,
             increments: {
 
               1: {
@@ -8365,6 +8380,8 @@
 
           this.stopAnimation = true;
 
+          this.moved = false;
+
           return true;
         },
 
@@ -8398,6 +8415,8 @@
           this._draggingX = x;
           this._draggingY = y;
 
+          this.moved = true;
+
           this.time = Date.now();
 
           this.emit( "dragging" );
@@ -8411,7 +8430,11 @@
         var dt = ( Date.now() - this.time );
 
         if ( x == this._lastDraggingX || y == this._lastDraggingY ) {
-          this.emit( "dragged" );
+
+          if ( this.moved ) {
+            this.emit( "dragged" );
+          }
+
           return;
         }
 
@@ -9529,10 +9552,10 @@
       PluginTimeSerieManager.prototype.defaults = {
 
         LRUName: "PluginTimeSerieManager",
-        intervals: [ 1000, 60000, 900000, 3600000, 8640000 ],
+        intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
         maxParallelRequests: 3,
-        optimalPxPerPoint: 1,
-        nbPoints: 5000,
+        optimalPxPerPoint: 2,
+        nbPoints: 1000,
         url: ""
       }
 
@@ -9566,6 +9589,8 @@
         };
 
         s.setInfo( "timeSerieManagerDBElements", dbElements );
+        s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+
         this.series.push( s );
         return s;
       }
@@ -9801,15 +9826,36 @@
         return slotId * ( interval * this.options.nbPoints );
       }
 
+      PluginTimeSerieManager.prototype.getZoneSerie = function( serie ) {
+        return serie._zoneSerie;
+      };
+
+      PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
+
+        var serie = this.graph.getSerie( serieName );
+        serie._zoneSerie.setXAxis( serie.getXAxis() );
+        serie._zoneSerie.setYAxis( serie.getYAxis() );
+        serie._zoneSerie.setFillColor( serie.getLineColor() );
+        serie._zoneSerie.setLineColor( serie.getLineColor() );
+        serie._zoneSerie.setFillOpacity( 0.2 );
+        serie._zoneSerie.setLineOpacity( 0.3 );
+      };
+
       PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
 
         var self = this;
+
+        this.changed = false;
+
         this.series.map( function( serie ) {
           self.recalculateSerie( serie, force );
         } );
 
-        self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, true, true, true, true ], false, true );
-
+        /*if ( this.changed ) {
+      self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
+    }
+*/
+        this.changed = false;
         //self.graph.autoscaleAxes();
 
         self.graph.draw();
@@ -9825,6 +9871,7 @@
         var endSlotId = this.computeSlotID( to, interval );
 
         var data = [];
+        var dataMinMax = [];
         var lruData;
 
         if ( !force && interval == this.currentSlots[ serie.getName() ].interval && this.currentSlots[ serie.getName() ].min <= startSlotId && this.currentSlots[ serie.getName() ].max >= endSlotId ) {
@@ -9840,23 +9887,25 @@
 
         var slotId = startSlotId;
 
-        console.log( 'effectively' );
-
         while ( slotId <= endSlotId ) {
 
           if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, slotId, interval ) ) ) {
 
-            data = data.concat( lruData.data );
+            data = data.concat( lruData.data.mean );
+            dataMinMax = dataMinMax.concat( lruData.data.minmax );
 
           } else {
 
-            data = data.concat( this.recalculateSerieUpwards( serie, slotId, interval ) );
+            this.recalculateSerieUpwards( serie, slotId, interval, data, dataMinMax )
           }
 
           slotId++;
         }
 
+        this.changed = true;
+
         serie.setData( data );
+        serie._zoneSerie.setData( dataMinMax );
       }
 
       PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
@@ -9872,7 +9921,7 @@
         }, interval );
       }
 
-      PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval ) {
+      PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval, data, dataMinMax ) {
 
         var intervals = this.options.intervals.slice( 0 );
         intervals.sort();
@@ -9890,23 +9939,26 @@
 
         if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, newSlotId, nextInterval ) ) ) {
 
-          for ( var i = 0, l = lruData.length; i < l; i += 2 ) {
+          for ( var i = 0, l = lruData.data.mean.length; i < l; i += 2 ) {
 
-            if ( lruData[ i ] < newSlotTime ) {
+            if ( lruData.data.mean[ i ] < newSlotTime ) {
               continue;
 
             } else if ( start === false ) {
               start = i;
             }
 
-            if ( lruData[ i ] >= newSlotTimeEnd ) {
+            if ( lruData.data.mean[ i ] >= newSlotTimeEnd ) {
 
-              return lruData.slice( start, i );
+              data = data.concat( lruData.data.mean.slice( start, i ) );
+              dataMinMax = data.concat( lruData.data.minmax.slice( start, i ) );
+
+              return;
             }
           }
         }
 
-        return this.recalculateSerieUpwards( serie, newSlotId, nextInterval );
+        return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
       }
 
       return PluginTimeSerieManager;
@@ -14006,7 +14058,6 @@
             } else {
 
               this._draw_standard();
-
             }
 
             this.removeExtraLines();
@@ -15049,6 +15100,7 @@
           line.setAttribute( 'stroke-width', this.getLineWidth() );
           line.setAttribute( 'fill', this.getFillColor() );
           line.setAttribute( 'fill-opacity', this.getFillOpacity() );
+          line.setAttribute( 'stroke-opacity', this.getLineOpacity() );
         },
 
         /**
@@ -15072,6 +15124,29 @@
          */
         getLineWidth: function() {
           return this.options.lineWidth;
+        },
+
+        /**
+         * Sets the line opacity
+         * @memberof SerieZone.prototype
+         *
+         * @param {Number} opacity - The line opacity
+         * @returns {SerieZone} - The current serie
+         */
+        setLineOpacity: function( opacity ) {
+          this.options.lineOpacity = opacity;
+          this.styleHasChanged();
+          return this;
+        },
+
+        /**
+         * Gets the line opacity
+         * @memberof SerieZone.prototype
+         *
+         * @returns {Number} - The line opacity
+         */
+        getLineOpacity: function() {
+          return this.options.lineOpacity;
         },
 
         /**
@@ -16321,7 +16396,7 @@
 
         }
 
-        if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" ) {
+        if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" && position.x !== false ) {
 
           this._labels[ labelIndex ].setAttribute( 'x', position.x );
           this._labels[ labelIndex ].setAttribute( 'y', position.y );
@@ -16529,7 +16604,7 @@
        * @returns {Shape} the current shape
        */
       Shape.prototype._unselect = function( mute ) {
-        console.trace();
+
         this._selectStatus = false;
 
         util.restoreDomAttributes( this._dom, 'select' );

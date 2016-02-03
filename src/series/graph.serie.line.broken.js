@@ -31,7 +31,6 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
         } else {
 
           this._draw_standard();
-
         }
 
         this.removeExtraLines();

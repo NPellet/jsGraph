@@ -1002,7 +1002,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
 
     }
 
-    if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" ) {
+    if ( position.x != "NaNpx" && !isNaN( position.x ) && position.x !== "NaN" && position.x !== false ) {
 
       this._labels[ labelIndex ].setAttribute( 'x', position.x );
       this._labels[ labelIndex ].setAttribute( 'y', position.y );
@@ -1210,7 +1210,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @returns {Shape} the current shape
    */
   Shape.prototype._unselect = function( mute ) {
-    console.trace();
+
     this._selectStatus = false;
 
     util.restoreDomAttributes( this._dom, 'select' );

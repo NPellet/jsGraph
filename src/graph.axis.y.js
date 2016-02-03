@@ -239,8 +239,9 @@ define( [ './graph.axis' ], function( GraphAxis ) {
         }
 
         j++;
-        maxV = Math.max( maxV, this.graph.series[ i ].getMax( start, end ) );
-        minV = Math.min( minV, this.graph.series[ i ].getMin( start, end ) );
+
+        maxV = max ? Math.max( maxV, this.graph.series[ i ].getMax( start, end ) ) : 0;
+        minV = min ? Math.min( minV, this.graph.series[ i ].getMin( start, end ) ) : 0;
       }
 
       if ( j == 0 ) {

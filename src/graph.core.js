@@ -1613,6 +1613,14 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.legend.update();
     },
 
+    getLegend: function() {
+      if ( !this.legend ) {
+        return;
+      }
+
+      return this.legend;
+
+    },
     /**
      * Kills the graph
      * @memberof Graph.prototype

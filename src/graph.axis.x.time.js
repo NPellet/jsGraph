@@ -469,7 +469,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       {
 
-        threshold: 100,
+        threshold: 40,
         increments: {
 
           1: {
@@ -488,7 +488,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       {
 
-        threshold: 200,
+        threshold: 150,
         increments: {
 
           1: {

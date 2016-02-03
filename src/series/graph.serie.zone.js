@@ -334,6 +334,7 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
       line.setAttribute( 'stroke-width', this.getLineWidth() );
       line.setAttribute( 'fill', this.getFillColor() );
       line.setAttribute( 'fill-opacity', this.getFillOpacity() );
+      line.setAttribute( 'stroke-opacity', this.getLineOpacity() );
     },
 
     /**
@@ -357,6 +358,29 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
      */
     getLineWidth: function() {
       return this.options.lineWidth;
+    },
+
+    /**
+     * Sets the line opacity
+     * @memberof SerieZone.prototype
+     *
+     * @param {Number} opacity - The line opacity
+     * @returns {SerieZone} - The current serie
+     */
+    setLineOpacity: function( opacity ) {
+      this.options.lineOpacity = opacity;
+      this.styleHasChanged();
+      return this;
+    },
+
+    /**
+     * Gets the line opacity
+     * @memberof SerieZone.prototype
+     *
+     * @returns {Number} - The line opacity
+     */
+    getLineOpacity: function() {
+      return this.options.lineOpacity;
     },
 
     /**

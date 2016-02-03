@@ -33,10 +33,10 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
   PluginTimeSerieManager.prototype.defaults = {
 
     LRUName: "PluginTimeSerieManager",
-    intervals: [ 1000, 60000, 900000, 3600000, 8640000 ],
+    intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
     maxParallelRequests: 3,
-    optimalPxPerPoint: 1,
-    nbPoints: 5000,
+    optimalPxPerPoint: 2,
+    nbPoints: 1000,
     url: ""
   }
 
@@ -70,6 +70,8 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     };
 
     s.setInfo( "timeSerieManagerDBElements", dbElements );
+    s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+
     this.series.push( s );
     return s;
   }
@@ -305,15 +307,36 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     return slotId * ( interval * this.options.nbPoints );
   }
 
+  PluginTimeSerieManager.prototype.getZoneSerie = function( serie ) {
+    return serie._zoneSerie;
+  };
+
+  PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
+
+    var serie = this.graph.getSerie( serieName );
+    serie._zoneSerie.setXAxis( serie.getXAxis() );
+    serie._zoneSerie.setYAxis( serie.getYAxis() );
+    serie._zoneSerie.setFillColor( serie.getLineColor() );
+    serie._zoneSerie.setLineColor( serie.getLineColor() );
+    serie._zoneSerie.setFillOpacity( 0.2 );
+    serie._zoneSerie.setLineOpacity( 0.3 );
+  };
+
   PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
 
     var self = this;
+
+    this.changed = false;
+
     this.series.map( function( serie ) {
       self.recalculateSerie( serie, force );
     } );
 
-    self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, true, true, true, true ], false, true );
-
+    /*if ( this.changed ) {
+      self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
+    }
+*/
+    this.changed = false;
     //self.graph.autoscaleAxes();
 
     self.graph.draw();
@@ -329,6 +352,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     var endSlotId = this.computeSlotID( to, interval );
 
     var data = [];
+    var dataMinMax = [];
     var lruData;
 
     if ( !force && interval == this.currentSlots[ serie.getName() ].interval && this.currentSlots[ serie.getName() ].min <= startSlotId && this.currentSlots[ serie.getName() ].max >= endSlotId ) {
@@ -344,23 +368,25 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     var slotId = startSlotId;
 
-    console.log( 'effectively' );
-
     while ( slotId <= endSlotId ) {
 
       if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, slotId, interval ) ) ) {
 
-        data = data.concat( lruData.data );
+        data = data.concat( lruData.data.mean );
+        dataMinMax = dataMinMax.concat( lruData.data.minmax );
 
       } else {
 
-        data = data.concat( this.recalculateSerieUpwards( serie, slotId, interval ) );
+        this.recalculateSerieUpwards( serie, slotId, interval, data, dataMinMax )
       }
 
       slotId++;
     }
 
+    this.changed = true;
+
     serie.setData( data );
+    serie._zoneSerie.setData( dataMinMax );
   }
 
   PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
@@ -376,7 +402,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     }, interval );
   }
 
-  PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval ) {
+  PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval, data, dataMinMax ) {
 
     var intervals = this.options.intervals.slice( 0 );
     intervals.sort();
@@ -394,23 +420,26 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, newSlotId, nextInterval ) ) ) {
 
-      for ( var i = 0, l = lruData.length; i < l; i += 2 ) {
+      for ( var i = 0, l = lruData.data.mean.length; i < l; i += 2 ) {
 
-        if ( lruData[ i ] < newSlotTime ) {
+        if ( lruData.data.mean[ i ] < newSlotTime ) {
           continue;
 
         } else if ( start === false ) {
           start = i;
         }
 
-        if ( lruData[  i ] >= newSlotTimeEnd ) {
+        if ( lruData.data.mean[  i ] >= newSlotTimeEnd ) {
 
-          return lruData.slice( start, i );
+          data = data.concat( lruData.data.mean.slice( start, i ) );
+          dataMinMax = data.concat( lruData.data.minmax.slice( start, i ) );
+
+          return;
         }
       }
     }
 
-    return this.recalculateSerieUpwards( serie, newSlotId, nextInterval );
+    return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
   }
 
   return PluginTimeSerieManager;

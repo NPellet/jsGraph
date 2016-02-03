@@ -44,6 +44,8 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
       this.stopAnimation = true;
 
+      this.moved = false;
+
       return true;
     },
 
@@ -77,6 +79,8 @@ define( [ './graph.plugin' ], function( Plugin ) {
       this._draggingX = x;
       this._draggingY = y;
 
+      this.moved = true;
+
       this.time = Date.now();
 
       this.emit( "dragging" );
@@ -90,7 +94,11 @@ define( [ './graph.plugin' ], function( Plugin ) {
     var dt = ( Date.now() - this.time );
 
     if ( x == this._lastDraggingX ||  y == this._lastDraggingY ) {
-      this.emit( "dragged" );
+
+      if ( this.moved ) {
+        this.emit( "dragged" );
+      }
+
       return;
     }
 
