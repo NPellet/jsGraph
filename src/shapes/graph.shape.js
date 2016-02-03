@@ -1,4 +1,4 @@
-define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util ) {
+define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/EventEmitter' ], function( GraphPosition, util, EventEmitter ) {
 
   "use strict";
 
@@ -8,6 +8,8 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @static
    */
   var Shape = function() {};
+
+  Shape.prototype = new EventEmitter();
 
   /**
    * Initializes the shape
@@ -429,6 +431,27 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
   Shape.prototype.redrawImpl = function() {};
 
   /**
+   * Sets all dumpable properties of the shape
+   * @param {Object} properties - The properties object
+   * @return {Shape} The current shape
+   * @memberof Shape
+   */
+  Shape.prototype.setProperties = function( properties ) {
+    this.properties = properties;
+    this.emit( "propertiesChanged" );
+    return this;
+  }
+
+  /**
+   * Gets all dumpable properties of the shape
+   * @return {Object} properties - The properties object
+   * @memberof Shape
+   */
+  Shape.prototype.getProperties = function( properties ) {
+    return this.properties;
+  }
+
+  /**
    * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
    * @param {String} prop - The property to save
    * @param val - The value to save
@@ -440,6 +463,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
     this.properties = this.properties || {};
     this.properties[ prop ] = this.properties[ prop ] || [];
     this.properties[ prop ][ index || 0 ] = val;
+    this.emit( "propertyChanged", prop );
     return this;
   };
 
@@ -595,7 +619,7 @@ define( [ '../graph.position', '../graph.util' ], function( GraphPosition, util 
    * @return {Shape} The current shape
    */
   Shape.prototype.setAttributes = function( attributes ) {
-    this.setProp( "attributes", shapeData.attributes );
+    this.setProp( "attributes", attributes );
     return this;
   }
 

@@ -1150,6 +1150,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         }
       }
 
+      if ( shapeData.properties ) {
+        shape.setProperties( shapeData.properties );
+      }
+
       /* Setting shape properties */
       if ( shapeData.fillColor ) {
         shape.setFillColor( shapeData.fillColor );

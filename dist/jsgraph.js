@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-49
+ * jsGraph JavaScript Graphing Library v1.13.3-50
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-02-03T17:23Z
+ * Date: 2016-02-03T22:21Z
  */
 
 ( function( global, factory ) {
@@ -2246,6 +2246,10 @@
             for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
               shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
             }
+          }
+
+          if ( shapeData.properties ) {
+            shape.setProperties( shapeData.properties );
           }
 
           /* Setting shape properties */
@@ -15390,7 +15394,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
      */
 
-    build[ './shapes/graph.shape' ] = ( function( GraphPosition, util ) {
+    build[ './shapes/graph.shape' ] = ( function( GraphPosition, util, EventEmitter ) {
       /** @global */
       /** @ignore */
 
@@ -15402,6 +15406,8 @@
        * @static
        */
       var Shape = function() {};
+
+      Shape.prototype = new EventEmitter();
 
       /**
        * Initializes the shape
@@ -15823,6 +15829,27 @@
       Shape.prototype.redrawImpl = function() {};
 
       /**
+       * Sets all dumpable properties of the shape
+       * @param {Object} properties - The properties object
+       * @return {Shape} The current shape
+       * @memberof Shape
+       */
+      Shape.prototype.setProperties = function( properties ) {
+        this.properties = properties;
+        this.emit( "propertiesChanged" );
+        return this;
+      }
+
+      /**
+       * Gets all dumpable properties of the shape
+       * @return {Object} properties - The properties object
+       * @memberof Shape
+       */
+      Shape.prototype.getProperties = function( properties ) {
+        return this.properties;
+      }
+
+      /**
        * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
        * @param {String} prop - The property to save
        * @param val - The value to save
@@ -15834,6 +15861,7 @@
         this.properties = this.properties || {};
         this.properties[ prop ] = this.properties[ prop ] || [];
         this.properties[ prop ][ index || 0 ] = val;
+        this.emit( "propertyChanged", prop );
         return this;
       };
 
@@ -15989,7 +16017,7 @@
        * @return {Shape} The current shape
        */
       Shape.prototype.setAttributes = function( attributes ) {
-        this.setProp( "attributes", shapeData.attributes );
+        this.setProp( "attributes", attributes );
         return this;
       }
 
@@ -17265,7 +17293,7 @@
 
       return Shape;
 
-    } )( build[ "./graph.position" ], build[ "./graph.util" ] );
+    } )( build[ "./graph.position" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
      * Build: new source file 

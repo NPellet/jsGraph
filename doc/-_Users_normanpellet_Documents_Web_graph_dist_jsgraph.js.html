@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
 				</ul>
 			</li>
 			
@@ -79,13 +79,13 @@
 	<article>
 		<pre
 			class="sunlight-highlight-javascript linenums">/*!
- * jsGraph JavaScript Graphing Library v1.13.3-42
+ * jsGraph JavaScript Graphing Library v1.13.3-49
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-01-17T15:08Z
+ * Date: 2016-02-03T21:55Z
  */
 
 ( function( global, factory ) {
@@ -477,7 +477,15 @@
             eventName = eventName.substring( 0, 1 ).toLowerCase() + eventName.substring( 1 );
 
             if ( source.on ) {
-              source.on( eventName, options[ i ] );
+
+              ( function( j ) {
+
+                source.on( eventName, function() {
+                  options[ j ].apply( source, arguments );
+                } );
+
+              } )( i )
+
             }
           }
         }
@@ -2320,6 +2328,10 @@
             }
           }
 
+          if ( shapeData.properties ) {
+            shape.setProperties( shapeData.properties );
+          }
+
           /* Setting shape properties */
           if ( shapeData.fillColor ) {
             shape.setFillColor( shapeData.fillColor );
@@ -2709,8 +2721,10 @@
             if ( constructor ) {
 
               this.plugins[ pluginName ] = new constructor();
-              this.plugins[ pluginName ].init( this, pluginOptions );
               this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+
+              util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[ pluginName ] );
+              this.plugins[ pluginName ].init( this, pluginOptions );
 
             } else {
               util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
@@ -2781,6 +2795,14 @@
           this.legend.update();
         },
 
+        getLegend: function() {
+          if ( !this.legend ) {
+            return;
+          }
+
+          return this.legend;
+
+        },
         /**
          * Kills the graph
          * @memberof Graph.prototype
@@ -3931,7 +3953,20 @@
 
           this.label.setAttribute( 'text-anchor', 'middle' );
 
+          this.gridLinePath = {
+            primary: "",
+            secondary: ""
+          };
+
+          this.gridPrimary = document.createElementNS( this.graph.ns, "path" );
+          this.gridSecondary = document.createElementNS( this.graph.ns, "path" );
+
           this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
+
+          this.groupGrids.appendChild( this.gridSecondary );
+          this.groupGrids.appendChild( this.gridPrimary );
+
+          this.setGridLinesStyle();
 
           this.group.appendChild( this.label );
 
@@ -4744,6 +4779,9 @@
           /*** DRAWING LABEL ******************/
           /************************************/
 
+          this.gridLinePath.primary = "";
+          this.gridLinePath.secondary = "";
+
           var label;
           if ( label = this.getLabel() ) {
             // Sets the label
@@ -4822,7 +4860,9 @@
 
           this.removeUselessTicks();
           this.removeUselessTickLabels();
-          this.removeUselessGridLines();
+
+          this.gridPrimary.setAttribute( 'd', this.gridLinePath.primary );
+          this.gridSecondary.setAttribute( 'd', this.gridLinePath.secondary );
 
           // Looks for axes linked to this current axis
           var axes = this.graph.findAxesLinkedTo( this );
@@ -5110,49 +5150,31 @@
 
         nextGridLine: function( primary, x1, x2, y1, y2 ) {
 
-          this.gridLines = this.gridLines || [];
-          this.lastCurrentGridLine = this.lastCurrentGridLine || 0;
-          this.currentGridLine = this.currentGridLine || 0;
-
           if ( !( ( primary &amp;&amp; this.options.primaryGrid ) || ( !primary &amp;&amp; this.options.secondaryGrid ) ) ) {
             return;
           }
 
-          if ( this.currentGridLine >= this.gridLines.length ) {
-            var gridLine = this.doGridLine();
-            this.gridLines.push( gridLine );
-          }
+          this.gridLinePath[ primary ? "primary" : "secondary" ] += "M " + x1 + " " + y1 + " L " + x2 + " " + y2;
+        },
 
-          var gridLine = this.gridLines[ this.currentGridLine ];
-
-          if ( this.currentGridLine >= this.lastCurrentGridLine ) {
-            gridLine.setAttribute( 'display', 'visible' );
-          }
+        setGridLineStyle: function( gridLine, primary ) {
 
           gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
-          gridLine.setAttribute( 'y1', y1 );
-          gridLine.setAttribute( 'y2', y2 );
-          gridLine.setAttribute( 'x1', x1 );
-          gridLine.setAttribute( 'x2', x2 );
           gridLine.setAttribute( 'stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor() );
           gridLine.setAttribute( 'stroke-width', primary ? this.getPrimaryGridWidth() : this.getSecondaryGridWidth() );
           gridLine.setAttribute( 'stroke-opacity', primary ? this.getPrimaryGridOpacity() : this.getSecondaryGridOpacity() );
 
-          this.currentGridLine++;
+          var dasharray;
+          if ( ( dasharray = primary ? this.getPrimaryGridDasharray() : this.getSecondaryGridDasharray() ) ) {
+            gridLine.setAttribute( 'stroke-dasharray', dasharray );
+          }
 
-          return gridLine;
         },
 
-        removeUselessGridLines: function() {
-
-          this.gridLines = this.gridLines || [];
-          this.currentGridLine = this.currentGridLine || 0;
-
-          for ( var i = this.currentGridLine; i &lt; this.gridLines.length; i++ ) {
-            this.gridLines[ i ].setAttribute( 'display', 'none' );
-          }
-          this.lastCurrentGridLine = this.currentGridLine;
-          this.currentGridLine = 0;
+        setGridLinesStyle: function() {
+          this.setGridLineStyle( this.gridPrimary, true );
+          this.setGridLineStyle( this.gridSecondary, false );
+          return this;
         },
 
         resetTicksLength: function() {},
@@ -5863,6 +5885,50 @@
         },
 
         /**
+         * Sets the dasharray of the primary grid lines
+         * @memberof Axis.prototype
+         * @param {String} dasharray - The dasharray of the primary grid lines
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setPrimaryGridDasharray: function( dasharray ) {
+          this.options.primaryGridDasharray = dasharray;
+          return this;
+        },
+
+        /**
+         * Gets the dasharray of the primary grid lines
+         * @memberof Axis.prototype
+         * @return {String} dasharray - The dasharray of the primary grid lines
+         * @since 1.13.3
+         */
+        getPrimaryGridDasharray: function() {
+          return this.options.primaryGridDasharray;
+        },
+
+        /**
+         * Sets the dasharray of the secondary grid lines
+         * @memberof Axis.prototype
+         * @param {String} dasharray - The dasharray of the secondary grid lines
+         * @return {Axis} The current axis
+         * @since 1.13.3
+         */
+        setSecondaryGridDasharray: function( dasharray ) {
+          this.options.secondaryGridDasharray = dasharray;
+          return this;
+        },
+
+        /**
+         * Gets the dasharray of the secondary grid lines
+         * @memberof Axis.prototype
+         * @return {String} dasharray - The dasharray of the secondary grid lines
+         * @since 1.13.3
+         */
+        getSecondaryGridDasharray: function() {
+          return this.options.secondaryGridDasharray;
+        },
+
+        /**
          * Sets the color of the label
          * @memberof Axis.prototype
          * @param {String} color - The new color of the label
@@ -6442,8 +6508,9 @@
             }
 
             j++;
-            maxV = Math.max( maxV, this.graph.series[ i ].getMax( start, end ) );
-            minV = Math.min( minV, this.graph.series[ i ].getMin( start, end ) );
+
+            maxV = max ? Math.max( maxV, this.graph.series[ i ].getMax( start, end ) ) : 0;
+            minV = min ? Math.min( minV, this.graph.series[ i ].getMin( start, end ) ) : 0;
           }
 
           if ( j == 0 ) {
@@ -7275,21 +7342,78 @@
 
         var axisFormat = [
 
+          {
+
+            threshold: 40,
+            increments: {
+
+              1: {
+                increment: 1, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 1,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
+          {
+
+            threshold: 150,
+            increments: {
+
+              1: {
+                increment: 1, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 5,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
+          {
+
+            threshold: 600,
+            increments: {
+
+              1: {
+                increment: 10, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 10 seconds
+                increment: 30,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
           { // One day
 
             threshold: 1000,
             increments: {
 
-              1: {
-                increment: 1, // One day on the first axis
-                unit: 'd',
-                format: 'HH:MM (dd/mm)'
+              1: { // 1h
+                increment: 1,
+                unit: 'h',
+                format: 'HH"h"MM (dd/mm/yy)'
               },
 
-              2: {
-                increment: 1,
+              2: { // 10 minutes
+                increment: 10,
                 unit: 'i',
-                format: 'MM:ss'
+                format: 'MM"min"'
               }
             }
           },
@@ -7302,7 +7426,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7321,7 +7445,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7340,7 +7464,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7359,7 +7483,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7378,7 +7502,7 @@
               1: {
                 increment: 1, // One day on the first axis
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7398,7 +7522,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7419,7 +7543,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7440,7 +7564,7 @@
 
                 increment: 1,
                 unit: 'd',
-                format: 'dd/mm'
+                format: 'dd/mm/yyyy'
               },
 
               2: {
@@ -7461,7 +7585,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7482,7 +7606,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7503,7 +7627,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7524,7 +7648,7 @@
 
                 increment: 1,
                 unit: 'm',
-                format: 'mmmm'
+                format: 'mmmm yyyy'
               },
 
               2: {
@@ -7564,15 +7688,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mm'
               },
 
               2: {
 
                 increment: 4, // One day on the first axis
                 unit: 'm',
-                format: 'mm/yyyy'
+                format: 'yyyy'
               }
             }
           },
@@ -7585,15 +7709,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mm'
               },
 
               2: {
 
                 increment: 6, // One day on the first axis
                 unit: 'm',
-                format: 'dd/mm'
+                format: 'yyyy'
               }
             }
           },
@@ -7606,15 +7730,15 @@
               1: {
 
                 increment: 1,
-                unit: 'y',
-                format: 'yyyy'
+                unit: 'm',
+                format: 'mmmm'
               },
 
               2: {
 
                 increment: 1, // One day on the first axis
                 unit: 'y',
-                format: 'dd/mm'
+                format: 'yyyy'
               }
             }
           },
@@ -8319,6 +8443,7 @@
        */
       PluginDrag.prototype.init = function( graph ) {
 
+        this.graph = graph;
         this.time = null;
         this.totaltime = 2000;
 
@@ -8334,7 +8459,12 @@
           this._draggingX = x;
           this._draggingY = y;
 
+          this._lastDraggingX = this._draggingX;
+          this._lastDraggingY = this._draggingY;
+
           this.stopAnimation = true;
+
+          this.moved = false;
 
           return true;
         },
@@ -8369,7 +8499,11 @@
           this._draggingX = x;
           this._draggingY = y;
 
+          this.moved = true;
+
           this.time = Date.now();
+
+          this.emit( "dragging" );
 
           graph.draw( true );
 
@@ -8379,8 +8513,22 @@
 
         var dt = ( Date.now() - this.time );
 
+        if ( x == this._lastDraggingX || y == this._lastDraggingY ) {
+
+          if ( this.moved ) {
+            this.emit( "dragged" );
+          }
+
+          return;
+        }
+
         this.speedX = ( x - this._lastDraggingX ) / dt;
         this.speedY = ( y - this._lastDraggingY ) / dt;
+
+        if ( isNaN( this.speedX ) || isNaN( this.speedY ) ) {
+          this.emit( "dragged" );
+          return;
+        }
 
         graph._applyToAxes( function( axis ) {
           axis._pluginDragMin = axis.getCurrentMin();
@@ -8392,7 +8540,12 @@
         this.accelerationY = -this.speedY / this.totaltime;
 
         if ( this.options.persistanceX || this.options.persistanceY ) {
+
           this._persistanceMove( graph );
+
+        } else {
+
+          this.emit( "dragged" );
         }
 
       }
@@ -8402,6 +8555,7 @@
         var self = this;
 
         if ( self.stopAnimation ) {
+          self.emit( "dragged" );
           return;
         }
 
@@ -8418,6 +8572,10 @@
               axis.setCurrentMin( -axis.getRelVal( dx ) + axis._pluginDragMin );
               axis.setCurrentMax( -axis.getRelVal( dx ) + axis._pluginDragMax );
 
+              axis.cacheCurrentMin();
+              axis.cacheCurrentMax();
+              axis.cacheInterval();
+
             }, false, true, false );
           }
 
@@ -8428,13 +8586,20 @@
               axis.setCurrentMin( -axis.getRelVal( dy ) + axis._pluginDragMin );
               axis.setCurrentMax( -axis.getRelVal( dy ) + axis._pluginDragMax );
 
+              axis.cacheCurrentMin();
+              axis.cacheCurrentMax();
+              axis.cacheInterval();
+
             }, false, false, true );
           }
 
-          graph.draw( true );
+          graph.draw();
 
           if ( dt &lt; self.totaltime ) {
+            self.emit( "dragging" );
             self._persistanceMove( graph );
+          } else {
+            self.emit( "dragged" );
           }
 
         } );
@@ -8914,6 +9079,7 @@
        */
       PluginZoom.prototype.onMouseUp = function( graph, x, y, e, mute ) {
 
+        var self = this;
         this.removeZone();
         var _x = x - graph.options.paddingLeft;
         var _y = y - graph.options.paddingTop;
@@ -8924,45 +9090,102 @@
 
         graph.cancelClick = true;
 
-        switch ( this._zoomingMode ) {
-          case 'x':
-            this.fullX = false;
-            graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-            break;
-          case 'y':
-            this.fullY = false;
-            graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
-            break;
-          case 'xy':
-            this.fullX = false;
-            this.fullY = false;
-            graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-            graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
-            break;
+        if ( this.options.transition ) {
 
-          case 'forceY2':
+          var modeX = false,
+            modeY = false;
+
+          if ( this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
             this.fullX = false;
+            graph._applyToAxes( function( axis ) {
+
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = Math.min( axis.getVal( _x ), axis.getVal( self.x1 ) );
+              axis._pluginZoomMaxFinal = Math.max( axis.getVal( _x ), axis.getVal( self.x1 ) );
+              console.log( axis._pluginZoomMin, axis._pluginZoomMinFinal );
+            }, false, true, false );
+
+            modeX = true;
+
+          }
+
+          if ( this._zoomingMode == 'y' || this._zoomingMode == 'xy' ) {
+
             this.fullY = false;
+            graph._applyToAxes( function( axis ) {
 
-            graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-            graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
 
-            break;
+              axis._pluginZoomMinFinal = Math.min( axis.getVal( _y ), axis.getVal( self.y1 ) );
+              axis._pluginZoomMaxFinal = Math.max( axis.getVal( _y ), axis.getVal( self.y1 ) );
+
+            }, false, false, true );
+
+            modeY = true;
+          }
+
+          if ( this._zoomingMode == 'forceY2' ) {
+
+            this.fullY = false;
+            graph._applyToAxes( function( axis ) {
+
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = Math.min( axis.getVal( self.y2 ), axis.getVal( self.y1 ) );
+              axis._pluginZoomMaxFinal = Math.max( axis.getVal( self.y2 ), axis.getVal( self.y1 ) );
+
+            }, false, false, true );
+
+            modeY = true;
+          }
+
+          this.transition( modeX, modeY, "zoomEnd" );
+
+        } else {
+
+          switch ( this._zoomingMode ) {
+            case 'x':
+              this.fullX = false;
+              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              break;
+            case 'y':
+              this.fullY = false;
+              graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+              break;
+            case 'xy':
+              this.fullX = false;
+              this.fullY = false;
+              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+              break;
+
+            case 'forceY2':
+
+              this.fullX = false;
+              this.fullY = false;
+
+              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+
+              break;
+          }
+
+          graph.prevent( true );
+          graph.draw();
+
+          if ( this._backedUpZoomMode ) {
+            this._zoomingMode = this._backedUpZoomMode;
+          }
+
+          this.emit( "zoomed" );
+
         }
 
-        graph.prevent( true );
-        graph.draw();
-
-        if ( this.options.onZoomEnd &amp;&amp; !mute ) {
-          this.options.onZoomEnd( graph, _x, _y, e, mute, this.x1, this.y1 );
-        }
-
-        if ( this._backedUpZoomMode ) {
-          this._zoomingMode = this._backedUpZoomMode;
-        }
-
-        this.emit( "zoomed" );
       };
 
       /**
@@ -9023,6 +9246,77 @@
           return;
         }
 
+        if ( this.options.transition ) {
+
+          var modeX = false,
+            modeY = false;
+
+          if ( pref.mode == 'xtotal' || pref.mode == 'total' ) {
+
+            graph._applyToAxes( function( axis ) {
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = axis.getMinValue();
+              axis._pluginZoomMaxFinal = axis.getMaxValue();
+
+            }, false, true, false );
+
+            modeX = true;
+
+          }
+
+          if ( pref.mode == 'ytotal' || pref.mode == 'total' ) {
+
+            graph._applyToAxes( function( axis ) {
+
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = axis.getMinValue();
+              axis._pluginZoomMaxFinal = axis.getMaxValue();
+
+            }, false, false, true );
+
+            modeY = true;
+
+          }
+
+          if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ) {
+
+            graph._applyToAxes( function( axis ) {
+
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = axis.getCurrentMin() - ( axis.getCurrentMax() - axis.getCurrentMin() );
+              axis._pluginZoomMaxFinal = axis.getCurrentMax() + ( axis.getCurrentMax() - axis.getCurrentMin() );
+
+            }, false, true, false );
+
+            modeX = true;
+
+          }
+
+          if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
+
+            graph._applyToAxes( function( axis ) {
+
+              axis._pluginZoomMin = axis.getCurrentMin();
+              axis._pluginZoomMax = axis.getCurrentMax();
+
+              axis._pluginZoomMinFinal = axis.getCurrentMin() - ( axis.getCurrentMax() - axis.getCurrentMin() );
+              axis._pluginZoomMaxFinal = axis.getCurrentMax() + ( axis.getCurrentMax() - axis.getCurrentMin() );
+
+            }, false, true, false );
+
+            modeY = true;
+
+          }
+
+          this.transition( modeX, modeY, "dblClick" );
+        }
+
         var xAxis = this.graph.getXAxis(),
           yAxis = this.graph.getYAxis();
 
@@ -9077,6 +9371,11 @@
             if ( xAxis.options.onZoom ) {
               xAxis.options.onZoom( xMin, xMax );
             }
+
+            xAxis.cacheCurrentMin();
+            xAxis.cacheCurrentMax();
+            xAxis.cacheInterval();
+
           }
 
           if ( pref.mode == 'gradualXY' || pref.mode == 'gradualY' ) {
@@ -9090,25 +9389,76 @@
             if ( yAxis.options.onZoom ) {
               yAxis.options.onZoom( yMin, yMax );
             }
+
+            yAxis.cacheCurrentMin();
+            yAxis.cacheCurrentMax();
+            yAxis.cacheInterval();
+
           }
+
         }
 
         this.graph.draw();
+        /*
+            this.emit( "dblClick", {
+              graph: graph,
+              x: x,
+              y: y,
+              pref: pref,
+              e: e,
+              mute: mute
+            } );
 
-        this.emit( "dblClick", {
-          graph: graph,
-          x: x,
-          y: y,
-          pref: pref,
-          e: e,
-          mute: mute
-        } );
-
-        if ( this.options.onDblClick &amp;&amp; !mute ) {
-          this.options.onDblClick( graph, x, y, e, mute );
-        }
+            if ( this.options.onDblClick &amp;&amp; !mute ) {
+              this.options.onDblClick( graph, x, y, e, mute );
+            }*/
 
       };
+
+      PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
+
+        var self = this;
+
+        if ( !self.gradualUnzoomStart ) {
+          self.gradualUnzoomStart = Date.now();
+        }
+
+        window.requestAnimationFrame( function() {
+
+          var dt = Date.now() - self.gradualUnzoomStart;
+          var progress = Math.sin( dt / 500 * Math.PI / 2 );
+
+          self.graph._applyToAxes( function( axis ) {
+
+            axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
+            axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );
+
+            axis.cacheCurrentMin();
+            axis.cacheCurrentMax();
+            axis.cacheInterval();
+
+          }, false, modeX, modeY );
+
+          self.graph.draw();
+
+          if ( dt &lt; 500 ) {
+
+            self.transition( modeX, modeY, eventName );
+            self.emit( "zooming" );
+
+          } else {
+
+            self.emit( "zoomed" );
+
+            if ( eventName ) {
+              self.emit( eventName )
+            }
+            self.gradualUnzoomStart = 0;
+
+          }
+
+        } );
+      }
 
       PluginZoom.prototype.isFullX = function() {
         return this.fullX;
@@ -9120,6 +9470,583 @@
 
       return PluginZoom;
     } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
+
+    /* 
+     * Build: new source file 
+     * File name : graph.lru
+     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.lru.js
+     */
+
+    build[ './graph.lru' ] = ( function() {
+      /** @global */
+      /** @ignore */
+
+      var memory = {},
+        memoryHead = {},
+        memoryCount = {},
+        memoryLimit = {};
+
+      function createStoreMemory( store, limit ) {
+        limit = limit || 50;
+        if ( !memory[ store ] ) {
+          memory[ store ] = {};
+          memoryCount[ store ] = 0;
+        }
+
+        memoryLimit[ store ] = limit;
+      }
+
+      function getFromMemory( store, index ) {
+        var obj, head;
+
+        if ( memory[ store ] &amp;&amp; memory[ store ][ index ] ) {
+
+          head = memoryHead[ store ];
+
+          obj = memory[ store ][ index ];
+          obj.prev = head;
+          obj.next = head.next;
+          head.next.prev = obj;
+          head.next = obj;
+
+          memoryHead[ store ] = obj;
+          return obj.data;
+        }
+      }
+
+      function storeInMemory( store, index, data ) {
+
+        var toStore, toDelete, head;
+        if ( memory[ store ] &amp;&amp; memoryCount[ store ] !== undefined &amp;&amp; memoryLimit[ store ] ) {
+          head = memoryHead[ store ];
+
+          if ( memory[ store ][ index ] ) {
+
+            getFromMemory( store, index );
+            memory[ store ][ index ].data.data = data;
+            memory[ store ][ index ].data.timeout = Date.now();
+
+          } else {
+
+            toStore = {
+              data: {
+                data: data,
+                timeout: Date.now()
+              }
+            };
+
+            if ( typeof head == 'undefined' ) {
+              toStore.prev = toStore;
+              toStore.next = toStore;
+            } else {
+              toStore.prev = head.prev;
+              toStore.next = head.next;
+              head.next.prev = toStore;
+              head.next = toStore;
+            }
+
+            memoryHead[ store ] = toStore;
+            memory[ store ][ index ] = toStore;
+            memoryCount[ store ]++;
+          }
+
+          // Remove oldest one
+          if ( memoryCount[ store ] > memoryLimit[ store ] &amp;&amp; head ) {
+            toDelete = head.next;
+            head.next.next.prev = head;
+            head.next = head.next.next;
+            toDelete.next.next = undefined;
+            toDelete.next.prev = undefined;
+            memoryCount[ store ]--;
+          }
+
+          return data;
+        }
+      }
+
+      return {
+
+        create: function( store, limitMemory ) {
+          createStoreMemory( store, limitMemory );
+        },
+
+        get: function( store, index ) {
+          var result;
+          if ( ( result = getFromMemory( store, index ) ) != undefined ) {
+            return result;
+          }
+
+        },
+
+        store: function( store, index, value ) {
+          storeInMemory( store, index, value );
+          return value;
+        },
+
+        empty: function( store ) {
+          emptyMemory( store );
+        },
+
+        exists: function( store ) {
+          return ( memory[ store ] );
+        }
+      }
+    } )();
+
+    /* 
+     * Build: new source file 
+     * File name : plugins/graph.plugin.timeseriemanager
+     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.timeseriemanager.js
+     */
+
+    build[ './plugins/graph.plugin.timeseriemanager' ] = ( function( $, LRU, Plugin ) {
+      /** @global */
+      /** @ignore */
+
+      /**
+       * @class PluginTimeSerieManager
+       * @implements Plugin
+       */
+      var PluginTimeSerieManager = function() {
+
+        var self = this;
+
+        this.series = [];
+        this.plugins = [];
+        this.currentSlots = {};
+
+        this.requestLevels = {};
+        this.update = function( noRecalculate, force ) {
+
+          self.series.forEach( function( serie ) {
+
+            self.updateSerie( serie, noRecalculate );
+
+          } );
+
+          if ( !noRecalculate ) {
+            self.recalculateSeries( force );
+          }
+        }
+
+      };
+
+      PluginTimeSerieManager.prototype = new Plugin();
+
+      PluginTimeSerieManager.prototype.defaults = {
+
+        LRUName: "PluginTimeSerieManager",
+        intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
+        maxParallelRequests: 3,
+        optimalPxPerPoint: 2,
+        nbPoints: 1000,
+        url: ""
+      }
+
+      /**
+       * Init method
+       * @private
+       * @memberof PluginTimeSerieManager
+       */
+      PluginTimeSerieManager.prototype.init = function( graph, options ) {
+        this.graph = graph;
+        LRU.create( this.options.LRUName, 200 );
+
+      };
+
+      PluginTimeSerieManager.prototype.setURL = function( url ) {
+        this.options.url = url;
+        return this;
+      }
+
+      PluginTimeSerieManager.prototype.setAvailableIntervals = function() {
+        this.options.intervals = arguments;
+      }
+
+      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements ) {
+        var s = this.graph.newSerie( serieName, serieOptions, serieType );
+
+        this.currentSlots[ serieName ] = {
+          min: 0,
+          max: 0,
+          interval: 0
+        };
+
+        s.setInfo( "timeSerieManagerDBElements", dbElements );
+        s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+
+        this.series.push( s );
+        return s;
+      }
+
+      PluginTimeSerieManager.prototype.registerPlugin = function( plugin, event ) {
+
+        var index;
+        if ( ( index = this.plugins.indexOf( plugin ) ) > -1 ) {
+
+          for ( var i = 1; i &lt; arguments.length; i++ ) {
+            plugin.removeListener( arguments[ i ], this.update );
+          }
+        }
+
+        for ( var i = 1; i &lt; arguments.length; i++ ) {
+          plugin.on( arguments[ i ], this.update );
+        }
+      }
+
+      PluginTimeSerieManager.prototype.updateSerie = function( serie, noRecalculate ) {
+
+        var self = this;
+        var from = serie.getXAxis().getCurrentMin();
+        var to = serie.getXAxis().getCurrentMax();
+        var priority = 1;
+
+        var optimalInterval = this.getOptimalInterval( to - from );
+
+        this.options.intervals.forEach( function( interval ) {
+
+          var startSlotId = self.computeSlotID( from, interval );
+          var endSlotId = self.computeSlotID( to, interval );
+
+          var intervalMultipliers = [
+            [ 2, 5, 6 ],
+            [ 1, 2, 4 ],
+            [ 0, 1, 3 ]
+          ];
+
+          intervalMultipliers.forEach( function( multiplier ) {
+
+            var firstSlotId = startSlotId - multiplier[ 0 ] * ( endSlotId - startSlotId );
+            var lastSlotId = endSlotId + multiplier[ 0 ] * ( endSlotId - startSlotId );
+
+            var slotId = firstSlotId;
+
+            while ( slotId &lt;= lastSlotId ) {
+
+              if ( self.computeTimeMin( slotId, interval ) > Date.now() ) {
+                break;
+              }
+
+              self.register( serie, slotId, interval, interval == optimalInterval ? multiplier[ 1 ] : multiplier[ 2 ], true, noRecalculate );
+              slotId++;
+            }
+
+          } );
+
+        } );
+
+        this.processRequests();
+      }
+
+      PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess, noRecalculate ) {
+
+        var id = this.computeUniqueID( serie, slotId, interval );
+
+        var data = LRU.get( this.options.LRUName, id );
+
+        if ( !data || ( this.computeTimeMax( slotId, interval ) > Date.now() &amp;&amp; data.timeout &lt; ( Date.now() - ( noRecalculate ? 5000 : 100000 ) ) ) &amp;&amp; priority == 1 ) {
+
+          this.request( serie, slotId, interval, priority, id, noProcess );
+        }
+      }
+
+      PluginTimeSerieManager.prototype.request = function( serie, slotId, interval, priority, slotName, noProcess ) {
+
+        for ( var i in this.requestLevels ) {
+
+          if ( i == priority ) {
+            continue;
+          }
+
+          if ( this.requestLevels[ i ][ slotName ] ) {
+
+            if ( this.requestLevels[ i ][ slotName ][ 0 ] !== 1 ) { // If the request is not pending
+
+              delete this.requestLevels[ i ][ slotName ];
+
+            } else {
+              this.requestLevels[ i ][ slotName ][ 5 ] = priority;
+            }
+
+          }
+        }
+
+        if ( this.requestLevels[ priority ] &amp;&amp; this.requestLevels[ priority ][ slotName ] ) {
+          return;
+        }
+
+        this.requestLevels[ priority ] = this.requestLevels[ priority ] || {};
+        this.requestLevels[ priority ][ slotName ] = [ 0, slotName, serie.getName(), slotId, interval, priority, serie.getInfo( 'timeSerieManagerDBElements' ) ];
+
+        if ( !noProcess ) {
+          this.processRequests();
+        }
+      }
+
+      PluginTimeSerieManager.prototype.processRequests = function() {
+
+        if ( this.requestsRunning == this.options.maxParallelRequests ) {
+          return;
+        }
+
+        var self = this,
+          currentLevelChecking = 1,
+          requestToMake;
+
+        while ( true ) {
+
+          for ( var i in this.requestLevels[ currentLevelChecking ] ) {
+
+            if ( this.requestLevels[ currentLevelChecking ][ i ][ 0 ] == 1 ) { // Running request
+              continue;
+            }
+
+            requestToMake = this.requestLevels[ currentLevelChecking ][ i ];
+            break;
+          }
+
+          if ( requestToMake ) {
+            break;
+          }
+
+          currentLevelChecking++;
+
+          if ( currentLevelChecking > 10 ) {
+            return;
+          }
+
+        }
+
+        this.requestsRunning++;
+
+        if ( !requestToMake ) {
+          return;
+        }
+
+        requestToMake[ 0 ] = 1;
+
+        $.ajax( {
+
+          url: this.getURL( requestToMake ),
+          method: 'get',
+          dataType: 'json'
+
+        } ).done( function( data ) {
+
+          self.requestsRunning--;
+
+          delete self.requestLevels[ currentLevelChecking ][ i ];
+
+          LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
+          self.processRequests();
+
+          if ( requestToMake[ 5 ] == 1 &amp;&amp; Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+
+            self.recalculateSeries( true );
+          }
+
+        } );
+      }
+
+      PluginTimeSerieManager.prototype.computeTimeMax = function( slotId, interval ) {
+        return ( slotId + 1 ) * ( interval * this.options.nbPoints );
+      }
+
+      PluginTimeSerieManager.prototype.computeTimeMin = function( slotId, interval ) {
+        return ( slotId ) * ( interval * this.options.nbPoints );
+      }
+
+      PluginTimeSerieManager.prototype.getURL = function( requestElements ) {
+
+        var url = this.options.url
+          .replace( "&lt;measurementid>", requestElements[ 2 ] )
+          .replace( '&lt;from>', this.computeTimeMin( requestElements[ 3 ], requestElements[ 4 ] ) )
+          .replace( '&lt;to>', this.computeTimeMax( requestElements[ 3 ], requestElements[ 4 ] ) )
+          .replace( '&lt;interval>', requestElements[ 4 ] );
+
+        var dbElements = requestElements[ 6 ] || {};
+
+        for ( var i in dbElements ) {
+          url = url.replace( "&lt;" + i + ">", dbElements[ i ] );
+        }
+
+        return url;
+      }
+
+      PluginTimeSerieManager.prototype.getOptimalInterval = function( totalspan ) {
+
+        var optimalInterval = ( this.options.optimalPxPerPoint || 1 ) * totalspan / this.graph.getDrawingWidth(),
+          diff = Infinity,
+          optimalIntervalAmongAvailable;
+
+        this.options.intervals.forEach( function( interval ) {
+
+          var newDiff = Math.min( diff, Math.abs( interval - optimalInterval ) );
+          if ( diff !== newDiff ) {
+
+            optimalIntervalAmongAvailable = interval;
+            diff = newDiff;
+          }
+        } );
+
+        return optimalIntervalAmongAvailable || 1000;
+      }
+
+      PluginTimeSerieManager.prototype.computeUniqueID = function( serie, slotId, interval ) {
+        var extra = "";
+        var info = serie.getInfo( 'timeSerieManagerDBElements' );
+        for ( var i in info ) {
+          extra += ";" + i + ":" + info[ i ];
+        }
+
+        return serie.getName() + ";" + slotId + ";" + interval + extra;
+      }
+
+      PluginTimeSerieManager.prototype.computeSlotID = function( time, interval ) {
+        return Math.floor( time / ( interval * this.options.nbPoints ) );
+      }
+
+      PluginTimeSerieManager.prototype.computeSlotTime = function( slotId, interval ) {
+        return slotId * ( interval * this.options.nbPoints );
+      }
+
+      PluginTimeSerieManager.prototype.getZoneSerie = function( serie ) {
+        return serie._zoneSerie;
+      };
+
+      PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
+
+        var serie = this.graph.getSerie( serieName );
+        serie._zoneSerie.setXAxis( serie.getXAxis() );
+        serie._zoneSerie.setYAxis( serie.getYAxis() );
+        serie._zoneSerie.setFillColor( serie.getLineColor() );
+        serie._zoneSerie.setLineColor( serie.getLineColor() );
+        serie._zoneSerie.setFillOpacity( 0.2 );
+        serie._zoneSerie.setLineOpacity( 0.3 );
+      };
+
+      PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
+
+        var self = this;
+
+        this.changed = false;
+
+        this.series.map( function( serie ) {
+          self.recalculateSerie( serie, force );
+        } );
+
+        /*if ( this.changed ) {
+      self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
+    }
+*/
+        this.changed = false;
+        //self.graph.autoscaleAxes();
+
+        self.graph.draw();
+      }
+
+      PluginTimeSerieManager.prototype.recalculateSerie = function( serie, force ) {
+
+        var from = serie.getXAxis().getCurrentMin(),
+          to = serie.getXAxis().getCurrentMax(),
+          interval = this.getOptimalInterval( to - from );
+
+        var startSlotId = this.computeSlotID( from, interval );
+        var endSlotId = this.computeSlotID( to, interval );
+
+        var data = [];
+        var dataMinMax = [];
+        var lruData;
+
+        if ( !force &amp;&amp; interval == this.currentSlots[ serie.getName() ].interval &amp;&amp; this.currentSlots[ serie.getName() ].min &lt;= startSlotId &amp;&amp; this.currentSlots[ serie.getName() ].max >= endSlotId ) {
+          return;
+        }
+
+        startSlotId -= 2;
+        endSlotId += 2;
+
+        this.currentSlots[ serie.getName() ].min = startSlotId;
+        this.currentSlots[ serie.getName() ].max = endSlotId;
+        this.currentSlots[ serie.getName() ].interval = interval;
+
+        var slotId = startSlotId;
+
+        while ( slotId &lt;= endSlotId ) {
+
+          if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, slotId, interval ) ) ) {
+
+            data = data.concat( lruData.data.mean );
+            dataMinMax = dataMinMax.concat( lruData.data.minmax );
+
+          } else {
+
+            this.recalculateSerieUpwards( serie, slotId, interval, data, dataMinMax )
+          }
+
+          slotId++;
+        }
+
+        this.changed = true;
+
+        serie.setData( data );
+        serie._zoneSerie.setData( dataMinMax );
+      }
+
+      PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
+
+        if ( this.interval ) {
+          clearInterval( this.interval )
+        }
+
+        var self = this;
+
+        this.interval = setInterval( function() {
+          self.update( true, false );
+        }, interval );
+      }
+
+      PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval, data, dataMinMax ) {
+
+        var intervals = this.options.intervals.slice( 0 );
+        intervals.sort();
+
+        var nextInterval = intervals[ intervals.indexOf( downInterval ) + 1 ] || -1;
+        var lruData;
+        if ( nextInterval &lt; 0 ) {
+          return [];
+        }
+
+        var newSlotTime = this.computeSlotTime( downSlotId, downInterval );
+        var newSlotTimeEnd = this.computeSlotTime( downSlotId + 1, downInterval );
+        var newSlotId = this.computeSlotID( newSlotTime, nextInterval ),
+          start = false;
+
+        if ( lruData = LRU.get( this.options.LRUName, this.computeUniqueID( serie, newSlotId, nextInterval ) ) ) {
+
+          for ( var i = 0, l = lruData.data.mean.length; i &lt; l; i += 2 ) {
+
+            if ( lruData.data.mean[ i ] &lt; newSlotTime ) {
+              continue;
+
+            } else if ( start === false ) {
+              start = i;
+            }
+
+            if ( lruData.data.mean[ i ] >= newSlotTimeEnd ) {
+
+              data = data.concat( lruData.data.mean.slice( start, i ) );
+              dataMinMax = data.concat( lruData.data.minmax.slice( start, i ) );
+
+              return;
+            }
+          }
+        }
+
+        return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
+      }
+
+      return PluginTimeSerieManager;
+    } )( build[ "./jquery" ], build[ "./graph.lru" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
 
     /* 
      * Build: new source file 
@@ -13215,7 +14142,6 @@
             } else {
 
               this._draw_standard();
-
             }
 
             this.removeExtraLines();
@@ -14258,6 +15184,7 @@
           line.setAttribute( 'stroke-width', this.getLineWidth() );
           line.setAttribute( 'fill', this.getFillColor() );
           line.setAttribute( 'fill-opacity', this.getFillOpacity() );
+          line.setAttribute( 'stroke-opacity', this.getLineOpacity() );
         },
 
         /**
@@ -14281,6 +15208,29 @@
          */
         getLineWidth: function() {
           return this.options.lineWidth;
+        },
+
+        /**
+         * Sets the line opacity
+         * @memberof SerieZone.prototype
+         *
+         * @param {Number} opacity - The line opacity
+         * @returns {SerieZone} - The current serie
+         */
+        setLineOpacity: function( opacity ) {
+          this.options.lineOpacity = opacity;
+          this.styleHasChanged();
+          return this;
+        },
+
+        /**
+         * Gets the line opacity
+         * @memberof SerieZone.prototype
+         *
+         * @returns {Number} - The line opacity
+         */
+        getLineOpacity: function() {
+          return this.options.lineOpacity;
         },
 
         /**
@@ -14524,7 +15474,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
      */
 
-    build[ './shapes/graph.shape' ] = ( function( GraphPosition, util ) {
+    build[ './shapes/graph.shape' ] = ( function( GraphPosition, util, EventEmitter ) {
       /** @global */
       /** @ignore */
 
@@ -14536,6 +15486,8 @@
        * @static
        */
       var Shape = function() {};
+
+      Shape.prototype = new EventEmitter();
 
       /**
        * Initializes the shape
@@ -14636,6 +15588,14 @@
        * @memberof Shape
        */
       Shape.prototype.initImpl = function() {};
+
+      /**
+       * @memberof Shape
+       * @return {Object} The shape's underlying data object
+       */
+      Shape.prototype.getData = function() {
+        return this._data;
+      };
 
       /**
        * @memberof Shape
@@ -14949,6 +15909,27 @@
       Shape.prototype.redrawImpl = function() {};
 
       /**
+       * Sets all dumpable properties of the shape
+       * @param {Object} properties - The properties object
+       * @return {Shape} The current shape
+       * @memberof Shape
+       */
+      Shape.prototype.setProperties = function( properties ) {
+        this.properties = properties;
+        this.emit( "propertiesChanged" );
+        return this;
+      }
+
+      /**
+       * Gets all dumpable properties of the shape
+       * @return {Object} properties - The properties object
+       * @memberof Shape
+       */
+      Shape.prototype.getProperties = function( properties ) {
+        return this.properties;
+      }
+
+      /**
        * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
        * @param {String} prop - The property to save
        * @param val - The value to save
@@ -14960,6 +15941,7 @@
         this.properties = this.properties || {};
         this.properties[ prop ] = this.properties[ prop ] || [];
         this.properties[ prop ][ index || 0 ] = val;
+        this.emit( "propertyChanged", prop );
         return this;
       };
 
@@ -15115,7 +16097,7 @@
        * @return {Shape} The current shape
        */
       Shape.prototype.setAttributes = function( attributes ) {
-        this.setProp( "attributes", shapeData.attributes );
+        this.setProp( "attributes", attributes );
         return this;
       }
 
@@ -15522,7 +16504,7 @@
 
         }
 
-        if ( position.x != "NaNpx" &amp;&amp; !isNaN( position.x ) &amp;&amp; position.x !== "NaN" ) {
+        if ( position.x != "NaNpx" &amp;&amp; !isNaN( position.x ) &amp;&amp; position.x !== "NaN" &amp;&amp; position.x !== false ) {
 
           this._labels[ labelIndex ].setAttribute( 'x', position.x );
           this._labels[ labelIndex ].setAttribute( 'y', position.y );
@@ -15730,7 +16712,7 @@
        * @returns {Shape} the current shape
        */
       Shape.prototype._unselect = function( mute ) {
-        console.trace();
+
         this._selectStatus = false;
 
         util.restoreDomAttributes( this._dom, 'select' );
@@ -16391,7 +17373,7 @@
 
       return Shape;
 
-    } )( build[ "./graph.position" ], build[ "./graph.util" ] );
+    } )( build[ "./graph.position" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
      * Build: new source file 
@@ -18749,6 +19731,7 @@
       GraphPluginShape,
       GraphPluginSelectScatter,
       GraphPluginZoom,
+      GraphPluginTimeSerieManager,
 
       GraphSerie,
       GraphSerieContour,
@@ -18799,6 +19782,7 @@
       Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
       Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
       Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
+      Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
 
       Graph.registerConstructor( "graph.shape", GraphShape );
       Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );
@@ -18822,7 +19806,7 @@
 
       return Graph;
 
-    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
+    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
 
   };
 
@@ -18866,7 +19850,7 @@
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Sun Jan 17th 2016 using the <a
+	on Wed Feb 3rd 2016 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
 				</ul>
 			</li>
 			
@@ -573,6 +573,83 @@ arrow.lock(); // Locks the shape, and effectively nullifies selectable, movable,
 
 </script>
 
+
+<h2>Setting and getting properties from the shape</h2><p>Shapes are done in a way that all their properties can be exported and re-imported. This is useful to store information about the shape that you would have to reload later. This does not avoid the need to create the shape, though. However, it allows to set shape placement, labels and style in an effortless fashion.</p>
+<pre class="prettyprint source"><code>var shape = graph.newShape( &quot;line&quot; );
+
+var position1 = graph.newPosition( &quot;150px&quot;, &quot;30px&quot; );
+var position2 = graph.newPosition( &quot;190px&quot;, &quot;80px&quot; );
+shape.setPosition( position1, 0 );
+shape.setPosition( position2, 1 );
+shape.setStrokeColor('red');
+shape.draw();
+
+console.log( shape.getProperties() );</code></pre><p><div id="example-15" class="jsgraph-example"></div></p>
+<p><div>
+    <button id="example-15-get">Get properties</button>
+    <code></code>
+</div><div>
+    <button id="example-15-set">Change properties</button>
+</div></p>
+<script>
+
+( function() {
+
+    var made = makeGraph2( "example-15" );
+    var shape = made.graph.newShape( "line" );
+
+    var position1 = made.graph.newPosition( "50px", "30px" );
+    var position2 = made.graph.newPosition( "90px", "80px" );
+    shape.setPosition( position1, 0 );
+    shape.setPosition( position2, 1 );
+    shape.setStrokeColor('red');
+
+    shape.draw();
+
+
+
+    document.getElementById( "example-15-get").addEventListener('click', function() {
+        $( this ).parent().find('code').html( JSON.stringify( shape.getProperties(), false, "\t" ) );
+    });
+
+    document.getElementById( "example-15-set").addEventListener('click', function() {
+        var properties = { "strokeColor": [ "blue" ], "strokeWidth": [ 2 ], "position": [ { "x": "90px", "y": "30px" }, { "x": "120px", "y": "80px" } ] };
+
+        shape.setProperties( properties );
+        shape.draw();
+    });
+})();
+
+</script>
+
+<h3>Listening to property change</h3><p>Any change of property should trigger the event <code>propertyChanged</code> which you can listen on the shape:</p>
+<pre class="prettyprint source"><code>    made.arrow.on(&quot;propertyChanged&quot;, function( property ) {
+
+        $(&quot;#example-16-property&quot;).html(&quot;&lt;div>Changed property: &lt;code>&quot; + property + &quot;&lt;/code>. New value: &lt;code>&quot; + JSON.stringify( made.arrow.getProp( property ) ) + &quot;&lt;/code>&lt;/div>&quot;);
+    })</code></pre><p><div id="example-16" class="jsgraph-example"></div>
+<span id="example-16-property"></span></p>
+<script>
+( function() {
+
+    var made = makeGraph2( "example-16" );
+    made.arrow.selectable();
+    made.arrow.movable();
+    made.arrow.resizable();
+    made.arrow.hasHandles( true );
+    made.arrow.setEventReceptacle();
+    made.arrow.setSelectStyle( {
+            stroke: 'red'
+    } );
+    made.arrow.createHandles();
+
+    made.arrow.on("propertyChanged", function( property ) {
+
+        $("#example-16-property").html("<div>Changed property: <code>" + property + "</code>. New value: <code>" + JSON.stringify( made.arrow.getProp( property ) ) + "</code></div>");
+    })
+})();
+
+</script>
+
 <h2>Conclusion</h2><p>It's time to put an end to this tutorial. I hope that creating shapes is now clear to you. Another tutorial is in preparation to showcase all the shapes that are shipped by default with jsGraph.</p>
 </article>
 
@@ -596,7 +673,7 @@ arrow.lock(); // Locks the shape, and effectively nullifies selectable, movable,
 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Sun Jan 17th 2016 using the <a
+	on Wed Feb 3rd 2016 using the <a
 	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 </span>
 </footer>

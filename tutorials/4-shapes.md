@@ -608,6 +608,101 @@ arrow.lock(); // Locks the shape, and effectively nullifies selectable, movable,
 
 </script>
 
+
+## Setting and getting properties from the shape
+
+Shapes are done in a way that all their properties can be exported and re-imported. This is useful to store information about the shape that you would have to reload later. This does not avoid the need to create the shape, though. However, it allows to set shape placement, labels and style in an effortless fashion.
+
+
+```
+var shape = graph.newShape( "line" );
+
+var position1 = graph.newPosition( "150px", "30px" );
+var position2 = graph.newPosition( "190px", "80px" );
+shape.setPosition( position1, 0 );
+shape.setPosition( position2, 1 );
+shape.setStrokeColor('red');
+shape.draw();
+
+console.log( shape.getProperties() );
+
+```
+
+<div id="example-15" class="jsgraph-example"></div>
+<div>
+	<button id="example-15-get">Get properties</button>
+	<code></code>
+</div><div>
+	<button id="example-15-set">Change properties</button>
+</div>
+<script>
+
+( function() {
+
+	var made = makeGraph2( "example-15" );
+	var shape = made.graph.newShape( "line" );
+
+	var position1 = made.graph.newPosition( "50px", "30px" );
+	var position2 = made.graph.newPosition( "90px", "80px" );
+	shape.setPosition( position1, 0 );
+	shape.setPosition( position2, 1 );
+	shape.setStrokeColor('red');
+
+	shape.draw();
+
+
+	
+	document.getElementById( "example-15-get").addEventListener('click', function() {
+		$( this ).parent().find('code').html( JSON.stringify( shape.getProperties(), false, "\t" ) );
+	});
+
+	document.getElementById( "example-15-set").addEventListener('click', function() {
+		var properties = { "strokeColor": [ "blue" ], "strokeWidth": [ 2 ], "position": [ { "x": "90px", "y": "30px" }, { "x": "120px", "y": "80px" } ] };
+
+		shape.setProperties( properties );
+		shape.draw();
+	});
+})();
+
+</script>
+
+### Listening to property change
+
+Any change of property should trigger the event ```propertyChanged``` which you can listen on the shape:
+
+```
+	made.arrow.on("propertyChanged", function( property ) {
+
+		$("#example-16-property").html("<div>Changed property: <code>" + property + "</code>. New value: <code>" + JSON.stringify( made.arrow.getProp( property ) ) + "</code></div>");
+	})
+
+```
+
+<div id="example-16" class="jsgraph-example"></div>
+<span id="example-16-property"></span>
+
+<script>
+( function() {
+
+	var made = makeGraph2( "example-16" );
+	made.arrow.selectable();
+	made.arrow.movable();
+	made.arrow.resizable();
+	made.arrow.hasHandles( true );
+	made.arrow.setEventReceptacle();
+	made.arrow.setSelectStyle( {
+			stroke: 'red'
+	} );
+	made.arrow.createHandles();
+	
+	made.arrow.on("propertyChanged", function( property ) {
+
+		$("#example-16-property").html("<div>Changed property: <code>" + property + "</code>. New value: <code>" + JSON.stringify( made.arrow.getProp( property ) ) + "</code></div>");
+	})
+})();
+
+</script>
+
 ## Conclusion
 
 It's time to put an end to this tutorial. I hope that creating shapes is now clear to you. Another tutorial is in preparation to showcase all the shapes that are shipped by default with jsGraph.
