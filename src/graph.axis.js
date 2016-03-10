@@ -61,7 +61,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     exponentialLabelFactor: 0,
     logScale: false,
     forcedMin: false,
-    forcedMax: false
+    forcedMax: false,
+
+    scientificScale: false,
+    scientificScaleExponent: false,
+    engineeringScale: false,
+    unit: false
   }
 
   GraphAxis.prototype = new EventEmitter();
@@ -938,11 +943,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       this.line.setAttribute( 'display', 'block' );
 
-      if ( this.options.scientific == true ) {
+      if ( this.options.scientificScale == true ) {
 
-        if ( this.options.scientificScale ) {
+        if ( this.options.scientificScaleExponent ) {
 
-          this.scientificExponent = this.options.scientificScale;
+          this.scientificExponent = this.options.scientificScaleExponent;
         } else {
           this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
         }
@@ -983,7 +988,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
         } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
-          if ( this.options.engineering ) {
+          if ( this.options.engineeringScale ) {
             this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
           }
 
@@ -2195,20 +2200,20 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @since 1.13.3
      */
     setScientific: function( on ) {
-      this.options.scientific = on;
+      this.options.scientificScale = on;
       return this;
     },
 
     /**
      * In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
-     * @param {Number} scientificScale - Forces the scientific scale to take a defined power of ten
+     * @param {Number} scientificScaleExponent - Forces the scientific scale to take a defined power of ten
      * @return {Axis} The current axis
      * @memberof Axis.prototype
      * @since 1.13.3
      * @see Axis#setScientific
      */
-    setScientificScale: function( scientificScale ) {
-      this.options.scientificScale = scientificScale;
+    setScientificScaleExponent: function( scientificScaleExponent ) {
+      this.options.scientificScaleExponent = scientificScaleExponent;
       return this;
     },
 
@@ -2221,8 +2226,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
      * @see Axis#setScientific
      */
     setEngineering: function( engineeringScaling ) {
-      this.options.scientific = engineeringScaling;
-      this.options.engineering = engineeringScaling;
+      this.options.scientificScale = engineeringScaling;
+      this.options.engineeringScale = engineeringScaling;
       return this;
     },
 

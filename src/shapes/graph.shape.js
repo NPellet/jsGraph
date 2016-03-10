@@ -438,6 +438,20 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.setProperties = function( properties ) {
     this.properties = properties;
+
+    if ( !Array.isArray( this.properties.position ) ) {
+      this.properties.position = [ this.properties.position ];
+    }
+
+    for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
+      var pos = GraphPosition.check( this.properties.position[ i ] );
+      if ( pos.relativeTo ) {
+        this.handleRelativePosition( pos, this.properties.position[ i ] );
+      }
+
+      this.properties.position[ i ] = pos;
+    }
+
     this.emit( "propertiesChanged" );
     return this;
   }
@@ -730,7 +744,11 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @return {Shape} The current shape
    */
   Shape.prototype.setLabelPosition = function( position, index ) {
-    this.setProp( 'labelPosition', GraphPosition.check( position ), index || 0 );
+    var pos = GraphPosition.check( position );
+    if ( pos.relativeTo ) {
+      this.handleRelativePosition( pos, position );
+    }
+    this.setProp( 'labelPosition', pos, index || 0 );
     return this;
   };
 
@@ -866,7 +884,12 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.setPosition = function( position, index ) {
 
-    return this.setProp( 'position', GraphPosition.check( position ), ( index || 0 ) );
+    var pos = GraphPosition.check( position );
+    if ( pos.relativeTo ) {
+      this.handleRelativePosition( pos, position );
+    }
+
+    return this.setProp( 'position', pos, ( index || 0 ) );
   };
 
   /**
@@ -1779,7 +1802,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @todo Explore a way to make it compatible for all kinds of shapes. Maybe the masker position should span the whole graph...
    */
   Shape.prototype.updateMask = function() {
-
+    return;
     if ( !this.maskDom ) {
       return;
     }

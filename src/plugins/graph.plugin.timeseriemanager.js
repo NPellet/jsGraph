@@ -48,6 +48,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
   PluginTimeSerieManager.prototype.init = function( graph, options ) {
     this.graph = graph;
     LRU.create( this.options.LRUName, 200 );
+    this.requestsRunning = 0;
 
   };
 
@@ -60,7 +61,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     this.options.intervals = arguments;
   }
 
-  PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements ) {
+  PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements, noZoneSerie ) {
     var s = this.graph.newSerie( serieName, serieOptions, serieType );
 
     this.currentSlots[ serieName ] = { 
@@ -70,7 +71,10 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     };
 
     s.setInfo( "timeSerieManagerDBElements", dbElements );
-    s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+
+    if ( !noZoneSerie ) {
+      s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+    }
 
     this.series.push( s );
     return s;
@@ -99,9 +103,12 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     var priority = 1;
 
     var optimalInterval = this.getOptimalInterval( to - from );
+    var optimalIntervalIndex = this.options.intervals.indexOf( optimalInterval );
+    var interval;
 
-    this.options.intervals.forEach( function( interval ) {
+    for ( var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++ ) {
 
+      interval = this.options.intervals[ i ];
       var startSlotId = self.computeSlotID( from, interval );
       var endSlotId = self.computeSlotID( to, interval );
 
@@ -130,7 +137,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
       } );
 
-    } );
+    }
 
     this.processRequests();
   }
@@ -182,7 +189,7 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
   PluginTimeSerieManager.prototype.processRequests = function() {
 
-    if ( this.requestsRunning == this.options.maxParallelRequests ) {
+    if ( this.requestsRunning >= this.options.maxParallelRequests ) {
       return;
     }
 
@@ -230,16 +237,19 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     } ).done( function( data ) {
 
-      self.requestsRunning--;
+      if ( data.status == 1 ) { // Success
 
-      delete self.requestLevels[ currentLevelChecking ][ i ];
+        self.requestsRunning--;
 
-      LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
-      self.processRequests();
+        delete self.requestLevels[ currentLevelChecking ][ i ];
 
-      if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+        LRU.store( self.options.LRUName, requestToMake[ 1 ], data.data ); // Element 1 is the unique ID
+        self.processRequests();
 
-        self.recalculateSeries( true );
+        if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+
+          self.recalculateSeries( true );
+        }
       }
 
     } );
@@ -314,6 +324,15 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
   PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
 
     var serie = this.graph.getSerie( serieName );
+
+    if ( !serie ) {
+      return;
+    }
+
+    if ( !serie._zoneSerie ) {
+      return;
+    }
+
     serie._zoneSerie.setXAxis( serie.getXAxis() );
     serie._zoneSerie.setYAxis( serie.getYAxis() );
     serie._zoneSerie.setFillColor( serie.getLineColor() );
@@ -386,7 +405,10 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     this.changed = true;
 
     serie.setData( data );
-    serie._zoneSerie.setData( dataMinMax );
+
+    if ( serie._zoneSerie ) {
+      serie._zoneSerie.setData( dataMinMax );
+    }
   }
 
   PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {

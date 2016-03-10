@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-51
+ * jsGraph JavaScript Graphing Library v1.13.3-52
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-02-03T22:28Z
+ * Date: 2016-03-10T09:13Z
  */
 
 ( function( global, factory ) {
@@ -3806,7 +3806,12 @@
         exponentialLabelFactor: 0,
         logScale: false,
         forcedMin: false,
-        forcedMax: false
+        forcedMax: false,
+
+        scientificScale: false,
+        scientificScaleExponent: false,
+        engineeringScale: false,
+        unit: false
       }
 
       GraphAxis.prototype = new EventEmitter();
@@ -4683,11 +4688,11 @@
 
           this.line.setAttribute( 'display', 'block' );
 
-          if ( this.options.scientific == true ) {
+          if ( this.options.scientificScale == true ) {
 
-            if ( this.options.scientificScale ) {
+            if ( this.options.scientificScaleExponent ) {
 
-              this.scientificExponent = this.options.scientificScale;
+              this.scientificExponent = this.options.scientificScaleExponent;
             } else {
               this.scientificExponent = Math.floor( Math.log( Math.max( Math.abs( this.getCurrentMax() ), Math.abs( this.getCurrentMin() ) ) ) / Math.log( 10 ) );
             }
@@ -4728,7 +4733,7 @@
 
             } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
-              if ( this.options.engineering ) {
+              if ( this.options.engineeringScale ) {
                 this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
               }
 
@@ -5940,20 +5945,20 @@
          * @since 1.13.3
          */
         setScientific: function( on ) {
-          this.options.scientific = on;
+          this.options.scientificScale = on;
           return this;
         },
 
         /**
          * In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
-         * @param {Number} scientificScale - Forces the scientific scale to take a defined power of ten
+         * @param {Number} scientificScaleExponent - Forces the scientific scale to take a defined power of ten
          * @return {Axis} The current axis
          * @memberof Axis.prototype
          * @since 1.13.3
          * @see Axis#setScientific
          */
-        setScientificScale: function( scientificScale ) {
-          this.options.scientificScale = scientificScale;
+        setScientificScaleExponent: function( scientificScaleExponent ) {
+          this.options.scientificScaleExponent = scientificScaleExponent;
           return this;
         },
 
@@ -5966,8 +5971,8 @@
          * @see Axis#setScientific
          */
         setEngineering: function( engineeringScaling ) {
-          this.options.scientific = engineeringScaling;
-          this.options.engineering = engineeringScaling;
+          this.options.scientificScale = engineeringScaling;
+          this.options.engineeringScale = engineeringScaling;
           return this;
         },
 
@@ -8262,6 +8267,11 @@
 
           this.update();
           this.series = series;
+        },
+
+        fixSeriesAdd: function( serie ) {
+          this.series = this.series || [];
+          this.series.push( serie );
         }
 
       };
@@ -9571,6 +9581,7 @@
       PluginTimeSerieManager.prototype.init = function( graph, options ) {
         this.graph = graph;
         LRU.create( this.options.LRUName, 200 );
+        this.requestsRunning = 0;
 
       };
 
@@ -9583,7 +9594,7 @@
         this.options.intervals = arguments;
       }
 
-      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements ) {
+      PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements, noZoneSerie ) {
         var s = this.graph.newSerie( serieName, serieOptions, serieType );
 
         this.currentSlots[ serieName ] = {
@@ -9593,7 +9604,10 @@
         };
 
         s.setInfo( "timeSerieManagerDBElements", dbElements );
-        s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+
+        if ( !noZoneSerie ) {
+          s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+        }
 
         this.series.push( s );
         return s;
@@ -9622,9 +9636,12 @@
         var priority = 1;
 
         var optimalInterval = this.getOptimalInterval( to - from );
+        var optimalIntervalIndex = this.options.intervals.indexOf( optimalInterval );
+        var interval;
 
-        this.options.intervals.forEach( function( interval ) {
+        for ( var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++ ) {
 
+          interval = this.options.intervals[ i ];
           var startSlotId = self.computeSlotID( from, interval );
           var endSlotId = self.computeSlotID( to, interval );
 
@@ -9653,7 +9670,7 @@
 
           } );
 
-        } );
+        }
 
         this.processRequests();
       }
@@ -9705,7 +9722,7 @@
 
       PluginTimeSerieManager.prototype.processRequests = function() {
 
-        if ( this.requestsRunning == this.options.maxParallelRequests ) {
+        if ( this.requestsRunning >= this.options.maxParallelRequests ) {
           return;
         }
 
@@ -9753,16 +9770,19 @@
 
         } ).done( function( data ) {
 
-          self.requestsRunning--;
+          if ( data.status == 1 ) { // Success
 
-          delete self.requestLevels[ currentLevelChecking ][ i ];
+            self.requestsRunning--;
 
-          LRU.store( self.options.LRUName, requestToMake[ 1 ], data ); // Element 1 is the unique ID
-          self.processRequests();
+            delete self.requestLevels[ currentLevelChecking ][ i ];
 
-          if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+            LRU.store( self.options.LRUName, requestToMake[ 1 ], data.data ); // Element 1 is the unique ID
+            self.processRequests();
 
-            self.recalculateSeries( true );
+            if ( requestToMake[ 5 ] == 1 && Object.keys( self.requestLevels[ 1 ] ).length == 0 ) {
+
+              self.recalculateSeries( true );
+            }
           }
 
         } );
@@ -9837,6 +9857,15 @@
       PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
 
         var serie = this.graph.getSerie( serieName );
+
+        if ( !serie ) {
+          return;
+        }
+
+        if ( !serie._zoneSerie ) {
+          return;
+        }
+
         serie._zoneSerie.setXAxis( serie.getXAxis() );
         serie._zoneSerie.setYAxis( serie.getYAxis() );
         serie._zoneSerie.setFillColor( serie.getLineColor() );
@@ -9909,7 +9938,10 @@
         this.changed = true;
 
         serie.setData( data );
-        serie._zoneSerie.setData( dataMinMax );
+
+        if ( serie._zoneSerie ) {
+          serie._zoneSerie.setData( dataMinMax );
+        }
       }
 
       PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
@@ -15855,6 +15887,20 @@
        */
       Shape.prototype.setProperties = function( properties ) {
         this.properties = properties;
+
+        if ( !Array.isArray( this.properties.position ) ) {
+          this.properties.position = [ this.properties.position ];
+        }
+
+        for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
+          var pos = GraphPosition.check( this.properties.position[ i ] );
+          if ( pos.relativeTo ) {
+            this.handleRelativePosition( pos, this.properties.position[ i ] );
+          }
+
+          this.properties.position[ i ] = pos;
+        }
+
         this.emit( "propertiesChanged" );
         return this;
       }
@@ -16147,7 +16193,11 @@
        * @return {Shape} The current shape
        */
       Shape.prototype.setLabelPosition = function( position, index ) {
-        this.setProp( 'labelPosition', GraphPosition.check( position ), index || 0 );
+        var pos = GraphPosition.check( position );
+        if ( pos.relativeTo ) {
+          this.handleRelativePosition( pos, position );
+        }
+        this.setProp( 'labelPosition', pos, index || 0 );
         return this;
       };
 
@@ -16283,7 +16333,12 @@
        */
       Shape.prototype.setPosition = function( position, index ) {
 
-        return this.setProp( 'position', GraphPosition.check( position ), ( index || 0 ) );
+        var pos = GraphPosition.check( position );
+        if ( pos.relativeTo ) {
+          this.handleRelativePosition( pos, position );
+        }
+
+        return this.setProp( 'position', pos, ( index || 0 ) );
       };
 
       /**
@@ -17196,7 +17251,7 @@
        * @todo Explore a way to make it compatible for all kinds of shapes. Maybe the masker position should span the whole graph...
        */
       Shape.prototype.updateMask = function() {
-
+        return;
         if ( !this.maskDom ) {
           return;
         }

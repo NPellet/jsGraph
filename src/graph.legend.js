@@ -507,6 +507,11 @@ define( [ "./graph.position" ], function( GraphPosition ) {
 
       this.update();
       this.series = series;
+    },
+
+    fixSeriesAdd: function( serie ) {
+      this.series = this.series || [];
+      this.series.push( serie );
     }
 
   };
