@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-52
+ * jsGraph JavaScript Graphing Library v1.13.3-53
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-03-10T09:13Z
+ * Date: 2016-03-11T16:28Z
  */
 
 ( function( global, factory ) {
@@ -11926,7 +11926,7 @@
             x = data[ i ][ j + incrXFlip ];
             y = data[ i ][ j + incrYFlip ];
 
-            if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) {
+            if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
               lastX = x;
               lastY = y;
               lastPointOutside = true;
