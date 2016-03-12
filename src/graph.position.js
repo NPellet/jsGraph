@@ -280,11 +280,22 @@ define( [], function() {
     return this;
   };
 
-  Position.check = function( pos ) {
+  Position.check = function( pos, callback ) {
     if ( pos instanceof Position ) {
       return pos;
     }
-    return new Position( pos );
+
+    var posObject = new Position( pos );
+
+    if ( pos.relativeTo ) {
+      var position;
+      if ( position = callback( pos.relativeTo ) ) {
+        posObject.relativeTo( position );
+      }
+    }
+
+    return posObject;
+
   }
 
   function _parsePx( px ) {

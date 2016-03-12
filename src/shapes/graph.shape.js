@@ -444,16 +444,27 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     }
 
     for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-      var pos = GraphPosition.check( this.properties.position[ i ] );
-      if ( pos.relativeTo ) {
-        this.handleRelativePosition( pos, this.properties.position[ i ] );
-      }
+      var self = this;
+      var pos = GraphPosition.check( this.properties.position[ i ], function( relativeTo ) {
+        return self.getRelativePosition( relativeTo );
+      } );
 
       this.properties.position[ i ] = pos;
     }
 
     this.emit( "propertiesChanged" );
     return this;
+  }
+
+  Shape.prototype.getRelativePosition = function( relativePosition ) {
+
+    var result;
+    if ( ( result = /position([0-9]*)/.exec( relativePosition ) ) !== null ) {
+      return this.getPosition( result[ 1 ] );
+    } else if ( ( result = /labelPosition([0-9]*)/.exec( relativePosition ) ) !== null ) {
+      return this.getLabelPosition( result[ 1 ] );
+    }
+
   }
 
   /**
@@ -744,10 +755,12 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @return {Shape} The current shape
    */
   Shape.prototype.setLabelPosition = function( position, index ) {
-    var pos = GraphPosition.check( position );
-    if ( pos.relativeTo ) {
-      this.handleRelativePosition( pos, position );
-    }
+
+    var self;
+    var pos = GraphPosition.check( position, function( relativeTo ) {
+      return self.getRelativePosition( relativeTo );
+    } );
+
     this.setProp( 'labelPosition', pos, index || 0 );
     return this;
   };
@@ -884,10 +897,10 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.setPosition = function( position, index ) {
 
-    var pos = GraphPosition.check( position );
-    if ( pos.relativeTo ) {
-      this.handleRelativePosition( pos, position );
-    }
+    var self = this;
+    var pos = GraphPosition.check( position, function( relativeTo ) {
+      return self.getRelativePosition( relativeTo );
+    } );
 
     return this.setProp( 'position', pos, ( index || 0 ) );
   };

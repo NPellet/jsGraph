@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-54
+ * jsGraph JavaScript Graphing Library v1.13.3-55
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-03-11T16:29Z
+ * Date: 2016-03-12T18:20Z
  */
 
 ( function( global, factory ) {
@@ -321,11 +321,22 @@
         return this;
       };
 
-      Position.check = function( pos ) {
+      Position.check = function( pos, callback ) {
         if ( pos instanceof Position ) {
           return pos;
         }
-        return new Position( pos );
+
+        var posObject = new Position( pos );
+
+        if ( pos.relativeTo ) {
+          var position;
+          if ( position = callback( pos.relativeTo ) ) {
+            posObject.relativeTo( position );
+          }
+        }
+
+        return posObject;
+
       }
 
       function _parsePx( px ) {
@@ -15893,16 +15904,27 @@
         }
 
         for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-          var pos = GraphPosition.check( this.properties.position[ i ] );
-          if ( pos.relativeTo ) {
-            this.handleRelativePosition( pos, this.properties.position[ i ] );
-          }
+          var self = this;
+          var pos = GraphPosition.check( this.properties.position[ i ], function( relativeTo ) {
+            return self.getRelativePosition( relativeTo );
+          } );
 
           this.properties.position[ i ] = pos;
         }
 
         this.emit( "propertiesChanged" );
         return this;
+      }
+
+      Shape.prototype.getRelativePosition = function( relativePosition ) {
+
+        var result;
+        if ( ( result = /position([0-9]*)/.exec( relativePosition ) ) !== null ) {
+          return this.getPosition( result[ 1 ] );
+        } else if ( ( result = /labelPosition([0-9]*)/.exec( relativePosition ) ) !== null ) {
+          return this.getLabelPosition( result[ 1 ] );
+        }
+
       }
 
       /**
@@ -16193,10 +16215,12 @@
        * @return {Shape} The current shape
        */
       Shape.prototype.setLabelPosition = function( position, index ) {
-        var pos = GraphPosition.check( position );
-        if ( pos.relativeTo ) {
-          this.handleRelativePosition( pos, position );
-        }
+
+        var self;
+        var pos = GraphPosition.check( position, function( relativeTo ) {
+          return self.getRelativePosition( relativeTo );
+        } );
+
         this.setProp( 'labelPosition', pos, index || 0 );
         return this;
       };
@@ -16333,10 +16357,10 @@
        */
       Shape.prototype.setPosition = function( position, index ) {
 
-        var pos = GraphPosition.check( position );
-        if ( pos.relativeTo ) {
-          this.handleRelativePosition( pos, position );
-        }
+        var self = this;
+        var pos = GraphPosition.check( position, function( relativeTo ) {
+          return self.getRelativePosition( relativeTo );
+        } );
 
         return this.setProp( 'position', pos, ( index || 0 ) );
       };
