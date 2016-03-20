@@ -1926,12 +1926,14 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       var possible = true;
       for ( var k = 0, m = level[ i ].length; k < m; k++ ) {
-        if ( !( ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 1 ] ) || ( ( span[ 0 ] > level[ i ][ k ][ 0 ] && span[ 1 ] > level[ i ][ k ][ 1 ] ) ) ) ) {
+
+        if ( !( ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 0 ] ) || ( ( span[ 0 ] > level[ i ][ k ][ 1 ] && span[ 1 ] > level[ i ][ k ][ 1 ] ) ) ) ) {
           possible = false;
         }
       }
 
       if ( possible ) {
+
         level[ i ].push( span );
         return i;
       }
@@ -2023,18 +2025,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
       axis.setLevel( level );
 
-      shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
-
-    }, false, false, true );
-
-    // Apply to left and right
-    graph._applyToAxes( function( axis, position ) {
-
-      if ( axis.disabled ||  axis.floating ) {
-        return;
-      }
-
-      axis.setShift( shift[ position ][ axis.getLevel() ] );
+      shift[ position ][ level ] = Math.max( drawn + axis.getAxisPosition(), shift[ position ][ level ] || 0 );
 
     }, false, false, true );
 
@@ -2045,6 +2036,24 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     var shiftRight = shift.right.reduce( function( prev, curr ) {
       return prev + curr;
     }, 0 );
+
+    [ shift.left, shift.right ].map( function( arr ) {
+      arr.reduce( function( prev, current, index ) {
+        arr[ index ] = prev + current;
+        return prev + current;
+      }, 0 );
+    } );
+
+    // Apply to left and right
+    graph._applyToAxes( function( axis, position ) {
+
+      if ( axis.disabled ||  axis.floating ) {
+        return;
+      }
+      console.log( axis.getLevel(), axis );
+      axis.setShift( shift[ position ][ axis.getLevel() ] );
+
+    }, false, false, true );
 
     // Apply to top and bottom
     graph._applyToAxes( function( axis, position ) {
@@ -2063,13 +2072,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       axis.draw();
 
     }, false, true, false );
-
-    [ shift.left, shift.right ].map( function( arr ) {
-      arr.reduce( function( prev, current, index ) {
-        arr[ index ] = prev;
-        return prev + current;
-      }, 0 );
-    } );
 
     graph._applyToAxes( function( axis ) {
 

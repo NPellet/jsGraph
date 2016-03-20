@@ -151,6 +151,16 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     handleMouseMoveLocal: function( x, y, e ) {
       x -= this.graph.getPaddingLeft();
       this.mouseVal = this.getVal( x );
+    },
+
+    setMinMaxFlipped: function() {
+
+      var interval = this.maxPx - this.minPx;
+      var maxPx = interval * this.span[ 1 ] + this.minPx;
+      var minPx = interval * this.span[ 0 ] + this.minPx;
+
+      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
     }
 
   } );

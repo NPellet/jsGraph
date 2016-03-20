@@ -10,6 +10,9 @@
          "title": "Axes unit and scientific scaling"
     },
 
+    "9-axisspan": {
+         "title": "Axes spanning"
+    },
 
     "4-shapes": {
          "title": "Handling shapes (basic)"

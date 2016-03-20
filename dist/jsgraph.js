@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-57
+ * jsGraph JavaScript Graphing Library v1.13.3-58
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-03-20T13:36Z
+ * Date: 2016-03-20T15:05Z
  */
 
 ( function( global, factory ) {
@@ -3035,12 +3035,14 @@
 
           var possible = true;
           for ( var k = 0, m = level[ i ].length; k < m; k++ ) {
-            if ( !( ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 1 ] ) || ( ( span[ 0 ] > level[ i ][ k ][ 0 ] && span[ 1 ] > level[ i ][ k ][ 1 ] ) ) ) ) {
+
+            if ( !( ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 0 ] ) || ( ( span[ 0 ] > level[ i ][ k ][ 1 ] && span[ 1 ] > level[ i ][ k ][ 1 ] ) ) ) ) {
               possible = false;
             }
           }
 
           if ( possible ) {
+
             level[ i ].push( span );
             return i;
           }
@@ -3132,18 +3134,7 @@
           var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
           axis.setLevel( level );
 
-          shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
-
-        }, false, false, true );
-
-        // Apply to left and right
-        graph._applyToAxes( function( axis, position ) {
-
-          if ( axis.disabled || axis.floating ) {
-            return;
-          }
-
-          axis.setShift( shift[ position ][ axis.getLevel() ] );
+          shift[ position ][ level ] = Math.max( drawn + axis.getAxisPosition(), shift[ position ][ level ] || 0 );
 
         }, false, false, true );
 
@@ -3154,6 +3145,24 @@
         var shiftRight = shift.right.reduce( function( prev, curr ) {
           return prev + curr;
         }, 0 );
+
+        [ shift.left, shift.right ].map( function( arr ) {
+          arr.reduce( function( prev, current, index ) {
+            arr[ index ] = prev + current;
+            return prev + current;
+          }, 0 );
+        } );
+
+        // Apply to left and right
+        graph._applyToAxes( function( axis, position ) {
+
+          if ( axis.disabled || axis.floating ) {
+            return;
+          }
+          console.log( axis.getLevel(), axis );
+          axis.setShift( shift[ position ][ axis.getLevel() ] );
+
+        }, false, false, true );
 
         // Apply to top and bottom
         graph._applyToAxes( function( axis, position ) {
@@ -3172,13 +3181,6 @@
           axis.draw();
 
         }, false, true, false );
-
-        [ shift.left, shift.right ].map( function( arr ) {
-          arr.reduce( function( prev, current, index ) {
-            arr[ index ] = prev;
-            return prev + current;
-          }, 0 );
-        } );
 
         graph._applyToAxes( function( axis ) {
 
@@ -4257,16 +4259,6 @@
         this.setMinMaxFlipped();
       };
 
-      GraphAxis.prototype.setMinMaxFlipped = function() {
-
-        var interval = this.maxPx - this.minPx;
-        var maxPx = interval * this.span[ 1 ] + this.minPx;
-        var minPx = interval * this.span[ 0 ] + this.minPx;
-
-        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-      };
-
       /**
        * @memberof GraphAxis
        * @return {Number} The position in px of the bottom of the axis
@@ -4772,9 +4764,6 @@
 
         //var widthPx = this.maxPx - this.minPx;
         var widthPx = Math.abs( this.getMaxPx() - this.getMinPx() );
-
-        console.log( this, widthPx );
-
         var valrange = this.getCurrentInterval();
 
         /* Number of px per unit */
@@ -6301,6 +6290,16 @@
         handleMouseMoveLocal: function( x, y, e ) {
           x -= this.graph.getPaddingLeft();
           this.mouseVal = this.getVal( x );
+        },
+
+        setMinMaxFlipped: function() {
+
+          var interval = this.maxPx - this.minPx;
+          var maxPx = interval * this.span[ 1 ] + this.minPx;
+          var minPx = interval * this.span[ 0 ] + this.minPx;
+
+          this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+          this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
         }
 
       } );
@@ -6581,6 +6580,16 @@
           }
 
           return this;
+        },
+
+        setMinMaxFlipped: function() {
+
+          var interval = this.maxPx - this.minPx;
+          var maxPx = this.maxPx - interval * this.span[ 0 ];
+          var minPx = this.maxPx - interval * this.span[ 1 ];
+
+          this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+          this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
         }
 
       } );

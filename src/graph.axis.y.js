@@ -263,6 +263,16 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       }
 
       return this;
+    },
+
+    setMinMaxFlipped: function() {
+
+      var interval = this.maxPx - this.minPx;
+      var maxPx = this.maxPx - interval * this.span[ 0 ];
+      var minPx = this.maxPx - interval * this.span[ 1 ];
+
+      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
     }
 
   } );

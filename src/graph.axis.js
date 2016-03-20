@@ -417,16 +417,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     this.setMinMaxFlipped();
   };
 
-  GraphAxis.prototype.setMinMaxFlipped = function() {
-
-    var interval = this.maxPx - this.minPx;
-    var maxPx = interval * this.span[ 1 ] + this.minPx;
-    var minPx = interval * this.span[ 0 ] + this.minPx;
-
-    this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-    this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-  };
-
   /**
    * @memberof GraphAxis
    * @return {Number} The position in px of the bottom of the axis
@@ -932,9 +922,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     //var widthPx = this.maxPx - this.minPx;
     var widthPx = Math.abs( this.getMaxPx() - this.getMinPx() );
-
-    console.log( this, widthPx );
-
     var valrange = this.getCurrentInterval();
 
     /* Number of px per unit */
