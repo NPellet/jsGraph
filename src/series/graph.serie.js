@@ -456,10 +456,13 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    */
   Serie.prototype.setXAxis = function( axis ) {
 
-    if ( typeof axis == "number" )
+    if ( typeof axis == "number" ) {
       this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
-    else
+    } else {
       this.xaxis = axis;
+    }
+
+    this.graph.updateDataMinMaxAxes();
 
     return this;
   };
@@ -472,10 +475,13 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
    */
   Serie.prototype.setYAxis = function( axis ) {
-    if ( typeof axis == "number" )
+    if ( typeof axis == "number" ) {
       this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
-    else
+    } else {
       this.yaxis = axis;
+    }
+
+    this.graph.updateDataMinMaxAxes();
 
     return this;
   };

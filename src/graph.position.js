@@ -287,7 +287,7 @@ define( [], function() {
 
     var posObject = new Position( pos );
 
-    if ( pos.relativeTo ) {
+    if ( pos && pos.relativeTo ) {
       var position;
       if ( position = callback( pos.relativeTo ) ) {
         posObject.relativeTo( position );

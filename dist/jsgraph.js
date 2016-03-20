@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-56
+ * jsGraph JavaScript Graphing Library v1.13.3-57
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-03-20T11:03Z
+ * Date: 2016-03-20T13:36Z
  */
 
 ( function( global, factory ) {
@@ -328,7 +328,7 @@
 
         var posObject = new Position( pos );
 
-        if ( pos.relativeTo ) {
+        if ( pos && pos.relativeTo ) {
           var position;
           if ( position = callback( pos.relativeTo ) ) {
             posObject.relativeTo( position );
@@ -1785,6 +1785,7 @@
          * @memberof Graph.prototype
          */
         autoscaleAxes: function() {
+
           this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
 
           //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
@@ -1828,6 +1829,7 @@
          * @returns {Number} The minimimum or maximum of the axis based on its series
          */
         getBoundaryAxisFromSeries: function( axis, minmax ) {
+
           var min = minmax == 'min',
             val,
             func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
@@ -3027,14 +3029,42 @@
         return serie;
       };
 
+      function getAxisLevelFromSpan( span, level ) {
+
+        for ( var i = 0, l = level.length; i < l; i++ ) {
+
+          var possible = true;
+          for ( var k = 0, m = level[ i ].length; k < m; k++ ) {
+            if ( !( ( span[ 0 ] < level[ i ][ k ][ 0 ] && span[ 1 ] < level[ i ][ k ][ 1 ] ) || ( ( span[ 0 ] > level[ i ][ k ][ 0 ] && span[ 1 ] > level[ i ][ k ][ 1 ] ) ) ) ) {
+              possible = false;
+            }
+          }
+
+          if ( possible ) {
+            level[ i ].push( span );
+            return i;
+          }
+        }
+
+        level.push( [ span ] );
+        return ( level.length - 1 );
+      }
+
       function refreshDrawingZone( graph ) {
 
         var i, j, l, xy, min, max, axis;
         var shift = {
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0
+          top: [],
+          bottom: [],
+          left: [],
+          right: []
+        };
+
+        var levels = {
+          top: [],
+          bottom: [],
+          left: [],
+          right: []
         };
 
         graph._painted = true;
@@ -3046,8 +3076,36 @@
             return;
           }
 
-          axis.setShift( shift[ position ] + axis.getAxisPosition(), axis.getAxisPosition() );
-          shift[ position ] += axis.getAxisPosition(); // Allow for the extra width/height of position shift
+          var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
+          axis.setLevel( level );
+
+          shift[ position ][ level ] = Math.max( axis.getAxisPosition(), ( shift[ position ][ level ] || 0 ) );
+
+        }, false, true, false );
+
+        var shiftTop = shift.top.reduce( function( prev, curr ) {
+          return prev + curr;
+        }, 0 );
+
+        var shiftBottom = shift.bottom.reduce( function( prev, curr ) {
+          return prev + curr;
+        }, 0 );
+
+        [ shift.top, shift.bottom ].map( function( arr ) {
+          arr.reduce( function( prev, current, index ) {
+            arr[ index ] = prev + current;
+            return prev + current;
+          }, 0 );
+        } );
+
+        // Apply to top and bottom
+        graph._applyToAxes( function( axis, position ) {
+
+          if ( axis.disabled || axis.floating ) {
+            return;
+          }
+
+          axis.setShift( shift[ position ][ axis.getLevel() ] );
 
         }, false, true, false );
 
@@ -3058,8 +3116,8 @@
             return;
           }
 
-          axis.setMinPx( shift.top );
-          axis.setMaxPx( graph.getDrawingHeight( true ) - shift.bottom );
+          axis.setMinPx( shiftTop );
+          axis.setMaxPx( graph.getDrawingHeight( true ) - shiftBottom );
 
           if ( axis.floating ) {
             return;
@@ -3068,15 +3126,34 @@
           // First we need to draw it in order to determine the width to allocate
           // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-          var drawn = axis.draw() || 0,
-            axisDim = axis.getAxisPosition();
-
+          var drawn = axis.draw();
           // Get axis position gives the extra shift that is common
 
-          shift[ position ] += drawn + axisDim;
-          axis.setShift( shift[ position ], drawn + axisDim );
+          var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
+          axis.setLevel( level );
+
+          shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
 
         }, false, false, true );
+
+        // Apply to left and right
+        graph._applyToAxes( function( axis, position ) {
+
+          if ( axis.disabled || axis.floating ) {
+            return;
+          }
+
+          axis.setShift( shift[ position ][ axis.getLevel() ] );
+
+        }, false, false, true );
+
+        var shiftLeft = shift.left.reduce( function( prev, curr ) {
+          return prev + curr;
+        }, 0 );
+
+        var shiftRight = shift.right.reduce( function( prev, curr ) {
+          return prev + curr;
+        }, 0 );
 
         // Apply to top and bottom
         graph._applyToAxes( function( axis, position ) {
@@ -3085,8 +3162,8 @@
             return;
           }
 
-          axis.setMinPx( shift.left );
-          axis.setMaxPx( graph.getDrawingWidth( true ) - shift.right );
+          axis.setMinPx( shiftLeft );
+          axis.setMaxPx( graph.getDrawingWidth( true ) - shiftRight );
 
           if ( axis.floating ) {
             return;
@@ -3095,6 +3172,13 @@
           axis.draw();
 
         }, false, true, false );
+
+        [ shift.left, shift.right ].map( function( arr ) {
+          arr.reduce( function( prev, current, index ) {
+            arr[ index ] = prev;
+            return prev + current;
+          }, 0 );
+        } );
 
         graph._applyToAxes( function( axis ) {
 
@@ -3111,20 +3195,20 @@
 
         }, false, true, true );
 
-        _closeLine( graph, 'right', graph.getDrawingWidth( true ), graph.getDrawingWidth( true ), shift.top, graph.getDrawingHeight( true ) - shift.bottom );
-        _closeLine( graph, 'left', 0, 0, shift.top, graph.getDrawingHeight( true ) - shift.bottom );
-        _closeLine( graph, 'top', shift.left, graph.getDrawingWidth( true ) - shift.right, 0, 0 );
-        _closeLine( graph, 'bottom', shift.left, graph.getDrawingWidth( true ) - shift.right, graph.getDrawingHeight( true ) - shift.bottom, graph.getDrawingHeight( true ) - shift.bottom );
+        _closeLine( graph, 'right', graph.getDrawingWidth( true ), graph.getDrawingWidth( true ), shiftTop, graph.getDrawingHeight( true ) - shiftBottom );
+        _closeLine( graph, 'left', 0, 0, shiftTop, graph.getDrawingHeight( true ) - shiftBottom );
+        _closeLine( graph, 'top', shiftLeft, graph.getDrawingWidth( true ) - shiftRight, 0, 0 );
+        _closeLine( graph, 'bottom', shiftLeft, graph.getDrawingWidth( true ) - shiftRight, graph.getDrawingHeight( true ) - shiftBottom, graph.getDrawingHeight( true ) - shiftBottom );
 
-        graph.clipRect.setAttribute( 'y', shift.top );
-        graph.clipRect.setAttribute( 'x', shift.left );
-        graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
-        graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
+        graph.clipRect.setAttribute( 'y', shiftTop );
+        graph.clipRect.setAttribute( 'x', shiftLeft );
+        graph.clipRect.setAttribute( 'width', graph.getDrawingWidth() - shiftLeft - shiftRight );
+        graph.clipRect.setAttribute( 'height', graph.getDrawingHeight() - shiftTop - shiftBottom );
 
-        graph.rectEvent.setAttribute( 'y', shift.top + graph.getPaddingTop() );
-        graph.rectEvent.setAttribute( 'x', shift.left + graph.getPaddingLeft() );
-        graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shift.left - shift.right );
-        graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shift.top - shift.bottom );
+        graph.rectEvent.setAttribute( 'y', shiftTop + graph.getPaddingTop() );
+        graph.rectEvent.setAttribute( 'x', shiftLeft + graph.getPaddingLeft() );
+        graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shiftLeft - shiftRight );
+        graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shiftTop - shiftBottom );
 
         /*
 		graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -3885,6 +3969,8 @@
 
         this.label.setAttribute( 'text-anchor', 'middle' );
 
+        this.span = [ 0, 1 ];
+
         this.gridLinePath = {
           primary: "",
           secondary: ""
@@ -4172,8 +4258,13 @@
       };
 
       GraphAxis.prototype.setMinMaxFlipped = function() {
-        this.minPxFlipped = this.isFlipped() ? this.maxPx : this.minPx;
-        this.maxPxFlipped = this.isFlipped() ? this.minPx : this.maxPx;
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = interval * this.span[ 1 ] + this.minPx;
+        var minPx = interval * this.span[ 0 ] + this.minPx;
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
       };
 
       /**
@@ -4679,7 +4770,11 @@
 
         // The data min max is stored in this.dataMin, this.dataMax
 
-        var widthPx = this.maxPx - this.minPx;
+        //var widthPx = this.maxPx - this.minPx;
+        var widthPx = Math.abs( this.getMaxPx() - this.getMinPx() );
+
+        console.log( this, widthPx );
+
         var valrange = this.getCurrentInterval();
 
         /* Number of px per unit */
@@ -5470,9 +5565,28 @@
         return this.options.labelValue;
       };
 
-      GraphAxis.prototype.setShift = function( shift, totalDimension ) {
+      GraphAxis.prototype.setSpan = function( _from, _to ) {
+
+        this.span = [ _from, _to ];
+        return this;
+      };
+
+      GraphAxis.prototype.getSpan = function() {
+        return this.span;
+      }
+
+      GraphAxis.prototype.setLevel = function( level ) {
+        this._level = level;
+        return this;
+      }
+
+      GraphAxis.prototype.getLevel = function() {
+        return this._level;
+      }
+
+      GraphAxis.prototype.setShift = function( shift ) {
         this.shift = shift;
-        this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
+        //this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
         this._setShift();
       };
 
@@ -5596,6 +5710,9 @@
       GraphAxis.prototype.gridsOff = function() {
         return this.setGrids( false );
       };
+
+      GraphAxis.prototype.turnGridsOff = GraphAxis.prototype.gridsOff;
+      GraphAxis.prototype.turnGridsOn = GraphAxis.prototype.gridsOn;
 
       /**
        * Sets the axis color
@@ -6074,7 +6191,7 @@
         },
 
         _setShift: function() {
-          if ( !this.getShift() || !this.graph.getDrawingHeight() ) {
+          if ( this.getShift() === undefined || !this.graph.getDrawingHeight() ) {
             return;
           }
 
@@ -6155,6 +6272,7 @@
           this.line.setAttribute( 'stroke', this.getAxisColor() );
 
           if ( !this.top ) {
+
             this.labelTspan.style.dominantBaseline = 'hanging';
             this.expTspan.style.dominantBaseline = 'hanging';
             this.expTspanExp.style.dominantBaseline = 'hanging';
@@ -10472,10 +10590,13 @@
        */
       Serie.prototype.setXAxis = function( axis ) {
 
-        if ( typeof axis == "number" )
+        if ( typeof axis == "number" ) {
           this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
-        else
+        } else {
           this.xaxis = axis;
+        }
+
+        this.graph.updateDataMinMaxAxes();
 
         return this;
       };
@@ -10488,10 +10609,13 @@
        * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
        */
       Serie.prototype.setYAxis = function( axis ) {
-        if ( typeof axis == "number" )
+        if ( typeof axis == "number" ) {
           this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
-        else
+        } else {
           this.yaxis = axis;
+        }
+
+        this.graph.updateDataMinMaxAxes();
 
         return this;
       };

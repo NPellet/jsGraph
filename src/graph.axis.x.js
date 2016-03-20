@@ -41,7 +41,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     },
 
     _setShift: function() {
-      if ( !this.getShift() ||  !this.graph.getDrawingHeight() ) {
+      if ( this.getShift() === undefined || !this.graph.getDrawingHeight() ) {
         return;
       }
 
@@ -122,6 +122,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
       this.line.setAttribute( 'stroke', this.getAxisColor() );
 
       if ( !this.top ) {
+
         this.labelTspan.style.dominantBaseline = 'hanging';
         this.expTspan.style.dominantBaseline = 'hanging';
         this.expTspanExp.style.dominantBaseline = 'hanging';

@@ -129,6 +129,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     this.label.setAttribute( 'text-anchor', 'middle' );
 
+    this.span = [ 0, 1 ];
+
     this.gridLinePath = {
       primary: "",
       secondary: ""
@@ -416,8 +418,13 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
   };
 
   GraphAxis.prototype.setMinMaxFlipped = function() {
-    this.minPxFlipped = this.isFlipped() ? this.maxPx : this.minPx;
-    this.maxPxFlipped = this.isFlipped() ? this.minPx : this.maxPx;
+
+    var interval = this.maxPx - this.minPx;
+    var maxPx = interval * this.span[ 1 ] + this.minPx;
+    var minPx = interval * this.span[ 0 ] + this.minPx;
+
+    this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+    this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
   };
 
   /**
@@ -923,7 +930,11 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     // The data min max is stored in this.dataMin, this.dataMax
 
-    var widthPx = this.maxPx - this.minPx;
+    //var widthPx = this.maxPx - this.minPx;
+    var widthPx = Math.abs( this.getMaxPx() - this.getMinPx() );
+
+    console.log( this, widthPx );
+
     var valrange = this.getCurrentInterval();
 
     /* Number of px per unit */
@@ -1714,9 +1725,28 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     return this.options.labelValue;
   };
 
-  GraphAxis.prototype.setShift = function( shift, totalDimension ) {
+  GraphAxis.prototype.setSpan = function( _from, _to ) {
+
+    this.span = [ _from, _to ];
+    return this;
+  };
+
+  GraphAxis.prototype.getSpan = function() {
+    return this.span;
+  }
+
+  GraphAxis.prototype.setLevel = function( level ) {
+    this._level = level;
+    return this;
+  }
+
+  GraphAxis.prototype.getLevel = function() {
+    return this._level;
+  }
+
+  GraphAxis.prototype.setShift = function( shift ) {
     this.shift = shift;
-    this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
+    //this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
     this._setShift();
   };
 
@@ -1840,6 +1870,9 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
   GraphAxis.prototype.gridsOff = function() {
     return this.setGrids( false );
   };
+
+  GraphAxis.prototype.turnGridsOff = GraphAxis.prototype.gridsOff;
+  GraphAxis.prototype.turnGridsOn = GraphAxis.prototype.gridsOn;
 
   /**
    * Sets the axis color
