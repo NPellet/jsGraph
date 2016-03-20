@@ -86,8 +86,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
     this.hasChanged = true;
-    this.groupGrids = document.createElementNS( this.graph.ns, 'g' );
-    this.graph.axisGroup.insertBefore( this.groupGrids, this.graph.axisGroup.firstChild );
+
     this.rectEvent = document.createElementNS( this.graph.ns, 'rect' );
     this.rectEvent.setAttribute( 'pointer-events', 'fill' );
     this.rectEvent.setAttribute( 'fill', 'transparent' );
@@ -139,10 +138,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     this.gridPrimary = document.createElementNS( this.graph.ns, "path" );
     this.gridSecondary = document.createElementNS( this.graph.ns, "path" );
 
-    this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
-
-    this.groupGrids.appendChild( this.gridSecondary );
-    this.groupGrids.appendChild( this.gridPrimary );
+    this.graph.groupPrimaryGrids.appendChild( this.gridPrimary );
+    this.graph.groupSecondaryGrids.appendChild( this.gridSecondary );
 
     this.setGridLinesStyle();
 
@@ -1316,12 +1313,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     this.currentTickLabel = 0;
 
   };
-
-  GraphAxis.prototype.doGridLine = function() {
-    var gridLine = document.createElementNS( this.graph.ns, 'line' );
-    this.groupGrids.appendChild( gridLine );
-    return gridLine;
-  };
+  /*
+    GraphAxis.prototype.doGridLine = function() {
+      var gridLine = document.createElementNS( this.graph.ns, 'line' );
+      this.groupGrids.appendChild( gridLine );
+      return gridLine;
+    };*/
 
   GraphAxis.prototype.nextGridLine = function( primary, x1, x2, y1, y2 ) {
 

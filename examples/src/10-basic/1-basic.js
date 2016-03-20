@@ -4,16 +4,17 @@ define( function() {
 	return [ function( domGraph ) {
 
 	var graph = new Graph( domGraph );
-  graph.getYAxis().secondaryGridOff().setLabel("fgg");
-  graph.getXAxis().secondaryGridOff().setLabel("fgg");
-
+  
+  graph.getXAxis().setPrimaryGridColor("#f00000").setPrimaryGridWidth(3).setGridLinesStyle();
+  
   graph.getYAxis().setPrimaryGridColor("#000000")
     .setPrimaryGridWidth(3)
     .setPrimaryGridOpacity(0.9)
-    .setPrimaryGridDasharray( "5,5" )
     .setGridLinesStyle();
 
-  graph.getXAxis().forcePrimaryTickUnitMax(3);
+  
+
+  //graph.getXAxis().forcePrimaryTickUnitMax(3);
 
   var coalConsumptionCA = {"request":{"command":"series","series_id":"ELEC.CONS_TOT.COW-CA-99.A"},"series":[{"series_id":"ELEC.CONS_TOT.COW-CA-99.A","name":"Total consumption : coal : California : all sectors : annual","units":"thousand tons","f":"A","description":"Summation of all types of coal; All sectors; ","copyright":"None","source":"EIA, U.S. Energy Information Administration","iso3166":"USA-CA","geography":"USA-CA","start":"2001","end":"2014","updated":"2015-03-27T14:00:55-0400","data":[["2014",876.417],["2013",915.246],["2012",1183.112],["2011",1539.699],["2010",1542.78],["2009",1521.939],["2008",1723.062],["2007",1752.384],["2006",1710.887],["2005",1676.522],["2004",1731.218],["2003",1727.233],["2002",1821.618],["2001",1739.07]]}]}
 

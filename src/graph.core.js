@@ -1763,6 +1763,17 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.axisGroup = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.axisGroup );
 
+      this.groupGrids = document.createElementNS( this.ns, 'g' );
+      this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+      this.groupPrimaryGrids = document.createElementNS( this.ns, 'g' );
+      this.groupSecondaryGrids = document.createElementNS( this.ns, 'g' );
+
+      this.axisGroup.appendChild( this.groupGrids );
+
+      this.groupGrids.appendChild( this.groupSecondaryGrids );
+      this.groupGrids.appendChild( this.groupPrimaryGrids );
+
       this.plotGroup = document.createElementNS( this.ns, 'g' );
       this.graphingZone.appendChild( this.plotGroup );
 
