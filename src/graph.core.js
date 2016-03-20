@@ -1152,64 +1152,64 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         }
       }
 
-      if ( shapeData.properties ) {
+      if ( shapeData.properties !== undefined ) {
         shape.setProperties( shapeData.properties );
       }
 
       /* Setting shape properties */
-      if ( shapeData.fillColor ) {
+      if ( shapeData.fillColor !== undefined ) {
         shape.setFillColor( shapeData.fillColor );
       }
 
-      if ( shapeData.fillOpacity ) {
+      if ( shapeData.fillOpacity !== undefined ) {
         shape.setFillOpacity( shapeData.fillOpacity );
       }
 
-      if ( shapeData.strokeColor ) {
+      if ( shapeData.strokeColor !== undefined ) {
         shape.setStrokeColor( shapeData.strokeColor );
       }
 
-      if ( shapeData.strokeWidth ) {
-        shape.setStrokeWidth( shapeData.strokeWidth || ( shapeData.strokeColor ? 1 : 0 ) );
+      if ( shapeData.strokeWidth !== undefined ) {
+        shape.setStrokeWidth( shapeData.strokeWidth );
       }
 
-      if ( shapeData.layer ) {
+      if ( shapeData.layer !== undefined ) {
         shape.setLayer( shapeData.layer );
       }
 
-      if ( shapeData.locked ) {
+      if ( shapeData.locked !== undefined ) {
         shape.lock();
       }
 
-      if ( shapeData.movable ) {
+      if ( shapeData.movable !== undefined ) {
         shape.movable();
       }
 
-      if ( shapeData.selectable ) {
+      if ( shapeData.selectable !== undefined ) {
         shape.selectable();
       }
 
-      if ( shapeData.resizable ) {
+      if ( shapeData.resizable !== undefined ) {
         shape.resizable();
       }
 
-      if ( shapeData.attributes ) {
+      if ( shapeData.attributes !== undefined ) {
         shape.setProp( "attributes", shapeData.attributes );
       }
 
-      if ( shapeData.handles ) {
+      if ( shapeData.handles !== undefined ) {
         shape.setProp( 'handles', shapeData.handles );
       }
 
-      if ( shapeData.selectOnMouseDown ) {
+      if ( shapeData.selectOnMouseDown !== undefined ) {
         shape.setProp( "selectOnMouseDown", true );
       }
 
-      if ( shapeData.selectOnClick ) {
+      if ( shapeData.selectOnClick !== undefined ) {
         shape.setProp( "selectOnClick", true );
       }
 
-      if ( shapeData.highlightOnMouseOver ) {
+      if ( shapeData.highlightOnMouseOver !== undefined ) {
         shape.setProp( "highlightOnMouseOver", true );
       }
 
@@ -1217,7 +1217,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shapeData.label = shapeData.labels;
       }
 
-      if ( shapeData.label ) {
+      if ( shapeData.label !== undefined ) {
 
         if ( !Array.isArray( shapeData.label ) ) {
           shapeData.label = [  shapeData.label ];

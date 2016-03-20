@@ -14,11 +14,10 @@ define( function() {
 
 
         graphinstance.newShape({ 
-            type: 'arrow', 
-            pos: { x: "60px", y: "80px" },
-            pos2: { dx: "-20px", dy: "-20px" },
+           type: 'arrow', 
+           position: [ { x: "60px", y: "80px" }, { dx: "-20px", dy: "-20px" } ],
            strokeColor: 'black',
-           strokeWidth: 1,
+           strokeWidth: 0,
            locked: false,
            selectable: true
 
@@ -27,8 +26,7 @@ define( function() {
 
         graphinstance.newShape({ 
             type: 'rect', 
-            pos: { x: 60, y: 80 },
-            pos2: { x: 20, y: 20 },
+            position: [ { x: 60, y: 80 },{ x: 20, y: 20 } ],
              strokeColor: 'red',
              strokeWidth: 1,
             fillColor: 'transparent'
