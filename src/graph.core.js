@@ -2061,7 +2061,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       if ( axis.disabled ||  axis.floating ) {
         return;
       }
-      console.log( axis.getLevel(), axis );
       axis.setShift( shift[ position ][ axis.getLevel() ] );
 
     }, false, false, true );

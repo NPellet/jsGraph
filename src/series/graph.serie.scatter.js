@@ -359,9 +359,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
   };
 
   GraphSerieScatter.prototype.doShape = function( group, shape ) {
-
     var el = document.createElementNS( this.graph.ns, shape.shape );
-    console.log( el );
     group.appendChild( el );
     return el;
   };

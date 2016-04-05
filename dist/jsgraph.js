@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-61
+ * jsGraph JavaScript Graphing Library v1.13.3-63
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-04-05T13:48Z
+ * Date: 2016-04-05T13:49Z
  */
 
 ( function( global, factory ) {
@@ -3170,7 +3170,6 @@
           if ( axis.disabled || axis.floating ) {
             return;
           }
-          console.log( axis.getLevel(), axis );
           axis.setShift( shift[ position ][ axis.getLevel() ] );
 
         }, false, false, true );
@@ -14790,9 +14789,7 @@
       };
 
       GraphSerieScatter.prototype.doShape = function( group, shape ) {
-
         var el = document.createElementNS( this.graph.ns, shape.shape );
-        console.log( el );
         group.appendChild( el );
         return el;
       };
