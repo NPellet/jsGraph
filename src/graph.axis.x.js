@@ -156,8 +156,8 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     setMinMaxFlipped: function() {
 
       var interval = this.maxPx - this.minPx;
-      var maxPx = interval * this.span[ 1 ] + this.minPx;
-      var minPx = interval * this.span[ 0 ] + this.minPx;
+      var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+      var minPx = interval * this.options.span[ 0 ] + this.minPx;
 
       this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
       this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;

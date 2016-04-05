@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-63
+ * jsGraph JavaScript Graphing Library v1.13.3-64
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-04-05T13:49Z
+ * Date: 2016-04-05T13:52Z
  */
 
 ( function( global, factory ) {
@@ -6302,8 +6302,8 @@
         setMinMaxFlipped: function() {
 
           var interval = this.maxPx - this.minPx;
-          var maxPx = interval * this.span[ 1 ] + this.minPx;
-          var minPx = interval * this.span[ 0 ] + this.minPx;
+          var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+          var minPx = interval * this.options.span[ 0 ] + this.minPx;
 
           this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
           this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
@@ -6592,8 +6592,8 @@
         setMinMaxFlipped: function() {
 
           var interval = this.maxPx - this.minPx;
-          var maxPx = this.maxPx - interval * this.span[ 0 ];
-          var minPx = this.maxPx - interval * this.span[ 1 ];
+          var maxPx = this.maxPx - interval * this.options.span[ 0 ];
+          var minPx = this.maxPx - interval * this.options.span[ 1 ];
 
           this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
           this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
