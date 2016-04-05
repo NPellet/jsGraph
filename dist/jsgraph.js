@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-60
+ * jsGraph JavaScript Graphing Library v1.13.3-61
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-03-20T15:37Z
+ * Date: 2016-04-05T13:48Z
  */
 
 ( function( global, factory ) {
@@ -3918,6 +3918,8 @@
         forcedMin: false,
         forcedMax: false,
 
+        span: [ 0, 1 ],
+
         scientificScale: false,
         scientificScaleExponent: false,
         engineeringScale: false,
@@ -3980,8 +3982,6 @@
         this.expTspanExp.setAttribute( 'font-size', "0.8em" );
 
         this.label.setAttribute( 'text-anchor', 'middle' );
-
-        this.span = [ 0, 1 ];
 
         this.gridLinePath = {
           primary: "",
@@ -5564,12 +5564,12 @@
 
       GraphAxis.prototype.setSpan = function( _from, _to ) {
 
-        this.span = [ _from, _to ];
+        this.options.span = [ _from, _to ];
         return this;
       };
 
       GraphAxis.prototype.getSpan = function() {
-        return this.span;
+        return this.options.span;
       }
 
       GraphAxis.prototype.setLevel = function( level ) {

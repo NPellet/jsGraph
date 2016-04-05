@@ -65,6 +65,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     forcedMin: false,
     forcedMax: false,
 
+    span: [ 0, 1 ],
+
     scientificScale: false,
     scientificScaleExponent: false,
     engineeringScale: false,
@@ -127,8 +129,6 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     this.expTspanExp.setAttribute( 'font-size', "0.8em" );
 
     this.label.setAttribute( 'text-anchor', 'middle' );
-
-    this.span = [ 0, 1 ];
 
     this.gridLinePath = {
       primary: "",
@@ -1711,12 +1711,12 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
   GraphAxis.prototype.setSpan = function( _from, _to ) {
 
-    this.span = [ _from, _to ];
+    this.options.span = [ _from, _to ];
     return this;
   };
 
   GraphAxis.prototype.getSpan = function() {
-    return this.span;
+    return this.options.span;
   }
 
   GraphAxis.prototype.setLevel = function( level ) {
