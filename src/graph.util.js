@@ -156,7 +156,7 @@ define( [], function() {
 
   util.restoreDomAttributes = function( to, identification ) {
 
-    if ( !to && !to._savedAttributesIds ) {
+    if ( !to || !to._savedAttributesIds ) {
       return;
     }
 
