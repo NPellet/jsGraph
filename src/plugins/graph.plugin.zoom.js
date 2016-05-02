@@ -35,6 +35,10 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     this._zoomingGroup.appendChild( this._zoomingSquare );
   };
 
+  PluginZoom.prototype.defaults = {
+    "axes": "all"
+  }
+
   /**
    * @private
    * @memberof PluginZoom
@@ -169,7 +173,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       if ( this._zoomingMode == 'x' ||  this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
         this.fullX = false;
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -186,7 +190,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       if ( this._zoomingMode == 'y' ||  this._zoomingMode == 'xy' ) {
 
         this.fullY = false;
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -202,7 +206,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       if ( this._zoomingMode == 'forceY2' ) {
 
         this.fullY = false;
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -222,17 +226,17 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       switch ( this._zoomingMode ) {
         case 'x':
           this.fullX = false;
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
           break;
         case 'y':
           this.fullY = false;
-          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+          this.toAxes( '_doZoom', [ _y, this.y1 ], false, true );
           break;
         case 'xy':
           this.fullX = false;
           this.fullY = false;
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-          graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+          this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          this.toAxes( '_doZoom', [ _y, this.y1 ], false, true );
           break;
 
         case 'forceY2':
@@ -240,8 +244,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
           this.fullX = false;
           this.fullY = false;
 
-          graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-          graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+          this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
+          this.toAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
 
           break;
       }
@@ -281,18 +285,18 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       options.baseline = 0;
     }
 
-    var serie;
+    /*var serie;
     if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
       if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
         return;
       }
-    }
+    }*/
 
     var doX = ( options.direction == 'x' );
     var doY = !( options.direction !== 'y' );
 
-    this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
+    this.toAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
     this.graph.drawSeries();
 
@@ -324,7 +328,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       if ( pref.mode == 'xtotal' ||  pref.mode == 'total' ) {
 
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
 
@@ -339,7 +343,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       if ( pref.mode == 'ytotal' ||  pref.mode == 'total' ) {
 
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -355,7 +359,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       if ( pref.mode == 'gradualX' ||  pref.mode == 'gradual' ) {
 
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -371,7 +375,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       if ( pref.mode == 'gradualY' ||  pref.mode == 'gradual' ) {
 
-        graph._applyToAxes( function( axis ) {
+        this.toAxes( function( axis ) {
 
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
@@ -393,13 +397,13 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
     if ( pref.mode == 'xtotal' ) {
 
-      this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+      this.toAxes( "setMinMaxToFitSeries", null, true, false );
       this.fullX = true;
       this.fullY = false;
 
     } else if ( pref.mode == 'ytotal' ) {
 
-      this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+      this.toAxes( "setMinMaxToFitSeries", null, false, true );
       this.fullX = false;
       this.fullY = true;
 
@@ -499,7 +503,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       var dt = Date.now() - self.gradualUnzoomStart;
       var progress = Math.sin( dt / 500 * Math.PI / 2 );
 
-      self.graph._applyToAxes( function( axis ) {
+      this.toAxes( function( axis ) {
 
         axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
         axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );
@@ -537,6 +541,43 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
   PluginZoom.prototype.isFullY = function() {
     return this.fullY;
+  }
+
+  PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
+    console.log( this.options );
+    switch ( this.options.axes ) {
+
+      case 'all':
+        this.graph._applyToAxes.apply( this.graph, arguments );
+        break;
+
+      case 'serieSelected':
+
+        var serie = this.graph.getSelectedSerie();
+        if ( serie ) {
+
+          if ( tb ) {
+
+            if ( typeof func == "string" ) {
+              serie.getXAxis()[ func ].apply( serie.getXAxis(), params )
+            } else {
+              func.apply( serie.getXAxis(), params );
+            }
+          }
+
+          if ( lr ) {
+
+            if ( typeof func == "string" ) {
+              serie.getYAxis()[ func ].apply( serie.getYAxis(), params )
+            } else {
+              func.apply( serie.getYAxis(), params );
+            }
+
+          }
+        }
+
+        break;
+    }
   }
 
   return PluginZoom;

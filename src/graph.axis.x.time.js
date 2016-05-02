@@ -469,7 +469,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       {
 
-        threshold: 40,
+        threshold: 20,
         increments: {
 
           1: {
@@ -488,7 +488,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       {
 
-        threshold: 150,
+        threshold: 50,
         increments: {
 
           1: {
@@ -497,7 +497,26 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
             format: 'HH"h"MM (dd/mm/yy)'
           },
 
-          2: { // 10 seconds
+          2: { // 2 seconds
+            increment: 2,
+            unit: 's',
+            format: 'MM:ss"s"'
+          }
+        }
+      },
+
+      {
+
+        threshold: 100,
+        increments: {
+
+          1: {
+            increment: 1, // 1 minute
+            unit: 'i',
+            format: 'HH"h"MM (dd/mm/yy)'
+          },
+
+          2: { // 5 seconds
             increment: 5,
             unit: 's',
             format: 'MM:ss"s"'
@@ -564,7 +583,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       { // One day
 
-        threshold: 4000,
+        threshold: 3000,
         increments: {
 
           1: {
@@ -813,15 +832,15 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'm',
-            format: 'mm'
+            unit: 'y',
+            format: 'yyyy'
           },
 
           2: {
 
             increment: 4, // One day on the first axis
             unit: 'm',
-            format: 'yyyy'
+            format: 'mm/yyyy'
           }
         }
       },
@@ -834,15 +853,15 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'm',
-            format: 'mm'
+            unit: 'y',
+            format: 'yyyy'
           },
 
           2: {
 
             increment: 6, // One day on the first axis
             unit: 'm',
-            format: 'yyyy'
+            format: 'mm/yyyy'
           }
         }
       },
@@ -855,8 +874,8 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
           1: {
 
             increment: 1,
-            unit: 'm',
-            format: 'mmmm'
+            unit: 'y',
+            format: 'yyyy'
           },
 
           2: {
@@ -945,6 +964,16 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
   GraphXAxis.prototype.getAxisPosition = function() {
     return 60;
+  };
+
+  GraphXAxis.prototype.setMinMaxFlipped = function() {
+
+    var interval = this.maxPx - this.minPx;
+    var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+    var minPx = interval * this.options.span[ 0 ] + this.minPx;
+
+    this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+    this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
   };
 
   return GraphXAxis;

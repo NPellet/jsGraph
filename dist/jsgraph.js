@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-64
+ * jsGraph JavaScript Graphing Library v1.13.3-65
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-04-05T13:52Z
+ * Date: 2016-05-02T20:25Z
  */
 
 ( function( global, factory ) {
@@ -7409,7 +7409,7 @@
 
           {
 
-            threshold: 40,
+            threshold: 20,
             increments: {
 
               1: {
@@ -7428,7 +7428,7 @@
 
           {
 
-            threshold: 150,
+            threshold: 50,
             increments: {
 
               1: {
@@ -7437,7 +7437,26 @@
                 format: 'HH"h"MM (dd/mm/yy)'
               },
 
-              2: { // 10 seconds
+              2: { // 2 seconds
+                increment: 2,
+                unit: 's',
+                format: 'MM:ss"s"'
+              }
+            }
+          },
+
+          {
+
+            threshold: 100,
+            increments: {
+
+              1: {
+                increment: 1, // 1 minute
+                unit: 'i',
+                format: 'HH"h"MM (dd/mm/yy)'
+              },
+
+              2: { // 5 seconds
                 increment: 5,
                 unit: 's',
                 format: 'MM:ss"s"'
@@ -7504,7 +7523,7 @@
 
           { // One day
 
-            threshold: 4000,
+            threshold: 3000,
             increments: {
 
               1: {
@@ -7753,15 +7772,15 @@
               1: {
 
                 increment: 1,
-                unit: 'm',
-                format: 'mm'
+                unit: 'y',
+                format: 'yyyy'
               },
 
               2: {
 
                 increment: 4, // One day on the first axis
                 unit: 'm',
-                format: 'yyyy'
+                format: 'mm/yyyy'
               }
             }
           },
@@ -7774,15 +7793,15 @@
               1: {
 
                 increment: 1,
-                unit: 'm',
-                format: 'mm'
+                unit: 'y',
+                format: 'yyyy'
               },
 
               2: {
 
                 increment: 6, // One day on the first axis
                 unit: 'm',
-                format: 'yyyy'
+                format: 'mm/yyyy'
               }
             }
           },
@@ -7795,8 +7814,8 @@
               1: {
 
                 increment: 1,
-                unit: 'm',
-                format: 'mmmm'
+                unit: 'y',
+                format: 'yyyy'
               },
 
               2: {
@@ -7885,6 +7904,16 @@
 
       GraphXAxis.prototype.getAxisPosition = function() {
         return 60;
+      };
+
+      GraphXAxis.prototype.setMinMaxFlipped = function() {
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+        var minPx = interval * this.options.span[ 0 ] + this.minPx;
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
       };
 
       return GraphXAxis;
@@ -9034,6 +9063,10 @@
         this._zoomingGroup.appendChild( this._zoomingSquare );
       };
 
+      PluginZoom.prototype.defaults = {
+        "axes": "all"
+      }
+
       /**
        * @private
        * @memberof PluginZoom
@@ -9168,7 +9201,7 @@
           if ( this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
 
             this.fullX = false;
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9185,7 +9218,7 @@
           if ( this._zoomingMode == 'y' || this._zoomingMode == 'xy' ) {
 
             this.fullY = false;
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9201,7 +9234,7 @@
           if ( this._zoomingMode == 'forceY2' ) {
 
             this.fullY = false;
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9221,17 +9254,17 @@
           switch ( this._zoomingMode ) {
             case 'x':
               this.fullX = false;
-              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
               break;
             case 'y':
               this.fullY = false;
-              graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+              this.toAxes( '_doZoom', [ _y, this.y1 ], false, true );
               break;
             case 'xy':
               this.fullX = false;
               this.fullY = false;
-              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-              graph._applyToAxes( '_doZoom', [ _y, this.y1 ], false, true );
+              this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              this.toAxes( '_doZoom', [ _y, this.y1 ], false, true );
               break;
 
             case 'forceY2':
@@ -9239,8 +9272,8 @@
               this.fullX = false;
               this.fullY = false;
 
-              graph._applyToAxes( '_doZoom', [ _x, this.x1 ], true, false );
-              graph._applyToAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
+              this.toAxes( '_doZoom', [ _x, this.x1 ], true, false );
+              this.toAxes( '_doZoom', [ this.y1, this.y2 ], false, true );
 
               break;
           }
@@ -9280,18 +9313,18 @@
           options.baseline = 0;
         }
 
-        var serie;
+        /*var serie;
         if ( ( serie = this.graph.getSelectedSerie() ) ) {
 
           if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
             return;
           }
-        }
+        }*/
 
         var doX = ( options.direction == 'x' );
         var doY = !( options.direction !== 'y' );
 
-        this.graph._applyToAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
+        this.toAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
 
         this.graph.drawSeries();
 
@@ -9323,7 +9356,7 @@
 
           if ( pref.mode == 'xtotal' || pref.mode == 'total' ) {
 
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
 
@@ -9338,7 +9371,7 @@
 
           if ( pref.mode == 'ytotal' || pref.mode == 'total' ) {
 
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9354,7 +9387,7 @@
 
           if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ) {
 
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9370,7 +9403,7 @@
 
           if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
 
-            graph._applyToAxes( function( axis ) {
+            this.toAxes( function( axis ) {
 
               axis._pluginZoomMin = axis.getCurrentMin();
               axis._pluginZoomMax = axis.getCurrentMax();
@@ -9392,13 +9425,13 @@
 
         if ( pref.mode == 'xtotal' ) {
 
-          this.graph._applyToAxes( "setMinMaxToFitSeries", null, true, false );
+          this.toAxes( "setMinMaxToFitSeries", null, true, false );
           this.fullX = true;
           this.fullY = false;
 
         } else if ( pref.mode == 'ytotal' ) {
 
-          this.graph._applyToAxes( "setMinMaxToFitSeries", null, false, true );
+          this.toAxes( "setMinMaxToFitSeries", null, false, true );
           this.fullX = false;
           this.fullY = true;
 
@@ -9498,7 +9531,7 @@
           var dt = Date.now() - self.gradualUnzoomStart;
           var progress = Math.sin( dt / 500 * Math.PI / 2 );
 
-          self.graph._applyToAxes( function( axis ) {
+          this.toAxes( function( axis ) {
 
             axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
             axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );
@@ -9536,6 +9569,43 @@
 
       PluginZoom.prototype.isFullY = function() {
         return this.fullY;
+      }
+
+      PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
+        console.log( this.options );
+        switch ( this.options.axes ) {
+
+          case 'all':
+            this.graph._applyToAxes.apply( this.graph, arguments );
+            break;
+
+          case 'serieSelected':
+
+            var serie = this.graph.getSelectedSerie();
+            if ( serie ) {
+
+              if ( tb ) {
+
+                if ( typeof func == "string" ) {
+                  serie.getXAxis()[ func ].apply( serie.getXAxis(), params )
+                } else {
+                  func.apply( serie.getXAxis(), params );
+                }
+              }
+
+              if ( lr ) {
+
+                if ( typeof func == "string" ) {
+                  serie.getYAxis()[ func ].apply( serie.getYAxis(), params )
+                } else {
+                  func.apply( serie.getYAxis(), params );
+                }
+
+              }
+            }
+
+            break;
+        }
       }
 
       return PluginZoom;
@@ -14963,7 +15033,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
      */
 
-    build[ './series/graph.serie.zone' ] = ( function( GraphSerieNonInstanciable ) {
+    build[ './series/graph.serie.zone' ] = ( function( GraphSerieNonInstanciable, util ) {
       /** @global */
       /** @ignore */
 
@@ -15029,6 +15099,18 @@
 
           this.applyLineStyle( this.lineZone );
           this.styleHasChanged();
+
+          this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
+          this.clipId = util.guid();
+          this.clip.setAttribute( 'id', this.clipId );
+
+          this.graph.defs.appendChild( this.clip );
+
+          this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+          this.clip.appendChild( this.clipRect );
+          this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+
+          this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
         },
 
         /**
@@ -15215,6 +15297,16 @@
               currentLine,
               max,
               self = this;
+
+            var xmin = this.getXAxis().getMinPx(),
+              xmax = this.getXAxis().getMaxPx(),
+              ymin = this.getYAxis().getMinPx(),
+              ymax = this.getYAxis().getMaxPx();
+
+            this.clipRect.setAttribute( "x", Math.min( xmin, xmax ) );
+            this.clipRect.setAttribute( "y", Math.min( ymin, ymax ) );
+            this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
+            this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
 
             this._drawn = true;
 
@@ -15581,7 +15673,7 @@
       } );
 
       return GraphSerieZone;
-    } )( build[ "./series/graph.serie" ] );
+    } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 

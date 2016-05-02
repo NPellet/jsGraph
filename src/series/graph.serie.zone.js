@@ -1,6 +1,6 @@
 "use strict";
 
-define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
+define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
 
   /** 
    * @class SerieZone
@@ -64,6 +64,18 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
       this.applyLineStyle( this.lineZone );
       this.styleHasChanged();
+
+      this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
+      this.clipId = util.guid();
+      this.clip.setAttribute( 'id', this.clipId );
+
+      this.graph.defs.appendChild( this.clip );
+
+      this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+      this.clip.appendChild( this.clipRect );
+      this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+
+      this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
     },
 
     /**
@@ -116,7 +128,7 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
 
       for ( var j = 0, l = data.length; j < l; j++ ) {
 
-        if ( arg == "2D" ||  arg == "2D_flat" ) {
+        if ( arg == "2D" || arg == "2D_flat" ) {
 
           arr[ z ] = ( data[ j ][ 0 ] );
           this._checkX( arr[ z ] );
@@ -250,6 +262,16 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
           currentLine,
           max,
           self = this;
+
+        var xmin = this.getXAxis().getMinPx(),
+          xmax = this.getXAxis().getMaxPx(),
+          ymin = this.getYAxis().getMinPx(),
+          ymax = this.getYAxis().getMaxPx();
+
+        this.clipRect.setAttribute( "x", Math.min( xmin, xmax ) );
+        this.clipRect.setAttribute( "y", Math.min( ymin, ymax ) );
+        this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
+        this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
 
         this._drawn = true;
 
@@ -480,7 +502,7 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
         v2 = this.searchClosestValue( end2 );
       }
 
-      if ( !v1 ||  !v2 ) {
+      if ( !v1 || !v2 ) {
         return -Infinity;
       }
 
@@ -522,7 +544,7 @@ define( [ './graph.serie' ], function( GraphSerieNonInstanciable ) {
         v2 = this.searchClosestValue( end2 );
       }
 
-      if ( !v1 ||  !v2 ) {
+      if ( !v1 || !v2 ) {
         return Infinity;
       }
 

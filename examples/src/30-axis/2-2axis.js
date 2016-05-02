@@ -4,7 +4,34 @@ define( function() {
 
     function( domGraph ) {
 
-        var graphinstance = new Graph( domGraph, { title: 'Solar cell j-V curve'} );
+        var graphinstance = new Graph( domGraph, { 
+
+
+      wheel: {
+        type: 'plugin',
+        plugin: 'zoom',
+        options: {
+          direction: 'y'
+        }
+      },
+
+      dblclick: {
+        type: 'plugin',
+        plugin: 'zoom',
+        options: {
+          mode: 'total'
+        }
+      },
+
+      plugins: {
+        'zoom': { axes: "serieSelected", zoomMode: 'xy' }
+      },
+
+      pluginAction: {
+        'zoom': { shift: false, ctrl: false }
+      }
+    
+  } );
 	// BEGIN IGNORE ON BUILD
 	var series = [ [], [], [] ];
 
@@ -70,13 +97,13 @@ define( function() {
   shape.redraw();
 
 
-  graphinstance.getRightAxis().adapt0To( graphinstance.getYAxis(), 'min', -10 );
+//  graphinstance.getRightAxis().adapt0To( graphinstance.getYAxis(), 'min', -10 );
 
   graphinstance.getXAxis().setLabel( 'Voltage (V)' );
   graphinstance.getYAxis().setLabel( 'Current (mA cm-2)' );
   graphinstance.getRightAxis().setLabel( 'Power output (mW)' );
 
-  graphinstance.getYAxis().setLineAt0( true );
+  //graphinstance.getYAxis().setLineAt0( true );
   graphinstance.draw( );
   
 
