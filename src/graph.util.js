@@ -129,6 +129,8 @@ define( [], function() {
 
   util.saveDomAttributes = function( to, attributes, identification ) {
 
+    if ( !to ) return;
+
     to._savedAttributesIds = to._savedAttributesIds || [];
 
     if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
@@ -154,7 +156,7 @@ define( [], function() {
 
   util.restoreDomAttributes = function( to, identification ) {
 
-    if ( !to._savedAttributesIds ) {
+    if ( !to || !to._savedAttributesIds ) {
       return;
     }
 

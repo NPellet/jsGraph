@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-65
+ * jsGraph JavaScript Graphing Library v1.13.3-69
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-02T20:25Z
+ * Date: 2016-05-02T20:27Z
  */
 
 ( function( global, factory ) {
@@ -488,6 +488,8 @@
 
       util.saveDomAttributes = function( to, attributes, identification ) {
 
+        if ( !to ) return;
+
         to._savedAttributesIds = to._savedAttributesIds || [];
 
         if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
@@ -513,7 +515,7 @@
 
       util.restoreDomAttributes = function( to, identification ) {
 
-        if ( !to._savedAttributesIds ) {
+        if ( !to || !to._savedAttributesIds ) {
           return;
         }
 
