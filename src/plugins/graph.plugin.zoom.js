@@ -543,7 +543,14 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
   }
 
   PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
-    switch ( this.options.axes ) {
+
+    var axes = this.options.axes;
+
+    if ( !this.graph.getSelectedSerie() ) {
+      axes = 'all';
+    }
+
+    switch ( axes ) {
 
       case 'all':
         this.graph._applyToAxes.apply( this.graph, arguments );
