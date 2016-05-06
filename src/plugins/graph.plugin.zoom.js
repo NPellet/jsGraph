@@ -180,7 +180,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
           axis._pluginZoomMinFinal = Math.min( axis.getVal( _x ), axis.getVal( self.x1 ) );
           axis._pluginZoomMaxFinal = Math.max( axis.getVal( _x ), axis.getVal( self.x1 ) );
-          console.log( axis._pluginZoomMin, axis._pluginZoomMinFinal );
         }, false, true, false );
 
         modeX = true;
@@ -544,7 +543,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
   }
 
   PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
-    console.log( this.options );
     switch ( this.options.axes ) {
 
       case 'all':
