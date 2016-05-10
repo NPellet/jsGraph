@@ -613,7 +613,6 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     if ( !this.textForLegend ) {
 
       var text = document.createElementNS( this.graph.ns, 'text' );
-      text.setAttribute( 'transform', 'translate(35, 3)' );
       text.setAttribute( 'cursor', 'pointer' );
       text.textContent = this.getLabel();
 

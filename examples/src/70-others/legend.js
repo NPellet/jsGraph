@@ -31,7 +31,8 @@ define( function() {
 			frameWidth: '1',
 			frameColor: 'rgba( 100, 100, 100, 0.5 )',
 
-			movable: true
+			movable: true,
+			isSerieHideable: false
 
 		});
 
@@ -58,7 +59,7 @@ define( function() {
 
 		graphinstance.getXAxis().setLabel( 'x' );
 		graphinstance.getYAxis().setLabel( 'y' );
-		graphinstance.getYAxis().setLineAt0( true );
+		//graphinstance.getYAxis().setLineAt0( true );
 
 		graphinstance.redraw( );
 		graphinstance.drawSeries();	
