@@ -408,7 +408,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
     } else if ( pref.mode == 'total' ) {
 
-      this.graph.autoscaleAxes();
+      this.toAxes( "setMinMaxToFitSeries", null, true, true );
+
       this.fullX = true;
       this.fullY = true;
       // Nothing to do here

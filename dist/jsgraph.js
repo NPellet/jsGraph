@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-73
+ * jsGraph JavaScript Graphing Library v1.13.3-74
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-06T19:21Z
+ * Date: 2016-05-10T18:42Z
  */
 
 ( function( global, factory ) {
@@ -9438,7 +9438,8 @@
 
         } else if ( pref.mode == 'total' ) {
 
-          this.graph.autoscaleAxes();
+          this.toAxes( "setMinMaxToFitSeries", null, true, true );
+
           this.fullX = true;
           this.fullY = true;
           // Nothing to do here
