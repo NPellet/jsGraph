@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-75
+ * jsGraph JavaScript Graphing Library v1.13.3-76
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-10T21:54Z
+ * Date: 2016-05-10T22:08Z
  */
 
 ( function( global, factory ) {
@@ -9439,7 +9439,20 @@
 
           }
 
-          if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ) {
+          if ( pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
+
+            var x = false,
+              y = false;
+
+            if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ) {
+              x = true;
+              modeX = true;
+            }
+
+            if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
+              y = true;
+              modeY = true;
+            }
 
             this.toAxes( function( axis ) {
 
@@ -9449,29 +9462,12 @@
               axis._pluginZoomMinFinal = axis.getCurrentMin() - ( axis.getCurrentMax() - axis.getCurrentMin() );
               axis._pluginZoomMaxFinal = axis.getCurrentMax() + ( axis.getCurrentMax() - axis.getCurrentMin() );
 
-            }, false, true, false );
-
-            modeX = true;
-
-          }
-
-          if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
-
-            this.toAxes( function( axis ) {
-
-              axis._pluginZoomMin = axis.getCurrentMin();
-              axis._pluginZoomMax = axis.getCurrentMax();
-
-              axis._pluginZoomMinFinal = axis.getCurrentMin() - ( axis.getCurrentMax() - axis.getCurrentMin() );
-              axis._pluginZoomMaxFinal = axis.getCurrentMax() + ( axis.getCurrentMax() - axis.getCurrentMin() );
-
-            }, false, true, false );
-
-            modeY = true;
+            }, false, x, y );
 
           }
 
           this.transition( modeX, modeY, "dblClick" );
+          return;
         }
 
         var xAxis = this.graph.getXAxis(),
@@ -9586,7 +9582,7 @@
           var dt = Date.now() - self.gradualUnzoomStart;
           var progress = Math.sin( dt / 500 * Math.PI / 2 );
 
-          this.toAxes( function( axis ) {
+          self.toAxes( function( axis ) {
 
             axis.setCurrentMin( axis._pluginZoomMin + ( axis._pluginZoomMinFinal - axis._pluginZoomMin ) * progress );
             axis.setCurrentMax( axis._pluginZoomMax + ( axis._pluginZoomMaxFinal - axis._pluginZoomMax ) * progress );

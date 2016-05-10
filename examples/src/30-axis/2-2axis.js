@@ -24,7 +24,7 @@ define( function() {
       },
 
       plugins: {
-        'zoom': { axes: "serieSelected", zoomMode: 'xy' }
+        'zoom': { axes: "serieSelected", zoomMode: 'xy', transition: true }
       },
 
       pluginAction: {
