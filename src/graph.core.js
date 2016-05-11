@@ -1094,11 +1094,12 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @param {String} shapeType - The type of the shape
      * @param {Object} [shapeData] - The options passed to the shape creator
      * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+     * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
      * @returns {Shape} The created shape
      * @memberof Graph.prototype
      * @see Graph#getConstructor
      */
-    newShape: function( shapeType, shapeData, mute ) {
+    newShape: function( shapeType, shapeData, mute, shapeProperties ) {
 
       var self = this,
         response;
@@ -1143,7 +1144,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       shape.graph = this;
       shape._data = shapeData;
 
-      shape.init( this );
+      shape.init( this, shapeProperties );
 
       if ( shapeData.position ) {
 

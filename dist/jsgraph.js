@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-76
+ * jsGraph JavaScript Graphing Library v1.13.3-77
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-10T22:08Z
+ * Date: 2016-05-11T07:29Z
  */
 
 ( function( global, factory ) {
@@ -647,7 +647,7 @@
 
       util.SVGParser = function( svgString ) {
 
-        parser = new DOMParser();
+        var parser = new DOMParser();
         var doc = parser.parseFromString( svgString, "image/svg+xml" );
         // returns a SVGDocument, which also is a Document.
 
@@ -2215,11 +2215,12 @@
          * @param {String} shapeType - The type of the shape
          * @param {Object} [shapeData] - The options passed to the shape creator
          * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+         * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
          * @returns {Shape} The created shape
          * @memberof Graph.prototype
          * @see Graph#getConstructor
          */
-        newShape: function( shapeType, shapeData, mute ) {
+        newShape: function( shapeType, shapeData, mute, shapeProperties ) {
 
           var self = this,
             response;
@@ -2264,7 +2265,7 @@
           shape.graph = this;
           shape._data = shapeData;
 
-          shape.init( this );
+          shape.init( this, shapeProperties );
 
           if ( shapeData.position ) {
 
@@ -15756,14 +15757,15 @@
        * Initializes the shape
        * @memberof Shape
        * @param {Graph} graph - The graph containing the shape
+       * @param {Object} properties - The properties object (not copied)
        * @return {Shape} The current shape
        */
-      Shape.prototype.init = function( graph ) {
+      Shape.prototype.init = function( graph, properties ) {
 
         var self = this;
 
         this.graph = graph;
-        this.properties = {};
+        this.properties = properties || {};
         this.handles = [];
         this.options = this.options || {};
 

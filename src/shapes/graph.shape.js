@@ -15,14 +15,15 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * Initializes the shape
    * @memberof Shape
    * @param {Graph} graph - The graph containing the shape
+   * @param {Object} properties - The properties object (not copied)
    * @return {Shape} The current shape
    */
-  Shape.prototype.init = function( graph ) {
+  Shape.prototype.init = function( graph, properties ) {
 
     var self = this;
 
     this.graph = graph;
-    this.properties = {};
+    this.properties = properties || {};
     this.handles = [];
     this.options = this.options || {};
 

@@ -288,7 +288,7 @@ define( [], function() {
 
   util.SVGParser = function( svgString ) {
 
-    parser = new DOMParser();
+    var parser = new DOMParser();
     var doc = parser.parseFromString( svgString, "image/svg+xml" );
     // returns a SVGDocument, which also is a Document.
 
