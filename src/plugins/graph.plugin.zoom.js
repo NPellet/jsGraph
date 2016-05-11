@@ -488,7 +488,8 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
   PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
 
-    var self = this;
+    var self = this,
+      maxTime = 500;
 
     if ( !self.gradualUnzoomStart ) {
       self.gradualUnzoomStart = Date.now();
@@ -497,7 +498,11 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     window.requestAnimationFrame( function() {
 
       var dt = Date.now() - self.gradualUnzoomStart;
-      var progress = Math.sin( dt / 500 * Math.PI / 2 );
+
+      if ( dt > maxTime ) {
+        dt = maxTime;
+      }
+      var progress = Math.sin( dt / maxTime * Math.PI / 2 );
 
       self.toAxes( function( axis ) {
 
@@ -512,7 +517,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       self.graph.draw();
 
-      if ( dt < 500 ) {
+      if ( dt < maxTime ) {
 
         self.transition( modeX, modeY, eventName );
         self.emit( "zooming" );

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-77
+ * jsGraph JavaScript Graphing Library v1.13.3-78
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-11T07:29Z
+ * Date: 2016-05-11T08:03Z
  */
 
 ( function( global, factory ) {
@@ -9572,7 +9572,8 @@
 
       PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
 
-        var self = this;
+        var self = this,
+          maxTime = 500;
 
         if ( !self.gradualUnzoomStart ) {
           self.gradualUnzoomStart = Date.now();
@@ -9581,7 +9582,11 @@
         window.requestAnimationFrame( function() {
 
           var dt = Date.now() - self.gradualUnzoomStart;
-          var progress = Math.sin( dt / 500 * Math.PI / 2 );
+
+          if ( dt > maxTime ) {
+            dt = maxTime;
+          }
+          var progress = Math.sin( dt / maxTime * Math.PI / 2 );
 
           self.toAxes( function( axis ) {
 
@@ -9596,7 +9601,7 @@
 
           self.graph.draw();
 
-          if ( dt < 500 ) {
+          if ( dt < maxTime ) {
 
             self.transition( modeX, modeY, eventName );
             self.emit( "zooming" );
@@ -9870,6 +9875,21 @@
           max: 0,
           interval: 0
         };
+
+        s.on( "hide", function() {
+
+          if ( s._zoneSerie ) {
+
+            s._zoneSerie.hide();
+          }
+        } );
+
+        s.on( "show", function() {
+
+          if ( s._zoneSerie ) {
+            s._zoneSerie.show();
+          }
+        } );
 
         s.setInfo( "timeSerieManagerDBElements", dbElements );
 
@@ -10146,6 +10166,10 @@
 
         var self = this;
 
+        if ( this.locked ) {
+          return;
+        }
+
         this.changed = false;
 
         this.series.map( function( serie ) {
@@ -10263,6 +10287,18 @@
         }
 
         return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
+      }
+
+      PluginTimeSerieManager.prototype.lockRedraw = function() {
+        this.locked = true;
+      }
+
+      PluginTimeSerieManager.prototype.unlockRedraw = function() {
+        this.locked = false;
+      }
+
+      PluginTimeSerieManager.prototype.isRedrawLocked = function() {
+        return !!this.locked;
       }
 
       return PluginTimeSerieManager;
@@ -10596,6 +10632,9 @@
             shapes[ i ].hide();
           }
         }
+
+        this.emit( "hide" );
+
         return this;
       };
 
@@ -10622,6 +10661,8 @@
             shapes[ i ].show();
           }
         }
+
+        this.emit( "show" );
 
         return this;
       };

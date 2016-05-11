@@ -70,6 +70,21 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
       interval: 0
     };
 
+    s.on( "hide", function() {
+
+      if ( s._zoneSerie ) {
+
+        s._zoneSerie.hide();
+      }
+    } );
+
+    s.on( "show", function() {
+
+      if ( s._zoneSerie ) {
+        s._zoneSerie.show();
+      }
+    } );
+
     s.setInfo( "timeSerieManagerDBElements", dbElements );
 
     if ( !noZoneSerie ) {
@@ -345,6 +360,10 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
 
     var self = this;
 
+    if ( this.locked ) {
+      return;
+    }
+
     this.changed = false;
 
     this.series.map( function( serie ) {
@@ -462,6 +481,18 @@ define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugi
     }
 
     return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
+  }
+
+  PluginTimeSerieManager.prototype.lockRedraw = function() {
+    this.locked = true;
+  }
+
+  PluginTimeSerieManager.prototype.unlockRedraw = function() {
+    this.locked = false;
+  }
+
+  PluginTimeSerieManager.prototype.isRedrawLocked = function() {
+    return !!this.locked;
   }
 
   return PluginTimeSerieManager;

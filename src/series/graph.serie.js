@@ -318,6 +318,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
         shapes[ i ].hide();
       }
     }
+
+    this.emit( "hide" );
+
     return this;
   };
 
@@ -344,6 +347,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
         shapes[ i ].show();
       }
     }
+
+    this.emit( "show" );
 
     return this;
   };
