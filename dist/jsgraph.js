@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-78
+ * jsGraph JavaScript Graphing Library v1.13.3-79
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-11T08:03Z
+ * Date: 2016-05-11T08:53Z
  */
 
 ( function( global, factory ) {
@@ -653,6 +653,19 @@
 
         return doc;
 
+      }
+
+      // http://stackoverflow.com/questions/5276953/what-is-the-most-efficient-way-to-reverse-an-array-in-javascript
+      util.reverseArray = function( array ) {
+        var left = null;
+        var right = null;
+        var length = array.length;
+        for ( left = 0, right = length - 1; left < right; left += 1, right -= 1 ) {
+          var temporary = array[ left ];
+          array[ left ] = array[ right ];
+          array[ right ] = temporary;
+        }
+        return array;
       }
 
       return util;
@@ -15415,13 +15428,9 @@
             j = 0, k = 0, m = this.data.length;
 
             var error;
-            var pathError = "";
 
-            var pathTop = "";
-            var pathBottom = "";
-
-            var lineTop = [];
-            var lineBottom = [];
+            var lineTop = "";
+            var lineBottom = "";
 
             var buffer;
 
@@ -15438,19 +15447,27 @@
 
               if ( buffer ) {
 
-                lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
-                lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
+                if ( lineBottom !== "" ) {
+                  lineBottom = " L " + lineBottom;
+                }
+
+                lineTop += buffer[ 0 ] + "," + Math.max( buffer[ 1 ], buffer[ 2 ] ) + " L ";
+                lineBottom = xpx + "," + Math.min( buffer[ 1 ], buffer[ 2 ] ) + lineBottom;
 
                 buffer = false;
                 k++;
               }
 
+              if ( lineBottom !== "" ) {
+                lineBottom = " L " + lineBottom;
+              }
+
               if ( ypx2 > ypx1 ) {
-                lineTop.push( [ xpx, ypx1 ] );
-                lineBottom.push( [ xpx, ypx2 ] );
+                lineTop += xpx + "," + ypx1 + " L ";
+                lineBottom = xpx + "," + ypx2 + lineBottom;
               } else {
-                lineTop.push( [ xpx, ypx2 ] );
-                lineBottom.push( [ xpx, ypx1 ] );
+                lineTop += xpx + "," + ypx2 + " L ";
+                lineBottom = xpx + "," + ypx1 + lineBottom;
               }
 
               if ( xpx > this.getXAxis().getMaxPx() ) {
@@ -15458,10 +15475,8 @@
               }
             }
 
-            lineBottom.reverse();
-
             if ( lineTop.length > 0 && lineBottom.length > 0 ) {
-              this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+              this.lineZone.setAttribute( 'd', "M " + lineTop + lineBottom + " z" );
             } else {
               this.lineZone.setAttribute( 'd', "" );
             }

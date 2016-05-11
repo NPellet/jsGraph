@@ -282,13 +282,9 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
         j = 0, k = 0, m = this.data.length;
 
         var error;
-        var pathError = "";
 
-        var pathTop = "";
-        var pathBottom = "";
-
-        var lineTop = [];
-        var lineBottom = [];
+        var lineTop = "";
+        var lineBottom = "";
 
         var buffer;
 
@@ -305,19 +301,27 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
 
           if ( buffer ) {
 
-            lineTop.push( [ xpx, Math.max( ypx1, ypx2 ) ] );
-            lineBottom.push( [ xpx, Math.min( ypx1, ypx2 ) ] );
+            if ( lineBottom !== "" ) {
+              lineBottom = " L " + lineBottom;
+            }
+
+            lineTop += buffer[ 0 ] + "," + Math.max( buffer[ 1 ], buffer[ 2 ] ) + " L ";
+            lineBottom = xpx + "," + Math.min( buffer[ 1 ], buffer[ 2 ] ) + lineBottom;
 
             buffer = false;
             k++;
           }
 
+          if ( lineBottom !== "" ) {
+            lineBottom = " L " + lineBottom;
+          }
+
           if ( ypx2 > ypx1 ) {
-            lineTop.push( [ xpx, ypx1 ] );
-            lineBottom.push( [ xpx, ypx2 ] );
+            lineTop += xpx + "," + ypx1 + " L ";
+            lineBottom = xpx + "," + ypx2 + lineBottom;
           } else {
-            lineTop.push( [ xpx, ypx2 ] );
-            lineBottom.push( [ xpx, ypx1 ] );
+            lineTop += xpx + "," + ypx2 + " L ";
+            lineBottom = xpx + "," + ypx1 + lineBottom;
           }
 
           if ( xpx > this.getXAxis().getMaxPx() ) {
@@ -325,10 +329,8 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
           }
         }
 
-        lineBottom.reverse();
-
         if ( lineTop.length > 0 && lineBottom.length > 0 ) {
-          this.lineZone.setAttribute( 'd', "M " + lineTop[ 0 ] + " L " + lineTop.join( " L " ) + " L " + lineBottom.join( " L " ) + " z" );
+          this.lineZone.setAttribute( 'd', "M " + lineTop + lineBottom + " z" );
         } else {
           this.lineZone.setAttribute( 'd', "" );
         }
