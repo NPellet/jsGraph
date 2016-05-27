@@ -448,10 +448,12 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
 
       var mousedown = function( e ) {
 
+        e.stopPropagation();
+
         if ( self.options.movable ) {
           pos.x = e.clientX;
           pos.y = e.clientY;
-          e.stopPropagation();
+
           e.preventDefault();
           self.mousedown = true;
           self.graph.elementMoving( self );

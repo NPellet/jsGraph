@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-81
+ * jsGraph JavaScript Graphing Library v1.13.3-82
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-27T15:45Z
+ * Date: 2016-05-27T18:14Z
  */
 
 ( function( global, factory ) {
@@ -8403,10 +8403,12 @@
 
           var mousedown = function( e ) {
 
+            e.stopPropagation();
+
             if ( self.options.movable ) {
               pos.x = e.clientX;
               pos.y = e.clientY;
-              e.stopPropagation();
+
               e.preventDefault();
               self.mousedown = true;
               self.graph.elementMoving( self );
