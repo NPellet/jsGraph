@@ -24,6 +24,7 @@ define( [
     './series/graph.serie.contour',
     './series/graph.serie.line',
     './series/graph.serie.line.broken',
+    './series/graph.serie.line.colored',
     './series/graph.serie.scatter',
     './series/graph.serie.zone',
 
@@ -71,6 +72,7 @@ define( [
     GraphSerieContour,
     GraphSerieLine,
     GraphSerieLineBroken,
+    GraphSerieLineColor,
     GraphSerieScatter,
     GraphSerieZone,
 
@@ -105,6 +107,7 @@ define( [
     Graph.registerConstructor( "graph.axis.x.time", GraphXAxisTime );
 
     Graph.registerConstructor( "graph.serie.line", GraphSerieLine );
+    Graph.registerConstructor( "graph.serie.line.color", GraphSerieLineColor );
     Graph.registerConstructor( "graph.serie.contour", GraphSerieContour );
     Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
     Graph.registerConstructor( "graph.serie.scatter", GraphSerieScatter );
