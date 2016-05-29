@@ -233,7 +233,11 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @memberof Shape
    * @return {Shape} The current shape
    */
-  Shape.prototype.changed = function() {
+  Shape.prototype.changed = function( event ) {
+
+    if ( event ) {
+      this.graph.emit( event, this );
+    }
 
     this.graph.emit( 'shapeChanged', this );
     return this;
@@ -271,39 +275,39 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @return {Shape} The current shape
    */
   Shape.prototype.setSerie = function( serie ) {
-      this.serie = serie;
-      this.xAxis = serie.getXAxis();
-      this.yAxis = serie.getYAxis();
-      return this;
-    },
+    this.serie = serie;
+    this.xAxis = serie.getXAxis();
+    this.yAxis = serie.getYAxis();
+    return this;
+  };
 
-    /**
-     * @memberof Shape
-     * @return {Serie} The serie associated to the shape
-     */
-    Shape.prototype.getSerie = function() {
-      return this.serie;
-    },
+  /**
+   * @memberof Shape
+   * @return {Serie} The serie associated to the shape
+   */
+  Shape.prototype.getSerie = function() {
+    return this.serie;
+  };
 
-    /**
-     * Assigns the shape to the default x and y axes of the graph, only if they don't exist yet
-     * @memberof Shape
-     * @return {Shape} The current shape
-     * @see Graph#getXAxis
-     * @see Graph#getYAxis
-     */
-    Shape.prototype.autoAxes = function() {
+  /**
+   * Assigns the shape to the default x and y axes of the graph, only if they don't exist yet
+   * @memberof Shape
+   * @return {Shape} The current shape
+   * @see Graph#getXAxis
+   * @see Graph#getYAxis
+   */
+  Shape.prototype.autoAxes = function() {
 
-      if ( !this.xAxis ) {
-        this.xAxis = this.graph.getXAxis();
-      }
+    if ( !this.xAxis ) {
+      this.xAxis = this.graph.getXAxis();
+    }
 
-      if ( !this.yAxis ) {
-        this.yAxis = this.graph.getYAxis();
-      }
+    if ( !this.yAxis ) {
+      this.yAxis = this.graph.getYAxis();
+    }
 
-      return this;
-    };
+    return this;
+  };
 
   /**
    * Assigns the shape to an x axis
@@ -688,6 +692,16 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   };
 
   /**
+   * Returns the text of the label
+   * @memberof Shape
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {String} The text of the label
+   */
+  Shape.prototype.getLabelText = function( text, index ) {
+    return this.getProp( 'labelText', index || 0 );
+  };
+
+  /**
    * Displays a hidden label
    * @memberof Shape
    * @param {Number} [ index = 0 ] - The index of the label
@@ -991,6 +1005,11 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
         self._labels[ i ].setAttribute( 'data-label-i', i );
         self._labels[ i ].jsGraphIsShape = self;
         self.group.appendChild( this._labels[ i ] );
+
+        self._labels[ i ].addEventListener( 'dblclick', function( e ) {
+          self.labelDblClickListener( e );
+        } );
+
       }
       i++;
     }
@@ -1007,7 +1026,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @memberof Shape
    */
   Shape.prototype.isLabelEditable = function( labelIndex ) {
-    return this.getProp( 'labelEditable', labelIndex );
+    return this.getProp( 'labelEditable', labelIndex || 0 );
   };
 
   /**
@@ -1025,8 +1044,6 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       this._applyLabelData( i );
 
-      this._labels[  i ].removeEventListener( "dblclick", labelDblClickListener );
-      this._labels[ i ].addEventListener( 'dblclick', labelDblClickListener );
     }
 
   };
@@ -1502,7 +1519,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * @private
    */
   Shape.prototype.handleMouseMove = function( e ) {
-
+    //console.log( this.resizinh, this.moving, this.isSelected(), this._mouseCoords );
     if ( ( this.resizing ||  this.moving ) && !this.isSelected() ) {
       this.graph.selectShape( this );
     }
@@ -1848,15 +1865,17 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     return this;
   };
 
-  function labelDblClickListener( e ) {
+  Shape.prototype.labelDblClickListener = function( e ) {
 
     var i = parseInt( e.target.getAttribute( 'data-label-i' ) );
 
-    if ( !i ) {
+    var self = this;
+
+    if ( isNaN( i ) ) {
       return;
     }
 
-    if ( !self.isLabelEditable( i ) ) {
+    if ( !this.isLabelEditable( i ) ) {
       return;
     }
 
@@ -1875,10 +1894,10 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
       $( this ).remove();
 
-      self.setLabelText( $( this ).setProp( 'value' ), i );
-      self._labels[ i ].textContent = $( this ).setProp( 'value' );
+      self.setLabelText( $( this ).prop( 'value' ), i );
+      self._labels[ i ].textContent = $( this ).prop( 'value' );
 
-      self.triggerChange();
+      self.changed( "shapeLabelChanged" );
 
     } ).bind( 'keyup', function( e ) {
 
@@ -1899,7 +1918,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
     } ).focus().get( 0 ).select();
 
-  }
+  };
 
   /**
    * Appends the shape DOM to its parent

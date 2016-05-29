@@ -1178,19 +1178,19 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         shape.setLayer( shapeData.layer );
       }
 
-      if ( shapeData.locked !== undefined ) {
+      if ( shapeData.locked == true ) {
         shape.lock();
       }
 
-      if ( shapeData.movable !== undefined ) {
+      if ( shapeData.movable == true ) {
         shape.movable();
       }
 
-      if ( shapeData.selectable !== undefined ) {
+      if ( shapeData.selectable == true ) {
         shape.selectable();
       }
 
-      if ( shapeData.resizable !== undefined ) {
+      if ( shapeData.resizable == true ) {
         shape.resizable();
       }
 
@@ -1212,6 +1212,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       if ( shapeData.highlightOnMouseOver !== undefined ) {
         shape.setProp( "highlightOnMouseOver", true );
+      }
+
+      if ( shapeData.labelEditable ) {
+        shape.setProp( "labelEditable", shapeData.labelEditable );
       }
 
       if ( shapeData.labels && !shapeData.label ) {

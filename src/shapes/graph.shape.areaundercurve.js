@@ -189,6 +189,9 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
       this.maxY = this.serie.getY( maxY );
       this.setHandles();
+
+      this.changed();
+
       return true;
     },
 

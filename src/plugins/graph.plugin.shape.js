@@ -74,7 +74,7 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
       movable: true
     };
 
-    util.extend( true, shapeInfo, this.options );
+    $.extend( true, shapeInfo, this.options );
 
     this.emit( "beforeNewShape", shapeInfo );
 
@@ -83,6 +83,8 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
     }
 
     var shape = graph.newShape( shapeInfo.type, shapeInfo );
+
+    this.emit( "createdShape", shape );
 
     if ( shape ) {
       self.currentShape = shape;
@@ -101,7 +103,6 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
   PluginShape.prototype.onMouseMove = function( graph, x, y, e ) {
 
     var self = this;
-
     if ( self.currentShape ) {
 
       self.count++;

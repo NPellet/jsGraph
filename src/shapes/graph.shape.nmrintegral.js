@@ -152,22 +152,18 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
         sum = 1; // Will look line a line anyway
       }
 
-      this.maxPx = this._data.maxPx || 50;
+      var ratio;
 
       if ( !this.ratio ) {
-        this.ratio = 1;
+        ratio = 150 / sum;
+      } else {
+        ratio = this.ratio;
       }
-
-      var integration = this.maxIntegration || sum;
 
       for ( var i = 0, l = points.length; i < l; i++ ) {
         //   console.log( points[ i ][ 1 ] / sum );
-        points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
+        points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] ) * ratio;
 
-        /* console.log( this.ratio, integration );
-        console.log( this.maxPx );
-        console.log( points[ i ][ 1 ] );
-*/
         if ( i == 0 ) {
           this.firstPointY = points[ i ][ 1 ];
         }
@@ -177,7 +173,7 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
       }
 
       this.points = points;
-      this.lastSum = Math.abs( sum );
+      this.sum = sum;
 
       var lastY = firstY,
         lastX = this.lastX;
@@ -205,6 +201,10 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
         x: ( pos1.x + pos2.x ) / 2,
         y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
       } ) );
+
+      this.updateLabels();
+
+      this.changed();
 
       this.setHandles();
 

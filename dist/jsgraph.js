@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-82
+ * jsGraph JavaScript Graphing Library v1.13.3-83
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-27T18:14Z
+ * Date: 2016-05-29T14:01Z
  */
 
 ( function( global, factory ) {
@@ -2312,19 +2312,19 @@
             shape.setLayer( shapeData.layer );
           }
 
-          if ( shapeData.locked !== undefined ) {
+          if ( shapeData.locked == true ) {
             shape.lock();
           }
 
-          if ( shapeData.movable !== undefined ) {
+          if ( shapeData.movable == true ) {
             shape.movable();
           }
 
-          if ( shapeData.selectable !== undefined ) {
+          if ( shapeData.selectable == true ) {
             shape.selectable();
           }
 
-          if ( shapeData.resizable !== undefined ) {
+          if ( shapeData.resizable == true ) {
             shape.resizable();
           }
 
@@ -2346,6 +2346,10 @@
 
           if ( shapeData.highlightOnMouseOver !== undefined ) {
             shape.setProp( "highlightOnMouseOver", true );
+          }
+
+          if ( shapeData.labelEditable ) {
+            shape.setProp( "labelEditable", shapeData.labelEditable );
           }
 
           if ( shapeData.labels && !shapeData.label ) {
@@ -8864,7 +8868,7 @@
           movable: true
         };
 
-        util.extend( true, shapeInfo, this.options );
+        $.extend( true, shapeInfo, this.options );
 
         this.emit( "beforeNewShape", shapeInfo );
 
@@ -8873,6 +8877,8 @@
         }
 
         var shape = graph.newShape( shapeInfo.type, shapeInfo );
+
+        this.emit( "createdShape", shape );
 
         if ( shape ) {
           self.currentShape = shape;
@@ -8891,7 +8897,6 @@
       PluginShape.prototype.onMouseMove = function( graph, x, y, e ) {
 
         var self = this;
-
         if ( self.currentShape ) {
 
           self.count++;
@@ -16404,7 +16409,11 @@
        * @memberof Shape
        * @return {Shape} The current shape
        */
-      Shape.prototype.changed = function() {
+      Shape.prototype.changed = function( event ) {
+
+        if ( event ) {
+          this.graph.emit( event, this );
+        }
 
         this.graph.emit( 'shapeChanged', this );
         return this;
@@ -16442,39 +16451,39 @@
        * @return {Shape} The current shape
        */
       Shape.prototype.setSerie = function( serie ) {
-          this.serie = serie;
-          this.xAxis = serie.getXAxis();
-          this.yAxis = serie.getYAxis();
-          return this;
-        },
+        this.serie = serie;
+        this.xAxis = serie.getXAxis();
+        this.yAxis = serie.getYAxis();
+        return this;
+      };
 
-        /**
-         * @memberof Shape
-         * @return {Serie} The serie associated to the shape
-         */
-        Shape.prototype.getSerie = function() {
-          return this.serie;
-        },
+      /**
+       * @memberof Shape
+       * @return {Serie} The serie associated to the shape
+       */
+      Shape.prototype.getSerie = function() {
+        return this.serie;
+      };
 
-        /**
-         * Assigns the shape to the default x and y axes of the graph, only if they don't exist yet
-         * @memberof Shape
-         * @return {Shape} The current shape
-         * @see Graph#getXAxis
-         * @see Graph#getYAxis
-         */
-        Shape.prototype.autoAxes = function() {
+      /**
+       * Assigns the shape to the default x and y axes of the graph, only if they don't exist yet
+       * @memberof Shape
+       * @return {Shape} The current shape
+       * @see Graph#getXAxis
+       * @see Graph#getYAxis
+       */
+      Shape.prototype.autoAxes = function() {
 
-          if ( !this.xAxis ) {
-            this.xAxis = this.graph.getXAxis();
-          }
+        if ( !this.xAxis ) {
+          this.xAxis = this.graph.getXAxis();
+        }
 
-          if ( !this.yAxis ) {
-            this.yAxis = this.graph.getYAxis();
-          }
+        if ( !this.yAxis ) {
+          this.yAxis = this.graph.getYAxis();
+        }
 
-          return this;
-        };
+        return this;
+      };
 
       /**
        * Assigns the shape to an x axis
@@ -16859,6 +16868,16 @@
       };
 
       /**
+       * Returns the text of the label
+       * @memberof Shape
+       * @param {Number} [ index = 0 ] - The index of the label
+       * @return {String} The text of the label
+       */
+      Shape.prototype.getLabelText = function( text, index ) {
+        return this.getProp( 'labelText', index || 0 );
+      };
+
+      /**
        * Displays a hidden label
        * @memberof Shape
        * @param {Number} [ index = 0 ] - The index of the label
@@ -17162,6 +17181,11 @@
             self._labels[ i ].setAttribute( 'data-label-i', i );
             self._labels[ i ].jsGraphIsShape = self;
             self.group.appendChild( this._labels[ i ] );
+
+            self._labels[ i ].addEventListener( 'dblclick', function( e ) {
+              self.labelDblClickListener( e );
+            } );
+
           }
           i++;
         }
@@ -17178,7 +17202,7 @@
        * @memberof Shape
        */
       Shape.prototype.isLabelEditable = function( labelIndex ) {
-        return this.getProp( 'labelEditable', labelIndex );
+        return this.getProp( 'labelEditable', labelIndex || 0 );
       };
 
       /**
@@ -17196,8 +17220,6 @@
         for ( var i = 0, l = this._labels.length; i < l; i++ ) {
           this._applyLabelData( i );
 
-          this._labels[ i ].removeEventListener( "dblclick", labelDblClickListener );
-          this._labels[ i ].addEventListener( 'dblclick', labelDblClickListener );
         }
 
       };
@@ -17673,7 +17695,7 @@
        * @private
        */
       Shape.prototype.handleMouseMove = function( e ) {
-
+        //console.log( this.resizinh, this.moving, this.isSelected(), this._mouseCoords );
         if ( ( this.resizing || this.moving ) && !this.isSelected() ) {
           this.graph.selectShape( this );
         }
@@ -18019,15 +18041,17 @@
         return this;
       };
 
-      function labelDblClickListener( e ) {
+      Shape.prototype.labelDblClickListener = function( e ) {
 
         var i = parseInt( e.target.getAttribute( 'data-label-i' ) );
 
-        if ( !i ) {
+        var self = this;
+
+        if ( isNaN( i ) ) {
           return;
         }
 
-        if ( !self.isLabelEditable( i ) ) {
+        if ( !this.isLabelEditable( i ) ) {
           return;
         }
 
@@ -18046,10 +18070,10 @@
 
           $( this ).remove();
 
-          self.setLabelText( $( this ).setProp( 'value' ), i );
-          self._labels[ i ].textContent = $( this ).setProp( 'value' );
+          self.setLabelText( $( this ).prop( 'value' ), i );
+          self._labels[ i ].textContent = $( this ).prop( 'value' );
 
-          self.triggerChange();
+          self.changed( "shapeLabelChanged" );
 
         } ).bind( 'keyup', function( e ) {
 
@@ -18070,7 +18094,7 @@
 
         } ).focus().get( 0 ).select();
 
-      }
+      };
 
       /**
        * Appends the shape DOM to its parent
@@ -18304,6 +18328,9 @@
 
           this.maxY = this.serie.getY( maxY );
           this.setHandles();
+
+          this.changed();
+
           return true;
         },
 
@@ -18890,22 +18917,18 @@
             sum = 1; // Will look line a line anyway
           }
 
-          this.maxPx = this._data.maxPx || 50;
+          var ratio;
 
           if ( !this.ratio ) {
-            this.ratio = 1;
+            ratio = 150 / sum;
+          } else {
+            ratio = this.ratio;
           }
-
-          var integration = this.maxIntegration || sum;
 
           for ( var i = 0, l = points.length; i < l; i++ ) {
             //   console.log( points[ i ][ 1 ] / sum );
-            points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] / sum ) * ( this.maxPx ) * ( sum / integration ) * this.ratio;
+            points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] ) * ratio;
 
-            /* console.log( this.ratio, integration );
-        console.log( this.maxPx );
-        console.log( points[ i ][ 1 ] );
-*/
             if ( i == 0 ) {
               this.firstPointY = points[ i ][ 1 ];
             }
@@ -18915,7 +18938,7 @@
           }
 
           this.points = points;
-          this.lastSum = Math.abs( sum );
+          this.sum = sum;
 
           var lastY = firstY,
             lastX = this.lastX;
@@ -18943,6 +18966,10 @@
             x: ( pos1.x + pos2.x ) / 2,
             y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
           } ) );
+
+          this.updateLabels();
+
+          this.changed();
 
           this.setHandles();
 
