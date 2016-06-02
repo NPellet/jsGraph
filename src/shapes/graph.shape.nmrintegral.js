@@ -41,10 +41,12 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
 
       if ( axis == 'x' ) {
         if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
+          this.setDom( 'd', "" );
           return false;
         }
       } else {
         if ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) {
+          this.setDom( 'd', "" );
           return false;
         }
       }

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-83
+ * jsGraph JavaScript Graphing Library v1.13.3-84
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-05-29T14:01Z
+ * Date: 2016-06-02T10:20Z
  */
 
 ( function( global, factory ) {
@@ -1388,7 +1388,7 @@
          * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
          * @return {Boolean} if the redraw has been successful
          */
-        redraw: function( onlyIfAxesHaveChanged ) {
+        redraw: function( onlyIfAxesHaveChanged, forceAnyway ) {
 
           if ( !this.width || !this.height ) {
             return;
@@ -2840,7 +2840,8 @@
           this.dom.setAttribute( 'height', this.height );
           this.domTitle.setAttribute( 'x', this.width / 2 );
 
-          refreshDrawingZone( this );
+          this.redraw();
+          //refreshDrawingZone( this );
 
           if ( this.legend ) {
             this.legend.update();
@@ -18806,10 +18807,12 @@
 
           if ( axis == 'x' ) {
             if ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) {
+              this.setDom( 'd', "" );
               return false;
             }
           } else {
             if ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) {
+              this.setDom( 'd', "" );
               return false;
             }
           }
