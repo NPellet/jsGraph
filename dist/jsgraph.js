@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-84
+ * jsGraph JavaScript Graphing Library v1.13.3-85
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-02T10:20Z
+ * Date: 2016-06-02T12:04Z
  */
 
 ( function( global, factory ) {
@@ -2841,6 +2841,7 @@
           this.domTitle.setAttribute( 'x', this.width / 2 );
 
           this.redraw();
+          this.drawSeries( true );
           //refreshDrawingZone( this );
 
           if ( this.legend ) {

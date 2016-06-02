@@ -1707,6 +1707,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.domTitle.setAttribute( 'x', this.width / 2 );
 
       this.redraw();
+      this.drawSeries( true );
       //refreshDrawingZone( this );
 
       if ( this.legend ) {
