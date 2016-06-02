@@ -1269,7 +1269,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     }
 
     util.saveDomAttributes( this._dom, style2, 'select' );
-
+    console.log( this.hasHandles(), this.hasStaticHandles() );
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
       this.addHandles();
       this.setHandles();

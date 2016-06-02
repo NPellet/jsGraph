@@ -254,7 +254,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
      * @return {Boolean} if the redraw has been successful
      */
-    redraw: function( onlyIfAxesHaveChanged, forceAnyway ) {
+    redraw: function( onlyIfAxesHaveChanged ) {
 
       if ( !this.width || !this.height ) {
         return;

@@ -133,10 +133,12 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
    */
   RectangleShape.prototype.applyPosition = function() {
 
-    var pos = this.computePosition( 0 );
-    var pos2 = this.computePosition( 1 );
-
-    var x, y, width, height;
+    var pos = this.computePosition( 0 ),
+      pos2 = this.computePosition( 1 ),
+      x,
+      y,
+      width,
+      height;
 
     if ( pos.x < pos2.x ) {
       x = pos.x,
