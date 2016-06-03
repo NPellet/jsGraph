@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-88
+ * jsGraph JavaScript Graphing Library v1.13.3-89
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-03T09:09Z
+ * Date: 2016-06-03T17:54Z
  */
 
 ( function( global, factory ) {
@@ -6288,7 +6288,7 @@
 
           // Place label correctly
           this.label.setAttribute( 'text-anchor', 'middle' );
-          this.label.setAttribute( 'x', Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + this.getMinPx() );
+          this.label.setAttribute( 'x', Math.abs( this.getMathMaxPx() - this.getMathMinPx() ) / 2 + this.getMathMinPx() );
           this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
           this.labelTspan.textContent = this.getLabel();
 
@@ -6467,7 +6467,7 @@
           // Place label correctly
           //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
 
-          this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() - this.getMinPx() ) / 2 + Math.min( this.getMinPx(), this.getMaxPx() ) ) + ') rotate(-90)' );
+          this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMathMaxPx() - this.getMathMinPx() ) / 2 + this.getMathMinPx() ) + ') rotate(-90)' );
 
           if ( this.getLabelColor() !== 'black' ) {
             this.label.setAttribute( 'fill', this.getLabelColor() );
@@ -18860,7 +18860,8 @@
               return false;
             }
 
-            console.log( v1 );
+            posXY.y = v1.yMin;
+            posXY2.y = v2.yMin;
 
             if ( v1.xBeforeIndex > v2.xBeforeIndex ) {
               v3 = v1;

@@ -93,7 +93,8 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
           return false;
         }
 
-        console.log( v1 );
+        posXY.y = v1.yMin;
+        posXY2.y = v2.yMin;
 
         if ( v1.xBeforeIndex > v2.xBeforeIndex ) {
           v3 = v1;
