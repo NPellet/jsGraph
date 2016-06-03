@@ -2160,7 +2160,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       _handleMouseLeave( self );
     } );
 
-    graph.dom.addEventListener( 'mousedown', function( e ) {
+    graph.groupEvent.addEventListener( 'mousedown', function( e ) {
 
       self.focus();
 

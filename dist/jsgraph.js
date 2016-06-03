@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-89
+ * jsGraph JavaScript Graphing Library v1.13.3-90
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-03T17:54Z
+ * Date: 2016-06-03T18:13Z
  */
 
 ( function( global, factory ) {
@@ -3294,7 +3294,7 @@
           _handleMouseLeave( self );
         } );
 
-        graph.dom.addEventListener( 'mousedown', function( e ) {
+        graph.groupEvent.addEventListener( 'mousedown', function( e ) {
 
           self.focus();
 
