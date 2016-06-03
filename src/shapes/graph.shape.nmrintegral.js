@@ -4,9 +4,21 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
 
   var GraphNMRIntegral = function( graph, options ) {
     this.nbHandles = 2;
+
   }
 
   $.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
+
+    createHandles: function() {
+
+      this._createHandles( 2, 'rect', {
+        transform: "translate(-3 -3)",
+        width: 6,
+        height: 6,
+        stroke: "black",
+        fill: "white"
+      } );
+    },
 
     applyPosition: function() {
 
@@ -239,17 +251,20 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
 
     setHandles: function() {
 
-      if ( !this._selected || this.points == undefined ) {
+      if ( this.points == undefined ) {
         return;
       }
 
       this.addHandles();
 
-      this.handle1.setAttribute( 'x', this.points[ 0 ][ 0 ] );
-      this.handle1.setAttribute( 'y', this.points[ 0 ][ 1 ] );
+      var posXY = this.calculatePosition( 0 ),
+        posXY2 = this.calculatePosition( 1 );
 
-      this.handle2.setAttribute( 'x', this.points[ this.points.length - 1 ][ 0 ] - 1 );
-      this.handle2.setAttribute( 'y', this.points[ this.points.length - 1 ][ 1 ] );
+      this.handles[ 1 ].setAttribute( 'x', posXY.x );
+      this.handles[ 1 ].setAttribute( 'y', posXY.y );
+
+      this.handles[ 2 ].setAttribute( 'x', posXY2.x );
+      this.handles[ 2 ].setAttribute( 'y', posXY2.y );
 
     }
 
