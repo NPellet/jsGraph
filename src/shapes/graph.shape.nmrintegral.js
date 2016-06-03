@@ -93,6 +93,8 @@ define( [ './graph.shape.areaundercurve', '../graph.position' ], function( Graph
           return false;
         }
 
+        console.log( v1 );
+
         if ( v1.xBeforeIndex > v2.xBeforeIndex ) {
           v3 = v1;
           v1 = v2;
