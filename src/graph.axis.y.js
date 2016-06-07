@@ -111,7 +111,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
       // Place label correctly
       //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
 
-      this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMathMaxPx() - this.getMathMinPx() ) / 2 + this.getMathMinPx() ) + ') rotate(-90)' );
+      this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
 
       if ( this.getLabelColor() !== 'black' ) {
         this.label.setAttribute( 'fill', this.getLabelColor() );
@@ -273,6 +273,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
 
       this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
       this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
     }
 
   } );

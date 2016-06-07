@@ -888,7 +888,20 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     this.setMinMaxFlipped();
     return this;
   };
+  /*
+    GraphAxis.prototype.setMinMaxFlipped = function() {
 
+      var interval = this.maxPx - this.minPx;
+      var maxPx = this.maxPx - interval * this.options.span[ 0 ];
+      var minPx = this.maxPx - interval * this.options.span[ 1 ];
+
+      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
+      // this.minPx = minPx;
+      //this.maxPx = maxPx;
+    }
+  */
   /**
    * @memberof GraphAxis
    * @return {Boolean} The current flipping state of the axis

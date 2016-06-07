@@ -108,7 +108,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
     //	this._zoomingSquare.setAttribute('display', 'none');
 
     //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
-
     switch ( this._zoomingMode ) {
 
       case 'xy':
@@ -305,8 +304,10 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
    * @private
    * @memberof PluginZoom
    */
-  PluginZoom.prototype.onDblClick = function( graph, x, y, pref, e, mute ) {
+  PluginZoom.prototype.onDblClick = function( x, y, e, pref, mute ) {
 
+    var graph = this.graph;
+    console.log( x, y, e, pref, mute );
     this.emit( "beforeDblClick", {
       graph: graph,
       x: x,
@@ -356,17 +357,17 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
       }
 
-      if ( pref.mode == 'gradualX' || pref.mode == 'gradualY' ||  pref.mode == 'gradual' ) {
+      if ( pref.mode == 'gradualX' || pref.mode == 'gradualY' ||  pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
 
         var x = false,
           y = false;
 
-        if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ) {
+        if ( pref.mode == 'gradualX' || pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
           x = true;
           modeX = true;
         }
 
-        if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ) {
+        if ( pref.mode == 'gradualY' || pref.mode == 'gradual' ||  pref.mode == 'gradualXY' ) {
           y = true;
           modeY = true;
         }

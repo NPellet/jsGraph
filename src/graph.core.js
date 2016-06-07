@@ -72,6 +72,11 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     this.shapesLocked = false;
     this.plugins = {};
 
+    for ( var i in this.options.pluginAction ) {
+      this.options.pluginAction.plugin = i;
+      this.options.mouseActions.push( this.options.pluginAction );
+    }
+
     this.selectedShapes = [];
 
     this.ns = 'http://www.w3.org/2000/svg';
@@ -153,6 +158,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
    * @prop {Number} fontFamily - The basic font family. Should be installed on the computer of the user
    * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
    * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
+   * @prop {Object.<String,Object>} mouseActions - Alias of pluginActions
    * @prop {Object} wheel - Define the mouse wheel action
    * @prop {Object} dblclick - Define the double click action
    * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
@@ -179,6 +185,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     plugins: {},
     pluginAction: {},
+    mouseActions: [],
     wheel: {},
     dblclick: {},
 
@@ -1474,31 +1481,29 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       }
     },
 
-    isPluginAllowed: function( e, plugin ) {
+    isMouseActionAllowed: function( e, action ) {
 
-      if ( this.forcedPlugin == plugin ) {
-        return true;
+      if ( action.type !== e.type &&  ( action.type !== undefined || e.type !== "mousedown" ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
+        return;
       }
 
-      var act = this.options.pluginAction[ plugin ] || plugin;
-
-      if ( act.shift === undefined ) {
-        act.shift = false;
+      if ( action.shift === undefined ) {
+        action.shift = false;
       }
 
-      if ( act.ctrl === undefined ) {
-        act.ctrl = false;
+      if ( action.ctrl === undefined ) {
+        action.ctrl = false;
       }
 
-      if ( act.meta === undefined ) {
-        act.meta = false;
+      if ( action.meta === undefined ) {
+        action.meta = false;
       }
 
-      if ( act.alt === undefined ) {
-        act.alt = false;
+      if ( action.alt === undefined ) {
+        action.alt = false;
       }
 
-      return ( e.shiftKey == act.shift && e.ctrlKey == act.ctrl && e.metaKey == act.meta && e.altKey == act.alt );
+      return ( e.shiftKey == action.shift && e.ctrlKey == action.ctrl && e.metaKey == action.meta && e.altKey == action.alt );
     },
 
     forcePlugin: function( plugin ) {
@@ -1533,6 +1538,17 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       if ( this.plugins[ which ] && this.plugins[ which ][ func ] ) {
 
         this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
+      }
+    },
+
+    _serieExecute: function( which, func, args ) {
+
+      if ( typeof serie !== 'object' ) {
+        serie = this.getSerie( serie );
+      }
+
+      if ( typeof serie[ func ] == 'function' ) {
+        serie.apply( serie, args );
       }
     },
 
@@ -2232,11 +2248,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
 
-      if ( !graph.options.wheel.type ) {
-        return;
-      }
-      e.preventDefault();
-      e.stopPropagation();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
       _handleMouseWheel( self, deltaY, e );
 
@@ -2245,11 +2256,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     graph.groupEvent.addEventListener( 'wheel', function( e ) {
 
-      if ( !graph.options.wheel.type ) {
-        return;
-      }
-      e.stopPropagation();
-      e.preventDefault();
       var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
       _handleMouseWheel( self, deltaY, e );
 
@@ -2259,9 +2265,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   function _handleMouseDown( graph, x, y, e ) {
 
-    var self = graph,
-      keyComb = graph.options.pluginAction,
-      i;
+    var self = graph;
 
     if ( graph.forcedPlugin ) {
 
@@ -2270,16 +2274,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       return;
     }
 
-    for ( i in keyComb ) {
-
-      if ( graph.isPluginAllowed( e, keyComb[ i ] ) ) {
-
-        graph.activePlugin = i; // Lease the mouse action to the current action
-        graph._pluginExecute( i, 'onMouseDown', [ graph, x, y, e ] );
-        return;
-      }
-    }
-
+    checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseDown' );
   }
 
   function _handleMouseMove( graph, x, y, e ) {
@@ -2353,9 +2348,67 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       graph.options.onMouseMoveData.call( graph, e, results );
     }
+
+    checkMouseActions( graph, e, [  graph, x, y, e ], 'onMouseMove' );
+
     return;
 
   }
+
+  function checkMouseActions( graph, e, parameters, methodName ) {
+
+    var keyComb = graph.options.mouseActions,
+      i;
+
+    for ( i = 0, l = keyComb.length; i < l; i++ ) {
+
+      if ( keyComb[ i ].plugin ) { // Is it a plugin ?
+
+        if ( this.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+
+          if ( keyComb[ i ].options ) {
+            parameters.push( keyComb[ i ].options );
+          }
+
+          graph.activePlugin = keyComb[ i ].plugin; // Lease the mouse action to the current action
+          graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
+          return true;
+        }
+
+      } else if ( keyComb[ i ].callback && graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+
+        if ( keyComb[ i ].options ) {
+          parameters.push( keyComb[ i ].options );
+        }
+
+        keyComb[ i ].callback.apply( this, parameters );
+        return true;
+
+      } else if ( keyComb[ i ].series ) {
+
+        var series;
+        if ( keyComb[ i ].series === 'all' ) {
+          series = graph.series;
+        }
+
+        if ( !Array.isArray( keyComb[ i ].series ) ) {
+          series = [  series ];
+        }
+
+        if ( keyComb[ i ].options ) {
+          parameters.push( keyComb[ i ].options );
+        }
+
+        for ( var j = 0; j < series.length; i++ ) {
+          graph._serieExecute( series[  i ], methodName, parameters );
+        }
+        return true;
+      }
+    }
+
+    return false;
+
+  };
 
   var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xValue ) {
 
@@ -2511,24 +2564,25 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     //	var _x = x - graph.options.paddingLeft;
     //	var _y = y - graph.options.paddingTop;
     var pref = graph.options.dblclick;
-
-    if ( !pref ||  !pref.type ) {
-      return;
-    }
-
-    switch ( pref.type ) {
-
-      case 'plugin':
-
-        var plugin;
-
-        if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
-
-          plugin.onDblClick( graph, x, y, pref.options, e );
+    checkMouseActions( graph, e, [ x, y, e ], 'onDblClick' );
+    /*
+        if ( !pref ||  !pref.type ) {
+          return;
         }
 
-        break;
-    }
+        switch ( pref.type ) {
+
+          case 'plugin':
+
+            var plugin;
+
+            if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+
+              plugin.onDblClick( graph, x, y, pref.options, e );
+            }
+
+            break;
+        }*/
   }
 
   function _handleMouseUp( graph, x, y, e ) {
@@ -2649,31 +2703,36 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   function _handleMouseWheel( graph, delta, e ) {
 
-    e.preventDefault();
-    e.stopPropagation();
+    e.type = 'mousewheel';
 
-    switch ( graph.options.wheel.type ) {
-
-      case 'plugin':
-
-        var plugin;
-
-        if ( plugin = graph.plugins[ graph.options.wheel.plugin ] ) {
-
-          plugin.onMouseWheel( delta, e, graph.options.wheel.options );
-        }
-
-        break;
-
-      case 'toSeries':
-
-        for ( var i = 0, l = graph.series.length; i < l; i++ ) {
-          graph.series[ i ].onMouseWheel( delta, e );
-        }
-
-        break;
-
+    if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    /*
+        switch ( graph.options.wheel.type ) {
+
+          case 'plugin':
+
+            var plugin;
+
+            if ( plugin = graph.plugins[ graph.options.wheel.plugin ] ) {
+
+              plugin.onMouseWheel( delta, e, graph.options.wheel.options );
+            }
+
+            break;
+
+          case 'toSeries':
+
+            for ( var i = 0, l = graph.series.length; i < l; i++ ) {
+              graph.series[ i ].onMouseWheel( delta, e );
+            }
+
+            break;
+
+        }
+        */
 
     // Redraw not obvious at all !!
     /*

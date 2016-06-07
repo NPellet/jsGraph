@@ -110,7 +110,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
       // Place label correctly
       this.label.setAttribute( 'text-anchor', 'middle' );
-      this.label.setAttribute( 'x', Math.abs( this.getMathMaxPx() - this.getMathMinPx() ) / 2 + this.getMathMinPx() );
+      this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
       this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
       this.labelTspan.textContent = this.getLabel();
 
@@ -161,6 +161,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
       this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
       this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
     }
 
   } );
