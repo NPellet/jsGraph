@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-92
+ * jsGraph JavaScript Graphing Library v1.13.3-93
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-09T10:58Z
+ * Date: 2016-06-09T11:02Z
  */
 
 ( function( global, factory ) {
@@ -3494,7 +3494,7 @@
 
           if ( keyComb[ i ].plugin ) { // Is it a plugin ?
 
-            if ( this.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+            if ( graph.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
 
               if ( keyComb[ i ].options ) {
                 parameters.push( keyComb[ i ].options );
@@ -3511,7 +3511,7 @@
               parameters.push( keyComb[ i ].options );
             }
 
-            keyComb[ i ].callback.apply( this, parameters );
+            keyComb[ i ].callback.apply( graph, parameters );
             return true;
 
           } else if ( keyComb[ i ].series ) {
@@ -3875,7 +3875,7 @@
       function _handleMouseLeave( graph ) {
 
         if ( graph.options.handleMouseLeave ) {
-          graph.options.handleMouseLeave.call( this );
+          graph.options.handleMouseLeave.call( graph );
 
         }
 
