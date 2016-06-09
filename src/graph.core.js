@@ -2699,8 +2699,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   function _handleMouseWheel( graph, delta, e ) {
 
-    e.type = 'mousewheel';
-
     if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
       e.preventDefault();
       e.stopPropagation();
