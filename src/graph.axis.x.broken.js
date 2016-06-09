@@ -1,8 +1,8 @@
-define( [ './graph.axis.x', './graph.axis.broken' ], function( GraphXAxis, GraphBrokenAxis ) {
+define( [ 'jquery', './graph.axis.x', './graph.axis.broken' ], function( $, GraphXAxis, GraphBrokenAxis ) {
 
   "use strict";
 
-  var GraphXAxisBroken = function( graph, topbottom, options ) {
+  function GraphXAxisBroken( graph, topbottom, options ) {
     this.init( graph, options );
     this.top = topbottom == 'top';
   }

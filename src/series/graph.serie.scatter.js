@@ -520,7 +520,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     }
 
-  }
+  };
 
   ErrorBarMixin.call( GraphSerieScatter.prototype ); // Add error bar mixin
 

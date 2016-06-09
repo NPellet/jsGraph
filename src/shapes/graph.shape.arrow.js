@@ -5,7 +5,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    * @class ArrowShape
    * @static
    */
-  var ArrowShape = function( graph ) {
+  function ArrowShape( graph ) {
 
   }
 
@@ -28,7 +28,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.setStrokeColor( 'black' );
     this.setStrokeWidth( 1 );
 
-  }
+  };
 
   return ArrowShape;
 

@@ -1,8 +1,8 @@
-define( [ './graph.shape.rect' ], function( GraphRect ) {
+define( [ 'jquery', './graph.shape.rect' ], function( $, GraphRect ) {
 
   var lineHeight = 5;
 
-  var GraphPeakIntegration2D = function( graph, options ) {
+  function GraphPeakIntegration2D( graph, options ) {
     this.nbHandles = 4;
   }
 

@@ -1,9 +1,9 @@
-define( [ './graph.shape.line' ], function( GraphLine ) {
+define( [ 'jquery', './graph.shape.line' ], function( $, GraphLine ) {
 
   "use strict";
   var lineHeight = 5;
 
-  var GraphPeakInterval2 = function( graph, options ) {
+  function GraphPeakInterval2( graph, options ) {
     this.nbHandles = 2;
 
   }

@@ -193,7 +193,7 @@ define( [ '../graph.util' ], function( util ) {
         }
 
       }
-    }
+    };
 
     this.errorAddPoint = function( j, dataX, dataY, xpx, ypx ) {
 
@@ -212,7 +212,7 @@ define( [ '../graph.util' ], function( util ) {
 
       }
 
-    }
+    };
 
     this.errorDraw = function()  {
 

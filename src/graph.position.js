@@ -36,7 +36,7 @@ define( [], function() {
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
-  }
+  };
 
   Position.prototype._compute = function( graph, xAxis, yAxis, serie ) {
 
@@ -296,7 +296,7 @@ define( [], function() {
 
     return posObject;
 
-  }
+  };
 
   function _parsePx( px ) {
     if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {

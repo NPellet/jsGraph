@@ -1,8 +1,8 @@
-define( [ './graph.shape.areaundercurve', '../graph.position' ], function( GraphSurfaceUnderCurve, GraphPosition ) {
+define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], function( $, GraphSurfaceUnderCurve, GraphPosition ) {
 
   "use strict";
 
-  var GraphNMRIntegral = function( graph, options ) {
+  function GraphNMRIntegral( graph, options ) {
     this.nbHandles = 2;
 
   }

@@ -143,7 +143,7 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
       //self.currentShape.kill();
       self.currentShape = false;
     }
-  }
+  };
 
   return PluginShape;
 

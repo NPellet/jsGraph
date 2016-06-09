@@ -35,7 +35,7 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
     isSerieHideable: true,
     isSerieSelectable: true
 
-  }
+  };
 
   /** 
    * Legend constructor
@@ -69,7 +69,7 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
       y: undefined,
       transformX: 0,
       transformY: 0
-    }
+    };
 
     this.setEvents();
 
@@ -210,27 +210,27 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
 
         case 'bottom':
           this.position.y = this.graph.getHeight() + "px";
-          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px"
+          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
           this.alignToY = "bottom";
           this.alignToX = false;
           break;
 
         case 'left':
           this.position.x = "6px";
-          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px"
+          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
           this.alignToX = "left";
           this.alignToY = false;
           break;
 
         case 'right':
           this.position.x = this.graph.getWidth() + "px";
-          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px"
+          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
           this.alignToX = "right";
           this.alignToY = false;
           break;
 
         case 'top':
-          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px"
+          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
           this.position.y = "10px";
           this.alignToY = "top";
           this.alignToX = false;
@@ -464,7 +464,7 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
 
       var mousemove = function( e ) {
         self.handleMouseMove( e );
-      }
+      };
 
       this.rectBottom.addEventListener( 'mousedown', mousedown );
       this.rectBottom.addEventListener( 'mousemove', mousemove );

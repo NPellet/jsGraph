@@ -1,8 +1,8 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
-  var GraphRect = function( graph, options ) {}
+  function GraphEllipse( graph, options ) {}
 
-  $.extend( GraphRect.prototype, GraphShape.prototype, {
+  $.extend( GraphEllipse.prototype, GraphShape.prototype, {
 
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
@@ -39,6 +39,6 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
   } );
 
-  return GraphRect;
+  return GraphEllipse;
 
 } );

@@ -18,7 +18,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   var profiling = [];
 
-  var Graph = function( wrapper, options, axis ) {
+  function Graph( wrapper, options, axis ) {
 
     var self = this;
 
@@ -1810,7 +1810,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this._makeClosingLines();
 
       this.clip = document.createElementNS( this.ns, 'clipPath' );
-      this.clip.setAttribute( 'id', '_clipplot' + this._creation )
+      this.clip.setAttribute( 'id', '_clipplot' + this._creation );
       this.defs.appendChild( this.clip );
 
       this.clipRect = document.createElementNS( this.ns, 'rect' );

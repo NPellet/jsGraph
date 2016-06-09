@@ -87,7 +87,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
       graph.draw( true );
 
-    }
+    };
 
   PluginDrag.prototype.onMouseUp = function( graph, x, y, e, target ) {
 
@@ -128,7 +128,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
       this.emit( "dragged" );
     }
 
-  }
+  };
 
   PluginDrag.prototype._persistanceMove = function( graph ) {
 
@@ -184,7 +184,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
     } );
 
-  }
+  };
 
   return PluginDrag;
 

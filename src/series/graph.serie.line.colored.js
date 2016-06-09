@@ -9,7 +9,7 @@ define( [ './graph.serie.line', './slotoptimizer', '../graph.util', '../mixins/g
    * @see Graph#newSerie
    * @augments SerieLine
    */
-  var SerieLineColor = function() {}
+  function SerieLineColor() {}
 
   SerieLineColor.prototype = new SerieLineBase();
 
@@ -19,12 +19,12 @@ define( [ './graph.serie.line', './slotoptimizer', '../graph.util', '../mixins/g
     if ( this.initExtended2 ) {
       this.initExtended2();
     }
-  }
+  };
 
   SerieLineColor.prototype.setColors = function( colors ) {
 
     this.colors = colors;
-  }
+  };
 
   SerieLineColor.prototype._draw_standard = function() {
 

@@ -7,7 +7,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @class Serie
    * @static
    */
-  var Serie = function() {}
+  function Serie() {}
 
   Serie.prototype = new EventEmitter();
 
@@ -295,7 +295,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
   Serie.prototype.killImpl = function() {
 
-  }
+  };
 
   /**
    * Hides the serie
@@ -826,7 +826,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this._tracker = true;
     this._trackingCallback = hoverCallback;
     this._trackingOutCallback = outCallback;
-  }
+  };
 
   Serie.prototype.disableTracking = function() {
 
@@ -836,7 +836,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     this._tracker = false;
     this._trackingCallback = null;
-  }
+  };
 
   Serie.prototype.setLegend = function( bln ) {
     this._legend = bln;
@@ -848,11 +848,11 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
   Serie.prototype.getMarkerForLegend = function() {
     return false;
-  }
+  };
 
   Serie.prototype.getType = function() {
     return this.type;
-  }
+  };
   return Serie;
 
 } );

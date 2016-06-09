@@ -2,7 +2,7 @@ define( [ 'jquery' ], function( $ ) {
 
   "use strict";
 
-  var GraphAxis = function() {}
+  function GraphAxis() {}
 
   GraphAxis.prototype = {
 
@@ -207,7 +207,7 @@ define( [ 'jquery' ], function( $ ) {
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
         if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
           // This range
-          return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
+          return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx;
 
           return;
         }
@@ -224,7 +224,7 @@ define( [ 'jquery' ], function( $ ) {
 
       return [ undefined, undefined ];
     }
-  }
+  };
 
   return GraphAxis;
 

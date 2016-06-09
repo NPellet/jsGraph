@@ -5,7 +5,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    * @class ArrowShape
    * @static
    */
-  var PeakBoundariesMiddleShape = function( graph ) {
+  function PeakBoundariesMiddleShape( graph ) {
     this.lineHeight = 6;
   }
 
@@ -31,7 +31,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.group.appendChild( this.line2 );
     this.group.appendChild( this.line3 );
     this._dom.element = this;
-  }
+  };
 
   PeakBoundariesMiddleShape.prototype.createHandles = function() {
     this._createHandles( 3, 'rect', {
@@ -42,7 +42,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  }
+  };
 
   PeakBoundariesMiddleShape.prototype.redrawImpl = function() {
 
@@ -131,12 +131,12 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     };
 
   PeakBoundariesMiddleShape.prototype.setY = function( y ) {
-      this.posYPx = y;
-    },
+    this.posYPx = y;
+  };
 
-    PeakBoundariesMiddleShape.prototype.setLineHeight = function( height ) {
-      this.lineHeihgt = height;
-    }
+  PeakBoundariesMiddleShape.prototype.setLineHeight = function( height ) {
+    this.lineHeihgt = height;
+  };
 
   PeakBoundariesMiddleShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
 

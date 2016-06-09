@@ -9,7 +9,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
    * @see Graph#newSerie
    * @augments Serie
    */
-  var SerieLine = function() {}
+  function SerieLine() {}
 
   SerieLine.prototype = new SerieLineNonInstanciable();
 
@@ -1103,11 +1103,11 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         this.picks[ i ].kill();
       }
     }
-  }
+  };
 
   SerieLine.prototype.killImpl = function() {
     this.killPeakPicking();
-  }
+  };
 
   /**
    * @param {Number} k - Index of the point for which we should get the family
@@ -1796,10 +1796,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       case 6:
         return "5 2";
-        break
+        break;
       case 7:
         return "2 5";
-        break
+        break;
 
       case 8:
         return "4 2 4 4";
@@ -1973,7 +1973,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.styles[ selectionType ].markers[ family ].points = points;
     this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
-  }
+  };
 
   SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
 
@@ -2022,7 +2022,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
     this.markerPoints[ selectionType || "unselected" ] = markerPoints;
-  }
+  };
 
   SerieLine.prototype.insertMarkers = function( selectionType ) {
 

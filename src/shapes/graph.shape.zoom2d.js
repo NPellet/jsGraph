@@ -1,6 +1,6 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
-  var Zoom2DShape = function() {}
+  function Zoom2DShape() {}
 
   $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 

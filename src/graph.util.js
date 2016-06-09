@@ -267,7 +267,7 @@ define( [], function() {
     // If the function hasn't returned already, we're confident that
     // |obj| is a plain object, created by {} or constructed with new Object
     return true;
-  }
+  };
 
   // https://davidwalsh.name/function-debounce
   util.debounce = function( func, wait, immediate ) {
@@ -294,7 +294,7 @@ define( [], function() {
 
     return doc;
 
-  }
+  };
 
   // http://stackoverflow.com/questions/5276953/what-is-the-most-efficient-way-to-reverse-an-array-in-javascript
   util.reverseArray = function( array ) {
@@ -307,7 +307,7 @@ define( [], function() {
       array[ right ] = temporary;
     }
     return array;
-  }
+  };
 
   return util;
 

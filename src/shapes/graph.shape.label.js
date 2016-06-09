@@ -1,4 +1,4 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
   /** 
    * Represents a label that extends the Shape class
@@ -6,7 +6,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
    * @augments Shape
    * @see Graph#newShape
    */
-  var LabelShape = function( graph, options ) {
+  function LabelShape( graph, options ) {
     this.selectStyle = {
       stroke: 'red'
     };

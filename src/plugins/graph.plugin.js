@@ -12,7 +12,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * Init function called by jsGraph on load
    * @memberof Plugin
    */
-  Plugin.prototype.init = function() {}
+  Plugin.prototype.init = function() {};
 
   /**
    * Handles the mousedown event from jsGraph
@@ -23,7 +23,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {SVGElement} target - The target element
    * @memberof Plugin
    */
-  Plugin.prototype.onMouseDown = function() {}
+  Plugin.prototype.onMouseDown = function() {};
 
   /**
    * Handles the mouseup event from jsGraph
@@ -34,7 +34,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {SVGElement} target - The target element
    * @memberof Plugin
    */
-  Plugin.prototype.onMouseUp = function() {}
+  Plugin.prototype.onMouseUp = function() {};
 
   /**
    * Handles the mousemove event from jsGraph
@@ -45,7 +45,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {SVGElement} target - The target element
    * @memberof Plugin
    */
-  Plugin.prototype.onMouseMove = function() {}
+  Plugin.prototype.onMouseMove = function() {};
 
   return Plugin;
 } );

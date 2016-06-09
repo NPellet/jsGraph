@@ -2,7 +2,7 @@ define( [ './graph.axis.y', './graph.axis.broken' ], function( GraphYAxis, Graph
 
   "use strict";
 
-  var GraphYAxisBroken = function( graph, leftright, options ) {
+  function GraphYAxisBroken( graph, leftright, options ) {
 
     this.init( graph, options );
 

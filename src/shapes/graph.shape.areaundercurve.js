@@ -1,8 +1,8 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
   "use strict";
 
-  var GraphSurfaceUnderCurve = function( graph ) {
+  function GraphSurfaceUnderCurve( graph ) {
 
   }
 

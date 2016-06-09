@@ -37,7 +37,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
   PluginZoom.prototype.defaults = {
     "axes": "all"
-  }
+  };
 
   /**
    * @private
@@ -535,15 +535,15 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
       }
 
     } );
-  }
+  };
 
   PluginZoom.prototype.isFullX = function() {
     return this.fullX;
-  }
+  };
 
   PluginZoom.prototype.isFullY = function() {
     return this.fullY;
-  }
+  };
 
   PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
 
@@ -586,7 +586,7 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
 
         break;
     }
-  }
+  };
 
   return PluginZoom;
 } );

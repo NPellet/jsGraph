@@ -8,7 +8,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
    * myAxis.prototype = new Graph.getConstructor("axis");
    * graph.setBottomAxis( new myAxis( { } ) );
    */
-  var GraphAxis = function() {}
+  function GraphAxis() {}
 
   GraphAxis.prototype = new EventEmitter();
 
@@ -71,7 +71,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     scientificScaleExponent: false,
     engineeringScale: false,
     unit: false
-  }
+  };
 
   GraphAxis.prototype.init = function( graph, options, overwriteoptions ) {
 
@@ -185,7 +185,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     this.axisRand = Math.random();
     this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
-    this.clip.setAttribute( 'id', '_clip' + this.axisRand )
+    this.clip.setAttribute( 'id', '_clip' + this.axisRand );
     this.graph.defs.appendChild( this.clip );
 
     this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
@@ -1386,7 +1386,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       fontSize: '1.0em',
       exponential: true,
       overwrite: false
-    }
+    };
     if ( incr < 0 )
       incr = 0;
     var pow = incr == 0 ? 0 : Math.floor( Math.log( incr ) / Math.log( 10 ) );
@@ -1730,16 +1730,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
   GraphAxis.prototype.getSpan = function() {
     return this.options.span;
-  }
+  };
 
   GraphAxis.prototype.setLevel = function( level ) {
     this._level = level;
     return this;
-  }
+  };
 
   GraphAxis.prototype.getLevel = function() {
     return this._level;
-  }
+  };
 
   GraphAxis.prototype.setShift = function( shift ) {
     this.shift = shift;

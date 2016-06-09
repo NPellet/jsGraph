@@ -6,7 +6,7 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
    * @augments Shape
    * @see Graph#newShape
    */
-  var RectangleShape = function( graph, options ) {
+  function RectangleShape( graph, options ) {
 
   }
 
@@ -199,7 +199,7 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
       posX = pos.x,
       posY = pos.y,
       pos2X = pos2.x,
-      pos2Y = pos2.y
+      pos2Y = pos2.y;
 
     if ( this.moving ) {
 
@@ -338,7 +338,7 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
     }
 
-  }
+  };
 
   return RectangleShape;
 
