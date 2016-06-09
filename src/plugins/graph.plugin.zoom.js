@@ -307,7 +307,6 @@ define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plu
   PluginZoom.prototype.onDblClick = function( x, y, e, pref, mute ) {
 
     var graph = this.graph;
-    console.log( x, y, e, pref, mute );
     this.emit( "beforeDblClick", {
       graph: graph,
       x: x,
