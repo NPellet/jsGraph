@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-93
+ * jsGraph JavaScript Graphing Library v1.13.3-94
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-09T11:02Z
+ * Date: 2016-06-09T11:05Z
  */
 
 ( function( global, factory ) {
@@ -3832,8 +3832,6 @@
       }
 
       function _handleMouseWheel( graph, delta, e ) {
-
-        e.type = 'mousewheel';
 
         if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
           e.preventDefault();
