@@ -1,7 +1,7 @@
 {
   "name": "graphs",
   
-  "version": "1.13.3-94",
+  "version": "1.13.3-95",
 
   "scripts": {
     "build": "grunt",

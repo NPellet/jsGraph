@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.13.3-94
+ * jsGraph JavaScript Graphing Library v1.13.3-95
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-09T11:05Z
+ * Date: 2016-06-09T11:16Z
  */
 
 ( function( global, factory ) {
@@ -9484,7 +9484,6 @@
       PluginZoom.prototype.onDblClick = function( x, y, e, pref, mute ) {
 
         var graph = this.graph;
-        console.log( x, y, e, pref, mute );
         this.emit( "beforeDblClick", {
           graph: graph,
           x: x,
