@@ -279,7 +279,9 @@ define( [ 'jquery', './graph.serie', '../graph.util' ], function( $, GraphSerieN
 
         var totalLength = this.data.length / 2;
 
-        j = 0, k = 0, m = this.data.length;
+        j = 0;
+        k = 0;
+        m = this.data.length;
 
         var error;
 

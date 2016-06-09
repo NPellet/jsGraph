@@ -36,58 +36,58 @@ define( [ './graph.plugin' ], function( Plugin ) {
    * @private
    */
   PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
-      this._draggingX = x;
-      this._draggingY = y;
+    this._draggingX = x;
+    this._draggingY = y;
 
-      this._lastDraggingX = this._draggingX;
-      this._lastDraggingY = this._draggingY;
+    this._lastDraggingX = this._draggingX;
+    this._lastDraggingY = this._draggingY;
 
-      this.stopAnimation = true;
+    this.stopAnimation = true;
 
-      this.moved = false;
+    this.moved = false;
 
-      return true;
-    },
+    return true;
+  };
 
-    /**
-     * @memberof PluginDrag
-     * @private
-     */
-    PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+  /**
+   * @memberof PluginDrag
+   * @private
+   */
+  PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
 
-      var deltaX = x - this._draggingX;
-      var deltaY = y - this._draggingY;
+    var deltaX = x - this._draggingX;
+    var deltaY = y - this._draggingY;
 
-      if ( this.options.dragX ) {
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
-        }, false, true, false );
-      }
+    if ( this.options.dragX ) {
+      graph._applyToAxes( function( axis ) {
+        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaX ) );
+        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaX ) );
+      }, false, true, false );
+    }
 
-      if ( this.options.dragY ) {
+    if ( this.options.dragY ) {
 
-        graph._applyToAxes( function( axis ) {
-          axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
-          axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
-        }, false, false, true );
-      }
+      graph._applyToAxes( function( axis ) {
+        axis.setCurrentMin( axis.getVal( axis.getMinPx() - deltaY ) );
+        axis.setCurrentMax( axis.getVal( axis.getMaxPx() - deltaY ) );
+      }, false, false, true );
+    }
 
-      this._lastDraggingX = this._draggingX;
-      this._lastDraggingY = this._draggingY;
+    this._lastDraggingX = this._draggingX;
+    this._lastDraggingY = this._draggingY;
 
-      this._draggingX = x;
-      this._draggingY = y;
+    this._draggingX = x;
+    this._draggingY = y;
 
-      this.moved = true;
+    this.moved = true;
 
-      this.time = Date.now();
+    this.time = Date.now();
 
-      this.emit( "dragging" );
+    this.emit( "dragging" );
 
-      graph.draw( true );
+    graph.draw( true );
 
-    };
+  };
 
   PluginDrag.prototype.onMouseUp = function( graph, x, y, e, target ) {
 

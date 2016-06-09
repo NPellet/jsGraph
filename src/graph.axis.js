@@ -1978,20 +1978,20 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
    * @since 1.13.3
    */
   GraphAxis.prototype.getPrimaryGridColor = function() {
-      return this.options.primaryGridColor;
-    },
+    return this.options.primaryGridColor;
+  };
 
-    /**
-     * Sets the color of the primary grid
-     * @memberof GraphAxis
-     * @param {String} color - The primary grid color
-     * @return {Axis} The current axis
-     * @since 1.13.3
-     */
-    GraphAxis.prototype.setSecondaryGridColor = function( color ) {
-      this.options.secondaryGridColor = color;
-      return this;
-    };
+  /**
+   * Sets the color of the primary grid
+   * @memberof GraphAxis
+   * @param {String} color - The primary grid color
+   * @return {Axis} The current axis
+   * @since 1.13.3
+   */
+  GraphAxis.prototype.setSecondaryGridColor = function( color ) {
+    this.options.secondaryGridColor = color;
+    return this;
+  };
 
   /**
    * Gets the color of the secondary grid

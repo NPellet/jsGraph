@@ -83,7 +83,9 @@ define( [ './graph.serie.line', './slotoptimizer', '../graph.util', '../mixins/g
       this.counter1 = i;
 
       this.currentLine = "";
-      j = 0, k = 0, m = data[ i ].length;
+      j = 0;
+      k = 0;
+      m = data[ i ].length;
 
       for ( j = 0; j < m; j += 2 ) {
 

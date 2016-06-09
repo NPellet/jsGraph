@@ -87,48 +87,48 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
   PeakBoundariesMiddleShape.prototype.setLinesY = function() {
 
-      if ( !this.posYPx ) {
-        return;
-      }
+    if ( !this.posYPx ) {
+      return;
+    }
 
-      var height = this.lineHeight;
+    var height = this.lineHeight;
 
-      this.line1.setAttribute( 'y1', this.posYPx - height );
-      this.line1.setAttribute( 'y2', this.posYPx + height );
+    this.line1.setAttribute( 'y1', this.posYPx - height );
+    this.line1.setAttribute( 'y2', this.posYPx + height );
 
-      this.line2.setAttribute( 'y1', this.posYPx - height );
-      this.line2.setAttribute( 'y2', this.posYPx + height );
+    this.line2.setAttribute( 'y1', this.posYPx - height );
+    this.line2.setAttribute( 'y2', this.posYPx + height );
 
-      this.line3.setAttribute( 'y1', this.posYPx - height );
-      this.line3.setAttribute( 'y2', this.posYPx + height );
+    this.line3.setAttribute( 'y1', this.posYPx - height );
+    this.line3.setAttribute( 'y2', this.posYPx + height );
 
-      this._dom.setAttribute( 'y1', this.posYPx );
-      this._dom.setAttribute( 'y2', this.posYPx );
+    this._dom.setAttribute( 'y1', this.posYPx );
+    this._dom.setAttribute( 'y2', this.posYPx );
 
-    },
+  };
 
-    PeakBoundariesMiddleShape.prototype.setHandles = function() {
+  PeakBoundariesMiddleShape.prototype.setHandles = function() {
 
-      if ( !this.posYPx ) {
-        return;
-      }
+    if ( !this.posYPx ) {
+      return;
+    }
 
-      var posLeft = this.computePosition( 0 );
-      var posRight = this.computePosition( 1 );
-      var posCenter = this.computePosition( 2 );
+    var posLeft = this.computePosition( 0 );
+    var posRight = this.computePosition( 1 );
+    var posCenter = this.computePosition( 2 );
 
-      if ( posLeft.x && posRight.x && posCenter.x ) {
+    if ( posLeft.x && posRight.x && posCenter.x ) {
 
-        this.handles[ 1 ].setAttribute( 'x', posLeft.x );
-        this.handles[ 1 ].setAttribute( 'y', this.posYPx );
+      this.handles[ 1 ].setAttribute( 'x', posLeft.x );
+      this.handles[ 1 ].setAttribute( 'y', this.posYPx );
 
-        this.handles[ 2 ].setAttribute( 'x', posRight.x );
-        this.handles[ 2 ].setAttribute( 'y', this.posYPx );
+      this.handles[ 2 ].setAttribute( 'x', posRight.x );
+      this.handles[ 2 ].setAttribute( 'y', this.posYPx );
 
-        this.handles[ 3 ].setAttribute( 'x', posCenter.x );
-        this.handles[ 3 ].setAttribute( 'y', this.posYPx );
-      }
-    };
+      this.handles[ 3 ].setAttribute( 'x', posCenter.x );
+      this.handles[ 3 ].setAttribute( 'y', this.posYPx );
+    }
+  };
 
   PeakBoundariesMiddleShape.prototype.setY = function( y ) {
     this.posYPx = y;

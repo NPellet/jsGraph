@@ -78,7 +78,9 @@ define( [ 'jquery', './graph.serie.line' ], function( $, GraphLine ) {
         toBreak = false;
 
         this.currentLine = "";
-        j = 0, k = 0, m = data[ i ].length;
+        j = 0;
+        k = 0;
+        m = data[ i ].length;
 
         for ( ; j < m; j += 2 ) {
 

@@ -1,4 +1,4 @@
-define( [ 'jquery', '../graph.lru', './graph.plugin', ], function( $, LRU, Plugin ) {
+define( [ 'jquery', '../graph.lru', './graph.plugin' ], function( $, LRU, Plugin ) {
 
   /**
    * @class PluginTimeSerieManager

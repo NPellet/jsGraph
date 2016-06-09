@@ -149,10 +149,13 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
         this.xData = [];
 
-        number = 0, k = 0, z = 0;
+        number = 0;
+        k = 0;
+        z = 0;
 
         for ( var i = 0, l = data.length; i < l; i++ ) {
-          x = data[ i ].x, dx = data[ i ].dx;
+          x = data[ i ].x;
+          dx = data[ i ].dx;
 
           this.xData.push( {
             x: x,

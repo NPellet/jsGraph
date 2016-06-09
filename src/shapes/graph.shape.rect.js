@@ -141,19 +141,19 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
       height;
 
     if ( pos.x < pos2.x ) {
-      x = pos.x,
-        width = pos2.x - pos.x;
+      x = pos.x;
+      width = pos2.x - pos.x;
     } else {
-      x = pos2.x,
-        width = pos.x - pos2.x;
+      x = pos2.x;
+      width = pos.x - pos2.x;
     }
 
     if ( pos.y < pos2.y ) {
-      y = pos.y,
-        height = pos2.y - pos.y;
+      y = pos.y;
+      height = pos2.y - pos.y;
     } else {
-      y = pos2.y,
-        height = pos.y - pos2.y;
+      y = pos2.y;
+      height = pos.y - pos2.y;
     }
 
     this.currentX = x;

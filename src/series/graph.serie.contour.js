@@ -125,7 +125,8 @@ define( [ './graph.serie.line', '../graph.util' ], function( GraphSerie, util ) 
 
         for ( ; i < l; i++ ) {
           this.currentLine = "";
-          j = 0, k = 0;
+          j = 0;
+          k = 0;
 
           for ( arr = this.data[ i ].lines, m = arr.length; j < m; j += 4 ) {
 
