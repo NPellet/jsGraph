@@ -1,6 +1,7 @@
 define( [ 'jquery', './graph.shape.line' ], function( $, GraphLine ) {
 
   "use strict";
+
   function GraphPeakInterval( graph ) {
 
   }
