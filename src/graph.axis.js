@@ -1,5 +1,7 @@
 define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( $, EventEmitter, util ) {
 
+  "use strict";
+
   /** 
    * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
    * @class Axis
@@ -1646,6 +1648,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
             [ 3600, 'h' ],
             [ 3600 * 24, 'd' ]
           ];
+        var umin;
         if ( max < 3600 ) { // to minutes
           umin = 0;
         } else if ( max < 3600 * 24 ) {

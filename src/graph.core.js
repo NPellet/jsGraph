@@ -1,5 +1,7 @@
 define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphPosition, util, EventEmitter ) {
 
+  "use strict";
+
   /** 
    * Main class of jsGraph that creates a new graph.
    * @class Graph
@@ -892,11 +894,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       var self = this;
 
-      if ( typeof type == "function" ) {
-        type = "line";
-        callback = type;
-      }
-
       if ( !type ) {
         type = "line";
       }
@@ -1468,8 +1465,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.closingLines = {};
       var els = [ 'top', 'bottom', 'left', 'right' ],
         i = 0,
-        l = 4,
-        line;
+        l = 4;
       for ( ; i < l; i++ ) {
         var line = document.createElementNS( this.ns, 'line' );
         line.setAttribute( 'stroke', 'black' );
@@ -2358,7 +2354,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
   function checkMouseActions( graph, e, parameters, methodName ) {
 
     var keyComb = graph.options.mouseActions,
-      i;
+      i, l;
 
     for ( i = 0, l = keyComb.length; i < l; i++ ) {
 

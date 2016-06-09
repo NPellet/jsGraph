@@ -1,4 +1,4 @@
-define( [ './graph.axis.y', './graph.axis.broken' ], function( GraphYAxis, GraphBrokenAxis ) {
+define( [ 'jquery', './graph.axis.y', './graph.axis.broken' ], function( $, GraphYAxis, GraphBrokenAxis ) {
 
   "use strict";
 

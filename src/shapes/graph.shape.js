@@ -447,9 +447,9 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     if ( !Array.isArray( this.properties.position ) ) {
       this.properties.position = [ this.properties.position ];
     }
-
+    var self = this;
     for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-      var self = this;
+
       var pos = GraphPosition.check( this.properties.position[ i ], function( relativeTo ) {
         return self.getRelativePosition( relativeTo );
       } );

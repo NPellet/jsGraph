@@ -372,7 +372,7 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
 
           g.appendChild( line );
 
-          if ( series[ i ].getType() == "scatter" ) {
+          if ( series[ j ].getType() == "scatter" ) {
             line.setAttribute( 'transform', 'translate( 20, 0 )' );
           }
 
