@@ -1,5 +1,7 @@
 define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphPosition, util, EventEmitter ) {
 
+  "use strict";
+
   /** 
    * Main class of jsGraph that creates a new graph.
    * @class Graph
@@ -18,7 +20,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   var profiling = [];
 
-  var Graph = function( wrapper, options, axis ) {
+  function Graph( wrapper, options, axis ) {
 
     var self = this;
 
@@ -892,11 +894,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       var self = this;
 
-      if ( typeof type == "function" ) {
-        type = "line";
-        callback = type;
-      }
-
       if ( !type ) {
         type = "line";
       }
@@ -1468,8 +1465,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.closingLines = {};
       var els = [ 'top', 'bottom', 'left', 'right' ],
         i = 0,
-        l = 4,
-        line;
+        l = 4;
       for ( ; i < l; i++ ) {
         var line = document.createElementNS( this.ns, 'line' );
         line.setAttribute( 'stroke', 'black' );
@@ -1810,7 +1806,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this._makeClosingLines();
 
       this.clip = document.createElementNS( this.ns, 'clipPath' );
-      this.clip.setAttribute( 'id', '_clipplot' + this._creation )
+      this.clip.setAttribute( 'id', '_clipplot' + this._creation );
       this.defs.appendChild( this.clip );
 
       this.clipRect = document.createElementNS( this.ns, 'rect' );
@@ -2358,13 +2354,13 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
   function checkMouseActions( graph, e, parameters, methodName ) {
 
     var keyComb = graph.options.mouseActions,
-      i;
+      i, l;
 
     for ( i = 0, l = keyComb.length; i < l; i++ ) {
 
       if ( keyComb[ i ].plugin ) { // Is it a plugin ?
 
-        if ( this.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+        if ( graph.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
 
           if ( keyComb[ i ].options ) {
             parameters.push( keyComb[ i ].options );
@@ -2381,7 +2377,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
           parameters.push( keyComb[ i ].options );
         }
 
-        keyComb[ i ].callback.apply( this, parameters );
+        keyComb[ i ].callback.apply( graph, parameters );
         return true;
 
       } else if ( keyComb[ i ].series ) {
@@ -2703,8 +2699,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   function _handleMouseWheel( graph, delta, e ) {
 
-    e.type = 'mousewheel';
-
     if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
       e.preventDefault();
       e.stopPropagation();
@@ -2745,7 +2739,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
   function _handleMouseLeave( graph ) {
 
     if ( graph.options.handleMouseLeave ) {
-      graph.options.handleMouseLeave.call( this );
+      graph.options.handleMouseLeave.call( graph );
 
     }
 

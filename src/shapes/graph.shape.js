@@ -447,9 +447,9 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     if ( !Array.isArray( this.properties.position ) ) {
       this.properties.position = [ this.properties.position ];
     }
-
+    var self = this;
     for ( var i = 0, l = this.properties.position.length; i < l; i++ ) {
-      var self = this;
+
       var pos = GraphPosition.check( this.properties.position[ i ], function( relativeTo ) {
         return self.getRelativePosition( relativeTo );
       } );
@@ -459,7 +459,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
     this.emit( "propertiesChanged" );
     return this;
-  }
+  };
 
   Shape.prototype.getRelativePosition = function( relativePosition ) {
 
@@ -470,7 +470,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
       return this.getLabelPosition( result[ 1 ] );
     }
 
-  }
+  };
 
   /**
    * Gets all dumpable properties of the shape
@@ -479,7 +479,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.getProperties = function( properties ) {
     return this.properties;
-  }
+  };
 
   /**
    * Sets a property to the shape that is remembered and can be later reexported (or maybe reimported)
@@ -525,7 +525,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.resetProp = function( prop ) {
     this.properties[ prop ] = [];
-  }
+  };
 
   /**
    * Sets a DOM property to the shape
@@ -555,7 +555,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
         this.group.setAttribute( prop, val );
       }
     }
-  } )
+  } );
 
   /**
    * Saves the stroke color
@@ -651,7 +651,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.setAttributes = function( attributes ) {
     this.setProp( "attributes", attributes );
     return this;
-  }
+  };
 
   /**
    * Adds a transform property to the shape.
@@ -666,7 +666,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
       arguments: Array.isArray( args ) ? args : [ args ]
     } );
     return this;
-  }
+  };
 
   /**
    * Resets the transforms
@@ -677,7 +677,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.resetTransforms = function() {
     this.resetProp( 'transforms' );
     return this;
-  }
+  };
 
   /**
    * Sets the text of the label
@@ -710,7 +710,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.displayLabel = function( index ) {
     this.setProp( 'labelVisible', true, index || 0 );
     return this;
-  }
+  };
 
   /**
    * @alias Shape#displayLabel
@@ -726,7 +726,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.hideLabel = function( index ) {
     this.setProp( 'labelVisible', false, index || 0 );
     return this;
-  }
+  };
 
   /**
    * Sets the color of the label
@@ -859,7 +859,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.applyStyle = function() {
     return this.applyGenericStyle();
-  }
+  };
 
   /**
    * Returns a computed position object
@@ -1151,7 +1151,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.isSelected = function() {
     return this._selectStatus ||  false;
-  }
+  };
 
   /**
    * Sets or queries whether the shape can have handles. Even if the property is set to false, the getter can return true if the property ```statichandles``` is true (used when handles never disappear)
@@ -1169,7 +1169,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     }
 
     return !!this.getProp( 'handles' ) || !!this.getProp( 'statichandles' );
-  }
+  };
 
   /**
    * Adds shape handles 
@@ -1208,7 +1208,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
     this.hideHandles();
     this.handles = [];
-  }
+  };
 
   /**
    * Hide shape handles 
@@ -1228,7 +1228,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
     this.handlesInDom = false;
     return this;
-  }
+  };
 
   /**
    * @protected
@@ -1238,7 +1238,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.areHandlesInDom = function() {
 
     return this.handlesInDom;
-  }
+  };
 
   /**
    * Selects the shape. Should only be called from jsGraph main instance
@@ -1414,7 +1414,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.createHandles = function() {
 
-  }
+  };
 
   /**
    * Handles mouse down event

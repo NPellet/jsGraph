@@ -299,7 +299,9 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     var totalLength = this.data.length / 2;
     var keys = [];
 
-    j = 0, k = 0, m = this.data.length;
+    j = 0;
+    k = 0;
+    m = this.data.length;
 
     if ( this.error ) {
       this.errorDrawInit();
@@ -520,7 +522,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     }
 
-  }
+  };
 
   ErrorBarMixin.call( GraphSerieScatter.prototype ); // Add error bar mixin
 

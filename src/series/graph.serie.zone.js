@@ -1,6 +1,6 @@
 "use strict";
 
-define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
+define( [ 'jquery', './graph.serie', '../graph.util' ], function( $, GraphSerieNonInstanciable, util ) {
 
   /** 
    * @class SerieZone
@@ -9,7 +9,7 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
    * @example graph.newSerie( name, options, "scatter" );
    * @see Graph#newSerie
    */
-  var GraphSerieZone = function() {}
+  function GraphSerieZone() {}
 
   $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
@@ -279,7 +279,9 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
 
         var totalLength = this.data.length / 2;
 
-        j = 0, k = 0, m = this.data.length;
+        j = 0;
+        k = 0;
+        m = this.data.length;
 
         var error;
 
@@ -295,7 +297,7 @@ define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciabl
           ypx2 = this.getY( this.data[ j + 2 ] );
 
           if ( xpx < 0 ) {
-            buffer = [ xpx, ypx1, ypx2 ]
+            buffer = [ xpx, ypx1, ypx2 ];
             continue;
           }
 

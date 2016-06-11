@@ -1,4 +1,4 @@
-define( [ './graph.axis' ], function( GraphAxis ) {
+define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
 
   "use strict";
 
@@ -7,7 +7,7 @@ define( [ './graph.axis' ], function( GraphAxis ) {
    * @class GraphYAxis
    * @augments GraphAxis
    */
-  var GraphYAxis = function( graph, leftright, options ) {
+  function GraphYAxis( graph, leftright, options ) {
 
     this.init( graph, options );
 

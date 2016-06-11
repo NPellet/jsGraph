@@ -9,7 +9,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
    * @see Graph#newSerie
    * @augments Serie
    */
-  var SerieLine = function() {}
+  function SerieLine() {}
 
   SerieLine.prototype = new SerieLineNonInstanciable();
 
@@ -715,7 +715,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       this.counter1 = i;
 
       this.currentLine = "";
-      j = 0, k = 0, m = data[ i ].length;
+      j = 0;
+      k = 0;
+      m = data[ i ].length;
 
       for ( j = 0; j < m; j += 2 ) {
 
@@ -975,7 +977,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     for ( ; i < l; i++ ) {
 
       currentLine = "M ";
-      j = 0, k = 0, m = data[ i ].length;
+      j = 0;
+      k = 0;
+      m = data[ i ].length;
 
       this.counter1 = i;
 
@@ -1103,11 +1107,11 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         this.picks[ i ].kill();
       }
     }
-  }
+  };
 
   SerieLine.prototype.killImpl = function() {
     this.killPeakPicking();
-  }
+  };
 
   /**
    * @param {Number} k - Index of the point for which we should get the family
@@ -1139,7 +1143,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     var k = 0;
     var i = 0,
-      xpx, max;
+      xpx, ypx, max;
     var j;
 
     if ( this.isFlipped() ) {
@@ -1165,8 +1169,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       if ( this.isFlipped() ) {
 
-        ypx = Math.floor( this.getY( slotToUse[ j ].x ) ),
-          max = this.getX( slotToUse[ j ].max );
+        ypx = Math.floor( this.getY( slotToUse[ j ].x ) );
+        max = this.getX( slotToUse[ j ].max );
 
         /*if ( this.options.autoPeakPicking ) {
             allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1181,9 +1185,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
         //    k++;
       } else {
 
-        xpx = Math.floor( this.getX( slotToUse[ j ].x ) ),
-
-          max = this.getY( slotToUse[ j ].max );
+        xpx = Math.floor( this.getX( slotToUse[ j ].x ) );
+        max = this.getY( slotToUse[ j ].max );
 
         if ( this.options.autoPeakPicking ) {
           allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
@@ -1506,8 +1509,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       for ( var i = 0, l = this.data.length; i < l; i++ ) {
         for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
 
-          p_x = this.data[ i ][ k ],
-            p_y = this.data[ i ][ k + 1 ];
+          p_x = this.data[ i ][ k ];
+          p_y = this.data[ i ][ k + 1 ];
           dist = Math.pow( ( this.getX( p_x ) - x ), 2 ) + Math.pow( ( this.getY( p_y ) - y ), 2 );
           if ( !oldDist || dist < oldDist ) {
             oldDist = dist;
@@ -1796,10 +1799,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       case 6:
         return "5 2";
-        break
+        break;
       case 7:
         return "2 5";
-        break
+        break;
 
       case 8:
         return "4 2 4 4";
@@ -1973,7 +1976,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.styles[ selectionType ].markers[ family ].points = points;
     this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
-  }
+  };
 
   SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
 
@@ -2022,7 +2025,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
     this.markerPoints[ selectionType || "unselected" ] = markerPoints;
-  }
+  };
 
   SerieLine.prototype.insertMarkers = function( selectionType ) {
 
@@ -2128,10 +2131,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     for ( ; i < l; i++ ) {
 
-      x = ys[ i ][ 1 ],
-        px = self.getX( x ),
-        k = 0,
-        y = self.getY( ys[ i ][ 0 ] );
+      x = ys[ i ][ 1 ];
+      px = self.getX( x );
+      k = 0;
+      y = self.getY( ys[ i ][ 0 ] );
 
       if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
         continue;
@@ -2270,7 +2273,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       for ( ; i < l; i++ ) {
 
-        j = 0, k = 0, m = graph.data[ i ].length;
+        j = 0;
+        k = 0;
+        m = graph.data[ i ].length;
 
         var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
 
@@ -2345,9 +2350,9 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     for ( ; i < l; i++ ) {
 
-      j = 0,
-        k = 0,
-        m = graph.data[ i ].length;
+      j = 0;
+      k = 0;
+      m = graph.data[ i ].length;
 
       degradationNb = 0;
       degradationValue = 0;

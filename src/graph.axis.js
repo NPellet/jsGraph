@@ -1,5 +1,7 @@
 define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( $, EventEmitter, util ) {
 
+  "use strict";
+
   /** 
    * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
    * @class Axis
@@ -8,7 +10,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
    * myAxis.prototype = new Graph.getConstructor("axis");
    * graph.setBottomAxis( new myAxis( { } ) );
    */
-  var GraphAxis = function() {}
+  function GraphAxis() {}
 
   GraphAxis.prototype = new EventEmitter();
 
@@ -71,7 +73,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     scientificScaleExponent: false,
     engineeringScale: false,
     unit: false
-  }
+  };
 
   GraphAxis.prototype.init = function( graph, options, overwriteoptions ) {
 
@@ -185,7 +187,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     this.axisRand = Math.random();
     this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
-    this.clip.setAttribute( 'id', '_clip' + this.axisRand )
+    this.clip.setAttribute( 'id', '_clip' + this.axisRand );
     this.graph.defs.appendChild( this.clip );
 
     this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
@@ -1386,7 +1388,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       fontSize: '1.0em',
       exponential: true,
       overwrite: false
-    }
+    };
     if ( incr < 0 )
       incr = 0;
     var pow = incr == 0 ? 0 : Math.floor( Math.log( incr ) / Math.log( 10 ) );
@@ -1646,6 +1648,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
             [ 3600, 'h' ],
             [ 3600 * 24, 'd' ]
           ];
+        var umin;
         if ( max < 3600 ) { // to minutes
           umin = 0;
         } else if ( max < 3600 * 24 ) {
@@ -1730,16 +1733,16 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
   GraphAxis.prototype.getSpan = function() {
     return this.options.span;
-  }
+  };
 
   GraphAxis.prototype.setLevel = function( level ) {
     this._level = level;
     return this;
-  }
+  };
 
   GraphAxis.prototype.getLevel = function() {
     return this._level;
-  }
+  };
 
   GraphAxis.prototype.setShift = function( shift ) {
     this.shift = shift;
@@ -1978,20 +1981,20 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
    * @since 1.13.3
    */
   GraphAxis.prototype.getPrimaryGridColor = function() {
-      return this.options.primaryGridColor;
-    },
+    return this.options.primaryGridColor;
+  };
 
-    /**
-     * Sets the color of the primary grid
-     * @memberof GraphAxis
-     * @param {String} color - The primary grid color
-     * @return {Axis} The current axis
-     * @since 1.13.3
-     */
-    GraphAxis.prototype.setSecondaryGridColor = function( color ) {
-      this.options.secondaryGridColor = color;
-      return this;
-    };
+  /**
+   * Sets the color of the primary grid
+   * @memberof GraphAxis
+   * @param {String} color - The primary grid color
+   * @return {Axis} The current axis
+   * @since 1.13.3
+   */
+  GraphAxis.prototype.setSecondaryGridColor = function( color ) {
+    this.options.secondaryGridColor = color;
+    return this;
+  };
 
   /**
    * Gets the color of the secondary grid

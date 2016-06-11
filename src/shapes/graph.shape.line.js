@@ -8,7 +8,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
    * @augments Shape
    * @see Graph#newShape
    */
-  var LineShape = function( graph, options ) {
+  function LineShape( graph, options ) {
 
   }
 
@@ -44,7 +44,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  }
+  };
 
   /**
    * Recalculates the positions and applies them

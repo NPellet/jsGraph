@@ -4,7 +4,7 @@ define( [], function() {
 
     buttons: [ 'none', 'rect', 'line', 'areaundercurve' ]
 
-  }
+  };
 
   var ns = 'http://www.w3.org/2000/svg';
   var nsxlink = "http://www.w3.org/1999/xlink";

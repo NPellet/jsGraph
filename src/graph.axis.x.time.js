@@ -2,7 +2,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
   "use strict";
 
-  var GraphXAxis = function( graph, topbottom, options ) {
+  function GraphXAxis( graph, topbottom, options ) {
 
     this.wrapper = {
       1: document.createElementNS( graph.ns, 'g' ),
@@ -231,7 +231,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
         break;
 
       default:
-        throw "Date format not recognized"
+        throw "Date format not recognized";
         break;
     }
 
@@ -301,7 +301,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
         break;
 
       default:
-        throw "Date format not recognized"
+        throw "Date format not recognized";
         break;
     }
 
@@ -319,7 +319,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
       group: document.createElementNS( axis.graph.ns, 'g' ),
       text: document.createElementNS( axis.graph.ns, 'text' )
-    }
+    };
 
     var line = document.createElementNS( axis.graph.ns, 'line' );
 

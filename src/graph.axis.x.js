@@ -7,7 +7,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
    * @class XAxis
    * @augments GraphAxis
    */
-  var XAxis = function( graph, topbottom, options ) {
+  function XAxis( graph, topbottom, options ) {
     this.init( graph, options );
     this.top = topbottom == 'top';
   }

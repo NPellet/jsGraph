@@ -1,8 +1,8 @@
-define( [ './graph.serie.line' ], function( GraphLine ) {
+define( [ 'jquery', './graph.serie.line' ], function( $, GraphLine ) {
 
   "use strict";
 
-  var GraphSerie = function() {}
+  function GraphSerie() {}
   $.extend( GraphSerie.prototype, GraphLine.prototype, {
 
     draw: function( force ) { // Serie redrawing
@@ -78,7 +78,9 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
         toBreak = false;
 
         this.currentLine = "";
-        j = 0, k = 0, m = data[ i ].length;
+        j = 0;
+        k = 0;
+        m = data[ i ].length;
 
         for ( ; j < m; j += 2 ) {
 
@@ -113,7 +115,7 @@ define( [ './graph.serie.line' ], function( GraphLine ) {
             // We must add the old point to the current range
             // use lastX, lastY for the last point
 
-            this._addPoint( rangeX[  1 ], rangeY[  1 ] )
+            this._addPoint( rangeX[  1 ], rangeY[  1 ] );
 
             // Just breaks
           } else if ( rangeX[ 0 ] == undefined ||  rangeY[ 0 ] == undefined && lastRangeX && lastRangeY ) {

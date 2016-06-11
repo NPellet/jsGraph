@@ -1,6 +1,6 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
-  var GraphCross = function( graph, options ) {
+  function GraphCross( graph, options ) {
     this.nbHandles = 1;
 
   }
