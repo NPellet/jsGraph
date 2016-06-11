@@ -81,6 +81,10 @@ define( [], function() {
     console.error( message );
   };
 
+  util.warn = function( message ) {
+    console.warn( message );
+  };
+
   /**
    * Checks if a variable is a numeric or not
    * @return {Boolean} <code>true</code> for a numeric value, false otherwise

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.1
+ * jsGraph JavaScript Graphing Library v1.14.2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-11T10:47Z
+ * Date: 2016-06-11T11:01Z
  */
 
 ( function( global, factory ) {
@@ -438,6 +438,10 @@
 
       util.throwError = function( message ) {
         console.error( message );
+      };
+
+      util.warn = function( message ) {
+        console.warn( message );
       };
 
       /**
@@ -3945,7 +3949,7 @@
 
           schema.axis.map( function( schemaAxis ) {
 
-            if ( !schemAxis.type ) {
+            if ( !schemaAxis.type ) {
               util.throwError( "Axis type is required (top, bottom, left or right)" );
             }
 
@@ -3970,7 +3974,7 @@
               axisOption.flipped = schemaAxis.flip;
             }
 
-            axes[ schemaAxis.type ].push( axisOption );
+            axes[ schemaAxis.type ].push( axisOptions );
             schemaAxis._jsGraphIndex = axes[ schemaAxis.type ].length - 1;
 
           } );
@@ -4004,35 +4008,37 @@
               return;
             }
 
-            serie = graph.newSerie( schemaSerie.label, serieOptions, serieType );
+            serie = graph.newSerie( schemaSerie.label || util.guid(), serieOptions, serieType );
 
             if ( schema.axis ) {
-              serieAxis = schema.axis[ serie.xAxis ];
+              serieAxis = schema.axis[ schemaSerie.xAxis ];
 
-              if ( !serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) {
+              if ( !serieAxis || ( serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) ) {
+                util.warn( "No x axis found. Setting automatically" );
                 serie.setXAxis( graph.getXAxis( 0 ) );
               } else {
                 if ( serieAxis.type == 'top' ) {
-                  serieAxis.setTopAxis( graph.getTopAxis( serieAxis._jsGraphIndex ) );
+                  serie.setXAxis( graph.getTopAxis( serieAxis._jsGraphIndex ) );
                 } else if ( serieAxis.type == 'bottom' ) {
-                  serieAxis.setBottomAxis( graph.getBottomAxis( serieAxis._jsGraphIndex ) );
+                  serie.setXAxis( graph.getBottomAxis( serieAxis._jsGraphIndex ) );
                 }
               }
 
-              serieAxis = schema.axis[ serie.yAxis ];
+              serieAxis = schema.axis[ schemaSerie.yAxis ];
 
-              if ( !serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right' ) {
+              if ( !serieAxis || ( serieAxis.type !== 'left' && serieAxis.type !== 'right' ) ) {
+                util.warn( "No y axis found. Setting automatically" );
                 serie.setYAxis( graph.getYAxis( 0 ) );
               } else {
                 if ( serieAxis.type == 'left' ) {
-                  serieAxis.setLeftAxis( graph.getLeftAxis( serieAxis._jsGraphIndex ) );
+                  serie.setYAxis( graph.getLeftAxis( serieAxis._jsGraphIndex ) );
                 } else if ( serieAxis.type == 'right' ) {
-                  serieAxis.setRightAxis( graph.getRightAxis( serieAxis._jsGraphIndex ) );
+                  serie.setYAxis( graph.getRightAxis( serieAxis._jsGraphIndex ) );
                 }
               }
 
             } else {
-
+              util.warn( "No axes found. Setting automatically" );
               serie.autoAxis();
             }
 
