@@ -2872,6 +2872,84 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
         serie = graph.newSerie( schemaSerie.label || util.guid(), serieOptions, serieType );
 
+        if ( schemaSerie.lineStyle ) {
+
+          schemaSerie.lineStyle.map( function( style ) {
+
+            var styleSerie = {};
+            style.styleName = style.styleName || "unselected";
+
+            switch ( serieType ) {
+
+              case 'line':
+                if ( style.lineWidth !== undefined ) {
+                  styleSerie.lineWidth = style.lineWidth;
+                }
+
+                if ( style.color !== undefined ) {
+                  styleSerie.lineColor = style.color;
+                }
+
+                if ( style.lineStyle ) {
+                  styleSerie.lineStyle = style.lineStyle;
+                }
+
+                serie.setStyle( styleSerie, style.styleName );
+                break;
+            }
+
+          } );
+        }
+
+        if ( schemaSerie.style ) {
+
+          schemaSerie.style.map( function( style ) {
+
+            var styleSerie = {};
+            style.styleName = style.styleName || "unselected";
+
+            if ( !Array.isArray( style.styles ) ) {
+              style.styles = [ style.styles ];
+            }
+
+            var styles = style.styles.map( function( style ) {
+              console.log( serieType );
+              switch ( serieType ) {
+
+                case "line":
+
+                  return {
+                    type: style.shape,
+                    zoom: style.zoom,
+                    strokeWidth: style.lineWidth,
+                    strokeColor: style.lineColor,
+                    fillColor: style.color,
+                    points: style.points
+                  };
+
+                  break;
+
+                case "scatter":
+
+                  break;
+              }
+            } );
+
+            switch ( serieType ) {
+
+              case "line":
+
+                serie.setMarkers( styles, style.styleName );
+                break;
+
+              case "scatter":
+
+                break;
+            }
+
+          } );
+        }
+
         if ( schema.axis ) {
           serieAxis = schema.axis[ schemaSerie.xAxis ];
 

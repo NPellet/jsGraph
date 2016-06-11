@@ -1756,7 +1756,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
    */
 
   SerieLine.prototype.setStyle = function( style, selectionType ) {
-
+    //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 
@@ -1934,11 +1934,13 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 					type: 1,
 					zoom: 1,
 					strokeWidth: 1,
-					strokeColor: ''
+					strokeColor: '',
 					fillColor: '',
+          points: []
 				}
 			* @memberof SerieLine
 */
+    console.log( families );
 
     this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 
