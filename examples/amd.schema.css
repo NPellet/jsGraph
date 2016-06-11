@@ -1,0 +1,13 @@
+body, html {
+  margin: 0;
+  padding: 0; }
+
+body {
+  font-family: "Myriad Pro", "Helvetica Neue", Arial, "Sans Serif";
+  font-size: 15px; }
+
+#graph {
+  height: 500px;
+  width: 400px;
+  margin: 20px; 
+}

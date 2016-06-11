@@ -2774,7 +2774,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   /**
    * Returns a registered constructor
-   * @memberof Graph.prototype
+   * @memberof Graph
    * @param {String} constructorName - The constructor name to look for
    * @returns {Function} The registered constructor
    * @throws Error
@@ -2788,6 +2788,130 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     }
     return constructor;
   };
+
+
+  /**
+   * Returns a graph created from a schema
+   * @memberof Graph
+   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+   * @param {HTMLElement} wrapper - The wrapping element
+   * @returns {Graph} Newly created graph
+   * @name Graph#fromSchema
+   */
+  Graph.fromSchema = function( schema, wrapper ) {
+
+    var graph;
+    var options = {};
+    var axes = { left: [], top: [], right: [], bottom: [] };
+    var axesIndices = [];
+
+    if( schema.title ) {
+      options.title = schema.title;
+    }
+
+    if( schema.axis ) {
+
+      schema.axis.map( function( schemaAxis ) {
+
+        if( ! schemAxis.type ) {
+          util.throwError("Axis type is required (top, bottom, left or right)");
+        }
+
+        var axisOptions = {};
+        if( schemaAxis.label ) {
+          axisOptions.labelValue = schemaAxis.label;
+        }
+
+        if( schemaAxis.unit  !== undefined ) {
+          axisOption.unit = schemaAxis.unit;
+        }
+
+        if( schemaAxis.min  !== undefined ) {
+          axisOption.forcedMin = schemaAxis.min;
+        }
+
+        if( schemaAxis.max  !== undefined ) {
+          axisOption.forcedMax = schemaAxis.max;
+        }
+
+        if( schemaAxis.flip !== undefined ) {
+          axisOption.flipped = schemaAxis.flip;
+        }
+
+        axes[ schemaAxis.type ].push( axisOption );
+        schemaAxis._jsGraphIndex = axes[ schemaAxis.type ].length - 1;
+
+      } );
+    }
+
+    graph = new Graph( wrapper, options, axes );
+
+    if( schema.data ) {
+
+      schema.data.map( function( schemaSerie ) {
+
+        var serieType = schemaSerie.type,
+            serie,
+            serieOptions,
+            serieAxis;
+
+        switch( schemaSerie.type ) {
+
+          case 'bar':
+            util.throwError("Bar charts not supported");
+            serieType = false;
+          break;
+
+          default:
+            serieType = 'line';
+          break;
+        }
+
+        if( ! serieType ) {
+          util.throwError("No valid serie type was found");
+          return;
+        }
+
+        serie = graph.newSerie( schemaSerie.label, serieOptions, serieType );  
+
+        if( schema.axis ) {
+          serieAxis = schema.axis[ serie.xAxis ];
+
+          if( ! serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) {
+            serie.setXAxis( graph.getXAxis( 0 ) );
+          } else {
+            if( serieAxis.type == 'top' ) {
+              serieAxis.setTopAxis( graph.getTopAxis( serieAxis._jsGraphIndex ) );
+            } else if( serieAxis.type == 'bottom' ) {
+              serieAxis.setBottomAxis( graph.getBottomAxis( serieAxis._jsGraphIndex ) );
+            }
+          }
+
+          serieAxis = schema.axis[ serie.yAxis ];
+
+          if( ! serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right' ) {
+            serie.setYAxis( graph.getYAxis( 0 ) );
+          } else {
+            if( serieAxis.type == 'left' ) {
+              serieAxis.setLeftAxis( graph.getLeftAxis( serieAxis._jsGraphIndex ) );
+            } else if( serieAxis.type == 'right' ) {
+              serieAxis.setRightAxis( graph.getRightAxis( serieAxis._jsGraphIndex ) );
+            }
+          }
+
+        } else {
+
+          serie.autoAxis();
+        }
+
+        serie.setData( [ { x: schemaSerie.x, y: schemaSerie.y } ] );
+
+      } );
+
+    }
+
+    return graph;
+  }
 
   /**
    * @alias Graph~getConstructor

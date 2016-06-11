@@ -54,7 +54,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     if ( !isDataArray && typeof data == 'object' ) {
       data = [ data ];
-    } else if ( isDataArray && !isArray( data[ 0 ] ) ) { // [100, 103, 102, 2143, ...]
+    } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
       data = [ data ];
       oneDimensional = true;
     } else if ( !isDataArray ) {
@@ -69,7 +69,6 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     if ( isData0Array && !oneDimensional && !isData00Array ) {
       data = [ data ];
     }
-
     if ( isData0Array ) {
       for ( var i = 0, k = data.length; i < k; i++ ) {
 
