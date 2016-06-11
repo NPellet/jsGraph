@@ -2789,7 +2789,6 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     return constructor;
   };
 
-
   /**
    * Returns a graph created from a schema
    * @memberof Graph
@@ -2802,39 +2801,44 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     var graph;
     var options = {};
-    var axes = { left: [], top: [], right: [], bottom: [] };
+    var axes = {
+      left: [],
+      top: [],
+      right: [],
+      bottom: []
+    };
     var axesIndices = [];
 
-    if( schema.title ) {
+    if ( schema.title ) {
       options.title = schema.title;
     }
 
-    if( schema.axis ) {
+    if ( schema.axis ) {
 
       schema.axis.map( function( schemaAxis ) {
 
-        if( ! schemAxis.type ) {
-          util.throwError("Axis type is required (top, bottom, left or right)");
+        if ( !schemAxis.type ) {
+          util.throwError( "Axis type is required (top, bottom, left or right)" );
         }
 
         var axisOptions = {};
-        if( schemaAxis.label ) {
+        if ( schemaAxis.label ) {
           axisOptions.labelValue = schemaAxis.label;
         }
 
-        if( schemaAxis.unit  !== undefined ) {
+        if ( schemaAxis.unit !== undefined ) {
           axisOption.unit = schemaAxis.unit;
         }
 
-        if( schemaAxis.min  !== undefined ) {
+        if ( schemaAxis.min !== undefined ) {
           axisOption.forcedMin = schemaAxis.min;
         }
 
-        if( schemaAxis.max  !== undefined ) {
+        if ( schemaAxis.max !== undefined ) {
           axisOption.forcedMax = schemaAxis.max;
         }
 
-        if( schemaAxis.flip !== undefined ) {
+        if ( schemaAxis.flip !== undefined ) {
           axisOption.flipped = schemaAxis.flip;
         }
 
@@ -2846,55 +2850,55 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     graph = new Graph( wrapper, options, axes );
 
-    if( schema.data ) {
+    if ( schema.data ) {
 
       schema.data.map( function( schemaSerie ) {
 
         var serieType = schemaSerie.type,
-            serie,
-            serieOptions,
-            serieAxis;
+          serie,
+          serieOptions,
+          serieAxis;
 
-        switch( schemaSerie.type ) {
+        switch ( schemaSerie.type ) {
 
           case 'bar':
-            util.throwError("Bar charts not supported");
+            util.throwError( "Bar charts not supported" );
             serieType = false;
-          break;
+            break;
 
           default:
             serieType = 'line';
-          break;
+            break;
         }
 
-        if( ! serieType ) {
-          util.throwError("No valid serie type was found");
+        if ( !serieType ) {
+          util.throwError( "No valid serie type was found" );
           return;
         }
 
-        serie = graph.newSerie( schemaSerie.label, serieOptions, serieType );  
+        serie = graph.newSerie( schemaSerie.label, serieOptions, serieType );
 
-        if( schema.axis ) {
+        if ( schema.axis ) {
           serieAxis = schema.axis[ serie.xAxis ];
 
-          if( ! serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) {
+          if ( !serieAxis ||  serieAxis.type !== 'top' && serieAxis.type !== 'bottom' ) {
             serie.setXAxis( graph.getXAxis( 0 ) );
           } else {
-            if( serieAxis.type == 'top' ) {
+            if ( serieAxis.type == 'top' ) {
               serieAxis.setTopAxis( graph.getTopAxis( serieAxis._jsGraphIndex ) );
-            } else if( serieAxis.type == 'bottom' ) {
+            } else if ( serieAxis.type == 'bottom' ) {
               serieAxis.setBottomAxis( graph.getBottomAxis( serieAxis._jsGraphIndex ) );
             }
           }
 
           serieAxis = schema.axis[ serie.yAxis ];
 
-          if( ! serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right' ) {
+          if ( !serieAxis ||  serieAxis.type !== 'left' && serieAxis.type !== 'right' ) {
             serie.setYAxis( graph.getYAxis( 0 ) );
           } else {
-            if( serieAxis.type == 'left' ) {
+            if ( serieAxis.type == 'left' ) {
               serieAxis.setLeftAxis( graph.getLeftAxis( serieAxis._jsGraphIndex ) );
-            } else if( serieAxis.type == 'right' ) {
+            } else if ( serieAxis.type == 'right' ) {
               serieAxis.setRightAxis( graph.getRightAxis( serieAxis._jsGraphIndex ) );
             }
           }
@@ -2904,7 +2908,10 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
           serie.autoAxis();
         }
 
-        serie.setData( [ { x: schemaSerie.x, y: schemaSerie.y } ] );
+        serie.setData( [ {
+          x: schemaSerie.x,
+          y: schemaSerie.y
+        } ] );
 
       } );
 
