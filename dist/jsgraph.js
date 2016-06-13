@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.3
+ * jsGraph JavaScript Graphing Library v1.14.4-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-11T12:07Z
+ * Date: 2016-06-13T11:57Z
  */
 
 ( function( global, factory ) {
@@ -4051,7 +4051,7 @@
                 }
 
                 var styles = style.styles.map( function( style ) {
-                  console.log( serieType );
+
                   switch ( serieType ) {
 
                     case "line":
@@ -4086,6 +4086,26 @@
                 }
 
               } );
+            }
+
+            var errors = [];
+            if ( schemaSerie.errordXdY ) {
+
+              schemaSerie.errordXdY.map( function( dxdy ) {
+
+                errors.push( [
+                  [ dxdy[ 0 ] ],
+                  [ dxdy[ 1 ] ]
+                ] );
+              } );
+
+              serie.setDataError( errors ) // Adds the error data
+                .setErrorStyle( [ {
+                  type: 'bar',
+                  x: {},
+                  y: {}
+                } ] ) // Display bar errors
+
             }
 
             if ( schema.axis ) {
@@ -11652,7 +11672,7 @@
         };
 
         this.makeBarX = function( coordX, origin, style ) {
-          var width = !util.isNumeric( style.width ) ? 10 : style.width;
+          var height = !util.isNumeric( style.width ) ? 10 : style.width;
           return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
         };
 
@@ -11731,6 +11751,7 @@
               }
             }
           }
+          console.log( styles );
           /*
           // None is defined
           if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
@@ -13767,7 +13788,6 @@
 				}
 			* @memberof SerieLine
 */
-        console.log( families );
 
         this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 

@@ -2913,7 +2913,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
             }
 
             var styles = style.styles.map( function( style ) {
-              console.log( serieType );
+
               switch ( serieType ) {
 
                 case "line":
@@ -2948,6 +2948,26 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
             }
 
           } );
+        }
+
+        var errors = [];
+        if ( schemaSerie.errordXdY ) {
+
+          schemaSerie.errordXdY.map( function( dxdy ) {
+
+            errors.push( [
+              [ dxdy[ 0 ] ],
+              [ dxdy[ 1 ] ]
+            ] );
+          } );
+
+          serie.setDataError( errors ) // Adds the error data
+            .setErrorStyle( [ {
+              type: 'bar',
+              x: {},
+              y: {}
+            } ] ) // Display bar errors
+
         }
 
         if ( schema.axis ) {

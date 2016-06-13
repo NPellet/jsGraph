@@ -1940,7 +1940,6 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 				}
 			* @memberof SerieLine
 */
-    console.log( families );
 
     this.styles[ selectionType || "unselected" ] = this.styles[ selectionType || "unselected" ] || {};
 

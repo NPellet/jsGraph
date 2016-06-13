@@ -68,7 +68,7 @@ define( [ '../graph.util' ], function( util ) {
     };
 
     this.makeBarX = function( coordX, origin, style ) {
-      var width = !util.isNumeric( style.width ) ? 10 : style.width;
+      var height = !util.isNumeric( style.width ) ? 10 : style.width;
       return " H " + coordX + " m 0 -" + ( height / 2 ) + " v " + ( height ) + " m 0 -" + ( height / 2 ) + " H " + origin + " ";
     };
 
@@ -147,6 +147,7 @@ define( [ '../graph.util' ], function( util ) {
           }
         }
       }
+      console.log( styles );
       /*
           // None is defined
           if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
