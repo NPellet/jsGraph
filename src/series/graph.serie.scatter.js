@@ -140,7 +140,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
       return this;
     }
 
-    if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
+    if ( data instanceof Array && !( data[ 0 ] instanceof Array ) && typeof data[ 0 ] !== "object" ) { // [100, 103, 102, 2143, ...]
       oneDimensional = "1D";
     }
 
@@ -149,6 +149,9 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     arr = this._addData( type, _2d ? data.length * 2 : data.length );
 
     z = 0;
+
+    console.log( data );
+    console.log( oneDimensional, _2d );
 
     for ( var j = 0, l = data.length; j < l; j++ ) {
 

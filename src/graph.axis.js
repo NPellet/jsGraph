@@ -1213,7 +1213,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
     incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
     this.incrTick = primary;
 
-    while ( incrTick < max ) {
+    while ( incrTick <= max ) {
 
       loop++;
       if ( loop > 200 ) {
@@ -1221,6 +1221,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       }
 
       if ( secondary ) {
+
         subIncrTick = incrTick + secondaryIncr;
         //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
         var loop2 = 0;

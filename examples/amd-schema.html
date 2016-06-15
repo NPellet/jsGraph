@@ -8,13 +8,33 @@
 	<body>
 		<div id="graph"></div>
 		<textarea id="schema">
-			{
+	{
   "title": "My chart",
   "data": [
-
-
-    {
-"errordXdY": [ [ 1, 2 ], [ 1, 4 ],[ 1, 4 ] ],
+    {	
+    	"type": "scatter",
+      "style": [ 
+        { 
+          "styleName": "unselected", 
+          "styles": [ 
+            { 
+              "points": "all", 
+              "shape": "circle", 
+              "zoom": 4, 
+              "lineColor": "red", 
+              "color": "green"
+            },  
+            { 
+              "points": 2,
+              "shape": "rectangle",
+              "zoom": 8,
+              "lineColor": "darkorange", 
+              "color": "orange"
+            }
+          ]
+        }
+      ],
+      
       "x": [
         1,
         2,
@@ -32,7 +52,6 @@
     }
   ]
 }
-
 		</textarea>
 	</body>
 </html>

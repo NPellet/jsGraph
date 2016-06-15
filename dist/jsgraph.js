@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-0
+ * jsGraph JavaScript Graphing Library v1.14.4-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-13T11:57Z
+ * Date: 2016-06-15T09:14Z
  */
 
 ( function( global, factory ) {
@@ -3998,11 +3998,16 @@
                 serieType = false;
                 break;
 
+              case 'scatter':
+                serieType = 'scatter';
+                break;
+
               default:
                 serieType = 'line';
                 break;
             }
 
+            console.log( serieType );
             if ( !serieType ) {
               util.throwError( "No valid serie type was found" );
               return;
@@ -4082,6 +4087,7 @@
 
                   case "scatter":
 
+                    serie.setStyle( styles, {}, style.styleName );
                     break;
                 }
 
@@ -5385,7 +5391,7 @@
         incrTick = this.options.shiftToZero ? this.dataMin - Math.ceil( ( this.dataMin - min ) / unitPerTick ) * unitPerTick : Math.floor( min / unitPerTick ) * unitPerTick;
         this.incrTick = primary;
 
-        while ( incrTick < max ) {
+        while ( incrTick <= max ) {
 
           loop++;
           if ( loop > 200 ) {
@@ -5393,6 +5399,7 @@
           }
 
           if ( secondary ) {
+
             subIncrTick = incrTick + secondaryIncr;
             //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
             var loop2 = 0;
@@ -15451,7 +15458,7 @@
           return this;
         }
 
-        if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
+        if ( data instanceof Array && !( data[ 0 ] instanceof Array ) && typeof data[ 0 ] !== "object" ) { // [100, 103, 102, 2143, ...]
           oneDimensional = "1D";
         }
 
@@ -15460,6 +15467,9 @@
         arr = this._addData( type, _2d ? data.length * 2 : data.length );
 
         z = 0;
+
+        console.log( data );
+        console.log( oneDimensional, _2d );
 
         for ( var j = 0, l = data.length; j < l; j++ ) {
 

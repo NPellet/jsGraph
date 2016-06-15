@@ -2860,11 +2860,16 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
             serieType = false;
             break;
 
+          case 'scatter':
+            serieType = 'scatter';
+            break;
+
           default:
             serieType = 'line';
             break;
         }
 
+        console.log( serieType );
         if ( !serieType ) {
           util.throwError( "No valid serie type was found" );
           return;
@@ -2944,6 +2949,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
               case "scatter":
 
+                serie.setStyle( styles, {}, style.styleName );
                 break;
             }
 
