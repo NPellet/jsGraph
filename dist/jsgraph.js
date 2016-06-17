@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-4
+ * jsGraph JavaScript Graphing Library v1.14.4-5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-17T10:33Z
+ * Date: 2016-06-17T10:38Z
  */
 
 ( function( global, factory ) {
@@ -11004,7 +11004,7 @@
 
         this.showImpl();
 
-        this.draw();
+        this.draw( true );
 
         if ( showShapes ) {
           var shapes = this.graph.getShapesOfSerie( this );

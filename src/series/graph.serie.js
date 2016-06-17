@@ -341,7 +341,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     this.showImpl();
 
-    this.draw();
+    this.draw( true );
 
     if ( showShapes ) {
       var shapes = this.graph.getShapesOfSerie( this );
