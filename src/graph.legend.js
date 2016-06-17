@@ -333,7 +333,12 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
           }
 
           g = document.createElementNS( self.graph.ns, 'g' );
+          var rect = document.createElementNS( self.graph.ns, 'rect' );
+
           self.subG.appendChild( g );
+
+          g.appendChild( rect );
+
           var line = series[ j ].getSymbolForLegend();
           var marker = series[ j ].getMarkerForLegend();
           var text = series[ j ].getTextForLegend();
@@ -385,6 +390,15 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
           }
 
           g.appendChild( text );
+
+          var bbox = g.getBBox();
+
+          rect.setAttribute( 'x', bbox.x );
+          rect.setAttribute( 'y', bbox.y );
+          rect.setAttribute( 'width', bbox.width );
+          rect.setAttribute( 'height', bbox.height );
+          rect.setAttribute( 'fill', 'none' );
+          rect.setAttribute( 'pointer-events', 'fill' );
 
           self.groups[ j ] = g;
 

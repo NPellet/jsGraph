@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-3
+ * jsGraph JavaScript Graphing Library v1.14.4-4
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-17T10:12Z
+ * Date: 2016-06-17T10:33Z
  */
 
 ( function( global, factory ) {
@@ -8607,7 +8607,12 @@
               }
 
               g = document.createElementNS( self.graph.ns, 'g' );
+              var rect = document.createElementNS( self.graph.ns, 'rect' );
+
               self.subG.appendChild( g );
+
+              g.appendChild( rect );
+
               var line = series[ j ].getSymbolForLegend();
               var marker = series[ j ].getMarkerForLegend();
               var text = series[ j ].getTextForLegend();
@@ -8659,6 +8664,15 @@
               }
 
               g.appendChild( text );
+
+              var bbox = g.getBBox();
+
+              rect.setAttribute( 'x', bbox.x );
+              rect.setAttribute( 'y', bbox.y );
+              rect.setAttribute( 'width', bbox.width );
+              rect.setAttribute( 'height', bbox.height );
+              rect.setAttribute( 'fill', 'none' );
+              rect.setAttribute( 'pointer-events', 'fill' );
 
               self.groups[ j ] = g;
 
