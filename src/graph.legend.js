@@ -414,6 +414,9 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
               self.graph.unselectSerie( serie );
             }
 
+            e.preventDefault();
+            e.stopPropagation();
+
           } );
 
         } ).call( this, i );
@@ -481,6 +484,9 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
       };
 
       this.rectBottom.addEventListener( 'mousedown', mousedown );
+      this.svg.addEventListener( 'click', function( e ) {
+        e.stopPropagation();
+      } );
       this.rectBottom.addEventListener( 'mousemove', mousemove );
       this.rect.addEventListener( 'mousemove', mousemove );
     },
