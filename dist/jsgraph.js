@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-2
+ * jsGraph JavaScript Graphing Library v1.14.4-3
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-17T09:12Z
+ * Date: 2016-06-17T10:12Z
  */
 
 ( function( global, factory ) {
@@ -13617,11 +13617,15 @@
 
       };
 
-      SerieLine.prototype.setLineStyle = function( number, selectionType ) {
+      SerieLine.prototype.setLineStyle = function( number, selectionType, applyToSelected ) {
 
         selectionType = selectionType || "unselected";
         this.styles[ selectionType ] = this.styles[ selectionType ] || {};
         this.styles[ selectionType ].lineStyle = number;
+
+        if ( applyToSelected ) {
+          this.setLineStyle( number, "selected" );
+        }
 
         this.styleHasChanged( selectionType );
 
@@ -13699,14 +13703,28 @@
           }
         }
       };
+
+      SerieLine.prototype.extendStyle = function( stylename ) {
+        var s = this.styles[ stylename ];
+        console.log( s, stylename );
+        if ( s ) {
+          this.styles[ stylename ] = $.extend( true, {}, this.styles.unselected, s );
+          console.log( s, stylename );
+        }
+      };
+
       /*  * @memberof SerieLine
        */
 
-      SerieLine.prototype.setLineWidth = function( width, selectionType ) {
+      SerieLine.prototype.setLineWidth = function( width, selectionType, applyToSelected ) {
 
         selectionType = selectionType || "unselected";
         this.styles[ selectionType ] = this.styles[ selectionType ] || {};
         this.styles[ selectionType ].lineWidth = width;
+
+        if ( applyToSelected ) {
+          this.setLineWidth( width, "selected" );
+        }
 
         this.styleHasChanged( selectionType );
 
@@ -13720,11 +13738,15 @@
 
       /* LINE COLOR * @memberof SerieLine
        */
-      SerieLine.prototype.setLineColor = function( color, selectionType ) {
+      SerieLine.prototype.setLineColor = function( color, selectionType, applyToSelected ) {
 
         selectionType = selectionType || "unselected";
         this.styles[ selectionType ] = this.styles[ selectionType ] || {};
         this.styles[ selectionType ].lineColor = color;
+
+        if ( applyToSelected ) {
+          this.setLineColor( color, "selected" );
+        }
 
         this.styleHasChanged( selectionType );
 

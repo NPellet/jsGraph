@@ -1762,11 +1762,15 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
   };
 
-  SerieLine.prototype.setLineStyle = function( number, selectionType ) {
+  SerieLine.prototype.setLineStyle = function( number, selectionType, applyToSelected ) {
 
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineStyle = number;
+
+    if ( applyToSelected ) {
+      this.setLineStyle( number, "selected" );
+    }
 
     this.styleHasChanged( selectionType );
 
@@ -1844,14 +1848,28 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       }
     }
   };
+
+  SerieLine.prototype.extendStyle = function( stylename ) {
+    var s = this.styles[ stylename ];
+    console.log( s, stylename );
+    if ( s ) {
+      this.styles[ stylename ] = $.extend( true, {}, this.styles.unselected, s );
+      console.log( s, stylename );
+    }
+  };
+
   /*  * @memberof SerieLine
    */
 
-  SerieLine.prototype.setLineWidth = function( width, selectionType ) {
+  SerieLine.prototype.setLineWidth = function( width, selectionType, applyToSelected ) {
 
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineWidth = width;
+
+    if ( applyToSelected ) {
+      this.setLineWidth( width, "selected" );
+    }
 
     this.styleHasChanged( selectionType );
 
@@ -1865,11 +1883,15 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
   /* LINE COLOR * @memberof SerieLine
    */
-  SerieLine.prototype.setLineColor = function( color, selectionType ) {
+  SerieLine.prototype.setLineColor = function( color, selectionType, applyToSelected ) {
 
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineColor = color;
+
+    if ( applyToSelected ) {
+      this.setLineColor( color, "selected" );
+    }
 
     this.styleHasChanged( selectionType );
 

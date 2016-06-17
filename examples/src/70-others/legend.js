@@ -48,7 +48,7 @@ define( function() {
 			.setLabel( "f(x) = sin(x)" )
 			.autoAxis()
 			.setData( series[ 1 ] )
-			.setLineColor('#1abd91');
+			.setLineColor('#1abd91', false, true );
 
 
 		graphinstance.newSerie( "cossin" )
