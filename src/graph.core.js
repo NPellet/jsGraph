@@ -2214,7 +2214,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     // Norman 26 june 2015: Do we really need the click timeout ?
 
-    graph.dom.addEventListener( 'click', function( e ) {
+    graph.groupEvent.addEventListener( 'click', function( e ) {
 
       // Cancel right click or Command+Click
       if ( e.which == 3 || e.ctrlKey ) {

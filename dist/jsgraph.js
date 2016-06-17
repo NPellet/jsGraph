@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-1
+ * jsGraph JavaScript Graphing Library v1.14.4-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-15T09:14Z
+ * Date: 2016-06-17T09:12Z
  */
 
 ( function( global, factory ) {
@@ -3352,7 +3352,7 @@
 
         // Norman 26 june 2015: Do we really need the click timeout ?
 
-        graph.dom.addEventListener( 'click', function( e ) {
+        graph.groupEvent.addEventListener( 'click', function( e ) {
 
           // Cancel right click or Command+Click
           if ( e.which == 3 || e.ctrlKey ) {
