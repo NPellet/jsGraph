@@ -1007,6 +1007,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
         self.group.appendChild( this._labels[ i ] );
 
         self._labels[ i ].addEventListener( 'dblclick', function( e ) {
+          e.stopPropagation();
           self.labelDblClickListener( e );
         } );
 
