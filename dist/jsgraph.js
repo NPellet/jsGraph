@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-7
+ * jsGraph JavaScript Graphing Library v1.14.4-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-28T14:03Z
+ * Date: 2016-06-28T14:22Z
  */
 
 ( function( global, factory ) {
@@ -19210,6 +19210,7 @@
             ];
             this.hideLabel( 0 );
             this.setDom( "d", "" );
+            this.hideHandles();
 
           } else {
 
@@ -19330,10 +19331,12 @@
               points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] ) * ratio;
 
               if ( i == 0 ) {
+                this.firstPointX = points[ i ][ 0 ];
                 this.firstPointY = points[ i ][ 1 ];
               }
               currentLine += " L " + points[ i ][ incrXFlip ] + ", " + points[ i ][ incrYFlip ] + " ";
 
+              this.lastPointX = points[ i ][ 0 ];
               this.lastPointY = points[ i ][ 1 ];
             }
 
@@ -19361,6 +19364,9 @@
             if ( this._selected ) {
               this.select();
             }
+
+            this.setHandles();
+
           }
 
           this.setLabelPosition( new GraphPosition( {
@@ -19369,10 +19375,7 @@
           } ) );
 
           this.updateLabels();
-
           this.changed();
-
-          this.setHandles();
 
           return true;
         },
@@ -19402,17 +19405,30 @@
             return;
           }
 
+          if ( !this.isSelected() ) {
+            return;
+          }
+
           this.addHandles();
 
-          var posXY = this.calculatePosition( 0 ),
-            posXY2 = this.calculatePosition( 1 );
+          var posXY = this.computePosition( 0 ),
+            posXY2 = this.computePosition( 1 );
 
-          this.handles[ 1 ].setAttribute( 'x', posXY.x );
-          this.handles[ 1 ].setAttribute( 'y', posXY.y );
+          if ( posXY.x < posXY2.x ) {
 
-          this.handles[ 2 ].setAttribute( 'x', posXY2.x );
-          this.handles[ 2 ].setAttribute( 'y', posXY2.y );
+            this.handles[ 1 ].setAttribute( 'x', this.firstPointX );
+            this.handles[ 1 ].setAttribute( 'y', this.firstPointY );
+            this.handles[ 2 ].setAttribute( 'x', this.lastPointX );
+            this.handles[ 2 ].setAttribute( 'y', this.lastPointY );
 
+          } else {
+
+            this.handles[ 2 ].setAttribute( 'x', this.firstPointX );
+            this.handles[ 2 ].setAttribute( 'y', this.firstPointY );
+            this.handles[ 1 ].setAttribute( 'x', this.lastPointX );
+            this.handles[ 1 ].setAttribute( 'y', this.lastPointY );
+
+          }
         }
 
       } );

@@ -66,6 +66,7 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
         ];
         this.hideLabel( 0 );
         this.setDom( "d", "" );
+        this.hideHandles();
 
       } else {
 
@@ -186,10 +187,12 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
           points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] ) * ratio;
 
           if ( i == 0 ) {
+            this.firstPointX = points[ i ][ 0 ];
             this.firstPointY = points[ i ][ 1 ];
           }
           currentLine += " L " + points[ i ][ incrXFlip ] + ", " + points[ i ][ incrYFlip ] + " ";
 
+          this.lastPointX = points[ i ][ 0 ];
           this.lastPointY = points[ i ][ 1 ];
         }
 
@@ -217,6 +220,9 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
         if ( this._selected ) {
           this.select();
         }
+
+        this.setHandles();
+
       }
 
       this.setLabelPosition( new GraphPosition( {
@@ -225,10 +231,7 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
       } ) );
 
       this.updateLabels();
-
       this.changed();
-
-      this.setHandles();
 
       return true;
     },
@@ -258,17 +261,30 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
         return;
       }
 
+      if ( !this.isSelected() ) {
+        return;
+      }
+
       this.addHandles();
 
-      var posXY = this.calculatePosition( 0 ),
-        posXY2 = this.calculatePosition( 1 );
+      var posXY = this.computePosition( 0 ),
+        posXY2 = this.computePosition( 1 );
 
-      this.handles[ 1 ].setAttribute( 'x', posXY.x );
-      this.handles[ 1 ].setAttribute( 'y', posXY.y );
+      if ( posXY.x < posXY2.x ) {
 
-      this.handles[ 2 ].setAttribute( 'x', posXY2.x );
-      this.handles[ 2 ].setAttribute( 'y', posXY2.y );
+        this.handles[ 1 ].setAttribute( 'x', this.firstPointX );
+        this.handles[ 1 ].setAttribute( 'y', this.firstPointY );
+        this.handles[ 2 ].setAttribute( 'x', this.lastPointX );
+        this.handles[ 2 ].setAttribute( 'y', this.lastPointY );
 
+      } else {
+
+        this.handles[ 2 ].setAttribute( 'x', this.firstPointX );
+        this.handles[ 2 ].setAttribute( 'y', this.firstPointY );
+        this.handles[ 1 ].setAttribute( 'x', this.lastPointX );
+        this.handles[ 1 ].setAttribute( 'y', this.lastPointY );
+
+      }
     }
 
   } );
