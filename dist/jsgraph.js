@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-9
+ * jsGraph JavaScript Graphing Library v1.14.4-10
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-28T14:32Z
+ * Date: 2016-06-28T14:38Z
  */
 
 ( function( global, factory ) {
@@ -3287,7 +3287,7 @@
 
           // Not sure this has to be prevented
 
-          if ( e.keyCode == 8 && self.selectedShapes ) {
+          if ( ( e.keyCode == 8 || e.keyCode == 127 ) && self.selectedShapes ) {
 
             e.preventDefault();
             e.stopPropagation();

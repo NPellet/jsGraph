@@ -2149,7 +2149,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
       // Not sure this has to be prevented
 
-      if ( e.keyCode == 8 && self.selectedShapes ) {
+      if ( ( e.keyCode == 8 || e.keyCode == 127 ) && self.selectedShapes ) {
 
         e.preventDefault();
         e.stopPropagation();
