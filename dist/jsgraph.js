@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-8
+ * jsGraph JavaScript Graphing Library v1.14.4-9
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-28T14:22Z
+ * Date: 2016-06-28T14:32Z
  */
 
 ( function( global, factory ) {
@@ -17824,7 +17824,7 @@
         }
 
         util.saveDomAttributes( this._dom, style2, 'select' );
-        console.log( this.hasHandles(), this.hasStaticHandles() );
+
         if ( this.hasHandles() && !this.hasStaticHandles() ) {
           this.addHandles();
           this.setHandles();
