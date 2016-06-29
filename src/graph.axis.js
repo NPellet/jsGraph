@@ -778,6 +778,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
       this.graph._axisHasChanged( this );
     }
 
+    this.emit( "zoomOutFull", [ this.currentAxisMin, this.currentAxisMax, this ] );
+
     return this;
   };
 

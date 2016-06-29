@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.7
+ * jsGraph JavaScript Graphing Library v1.14.8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-29T10:09Z
+ * Date: 2016-06-29T10:12Z
  */
 
 ( function( global, factory ) {
@@ -4955,6 +4955,8 @@
         if ( !noNotify ) {
           this.graph._axisHasChanged( this );
         }
+
+        this.emit( "zoomOutFull", [ this.currentAxisMin, this.currentAxisMax, this ] );
 
         return this;
       };
