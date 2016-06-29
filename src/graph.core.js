@@ -692,6 +692,40 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       // X is not always ascending... 
     },
 
+    getAxisState: function() {
+
+      var state = {};
+      for ( var i in this.axis ) {
+        state[ i ] = this.axis[ i ].map( function( axis ) {
+          return [ axis.getCurrentMin(), axis.getCurrentMax() ];
+        } );
+      }
+      return state;
+    },
+
+    setAxisState: function( state ) {
+
+      var j, l;
+      for ( var i in state ) {
+
+        if ( !this.axis[ i ] ) {
+          continue;
+        }
+
+        for ( j = 0, l = state[ i ].length; j < l; j++ ) {
+
+          if ( !this.axis[ i ][ j ] ) {
+            continue;
+          }
+
+          this.axis[ i ][ j ].setCurrentMin( state[ i ][ j ][ 0 ] );
+          this.axis[ i ][ j ].setCurrentMax( state[ i ][ j ][ 1 ] );
+        }
+      }
+
+      this.draw();
+    },
+
     _applyToAxis: {
       'string': function( type, func, params ) {
         //    params.splice(1, 0, type);
