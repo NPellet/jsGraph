@@ -32,7 +32,7 @@ define( function() {
 			frameColor: 'rgba( 100, 100, 100, 0.5 )',
 
 			movable: true,
-			isSerieHideable: false
+			isSerieHideable: true
 
 		});
 
