@@ -76,7 +76,7 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
 
     $.extend( true, shapeInfo, this.options );
 
-    this.emit( "beforeNewShape", shapeInfo );
+    this.emit( "beforeNewShape", shapeInfo, e );
 
     if ( this.graph.prevent( false ) ) {
       return;
@@ -84,7 +84,7 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
 
     var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
-    this.emit( "createdShape", shape );
+    this.emit( "createdShape", shape, e );
 
     if ( shape ) {
       self.currentShape = shape;

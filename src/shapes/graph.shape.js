@@ -508,6 +508,15 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   };
 
   /**
+   * Returns all the properties of the shape
+   * @param {String} prop - The property to retrieve
+   * @memberof Shape
+   */
+  Shape.prototype.getProps = function( prop, index ) {
+    return ( this.properties[ prop ] || [] );
+  };
+
+  /**
    * Adds a property to the property array
    * @param {String} prop - The property to add
    * @param val - The value to save
@@ -650,6 +659,20 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    */
   Shape.prototype.setAttributes = function( attributes ) {
     this.setProp( "attributes", attributes );
+    return this;
+  };
+
+  /**
+   * Adds an extra attribute to the shape
+   * @memberof Shape
+   * @param {String} attributeName - The name of the attribute
+   * @param {String} attributeValue - The value of the attribute
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.addAttribute = function( attributeName, attributeValue ) {
+    var added = {};
+    added[ attributeName ] = attributeValue;
+    this.addProp( "attributes", added );
     return this;
   };
 
@@ -841,10 +864,13 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
     this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
 
-    var attributes = this.getProp( "attributes" ) || {};
+    var attributes = this.getProps( "attributes" );
+    for ( var j = 0, l = attributes.length; j < l; j++ ) {
 
-    for ( var i in attributes ) {
-      this.setDom( i, typeof attributes[ i ] == "function" ? attributes[ i ].call( this, i ) : attributes[ i ] );
+      for ( var i in attributes[ j ] ) {
+        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ] );
+      }
+
     }
 
     this._applyTransforms();

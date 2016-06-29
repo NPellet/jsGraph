@@ -27,6 +27,7 @@ define( [
     './series/graph.serie.line.colored',
     './series/graph.serie.scatter',
     './series/graph.serie.zone',
+    './series/graph.serie.densitymap',
 
     './shapes/graph.shape',
     './shapes/graph.shape.areaundercurve',
@@ -75,6 +76,7 @@ define( [
     GraphSerieLineColor,
     GraphSerieScatter,
     GraphSerieZone,
+    GraphSerieDensityMap,
 
     GraphShape,
     GraphShapeAreaUnderCurve,
@@ -112,6 +114,7 @@ define( [
     Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
     Graph.registerConstructor( "graph.serie.scatter", GraphSerieScatter );
     Graph.registerConstructor( "graph.serie.zone", GraphSerieZone );
+    Graph.registerConstructor( "graph.serie.densitymap", GraphSerieDensityMap );
 
     Graph.registerConstructor( "graph.plugin.shape", GraphPluginShape );
     Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );

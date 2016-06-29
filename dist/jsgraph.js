@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.4-10
+ * jsGraph JavaScript Graphing Library v1.14.5
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-28T14:38Z
+ * Date: 2016-06-29T10:00Z
  */
 
 ( function( global, factory ) {
@@ -9205,7 +9205,7 @@
 
         $.extend( true, shapeInfo, this.options );
 
-        this.emit( "beforeNewShape", shapeInfo );
+        this.emit( "beforeNewShape", shapeInfo, e );
 
         if ( this.graph.prevent( false ) ) {
           return;
@@ -9213,7 +9213,7 @@
 
         var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
-        this.emit( "createdShape", shape );
+        this.emit( "createdShape", shape, e );
 
         if ( shape ) {
           self.currentShape = shape;
@@ -16546,6 +16546,284 @@
 
     /* 
      * Build: new source file 
+     * File name : series/graph.serie.densitymap
+     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.densitymap.js
+     */
+
+    build[ './series/graph.serie.densitymap' ] = ( function( SerieNonInstanciable, util ) {
+      /** @global */
+      /** @ignore */
+
+      "use strict";
+
+      var hexChar = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ];
+
+      /** 
+       * Serie line
+       * @class SerieDensityMap
+       * @example graph.newSerie( name, options, "line" );
+       * @see Graph#newSerie
+       * @augments Serie
+       */
+      function SerieDensityMap() {}
+
+      SerieDensityMap.prototype = new SerieNonInstanciable();
+
+      /**
+       * Initializes the serie
+       * @memberof SerieDensityMap
+       */
+      SerieDensityMap.prototype.init = function( graph, name, options ) {
+
+        this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
+        util.mapEventEmission( this.options, this ); // Register events
+
+        this.graph = graph;
+        this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+        this.rects = [];
+        this.paths = [];
+      };
+
+      SerieDensityMap.prototype.setData = function( data ) {
+
+        this.minX = this.maxX = this.minY = this.maxY = 0;
+        var i = 0,
+          l = data.length;
+        this.data = data;
+        for ( i = 0; i < l; i++ ) {
+          this._checkX( data[ i ][ 0 ] );
+          this._checkY( data[ i ][ 1 ] );
+        }
+
+        return this;
+
+      }
+
+      SerieDensityMap.prototype.calculateDensity = function( fromX, deltaX, numX, fromY, deltaY, numY ) {
+
+        var densitymap = [],
+          i,
+          l = this.data.length,
+          indexX, indexY;
+
+        var binMin = Number.POSITIVE_INFINITY;
+        var binMax = Number.NEGATIVE_INFINITY;
+
+        for ( i = 0; i < l; i++ ) {
+          indexX = Math.floor( ( this.data[ i ][ 0 ] - fromX ) / deltaX );
+          indexY = Math.floor( ( this.data[ i ][ 1 ] - fromY ) / deltaY );
+
+          if ( indexX > numX || indexY > numY || indexX < 0 || indexY < 0 ) {
+            continue;
+          }
+
+          densitymap[ indexX ] = densitymap[ indexX ] || [];
+          densitymap[ indexX ][ indexY ] = densitymap[ indexX ][ indexY ] + 1 || 1;
+
+          binMin = Math.min( binMin, densitymap[ indexX ][ indexY ] );
+          binMax = Math.max( binMax, densitymap[ indexX ][ indexY ] );
+        }
+
+        this.maxIndexX = numX;
+        this.maxIndexY = numY;
+
+        this.binMin = binMin;
+        this.binMax = binMax;
+
+        this.deltaX = deltaX;
+        this.deltaY = deltaY;
+
+        this.fromX = fromX;
+        this.fromY = fromY;
+
+        this.numX = numX;
+        this.numY = numY;
+
+        this.densitymap = densitymap;
+        return densitymap;
+      }
+
+      SerieDensityMap.prototype.autoBins = function( numX, numY ) {
+
+        this.calculateDensity(
+          this.minX, ( this.maxX - this.minX ) / numX, numX,
+          this.minY, ( this.maxY - this.minY ) / numY, numY
+        );
+      }
+
+      SerieDensityMap.prototype.colorMapHSV = function( fromColor, toColor, minBin, maxBin, numBins, method ) {
+
+        minBin = minBin || 0;
+        method = method || "linear";
+
+        var methods = {
+          "exp": function( value ) {
+            return ( Math.exp( value ) - Math.exp( minBin ) ) / ( Math.exp( maxBin ) - Math.exp( minBin ) );
+          },
+          "linear": function( value ) {
+            return ( value - minBin ) / ( maxBin - minBin );
+          }
+        }
+
+        var k = 0,
+          colorMap = [];
+
+        var color = {
+          h: null,
+          s: null,
+          v: null
+        };
+        var deltaBin = ( maxBin - minBin ) / ( numBins - 1 ),
+          ratio;
+
+        for ( var i = minBin; i <= maxBin; i += deltaBin ) {
+
+          ratio = methods[ method ]( i );
+
+          for ( var j in color ) {
+            color[ j ] = ( toColor[ j ] - fromColor[ j ] ) * ratio + fromColor[ j ];
+          }
+
+          colorMap[ k ] = this.HSVtoRGB( color.h, color.s, color.v );
+          k++;
+        }
+
+        this.colorMap = colorMap;
+        this.colorMapMin = minBin;
+        this.colorMapMax = maxBin;
+        this.colorMapNum = numBins;
+      }
+
+      SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor, numBins ) {
+
+        numBins = numBins || 300;
+        this.colorMapHSV( fromColor, toColor, this.binMin, this.binMax, numBins, "linear" );
+      }
+
+      SerieDensityMap.prototype.byteToHex = function( b ) {
+        return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
+      }
+
+      SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
+        var r, g, b, i, f, p, q, t;
+        if ( arguments.length === 1 ) {
+          s = h.s, v = h.v, h = h.h;
+        }
+        i = Math.floor( h * 6 );
+        f = h * 6 - i;
+        p = v * ( 1 - s );
+        q = v * ( 1 - f * s );
+        t = v * ( 1 - ( 1 - f ) * s );
+        switch ( i % 6 ) {
+          case 0:
+            r = v, g = t, b = p;
+            break;
+          case 1:
+            r = q, g = v, b = p;
+            break;
+          case 2:
+            r = p, g = v, b = t;
+            break;
+          case 3:
+            r = p, g = q, b = v;
+            break;
+          case 4:
+            r = t, g = p, b = v;
+            break;
+          case 5:
+            r = v, g = p, b = q;
+            break;
+        }
+        return "#" + this.byteToHex( Math.floor( r * 255 ) ) + this.byteToHex( Math.floor( g * 255 ) ) + this.byteToHex( Math.floor( b * 255 ) );
+      }
+
+      SerieDensityMap.prototype.getColorIndex = function( value ) {
+
+        return Math.floor( ( value - this.colorMapMin ) / ( this.colorMapMax - this.colorMapMin ) * this.colorMapNum );
+      }
+
+      SerieDensityMap.prototype.draw = function() {
+
+        var colorIndex;
+
+        var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
+          deltaYPx = this.getYAxis().getRelPx( this.deltaY );
+
+        for ( var i = 0; i < this.paths.length; i++ ) {
+          this.paths[ i ] = "";
+        }
+
+        for ( var i = 0; i < this.maxIndexX; i++ ) {
+
+          for ( var j = 0; j < this.maxIndexY; j++ ) {
+
+            if ( this.densitymap[ i ][ j ] == "undefined" ) {
+              continue;
+            }
+
+            colorIndex = this.getColorIndex( this.densitymap[ i ][ j ] );
+            if ( !this.paths[ colorIndex ] ) {
+              this.paths[ colorIndex ] = "";
+            }
+            this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
+
+            ;
+          }
+        }
+        /*
+            this.maxIndexX = indexX;
+            this.maxIndexY = indexY;*/
+
+        this.drawRects();
+      }
+
+      SerieDensityMap.prototype.drawRects = function() {
+
+        for ( var i = 0; i < this.paths.length; i++ ) {
+
+          if ( !this.rects[ i ] ) {
+            this.rects[ i ] = document.createElementNS( this.graph.ns, "path" );
+          }
+
+          if ( this.paths[ i ] ) {
+            this.rects[ i ].setAttribute( 'd', this.paths[ i ] );
+            this.rects[ i ].setAttribute( 'fill', this.colorMap[ i ] );
+          }
+          this.groupMain.appendChild( this.rects[ i ] );
+        }
+      }
+
+      /**
+       * @name SerieDensityMapDefaultOptions
+       * @object
+       * @static
+       * @memberof SerieDensityMap
+       */
+      SerieDensityMap.prototype.defaults = {
+
+      };
+
+      /**
+   * Sets the options of the serie
+   * @see SerieDensityMapDefaultOptions
+   * @param {Object} options - A object containing the options to set
+   * @return {SerieDensityMap} The current serie
+   * @memberof SerieDensityMap
+   
+*/
+      SerieDensityMap.prototype.setOptions = function( options ) {
+        this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
+        // Unselected style
+
+        return this;
+      };
+
+      return SerieDensityMap;
+    } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
+
+    /* 
+     * Build: new source file 
      * File name : shapes/graph.shape
      * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
      */
@@ -17062,6 +17340,15 @@
       };
 
       /**
+       * Returns all the properties of the shape
+       * @param {String} prop - The property to retrieve
+       * @memberof Shape
+       */
+      Shape.prototype.getProps = function( prop, index ) {
+        return ( this.properties[ prop ] || [] );
+      };
+
+      /**
        * Adds a property to the property array
        * @param {String} prop - The property to add
        * @param val - The value to save
@@ -17204,6 +17491,20 @@
        */
       Shape.prototype.setAttributes = function( attributes ) {
         this.setProp( "attributes", attributes );
+        return this;
+      };
+
+      /**
+       * Adds an extra attribute to the shape
+       * @memberof Shape
+       * @param {String} attributeName - The name of the attribute
+       * @param {String} attributeValue - The value of the attribute
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.addAttribute = function( attributeName, attributeValue ) {
+        var added = {};
+        added[ attributeName ] = attributeValue;
+        this.addProp( "attributes", added );
         return this;
       };
 
@@ -17395,10 +17696,13 @@
         this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
         this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
 
-        var attributes = this.getProp( "attributes" ) || {};
+        var attributes = this.getProps( "attributes" );
+        for ( var j = 0, l = attributes.length; j < l; j++ ) {
 
-        for ( var i in attributes ) {
-          this.setDom( i, typeof attributes[ i ] == "function" ? attributes[ i ].call( this, i ) : attributes[ i ] );
+          for ( var i in attributes[ j ] ) {
+            this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ] );
+          }
+
         }
 
         this._applyTransforms();
@@ -20920,6 +21224,7 @@
       GraphSerieLineColor,
       GraphSerieScatter,
       GraphSerieZone,
+      GraphSerieDensityMap,
 
       GraphShape,
       GraphShapeAreaUnderCurve,
@@ -20959,6 +21264,7 @@
       Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
       Graph.registerConstructor( "graph.serie.scatter", GraphSerieScatter );
       Graph.registerConstructor( "graph.serie.zone", GraphSerieZone );
+      Graph.registerConstructor( "graph.serie.densitymap", GraphSerieDensityMap );
 
       Graph.registerConstructor( "graph.plugin.shape", GraphPluginShape );
       Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
@@ -20988,7 +21294,7 @@
 
       return Graph;
 
-    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
+    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./series/graph.serie.densitymap" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
 
   };
 
