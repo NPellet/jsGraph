@@ -37,10 +37,19 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     var i = 0,
       l = data.length;
     this.data = data;
+
+    this.minX = Number.POSITIVE_INFINITY;
+    this.minY = Number.POSITIVE_INFINITY;
+    this.maxX = Number.NEGATIVE_INFINITY;
+    this.maxY = Number.NEGATIVE_INFINITY;
+
     for ( i = 0; i < l; i++ ) {
       this._checkX( data[ i ][ 0 ] );
       this._checkY( data[ i ][ 1 ] );
     }
+
+    this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
 
     return this;
 
@@ -57,8 +66,8 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     var binMax = Number.NEGATIVE_INFINITY;
 
     for ( i = 0; i < l; i++ ) {
-      indexX = Math.floor( ( this.data[ i ][ 0 ] - fromX ) / deltaX );
-      indexY = Math.floor( ( this.data[ i ][ 1 ] - fromY ) / deltaY );
+      indexX = ~~( ( this.data[ i ][ 0 ] - fromX ) / deltaX );
+      indexY = ~~( ( this.data[ i ][ 1 ] - fromY ) / deltaY );
 
       if ( indexX > numX || indexY > numY ||  indexX < 0 ||  indexY < 0 ) {
         continue;
@@ -67,8 +76,9 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
       densitymap[ indexX ] = densitymap[ indexX ] || [];
       densitymap[ indexX ][ indexY ] = densitymap[ indexX ][ indexY ] + 1 ||  1;
 
-      binMin = Math.min( binMin, densitymap[ indexX ][ indexY ] );
-      binMax = Math.max( binMax, densitymap[ indexX ][ indexY ] );
+      binMin = densitymap[ indexX ][ indexY ] < binMin ? densitymap[ indexX ][ indexY ] : binMin;
+      binMax = densitymap[ indexX ][ indexY ] > binMax ? densitymap[ indexX ][ indexY ] : binMax;
+      //binMax = Math.max( binMax, densitymap[ indexX ][ indexY ] );
     }
 
     this.maxIndexX = numX;
@@ -96,19 +106,31 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
       this.minX, ( this.maxX - this.minX ) / numX, numX,
       this.minY, ( this.maxY - this.minY ) / numY, numY
     );
+    return this;
   }
 
-  SerieDensityMap.prototype.colorMapHSV = function( fromColor, toColor, minBin, maxBin, numBins, method ) {
+  SerieDensityMap.prototype.setBinsBoundaries = function( min, max ) {
+    this.colorMapMin = min;
+    this.colorMapMax = max;
+    return this;
+  }
 
-    minBin = minBin || 0;
+  SerieDensityMap.prototype.autoBinsBoundaries = function() {
+    this.colorMapMin = this.binMin;
+    this.colorMapMax = this.binMax;
+    return this;
+  }
+
+  SerieDensityMap.prototype.colorMapHSV = function( fromColor, toColor, numBins, method ) {
+
     method = method || "linear";
 
     var methods = {
       "exp": function( value ) {
-        return ( Math.exp( value ) - Math.exp( minBin ) ) / ( Math.exp( maxBin ) - Math.exp( minBin ) );
+        return ( Math.exp( value ) - Math.exp( 0 ) ) / ( Math.exp( numBins ) - Math.exp( 0 ) );
       },
       "linear": function( value ) {
-        return ( value - minBin ) / ( maxBin - minBin );
+        return ( value - 0 ) / ( numBins - 0 );
       }
     }
 
@@ -120,10 +142,10 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
       s: null,
       v: null
     };
-    var deltaBin = ( maxBin - minBin ) / ( numBins - 1 ),
-      ratio;
 
-    for ( var i = minBin; i <= maxBin; i += deltaBin ) {
+    var ratio;
+
+    for ( var i = 0; i <= numBins; i++ ) {
 
       ratio = methods[ method ]( i );
 
@@ -136,15 +158,12 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     }
 
     this.colorMap = colorMap;
-    this.colorMapMin = minBin;
-    this.colorMapMax = maxBin;
     this.colorMapNum = numBins;
   }
 
-  SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor, numBins ) {
+  SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor ) {
 
-    numBins = numBins ||  300;
-    this.colorMapHSV( fromColor, toColor, this.binMin, this.binMax, numBins, "linear" );
+    this.colorMapHSV( fromColor, toColor, 400, "linear" );
   }
 
   SerieDensityMap.prototype.byteToHex = function( b ) {
@@ -193,8 +212,8 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
     var colorIndex;
 
-    var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
-      deltaYPx = this.getYAxis().getRelPx( this.deltaY );
+    var deltaXPx = Math.round( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
+      deltaYPx = Math.round( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
 
     for ( var i = 0; i < this.paths.length; i++ ) {
       this.paths[ i ] = "";
@@ -204,7 +223,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
       for ( var j = 0; j < this.maxIndexY; j++ ) {
 
-        if ( this.densitymap[ i ][ j ] == "undefined" ) {
+        if ( this.densitymap[ i ] == undefined || this.densitymap[ i ][ j ] == undefined ) {
           continue;
         }
 
@@ -212,7 +231,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
         if ( !this.paths[ colorIndex ] ) {
           this.paths[ colorIndex ] = "";
         }
-        this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
+        this.paths[ colorIndex ] += " M " + this.getXAxis().getRoundedPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getRoundedPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
         ;
       }
@@ -232,12 +251,13 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
         this.rects[ i ] = document.createElementNS( this.graph.ns, "path" );
       }
 
-      if ( this.paths[ i ] ) {
+      if ( this.paths[ i ] !== undefined ) {
         this.rects[ i ].setAttribute( 'd', this.paths[  i ] );
         this.rects[ i ].setAttribute( 'fill', this.colorMap[ i ] );
       }
       this.groupMain.appendChild( this.rects[ i ] );
     }
+
   }
 
   /**

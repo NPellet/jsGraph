@@ -1521,8 +1521,8 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
    * @alias Axis~getPos
    */
   GraphAxis.prototype.getPx = function( value ) {
-    //			if(this.getMaxPx() == undefined)
-    //				console.log(this);
+    //      if(this.getMaxPx() == undefined)
+    //        console.log(this);
     //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
     // Ex 50 / (100) * (1000 - 700) + 700
 
@@ -1541,6 +1541,19 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
       return value;
     }
+  };
+
+  /**
+   * @alias Axis~getPos
+   */
+  GraphAxis.prototype.getRoundedPx = function( value ) {
+    //      if(this.getMaxPx() == undefined)
+    //        console.log(this);
+    //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
+    // Ex 50 / (100) * (1000 - 700) + 700
+
+    //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
+    return Math.round( this.getPx( value ) * 10 ) / 10;
   };
 
   /**

@@ -73,8 +73,8 @@ define( function() {
 		);
 
 		var state = graphinstance.getAxisState();
-
 		state.left[ 0 ] = [ 10, 20 ];
+		state.bottom[ 0 ] = [ 10, 20 ];
 		graphinstance.setAxisState( state );
 
 		legend.update();

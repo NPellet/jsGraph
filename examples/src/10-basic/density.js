@@ -47,20 +47,34 @@ define( function() {
 
 
 
+	var s = graph.newSerie("a", {}, "densitymap").autoAxis();
 
+	window.requestAnimationFrame( setData );
+	var t = 0;
+	function setData() {
 
-	for( var i = 0; i < Math.PI * 1000; i += 0.001 ) {
-		data.push( [ Math.sin( i ) * Math.sin( i ) + Math.pow( Math.random(), 1.2 ) / 5, Math.cos( i ) - Math.sin( i )  + Math.pow( Math.random(), 1.2 ) / 5 ] );
+		t+= 0.1;
+		data = [];
+		for( var i = 0; i < Math.PI; i += 0.00001 ) {
+			data.push( [ Math.sin( i / Math.sin( t ) +  Math.pow( Math.random() / 10, 1) ), Math.cos( Math.sin( t ) * i ) + Math.pow( Math.random() / 10, 1) ] );
+		}
+		s.setData( data ).autoBins( 150, 150 ).autoBinsBoundaries();
+		graph.autoscaleAxes();
+
+		graph.draw( true );
+		setTimeout( function() {
+			window.requestAnimationFrame( setData );	
+		}, 100 );
+		
 	}
 
-	
-	var s = graph.newSerie("a", {}, "densitymap").setData( data ).autoAxis();
-	s.autoBins( 100, 100 );
+
 	s.autoColorMapHSV( { h: 1, s: 0.4, v: 0.2 }, { h: 0, s: 1, v:1 } );
-
-	graph.autoscaleAxes();
-
+	
 	graph.draw();
+
+
+
 	}, 
 
 	"",
