@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.6
+ * jsGraph JavaScript Graphing Library v1.14.7
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-29T10:07Z
+ * Date: 2016-06-29T10:09Z
  */
 
 ( function( global, factory ) {
@@ -8759,6 +8759,9 @@
 
           this.rectBottom.addEventListener( 'mousedown', mousedown );
           this.svg.addEventListener( 'click', function( e ) {
+            e.stopPropagation();
+          } );
+          this.svg.addEventListener( 'dblclick', function( e ) {
             e.stopPropagation();
           } );
           this.rectBottom.addEventListener( 'mousemove', mousemove );

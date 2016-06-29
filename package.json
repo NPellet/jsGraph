@@ -1,6 +1,6 @@
 {
   "name": "graphs",
-  "version": "1.14.6",
+  "version": "1.14.7",
   "scripts": {
     "build": "grunt",
     "test": "grunt && npm run test-mocha",

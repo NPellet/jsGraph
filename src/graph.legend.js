@@ -487,6 +487,9 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
       this.svg.addEventListener( 'click', function( e ) {
         e.stopPropagation();
       } );
+      this.svg.addEventListener( 'dblclick', function( e ) {
+        e.stopPropagation();
+      } );
       this.rectBottom.addEventListener( 'mousemove', mousemove );
       this.rect.addEventListener( 'mousemove', mousemove );
     },
