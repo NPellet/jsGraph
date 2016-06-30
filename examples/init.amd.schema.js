@@ -16,19 +16,20 @@ require( [ 'jquery', './src/graph'] , function( $, Graph ) {
 
 		var val = $( this ).prop( 'value' );
 
-		try {
 
 			var wrapper = $("#graph").get(0);
 			$("#graph").empty();
 
+		try {
 			var schema = JSON.parse( val );
+		} catch ( e ) {
+			console.error( e );
+		}
 			var graph = Graph.fromSchema( schema, wrapper );
 
 			graph.resize( 500, 300 );
 			graph.drawSeries( true );
-		} catch ( e ) {
-			console.error( e );
-		}
+		
 	})
 
 } );
