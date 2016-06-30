@@ -3006,23 +3006,28 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         var errors = [];
         if ( schemaSerie.errorX ) {
 
-          for( var i = 0, l = schemaSerie.errorX.length; i < l; i ++ ) {
+          for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
 
-            errors[ i ] = errors[ i ] || [ [], [] ];
+            errors[ i ] = errors[ i ] || [
+              [],
+              []
+            ];
 
             errors[ i ][ 0 ][ 0 ] = schemaSerie.errorX[ i ];
           }
         }
-        
+
         if ( schemaSerie.errorY ) {
 
-          for( var i = 0, l = schemaSerie.errorY.length; i < l; i ++ ) {
+          for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
 
-            errors[ i ] = errors[ i ] || [ [] ];
+            errors[ i ] = errors[ i ] || [
+              []
+            ];
             errors[ i ][ 1 ][ 0 ] = schemaSerie.errorY[ i ];
           }
         }
-      
+
         serie.setDataError( errors ) // Adds the error data
           .setErrorStyle( [ {
             type: 'bar',

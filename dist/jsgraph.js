@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-1
+ * jsGraph JavaScript Graphing Library v1.14.10-2
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-30T08:52Z
+ * Date: 2016-06-30T09:10Z
  */
 
 ( function( global, factory ) {
@@ -4142,24 +4142,36 @@
             }
 
             var errors = [];
-            if ( schemaSerie.errordXdY ) {
+            if ( schemaSerie.errorX ) {
 
-              schemaSerie.errordXdY.map( function( dxdy ) {
+              for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
 
-                errors.push( [
-                  [ dxdy[ 0 ] ],
-                  [ dxdy[ 1 ] ]
-                ] );
-              } );
+                errors[ i ] = errors[ i ] || [
+                  [],
+                  []
+                ];
 
-              serie.setDataError( errors ) // Adds the error data
-                .setErrorStyle( [ {
-                  type: 'bar',
-                  x: {},
-                  y: {}
-                } ] ) // Display bar errors
-
+                errors[ i ][ 0 ][ 0 ] = schemaSerie.errorX[ i ];
+              }
             }
+
+            if ( schemaSerie.errorY ) {
+
+              for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
+
+                errors[ i ] = errors[ i ] || [
+                  []
+                ];
+                errors[ i ][ 1 ][ 0 ] = schemaSerie.errorY[ i ];
+              }
+            }
+
+            serie.setDataError( errors ) // Adds the error data
+              .setErrorStyle( [ {
+                type: 'bar',
+                x: {},
+                y: {}
+              } ] ); // Display bar errors
 
             if ( schema.axis ) {
               serieAxis = schema.axis[ schemaSerie.xAxis ];
