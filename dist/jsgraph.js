@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-0
+ * jsGraph JavaScript Graphing Library v1.14.10-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-30T08:50Z
+ * Date: 2016-06-30T08:52Z
  */
 
 ( function( global, factory ) {
@@ -1865,7 +1865,7 @@
         },
 
         saveAxisState: function( savedName ) {
-          this.savedAxisState = this.savedAxisState || [];
+          this.savedAxisState = this.savedAxisState || {};
           this.savedAxisState[ savedName ] = this.getAxisState();
           return this;
         },

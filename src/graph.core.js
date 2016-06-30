@@ -727,7 +727,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     },
 
     saveAxisState: function( savedName ) {
-      this.savedAxisState = this.savedAxisState || [];
+      this.savedAxisState = this.savedAxisState || {};
       this.savedAxisState[ savedName ] = this.getAxisState();
       return this;
     },
