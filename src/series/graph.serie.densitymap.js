@@ -212,8 +212,8 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
     var colorIndex;
 
-    var deltaXPx = Math.round( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
-      deltaYPx = Math.round( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
+    var deltaXPx = Math.floor( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
+      deltaYPx = Math.floor( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
 
     for ( var i = 0; i < this.paths.length; i++ ) {
       this.paths[ i ] = "";
@@ -249,6 +249,8 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
       if ( !this.rects[ i ] ) {
         this.rects[ i ] = document.createElementNS( this.graph.ns, "path" );
+        this.rects[ i ].setAttribute( 'shape-rendering', 'crispEdges' );
+
       }
 
       if ( this.paths[ i ] !== undefined ) {

@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.9
+ * jsGraph JavaScript Graphing Library v1.14.10-0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-29T21:42Z
+ * Date: 2016-06-30T08:50Z
  */
 
 ( function( global, factory ) {
@@ -1862,6 +1862,19 @@
           }
 
           this.draw();
+        },
+
+        saveAxisState: function( savedName ) {
+          this.savedAxisState = this.savedAxisState || [];
+          this.savedAxisState[ savedName ] = this.getAxisState();
+          return this;
+        },
+
+        recallAxisState: function( stateName ) {
+          if ( this.savedAxisState[ savedName ] ) {
+            this.recallAxisState( this.savedAxisState[ savedName ] );
+          }
+          return this;
         },
 
         _applyToAxis: {
@@ -16818,8 +16831,8 @@
 
         var colorIndex;
 
-        var deltaXPx = Math.round( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
-          deltaYPx = Math.round( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
+        var deltaXPx = Math.floor( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
+          deltaYPx = Math.floor( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
 
         for ( var i = 0; i < this.paths.length; i++ ) {
           this.paths[ i ] = "";
@@ -16855,6 +16868,8 @@
 
           if ( !this.rects[ i ] ) {
             this.rects[ i ] = document.createElementNS( this.graph.ns, "path" );
+            this.rects[ i ].setAttribute( 'shape-rendering', 'crispEdges' );
+
           }
 
           if ( this.paths[ i ] !== undefined ) {

@@ -63,7 +63,7 @@ define( function() {
 
 		graph.draw( true );
 		setTimeout( function() {
-			window.requestAnimationFrame( setData );	
+			//window.requestAnimationFrame( setData );	
 		}, 100 );
 		
 	}

@@ -726,6 +726,19 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       this.draw();
     },
 
+    saveAxisState: function( savedName ) {
+      this.savedAxisState = this.savedAxisState || [];
+      this.savedAxisState[ savedName ] = this.getAxisState();
+      return this;
+    },
+
+    recallAxisState: function( stateName ) {
+      if ( this.savedAxisState[ savedName ] ) {
+        this.recallAxisState( this.savedAxisState[ savedName ] );
+      }
+      return this;
+    },
+
     _applyToAxis: {
       'string': function( type, func, params ) {
         //    params.splice(1, 0, type);
