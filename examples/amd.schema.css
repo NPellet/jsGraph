@@ -11,3 +11,8 @@ body {
   width: 400px;
   margin: 20px; 
 }
+
+#schema {
+  height: 400px;
+  width: 1000px;
+}

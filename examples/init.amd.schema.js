@@ -11,25 +11,31 @@ requirejs.config({
 require( [ 'jquery', './src/graph'] , function( $, Graph ) {
 
 	window.Graph = Graph;
+
+	var textarea = $('textarea');
 	
-	$("textarea").bind('keyup', function() {
+	textarea.bind('keyup', redraw);
 
-		var val = $( this ).prop( 'value' );
+	redraw();
+
+	function redraw() {
+
+		var val = textarea.prop( 'value' );
 
 
-			var wrapper = $("#graph").get(0);
-			$("#graph").empty();
+		var wrapper = $("#graph").get(0);
+		$("#graph").empty();
 
 		try {
 			var schema = JSON.parse( val );
 		} catch ( e ) {
 			console.error( e );
 		}
-			var graph = Graph.fromSchema( schema, wrapper );
+		var graph = Graph.fromSchema( schema, wrapper );
 
-			graph.resize( 500, 300 );
-			graph.drawSeries( true );
-		
-	})
+		graph.resize( 500, 300 );
+		graph.drawSeries( true );
+
+	}
 
 } );
