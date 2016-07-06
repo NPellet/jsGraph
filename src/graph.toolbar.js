@@ -76,7 +76,8 @@ define( [ './graph.util' ], function( util ) {
 
     this.options = util.extend( true, {}, toolbarDefaults, options );
     this.graph = graph;
-    this.div = $( "<ul />" ).addClass( 'graph-toolbar' );
+    this.div = document.createElement( 'ul' );
+    this.div.classList.add( 'graph-toolbar' );
 
     this.graph.getPlugin( './graph.plugin.shape' ).then( function( plugin ) {
 
@@ -86,13 +87,15 @@ define( [ './graph.util' ], function( util ) {
         return;
       }
 
-      self.div.on( 'click', 'li', function() {
-
-        var shape = $( this ).attr( 'data-shape' );
-        self.plugin.setShape( shape );
-
-        $( this ).parent().children().removeClass( 'selected' );
-        $( this ).addClass( 'selected' );
+      self.div.addEventListener( 'click', function( event ) {
+        if ( event.target.matches( 'li' ) ) {
+          var shape = event.target.getAttribute( 'data-shape' );
+          self.plugin.setShape( shape );
+          event.target.parentElement.children.forEach( function( child ) {
+            child.classList.remove( 'selected' );
+          } );
+          event.target.classList.add( 'selected' );
+        }
       } );
 
       self.makeButtons();
@@ -103,34 +106,29 @@ define( [ './graph.util' ], function( util ) {
 
     makeButtons: function() {
 
-      var self = this;
       for ( var i = 0, l = this.options.buttons.length; i < l; i++ ) {
-
-        this.div.append( this.makeButton( this.options.buttons[ i ] ) );
+        this.div.appendChild( this.makeButton( this.options.buttons[ i ] ) );
       }
     },
 
     makeButton: function( button ) {
 
-      var div = $( "<li />" );
+      var div = document.createElement( 'li' );
       switch ( button ) {
 
         case 'line':
-          div
-            .html( makeSvgLine() )
-            .attr( 'data-shape', 'line' );
+          div.appendChild( makeSvgLine() );
+          div.setAttribute( 'data-shape', 'line' );
           break;
 
         case 'rect':
-          div
-            .html( makeSvgRect() )
-            .attr( 'data-shape', 'rect' );
+          div.appendChild( makeSvgRect() );
+          div.setAttribute( 'data-shape', 'rect' );
           break;
 
         case 'areaundercurve':
-          div
-            .html( makeSvgAUC() )
-            .attr( 'data-shape', 'areaundercurve' );
+          div.appendChild( makeSvgAUC() );
+          div.setAttribute( 'data-shape', 'areaundercurve' );
           break;
       }
 

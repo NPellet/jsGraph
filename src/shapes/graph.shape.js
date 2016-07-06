@@ -1899,41 +1899,38 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     e.preventDefault();
     e.stopPropagation();
 
-    $( '<input type="text" />' ).attr( 'value', self.getProp( 'labelText', i ) ).prependTo( self.graph._dom ).css( {
-
+    var shapeLabel = document.createElement( 'input' );
+    shapeLabel.setAttribute( 'type', 'text' );
+    shapeLabel.setAttribute( 'value', self.getProp( 'labelText', i ) );
+    self.graph._dom.prepend( shapeLabel );
+    util.setCSS( shapeLabel, {
       position: 'absolute',
-      'margin-top': ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + "px",
-      'margin-left': ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + "px",
+      marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + 'px',
+      marginLeft: ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + 'px',
       textAlign: 'center',
       width: '100px'
-
-    } ).bind( 'blur', function() {
-
-      $( this ).remove();
-
-      self.setLabelText( $( this ).prop( 'value' ), i );
-      self._labels[ i ].textContent = $( this ).prop( 'value' );
-
+    } );
+    shapeLabel.addEventListener( 'blur', function() {
+      self.setLabelText( shapeLabel.getAttribute( 'value' ), i );
+      self._labels[ i ].textContent = shapeLabel.getAttribute( 'value' );
+      shapeLabel.remove();
       self.changed( "shapeLabelChanged" );
 
-    } ).bind( 'keyup', function( e ) {
-
+    } );
+    shapeLabel.addEventListener( 'keyup', function( e ) {
       e.stopPropagation();
       e.preventDefault();
-
-      if ( e.keyCode == 13 ) {
-        $( this ).trigger( 'blur' );
+      if ( e.keyCode === 13 ) {
+        shapeLabel.dispatchEvent( new Event( 'blur' ) );
       }
-
-    } ).bind( 'keypress', function( e ) {
-
+    } );
+    shapeLabel.addEventListener( 'keypress', function( e ) {
       e.stopPropagation();
-
-    } ).bind( 'keydown', function( e ) {
-
+    } );
+    shapeLabel.addEventListener( 'keydown', function( e ) {
       e.stopPropagation();
-
-    } ).focus().get( 0 ).select();
+    } );
+    shapeLabel.focus();
 
   };
 

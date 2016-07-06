@@ -3,7 +3,7 @@ requirejs.config({
 
 	baseUrl: '../',
 	paths: {
-		'jquery': 'src/dependencies/jquery/dist/jquery.min'
+		'jquery': 'src/dependencies/jquery/dist/jquery'
 	}
 });
 

@@ -235,6 +235,14 @@ define( [], function() {
     };
   };
 
+  // jQuery.fn.css
+  util.setCSS = function setCSS( element, values ) {
+    var style = element.style;
+    for ( var i in values ) {
+      style[ i ] = values[ i ];
+    }
+  };
+
   util.ajaxGet = function ajaxGet( options ) {
     return new Promise( function( resolve, reject ) {
       var request = new XMLHttpRequest();
