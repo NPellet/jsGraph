@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
+define( [ './graph.util', './graph.axis' ], function( util, GraphAxis ) {
 
   "use strict";
 
@@ -12,7 +12,7 @@ define( [ 'jquery', './graph.axis' ], function( $, GraphAxis ) {
     this.top = topbottom == 'top';
   }
 
-  $.extend( XAxis.prototype, GraphAxis.prototype, {
+  util.extend( XAxis.prototype, GraphAxis.prototype, {
 
     getAxisPosition: function() {
 

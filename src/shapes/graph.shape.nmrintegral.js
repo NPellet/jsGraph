@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], function( $, GraphSurfaceUnderCurve, GraphPosition ) {
+define( [ '../graph.util', './graph.shape.areaundercurve', '../graph.position' ], function( util, GraphSurfaceUnderCurve, GraphPosition ) {
 
   "use strict";
 
@@ -7,7 +7,7 @@ define( [ 'jquery', './graph.shape.areaundercurve', '../graph.position' ], funct
 
   }
 
-  $.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
+  util.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
 
     createHandles: function() {
 

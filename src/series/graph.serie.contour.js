@@ -22,7 +22,7 @@ define( [ './graph.serie.line', '../graph.util' ], function( GraphSerie, util ) 
 
   GraphSerieContour.prototype = new GraphSerie();
 
-  $.extend( GraphSerieContour.prototype, {
+  util.extend( GraphSerieContour.prototype, {
 
     /**
      * Sets the contour lines

@@ -132,8 +132,8 @@ define( [ '../graph.util' ], function( util ) {
 
           if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
 
-            errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-            errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+            errorstyles[ i ][ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+            errorstyles[ i ][ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
 
           }
 

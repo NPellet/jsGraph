@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, util ) {
+define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
 
   "use strict";
 
@@ -74,7 +74,7 @@ define( [ 'jquery', './graph.plugin', '../graph.util' ], function( $, Plugin, ut
       movable: true
     };
 
-    $.extend( true, shapeInfo, this.options );
+    util.extend( true, shapeInfo, this.options );
 
     this.emit( "beforeNewShape", shapeInfo, e );
 

@@ -1,4 +1,4 @@
-define( [ 'jquery', '../graph.lru', './graph.plugin' ], function( $, LRU, Plugin ) {
+define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Plugin, util ) {
 
   /**
    * @class PluginTimeSerieManager
@@ -244,11 +244,11 @@ define( [ 'jquery', '../graph.lru', './graph.plugin' ], function( $, LRU, Plugin
 
     requestToMake[ 0 ] = 1;
 
-    $.ajax( {
+    util.ajaxGet( {
 
       url: this.getURL( requestToMake ),
-      method: 'get',
-      dataType: 'json'
+      method: 'GET',
+      json: true
 
     } ).done( function( data ) {
 

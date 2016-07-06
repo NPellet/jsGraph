@@ -1,9 +1,9 @@
-define( [ 'jquery', './graph.serie.line' ], function( $, GraphLine ) {
+define( [ './graph.serie.line', '../graph.util' ], function( GraphLine, util ) {
 
   "use strict";
 
   function GraphSerie() {}
-  $.extend( GraphSerie.prototype, GraphLine.prototype, {
+  util.extend( GraphSerie.prototype, GraphLine.prototype, {
 
     draw: function( force ) { // Serie redrawing
 

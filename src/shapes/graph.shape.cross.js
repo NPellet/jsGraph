@@ -1,11 +1,11 @@
-define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
+define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   function GraphCross( graph, options ) {
     this.nbHandles = 1;
 
   }
 
-  $.extend( GraphCross.prototype, GraphShape.prototype, {
+  util.extend( GraphCross.prototype, GraphShape.prototype, {
 
     getLength: function() {
       return this.options.length || 10;

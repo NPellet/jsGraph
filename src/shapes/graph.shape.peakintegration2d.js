@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.shape.rect' ], function( $, GraphRect ) {
+define( [ '../graph.util', './graph.shape.rect' ], function( util, GraphRect ) {
 
   var lineHeight = 5;
 
@@ -6,7 +6,7 @@ define( [ 'jquery', './graph.shape.rect' ], function( $, GraphRect ) {
     this.nbHandles = 4;
   }
 
-  $.extend( GraphPeakIntegration2D.prototype, GraphRect.prototype, {
+  util.extend( GraphPeakIntegration2D.prototype, GraphRect.prototype, {
 
     createDom: function() {
 

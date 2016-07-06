@@ -75,10 +75,17 @@ define( [ '../graph.util' ], function( util ) {
 
     var requestId = util.guid();
     toOptimize._queueId = requestId;
-    queue[ requestId ] = $.Deferred();
+    var resolve;
+    var prom = new Promise(function (_resolve) {
+      resolve = _resolve;
+    });
+    queue[ requestId ] = {
+      promise: prom,
+      resolve: resolve
+    };
 
     slotWorker.postMessage( toOptimize );
-    return queue[ requestId ];
+    return queue[ requestId ].promise;
   }
 
 } );

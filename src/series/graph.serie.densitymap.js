@@ -21,7 +21,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    */
   SerieDensityMap.prototype.init = function( graph, name, options ) {
 
-    this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
+    this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
     util.mapEventEmission( this.options, this ); // Register events
 
     this.graph = graph;
@@ -281,7 +281,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    
 */
   SerieDensityMap.prototype.setOptions = function( options ) {
-    this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
+    this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
     // Unselected style
 
     return this;

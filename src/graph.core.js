@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( $, GraphPosition, util, EventEmitter ) {
+define( [ './graph.position', './graph.util', './dependencies/eventEmitter/EventEmitter' ], function( GraphPosition, util, EventEmitter ) {
 
   "use strict";
 
@@ -33,14 +33,12 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
     if ( typeof wrapper == "string" ) {
       wrapper = document.getElementById( wrapper );
+    } else if ( typeof wrapper.length == "number" ) {
+      wrapper = wrapper[0];
     }
 
     if ( !wrapper ) {
       throw "The wrapper DOM element was not found.";
-    }
-
-    if ( wrapper instanceof $ ) {
-      wrapper = wrapper.get( 0 );
     }
 
     if ( !wrapper.appendChild ) {
@@ -59,7 +57,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @name Graph#options
      * @default {@link GraphOptionsDefault}
      */
-    this.options = $.extend( {}, GraphOptionsDefault, options );
+    this.options = util.extend( {}, GraphOptionsDefault, options );
 
     this.prevented = false;
 
@@ -92,27 +90,15 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
     }
 
     // DOM
-    var w, h;
-    if ( wrapper.style.width && wrapper.style.width.indexOf( "%" ) == -1 ) {
-      w = parseInt( wrapper.style.width.replace( 'px', '' ) );
-    } else {
-      w = $( wrapper ).width();
-    }
-
-    if ( wrapper.style.height && wrapper.style.height.indexOf( "%" ) == -1 ) {
-      h = parseInt( wrapper.style.height.replace( 'px', '' ) );
-    } else {
-      h = $( wrapper ).height();
-    }
+    var wrapperStyle = getComputedStyle( wrapper );
+    var w = parseInt(wrapperStyle.width);
+    var h = parseInt(wrapperStyle.height);
 
     this._doDom();
 
     this.setSize( w, h );
     this._resize();
     _registerEvents( this );
-
-    this.pluginsReady = $.Deferred();
-    this.seriesReady = $.Deferred();
 
     this.currentAction = false;
 
@@ -197,7 +183,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
 
   Graph.prototype = new EventEmitter();
 
-  Graph.prototype = $.extend( Graph.prototype, {
+  Graph.prototype = util.extend( Graph.prototype, {
 
     /** 
      * Returns the graph SVG wrapper element
@@ -446,7 +432,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
      * @see Graph#uncacheOffset
      */
     cacheOffset: function() {
-      this.offsetCached = $( this._dom ).offset();
+      this.offsetCached = util.getOffset( this._dom );
     },
 
     /**
@@ -1609,7 +1595,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
         if ( constructor ) {
 
           this.plugins[ pluginName ] = new constructor();
-          this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+          this.plugins[ pluginName ].options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
 
           util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
           this.plugins[ pluginName ].init( this, pluginOptions );
@@ -1740,7 +1726,7 @@ define( [ 'jquery', './graph.position', './graph.util', './dependencies/eventEmi
       var x = e.pageX,
         y = e.pageY;
 
-      var pos = this.offsetCached || $( this._dom ).offset();
+      var pos = this.offsetCached || util.getOffset( this._dom );
 
       x -= pos.left /* - window.scrollX*/ ;
       y -= pos.top /* - window.scrollY*/ ;

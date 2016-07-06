@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.axis.y', './graph.axis.broken' ], function( $, GraphYAxis, GraphBrokenAxis ) {
+define( [ './graph.util', './graph.axis.y', './graph.axis.broken' ], function( util, GraphYAxis, GraphBrokenAxis ) {
 
   "use strict";
 
@@ -11,7 +11,7 @@ define( [ 'jquery', './graph.axis.y', './graph.axis.broken' ], function( $, Grap
 
   }
 
-  $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
+  util.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
 
     createBrokenLine: function( range ) {
 

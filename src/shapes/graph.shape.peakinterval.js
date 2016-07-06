@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.shape.line' ], function( $, GraphLine ) {
+define( [ '../graph.util', './graph.shape.line' ], function( util, GraphLine ) {
 
   "use strict";
 
@@ -6,7 +6,7 @@ define( [ 'jquery', './graph.shape.line' ], function( $, GraphLine ) {
 
   }
 
-  $.extend( GraphPeakInterval.prototype, GraphLine.prototype, {
+  util.extend( GraphPeakInterval.prototype, GraphLine.prototype, {
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'line' );
       this._dom.setAttribute( 'marker-end', 'url(#verticalline' + this.graph._creation + ')' );

@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
+define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   /** 
    * Represents a label that extends the Shape class
@@ -15,7 +15,7 @@ define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
   LabelShape.prototype = new GraphShape();
 
-  $.extend( LabelShape.prototype, GraphShape.prototype, {
+  util.extend( LabelShape.prototype, GraphShape.prototype, {
 
     createDom: function() {
       return false;

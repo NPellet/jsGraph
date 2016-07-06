@@ -1,7 +1,7 @@
-  define( [ './graph.shape.areaundercurve' ], function( GraphSurfaceUnderCurve ) {
+  define( [ './graph.shape.areaundercurve', '../graph.util' ], function( GraphSurfaceUnderCurve, util ) {
 
     var GraphRangeX = function( graph ) {};
-    $.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
+    util.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
 
       createDom: function() {
         this._dom = document.createElementNS( this.graph.ns, 'rect' );

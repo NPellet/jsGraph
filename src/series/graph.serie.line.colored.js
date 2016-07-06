@@ -1,4 +1,4 @@
-define( [ './graph.serie.line', './slotoptimizer', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( SerieLineBase, SlotOptimizer, util, ErrorBarMixin ) {
+define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( SerieLineBase, util, ErrorBarMixin ) {
 
   "use strict";
 

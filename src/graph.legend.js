@@ -45,7 +45,7 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
    */
   var Legend = function( graph, options ) {
 
-    this.options = $.extend( {}, legendDefaults, options );
+    this.options = util.extend( {}, legendDefaults, options );
 
     this.graph = graph;
     this.svg = document.createElementNS( this.graph.ns, 'g' );

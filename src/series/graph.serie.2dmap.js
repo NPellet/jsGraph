@@ -1,9 +1,9 @@
-define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
+define( [ '../graph._serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
 
   "use strict";
 
   var GraphSerie = function() {}
-  $.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
+  util.extend( GraphSerie.prototype, GraphSerieNonInstanciable.prototype, {
 
     defaults: {
       
@@ -15,7 +15,7 @@ define( [ '../graph._serie' ], function( GraphSerieNonInstanciable ) {
 
       this.graph = graph;
       this.name = name;
-      this.options = $.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
+      this.options = util.extend( true, {}, GraphSerie.prototype.defaults, options ); // Creates options
       this.graph.mapEventEmission( this.options, this ); // Register events
 
       this.canvas = document.createElement("canvas"); 

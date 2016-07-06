@@ -1,4 +1,4 @@
-define( [], function() {
+define( ['./graph.util'], function( util ) {
 
   var toolbarDefaults = {
 
@@ -74,7 +74,7 @@ define( [], function() {
 
     var self = this;
 
-    this.options = $.extend( true, {}, toolbarDefaults, options );
+    this.options = util.extend( true, {}, toolbarDefaults, options );
     this.graph = graph;
     this.div = $( "<ul />" ).addClass( 'graph-toolbar' );
 

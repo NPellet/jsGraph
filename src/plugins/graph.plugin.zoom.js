@@ -1,4 +1,4 @@
-define( [ 'jquery', '../graph.util', './graph.plugin', ], function( $, util, Plugin ) {
+define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
 
   /**
    * @class PluginZoom

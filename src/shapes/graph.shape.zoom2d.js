@@ -1,8 +1,8 @@
-define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
+define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   function Zoom2DShape() {}
 
-  $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
+  util.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 
     createDom: function() {
       this._dom = document.createElementNS( this.graph.ns, 'g' );
@@ -105,7 +105,7 @@ define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
     handleMouseMoveImpl: function( e ) {
 
-      var o = $( this._dom ).offset();
+      var o = util.getOffset( this._dom );
       var cY = e.pageY - o.top;
       //console.log( this.selected );
 

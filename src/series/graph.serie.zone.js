@@ -1,6 +1,6 @@
 "use strict";
 
-define( [ 'jquery', './graph.serie', '../graph.util' ], function( $, GraphSerieNonInstanciable, util ) {
+define( [ './graph.serie', '../graph.util' ], function( GraphSerieNonInstanciable, util ) {
 
   /** 
    * @class SerieZone
@@ -11,7 +11,7 @@ define( [ 'jquery', './graph.serie', '../graph.util' ], function( $, GraphSerieN
    */
   function GraphSerieZone() {}
 
-  $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
+  util.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
     /**
      * @name SerieZoneDefaultOptions
@@ -39,7 +39,7 @@ define( [ 'jquery', './graph.serie', '../graph.util' ], function( $, GraphSerieN
       this.id = Math.random() + Date.now();
 
       this.shown = true;
-      this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
+      this.options = util.extend( true, {}, GraphSerieZone.prototype.defaults, options );
       this.data = [];
 
       this.groupZones = document.createElementNS( this.graph.ns, 'g' );

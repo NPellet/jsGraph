@@ -1,4 +1,4 @@
-define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( $, EventEmitter, util ) {
+define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( EventEmitter, util ) {
 
   "use strict";
 
@@ -86,7 +86,7 @@ define( [ 'jquery', './dependencies/eventEmitter/EventEmitter', './graph.util' ]
 
     var self = this;
     this.graph = graph;
-    this.options = $.extend( true, {}, GraphAxis.prototype.defaults, overwriteoptions, options );
+    this.options = util.extend( true, {}, GraphAxis.prototype.defaults, overwriteoptions, options );
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
     this.hasChanged = true;

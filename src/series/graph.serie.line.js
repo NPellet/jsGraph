@@ -27,7 +27,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     this.graph = graph;
     this.name = name;
 
-    this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) ); // Creates options
+    this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) ); // Creates options
     util.mapEventEmission( this.options, this ); // Register events
 
     // Creates an empty style variable
@@ -196,7 +196,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
    
 */
   SerieLine.prototype.setOptions = function( options ) {
-    this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
+    this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
     // Unselected style
     this.styles.unselected = {
       lineColor: this.options.lineColor,
@@ -235,7 +235,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   SerieLine.prototype.calculateSlot = function( slot, slotNumber ) {
     var self = this;
     this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
-    this.slotsData[ slot ].pipe( function( data ) {
+    this.slotsData[ slot ].then( function( data ) {
 
       self.slotsData[ slot ] = data;
       return data;
@@ -1844,7 +1844,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
       var s = this.styles[ i ];
       if ( s ) {
-        this.styles[ i ] = $.extend( true, {}, this.styles.unselected, s );
+        this.styles[ i ] = util.extend( true, {}, this.styles.unselected, s );
       }
     }
   };
@@ -1853,7 +1853,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     var s = this.styles[ stylename ];
     console.log( s, stylename );
     if ( s ) {
-      this.styles[ stylename ] = $.extend( true, {}, this.styles.unselected, s );
+      this.styles[ stylename ] = util.extend( true, {}, this.styles.unselected, s );
       console.log( s, stylename );
     }
   };

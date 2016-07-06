@@ -32,7 +32,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.shapes = []; // Stores all shapes
 
     this.shown = true;
-    this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+    this.options = util.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
     this.data = [];
 
     this.shapesDetails = [];
@@ -71,12 +71,12 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 */
 
     this.groupPoints.addEventListener( 'mouseover', function( e ) {
-      var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+      var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
       self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
     } );
 
     this.groupPoints.addEventListener( 'mouseout', function( e ) {
-      var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+      var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
       self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
     } );
 
@@ -420,8 +420,8 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
         }
 
-        var tmp = $.extend( {}, styleAll, style );
-        style = $.extend( style, tmp );
+        var tmp = util.extend( {}, styleAll, style );
+        style = util.extend( style, tmp );
 
       } else if ( styleAll !== undefined ) {
 

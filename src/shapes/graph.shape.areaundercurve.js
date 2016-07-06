@@ -1,4 +1,4 @@
-define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
+define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   "use strict";
 
@@ -6,7 +6,7 @@ define( [ 'jquery', './graph.shape' ], function( $, GraphShape ) {
 
   }
 
-  $.extend( GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {
+  util.extend( GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {
     createDom: function() {
 
       var self = this;
