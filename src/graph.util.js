@@ -227,7 +227,7 @@ define( [], function() {
   };
 
   // jQuery.fn.offset
-  util.getOffset = function getOffset(el) {
+  util.getOffset = function getOffset( el ) {
     var rect = el.getBoundingClientRect();
     return {
       top: rect.top + document.body.scrollTop,
@@ -235,25 +235,25 @@ define( [], function() {
     };
   };
 
-  util.ajaxGet = function ajaxGet(options) {
-    return new Promise(function (resolve, reject) {
+  util.ajaxGet = function ajaxGet( options ) {
+    return new Promise( function( resolve, reject ) {
       var request = new XMLHttpRequest();
-      request.open(options.type || 'GET', options.url, true);
-      if (options.json) request.setRequestHeader('Accept', 'application/json');
-      request.onload = function () {
-        if (request.status === 200) {
+      request.open( options.type || 'GET', options.url, true );
+      if ( options.json ) request.setRequestHeader( 'Accept', 'application/json' );
+      request.onload = function() {
+        if ( request.status === 200 ) {
           var response = request.responseText;
-          if (options.json) response = JSON.parse(response);
-          resolve(response);
+          if ( options.json ) response = JSON.parse( response );
+          resolve( response );
         } else {
-          reject(new Error('Request error: ' + request.status));
+          reject( new Error( 'Request error: ' + request.status ) );
         }
       };
-      request.onerror = function () {
-        reject(new Error('Network error: ' + request.status));
+      request.onerror = function() {
+        reject( new Error( 'Network error: ' + request.status ) );
       };
       request.send();
-    });
+    } );
   };
 
   // https://raw.githubusercontent.com/justmoon/node-extend/888f153645115d1c6aa9a7e346e8e9cd9a83de9b/index.js
@@ -261,77 +261,77 @@ define( [], function() {
   var hasOwn = Object.prototype.hasOwnProperty;
   var toStr = Object.prototype.toString;
 
-  var isArray = function isArray(arr) {
-    if (typeof Array.isArray === 'function') {
-      return Array.isArray(arr);
+  var isArray = function isArray( arr ) {
+    if ( typeof Array.isArray === 'function' ) {
+      return Array.isArray( arr );
     }
 
-    return toStr.call(arr) === '[object Array]';
+    return toStr.call( arr ) === '[object Array]';
   };
 
-  var isPlainObject = function isPlainObject(obj) {
-    if (!obj || toStr.call(obj) !== '[object Object]') {
+  var isPlainObject = function isPlainObject( obj ) {
+    if ( !obj || toStr.call( obj ) !== '[object Object]' ) {
       return false;
     }
 
-    var hasOwnConstructor = hasOwn.call(obj, 'constructor');
-    var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call(obj.constructor.prototype, 'isPrototypeOf');
+    var hasOwnConstructor = hasOwn.call( obj, 'constructor' );
+    var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' );
     // Not own constructor property must be Object
-    if (obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf) {
+    if ( obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf ) {
       return false;
     }
 
     // Own properties are enumerated firstly, so to speed up,
     // if last one is own, then all properties are own.
     var key;
-    for (key in obj) { /**/ }
+    for ( key in obj ) { /**/ }
 
-    return typeof key === 'undefined' || hasOwn.call(obj, key);
+    return typeof key === 'undefined' || hasOwn.call( obj, key );
   };
 
   util.extend = function extend() {
     var options, name, src, copy, copyIsArray, clone;
-    var target = arguments[0];
+    var target = arguments[ 0 ];
     var i = 1;
     var length = arguments.length;
     var deep = false;
 
     // Handle a deep copy situation
-    if (typeof target === 'boolean') {
+    if ( typeof target === 'boolean' ) {
       deep = target;
-      target = arguments[1] || {};
+      target = arguments[ 1 ] || {};
       // skip the boolean and the target
       i = 2;
-    } else if ((typeof target !== 'object' && typeof target !== 'function') || target == null) {
+    } else if ( ( typeof target !== 'object' && typeof target !== 'function' ) || target == null ) {
       target = {};
     }
 
-    for (; i < length; ++i) {
-      options = arguments[i];
+    for ( ; i < length; ++i ) {
+      options = arguments[ i ];
       // Only deal with non-null/undefined values
-      if (options != null) {
+      if ( options != null ) {
         // Extend the base object
-        for (name in options) {
-          src = target[name];
-          copy = options[name];
+        for ( name in options ) {
+          src = target[ name ];
+          copy = options[ name ];
 
           // Prevent never-ending loop
-          if (target !== copy) {
+          if ( target !== copy ) {
             // Recurse if we're merging plain objects or arrays
-            if (deep && copy && (isPlainObject(copy) || (copyIsArray = isArray(copy)))) {
-              if (copyIsArray) {
+            if ( deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
+              if ( copyIsArray ) {
                 copyIsArray = false;
-                clone = src && isArray(src) ? src : [];
+                clone = src && isArray( src ) ? src : [];
               } else {
-                clone = src && isPlainObject(src) ? src : {};
+                clone = src && isPlainObject( src ) ? src : {};
               }
 
               // Never move original objects, clone them
-              target[name] = extend(deep, clone, copy);
+              target[ name ] = extend( deep, clone, copy );
 
               // Don't bring in undefined values
-            } else if (typeof copy !== 'undefined') {
-              target[name] = copy;
+            } else if ( typeof copy !== 'undefined' ) {
+              target[ name ] = copy;
             }
           }
         }

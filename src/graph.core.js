@@ -34,7 +34,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     if ( typeof wrapper == "string" ) {
       wrapper = document.getElementById( wrapper );
     } else if ( typeof wrapper.length == "number" ) {
-      wrapper = wrapper[0];
+      wrapper = wrapper[ 0 ];
     }
 
     if ( !wrapper ) {
@@ -91,8 +91,8 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     // DOM
     var wrapperStyle = getComputedStyle( wrapper );
-    var w = parseInt(wrapperStyle.width);
-    var h = parseInt(wrapperStyle.height);
+    var w = parseInt( wrapperStyle.width );
+    var h = parseInt( wrapperStyle.height );
 
     this._doDom();
 

@@ -540,31 +540,21 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
    * Sets a DOM property to the shape
    * @memberof Shape
    */
-  Object.defineProperty( Shape.prototype, 'setDom', {
-    enumerable: true,
-    writable: false,
-    configurable: false,
-    value: function( prop, val ) {
-      if ( this._dom ) {
-        this._dom.setAttribute( prop, val );
-      }
+  Shape.prototype.setDom = function( prop, val ) {
+    if ( this._dom ) {
+      this._dom.setAttribute( prop, val );
     }
-  } );
+  };
 
   /**
    * Sets a DOM property to the shape group
    * @memberof Shape
    */
-  Object.defineProperty( Shape.prototype, 'setDomGroup', {
-    enumerable: true,
-    writable: false,
-    configurable: false,
-    value: function( prop, val ) {
-      if ( this.group ) {
-        this.group.setAttribute( prop, val );
-      }
+  Shape.prototype.setDomGroup = function( prop, val ) {
+    if ( this.group ) {
+      this.group.setAttribute( prop, val );
     }
-  } );
+  };
 
   /**
    * Saves the stroke color

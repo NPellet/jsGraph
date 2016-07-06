@@ -76,9 +76,9 @@ define( [ '../graph.util' ], function( util ) {
     var requestId = util.guid();
     toOptimize._queueId = requestId;
     var resolve;
-    var prom = new Promise(function (_resolve) {
+    var prom = new Promise( function( _resolve ) {
       resolve = _resolve;
-    });
+    } );
     queue[ requestId ] = {
       promise: prom,
       resolve: resolve

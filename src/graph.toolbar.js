@@ -1,4 +1,4 @@
-define( ['./graph.util'], function( util ) {
+define( [ './graph.util' ], function( util ) {
 
   var toolbarDefaults = {
 
