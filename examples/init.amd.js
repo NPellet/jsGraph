@@ -3,12 +3,11 @@ requirejs.config({
 
 	baseUrl: '../',
 	paths: {
-		'jquery': './src/dependencies/jquery/dist/jquery.min',
-		'graph': './dist/jsgraph'
+		'jquery': 'src/dependencies/jquery/dist/jquery.min'
 	}
 });
 
-require( [ 'jquery', './src/graph', './examples/series' ] , function( $, Graph, series ) {
+require( [ 'jquery', 'src/graph', 'examples/series' ] , function( $, Graph, series ) {
 
 	window.contour = series.contour;
 	window.series = series.numeric;
@@ -16,6 +15,6 @@ require( [ 'jquery', './src/graph', './examples/series' ] , function( $, Graph, 
 
 	var options = {};
 
-	require( [ './examples/loadexamples'] );
+	require( [ 'examples/loadexamples'] );
 	
 } );

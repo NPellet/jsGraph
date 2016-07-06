@@ -15,22 +15,24 @@ define( function() {
 	} else {
 
 		examples = [
-			'./examples/src/basic',
-			'./examples/src/axis',
-			'./examples/src/markers',
-			'./examples/src/contour',
-			'./examples/src/errorbars',
-			'./examples/src/errorbars_style',
-			'./examples/src/timeaxis',
-			'./examples/src/2axis',
-			'./examples/src/legend',
-			'./examples/src/minmax',
-			'./examples/src/plugins',
-			'./examples/src/scatter',
-			'./examples/src/xinterval',
-			'./examples/src/degradation',
-			'./examples/src/degradation2',
-			'./examples/src/shape'
+			'examples/src/10-basic/1-basic',
+			'examples/src/10-basic/2-drawfunction',
+			'examples/src/10-basic/3-axisspan'
+			// './examples/src/axis',
+			// './examples/src/markers',
+			// './examples/src/contour',
+			// './examples/src/errorbars',
+			// './examples/src/errorbars_style',
+			// './examples/src/timeaxis',
+			// './examples/src/2axis',
+			// './examples/src/legend',
+			// './examples/src/minmax',
+			// './examples/src/plugins',
+			// './examples/src/scatter',
+			// './examples/src/xinterval',
+			// './examples/src/degradation',
+			// './examples/src/degradation2',
+			// './examples/src/shape'
 		];
 
 	}
