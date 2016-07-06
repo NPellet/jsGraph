@@ -4,13 +4,12 @@ var jsdom = require('mocha-jsdom');
 var path = require('path');
 var assert = require("assert")
 
-var jquery = path.resolve(__dirname + '/../../dist/jquery.min.js');
 var jsgraph = path.resolve(__dirname + '/../../dist/jsgraph.js');
 
 describe('Simple graph creation tests', function () {
 
     jsdom({
-        scripts: [jquery, jsgraph]
+        scripts: [jsgraph]
     });
 
     it('Basic creation', function () {

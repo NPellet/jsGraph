@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-06-30T09:10Z
+ * Date: 2016-07-06T15:13Z
  */
 
 ( function( global, factory ) {
@@ -25,16 +25,14 @@
 
   "use strict";
 
-  var Graph = function( $ ) {
+  var Graph = function() {
 
     var build = [];
-
-    build[ './jquery' ] = $;
 
     /* 
      * Build: new source file 
      * File name : graph.position
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.position.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.position.js
      */
 
     build[ './graph.position' ] = ( function() {
@@ -352,7 +350,7 @@
     /* 
      * Build: new source file 
      * File name : graph.util
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.util.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.util.js
      */
 
     build[ './graph.util' ] = ( function() {
@@ -545,93 +543,6 @@
 
       };
 
-      // http://stackoverflow.com/questions/11197247/javascript-equivalent-of-jquerys-extend-method
-      util.extend = function() {
-        var src, copyIsArray, copy, name, options, clone,
-          target = arguments[ 0 ] || {},
-          i = 1,
-          length = arguments.length,
-          deep = false;
-
-        // Handle a deep copy situation
-        if ( typeof target === "boolean" ) {
-          deep = target;
-          target = arguments[ 1 ] || {};
-
-          // skip the boolean and the target
-          i = 2;
-        }
-
-        // Handle case when target is a string or something (possible in deep copy)
-        if ( typeof target !== "object" && !( typeof target == "function" ) ) {
-          target = {};
-        }
-
-        // extend jQuery itself if only one argument is passed
-        if ( length === i ) {
-          target = this;
-          --i;
-        }
-
-        for ( ; i < length; i++ ) {
-
-          // Only deal with non-null/undefined values
-          if ( ( options = arguments[ i ] ) != null ) {
-
-            // Extend the base object
-            for ( name in options ) {
-              src = target[ name ];
-              copy = options[ name ];
-
-              // Prevent never-ending loop
-              if ( target === copy ) {
-                continue;
-              }
-
-              // Recurse if we're merging plain objects or arrays
-              if ( deep && copy && ( util.isPlainObject( copy ) || ( copyIsArray = Array.isArray( copy ) ) ) ) {
-                if ( copyIsArray ) {
-                  copyIsArray = false;
-                  clone = src && Array.isArray( src ) ? src : [];
-
-                } else {
-                  clone = src && util.isPlainObject( src ) ? src : {};
-                }
-
-                // Never move original objects, clone them
-                target[ name ] = util.extend( deep, clone, copy );
-
-                // Don't bring in undefined values
-              } else if ( copy !== undefined ) {
-                target[ name ] = copy;
-              }
-            }
-          }
-        }
-
-        // Return the modified object
-        return target;
-      };
-
-      // http://code.jquery.com/jquery-2.1.4.js
-      util.isPlainObject = function( obj ) {
-        // Not plain objects:
-        // - Any object or value whose internal [[Class]] property is not "[object Object]"
-        // - DOM nodes
-        // - window
-        if ( typeof obj !== "object" || obj.nodeType || obj === obj.window ) {
-          return false;
-        }
-
-        if ( obj.constructor && obj.constructor.prototype.hasOwnProperty( "isPrototypeOf" ) ) {
-          return false;
-        }
-
-        // If the function hasn't returned already, we're confident that
-        // |obj| is a plain object, created by {} or constructed with new Object
-        return true;
-      };
-
       // https://davidwalsh.name/function-debounce
       util.debounce = function( func, wait, immediate ) {
         var timeout;
@@ -672,6 +583,133 @@
         return array;
       };
 
+      // jQuery.fn.offset
+      util.getOffset = function getOffset( el ) {
+        var rect = el.getBoundingClientRect();
+        return {
+          top: rect.top + document.body.scrollTop,
+          left: rect.left + document.body.scrollLeft
+        };
+      };
+
+      // jQuery.fn.css
+      util.setCSS = function setCSS( element, values ) {
+        var style = element.style;
+        for ( var i in values ) {
+          style[ i ] = values[ i ];
+        }
+      };
+
+      util.ajaxGet = function ajaxGet( options ) {
+        return new Promise( function( resolve, reject ) {
+          var request = new XMLHttpRequest();
+          request.open( options.type || 'GET', options.url, true );
+          if ( options.json ) request.setRequestHeader( 'Accept', 'application/json' );
+          request.onload = function() {
+            if ( request.status === 200 ) {
+              var response = request.responseText;
+              if ( options.json ) response = JSON.parse( response );
+              resolve( response );
+            } else {
+              reject( new Error( 'Request error: ' + request.status ) );
+            }
+          };
+          request.onerror = function() {
+            reject( new Error( 'Network error: ' + request.status ) );
+          };
+          request.send();
+        } );
+      };
+
+      // https://raw.githubusercontent.com/justmoon/node-extend/888f153645115d1c6aa9a7e346e8e9cd9a83de9b/index.js
+      // Copyright (c) 2014 Stefan Thomas
+      var hasOwn = Object.prototype.hasOwnProperty;
+      var toStr = Object.prototype.toString;
+
+      var isArray = function isArray( arr ) {
+        if ( typeof Array.isArray === 'function' ) {
+          return Array.isArray( arr );
+        }
+
+        return toStr.call( arr ) === '[object Array]';
+      };
+
+      var isPlainObject = function isPlainObject( obj ) {
+        if ( !obj || toStr.call( obj ) !== '[object Object]' ) {
+          return false;
+        }
+
+        var hasOwnConstructor = hasOwn.call( obj, 'constructor' );
+        var hasIsPrototypeOf = obj.constructor && obj.constructor.prototype && hasOwn.call( obj.constructor.prototype, 'isPrototypeOf' );
+        // Not own constructor property must be Object
+        if ( obj.constructor && !hasOwnConstructor && !hasIsPrototypeOf ) {
+          return false;
+        }
+
+        // Own properties are enumerated firstly, so to speed up,
+        // if last one is own, then all properties are own.
+        var key;
+        for ( key in obj ) { /**/ }
+
+        return typeof key === 'undefined' || hasOwn.call( obj, key );
+      };
+
+      util.extend = function extend() {
+        var options, name, src, copy, copyIsArray, clone;
+        var target = arguments[ 0 ];
+        var i = 1;
+        var length = arguments.length;
+        var deep = false;
+
+        // Handle a deep copy situation
+        if ( typeof target === 'boolean' ) {
+          deep = target;
+          target = arguments[ 1 ] || {};
+          // skip the boolean and the target
+          i = 2;
+        } else if ( ( typeof target !== 'object' && typeof target !== 'function' ) || target == null ) {
+          target = {};
+        }
+
+        for ( ; i < length; ++i ) {
+          options = arguments[ i ];
+          // Only deal with non-null/undefined values
+          if ( options != null ) {
+            // Extend the base object
+            for ( name in options ) {
+              src = target[ name ];
+              copy = options[ name ];
+
+              // Prevent never-ending loop
+              if ( target !== copy ) {
+                // Recurse if we're merging plain objects or arrays
+                if ( deep && copy && ( isPlainObject( copy ) || ( copyIsArray = isArray( copy ) ) ) ) {
+                  if ( copyIsArray ) {
+                    copyIsArray = false;
+                    clone = src && isArray( src ) ? src : [];
+                  } else {
+                    clone = src && isPlainObject( src ) ? src : {};
+                  }
+
+                  // Never move original objects, clone them
+                  target[ name ] = extend( deep, clone, copy );
+
+                  // Don't bring in undefined values
+                } else if ( typeof copy !== 'undefined' ) {
+                  target[ name ] = copy;
+                }
+              }
+            }
+          }
+        }
+
+        // Return the modified object
+        return target;
+      };
+
+      util.isArray = isArray;
+      util.isPlainObject = isPlainObject;
+
       return util;
 
     } )();
@@ -679,7 +717,7 @@
     /* 
      * Build: new source file 
      * File name : dependencies/eventEmitter/EventEmitter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/dependencies/eventEmitter/EventEmitter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/dependencies/eventEmitter/EventEmitter.js
      */
 
     build[ './dependencies/eventEmitter/EventEmitter' ] = ( function() {
@@ -1131,10 +1169,10 @@
     /* 
      * Build: new source file 
      * File name : graph.core
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.core.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.core.js
      */
 
-    build[ './graph.core' ] = ( function( $, GraphPosition, util, EventEmitter ) {
+    build[ './graph.core' ] = ( function( GraphPosition, util, EventEmitter ) {
       /** @global */
       /** @ignore */
 
@@ -1171,14 +1209,12 @@
 
         if ( typeof wrapper == "string" ) {
           wrapper = document.getElementById( wrapper );
+        } else if ( typeof wrapper.length == "number" ) {
+          wrapper = wrapper[ 0 ];
         }
 
         if ( !wrapper ) {
           throw "The wrapper DOM element was not found.";
-        }
-
-        if ( wrapper instanceof $ ) {
-          wrapper = wrapper.get( 0 );
         }
 
         if ( !wrapper.appendChild ) {
@@ -1197,7 +1233,7 @@
          * @name Graph#options
          * @default {@link GraphOptionsDefault}
          */
-        this.options = $.extend( {}, GraphOptionsDefault, options );
+        this.options = util.extend( {}, GraphOptionsDefault, options );
 
         this.prevented = false;
 
@@ -1230,27 +1266,15 @@
         }
 
         // DOM
-        var w, h;
-        if ( wrapper.style.width && wrapper.style.width.indexOf( "%" ) == -1 ) {
-          w = parseInt( wrapper.style.width.replace( 'px', '' ) );
-        } else {
-          w = $( wrapper ).width();
-        }
-
-        if ( wrapper.style.height && wrapper.style.height.indexOf( "%" ) == -1 ) {
-          h = parseInt( wrapper.style.height.replace( 'px', '' ) );
-        } else {
-          h = $( wrapper ).height();
-        }
+        var wrapperStyle = getComputedStyle( wrapper );
+        var w = parseInt( wrapperStyle.width );
+        var h = parseInt( wrapperStyle.height );
 
         this._doDom();
 
         this.setSize( w, h );
         this._resize();
         _registerEvents( this );
-
-        this.pluginsReady = $.Deferred();
-        this.seriesReady = $.Deferred();
 
         this.currentAction = false;
 
@@ -1335,7 +1359,7 @@
 
       Graph.prototype = new EventEmitter();
 
-      Graph.prototype = $.extend( Graph.prototype, {
+      Graph.prototype = util.extend( Graph.prototype, {
 
         /** 
          * Returns the graph SVG wrapper element
@@ -1584,7 +1608,7 @@
          * @see Graph#uncacheOffset
          */
         cacheOffset: function() {
-          this.offsetCached = $( this._dom ).offset();
+          this.offsetCached = util.getOffset( this._dom );
         },
 
         /**
@@ -2747,7 +2771,7 @@
             if ( constructor ) {
 
               this.plugins[ pluginName ] = new constructor();
-              this.plugins[ pluginName ].options = $.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+              this.plugins[ pluginName ].options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
 
               util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[ pluginName ] );
               this.plugins[ pluginName ].init( this, pluginOptions );
@@ -2878,7 +2902,7 @@
           var x = e.pageX,
             y = e.pageY;
 
-          var pos = this.offsetCached || $( this._dom ).offset();
+          var pos = this.offsetCached || util.getOffset( this._dom );
 
           x -= pos.left /* - window.scrollX*/ ;
           y -= pos.top /* - window.scrollY*/ ;
@@ -4225,15 +4249,15 @@
       Graph._constructors = {};
 
       return Graph;
-    } )( build[ "./jquery" ], build[ "./graph.position" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
+    } )( build[ "./graph.position" ], build[ "./graph.util" ], build[ "./dependencies/eventEmitter/EventEmitter" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.js
      */
 
-    build[ './graph.axis' ] = ( function( $, EventEmitter, util ) {
+    build[ './graph.axis' ] = ( function( EventEmitter, util ) {
       /** @global */
       /** @ignore */
 
@@ -4323,7 +4347,7 @@
 
         var self = this;
         this.graph = graph;
-        this.options = $.extend( true, {}, GraphAxis.prototype.defaults, overwriteoptions, options );
+        this.options = util.extend( true, {}, GraphAxis.prototype.defaults, overwriteoptions, options );
 
         this.group = document.createElementNS( this.graph.ns, 'g' );
         this.hasChanged = true;
@@ -6551,15 +6575,15 @@
 
       return GraphAxis;
 
-    } )( build[ "./jquery" ], build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
+    } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis.x
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.js
      */
 
-    build[ './graph.axis.x' ] = ( function( $, GraphAxis ) {
+    build[ './graph.axis.x' ] = ( function( util, GraphAxis ) {
       /** @global */
       /** @ignore */
 
@@ -6575,7 +6599,7 @@
         this.top = topbottom == 'top';
       }
 
-      $.extend( XAxis.prototype, GraphAxis.prototype, {
+      util.extend( XAxis.prototype, GraphAxis.prototype, {
 
         getAxisPosition: function() {
 
@@ -6730,15 +6754,15 @@
       } );
 
       return XAxis;
-    } )( build[ "./jquery" ], build[ "./graph.axis" ] );
+    } )( build[ "./graph.util" ], build[ "./graph.axis" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis.y
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.y.js
      */
 
-    build[ './graph.axis.y' ] = ( function( $, GraphAxis ) {
+    build[ './graph.axis.y' ] = ( function( util, GraphAxis ) {
       /** @global */
       /** @ignore */
 
@@ -6758,7 +6782,7 @@
 
       }
 
-      $.extend( GraphYAxis.prototype, GraphAxis.prototype, {
+      util.extend( GraphYAxis.prototype, GraphAxis.prototype, {
 
         getAxisPosition: function() {
 
@@ -7022,15 +7046,15 @@
 
       return GraphYAxis;
 
-    } )( build[ "./jquery" ], build[ "./graph.axis" ] );
+    } )( build[ "./graph.util" ], build[ "./graph.axis" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.broken.js
      */
 
-    build[ './graph.axis.broken' ] = ( function( $ ) {
+    build[ './graph.axis.broken' ] = ( function() {
       /** @global */
       /** @ignore */
 
@@ -7262,15 +7286,15 @@
 
       return GraphAxis;
 
-    } )( build[ "./jquery" ] );
+    } )();
 
     /* 
      * Build: new source file 
      * File name : graph.axis.x.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.broken.js
      */
 
-    build[ './graph.axis.x.broken' ] = ( function( $, GraphXAxis, GraphBrokenAxis ) {
+    build[ './graph.axis.x.broken' ] = ( function( util, GraphXAxis, GraphBrokenAxis ) {
       /** @global */
       /** @ignore */
 
@@ -7281,7 +7305,7 @@
         this.top = topbottom == 'top';
       }
 
-      $.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
+      util.extend( GraphXAxisBroken.prototype, GraphXAxis.prototype, GraphBrokenAxis.prototype, {
 
         createBrokenLine: function( range ) {
 
@@ -7302,15 +7326,15 @@
 
       return GraphXAxisBroken;
 
-    } )( build[ "./jquery" ], build[ "./graph.axis.x" ], build[ "./graph.axis.broken" ] );
+    } )( build[ "./graph.util" ], build[ "./graph.axis.x" ], build[ "./graph.axis.broken" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis.y.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.y.broken.js
      */
 
-    build[ './graph.axis.y.broken' ] = ( function( $, GraphYAxis, GraphBrokenAxis ) {
+    build[ './graph.axis.y.broken' ] = ( function( util, GraphYAxis, GraphBrokenAxis ) {
       /** @global */
       /** @ignore */
 
@@ -7325,7 +7349,7 @@
 
       }
 
-      $.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
+      util.extend( GraphYAxisBroken.prototype, GraphYAxis.prototype, GraphBrokenAxis.prototype, {
 
         createBrokenLine: function( range ) {
 
@@ -7347,12 +7371,12 @@
 
       return GraphYAxisBroken;
 
-    } )( build[ "./jquery" ], build[ "./graph.axis.y" ], build[ "./graph.axis.broken" ] );
+    } )( build[ "./graph.util" ], build[ "./graph.axis.y" ], build[ "./graph.axis.broken" ] );
 
     /* 
      * Build: new source file 
      * File name : graph.axis.x.time
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.time.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.axis.x.time.js
      */
 
     build[ './graph.axis.x.time' ] = ( function( GraphAxis, util ) {
@@ -8341,7 +8365,7 @@
     /* 
      * Build: new source file 
      * File name : graph.legend
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.legend.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.legend.js
      */
 
     build[ './graph.legend' ] = ( function( GraphPosition, util ) {
@@ -8393,7 +8417,7 @@
        */
       var Legend = function( graph, options ) {
 
-        this.options = $.extend( {}, legendDefaults, options );
+        this.options = util.extend( {}, legendDefaults, options );
 
         this.graph = graph;
         this.svg = document.createElementNS( this.graph.ns, 'g' );
@@ -8939,7 +8963,7 @@
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.js
      */
 
     build[ './plugins/graph.plugin' ] = ( function( EventEmitter ) {
@@ -8999,7 +9023,7 @@
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin.drag
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.drag.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.drag.js
      */
 
     build[ './plugins/graph.plugin.drag' ] = ( function( Plugin ) {
@@ -9199,10 +9223,10 @@
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin.shape
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.shape.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.shape.js
      */
 
-    build[ './plugins/graph.plugin.shape' ] = ( function( $, Plugin, util ) {
+    build[ './plugins/graph.plugin.shape' ] = ( function( Plugin, util ) {
       /** @global */
       /** @ignore */
 
@@ -9280,7 +9304,7 @@
           movable: true
         };
 
-        $.extend( true, shapeInfo, this.options );
+        util.extend( true, shapeInfo, this.options );
 
         this.emit( "beforeNewShape", shapeInfo, e );
 
@@ -9353,12 +9377,12 @@
 
       return PluginShape;
 
-    } )( build[ "./jquery" ], build[ "./plugins/graph.plugin" ], build[ "./graph.util" ] );
+    } )( build[ "./plugins/graph.plugin" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin.selectScatter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.selectScatter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.selectScatter.js
      */
 
     build[ './plugins/graph.plugin.selectScatter' ] = ( function( Plugin, util ) {
@@ -9509,10 +9533,10 @@
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin.zoom
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.zoom.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.zoom.js
      */
 
-    build[ './plugins/graph.plugin.zoom' ] = ( function( $, util, Plugin ) {
+    build[ './plugins/graph.plugin.zoom' ] = ( function( util, Plugin ) {
       /** @global */
       /** @ignore */
 
@@ -10104,12 +10128,12 @@
       };
 
       return PluginZoom;
-    } )( build[ "./jquery" ], build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
+    } )( build[ "./graph.util" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/ " ] );
 
     /* 
      * Build: new source file 
      * File name : graph.lru
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.lru.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.lru.js
      */
 
     build[ './graph.lru' ] = ( function() {
@@ -10231,10 +10255,10 @@
     /* 
      * Build: new source file 
      * File name : plugins/graph.plugin.timeseriemanager
-     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.timeseriemanager.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/plugins/graph.plugin.timeseriemanager.js
      */
 
-    build[ './plugins/graph.plugin.timeseriemanager' ] = ( function( $, LRU, Plugin ) {
+    build[ './plugins/graph.plugin.timeseriemanager' ] = ( function( LRU, Plugin, util ) {
       /** @global */
       /** @ignore */
 
@@ -10482,11 +10506,11 @@
 
         requestToMake[ 0 ] = 1;
 
-        $.ajax( {
+        util.ajaxGet( {
 
           url: this.getURL( requestToMake ),
-          method: 'get',
-          dataType: 'json'
+          method: 'GET',
+          json: true
 
         } ).done( function( data ) {
 
@@ -10734,12 +10758,12 @@
       };
 
       return PluginTimeSerieManager;
-    } )( build[ "./jquery" ], build[ "./graph.lru" ], build[ "./plugins/graph.plugin" ] );
+    } )( build[ "./graph.lru" ], build[ "./plugins/graph.plugin" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : series/graph.serie
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.js
      */
 
     build[ './series/graph.serie' ] = ( function( EventEmitter, util ) {
@@ -11608,7 +11632,7 @@
     /* 
      * Build: new source file 
      * File name : series/slotoptimizer
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/slotoptimizer.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/slotoptimizer.js
      */
 
     build[ './series/slotoptimizer' ] = ( function( util ) {
@@ -11690,10 +11714,17 @@
 
         var requestId = util.guid();
         toOptimize._queueId = requestId;
-        queue[ requestId ] = $.Deferred();
+        var resolve;
+        var prom = new Promise( function( _resolve ) {
+          resolve = _resolve;
+        } );
+        queue[ requestId ] = {
+          promise: prom,
+          resolve: resolve
+        };
 
         slotWorker.postMessage( toOptimize );
-        return queue[ requestId ];
+        return queue[ requestId ].promise;
       }
 
     } )( build[ "./graph.util" ] );
@@ -11701,7 +11732,7 @@
     /* 
      * Build: new source file 
      * File name : mixins/graph.mixin.errorbars
-     * File path : /Users/normanpellet/Documents/Web/graph/src/mixins/graph.mixin.errorbars.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/mixins/graph.mixin.errorbars.js
      */
 
     build[ './mixins/graph.mixin.errorbars' ] = ( function( util ) {
@@ -11840,8 +11871,8 @@
 
               if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
 
-                errorstyles[ i ][ pairs[ j ][ 1 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-                errorstyles[ i ][ pairs[ j ][ 2 ] ] = $.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+                errorstyles[ i ][ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
+                errorstyles[ i ][ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
 
               }
 
@@ -11946,7 +11977,7 @@
     /* 
      * Build: new source file 
      * File name : series/graph.serie.line
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.js
      */
 
     build[ './series/graph.serie.line' ] = ( function( SerieLineNonInstanciable, SlotOptimizer, util, ErrorBarMixin ) {
@@ -11980,7 +12011,7 @@
         this.graph = graph;
         this.name = name;
 
-        this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) ); // Creates options
+        this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) ); // Creates options
         util.mapEventEmission( this.options, this ); // Register events
 
         // Creates an empty style variable
@@ -12149,7 +12180,7 @@
    
 */
       SerieLine.prototype.setOptions = function( options ) {
-        this.options = $.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
+        this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
         // Unselected style
         this.styles.unselected = {
           lineColor: this.options.lineColor,
@@ -12188,7 +12219,7 @@
       SerieLine.prototype.calculateSlot = function( slot, slotNumber ) {
         var self = this;
         this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
-        this.slotsData[ slot ].pipe( function( data ) {
+        this.slotsData[ slot ].then( function( data ) {
 
           self.slotsData[ slot ] = data;
           return data;
@@ -13796,7 +13827,7 @@
 
           var s = this.styles[ i ];
           if ( s ) {
-            this.styles[ i ] = $.extend( true, {}, this.styles.unselected, s );
+            this.styles[ i ] = util.extend( true, {}, this.styles.unselected, s );
           }
         }
       };
@@ -13805,7 +13836,7 @@
         var s = this.styles[ stylename ];
         console.log( s, stylename );
         if ( s ) {
-          this.styles[ stylename ] = $.extend( true, {}, this.styles.unselected, s );
+          this.styles[ stylename ] = util.extend( true, {}, this.styles.unselected, s );
           console.log( s, stylename );
         }
       };
@@ -14457,7 +14488,7 @@
     /* 
      * Build: new source file 
      * File name : series/graph.serie.contour
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.contour.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.contour.js
      */
 
     build[ './series/graph.serie.contour' ] = ( function( GraphSerie, util ) {
@@ -14486,7 +14517,7 @@
 
       GraphSerieContour.prototype = new GraphSerie();
 
-      $.extend( GraphSerieContour.prototype, {
+      util.extend( GraphSerieContour.prototype, {
 
         /**
          * Sets the contour lines
@@ -14853,17 +14884,17 @@
     /* 
      * Build: new source file 
      * File name : series/graph.serie.line.broken
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.broken.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.broken.js
      */
 
-    build[ './series/graph.serie.line.broken' ] = ( function( $, GraphLine ) {
+    build[ './series/graph.serie.line.broken' ] = ( function( GraphLine, util ) {
       /** @global */
       /** @ignore */
 
       "use strict";
 
       function GraphSerie() {}
-      $.extend( GraphSerie.prototype, GraphLine.prototype, {
+      util.extend( GraphSerie.prototype, GraphLine.prototype, {
 
         draw: function( force ) { // Serie redrawing
 
@@ -15054,15 +15085,15 @@
       } );
 
       return GraphSerie;
-    } )( build[ "./jquery" ], build[ "./series/graph.serie.line" ] );
+    } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : series/graph.serie.line.colored
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.line.colored.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.line.colored.js
      */
 
-    build[ './series/graph.serie.line.colored' ] = ( function( SerieLineBase, SlotOptimizer, util, ErrorBarMixin ) {
+    build[ './series/graph.serie.line.colored' ] = ( function( SerieLineBase, util, ErrorBarMixin ) {
       /** @global */
       /** @ignore */
 
@@ -15427,12 +15458,12 @@
       };
 
       return SerieLineColor;
-    } )( build[ "./series/graph.serie.line" ], build[ "./series/slotoptimizer" ], build[ "./graph.util" ], build[ "./mixins/graph.mixin.errorbars" ] );
+    } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ], build[ "./mixins/graph.mixin.errorbars" ] );
 
     /* 
      * Build: new source file 
      * File name : series/graph.serie.scatter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.scatter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.scatter.js
      */
 
     build[ './series/graph.serie.scatter' ] = ( function( GraphSerieNonInstanciable, util, ErrorBarMixin ) {
@@ -15469,7 +15500,7 @@
         this.shapes = []; // Stores all shapes
 
         this.shown = true;
-        this.options = $.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+        this.options = util.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
         this.data = [];
 
         this.shapesDetails = [];
@@ -15508,12 +15539,12 @@
 */
 
         this.groupPoints.addEventListener( 'mouseover', function( e ) {
-          var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+          var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
           self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
         } );
 
         this.groupPoints.addEventListener( 'mouseout', function( e ) {
-          var id = parseInt( $( e.target ).parent().attr( 'data-shapeid' ) );
+          var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
           self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
         } );
 
@@ -15857,8 +15888,8 @@
 
             }
 
-            var tmp = $.extend( {}, styleAll, style );
-            style = $.extend( style, tmp );
+            var tmp = util.extend( {}, styleAll, style );
+            style = util.extend( style, tmp );
 
           } else if ( styleAll !== undefined ) {
 
@@ -15972,10 +16003,10 @@
     /* 
      * Build: new source file 
      * File name : series/graph.serie.zone
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.zone.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.zone.js
      */
 
-    build[ './series/graph.serie.zone' ] = ( function( $, GraphSerieNonInstanciable, util ) {
+    build[ './series/graph.serie.zone' ] = ( function( GraphSerieNonInstanciable, util ) {
       /** @global */
       /** @ignore */
 
@@ -15988,7 +16019,7 @@
        */
       function GraphSerieZone() {}
 
-      $.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
+      util.extend( GraphSerieZone.prototype, GraphSerieNonInstanciable.prototype, {
 
         /**
          * @name SerieZoneDefaultOptions
@@ -16016,7 +16047,7 @@
           this.id = Math.random() + Date.now();
 
           this.shown = true;
-          this.options = $.extend( true, {}, GraphSerieZone.prototype.defaults, options );
+          this.options = util.extend( true, {}, GraphSerieZone.prototype.defaults, options );
           this.data = [];
 
           this.groupZones = document.createElementNS( this.graph.ns, 'g' );
@@ -16619,12 +16650,12 @@
       } );
 
       return GraphSerieZone;
-    } )( build[ "./jquery" ], build[ "./series/graph.serie" ], build[ "./graph.util" ] );
+    } )( build[ "./series/graph.serie" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : series/graph.serie.densitymap
-     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.densitymap.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/series/graph.serie.densitymap.js
      */
 
     build[ './series/graph.serie.densitymap' ] = ( function( SerieNonInstanciable, util ) {
@@ -16652,7 +16683,7 @@
        */
       SerieDensityMap.prototype.init = function( graph, name, options ) {
 
-        this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
+        this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
         util.mapEventEmission( this.options, this ); // Register events
 
         this.graph = graph;
@@ -16912,7 +16943,7 @@
    
 */
       SerieDensityMap.prototype.setOptions = function( options ) {
-        this.options = $.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
+        this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
         // Unselected style
 
         return this;
@@ -16924,7 +16955,7 @@
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.js
      */
 
     build[ './shapes/graph.shape' ] = ( function( GraphPosition, util, EventEmitter ) {
@@ -17471,31 +17502,21 @@
        * Sets a DOM property to the shape
        * @memberof Shape
        */
-      Object.defineProperty( Shape.prototype, 'setDom', {
-        enumerable: true,
-        writable: false,
-        configurable: false,
-        value: function( prop, val ) {
-          if ( this._dom ) {
-            this._dom.setAttribute( prop, val );
-          }
+      Shape.prototype.setDom = function( prop, val ) {
+        if ( this._dom ) {
+          this._dom.setAttribute( prop, val );
         }
-      } );
+      };
 
       /**
        * Sets a DOM property to the shape group
        * @memberof Shape
        */
-      Object.defineProperty( Shape.prototype, 'setDomGroup', {
-        enumerable: true,
-        writable: false,
-        configurable: false,
-        value: function( prop, val ) {
-          if ( this.group ) {
-            this.group.setAttribute( prop, val );
-          }
+      Shape.prototype.setDomGroup = function( prop, val ) {
+        if ( this.group ) {
+          this.group.setAttribute( prop, val );
         }
-      } );
+      };
 
       /**
        * Saves the stroke color
@@ -18840,41 +18861,38 @@
         e.preventDefault();
         e.stopPropagation();
 
-        $( '<input type="text" />' ).attr( 'value', self.getProp( 'labelText', i ) ).prependTo( self.graph._dom ).css( {
-
+        var shapeLabel = document.createElement( 'input' );
+        shapeLabel.setAttribute( 'type', 'text' );
+        shapeLabel.setAttribute( 'value', self.getProp( 'labelText', i ) );
+        self.graph._dom.prepend( shapeLabel );
+        util.setCSS( shapeLabel, {
           position: 'absolute',
-          'margin-top': ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + "px",
-          'margin-left': ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + "px",
+          marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + 'px',
+          marginLeft: ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + 'px',
           textAlign: 'center',
           width: '100px'
-
-        } ).bind( 'blur', function() {
-
-          $( this ).remove();
-
-          self.setLabelText( $( this ).prop( 'value' ), i );
-          self._labels[ i ].textContent = $( this ).prop( 'value' );
-
+        } );
+        shapeLabel.addEventListener( 'blur', function() {
+          self.setLabelText( shapeLabel.getAttribute( 'value' ), i );
+          self._labels[ i ].textContent = shapeLabel.getAttribute( 'value' );
+          shapeLabel.remove();
           self.changed( "shapeLabelChanged" );
 
-        } ).bind( 'keyup', function( e ) {
-
+        } );
+        shapeLabel.addEventListener( 'keyup', function( e ) {
           e.stopPropagation();
           e.preventDefault();
-
-          if ( e.keyCode == 13 ) {
-            $( this ).trigger( 'blur' );
+          if ( e.keyCode === 13 ) {
+            shapeLabel.dispatchEvent( new Event( 'blur' ) );
           }
-
-        } ).bind( 'keypress', function( e ) {
-
+        } );
+        shapeLabel.addEventListener( 'keypress', function( e ) {
           e.stopPropagation();
-
-        } ).bind( 'keydown', function( e ) {
-
+        } );
+        shapeLabel.addEventListener( 'keydown', function( e ) {
           e.stopPropagation();
-
-        } ).focus().get( 0 ).select();
+        } );
+        shapeLabel.focus();
 
       };
 
@@ -18914,10 +18932,10 @@
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.areaundercurve
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.areaundercurve.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.areaundercurve.js
      */
 
-    build[ './shapes/graph.shape.areaundercurve' ] = ( function( $, GraphShape ) {
+    build[ './shapes/graph.shape.areaundercurve' ] = ( function( util, GraphShape ) {
       /** @global */
       /** @ignore */
 
@@ -18927,7 +18945,7 @@
 
       }
 
-      $.extend( GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {
+      util.extend( GraphSurfaceUnderCurve.prototype, GraphShape.prototype, {
         createDom: function() {
 
           var self = this;
@@ -19167,12 +19185,12 @@
       } );
 
       return GraphSurfaceUnderCurve;
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.line
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.line.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.line.js
      */
 
     build[ './shapes/graph.shape.line' ] = ( function( GraphShape ) {
@@ -19402,7 +19420,7 @@
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.arrow
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.arrow.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.arrow.js
      */
 
     build[ './shapes/graph.shape.arrow' ] = ( function( GraphLine ) {
@@ -19446,16 +19464,16 @@
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.ellipse
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.ellipse.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.ellipse.js
      */
 
-    build[ './shapes/graph.shape.ellipse' ] = ( function( $, GraphShape ) {
+    build[ './shapes/graph.shape.ellipse' ] = ( function( util, GraphShape ) {
       /** @global */
       /** @ignore */
 
       function GraphEllipse( graph, options ) {}
 
-      $.extend( GraphEllipse.prototype, GraphShape.prototype, {
+      util.extend( GraphEllipse.prototype, GraphShape.prototype, {
 
         createDom: function() {
           this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
@@ -19494,15 +19512,15 @@
 
       return GraphEllipse;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.label
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.label.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.label.js
      */
 
-    build[ './shapes/graph.shape.label' ] = ( function( $, GraphShape ) {
+    build[ './shapes/graph.shape.label' ] = ( function( util, GraphShape ) {
       /** @global */
       /** @ignore */
 
@@ -19521,7 +19539,7 @@
 
       LabelShape.prototype = new GraphShape();
 
-      $.extend( LabelShape.prototype, GraphShape.prototype, {
+      util.extend( LabelShape.prototype, GraphShape.prototype, {
 
         createDom: function() {
           return false;
@@ -19535,15 +19553,15 @@
 
       return LabelShape;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.nmrintegral
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.nmrintegral.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.nmrintegral.js
      */
 
-    build[ './shapes/graph.shape.nmrintegral' ] = ( function( $, GraphSurfaceUnderCurve, GraphPosition ) {
+    build[ './shapes/graph.shape.nmrintegral' ] = ( function( util, GraphSurfaceUnderCurve, GraphPosition ) {
       /** @global */
       /** @ignore */
 
@@ -19554,7 +19572,7 @@
 
       }
 
-      $.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
+      util.extend( GraphNMRIntegral.prototype, GraphSurfaceUnderCurve.prototype, {
 
         createHandles: function() {
 
@@ -19837,12 +19855,12 @@
       } );
 
       return GraphNMRIntegral;
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./graph.position" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./graph.position" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.rect
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rect.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rect.js
      */
 
     build[ './shapes/graph.shape.rect' ] = ( function( GraphShape, util ) {
@@ -20196,10 +20214,10 @@
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.peakintegration2d
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakintegration2d.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakintegration2d.js
      */
 
-    build[ './shapes/graph.shape.peakintegration2d' ] = ( function( $, GraphRect ) {
+    build[ './shapes/graph.shape.peakintegration2d' ] = ( function( util, GraphRect ) {
       /** @global */
       /** @ignore */
 
@@ -20209,7 +20227,7 @@
         this.nbHandles = 4;
       }
 
-      $.extend( GraphPeakIntegration2D.prototype, GraphRect.prototype, {
+      util.extend( GraphPeakIntegration2D.prototype, GraphRect.prototype, {
 
         createDom: function() {
 
@@ -20237,15 +20255,15 @@
 
       return GraphPeakIntegration2D;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape.rect" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape.rect" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.peakinterval
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval.js
      */
 
-    build[ './shapes/graph.shape.peakinterval' ] = ( function( $, GraphLine ) {
+    build[ './shapes/graph.shape.peakinterval' ] = ( function( util, GraphLine ) {
       /** @global */
       /** @ignore */
 
@@ -20255,7 +20273,7 @@
 
       }
 
-      $.extend( GraphPeakInterval.prototype, GraphLine.prototype, {
+      util.extend( GraphPeakInterval.prototype, GraphLine.prototype, {
         createDom: function() {
           this._dom = document.createElementNS( this.graph.ns, 'line' );
           this._dom.setAttribute( 'marker-end', 'url(#verticalline' + this.graph._creation + ')' );
@@ -20280,15 +20298,15 @@
 
       return GraphPeakInterval;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape.line" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape.line" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.peakinterval2
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakinterval2.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakinterval2.js
      */
 
-    build[ './shapes/graph.shape.peakinterval2' ] = ( function( $, GraphLine ) {
+    build[ './shapes/graph.shape.peakinterval2' ] = ( function( util, GraphLine ) {
       /** @global */
       /** @ignore */
 
@@ -20300,7 +20318,7 @@
 
       }
 
-      $.extend( GraphPeakInterval2.prototype, GraphLine.prototype, {
+      util.extend( GraphPeakInterval2.prototype, GraphLine.prototype, {
 
         createDom: function() {
           this._dom = document.createElementNS( this.graph.ns, 'line' );
@@ -20500,20 +20518,20 @@
       } );
 
       return GraphPeakInterval2;
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape.line" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape.line" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.rangex
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.rangex.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.rangex.js
      */
 
-    build[ './shapes/graph.shape.rangex' ] = ( function( GraphSurfaceUnderCurve ) {
+    build[ './shapes/graph.shape.rangex' ] = ( function( GraphSurfaceUnderCurve, util ) {
       /** @global */
       /** @ignore */
 
       var GraphRangeX = function( graph ) {};
-      $.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
+      util.extend( GraphRangeX.prototype, GraphSurfaceUnderCurve.prototype, {
 
         createDom: function() {
           this._dom = document.createElementNS( this.graph.ns, 'rect' );
@@ -20620,15 +20638,15 @@
       } );
 
       return GraphRangeX;
-    } )( build[ "./shapes/graph.shape.areaundercurve" ] );
+    } )( build[ "./shapes/graph.shape.areaundercurve" ], build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.cross
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.cross.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.cross.js
      */
 
-    build[ './shapes/graph.shape.cross' ] = ( function( $, GraphShape ) {
+    build[ './shapes/graph.shape.cross' ] = ( function( util, GraphShape ) {
       /** @global */
       /** @ignore */
 
@@ -20637,7 +20655,7 @@
 
       }
 
-      $.extend( GraphCross.prototype, GraphShape.prototype, {
+      util.extend( GraphCross.prototype, GraphShape.prototype, {
 
         getLength: function() {
           return this.options.length || 10;
@@ -20744,21 +20762,21 @@
 
       return GraphCross;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.zoom2d
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.zoom2d.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.zoom2d.js
      */
 
-    build[ './shapes/graph.shape.zoom2d' ] = ( function( $, GraphShape ) {
+    build[ './shapes/graph.shape.zoom2d' ] = ( function( util, GraphShape ) {
       /** @global */
       /** @ignore */
 
       function Zoom2DShape() {}
 
-      $.extend( Zoom2DShape.prototype, GraphShape.prototype, {
+      util.extend( Zoom2DShape.prototype, GraphShape.prototype, {
 
         createDom: function() {
           this._dom = document.createElementNS( this.graph.ns, 'g' );
@@ -20861,7 +20879,7 @@
 
         handleMouseMoveImpl: function( e ) {
 
-          var o = $( this._dom ).offset();
+          var o = util.getOffset( this._dom );
           var cY = e.pageY - o.top;
           //console.log( this.selected );
 
@@ -20923,12 +20941,12 @@
 
       return Zoom2DShape;
 
-    } )( build[ "./jquery" ], build[ "./shapes/graph.shape" ] );
+    } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
      * File name : shapes/graph.shape.peakboundariescenter
-     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.peakboundariescenter.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/shapes/graph.shape.peakboundariescenter.js
      */
 
     build[ './shapes/graph.shape.peakboundariescenter' ] = ( function( GraphLine ) {
@@ -21137,10 +21155,10 @@
     /* 
      * Build: new source file 
      * File name : graph.toolbar
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.toolbar.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.toolbar.js
      */
 
-    build[ './graph.toolbar' ] = ( function() {
+    build[ './graph.toolbar' ] = ( function( util ) {
       /** @global */
       /** @ignore */
 
@@ -21218,9 +21236,10 @@
 
         var self = this;
 
-        this.options = $.extend( true, {}, toolbarDefaults, options );
+        this.options = util.extend( true, {}, toolbarDefaults, options );
         this.graph = graph;
-        this.div = $( "<ul />" ).addClass( 'graph-toolbar' );
+        this.div = document.createElement( 'ul' );
+        this.div.classList.add( 'graph-toolbar' );
 
         this.graph.getPlugin( './graph.plugin.shape' ).then( function( plugin ) {
 
@@ -21230,13 +21249,15 @@
             return;
           }
 
-          self.div.on( 'click', 'li', function() {
-
-            var shape = $( this ).attr( 'data-shape' );
-            self.plugin.setShape( shape );
-
-            $( this ).parent().children().removeClass( 'selected' );
-            $( this ).addClass( 'selected' );
+          self.div.addEventListener( 'click', function( event ) {
+            if ( event.target.matches( 'li' ) ) {
+              var shape = event.target.getAttribute( 'data-shape' );
+              self.plugin.setShape( shape );
+              event.target.parentElement.children.forEach( function( child ) {
+                child.classList.remove( 'selected' );
+              } );
+              event.target.classList.add( 'selected' );
+            }
           } );
 
           self.makeButtons();
@@ -21247,34 +21268,29 @@
 
         makeButtons: function() {
 
-          var self = this;
           for ( var i = 0, l = this.options.buttons.length; i < l; i++ ) {
-
-            this.div.append( this.makeButton( this.options.buttons[ i ] ) );
+            this.div.appendChild( this.makeButton( this.options.buttons[ i ] ) );
           }
         },
 
         makeButton: function( button ) {
 
-          var div = $( "<li />" );
+          var div = document.createElement( 'li' );
           switch ( button ) {
 
             case 'line':
-              div
-                .html( makeSvgLine() )
-                .attr( 'data-shape', 'line' );
+              div.appendChild( makeSvgLine() );
+              div.setAttribute( 'data-shape', 'line' );
               break;
 
             case 'rect':
-              div
-                .html( makeSvgRect() )
-                .attr( 'data-shape', 'rect' );
+              div.appendChild( makeSvgRect() );
+              div.setAttribute( 'data-shape', 'rect' );
               break;
 
             case 'areaundercurve':
-              div
-                .html( makeSvgAUC() )
-                .attr( 'data-shape', 'areaundercurve' );
+              div.appendChild( makeSvgAUC() );
+              div.setAttribute( 'data-shape', 'areaundercurve' );
               break;
           }
 
@@ -21289,12 +21305,12 @@
 
       return Toolbar;
 
-    } )();
+    } )( build[ "./graph.util" ] );
 
     /* 
      * Build: new source file 
      * File name : graph
-     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.js
+     * File path : /home/mzasso/git/npellet/jsGraph/src/graph.js
      */
 
     return ( function( Graph,
@@ -21398,17 +21414,11 @@
   };
 
   if ( typeof define === "function" && define.amd ) {
-    define( [ 'jquery' ], function( $ ) {
-      return Graph( $ );
+    define( function() {
+      return Graph();
     } );
   } else if ( window ) {
-
-    if ( !window.jQuery ) {
-      throw "jQuery has not been loaded. Abort graph initialization."
-      return;
-    }
-
-    window.Graph = Graph( window.jQuery );
+    window.Graph = Graph();
   }
 
 } ) );

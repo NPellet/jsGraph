@@ -25,8 +25,6 @@
 
 	"use strict";
 
-	var Graph = function( $ ) {
+	var Graph = function( ) {
 
 		var build = [ ];
-
-		build[ './jquery' ] = $;
