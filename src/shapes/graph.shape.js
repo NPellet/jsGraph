@@ -414,14 +414,14 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   Shape.prototype.redraw = function() {
 
     if ( this.hidden ) {
-      return;
+      return this;
     }
 
     this.position = this.applyPosition();
 
     this.redrawImpl();
     if ( !this.position ) {
-      return;
+      return this;
     }
 
     this.updateLabels();
