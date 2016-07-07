@@ -1,29 +1,28 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-3
+ * jsGraph JavaScript Graphing Library v1.14.10-4
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-07T07:07Z
+ * Date: 2016-07-07T12:20Z
  */
 
-( function( global, factory ) {
+( function( root, factory ) {
 
-  if ( typeof module === "object" && typeof module.exports === "object" ) {
-
-    module.exports = factory( global );
-
+  if ( typeof define === 'function' && define.amd ) {
+    define( function() {
+      return factory();
+    } );
+  } else if ( typeof module === 'object' && typeof module.exports === 'object' ) {
+    module.exports = factory();
   } else {
-
-    factory( global );
-
+    root.Graph = factory();
   }
 
-  // Pass this if window is not defined yet
-}( ( typeof window !== "undefined" ? window : this ), function( window ) {
+}( ( typeof window !== 'undefined' ? window : this ), function() {
 
-  "use strict";
+  'use strict';
 
   var Graph = function() {
 
@@ -17376,14 +17375,14 @@
       Shape.prototype.redraw = function() {
 
         if ( this.hidden ) {
-          return;
+          return this;
         }
 
         this.position = this.applyPosition();
 
         this.redrawImpl();
         if ( !this.position ) {
-          return;
+          return this;
         }
 
         this.updateLabels();
@@ -21413,12 +21412,6 @@
 
   };
 
-  if ( typeof define === "function" && define.amd ) {
-    define( function() {
-      return Graph();
-    } );
-  } else if ( window ) {
-    window.Graph = Graph();
-  }
+  return Graph();
 
 } ) );

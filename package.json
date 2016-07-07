@@ -1,7 +1,7 @@
 {
   "name": "graphs",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
-  "version": "1.14.10-3",
+  "version": "1.14.10-4",
   "scripts": {
     "build": "grunt",
     "test": "grunt && npm run test-mocha",
