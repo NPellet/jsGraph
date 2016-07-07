@@ -8,23 +8,22 @@
  * Date: @DATE
  */
 
-(function( global, factory ) {
+(function( root, factory ) {
 
-	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		
-		module.exports = factory( global );
-			
-	} else {
+  if ( typeof define === 'function' && define.amd ) {
+    define( function( ) {
+      return factory( );
+    } );
+  } else if ( typeof module === 'object' && typeof module.exports === 'object' ) {
+    module.exports = factory( );
+  } else {
+    root.Graph = factory( );
+  }
 
-		factory( global );
+}( ( typeof window !== 'undefined' ? window : this ) , function( ) {
 
-	}
+  'use strict';
 
-// Pass this if window is not defined yet
-}( ( typeof window !== "undefined" ? window : this ) , function( window ) {
+  var Graph = function( ) {
 
-	"use strict";
-
-	var Graph = function( ) {
-
-		var build = [ ];
+    var build = [ ];
