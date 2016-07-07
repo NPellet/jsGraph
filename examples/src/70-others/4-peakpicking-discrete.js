@@ -423,7 +423,7 @@ var serieData = [
 			{ 
 				autoPeakPicking: true, 
 				autoPeakPickingNb: 10,
-				autoPeakPickingFormat: function( val, index ) {  this.prop( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toFixed( 1 ); },
+				autoPeakPickingFormat: function( val, index ) {  this.setProp( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toFixed( 1 ); },
 				autoPeakPickingAllowAllY: true,
 				lineToZero: true 
 

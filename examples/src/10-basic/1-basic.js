@@ -1,5 +1,5 @@
 
-define( function() {
+define( ['jquery'], function($) {
 
 	return [ function( domGraph ) {
 
