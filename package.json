@@ -1,11 +1,16 @@
 {
   "name": "graphs",
+  "description": "library that can be used to render scientific data in the form of graphs and charts",
   "version": "1.14.10-3",
   "scripts": {
     "build": "grunt",
     "test": "grunt && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"
   },
+  "main": "dist/jsgraph.js",
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "bower": "^1.3.5",
     "grunt": "^0.4.5",
