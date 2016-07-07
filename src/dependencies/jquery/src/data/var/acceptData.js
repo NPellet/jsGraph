@@ -1,11 +1,12 @@
-define([
-	"../core"
-], function( jQuery ) {
+define( function() {
+
+"use strict";
 
 /**
  * Determines whether an object can have data
  */
-jQuery.acceptData = function( owner ) {
+return function( owner ) {
+
 	// Accepts only:
 	//  - Node
 	//    - Node.ELEMENT_NODE
@@ -16,5 +17,4 @@ jQuery.acceptData = function( owner ) {
 	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
 };
 
-return jQuery.acceptData;
-});
+} );
