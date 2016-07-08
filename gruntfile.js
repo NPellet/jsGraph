@@ -127,14 +127,16 @@ module.exports = function(grunt) {
 
                 }
             }
-        }
+        },
 
+        exec: {
+            npm_publish: 'npm publish'
+        }
 
     });
 
 
     var fs = require('fs');
-    var w = require('wrench');
     var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
@@ -145,6 +147,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jsdoc');
+    grunt.loadNpmTasks('grunt-exec');
 
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] );
@@ -159,7 +162,7 @@ module.exports = function(grunt) {
         grunt.task.run("bump:prerelease:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:prerelease:commit-only");
-    })
+    });
 
     grunt.registerTask( "patch", "Make a new patch", function() {
 
