@@ -162,6 +162,7 @@ module.exports = function(grunt) {
         grunt.task.run("bump:prerelease:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:prerelease:commit-only");
+        grunt.task.run("exec:npm_publish");
     });
 
     grunt.registerTask( "patch", "Make a new patch", function() {
@@ -169,6 +170,7 @@ module.exports = function(grunt) {
         grunt.task.run("bump:patch:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:patch:commit-only");
+        grunt.task.run("exec:npm_publish");
     });
 
 
@@ -177,6 +179,7 @@ module.exports = function(grunt) {
         grunt.task.run("bump:minor:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:minor:commit-only");
+        grunt.task.run("exec:npm_publish");
     });
 
     grunt.registerTask( "major", "Make a new release", function() {
@@ -184,8 +187,8 @@ module.exports = function(grunt) {
         grunt.task.run("bump:major:bump-only");
         grunt.task.run("default");
         grunt.task.run("bump:major:commit-only");
-    })
-
+        grunt.task.run("exec:npm_publish");
+    });
 
 
     grunt.registerMultiTask( 'build', 'Build jsGraph distributions', function() {
