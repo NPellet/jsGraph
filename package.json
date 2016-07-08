@@ -1,5 +1,5 @@
 {
-  "name": "graphs",
+  "name": "node-jsgraph",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
   "version": "1.14.10-4",
   "scripts": {
