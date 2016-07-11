@@ -849,7 +849,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
   Serie.prototype.disableTracking = function() {
 
     if ( this._trackerDom ) {
-      this._trackerDom.parentNode.removeChild( this._trackerDom );
+      this._trackerDom.remove( );
+      this._trackerDom = null;
     }
 
     this._tracker = false;
@@ -867,7 +868,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     options = options || {};
     this.graph.addSerieToTrackingLine( this, options );
-  }
+  };
 
   Serie.prototype.setLegend = function( bln ) {
     this._legend = bln;
