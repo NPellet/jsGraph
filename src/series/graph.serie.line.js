@@ -906,7 +906,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     if ( this._tracker ) {
 
       if ( this._trackerDom ) {
-        this._trackerDom.remove( );
+        this._trackerDom.remove();
       }
 
       var cloned = this.groupLines.cloneNode( true );

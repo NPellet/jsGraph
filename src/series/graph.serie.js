@@ -849,7 +849,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
   Serie.prototype.disableTracking = function() {
 
     if ( this._trackerDom ) {
-      this._trackerDom.remove( );
+      this._trackerDom.remove();
       this._trackerDom = null;
     }
 
