@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-7
+ * jsGraph JavaScript Graphing Library v1.14.10-8
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-11T08:01Z
+ * Date: 2016-07-11T08:36Z
  */
 
 ( function( root, factory ) {
@@ -3083,15 +3083,17 @@
           // Individual tracking
           if ( options.mode == "individual" ) {
 
-            options.series.map( function( sOptions ) {
+            if ( options.series ) {
+              options.series.map( function( sOptions ) {
 
-              if ( typeof sOptions.serie !== "object" ) {
-                sOptions.serie = this.getSerie( sOptions.serie );
-              }
+                if ( typeof sOptions.serie !== "object" ) {
+                  sOptions.serie = this.getSerie( sOptions.serie );
+                }
 
-              self.addSerieToTrackingLine( sOptions.serie, sOptions );
+                self.addSerieToTrackingLine( sOptions.serie, sOptions );
 
-            } );
+              } );
+            }
           } else {
             options.series.map( function( serie ) {
               serie.serie.disableTracking();
@@ -5894,6 +5896,17 @@
         }
       };
 
+      /**
+       *  Computes a value and returns it in HTML formatting
+       *  @memberof GraphAxis
+       *  @param {Number} value - The value to compute
+       *  @param {Boolean} noScaling - Does not display scaling
+       *  @param {Boolean} noUnits - Does not display units
+       *  @return {String} An HTML string containing the computed value
+       *  @example graph.getXAxis().setUnit( "m" ).setUnitDecade( true ).setScientific( true );
+       *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
+       *  @see GraphAxis#valueToText
+       */
       GraphAxis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
 
         var text = this.valueToText( value );

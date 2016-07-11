@@ -1908,15 +1908,17 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       // Individual tracking
       if ( options.mode == "individual" ) {
 
-        options.series.map( function( sOptions ) {
+        if ( options.series ) {
+          options.series.map( function( sOptions ) {
 
-          if ( typeof sOptions.serie !== "object" ) {
-            sOptions.serie = this.getSerie( sOptions.serie );
-          }
+            if ( typeof sOptions.serie !== "object" ) {
+              sOptions.serie = this.getSerie( sOptions.serie );
+            }
 
-          self.addSerieToTrackingLine( sOptions.serie, sOptions );
+            self.addSerieToTrackingLine( sOptions.serie, sOptions );
 
-        } );
+          } );
+        }
       } else {
         options.series.map( function( serie ) {
           serie.serie.disableTracking();

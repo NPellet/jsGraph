@@ -1636,6 +1636,17 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
   };
 
+  /**
+   *  Computes a value and returns it in HTML formatting
+   *  @memberof GraphAxis
+   *  @param {Number} value - The value to compute
+   *  @param {Boolean} noScaling - Does not display scaling
+   *  @param {Boolean} noUnits - Does not display units
+   *  @return {String} An HTML string containing the computed value
+   *  @example graph.getXAxis().setUnit( "m" ).setUnitDecade( true ).setScientific( true );
+   *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
+   *  @see GraphAxis#valueToText
+   */
   GraphAxis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
 
     var text = this.valueToText( value );

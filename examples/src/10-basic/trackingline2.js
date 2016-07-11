@@ -41,8 +41,8 @@ $.when(
     
 
   } )
-).then( functio/*n() {
-
+).then( function() {
+/*
 
   var trackLine = graph.trackingLine( {
       
