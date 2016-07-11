@@ -1905,46 +1905,17 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
         this.options.trackingLine = options;
       }
 
+      // Individual tracking
       if ( options.mode == "individual" ) {
 
         options.series.map( function( sOptions ) {
 
-          sOptions.serie.enableTracking( function( serie, index, x, y ) {
+          if ( typeof sOptions.serie !== "object" ) {
+            sOptions.serie = this.getSerie( sOptions.serie );
+          }
 
-            if ( index ) {
+          self.addSerieToTrackingLine( sOptions.serie, sOptions );
 
-              self.trackingLine.show();
-              var closestIndex = index.xIndexClosest;
-              self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
-              self.trackingLine.getPosition( 1 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
-              self.trackingLine.redraw();
-
-              serie._trackingLegend = _trackingLegendSerie( self, {
-                serie: serie
-              }, x, y, serie._trackingLegend, sOptions.textMethod ? sOptions.textMethod : function( output ) {
-
-                for ( var i in output ) {
-                  return output[ i ].serie.serie.getName();
-                  break;
-                }
-
-              }, self.trackingLine.getPosition( 0 ).x );
-
-              serie._trackingLegend.style.display = "block";
-            }
-          }, function( serie ) {
-            self.trackingLine.hide();
-
-            if ( serie.trackingShape ) {
-              serie.trackingShape.hide();
-            }
-
-            serie._trackingLegend.style.display = "none";
-            serie._trackingLegend = _trackingLegendSerie( self, {
-              serie: serie
-            }, false, false, serie._trackingLegend, false, false );
-
-          } );
         } );
       } else {
         options.series.map( function( serie ) {
@@ -1964,6 +1935,59 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       this.trackingLine.draw();
 
       return this.trackingLine;
+
+    },
+
+    addSerieToTrackingLine: function( serie, options ) {
+
+      var self = this;
+
+      if ( !this.options.trackingLine ) {
+        this.trackingLine( {
+          mode: 'individual'
+        } );
+      }
+
+      serie.enableTracking( function( serie, index, x, y ) {
+
+        if ( index ) {
+
+          self.trackingLine.show();
+          var closestIndex = index.xIndexClosest;
+          self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+          self.trackingLine.getPosition( 1 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
+          self.trackingLine.redraw();
+
+          serie._trackingLegend = _trackingLegendSerie( self, {
+            serie: serie
+          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function( output ) {
+
+            for ( var i in output ) {
+
+              return output[ i ].serie.serie.getName() + ": " + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )
+              break;
+            }
+
+          }, self.trackingLine.getPosition( 0 ).x );
+
+          serie._trackingLegend.style.display = "block";
+        }
+      }, function( serie ) {
+        self.trackingLine.hide();
+
+        if ( serie.trackingShape ) {
+          serie.trackingShape.hide();
+        }
+
+        if ( serie._trackingLegend ) {
+          serie._trackingLegend.style.display = "none";
+        }
+
+        serie._trackingLegend = _trackingLegendSerie( self, {
+          serie: serie
+        }, false, false, serie._trackingLegend, false, false );
+
+      } );
 
     }
 
@@ -2351,7 +2375,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
           var series = graph.options.trackingLine.series;
 
-          if ( !graph.options.trackingLine.series ) {
+          if ( !series ) {
 
             series = graph.getSeries().map( function( serie ) {
               return {
@@ -2524,7 +2548,11 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       }
 
       legend.style.display = "block";
-      legend.innerHTML = textMethod( output, xValue, x, y );
+      var txt = textMethod( output, xValue, x, y );
+
+      legend.innerHTML = txt;
+
+      //legend.innerHTML = textMethod( output, xValue, x, y );
 
     }
 
@@ -2736,37 +2764,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       e.preventDefault();
       e.stopPropagation();
     }
-    /*
-        switch ( graph.options.wheel.type ) {
 
-          case 'plugin':
-
-            var plugin;
-
-            if ( plugin = graph.plugins[ graph.options.wheel.plugin ] ) {
-
-              plugin.onMouseWheel( delta, e, graph.options.wheel.options );
-            }
-
-            break;
-
-          case 'toSeries':
-
-            for ( var i = 0, l = graph.series.length; i < l; i++ ) {
-              graph.series[ i ].onMouseWheel( delta, e );
-            }
-
-            break;
-
-        }
-        */
-
-    // Redraw not obvious at all !!
-    /*
-    graph.redraw();
-    graph.drawSeries( true );
-
-    */
   }
 
   function _handleMouseLeave( graph ) {

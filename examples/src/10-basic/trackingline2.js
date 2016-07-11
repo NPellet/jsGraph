@@ -1,5 +1,5 @@
 
-define( function() {
+define( [ 'jquery'], function( $ ) {
 
 	return [ function( domGraph ) {
 
@@ -10,6 +10,8 @@ define( function() {
   graph.getYAxis().setPrimaryGridColor("#f0f0f0");
   graph.getXAxis().setPrimaryGridColor("#f0f0f0");
 	
+  graph.getYAxis().setUnit( "tons" ).setUnitDecade( true ).setScientific( true ).setEngineering( true ); 
+
   var coalConsumptionCA = {"request":{"command":"series","series_id":"ELEC.CONS_TOT.COW-CA-99.A"},"series":[{"series_id":"ELEC.CONS_TOT.COW-CA-99.A","name":"Total consumption : coal : California : all sectors : annual","units":"thousand tons","f":"A","description":"Summation of all types of coal; All sectors; ","copyright":"None","source":"EIA, U.S. Energy Information Administration","iso3166":"USA-CA","geography":"USA-CA","start":"2001","end":"2014","updated":"2015-03-27T14:00:55-0400","data":[["2014",876.417],["2013",915.246],["2012",1183.112],["2011",1539.699],["2010",1542.78],["2009",1521.939],["2008",1723.062],["2007",1752.384],["2006",1710.887],["2005",1676.522],["2004",1731.218],["2003",1727.233],["2002",1821.618],["2001",1739.07]]}]}
 
 $.when( 
@@ -44,7 +46,7 @@ $.when(
 
   var trackLine = graph.trackingLine( {
       
-    mode: "individual",
+    mode: "common",
     snapToSerie: graph.getSerie("CA"),
 
     textMethod: function( output ) {
@@ -64,20 +66,12 @@ $.when(
     },
 
     series: [ 
-      {
-        serie: graph.getSerie("CA"),
-        textMethod: function( data ) {
-          return "Coal consumption in California: " + data.CA.yValue + " (in " + data.CA.xValue + ")";
-        }
-      },
-
-      {
-        serie: graph.getSerie("CO"),
-        withinPx: 10
-      } 
+      
     ]
 
   });
+
+  graph.getSerie("CA").allowTrackingLine( {} );
 
 
     graph.autoscaleAxes();

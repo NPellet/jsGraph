@@ -975,53 +975,52 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     if ( label = this.getLabel() ) {
       // Sets the label
       this.labelTspan.textContent = label;
+    }
+
+    if ( this.options.unit ) {
+
+      this.unitTspan.setAttribute( 'display', 'visible' );
+      this.expTspan.setAttribute( 'display', 'none' );
+      this.expTspanExp.setAttribute( 'display', 'none' );
+      this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
+
+    } else {
+      this.unitTspan.setAttribute( 'display', 'none' );
+    }
+
+    var letter;
+
+    if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
+
+      this.preunitTspan.innerHTML = letter;
+      this.preunitTspan.setAttribute( 'display', 'visible' );
+      this.unitTspan.setAttribute( 'dx', 0 );
+
+    } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
+
+      if ( this.options.engineeringScale ) {
+        this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+      }
+
+      this.preunitTspan.textContent = "";
+      this.preunitTspan.setAttribute( 'display', 'none' );
 
       if ( this.options.unit ) {
-
-        this.unitTspan.setAttribute( 'display', 'visible' );
-        this.expTspan.setAttribute( 'display', 'none' );
-        this.expTspanExp.setAttribute( 'display', 'none' );
-        this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
-
-      } else {
-        this.unitTspan.setAttribute( 'display', 'none' );
+        this.unitTspan.setAttribute( 'dx', 5 );
       }
 
-      var letter;
+      this.expTspan.setAttribute( 'display', 'visible' );
+      this.expTspanExp.setAttribute( 'display', 'visible' );
 
-      if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
+      this.expTspan.textContent = "x10";
+      this.expTspanExp.textContent = this.scientificExponent;
 
-        this.preunitTspan.innerHTML = letter;
-        this.preunitTspan.setAttribute( 'display', 'visible' );
-        this.unitTspan.setAttribute( 'dx', 0 );
+    } else {
 
-      } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
-
-        if ( this.options.engineeringScale ) {
-          this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
-        }
-
-        this.preunitTspan.textContent = "";
-        this.preunitTspan.setAttribute( 'display', 'none' );
-
-        if ( this.options.unit ) {
-          this.unitTspan.setAttribute( 'dx', 5 );
-        }
-
-        this.expTspan.setAttribute( 'display', 'visible' );
-        this.expTspanExp.setAttribute( 'display', 'visible' );
-
-        this.expTspan.textContent = "x10";
-        this.expTspanExp.textContent = this.scientificExponent;
-
-      } else {
-
-        this.unitTspan.setAttribute( 'display', 'none' );
-        this.preunitTspan.setAttribute( 'display', 'none' );
-        this.expTspan.setAttribute( 'display', 'none' );
-        this.expTspanExp.setAttribute( 'display', 'none' );
-      }
-
+      this.unitTspan.setAttribute( 'display', 'none' );
+      this.preunitTspan.setAttribute( 'display', 'none' );
+      this.expTspan.setAttribute( 'display', 'none' );
+      this.expTspanExp.setAttribute( 'display', 'none' );
     }
 
     if ( !this.options.hideTicks ) {
@@ -1637,6 +1636,28 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
   };
 
+  GraphAxis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
+
+    var text = this.valueToText( value );
+    var letter;
+
+    if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
+
+      text += letter;
+
+    } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) && !noScaling ) {
+      text += "x10";
+      text += '<sup>' + this.scientificExponent + '</sup>';
+    }
+
+    if ( this.options.unit && !noUnits ) {
+
+      text += this.options.unit.replace( /\^([-+0-9]*)/g, "<sup>$1</sup>" );
+    }
+
+    return text;
+  }
+
   GraphAxis.prototype.getModifiedValue = function( value ) {
     if ( this.options.ticklabelratio ) {
       value *= this.options.ticklabelratio;
@@ -2236,6 +2257,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    */
   GraphAxis.prototype.setUnitDecade = function( on ) {
     this.options.unitDecade = on;
+    return this;
   };
 
   /**
@@ -2271,7 +2293,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @since 1.13.3
    * @see Axis#setScientific
    */
-  GraphAxis.prototype.setEngineering = function( engineeringScaling ) {
+  GraphAxis.prototype.setEngineering = function( engineeringScaling ) { //bool
     this.options.scientificScale = engineeringScaling;
     this.options.engineeringScale = engineeringScaling;
     return this;

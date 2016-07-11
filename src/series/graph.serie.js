@@ -824,12 +824,28 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     return this;
   };
 
+  /**
+   * Allows mouse tracking of the serie
+   * @memberof Serie
+   * @returns {Serie} The current serie
+   * @param {Function} hoverCallback - Function to be called when the mouse enters the serie area
+   * @param {Function} outCallback - Function to be called when the mouse exits the serie area
+   * @private
+   */
   Serie.prototype.enableTracking = function( hoverCallback, outCallback ) {
     this._tracker = true;
     this._trackingCallback = hoverCallback;
     this._trackingOutCallback = outCallback;
+
+    return this;
   };
 
+  /**
+   * Disables mouse tracking of the serie
+   * @memberof Serie
+   * @returns {Serie} The current serie
+   * @private
+   */
   Serie.prototype.disableTracking = function() {
 
     if ( this._trackerDom ) {
@@ -838,7 +854,20 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     this._tracker = false;
     this._trackingCallback = null;
+    return this;
   };
+
+  /**
+   *  Allows mouse tracking of the serie
+   *  @memberof Serie
+   *  @param {Object} options - The tracking line options
+   *  @returns {Serie} The current serie
+   */
+  Serie.prototype.allowTrackingLine = function( options ) {
+
+    options = options || {};
+    this.graph.addSerieToTrackingLine( this, options );
+  }
 
   Serie.prototype.setLegend = function( bln ) {
     this._legend = bln;
