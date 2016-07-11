@@ -41,7 +41,7 @@ $.when(
     
 
   } )
-).then( function() {
+).then( functio/*n() {
 
 
   var trackLine = graph.trackingLine( {
@@ -69,7 +69,7 @@ $.when(
       
     ]
 
-  });
+  });*/
 
   graph.getSerie("CA").allowTrackingLine( {} );
 
