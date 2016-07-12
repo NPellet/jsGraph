@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-9
+ * jsGraph JavaScript Graphing Library v1.14.10-11
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-12T09:22Z
+ * Date: 2016-07-12T09:23Z
  */
 
 ( function( root, factory ) {
@@ -3524,7 +3524,6 @@
         graph._applyToAxes( 'handleMouseMove', [ y - graph.options.paddingTop, e ], false, true );
 
         if ( !graph.activePlugin ) {
-          var results = {};
           var index;
 
           if ( graph.options.trackingLine && graph.options.trackingLine.snapToSerie ) {
@@ -3569,6 +3568,7 @@
         }
 
         if ( graph.options.onMouseMoveData ) {
+          var results = {};
 
           for ( var i = 0; i < graph.series.length; i++ ) {
 
@@ -11651,7 +11651,8 @@
       Serie.prototype.disableTracking = function() {
 
         if ( this._trackerDom ) {
-          this._trackerDom.parentNode.removeChild( this._trackerDom );
+          this._trackerDom.remove();
+          this._trackerDom = null;
         }
 
         this._tracker = false;
@@ -11669,7 +11670,7 @@
 
         options = options || {};
         this.graph.addSerieToTrackingLine( this, options );
-      }
+      };
 
       Serie.prototype.setLegend = function( bln ) {
         this._legend = bln;
@@ -12951,7 +12952,7 @@
         if ( this._tracker ) {
 
           if ( this._trackerDom ) {
-            this.groupLines.removeChild( this._trackerDom );
+            this._trackerDom.remove();
           }
 
           var cloned = this.groupLines.cloneNode( true );
@@ -15417,7 +15418,7 @@
         if ( this._tracker ) {
 
           if ( this._trackerDom ) {
-            this.groupLines.removeChild( this._trackerDom );
+            this._trackerDom.remove();
           }
 
           var cloned = this.groupLines.cloneNode( true );

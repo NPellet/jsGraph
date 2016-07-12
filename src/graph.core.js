@@ -2349,7 +2349,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     graph._applyToAxes( 'handleMouseMove', [ y - graph.options.paddingTop, e ], false, true );
 
     if ( !graph.activePlugin ) {
-      var results = {};
       var index;
 
       if ( graph.options.trackingLine && graph.options.trackingLine.snapToSerie ) {
@@ -2394,6 +2393,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     }
 
     if ( graph.options.onMouseMoveData ) {
+      var results = {};
 
       for ( var i = 0; i < graph.series.length; i++ ) {
 

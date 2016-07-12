@@ -259,7 +259,7 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     if ( this._tracker ) {
 
       if ( this._trackerDom ) {
-        this.groupLines.removeChild( this._trackerDom );
+        this._trackerDom.remove();
       }
 
       var cloned = this.groupLines.cloneNode( true );
