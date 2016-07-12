@@ -44,8 +44,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     this.minX = Number.POSITIVE_INFINITY;
     this.minY = Number.POSITIVE_INFINITY;
-    this.maxX = -Number.NEGATIVE_INFINITY;
-    this.maxY = -Number.NEGATIVE_INFINITY;
+    this.maxX = Number.NEGATIVE_INFINITY;
+    this.maxY = Number.NEGATIVE_INFINITY;
 
     var isDataArray = isArray( data );
 
