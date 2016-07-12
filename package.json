@@ -4,6 +4,7 @@
   "version": "1.14.10-13",
   "scripts": {
     "build": "grunt",
+    "doc": "git subtree push --prefix doc origin gh-pages",
     "test": "grunt && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"
   },
