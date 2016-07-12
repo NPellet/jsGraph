@@ -775,7 +775,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
         i,
         l;
 
-      val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
+      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
       series = this.getSeriesFromAxis( axis, true );
 
       for ( i = 0, l = series.length; i < l; i++ ) {

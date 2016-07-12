@@ -42,10 +42,10 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     // We shouldn't need that for the lines
     //this.empty();
 
-    this.minX = Number.POSITIVE_INFINITY;
-    this.minY = Number.POSITIVE_INFINITY;
-    this.maxX = Number.NEGATIVE_INFINITY;
-    this.maxY = Number.NEGATIVE_INFINITY;
+    this.minX = Number.MAX_SAFE_INTEGER;
+    this.minY = Number.MAX_SAFE_INTEGER;
+    this.maxX = Number.MIN_SAFE_INTEGER;
+    this.maxY = Number.MIN_SAFE_INTEGER;
 
     var isDataArray = isArray( data );
 

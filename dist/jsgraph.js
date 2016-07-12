@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-12
+ * jsGraph JavaScript Graphing Library v1.14.10-13
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-12T09:26Z
+ * Date: 2016-07-12T09:37Z
  */
 
 ( function( root, factory ) {
@@ -1950,7 +1950,7 @@
             i,
             l;
 
-          val = min ? Number.MAX_VALUE : Number.MIN_VALUE;
+          val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
           series = this.getSeriesFromAxis( axis, true );
 
           for ( i = 0, l = series.length; i < l; i++ ) {
@@ -10844,10 +10844,10 @@
         // We shouldn't need that for the lines
         //this.empty();
 
-        this.minX = Number.POSITIVE_INFINITY;
-        this.minY = Number.POSITIVE_INFINITY;
-        this.maxX = Number.NEGATIVE_INFINITY;
-        this.maxY = Number.NEGATIVE_INFINITY;
+        this.minX = Number.MAX_SAFE_INTEGER;
+        this.minY = Number.MAX_SAFE_INTEGER;
+        this.maxX = Number.MIN_SAFE_INTEGER;
+        this.maxY = Number.MIN_SAFE_INTEGER;
 
         var isDataArray = isArray( data );
 
