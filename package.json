@@ -33,7 +33,8 @@
     "ncp": "^2.0.0",
     "path": "^0.11.14",
     "requirejs": "^2.1.18",
-    "should": "^7.0.2"
+    "should": "^7.0.2",
+    "wrench": "^1.5.9"
   },
   "dependencies": {},
   "repository": "NPellet/jsGraph",

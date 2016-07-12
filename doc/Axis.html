@@ -3,23 +3,23 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>jsGraph Class: Axis</title>
+	<title>DocStrap Class: Axis</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
 
 </head>
 
 <body>
 
 <div class="navbar navbar-default navbar-fixed-top navbar-inverse">
-<div class="fluid">
+<div class="container">
 	<div class="navbar-header">
-		<a class="navbar-brand" href="index.html">jsGraph</a>
+		<a class="navbar-brand" href="index.html">DocStrap</a>
 	</div>
 	<div class="navbar-collapse">
 		<ul class="nav navbar-nav">
@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+					<li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="Axis.html">Axis</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Position.html">Position</a></li><li><a href="RectangleShape.html">RectangleShape</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieDensityMap.html">SerieDensityMap</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieLineColor.html">SerieLineColor</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="XAxis.html">XAxis</a></li>
 				</ul>
 			</li>
 			
@@ -48,7 +48,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li>
 				</ul>
 			</li>
 			
@@ -59,25 +59,15 @@
 
 
 <div class="container">
+<div class="row">
 
 	
-	<div class="row">
+	<div class="col-md-8">
+	
+		<div id="main">
+			
 
-		
-			<div class="col-md-3">
-				<div id="toc" class="col-md-3"></div>
-			</div>
-		
-
-
-		
-		<div class="col-md-9">
-		
-			<div id="main">
-	    		<h1 class="page-title">Class: Axis</h1>
-				
-
-	<!--<h1 class="page-title">Class: Axis</h1>-->
+	<h1 class="page-title">Class: Axis</h1>
 <section>
 
 <header>
@@ -94,13 +84,14 @@
     <div class="container-overview">
     
         
+<hr>
 <dt>
-    <h4 class="name" id="Axis"><span class="type-signature"></span>new <span class='mainname'>Axis</span><span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Axis"><span class="type-signature"></span>new Axis()</h4>
     
     
 </dt>
 <dd>
-    
+
     
     <div class="description">
         <p>Axis constructor. Usually not instanced directly, but for custom made axes, that's possible</p>
@@ -110,13 +101,13 @@
     
 
     
+
     
     
-    
-    
+
     
 <dl class="details">
-	
+    
 
 	
 
@@ -145,15 +136,15 @@
 
 
 	
-	<h5 class="tag-source">Source:</h5>
-	<p class="tag-source">
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html">/Users/normanpellet/Documents/Web/graph/dist/jsgraph.js</a>,
-				 <a href="-_Users_normanpellet_Documents_Web_graph_dist_jsgraph.js.html#sunlight-1-line-3845">line 3845</a>
+				<a href="-_home_mzasso_git_npellet_jsGraph_dist_jsgraph.js.html">/home/mzasso/git/npellet/jsGraph/dist/jsgraph.js</a>,
+				 <a href="-_home_mzasso_git_npellet_jsGraph_dist_jsgraph.js.html#sunlight-1-line-4265">line 4265</a>
 			</li>
 		</ul>
-	</p>
+	</dd>
 	
 
 	
@@ -163,7 +154,11 @@
 	
 </dl>
 
+
     
+
+    
+
     
 
     
@@ -171,11 +166,7 @@
     
 
     
-    
-    
-    
-    
-    
+
     
         <h5>Example</h5>
         
@@ -214,11 +205,18 @@ graph.setBottomAxis( new myAxis( { } ) );</pre>
 
 
 
-			</div>
 		</div>
-
-
 	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3"></div>
+		</div>
+	
+
+</div>
 </div>
 
 
@@ -226,14 +224,13 @@ graph.setBottomAxis( new myAxis( { } ) );</pre>
 
 
 	<span class="copyright">
-	jsGraph Copyright © 2012-2015 Norman Pellet
+	DocStrap Copyright © 2012-2015 The contributors to the JSDoc3 and DocStrap projects.
 	</span>
-	<br />
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Sun Mar 20th 2016 using the <a
-	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	on Tue Jul 12th 2016 using the <a
+	href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
 </footer>
 
@@ -250,37 +247,19 @@ $( function () {
 		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
 	} );
 
-	$( "#toc" ).toc( {
-		anchorName  : function ( i, heading, prefix ) {
-			return $( heading ).attr( "id" ) || ( prefix + i );
-		},
-		headerText: function(i, heading, $heading) {
-			var main;
-			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
-		  },
-		selectors   : "h1,h2,h3,h4",
-		showAndHide : false,
-		scrollTo    : "100px"
-	} );
-
-	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-	$( '.dropdown-toggle' ).dropdown();
-	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
 	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
 		var $this = $( this );
 
 		var example = $this.find( "code" );
 		exampleText = example.html();
 		var lang = /{@lang (.*?)}/.exec( exampleText );
-		console.log( exampleText );
 		if ( lang && lang[1] ) {
 			exampleText = exampleText.replace( lang[0], "" );
 			example.html( exampleText );
 			lang = lang[1];
 		} else {
-			lang = "javascript";
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
 		}
 
 		if ( lang ) {
@@ -295,9 +274,31 @@ $( function () {
 
 	Sunlight.highlightAll( {
 		lineNumbers : true,
-		showMenu : false,
+		showMenu : true,
 		enableDoclinks : true
 	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+                navbarOffset: 10,
+		smoothScrolling: true
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+  $( "table" ).each( function () {
+    var $this = $( this );
+    $this.addClass('table');
+  } );
+
 } );
 </script>
 

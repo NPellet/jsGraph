@@ -3,23 +3,23 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>jsGraph Handling shapes (basic)</title>
+	<title>DocStrap tutorialHandling shapes (basic)</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
 
-	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
 
 </head>
 
 <body>
 
 <div class="navbar navbar-default navbar-fixed-top navbar-inverse">
-<div class="fluid">
+<div class="container">
 	<div class="navbar-header">
-		<a class="navbar-brand" href="index.html">jsGraph</a>
+		<a class="navbar-brand" href="index.html">DocStrap</a>
 	</div>
 	<div class="navbar-collapse">
 		<ul class="nav navbar-nav">
@@ -27,7 +27,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Position.html">Position</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Axis.html">Axis</a></li><li><a href="XAxis.html">XAxis</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="RectangleShape.html">RectangleShape</a></li>
+					<li><a href="ArrowShape.html">ArrowShape</a></li><li><a href="Axis.html">Axis</a></li><li><a href="Graph.html">Graph</a></li><li><a href="GraphYAxis.html">GraphYAxis</a></li><li><a href="LabelShape.html">LabelShape</a></li><li><a href="LineShape.html">LineShape</a></li><li><a href="PluginDrag.html">PluginDrag</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="Position.html">Position</a></li><li><a href="RectangleShape.html">RectangleShape</a></li><li><a href="Serie.html">Serie</a></li><li><a href="SerieDensityMap.html">SerieDensityMap</a></li><li><a href="SerieLine.html">SerieLine</a></li><li><a href="SerieLineColor.html">SerieLineColor</a></li><li><a href="SerieScatter.html">SerieScatter</a></li><li><a href="SerieZone.html">SerieZone</a></li><li><a href="Shape.html">Shape</a></li><li><a href="XAxis.html">XAxis</a></li>
 				</ul>
 			</li>
 			
@@ -48,7 +48,7 @@
 			<li class="dropdown">
 				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li>
 				</ul>
 			</li>
 			
@@ -59,24 +59,18 @@
 
 
 <div class="container">
+<div class="row">
 
 	
-	<div class="row">
-
-		
-
-
-		
-		<div class="col-md-12">
-		
-			<div id="main">
-	    		<h1 class="page-title">Handling shapes (basic)</h1>
-				<section class="tutorial-section">
+	<div class="col-md-12">
+	
+		<div id="main">
+			<section class="tutorial-section">
 
 <header>
     
 
-    
+    <h2>Handling shapes (basic)</h2>
 </header>
 
 <article>
@@ -209,9 +203,7 @@ g.draw();
 </script>
 
 
-<h3>Assign positions relative to the axes</h3><p>However most of the time you do not want to reference the shape position with respect to the graph screen coordinates. Imagine you want to zoom inside the graph: the shapes will not move. Although it might be ok for some applications, you might want to place some shapes with respect to the axes coordinates. In our example, we want to point the arrow towards the data at a particular year to, say, note an event that happened then. To do so, you need to attach the shape to the axes. One way to do that is to assign the serie
-<code>arrow.setSerie( g.getSerie(&quot;employment_nb&quot;) );</code>
-and the axes of the serie will be used as the axes for the shape. Alternatively, you can use the <code>setXAxis</code> and <code>setYAxis</code> methods.</p>
+<h3>Assign positions relative to the axes</h3><p>However most of the time you do not want to reference the shape position with respect to the graph screen coordinates. Imagine you want to zoom inside the graph: the shapes will not move. Although it might be ok for some applications, you might want to place some shapes with respect to the axes coordinates. In our example, we want to point the arrow towards the data at a particular year to, say, note an event that happened then. To do so, you need to attach the shape to the axes. One way to do that is to assign the serie<br><code>arrow.setSerie( g.getSerie(&quot;employment_nb&quot;) );</code><br>and the axes of the serie will be used as the axes for the shape. Alternatively, you can use the <code>setXAxis</code> and <code>setYAxis</code> methods.</p>
 <pre class="prettyprint source"><code>arrow.setSerie( g.getSerie( &quot;employment_nb&quot; ) );
 var position1 = g.newPosition( 1990, 3821 );
 var position2 = g.newPosition( &quot;190px&quot;, &quot;80px&quot; );
@@ -545,8 +537,7 @@ console.log( arrow.isResizable() ); // Returns true
 <h3>Locking the shapes</h3><p>Shapes can be prevent from being selected, resized and moved using the <code>lock</code> method:</p>
 <pre class="prettyprint source"><code>var arrow = graph.newShape( &quot;arrow&quot;, { selectable: true, movable: true, handles: true, resizable: true, /* locked: true */ } );
 arrow.lock(); // Locks the shape, and effectively nullifies selectable, movable, handles and resizable, until unlock() is called</code></pre><p><div id="example-14" class="jsgraph-example"></div></p>
-<button id="example-14-unlock">Unlock</button>
-<button id="example-14-lock">Lock</button>
+<button id="example-14-unlock">Unlock</button><br><button id="example-14-lock">Lock</button>
 
 <script>
 ( function() {
@@ -585,12 +576,7 @@ shape.setStrokeColor('red');
 shape.draw();
 
 console.log( shape.getProperties() );</code></pre><p><div id="example-15" class="jsgraph-example"></div></p>
-<p><div>
-    <button id="example-15-get">Get properties</button>
-    <code></code>
-</div><div>
-    <button id="example-15-set">Change properties</button>
-</div></p>
+<p><div><br>    <button id="example-15-get">Get properties</button><br>    <code></code><br></div><div><br>    <button id="example-15-set">Change properties</button><br></div></p>
 <script>
 
 ( function() {
@@ -626,8 +612,7 @@ console.log( shape.getProperties() );</code></pre><p><div id="example-15" class=
 <pre class="prettyprint source"><code>    made.arrow.on(&quot;propertyChanged&quot;, function( property ) {
 
         $(&quot;#example-16-property&quot;).html(&quot;&lt;div>Changed property: &lt;code>&quot; + property + &quot;&lt;/code>. New value: &lt;code>&quot; + JSON.stringify( made.arrow.getProp( property ) ) + &quot;&lt;/code>&lt;/div>&quot;);
-    })</code></pre><p><div id="example-16" class="jsgraph-example"></div>
-<span id="example-16-property"></span></p>
+    })</code></pre><p><div id="example-16" class="jsgraph-example"></div><br><span id="example-16-property"></span></p>
 <script>
 ( function() {
 
@@ -656,11 +641,14 @@ console.log( shape.getProperties() );</code></pre><p><div id="example-15" class=
 
 </section>
 
-			</div>
 		</div>
-
-
 	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
 </div>
 
 
@@ -668,14 +656,13 @@ console.log( shape.getProperties() );</code></pre><p><div id="example-15" class=
 
 
 	<span class="copyright">
-	jsGraph Copyright © 2012-2015 Norman Pellet
+	DocStrap Copyright © 2012-2015 The contributors to the JSDoc3 and DocStrap projects.
 	</span>
-	<br />
 
 <span class="jsdoc-message">
-	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
-	on Sun Mar 20th 2016 using the <a
-	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	on Tue Jul 12th 2016 using the <a
+	href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
 </footer>
 
@@ -692,37 +679,19 @@ $( function () {
 		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
 	} );
 
-	$( "#toc" ).toc( {
-		anchorName  : function ( i, heading, prefix ) {
-			return $( heading ).attr( "id" ) || ( prefix + i );
-		},
-		headerText: function(i, heading, $heading) {
-			var main;
-			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
-		  },
-		selectors   : "h1,h2,h3,h4",
-		showAndHide : false,
-		scrollTo    : "100px"
-	} );
-
-	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-	$( '.dropdown-toggle' ).dropdown();
-	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
 	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
 		var $this = $( this );
 
 		var example = $this.find( "code" );
 		exampleText = example.html();
 		var lang = /{@lang (.*?)}/.exec( exampleText );
-		console.log( exampleText );
 		if ( lang && lang[1] ) {
 			exampleText = exampleText.replace( lang[0], "" );
 			example.html( exampleText );
 			lang = lang[1];
 		} else {
-			lang = "javascript";
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
 		}
 
 		if ( lang ) {
@@ -737,9 +706,31 @@ $( function () {
 
 	Sunlight.highlightAll( {
 		lineNumbers : true,
-		showMenu : false,
+		showMenu : true,
 		enableDoclinks : true
 	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+                navbarOffset: 10,
+		smoothScrolling: true
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+  $( "table" ).each( function () {
+    var $this = $( this );
+    $this.addClass('table');
+  } );
+
 } );
 </script>
 
