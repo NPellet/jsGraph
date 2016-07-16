@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-13
+ * jsGraph JavaScript Graphing Library v1.14.10-14
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-12T09:37Z
+ * Date: 2016-07-16T09:44Z
  */
 
 ( function( root, factory ) {
@@ -1842,7 +1842,6 @@
         /**
          * Autoscales the x and y axes of the graph<br />
          * Repains the canvas
-         * @todo Find a solution for rescaling the y axis: if the x axis is
          * @memberof Graph.prototype
          */
         autoscaleAxes: function() {
@@ -1851,6 +1850,18 @@
 
           //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
           // X is not always ascending... 
+        },
+
+        /**
+         * Sets the background color
+         * @param {String} color - An SVG accepted color for the background
+         * @return {Graph} The current graph instance
+         * @memberof Graph.prototype
+         */
+        setBackgroundColor: function( color ) {
+
+          this.rectEvent.setAttribute( 'fill', color );
+          return this;
         },
 
         getAxisState: function() {
@@ -3363,8 +3374,12 @@
 
         graph.rectEvent.setAttribute( 'y', shiftTop + graph.getPaddingTop() );
         graph.rectEvent.setAttribute( 'x', shiftLeft + graph.getPaddingLeft() );
-        graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shiftLeft - shiftRight );
-        graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shiftTop - shiftBottom );
+
+        graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight
+        graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
+        graph.rectEvent.setAttribute( 'width', graph.drawingSpaceWidth );
+        graph.rectEvent.setAttribute( 'height', graph.drawingSpaceHeight );
 
         /*
 		graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -16753,6 +16768,8 @@
 
         this.rects = [];
         this.paths = [];
+
+        this.recalculateBinsOnDraw = false;
       };
 
       SerieDensityMap.prototype.setData = function( data ) {
@@ -16826,10 +16843,24 @@
 
       SerieDensityMap.prototype.autoBins = function( numX, numY ) {
 
+        this.numX = numX;
+        this.numY = numY;
+
         this.calculateDensity(
           this.minX, ( this.maxX - this.minX ) / numX, numX,
           this.minY, ( this.maxY - this.minY ) / numY, numY
         );
+
+        this.recalculateBinsOnDraw = false;
+
+        return this;
+      }
+
+      SerieDensityMap.prototype.setBinsPerPx = function( perPxX, perPxY ) {
+
+        this.recalculateBinsOnDraw = true;
+        this.binPerPxX = perPxX || 3;
+        this.binPerPxY = perPxY || 3;
         return this;
       }
 
@@ -16851,7 +16882,10 @@
 
         var methods = {
           "exp": function( value ) {
-            return ( Math.exp( value ) - Math.exp( 0 ) ) / ( Math.exp( numBins ) - Math.exp( 0 ) );
+            return ( Math.exp( value / numBins * 1 ) - Math.exp( 0 ) ) / ( Math.exp( 1 ) - Math.exp( 0 ) );
+          },
+          "log": function( value ) {
+            return ( Math.log( value + 1 ) - Math.log( 1 ) ) / ( Math.log( numBins + 1 ) - Math.log( 1 ) );
           },
           "linear": function( value ) {
             return ( value - 0 ) / ( numBins - 0 );
@@ -16859,12 +16893,14 @@
         }
 
         var k = 0,
-          colorMap = [];
+          colorMap = [],
+          opacities = [];
 
         var color = {
           h: null,
           s: null,
-          v: null
+          l: null,
+          a: null
         };
 
         var ratio;
@@ -16877,56 +16913,58 @@
             color[ j ] = ( toColor[ j ] - fromColor[ j ] ) * ratio + fromColor[ j ];
           }
 
-          colorMap[ k ] = this.HSVtoRGB( color.h, color.s, color.v );
+          colorMap[ k ] = "hsl(" + color.h + ", " + Math.round( color.s * 100 ) + "%, " + Math.round( color.l * 100 ) + "%)"; //this.HSVtoRGB( color.h, color.s, color.v );
+          opacities[ k ] = color.a;
           k++;
         }
 
+        this.opacities = opacities;
         this.colorMap = colorMap;
         this.colorMapNum = numBins;
       }
 
-      SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor ) {
+      SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor, method ) {
 
-        this.colorMapHSV( fromColor, toColor, 400, "linear" );
+        this.colorMapHSV( fromColor, toColor, 400, method || "linear" );
       }
 
       SerieDensityMap.prototype.byteToHex = function( b ) {
-        return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
-      }
-
-      SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
-        var r, g, b, i, f, p, q, t;
-        if ( arguments.length === 1 ) {
-          s = h.s, v = h.v, h = h.h;
+          return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
         }
-        i = Math.floor( h * 6 );
-        f = h * 6 - i;
-        p = v * ( 1 - s );
-        q = v * ( 1 - f * s );
-        t = v * ( 1 - ( 1 - f ) * s );
-        switch ( i % 6 ) {
-          case 0:
-            r = v, g = t, b = p;
-            break;
-          case 1:
-            r = q, g = v, b = p;
-            break;
-          case 2:
-            r = p, g = v, b = t;
-            break;
-          case 3:
-            r = p, g = q, b = v;
-            break;
-          case 4:
-            r = t, g = p, b = v;
-            break;
-          case 5:
-            r = v, g = p, b = q;
-            break;
-        }
-        return "#" + this.byteToHex( Math.floor( r * 255 ) ) + this.byteToHex( Math.floor( g * 255 ) ) + this.byteToHex( Math.floor( b * 255 ) );
-      }
-
+        /*
+          SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
+            var r, g, b, i, f, p, q, t;
+            if ( arguments.length === 1 ) {
+              s = h.s, v = h.v, h = h.h;
+            }
+            i = Math.floor( h * 6 );
+            f = h * 6 - i;
+            p = v * ( 1 - s );
+            q = v * ( 1 - f * s );
+            t = v * ( 1 - ( 1 - f ) * s );
+            switch ( i % 6 ) {
+              case 0:
+                r = v, g = t, b = p;
+                break;
+              case 1:
+                r = q, g = v, b = p;
+                break;
+              case 2:
+                r = p, g = v, b = t;
+                break;
+              case 3:
+                r = p, g = q, b = v;
+                break;
+              case 4:
+                r = t, g = p, b = v;
+                break;
+              case 5:
+                r = v, g = p, b = q;
+                break;
+            }
+            return "#" + this.byteToHex( Math.floor( r * 255 ) ) + this.byteToHex( Math.floor( g * 255 ) ) + this.byteToHex( Math.floor( b * 255 ) );
+          }
+        */
       SerieDensityMap.prototype.getColorIndex = function( value ) {
 
         return Math.floor( ( value - this.colorMapMin ) / ( this.colorMapMax - this.colorMapMin ) * this.colorMapNum );
@@ -16936,9 +16974,22 @@
 
         var colorIndex;
 
-        var deltaXPx = Math.floor( this.getXAxis().getRelPx( this.deltaX ) * 10 ) / 10,
-          deltaYPx = Math.floor( this.getYAxis().getRelPx( this.deltaY ) * 10 ) / 10;
+        if ( this.recalculateBinsOnDraw ) {
 
+          this.numX = this.graph.drawingSpaceWidth / this.binPerPxX;
+          this.numY = this.graph.drawingSpaceHeight / this.binPerPxY;
+          console.log( this.minX, ( this.maxX - this.minX ) / this.numX, this.numX );
+          this.calculateDensity(
+            this.getXAxis().getCurrentMin(), ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() ) / this.numX, this.numX,
+            this.getYAxis().getCurrentMin(), ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() ) / this.numY, this.numY
+          );
+
+          this.autoBinsBoundaries();
+        }
+
+        var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
+          deltaYPx = this.getYAxis().getRelPx( this.deltaY );
+        console.log( deltaXPx, deltaYPx );
         for ( var i = 0; i < this.paths.length; i++ ) {
           this.paths[ i ] = "";
         }
@@ -16955,7 +17006,7 @@
             if ( !this.paths[ colorIndex ] ) {
               this.paths[ colorIndex ] = "";
             }
-            this.paths[ colorIndex ] += " M " + this.getXAxis().getRoundedPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getRoundedPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
+            this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
             ;
           }
@@ -16980,6 +17031,7 @@
           if ( this.paths[ i ] !== undefined ) {
             this.rects[ i ].setAttribute( 'd', this.paths[ i ] );
             this.rects[ i ].setAttribute( 'fill', this.colorMap[ i ] );
+            this.rects[ i ].setAttribute( 'fill-opacity', this.opacities[ i ] );
           }
           this.groupMain.appendChild( this.rects[ i ] );
         }

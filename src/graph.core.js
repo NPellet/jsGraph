@@ -667,7 +667,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     /**
      * Autoscales the x and y axes of the graph<br />
      * Repains the canvas
-     * @todo Find a solution for rescaling the y axis: if the x axis is
      * @memberof Graph.prototype
      */
     autoscaleAxes: function() {
@@ -676,6 +675,18 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
       //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
       // X is not always ascending... 
+    },
+
+    /**
+     * Sets the background color
+     * @param {String} color - An SVG accepted color for the background
+     * @return {Graph} The current graph instance
+     * @memberof Graph.prototype
+     */
+    setBackgroundColor: function( color ) {
+
+      this.rectEvent.setAttribute( 'fill', color );
+      return this;
     },
 
     getAxisState: function() {
@@ -2188,8 +2199,12 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     graph.rectEvent.setAttribute( 'y', shiftTop + graph.getPaddingTop() );
     graph.rectEvent.setAttribute( 'x', shiftLeft + graph.getPaddingLeft() );
-    graph.rectEvent.setAttribute( 'width', graph.getDrawingWidth() - shiftLeft - shiftRight );
-    graph.rectEvent.setAttribute( 'height', graph.getDrawingHeight() - shiftTop - shiftBottom );
+
+    graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight
+    graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
+    graph.rectEvent.setAttribute( 'width', graph.drawingSpaceWidth );
+    graph.rectEvent.setAttribute( 'height', graph.drawingSpaceHeight );
 
     /*
 		graph.shapeZoneRect.setAttribute('x', shift[1]);
