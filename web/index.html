@@ -3,16 +3,61 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>jsGraph - Scientific graphs in your browser</title>
-  <meta name="description" content="jsGraph - Scientific graphs in your browser">
+  <title>jsGraph - Scientific graphs in the browser</title>
+  <meta name="description" content="jsGraph - Scientific graphs in the browser">
   <meta name="author" content="Norman Pellet">
   <link rel="stylesheet" href="css/style.css">
-  <script src="lib/requirejs/require.js" data-main="js/main.js"></script>
-  <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
+
+  <script src="./src/lib/jquery/dist/jquery.min.js"></script>
+  <script src="./src/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="./src/lib/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
   
 
+	<nav class="navbar navbar-default" id="jsgraph-nav">
+	  <div class="container">
+		<div class="navbar-header">
+
+			<a class="navbar-brand" href="../">
+		    	jsGraph
+		    </a>
+		    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		    </button>
+		</div>
+
+	    <div class="collapse navbar-collapse">
+	      <ul class="nav navbar-nav">
+
+
+	        <li><a href="#">Introduction</a></li>
+	        <li><a href="#">Tutorials</a></li>
+	        <li><a href="#">Documentation</a></li>
+	        <li><a href="#">Examples</a></li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+
+	<div class="container" id="jsgraph-main">
+
+		<div id="jsgraph-title">
+			jsGraph
+		</div>
+
+		<div id="jsgraph-version">
+			v1.14.1-1
+		</div>
+
+		<pre class="code">
+			npm install node-jsgraph
+		</pre>
+
+	</div>
 
 </body>
 </html>

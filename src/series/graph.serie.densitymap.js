@@ -137,7 +137,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     return this;
   }
 
-  SerieDensityMap.prototype.colorMapHSV = function( fromColor, toColor, numBins, method ) {
+  SerieDensityMap.prototype.colorMapHSV = function( colorStops, numBins, method ) {
 
     method = method || "linear";
 
@@ -164,14 +164,25 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
       a: null
     };
 
-    var ratio;
+    var ratio, first;
+
+    var slices = colorStops.length - 1;
 
     for ( var i = 0; i <= numBins; i++ ) {
 
       ratio = methods[ method ]( i );
 
+      first = Math.floor( ratio * slices );
+
+      if ( first == colorStops.length - 1 ) { // Handle 1
+        first = slices - 1;
+      }
+
+      ratio = ( ratio - first / ( slices ) ) / ( 1 / ( slices ) );
+      console.log( first, ratio, slices );
+
       for ( var j in color ) {
-        color[ j ] = ( toColor[ j ] - fromColor[ j ] ) * ratio + fromColor[ j ];
+        color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
       }
 
       colorMap[ k ] = "hsl(" + color.h + ", " + Math.round( color.s * 100 ) + "%, " + Math.round( color.l * 100 ) + "%)"; //this.HSVtoRGB( color.h, color.s, color.v );
@@ -184,9 +195,9 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     this.colorMapNum = numBins;
   }
 
-  SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor, method ) {
+  SerieDensityMap.prototype.autoColorMapHSV = function( colorStops, method ) {
 
-    this.colorMapHSV( fromColor, toColor, 400, method || "linear" );
+    this.colorMapHSV( colorStops, 100, method || "linear" );
   }
 
   SerieDensityMap.prototype.byteToHex = function( b ) {

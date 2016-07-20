@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-15
+ * jsGraph JavaScript Graphing Library v1.14.10-16
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-16T09:47Z
+ * Date: 2016-07-20T09:21Z
  */
 
 ( function( root, factory ) {
@@ -16876,7 +16876,7 @@
         return this;
       }
 
-      SerieDensityMap.prototype.colorMapHSV = function( fromColor, toColor, numBins, method ) {
+      SerieDensityMap.prototype.colorMapHSV = function( colorStops, numBins, method ) {
 
         method = method || "linear";
 
@@ -16903,14 +16903,25 @@
           a: null
         };
 
-        var ratio;
+        var ratio, first;
+
+        var slices = colorStops.length - 1;
 
         for ( var i = 0; i <= numBins; i++ ) {
 
           ratio = methods[ method ]( i );
 
+          first = Math.floor( ratio * slices );
+
+          if ( first == colorStops.length - 1 ) { // Handle 1
+            first = slices - 1;
+          }
+
+          ratio = ( ratio - first / ( slices ) ) / ( 1 / ( slices ) );
+          console.log( first, ratio, slices );
+
           for ( var j in color ) {
-            color[ j ] = ( toColor[ j ] - fromColor[ j ] ) * ratio + fromColor[ j ];
+            color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
           }
 
           colorMap[ k ] = "hsl(" + color.h + ", " + Math.round( color.s * 100 ) + "%, " + Math.round( color.l * 100 ) + "%)"; //this.HSVtoRGB( color.h, color.s, color.v );
@@ -16923,9 +16934,9 @@
         this.colorMapNum = numBins;
       }
 
-      SerieDensityMap.prototype.autoColorMapHSV = function( fromColor, toColor, method ) {
+      SerieDensityMap.prototype.autoColorMapHSV = function( colorStops, method ) {
 
-        this.colorMapHSV( fromColor, toColor, 400, method || "linear" );
+        this.colorMapHSV( colorStops, 100, method || "linear" );
       }
 
       SerieDensityMap.prototype.byteToHex = function( b ) {
