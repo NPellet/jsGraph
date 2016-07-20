@@ -109,9 +109,10 @@ define( [ './graph.util', './graph.axis' ], function( util, GraphAxis ) {
       //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
       // Place label correctly
+
       this.label.setAttribute( 'text-anchor', 'middle' );
       this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
-      this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
+      this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
       this.labelTspan.textContent = this.getLabel();
 
       this.line.setAttribute( 'x1', this.getMinPx() );

@@ -119,6 +119,10 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
   SerieDensityMap.prototype.setBinsPerPx = function( perPxX, perPxY ) {
 
+    if ( perPxY === undefined && perPxX ) {
+      perPxY = perPxX;
+    }
+
     this.recalculateBinsOnDraw = true;
     this.binPerPxX = perPxX || 3;
     this.binPerPxY = perPxY || 3;
@@ -179,7 +183,6 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
       }
 
       ratio = ( ratio - first / ( slices ) ) / ( 1 / ( slices ) );
-      console.log( first, ratio, slices );
 
       for ( var j in color ) {
         color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
@@ -250,7 +253,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
       this.numX = this.graph.drawingSpaceWidth / this.binPerPxX;
       this.numY = this.graph.drawingSpaceHeight / this.binPerPxY;
-      console.log( this.minX, ( this.maxX - this.minX ) / this.numX, this.numX );
+
       this.calculateDensity(
         this.getXAxis().getCurrentMin(), ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() ) / this.numX, this.numX,
         this.getYAxis().getCurrentMin(), ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() ) / this.numY, this.numY
@@ -261,7 +264,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
 
     var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
       deltaYPx = this.getYAxis().getRelPx( this.deltaY );
-    console.log( deltaXPx, deltaYPx );
+
     for ( var i = 0; i < this.paths.length; i++ ) {
       this.paths[ i ] = "";
     }

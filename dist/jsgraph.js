@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-16
+ * jsGraph JavaScript Graphing Library v1.14.10-17
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-20T09:21Z
+ * Date: 2016-07-20T11:49Z
  */
 
 ( function( root, factory ) {
@@ -4347,7 +4347,9 @@
         scientificScale: false,
         scientificScaleExponent: false,
         engineeringScale: false,
-        unit: false
+        unit: false,
+        unitWrapperBefore: '',
+        unitWrapperAfter: ''
       };
 
       GraphAxis.prototype.init = function( graph, options, overwriteoptions ) {
@@ -5255,9 +5257,11 @@
         if ( this.options.unit ) {
 
           this.unitTspan.setAttribute( 'display', 'visible' );
+          this.unitTspan.setAttribute( 'dx', 5 );
+
           this.expTspan.setAttribute( 'display', 'none' );
           this.expTspanExp.setAttribute( 'display', 'none' );
-          this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
+          this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
 
         } else {
           this.unitTspan.setAttribute( 'display', 'none' );
@@ -5280,10 +5284,6 @@
           this.preunitTspan.textContent = "";
           this.preunitTspan.setAttribute( 'display', 'none' );
 
-          if ( this.options.unit ) {
-            this.unitTspan.setAttribute( 'dx', 5 );
-          }
-
           this.expTspan.setAttribute( 'display', 'visible' );
           this.expTspanExp.setAttribute( 'display', 'visible' );
 
@@ -5292,7 +5292,10 @@
 
         } else {
 
-          this.unitTspan.setAttribute( 'display', 'none' );
+          if ( !this.options.unit ) {
+            this.unitTspan.setAttribute( 'display', 'none' );
+          }
+
           this.preunitTspan.setAttribute( 'display', 'none' );
           this.expTspan.setAttribute( 'display', 'none' );
           this.expTspanExp.setAttribute( 'display', 'none' );
@@ -6535,6 +6538,21 @@
       };
 
       /**
+       * Sets characters wrapping the unit
+       * @param {String} before - The string to insert before
+       * @param {String} after - The string to insert after
+       * @return {Axis} The current axis
+       * @memberof GraphAxis
+       * @example axis.setUnitWrapper("[", "]").setUnit('m'); // Will display [m]
+       * @since 1.13.3
+       */
+      GraphAxis.prototype.setUnitWrapper = function( before, after ) {
+        this.options.unitWrapperBefore = before;
+        this.options.unitWrapperAfter = after;
+        return this;
+      };
+
+      /**
        * Allows the unit to scale with thousands
        * @param {Boolean} on - Enables this mode
        * @return {Axis} The current axis
@@ -6743,9 +6761,10 @@
           //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
           // Place label correctly
+
           this.label.setAttribute( 'text-anchor', 'middle' );
           this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
-          this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 15 ) + this.graph.options.fontSize ) );
+          this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
           this.labelTspan.textContent = this.getLabel();
 
           this.line.setAttribute( 'x1', this.getMinPx() );
@@ -16858,6 +16877,10 @@
 
       SerieDensityMap.prototype.setBinsPerPx = function( perPxX, perPxY ) {
 
+        if ( perPxY === undefined && perPxX ) {
+          perPxY = perPxX;
+        }
+
         this.recalculateBinsOnDraw = true;
         this.binPerPxX = perPxX || 3;
         this.binPerPxY = perPxY || 3;
@@ -16918,7 +16941,6 @@
           }
 
           ratio = ( ratio - first / ( slices ) ) / ( 1 / ( slices ) );
-          console.log( first, ratio, slices );
 
           for ( var j in color ) {
             color[ j ] = ( colorStops[ first + 1 ][ j ] - colorStops[ first ][ j ] ) * ratio + colorStops[ first ][ j ];
@@ -16989,7 +17011,7 @@
 
           this.numX = this.graph.drawingSpaceWidth / this.binPerPxX;
           this.numY = this.graph.drawingSpaceHeight / this.binPerPxY;
-          console.log( this.minX, ( this.maxX - this.minX ) / this.numX, this.numX );
+
           this.calculateDensity(
             this.getXAxis().getCurrentMin(), ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() ) / this.numX, this.numX,
             this.getYAxis().getCurrentMin(), ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() ) / this.numY, this.numY
@@ -17000,7 +17022,7 @@
 
         var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
           deltaYPx = this.getYAxis().getRelPx( this.deltaY );
-        console.log( deltaXPx, deltaYPx );
+
         for ( var i = 0; i < this.paths.length; i++ ) {
           this.paths[ i ] = "";
         }
@@ -17929,6 +17951,30 @@
       };
 
       /**
+       * Sets the color of the stroke of the label. 
+       * @memberof Shape
+       * @param {String} color - The color of the stroke
+       * @param {Number} [ index = 0 ] - The index of the label
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.setLabelStrokeColor = function( color, index ) {
+        this.setProp( 'labelStrokeColor', color, index || 0 );
+        return this;
+      };
+
+      /**
+       * Sets the width of the stroke of the label. 
+       * @memberof Shape
+       * @param {Number} width - The width of the stroke
+       * @param {Number} [ index = 0 ] - The index of the label
+       * @return {Shape} The current shape
+       */
+      Shape.prototype.setLabelStrokeWidth = function( width, index ) {
+        this.setProp( 'labelStrokeWidth', width, index || 0 );
+        return this;
+      };
+
+      /**
        * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
        * @memberof Shape
        * @return {Shape} The current shape
@@ -18167,7 +18213,7 @@
 
         var visible = this.getProp( 'labelVisible', labelIndex );
 
-        if ( !visible ) {
+        if ( visible === false ) {
           this._labels[ labelIndex ].setAttribute( 'display', 'none' );
           return;
         } else {
@@ -18209,11 +18255,19 @@
         /** Sets the color */
         this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) || 'black' );
 
-        /** Sets the color */
+        /** Sets the size */
         this._labels[ labelIndex ].setAttribute( "font-size", this.getProp( 'labelSize', labelIndex ) + "px" || "12px" );
 
         /** Sets the anchor */
         this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
+
+        /** Sets the stroke */
+        this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) );
+
+        /** Sets the stroke */
+        this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) + "px" );
+
+        this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
         return this;
       };
@@ -20802,10 +20856,10 @@
 
         },
 
-        setPosition: function() {
-          var position = this._getPosition( this.getFromData( 'pos' ) );
+        applyPosition: function() {
 
-          if ( !position.x || !position.y ) {
+          var position = this.calculatePosition( 0 );
+          if ( !position || !position.x || !position.y ) {
             return;
           }
 
@@ -20819,9 +20873,7 @@
 
         redrawImpl: function() {
 
-          this.setPosition();
           this.setHandles();
-
         },
 
         handleCreateImpl: function() {
@@ -20876,6 +20928,33 @@
 
           this.handle1.setAttribute( 'x', this.currentPos1x );
           this.handle1.setAttribute( 'y', this.currentPos1y );
+        },
+
+        createHandles: function() {
+
+          this._createHandles( 1, 'rect', {
+            transform: "translate(-3 -3)",
+            width: 6,
+            height: 6,
+            stroke: "black",
+            fill: "white",
+            cursor: 'nwse-resize'
+          } );
+        },
+
+        setHandles: function() {
+
+          if ( !this.areHandlesInDom() ) {
+            return;
+          }
+
+          if ( isNaN( this.currentPos1x ) ) {
+            return;
+          }
+
+          this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
+          this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
+
         },
 
         selectStyle: function() {

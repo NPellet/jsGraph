@@ -27,10 +27,10 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
     },
 
-    setPosition: function() {
-      var position = this._getPosition( this.getFromData( 'pos' ) );
+    applyPosition: function() {
 
-      if ( !position.x || !position.y ) {
+      var position = this.calculatePosition( 0 );
+      if ( !position || !position.x || !position.y ) {
         return;
       }
 
@@ -44,9 +44,7 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
     redrawImpl: function() {
 
-      this.setPosition();
       this.setHandles();
-
     },
 
     handleCreateImpl: function() {
@@ -101,6 +99,33 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
       this.handle1.setAttribute( 'x', this.currentPos1x );
       this.handle1.setAttribute( 'y', this.currentPos1y );
+    },
+
+    createHandles: function() {
+
+      this._createHandles( 1, 'rect', {
+        transform: "translate(-3 -3)",
+        width: 6,
+        height: 6,
+        stroke: "black",
+        fill: "white",
+        cursor: 'nwse-resize'
+      } );
+    },
+
+    setHandles: function() {
+
+      if ( !this.areHandlesInDom() ) {
+        return;
+      }
+
+      if ( isNaN( this.currentPos1x ) ) {
+        return;
+      }
+
+      this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
+      this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
+
     },
 
     selectStyle: function() {

@@ -59,6 +59,12 @@ module.exports = function(grunt) {
                 }
             },
 
+            examples: {
+                files: {
+                    './examples/node_modules/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js'
+                }
+            },
+
             exportToNMR: {
 
                 files: {
@@ -150,7 +156,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-exec');
 
 
-    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist' ] );
+    grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
 
     grunt.registerTask( 'gcms', [ 'default', 'copy:exportToGCMS'] );
     grunt.registerTask( "minify", "Minifying distribution file", function() {

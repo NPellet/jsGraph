@@ -72,7 +72,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     scientificScale: false,
     scientificScaleExponent: false,
     engineeringScale: false,
-    unit: false
+    unit: false,
+    unitWrapperBefore: '',
+    unitWrapperAfter: ''
   };
 
   GraphAxis.prototype.init = function( graph, options, overwriteoptions ) {
@@ -980,9 +982,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     if ( this.options.unit ) {
 
       this.unitTspan.setAttribute( 'display', 'visible' );
+      this.unitTspan.setAttribute( 'dx', 5 );
+
       this.expTspan.setAttribute( 'display', 'none' );
       this.expTspanExp.setAttribute( 'display', 'none' );
-      this.unitTspan.innerHTML = this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" );
+      this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
 
     } else {
       this.unitTspan.setAttribute( 'display', 'none' );
@@ -1005,10 +1009,6 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.preunitTspan.textContent = "";
       this.preunitTspan.setAttribute( 'display', 'none' );
 
-      if ( this.options.unit ) {
-        this.unitTspan.setAttribute( 'dx', 5 );
-      }
-
       this.expTspan.setAttribute( 'display', 'visible' );
       this.expTspanExp.setAttribute( 'display', 'visible' );
 
@@ -1017,7 +1017,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     } else {
 
-      this.unitTspan.setAttribute( 'display', 'none' );
+      if ( !this.options.unit ) {
+        this.unitTspan.setAttribute( 'display', 'none' );
+      }
+
       this.preunitTspan.setAttribute( 'display', 'none' );
       this.expTspan.setAttribute( 'display', 'none' );
       this.expTspanExp.setAttribute( 'display', 'none' );
@@ -2256,6 +2259,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    */
   GraphAxis.prototype.setUnit = function( unit ) {
     this.options.unit = unit;
+    return this;
+  };
+
+  /**
+   * Sets characters wrapping the unit
+   * @param {String} before - The string to insert before
+   * @param {String} after - The string to insert after
+   * @return {Axis} The current axis
+   * @memberof GraphAxis
+   * @example axis.setUnitWrapper("[", "]").setUnit('m'); // Will display [m]
+   * @since 1.13.3
+   */
+  GraphAxis.prototype.setUnitWrapper = function( before, after ) {
+    this.options.unitWrapperBefore = before;
+    this.options.unitWrapperAfter = after;
     return this;
   };
 

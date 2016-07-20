@@ -842,6 +842,30 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
   };
 
   /**
+   * Sets the color of the stroke of the label. 
+   * @memberof Shape
+   * @param {String} color - The color of the stroke
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelStrokeColor = function( color, index ) {
+    this.setProp( 'labelStrokeColor', color, index || 0 );
+    return this;
+  };
+
+  /**
+   * Sets the width of the stroke of the label. 
+   * @memberof Shape
+   * @param {Number} width - The width of the stroke
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  Shape.prototype.setLabelStrokeWidth = function( width, index ) {
+    this.setProp( 'labelStrokeWidth', width, index || 0 );
+    return this;
+  };
+
+  /**
    * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
    * @memberof Shape
    * @return {Shape} The current shape
@@ -1080,7 +1104,7 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
 
     var visible = this.getProp( 'labelVisible', labelIndex );
 
-    if ( !visible ) {
+    if ( visible === false ) {
       this._labels[  labelIndex ].setAttribute( 'display', 'none' );
       return;
     } else {
@@ -1122,11 +1146,19 @@ define( [ '../graph.position', '../graph.util', '../dependencies/eventEmitter/Ev
     /** Sets the color */
     this._labels[ labelIndex ].setAttribute( "fill", this.getProp( 'labelColor', labelIndex ) ||  'black' );
 
-    /** Sets the color */
+    /** Sets the size */
     this._labels[ labelIndex ].setAttribute( "font-size", this.getProp( 'labelSize', labelIndex ) + "px" ||  "12px" );
 
     /** Sets the anchor */
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
+
+    /** Sets the stroke */
+    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) );
+
+    /** Sets the stroke */
+    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) + "px" );
+
+    this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
     return this;
   };
