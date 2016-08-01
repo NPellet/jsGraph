@@ -1,5 +1,3 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
 
 <script>
 var serie1 = [ 0, -6, 2, 5, 5, 0 ];
@@ -35,7 +33,7 @@ function makeGraph( dom ) {
 
 </script>
 
-## Introduction
+### Introduction
 Herein, we describe how to force different axes to behave dependently of each other. jsGraph gives you the possibility to adapt the value of one axis (in this example, the right one) to another value on another axis (in this example, the left one). For this, the function to employ is {@link Axis.adaptTo}, which was introduced in v1.3.12 (and replaces the previous ```adapt0To``` method which is covered and extended in the current ```adaptTo``` method).
 
 The method takes the following syntax:
@@ -51,7 +49,7 @@ With the following arguments:
 * ```myReferenceValueOnAxisRef``` is the value on the ```myAxisRef``` to which ```myValueToAdaptTo``` will be aligned to.
 * ```MinOrMaxPreferred``` will define the behavior of the boundaries (see text later)
 
-## Example
+### Example
 
 Let us start with a basic example
 
@@ -91,7 +89,7 @@ makeGraph("example-1")
 
 Ok so here there's no adapt. The two axis behave independantly and adapt to their own serie.
 
-### Natural behavior
+#### Natural behavior
 
 Now, let's force the right axis to align to the left axis. In this example, the value ```0``` of the right axis will align with ```-3``` on the left axis:
 
@@ -121,7 +119,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of th
 g.draw();
 </script>
 
-### Behavior when axes are forced
+#### Behavior when axes are forced
 
 Here is the rule when a boundary of the axis is forced:
 

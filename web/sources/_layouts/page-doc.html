@@ -1,0 +1,41 @@
+---
+layout: default
+---
+
+
+{% include docnav.html %}
+
+{% assign docbars=site.data.docbars[page.docbar] %}
+
+{% if docbars.size > 0 %}
+<nav class="navbar navbar-default" id="jsgraph-subdocnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+			{% for subitem in docbars %}
+			  {% if subitem.title %}
+			  <li {% if page.subtitle == subitem.url %} class="active" {% endif %}>
+			  	<a class="page-link" href="{{ subitem.url | prepend: 'docs/' | prepend: site.baseurl }}.html">
+			  		{{ subitem.title }}
+			  	</a>
+			  </li>
+			  {% endif %}
+			{% endfor %}	
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+{% endif %}
+
+
+
+<div class="container">
+
+
+{{ content }}
+
+</div>
+

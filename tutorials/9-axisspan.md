@@ -1,5 +1,3 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
 
 jsGraph allows you to have in a single graph more than one axis at the same position (top, left, right, bottom). Axes don't actually have to take up the 100% of the space, horizontally or vertically.
 
@@ -9,11 +7,11 @@ You can do that using the method ```axis.setSpan( spanFrom, spanTo )```, where `
 
 For the x axis, 0 is always at the left, and 1 is at the right. For the y axis, 0 is the *bottom*, and 1 is the *top* (inverse of the traditional SVG coordinates).
 
-## Basic example
+### <a id="example"></a>  Basic example
 
 To illustrate the ```setSpan``` method, let us make a nice graph with two y axes spanning from 0 to 45% and from 55% to 100%:
 
-```
+{% highlight javascript %}
 
   var graph = new Graph( "example-1" );
   graph.resize( 700, 300 );
@@ -40,7 +38,9 @@ To illustrate the ```setSpan``` method, let us make a nice graph with two y axes
 
   graph.draw();
 
-  ```
+{% endhighlight %}
+
+
 <div id="example-1" class="jsgraph-example"></div>
 
 <script>
@@ -78,7 +78,8 @@ To illustrate the ```setSpan``` method, let us make a nice graph with two y axes
 Of course, this also works with the X axis:
 
 
-```
+
+{% highlight javascript %}
 
   var graph = new Graph( "example-2" );
   
@@ -105,7 +106,7 @@ Of course, this also works with the X axis:
 
   graph.draw();
 
-  ```
+{% endhighlight %}
 
 
   <div id="example-2" class="jsgraph-example"></div>
@@ -141,7 +142,7 @@ Of course, this also works with the X axis:
 </script>
 
 
-## Overlapping axes
+###  <a id="overlap"></a>  Overlapping axes
 
 One might wonder how jsgraph handles cases where axis spans overlap. For example ```axisA.setSpan( 0, 55 )``` would clash with ```axisB.setSpan( 50, 100 )```. In such cases, jsGraph determines automatically such clashes and offsets one of the axis (the one with the largest index in the stack) by a sufficient amount so that visual perception is not deteriorated. In general, jsGraph will try to place as many axis in the first level, and perform iteratively for the following levels. For example, if you have ```axisA.setSpan( 0, 55 )```, ```axisB.setSpan( 50, 100 )``` and ```axisC.setSpan( 60, 80 )```, then axisC will be placed together with axisA because they don't overlap. It will not take a third level.
 
@@ -149,7 +150,8 @@ To make it clear, here is how this example would turn out:
 
 
 
-```
+
+{% highlight javascript %}
 
   var graph = new Graph( "example-3" );
 
@@ -186,7 +188,8 @@ To make it clear, here is how this example would turn out:
 
   graph.draw();
 
-  ```
+{% endhighlight %}
+
 
 <div id="example-3" class="jsgraph-example"></div>
 

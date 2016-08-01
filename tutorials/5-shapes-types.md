@@ -1,5 +1,3 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
 
 <script>
 	

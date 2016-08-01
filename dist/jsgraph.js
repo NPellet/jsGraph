@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-20T11:49Z
+ * Date: 2016-07-30T19:49Z
  */
 
 ( function( root, factory ) {
@@ -1180,8 +1180,8 @@
       /** 
        * Main class of jsGraph that creates a new graph.
        * @class Graph
-       * @param {HTMLElement} wrapper - The DOM Wrapper element
-       * @param {Graph#options} [ options ] - The options of the graph
+       * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+       * @param {GraphOptions} [ options ] - The options of the graph
        * @param {Object} [ axis ] - The list of axes
        * @param {Array} axis.left - The list of left axes
        * @param {Array} axis.bottom - The list of bottom axes
@@ -1192,7 +1192,6 @@
        * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
        * @tutorial basic
        */
-
       var profiling = [];
 
       function Graph( wrapper, options, axis ) {
@@ -1230,7 +1229,10 @@
          * @object
          * @memberof Graph
          * @name Graph#options
+         * @type GraphOptions
          * @default {@link GraphOptionsDefault}
+         * Access directly the options of the graph using this public object.
+         * @example graph.options.mouseActions.push( {  } );
          */
         this.options = util.extend( {}, GraphOptionsDefault, options );
 
@@ -1308,6 +1310,7 @@
       /** 
        * Default graph parameters
        * @name Graph~GraphOptionsDefault
+       * @name GraphOptions
        * @object
        * @static
        * @memberof Graph
@@ -1692,7 +1695,7 @@
 
         /**
          * Sets a bottom axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ index=0 ] - The index of the axis
          * @memberof Graph.prototype
          */
@@ -1702,7 +1705,7 @@
 
         /**
          * Sets a left axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ index=0 ] - The index of the axis
          * @memberof Graph.prototype
          */
@@ -1712,7 +1715,7 @@
 
         /**
          * Sets a left axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ index=0 ] - The index of the axis
          * @memberof Graph.prototype
          * @see Graph#setBottomAxis
@@ -1728,7 +1731,7 @@
 
         /**
          * Sets a right axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ index=0 ] - The index of the axis
          * @memberof Graph.prototype
          * @see Graph#setBottomAxis
@@ -1744,7 +1747,7 @@
 
         /**
          * Sets a top axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ index=0 ] - The index of the axis
          * @memberof Graph.prototype
          * @see Graph#setBottomAxis
@@ -1760,7 +1763,7 @@
 
         /**
          * Sets a bottom axis
-         * @param {GraphAxis} axis - The axis instance to set
+         * @param {Axis} axis - The axis instance to set
          * @param {Number} [ number=0 ] - The index of the axis
          * @memberof Graph.prototype
          * @see Graph#setTopAxis
@@ -1943,7 +1946,7 @@
         /**
          * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
          * @memberof Graph.prototype
-         * @param {GraphAxis} axis - The axis for which the value should be computed
+         * @param {Axis} axis - The axis for which the value should be computed
          * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
          * @returns {Number} The minimimum or maximum of the axis based on its series
          */
@@ -1973,7 +1976,6 @@
             }
 
             serieValue = serie[ func2use ]();
-
             val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
           }
@@ -1984,7 +1986,7 @@
         /**
          *  Returns all the series associated to an axis
          *  @memberof Graph.prototype
-         *  @param {GraphAxis} axis - The axis to which the series belong
+         *  @param {Axis} axis - The axis to which the series belong
          *  @returns {Serie[]} An array containing the list of series that belong to the axis
          */
         getSeriesFromAxis: function( axis ) {
@@ -2038,7 +2040,7 @@
          * Function that is called from {@link Graph#_applyToAxes}
          * @function
          * @name AxisCallbackFunction
-         * @param {GraphAxis} axis - The axis of the function
+         * @param {Axis} axis - The axis of the function
          * @param {String} type - The type of the axis (left,right,top,bottom)
          * @param params - The params passed in the _applyToAxis function.
          * @see Graph#_applyToAxes
@@ -2078,7 +2080,7 @@
          * Axes can be dependant of one another (for instance for unit conversions)
          * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
          * @memberof Graph.prototype
-         * @param {GraphAxis} axis - The axis that links one or multiple other dependant axes
+         * @param {Axis} axis - The axis that links one or multiple other dependant axes
          * @returns {Axis[]} The list of axes linked to the axis passed as parameter
          */
         findAxesLinkedTo: function( axis ) {
@@ -2240,17 +2242,22 @@
          */
         selectSerie: function( serie, selectName ) {
 
-          if ( this.selectedSerie == serie ) {
+          if ( !( typeof serie == "object" ) ) {
+            serie = this.getSerie( serie );
+          }
+
+          if ( this.selectedSerie == serie && this.selectedSerie.selectionType == selectName ) {
             return;
           }
 
-          if ( this.selectedSerie ) {
+          if ( this.selectedSerie !== serie ) {
             this.unselectSerie( serie );
           }
 
           this.selectedSerie = serie;
           this.triggerEvent( 'onSelectSerie', serie );
-          serie.select( "selected" );
+
+          serie.select( selectName || "selected" );
         },
 
         /**
@@ -3976,17 +3983,18 @@
 
       /**
        * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-       * @name Graph.registerConstructor
-       * @param {String} name - The name of the constructor
-       * @see Graph#newSerie
+       * @param {String} constructorName - The name of the constructor
+       * @param {Function} constructor - The constructor method
+       * @memberof Graph
+       * @see Graph.getConstructor
        */
-      Graph.registerConstructor = function( name, constructor ) {
+      Graph.registerConstructor = function( constructorName, constructor ) {
 
-        if ( Graph._constructors[ name ] ) {
+        if ( Graph._constructors[ constructorName ] ) {
           return util.throwError( "Constructor " + constructor + " already exists." );
         }
 
-        Graph._constructors[ name ] = constructor;
+        Graph._constructors[ constructorName ] = constructor;
       };
 
       /**
@@ -3996,7 +4004,6 @@
        * @returns {Function} The registered constructor
        * @throws Error
        * @see Graph.registerConstructor
-       * @name Graph#getConstructor
        */
       Graph.getConstructor = function( constructorName ) {
         var constructor = Graph._constructors[ constructorName ];
@@ -4012,7 +4019,6 @@
        * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
        * @param {HTMLElement} wrapper - The wrapping element
        * @returns {Graph} Newly created graph
-       * @name Graph#fromSchema
        */
       Graph.fromSchema = function( schema, wrapper ) {
 
@@ -4092,7 +4098,6 @@
                 break;
             }
 
-            console.log( serieType );
             if ( !serieType ) {
               util.throwError( "No valid serie type was found" );
               return;
@@ -4281,22 +4286,23 @@
        * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
        * @class Axis
        * @static
+       * @augments EventEmitter
        * @example function myAxis() {};
        * myAxis.prototype = new Graph.getConstructor("axis");
        * graph.setBottomAxis( new myAxis( { } ) );
        */
-      function GraphAxis() {}
+      function Axis() {}
 
-      GraphAxis.prototype = new EventEmitter();
+      Axis.prototype = new EventEmitter();
 
       /** 
        * Default graph parameters
        * @name AxisOptionsDefault
        * @object
        * @static
-       * @memberof GraphAxis
+       * @memberof Axis
        * @prop {Boolean} display - Whether to display or not the axis
-       * @prop {Boolean} flipped - The top padding
+       * @prop {Boolean} flipped - Flips the axis (maximum and minimum will be inverted)
        * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
        * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
        * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
@@ -4313,7 +4319,7 @@
        * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
        * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
        */
-      GraphAxis.prototype.defaults = {
+      Axis.prototype.defaults = {
         lineAt0: false,
         display: true,
         flipped: false,
@@ -4352,7 +4358,7 @@
         unitWrapperAfter: ''
       };
 
-      GraphAxis.prototype.init = function( graph, options, overwriteoptions ) {
+      Axis.prototype.init = function( graph, options, overwriteoptions ) {
 
         this.unitModificationTimeTicks = [
           [ 1, [ 1, 2, 5, 10, 20, 30 ] ],
@@ -4363,7 +4369,7 @@
 
         var self = this;
         this.graph = graph;
-        this.options = util.extend( true, {}, GraphAxis.prototype.defaults, overwriteoptions, options );
+        this.options = util.extend( true, {}, Axis.prototype.defaults, overwriteoptions, options );
 
         this.group = document.createElementNS( this.graph.ns, 'g' );
         this.hasChanged = true;
@@ -4472,54 +4478,54 @@
         this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
       };
 
-      GraphAxis.prototype.handleMouseMoveLocal = function() {};
+      Axis.prototype.handleMouseMoveLocal = function() {};
 
       /**
        * Hides the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.hide = function() {
+      Axis.prototype.hide = function() {
         this.options.display = false;
         return this;
       };
 
       /**
        * Shows the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.show = function() {
+      Axis.prototype.show = function() {
         this.options.display = true;
         return this;
       };
 
       /**
        * Shows or hides the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Boolean} display - true to display the axis, false to hide it
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setDisplay = function( bool ) {
+      Axis.prototype.setDisplay = function( bool ) {
         this.options.display = !!bool;
         return this;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Boolean} A boolean indicating the displayed state of the axis
        */
-      GraphAxis.prototype.isDisplayed = function() {
+      Axis.prototype.isDisplayed = function() {
         return this.options.display;
       };
 
       /**
        * Forces the appearence of a straight perpendicular line at value 0
        * @param {Boolean} lineAt0 - true to display the line, false not to.
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setLineAt0 = function( bool ) {
+      Axis.prototype.setLineAt0 = function( bool ) {
         this.options.lineAt0 = !!bool;
       };
 
@@ -4531,11 +4537,11 @@
        * @param {Number} thisValue - The value of the current axis that should be aligned
        * @param {Number} foreignValue - The value of the reference axis that should be aligned
        * @param {String} preference - "min" or "max". Defined the boundary that should behave the more normally
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.adaptTo = function( axis, thisValue, foreignValue, preference ) {
+      Axis.prototype.adaptTo = function( axis, thisValue, foreignValue, preference ) {
 
         if ( !axis ) {
           this.options.adaptTo = false;
@@ -4556,11 +4562,11 @@
 
       /**
        * Adapts maximum and minimum of the axis if options.adaptTo is defined
-       * @memberof GraphAxis
+       * @memberof Axis
        * @returns {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.adapt = function() {
+      Axis.prototype.adapt = function() {
 
         if ( !this.options.adaptTo ) {
           return;
@@ -4618,11 +4624,11 @@
        * Makes the axis floating (not aligned to the right or the left anymore). You need to specify another axis (perpendicular) and a value at which this axis should be located
        * @param {Axis} axis - The axis on which the current axis should be aligned to
        * @param {Number} value - The value on which the current axis should be aligned
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
        */
-      GraphAxis.prototype.setFloating = function( axis, value ) {
+      Axis.prototype.setFloating = function( axis, value ) {
 
         this.floating = true;
         this.floatingAxis = axis;
@@ -4632,30 +4638,30 @@
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The axis referencing the floating value of the current axis
        */
-      GraphAxis.prototype.getFloatingAxis = function() {
+      Axis.prototype.getFloatingAxis = function() {
         return this.floatingAxis;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The value to which the current axis is aligned to
        */
-      GraphAxis.prototype.getFloatingValue = function() {
+      Axis.prototype.getFloatingValue = function() {
         return this.floatingValue;
       };
 
       /**
        * Sets the axis data spacing
-       * @memberof GraphAxis
+       * @memberof Axis
        * @see AxisOptionsDefault
        * @param {Number} min - The spacing at the axis min value
        * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setAxisDataSpacing = function( val1, val2 ) {
+      Axis.prototype.setAxisDataSpacing = function( val1, val2 ) {
         this.options.axisDataSpacing.min = val1;
         this.options.axisDataSpacing.max = val2 || val1;
         return this;
@@ -4663,57 +4669,57 @@
 
       /**
        * Sets the axis data spacing at the minimum of the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @see AxisOptionsDefault
        * @param {Number} min - The spacing at the axis min value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setAxisDataSpacingMin = function( val ) {
+      Axis.prototype.setAxisDataSpacingMin = function( val ) {
         this.options.axisDataSpacing.min = val;
       };
 
       /**
        * Sets the axis data spacing at the maximum of the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @see AxisOptionsDefault
        * @param {Number} max - The spacing at the axis max value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setAxisDataSpacingMax = function( val ) {
+      Axis.prototype.setAxisDataSpacingMax = function( val ) {
         this.options.axisDataSpacing.max = val;
       };
 
-      GraphAxis.prototype.setMinPx = function( px ) {
+      Axis.prototype.setMinPx = function( px ) {
         this.minPx = px;
         this.setMinMaxFlipped();
       };
 
-      GraphAxis.prototype.setMaxPx = function( px ) {
+      Axis.prototype.setMaxPx = function( px ) {
         this.maxPx = px;
         this.setMinMaxFlipped();
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The position in px of the bottom of the axis
        */
-      GraphAxis.prototype.getMinPx = function() {
+      Axis.prototype.getMinPx = function() {
         return this.minPxFlipped;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The position in px of the top of the axis
        */
-      GraphAxis.prototype.getMaxPx = function( px ) {
+      Axis.prototype.getMaxPx = function( px ) {
         return this.maxPxFlipped;
       };
 
-      GraphAxis.prototype.getMathMaxPx = function() {
+      Axis.prototype.getMathMaxPx = function() {
         return this.maxPx;
       };
 
-      GraphAxis.prototype.getMathMinPx = function() {
+      Axis.prototype.getMathMinPx = function() {
         return this.minPx;
       };
 
@@ -4721,38 +4727,38 @@
 
       /**
        * Retrieves the minimum possible value of the axis. Can be set by "forcedMin", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The minimum possible value of the axis
        */
-      GraphAxis.prototype.getMinValue = function() {
+      Axis.prototype.getMinValue = function() {
         return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
       };
 
       /**
        * Retrieves the maximum possible value of the axis. Can be set by "forcedMax", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The maximum possible value of the axis
        */
-      GraphAxis.prototype.getMaxValue = function() {
+      Axis.prototype.getMaxValue = function() {
         return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
       };
 
-      GraphAxis.prototype.setMinValueData = function( min ) {
+      Axis.prototype.setMinValueData = function( min ) {
         this.dataMin = min;
       };
 
-      GraphAxis.prototype.setMaxValueData = function( max ) {
+      Axis.prototype.setMaxValueData = function( max ) {
         this.dataMax = max;
       };
 
       /**
        * Forces the minimum value of the axis (no more dependant on the serie values)
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} min - The minimum value of the axis
        * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.forceMin = function( min, noRescale ) {
+      Axis.prototype.forceMin = function( min, noRescale ) {
         this.options.forcedMin = min;
 
         this.setCurrentMin( noRescale ? this.getCurrentMin() : undefined );
@@ -4762,12 +4768,12 @@
 
       /**
        * Forces the maximum value of the axis (no more dependant on the serie values).
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} max - The maximum value of the axis
        * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.forceMax = function( max, noRescale ) {
+      Axis.prototype.forceMax = function( max, noRescale ) {
         this.options.forcedMax = max;
 
         this.setCurrentMax( noRescale ? this.getCurrentMax() : undefined );
@@ -4777,29 +4783,29 @@
 
       /**
        * Retrieves the forced minimum of the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The maximum possible value of the axis
        */
-      GraphAxis.prototype.getForcedMin = function() {
+      Axis.prototype.getForcedMin = function() {
         return this.options.forcedMin;
       };
 
       /**
        * Retrieves the forced minimum of the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The maximum possible value of the axis
        */
-      GraphAxis.prototype.getForcedMax = function() {
+      Axis.prototype.getForcedMax = function() {
         return this.options.forcedMax;
       };
 
       /**
        * Forces the min and max values of the axis to the min / max values of another axis
        * @param {Axis} axis - The axis from which the min / max values are retrieved.
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.forceToAxis = function( axis ) {
+      Axis.prototype.forceToAxis = function( axis ) {
         if ( axis.getMaxValue && axis.getMinValue ) {
           this.options.forcedMin = axis.getMinValue();
           this.options.forcedMax = axis.getMaxValue();
@@ -4808,19 +4814,19 @@
         return this;
       };
 
-      GraphAxis.prototype.getNbTicksPrimary = function() {
+      Axis.prototype.getNbTicksPrimary = function() {
         return this.options.nbTicksPrimary;
       };
 
-      GraphAxis.prototype.getNbTicksSecondary = function() {
+      Axis.prototype.getNbTicksSecondary = function() {
         return this.options.nbTicksSecondary;
       };
 
-      GraphAxis.prototype.handleMouseMove = function( px, e ) {
+      Axis.prototype.handleMouseMove = function( px, e ) {
         this.mouseVal = this.getVal( px );
       };
 
-      GraphAxis.prototype.handleMouseWheel = function( delta, e, baseline ) {
+      Axis.prototype.handleMouseWheel = function( delta, e, baseline ) {
 
         delta = Math.min( 0.2, Math.max( -0.2, delta ) );
 
@@ -4845,7 +4851,7 @@
        * Performs a zoom on the axis, without redraw afterwards
        * @param {Number} val1 - The new axis minimum
        * @param {Number} val2 - The new axis maximum
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        * @example
        * graph.getBottomAxis().zoom( 50, 70 ); // Axis boundaries will be 50 and 70 after next redraw
@@ -4856,16 +4862,16 @@
        * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
        * graph.draw();
        */
-      GraphAxis.prototype.zoom = function( val1, val2 ) {
+      Axis.prototype.zoom = function( val1, val2 ) {
         return this._doZoomVal( val1, val2, true );
       };
 
-      GraphAxis.prototype._doZoomVal = function( val1, val2, mute ) {
+      Axis.prototype._doZoomVal = function( val1, val2, mute ) {
 
         return this._doZoom( this.getPx( val1 ), this.getPx( val2 ), val1, val2, mute );
       };
 
-      GraphAxis.prototype._doZoom = function( px1, px2, val1, val2, mute ) {
+      Axis.prototype._doZoom = function( px1, px2, val1, val2, mute ) {
 
         //if(this.options.display || 1 == 1) {
         var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
@@ -4892,19 +4898,19 @@
         return this;
       };
 
-      GraphAxis.prototype.getSerieShift = function() {
+      Axis.prototype.getSerieShift = function() {
         return this._serieShift;
       };
 
-      GraphAxis.prototype.getSerieScale = function() {
+      Axis.prototype.getSerieScale = function() {
         return this._serieScale;
       };
 
-      GraphAxis.prototype.getMouseVal = function() {
+      Axis.prototype.getMouseVal = function() {
         return this.mouseVal;
       };
 
-      GraphAxis.prototype.getUnitPerTick = function( px, nbTick, valrange ) {
+      Axis.prototype.getUnitPerTick = function( px, nbTick, valrange ) {
 
         var umin;
         var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
@@ -5012,10 +5018,10 @@
 
       /**
        * Resets the min and max of the serie to fit the series it contains
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setMinMaxToFitSeries = function( noNotify ) {
+      Axis.prototype.setMinMaxToFitSeries = function( noNotify ) {
 
         var interval = this.getInterval();
 
@@ -5061,68 +5067,68 @@
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
        */
-      GraphAxis.prototype.getInterval = function() {
+      Axis.prototype.getInterval = function() {
         return this.getMaxValue() - this.getMinValue()
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
        */
-      GraphAxis.prototype.getCurrentInterval = function() {
+      Axis.prototype.getCurrentInterval = function() {
         return this.cachedInterval;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The current minimum value of the axis
        */
-      GraphAxis.prototype.getCurrentMin = function() {
+      Axis.prototype.getCurrentMin = function() {
         return this.cachedCurrentMin;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The current maximum value of the axis
        */
-      GraphAxis.prototype.getCurrentMax = function() {
+      Axis.prototype.getCurrentMax = function() {
         return this.cachedCurrentMax;
       };
 
       /**
        * Caches the current axis minimum
-       * @memberof GraphAxis
+       * @memberof Axis
        */
-      GraphAxis.prototype.cacheCurrentMin = function() {
+      Axis.prototype.cacheCurrentMin = function() {
         this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
       };
 
       /**
        * Caches the current axis maximum
-       * @memberof GraphAxis
+       * @memberof Axis
        */
-      GraphAxis.prototype.cacheCurrentMax = function() {
+      Axis.prototype.cacheCurrentMax = function() {
         this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
       };
 
       /**
        * Caches the current interval
-       * @memberof GraphAxis
+       * @memberof Axis
        */
-      GraphAxis.prototype.cacheInterval = function() {
+      Axis.prototype.cacheInterval = function() {
         this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
       };
 
       /**
        * Sets the current minimum value of the axis. If lower that the forced value, the forced value is used
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} val - The new minimum value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setCurrentMin = function( val ) {
+      Axis.prototype.setCurrentMin = function( val ) {
 
         if ( val === undefined || ( this.getForcedMin() !== false && val < this.getForcedMin() ) ) {
           val = this.getMinValue();
@@ -5139,11 +5145,11 @@
 
       /**
        * Sets the current maximum value of the axis. If higher that the forced value, the forced value is used
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} val - The new maximum value
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setCurrentMax = function( val ) {
+      Axis.prototype.setCurrentMax = function( val ) {
 
         if ( val === undefined || ( this.getForcedMax() !== false && val > this.getForcedMax() ) ) {
           val = this.getMaxValue();
@@ -5160,17 +5166,17 @@
 
       /**
        * Sets the flipping state of the axis. If enabled, the axis is descending rather than ascending.
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Boolean} flip - The new flipping state of the axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.flip = function( flip ) {
+      Axis.prototype.flip = function( flip ) {
         this.options.flipped = flip;
         this.setMinMaxFlipped();
         return this;
       };
       /*
-        GraphAxis.prototype.setMinMaxFlipped = function() {
+        Axis.prototype.setMinMaxFlipped = function() {
 
           var interval = this.maxPx - this.minPx;
           var maxPx = this.maxPx - interval * this.options.span[ 0 ];
@@ -5184,14 +5190,14 @@
         }
       */
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Boolean} The current flipping state of the axis
        */
-      GraphAxis.prototype.isFlipped = function() {
+      Axis.prototype.isFlipped = function() {
         return this.options.flipped;
       };
 
-      GraphAxis.prototype._draw = function( linkedToAxisOnly ) { // Redrawing of the axis
+      Axis.prototype._draw = function( linkedToAxisOnly ) { // Redrawing of the axis
 
         var self = this;
         var visible;
@@ -5352,7 +5358,7 @@
         return widthHeight + ( label ? 20 : 0 );
       };
 
-      GraphAxis.prototype.getExponentGreekLetter = function( val ) {
+      Axis.prototype.getExponentGreekLetter = function( val ) {
         switch ( val ) {
 
           case 3:
@@ -5398,7 +5404,7 @@
 
       };
 
-      GraphAxis.prototype.drawInit = function() {
+      Axis.prototype.drawInit = function() {
 
         switch ( this.options.tickPosition ) {
           case 3:
@@ -5436,7 +5442,7 @@
 */
       };
 
-      GraphAxis.prototype.drawLinearTicksWrapper = function( widthPx, valrange ) {
+      Axis.prototype.drawLinearTicksWrapper = function( widthPx, valrange ) {
 
         var tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
 
@@ -5449,19 +5455,19 @@
         return this.drawTicks( tickPrimaryUnit, this.secondaryTicks() );
       };
 
-      GraphAxis.prototype.forcePrimaryTickUnitMax = function( value ) {
+      Axis.prototype.forcePrimaryTickUnitMax = function( value ) {
         this.options.maxPrimaryTickUnit = value;
       };
 
-      GraphAxis.prototype.forcePrimaryTickUnitMin = function( value ) {
+      Axis.prototype.forcePrimaryTickUnitMin = function( value ) {
         this.options.minPrimaryTickUnit = value;
       };
 
-      GraphAxis.prototype.setTickLabelRatio = function( tickRatio ) {
+      Axis.prototype.setTickLabelRatio = function( tickRatio ) {
         this.options.ticklabelratio = tickRatio;
       };
 
-      GraphAxis.prototype.draw = function( linkedToAxisOnly ) {
+      Axis.prototype.draw = function( linkedToAxisOnly ) {
 
         if ( ( linkedToAxisOnly && this.linkedToAxis ) || ( !linkedToAxisOnly && !this.linkedToAxis ) ) {
 
@@ -5474,7 +5480,7 @@
         return 0;
       };
 
-      GraphAxis.prototype.drawTicks = function( primary, secondary ) {
+      Axis.prototype.drawTicks = function( primary, secondary ) {
 
         var unitPerTick = primary,
           min = this.getCurrentMin(),
@@ -5535,7 +5541,7 @@
         return this.widthHeightTick;
       };
 
-      GraphAxis.prototype.nextTick = function( level, callback ) {
+      Axis.prototype.nextTick = function( level, callback ) {
 
         this.ticks[ level ] = this.ticks[ level ] || [];
         this.lastCurrentTick[ level ] = this.lastCurrentTick[ level ] || 0;
@@ -5560,7 +5566,7 @@
         return tick;
       };
 
-      GraphAxis.prototype.nextTickLabel = function( callback ) {
+      Axis.prototype.nextTickLabel = function( callback ) {
 
         this.ticksLabels = this.ticksLabels || [];
         this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
@@ -5585,7 +5591,7 @@
         return tickLabel;
       };
 
-      GraphAxis.prototype.removeUselessTicks = function() {
+      Axis.prototype.removeUselessTicks = function() {
 
         for ( var j in this.currentTick ) {
 
@@ -5598,7 +5604,7 @@
         }
       };
 
-      GraphAxis.prototype.removeUselessTickLabels = function() {
+      Axis.prototype.removeUselessTickLabels = function() {
 
         for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
           this.ticksLabels[ i ].setAttribute( 'display', 'none' );
@@ -5609,13 +5615,13 @@
 
       };
       /*
-        GraphAxis.prototype.doGridLine = function() {
+        Axis.prototype.doGridLine = function() {
           var gridLine = document.createElementNS( this.graph.ns, 'line' );
           this.groupGrids.appendChild( gridLine );
           return gridLine;
         };*/
 
-      GraphAxis.prototype.nextGridLine = function( primary, x1, x2, y1, y2 ) {
+      Axis.prototype.nextGridLine = function( primary, x1, x2, y1, y2 ) {
 
         if ( !( ( primary && this.options.primaryGrid ) || ( !primary && this.options.secondaryGrid ) ) ) {
           return;
@@ -5624,7 +5630,7 @@
         this.gridLinePath[ primary ? "primary" : "secondary" ] += "M " + x1 + " " + y1 + " L " + x2 + " " + y2;
       };
 
-      GraphAxis.prototype.setGridLineStyle = function( gridLine, primary ) {
+      Axis.prototype.setGridLineStyle = function( gridLine, primary ) {
 
         gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
         gridLine.setAttribute( 'stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor() );
@@ -5638,19 +5644,19 @@
 
       };
 
-      GraphAxis.prototype.setGridLinesStyle = function() {
+      Axis.prototype.setGridLinesStyle = function() {
         this.setGridLineStyle( this.gridPrimary, true );
         this.setGridLineStyle( this.gridSecondary, false );
         return this;
       };
 
-      GraphAxis.prototype.resetTicksLength = function() {};
+      Axis.prototype.resetTicksLength = function() {};
 
-      GraphAxis.prototype.secondaryTicks = function() {
+      Axis.prototype.secondaryTicks = function() {
         return this.options.nbTicksSecondary;
       };
 
-      GraphAxis.prototype.drawLogTicks = function() {
+      Axis.prototype.drawLogTicks = function() {
         var min = this.getCurrentMin(),
           max = this.getCurrentMax();
         var incr = Math.min( min, max );
@@ -5702,11 +5708,11 @@
         return this.widthHeightTick;
       };
 
-      GraphAxis.prototype.drawTickWrapper = function( value, label, level, options ) {
+      Axis.prototype.drawTickWrapper = function( value, label, level, options ) {
 
         //var pos = this.getPos( value );
 
-        this.drawTick( value, label, level, options );
+        this.drawTick( value, level, options );
       };
 
       /**
@@ -5721,10 +5727,10 @@
        * @param {Axis} axis - The master axis
        * @param {SlaveAxisScalingFunction} scalingFunction - The scaling function used to map masterValue -> slaveValue
        * @param {Number} decimals - The number of decimals to round the value to
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The width or height used by the axis (used internally)
        */
-      GraphAxis.prototype.linkToAxis = function( axis, scalingFunction, decimals ) {
+      Axis.prototype.linkToAxis = function( axis, scalingFunction, decimals ) {
 
         this.linkedToAxis = {
           axis: axis,
@@ -5734,7 +5740,7 @@
 
       };
 
-      GraphAxis.prototype.drawLinkedToAxisTicksWrapper = function( widthPx, valrange ) {
+      Axis.prototype.drawLinkedToAxisTicksWrapper = function( widthPx, valrange ) {
 
         var opts = this.linkedToAxis,
           px = 0,
@@ -5759,7 +5765,7 @@
             this.decimals = opts.decimals;
           }
 
-          t = this.drawTick( val, true, 1, {}, px + this.getMinPx() );
+          t = this.drawTick( val, 1, {}, px + this.getMinPx() );
 
           if ( !t ) {
             console.log( val, px, this.getMinPx() );
@@ -5787,17 +5793,17 @@
       /**
        * Transform a value into pixels, according to the axis scaling. The value is referenced to the drawing wrapper, not the the axis minimal value
        * @param {Number} value - The value to translate into pixels
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The value transformed into pixels
        */
-      GraphAxis.prototype.getPos = function( value ) {
+      Axis.prototype.getPos = function( value ) {
         return this.getPx( value );
       };
 
       /**
        * @alias Axis~getPos
        */
-      GraphAxis.prototype.getPx = function( value ) {
+      Axis.prototype.getPx = function( value ) {
         //      if(this.getMaxPx() == undefined)
         //        console.log(this);
         //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -5823,7 +5829,7 @@
       /**
        * @alias Axis~getPos
        */
-      GraphAxis.prototype.getRoundedPx = function( value ) {
+      Axis.prototype.getRoundedPx = function( value ) {
         //      if(this.getMaxPx() == undefined)
         //        console.log(this);
         //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -5836,10 +5842,10 @@
       /**
        * Transform a pixel position (referenced to the graph zone, not to the axis minimum) into a value, according to the axis scaling.
        * @param {Number} pixels - The number of pixels to translate into a value
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The axis value corresponding to the pixel position
        */
-      GraphAxis.prototype.getVal = function( px ) {
+      Axis.prototype.getVal = function( px ) {
 
         if ( !this.options.logScale ) {
 
@@ -5855,13 +5861,18 @@
       };
 
       /**
+       *  @alias Axis#getVal
+       */
+      Axis.prototype.getValue = Axis.prototype.getVal;
+
+      /**
        * Transform a delta value into pixels
        * @param {Number} value - The value to translate into pixels
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The value transformed into pixels
        * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
        */
-      GraphAxis.prototype.getRelPx = function( delta ) {
+      Axis.prototype.getRelPx = function( delta ) {
 
         return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
       };
@@ -5869,17 +5880,17 @@
       /**
        * Transform a delta pixels value into value
        * @param {Number} pixels - The pixel to convert into a value
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} The delta value corresponding to delta pixels
        * @see Axis~getRelPx
        * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
        */
-      GraphAxis.prototype.getRelVal = function( px ) {
+      Axis.prototype.getRelVal = function( px ) {
 
         return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
       };
 
-      GraphAxis.prototype.valueToText = function( value ) {
+      Axis.prototype.valueToText = function( value ) {
 
         if ( this.scientificExponent ) {
 
@@ -5916,16 +5927,16 @@
 
       /**
        *  Computes a value and returns it in HTML formatting
-       *  @memberof GraphAxis
+       *  @memberof Axis
        *  @param {Number} value - The value to compute
        *  @param {Boolean} noScaling - Does not display scaling
        *  @param {Boolean} noUnits - Does not display units
        *  @return {String} An HTML string containing the computed value
        *  @example graph.getXAxis().setUnit( "m" ).setUnitDecade( true ).setScientific( true );
        *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
-       *  @see GraphAxis#valueToText
+       *  @see Axis#valueToText
        */
-      GraphAxis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
+      Axis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
 
         var text = this.valueToText( value );
         var letter;
@@ -5947,7 +5958,7 @@
         return text;
       }
 
-      GraphAxis.prototype.getModifiedValue = function( value ) {
+      Axis.prototype.getModifiedValue = function( value ) {
         if ( this.options.ticklabelratio ) {
           value *= this.options.ticklabelratio;
         }
@@ -5959,7 +5970,7 @@
         return value;
       };
 
-      GraphAxis.prototype.modifyUnit = function( value, mode ) {
+      Axis.prototype.modifyUnit = function( value, mode ) {
 
         var text = "";
         var incr = this.incrTick;
@@ -6016,77 +6027,77 @@
         return text;
       };
 
-      GraphAxis.prototype.getExponentialFactor = function() {
+      Axis.prototype.getExponentialFactor = function() {
         return this.options.exponentialFactor;
       };
 
-      GraphAxis.prototype.setExponentialFactor = function( value ) {
+      Axis.prototype.setExponentialFactor = function( value ) {
         this.options.exponentialFactor = value;
       };
 
-      GraphAxis.prototype.setExponentialLabelFactor = function( value ) {
+      Axis.prototype.setExponentialLabelFactor = function( value ) {
         this.options.exponentialLabelFactor = value;
       };
 
-      GraphAxis.prototype.getExponentialLabelFactor = function() {
+      Axis.prototype.getExponentialLabelFactor = function() {
         return this.options.exponentialLabelFactor;
       };
 
       /**
        * Sets the label of the axis
        * @param {Number} label - The label to display under the axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setLabel = function( label ) {
+      Axis.prototype.setLabel = function( label ) {
         this.options.labelValue = label;
         return this;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The label value
        */
-      GraphAxis.prototype.getLabel = function() {
+      Axis.prototype.getLabel = function() {
         return this.options.labelValue;
       };
 
-      GraphAxis.prototype.setSpan = function( _from, _to ) {
+      Axis.prototype.setSpan = function( _from, _to ) {
 
         this.options.span = [ _from, _to ];
         return this;
       };
 
-      GraphAxis.prototype.getSpan = function() {
+      Axis.prototype.getSpan = function() {
         return this.options.span;
       };
 
-      GraphAxis.prototype.setLevel = function( level ) {
+      Axis.prototype.setLevel = function( level ) {
         this._level = level;
         return this;
       };
 
-      GraphAxis.prototype.getLevel = function() {
+      Axis.prototype.getLevel = function() {
         return this._level;
       };
 
-      GraphAxis.prototype.setShift = function( shift ) {
+      Axis.prototype.setShift = function( shift ) {
         this.shift = shift;
         //this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
         this._setShift();
       };
 
-      GraphAxis.prototype.getShift = function() {
+      Axis.prototype.getShift = function() {
         return this.shift;
       };
 
       /**
        * Changes the tick position
        * @param {Number} pos - The new position ( "outside", "centered" or "inside" )
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setTickPosition = function( pos ) {
+      Axis.prototype.setTickPosition = function( pos ) {
         switch ( pos ) {
           case 3:
           case 'outside':
@@ -6112,10 +6123,10 @@
       /**
        * Displays or hides the axis grids
        * @param {Boolean} on - true to enable the grids, false to disable them
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setGrids = function( on ) {
+      Axis.prototype.setGrids = function( on ) {
         this.options.primaryGrid = on;
         this.options.secondaryGrid = on;
         return this;
@@ -6124,10 +6135,10 @@
       /**
        * Displays or hides the axis primary grid
        * @param {Boolean} on - true to enable the grids, false to disable it
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setPrimaryGrid = function( on ) {
+      Axis.prototype.setPrimaryGrid = function( on ) {
         this.options.primaryGrid = on;
         return this;
       };
@@ -6135,357 +6146,364 @@
       /**
        * Displays or hides the axis secondary grid
        * @param {Boolean} on - true to enable the grids, false to disable it
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.setSecondaryGrid = function( on ) {
+      Axis.prototype.setSecondaryGrid = function( on ) {
         this.options.secondaryGrid = on;
         return this;
       };
 
       /**
        * Enables primary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.primaryGridOn = function() {
+      Axis.prototype.primaryGridOn = function() {
         return this.setPrimaryGrid( true );
       };
 
       /**
        * Disables primary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.primaryGridOff = function() {
+      Axis.prototype.primaryGridOff = function() {
         return this.setPrimaryGrid( false );
       };
 
       /**
        * Enables secondary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.secondaryGridOn = function() {
+      Axis.prototype.secondaryGridOn = function() {
         return this.setSecondaryGrid( true );
       };
 
       /**
        * Disables secondary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.secondaryGridOff = function() {
+      Axis.prototype.secondaryGridOff = function() {
         return this.setSecondaryGrid( false );
       };
 
       /**
        * Enables all the grids
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.gridsOn = function() {
+      Axis.prototype.gridsOn = function() {
         return this.setGrids( true );
       };
 
       /**
        * Disables all the grids
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Axis} The current axis
        */
-      GraphAxis.prototype.gridsOff = function() {
+      Axis.prototype.gridsOff = function() {
         return this.setGrids( false );
       };
 
-      GraphAxis.prototype.turnGridsOff = GraphAxis.prototype.gridsOff;
-      GraphAxis.prototype.turnGridsOn = GraphAxis.prototype.gridsOn;
+      /**
+       * @alias Axis#gridsOff
+       */
+      Axis.prototype.turnGridsOff = Axis.prototype.gridsOff;
+
+      /**
+       * @alias Axis#gridsOn
+       */
+      Axis.prototype.turnGridsOn = Axis.prototype.gridsOn;
 
       /**
        * Sets the axis color
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The color to set the axis
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.setAxisColor = function( color ) {
+      Axis.prototype.setAxisColor = function( color ) {
         this.options.axisColor = color;
         return this;
       };
 
       /**
        * Gets the axis color
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The color of the axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.getAxisColor = function( color ) {
+      Axis.prototype.getAxisColor = function( color ) {
         return this.options.axisColor || 'black';
       };
 
       /**
        * Sets the color of the main ticks
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The new color of the primary ticks
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.setPrimaryTicksColor = function( color ) {
+      Axis.prototype.setPrimaryTicksColor = function( color ) {
         this.options.primaryTicksColor = color;
         return this;
       };
 
       /**
        * Gets the color of the main ticks
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The color of the primary ticks
        * @since 1.13.2
        */
-      GraphAxis.prototype.getPrimaryTicksColor = function( color ) {
+      Axis.prototype.getPrimaryTicksColor = function( color ) {
         return this.options.primaryTicksColor || 'black';
       };
 
       /**
        * Sets the color of the secondary ticks
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The new color of the secondary ticks
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.setSecondaryTicksColor = function( color ) {
+      Axis.prototype.setSecondaryTicksColor = function( color ) {
         this.options.secondaryTicksColor = color;
         return this;
       };
 
       /**
        * Gets the color of the secondary ticks
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The color of the secondary ticks
        * @since 1.13.2
        */
-      GraphAxis.prototype.getSecondaryTicksColor = function( color ) {
+      Axis.prototype.getSecondaryTicksColor = function( color ) {
         return this.options.secondaryTicksColor || 'black';
       };
 
       /**
        * Sets the color of the tick labels
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The new color of the tick labels
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.setTicksLabelColor = function( color ) {
+      Axis.prototype.setTicksLabelColor = function( color ) {
         this.options.ticksLabelColor = color;
         return this;
       };
 
       /**
        * Gets the color of the tick labels
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The color of the tick labels
        * @since 1.13.2
        */
-      GraphAxis.prototype.getTicksLabelColor = function( color ) {
+      Axis.prototype.getTicksLabelColor = function( color ) {
         return this.options.ticksLabelColor || 'black';
       };
 
       /**
        * Sets the color of the primary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The primary grid color
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setPrimaryGridColor = function( color ) {
+      Axis.prototype.setPrimaryGridColor = function( color ) {
         this.options.primaryGridColor = color;
         return this;
       };
 
       /**
        * Gets the color of the primary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} color - The primary grid color
        * @since 1.13.3
        */
-      GraphAxis.prototype.getPrimaryGridColor = function() {
+      Axis.prototype.getPrimaryGridColor = function() {
         return this.options.primaryGridColor;
       };
 
       /**
        * Sets the color of the primary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The primary grid color
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setSecondaryGridColor = function( color ) {
+      Axis.prototype.setSecondaryGridColor = function( color ) {
         this.options.secondaryGridColor = color;
         return this;
       };
 
       /**
        * Gets the color of the secondary grid
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} color - The secondary grid color
        * @since 1.13.3
        */
-      GraphAxis.prototype.getSecondaryGridColor = function() {
+      Axis.prototype.getSecondaryGridColor = function() {
         return this.options.secondaryGridColor;
       };
 
       /**
        * Sets the width of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} width - The width of the primary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setPrimaryGridWidth = function( width ) {
+      Axis.prototype.setPrimaryGridWidth = function( width ) {
         this.options.primaryGridWidth = width;
         return this;
       };
 
       /**
        * Gets the width of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} width - The width of the primary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getPrimaryGridWidth = function() {
+      Axis.prototype.getPrimaryGridWidth = function() {
         return this.options.primaryGridWidth;
       };
 
       /**
        * Sets the width of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} width - The width of the secondary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setSecondaryGridWidth = function( width ) {
+      Axis.prototype.setSecondaryGridWidth = function( width ) {
         this.options.secondaryGridWidth = width;
         return this;
       };
 
       /**
        * Gets the width of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} width - The width of the secondary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getSecondaryGridWidth = function() {
+      Axis.prototype.getSecondaryGridWidth = function() {
         return this.options.secondaryGridWidth;
       };
 
       /**
        * Sets the opacity of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} opacity - The opacity of the primary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setPrimaryGridOpacity = function( opacity ) {
+      Axis.prototype.setPrimaryGridOpacity = function( opacity ) {
         this.options.primaryGridOpacity = opacity;
         return this;
       };
 
       /**
        * Gets the opacity of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} opacity - The opacity of the primary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getPrimaryGridOpacity = function() {
+      Axis.prototype.getPrimaryGridOpacity = function() {
         return this.options.primaryGridOpacity;
       };
 
       /**
        * Sets the opacity of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {Number} opacity - The opacity of the secondary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setSecondaryGridOpacity = function( opacity ) {
+      Axis.prototype.setSecondaryGridOpacity = function( opacity ) {
         this.options.secondaryGridOpacity = opacity;
         return this;
       };
 
       /**
        * Gets the opacity of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {Number} opacity - The opacity of the secondary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getSecondaryGridOpacity = function() {
+      Axis.prototype.getSecondaryGridOpacity = function() {
         return this.options.secondaryGridOpacity;
       };
 
       /**
        * Sets the dasharray of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} dasharray - The dasharray of the primary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setPrimaryGridDasharray = function( dasharray ) {
+      Axis.prototype.setPrimaryGridDasharray = function( dasharray ) {
         this.options.primaryGridDasharray = dasharray;
         return this;
       };
 
       /**
        * Gets the dasharray of the primary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} dasharray - The dasharray of the primary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getPrimaryGridDasharray = function() {
+      Axis.prototype.getPrimaryGridDasharray = function() {
         return this.options.primaryGridDasharray;
       };
 
       /**
        * Sets the dasharray of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} dasharray - The dasharray of the secondary grid lines
        * @return {Axis} The current axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setSecondaryGridDasharray = function( dasharray ) {
+      Axis.prototype.setSecondaryGridDasharray = function( dasharray ) {
         this.options.secondaryGridDasharray = dasharray;
         return this;
       };
 
       /**
        * Gets the dasharray of the secondary grid lines
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} dasharray - The dasharray of the secondary grid lines
        * @since 1.13.3
        */
-      GraphAxis.prototype.getSecondaryGridDasharray = function() {
+      Axis.prototype.getSecondaryGridDasharray = function() {
         return this.options.secondaryGridDasharray;
       };
 
       /**
        * Sets the color of the label
-       * @memberof GraphAxis
+       * @memberof Axis
        * @param {String} color - The new color of the label
        * @return {Axis} The current axis
        * @since 1.13.2
        */
-      GraphAxis.prototype.setLabelColor = function( color ) {
+      Axis.prototype.setLabelColor = function( color ) {
         this.options.labelColor = color;
       };
 
       /**
        * Gets the color of the label
-       * @memberof GraphAxis
+       * @memberof Axis
        * @return {String} The color of the label
        * @since 1.13.2
        */
-      GraphAxis.prototype.getLabelColor = function() {
+      Axis.prototype.getLabelColor = function() {
         return this.options.labelColor;
       };
 
-      GraphAxis.prototype.setTickContent = function( dom, val, options ) {
+      Axis.prototype.setTickContent = function( dom, val, options ) {
         if ( !options ) options = {};
 
         if ( options.overwrite || !options.exponential ) {
@@ -6510,18 +6528,18 @@
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @returns {Boolean} true if it is an x axis, false otherwise
        */
-      GraphAxis.prototype.isX = function() {
+      Axis.prototype.isX = function() {
         return false;
       };
 
       /**
-       * @memberof GraphAxis
+       * @memberof Axis
        * @returns {Boolean} true if it is an y axis, false otherwise
        */
-      GraphAxis.prototype.isY = function() {
+      Axis.prototype.isY = function() {
         return false;
       };
 
@@ -6529,10 +6547,10 @@
        * Sets the unit of the axis
        * @param {String} unit - The unit of the axis
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setUnit = function( unit ) {
+      Axis.prototype.setUnit = function( unit ) {
         this.options.unit = unit;
         return this;
       };
@@ -6542,11 +6560,11 @@
        * @param {String} before - The string to insert before
        * @param {String} after - The string to insert after
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @example axis.setUnitWrapper("[", "]").setUnit('m'); // Will display [m]
        * @since 1.13.3
        */
-      GraphAxis.prototype.setUnitWrapper = function( before, after ) {
+      Axis.prototype.setUnitWrapper = function( before, after ) {
         this.options.unitWrapperBefore = before;
         this.options.unitWrapperAfter = after;
         return this;
@@ -6556,10 +6574,10 @@
        * Allows the unit to scale with thousands
        * @param {Boolean} on - Enables this mode
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setUnitDecade = function( on ) {
+      Axis.prototype.setUnitDecade = function( on ) {
         this.options.unitDecade = on;
         return this;
       };
@@ -6568,10 +6586,10 @@
        * Enable the scientific mode for the axis values. This way, big numbers can be avoided, e.g. "1000000000" would be displayed 1 with 10<sup>9</sup> or "G" shown on near the axis unit.
        * @param {Boolean} on - Enables the scientific mode
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setScientific = function( on ) {
+      Axis.prototype.setScientific = function( on ) {
         this.options.scientificScale = on;
         return this;
       };
@@ -6580,11 +6598,11 @@
        * In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
        * @param {Number} scientificScaleExponent - Forces the scientific scale to take a defined power of ten
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        * @see Axis#setScientific
        */
-      GraphAxis.prototype.setScientificScaleExponent = function( scientificScaleExponent ) {
+      Axis.prototype.setScientificScaleExponent = function( scientificScaleExponent ) {
         this.options.scientificScaleExponent = scientificScaleExponent;
         return this;
       };
@@ -6593,11 +6611,11 @@
        * The engineer scaling is similar to the scientific scaling ({@link Axis#setScientificScale}) but allowing only mupltiples of 3 to be used to scale the axis (for instance, go from grams to kilograms while skipping decagrams and hexagrams)
        * @param {Boolean} engineeringScaling - <code>true</code> to turn on the engineering scaling
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        * @see Axis#setScientific
        */
-      GraphAxis.prototype.setEngineering = function( engineeringScaling ) { //bool
+      Axis.prototype.setEngineering = function( engineeringScaling ) { //bool
         this.options.scientificScale = engineeringScaling;
         this.options.engineeringScale = engineeringScaling;
         return this;
@@ -6607,11 +6625,11 @@
        * Calculates the closest engineering exponent from a scientific exponent
        * @param {Number} scientificExponent - The exponent of 10 based on which the axis will be scaled
        * @return {Number} The appropriate engineering exponent
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        * @private
        */
-      GraphAxis.prototype.getEngineeringExponent = function( scientificExponent ) {
+      Axis.prototype.getEngineeringExponent = function( scientificExponent ) {
 
         if ( scientificExponent > 0 ) {
           scientificExponent -= ( scientificExponent % 3 );
@@ -6626,19 +6644,19 @@
        * Enables log scaling
        * @param {Boolean} logScale - ```true``` to enable the log scaling, ```false``` to disable it
        * @return {Axis} The current axis
-       * @memberof GraphAxis
+       * @memberof Axis
        * @since 1.13.3
        */
-      GraphAxis.prototype.setLogScale = function( log ) {
+      Axis.prototype.setLogScale = function( log ) {
         this.options.logScale = log;
         return this;
       };
 
-      GraphAxis.prototype.isZoomed = function() {
+      Axis.prototype.isZoomed = function() {
         return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
       };
 
-      return GraphAxis;
+      return Axis;
 
     } )( build[ "./dependencies/eventEmitter/EventEmitter" ], build[ "./graph.util" ] );
 
@@ -6648,7 +6666,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.js
      */
 
-    build[ './graph.axis.x' ] = ( function( util, GraphAxis ) {
+    build[ './graph.axis.x' ] = ( function( util, Axis ) {
       /** @global */
       /** @ignore */
 
@@ -6656,170 +6674,212 @@
 
       /** 
        * Generic constructor of a y axis
-       * @class XAxis
-       * @augments GraphAxis
+       * @class AxisX
+       * @augments Axis
        */
-      function XAxis( graph, topbottom, options ) {
+      function AxisX( graph, topbottom, options ) {
         this.init( graph, options );
         this.top = topbottom == 'top';
       }
 
-      util.extend( XAxis.prototype, GraphAxis.prototype, {
+      AxisX.prototype = new Axis();
 
-        getAxisPosition: function() {
+      /**
+       *  @memberof AxisX
+       *  @private
+       *  Returns the position of the axis, used by refreshDrawingZone in core module
+       */
+      AxisX.prototype.getAxisPosition = function() {
 
-          if ( !this.options.display ) {
-            return 0;
-          }
-
-          var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
-
-          if ( this.getLabel() ) {
-            size += this.graph.options.fontSize;
-          }
-
-          return size;
-        },
-
-        getAxisWidthHeight: function() {
-          return;
-        },
-
-        isX: function() {
-          return true;
-        },
-        isY: function() {
-          return false;
-        },
-
-        _setShift: function() {
-          if ( this.getShift() === undefined || !this.graph.getDrawingHeight() ) {
-            return;
-          }
-
-          this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
-        },
-
-        getMaxSizeTick: function() {
-          return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
-        },
-
-        drawTick: function( value, label, level, options, forcedPos ) {
-
-          var self = this,
-            val;
-
-          val = forcedPos || this.getPos( value );
-
-          if ( val == undefined || isNaN( val ) ) {
-            return;
-          }
-
-          var tick = this.nextTick( level, function( tick ) {
-
-            tick.setAttribute( 'y1', ( self.top ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
-            tick.setAttribute( 'y2', ( self.top ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
-
-            if ( level == 1 ) {
-              tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
-            } else {
-              tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
-            }
-
-          } );
-
-          //      tick.setAttribute( 'shape-rendering', 'crispEdges' );
-          tick.setAttribute( 'x1', val );
-          tick.setAttribute( 'x2', val );
-
-          this.nextGridLine( level == 1, val, val, 0, this.graph.getDrawingHeight() );
-
-          //  this.groupTicks.appendChild( tick );
-          if ( level == 1 ) {
-            var tickLabel = this.nextTickLabel( function( tickLabel ) {
-
-              tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
-              tickLabel.setAttribute( 'text-anchor', 'middle' );
-              if ( self.getTicksLabelColor() !== 'black' ) {
-                tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
-              }
-              tickLabel.style.dominantBaseline = 'hanging';
-            } );
-
-            tickLabel.setAttribute( 'x', val );
-            this.setTickContent( tickLabel, value, options );
-
-          }
-          //    this.ticks.push( tick );
-
-          return [ tick, tickLabel ];
-        },
-
-        drawSpecifics: function() {
-
-          // Adjusts group shift
-          //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
-
-          // Place label correctly
-
-          this.label.setAttribute( 'text-anchor', 'middle' );
-          this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
-          this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
-          this.labelTspan.textContent = this.getLabel();
-
-          this.line.setAttribute( 'x1', this.getMinPx() );
-          this.line.setAttribute( 'x2', this.getMaxPx() );
-          this.line.setAttribute( 'y1', 0 );
-          this.line.setAttribute( 'y2', 0 );
-
-          this.line.setAttribute( 'stroke', this.getAxisColor() );
-
-          if ( !this.top ) {
-
-            this.labelTspan.style.dominantBaseline = 'hanging';
-            this.expTspan.style.dominantBaseline = 'hanging';
-            this.expTspanExp.style.dominantBaseline = 'hanging';
-
-            this.unitTspan.style.dominantBaseline = 'hanging';
-            this.preunitTspan.style.dominantBaseline = 'hanging';
-
-          }
-        },
-
-        _draw0Line: function( px ) {
-
-          if ( !this._0line ) {
-            this._0line = document.createElementNS( this.graph.ns, 'line' );
-          }
-          this._0line.setAttribute( 'x1', px );
-          this._0line.setAttribute( 'x2', px );
-
-          this._0line.setAttribute( 'y1', 0 );
-          this._0line.setAttribute( 'y2', this.getMaxPx() );
-
-          this._0line.setAttribute( 'stroke', 'black' );
-          this.groupGrids.appendChild( this._0line );
-        },
-
-        handleMouseMoveLocal: function( x, y, e ) {
-          x -= this.graph.getPaddingLeft();
-          this.mouseVal = this.getVal( x );
-        },
-
-        setMinMaxFlipped: function() {
-
-          var interval = this.maxPx - this.minPx;
-          var maxPx = interval * this.options.span[ 1 ] + this.minPx;
-          var minPx = interval * this.options.span[ 0 ] + this.minPx;
-
-          this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-          this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-
+        if ( !this.options.display ) {
+          return 0;
         }
 
-      } );
+        var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
 
-      return XAxis;
+        if ( this.getLabel() ) {
+          size += this.graph.options.fontSize;
+        }
+
+        return size;
+      };
+
+      /**
+       *  @memberof AxisX
+       *  @returns {Boolean} always ```true```
+       */
+      AxisX.prototype.isX = function() {
+        return true;
+      };
+
+      /**
+       *  @memberof AxisX
+       *  @returns {Boolean} always ```false```
+       */
+      AxisX.prototype.isY = function() {
+        return false;
+      }
+
+      /**
+       *  @memberof AxisX
+       *  @private
+       *  Used to set the x position of the axis
+       */
+      AxisX.prototype._setShift = function() {
+        if ( this.getShift() === undefined || !this.graph.getDrawingHeight() ) {
+          return;
+        }
+
+        this.group.setAttribute( 'transform', 'translate(0 ' + ( this.floating ? this.getShift() : ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) ) + ')' )
+      };
+
+      /**
+       *  @memberof AxisX
+       *  Caclulates the maximum tick height
+       *  @return {Number} The maximum tick height
+       */
+      AxisX.prototype.getMaxSizeTick = function() {
+        return ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ) ? 10 : 10 )
+      };
+
+      /**
+       *  @memberof AxisX
+       *  Draws a tick. Mostly used internally but it can be useful if you want to make your own axes
+       *  @param {Number} value - The value in axis unit to place the tick
+       *  @param {Number} level - The importance of the tick
+       *  @param {Object} options - Further options to be passed to ```setTickContent```
+       *  @param {Number} forcedPos - Forces the position of the tick (for axis dependency)
+       */
+      AxisX.prototype.drawTick = function( value, level, options, forcedPos ) {
+
+        var self = this,
+          val;
+
+        val = forcedPos || this.getPos( value );
+
+        if ( val == undefined || isNaN( val ) ) {
+          return;
+        }
+
+        var tick = this.nextTick( level, function( tick ) {
+
+          tick.setAttribute( 'y1', ( self.top ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
+          tick.setAttribute( 'y2', ( self.top ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
+
+          if ( level == 1 ) {
+            tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
+          } else {
+            tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
+          }
+
+        } );
+
+        //      tick.setAttribute( 'shape-rendering', 'crispEdges' );
+        tick.setAttribute( 'x1', val );
+        tick.setAttribute( 'x2', val );
+
+        this.nextGridLine( level == 1, val, val, 0, this.graph.getDrawingHeight() );
+
+        //  this.groupTicks.appendChild( tick );
+        if ( level == 1 ) {
+          var tickLabel = this.nextTickLabel( function( tickLabel ) {
+
+            tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
+            tickLabel.setAttribute( 'text-anchor', 'middle' );
+            if ( self.getTicksLabelColor() !== 'black' ) {
+              tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+            }
+            tickLabel.style.dominantBaseline = 'hanging';
+          } );
+
+          tickLabel.setAttribute( 'x', val );
+          this.setTickContent( tickLabel, value, options );
+
+        }
+        //    this.ticks.push( tick );
+
+        return [ tick, tickLabel ];
+      };
+
+      /**
+       *  @memberof AxisX
+       *  Paints the label, the axis line and anything else specific to x axes
+       */
+      AxisX.prototype.drawSpecifics = function() {
+
+        // Adjusts group shift
+        //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
+
+        // Place label correctly
+
+        this.label.setAttribute( 'text-anchor', 'middle' );
+        this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
+        this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
+        this.labelTspan.textContent = this.getLabel();
+
+        this.line.setAttribute( 'x1', this.getMinPx() );
+        this.line.setAttribute( 'x2', this.getMaxPx() );
+        this.line.setAttribute( 'y1', 0 );
+        this.line.setAttribute( 'y2', 0 );
+
+        this.line.setAttribute( 'stroke', this.getAxisColor() );
+
+        if ( !this.top ) {
+
+          this.labelTspan.style.dominantBaseline = 'hanging';
+          this.expTspan.style.dominantBaseline = 'hanging';
+          this.expTspanExp.style.dominantBaseline = 'hanging';
+
+          this.unitTspan.style.dominantBaseline = 'hanging';
+          this.preunitTspan.style.dominantBaseline = 'hanging';
+
+        }
+      };
+
+      /**
+       *  @memberof AxisX
+       *  @private
+       */
+      AxisX.prototype._draw0Line = function( px ) {
+
+        if ( !this._0line ) {
+          this._0line = document.createElementNS( this.graph.ns, 'line' );
+        }
+        this._0line.setAttribute( 'x1', px );
+        this._0line.setAttribute( 'x2', px );
+
+        this._0line.setAttribute( 'y1', 0 );
+        this._0line.setAttribute( 'y2', this.getMaxPx() );
+
+        this._0line.setAttribute( 'stroke', 'black' );
+        this.groupGrids.appendChild( this._0line );
+      };
+
+      /**
+       *  @memberof AxisX
+       *  @private
+       */
+      AxisX.prototype.handleMouseMoveLocal = function( x, y, e ) {
+        x -= this.graph.getPaddingLeft();
+        this.mouseVal = this.getVal( x );
+      };
+
+      /**
+       *  @memberof AxisX
+       *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+       */
+      AxisX.prototype.setMinMaxFlipped = function() {
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+        var minPx = interval * this.options.span[ 0 ] + this.minPx;
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
+      };
+
+      return AxisX;
     } )( build[ "./graph.util" ], build[ "./graph.axis" ] );
 
     /* 
@@ -6828,7 +6888,7 @@
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.y.js
      */
 
-    build[ './graph.axis.y' ] = ( function( util, GraphAxis ) {
+    build[ './graph.axis.y' ] = ( function( util, Axis ) {
       /** @global */
       /** @ignore */
 
@@ -6836,10 +6896,10 @@
 
       /** 
        * Generic constructor of a y axis
-       * @class GraphYAxis
-       * @augments GraphAxis
+       * @class AxisY
+       * @augments Axis
        */
-      function GraphYAxis( graph, leftright, options ) {
+      function AxisY( graph, leftright, options ) {
 
         this.init( graph, options );
 
@@ -6848,269 +6908,329 @@
 
       }
 
-      util.extend( GraphYAxis.prototype, GraphAxis.prototype, {
+      AxisY.prototype = new Axis();
 
-        getAxisPosition: function() {
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.getAxisPosition = function() {
 
-          if ( !this.options.display ) {
-            return 0;
+        if ( !this.options.display ) {
+          return 0;
+        }
+        return ( this.options.tickPosition == 1 ? 15 : 0 );
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.getAxisWidthHeight = function() {
+        return 15;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @returns {Boolean} always ```false```
+       */
+      AxisY.prototype.isX = function() {
+        return false;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @returns {Boolean} always ```true```
+       */
+      AxisY.prototype.isY = function() {
+        return true;
+      }
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.resetTicksLength = function() {
+        this.longestTick = [ false, 0 ];
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.getMaxSizeTick = function() {
+
+        return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.drawTick = function( value, level, options, forcedPos ) {
+        var pos;
+
+        var self = this,
+          group = this.groupTicks,
+          tickLabel;
+
+        pos = forcedPos || this.getPos( value );
+
+        if ( pos == undefined || isNaN( pos ) ) {
+          return;
+        }
+
+        var tick = this.nextTick( level, function( tick ) {
+
+          tick.setAttribute( 'x1', ( self.left ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
+          tick.setAttribute( 'x2', ( self.left ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
+
+          if ( level == 1 ) {
+            tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
+          } else {
+            tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
           }
-          return ( this.options.tickPosition == 1 ? 15 : 0 );
-        },
 
-        getAxisWidthHeight: function() {
-          return 15;
-        },
+        } );
 
-        isX: function() {
-          return false;
-        },
-        isY: function() {
-          return true;
-        },
+        tick.setAttribute( 'y1', pos );
+        tick.setAttribute( 'y2', pos );
 
-        resetTicksLength: function() {
-          this.longestTick = [ false, 0 ];
-        },
+        this.nextGridLine( level == 1, 0, this.graph.getDrawingWidth(), pos, pos );
 
-        getMaxSizeTick: function() {
+        //  this.groupTicks.appendChild( tick );
+        if ( level == 1 ) {
+          var tickLabel = this.nextTickLabel( function( tickLabel ) {
 
-          return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
-        },
-
-        drawTick: function( value, label, level, options, forcedPos ) {
-          var pos;
-
-          var self = this,
-            group = this.groupTicks,
-            tickLabel;
-
-          pos = forcedPos || this.getPos( value );
-
-          if ( pos == undefined || isNaN( pos ) ) {
-            return;
-          }
-
-          var tick = this.nextTick( level, function( tick ) {
-
-            tick.setAttribute( 'x1', ( self.left ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
-            tick.setAttribute( 'x2', ( self.left ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
-
-            if ( level == 1 ) {
-              tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
-            } else {
-              tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
+            tickLabel.setAttribute( 'x', self.left ? -10 : 10 );
+            if ( self.getTicksLabelColor() !== 'black' ) {
+              tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
             }
+
+            if ( self.left ) {
+              tickLabel.setAttribute( 'text-anchor', 'end' );
+            } else {
+              tickLabel.setAttribute( 'text-anchor', 'start' );
+            }
+            tickLabel.style.dominantBaseline = 'central';
 
           } );
 
-          tick.setAttribute( 'y1', pos );
-          tick.setAttribute( 'y2', pos );
+          tickLabel.setAttribute( 'y', pos );
+          this.setTickContent( tickLabel, value, options );
 
-          this.nextGridLine( level == 1, 0, this.graph.getDrawingWidth(), pos, pos );
-
-          //  this.groupTicks.appendChild( tick );
-          if ( level == 1 ) {
-            var tickLabel = this.nextTickLabel( function( tickLabel ) {
-
-              tickLabel.setAttribute( 'x', self.left ? -10 : 10 );
-              if ( self.getTicksLabelColor() !== 'black' ) {
-                tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
-              }
-
-              if ( self.left ) {
-                tickLabel.setAttribute( 'text-anchor', 'end' );
-              } else {
-                tickLabel.setAttribute( 'text-anchor', 'start' );
-              }
-              tickLabel.style.dominantBaseline = 'central';
-
-            } );
-
-            tickLabel.setAttribute( 'y', pos );
-            this.setTickContent( tickLabel, value, options );
-
-            if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
-              this.longestTick[ 0 ] = tickLabel;
-              this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
-
-            }
-          }
-
-        },
-
-        drawSpecifics: function() {
-          // Place label correctly
-          //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-
-          this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
-
-          if ( this.getLabelColor() !== 'black' ) {
-            this.label.setAttribute( 'fill', this.getLabelColor() );
-          }
-
-          this.labelTspan.textContent = this.getLabel();
-
-          if ( !this.left ) {
-            this.labelTspan.style.dominantBaseline = 'hanging';
-            this.expTspan.style.dominantBaseline = 'hanging';
-            this.expTspanExp.style.dominantBaseline = 'hanging';
-
-            this.unitTspan.style.dominantBaseline = 'hanging';
-            this.preunitTspan.style.dominantBaseline = 'hanging';
+          if ( String( tickLabel.textContent ).length >= this.longestTick[ 1 ] ) {
+            this.longestTick[ 0 ] = tickLabel;
+            this.longestTick[ 1 ] = String( tickLabel.textContent ).length;
 
           }
+        }
 
-          this.line.setAttribute( 'y1', this.getMinPx() );
-          this.line.setAttribute( 'y2', this.getMaxPx() );
-          this.line.setAttribute( 'x1', 0 );
-          this.line.setAttribute( 'x2', 0 );
+      };
 
-          this.line.setAttribute( 'stroke', this.getAxisColor() );
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.drawSpecifics = function() {
+        // Place label correctly
+        //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
 
-        },
+        this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
 
-        _setShift: function() {
+        if ( this.getLabelColor() !== 'black' ) {
+          this.label.setAttribute( 'fill', this.getLabelColor() );
+        }
 
-          if ( !this.getShift() || !this.graph.getWidth() ) {
-            return;
-          }
+        this.labelTspan.textContent = this.getLabel();
 
-          var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
-          this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
-        },
+        if ( !this.left ) {
+          this.labelTspan.style.dominantBaseline = 'hanging';
+          this.expTspan.style.dominantBaseline = 'hanging';
+          this.expTspanExp.style.dominantBaseline = 'hanging';
 
-        isLeft: function() {
-          return this.left;
-        },
-
-        isRight: function() {
-          return !this.left;
-        },
-
-        isFlipped: function() {
-          return !this.options.flipped;
-        },
-
-        _draw0Line: function( px ) {
-
-          if ( !this._0line ) {
-            this._0line = document.createElementNS( this.graph.ns, 'line' );
-          }
-
-          this._0line.setAttribute( 'y1', px );
-          this._0line.setAttribute( 'y2', px );
-
-          this._0line.setAttribute( 'x1', 0 );
-          this._0line.setAttribute( 'x2', this.graph.getDrawingWidth() );
-
-          this._0line.setAttribute( 'stroke', 'black' );
-          this.groupGrids.appendChild( this._0line );
-        },
-
-        handleMouseMoveLocal: function( x, y, e ) {
-          y -= this.graph.getPaddingTop();
-          this.mouseVal = this.getVal( y );
-        },
-
-        /**
-         * Scales the axis with respect to the series contained in an x axis
-         * @memberof GraphYAxis.prototype
-         * @param {GraphAxis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
-         * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
-         * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
-         * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
-         * @param {Boolean} [ min = true ] - Adapt the min
-         * @param {Boolean} [ max = true ] - Adapt the max
-         * @returns {GraphAxis} The current axis
-         */
-        scaleToFitAxis: function( axis, excludeSerie, start, end, min, max ) {
-          //console.log( axis instanceof GraphAxis );
-          if ( !axis || !axis.isX() ) {
-            axis = this.graph.getXAxis();
-          }
-
-          if ( isNaN( start ) ) {
-            start = axis.getCurrentMin();
-          }
-
-          if ( isNaN( end ) ) {
-            end = axis.getCurrentMax();
-          }
-
-          if ( min === undefined ) {
-            min = true;
-          }
-
-          if ( max === undefined ) {
-            max = true;
-          }
-
-          if ( typeof excludeSerie == "number" ) {
-            end = start;
-            start = excludeSerie;
-            excludeSerie = false;
-          }
-
-          var maxV = -Infinity,
-            minV = Infinity,
-            j = 0;
-
-          for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
-
-            if ( !this.graph.series[ i ].isShown() ) {
-              continue;
-            }
-
-            if ( this.graph.series[ i ] == excludeSerie ) {
-              continue;
-            }
-
-            if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
-              continue;
-            }
-
-            j++;
-
-            maxV = max ? Math.max( maxV, this.graph.series[ i ].getMax( start, end ) ) : 0;
-            minV = min ? Math.min( minV, this.graph.series[ i ].getMin( start, end ) ) : 0;
-          }
-
-          if ( j == 0 ) {
-
-            this.setMinMaxToFitSeries(); // No point was found
-
-          } else {
-
-            // If we wanted originally to resize min and max. Otherwise we use the current value
-            minV = min ? minV : this.getCurrentMin();
-            maxV = max ? maxV : this.getCurrentMax();
-
-            var interval = maxV - minV;
-
-            minV -= ( this.options.axisDataSpacing.min * interval );
-            maxV += ( this.options.axisDataSpacing.max * interval );
-
-            this._doZoomVal( minV, maxV );
-          }
-
-          return this;
-        },
-
-        setMinMaxFlipped: function() {
-
-          var interval = this.maxPx - this.minPx;
-          var maxPx = this.maxPx - interval * this.options.span[ 0 ];
-          var minPx = this.maxPx - interval * this.options.span[ 1 ];
-
-          this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-          this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+          this.unitTspan.style.dominantBaseline = 'hanging';
+          this.preunitTspan.style.dominantBaseline = 'hanging';
 
         }
 
-      } );
+        this.line.setAttribute( 'y1', this.getMinPx() );
+        this.line.setAttribute( 'y2', this.getMaxPx() );
+        this.line.setAttribute( 'x1', 0 );
+        this.line.setAttribute( 'x2', 0 );
 
-      return GraphYAxis;
+        this.line.setAttribute( 'stroke', this.getAxisColor() );
+
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype._setShift = function() {
+
+        if ( !this.getShift() || !this.graph.getWidth() ) {
+          return;
+        }
+
+        var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
+        this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.isLeft = function() {
+        return this.left;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.isRight = function() {
+        return !this.left;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.isFlipped = function() {
+        return !this.options.flipped;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype._draw0Line = function( px ) {
+
+        if ( !this._0line ) {
+          this._0line = document.createElementNS( this.graph.ns, 'line' );
+        }
+
+        this._0line.setAttribute( 'y1', px );
+        this._0line.setAttribute( 'y2', px );
+
+        this._0line.setAttribute( 'x1', 0 );
+        this._0line.setAttribute( 'x2', this.graph.getDrawingWidth() );
+
+        this._0line.setAttribute( 'stroke', 'black' );
+        this.groupGrids.appendChild( this._0line );
+      };
+
+      /**
+       *  @memberof AxisY
+       *  @private
+       */
+      AxisY.prototype.handleMouseMoveLocal = function( x, y, e ) {
+        y -= this.graph.getPaddingTop();
+        this.mouseVal = this.getVal( y );
+      };
+
+      /**
+       * Scales the axis with respect to the series contained in an x axis
+       * @memberof AxisY
+       * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
+       * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+       * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
+       * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
+       * @param {Boolean} [ min = true ] - Adapt the min
+       * @param {Boolean} [ max = true ] - Adapt the max
+       * @returns {Axis} The current axis
+       */
+      AxisY.prototype.scaleToFitAxis = function( axis, excludeSerie, start, end, min, max ) {
+        //console.log( axis instanceof GraphAxis );
+        if ( !axis || !axis.isX() ) {
+          axis = this.graph.getXAxis();
+        }
+
+        if ( isNaN( start ) ) {
+          start = axis.getCurrentMin();
+        }
+
+        if ( isNaN( end ) ) {
+          end = axis.getCurrentMax();
+        }
+
+        if ( min === undefined ) {
+          min = true;
+        }
+
+        if ( max === undefined ) {
+          max = true;
+        }
+
+        if ( typeof excludeSerie == "number" ) {
+          end = start;
+          start = excludeSerie;
+          excludeSerie = false;
+        }
+
+        var maxV = -Infinity,
+          minV = Infinity,
+          j = 0;
+
+        for ( var i = 0, l = this.graph.series.length; i < l; i++ ) {
+
+          if ( !this.graph.series[ i ].isShown() ) {
+            continue;
+          }
+
+          if ( this.graph.series[ i ] == excludeSerie ) {
+            continue;
+          }
+
+          if ( !( this.graph.series[ i ].getXAxis() == axis ) || ( this.graph.series[ i ].getYAxis() !== this ) ) {
+            continue;
+          }
+
+          j++;
+
+          maxV = max ? Math.max( maxV, this.graph.series[ i ].getMax( start, end ) ) : 0;
+          minV = min ? Math.min( minV, this.graph.series[ i ].getMin( start, end ) ) : 0;
+        }
+
+        if ( j == 0 ) {
+
+          this.setMinMaxToFitSeries(); // No point was found
+
+        } else {
+
+          // If we wanted originally to resize min and max. Otherwise we use the current value
+          minV = min ? minV : this.getCurrentMin();
+          maxV = max ? maxV : this.getCurrentMax();
+
+          var interval = maxV - minV;
+
+          minV -= ( this.options.axisDataSpacing.min * interval );
+          maxV += ( this.options.axisDataSpacing.max * interval );
+
+          this._doZoomVal( minV, maxV );
+        }
+
+        return this;
+      };
+
+      /**
+       *  @memberof AxisY
+       *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+       *  @return {Axis} The current axis instance
+       */
+      AxisY.prototype.setMinMaxFlipped = function() {
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = this.maxPx - interval * this.options.span[ 0 ];
+        var minPx = this.maxPx - interval * this.options.span[ 1 ];
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
+      }
+
+      return AxisY;
 
     } )( build[ "./graph.util" ], build[ "./graph.axis" ] );
 
@@ -8870,6 +8990,16 @@
          */
         isHideable: function() {
           return this.options.isSerieHideable;
+        },
+
+        notHideable: function() {
+          this.options.isSerieHideable = false;
+          return this;
+        },
+
+        hideable: function() {
+          this.options.isSerieHideable = true;
+          return this;
         },
 
         /** 
@@ -10828,6 +10958,443 @@
 
     /* 
      * Build: new source file 
+     * File name : plugins/graph.plugin.serielinedifference
+     * File path : /Users/normanpellet/Documents/Web/graph/src/plugins/graph.plugin.serielinedifference.js
+     */
+
+    build[ './plugins/graph.plugin.serielinedifference' ] = ( function( Plugin ) {
+      /** @global */
+      /** @ignore */
+
+      "use strict";
+
+      /**
+       * @class PluginSerieLineDifference
+       * @implements Plugin
+       */
+      var PluginSerieLineDifference = function() {
+
+      };
+
+      PluginSerieLineDifference.prototype = new Plugin();
+
+      PluginSerieLineDifference.prototype.defaults = {
+
+        positiveStyle: {
+
+          fillColor: 'green',
+          fillOpacity: 0.2,
+          strokeWidth: 0
+        },
+
+        negativeStyle: {
+          fillColor: 'red',
+          fillOpacity: 0.2,
+          strokeWidth: 0
+        },
+
+        from: 0,
+        to: 0
+      };
+
+      /**
+       * Init method
+       * @private
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.init = function( graph, options ) {
+        this.graph = graph;
+
+        this.pathsPositive = [];
+        this.pathsNegative = [];
+
+        this.positivePolyline = this.graph.newShape( 'polyline' ).draw();
+
+        this.positivePolyline.
+        setFillColor( this.options.positiveStyle.fillColor ).
+        setFillOpacity( this.options.positiveStyle.fillOpacity ).
+        setStrokeWidth( this.options.positiveStyle.strokeWidth ).
+        applyStyle();
+
+        this.negativePolyline = this.graph.newShape( 'polyline' ).draw();
+
+        this.negativePolyline.
+        setFillColor( this.options.negativeStyle.fillColor ).
+        setFillOpacity( this.options.negativeStyle.fillOpacity ).
+        setStrokeWidth( this.options.negativeStyle.strokeWidth ).
+        applyStyle();
+      };
+
+      /**
+       * Assigns the two series for the shape. Postive values are defined when ```serieTop``` is higher than ```serieBottom```.
+       * @param {SerieLine} serieTop - The top serie
+       * @param {SerieLine} serieBottom - The bottom serie
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.setSeries = function( serieTop, serieBottom ) {
+        this.serie1 = serieTop;
+        this.serie2 = serieBottom;
+      };
+
+      /**
+       * Assigns the boundaries
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.setBoundaries = function( from, to ) {
+        this.options.from = from;
+        this.options.to = to;
+      };
+
+      /**
+       * @returns the starting value used to draw the zone
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.getFrom = function() {
+        return this.options.from;
+      };
+
+      /**
+       * @returns the ending value used to draw the zone
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.getTo = function() {
+        return this.options.to;
+      };
+
+      /**
+       * Calculates and draws the zone series
+       * @returns {Plugin} The current plugin instance
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.draw = function() {
+
+        var self = this;
+        var s1 = this.serie1.searchClosestValue( this.getFrom() );
+        var i1, j1, i2, j2, y, y2, crossing;
+
+        var top = [];
+        var bottom = [];
+
+        var bottomBroken;
+
+        if ( !s1 ) {
+          i1 = 0;
+          j1 = 0;
+        } else {
+
+          i1 = s1.dataIndex;
+          j1 = s1.xAfterIndex * 2;
+        }
+
+        y = this.interpolate( this.serie1, this.getFrom() );
+        top.push( this.getFrom() ); // x 
+        top.push( y ); // y
+
+        y = this.interpolate( this.serie2, this.getFrom() );
+        bottom.push( this.getFrom() ); // x 
+        bottom.push( y ); // y
+
+        var s2;
+
+        var order;
+
+        function nextSet() {
+
+          if ( order === true ) {
+            self.pathsPositive.push( [ top, bottom ] );
+          } else if ( order === false ) {
+            self.pathsNegative.push( [ top, bottom ] );
+          }
+
+          top = [];
+          bottom = [];
+          order = undefined;
+        }
+        var ended;
+        for ( ; i1 < this.serie1.data.length; i1++ ) {
+
+          for ( ; j1 < this.serie1.data[ i1 ].length; j1 += 2 ) {
+
+            if ( this.serie1.data[ i1 ][ j1 ] > this.getTo() ) { // FINISHED !
+
+              y = this.interpolate( this.serie1, this.getTo() );
+              y2 = this.interpolate( this.serie2, this.getTo() );
+
+              crossing = this.computeCrossing(
+                top[ top.length - 2 ], top[ top.length - 1 ],
+                this.getTo(), y,
+                bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
+                this.getTo(), y2
+              );
+
+              if ( crossing ) {
+
+                top.push( crossing.x );
+                top.push( crossing.y );
+                bottom.push( crossing.x );
+                bottom.push( crossing.y );
+                nextSet();
+                top.push( crossing.x );
+                top.push( crossing.y );
+                bottom.push( crossing.x );
+                bottom.push( crossing.y );
+
+                order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
+              }
+
+              top.push( this.getTo() ); // x 
+              top.push( y ); // y
+
+              bottom.push( this.getTo() ); // x 
+              bottom.push( y2 ); // y
+
+              ended = true;
+              break;
+            }
+
+            if ( !s2 ) {
+              s2 = this.serie2.searchClosestValue( this.serie1.data[ i1 ][ j1 ] ); // Finds the first point
+
+              if ( s2 ) {
+                i2 = s2.dataIndex;
+                j2 = s2.xBeforeIndex * 2;
+
+                // TODO: Add here first points
+
+                y = this.interpolate( this.serie2, this.serie1.data[ i1 ][ j1 ] );
+
+                top.push( this.serie1.data[ i1 ][ j1 ] ); // x 
+                top.push( this.serie1.data[ i1 ][ j1 + 1 ] ); // y
+
+                bottom.push( this.serie1.data[ i1 ][ j1 ] ); // x 
+                bottom.push( y ); // y
+
+                order = this.serie1.data[ i1 ][ j1 + 1 ] > y;
+
+              } else {
+                continue;
+              }
+            }
+
+            bottomBroken = false;
+
+            crossing = this.computeCrossing(
+              top[ top.length - 2 ], top[ top.length - 1 ],
+              this.serie1.data[ i1 ][ j1 ], this.serie1.data[ i1 ][ j1 + 1 ],
+              bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
+              this.serie2.data[ i2 ][ j2 ], this.serie2.data[ i2 ][ j2 + 1 ]
+            );
+
+            if ( crossing ) {
+
+              top.push( crossing.x );
+              top.push( crossing.y );
+              bottom.push( crossing.x );
+              bottom.push( crossing.y );
+              nextSet();
+              top.push( crossing.x );
+              top.push( crossing.y );
+              bottom.push( crossing.x );
+              bottom.push( crossing.y );
+
+              order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
+            }
+
+            while ( this.serie2.data[ i2 ][ j2 ] < this.serie1.data[ i1 ][ j1 ] ) {
+
+              bottom.push( this.serie2.data[ i2 ][ j2 ] );
+              bottom.push( this.serie2.data[ i2 ][ j2 + 1 ] );
+
+              j2 += 2;
+              if ( j2 == this.serie2.data[ i2 ].length ) {
+                bottomBroken = this.serie2.data[ i2 ][ j2 - 2 ];
+                i2++;
+                j2 = 0;
+                break;
+              }
+
+              crossing = this.computeCrossing(
+                top[ top.length - 2 ], top[ top.length - 1 ],
+                this.serie1.data[ i1 ][ j1 ], this.serie1.data[ i1 ][ j1 + 1 ],
+                bottom[ bottom.length - 2 ], bottom[ bottom.length - 1 ],
+                this.serie2.data[ i2 ][ j2 ], this.serie2.data[ i2 ][ j2 + 1 ]
+              );
+
+              if ( crossing ) {
+
+                top.push( crossing.x );
+                top.push( crossing.y );
+                bottom.push( crossing.x );
+                bottom.push( crossing.y );
+                nextSet();
+                top.push( crossing.x );
+                top.push( crossing.y );
+                bottom.push( crossing.x );
+                bottom.push( crossing.y );
+
+                order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
+              }
+
+            }
+
+            if ( bottomBroken === false ) {
+              top.push( this.serie1.data[ i1 ][ j1 ] );
+              top.push( this.serie1.data[ i1 ][ j1 + 1 ] );
+            } else {
+
+              top.push( bottomBroken );
+              top.push( this.interpolate( this.serie1, bottomBroken ) );
+
+              s2 = false;
+              j1 -= 2;
+              nextSet();
+            }
+
+          }
+
+          if ( ended ) {
+            nextSet();
+            break;
+          }
+          // End of X
+
+          if ( y = this.interpolate( this.serie2, top[ top.length - 2 ] ) ) {
+            bottom.push( top[ top.length - 2 ] );
+            bottom.push( y );
+          }
+
+          nextSet();
+
+          j1 = 0;
+          s2 = false;
+        };
+
+        var d = this.pathsPositive.reduce( makePaths, "" );
+        console.log( d );
+        this.positivePolyline.setPointsPx( d ).redraw();
+
+        var d = this.pathsNegative.reduce( makePaths, "" );
+        this.negativePolyline.setPointsPx( d ).redraw();
+
+        //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
+
+        function makePaths( d, path ) {
+
+          for ( var i = 0; i < path[ 0 ].length; i += 2 ) {
+            if ( i == 0 ) {
+              d += "M ";
+            }
+            d += " " + Math.round( self.serie1.getXAxis().getPx( path[ 0 ][ i ] ) ) + ", " + Math.round( self.serie1.getYAxis().getPx( path[ 0 ][ i + 1 ] ) );
+            if ( i < path[ 0 ].length - 2 ) {
+              d += " L ";
+            }
+          }
+
+          for ( var i = path[ 1 ].length - 2; i >= 0; i -= 2 ) {
+            d += " L " + Math.round( self.serie2.getXAxis().getPx( path[ 1 ][ i ] ) ) + ", " + Math.round( self.serie2.getYAxis().getPx( path[ 1 ][ i + 1 ] ) );
+            if ( i == 0 ) {
+              d += " z ";
+            }
+          }
+          return d;
+        }
+
+      }
+
+      /**
+       * Finds the interpolated y value at point ```valX``` of the serie ```serie```
+       * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
+       * @param {Serie} serie - The serie for which the y value should be computed
+       * @param {Number} valX - The x value
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.interpolate = function( serie, valX ) {
+
+        var value = serie.searchClosestValue( valX );
+
+        if ( !value ) {
+          return false;
+        }
+
+        if ( value.xMax == undefined ) {
+          return value.yMin;
+        }
+
+        if ( value.xMin == undefined ) {
+          return value.yMax;
+        }
+
+        var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+        return ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+      }
+
+      /**
+       * Finds the crossing point between two vector and returns it, or ```false``` if it is not within the x boundaries
+       * @returns {(Object|Boolean)} An object containing the crossing point in the following format: ```{ x: xCrossing, y: yCrossing }``` or ```false``` if no crossing point can be found
+       * @param {Number} x11 - First x point of the first vector
+       * @param {Number} y11 - First y point of the first vector
+       * @param {Number} x12 - Second x point of the first vector
+       * @param {Number} y12 - Second y point of the first vector
+       * @param {Number} x21 - First x point of the second vector
+       * @param {Number} y21 - First y point of the second vector
+       * @param {Number} y22 - Second x point of the second vector
+       * @param {Number} y22 - Second y point of the second vector
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.computeCrossing = function( x11, y11, x12, y12, x21, y21, x22, y22 ) {
+        var a1 = ( y12 - y11 ) / ( x12 - x11 );
+        var a2 = ( y22 - y21 ) / ( x22 - x21 );
+
+        var b1 = y12 - a1 * x12;
+        var b2 = y22 - a2 * x22;
+
+        if ( x11 == x12 || x21 == x22 ) {
+
+          return false;
+        }
+
+        if ( a1 == a2 ) {
+          return {
+            x: x11,
+            y1: y11,
+            y2: y11
+          };
+        }
+
+        var x = ( b1 - b2 ) / ( a2 - a1 )
+
+        if ( x > x12 || x < x11 || x < x21 || x > x22 ) {
+          return false;
+        }
+
+        return {
+          x: x,
+          y: a1 * x + b1
+        };
+      }
+
+      /**
+       * @returns The positive polyline
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.getPositivePolyline = function() {
+        return this.positivePolyline;
+      }
+
+      /**
+       * @returns The negative polyline
+       * @memberof PluginSerieLineDifference
+       */
+      PluginSerieLineDifference.prototype.getNegativePolyline = function() {
+        return this.negativePolyline;
+      }
+
+      return PluginSerieLineDifference;
+
+    } )( build[ "./plugins/graph.plugin" ] );
+
+    /* 
+     * Build: new source file 
      * File name : series/graph.serie
      * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.js
      */
@@ -10893,6 +11460,8 @@
         } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
           data = [ data ];
           oneDimensional = true;
+        } else if ( isDataArray && isArray( data[ 0 ] ) && data[ 0 ].length > 2 ) {
+          oneDimensional = true;
         } else if ( !isDataArray ) {
           util.throwError( "Data is not an array" );
           return;
@@ -10902,12 +11471,14 @@
         var isData0Array = isArray( data[ 0 ] );
 
         var isData00Array = isArray( data[ 0 ][ 0 ] );
+        console.log( oneDimensional, data )
         if ( isData0Array && !oneDimensional && !isData00Array ) {
           data = [ data ];
         }
         if ( isData0Array ) {
-          for ( var i = 0, k = data.length; i < k; i++ ) {
 
+          for ( var i = 0, k = data.length; i < k; i++ ) {
+            console.log( i, k );
             arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
             datas.push( arr );
             z = 0;
@@ -12493,10 +13064,10 @@
 
         this.selected = selectionType !== "unselected";
 
-        if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+        if ( this.areMarkersShown() || this.areMarkersShown( selectionType ) ) {
           this.selectionType = selectionType;
 
-          this.draw(); // Drawing is absolutely required here
+          this.draw( true ); // Drawing is absolutely required here
           this.applyLineStyles();
         } else {
           this.selectionType = selectionType;
@@ -13199,7 +13770,7 @@
        */
       SerieLine.prototype.getMarkerCurrentFamily = function( k ) {
 
-        if ( !this.markerPoints[ this.selectionType ] ) {
+        if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
           return;
         }
 
@@ -13356,8 +13927,8 @@
           return;
         }
 
-        if ( this.markersShown() && allowMarker !== false ) {
-          drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+        if ( this.markersShown() && allowMarker !== false && this.markerFamilies[ this.selectionType || "unselected" ] ) {
+          drawMarkerXY( this, this.markerFamilies[ this.selectionType || "unselected" ][ this.markerCurrentFamily ], xpx, ypx );
         }
 
         this.counter++;
@@ -13928,13 +14499,19 @@
         }
       };
 
-      SerieLine.prototype.extendStyle = function( stylename ) {
-        var s = this.styles[ stylename ];
-        console.log( s, stylename );
-        if ( s ) {
-          this.styles[ stylename ] = util.extend( true, {}, this.styles.unselected, s );
-          console.log( s, stylename );
-        }
+      SerieLine.prototype.extendStyle = function( styleTarget, styleOrigin ) {
+        var s = this.styles[ styleTarget ];
+
+        this.styles[ styleTarget ] = util.extend( true, {}, this.styles[ styleOrigin || "unselected" ], s || {} );
+
+        this.styles[ styleTarget ].markers.map( function( marker ) {
+          if ( marker.dom ) {
+            marker.dom = "";
+          }
+        } );
+
+        this._recalculateMarkerPoints( styleTarget, this.styles[ styleTarget ].markers );
+        this.styleHasChanged( styleTarget );
       };
 
       /*  * @memberof SerieLine
@@ -13957,7 +14534,7 @@
 
       SerieLine.prototype.getLineWidth = function( selectionType ) {
 
-        return this.getStyle( selectionType ).lineWidth;
+        return this.getStyle( selectionType ).lineWidth || 1;
       };
 
       /* LINE COLOR * @memberof SerieLine
@@ -13979,7 +14556,7 @@
 
       SerieLine.prototype.getLineColor = function( selectionType ) {
 
-        return this.getStyle( selectionType ).lineColor;
+        return this.getStyle( selectionType ).lineColor || "black";
       };
 
       /* * @memberof SerieLine
@@ -13993,7 +14570,7 @@
         this.styles[ selectionType ].showMarkers = true;
 
         if ( redraw && this._drawn ) {
-          this.draw();
+          this.draw( true );
         } else {
           this.styleHasChanged( selectionType );
         }
@@ -14007,7 +14584,7 @@
         this.styles[ selectionType ].showMarkers = false;
 
         if ( redraw && this._drawn ) {
-          this.draw();
+          this.draw( true );
         } else {
           this.styleHasChanged( selectionType );
         }
@@ -14015,7 +14592,7 @@
       };
 
       SerieLine.prototype.markersShown = function( selectionType ) {
-        return this.getStyle( selectionType ).showMarkers;
+        return this.getStyle( selectionType ).showMarkers !== false;
       };
 
       SerieLine.prototype.areMarkersShown = function() {
@@ -14027,7 +14604,7 @@
       };
 
       // Multiple markers
-      SerieLine.prototype.setMarkers = function( families, selectionType ) {
+      SerieLine.prototype.setMarkers = function( families, selectionType, applyToSelected ) {
         // Family has to be an object
         // Family looks like
         /*
@@ -14059,15 +14636,45 @@
 
         this.styles[ selectionType || "unselected" ].markers = families;
 
-        this._recalculateMarkerPoints( selectionType, families );
+        if ( applyToSelected ) {
+          this.styles[ "selected" ].markers = util.extend( true, {}, families );
+        }
 
+        this._recalculateMarkerPoints( selectionType, families );
         this.styleHasChanged( selectionType );
         this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-
         return this;
       };
 
       SerieLine.prototype.setMarkersPoints = function( points, family, selectionType ) {
+        this._extendMarkers( "points", points, family, selectionType, true );
+      };
+
+      SerieLine.prototype.setMarkersColor = function( color, family, selectionType ) {
+        this._extendMarkers( "color", color, family, selectionType );
+      };
+
+      SerieLine.prototype.setMarkersType = function( type, family, selectionType ) {
+        this._extendMarkers( "type", type, family, selectionType );
+      };
+
+      SerieLine.prototype.setMarkersZoom = function( zoom, family, selectionType ) {
+        this._extendMarkers( "zoom", zoom, family, selectionType );
+      };
+
+      SerieLine.prototype.setMarkersStrokeColor = function( strokeColor, family, selectionType ) {
+        this._extendMarkers( "strokeColor", strokeColor, family, selectionType );
+      };
+
+      SerieLine.prototype.setMarkersStrokeWidth = function( strokeWidth, family, selectionType ) {
+        this._extendMarkers( "strokeWidth", strokeWidth, family, selectionType );
+      };
+
+      SerieLine.prototype.setMarkersFillColor = function( fillColor, family, selectionType ) {
+        this._extendMarkers( "fillColor", fillColor, family, selectionType );
+      };
+
+      SerieLine.prototype._extendMarkers = function( type, value, family, selectionType, recalculatePoints ) {
 
         family = family || 0;
         selectionType = selectionType || "unselected";
@@ -14076,8 +14683,14 @@
           return;
         }
 
-        this.styles[ selectionType ].markers[ family ].points = points;
-        this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+        this.styles[ selectionType ].markers[ family ][ type ] = value
+
+        if ( recalculatePoints ) {
+          this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+        }
+
+        this.setMarkerStyleTo( this.styles[ selectionType ].markers[ family ].dom, this.styles[ selectionType ].markers[ family ] );
+
       };
 
       SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {
@@ -16775,6 +17388,7 @@
 
       /**
        * Initializes the serie
+       * @private
        * @memberof SerieDensityMap
        */
       SerieDensityMap.prototype.init = function( graph, name, options ) {
@@ -16791,6 +17405,13 @@
         this.recalculateBinsOnDraw = false;
       };
 
+      /**
+       * Sets the data of the serie. Careful, only one format allowed for now.
+       * @memberof SerieDensityMap
+       * @param {Array} data - A vector containing 2-elements arrays
+       * @return {SerieDensityMap} The current instance
+       * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
+       */
       SerieDensityMap.prototype.setData = function( data ) {
 
         this.minX = this.maxX = this.minY = this.maxY = 0;
@@ -16815,6 +17436,20 @@
 
       }
 
+      /**
+       * Calculates the bins from the (x,y) dataset
+       * @memberof SerieDensityMap
+       * @param {Number} fromX - The first x element to consider
+       * @param {Number} deltaX - The x spacing between two bins
+       * @param {Number} numX - The number of x bins
+       * @param {Number} fromY - The first y element to consider
+       * @param {Number} deltaY - The y spacing between two bins
+       * @param {Number} numY - The number of y bins
+       * @return {Array} The generated density map
+       * @see SerieDensityMap#autoBins
+       * @see SerieDensityMap#autoColorMapBinBoundaries
+       * @see SerieDensityMap#setPxPerBin
+       */
       SerieDensityMap.prototype.calculateDensity = function( fromX, deltaX, numX, fromY, deltaY, numY ) {
 
         var densitymap = [],
@@ -16860,10 +17495,114 @@
         return densitymap;
       }
 
-      SerieDensityMap.prototype.autoBins = function( numX, numY ) {
+      /**
+       * Calculates the bins from the (x,y) dataset using bin weighing
+       * Will assign a set of (x,y) to the 4 neighbouring bins according to its exact position
+       * @memberof SerieDensityMap
+       * @param {Number} fromX - The first x element to consider
+       * @param {Number} deltaX - The x spacing between two bins
+       * @param {Number} numX - The number of x bins
+       * @param {Number} fromY - The first y element to consider
+       * @param {Number} deltaY - The y spacing between two bins
+       * @param {Number} numY - The number of y bins
+       * @return {Array} The generated density map
+       * @see SerieDensityMap#autoBins
+       * @see SerieDensityMap#autoColorMapBinBoundaries
+       * @see SerieDensityMap#setPxPerBin
+       */
+      SerieDensityMap.prototype.calculateDensityWeighted = function( fromX, deltaX, numX, fromY, deltaY, numY ) {
+
+        var densitymap = [],
+          i,
+          l = this.data.length,
+          indexX, indexY;
+
+        var binMin = Number.POSITIVE_INFINITY;
+        var binMax = Number.NEGATIVE_INFINITY;
+
+        var compX, compY;
+        var exactX, exactY;
+        var indexXLow, indexXHigh, indexYLow, indexYHigh;
+
+        for ( i = 0; i < l; i++ ) {
+          exactX = ( ( this.data[ i ][ 0 ] - fromX ) / deltaX ) - 0.5;
+          exactY = ( ( this.data[ i ][ 1 ] - fromY ) / deltaY ) - 0.5;
+
+          indexX = Math.floor( exactX );
+          indexY = Math.floor( exactY );
+
+          indexXLow = indexX; //Math.floor( exactX );
+          indexYLow = indexY; //Math.floor( exactY );
+
+          indexXHigh = indexX + 1; //Math.ceil( exactX );
+          indexYHigh = indexY + 1; //Math.ceil( exactY );
+
+          compX = ( 1 - ( exactX - indexX ) );
+          compY = ( 1 - ( exactY - indexY ) );
+
+          //console.log( exactY, indexY );
+          //console.log( compY, indexYLow, indexYHigh );
+          if ( indexX > numX || indexY > numY || indexX < 0 || indexY < 0 ) {
+            continue;
+          }
+
+          densitymap[ indexXLow ] = densitymap[ indexXLow ] || [];
+          densitymap[ indexXHigh ] = densitymap[ indexXHigh ] || [];
+
+          densitymap[ indexXLow ][ indexYLow ] = densitymap[ indexXLow ][ indexYLow ] || 0;
+          densitymap[ indexXHigh ][ indexYLow ] = densitymap[ indexXHigh ][ indexYLow ] || 0;
+          densitymap[ indexXLow ][ indexYHigh ] = densitymap[ indexXLow ][ indexYHigh ] || 0;
+          densitymap[ indexXHigh ][ indexYHigh ] = densitymap[ indexXHigh ][ indexYHigh ] || 0;
+
+          densitymap[ indexXLow ][ indexYLow ] += compX * compY;
+          densitymap[ indexXHigh ][ indexYLow ] += ( 1 - compX ) * compY;
+          densitymap[ indexXLow ][ indexYHigh ] += compX * ( 1 - compY );
+          densitymap[ indexXHigh ][ indexYHigh ] += ( 1 - compX ) * ( 1 - compY );
+
+          // A loop would be nicer, but would it be faster ?
+          binMin = densitymap[ indexXLow ][ indexYLow ] < binMin ? densitymap[ indexXLow ][ indexYLow ] : binMin;
+          binMax = densitymap[ indexXLow ][ indexYLow ] > binMax ? densitymap[ indexXLow ][ indexYLow ] : binMax;
+          binMin = densitymap[ indexXHigh ][ indexYLow ] < binMin ? densitymap[ indexXHigh ][ indexYLow ] : binMin;
+          binMax = densitymap[ indexXHigh ][ indexYLow ] > binMax ? densitymap[ indexXHigh ][ indexYLow ] : binMax;
+          binMin = densitymap[ indexXLow ][ indexYHigh ] < binMin ? densitymap[ indexXLow ][ indexYHigh ] : binMin;
+          binMax = densitymap[ indexXLow ][ indexYHigh ] > binMax ? densitymap[ indexXLow ][ indexYHigh ] : binMax;
+          binMin = densitymap[ indexXHigh ][ indexYHigh ] < binMin ? densitymap[ indexXHigh ][ indexYHigh ] : binMin;
+          binMax = densitymap[ indexXHigh ][ indexYHigh ] > binMax ? densitymap[ indexXHigh ][ indexYHigh ] : binMax;
+
+          //binMax = Math.max( binMax, densitymap[ indexX ][ indexY ] );
+        }
+
+        this.maxIndexX = numX;
+        this.maxIndexY = numY;
+
+        this.binMin = binMin;
+        this.binMax = binMax;
+
+        this.deltaX = deltaX;
+        this.deltaY = deltaY;
+
+        this.fromX = fromX;
+        this.fromY = fromY;
 
         this.numX = numX;
         this.numY = numY;
+
+        this.densitymap = densitymap;
+        return densitymap;
+      }
+
+      /**
+       * Calculates the density map based on the minimum and maximum values found in the data array
+       * @memberof SerieDensityMap
+       * @param {Number} [ numX = 400 ] - The number of x bins
+       * @param {Number} [ numY = numX ] - The number of y bins
+       * @return {SerieDensityMap} The current instance
+       * @see SerieDensityMap#calculateDensity
+       */
+      SerieDensityMap.prototype.autoBins = function( numX, numY ) {
+
+        this.numX = numX || 400;
+        this.numY = numY || this.numX;
 
         this.calculateDensity(
           this.minX, ( this.maxX - this.minX ) / numX, numX,
@@ -16875,43 +17614,209 @@
         return this;
       }
 
-      SerieDensityMap.prototype.setBinsPerPx = function( perPxX, perPxY ) {
+      /**
+       * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+       * the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using {@link SerieDensityMap#setColorMapBinBoundaries}).
+       * @memberof SerieDensityMap
+       * @param {Number} pxPerBinX - The number of x bins per pixels. Should be an integer, but technically it doesn't have to
+       * @param {Number} pxPerBinY - The number of y bins per pixels. Should be an integer, but technically it doesn't have to
+       * @param {Boolean} weightedDensityMap - Whether jsGraph should use weighted density mapping or not
+       * @return {SerieDensityMap} The current instance
+       * @see SerieDensityMap#calculateDensity
+       */
+      SerieDensityMap.prototype.setPxPerBin = function( pxPerBinX, pxPerBinY, weightedDensityMap ) {
 
-        if ( perPxY === undefined && perPxX ) {
-          perPxY = perPxX;
+        if ( pxPerBinX ) {
+          this.calculationDensityMap( {
+            from: 'min',
+            to: 'max',
+            pxPerBin: pxPerBinX,
+            weighted: weightedDensityMap
+          } );
         }
 
-        this.recalculateBinsOnDraw = true;
-        this.binPerPxX = perPxX || 3;
-        this.binPerPxY = perPxY || 3;
+        if ( pxPerBinY ) {
+          this.calculationDensityMap( false, {
+            from: 'min',
+            to: 'max',
+            pxPerBin: pxPerBinY,
+            weighted: weightedDensityMap
+          } );
+        }
+
         return this;
       }
 
-      SerieDensityMap.prototype.setBinsBoundaries = function( min, max ) {
+      /**
+       * Sets bins in the ```x``` or ```y``` direction based on a from value, a to value and a number of bins.
+       * @memberof SerieDensityMap
+       * @param {String} mode - ```x``` or ```y```
+       * @param {Number} from - The from value of the bin for the calculation with ```calculateDensityMap```
+       * @param {Number} to - The to value
+       * @param {Number} num - The number of bins
+       * @return {SerieDensityMap} The current instance
+       * @see SerieDensityMap#calculateDensity
+       */
+      SerieDensityMap.prototype.setBinsFromTo = function( mode, from, to, num ) {
+
+        this.densityMapCalculation = this.densityMapCalculation || {};
+
+        this.densityMapCalculation[ mode ] = {
+          from: from,
+          to: to,
+          numBins: num
+        };
+        this.calculationDensityMap();
+        return this;
+      }
+
+      SerieDensityMap.prototype.calculationDensityMap = function( x, y ) {
+
+        this.method = this.calculateDensityAdvanced;
+        this.densityMapCalculation = this.densityMapCalculation || {};
+
+        if ( x ) {
+          this.densityMapCalculation.x = x;
+        }
+
+        if ( y ) {
+          this.densityMapCalculation.y = y;
+        }
+      }
+
+      SerieDensityMap.prototype.calculateDensityAdvanced = function() {
+
+        var results = {
+          x: {
+            from: 0,
+            num: 0,
+            delta: 0,
+            weighing: false
+          },
+
+          y: {
+            from: 0,
+            num: 0,
+            delta: 0,
+            weighing: false
+          }
+        };
+
+        var widthValues = {
+          x: this.graph.drawingSpaceWidth,
+          y: this.graph.drawingSpaceHeight
+        };
+        var axisGetter = {
+          x: this.getXAxis,
+          y: this.getYAxis
+        };
+
+        var weighing = false;
+
+        for ( var i in this.densityMapCalculation ) {
+
+          if ( this.densityMapCalculation[ i ].weighted ) {
+            weighing = true;
+            results[ i ].weighing = true;
+          }
+
+          if ( this.densityMapCalculation[ i ].pxPerBin ) {
+
+            // In value
+
+            var from = ( this.densityMapCalculation[ i ].from == 'min' ) ? axisGetter[ i ].call( this ).getCurrentMin() : this.densityMapCalculation[ i ].from;
+            var to = this.densityMapCalculation[ i ].to == 'max' ? axisGetter[ i ].call( this ).getCurrentMax() : this.densityMapCalculation[ i ].to;
+
+            // In px
+            var dimension = Math.abs( axisGetter[ i ].call( this ).getRelPx( to - from ) );
+            results[ i ].num = Math.ceil( widthValues[ i ] / this.densityMapCalculation[ i ].pxPerBin );
+
+            //console.log( from, from - axisGetter[ i ].call( this ).getRelVal( ( results[ i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ), ( results[ i ].num * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 );
+            results[ i ].from = from - Math.abs( axisGetter[ i ].call( this ).getRelVal( ( ( results[ i ].num ) * this.densityMapCalculation[ i ].pxPerBin - dimension ) / 2 ) );
+            results[ i ].delta = Math.abs( axisGetter[ i ].call( this ).getRelVal( this.densityMapCalculation[ i ].pxPerBin ) );
+
+          } else {
+
+            results[ i ].num = this.densityMapCalculation[ i ].numBins || 400;
+            results[ i ].from = ( this.densityMapCalculation[ i ].from == 'min' ) ? axisGetter[ i ].call( this ).getCurrentMin() : this.densityMapCalculation[ i ].from;
+            results[ i ].delta = ( this.densityMapCalculation[ i ].to ) ? ( ( this.densityMapCalculation[ i ].to == 'max' ? axisGetter[ i ].call( this ).getCurrentMax() : this.densityMapCalculation[ i ].to ) - results[ i ].from ) / ( results[ i ].num ) : this.densityMapCalculate[ i ].delta;
+
+          }
+
+          //      console.log( axisGetter[ i ].call( this ).getCurrentMin(), axisGetter[ i ].call( this ).getCurrentMax(), )
+        }
+        //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
+
+        //console.log( this.densityMapCalculation );
+        ( weighing ? this.calculateDensityWeighted : this.calculateDensity ).call( this,
+          results.x.from, results.x.delta, results.x.num,
+          results.y.from, results.y.delta, results.y.num
+        );
+      };
+
+      /**
+       * Selects a subrange of bins for the color mapping. There is no need to recalculate the color map after calling this method
+       * @memberof SerieDensityMap
+       * @param {Number} binMin - The minimum bin value
+       * @param {Number} binMax - The maximum bin value
+       * @return {SerieDensityMap} The current instance
+       * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
+       * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); 
+       */
+      SerieDensityMap.prototype.setColorMapBinBoundaries = function( min, max ) {
         this.colorMapMin = min;
         this.colorMapMax = max;
         return this;
       }
 
-      SerieDensityMap.prototype.autoBinsBoundaries = function() {
+      /**
+       * Calls {@link SerieDensityMap#setColorMapBinBoundaries} using the minimum and maximum bin values calculated by {@link SerieDensityMap#calculateDensity}. This function must be called, since colorMinMap and colorMaxMap are not set automatically when the density map is calculated.
+       * @memberof SerieDensityMap
+       * @param {Number} binMin - The minimum bin value
+       * @param {Number} binMax - The maximum bin value
+       * @return {SerieDensityMap} The current instance
+       */
+      SerieDensityMap.prototype.autoColorMapBinBoundaries = function() {
         this.colorMapMin = this.binMin;
         this.colorMapMax = this.binMax;
         return this;
       }
 
-      SerieDensityMap.prototype.colorMapHSV = function( colorStops, numBins, method ) {
+      /**
+       * Allows the use of a callback to determine the color map min and max value just before the density map is redrawn. This is very useful when the density map is recalculate before redraw, such as in the case where bins per pixels are used
+       * @memberof SerieDensityMap
+       * @param {(String|Function)} callback - The callback function to call. Should return an array with two elements ```[ colorMapMin, colorMapMax ]```. This parameter can also take the value ```auto```, in which case ```autoColorMapBinBoundaries``` will be called before redraw
+       * @return {SerieDensityMap} The current instance
+       */
+      SerieDensityMap.prototype.onRedrawColorMapBinBoundaries = function( callback ) {
+        this.callbackColorMapMinMax = callback;
+        return this;
+      };
+
+      /**
+       * Generates a color map based on a serie of HSL(A) values. 
+       * @summary Colors can scale linearly, logarithmically (enhances short range differences) or exponentially (enhances long range differences).
+       * One word of advice though. SVG being not canvas, jsGraph has to create a path for each color value of the color map. In other words, if you're asking for 16-bit coloring (65536 values), 65536 SVG paths will be created and your browser will start to suffer from it.
+       * As of now, all the colors in colorStops will be places at equal distances from each other between <code>colorMapMin</code> and <code>colorMapMax</code> set by {@link autoColorMapBinBoundaries} or {@link setColorMapBinBoundaries}
+       * @memberof SerieDensityMap
+       * @param {Array<Object>} colorStops - An array of objects, each having the following format: <code>{ h: [ 0-360], s: 0-1, l: 0-1, a: 0-1}</code>
+       * @param {Number} numColors - The number of colors to compute.
+       * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code>, or <code>log</code>
+       * @return {SerieDensityMap} The current instance
+       */
+      SerieDensityMap.prototype.colorMapHSL = function( colorStops, numColors, method ) {
 
         method = method || "linear";
 
         var methods = {
           "exp": function( value ) {
-            return ( Math.exp( value / numBins * 1 ) - Math.exp( 0 ) ) / ( Math.exp( 1 ) - Math.exp( 0 ) );
+            return ( Math.exp( value / numColors * 1 ) - Math.exp( 0 ) ) / ( Math.exp( 1 ) - Math.exp( 0 ) );
           },
           "log": function( value ) {
-            return ( Math.log( value + 1 ) - Math.log( 1 ) ) / ( Math.log( numBins + 1 ) - Math.log( 1 ) );
+            return ( Math.log( value + 1 ) - Math.log( 1 ) ) / ( Math.log( numColors + 1 ) - Math.log( 1 ) );
           },
           "linear": function( value ) {
-            return ( value - 0 ) / ( numBins - 0 );
+            return ( value - 0 ) / ( numColors - 0 );
           }
         }
 
@@ -16930,7 +17835,7 @@
 
         var slices = colorStops.length - 1;
 
-        for ( var i = 0; i <= numBins; i++ ) {
+        for ( var i = 0; i <= numColors; i++ ) {
 
           ratio = methods[ method ]( i );
 
@@ -16953,71 +17858,91 @@
 
         this.opacities = opacities;
         this.colorMap = colorMap;
-        this.colorMapNum = numBins;
+        this.colorMapNum = numColors;
+        return this;
       }
 
-      SerieDensityMap.prototype.autoColorMapHSV = function( colorStops, method ) {
-
+      /**
+       * Calls {@link SerieDensityMap#colorMapHSV} using 100 colors.
+       * @memberof SerieDensityMap
+       * @param {Array<Object>} colorStops - An array of objects, each having the following format: <code>{ h: [ 0-360], s: 0-1, l: 0-1, a: 0-1}</code>
+       * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code> or <code>log</code>
+       * @return {SerieDensityMap} The current instance
+       */
+      SerieDensityMap.prototype.autoColorMapHSL = function( colorStops, method ) {
         this.colorMapHSV( colorStops, 100, method || "linear" );
+        return this;
       }
 
-      SerieDensityMap.prototype.byteToHex = function( b ) {
-          return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
-        }
-        /*
-          SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
-            var r, g, b, i, f, p, q, t;
-            if ( arguments.length === 1 ) {
-              s = h.s, v = h.v, h = h.h;
-            }
-            i = Math.floor( h * 6 );
-            f = h * 6 - i;
-            p = v * ( 1 - s );
-            q = v * ( 1 - f * s );
-            t = v * ( 1 - ( 1 - f ) * s );
-            switch ( i % 6 ) {
-              case 0:
-                r = v, g = t, b = p;
-                break;
-              case 1:
-                r = q, g = v, b = p;
-                break;
-              case 2:
-                r = p, g = v, b = t;
-                break;
-              case 3:
-                r = p, g = q, b = v;
-                break;
-              case 4:
-                r = t, g = p, b = v;
-                break;
-              case 5:
-                r = v, g = p, b = q;
-                break;
-            }
-            return "#" + this.byteToHex( Math.floor( r * 255 ) ) + this.byteToHex( Math.floor( g * 255 ) ) + this.byteToHex( Math.floor( b * 255 ) );
+      /*  SerieDensityMap.prototype.byteToHex = function( b ) {
+            return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
           }
-        */
-      SerieDensityMap.prototype.getColorIndex = function( value ) {
+          */
+      /*
+        SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
+          var r, g, b, i, f, p, q, t;
+          if ( arguments.length === 1 ) {
+            s = h.s, v = h.v, h = h.h;
+          }
+          i = Math.floor( h * 6 );
+          f = h * 6 - i;
+          p = v * ( 1 - s );
+          q = v * ( 1 - f * s );
+          t = v * ( 1 - ( 1 - f ) * s );
+          switch ( i % 6 ) {
+            case 0:
+              r = v, g = t, b = p;
+              break;
+            case 1:
+              r = q, g = v, b = p;
+              break;
+            case 2:
+              r = p, g = v, b = t;
+              break;
+            case 3:
+              r = p, g = q, b = v;
+              break;
+            case 4:
+              r = t, g = p, b = v;
+              break;
+            case 5:
+              r = v, g = p, b = q;
+              break;
+          }
+          return "#" + this.byteToHex( Math.floor( r * 255 ) ) + this.byteToHex( Math.floor( g * 255 ) ) + this.byteToHex( Math.floor( b * 255 ) );
+        }
+      */
 
-        return Math.floor( ( value - this.colorMapMin ) / ( this.colorMapMax - this.colorMapMin ) * this.colorMapNum );
+      /**
+       * Returns the color index (```[ 0 - 1 ]```) for a certain value, based on colorMapMin and colorMapMax.
+       * @memberof SerieDensityMap
+       * @param {Number} binValue - The value of the bin
+       * @return {Number} The color index
+       */
+      SerieDensityMap.prototype.getColorIndex = function( binValue ) {
+
+        return Math.max( 0, Math.min( this.colorMapNum, Math.floor( ( binValue - this.colorMapMin ) / ( this.colorMapMax - this.colorMapMin ) * this.colorMapNum ) ) );
       }
 
+      /**
+       * Draws the serie
+       * @memberof SerieDensityMap
+       * @private
+       */
       SerieDensityMap.prototype.draw = function() {
 
         var colorIndex;
 
-        if ( this.recalculateBinsOnDraw ) {
+        if ( this.method ) {
+          this.method();
+        }
 
-          this.numX = this.graph.drawingSpaceWidth / this.binPerPxX;
-          this.numY = this.graph.drawingSpaceHeight / this.binPerPxY;
+        if ( ( !this.callbackColorMapMinMax && ( this.colorMapMin == undefined || this.colorMapMax == undefined ) || this.callbackColorMapMinMax == 'auto' ) ) {
+          this.autoColorMapBinBoundaries();
+        } else {
+          var val = this.callbackColorMapMinMax( this.binMin, this.binMax );
 
-          this.calculateDensity(
-            this.getXAxis().getCurrentMin(), ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() ) / this.numX, this.numX,
-            this.getYAxis().getCurrentMin(), ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() ) / this.numY, this.numY
-          );
-
-          this.autoBinsBoundaries();
+          this.setColorMapBinBoundaries( val[ 0 ], val[ 1 ] );
         }
 
         var deltaXPx = this.getXAxis().getRelPx( this.deltaX ),
@@ -17051,6 +17976,11 @@
         this.drawRects();
       }
 
+      /**
+       * Draws the rectangles
+       * @memberof SerieDensityMap
+       * @private
+       */
       SerieDensityMap.prototype.drawRects = function() {
 
         for ( var i = 0; i < this.paths.length; i++ ) {
@@ -17082,13 +18012,12 @@
       };
 
       /**
-   * Sets the options of the serie
-   * @see SerieDensityMapDefaultOptions
-   * @param {Object} options - A object containing the options to set
-   * @return {SerieDensityMap} The current serie
-   * @memberof SerieDensityMap
-   
-*/
+       * Sets the options of the serie
+       * @see SerieDensityMapDefaultOptions
+       * @param {Object} options - A object containing the options to set
+       * @return {SerieDensityMap} The current serie
+       * @memberof SerieDensityMap
+       */
       SerieDensityMap.prototype.setOptions = function( options ) {
         this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
         // Unselected style
@@ -19380,23 +20309,23 @@
 
       /** 
        * Represents a line that extends the Shape class
-       * @class LineShape
+       * @class ShapeLine
        * @augments Shape
        * @see Graph#newShape
        */
-      function LineShape( graph, options ) {
+      function ShapeLine( graph, options ) {
 
       }
 
-      LineShape.prototype = new GraphShape();
+      ShapeLine.prototype = new GraphShape();
 
       /**
        * Creates the DOM
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @private
        * @return {Shape} The current shape
        */
-      LineShape.prototype.createDom = function() {
+      ShapeLine.prototype.createDom = function() {
 
         this._dom = document.createElementNS( this.graph.ns, 'line' );
 
@@ -19406,11 +20335,11 @@
 
       /**
        * Creates the handles
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @private
        * @return {Shape} The current shape
        */
-      LineShape.prototype.createHandles = function() {
+      ShapeLine.prototype.createHandles = function() {
 
         this._createHandles( 2, 'rect', {
           transform: "translate(-3 -3)",
@@ -19424,11 +20353,11 @@
 
       /**
        * Recalculates the positions and applies them
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @private
        * @return {Boolean} Whether the shape should be redrawn
        */
-      LineShape.prototype.applyPosition = function() {
+      ShapeLine.prototype.applyPosition = function() {
 
         var position = this.calculatePosition( 0 );
         var position2 = this.calculatePosition( 1 );
@@ -19454,10 +20383,10 @@
 
       /**
        * Handles mouse move events
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @private
        */
-      LineShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+      ShapeLine.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
 
         if ( this.isLocked() ) {
           return;
@@ -19546,10 +20475,10 @@
 
       /**
        * Sets the handle position
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @private
        */
-      LineShape.prototype.setHandles = function() {
+      ShapeLine.prototype.setHandles = function() {
 
         if ( !this.areHandlesInDom() ) {
           return;
@@ -19568,10 +20497,10 @@
 
       /**
        * Creates an line receptacle with the coordinates of the line, but continuous and thicker
-       * @memberof LineShape
+       * @memberof ShapeLine
        * @return {Shape} The current shape
        */
-      LineShape.prototype.setEventReceptacle = function() {
+      ShapeLine.prototype.setEventReceptacle = function() {
 
         if ( !this.currentPos1x ) {
           return;
@@ -19592,7 +20521,7 @@
         this.rectEvent.setAttribute( "stroke-width", this.getProp( "strokeWidth" ) + 2 );
       };
 
-      return LineShape;
+      return ShapeLine;
 
     } )( build[ "./shapes/graph.shape" ] );
 
@@ -19608,16 +20537,16 @@
 
       /** 
        * Arrow shape
-       * @class ArrowShape
+       * @class ShapeArrow
        * @static
        */
-      function ArrowShape( graph ) {
+      function ShapeArrow( graph ) {
 
       }
 
-      ArrowShape.prototype = new GraphLine();
+      ShapeArrow.prototype = new GraphLine();
 
-      ArrowShape.prototype.createDom = function() {
+      ShapeArrow.prototype.createDom = function() {
 
         this._dom = document.createElementNS( this.graph.ns, 'line' );
         this._dom.setAttribute( 'marker-end', 'url(#arrow' + this.graph._creation + ')' );
@@ -19636,7 +20565,7 @@
 
       };
 
-      return ArrowShape;
+      return ShapeArrow;
 
     } )( build[ "./shapes/graph.shape.line" ] );
 
@@ -19705,20 +20634,20 @@
 
       /** 
        * Represents a label that extends the Shape class
-       * @class LabelShape
+       * @class ShapeLabel
        * @augments Shape
        * @see Graph#newShape
        */
-      function LabelShape( graph, options ) {
+      function ShapeLabel( graph, options ) {
         this.selectStyle = {
           stroke: 'red'
         };
 
       }
 
-      LabelShape.prototype = new GraphShape();
+      ShapeLabel.prototype = new GraphShape();
 
-      util.extend( LabelShape.prototype, GraphShape.prototype, {
+      util.extend( ShapeLabel.prototype, GraphShape.prototype, {
 
         createDom: function() {
           return false;
@@ -19730,9 +20659,98 @@
 
       } );
 
-      return LabelShape;
+      return ShapeLabel;
 
     } )( build[ "./graph.util" ], build[ "./shapes/graph.shape" ] );
+
+    /* 
+     * Build: new source file 
+     * File name : shapes/graph.shape.polyline
+     * File path : /Users/normanpellet/Documents/Web/graph/src/shapes/graph.shape.polyline.js
+     */
+
+    build[ './shapes/graph.shape.polyline' ] = ( function( GraphShape ) {
+      /** @global */
+      /** @ignore */
+
+      "use strict";
+
+      /** 
+       * Represents a line that extends the Shape class
+       * @class ShapePolyLine
+       * @augments Shape
+       * @see Graph#newShape
+       */
+      function ShapePolyLine( graph, options ) {
+
+      }
+
+      ShapePolyLine.prototype = new GraphShape();
+
+      /**
+       * Creates the DOM
+       * @memberof ShapePolyLine
+       * @private
+       * @return {Shape} The current shape
+       */
+      ShapePolyLine.prototype.createDom = function() {
+
+        this._dom = document.createElementNS( this.graph.ns, 'path' );
+        this.setStrokeColor( 'black' );
+        this.setStrokeWidth( 1 );
+      };
+
+      /**
+       * No handles for the polyline
+       * @memberof ShapePolyLine
+       * @private
+       * @return {Shape} The current shape
+       */
+      ShapePolyLine.prototype.createHandles = function() {
+
+      };
+
+      ShapePolyLine.prototype.setPointsPx = function( points ) {
+        this.pxPoints = points;
+        return this;
+      }
+
+      /**
+       * Recalculates the positions and applies them
+       * @memberof ShapePolyLine
+       * @private
+       * @return {Boolean} Whether the shape should be redrawn
+       */
+      ShapePolyLine.prototype.applyPosition = function() {
+
+        if ( this.pxPoints ) {
+          this.setDom( 'd', this.pxPoints );
+
+        } else if ( this.points ) {
+
+          var xAxis, yAxis;
+
+          if ( this.serie ) {
+
+            xAxis = this.serie.getXAxis();
+            yAxis = this.serie.getYAxis();
+
+          } else if ( this.xAxis && this.yAxis ) {
+
+            xAxis = this.xAxis;
+            yAxis = this.yAxis;
+          }
+
+          this.setDom( 'd', 'M ' + this.points.map( function( p ) {
+            return xAxis.getPx( p[ 0 ] ) + ", " + yAxis.getPx( p[ 1 ] );
+          } ).join( " L " ) );
+        }
+
+        return true;
+      };
+
+      return ShapePolyLine;
+    } )( build[ "./shapes/graph.shape" ] );
 
     /* 
      * Build: new source file 
@@ -20048,23 +21066,23 @@
 
       /** 
        * Represents a rectangle that extends the Shape class
-       * @class RectangleShape
+       * @class ShapeRectangle
        * @augments Shape
        * @see Graph#newShape
        */
-      function RectangleShape( graph, options ) {
+      function ShapeRectangle( graph, options ) {
 
       }
 
-      RectangleShape.prototype = new GraphShape();
+      ShapeRectangle.prototype = new GraphShape();
 
       /**
        * Creates the DOM
-       * @memberof RectangleShape
+       * @memberof ShapeRectangle
        * @private
        * @return {Shape} The current shape
        */
-      RectangleShape.prototype.createDom = function() {
+      ShapeRectangle.prototype.createDom = function() {
         var self = this;
         this._dom = document.createElementNS( this.graph.ns, 'rect' );
 
@@ -20077,11 +21095,11 @@
 
       /**
        * Creates the Handles
-       * @memberof RectangleShape
+       * @memberof ShapeRectangle
        * @private
        * @return {Shape} The current shape
        */
-      RectangleShape.prototype.createHandles = function() {
+      ShapeRectangle.prototype.createHandles = function() {
         if ( !this.hasHandles() ) {
           return;
         }
@@ -20173,11 +21191,11 @@
 
       /**
        * Updates the position
-       * @memberof RectangleShape
+       * @memberof ShapeRectangle
        * @private
        * @return {Shape} The current shape
        */
-      RectangleShape.prototype.applyPosition = function() {
+      ShapeRectangle.prototype.applyPosition = function() {
 
         var pos = this.computePosition( 0 ),
           pos2 = this.computePosition( 1 ),
@@ -20225,11 +21243,11 @@
 
       /**
        * Implements mouse move event
-       * @memberof RectangleShape
+       * @memberof ShapeRectangle
        * @private
        * @return {Shape} The current shape
        */
-      RectangleShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+      ShapeRectangle.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
 
         var handles = this.getProp( 'handles' );
 
@@ -20324,11 +21342,11 @@
 
       /**
        * Places handles properly
-       * @memberof RectangleShape
+       * @memberof ShapeRectangle
        * @private
        * @return {Shape} The current shape
        */
-      RectangleShape.prototype.setHandles = function() {
+      ShapeRectangle.prototype.setHandles = function() {
 
         if ( this.isLocked() || ( !this.isSelectable() && !this._staticHandles ) ) {
           return;
@@ -20386,7 +21404,7 @@
 
       };
 
-      return RectangleShape;
+      return ShapeRectangle;
 
     } )( build[ "./shapes/graph.shape" ], build[ "./graph.util" ] );
 
@@ -20914,22 +21932,6 @@
 
         },
 
-        setHandles: function() {
-
-          if ( this.isLocked() ) {
-            return;
-          }
-
-          if ( !this._selected || this.currentPos1x == undefined ) {
-            return;
-          }
-
-          this.addHandles();
-
-          this.handle1.setAttribute( 'x', this.currentPos1x );
-          this.handle1.setAttribute( 'y', this.currentPos1y );
-        },
-
         createHandles: function() {
 
           this._createHandles( 1, 'rect', {
@@ -21158,17 +22160,17 @@
       /** @ignore */
 
       /** 
-       * Arrow shape
-       * @class ArrowShape
+       * Peak boundaries shape
+       * @class ShapePeakBoundaries
        * @static
        */
-      function PeakBoundariesMiddleShape( graph ) {
+      function ShapePeakBoundaries( graph ) {
         this.lineHeight = 6;
       }
 
-      PeakBoundariesMiddleShape.prototype = new GraphLine();
+      ShapePeakBoundaries.prototype = new GraphLine();
 
-      PeakBoundariesMiddleShape.prototype.createDom = function() {
+      ShapePeakBoundaries.prototype.createDom = function() {
 
         this._dom = document.createElementNS( this.graph.ns, 'line' );
         this.line1 = document.createElementNS( this.graph.ns, 'line' );
@@ -21190,7 +22192,7 @@
         this._dom.element = this;
       };
 
-      PeakBoundariesMiddleShape.prototype.createHandles = function() {
+      ShapePeakBoundaries.prototype.createHandles = function() {
         this._createHandles( 3, 'rect', {
           transform: "translate(-3 -3)",
           width: 6,
@@ -21201,7 +22203,7 @@
         } );
       };
 
-      PeakBoundariesMiddleShape.prototype.redrawImpl = function() {
+      ShapePeakBoundaries.prototype.redrawImpl = function() {
 
         this.line1.setAttribute( 'stroke', this.getStrokeColor() );
         this.line2.setAttribute( 'stroke', this.getStrokeColor() );
@@ -21215,7 +22217,13 @@
         this.redrawLines();
       };
 
-      PeakBoundariesMiddleShape.prototype.redrawLines = function() {
+      /**
+       * @memberof ShapePeakBoundaries
+       * Redraws the vertical lines according to the positions.
+       * Position 0 is the left line, position 1 is the right line and position 2 is the center line
+       * @returns {ShapePeakBoundaries} The shape instance
+       */
+      ShapePeakBoundaries.prototype.redrawLines = function() {
 
         var posLeft = this.computePosition( 0 );
         var posRight = this.computePosition( 1 );
@@ -21237,15 +22245,22 @@
           this._dom.setAttribute( 'x1', posLeft.x );
           this._dom.setAttribute( 'x2', posRight.x );
 
-          this.setLinesY( height );
+          this.redrawY( height );
         }
+
+        return this;
 
       };
 
-      PeakBoundariesMiddleShape.prototype.setLinesY = function() {
+      /**
+       * @memberof ShapePeakBoundaries
+       * Redraws the vertical positions of the shape
+       * @returns {ShapePeakBoundaries} The shape instance
+       */
+      ShapePeakBoundaries.prototype.redrawY = function() {
 
         if ( !this.posYPx ) {
-          return;
+          return this;
         }
 
         var height = this.lineHeight;
@@ -21262,9 +22277,10 @@
         this._dom.setAttribute( 'y1', this.posYPx );
         this._dom.setAttribute( 'y2', this.posYPx );
 
+        return this;
       };
 
-      PeakBoundariesMiddleShape.prototype.setHandles = function() {
+      ShapePeakBoundaries.prototype.setHandles = function() {
 
         if ( !this.posYPx ) {
           return;
@@ -21287,15 +22303,28 @@
         }
       };
 
-      PeakBoundariesMiddleShape.prototype.setY = function( y ) {
+      /**
+       * @memberof ShapePeakBoundaries
+       * Sets the y position of the shape
+       * @param {Number} y - The y position in px
+       * @returns {ShapePeakBoundaries} The shape instance
+       */
+      ShapePeakBoundaries.prototype.setY = function( y ) {
         this.posYPx = y;
+        return this;
       };
 
-      PeakBoundariesMiddleShape.prototype.setLineHeight = function( height ) {
+      /**
+       * @memberof ShapePeakBoundaries
+       * Sets the height of the peak lines
+       * @param {Number} height - The height of the lines in px
+       * @returns {ShapePeakBoundaries} The shape instance
+       */
+      ShapePeakBoundaries.prototype.setLineHeight = function( height ) {
         this.lineHeihgt = height;
       };
 
-      PeakBoundariesMiddleShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
+      ShapePeakBoundaries.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
 
         if ( this.isLocked() ) {
           return;
@@ -21349,11 +22378,13 @@
         this.setHandles();
       };
 
-      PeakBoundariesMiddleShape.prototype.applyPosition = function() {
+      ShapePeakBoundaries.prototype.applyPosition = function() {
+
+        this.redrawLines();
         return true;
       };
 
-      return PeakBoundariesMiddleShape;
+      return ShapePeakBoundaries;
     } )( build[ "./shapes/graph.shape.line" ] );
 
     /* 
@@ -21535,6 +22566,7 @@
       GraphPluginSelectScatter,
       GraphPluginZoom,
       GraphPluginTimeSerieManager,
+      GraphPluginSerieLineDifference,
 
       GraphSerie,
       GraphSerieContour,
@@ -21550,6 +22582,7 @@
       GraphShapeArrow,
       GraphShapeEllipse,
       GraphShapeLabel,
+      GraphShapePolyLine,
       GraphShapeLine,
       GraphShapeNMRIntegral,
       GraphShapePeakIntegration2D,
@@ -21590,12 +22623,15 @@
       Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
       Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
       Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
+      Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
+      Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
 
       Graph.registerConstructor( "graph.shape", GraphShape );
       Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );
       Graph.registerConstructor( "graph.shape.arrow", GraphShapeArrow );
       Graph.registerConstructor( "graph.shape.ellipse", GraphShapeEllipse );
       Graph.registerConstructor( "graph.shape.label", GraphShapeLabel );
+      Graph.registerConstructor( "graph.shape.polyline", GraphShapePolyLine );
       Graph.registerConstructor( "graph.shape.line", GraphShapeLine );
       Graph.registerConstructor( "graph.shape.nmrintegral", GraphShapeNMRIntegral );
       Graph.registerConstructor( "graph.shape.peakintegration2d", GraphShapePeakIntegration2D );
@@ -21613,7 +22649,7 @@
 
       return Graph;
 
-    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./series/graph.serie.densitymap" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
+    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./plugins/graph.plugin.serielinedifference" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./series/graph.serie.densitymap" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.polyline" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
 
   };
 

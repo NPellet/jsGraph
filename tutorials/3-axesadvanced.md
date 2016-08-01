@@ -1,5 +1,3 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
 
 <script>
 	var serie1 = [0, 10000000, 1, 11000000 ];

@@ -1,0 +1,115 @@
+<!--
+How to use this page
+1. Just load it and see a bunch a examples
+2. Select the examples you want to load. URL should look like amd.html#examples:10-basic/1-basic,40-plugins/1-plugins
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="./style.css" rel="stylesheet" />
+		<script src="../node_modules/node-jsgraph/dist/jsgraph.js" type="text/javascript"></script>
+		<script src="./node_modules/jquery/dist/jquery.min.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+
+		<div id="graph"></div>
+	
+		<script>
+
+			var graph = new Graph( "graph", { 
+				
+			}, { });
+
+			graph.resize(400, 400);
+
+			graph.getXAxis().turnGridsOff();
+			graph.getYAxis().turnGridsOff();
+	
+			graph.getXAxis().forceMin( 4.1 ).forceMax( 4.6 );
+
+			graph.getXAxis().setLabel('Voltage').setUnitWrapper("[", "]").setUnit('V').setTickPosition('outside');
+
+
+			graph.getYAxis().forceMin( 70 ).forceMax( 98 );
+			graph.getYAxis().setLabel('Power').setUnitWrapper("[", "]").setUnit('mW').setTickPosition('outside');
+
+
+
+			var shape3 = graph.newShape( 'cross', { position: [ { x: 4.2117, y: 92.13 } ], strokeColor: 'black', strokeWidth: 3 } ).draw();
+			var shape4 = graph.newShape( 'cross', { position: [ { x: 4.1709, y: 91.257 } ], strokeColor: 'black', strokeWidth: 3 } ).draw();
+
+
+			var shape1 = graph.newShape( 'cross', { position: [ { x: 4.2117, y: 92.13 } ], strokeColor: 'white' } ).draw();
+			shape1.setLabelText( "92.13 mW");
+			shape1.setLabelPosition( { dx: "20px", dy: "3px" } );
+			shape1.getLabelPosition().relativeTo( shape1.getPosition() );
+			shape1.setLabelColor( 'white' );
+			shape1.makeLabels();
+
+			var shape2 = graph.newShape( 'cross', { position: [ { x: 4.1709, y: 91.257 } ], strokeColor: 'white' } ).draw();
+			shape2.setLabelText( "91.26 mW");
+			shape2.setLabelPosition( { dx: "0px", dy: "23px" } );
+			shape2.setLabelAnchor( "middle" );
+			shape2.getLabelPosition().relativeTo( shape2.getPosition() );
+			shape2.setLabelColor( 'white' );
+			shape2.makeLabels();
+
+
+
+			var shape3 = graph.newShape( 'cross', { position: [ { x: 4.52, y: 75 } ], strokeColor: 'white' } ).draw();
+			shape3.setLabelText( "Poling");
+			shape3.setLabelPosition( { dx: "0px", dy: "23px" } );
+			shape3.setLabelAnchor( "middle" );
+			shape3.getLabelPosition().relativeTo( shape3.getPosition() );
+			shape3.setLabelColor( 'white' );
+			shape3.makeLabels();
+
+
+			function load( filename, colors ) {
+
+
+				$.get( './src/data/' + filename, {}, function( data ) {
+
+					var s = graph.newSerie( filename , {}, "densitymap").autoAxis();
+					
+					var d = [];
+					data.split("\n").map( function( data ) {
+						data = data.split("\t").map( parseFloat );
+						data.reverse()
+						d.push( data );
+					});
+					
+					s.setData( d ).
+						setBinsPerPx(  5 ).
+						autoBinsBoundaries();
+
+					s.autoColorMapHSV( colors, "log" );
+
+					graph.autoscaleAxes();
+					graph.draw( true );		
+
+					shape1.redraw();
+					shape2.redraw();
+
+					shape1.updateLabels();
+
+				});
+
+			}
+
+
+			load( "data1.txt", [ { h: 0, s: 0.67, l: 0.04, a: 1 }, { h: 0, s: 1, l:0.5, a:1 }, { h: 60, s: 1, l:0.5, a:1 } ] )
+			load( "data2.txt", [ { h: 120, s: 0.67, l: 0.04, a: 1 }, { h: 120, s: 1, l:0.5, a:1 }, { h: 200, s: 1, l:0.5, a:1 } ] );
+
+		
+
+
+			
+			graph.setBackgroundColor('black');
+
+	
+		</script>		
+	</body>
+</html>

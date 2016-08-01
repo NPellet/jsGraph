@@ -5,8 +5,8 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
   /** 
    * Main class of jsGraph that creates a new graph.
    * @class Graph
-   * @param {HTMLElement} wrapper - The DOM Wrapper element
-   * @param {Graph#options} [ options ] - The options of the graph
+   * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+   * @param {GraphOptions} [ options ] - The options of the graph
    * @param {Object} [ axis ] - The list of axes
    * @param {Array} axis.left - The list of left axes
    * @param {Array} axis.bottom - The list of bottom axes
@@ -17,7 +17,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
    * @tutorial basic
    */
-
   var profiling = [];
 
   function Graph( wrapper, options, axis ) {
@@ -55,7 +54,10 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
      * @object
      * @memberof Graph
      * @name Graph#options
+     * @type GraphOptions
      * @default {@link GraphOptionsDefault}
+     * Access directly the options of the graph using this public object.
+     * @example graph.options.mouseActions.push( {  } );
      */
     this.options = util.extend( {}, GraphOptionsDefault, options );
 
@@ -133,6 +135,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
   /** 
    * Default graph parameters
    * @name Graph~GraphOptionsDefault
+   * @name GraphOptions
    * @object
    * @static
    * @memberof Graph
@@ -517,7 +520,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a bottom axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -527,7 +530,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a left axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      */
@@ -537,7 +540,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a left axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      * @see Graph#setBottomAxis
@@ -553,7 +556,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a right axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      * @see Graph#setBottomAxis
@@ -569,7 +572,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a top axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ index=0 ] - The index of the axis
      * @memberof Graph.prototype
      * @see Graph#setBottomAxis
@@ -585,7 +588,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
     /**
      * Sets a bottom axis
-     * @param {GraphAxis} axis - The axis instance to set
+     * @param {Axis} axis - The axis instance to set
      * @param {Number} [ number=0 ] - The index of the axis
      * @memberof Graph.prototype
      * @see Graph#setTopAxis
@@ -768,7 +771,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     /**
      * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
      * @memberof Graph.prototype
-     * @param {GraphAxis} axis - The axis for which the value should be computed
+     * @param {Axis} axis - The axis for which the value should be computed
      * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
      * @returns {Number} The minimimum or maximum of the axis based on its series
      */
@@ -798,7 +801,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
         }
 
         serieValue = serie[ func2use ]();
-
         val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
       }
@@ -809,7 +811,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
     /**
      *  Returns all the series associated to an axis
      *  @memberof Graph.prototype
-     *  @param {GraphAxis} axis - The axis to which the series belong
+     *  @param {Axis} axis - The axis to which the series belong
      *  @returns {Serie[]} An array containing the list of series that belong to the axis
      */
     getSeriesFromAxis: function( axis ) {
@@ -863,7 +865,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
      * Function that is called from {@link Graph#_applyToAxes}
      * @function
      * @name AxisCallbackFunction
-     * @param {GraphAxis} axis - The axis of the function
+     * @param {Axis} axis - The axis of the function
      * @param {String} type - The type of the axis (left,right,top,bottom)
      * @param params - The params passed in the _applyToAxis function.
      * @see Graph#_applyToAxes
@@ -903,7 +905,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
      * Axes can be dependant of one another (for instance for unit conversions)
      * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
      * @memberof Graph.prototype
-     * @param {GraphAxis} axis - The axis that links one or multiple other dependant axes
+     * @param {Axis} axis - The axis that links one or multiple other dependant axes
      * @returns {Axis[]} The list of axes linked to the axis passed as parameter
      */
     findAxesLinkedTo: function( axis ) {
@@ -1065,17 +1067,22 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
      */
     selectSerie: function( serie, selectName ) {
 
-      if ( this.selectedSerie == serie ) {
+      if ( !( typeof serie == "object" ) ) {
+        serie = this.getSerie( serie );
+      }
+
+      if ( this.selectedSerie == serie && this.selectedSerie.selectionType == selectName ) {
         return;
       }
 
-      if ( this.selectedSerie ) {
+      if ( this.selectedSerie !== serie ) {
         this.unselectSerie( serie );
       }
 
       this.selectedSerie = serie;
       this.triggerEvent( 'onSelectSerie', serie );
-      serie.select( "selected" );
+
+      serie.select( selectName || "selected" );
     },
 
     /**
@@ -2704,6 +2711,10 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
       time: {
         x: graph.getConstructor( "graph.axis.x.time" )
+      },
+
+      bar: {
+        x: graph.getConstructor( "graph.axis.x.bar" )
       }
     };
 
@@ -2711,6 +2722,10 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
       case 'time':
         var axisInstance = _availableAxes.time;
+        break;
+
+      case 'bar':
+        var axisInstance = _availableAxes.bar;
         break;
 
       case 'broken':
@@ -2742,7 +2757,12 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       num = 0;
     }
 
-    return graph.axis[ pos ][ num ] = graph.axis[ pos ][ num ] || new inst( graph, pos, options );
+    if( ! graph.axis[ pos ][ num ] ) {
+      graph.axis[ pos ][ num ] = new inst( graph, pos, options );
+      graph.axis[ pos ][ num ].init( graph, options );
+    }
+
+    return graph.axis[ pos ][ num ];
   }
 
   function _closeLine( graph, mode, x1, x2, y1, y2 ) {
@@ -2801,17 +2821,18 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
 
   /**
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-   * @name Graph.registerConstructor
-   * @param {String} name - The name of the constructor
-   * @see Graph#newSerie
+   * @param {String} constructorName - The name of the constructor
+   * @param {Function} constructor - The constructor method
+   * @memberof Graph
+   * @see Graph.getConstructor
    */
-  Graph.registerConstructor = function( name, constructor ) {
+  Graph.registerConstructor = function( constructorName, constructor ) {
 
-    if ( Graph._constructors[ name ] ) {
+    if ( Graph._constructors[ constructorName ] ) {
       return util.throwError( "Constructor " + constructor + " already exists." );
     }
 
-    Graph._constructors[ name ] = constructor;
+    Graph._constructors[ constructorName ] = constructor;
   };
 
   /**
@@ -2821,7 +2842,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
    * @returns {Function} The registered constructor
    * @throws Error
    * @see Graph.registerConstructor
-   * @name Graph#getConstructor
    */
   Graph.getConstructor = function( constructorName ) {
     var constructor = Graph._constructors[ constructorName ];
@@ -2837,7 +2857,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
    * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
    * @param {HTMLElement} wrapper - The wrapping element
    * @returns {Graph} Newly created graph
-   * @name Graph#fromSchema
    */
   Graph.fromSchema = function( schema, wrapper ) {
 
@@ -2917,7 +2936,6 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
             break;
         }
 
-        console.log( serieType );
         if ( !serieType ) {
           util.throwError( "No valid serie type was found" );
           return;

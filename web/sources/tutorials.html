@@ -1,0 +1,29 @@
+---
+layout: page
+title: Tutorials
+subtitle: Find help by reading tutorials on series, shapes, plugins, legends, ...  Copy the examples in your project and get started within minutes
+permalink: /tutorials
+---
+
+<p class="larger">
+	Reading the documentation can sometimes be problematic, especially since in some cases, some methods have (or are supposed) to be used with others, or in a certain order. In addition, some concepts might be a little hard to grasp, such as the drawing optimizations, the styles, the shapes, the plugins, etc...
+</p>
+
+
+<p class="larger">
+	To help you kick-off your own graphs as soon as possible, we wrote a bunch of tutorials which focus of certain aspects of jsGraph. Feel free to copy/paste the code in your own project and play around with it. Practice is the best way to master the very extensive API of jsGraph
+</p>
+
+<h3>Available tutorials</h3>
+
+<ul class="list-group">
+  
+{% for tuto in site.data.tutorials %}
+
+	<li class="list-group-item">
+		<a href="{{ tuto.url | prepend: 'tutorials/' | prepend: site.baseurl }}">
+			{{ tuto.title }}
+		</a>
+	</li>
+{% endfor %}
+</ul>

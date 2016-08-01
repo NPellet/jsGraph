@@ -1,0 +1,88 @@
+{
+	"Axis": [
+		{
+			"title": "X",
+			"url": "AxisX"
+		},
+		{
+			"title": "Y",
+			"url": "AxisY"
+		}
+	],
+	"Core": [],
+	"Plugin": [
+		{
+			"title": "Drag",
+			"url": "PluginDrag"
+		},
+		{
+			"title": "SelectScatter",
+			"url": "PluginSelectScatter"
+		},
+		{
+			"title": "SerieLineDifference",
+			"url": "PluginSerieLineDifference"
+		},
+		{
+			"title": "Shape",
+			"url": "PluginShape"
+		},
+		{
+			"title": "TimeSerieManager",
+			"url": "PluginTimeSerieManager"
+		},
+		{
+			"title": "Zoom",
+			"url": "PluginZoom"
+		}
+	],
+	"Position": [],
+	"Serie": [
+		{
+			"title": "DensityMap",
+			"url": "SerieDensityMap"
+		},
+		{
+			"title": "Line",
+			"url": "SerieLine"
+		},
+		{
+			"title": "LineColor",
+			"url": "SerieLineColor"
+		},
+		{
+			"title": "Scatter",
+			"url": "SerieScatter"
+		},
+		{
+			"title": "Zone",
+			"url": "SerieZone"
+		}
+	],
+	"Shape": [
+		{
+			"title": "Arrow",
+			"url": "ShapeArrow"
+		},
+		{
+			"title": "Label",
+			"url": "ShapeLabel"
+		},
+		{
+			"title": "Line",
+			"url": "ShapeLine"
+		},
+		{
+			"title": "PeakBoundaries",
+			"url": "ShapePeakBoundaries"
+		},
+		{
+			"title": "PolyLine",
+			"url": "ShapePolyLine"
+		},
+		{
+			"title": "Rectangle",
+			"url": "ShapeRectangle"
+		}
+	]
+}

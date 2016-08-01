@@ -2,23 +2,23 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   /** 
    * Represents a rectangle that extends the Shape class
-   * @class RectangleShape
+   * @class ShapeRectangle
    * @augments Shape
    * @see Graph#newShape
    */
-  function RectangleShape( graph, options ) {
+  function ShapeRectangle( graph, options ) {
 
   }
 
-  RectangleShape.prototype = new GraphShape();
+  ShapeRectangle.prototype = new GraphShape();
 
   /**
    * Creates the DOM
-   * @memberof RectangleShape
+   * @memberof ShapeRectangle
    * @private
    * @return {Shape} The current shape
    */
-  RectangleShape.prototype.createDom = function() {
+  ShapeRectangle.prototype.createDom = function() {
     var self = this;
     this._dom = document.createElementNS( this.graph.ns, 'rect' );
 
@@ -31,11 +31,11 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   /**
    * Creates the Handles
-   * @memberof RectangleShape
+   * @memberof ShapeRectangle
    * @private
    * @return {Shape} The current shape
    */
-  RectangleShape.prototype.createHandles = function() {
+  ShapeRectangle.prototype.createHandles = function() {
     if ( !this.hasHandles() ) {
       return;
     }
@@ -127,11 +127,11 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   /**
    * Updates the position
-   * @memberof RectangleShape
+   * @memberof ShapeRectangle
    * @private
    * @return {Shape} The current shape
    */
-  RectangleShape.prototype.applyPosition = function() {
+  ShapeRectangle.prototype.applyPosition = function() {
 
     var pos = this.computePosition( 0 ),
       pos2 = this.computePosition( 1 ),
@@ -179,11 +179,11 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   /**
    * Implements mouse move event
-   * @memberof RectangleShape
+   * @memberof ShapeRectangle
    * @private
    * @return {Shape} The current shape
    */
-  RectangleShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+  ShapeRectangle.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
 
     var handles = this.getProp( 'handles' );
 
@@ -278,11 +278,11 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   /**
    * Places handles properly
-   * @memberof RectangleShape
+   * @memberof ShapeRectangle
    * @private
    * @return {Shape} The current shape
    */
-  RectangleShape.prototype.setHandles = function() {
+  ShapeRectangle.prototype.setHandles = function() {
 
     if ( this.isLocked() ||  ( !this.isSelectable() && !this._staticHandles ) ) {
       return;
@@ -340,6 +340,6 @@ define( [ './graph.shape', '../graph.util' ], function( GraphShape, util ) {
 
   };
 
-  return RectangleShape;
+  return ShapeRectangle;
 
 } );

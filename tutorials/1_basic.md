@@ -1,60 +1,73 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
 
 <script>
 var serie1 = [-1,-20.499747544838275,-0.95,-20.499659532985874,-0.8999999999999999,-20.499540838115898,-0.8499999999999999,-20.49938076340126,-0.7999999999999998,-20.499164882847428,-0.7499999999999998,-20.4988737412163,-0.6999999999999997,-20.498481100712695,-0.6499999999999997,-20.497951576424207,-0.5999999999999996,-20.497237447419362,-0.5499999999999996,-20.49627435611903,-0.4999999999999996,-20.494975508366757,-0.4499999999999996,-20.493223851506187,-0.39999999999999963,-20.490861525550883,-0.34999999999999964,-20.48767563678195,-0.29999999999999966,-20.483379071684652,-0.24999999999999967,-20.477584622168607,-0.19999999999999968,-20.469770090226536,-0.1499999999999997,-20.45923122725008,-0.09999999999999969,-20.44501826687575,-0.049999999999999684,-20.425850331676905,3.191891195797325e-16,-20.4,0.05000000000000032,-20.365137630064282,0.10000000000000032,-20.318121411753218,0.15000000000000033,-20.25471422548477,0.20000000000000034,-20.16920179137358,0.25000000000000033,-20.053877696141516,0.3000000000000003,-19.89834888820463,0.3500000000000003,-19.68859905188818,0.4000000000000003,-19.405725451695528,0.4500000000000003,-19.024235410553235,0.5000000000000003,-18.509748899999998,0.5500000000000004,-17.81590019886833,0.6000000000000004,-16.88015939675398,0.6500000000000005,-15.618197174567083,0.7000000000000005,-13.916285014032407,0.7500000000000006,-11.621045940111184,0.8000000000000006,-8.52563212933044,0.8500000000000006,-4.351083704794043,0.9000000000000007,1.2788112346498295,0.9500000000000007,8.87142097487483,1.0000000000000007,19.11099441051224,1.0500000000000007,32.920325817120975,1.1000000000000008,51.543917424350724,1.1500000000000008,76.66013443300987,1.2000000000000008,110.53245992908506,1.2500000000000009,156.21348084543214,1.300000000000001,217.8199882640481,1.350000000000001,300.90398420341603,1.400000000000001,412.9530301645426,1.450000000000001,564.065029038078];
 var serie2 = [-1,20.499747544838275,-0.95,19.47467655633658,-0.8999999999999999,18.449586754304306,-0.8499999999999999,17.424473648891066,-0.7999999999999998,16.39933190627794,-0.7499999999999998,15.37415530591222,-0.6999999999999997,14.34893677049888,-0.6499999999999997,13.323668524675728,-0.5999999999999996,12.29834246845161,-0.5499999999999996,11.272950895865458,-0.4999999999999996,10.247487754183371,-0.4499999999999996,9.221950733177776,-0.39999999999999963,8.196344610220345,-0.34999999999999964,7.170686472873675,-0.29999999999999966,6.145013721505388,-0.24999999999999967,5.1193961555421446,-0.19999999999999968,4.0939540180453005,-0.1499999999999997,3.0688846840875055,-0.09999999999999969,2.0445018266875685,-0.049999999999999684,1.0212925165838387,3.191891195797325e-16,-6.511458039426543e-15,0.05000000000000032,-1.0182568815032207,0.10000000000000032,-2.0318121411753283,0.15000000000000033,-3.038207133822722,0.20000000000000034,-4.033840358274723,0.25000000000000033,-5.013469424035386,0.3000000000000003,-5.969504666461395,0.3500000000000003,-6.891009668160868,0.4000000000000003,-7.7622901806782165,0.4500000000000003,-8.560905934748961,0.5000000000000003,-9.254874450000004,0.5500000000000004,-9.798745109377588,0.6000000000000004,-10.128095638052397,0.6500000000000005,-10.151828163468611,0.7000000000000005,-9.741399509822692,0.7500000000000006,-8.715784455083394,0.8000000000000006,-6.820505703464357,0.8500000000000006,-3.6984211490749392,0.9000000000000007,1.1509301111848473,0.9500000000000007,8.427849926131096,1.0000000000000007,19.110994410512255,1.0500000000000007,34.56634210797705,1.1000000000000008,56.69830916678583,1.1500000000000008,88.15915459796142,1.2000000000000008,132.63895191490218,1.2500000000000009,195.26685105679033,1.300000000000001,283.16598474326275,1.350000000000001,406.22037867461194,1.400000000000001,578.1342422303601,1.450000000000001,817.8942921052137]
 </script>
 
-## Introduction
+### <a id="doc-introduction"></a> Introduction
 
 
 In this tutorial, we will review the basics of jsGraph, through examples and explanations. This tutorial isn't meant to be thorough in every aspect of jsGraph, but rather show you what can be done in a couple of lines of code. Links to more comprehensive tutorials will be given along the text.
 
 
-## Setting up jsGraph
-
+### <a id="doc-setup"></a> Setting up jsGraph
 jsGraph depends only on jQuery to work. Include both files inside your ```head``` tag to make it work.
 
-``` 
-{@lang xml}	<script type="text/javascript" src="path/to/jquery/jquery.min.js"> </script>
-	<script type="text/javascript" src="path/to/jsgraph/jsgraph.min.js"> </script>
-```
 
-In this situation, jsGraph exposes only the constructor ```Graph``` to the global scope. Everything else is done from there.
 
+{% highlight html %}
+<script type="text/javascript" src="path/to/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="path/to/jsgraph/jsgraph.min.js"></script>
+{% endhighlight %}
+
+
+In this situation, jsGraph exposes the constructor ```Graph``` to the window element. Everything else is done from there.
 Alternatively, is you use an AMD loader, jsGraph may be loaded accordingly
-```
-	require( [ 'jquery', 'path/to/jsgraph.min' ], function( $, jsGraph ) {
-		...
-	} )
-```
 
-## The data format
 
+{% highlight javascript %}
+require( [ 'path/to/jsgraph' ], function( jsGraph ) {
+	...
+} );
+{% endhighlight %}
+
+
+
+
+### <a id="doc-dataformat"></a>The data format
 
 For starters, it is useful to discuss briefly the format of data that can be used. All the points in all the series available in jsGraph contain coordinates as point vectors defined as ```(x,y)```. Since bar charts or pie charts are not supported, <code>x</code> and <code>y</code> must be numbers.
 
 We review now the three main ways to define data:
 
 * One-dimensional x/y array:
-```javascript
+
+
+{% highlight javascript %}
 	var data = [ x1, y1, x2, y2, ..., xj, yj, ..., xn, yn ];
-```
+{% endhighlight %}
+
 
 * Array of x/y pairs:
-```javascript
+
+
+{% highlight javascript %}
 	var data = [ [ x1, y1 ], [ x2, y2 ], ..., [ xj, yj ], ..., [ xn, yn ] ];
-```
+{% endhighlight %}
+
 
 * Object of uniformely spaced y data
-```javascript
+
+
+{% highlight javascript %}
 	var data = { x0: _x0, dx: _dx, y: [ y1, y2, ..., yj, ..., yn ] };
-```
+{% endhighlight %}
+
+
 where x0 is the starting x value (corresponding to y1), and dx is the horizontal increment value between each y value. This data definition is only available for line series.
 
 
-## Creating a graph
+### <a id="doc-creating"></a>Creating a graph
 
 
 Before we start, we will use the following data throughout the tutorial. You can copy it to run on your side too.
@@ -198,8 +211,8 @@ g.draw();
 
 </script>
 
-Plotting multiple series
--------------
+### <a id="doc-multipleseries"></a>Plotting multiple series
+
 
 Before plotting the second serie, you need to understand the following:
 
@@ -274,7 +287,7 @@ g.draw();
 However this makes no scientific sense. Power density has not the same units as current density, and hence it should be displayed on the same scale at all ! So instead of calling {@link Serie#autoAxis}, let's rather use another y axis for the power density.
 
 
-## Plotting on multiple axes
+### <a id="doc-multipleaxes"></a> Plotting on multiple axes
 
 
 jsGraph can use as many axis as you want. X axes can be at the top or bottom position, and Y axes can be at the left or at the right position. You can specify to jsGraph which axes you want with which options during graph creation ({@link Graph}), but axes can also be created on the fly, which is probably easiers to understand.
@@ -452,9 +465,9 @@ g.draw();
 
 Good ! Let's now see what we can do with the axes.
 
-## Styling the axis
+### <a id="doc-styling"></a>Styling the axis
 
-### Setting axis boundaries
+#### <a id="doc-boundaries"></a>Setting axis boundaries
 
 The first thing you will probably want to do is not to rely on the series data to set the axis minimum / maximum.
 By default, there is a 10% margin on each side of the serie, so that the serie doesn't directly touch the axis. This can be changed or removed using {@see Axis#setAxisDataSpacing}
@@ -537,7 +550,7 @@ g
 
 </script>
 
-### Aligning the axes
+#### <a id="doc-alignment"></a>Aligning the axes
 
 Sometimes, if you have two axes that should be aligned on a common value, it would be nice to force the axes to behave accordingly. For example, in our example, it makes sense to align the 0 of the current density with the 0 of the power output. So one of the axis will have to behave differently. Let's pick the power output. A more detailed tutorial {@tutorial adaptto} has been written to detail the behavior of the ```adaptTo``` method.
 
@@ -600,7 +613,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right 
 
 </script>
 
-### Coloring the axes
+#### <a id="doc-coloring"></a>Coloring the axes
 
 Since v1.13.2, you have the possibility to change the color of the axes. Use the {@link Axis#setAxisColor} method. The color of the ticks can be changed using {@link Axis#setPrimaryTicksColor} and {@link Axis#setSecondaryTicksColor}. The color of the tick labels can be changed using {@link Axis#setTicksLabelColor}. The color of the label can be selected using {@link Axis#setLabelColor}.
 

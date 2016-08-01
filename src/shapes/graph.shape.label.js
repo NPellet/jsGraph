@@ -2,20 +2,20 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   /** 
    * Represents a label that extends the Shape class
-   * @class LabelShape
+   * @class ShapeLabel
    * @augments Shape
    * @see Graph#newShape
    */
-  function LabelShape( graph, options ) {
+  function ShapeLabel( graph, options ) {
     this.selectStyle = {
       stroke: 'red'
     };
 
   }
 
-  LabelShape.prototype = new GraphShape();
+  ShapeLabel.prototype = new GraphShape();
 
-  util.extend( LabelShape.prototype, GraphShape.prototype, {
+  util.extend( ShapeLabel.prototype, GraphShape.prototype, {
 
     createDom: function() {
       return false;
@@ -27,6 +27,6 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
   } );
 
-  return LabelShape;
+  return ShapeLabel;
 
 } );

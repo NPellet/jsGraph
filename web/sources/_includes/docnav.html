@@ -1,0 +1,22 @@
+
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			{% for doc in site.data.doc %}
+  			  {% if doc.title %}
+  			  <li {% if page.docbar == doc.title %} class="active" {% endif %}>
+            <a class="page-link" href="{{ doc.url | prepend: 'docs/' | prepend: site.baseurl }}.html">{{ doc.title }}</a>
+          </li>
+  			  {% endif %}
+  			{% endfor %}
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

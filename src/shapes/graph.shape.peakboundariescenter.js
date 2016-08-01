@@ -1,17 +1,17 @@
 define( [ './graph.shape.line' ], function( GraphLine ) {
 
   /** 
-   * Arrow shape
-   * @class ArrowShape
+   * Peak boundaries shape
+   * @class ShapePeakBoundaries
    * @static
    */
-  function PeakBoundariesMiddleShape( graph ) {
+  function ShapePeakBoundaries( graph ) {
     this.lineHeight = 6;
   }
 
-  PeakBoundariesMiddleShape.prototype = new GraphLine();
+  ShapePeakBoundaries.prototype = new GraphLine();
 
-  PeakBoundariesMiddleShape.prototype.createDom = function() {
+  ShapePeakBoundaries.prototype.createDom = function() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
     this.line1 = document.createElementNS( this.graph.ns, 'line' );
@@ -33,7 +33,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this._dom.element = this;
   };
 
-  PeakBoundariesMiddleShape.prototype.createHandles = function() {
+  ShapePeakBoundaries.prototype.createHandles = function() {
     this._createHandles( 3, 'rect', {
       transform: "translate(-3 -3)",
       width: 6,
@@ -44,7 +44,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     } );
   };
 
-  PeakBoundariesMiddleShape.prototype.redrawImpl = function() {
+  ShapePeakBoundaries.prototype.redrawImpl = function() {
 
     this.line1.setAttribute( 'stroke', this.getStrokeColor() );
     this.line2.setAttribute( 'stroke', this.getStrokeColor() );
@@ -58,7 +58,13 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.redrawLines();
   };
 
-  PeakBoundariesMiddleShape.prototype.redrawLines = function() {
+  /**
+   * @memberof ShapePeakBoundaries
+   * Redraws the vertical lines according to the positions.
+   * Position 0 is the left line, position 1 is the right line and position 2 is the center line
+   * @returns {ShapePeakBoundaries} The shape instance
+   */
+  ShapePeakBoundaries.prototype.redrawLines = function() {
 
     var posLeft = this.computePosition( 0 );
     var posRight = this.computePosition( 1 );
@@ -80,15 +86,22 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
       this._dom.setAttribute( 'x1', posLeft.x );
       this._dom.setAttribute( 'x2', posRight.x );
 
-      this.setLinesY( height );
+      this.redrawY( height );
     }
+
+    return this;
 
   };
 
-  PeakBoundariesMiddleShape.prototype.setLinesY = function() {
+  /**
+   * @memberof ShapePeakBoundaries
+   * Redraws the vertical positions of the shape
+   * @returns {ShapePeakBoundaries} The shape instance
+   */
+  ShapePeakBoundaries.prototype.redrawY = function() {
 
     if ( !this.posYPx ) {
-      return;
+      return this;
     }
 
     var height = this.lineHeight;
@@ -105,9 +118,10 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this._dom.setAttribute( 'y1', this.posYPx );
     this._dom.setAttribute( 'y2', this.posYPx );
 
+    return this;
   };
 
-  PeakBoundariesMiddleShape.prototype.setHandles = function() {
+  ShapePeakBoundaries.prototype.setHandles = function() {
 
     if ( !this.posYPx ) {
       return;
@@ -130,15 +144,28 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     }
   };
 
-  PeakBoundariesMiddleShape.prototype.setY = function( y ) {
+  /**
+   * @memberof ShapePeakBoundaries
+   * Sets the y position of the shape
+   * @param {Number} y - The y position in px
+   * @returns {ShapePeakBoundaries} The shape instance
+   */
+  ShapePeakBoundaries.prototype.setY = function( y ) {
     this.posYPx = y;
+    return this;
   };
 
-  PeakBoundariesMiddleShape.prototype.setLineHeight = function( height ) {
+  /**
+   * @memberof ShapePeakBoundaries
+   * Sets the height of the peak lines
+   * @param {Number} height - The height of the lines in px
+   * @returns {ShapePeakBoundaries} The shape instance
+   */
+  ShapePeakBoundaries.prototype.setLineHeight = function( height ) {
     this.lineHeihgt = height;
   };
 
-  PeakBoundariesMiddleShape.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
+  ShapePeakBoundaries.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
 
     if ( this.isLocked() ) {
       return;
@@ -192,9 +219,11 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.setHandles();
   };
 
-  PeakBoundariesMiddleShape.prototype.applyPosition = function() {
+  ShapePeakBoundaries.prototype.applyPosition = function() {
+
+    this.redrawLines();
     return true;
   };
 
-  return PeakBoundariesMiddleShape;
+  return ShapePeakBoundaries;
 } );

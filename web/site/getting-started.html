@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Getting Started</title>
+    <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.min.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///getting-started">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="#">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div id="jsgraph-page" class="container-fluid">
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8">
+				<h1 id="jsgraph-title">Getting Started</h1>
+				<p id="jsgraph-subtitle">
+					Download, install and run jsGraph in a nutshell
+				</p>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="container">
+
+<h2 id="download">Download</h2>
+
+<p class="larger">
+	jsGraph can be downloaded and installed manually or via a package manager, such as npm or bower. The project is hosted on Github and the distribution files can be found there. jsGraph has no dependencies and can be utilized without jQuery.
+</p>
+
+<div class="row" id="jsgraph-download">
+	<div class="col-sm-4">
+
+		<h3>
+			Minified version
+		</h3>
+
+		<p class="">
+			The full-featured, compact version of jsGraph, shipped with all plugins, shapes and series available
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">Download minified (252kb)</a>
+		</button>
+
+	</div>
+	<div class="col-sm-4">
+
+		<h3>
+			Source code
+		</h3>
+
+		<p class="">
+			The compiled but not uglified source code can be used for testing purposes and bug reporting
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">Expanded version (673kb)</a>
+		</button>
+
+	</div>
+
+	<div class="col-sm-4">
+
+
+		<h3>
+			Github repo
+		</h3>
+
+		<p class="">
+			The project is hosted on Github, for those who want to contribute to the project
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">View on Github</a>
+		</button>
+
+	</div>
+</div>
+
+<h2 id="load-with-npm">Load with npm</h2>
+<p class="larger">
+
+
+Installing jsGraph from <a href="http://npmjs.org">npm</a> is an easy way to install jsGraph and keep it up to date
+
+</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install node-jsgraph --save-dev
+</code></pre>
+</div>
+
+<h2 id="load-with-bower">Load with bower</h2>
+<p class="larger">
+	Alternatively, jsGraph is also available from the bower package manager
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>bower install jsgraph
+</code></pre>
+</div>
+
+<h2 id="loading-jsgraph-into-your-browser">Loading jsGraph into your browser</h2>
+<p class="larger">
+	jsGraph is available both for direct inclusion or as an anonymous AMD module loadable with [requirejs](http://requirejs.org). It does not rely on external libraries, therefore does not necessarily have to be loaded after jQuery, for example.
+</p>
+
+<h3 id="loading-manually">Loading manually</h3>
+
+<p>Simply paste the script inclusion tag anywhere in your webpage. jsGraph loads synchronously, so if you place it the header part of your page, it will be readily available in the other scripts. When loaded manually, jsGraph creates a unique global object named <code class="highlighter-rouge">Graph</code> - the graph constructor - available from the <code class="highlighter-rouge">window</code> object.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- Includes jsGraph library --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"path/to/jsgraph/jsgraph.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<h3 id="loading-with-requirejs">Loading with requirejs</h3>
+
+<p>If you are using a AMD structure using requirejs or other, jsGraph will register itself as an anonymous module. To load it, just use:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">require</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'path/to/jsgraph'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">Graph</span> <span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// new Graph(); is available</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>In this case, the Graph object is not exposed to the <code class="highlighter-rouge">window</code> element anymore.</p>
+
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

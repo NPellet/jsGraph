@@ -434,6 +434,16 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
       return this.options.isSerieHideable;
     },
 
+    notHideable: function() {
+      this.options.isSerieHideable = false;
+      return this;
+    },
+
+    hideable: function() {
+      this.options.isSerieHideable = true;
+      return this;
+    },
+
     /** 
      * @memberof Legend.prototype
      * @return {Boolean} true or false depending if the series can be selected or not

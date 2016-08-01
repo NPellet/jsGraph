@@ -1,0 +1,1076 @@
+subtitle: 'PluginSerieLineDifference'
+---
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>PluginSerieLineDifference</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="PluginSerieLineDifference"><span class="type-signature"></span>new <span></span><span class="doc-name">PluginSerieLineDifference</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="implements">Implements:</dt>
+    <dd class="implements"><ul>
+        
+            <li><a href="Plugin.html">Plugin</a></li>
+        
+    </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="computeCrossing"><span class="type-signature"></span><span>{<span class="doc-return">Object|Boolean</span>} </span><span class="doc-name">computeCrossing</span><span class="doc-signature">( <span class="doc-type">Number</span> x11 , <span class="doc-type">Number</span> y11 , <span class="doc-type">Number</span> x12 , <span class="doc-type">Number</span> y12 , <span class="doc-type">Number</span> x21 , <span class="doc-type">Number</span> y21 , <span class="doc-type">Number</span> y22 , <span class="doc-type">Number</span> y22 )</span></h4>
+
+
+
+
+<div class="description">
+    Finds the crossing point between two vector and returns it, or ```false``` if it is not within the x boundaries
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x11</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">First x point of the first vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y11</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">First y point of the first vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x12</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Second x point of the first vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y12</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Second y point of the first vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>x21</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">First x point of the second vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y21</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">First y point of the second vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y22</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Second x point of the second vector</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>y22</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Second y point of the second vector</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An object containing the crossing point in the following format: ```{ x: xCrossing, y: yCrossing }``` or ```false``` if no crossing point can be found
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="draw"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Plugin.html">Plugin</a></span>} </span><span class="doc-name">draw</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Calculates and draws the zone series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Plugin.html">Plugin</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current plugin instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getFrom"><span class="type-signature"></span><span></span><span class="doc-name">getFrom</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    the starting value used to draw the zone
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getNegativePolyline"><span class="type-signature"></span><span></span><span class="doc-name">getNegativePolyline</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    The negative polyline
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPositivePolyline"><span class="type-signature"></span><span></span><span class="doc-name">getPositivePolyline</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    The positive polyline
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getTo"><span class="type-signature"></span><span></span><span class="doc-name">getTo</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    the ending value used to draw the zone
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="interpolate"><span class="type-signature"></span><span>{<span class="doc-return">Number|Boolean</span>} </span><span class="doc-name">interpolate</span><span class="doc-signature">( <span class="doc-type">Serie</span> serie , <span class="doc-type">Number</span> valX )</span></h4>
+
+
+
+
+<div class="description">
+    Finds the interpolated y value at point ```valX``` of the serie ```serie```
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serie for which the y value should be computed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>valX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The interpolated y value is possible, ```false``` otherwise
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoundaries"><span class="type-signature"></span><span></span><span class="doc-name">setBoundaries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns the boundaries
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSeries"><span class="type-signature"></span><span></span><span class="doc-name">setSeries</span><span class="doc-signature">( <span class="doc-type">SerieLine</span> serieTop , <span class="doc-type">SerieLine</span> serieBottom )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns the two series for the shape. Postive values are defined when ```serieTop``` is higher than ```serieBottom```.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serieTop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The top serie</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>serieBottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The bottom serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+
+
+
+    
+
+    
+</article>
+
+</section>

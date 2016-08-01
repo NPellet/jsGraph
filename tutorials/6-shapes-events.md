@@ -1,9 +1,3 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
-
-<script>
-	
-</script>
 
 Shapes feature events. However those events are fired at the {@link Graph} level, to avoid registering too many event handlers which would slow down jsGraph and use up too much memory.
 

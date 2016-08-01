@@ -7,6 +7,7 @@ define( [
     './graph.axis.x',
     './graph.axis.y',
 
+    './graph.axis.x.bar',
     './graph.axis.x.broken',
     './graph.axis.y.broken',
     './graph.axis.x.time',
@@ -19,9 +20,11 @@ define( [
     './plugins/graph.plugin.selectScatter',
     './plugins/graph.plugin.zoom',
     './plugins/graph.plugin.timeseriemanager',
+    './plugins/graph.plugin.serielinedifference',
 
     './series/graph.serie',
     './series/graph.serie.contour',
+    './series/graph.serie.bar',
     './series/graph.serie.line',
     './series/graph.serie.line.broken',
     './series/graph.serie.line.colored',
@@ -34,6 +37,7 @@ define( [
     './shapes/graph.shape.arrow',
     './shapes/graph.shape.ellipse',
     './shapes/graph.shape.label',
+    './shapes/graph.shape.polyline',
     './shapes/graph.shape.line',
     './shapes/graph.shape.nmrintegral',
     './shapes/graph.shape.peakintegration2d',
@@ -57,6 +61,8 @@ define( [
     GraphAxis,
     GraphXAxis,
     GraphYAxis,
+
+    GraphXAxisBar,
     GraphXAxisBroken,
     GraphYAxisBroken,
     GraphXAxisTime,
@@ -68,9 +74,11 @@ define( [
     GraphPluginSelectScatter,
     GraphPluginZoom,
     GraphPluginTimeSerieManager,
+    GraphPluginSerieLineDifference,
 
     GraphSerie,
     GraphSerieContour,
+    GraphSerieBar,
     GraphSerieLine,
     GraphSerieLineBroken,
     GraphSerieLineColor,
@@ -83,6 +91,7 @@ define( [
     GraphShapeArrow,
     GraphShapeEllipse,
     GraphShapeLabel,
+    GraphShapePolyLine,
     GraphShapeLine,
     GraphShapeNMRIntegral,
     GraphShapePeakIntegration2D,
@@ -104,6 +113,7 @@ define( [
 
     Graph.registerConstructor( "graph.axis.x", GraphXAxis );
     Graph.registerConstructor( "graph.axis.y", GraphYAxis );
+    Graph.registerConstructor( "graph.axis.x.bar", GraphXAxisBar );
     Graph.registerConstructor( "graph.axis.x.broken", GraphXAxisBroken );
     Graph.registerConstructor( "graph.axis.y.broken", GraphYAxisBroken );
     Graph.registerConstructor( "graph.axis.x.time", GraphXAxisTime );
@@ -111,6 +121,7 @@ define( [
     Graph.registerConstructor( "graph.serie.line", GraphSerieLine );
     Graph.registerConstructor( "graph.serie.line.color", GraphSerieLineColor );
     Graph.registerConstructor( "graph.serie.contour", GraphSerieContour );
+    Graph.registerConstructor( "graph.serie.bar", GraphSerieBar );
     Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
     Graph.registerConstructor( "graph.serie.scatter", GraphSerieScatter );
     Graph.registerConstructor( "graph.serie.zone", GraphSerieZone );
@@ -121,12 +132,15 @@ define( [
     Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
     Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
     Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
+    Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
+    Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
 
     Graph.registerConstructor( "graph.shape", GraphShape );
     Graph.registerConstructor( "graph.shape.areaundercurve", GraphShapeAreaUnderCurve );
     Graph.registerConstructor( "graph.shape.arrow", GraphShapeArrow );
     Graph.registerConstructor( "graph.shape.ellipse", GraphShapeEllipse );
     Graph.registerConstructor( "graph.shape.label", GraphShapeLabel );
+    Graph.registerConstructor( "graph.shape.polyline", GraphShapePolyLine );
     Graph.registerConstructor( "graph.shape.line", GraphShapeLine );
     Graph.registerConstructor( "graph.shape.nmrintegral", GraphShapeNMRIntegral );
     Graph.registerConstructor( "graph.shape.peakintegration2d", GraphShapePeakIntegration2D );

@@ -34,5 +34,17 @@
 
     "8-trackingline": {
          "title": "Tracking line"
+    },
+
+    "9-densitymap": {
+         "title": "Density maps"
+    },
+
+    "10-seriestyle": {
+         "title": "Serie styles"
+    },
+
+    "11-linedifference": {
+         "title": "Difference between two series"
     }
  }

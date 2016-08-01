@@ -2,16 +2,16 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
   /** 
    * Arrow shape
-   * @class ArrowShape
+   * @class ShapeArrow
    * @static
    */
-  function ArrowShape( graph ) {
+  function ShapeArrow( graph ) {
 
   }
 
-  ArrowShape.prototype = new GraphLine();
+  ShapeArrow.prototype = new GraphLine();
 
-  ArrowShape.prototype.createDom = function() {
+  ShapeArrow.prototype.createDom = function() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
     this._dom.setAttribute( 'marker-end', 'url(#arrow' + this.graph._creation + ')' );
@@ -30,6 +30,6 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
   };
 
-  return ArrowShape;
+  return ShapeArrow;
 
 } );

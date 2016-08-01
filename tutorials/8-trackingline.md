@@ -1,11 +1,8 @@
-<script src="../dist/jquery.min.js"></script>
-<script src="../dist/jsgraph.js"></script>
-
 
 
 jsGraph allows you to display a vertical line as a tracker and to display information about the series at the x point of the tracker. Obviously your x data must be monotoneously increasing for this feature to work. I will show you through a serie of examples how to work with the tracking features.
 
-## Blank example
+### Blank example
 
 Let's start by a standard blank example
 
@@ -45,7 +42,9 @@ Let's start by a standard blank example
 	var g = makeGraph("example-1");
 </script>
 
-```
+
+
+{% highlight javascript %}
 	
   var graph = new Graph( "example-1" );
   graph.resize( 700, 300 ); // Resizes the graph
@@ -66,12 +65,12 @@ Let's start by a standard blank example
   serie.setData( colorado );
   serie.autoAxis();
 
-```
+{% endhighlight %}
 
 
 There are two modes of tracking available: ```individual``` and ```common```:
 
-## Common mode
+### Common mode
 
 In the common mode, no matter where the mouse is, jsGraph will try to find the closest x value for each serie and process them all together. If there is no computable data for any serie (outside of any serie range), nothing is displayed. Otherwise, a vertical line is shown, the closest point in each serie is highlighted and a single text box appears (common to all series). Here's how to do:
 
@@ -120,7 +119,8 @@ In the common mode, no matter where the mouse is, jsGraph will try to find the c
 </script>
 
 
-```
+
+{% highlight javascript %}
 
   graph.trackingLine( {
       
@@ -155,14 +155,16 @@ In the common mode, no matter where the mouse is, jsGraph will try to find the c
     ]
   });
 
-  ```
+  {% endhighlight %}
+
+
 
   * The ```snapToSerie``` option defined which serie will reference the available x values for the tracking line. The other series will look for the best point around the snapped value to return their closest value.
   * The ```textMethod``` option defined a method used to generate the text located inside the legend box.
   * The ```trackingLineShapeOptions``` applies its members to the line shape element. See {@link ShapeLine} for more details
   * The ```series``` option lists all the series accepting tracking. The ```withinPx``` option defined the position range in which it is acceptable for the serie to show a tracking point. The ```withinVal``` option is also available for the same feature but in axis unit.
 
-### withinVal and withinPx
+#### withinVal and withinPx
 
 To demonstrate the ```within``` feature, let us use another example. In this example, the ```snapToSerie``` option is set to the red 
 
@@ -263,7 +265,10 @@ To demonstrate the ```within``` feature, let us use another example. In this exa
   graph.draw();
  </script>
 
- ```
+ 
+
+{% highlight javascript %}
+
  var graph = new Graph( "example-3" );
 
   graph.resize( 700, 300 ); // Resizes the graph
@@ -332,7 +337,10 @@ To demonstrate the ```within``` feature, let us use another example. In this exa
 
   graph.draw();
 
-  ```
+
+{% endhighlight %}
+
+
 
   In this example, the second serie (red) will only highlight if the snapped point on the blue serie is less than 10px than the closest point on the red serie. With this particular graph width, it happens when the x value of the red point is either exactly on the blue one or shifted by one. The third serie (green) will highlight a point only if it is within 20px of the snapped point on the blue serie. Therefore, more points compared to the red serie are selected. In the fourth serie (orange), only points not further than 0.2 (included) will be tracked. If no point is within 0.2 (in x axis value), then no tracking is done and the dot is not showed. The only tracked points are the first two (0, +0.2), the three in the middle (-0.2, 0, +0.2) and the last two (-0.2, 0).
 

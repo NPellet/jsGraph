@@ -43,8 +43,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     //this.empty();
 
     this.minX = Number.MAX_SAFE_INTEGER;
-    this.minY = Number.MAX_SAFE_INTEGER;
     this.maxX = Number.MIN_SAFE_INTEGER;
+    this.minY = Number.MAX_SAFE_INTEGER;
     this.maxY = Number.MIN_SAFE_INTEGER;
 
     var isDataArray = isArray( data );
@@ -57,6 +57,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
       data = [ data ];
       oneDimensional = true;
+    } else if ( isDataArray && isArray( data[ 0 ] ) && data[ 0 ].length > 2 ) {
+      oneDimensional = true;
     } else if ( !isDataArray ) {
       util.throwError( "Data is not an array" );
       return;
@@ -66,12 +68,14 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     var isData0Array = isArray( data[ 0 ] );
 
     var isData00Array = isArray( data[ 0 ][ 0 ] );
+    
     if ( isData0Array && !oneDimensional && !isData00Array ) {
       data = [ data ];
     }
     if ( isData0Array ) {
-      for ( var i = 0, k = data.length; i < k; i++ ) {
 
+      for ( var i = 0, k = data.length; i < k; i++ ) {
+        console.log( i, k );
         arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
         datas.push( arr );
         z = 0;

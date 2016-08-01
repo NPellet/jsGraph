@@ -1,0 +1,245 @@
+
+Serie classes apply to line series and scatter. They allow the user to pre-program the style of the series and activate them in a single instruction. There are two default classes which are :
+
+* ```unselected```. It is the default style that is programmed when the API is called without specification, and it is the style that will be displayed when not expressively chosen otherwise
+* ```selected```. It is the style applied the serie when it (for the line serie) or one of its points (for the scatter serie) is selected.
+
+
+### <a id="doc-line-series"></a> Line series
+
+
+The methods that can set styles are the following:
+
+
+* ```setLineColor( String serieColor [, String selectionName = "undefined" ] [, bool applyToSelected ] )```
+* ```setLineWidth( Number strokeWidth [, String selectionName = "undefined" ] [, bool applyToSelected ] )```
+
+* ```setLineStyle( Number serieStyle [, String selectionName = "undefined" ] [, bool applyToSelected  ] )```
+* ```setMarkers( Object markerFamilies [, String selectionName = "undefined" ] [, bool applyToSelected ] )```
+* ```showMarkers( [, String selectionName = "undefined" ] )```
+* ```hideMarkers( [, String selectionName = "undefined" ] )```
+* ```markersShown( [, String selectionName = "undefined" ] )```
+* ```setMarkersPoints( String familyName, mixed Points [, String selectionName = "undefined" ] )```
+
+Each of these methods take the parameter ```selectionName``` (which defaults with "undefined", the standard style) that you can specify. In addition to that, some parameters take the boolean ```applyToSelected``` which applies the command not only to the style you are working on, but also to the "selected" style. This is quite useful because it shrinks the number of API calls:
+
+{%highlight javascript%}
+serie.setLineColor('red');
+serie.setLineColor('red', 'selected');
+
+// Has similar effect as 
+serie.setLineColor('red', false, true );
+{%endhighlight%}
+
+It should be noted that when styles are used in the constructor, they will apply to the "unselected" *and* to the "selected" styles.
+
+
+#### <a id="extend-style"></a> Extending style
+
+
+You can also extend one style by another one, like this:
+
+{%highlight javascript%}
+serie.extendStyle( String styleTarget, String styleOrigin );
+{%endhighlight%}
+
+which will extend styleTarget with styleOrigin, provided that the parameter in styleTarget is not defined. In other words, styleTarget parameters have the priority. For the jQuery people, this would correspond to: ```styleTarget = $.extend( {}, true, styleTarget, styleOrigin );```
+
+
+#### <a id="select-method"></a> The select method
+
+
+Although you could call directly
+
+{%highlight javascript%}
+serie.select( [ String selectName = "selected" ] );
+{%endhighlight%}
+
+where the parameter ```selectName``` is optional and takes "selected" by default, jsGraph also manages serie selection from its core. Therefore, we advise to call
+
+{%highlight javascript%}
+graph.selectSerie( {Number|String} serieName [, String selectName = "selected" ] );
+{%endhighlight%}
+
+
+#### <a id="extend-markers"></a> Extending some marker properties
+
+
+Sometimes you want to copy some marker styles from one style to another, and you can do it using ```serie.extendStyle``` method. But all the marker properties will be copied, and perhaps you want to apply some post-modification. jsGraph exposes a few methods for that:
+
+* ```setMarkerPoints( newPoints, familyIndex, selectionType )``` changes the points
+* ```setMarkersType( newType, familyIndex, selectionType )``` changes the markers type
+* ```setMarkersZoom( newZoom, familyIndex, selectionType )``` changes the markers zoom
+* ```setMarkersStrokeColor( newStrokeColor, familyIndex, selectionType )``` changes the markers stroke color
+* ```setMarkersStrokeWidth( newStrokeWidth, familyIndex, selectionType )``` changes the markers stroke width
+* ```setMarkersFillColor( newFillColor, familyIndex, selectionType )``` changes the markers fill color
+
+The ```familyIndex``` parameter relates to the marker family, i.e. the index of the markers to change as was used in the ```setMarkers```method. ```familyIndex``` defaults to 0. The ```selectionType``` parameter is the name of the selection style for which the style should be overwritten.
+
+
+#### <a id="example"></a>Example
+
+
+Consider the following example:
+
+{%highlight javascript%}
+s.setLineColor( "#0710ad" );
+s.setLineStyle( 2 );
+s.setLineWidth( 3 );
+s.setMarkers( [ {
+	type: 1,
+	zoom: 1,
+	strokeWidth: 2,
+	strokeColor: 'white',
+	fillColor: '#0710ad',
+} ] );
+{%endhighlight%}
+
+<div id="doc-example-1"></div>
+<script>
+
+var graph = new Graph("doc-example-1").resize(400, 250);
+var s = graph.newSerie().setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ] ).autoAxis();
+
+s.setLineColor( "#0710ad" );
+s.setLineStyle( 2 );
+s.setLineWidth( 2 );
+s.setMarkers( [ {
+	type: 1,
+	zoom: 2,
+	strokeWidth: 2,
+	strokeColor: 'white',
+	fillColor: '#0710ad',
+} ] );
+
+graph.draw();
+
+</script>
+
+Like we said before, by default, all those methods apply to the "unselected" style. We could decide to create a few more styles, and to extend others from the "unselected" one in several ways.
+
+
+{%highlight javascript%}
+
+// Sets the "unselected" line color
+s.setLineColor( "#0710ad" );
+
+// Sets the line style to "unselected" and "selected"
+s.setLineStyle( 2, false, true ); 
+
+// Sets the line width to "unselected" and "selected"
+s.setLineWidth( 2, false, true ); 
+
+// Sets the markers to "unselected" and "selected"
+s.setMarkers( [ {
+	type: 1,
+	zoom: 2,
+	strokeWidth: 2,
+	strokeColor: 'white',
+	fillColor: '#0710ad',
+} ], false, true );
+
+// Sets the color for "selected"
+s.setLineColor( "#2e7c14", "selected" );
+
+// Overwrites the previously set line style of "selected" (see the 2nd command line)
+s.setLineStyle( 1, "selected" );
+
+// Creates a new style "extended" and extends it from "unselected"
+s.extendStyle( "extended", "unselected" );	
+
+// Overwrites the line width
+s.setLineWidth( 4, "extended" );
+
+// Sets a few marker families for the style "custom1"
+s.setMarkers( [ {
+	type: 4,
+	zoom: 2,
+	strokeWidth: 2,
+	strokeColor: '#0710ad',
+	fillColor: '#676cc6',
+}, {
+	type: 4,
+	zoom: 2,
+	strokeWidth: 2,
+	strokeColor: '#962614',
+	fillColor: '#b76e62',
+	points: [ 1, 4, [ 6, 9 ] ]
+} ], "custom1" );
+
+// Copy "custom1" into the new style "custom2"
+s.extendStyle( "custom2", "custom1" );
+
+// Overwrite some of the marker properties in "custom2"
+s.setMarkersStrokeColor( "#247c4e", 1, "custom2" );
+s.setMarkersFillColor( "#6fb590", 1, "custom2" );
+
+// You have to draw the series at the end
+graph.draw(); 
+
+{%endhighlight%}
+
+
+<div id="doc-example-2"></div>
+
+
+<div class="btn-group" id="doc-example-1-btns">
+	<button class="btn btn-default" data-style="unselected">"unselected" style</button>
+	<button class="btn btn-default" data-style="selected">"selected" style</button>
+	<button class="btn btn-default" data-style="extended">"extended" style</button>
+	<button class="btn btn-default" data-style="custom1">"custom1" style</button>
+	<button class="btn btn-default" data-style="custom2">"custom2" style</button>
+</div>
+
+<script>
+
+( function() {
+	var graph = new Graph("doc-example-2").resize(400, 250);
+	var s = graph.newSerie( "serie" ).setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1949, 2339, 1954, 2482,  1959, 2644,  1964, 3046, 1969, 3098,  1974, 3273,  1979, 3095, 1984, 3288, 1989, 3704, 1994, 3999, 1999, 4075, 2004, 4429, 2009, 4588, 2014, 4918 ] ).autoAxis();
+
+	s.setLineColor( "#0710ad" );
+	s.setLineStyle( 2, false, true );  // Will apply to "selected"
+	s.setLineWidth( 2, false, true );  // Will apply to "selected"
+	s.setMarkers( [ {
+		type: 1,
+		zoom: 2,
+		strokeWidth: 2,
+		strokeColor: 'white',
+		fillColor: '#0710ad',
+	} ], false, true ); // Will apply to "selected"
+
+	s.setLineColor( "#2e7c14", "selected" );
+	s.setLineStyle( 1, "selected" );
+
+	s.extendStyle( "extended", "unselected" );	
+	s.setLineWidth( 4, "extended" );
+
+	s.setMarkers( [ {
+		type: 4,
+		zoom: 2,
+		strokeWidth: 2,
+		strokeColor: '#0710ad',
+		fillColor: '#676cc6',
+	}, {
+		type: 4,
+		zoom: 2,
+		strokeWidth: 2,
+		strokeColor: '#962614',
+		fillColor: '#b76e62',
+		points: [ 1, 4, [ 6, 9 ] ]
+	} ], "custom1" );
+
+	s.extendStyle( "custom2", "custom1" );
+	s.setMarkersStrokeColor( "#247c4e", 1, "custom2" );
+	s.setMarkersFillColor( "#6fb590", 1, "custom2" );
+	graph.draw();
+
+	$("#doc-example-1-btns").on('click', 'button', function() {
+		
+		graph.selectSerie( "serie", $( this ).data('style') );
+	});
+}) ();
+
+</script>
+
+

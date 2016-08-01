@@ -147,7 +147,6 @@ define( [ '../graph.util' ], function( util ) {
           }
         }
       }
-      console.log( styles );
       /*
           // None is defined
           if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
@@ -214,6 +213,14 @@ define( [ '../graph.util' ], function( util ) {
       }
 
     };
+
+
+    this.errorAddPointBarChart = function( j, posY, xpx, ypx ) {
+      var error;
+      if( this.error && ( error = this.error[ j ] ) ) {
+        this.doErrorDraw( 'y', error, posY, ypx, xpx, ypx );
+      }
+    }
 
     this.errorDraw = function()  {
 

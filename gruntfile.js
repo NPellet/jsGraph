@@ -55,7 +55,7 @@ module.exports = function(grunt) {
             dist: {
 
                 files: {
-                    'dist/jquery.min.js': 'lib/components/jquery/dist/jquery.min.js'
+                    //'dist/jquery.min.js': 'lib/components/jquery/dist/jquery.min.js'
                 }
             },
 
@@ -317,7 +317,7 @@ module.exports = function(grunt) {
         }
 
 
-        var externalLibraries = [ 'jquery' ];
+        var externalLibraries = [  ];
 
        var requirejsConfig = {
 

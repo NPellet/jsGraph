@@ -1,0 +1,10 @@
+{
+  "name": "node-jsgraph-examples",
+  "description": "Examples for jsgraph",
+  "version": "1.14.10-15",
+  "devDependencies": {
+   
+  },
+  "dependencies": {},
+  "license": "MIT"
+}

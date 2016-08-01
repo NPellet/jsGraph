@@ -413,10 +413,10 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.selected = selectionType !== "unselected";
 
-    if ( !( !this.areMarkersShown() && !this.areMarkersShown( selectionType ) ) ) {
+    if ( this.areMarkersShown() || this.areMarkersShown( selectionType ) ) {
       this.selectionType = selectionType;
 
-      this.draw(); // Drawing is absolutely required here
+      this.draw( true ); // Drawing is absolutely required here
       this.applyLineStyles();
     } else {
       this.selectionType = selectionType;
@@ -1119,7 +1119,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
    */
   SerieLine.prototype.getMarkerCurrentFamily = function( k ) {
 
-    if ( !this.markerPoints[ this.selectionType ] ) {
+    if ( !this.markerPoints || !this.markerPoints[ this.selectionType ] ) {
       return;
     }
 
@@ -1276,8 +1276,8 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       return;
     }
 
-    if ( this.markersShown() && allowMarker !== false ) {
-      drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+    if ( this.markersShown() && allowMarker !== false && this.markerFamilies[ this.selectionType || "unselected" ] ) {
+      drawMarkerXY( this, this.markerFamilies[ this.selectionType || "unselected" ][ this.markerCurrentFamily ], xpx, ypx );
     }
 
     this.counter++;
@@ -1849,13 +1849,19 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     }
   };
 
-  SerieLine.prototype.extendStyle = function( stylename ) {
-    var s = this.styles[ stylename ];
-    console.log( s, stylename );
-    if ( s ) {
-      this.styles[ stylename ] = util.extend( true, {}, this.styles.unselected, s );
-      console.log( s, stylename );
-    }
+  SerieLine.prototype.extendStyle = function( styleTarget, styleOrigin ) {
+    var s = this.styles[ styleTarget ];
+
+    this.styles[ styleTarget ] = util.extend( true, {}, this.styles[ styleOrigin || "unselected" ], s || {} );
+
+    this.styles[ styleTarget ].markers.map( function( marker ) {
+      if ( marker.dom ) {
+        marker.dom = "";
+      }
+    } );
+
+    this._recalculateMarkerPoints( styleTarget, this.styles[ styleTarget ].markers );
+    this.styleHasChanged( styleTarget );
   };
 
   /*  * @memberof SerieLine
@@ -1878,7 +1884,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
   SerieLine.prototype.getLineWidth = function( selectionType ) {
 
-    return this.getStyle( selectionType ).lineWidth;
+    return this.getStyle( selectionType ).lineWidth || 1;
   };
 
   /* LINE COLOR * @memberof SerieLine
@@ -1900,7 +1906,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
   SerieLine.prototype.getLineColor = function( selectionType ) {
 
-    return this.getStyle( selectionType ).lineColor;
+    return this.getStyle( selectionType ).lineColor || "black";
   };
 
   /* * @memberof SerieLine
@@ -1914,7 +1920,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     this.styles[ selectionType ].showMarkers = true;
 
     if ( redraw && this._drawn ) {
-      this.draw();
+      this.draw( true );
     } else {
       this.styleHasChanged( selectionType );
     }
@@ -1928,7 +1934,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
     this.styles[ selectionType ].showMarkers = false;
 
     if ( redraw && this._drawn ) {
-      this.draw();
+      this.draw( true );
     } else {
       this.styleHasChanged( selectionType );
     }
@@ -1936,7 +1942,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   };
 
   SerieLine.prototype.markersShown = function( selectionType ) {
-    return this.getStyle( selectionType ).showMarkers;
+    return this.getStyle( selectionType ).showMarkers !== false;
   };
 
   SerieLine.prototype.areMarkersShown = function() {
@@ -1948,7 +1954,7 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
   };
 
   // Multiple markers
-  SerieLine.prototype.setMarkers = function( families, selectionType ) {
+  SerieLine.prototype.setMarkers = function( families, selectionType, applyToSelected ) {
     // Family has to be an object
     // Family looks like
     /*
@@ -1980,15 +1986,45 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
 
     this.styles[ selectionType || "unselected" ].markers = families;
 
-    this._recalculateMarkerPoints( selectionType, families );
+    if ( applyToSelected ) {
+      this.styles[ "selected" ].markers = util.extend( true, {}, families );
+    }
 
+    this._recalculateMarkerPoints( selectionType, families );
     this.styleHasChanged( selectionType );
     this.dataHasChanged( true ); // Data has not really changed, but marker placing is performed during the draw method
-
     return this;
   };
 
   SerieLine.prototype.setMarkersPoints = function( points, family, selectionType ) {
+    this._extendMarkers( "points", points, family, selectionType, true );
+  };
+
+  SerieLine.prototype.setMarkersColor = function( color, family, selectionType ) {
+    this._extendMarkers( "color", color, family, selectionType );
+  };
+
+  SerieLine.prototype.setMarkersType = function( type, family, selectionType ) {
+    this._extendMarkers( "type", type, family, selectionType );
+  };
+
+  SerieLine.prototype.setMarkersZoom = function( zoom, family, selectionType ) {
+    this._extendMarkers( "zoom", zoom, family, selectionType );
+  };
+
+  SerieLine.prototype.setMarkersStrokeColor = function( strokeColor, family, selectionType ) {
+    this._extendMarkers( "strokeColor", strokeColor, family, selectionType );
+  };
+
+  SerieLine.prototype.setMarkersStrokeWidth = function( strokeWidth, family, selectionType ) {
+    this._extendMarkers( "strokeWidth", strokeWidth, family, selectionType );
+  };
+
+  SerieLine.prototype.setMarkersFillColor = function( fillColor, family, selectionType ) {
+    this._extendMarkers( "fillColor", fillColor, family, selectionType );
+  };
+
+  SerieLine.prototype._extendMarkers = function( type, value, family, selectionType, recalculatePoints ) {
 
     family = family ||  0;
     selectionType = selectionType ||  "unselected";
@@ -1997,8 +2033,14 @@ define( [ './graph.serie', './slotoptimizer', '../graph.util', '../mixins/graph.
       return;
     }
 
-    this.styles[ selectionType ].markers[ family ].points = points;
-    this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+    this.styles[ selectionType ].markers[ family ][ type ] = value
+
+    if ( recalculatePoints ) {
+      this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
+    }
+
+    this.setMarkerStyleTo( this.styles[ selectionType ].markers[ family ].dom, this.styles[ selectionType ].markers[ family ] );
+
   };
 
   SerieLine.prototype._recalculateMarkerPoints = function( selectionType, families ) {

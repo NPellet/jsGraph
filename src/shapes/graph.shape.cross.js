@@ -85,22 +85,6 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
 
     },
 
-    setHandles: function() {
-
-      if ( this.isLocked() ) {
-        return;
-      }
-
-      if ( !this._selected || this.currentPos1x == undefined ) {
-        return;
-      }
-
-      this.addHandles();
-
-      this.handle1.setAttribute( 'x', this.currentPos1x );
-      this.handle1.setAttribute( 'y', this.currentPos1y );
-    },
-
     createHandles: function() {
 
       this._createHandles( 1, 'rect', {
