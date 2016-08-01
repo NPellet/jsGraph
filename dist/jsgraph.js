@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.14.10-17
+ * jsGraph JavaScript Graphing Library v1.15.0
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-07-30T19:49Z
+ * Date: 2016-08-01T17:59Z
  */
 
 ( function( root, factory ) {
@@ -3886,6 +3886,10 @@
 
           time: {
             x: graph.getConstructor( "graph.axis.x.time" )
+          },
+
+          bar: {
+            x: graph.getConstructor( "graph.axis.x.bar" )
           }
         };
 
@@ -3893,6 +3897,10 @@
 
           case 'time':
             var axisInstance = _availableAxes.time;
+            break;
+
+          case 'bar':
+            var axisInstance = _availableAxes.bar;
             break;
 
           case 'broken':
@@ -3924,7 +3932,12 @@
           num = 0;
         }
 
-        return graph.axis[ pos ][ num ] = graph.axis[ pos ][ num ] || new inst( graph, pos, options );
+        if ( !graph.axis[ pos ][ num ] ) {
+          graph.axis[ pos ][ num ] = new inst( graph, pos, options );
+          graph.axis[ pos ][ num ].init( graph, options );
+        }
+
+        return graph.axis[ pos ][ num ];
       }
 
       function _closeLine( graph, mode, x1, x2, y1, y2 ) {
@@ -5474,7 +5487,7 @@
           this._widthLabels = 0;
           var drawn = this._draw();
           this._widthLabels += drawn;
-          return drawn; // ??? this.series.length > 0 ? 100 : drawn;       
+          return drawn;
         }
 
         return 0;
@@ -5876,6 +5889,11 @@
 
         return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
       };
+
+      /**
+       *  @alias Axis#getRelPx
+       */
+      Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
       /**
        * Transform a delta pixels value into value
@@ -6678,7 +6696,6 @@
        * @augments Axis
        */
       function AxisX( graph, topbottom, options ) {
-        this.init( graph, options );
         this.top = topbottom == 'top';
       }
 
@@ -6901,7 +6918,7 @@
        */
       function AxisY( graph, leftright, options ) {
 
-        this.init( graph, options );
+        // this.init( graph, options );
 
         this.leftright = leftright;
         this.left = leftright == 'left';
@@ -7236,6 +7253,101 @@
 
     /* 
      * Build: new source file 
+     * File name : graph.axis.x.bar
+     * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.x.bar.js
+     */
+
+    build[ './graph.axis.x.bar' ] = ( function( util, Axis ) {
+      /** @global */
+      /** @ignore */
+
+      "use strict";
+
+      /** 
+       * Generic constructor of a y axis
+       * @class AxisXBar
+       * @augments Axis
+       */
+      function AxisXBar( graph, topbottom, options ) {
+        this.top = topbottom == 'top';
+      }
+
+      AxisXBar.prototype = new Axis();
+
+      AxisXBar.prototype.setElements = function( e ) {
+        this.barCategories = e;
+      };
+
+      AxisXBar.prototype.draw = function() {
+
+        var self = this,
+          tickLabel,
+          width = this.graph.drawingSpaceWidth,
+          elements = this.barCategories;
+
+        this.forceMin( 0 );
+        this.forceMax( 1 );
+
+        this.cacheCurrentMin();
+        this.cacheCurrentMax();
+        this.cacheInterval();
+
+        if ( !elements ) {
+          return;
+        }
+
+        if ( !Array.isArray( elements ) ) {
+          elements = [ elements ];
+        }
+
+        this.drawInit();
+
+        //var widthPerElement = width / elements.length;
+        for ( var i = 0; i <= elements.length; i++ ) {
+          this.drawTick( i / elements.length, 2 );
+
+          if ( i < elements.length ) {
+            tickLabel = this.nextTickLabel( function( tickLabel ) {
+
+              tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
+              tickLabel.setAttribute( 'text-anchor', 'middle' );
+              if ( self.getTicksLabelColor() !== 'black' ) {
+                tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+              }
+              tickLabel.style.dominantBaseline = 'hanging';
+
+            } );
+
+            tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
+            tickLabel.textContent = elements[ i ].title;
+          }
+
+        }
+
+        this.drawSpecifics();
+      }
+
+      AxisXBar.prototype.setSeries = function() {
+        var self = this;
+        this.series = arguments;
+
+        Array.prototype.map.call( this.series, function( serie, index ) {
+
+          if ( !( typeof serie == "object" ) ) {
+            serie = self.graph.getSerie( serie );
+          }
+
+          if ( serie.setBarConfig ) {
+            serie.setBarConfig( index, self.barCategories, self.series.length );
+          }
+        } );
+      }
+
+      return AxisXBar;
+    } )( build[ "./graph.util" ], build[ "./graph.axis.x" ] );
+
+    /* 
+     * Build: new source file 
      * File name : graph.axis.broken
      * File path : /Users/normanpellet/Documents/Web/graph/src/graph.axis.broken.js
      */
@@ -7528,7 +7640,7 @@
 
       function GraphYAxisBroken( graph, leftright, options ) {
 
-        this.init( graph, options );
+        // this.init( graph, options );
 
         this.leftright = leftright;
         this.left = leftright == 'left';
@@ -7593,7 +7705,7 @@
 
         this.wrapper[ 1 ].appendChild( this.rect );
 
-        this.init( graph, options );
+        //    this.init( graph, options );
 
         this.group.appendChild( this.wrapper[ 1 ] );
         this.group.appendChild( this.wrapper[ 2 ] );
@@ -11446,8 +11558,8 @@
         //this.empty();
 
         this.minX = Number.MAX_SAFE_INTEGER;
-        this.minY = Number.MAX_SAFE_INTEGER;
         this.maxX = Number.MIN_SAFE_INTEGER;
+        this.minY = Number.MAX_SAFE_INTEGER;
         this.maxY = Number.MIN_SAFE_INTEGER;
 
         var isDataArray = isArray( data );
@@ -11471,7 +11583,7 @@
         var isData0Array = isArray( data[ 0 ] );
 
         var isData00Array = isArray( data[ 0 ][ 0 ] );
-        console.log( oneDimensional, data )
+
         if ( isData0Array && !oneDimensional && !isData00Array ) {
           data = [ data ];
         }
@@ -12553,7 +12665,6 @@
               }
             }
           }
-          console.log( styles );
           /*
           // None is defined
           if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
@@ -12620,6 +12731,13 @@
           }
 
         };
+
+        this.errorAddPointBarChart = function( j, posY, xpx, ypx ) {
+          var error;
+          if ( this.error && ( error = this.error[ j ] ) ) {
+            this.doErrorDraw( 'y', error, posY, ypx, xpx, ypx );
+          }
+        }
 
         this.errorDraw = function() {
 
@@ -15589,6 +15707,214 @@
       return GraphSerieContour;
 
     } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ] );
+
+    /* 
+     * Build: new source file 
+     * File name : series/graph.serie.bar
+     * File path : /Users/normanpellet/Documents/Web/graph/src/series/graph.serie.bar.js
+     */
+
+    build[ './series/graph.serie.bar' ] = ( function( Serie, util, ErrorBarMixin ) {
+      /** @global */
+      /** @ignore */
+
+      "use strict";
+
+      /** 
+       * Serie class to be extended
+       * @class Serie
+       * @static
+       */
+      function SerieBar() {
+
+      }
+
+      SerieBar.prototype = new Serie();
+
+      SerieBar.prototype.init = function( graph, name, options ) {
+        this.graph = graph;
+        this.name = name;
+        this.options = options || {};
+
+        this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+
+        this.pathDom = document.createElementNS( this.graph.ns, 'path' );
+        this.groupMain.appendChild( this.pathDom );
+
+        // Creates an empty style variable
+        this.styles = {};
+
+        // Unselected style
+        this.styles.unselected = {
+          lineColor: this.options.lineColor,
+          lineStyle: this.options.lineStyle,
+          lineWidth: this.options.lineWidth,
+          markers: this.options.markers
+        };
+
+      }
+
+      SerieBar.prototype.setData = function( data ) {
+
+        this.data = data;
+        this.minY = Number.MAX_SAFE_INTEGER;
+        this.maxY = Number.MIN_SAFE_INTEGER;
+
+        for ( var i in this.data ) {
+          this._checkY( this.data[ i ] );
+        }
+
+        return this;
+      };
+
+      /*  
+       * @memberof SerieBar
+       */
+      SerieBar.prototype.setFillColor = function( fillColor, selectionType, applyToSelected ) {
+
+        selectionType = selectionType || "unselected";
+        this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+        this.styles[ selectionType ].fillColor = fillColor;
+
+        if ( applyToSelected ) {
+          this.setFillColor( fillColor, "selected" );
+        }
+
+        this.styleHasChanged( selectionType );
+
+        return this;
+      };
+
+      SerieBar.prototype.getFillColor = function( selectionType ) {
+        return this.getStyle( selectionType ).fillColor;
+      };
+
+      /*  
+       * @memberof SerieBar
+       */
+      SerieBar.prototype.setFillOpacity = function( opacity, selectionType, applyToSelected ) {
+
+        selectionType = selectionType || "unselected";
+        this.styles[ selectionType ] = this.styles[ selectionType ] || {};
+        this.styles[ selectionType ].fillOpacity = opacity;
+
+        if ( applyToSelected ) {
+          this.setLineWidth( opacity, "selected" );
+        }
+
+        this.styleHasChanged( selectionType );
+
+        return this;
+      };
+
+      SerieBar.prototype.getFillOpacity = function( selectionType ) {
+
+        return this.getStyle( selectionType ).fillOpacity || 1;
+      };
+
+      /**
+       * Reapply the current style to the serie lines elements. Mostly used internally
+       * @memberof SerieBar
+       */
+      SerieBar.prototype.applyLineStyles = function() {
+        this.applyLineStyle( this.pathDom );
+      };
+
+      /**
+       * Applies the current style to a line element. Mostly used internally
+       * @memberof SerieBar
+       */
+      SerieBar.prototype.applyLineStyle = function( line ) {
+
+        line.setAttribute( 'stroke', this.getLineColor() );
+        line.setAttribute( 'stroke-width', this.getLineWidth() );
+        if ( this.getLineDashArray() ) {
+          line.setAttribute( 'stroke-dasharray', this.getLineDashArray() );
+        } else {
+          line.removeAttribute( 'stroke-dasharray' );
+        }
+        line.setAttribute( 'fill', this.getFillColor() );
+        line.setAttribute( 'fill-opacity', this.getFillOpacity() || 1 );
+      };
+
+      SerieBar.prototype.draw = function() {
+
+        var path = "";
+        var categoryNumber,
+          position;
+
+        if ( this.error ) {
+          this.errorDrawInit();
+        }
+
+        for ( var i in this.data ) {
+
+          if ( false === ( categoryNumber = this.getCategory( i ) ) ) {
+            continue;
+          }
+
+          position = this.calculatePosition( categoryNumber, this.order );
+
+          path += "M " +
+            this.getXAxis().getPos( position[ 0 ] ) +
+            " " +
+            this.getYAxis().getPos( 0 ) +
+            " V " +
+            this.getYAxis().getPos( this.data[ i ] ) +
+            " h " +
+            this.getXAxis().getDeltaPx( position[ 1 ] ) +
+            " V " +
+            this.getYAxis().getPos( 0 );
+
+          if ( this.error ) {
+            this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( position[ 2 ] ), this.getYAxis().getPos( this.data[ i ] ) );
+          }
+        }
+
+        if ( this.error ) {
+          this.errorDraw();
+        }
+
+        this.pathDom.setAttribute( 'd', path );
+        this.applyLineStyles();
+      }
+
+      SerieBar.prototype.getCategory = function( name ) {
+
+        if ( !this.categories ) {
+          throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
+        }
+
+        for ( var i = 0; i < this.categories.length; i++ ) {
+
+          if ( this.categories[ i ].name == name ) {
+            return i;
+          }
+        }
+
+        return false;
+      }
+
+      SerieBar.prototype.setBarConfig = function( order, categories, nbSeries ) {
+
+        this.order = order;
+        this.categories = categories;
+        this.nbSeries = nbSeries;
+
+      }
+
+      SerieBar.prototype.calculatePosition = function( categoryNumber, serieNumber ) {
+
+        var nbElements = ( this.nbSeries + 1 ) * this.categories.length;
+        var nb = categoryNumber * ( this.nbSeries + 1 ) + serieNumber + 0.5;
+        return [ ( nb ) / nbElements, 1 / nbElements, ( nb + 0.5 ) / nbElements ];
+      }
+
+      ErrorBarMixin.call( SerieBar.prototype ); // Add error bar mixin
+
+      return SerieBar;
+
+    } )( build[ "./series/graph.serie.line" ], build[ "./graph.util" ], build[ "./mixins/graph.mixin.errorbars" ] );
 
     /* 
      * Build: new source file 
@@ -22555,6 +22881,8 @@
       GraphAxis,
       GraphXAxis,
       GraphYAxis,
+
+      GraphXAxisBar,
       GraphXAxisBroken,
       GraphYAxisBroken,
       GraphXAxisTime,
@@ -22570,6 +22898,7 @@
 
       GraphSerie,
       GraphSerieContour,
+      GraphSerieBar,
       GraphSerieLine,
       GraphSerieLineBroken,
       GraphSerieLineColor,
@@ -22606,6 +22935,7 @@
 
       Graph.registerConstructor( "graph.axis.x", GraphXAxis );
       Graph.registerConstructor( "graph.axis.y", GraphYAxis );
+      Graph.registerConstructor( "graph.axis.x.bar", GraphXAxisBar );
       Graph.registerConstructor( "graph.axis.x.broken", GraphXAxisBroken );
       Graph.registerConstructor( "graph.axis.y.broken", GraphYAxisBroken );
       Graph.registerConstructor( "graph.axis.x.time", GraphXAxisTime );
@@ -22613,6 +22943,7 @@
       Graph.registerConstructor( "graph.serie.line", GraphSerieLine );
       Graph.registerConstructor( "graph.serie.line.color", GraphSerieLineColor );
       Graph.registerConstructor( "graph.serie.contour", GraphSerieContour );
+      Graph.registerConstructor( "graph.serie.bar", GraphSerieBar );
       Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
       Graph.registerConstructor( "graph.serie.scatter", GraphSerieScatter );
       Graph.registerConstructor( "graph.serie.zone", GraphSerieZone );
@@ -22649,7 +22980,7 @@
 
       return Graph;
 
-    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./plugins/graph.plugin.serielinedifference" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./series/graph.serie.densitymap" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.polyline" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
+    } )( build[ "./graph.core" ], build[ "./graph.position" ], build[ "./graph.axis" ], build[ "./graph.axis.x" ], build[ "./graph.axis.y" ], build[ "./graph.axis.x.bar" ], build[ "./graph.axis.x.broken" ], build[ "./graph.axis.y.broken" ], build[ "./graph.axis.x.time" ], build[ "./graph.legend" ], build[ "./plugins/graph.plugin" ], build[ "./plugins/graph.plugin.drag" ], build[ "./plugins/graph.plugin.shape" ], build[ "./plugins/graph.plugin.selectScatter" ], build[ "./plugins/graph.plugin.zoom" ], build[ "./plugins/graph.plugin.timeseriemanager" ], build[ "./plugins/graph.plugin.serielinedifference" ], build[ "./series/graph.serie" ], build[ "./series/graph.serie.contour" ], build[ "./series/graph.serie.bar" ], build[ "./series/graph.serie.line" ], build[ "./series/graph.serie.line.broken" ], build[ "./series/graph.serie.line.colored" ], build[ "./series/graph.serie.scatter" ], build[ "./series/graph.serie.zone" ], build[ "./series/graph.serie.densitymap" ], build[ "./shapes/graph.shape" ], build[ "./shapes/graph.shape.areaundercurve" ], build[ "./shapes/graph.shape.arrow" ], build[ "./shapes/graph.shape.ellipse" ], build[ "./shapes/graph.shape.label" ], build[ "./shapes/graph.shape.polyline" ], build[ "./shapes/graph.shape.line" ], build[ "./shapes/graph.shape.nmrintegral" ], build[ "./shapes/graph.shape.peakintegration2d" ], build[ "./shapes/graph.shape.peakinterval" ], build[ "./shapes/graph.shape.peakinterval2" ], build[ "./shapes/graph.shape.rangex" ], build[ "./shapes/graph.shape.rect" ], build[ "./shapes/graph.shape.cross" ], build[ "./shapes/graph.shape.zoom2d" ], build[ "./shapes/graph.shape.peakboundariescenter" ], build[ "./graph.toolbar" ] );
 
   };
 

@@ -1597,12 +1597,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
   };
 
-
   /**
    *  @alias Axis#getRelPx
    */
   Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
-
 
   /**
    * Transform a delta pixels value into value

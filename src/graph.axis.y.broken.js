@@ -4,7 +4,7 @@ define( [ './graph.util', './graph.axis.y', './graph.axis.broken' ], function( u
 
   function GraphYAxisBroken( graph, leftright, options ) {
 
-   // this.init( graph, options );
+    // this.init( graph, options );
 
     this.leftright = leftright;
     this.left = leftright == 'left';

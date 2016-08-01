@@ -9,7 +9,7 @@ define( [ './graph.util', './graph.axis' ], function( util, Axis ) {
    */
   function AxisY( graph, leftright, options ) {
 
-   // this.init( graph, options );
+    // this.init( graph, options );
 
     this.leftright = leftright;
     this.left = leftright == 'left';

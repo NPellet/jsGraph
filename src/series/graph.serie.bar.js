@@ -1,4 +1,4 @@
-define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorbars' ], function( Serie, util, ErrorBarMixin ) {
+define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( Serie, util, ErrorBarMixin ) {
 
   "use strict";
 
@@ -7,18 +7,16 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
    * @class Serie
    * @static
    */
-  function SerieBar( ) {
+  function SerieBar() {
 
   }
 
-
   SerieBar.prototype = new Serie();
-
 
   SerieBar.prototype.init = function( graph, name, options ) {
     this.graph = graph;
     this.name = name;
-    this.options = options || {};
+    this.options = options ||  {};
 
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
@@ -44,13 +42,12 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
     this.minY = Number.MAX_SAFE_INTEGER;
     this.maxY = Number.MIN_SAFE_INTEGER;
 
-    for( var i in this.data ) {
+    for ( var i in this.data ) {
       this._checkY( this.data[ i ] );
     }
 
     return this;
   };
-
 
   /*  
    * @memberof SerieBar
@@ -73,7 +70,6 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
   SerieBar.prototype.getFillColor = function( selectionType ) {
     return this.getStyle( selectionType ).fillColor;
   };
-
 
   /*  
    * @memberof SerieBar
@@ -129,32 +125,30 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
     var categoryNumber,
       position;
 
-
     if ( this.error ) {
       this.errorDrawInit();
     }
 
-    for( var i in this.data ) {
+    for ( var i in this.data ) {
 
-      if( false === ( categoryNumber = this.getCategory( i ) ) ) {
+      if ( false === ( categoryNumber = this.getCategory( i ) ) ) {
         continue;
       }
 
       position = this.calculatePosition( categoryNumber, this.order );
 
-      path += "M " + 
-              this.getXAxis().getPos( position[ 0 ] ) + 
-              " " + 
-              this.getYAxis().getPos( 0 ) + 
-              " V " +
-              this.getYAxis().getPos( this.data[ i ] ) + 
-              " h " + 
-              this.getXAxis().getDeltaPx( position[ 1 ] ) + 
-              " V " + 
-              this.getYAxis().getPos( 0 );
+      path += "M " +
+        this.getXAxis().getPos( position[ 0 ] ) +
+        " " +
+        this.getYAxis().getPos( 0 ) +
+        " V " +
+        this.getYAxis().getPos( this.data[ i ] ) +
+        " h " +
+        this.getXAxis().getDeltaPx( position[ 1 ] ) +
+        " V " +
+        this.getYAxis().getPos( 0 );
 
-
-      if( this.error ) {
+      if ( this.error ) {
         this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( position[ 2 ] ), this.getYAxis().getPos( this.data[ i ] ) );
       }
     }
@@ -163,26 +157,25 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
       this.errorDraw();
     }
 
-    this.pathDom.setAttribute('d', path );
+    this.pathDom.setAttribute( 'd', path );
     this.applyLineStyles();
   }
 
   SerieBar.prototype.getCategory = function( name ) {
 
-    if( ! this.categories ) {
-      throw new Error("No categories were defined. Probably axis.setSeries was not called");
+    if ( !this.categories ) {
+      throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
     }
 
-    for( var i = 0; i < this.categories.length; i ++ ) {
+    for ( var i = 0; i < this.categories.length; i++ ) {
 
-      if( this.categories[ i ].name == name ) {
+      if ( this.categories[ i ].name == name ) {
         return i;
       }
     }
 
     return false;
   }
-
 
   SerieBar.prototype.setBarConfig = function( order, categories, nbSeries ) {
 
@@ -200,9 +193,6 @@ define( [ './graph.serie.line', '../graph.util',  '../mixins/graph.mixin.errorba
   }
 
   ErrorBarMixin.call( SerieBar.prototype ); // Add error bar mixin
-
-
-
 
   return SerieBar;
 

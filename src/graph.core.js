@@ -2757,7 +2757,7 @@ define( [ './graph.position', './graph.util', './dependencies/eventEmitter/Event
       num = 0;
     }
 
-    if( ! graph.axis[ pos ][ num ] ) {
+    if ( !graph.axis[ pos ][ num ] ) {
       graph.axis[ pos ][ num ] = new inst( graph, pos, options );
       graph.axis[ pos ][ num ].init( graph, options );
     }

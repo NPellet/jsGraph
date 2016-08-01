@@ -20,9 +20,9 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
   AxisXBar.prototype.draw = function() {
 
     var self = this,
-        tickLabel,
-        width = this.graph.drawingSpaceWidth,
-        elements = this.barCategories;
+      tickLabel,
+      width = this.graph.drawingSpaceWidth,
+      elements = this.barCategories;
 
     this.forceMin( 0 );
     this.forceMax( 1 );
@@ -31,21 +31,21 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
     this.cacheCurrentMax();
     this.cacheInterval();
 
-    if( ! elements ) {
+    if ( !elements ) {
       return;
     }
 
-    if( ! Array.isArray( elements ) ) {
+    if ( !Array.isArray( elements ) ) {
       elements = [ elements ];
     }
 
     this.drawInit();
 
     //var widthPerElement = width / elements.length;
-    for( var i = 0; i <= elements.length; i ++ ) {
+    for ( var i = 0; i <= elements.length; i++ ) {
       this.drawTick( i / elements.length, 2 );
 
-      if( i < elements.length ) {
+      if ( i < elements.length ) {
         tickLabel = this.nextTickLabel( function( tickLabel ) {
 
           tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
@@ -54,13 +54,12 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
             tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
           }
           tickLabel.style.dominantBaseline = 'hanging';
-        
+
         } );
 
         tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
         tickLabel.textContent = elements[ i ].title;
       }
-
 
     }
 
@@ -73,11 +72,11 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
 
     Array.prototype.map.call( this.series, function( serie, index ) {
 
-      if( ! ( typeof serie == "object" ) ) {
+      if ( !( typeof serie == "object" ) ) {
         serie = self.graph.getSerie( serie );
       }
-      
-      if( serie.setBarConfig ) {
+
+      if ( serie.setBarConfig ) {
         serie.setBarConfig( index, self.barCategories, self.series.length );
       }
     } );

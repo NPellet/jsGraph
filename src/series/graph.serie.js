@@ -68,7 +68,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     var isData0Array = isArray( data[ 0 ] );
 
     var isData00Array = isArray( data[ 0 ][ 0 ] );
-    
+
     if ( isData0Array && !oneDimensional && !isData00Array ) {
       data = [ data ];
     }

@@ -24,7 +24,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
     this.wrapper[ 1 ].appendChild( this.rect );
 
-//    this.init( graph, options );
+    //    this.init( graph, options );
 
     this.group.appendChild( this.wrapper[  1 ] );
     this.group.appendChild( this.wrapper[  2 ] );

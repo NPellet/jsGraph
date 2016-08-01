@@ -214,10 +214,9 @@ define( [ '../graph.util' ], function( util ) {
 
     };
 
-
     this.errorAddPointBarChart = function( j, posY, xpx, ypx ) {
       var error;
-      if( this.error && ( error = this.error[ j ] ) ) {
+      if ( this.error && ( error = this.error[ j ] ) ) {
         this.doErrorDraw( 'y', error, posY, ypx, xpx, ypx );
       }
     }
