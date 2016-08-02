@@ -1,12 +1,16 @@
-define( [], function() {
 
-  "use strict";
 
-  /** 
-   * Positionning class
-   * @class Position
-   */
-  var Position = function( x, y, dx, dy ) {
+function _parsePx( px ) {
+  if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
+    return parseInt( px.replace( 'px', '' ) );
+  }
+  return false;
+};
+
+
+class GraphPosition {
+
+  constructor ( x, y, dx, dy ) {
 
     if ( !( x instanceof Number ) && x instanceof Object ) {
       this.x = x.x;
@@ -19,9 +23,9 @@ define( [], function() {
       this.dx = dx;
       this.dy = dy;
     }
-  };
+  }
 
-  Position.prototype.compute = function( graph, xAxis, yAxis, serie ) {
+  compute( graph, xAxis, yAxis, serie ) {
 
     if ( !graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis ) {
       this.graph.throw();
@@ -36,9 +40,9 @@ define( [], function() {
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
-  };
-
-  Position.prototype._compute = function( graph, xAxis, yAxis, serie ) {
+  }
+  
+  _compute( graph, xAxis, yAxis, serie ) {
 
     var relativeTo = this._relativeTo;
     if ( relativeTo ) {
@@ -135,9 +139,9 @@ define( [], function() {
     }
 
     return pos;
-  };
+  }
 
-  Position.prototype._getPositionPx = function( value, x, axis, graph ) {
+  _getPositionPx( value, x, axis, graph ) {
 
     var parsed;
 
@@ -146,23 +150,20 @@ define( [], function() {
     }
 
     if ( ( parsed = this._parsePercent( value ) ) !== false ) {
-
       return parsed / 100 * ( x ? graph.getDrawingWidth() : graph.getDrawingHeight() );
-
     } else if ( axis ) {
-
       return axis.getPos( value );
     }
-  };
+  }
 
-  Position.prototype._parsePercent = function( percent ) {
+  _parsePercent( percent ) {
     if ( percent && percent.indexOf && percent.indexOf( '%' ) > -1 ) {
       return percent;
     }
     return false;
-  };
+  }
 
-  Position.getDeltaPx = function( value, axis ) {
+  getDeltaPx( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
       return ( v ) + "px";
@@ -172,7 +173,7 @@ define( [], function() {
     }
   };
 
-  Position.prototype.deltaPosition = function( mode, delta, axis ) {
+  deltaPosition( mode, delta, axis ) {
 
     mode = mode == 'y' ? 'y' : 'x';
     var ref = this[ mode ],
@@ -224,9 +225,9 @@ define( [], function() {
       }
 
     }
-  };
+  }
 
-  Position.prototype.getValPosition = function( rel, axis ) {
+  getValPosition( rel, axis ) {
 
     if ( rel == 'max' ) {
       return axis.getMaxValue();
@@ -237,9 +238,9 @@ define( [], function() {
     }
 
     return rel;
-  };
+  }
 
-  Position.prototype.getPx = function( value, axis, rel ) {
+  getPx( value, axis, rel ) {
 
     var parsed;
 
@@ -271,16 +272,16 @@ define( [], function() {
     }
   };
 
-  Position.prototype.getPxRel = function( value, axis ) {
+  getPxRel( value, axis ) {
     return this.getPx( value, axis, true );
   };
 
-  Position.prototype.relativeTo = function( pos ) {
+  relativeTo( pos ) {
     this._relativeTo = Position.check( pos );
     return this;
-  };
+  }
 
-  Position.check = function( pos, callback ) {
+  check( pos, callback ) {
     if ( pos instanceof Position ) {
       return pos;
     }
@@ -295,15 +296,8 @@ define( [], function() {
     }
 
     return posObject;
+  }
+}
 
-  };
 
-  function _parsePx( px ) {
-    if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
-      return parseInt( px.replace( 'px', '' ) );
-    }
-    return false;
-  };
-
-  return Position;
-} );
+export { GraphPosition };

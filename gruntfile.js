@@ -1,5 +1,4 @@
 
-
 module.exports = function(grunt) {
 
     grunt.initConfig({
@@ -137,6 +136,30 @@ module.exports = function(grunt) {
 
         exec: {
             npm_publish: 'npm publish'
+        },
+
+        webpack: {
+
+            test2: {
+
+                 entry: './src/graph.js',
+                 output: {
+                     path: './bin',
+                     filename: 'app.bundle.js',
+
+                     library: "Graph",
+                     libraryTarget: 'umd'
+                 },
+
+                 module: {
+                     loaders: [{
+                         test: /\.js$/,
+                         exclude: /node_modules/,
+                         loader: 'babel-loader',
+                     }]
+                 }
+
+             }
         }
 
     });
@@ -146,7 +169,10 @@ module.exports = function(grunt) {
     var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
-    
+    var babel = require('babel-core');
+
+
+
     grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -154,6 +180,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-exec');
+    grunt.loadNpmTasks('grunt-webpack');
 
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
@@ -207,6 +234,13 @@ module.exports = function(grunt) {
         var version = grunt.config('pkg').version;
         
         var buildConvert = function( name, path, contents ) {
+            var code;
+            if( name == 'graph.axis.x.bar' ) {
+                contents = babel.transform( contents, { presets: [ "es2015" ] } ).code;
+                //contents = code;
+            }
+
+            
 
             grunt.file.write( path, beautify( grunt.file.read( path ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
 
@@ -373,3 +407,4 @@ module.exports = function(grunt) {
         } );
     } );
 };
+

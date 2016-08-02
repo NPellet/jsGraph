@@ -1,6 +1,8 @@
+import Graph from './graph.core'
+import GraphPosition from './graph.position'
+
 define( [
 
-    './graph.core',
     './graph.position',
 
     './graph.axis',
@@ -54,8 +56,7 @@ define( [
   ],
 
   function(
-    Graph,
-
+    
     GraphPosition,
 
     GraphAxis,
@@ -157,5 +158,4 @@ define( [
     Graph.registerConstructor( "graph.legend", GraphLegend );
 
     return Graph;
-
   } );

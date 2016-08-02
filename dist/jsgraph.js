@@ -5,7 +5,7 @@
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-08-01T20:40Z
+ * Date: 2016-08-02T11:54Z
  */
 
 ( function( root, factory ) {
@@ -7261,6 +7261,57 @@
       /** @global */
       /** @ignore */
 
+      var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function( obj ) {
+        return typeof obj;
+      } : function( obj ) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+      };
+
+      var _createClass = function() {
+        function defineProperties( target, props ) {
+          for ( var i = 0; i < props.length; i++ ) {
+            var descriptor = props[ i ];
+            descriptor.enumerable = descriptor.enumerable || false;
+            descriptor.configurable = true;
+            if ( "value" in descriptor ) descriptor.writable = true;
+            Object.defineProperty( target, descriptor.key, descriptor );
+          }
+        }
+        return function( Constructor, protoProps, staticProps ) {
+          if ( protoProps ) defineProperties( Constructor.prototype, protoProps );
+          if ( staticProps ) defineProperties( Constructor, staticProps );
+          return Constructor;
+        };
+      }();
+
+      function _classCallCheck( instance, Constructor ) {
+        if ( !( instance instanceof Constructor ) ) {
+          throw new TypeError( "Cannot call a class as a function" );
+        }
+      }
+
+      function _possibleConstructorReturn( self, call ) {
+        if ( !self ) {
+          throw new ReferenceError( "this hasn't been initialised - super() hasn't been called" );
+        }
+        return call && ( typeof call === "object" || typeof call === "function" ) ? call : self;
+      }
+
+      function _inherits( subClass, superClass ) {
+        if ( typeof superClass !== "function" && superClass !== null ) {
+          throw new TypeError( "Super expression must either be null or a function, not " + typeof superClass );
+        }
+        subClass.prototype = Object.create( superClass && superClass.prototype, {
+          constructor: {
+            value: subClass,
+            enumerable: false,
+            writable: true,
+            configurable: true
+          }
+        } );
+        if ( superClass ) Object.setPrototypeOf ? Object.setPrototypeOf( subClass, superClass ) : subClass.__proto__ = superClass;
+      }
+
       "use strict";
 
       /** 
@@ -7268,80 +7319,91 @@
        * @class AxisXBar
        * @augments Axis
        */
-      function AxisXBar( graph, topbottom, options ) {
-        this.top = topbottom == 'top';
-      }
 
-      AxisXBar.prototype = new Axis();
+      var AxisXBar = function( _Axis ) {
+        _inherits( AxisXBar, _Axis );
 
-      AxisXBar.prototype.setElements = function( e ) {
-        this.barCategories = e;
-      };
+        function AxisXBar( graph, topbottom, options ) {
+          _classCallCheck( this, AxisXBar );
 
-      AxisXBar.prototype.draw = function() {
-
-        var self = this,
-          tickLabel,
-          width = this.graph.drawingSpaceWidth,
-          elements = this.barCategories;
-
-        this.forceMin( 0 );
-        this.forceMax( 1 );
-
-        this.cacheCurrentMin();
-        this.cacheCurrentMax();
-        this.cacheInterval();
-
-        if ( !elements ) {
-          return;
+          return _possibleConstructorReturn( this, Object.getPrototypeOf( AxisXBar ).call( this, graph, topbottom, options ) );
         }
 
-        if ( !Array.isArray( elements ) ) {
-          elements = [ elements ];
-        }
+        _createClass( AxisXBar, [ {
+          key: 'draw',
+          value: function draw() {
 
-        this.drawInit();
+            var self = this,
+              tickLabel,
+              width = this.graph.drawingSpaceWidth,
+              elements = this._barCategories;
 
-        //var widthPerElement = width / elements.length;
-        for ( var i = 0; i <= elements.length; i++ ) {
-          this.drawTick( i / elements.length, 2 );
+            this.forceMin( 0 );
+            this.forceMax( 1 );
 
-          if ( i < elements.length ) {
-            tickLabel = this.nextTickLabel( function( tickLabel ) {
+            this.cacheCurrentMin();
+            this.cacheCurrentMax();
+            this.cacheInterval();
 
-              tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
-              tickLabel.setAttribute( 'text-anchor', 'middle' );
-              if ( self.getTicksLabelColor() !== 'black' ) {
-                tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+            if ( !elements ) {
+              return;
+            }
+
+            if ( !Array.isArray( elements ) ) {
+              elements = [ elements ];
+            }
+
+            this.drawInit();
+
+            //var widthPerElement = width / elements.length;
+            for ( var i = 0; i <= elements.length; i++ ) {
+              this.drawTick( i / elements.length, 2 );
+
+              if ( i < elements.length ) {
+                tickLabel = this.nextTickLabel( function( tickLabel ) {
+
+                  tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
+                  tickLabel.setAttribute( 'text-anchor', 'middle' );
+                  if ( self.getTicksLabelColor() !== 'black' ) {
+                    tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+                  }
+                  tickLabel.style.dominantBaseline = 'hanging';
+                } );
+
+                tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
+                tickLabel.textContent = elements[ i ].title;
               }
-              tickLabel.style.dominantBaseline = 'hanging';
+            }
 
+            this.drawSpecifics();
+          }
+        }, {
+          key: 'setSeries',
+          value: function setSeries() {
+
+            var self = this;
+            this.series = arguments;
+
+            Array.prototype.map.call( this.series, function( serie, index ) {
+
+              if ( !( ( typeof serie === 'undefined' ? 'undefined' : _typeof( serie ) ) == "object" ) ) {
+                serie = self.graph.getSerie( serie );
+              }
+
+              if ( serie.setBarConfig ) {
+                serie.setBarConfig( index, self._barCategories, self.series.length );
+              }
             } );
-
-            tickLabel.setAttribute( 'x', this.getPos( ( i + 0.5 ) / elements.length ) );
-            tickLabel.textContent = elements[ i ].title;
           }
-
-        }
-
-        this.drawSpecifics();
-      }
-
-      AxisXBar.prototype.setSeries = function() {
-        var self = this;
-        this.series = arguments;
-
-        Array.prototype.map.call( this.series, function( serie, index ) {
-
-          if ( !( typeof serie == "object" ) ) {
-            serie = self.graph.getSerie( serie );
+        }, {
+          key: 'categories',
+          set: function set( categories ) {
+            this._barCategories = categories;
           }
+        } ] );
 
-          if ( serie.setBarConfig ) {
-            serie.setBarConfig( index, self.barCategories, self.series.length );
-          }
-        } );
-      }
+        return AxisXBar;
+      }( Axis );
 
       return AxisXBar;
     } )( build[ "./graph.util" ], build[ "./graph.axis.x" ] );

@@ -8,12 +8,12 @@ define( function() {
 		}, { bottom: [ { type: 'bar' } ] } );
 
 			
-			graphinstance.getBottomAxis().setElements( [ 
+			graphinstance.getBottomAxis().categories = [ 
 				{ title: "First", name: '1st'}, 
 				{ title: "Sec ", name: 2 }, 
 				{ title: "Third ", name: 3 }, 
 				{ title: "Fourth", name: "fourth"} 
-			] );
+			];
     		
 			graphinstance.newSerie("test", {}, "bar" ).setData( { "1st": 4, 3: 5 } ).autoAxis().setFillColor('red').setFillOpacity(0.1).setLineColor('red');
 			graphinstance.newSerie("test2", {}, "bar" ).setData( { "1st": 5, 3: 2 } ).autoAxis().setFillColor('blue').setFillOpacity(0.1).setLineColor('blue');
