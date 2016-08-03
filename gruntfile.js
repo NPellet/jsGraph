@@ -3,16 +3,36 @@ module.exports = function(grunt) {
 
 
 
+    function WebpackBeautifier(options) { }
 
-    function WebpackBeutifier(options) { }
-
-    WebpackBeutifier.prototype.apply = function(compiler) {
+    WebpackBeautifier.prototype.apply = function(compiler) {
     
       compiler.plugin('done', function( stats ) {
         var json = stats.toJson({assets: false, chunks: false, modules: true }).modules;
         json.map( function( el ) {
-            console.log( el.name );
             grunt.file.write( el.name, beautify( grunt.file.read( el.name ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+        });
+
+
+        grunt.file.write( "jsdoc.json", JSON.stringify( {
+            opts: {
+                "destination": "./web/doc/",
+                "tutorials": "tutorials",
+                "template": "util/doctemplate"
+            },
+
+            "source": {
+                "include": json.map( ( el ) => el.name ),
+            }
+            
+        }, false, "\t" ) );
+
+        exec("./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
+            if( err ) {
+                console.error( err );
+                return;
+            }
+            console.log( out );
         });
       });
     };
@@ -170,9 +190,9 @@ module.exports = function(grunt) {
                  },
 
                  plugins: [
-                    new WebpackBeutifier( { options: true } )
+                    new WebpackBeautifier( { options: true } )
                  ],
-                 
+
                  module: {
                      loaders: [{
                          test: /\.js$/,
@@ -198,7 +218,7 @@ module.exports = function(grunt) {
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
     var babel = require('babel-core');
-
+    var exec = require('child_process').exec;
 
 
     grunt.loadNpmTasks('grunt-sloc');

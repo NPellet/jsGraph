@@ -229,24 +229,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _constructors = {};
 
 	/** 
-	 * Main class of jsGraph that creates a new graph.
-	 * @class Graph
-	 * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
-	 * @param {GraphOptions} [ options ] - The options of the graph
-	 * @param {Object} [ axis ] - The list of axes
-	 * @param {Array} axis.left - The list of left axes
-	 * @param {Array} axis.bottom - The list of bottom axes
-	 * @param {Array} axis.top - The list of top axes
-	 * @param {Array} axis.right - The list of right axes
-	 * @augments EventEmitter
-	 * @example var graph = new Graph("someDomID");
-	 * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
+	 * Entry class of jsGraph that creates a new graph.
+	 * @extends EventEmitter
 	 * @tutorial basic
 	 */
 
 	var Graph = function (_EventEmitter) {
 	  _inherits(Graph, _EventEmitter);
 
+	  /**
+	   * Graph constructor
+	   * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+	   * @param {GraphOptions} [ options ] - The options of the graph
+	   * @param {Object} [ axis ] - The list of axes
+	   * @param {Array} axis.left - The list of left axes
+	   * @param {Array} axis.bottom - The list of bottom axes
+	   * @param {Array} axis.top - The list of top axes
+	   * @param {Array} axis.right - The list of right axes
+	   * @example var graph = new Graph("someDomID");
+	   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
+	   */
 	  function Graph(wrapper, options, axis) {
 	    _classCallCheck(this, Graph);
 
@@ -366,7 +368,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /** 
 	   * Returns the graph SVG wrapper element
-	   * @memberof Graph.prototype
 	   * @public
 	   * @return {SVGElement} The DOM element wrapping the graph
 	   */
@@ -380,7 +381,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     * Returns the graph wrapper element passed during the graph creation
-	     * @memberof Graph.prototype
 	     * @public
 	     * @return {HTMLElement} The DOM element wrapping the graph
 	     */
@@ -393,7 +393,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Sets an option of the graph
-	     * @memberof Graph.prototype
 	     * @param {String} name - Option name
 	     * @param value - New option value
 	     * @returns {Graph} - Graph instance
@@ -408,7 +407,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     *  Sets the title of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -420,7 +418,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     *  Shows the title of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -431,7 +428,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     *  Hides the title of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -443,7 +439,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
 	     * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
-	     * @memberof Graph.prototype
 	     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
 	     * @return {Boolean} if the redraw has been successful
 	     */
@@ -473,7 +468,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -482,13 +476,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.drawSeries(this.redraw(true));
 	    }
+
 	    /**
 	     * Sets the total width of the graph
 	     * @param {Number} width - The new width of the graph
 	     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
 	     * @see Graph#setHeight
 	     * @see Graph#resize
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -499,13 +493,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._resize();
 	      }
 	    }
+
 	    /**
 	     * Sets the total height of the graph
 	     * @param {Number} height - The new height of the graph
 	     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
 	     * @see Graph#setWidth
 	     * @see Graph#resize
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -516,13 +510,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._resize();
 	      }
 	    }
+
 	    /**
 	     * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
 	     * @param {Number} [ width ] - The new width of the graph
 	     * @param {Number} [ height ] - The new height of the graph
 	     * @see Graph#setWidth
 	     * @see Graph#setHeight
-	     * @memberof Graph.prototype
 	     * @return {Graph} The current graph
 	     */
 
@@ -536,6 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._resize();
 	      return this;
 	    }
+
 	    /**
 	     * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
 	     * @param {Number} [ width ] - The new width of the graph
@@ -543,7 +538,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @see Graph#setWidth
 	     * @see Graph#setHeight
 	     * @see Graph#resize
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -554,10 +548,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.getDrawingHeight();
 	      this.getDrawingWidth();
 	    }
+
 	    /**
 	     * Returns the width of the graph (set by setSize, setWidth or resize methods)
 	     * @return {Number} Width of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -565,10 +559,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getWidth() {
 	      return this.width;
 	    }
+
 	    /**
 	     * Returns the height of the graph (set by setSize, setHeight or resize methods)
 	     * @return {Number} Height of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -576,10 +570,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getHeight() {
 	      return this.height;
 	    }
+
 	    /**
 	     * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
 	     * @return {Number} paddingTop
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -587,10 +581,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getPaddingTop() {
 	      return this.options.paddingTop;
 	    }
+
 	    /**
 	     * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
 	     * @return {Number} paddingTop
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -598,10 +592,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getPaddingLeft() {
 	      return this.options.paddingLeft;
 	    }
+
 	    /**
 	     * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
 	     * @return {Number} paddingTop
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -609,10 +603,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getPaddingBottom() {
 	      return this.options.paddingBottom;
 	    }
+
 	    /**
 	     * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
 	     * @return {Number} paddingRight
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -620,11 +614,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getPaddingRight() {
 	      return this.options.paddingRight;
 	    }
+
 	    /**
 	     * Returns the height of the drawable zone, including the space used by the axes
 	     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
 	     * @returns {Number} Height of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -635,11 +629,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return this.innerHeight = this.height - this.options.paddingTop - this.options.paddingBottom;
 	    }
+
 	    /**
 	     * Returns the width of the drawable zone, including the space used by the axes
 	     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
 	     * @returns {Number} Width of the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -650,11 +644,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return this.innerWidth = this.width - this.options.paddingLeft - this.options.paddingRight;
 	    }
+
 	    /**
 	     * Caches the wrapper offset in the page.<br />
 	     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
 	     * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
-	     * @memberof Graph.prototype
 	     * @see Graph#uncacheOffset
 	     */
 
@@ -663,9 +657,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function cacheOffset() {
 	      this.offsetCached = util.getOffset(this._dom);
 	    }
+
 	    /**
 	     * Un-caches the wrapper offset value
-	     * @memberof Graph.prototype
 	     * @see Graph#cacheOffset
 	     */
 
@@ -674,10 +668,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function uncacheOffset() {
 	      this.offsetCached = false;
 	    }
+
 	    /**
 	     * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
 	     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -691,10 +685,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return this.getBottomAxis(index, options);
 	    }
+
 	    /**
 	     * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
 	     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -709,9 +703,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return this.getLeftAxis(index, options);
 	    }
+
 	    /**
 	     * Returns the top axis at a certain index. Creates it if non-existant
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -721,9 +715,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getTopAxis(index, options) {
 	      return _getAxis(this, index, options, 'top');
 	    }
+
 	    /**
 	     * Returns the bottom axis at a certain index. Creates it if non-existant
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -733,9 +727,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBottomAxis(index, options) {
 	      return _getAxis(this, index, options, 'bottom');
 	    }
+
 	    /**
 	     * Returns the left axis at a certain index. Creates it if non-existant
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -745,9 +739,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getLeftAxis(index, options) {
 	      return _getAxis(this, index, options, 'left');
 	    }
+
 	    /**
 	     * Returns the right axis at a certain index. Creates it if non-existant
-	     * @memberof Graph.prototype
 	     * @param {Number} [ index=0 ] - The index of the axis
 	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
 	     */
@@ -757,11 +751,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getRightAxis(index, options) {
 	      return _getAxis(this, index, options, 'right');
 	    }
+
 	    /**
 	     * Sets a bottom axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ index=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -769,11 +763,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setXAxis(axis, index) {
 	      this.setBottomAxis(axis, index);
 	    }
+
 	    /**
 	     * Sets a left axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ index=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -781,11 +775,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setYAxis(axis, index) {
 	      this.setLeftAxis(axis, index);
 	    }
+
 	    /**
 	     * Sets a left axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ index=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     * @see Graph#setBottomAxis
 	     * @see Graph#setTopAxis
 	     * @see Graph#setRightAxis
@@ -799,11 +793,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      index = index || 0;
 	      this.axis.left[index] = axis;
 	    }
+
 	    /**
 	     * Sets a right axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ index=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     * @see Graph#setBottomAxis
 	     * @see Graph#setLeftAxis
 	     * @see Graph#setTopAxis
@@ -817,11 +811,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      index = index || 0;
 	      this.axis.right[index] = axis;
 	    }
+
 	    /**
 	     * Sets a top axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ index=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     * @see Graph#setBottomAxis
 	     * @see Graph#setLeftAxis
 	     * @see Graph#setRightAxis
@@ -835,11 +829,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      index = index || 0;
 	      this.axis.top[index] = axis;
 	    }
+
 	    /**
 	     * Sets a bottom axis
 	     * @param {Axis} axis - The axis instance to set
 	     * @param {Number} [ number=0 ] - The index of the axis
-	     * @memberof Graph.prototype
 	     * @see Graph#setTopAxis
 	     * @see Graph#setLeftAxis
 	     * @see Graph#setRightAxis
@@ -853,10 +847,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      num = num || 0;
 	      this.axis.bottom[num] = axis;
 	    }
+
 	    /**
 	     * Determines if an x axis belongs to the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -864,10 +858,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasXAxis(axis) {
 	      return this.hasTopAxis(axis) || this.hasBottomAxis(axis);
 	    }
+
 	    /**
 	     * Determines if an x axis belongs to the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -875,10 +869,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasYAxis(axis) {
 	      return this.hasLeftAxis(axis) || this.hasRightAxis(axis);
 	    }
+
 	    /**
 	     * Determines if an x axis belongs to top axes list of the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -886,10 +880,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasTopAxis(axis) {
 	      return this.hasAxis(axis, this.axis.top);
 	    }
+
 	    /**
 	     * Determines if an x axis belongs to bottom axes list of the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -897,10 +891,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasBottomAxis(axis) {
 	      return this.hasAxis(axis, this.axis.bottom);
 	    }
+
 	    /**
 	     * Determines if a y axis belongs to left axes list of the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -908,10 +902,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasLeftAxis(axis) {
 	      return this.hasAxis(axis, this.axis.left);
 	    }
+
 	    /**
 	     * Determines if a y axis belongs to right axes list of the graph
 	     * @param {Axis} axis - The axis instance to check
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -919,11 +913,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasRightAxis(axis) {
 	      return this.hasAxis(axis, this.axis.right);
 	    }
+
 	    /**
 	     * Determines if an axis belongs to a list of axes
 	     * @param {Axis} axis - The axis instance to check
 	     * @param {Array} axisList - The list of axes to check
-	     * @memberof Graph.prototype
 	     * @private
 	     */
 
@@ -932,10 +926,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hasAxis(axis, axisList) {
 	      return axisList.indexOf(axis) > -1;
 	    }
+
 	    /**
 	     * Autoscales the x and y axes of the graph<br />
 	     * Repains the canvas
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -947,11 +941,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
 	      // X is not always ascending... 
 	    }
+
 	    /**
 	     * Sets the background color
 	     * @param {String} color - An SVG accepted color for the background
 	     * @return {Graph} The current graph instance
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1040,7 +1034,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1052,6 +1045,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return valSeries;
 	      //return Math[ minmax ]( valSeries, valShapes );
 	    }
+
 	    /**
 	     * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
 	     * @memberof Graph.prototype
@@ -1093,9 +1087,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return val;
 	    }
+
 	    /**
 	     *  Returns all the series associated to an axis
-	     *  @memberof Graph.prototype
 	     *  @param {Axis} axis - The axis to which the series belong
 	     *  @returns {Serie[]} An array containing the list of series that belong to the axis
 	     */
@@ -1113,9 +1107,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return series;
 	    }
+
 	    /**
 	     * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
-	     * @memberof Graph.prototype
 	     * @see Graph#getBoundaryAxis
 	     */
 
@@ -1148,6 +1142,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+
 	    /** 
 	     * Function that is called from {@link Graph#_applyToAxes}
 	     * @function
@@ -1166,7 +1161,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param params - Extra parameters to pass to the function
 	     * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
 	     * @param {Boolean} leftright=false - True to apply to function to left and right axes
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1190,10 +1184,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._applyToAxis(typeof func === 'undefined' ? 'undefined' : _typeof(func)).call(this, ax[i], func, params);
 	      }
 	    }
+
 	    /**
 	     * Axes can be dependant of one another (for instance for unit conversions)
 	     * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
-	     * @memberof Graph.prototype
 	     * @param {Axis} axis - The axis that links one or multiple other dependant axes
 	     * @returns {Axis[]} The list of axes linked to the axis passed as parameter
 	     */
@@ -1217,6 +1211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _axisHasChanged(axis) {
 	      this._axesHaveChanged = true;
 	    }
+
 	    /**
 	     * Creates a new serie<br />
 	     * If the a serie with the same name exists, returns this serie with update options <br />
@@ -1226,7 +1221,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Object} options - The serie options
 	     * @param {Type} type - The type of the serie.
 	     * @returns {Serie} The newly created serie
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1255,12 +1249,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      self.emit("newSerie", serie);
 	      return serie;
 	    }
+
 	    /** 
 	     * Looks for an existing serie by name or by index and returns it.
 	     * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
 	     * @param {(String|Number)} name - The name or the index of the serie
 	     * @returns {Serie}
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1283,10 +1277,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return false;
 	    }
+
 	    /**
 	     * Returns all the series
 	     * @returns {Serie[]} An array of all the series
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1294,11 +1288,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getSeries() {
 	      return this.series;
 	    }
+
 	    /**
 	     * Draws a specific serie
 	     * @param {Serie} serie - The serie to redraw
 	     * @param {Boolean} force - Forces redraw even if no data has changed
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1311,9 +1305,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      serie.draw(force);
 	    }
+
 	    /**
 	     * Redraws all visible series
-	     * @memberof Graph.prototype
 	     * @param {Boolean} force - Forces redraw even if no data has changed
 	     */
 
@@ -1332,8 +1326,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+
 	    /**
-	     * @memberof Graph.prototype
 	     * @alias Graph#removeSeries
 	     */
 
@@ -1342,8 +1336,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function resetSeries() {
 	      this.removeSeries();
 	    }
+
 	    /**
-	     * @memberof Graph.prototype
 	     * @alias Graph#removeSeries
 	     */
 
@@ -1352,9 +1346,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function killSeries() {
 	      this.resetSeries();
 	    }
+
 	    /**
 	     * Removes all series from the graph
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1365,11 +1359,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      this.series = [];
 	    }
+
 	    /**
 	     * Selects a serie. Only one serie per graph can be selected.
 	     * @param {Serie} serie - The serie to select
 	     * @param {String} selectName="selected" - The name of the selection
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1393,10 +1387,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      serie.select(selectName || "selected");
 	    }
+
 	    /**
 	     * Returns the selected serie
 	     * @returns {(Serie|undefined)} The selected serie
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1404,10 +1398,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getSelectedSerie() {
 	      return this.selectedSerie;
 	    }
+
 	    /**
 	     * Unselects a serie
 	     * @param {Serie} serie - The serie to unselect
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1417,11 +1411,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.selectedSerie = false;
 	      this.triggerEvent('onUnselectSerie', serie);
 	    }
+
 	    /**
 	     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
 	     * @param {Serie} serie - The serie containing the shapes
 	     * @returns {Shape[]} An array containing a list of shapes associated to the serie
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1451,9 +1445,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return util.throwError("No constructor exists for toolbar");
 	      }
 	    }
+
 	    /**
 	     *  Returns all shapes from the graph
-	     *  @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1461,6 +1455,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getShapes() {
 	      return this.shapes || [];
 	    }
+
 	    /**
 	     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
 	     * @param {String} shapeType - The type of the shape
@@ -1468,7 +1463,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
 	     * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
 	     * @returns {Shape} The created shape
-	     * @memberof Graph.prototype
 	     * @see Graph#getConstructor
 	     */
 
@@ -1626,10 +1620,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return shape;
 	    }
+
 	    /**
 	     * Creates a new position. Arguments are passed to the position constructor
 	     * @param {...*} var_args
-	     * @memberof Graph.prototype
 	     * @see Position
 	     */
 
@@ -1640,9 +1634,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      Array.prototype.unshift.call(arguments, null);
 	      return new (Function.prototype.bind.apply(_graph2.default, arguments))();
 	    }
+
 	    /**
 	     *  Redraws all shapes. To be called if their definitions have changed
-	     *  @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1655,9 +1649,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
 	    }
+
 	    /**
 	     *  Removes all shapes from the graph
-	     *  @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1670,11 +1664,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      this.shapes = [];
 	    }
+
 	    /**
 	     * Selects a shape
 	     * @param {Shape} shape - The shape to select
 	     * @param {Boolean} mute - Select the shape quietly
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1716,11 +1710,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.emit("shapeSelect", shape);
 	      }
 	    }
+
 	    /**
 	     * Unselects a shape
 	     * @param {Shape} shape - The shape to unselect
 	     * @param {Boolean} mute - Unselect the shape quietly
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -1748,9 +1742,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.emit("shapeUnselect", shape);
 	      }
 	    }
+
 	    /**
 	     * Unselects all shapes
-	     * @memberof Graph.prototype
 	     * @param {Boolean} [ mute = false ] - Mutes all unselection events
 	     * @return {Graph} The current graph instance
 	     */
@@ -1966,9 +1960,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+
 	    /**
 	     * Returns an initialized plugin
-	     * @memberof Graph.prototype
 	     * @param {String} pluginName
 	     * @returns {Plugin} The plugin which name is <pluginName>
 	     */
@@ -1996,10 +1990,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return;
 	    }
+
 	    /**
 	     * Creates a legend. Only one legend is allowed per graph
 	     * @param {Object} options - The legend options
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -2021,9 +2015,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return this.legend;
 	    }
+
 	    /**
 	     * Redraw the legend
-	     * @memberof Graph.prototype
 	     */
 
 	  }, {
@@ -2044,10 +2038,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return this.legend;
-	    } /**
-	      * Kills the graph
-	      * @memberof Graph.prototype
-	      **/
+	    }
+
+	    /**
+	     * Kills the graph
+	     **/
 
 	  }, {
 	    key: 'kill',
@@ -2371,7 +2366,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Returns a graph created from a schema
-	     * @memberof Graph
 	     * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
 	     * @param {HTMLElement} wrapper - The wrapping element
 	     * @returns {Graph} Newly created graph
@@ -2612,7 +2606,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
 	     * @param {String} constructorName - The name of the constructor
 	     * @param {Function} constructor - The constructor method
-	     * @memberof Graph
 	     * @see Graph.getConstructor
 	     * @static
 	     */
@@ -2630,7 +2623,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Returns a registered constructor
-	     * @memberof Graph
 	     * @param {String} constructorName - The constructor name to look for
 	     * @returns {Function} The registered constructor
 	     * @throws Error
@@ -3447,6 +3439,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return false;
 	};
 
+	/**
+	 * Utility class to compute positioning
+	 * @class
+	 */
+
 	var GraphPosition = function () {
 	  function GraphPosition(x, y, dx, dy) {
 	    _classCallCheck(this, GraphPosition);
@@ -3463,6 +3460,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.dy = dy;
 	    }
 	  }
+
+	  /**
+	   *  Computes the position of the position
+	   *  @param {Graph} graph - The graph for which the position has to be computed
+	   *  @param {AxisX} xAxis - The x axis to consider (has to belong to the graph)
+	   *  @param {AxisY} yAxis - The y axis to consider (has to belong to the graph)
+	   *  @param {Serie} [serie] - For non-existing y value, use a serie to compute it automatically from the serie data
+	   *  @return {Object} An object in the format ```{x: xPx, y: yPx}``` containing the position in pixels of the position
+	   */
+
 
 	  _createClass(GraphPosition, [{
 	    key: 'compute',
@@ -3601,6 +3608,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return false;
 	    }
+
+	    /**
+	     *  Computes the value in pixels of an amplitude (or a distance) for a certain axis
+	     *  @param {Number} value - The value in axis unit
+	     *  @param {Axis} Axis - The x axis to consider (has to belong to the graph)
+	     *  @return {String} The value in pixels, e.g. "20px"
+	     */
+
 	  }, {
 	    key: 'getDeltaPx',
 	    value: function getDeltaPx(value, axis) {
@@ -3681,6 +3696,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return rel;
 	    }
+
+	    /**
+	     *  Computes a value in pixels
+	     *  @param {Number} value - The value in axis unit
+	     *  @param {Axis} axis - The x axis to consider (has to belong to the graph)
+	     *  @param {Boolean} rel - Whether or not the value is a distance 
+	     *  @return {(Number|String)} The computed value
+	     */
+
 	  }, {
 	    key: 'getPx',
 	    value: function getPx(value, axis, rel) {
@@ -3717,10 +3741,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'relativeTo',
+
+
+	    /**
+	     *  Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"
+	     *  @param {Position} pos - The reference position
+	     *  @return {Position} The current position
+	     */
 	    value: function relativeTo(pos) {
 	      this._relativeTo = Position.check(pos);
 	      return this;
 	    }
+
+	    /**
+	     *  Checks if an object is a position. If not, creates a new Position instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```Position``` instance which serves as the reference position.
+	     *  @example GraphPosition.check( { x: 1, y: 2 }, function() { return someOtherPosition; } );
+	     *  @param {(Object|Position)} pos - The position object or the object fed into the constructor
+	     *  @param {Function} callback - The callback fired if a new position is created
+	     *  @return {Position} The resulting position object
+	     */
+
 	  }, {
 	    key: 'check',
 	    value: function check(pos, callback) {
@@ -3775,7 +3815,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.setCSS = setCSS;
 	exports.ajaxGet = ajaxGet;
 	exports.extend = extend;
-
 	/**
 	 *  Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
 	 * @param {SVGElement} to - The SVG element to apply the attributes to

@@ -5,11 +5,16 @@
 			"url": "AxisX"
 		},
 		{
+			"title": "XBar",
+			"url": "AxisXBar"
+		},
+		{
 			"title": "Y",
 			"url": "AxisY"
 		}
 	],
 	"Core": [],
+	"GraphPosition": [],
 	"Plugin": [
 		{
 			"title": "Drag",
@@ -36,7 +41,6 @@
 			"url": "PluginZoom"
 		}
 	],
-	"Position": [],
 	"Serie": [
 		{
 			"title": "DensityMap",

@@ -5,6 +5,10 @@ function _parsePx( px ) {
   return false;
 };
 
+/**
+ * Utility class to compute positioning
+ * @class
+ */
 class GraphPosition {
 
   constructor( x, y, dx, dy ) {
@@ -22,6 +26,14 @@ class GraphPosition {
     }
   }
 
+  /**
+   *  Computes the position of the position
+   *  @param {Graph} graph - The graph for which the position has to be computed
+   *  @param {AxisX} xAxis - The x axis to consider (has to belong to the graph)
+   *  @param {AxisY} yAxis - The y axis to consider (has to belong to the graph)
+   *  @param {Serie} [serie] - For non-existing y value, use a serie to compute it automatically from the serie data
+   *  @return {Object} An object in the format ```{x: xPx, y: yPx}``` containing the position in pixels of the position
+   */
   compute( graph, xAxis, yAxis, serie ) {
 
     if ( !graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis ) {
@@ -160,6 +172,12 @@ class GraphPosition {
     return false;
   }
 
+  /**
+   *  Computes the value in pixels of an amplitude (or a distance) for a certain axis
+   *  @param {Number} value - The value in axis unit
+   *  @param {Axis} Axis - The x axis to consider (has to belong to the graph)
+   *  @return {String} The value in pixels, e.g. "20px"
+   */
   getDeltaPx( value, axis ) {
     var v;
     if ( ( v = _parsePx( value ) ) !== false ) {
@@ -237,6 +255,13 @@ class GraphPosition {
     return rel;
   }
 
+  /**
+   *  Computes a value in pixels
+   *  @param {Number} value - The value in axis unit
+   *  @param {Axis} axis - The x axis to consider (has to belong to the graph)
+   *  @param {Boolean} rel - Whether or not the value is a distance 
+   *  @return {(Number|String)} The computed value
+   */
   getPx( value, axis, rel ) {
 
     var parsed;
@@ -273,11 +298,23 @@ class GraphPosition {
     return this.getPx( value, axis, true );
   };
 
+  /**
+   *  Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"
+   *  @param {Position} pos - The reference position
+   *  @return {Position} The current position
+   */
   relativeTo( pos ) {
     this._relativeTo = Position.check( pos );
     return this;
   }
 
+  /**
+   *  Checks if an object is a position. If not, creates a new Position instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```Position``` instance which serves as the reference position.
+   *  @example GraphPosition.check( { x: 1, y: 2 }, function() { return someOtherPosition; } );
+   *  @param {(Object|Position)} pos - The position object or the object fed into the constructor
+   *  @param {Function} callback - The callback fired if a new position is created
+   *  @return {Position} The resulting position object
+   */
   check( pos, callback ) {
     if ( pos instanceof Position ) {
       return pos;

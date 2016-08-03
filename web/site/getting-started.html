@@ -169,10 +169,32 @@ Installing jsGraph from <a href="http://npmjs.org">npm</a> is an easy way to ins
 <p>If you are using a AMD structure using requirejs or other, jsGraph will register itself as an anonymous module. To load it, just use:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">require</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'path/to/jsgraph'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">Graph</span> <span class="p">)</span> <span class="p">{</span>
-	<span class="c1">// new Graph(); is available</span>
+  <span class="c1">// new Graph(); is available</span>
 <span class="p">});</span></code></pre></figure>
 
 <p>In this case, the Graph object is not exposed to the <code class="highlighter-rouge">window</code> element anymore.</p>
+
+<h3 id="your-first-graph">Your first graph</h3>
+
+<p>Creating a graph requires only a few lines of code, which involve:</p>
+
+<ul>
+  <li>Creation of a new graph instance, for which you need to specify the DOM element container.</li>
+  <li>Set the size of the container</li>
+  <li>Creation of a least one serie (although not necessary)</li>
+  <li>Assign some axes to the serie</li>
+  <li>Set some data of the serie</li>
+  <li><em>Draw everything</em></li>
+</ul>
+
+<p>Which translates into the following code:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"containerId"</span><span class="p">);</span> <span class="c1">// Can also be new Graph( containerDOM );</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span> <span class="p">);</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serieName"</span> <span class="p">)</span>
+	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+	<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x3</span><span class="p">,</span> <span class="nx">y3</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
 
 
 </div>

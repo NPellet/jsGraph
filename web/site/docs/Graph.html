@@ -101,7 +101,7 @@
   			
   			  
   			  <li >
-            <a class="page-link" href="/docs/Position.html">Position</a>
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
           </li>
   			  
   			
@@ -128,6 +128,8 @@
     
         <h2>Graph</h2>
         
+            <div class="class-description">Entry class of jsGraph that creates a new graph.</div>
+        
     
 </header>
 
@@ -141,6 +143,8 @@
 
 
     
+    <h2>Constructor</h2>
+    
 
     <h4 class="doc-code" id="Graph"><span class="type-signature"></span>new <span></span><span class="doc-name">Graph</span><span class="doc-signature">( <span class="doc-type">HTMLElement, String</span> wrapper [ , <span class="doc-type">GraphOptions</span> options ] [ , <span class="doc-type">Object</span> axis ] )</span></h4>
 
@@ -148,7 +152,7 @@
 
 
 <div class="description">
-    Main class of jsGraph that creates a new graph.
+    Graph constructor
 </div>
 
 
@@ -468,15 +472,6 @@
     
 
     
-
-    
-        <h5>Examples</h5>
-        
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"someDomID"</span><span class="p">);</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"someOtherDomID"</span><span class="p">,</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Graph title'</span><span class="p">,</span> <span class="na">paddingRight</span><span class="p">:</span> <span class="mi">100</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
 
     
 
@@ -2498,154 +2493,6 @@ Finds and returns all the axes that are linked to a specific axis. Mostly used i
     
 
     
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getBoundaryAxisFromSeries"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getBoundaryAxisFromSeries</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis , <span class="doc-type">minmax</span> minmax )</span></h4>
-
-
-
-
-<div class="description">
-    Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>axis</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Axis.html">Axis</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The axis for which the value should be computed</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>minmax</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">minmax</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The minimum or maximum to look for. "min" for the minimum, anything else for the maximum</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The minimimum or maximum of the axis based on its series
-</div>
-
-        
 
     
 
@@ -5955,7 +5802,7 @@ Caution ! The <code>options</code> parameter will only be effective if an axis i
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="Position.html">Position</a></li>
+            <li>Position</li>
         </ul>
     </dd>
     
@@ -6642,9 +6489,105 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
 <div class="description">
     Removes all series from the graph
 </div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
 
 
 <div class="doc-details">

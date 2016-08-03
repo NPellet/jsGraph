@@ -57,22 +57,24 @@ const GraphOptionsDefault = {
 var _constructors = {};
 
 /** 
- * Main class of jsGraph that creates a new graph.
- * @class Graph
- * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
- * @param {GraphOptions} [ options ] - The options of the graph
- * @param {Object} [ axis ] - The list of axes
- * @param {Array} axis.left - The list of left axes
- * @param {Array} axis.bottom - The list of bottom axes
- * @param {Array} axis.top - The list of top axes
- * @param {Array} axis.right - The list of right axes
- * @augments EventEmitter
- * @example var graph = new Graph("someDomID");
- * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
+ * Entry class of jsGraph that creates a new graph.
+ * @extends EventEmitter
  * @tutorial basic
  */
 class Graph extends EventEmitter {
 
+  /**
+   * Graph constructor
+   * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+   * @param {GraphOptions} [ options ] - The options of the graph
+   * @param {Object} [ axis ] - The list of axes
+   * @param {Array} axis.left - The list of left axes
+   * @param {Array} axis.bottom - The list of bottom axes
+   * @param {Array} axis.top - The list of top axes
+   * @param {Array} axis.right - The list of right axes
+   * @example var graph = new Graph("someDomID");
+   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
+   */
   constructor( wrapper, options, axis ) {
 
     super();
@@ -190,7 +192,6 @@ class Graph extends EventEmitter {
 
   /** 
    * Returns the graph SVG wrapper element
-   * @memberof Graph.prototype
    * @public
    * @return {SVGElement} The DOM element wrapping the graph
    */
@@ -200,7 +201,6 @@ class Graph extends EventEmitter {
 
   /** 
    * Returns the graph wrapper element passed during the graph creation
-   * @memberof Graph.prototype
    * @public
    * @return {HTMLElement} The DOM element wrapping the graph
    */
@@ -210,7 +210,6 @@ class Graph extends EventEmitter {
 
   /**
    * Sets an option of the graph
-   * @memberof Graph.prototype
    * @param {String} name - Option name
    * @param value - New option value
    * @returns {Graph} - Graph instance
@@ -222,7 +221,6 @@ class Graph extends EventEmitter {
 
   /**
    *  Sets the title of the graph
-   * @memberof Graph.prototype
    */
   setTitle( title ) {
     this.options.title = title;
@@ -231,7 +229,6 @@ class Graph extends EventEmitter {
 
   /**
    *  Shows the title of the graph
-   * @memberof Graph.prototype
    */
   displayTitle() {
     this.domTitle.setAttribute( 'display', 'inline' );
@@ -239,7 +236,6 @@ class Graph extends EventEmitter {
 
   /**
    *  Hides the title of the graph
-   * @memberof Graph.prototype
    */
   hideTitle() {
     this.domTitle.setAttribute( 'display', 'none' );
@@ -248,7 +244,6 @@ class Graph extends EventEmitter {
   /**
    * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
    * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
-   * @memberof Graph.prototype
    * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
    * @return {Boolean} if the redraw has been successful
    */
@@ -276,381 +271,380 @@ class Graph extends EventEmitter {
 
   /**
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
-   * @memberof Graph.prototype
    */
   draw() {
 
-      this.drawSeries( this.redraw( true ) );
-    }
-    /**
-     * Sets the total width of the graph
-     * @param {Number} width - The new width of the graph
-     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-     * @see Graph#setHeight
-     * @see Graph#resize
-     * @memberof Graph.prototype
-     */
+    this.drawSeries( this.redraw( true ) );
+  }
+
+  /**
+   * Sets the total width of the graph
+   * @param {Number} width - The new width of the graph
+   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+   * @see Graph#setHeight
+   * @see Graph#resize
+   */
   setWidth( width, skipResize ) {
-      this.width = width;
-      if ( !skipResize ) {
-        this._resize();
-      }
-    }
-    /**
-     * Sets the total height of the graph
-     * @param {Number} height - The new height of the graph
-     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-     * @see Graph#setWidth
-     * @see Graph#resize
-     * @memberof Graph.prototype
-     */
-  setHeight( height, skipResize ) {
-      this.height = height;
-      if ( !skipResize ) {
-        this._resize();
-      }
-    }
-    /**
-     * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
-     * @param {Number} [ width ] - The new width of the graph
-     * @param {Number} [ height ] - The new height of the graph
-     * @see Graph#setWidth
-     * @see Graph#setHeight
-     * @memberof Graph.prototype
-     * @return {Graph} The current graph
-     */
-  resize( w, h ) {
-      if ( w && h ) {
-        this.setSize( w, h );
-      }
-
+    this.width = width;
+    if ( !skipResize ) {
       this._resize();
-      return this;
     }
-    /**
-     * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
-     * @param {Number} [ width ] - The new width of the graph
-     * @param {Number} [ height ] - The new height of the graph
-     * @see Graph#setWidth
-     * @see Graph#setHeight
-     * @see Graph#resize
-     * @memberof Graph.prototype
-     */
-  setSize( w, h ) {
-      this.setWidth( w, true );
-      this.setHeight( h, true );
-      this.getDrawingHeight();
-      this.getDrawingWidth();
-    }
-    /**
-     * Returns the width of the graph (set by setSize, setWidth or resize methods)
-     * @return {Number} Width of the graph
-     * @memberof Graph.prototype
-     */
-  getWidth() {
-      return this.width;
-    }
-    /**
-     * Returns the height of the graph (set by setSize, setHeight or resize methods)
-     * @return {Number} Height of the graph
-     * @memberof Graph.prototype
-     */
-  getHeight() {
-      return this.height;
-    }
-    /**
-     * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
-     * @return {Number} paddingTop
-     * @memberof Graph.prototype
-     */
-  getPaddingTop() {
-      return this.options.paddingTop;
-    }
-    /**
-     * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
-     * @return {Number} paddingTop
-     * @memberof Graph.prototype
-     */
-  getPaddingLeft() {
-      return this.options.paddingLeft;
-    }
-    /**
-     * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
-     * @return {Number} paddingTop
-     * @memberof Graph.prototype
-     */
-  getPaddingBottom() {
-      return this.options.paddingBottom;
-    }
-    /**
-     * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
-     * @return {Number} paddingRight
-     * @memberof Graph.prototype
-     */
-  getPaddingRight() {
-      return this.options.paddingRight;
-    }
-    /**
-     * Returns the height of the drawable zone, including the space used by the axes
-     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-     * @returns {Number} Height of the graph
-     * @memberof Graph.prototype
-     */
-  getDrawingHeight( useCache ) {
-      if ( useCache && this.innerHeight ) {
-        return this.innerHeight;
-      }
-      return ( this.innerHeight = ( this.height - this.options.paddingTop - this.options.paddingBottom ) );
-    }
-    /**
-     * Returns the width of the drawable zone, including the space used by the axes
-     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-     * @returns {Number} Width of the graph
-     * @memberof Graph.prototype
-     */
-  getDrawingWidth( useCache ) {
-      if ( useCache && this.innerWidth ) {
-        return this.innerWidth;
-      }
-      return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
-    }
-    /**
-     * Caches the wrapper offset in the page.<br />
-     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
-     * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
-     * @memberof Graph.prototype
-     * @see Graph#uncacheOffset
-     */
-  cacheOffset() {
-      this.offsetCached = util.getOffset( this._dom );
-    }
-    /**
-     * Un-caches the wrapper offset value
-     * @memberof Graph.prototype
-     * @see Graph#cacheOffset
-     */
-  uncacheOffset() {
-      this.offsetCached = false;
-    }
-    /**
-     * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
-     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
-  getXAxis( index, options ) {
-      if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
-        return this.getTopAxis( index, options );
-      }
+  }
 
-      return this.getBottomAxis( index, options );
+  /**
+   * Sets the total height of the graph
+   * @param {Number} height - The new height of the graph
+   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+   * @see Graph#setWidth
+   * @see Graph#resize
+   */
+  setHeight( height, skipResize ) {
+    this.height = height;
+    if ( !skipResize ) {
+      this._resize();
     }
-    /**
-     * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
-     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
+  }
+
+  /**
+   * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
+   * @param {Number} [ width ] - The new width of the graph
+   * @param {Number} [ height ] - The new height of the graph
+   * @see Graph#setWidth
+   * @see Graph#setHeight
+   * @return {Graph} The current graph
+   */
+  resize( w, h ) {
+    if ( w && h ) {
+      this.setSize( w, h );
+    }
+
+    this._resize();
+    return this;
+  }
+
+  /**
+   * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
+   * @param {Number} [ width ] - The new width of the graph
+   * @param {Number} [ height ] - The new height of the graph
+   * @see Graph#setWidth
+   * @see Graph#setHeight
+   * @see Graph#resize
+   */
+  setSize( w, h ) {
+    this.setWidth( w, true );
+    this.setHeight( h, true );
+    this.getDrawingHeight();
+    this.getDrawingWidth();
+  }
+
+  /**
+   * Returns the width of the graph (set by setSize, setWidth or resize methods)
+   * @return {Number} Width of the graph
+   */
+  getWidth() {
+    return this.width;
+  }
+
+  /**
+   * Returns the height of the graph (set by setSize, setHeight or resize methods)
+   * @return {Number} Height of the graph
+   */
+  getHeight() {
+    return this.height;
+  }
+
+  /**
+   * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
+   * @return {Number} paddingTop
+   */
+  getPaddingTop() {
+    return this.options.paddingTop;
+  }
+
+  /**
+   * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
+   * @return {Number} paddingTop
+   */
+  getPaddingLeft() {
+    return this.options.paddingLeft;
+  }
+
+  /**
+   * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
+   * @return {Number} paddingTop
+   */
+  getPaddingBottom() {
+    return this.options.paddingBottom;
+  }
+
+  /**
+   * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
+   * @return {Number} paddingRight
+   */
+  getPaddingRight() {
+    return this.options.paddingRight;
+  }
+
+  /**
+   * Returns the height of the drawable zone, including the space used by the axes
+   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+   * @returns {Number} Height of the graph
+   */
+  getDrawingHeight( useCache ) {
+    if ( useCache && this.innerHeight ) {
+      return this.innerHeight;
+    }
+    return ( this.innerHeight = ( this.height - this.options.paddingTop - this.options.paddingBottom ) );
+  }
+
+  /**
+   * Returns the width of the drawable zone, including the space used by the axes
+   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+   * @returns {Number} Width of the graph
+   */
+  getDrawingWidth( useCache ) {
+    if ( useCache && this.innerWidth ) {
+      return this.innerWidth;
+    }
+    return ( this.innerWidth = ( this.width - this.options.paddingLeft - this.options.paddingRight ) );
+  }
+
+  /**
+   * Caches the wrapper offset in the page.<br />
+   * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
+   * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
+   * @see Graph#uncacheOffset
+   */
+  cacheOffset() {
+    this.offsetCached = util.getOffset( this._dom );
+  }
+
+  /**
+   * Un-caches the wrapper offset value
+   * @see Graph#cacheOffset
+   */
+  uncacheOffset() {
+    this.offsetCached = false;
+  }
+
+  /**
+   * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
+  getXAxis( index, options ) {
+    if ( this.axis.top.length > 0 && this.axis.bottom.length == 0 ) {
+      return this.getTopAxis( index, options );
+    }
+
+    return this.getBottomAxis( index, options );
+  }
+
+  /**
+   * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
   getYAxis( index, options ) {
 
-      if ( this.axis.right.length > 0 && this.axis.left.length == 0 ) {
-        return this.getRightAxis( index, options );
-      }
+    if ( this.axis.right.length > 0 && this.axis.left.length == 0 ) {
+      return this.getRightAxis( index, options );
+    }
 
-      return this.getLeftAxis( index, options );
-    }
-    /**
-     * Returns the top axis at a certain index. Creates it if non-existant
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
+    return this.getLeftAxis( index, options );
+  }
+
+  /**
+   * Returns the top axis at a certain index. Creates it if non-existant
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
   getTopAxis( index, options ) {
-      return _getAxis( this, index, options, 'top' );
-    }
-    /**
-     * Returns the bottom axis at a certain index. Creates it if non-existant
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
+    return _getAxis( this, index, options, 'top' );
+  }
+
+  /**
+   * Returns the bottom axis at a certain index. Creates it if non-existant
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
   getBottomAxis( index, options ) {
-      return _getAxis( this, index, options, 'bottom' );
-    }
-    /**
-     * Returns the left axis at a certain index. Creates it if non-existant
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
+    return _getAxis( this, index, options, 'bottom' );
+  }
+
+  /**
+   * Returns the left axis at a certain index. Creates it if non-existant
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
   getLeftAxis( index, options ) {
-      return _getAxis( this, index, options, 'left' );
-    }
-    /**
-     * Returns the right axis at a certain index. Creates it if non-existant
-     * @memberof Graph.prototype
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @param {Object} [ options={} ] - The options to pass to the axis constructor
-     */
+    return _getAxis( this, index, options, 'left' );
+  }
+
+  /**
+   * Returns the right axis at a certain index. Creates it if non-existant
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @param {Object} [ options={} ] - The options to pass to the axis constructor
+   */
   getRightAxis( index, options ) {
-      return _getAxis( this, index, options, 'right' );
-    }
-    /**
-     * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     */
+    return _getAxis( this, index, options, 'right' );
+  }
+
+  /**
+   * Sets a bottom axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ index=0 ] - The index of the axis
+   */
   setXAxis( axis, index ) {
-      this.setBottomAxis( axis, index );
-    }
-    /**
-     * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     */
+    this.setBottomAxis( axis, index );
+  }
+
+  /**
+   * Sets a left axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ index=0 ] - The index of the axis
+   */
   setYAxis( axis, index ) {
-      this.setLeftAxis( axis, index );
-    }
-    /**
-     * Sets a left axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     * @see Graph#setBottomAxis
-     * @see Graph#setTopAxis
-     * @see Graph#setRightAxis
-     * @see Graph#getLeftAxis
-     * @see Graph#getYAxis
-     */
+    this.setLeftAxis( axis, index );
+  }
+
+  /**
+   * Sets a left axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @see Graph#setBottomAxis
+   * @see Graph#setTopAxis
+   * @see Graph#setRightAxis
+   * @see Graph#getLeftAxis
+   * @see Graph#getYAxis
+   */
   setLeftAxis( axis, index ) {
-      index = index || 0;
-      this.axis.left[ index ] = axis;
-    }
-    /**
-     * Sets a right axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     * @see Graph#setBottomAxis
-     * @see Graph#setLeftAxis
-     * @see Graph#setTopAxis
-     * @see Graph#getRightAxis
-     * @see Graph#getYAxis
-     */
+    index = index || 0;
+    this.axis.left[ index ] = axis;
+  }
+
+  /**
+   * Sets a right axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @see Graph#setBottomAxis
+   * @see Graph#setLeftAxis
+   * @see Graph#setTopAxis
+   * @see Graph#getRightAxis
+   * @see Graph#getYAxis
+   */
   setRightAxis( axis, index ) {
-      index = index || 0;
-      this.axis.right[ index ] = axis;
-    }
-    /**
-     * Sets a top axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ index=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     * @see Graph#setBottomAxis
-     * @see Graph#setLeftAxis
-     * @see Graph#setRightAxis
-     * @see Graph#getBottomAxis
-     * @see Graph#getXAxis
-     */
+    index = index || 0;
+    this.axis.right[ index ] = axis;
+  }
+
+  /**
+   * Sets a top axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ index=0 ] - The index of the axis
+   * @see Graph#setBottomAxis
+   * @see Graph#setLeftAxis
+   * @see Graph#setRightAxis
+   * @see Graph#getBottomAxis
+   * @see Graph#getXAxis
+   */
   setTopAxis( axis, index ) {
-      index = index || 0;
-      this.axis.top[ index ] = axis;
-    }
-    /**
-     * Sets a bottom axis
-     * @param {Axis} axis - The axis instance to set
-     * @param {Number} [ number=0 ] - The index of the axis
-     * @memberof Graph.prototype
-     * @see Graph#setTopAxis
-     * @see Graph#setLeftAxis
-     * @see Graph#setRightAxis
-     * @see Graph#getTopAxis
-     * @see Graph#getXAxis
-     */
+    index = index || 0;
+    this.axis.top[ index ] = axis;
+  }
+
+  /**
+   * Sets a bottom axis
+   * @param {Axis} axis - The axis instance to set
+   * @param {Number} [ number=0 ] - The index of the axis
+   * @see Graph#setTopAxis
+   * @see Graph#setLeftAxis
+   * @see Graph#setRightAxis
+   * @see Graph#getTopAxis
+   * @see Graph#getXAxis
+   */
   setBottomAxis( axis, num ) {
-      num = num || 0;
-      this.axis.bottom[ num ] = axis;
-    }
-    /**
-     * Determines if an x axis belongs to the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    num = num || 0;
+    this.axis.bottom[ num ] = axis;
+  }
+
+  /**
+   * Determines if an x axis belongs to the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasXAxis( axis ) {
-      return this.hasTopAxis( axis ) ||  this.hasBottomAxis( axis );
-    }
-    /**
-     * Determines if an x axis belongs to the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    return this.hasTopAxis( axis ) ||  this.hasBottomAxis( axis );
+  }
+
+  /**
+   * Determines if an x axis belongs to the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasYAxis( axis ) {
-      return this.hasLeftAxis( axis ) ||  this.hasRightAxis( axis );
-    }
-    /**
-     * Determines if an x axis belongs to top axes list of the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    return this.hasLeftAxis( axis ) ||  this.hasRightAxis( axis );
+  }
+
+  /**
+   * Determines if an x axis belongs to top axes list of the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasTopAxis( axis ) {
-      return this.hasAxis( axis, this.axis.top );
-    }
-    /**
-     * Determines if an x axis belongs to bottom axes list of the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    return this.hasAxis( axis, this.axis.top );
+  }
+
+  /**
+   * Determines if an x axis belongs to bottom axes list of the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasBottomAxis( axis ) {
-      return this.hasAxis( axis, this.axis.bottom );
-    }
-    /**
-     * Determines if a y axis belongs to left axes list of the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    return this.hasAxis( axis, this.axis.bottom );
+  }
+
+  /**
+   * Determines if a y axis belongs to left axes list of the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasLeftAxis( axis ) {
-      return this.hasAxis( axis, this.axis.left );
-    }
-    /**
-     * Determines if a y axis belongs to right axes list of the graph
-     * @param {Axis} axis - The axis instance to check
-     * @memberof Graph.prototype
-     */
+    return this.hasAxis( axis, this.axis.left );
+  }
+
+  /**
+   * Determines if a y axis belongs to right axes list of the graph
+   * @param {Axis} axis - The axis instance to check
+   */
   hasRightAxis( axis ) {
-      return this.hasAxis( axis, this.axis.right );
-    }
-    /**
-     * Determines if an axis belongs to a list of axes
-     * @param {Axis} axis - The axis instance to check
-     * @param {Array} axisList - The list of axes to check
-     * @memberof Graph.prototype
-     * @private
-     */
+    return this.hasAxis( axis, this.axis.right );
+  }
+
+  /**
+   * Determines if an axis belongs to a list of axes
+   * @param {Axis} axis - The axis instance to check
+   * @param {Array} axisList - The list of axes to check
+   * @private
+   */
   hasAxis( axis, axisList ) {
-      return axisList.indexOf( axis ) > -1;
-    }
-    /**
-     * Autoscales the x and y axes of the graph<br />
-     * Repains the canvas
-     * @memberof Graph.prototype
-     */
+    return axisList.indexOf( axis ) > -1;
+  }
+
+  /**
+   * Autoscales the x and y axes of the graph<br />
+   * Repains the canvas
+   */
   autoscaleAxes() {
 
-      this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
+    this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
 
-      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-      // X is not always ascending... 
-    }
-    /**
-     * Sets the background color
-     * @param {String} color - An SVG accepted color for the background
-     * @return {Graph} The current graph instance
-     * @memberof Graph.prototype
-     */
+    //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+    // X is not always ascending... 
+  }
+
+  /**
+   * Sets the background color
+   * @param {String} color - An SVG accepted color for the background
+   * @return {Graph} The current graph instance
+   */
   setBackgroundColor( color ) {
 
     this.rectEvent.setAttribute( 'fill', color );
@@ -726,115 +720,116 @@ class Graph extends EventEmitter {
 
   /**
    * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
-   * @memberof Graph.prototype
    */
   getBoundaryAxis( axis, minmax ) {
 
-      var valSeries = this.getBoundaryAxisFromSeries( axis, minmax );
-      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-      return valSeries;
-      //return Math[ minmax ]( valSeries, valShapes );
+    var valSeries = this.getBoundaryAxisFromSeries( axis, minmax );
+    //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+    return valSeries;
+    //return Math[ minmax ]( valSeries, valShapes );
 
-    }
-    /**
-     * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
-     * @memberof Graph.prototype
-     * @param {Axis} axis - The axis for which the value should be computed
-     * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
-     * @returns {Number} The minimimum or maximum of the axis based on its series
-     */
+  }
+
+  /**
+   * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
+   * @memberof Graph.prototype
+   * @param {Axis} axis - The axis for which the value should be computed
+   * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
+   * @returns {Number} The minimimum or maximum of the axis based on its series
+   */
   getBoundaryAxisFromSeries( axis, minmax ) {
 
-      var min = minmax == 'min',
-        val,
-        func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
-        func2use = func[ min ? 0 : 1 ],
-        infinity2use = min ? +Infinity : -Infinity,
-        currentSerie,
-        serie,
-        series,
-        serieValue,
-        i,
-        l;
+    var min = minmax == 'min',
+      val,
+      func = axis.isX() ? [ 'getMinX', 'getMaxX' ] : [ 'getMinY', 'getMaxY' ],
+      func2use = func[ min ? 0 : 1 ],
+      infinity2use = min ? +Infinity : -Infinity,
+      currentSerie,
+      serie,
+      series,
+      serieValue,
+      i,
+      l;
 
-      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
-      series = this.getSeriesFromAxis( axis, true );
+    val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+    series = this.getSeriesFromAxis( axis, true );
 
-      for ( i = 0, l = series.length; i < l; i++ ) {
+    for ( i = 0, l = series.length; i < l; i++ ) {
 
-        serie = series[ i ];
+      serie = series[ i ];
 
-        if ( !serie.isShown() ) {
+      if ( !serie.isShown() ) {
+        continue;
+      }
+
+      serieValue = serie[ func2use ]();
+      val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
+
+    }
+
+    return val;
+  }
+
+  /**
+   *  Returns all the series associated to an axis
+   *  @param {Axis} axis - The axis to which the series belong
+   *  @returns {Serie[]} An array containing the list of series that belong to the axis
+   */
+  getSeriesFromAxis( axis ) {
+    var series = [],
+      i = this.series.length - 1;
+    for ( ; i >= 0; i-- ) {
+      if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis ) {
+        series.push( this.series[ i ] );
+      }
+    }
+
+    return series;
+  }
+
+  /**
+   * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
+   * @see Graph#getBoundaryAxis
+   */
+  updateDataMinMaxAxes() {
+
+    var axisvars = [ 'bottom', 'top', 'left', 'right' ],
+      axis,
+      j,
+      l,
+      i,
+      xy;
+
+    for ( j = 0, l = axisvars.length; j < l; j++ ) {
+
+      for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
+
+        axis = this.axis[ axisvars[ j ] ][ i ];
+        xy = j < 2 ? 'x' : 'y';
+
+        if ( axis.disabled ) {
           continue;
         }
 
-        serieValue = serie[ func2use ]();
-        val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
+        //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
+        axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min' ) );
+        axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max' ) );
 
       }
-
-      return val;
     }
-    /**
-     *  Returns all the series associated to an axis
-     *  @memberof Graph.prototype
-     *  @param {Axis} axis - The axis to which the series belong
-     *  @returns {Serie[]} An array containing the list of series that belong to the axis
-     */
-  getSeriesFromAxis( axis ) {
-      var series = [],
-        i = this.series.length - 1;
-      for ( ; i >= 0; i-- ) {
-        if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis ) {
-          series.push( this.series[ i ] );
-        }
-      }
 
-      return series;
-    }
-    /**
-     * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
-     * @memberof Graph.prototype
-     * @see Graph#getBoundaryAxis
-     */
-  updateDataMinMaxAxes() {
+  }
 
-      var axisvars = [ 'bottom', 'top', 'left', 'right' ],
-        axis,
-        j,
-        l,
-        i,
-        xy;
-
-      for ( j = 0, l = axisvars.length; j < l; j++ ) {
-
-        for ( i = this.axis[ axisvars[ j ] ].length - 1; i >= 0; i-- ) {
-
-          axis = this.axis[ axisvars[ j ] ][ i ];
-          xy = j < 2 ? 'x' : 'y';
-
-          if ( axis.disabled ) {
-            continue;
-          }
-
-          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-
-          axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min' ) );
-          axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max' ) );
-
-        }
-      }
-
-    }
-    /** 
-     * Function that is called from {@link Graph#_applyToAxes}
-     * @function
-     * @name AxisCallbackFunction
-     * @param {Axis} axis - The axis of the function
-     * @param {String} type - The type of the axis (left,right,top,bottom)
-     * @param params - The params passed in the _applyToAxis function.
-     * @see Graph#_applyToAxes
-     */
+  /** 
+   * Function that is called from {@link Graph#_applyToAxes}
+   * @function
+   * @name AxisCallbackFunction
+   * @param {Axis} axis - The axis of the function
+   * @param {String} type - The type of the axis (left,right,top,bottom)
+   * @param params - The params passed in the _applyToAxis function.
+   * @see Graph#_applyToAxes
+   */
 
   /**
    * Applies a function to axes. The function will be executed once for every axis.
@@ -844,34 +839,33 @@ class Graph extends EventEmitter {
    * @param params - Extra parameters to pass to the function
    * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
    * @param {Boolean} leftright=false - True to apply to function to left and right axes
-   * @memberof Graph.prototype
    */
   _applyToAxes( func, params, tb, lr ) {
 
-      var ax = [],
-        i = 0,
-        l;
+    var ax = [],
+      i = 0,
+      l;
 
-      if ( tb || tb == undefined ) {
-        ax.push( 'top' );
-        ax.push( 'bottom' );
-      }
-      if ( lr || lr == undefined ) {
-        ax.push( 'left' );
-        ax.push( 'right' );
-      }
-
-      for ( l = ax.length; i < l; i++ ) {
-        this._applyToAxis( typeof func ).call( this, ax[ i ], func, params );
-      }
+    if ( tb || tb == undefined ) {
+      ax.push( 'top' );
+      ax.push( 'bottom' );
     }
-    /**
-     * Axes can be dependant of one another (for instance for unit conversions)
-     * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
-     * @memberof Graph.prototype
-     * @param {Axis} axis - The axis that links one or multiple other dependant axes
-     * @returns {Axis[]} The list of axes linked to the axis passed as parameter
-     */
+    if ( lr || lr == undefined ) {
+      ax.push( 'left' );
+      ax.push( 'right' );
+    }
+
+    for ( l = ax.length; i < l; i++ ) {
+      this._applyToAxis( typeof func ).call( this, ax[ i ], func, params );
+    }
+  }
+
+  /**
+   * Axes can be dependant of one another (for instance for unit conversions)
+   * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
+   * @param {Axis} axis - The axis that links one or multiple other dependant axes
+   * @returns {Axis[]} The list of axes linked to the axis passed as parameter
+   */
   findAxesLinkedTo( axis ) {
 
     var axes = [];
@@ -885,183 +879,183 @@ class Graph extends EventEmitter {
     return axes;
   }
   _axisHasChanged( axis ) {
-      this._axesHaveChanged = true;
-    }
-    /**
-     * Creates a new serie<br />
-     * If the a serie with the same name exists, returns this serie with update options <br />
-     * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
-     * Built-in series types are "line", "contour", "zone" and "scatter".
-     * @param {String} name - The name of the serie (unique)
-     * @param {Object} options - The serie options
-     * @param {Type} type - The type of the serie.
-     * @returns {Serie} The newly created serie
-     * @memberof Graph.prototype
-     */
+    this._axesHaveChanged = true;
+  }
+
+  /**
+   * Creates a new serie<br />
+   * If the a serie with the same name exists, returns this serie with update options <br />
+   * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
+   * Built-in series types are "line", "contour", "zone" and "scatter".
+   * @param {String} name - The name of the serie (unique)
+   * @param {Object} options - The serie options
+   * @param {Type} type - The type of the serie.
+   * @returns {Serie} The newly created serie
+   */
   newSerie( name, options, type ) {
 
-      var self = this;
+    var self = this;
 
-      if ( !type ) {
-        type = "line";
-      }
+    if ( !type ) {
+      type = "line";
+    }
 
-      var serie;
-      if ( serie = this.getSerie( name ) ) {
-        return serie;
-      }
-
-      serie = makeSerie( this, name, options, type );
-      serie.type = type;
-      self.series.push( serie );
-
-      if ( self.legend ) {
-        self.legend.update();
-      }
-
-      self.emit( "newSerie", serie );
+    var serie;
+    if ( serie = this.getSerie( name ) ) {
       return serie;
     }
-    /** 
-     * Looks for an existing serie by name or by index and returns it.
-     * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
-     * @param {(String|Number)} name - The name or the index of the serie
-     * @returns {Serie}
-     * @memberof Graph.prototype
-     */
+
+    serie = makeSerie( this, name, options, type );
+    serie.type = type;
+    self.series.push( serie );
+
+    if ( self.legend ) {
+      self.legend.update();
+    }
+
+    self.emit( "newSerie", serie );
+    return serie;
+  }
+
+  /** 
+   * Looks for an existing serie by name or by index and returns it.
+   * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
+   * @param {(String|Number)} name - The name or the index of the serie
+   * @returns {Serie}
+   */
   getSerie( name ) {
 
-      if ( typeof name == 'number' ) {
-        return this.series[ name ] ||  false;
-      }
-      var i = 0,
-        l = this.series.length;
-
-      for ( ; i < l; i++ ) {
-
-        if ( this.series[ i ].getName() == name ) {
-
-          return this.series[ i ];
-
-        }
-      }
-
-      return false
+    if ( typeof name == 'number' ) {
+      return this.series[ name ] ||  false;
     }
-    /**
-     * Returns all the series
-     * @returns {Serie[]} An array of all the series
-     * @memberof Graph.prototype
-     */
+    var i = 0,
+      l = this.series.length;
+
+    for ( ; i < l; i++ ) {
+
+      if ( this.series[ i ].getName() == name ) {
+
+        return this.series[ i ];
+
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * Returns all the series
+   * @returns {Serie[]} An array of all the series
+   */
   getSeries() {
-      return this.series;
-    }
-    /**
-     * Draws a specific serie
-     * @param {Serie} serie - The serie to redraw
-     * @param {Boolean} force - Forces redraw even if no data has changed
-     * @memberof Graph.prototype
-     */
+    return this.series;
+  }
+
+  /**
+   * Draws a specific serie
+   * @param {Serie} serie - The serie to redraw
+   * @param {Boolean} force - Forces redraw even if no data has changed
+   */
   drawSerie( serie, force ) {
 
-      if ( !serie.draw ) {
-        throw "Serie has no method draw";
-      }
-
-      serie.draw( force );
+    if ( !serie.draw ) {
+      throw "Serie has no method draw";
     }
-    /**
-     * Redraws all visible series
-     * @memberof Graph.prototype
-     * @param {Boolean} force - Forces redraw even if no data has changed
-     */
+
+    serie.draw( force );
+  }
+
+  /**
+   * Redraws all visible series
+   * @param {Boolean} force - Forces redraw even if no data has changed
+   */
   drawSeries( force ) {
 
-      if ( !this.width || !this.height ) {
-        return;
-      }
+    if ( !this.width || !this.height ) {
+      return;
+    }
 
-      var i = this.series.length - 1;
-      for ( ; i >= 0; i-- ) {
-        if ( this.series[ i ].isShown() ) {
-          this.drawSerie( this.series[  i ], force );
-        }
+    var i = this.series.length - 1;
+    for ( ; i >= 0; i-- ) {
+      if ( this.series[ i ].isShown() ) {
+        this.drawSerie( this.series[  i ], force );
       }
     }
-    /**
-     * @memberof Graph.prototype
-     * @alias Graph#removeSeries
-     */
+  }
+
+  /**
+   * @alias Graph#removeSeries
+   */
   resetSeries() {
-      this.removeSeries()
-    }
-    /**
-     * @memberof Graph.prototype
-     * @alias Graph#removeSeries
-     */
+    this.removeSeries()
+  }
+
+  /**
+   * @alias Graph#removeSeries
+   */
 
   killSeries() {
-      this.resetSeries();
-    }
-    /**
-     * Removes all series from the graph
-     * @memberof Graph.prototype
-     */
+    this.resetSeries();
+  }
+
+  /**
+   * Removes all series from the graph
+   */
   removeSeries() {
-      while ( this.series[ 0 ] ) {
-        this.series[ 0 ].kill( true );
-      }
-      this.series = [];
+    while ( this.series[ 0 ] ) {
+      this.series[ 0 ].kill( true );
     }
-    /**
-     * Selects a serie. Only one serie per graph can be selected.
-     * @param {Serie} serie - The serie to select
-     * @param {String} selectName="selected" - The name of the selection
-     * @memberof Graph.prototype
-     */
+    this.series = [];
+  }
+
+  /**
+   * Selects a serie. Only one serie per graph can be selected.
+   * @param {Serie} serie - The serie to select
+   * @param {String} selectName="selected" - The name of the selection
+   */
   selectSerie( serie, selectName ) {
 
-      if ( !( typeof serie == "object" ) ) {
-        serie = this.getSerie( serie );
-      }
-
-      if ( this.selectedSerie == serie && this.selectedSerie.selectionType == selectName ) {
-        return;
-      }
-
-      if ( this.selectedSerie !== serie ) {
-        this.unselectSerie( serie );
-      }
-
-      this.selectedSerie = serie;
-      this.triggerEvent( 'onSelectSerie', serie );
-
-      serie.select( selectName || "selected" );
+    if ( !( typeof serie == "object" ) ) {
+      serie = this.getSerie( serie );
     }
-    /**
-     * Returns the selected serie
-     * @returns {(Serie|undefined)} The selected serie
-     * @memberof Graph.prototype
-     */
+
+    if ( this.selectedSerie == serie && this.selectedSerie.selectionType == selectName ) {
+      return;
+    }
+
+    if ( this.selectedSerie !== serie ) {
+      this.unselectSerie( serie );
+    }
+
+    this.selectedSerie = serie;
+    this.triggerEvent( 'onSelectSerie', serie );
+
+    serie.select( selectName || "selected" );
+  }
+
+  /**
+   * Returns the selected serie
+   * @returns {(Serie|undefined)} The selected serie
+   */
   getSelectedSerie() {
-      return this.selectedSerie;
-    }
-    /**
-     * Unselects a serie
-     * @param {Serie} serie - The serie to unselect
-     * @memberof Graph.prototype
-     */
+    return this.selectedSerie;
+  }
+
+  /**
+   * Unselects a serie
+   * @param {Serie} serie - The serie to unselect
+   */
   unselectSerie( serie ) {
-      serie.unselect();
-      this.selectedSerie = false;
-      this.triggerEvent( 'onUnselectSerie', serie );
-    }
-    /**
-     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
-     * @param {Serie} serie - The serie containing the shapes
-     * @returns {Shape[]} An array containing a list of shapes associated to the serie
-     * @memberof Graph.prototype
-     */
+    serie.unselect();
+    this.selectedSerie = false;
+    this.triggerEvent( 'onUnselectSerie', serie );
+  }
+
+  /**
+   * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
+   * @param {Serie} serie - The serie containing the shapes
+   * @returns {Shape[]} An array containing a list of shapes associated to the serie
+   */
   getShapesOfSerie( serie ) {
 
     var shapes = [];
@@ -1078,295 +1072,295 @@ class Graph extends EventEmitter {
   }
   makeToolbar( toolbarData ) {
 
-      var constructor = this.getConstructor( "graph.toolbar" );
-      if ( constructor ) {
-        return this.toolbar = new constructor( this, toolbarData );
-      } else {
-        return util.throwError( "No constructor exists for toolbar" );
-      }
+    var constructor = this.getConstructor( "graph.toolbar" );
+    if ( constructor ) {
+      return this.toolbar = new constructor( this, toolbarData );
+    } else {
+      return util.throwError( "No constructor exists for toolbar" );
     }
-    /**
-     *  Returns all shapes from the graph
-     *  @memberof Graph.prototype
-     */
+  }
+
+  /**
+   *  Returns all shapes from the graph
+   */
   getShapes() {
-      return this.shapes ||  [];
-    }
-    /**
-     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
-     * @param {String} shapeType - The type of the shape
-     * @param {Object} [shapeData] - The options passed to the shape creator
-     * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
-     * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
-     * @returns {Shape} The created shape
-     * @memberof Graph.prototype
-     * @see Graph#getConstructor
-     */
+    return this.shapes ||  [];
+  }
+
+  /**
+   * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
+   * @param {String} shapeType - The type of the shape
+   * @param {Object} [shapeData] - The options passed to the shape creator
+   * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+   * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
+   * @returns {Shape} The created shape
+   * @see Graph#getConstructor
+   */
   newShape( shapeType, shapeData, mute, shapeProperties ) {
 
-      var self = this,
-        response;
+    var self = this,
+      response;
 
-      if ( !mute ) {
+    if ( !mute ) {
 
-        this.emit( 'beforeNewShape', shapeData );
-
-        if ( this.prevent( false ) ) {
-          return false;
-        }
-      }
-
-      // Backward compatibility
-      if ( typeof shapeType == "object" ) {
-        mute = shapeData;
-        shapeData = shapeType;
-        shapeType = shapeData.type;
-      }
-
-      shapeData = shapeData || {};
-      shapeData._id = util.guid();
-
-      var constructor;
-      if ( typeof shapeType == "function" ) {
-        constructor = shapeType;
-      } else {
-        constructor = this.getConstructor( "graph.shape." + shapeType );
-      }
-
-      if ( !constructor ) {
-        return util.throwError( "No constructor for this shape" );
-      }
-
-      var shape = new constructor( this, shapeData );
-
-      if ( !shape ) {
-        return util.throwError( "Failed to construct shape." );
-      }
-
-      shape.type = shapeType;
-      shape.graph = this;
-      shape._data = shapeData;
-
-      shape.init( this, shapeProperties );
-
-      if ( shapeData.position ) {
-
-        for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
-          shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
-        }
-      }
-
-      if ( shapeData.properties !== undefined ) {
-        shape.setProperties( shapeData.properties );
-      }
-
-      /* Setting shape properties */
-      if ( shapeData.fillColor !== undefined ) {
-        shape.setFillColor( shapeData.fillColor );
-      }
-
-      if ( shapeData.fillOpacity !== undefined ) {
-        shape.setFillOpacity( shapeData.fillOpacity );
-      }
-
-      if ( shapeData.strokeColor !== undefined ) {
-        shape.setStrokeColor( shapeData.strokeColor );
-      }
-
-      if ( shapeData.strokeWidth !== undefined ) {
-        shape.setStrokeWidth( shapeData.strokeWidth );
-      }
-
-      if ( shapeData.layer !== undefined ) {
-        shape.setLayer( shapeData.layer );
-      }
-
-      if ( shapeData.locked == true ) {
-        shape.lock();
-      }
-
-      if ( shapeData.movable == true ) {
-        shape.movable();
-      }
-
-      if ( shapeData.selectable == true ) {
-        shape.selectable();
-      }
-
-      if ( shapeData.resizable == true ) {
-        shape.resizable();
-      }
-
-      if ( shapeData.attributes !== undefined ) {
-        shape.setProp( "attributes", shapeData.attributes );
-      }
-
-      if ( shapeData.handles !== undefined ) {
-        shape.setProp( 'handles', shapeData.handles );
-      }
-
-      if ( shapeData.selectOnMouseDown !== undefined ) {
-        shape.setProp( "selectOnMouseDown", true );
-      }
-
-      if ( shapeData.selectOnClick !== undefined ) {
-        shape.setProp( "selectOnClick", true );
-      }
-
-      if ( shapeData.highlightOnMouseOver !== undefined ) {
-        shape.setProp( "highlightOnMouseOver", true );
-      }
-
-      if ( shapeData.labelEditable ) {
-        shape.setProp( "labelEditable", shapeData.labelEditable );
-      }
-
-      if ( shapeData.labels && !shapeData.label ) {
-        shapeData.label = shapeData.labels;
-      }
-
-      if ( shapeData.label !== undefined ) {
-
-        if ( !Array.isArray( shapeData.label ) ) {
-          shapeData.label = [  shapeData.label ];
-        }
-
-        for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
-
-          shape.showLabel( i );
-          shape.setLabelText( shapeData.label[ i ].text, i );
-          shape.setLabelPosition( shapeData.label[ i ].position, i );
-          shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
-          shape.setLabelSize( shapeData.label[ i ].size, i );
-          shape.setLabelAngle( shapeData.label[ i ].angle || 0, i );
-          shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
-          shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
-        }
-      }
-
-      shape.createHandles();
-
-      this.shapes.push( shape );
-
-      if ( !mute ) {
-        this.emit( 'newShape', shape, shapeData );
-      }
-
-      return shape;
-    }
-    /**
-     * Creates a new position. Arguments are passed to the position constructor
-     * @param {...*} var_args
-     * @memberof Graph.prototype
-     * @see Position
-     */
-  newPosition( var_args ) {
-
-      Array.prototype.unshift.call( arguments, null );
-      return new( Function.prototype.bind.apply( GraphPosition, arguments ) );
-    }
-    /**
-     *  Redraws all shapes. To be called if their definitions have changed
-     *  @memberof Graph.prototype
-     */
-  redrawShapes() {
-
-      //this.graphingZone.removeChild(this.shapeZone);
-      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        this.shapes[ i ].redraw();
-      }
-      //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
-    }
-    /**
-     *  Removes all shapes from the graph
-     *  @memberof Graph.prototype
-     */
-  removeShapes() {
-      for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
-        if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
-          this.shapes[ i ].kill( true );
-        }
-      }
-      this.shapes = [];
-    }
-    /**
-     * Selects a shape
-     * @param {Shape} shape - The shape to select
-     * @param {Boolean} mute - Select the shape quietly
-     * @memberof Graph.prototype
-     */
-  selectShape( shape, mute ) {
-
-      // Already selected. Returns false
-
-      if ( !shape ) {
-        return;
-      }
-
-      if ( this.selectedShapes.indexOf( shape ) > -1 ) {
-        return false;
-      }
-
-      if ( !shape.isSelectable() ) {
-        return false;
-      }
-
-      if ( !mute ) {
-        this.emit( "beforeShapeSelect", shape );
-      }
+      this.emit( 'beforeNewShape', shapeData );
 
       if ( this.prevent( false ) ) {
-        return;
-      }
-
-      if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection )  { // Only one selected shape at the time
-
-        this.unselectShapes( mute );
-      }
-
-      shape._select( mute );
-      this.selectedShapes.push( shape );
-
-      if ( !mute ) {
-        this.emit( "shapeSelect", shape );
+        return false;
       }
     }
-    /**
-     * Unselects a shape
-     * @param {Shape} shape - The shape to unselect
-     * @param {Boolean} mute - Unselect the shape quietly
-     * @memberof Graph.prototype
-     */
+
+    // Backward compatibility
+    if ( typeof shapeType == "object" ) {
+      mute = shapeData;
+      shapeData = shapeType;
+      shapeType = shapeData.type;
+    }
+
+    shapeData = shapeData || {};
+    shapeData._id = util.guid();
+
+    var constructor;
+    if ( typeof shapeType == "function" ) {
+      constructor = shapeType;
+    } else {
+      constructor = this.getConstructor( "graph.shape." + shapeType );
+    }
+
+    if ( !constructor ) {
+      return util.throwError( "No constructor for this shape" );
+    }
+
+    var shape = new constructor( this, shapeData );
+
+    if ( !shape ) {
+      return util.throwError( "Failed to construct shape." );
+    }
+
+    shape.type = shapeType;
+    shape.graph = this;
+    shape._data = shapeData;
+
+    shape.init( this, shapeProperties );
+
+    if ( shapeData.position ) {
+
+      for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
+        shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
+      }
+    }
+
+    if ( shapeData.properties !== undefined ) {
+      shape.setProperties( shapeData.properties );
+    }
+
+    /* Setting shape properties */
+    if ( shapeData.fillColor !== undefined ) {
+      shape.setFillColor( shapeData.fillColor );
+    }
+
+    if ( shapeData.fillOpacity !== undefined ) {
+      shape.setFillOpacity( shapeData.fillOpacity );
+    }
+
+    if ( shapeData.strokeColor !== undefined ) {
+      shape.setStrokeColor( shapeData.strokeColor );
+    }
+
+    if ( shapeData.strokeWidth !== undefined ) {
+      shape.setStrokeWidth( shapeData.strokeWidth );
+    }
+
+    if ( shapeData.layer !== undefined ) {
+      shape.setLayer( shapeData.layer );
+    }
+
+    if ( shapeData.locked == true ) {
+      shape.lock();
+    }
+
+    if ( shapeData.movable == true ) {
+      shape.movable();
+    }
+
+    if ( shapeData.selectable == true ) {
+      shape.selectable();
+    }
+
+    if ( shapeData.resizable == true ) {
+      shape.resizable();
+    }
+
+    if ( shapeData.attributes !== undefined ) {
+      shape.setProp( "attributes", shapeData.attributes );
+    }
+
+    if ( shapeData.handles !== undefined ) {
+      shape.setProp( 'handles', shapeData.handles );
+    }
+
+    if ( shapeData.selectOnMouseDown !== undefined ) {
+      shape.setProp( "selectOnMouseDown", true );
+    }
+
+    if ( shapeData.selectOnClick !== undefined ) {
+      shape.setProp( "selectOnClick", true );
+    }
+
+    if ( shapeData.highlightOnMouseOver !== undefined ) {
+      shape.setProp( "highlightOnMouseOver", true );
+    }
+
+    if ( shapeData.labelEditable ) {
+      shape.setProp( "labelEditable", shapeData.labelEditable );
+    }
+
+    if ( shapeData.labels && !shapeData.label ) {
+      shapeData.label = shapeData.labels;
+    }
+
+    if ( shapeData.label !== undefined ) {
+
+      if ( !Array.isArray( shapeData.label ) ) {
+        shapeData.label = [  shapeData.label ];
+      }
+
+      for ( var i = 0, l = shapeData.label.length; i < l; i++ ) {
+
+        shape.showLabel( i );
+        shape.setLabelText( shapeData.label[ i ].text, i );
+        shape.setLabelPosition( shapeData.label[ i ].position, i );
+        shape.setLabelColor( shapeData.label[ i ].color || 'black', i );
+        shape.setLabelSize( shapeData.label[ i ].size, i );
+        shape.setLabelAngle( shapeData.label[ i ].angle || 0, i );
+        shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
+        shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
+      }
+    }
+
+    shape.createHandles();
+
+    this.shapes.push( shape );
+
+    if ( !mute ) {
+      this.emit( 'newShape', shape, shapeData );
+    }
+
+    return shape;
+  }
+
+  /**
+   * Creates a new position. Arguments are passed to the position constructor
+   * @param {...*} var_args
+   * @see Position
+   */
+  newPosition( var_args ) {
+
+    Array.prototype.unshift.call( arguments, null );
+    return new( Function.prototype.bind.apply( GraphPosition, arguments ) );
+  }
+
+  /**
+   *  Redraws all shapes. To be called if their definitions have changed
+   */
+  redrawShapes() {
+
+    //this.graphingZone.removeChild(this.shapeZone);
+    for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+      this.shapes[ i ].redraw();
+    }
+    //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
+  }
+
+  /**
+   *  Removes all shapes from the graph
+   */
+  removeShapes() {
+    for ( var i = 0, l = this.shapes.length; i < l; i++ ) {
+      if ( this.shapes[ i ] && this.shapes[ i ].kill ) {
+        this.shapes[ i ].kill( true );
+      }
+    }
+    this.shapes = [];
+  }
+
+  /**
+   * Selects a shape
+   * @param {Shape} shape - The shape to select
+   * @param {Boolean} mute - Select the shape quietly
+   */
+  selectShape( shape, mute ) {
+
+    // Already selected. Returns false
+
+    if ( !shape ) {
+      return;
+    }
+
+    if ( this.selectedShapes.indexOf( shape ) > -1 ) {
+      return false;
+    }
+
+    if ( !shape.isSelectable() ) {
+      return false;
+    }
+
+    if ( !mute ) {
+      this.emit( "beforeShapeSelect", shape );
+    }
+
+    if ( this.prevent( false ) ) {
+      return;
+    }
+
+    if ( this.selectedShapes.length > 0 && this.options.shapesUniqueSelection )  { // Only one selected shape at the time
+
+      this.unselectShapes( mute );
+    }
+
+    shape._select( mute );
+    this.selectedShapes.push( shape );
+
+    if ( !mute ) {
+      this.emit( "shapeSelect", shape );
+    }
+  }
+
+  /**
+   * Unselects a shape
+   * @param {Shape} shape - The shape to unselect
+   * @param {Boolean} mute - Unselect the shape quietly
+   */
   unselectShape( shape, mute ) {
 
-      if ( this.selectedShapes.indexOf( shape ) == -1 ) {
-        return;
-      }
-
-      if ( !mute ) {
-        this.emit( "beforeShapeUnselect", shape );
-      }
-
-      if ( this.cancelUnselectShape ) {
-        this.cancelUnselectShape = false;
-        return;
-      }
-
-      shape._unselect();
-
-      this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
-
-      if ( !mute ) {
-        this.emit( "shapeUnselect", shape );
-      }
-
+    if ( this.selectedShapes.indexOf( shape ) == -1 ) {
+      return;
     }
-    /**
-     * Unselects all shapes
-     * @memberof Graph.prototype
-     * @param {Boolean} [ mute = false ] - Mutes all unselection events
-     * @return {Graph} The current graph instance
-     */
+
+    if ( !mute ) {
+      this.emit( "beforeShapeUnselect", shape );
+    }
+
+    if ( this.cancelUnselectShape ) {
+      this.cancelUnselectShape = false;
+      return;
+    }
+
+    shape._unselect();
+
+    this.selectedShapes.splice( this.selectedShapes.indexOf( shape ), 1 );
+
+    if ( !mute ) {
+      this.emit( "shapeUnselect", shape );
+    }
+
+  }
+
+  /**
+   * Unselects all shapes
+   * @param {Boolean} [ mute = false ] - Mutes all unselection events
+   * @return {Graph} The current graph instance
+   */
   unselectShapes( mute ) {
 
     while ( this.selectedShapes[ 0 ] ) {
@@ -1526,34 +1520,34 @@ class Graph extends EventEmitter {
   }
   _pluginsInit() {
 
-      var constructor, pluginName, pluginOptions;
+    var constructor, pluginName, pluginOptions;
 
-      for ( var i in this.options.plugins ) {
+    for ( var i in this.options.plugins ) {
 
-        pluginName = i;
-        pluginOptions = this.options.plugins[ i ];
+      pluginName = i;
+      pluginOptions = this.options.plugins[ i ];
 
-        constructor = this.getConstructor( "graph.plugin." + pluginName );
+      constructor = this.getConstructor( "graph.plugin." + pluginName );
 
-        if ( constructor ) {
+      if ( constructor ) {
 
-          this.plugins[ pluginName ] = new constructor();
-          this.plugins[ pluginName ].options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+        this.plugins[ pluginName ] = new constructor();
+        this.plugins[ pluginName ].options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
 
-          util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
-          this.plugins[ pluginName ].init( this, pluginOptions );
+        util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
+        this.plugins[ pluginName ].init( this, pluginOptions );
 
-        } else {
-          util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
-        }
+      } else {
+        util.throwError( "Plugin \"" + pluginName + "\" has not been registered" );
       }
     }
-    /**
-     * Returns an initialized plugin
-     * @memberof Graph.prototype
-     * @param {String} pluginName
-     * @returns {Plugin} The plugin which name is <pluginName>
-     */
+  }
+
+  /**
+   * Returns an initialized plugin
+   * @param {String} pluginName
+   * @returns {Plugin} The plugin which name is <pluginName>
+   */
   getPlugin( pluginName ) {
     var plugin = this.plugins[ pluginName ];
 
@@ -1564,41 +1558,41 @@ class Graph extends EventEmitter {
     return plugin;
   }
   triggerEvent() {
-      var func = arguments[ 0 ],
-        args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
+    var func = arguments[ 0 ],
+      args = Array.prototype.splice.apply( arguments, [ 0, 1 ] );
 
-      if ( typeof this.options[ func ] == "function" ) {
-        return this.options[ func ].apply( this, arguments );
-      }
-
-      return;
+    if ( typeof this.options[ func ] == "function" ) {
+      return this.options[ func ].apply( this, arguments );
     }
-    /**
-     * Creates a legend. Only one legend is allowed per graph
-     * @param {Object} options - The legend options
-     * @memberof Graph.prototype
-     */
+
+    return;
+  }
+
+  /**
+   * Creates a legend. Only one legend is allowed per graph
+   * @param {Object} options - The legend options
+   */
   makeLegend( options ) {
 
-      if ( this.legend ) {
-        return this.legend;
-      }
-
-      var constructor = this.getConstructor( "graph.legend" );
-      if ( constructor ) {
-        this.legend = new constructor( this, options );
-      } else {
-        return util.throwError( "Graph legend is not available as it has not been registered" );
-      }
-
-      this.legend.update();
-
+    if ( this.legend ) {
       return this.legend;
     }
-    /**
-     * Redraw the legend
-     * @memberof Graph.prototype
-     */
+
+    var constructor = this.getConstructor( "graph.legend" );
+    if ( constructor ) {
+      this.legend = new constructor( this, options );
+    } else {
+      return util.throwError( "Graph legend is not available as it has not been registered" );
+    }
+
+    this.legend.update();
+
+    return this.legend;
+  }
+
+  /**
+   * Redraw the legend
+   */
   updateLegend() {
 
     if ( !this.legend ) {
@@ -1608,17 +1602,17 @@ class Graph extends EventEmitter {
     this.legend.update();
   }
   getLegend() {
-      if ( !this.legend ) {
-        return;
-      }
-
-      return this.legend;
-
+    if ( !this.legend ) {
+      return;
     }
-    /**
-     * Kills the graph
-     * @memberof Graph.prototype
-     **/
+
+    return this.legend;
+
+  }
+
+  /**
+   * Kills the graph
+   **/
   kill() {
     this._dom.removeChild( this.dom );
   }
@@ -1922,7 +1916,6 @@ class Graph extends EventEmitter {
 
   /**
    * Returns a graph created from a schema
-   * @memberof Graph
    * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
    * @param {HTMLElement} wrapper - The wrapping element
    * @returns {Graph} Newly created graph
@@ -2171,7 +2164,6 @@ class Graph extends EventEmitter {
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
    * @param {String} constructorName - The name of the constructor
    * @param {Function} constructor - The constructor method
-   * @memberof Graph
    * @see Graph.getConstructor
    * @static
    */
@@ -2186,7 +2178,6 @@ class Graph extends EventEmitter {
 
   /**
    * Returns a registered constructor
-   * @memberof Graph
    * @param {String} constructorName - The constructor name to look for
    * @returns {Function} The registered constructor
    * @throws Error
