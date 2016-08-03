@@ -1,86 +1,83 @@
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import * as util from './graph.util'
 
+/** 
+ * Default graph parameters
+ * @name AxisOptionsDefault
+ * @object
+ * @static
+ * @memberof Axis
+ * @prop {Boolean} display - Whether to display or not the axis
+ * @prop {Boolean} flipped - Flips the axis (maximum and minimum will be inverted)
+ * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+ * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
+ * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
+ * @prop {Boolean} primaryGrid - Whether or not to display the primary grid (on the main ticks)
+ * @prop {Boolean} secondaryGrid - Whether or not to display the secondary grid (on the secondary ticks)
+ * @prop {Number} tickPosition - Sets the position of the ticks with regards to the axis ( 1 = inside, 2 = centered, 3 = outside ).
+ * @prop {Number} nbTicksPrimary - The number of primary ticks to use (approximately)
+ * @prop {Number} nbTicksSecondary - The number of secondary ticks to use (approximately)
+ * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+ * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
+ * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
+ * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
+ * @prop {Boolean} logScale - Display the axis in log scale (base 10)
+ * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
+ * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
+ */
+const defaults = {
+  lineAt0: false,
+  display: true,
+  flipped: false,
+  axisDataSpacing: {
+    min: 0.1,
+    max: 0.1
+  },
+  unitModification: false,
+  primaryGrid: true,
+  secondaryGrid: true,
 
+  primaryGridColor: "#f0f0f0",
+  secondaryGridColor: "#f0f0f0",
 
-  /** 
-   * Default graph parameters
-   * @name AxisOptionsDefault
-   * @object
-   * @static
-   * @memberof Axis
-   * @prop {Boolean} display - Whether to display or not the axis
-   * @prop {Boolean} flipped - Flips the axis (maximum and minimum will be inverted)
-   * @prop {Numner} axisDataSpacing.min - The spacing of the at the bottom of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
-   * @prop {Number} axisDataSpacing.max - The spacing of the at the top of the axis. The value is multiplied by the (max - min) values given by the series (0.1 means 10% of the serie width / height).
-   * @prop {String} unitModification - Used to change the units of the axis in a defined way. Currently, "time" and "time:min.sec" are supported. They will display the value in days, hours, minutes and seconds and the data should be expressed in seconds.
-   * @prop {Boolean} primaryGrid - Whether or not to display the primary grid (on the main ticks)
-   * @prop {Boolean} secondaryGrid - Whether or not to display the secondary grid (on the secondary ticks)
-   * @prop {Number} tickPosition - Sets the position of the ticks with regards to the axis ( 1 = inside, 2 = centered, 3 = outside ).
-   * @prop {Number} nbTicksPrimary - The number of primary ticks to use (approximately)
-   * @prop {Number} nbTicksSecondary - The number of secondary ticks to use (approximately)
-   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
-   * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
-   * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
-   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
-   * @prop {Boolean} logScale - Display the axis in log scale (base 10)
-   * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
-   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
-   */
-  const defaults = {
-    lineAt0: false,
-    display: true,
-    flipped: false,
-    axisDataSpacing: {
-      min: 0.1,
-      max: 0.1
-    },
-    unitModification: false,
-    primaryGrid: true,
-    secondaryGrid: true,
+  primaryGridWidth: 1,
+  secondaryGridWidth: 1,
 
-    primaryGridColor: "#f0f0f0",
-    secondaryGridColor: "#f0f0f0",
+  shiftToZero: false,
+  tickPosition: 1,
+  nbTicksPrimary: 3,
+  nbTicksSecondary: 10,
+  ticklabelratio: 1,
+  exponentialFactor: 0,
+  exponentialLabelFactor: 0,
+  logScale: false,
+  forcedMin: false,
+  forcedMax: false,
 
-    primaryGridWidth: 1,
-    secondaryGridWidth: 1,
+  span: [ 0, 1 ],
 
-    shiftToZero: false,
-    tickPosition: 1,
-    nbTicksPrimary: 3,
-    nbTicksSecondary: 10,
-    ticklabelratio: 1,
-    exponentialFactor: 0,
-    exponentialLabelFactor: 0,
-    logScale: false,
-    forcedMin: false,
-    forcedMax: false,
+  scientificScale: false,
+  scientificScaleExponent: false,
+  engineeringScale: false,
+  unit: false,
+  unitWrapperBefore: '',
+  unitWrapperAfter: ''
+};
 
-    span: [ 0, 1 ],
+/** 
+ * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
+ * @class Axis
+ * @static
+ * @augments EventEmitter
+ * @example function myAxis() {};
+ * myAxis.prototype = new Graph.getConstructor("axis");
+ * graph.setBottomAxis( new myAxis( { } ) );
+ */
+class Axis extends EventEmitter {
 
-    scientificScale: false,
-    scientificScaleExponent: false,
-    engineeringScale: false,
-    unit: false,
-    unitWrapperBefore: '',
-    unitWrapperAfter: ''
-  };
-
-
-  /** 
-   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
-   * @class Axis
-   * @static
-   * @augments EventEmitter
-   * @example function myAxis() {};
-   * myAxis.prototype = new Graph.getConstructor("axis");
-   * graph.setBottomAxis( new myAxis( { } ) );
-   */
-  class Axis extends EventEmitter {
-
-    constructor() {
-      super();
-    }
+  constructor() {
+    super();
+  }
 
   init( graph, options, overwriteoptions ) {
 
@@ -895,28 +892,28 @@ import * as util from './graph.util'
    * @return {Axis} The current axis
    */
   flip( flip ) {
-    this.options.flipped = flip;
-    this.setMinMaxFlipped();
-    return this;
-  }
-  /*
-    setMinMaxFlipped() {
-
-      var interval = this.maxPx - this.minPx;
-      var maxPx = this.maxPx - interval * this.options.span[ 0 ];
-      var minPx = this.maxPx - interval * this.options.span[ 1 ];
-
-      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-
-      // this.minPx = minPx;
-      //this.maxPx = maxPx;
+      this.options.flipped = flip;
+      this.setMinMaxFlipped();
+      return this;
     }
-  */
-  /**
-   * @memberof Axis
-   * @return {Boolean} The current flipping state of the axis
-   */
+    /*
+      setMinMaxFlipped() {
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = this.maxPx - interval * this.options.span[ 0 ];
+        var minPx = this.maxPx - interval * this.options.span[ 1 ];
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
+        // this.minPx = minPx;
+        //this.maxPx = maxPx;
+      }
+    */
+    /**
+     * @memberof Axis
+     * @return {Boolean} The current flipping state of the axis
+     */
   isFlipped() {
     return this.options.flipped;
   }
@@ -1330,20 +1327,20 @@ import * as util from './graph.util'
 
   removeUselessTickLabels() {
 
-    for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
-      this.ticksLabels[ i ].setAttribute( 'display', 'none' );
+      for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
+        this.ticksLabels[ i ].setAttribute( 'display', 'none' );
+      }
+
+      this.lastCurrentTickLabel = this.currentTickLabel;
+      this.currentTickLabel = 0;
+
     }
-
-    this.lastCurrentTickLabel = this.currentTickLabel;
-    this.currentTickLabel = 0;
-
-  }
-  /*
-    doGridLine() {
-      var gridLine = document.createElementNS( this.graph.ns, 'line' );
-      this.groupGrids.appendChild( gridLine );
-      return gridLine;
-    };*/
+    /*
+      doGridLine() {
+        var gridLine = document.createElementNS( this.graph.ns, 'line' );
+        this.groupGrids.appendChild( gridLine );
+        return gridLine;
+      };*/
 
   nextGridLine( primary, x1, x2, y1, y2 ) {
 
@@ -2368,12 +2365,10 @@ import * as util from './graph.util'
  */
 Axis.prototype.getValue = Axis.prototype.getVal;
 
-
 /**
  *  @alias Axis#getRelPx
  */
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
-
 
 /**
  * @alias Axis#gridsOff

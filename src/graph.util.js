@@ -1,4 +1,3 @@
-
 /**
  *  Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
  * @param {SVGElement} to - The SVG element to apply the attributes to
@@ -343,5 +342,9 @@ export function extend() {
   return target;
 };
 
-export { isArray };
-export { isPlainObject };
+export {
+  isArray
+};
+export {
+  isPlainObject
+};

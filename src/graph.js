@@ -6,7 +6,6 @@ import AxisY from './graph.axis.y'
 import AxisXBar from './graph.axis.x.bar'
 import AxisXTime from './graph.axis.x.time'
 
-
 define( [
     './graph.axis.x.broken',
     './graph.axis.y.broken',
@@ -54,11 +53,9 @@ define( [
 
   function(
 
-
-
     GraphXAxisBroken,
     GraphYAxisBroken,
-    
+
     GraphLegend,
 
     GraphPlugin,
@@ -100,8 +97,7 @@ define( [
 
   ) {
 
-
-console.log( Graph, GraphPosition, AxisX );
+    console.log( Graph, GraphPosition, AxisX );
 
     // Corrent naming is important here !
 

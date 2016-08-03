@@ -1,6 +1,24 @@
 
 module.exports = function(grunt) {
 
+
+
+
+    function WebpackBeutifier(options) { }
+
+    WebpackBeutifier.prototype.apply = function(compiler) {
+    
+      compiler.plugin('done', function( stats ) {
+        var json = stats.toJson({assets: false, chunks: false, modules: true }).modules;
+        json.map( function( el ) {
+            console.log( el.name );
+            grunt.file.write( el.name, beautify( grunt.file.read( el.name ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
+        });
+      });
+    };
+
+
+
     grunt.initConfig({
 
         pkg: grunt.file.readJSON('package.json'),
@@ -151,6 +169,10 @@ module.exports = function(grunt) {
                      libraryTarget: 'umd'
                  },
 
+                 plugins: [
+                    new WebpackBeutifier( { options: true } )
+                 ],
+                 
                  module: {
                      loaders: [{
                          test: /\.js$/,

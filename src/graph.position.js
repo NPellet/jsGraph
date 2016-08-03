@@ -1,5 +1,3 @@
-
-
 function _parsePx( px ) {
   if ( px && px.indexOf && px.indexOf( 'px' ) > -1 ) {
     return parseInt( px.replace( 'px', '' ) );
@@ -7,10 +5,9 @@ function _parsePx( px ) {
   return false;
 };
 
-
 class GraphPosition {
 
-  constructor ( x, y, dx, dy ) {
+  constructor( x, y, dx, dy ) {
 
     if ( !( x instanceof Number ) && x instanceof Object ) {
       this.x = x.x;
@@ -41,7 +38,7 @@ class GraphPosition {
 
     return this._compute( graph, xAxis, yAxis, serie );
   }
-  
+
   _compute( graph, xAxis, yAxis, serie ) {
 
     var relativeTo = this._relativeTo;
@@ -299,5 +296,6 @@ class GraphPosition {
   }
 }
 
-
-export { GraphPosition };
+export {
+  GraphPosition
+};
