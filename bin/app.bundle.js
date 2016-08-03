@@ -208,6 +208,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  shapesUniqueSelection: true
 	};
 
+	var _constructors = {};
+
 	/** 
 	 * Main class of jsGraph that creates a new graph.
 	 * @class Graph
@@ -2348,10 +2350,294 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, false, false, serie._trackingLegend, false, false);
 	      });
 	    }
+
+	    /**
+	     * Returns a graph created from a schema
+	     * @memberof Graph
+	     * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+	     * @param {HTMLElement} wrapper - The wrapping element
+	     * @returns {Graph} Newly created graph
+	     */
+
+	  }], [{
+	    key: 'fromSchema',
+	    value: function fromSchema(schema, wrapper) {
+
+	      var graph;
+	      var options = {};
+	      var axes = {
+	        left: [],
+	        top: [],
+	        right: [],
+	        bottom: []
+	      };
+	      var axesIndices = [];
+
+	      if (schema.title) {
+	        options.title = schema.title;
+	      }
+
+	      if (schema.axis) {
+
+	        schema.axis.map(function (schemaAxis) {
+
+	          if (!schemaAxis.type) {
+	            util.throwError("Axis type is required (top, bottom, left or right)");
+	          }
+
+	          var axisOptions = {};
+	          if (schemaAxis.label) {
+	            axisOptions.labelValue = schemaAxis.label;
+	          }
+
+	          if (schemaAxis.unit !== undefined) {
+	            axisOption.unit = schemaAxis.unit;
+	          }
+
+	          if (schemaAxis.min !== undefined) {
+	            axisOption.forcedMin = schemaAxis.min;
+	          }
+
+	          if (schemaAxis.max !== undefined) {
+	            axisOption.forcedMax = schemaAxis.max;
+	          }
+
+	          if (schemaAxis.flip !== undefined) {
+	            axisOption.flipped = schemaAxis.flip;
+	          }
+
+	          axes[schemaAxis.type].push(axisOptions);
+	          schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
+	        });
+	      }
+
+	      graph = new Graph(wrapper, options, axes);
+
+	      if (schema.data) {
+
+	        schema.data.map(function (schemaSerie) {
+
+	          var serieType = schemaSerie.type,
+	              serie,
+	              serieOptions,
+	              serieAxis;
+
+	          switch (schemaSerie.type) {
+
+	            case 'bar':
+	              util.throwError("Bar charts not supported");
+	              serieType = false;
+	              break;
+
+	            case 'scatter':
+	              serieType = 'scatter';
+	              break;
+
+	            default:
+	              serieType = 'line';
+	              break;
+	          }
+
+	          if (!serieType) {
+	            util.throwError("No valid serie type was found");
+	            return;
+	          }
+
+	          serie = graph.newSerie(schemaSerie.label || util.guid(), serieOptions, serieType);
+
+	          if (schemaSerie.lineStyle) {
+
+	            schemaSerie.lineStyle.map(function (style) {
+
+	              var styleSerie = {};
+	              style.styleName = style.styleName || "unselected";
+
+	              switch (serieType) {
+
+	                case 'line':
+	                  if (style.lineWidth !== undefined) {
+	                    styleSerie.lineWidth = style.lineWidth;
+	                  }
+
+	                  if (style.color !== undefined) {
+	                    styleSerie.lineColor = style.color;
+	                  }
+
+	                  if (style.lineStyle) {
+	                    styleSerie.lineStyle = style.lineStyle;
+	                  }
+
+	                  serie.setStyle(styleSerie, style.styleName);
+	                  break;
+	              }
+	            });
+	          }
+
+	          if (schemaSerie.style) {
+
+	            schemaSerie.style.map(function (style) {
+
+	              var styleSerie = {};
+	              style.styleName = style.styleName || "unselected";
+
+	              if (!Array.isArray(style.styles)) {
+	                style.styles = [style.styles];
+	              }
+
+	              var styles = style.styles.map(function (style) {
+
+	                switch (serieType) {
+
+	                  case "line":
+
+	                    return {
+	                      type: style.shape,
+	                      zoom: style.zoom,
+	                      strokeWidth: style.lineWidth,
+	                      strokeColor: style.lineColor,
+	                      fillColor: style.color,
+	                      points: style.points
+	                    };
+
+	                    break;
+
+	                  case "scatter":
+
+	                    break;
+	                }
+	              });
+
+	              switch (serieType) {
+
+	                case "line":
+
+	                  serie.setMarkers(styles, style.styleName);
+	                  break;
+
+	                case "scatter":
+
+	                  serie.setStyle(styles, {}, style.styleName);
+	                  break;
+	              }
+	            });
+	          }
+
+	          var errors = [];
+	          if (schemaSerie.errorX) {
+
+	            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+
+	              errors[i] = errors[i] || [[], []];
+
+	              errors[i][0][0] = schemaSerie.errorX[i];
+	            }
+	          }
+
+	          if (schemaSerie.errorY) {
+
+	            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
+
+	              errors[i] = errors[i] || [[]];
+	              errors[i][1][0] = schemaSerie.errorY[i];
+	            }
+	          }
+
+	          serie.setDataError(errors) // Adds the error data
+	          .setErrorStyle([{
+	            type: 'bar',
+	            x: {},
+	            y: {}
+	          }]); // Display bar errors
+
+	          if (schema.axis) {
+	            serieAxis = schema.axis[schemaSerie.xAxis];
+
+	            if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
+	              util.warn("No x axis found. Setting automatically");
+	              serie.setXAxis(graph.getXAxis(0));
+	            } else {
+	              if (serieAxis.type == 'top') {
+	                serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
+	              } else if (serieAxis.type == 'bottom') {
+	                serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
+	              }
+	            }
+
+	            serieAxis = schema.axis[schemaSerie.yAxis];
+
+	            if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
+	              util.warn("No y axis found. Setting automatically");
+	              serie.setYAxis(graph.getYAxis(0));
+	            } else {
+	              if (serieAxis.type == 'left') {
+	                serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
+	              } else if (serieAxis.type == 'right') {
+	                serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
+	              }
+	            }
+	          } else {
+	            util.warn("No axes found. Setting automatically");
+	            serie.autoAxis();
+	          }
+
+	          serie.setData([{
+	            x: schemaSerie.x,
+	            y: schemaSerie.y
+	          }]);
+	        });
+	      }
+
+	      return graph;
+	    }
+
+	    /**
+	     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+	     * @param {String} constructorName - The name of the constructor
+	     * @param {Function} constructor - The constructor method
+	     * @memberof Graph
+	     * @see Graph.getConstructor
+	     * @static
+	     */
+
+	  }, {
+	    key: 'registerConstructor',
+	    value: function registerConstructor(constructorName, constructor) {
+
+	      if (_constructors[constructorName]) {
+	        return util.throwError("Constructor " + constructor + " already exists.");
+	      }
+
+	      _constructors[constructorName] = constructor;
+	    }
+
+	    /**
+	     * Returns a registered constructor
+	     * @memberof Graph
+	     * @param {String} constructorName - The constructor name to look for
+	     * @returns {Function} The registered constructor
+	     * @throws Error
+	     * @see Graph.registerConstructor
+	     * @static
+	     */
+
+	  }, {
+	    key: 'getConstructor',
+	    value: function getConstructor(constructorName) {
+	      var constructor = _constructors[constructorName];
+	      if (!constructor) {
+	        return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
+	      }
+	      return constructor;
+	    }
 	  }]);
 
 	  return Graph;
 	}(_EventEmitter3.default);
+
+	// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+
+
+	Graph.prototype.getConstructor = Graph.getConstructor;
 
 	function makeSerie(graph, name, options, type) {
 
@@ -3119,281 +3405,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph._axesHaveChanged = false;
 	  return temp;
 	}
-
-	/**
-	 * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-	 * @param {String} constructorName - The name of the constructor
-	 * @param {Function} constructor - The constructor method
-	 * @memberof Graph
-	 * @see Graph.getConstructor
-	 */
-	Graph.registerConstructor = function (constructorName, constructor) {
-
-	  if (Graph._constructors[constructorName]) {
-	    return util.throwError("Constructor " + constructor + " already exists.");
-	  }
-
-	  Graph._constructors[constructorName] = constructor;
-	};
-
-	/**
-	 * Returns a registered constructor
-	 * @memberof Graph
-	 * @param {String} constructorName - The constructor name to look for
-	 * @returns {Function} The registered constructor
-	 * @throws Error
-	 * @see Graph.registerConstructor
-	 */
-	Graph.getConstructor = function (constructorName) {
-	  var constructor = Graph._constructors[constructorName];
-	  if (!constructor) {
-	    return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
-	  }
-	  return constructor;
-	};
-
-	/**
-	 * Returns a graph created from a schema
-	 * @memberof Graph
-	 * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
-	 * @param {HTMLElement} wrapper - The wrapping element
-	 * @returns {Graph} Newly created graph
-	 */
-	Graph.fromSchema = function (schema, wrapper) {
-
-	  var graph;
-	  var options = {};
-	  var axes = {
-	    left: [],
-	    top: [],
-	    right: [],
-	    bottom: []
-	  };
-	  var axesIndices = [];
-
-	  if (schema.title) {
-	    options.title = schema.title;
-	  }
-
-	  if (schema.axis) {
-
-	    schema.axis.map(function (schemaAxis) {
-
-	      if (!schemaAxis.type) {
-	        util.throwError("Axis type is required (top, bottom, left or right)");
-	      }
-
-	      var axisOptions = {};
-	      if (schemaAxis.label) {
-	        axisOptions.labelValue = schemaAxis.label;
-	      }
-
-	      if (schemaAxis.unit !== undefined) {
-	        axisOption.unit = schemaAxis.unit;
-	      }
-
-	      if (schemaAxis.min !== undefined) {
-	        axisOption.forcedMin = schemaAxis.min;
-	      }
-
-	      if (schemaAxis.max !== undefined) {
-	        axisOption.forcedMax = schemaAxis.max;
-	      }
-
-	      if (schemaAxis.flip !== undefined) {
-	        axisOption.flipped = schemaAxis.flip;
-	      }
-
-	      axes[schemaAxis.type].push(axisOptions);
-	      schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
-	    });
-	  }
-
-	  graph = new Graph(wrapper, options, axes);
-
-	  if (schema.data) {
-
-	    schema.data.map(function (schemaSerie) {
-
-	      var serieType = schemaSerie.type,
-	          serie,
-	          serieOptions,
-	          serieAxis;
-
-	      switch (schemaSerie.type) {
-
-	        case 'bar':
-	          util.throwError("Bar charts not supported");
-	          serieType = false;
-	          break;
-
-	        case 'scatter':
-	          serieType = 'scatter';
-	          break;
-
-	        default:
-	          serieType = 'line';
-	          break;
-	      }
-
-	      if (!serieType) {
-	        util.throwError("No valid serie type was found");
-	        return;
-	      }
-
-	      serie = graph.newSerie(schemaSerie.label || util.guid(), serieOptions, serieType);
-
-	      if (schemaSerie.lineStyle) {
-
-	        schemaSerie.lineStyle.map(function (style) {
-
-	          var styleSerie = {};
-	          style.styleName = style.styleName || "unselected";
-
-	          switch (serieType) {
-
-	            case 'line':
-	              if (style.lineWidth !== undefined) {
-	                styleSerie.lineWidth = style.lineWidth;
-	              }
-
-	              if (style.color !== undefined) {
-	                styleSerie.lineColor = style.color;
-	              }
-
-	              if (style.lineStyle) {
-	                styleSerie.lineStyle = style.lineStyle;
-	              }
-
-	              serie.setStyle(styleSerie, style.styleName);
-	              break;
-	          }
-	        });
-	      }
-
-	      if (schemaSerie.style) {
-
-	        schemaSerie.style.map(function (style) {
-
-	          var styleSerie = {};
-	          style.styleName = style.styleName || "unselected";
-
-	          if (!Array.isArray(style.styles)) {
-	            style.styles = [style.styles];
-	          }
-
-	          var styles = style.styles.map(function (style) {
-
-	            switch (serieType) {
-
-	              case "line":
-
-	                return {
-	                  type: style.shape,
-	                  zoom: style.zoom,
-	                  strokeWidth: style.lineWidth,
-	                  strokeColor: style.lineColor,
-	                  fillColor: style.color,
-	                  points: style.points
-	                };
-
-	                break;
-
-	              case "scatter":
-
-	                break;
-	            }
-	          });
-
-	          switch (serieType) {
-
-	            case "line":
-
-	              serie.setMarkers(styles, style.styleName);
-	              break;
-
-	            case "scatter":
-
-	              serie.setStyle(styles, {}, style.styleName);
-	              break;
-	          }
-	        });
-	      }
-
-	      var errors = [];
-	      if (schemaSerie.errorX) {
-
-	        for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
-
-	          errors[i] = errors[i] || [[], []];
-
-	          errors[i][0][0] = schemaSerie.errorX[i];
-	        }
-	      }
-
-	      if (schemaSerie.errorY) {
-
-	        for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
-
-	          errors[i] = errors[i] || [[]];
-	          errors[i][1][0] = schemaSerie.errorY[i];
-	        }
-	      }
-
-	      serie.setDataError(errors) // Adds the error data
-	      .setErrorStyle([{
-	        type: 'bar',
-	        x: {},
-	        y: {}
-	      }]); // Display bar errors
-
-	      if (schema.axis) {
-	        serieAxis = schema.axis[schemaSerie.xAxis];
-
-	        if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
-	          util.warn("No x axis found. Setting automatically");
-	          serie.setXAxis(graph.getXAxis(0));
-	        } else {
-	          if (serieAxis.type == 'top') {
-	            serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
-	          } else if (serieAxis.type == 'bottom') {
-	            serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
-	          }
-	        }
-
-	        serieAxis = schema.axis[schemaSerie.yAxis];
-
-	        if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
-	          util.warn("No y axis found. Setting automatically");
-	          serie.setYAxis(graph.getYAxis(0));
-	        } else {
-	          if (serieAxis.type == 'left') {
-	            serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
-	          } else if (serieAxis.type == 'right') {
-	            serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
-	          }
-	        }
-	      } else {
-	        util.warn("No axes found. Setting automatically");
-	        serie.autoAxis();
-	      }
-
-	      serie.setData([{
-	        x: schemaSerie.x,
-	        y: schemaSerie.y
-	      }]);
-	    });
-	  }
-
-	  return graph;
-	};
-
-	/**
-	 * @alias Graph~getConstructor
-	 */
-	Graph.prototype.getConstructor = Graph.getConstructor;
-
-	Graph._constructors = {};
 
 	exports.default = Graph;
 
