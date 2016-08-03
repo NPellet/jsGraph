@@ -4635,7 +4635,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/** 
 	 * Generic constructor of a y axis
-	 * @class AxisX
 	 * @augments Axis
 	 */
 	var AxisX = function (_Axis) {
@@ -4651,7 +4650,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   *  @memberof AxisX
 	   *  @private
 	   *  Returns the position of the axis, used by refreshDrawingZone in core module
 	   */
@@ -4675,7 +4673,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  @returns {Boolean} always ```true```
 	     */
 
@@ -4686,7 +4683,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  @returns {Boolean} always ```false```
 	     */
 
@@ -4697,7 +4693,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  @private
 	     *  Used to set the x position of the axis
 	     */
@@ -4713,7 +4708,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  Caclulates the maximum tick height
 	     *  @return {Number} The maximum tick height
 	     */
@@ -4725,7 +4719,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  Draws a tick. Mostly used internally but it can be useful if you want to make your own axes
 	     *  @param {Number} value - The value in axis unit to place the tick
 	     *  @param {Number} level - The importance of the tick
@@ -4785,7 +4778,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  Paints the label, the axis line and anything else specific to x axes
 	     */
 
@@ -4822,7 +4814,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  @private
 	     */
 
@@ -4844,7 +4835,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  @private
 	     */
 
@@ -4856,7 +4846,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     *  @memberof AxisX
 	     *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
 	     */
 
@@ -7601,338 +7590,388 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _graph = __webpack_require__(6);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 	/** 
 	 * Generic constructor of a y axis
-	 * @class AxisY
-	 * @augments Axis
+	 * @extends Axis
 	 */
-	function AxisY(graph, leftright, options) {
+	var AxisY = function (_Axis) {
+	  _inherits(AxisY, _Axis);
 
-	  // this.init( graph, options );
+	  function AxisY(graph, leftright, options) {
+	    _classCallCheck(this, AxisY);
 
-	  this.leftright = leftright;
-	  this.left = leftright == 'left';
-	}
+	    // this.init( graph, options );
 
-	AxisY.prototype = new _graph2.default();
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AxisY).call(this, graph, leftright, options));
 
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.getAxisPosition = function () {
+	    _this.leftright = leftright;
+	    _this.left = leftright == 'left';
 
-	  if (!this.options.display) {
-	    return 0;
-	  }
-	  return this.options.tickPosition == 1 ? 15 : 0;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.getAxisWidthHeight = function () {
-	  return 15;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @returns {Boolean} always ```false```
-	 */
-	AxisY.prototype.isX = function () {
-	  return false;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @returns {Boolean} always ```true```
-	 */
-	AxisY.prototype.isY = function () {
-	  return true;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.resetTicksLength = function () {
-	  this.longestTick = [false, 0];
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.getMaxSizeTick = function () {
-
-	  return (this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0) + 10; //(this.left ? 10 : 0);
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.drawTick = function (value, level, options, forcedPos) {
-	  var pos;
-
-	  var self = this,
-	      group = this.groupTicks,
-	      tickLabel;
-
-	  pos = forcedPos || this.getPos(value);
-
-	  if (pos == undefined || isNaN(pos)) {
-	    return;
+	    return _this;
 	  }
 
-	  var tick = this.nextTick(level, function (tick) {
+	  /**
+	   *  @private
+	   */
 
-	    tick.setAttribute('x1', (self.left ? 1 : -1) * self.tickPx1 * self.tickScaling[level]);
-	    tick.setAttribute('x2', (self.left ? 1 : -1) * self.tickPx2 * self.tickScaling[level]);
 
-	    if (level == 1) {
-	      tick.setAttribute('stroke', self.getPrimaryTicksColor());
-	    } else {
-	      tick.setAttribute('stroke', self.getSecondaryTicksColor());
+	  _createClass(AxisY, [{
+	    key: 'getAxisPosition',
+	    value: function getAxisPosition() {
+
+	      if (!this.options.display) {
+	        return 0;
+	      }
+	      return this.options.tickPosition == 1 ? 15 : 0;
 	    }
-	  });
 
-	  tick.setAttribute('y1', pos);
-	  tick.setAttribute('y2', pos);
+	    /**
+	     *  @private
+	     */
 
-	  this.nextGridLine(level == 1, 0, this.graph.getDrawingWidth(), pos, pos);
+	  }, {
+	    key: 'getAxisWidthHeight',
+	    value: function getAxisWidthHeight() {
+	      return 15;
+	    }
 
-	  //  this.groupTicks.appendChild( tick );
-	  if (level == 1) {
-	    var tickLabel = this.nextTickLabel(function (tickLabel) {
+	    /**
+	     *  @returns {Boolean} always ```false```
+	     */
 
-	      tickLabel.setAttribute('x', self.left ? -10 : 10);
-	      if (self.getTicksLabelColor() !== 'black') {
-	        tickLabel.setAttribute('fill', self.getTicksLabelColor());
+	  }, {
+	    key: 'isX',
+	    value: function isX() {
+	      return false;
+	    }
+
+	    /**
+	     *  @returns {Boolean} always ```true```
+	     */
+
+	  }, {
+	    key: 'isY',
+	    value: function isY() {
+	      return true;
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'resetTicksLength',
+	    value: function resetTicksLength() {
+	      this.longestTick = [false, 0];
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'getMaxSizeTick',
+	    value: function getMaxSizeTick() {
+
+	      return (this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0) + 10; //(this.left ? 10 : 0);
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'drawTick',
+	    value: function drawTick(value, level, options, forcedPos) {
+	      var pos;
+
+	      var self = this,
+	          group = this.groupTicks,
+	          tickLabel;
+
+	      pos = forcedPos || this.getPos(value);
+
+	      if (pos == undefined || isNaN(pos)) {
+	        return;
 	      }
 
-	      if (self.left) {
-	        tickLabel.setAttribute('text-anchor', 'end');
+	      var tick = this.nextTick(level, function (tick) {
+
+	        tick.setAttribute('x1', (self.left ? 1 : -1) * self.tickPx1 * self.tickScaling[level]);
+	        tick.setAttribute('x2', (self.left ? 1 : -1) * self.tickPx2 * self.tickScaling[level]);
+
+	        if (level == 1) {
+	          tick.setAttribute('stroke', self.getPrimaryTicksColor());
+	        } else {
+	          tick.setAttribute('stroke', self.getSecondaryTicksColor());
+	        }
+	      });
+
+	      tick.setAttribute('y1', pos);
+	      tick.setAttribute('y2', pos);
+
+	      this.nextGridLine(level == 1, 0, this.graph.getDrawingWidth(), pos, pos);
+
+	      //  this.groupTicks.appendChild( tick );
+	      if (level == 1) {
+	        var tickLabel = this.nextTickLabel(function (tickLabel) {
+
+	          tickLabel.setAttribute('x', self.left ? -10 : 10);
+	          if (self.getTicksLabelColor() !== 'black') {
+	            tickLabel.setAttribute('fill', self.getTicksLabelColor());
+	          }
+
+	          if (self.left) {
+	            tickLabel.setAttribute('text-anchor', 'end');
+	          } else {
+	            tickLabel.setAttribute('text-anchor', 'start');
+	          }
+	          tickLabel.style.dominantBaseline = 'central';
+	        });
+
+	        tickLabel.setAttribute('y', pos);
+	        this.setTickContent(tickLabel, value, options);
+
+	        if (String(tickLabel.textContent).length >= this.longestTick[1]) {
+	          this.longestTick[0] = tickLabel;
+	          this.longestTick[1] = String(tickLabel.textContent).length;
+	        }
+	      }
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'drawSpecifics',
+	    value: function drawSpecifics() {
+	      // Place label correctly
+	      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
+
+	      this.label.setAttribute('transform', 'translate(' + (this.left ? 1 : -1) * (-this.widthHeightTick - 10 - 5) + ', ' + Math.abs(this.getMaxPx() + this.getMinPx()) / 2 + ') rotate(-90)');
+
+	      if (this.getLabelColor() !== 'black') {
+	        this.label.setAttribute('fill', this.getLabelColor());
+	      }
+
+	      this.labelTspan.textContent = this.getLabel();
+
+	      if (!this.left) {
+	        this.labelTspan.style.dominantBaseline = 'hanging';
+	        this.expTspan.style.dominantBaseline = 'hanging';
+	        this.expTspanExp.style.dominantBaseline = 'hanging';
+
+	        this.unitTspan.style.dominantBaseline = 'hanging';
+	        this.preunitTspan.style.dominantBaseline = 'hanging';
+	      }
+
+	      this.line.setAttribute('y1', this.getMinPx());
+	      this.line.setAttribute('y2', this.getMaxPx());
+	      this.line.setAttribute('x1', 0);
+	      this.line.setAttribute('x2', 0);
+
+	      this.line.setAttribute('stroke', this.getAxisColor());
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: '_setShift',
+	    value: function _setShift() {
+
+	      if (!this.getShift() || !this.graph.getWidth()) {
+	        return;
+	      }
+
+	      var xshift = this.floating ? this.getShift() : this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
+	      this.group.setAttribute('transform', 'translate( ' + xshift + ' 0 )');
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'isLeft',
+	    value: function isLeft() {
+	      return this.left;
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'isRight',
+	    value: function isRight() {
+	      return !this.left;
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'isFlipped',
+	    value: function isFlipped() {
+	      return !this.options.flipped;
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: '_draw0Line',
+	    value: function _draw0Line(px) {
+
+	      if (!this._0line) {
+	        this._0line = document.createElementNS(this.graph.ns, 'line');
+	      }
+
+	      this._0line.setAttribute('y1', px);
+	      this._0line.setAttribute('y2', px);
+
+	      this._0line.setAttribute('x1', 0);
+	      this._0line.setAttribute('x2', this.graph.getDrawingWidth());
+
+	      this._0line.setAttribute('stroke', 'black');
+	      this.groupGrids.appendChild(this._0line);
+	    }
+
+	    /**
+	     *  @private
+	     */
+
+	  }, {
+	    key: 'handleMouseMoveLocal',
+	    value: function handleMouseMoveLocal(x, y, e) {
+	      y -= this.graph.getPaddingTop();
+	      this.mouseVal = this.getVal(y);
+	    }
+
+	    /**
+	     * Scales the axis with respect to the series contained in an x axis
+	     * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
+	     * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+	     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
+	     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
+	     * @param {Boolean} [ min = true ] - Adapt the min
+	     * @param {Boolean} [ max = true ] - Adapt the max
+	     * @returns {Axis} The current axis
+	     */
+
+	  }, {
+	    key: 'scaleToFitAxis',
+	    value: function scaleToFitAxis(axis, excludeSerie, start, end, min, max) {
+	      //console.log( axis instanceof GraphAxis );
+	      if (!axis || !axis.isX()) {
+	        axis = this.graph.getXAxis();
+	      }
+
+	      if (isNaN(start)) {
+	        start = axis.getCurrentMin();
+	      }
+
+	      if (isNaN(end)) {
+	        end = axis.getCurrentMax();
+	      }
+
+	      if (min === undefined) {
+	        min = true;
+	      }
+
+	      if (max === undefined) {
+	        max = true;
+	      }
+
+	      if (typeof excludeSerie == "number") {
+	        end = start;
+	        start = excludeSerie;
+	        excludeSerie = false;
+	      }
+
+	      var maxV = -Infinity,
+	          minV = Infinity,
+	          j = 0;
+
+	      for (var i = 0, l = this.graph.series.length; i < l; i++) {
+
+	        if (!this.graph.series[i].isShown()) {
+	          continue;
+	        }
+
+	        if (this.graph.series[i] == excludeSerie) {
+	          continue;
+	        }
+
+	        if (!(this.graph.series[i].getXAxis() == axis) || this.graph.series[i].getYAxis() !== this) {
+	          continue;
+	        }
+
+	        j++;
+
+	        maxV = max ? Math.max(maxV, this.graph.series[i].getMax(start, end)) : 0;
+	        minV = min ? Math.min(minV, this.graph.series[i].getMin(start, end)) : 0;
+	      }
+
+	      if (j == 0) {
+
+	        this.setMinMaxToFitSeries(); // No point was found
 	      } else {
-	        tickLabel.setAttribute('text-anchor', 'start');
+
+	        // If we wanted originally to resize min and max. Otherwise we use the current value
+	        minV = min ? minV : this.getCurrentMin();
+	        maxV = max ? maxV : this.getCurrentMax();
+
+	        var interval = maxV - minV;
+
+	        minV -= this.options.axisDataSpacing.min * interval;
+	        maxV += this.options.axisDataSpacing.max * interval;
+
+	        this._doZoomVal(minV, maxV);
 	      }
-	      tickLabel.style.dominantBaseline = 'central';
-	    });
 
-	    tickLabel.setAttribute('y', pos);
-	    this.setTickContent(tickLabel, value, options);
-
-	    if (String(tickLabel.textContent).length >= this.longestTick[1]) {
-	      this.longestTick[0] = tickLabel;
-	      this.longestTick[1] = String(tickLabel.textContent).length;
-	    }
-	  }
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.drawSpecifics = function () {
-	  // Place label correctly
-	  //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-
-	  this.label.setAttribute('transform', 'translate(' + (this.left ? 1 : -1) * (-this.widthHeightTick - 10 - 5) + ', ' + Math.abs(this.getMaxPx() + this.getMinPx()) / 2 + ') rotate(-90)');
-
-	  if (this.getLabelColor() !== 'black') {
-	    this.label.setAttribute('fill', this.getLabelColor());
-	  }
-
-	  this.labelTspan.textContent = this.getLabel();
-
-	  if (!this.left) {
-	    this.labelTspan.style.dominantBaseline = 'hanging';
-	    this.expTspan.style.dominantBaseline = 'hanging';
-	    this.expTspanExp.style.dominantBaseline = 'hanging';
-
-	    this.unitTspan.style.dominantBaseline = 'hanging';
-	    this.preunitTspan.style.dominantBaseline = 'hanging';
-	  }
-
-	  this.line.setAttribute('y1', this.getMinPx());
-	  this.line.setAttribute('y2', this.getMaxPx());
-	  this.line.setAttribute('x1', 0);
-	  this.line.setAttribute('x2', 0);
-
-	  this.line.setAttribute('stroke', this.getAxisColor());
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype._setShift = function () {
-
-	  if (!this.getShift() || !this.graph.getWidth()) {
-	    return;
-	  }
-
-	  var xshift = this.floating ? this.getShift() : this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift();
-	  this.group.setAttribute('transform', 'translate( ' + xshift + ' 0 )');
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.isLeft = function () {
-	  return this.left;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.isRight = function () {
-	  return !this.left;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.isFlipped = function () {
-	  return !this.options.flipped;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype._draw0Line = function (px) {
-
-	  if (!this._0line) {
-	    this._0line = document.createElementNS(this.graph.ns, 'line');
-	  }
-
-	  this._0line.setAttribute('y1', px);
-	  this._0line.setAttribute('y2', px);
-
-	  this._0line.setAttribute('x1', 0);
-	  this._0line.setAttribute('x2', this.graph.getDrawingWidth());
-
-	  this._0line.setAttribute('stroke', 'black');
-	  this.groupGrids.appendChild(this._0line);
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  @private
-	 */
-	AxisY.prototype.handleMouseMoveLocal = function (x, y, e) {
-	  y -= this.graph.getPaddingTop();
-	  this.mouseVal = this.getVal(y);
-	};
-
-	/**
-	 * Scales the axis with respect to the series contained in an x axis
-	 * @memberof AxisY
-	 * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
-	 * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
-	 * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
-	 * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
-	 * @param {Boolean} [ min = true ] - Adapt the min
-	 * @param {Boolean} [ max = true ] - Adapt the max
-	 * @returns {Axis} The current axis
-	 */
-	AxisY.prototype.scaleToFitAxis = function (axis, excludeSerie, start, end, min, max) {
-	  //console.log( axis instanceof GraphAxis );
-	  if (!axis || !axis.isX()) {
-	    axis = this.graph.getXAxis();
-	  }
-
-	  if (isNaN(start)) {
-	    start = axis.getCurrentMin();
-	  }
-
-	  if (isNaN(end)) {
-	    end = axis.getCurrentMax();
-	  }
-
-	  if (min === undefined) {
-	    min = true;
-	  }
-
-	  if (max === undefined) {
-	    max = true;
-	  }
-
-	  if (typeof excludeSerie == "number") {
-	    end = start;
-	    start = excludeSerie;
-	    excludeSerie = false;
-	  }
-
-	  var maxV = -Infinity,
-	      minV = Infinity,
-	      j = 0;
-
-	  for (var i = 0, l = this.graph.series.length; i < l; i++) {
-
-	    if (!this.graph.series[i].isShown()) {
-	      continue;
+	      return this;
 	    }
 
-	    if (this.graph.series[i] == excludeSerie) {
-	      continue;
+	    /**
+	     *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+	     *  @return {Axis} The current axis instance
+	     */
+
+	  }, {
+	    key: 'setMinMaxFlipped',
+	    value: function setMinMaxFlipped() {
+
+	      var interval = this.maxPx - this.minPx;
+	      var maxPx = this.maxPx - interval * this.options.span[0];
+	      var minPx = this.maxPx - interval * this.options.span[1];
+
+	      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+	      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
 	    }
+	  }]);
 
-	    if (!(this.graph.series[i].getXAxis() == axis) || this.graph.series[i].getYAxis() !== this) {
-	      continue;
-	    }
-
-	    j++;
-
-	    maxV = max ? Math.max(maxV, this.graph.series[i].getMax(start, end)) : 0;
-	    minV = min ? Math.min(minV, this.graph.series[i].getMin(start, end)) : 0;
-	  }
-
-	  if (j == 0) {
-
-	    this.setMinMaxToFitSeries(); // No point was found
-	  } else {
-
-	    // If we wanted originally to resize min and max. Otherwise we use the current value
-	    minV = min ? minV : this.getCurrentMin();
-	    maxV = max ? maxV : this.getCurrentMax();
-
-	    var interval = maxV - minV;
-
-	    minV -= this.options.axisDataSpacing.min * interval;
-	    maxV += this.options.axisDataSpacing.max * interval;
-
-	    this._doZoomVal(minV, maxV);
-	  }
-
-	  return this;
-	};
-
-	/**
-	 *  @memberof AxisY
-	 *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
-	 *  @return {Axis} The current axis instance
-	 */
-	AxisY.prototype.setMinMaxFlipped = function () {
-
-	  var interval = this.maxPx - this.minPx;
-	  var maxPx = this.maxPx - interval * this.options.span[0];
-	  var minPx = this.maxPx - interval * this.options.span[1];
-
-	  this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-	  this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-	};
+	  return AxisY;
+	}(_graph2.default);
 
 	exports.default = AxisY;
 

@@ -2,17 +2,17 @@ import Axis from './graph.axis'
 
 /** 
  * Generic constructor of a y axis
- * @class AxisX
  * @augments Axis
  */
 class AxisX extends Axis {
+
   constructor( graph, topbottom, options ) {
+
     super( graph, topbottom, options );
     this.top = topbottom == 'top';
   }
 
   /**
-   *  @memberof AxisX
    *  @private
    *  Returns the position of the axis, used by refreshDrawingZone in core module
    */
@@ -32,7 +32,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  @returns {Boolean} always ```true```
    */
   isX()  {
@@ -40,7 +39,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  @returns {Boolean} always ```false```
    */
   isY() {
@@ -48,7 +46,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  @private
    *  Used to set the x position of the axis
    */
@@ -61,7 +58,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  Caclulates the maximum tick height
    *  @return {Number} The maximum tick height
    */
@@ -70,7 +66,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  Draws a tick. Mostly used internally but it can be useful if you want to make your own axes
    *  @param {Number} value - The value in axis unit to place the tick
    *  @param {Number} level - The importance of the tick
@@ -129,7 +124,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  Paints the label, the axis line and anything else specific to x axes
    */
   drawSpecifics() {
@@ -164,7 +158,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  @private
    */
   _draw0Line( px ) {
@@ -183,7 +176,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  @private
    */
   handleMouseMoveLocal( x, y, e ) {
@@ -192,7 +184,6 @@ class AxisX extends Axis {
   }
 
   /**
-   *  @memberof AxisX
    *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
    */
   setMinMaxFlipped() {

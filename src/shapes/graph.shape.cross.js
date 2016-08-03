@@ -1,124 +1,132 @@
-define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
+import Shape from './graph.shape'
 
-  function GraphCross( graph, options ) {
+
+/**
+ *  Displays a cross
+ *  @extends GraphShape
+ */
+class GraphCross extends Shape {
+
+  constructor( graph, options ) {
     this.nbHandles = 1;
-
+    super( graph, options );
   }
 
-  util.extend( GraphCross.prototype, GraphShape.prototype, {
+  /**
+   * Width of the cross, also available from the constructor
+   * @type {Number} width
+   */
+  get width {
+    return this.options.width || 10;
+  }
 
-    getLength: function() {
-      return this.options.length || 10;
-    },
+  set width( l ) {
+    this.options.width = l || 10;
+  }
 
-    createDom: function() {
+  createDom() {
 
-      this._dom = document.createElementNS( this.graph.ns, 'path' );
-      this._dom.setAttribute( 'd', 'M -' + ( this.getLength() / 2 ) + ' 0 h ' + ( this.getLength() ) + ' m -' + ( this.getLength() / 2 ) + ' -' + ( this.getLength() / 2 ) + ' v ' + ( this.getLength() ) + '' );
+    this._dom = document.createElementNS( this.graph.ns, 'path' );
+    this._dom.setAttribute( 'd', 'M -' + ( this.width / 2 ) + ' 0 h ' + ( this.width ) + ' m -' + ( this.width / 2 ) + ' -' + ( this.width / 2 ) + ' v ' + ( this.width ) + '' );
 
-      this.createHandles( this.nbHandles, 'rect', {
-        transform: "translate(-3 -3)",
-        width: 6,
-        height: 6,
-        stroke: "black",
-        fill: "white",
-        cursor: 'nwse-resize'
-      } );
+    this.createHandles( this.nbHandles, 'rect', {
+      transform: "translate(-3 -3)",
+      width: 6,
+      height: 6,
+      stroke: "black",
+      fill: "white",
+      cursor: 'nwse-resize'
+    } );
+  }
 
-    },
+  applyPosition() {
 
-    applyPosition: function() {
-
-      var position = this.calculatePosition( 0 );
-      if ( !position || !position.x || !position.y ) {
-        return;
-      }
-
-      this.setDom( 'transform', 'translate( ' + position.x + ', ' + position.y + ')' );
-
-      this.currentPos1x = position.x;
-      this.currentPos1y = position.y;
-
-      return true;
-    },
-
-    redrawImpl: function() {
-
-      this.setHandles();
-    },
-
-    handleCreateImpl: function() {
-
+    var position = this.calculatePosition( 0 );
+    if ( !position || !position.x || !position.y ) {
       return;
-    },
-
-    handleMouseDownImpl: function( e ) {
-
-      this.moving = true;
-
-      return true;
-    },
-
-    handleMouseUpImpl: function() {
-
-      this.triggerChange();
-      return true;
-    },
-
-    handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
-
-      if ( this.isLocked() ) {
-        return;
-      }
-
-      var pos = this.getFromData( 'pos' );
-
-      if ( this.moving ) {
-
-        pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
-        pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
-      }
-
-      this.redrawImpl();
-
-      return true;
-
-    },
-
-    createHandles: function() {
-
-      this._createHandles( 1, 'rect', {
-        transform: "translate(-3 -3)",
-        width: 6,
-        height: 6,
-        stroke: "black",
-        fill: "white",
-        cursor: 'nwse-resize'
-      } );
-    },
-
-    setHandles: function() {
-
-      if ( !this.areHandlesInDom() ) {
-        return;
-      }
-
-      if ( isNaN( this.currentPos1x ) ) {
-        return;
-      }
-
-      this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
-      this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
-
-    },
-
-    selectStyle: function() {
-      this.setDom( 'stroke', 'red' );
-      this.setDom( 'stroke-width', '2' );
     }
 
-  } );
+    this.setDom( 'transform', 'translate( ' + position.x + ', ' + position.y + ')' );
 
-  return GraphCross;
+    this.currentPos1x = position.x;
+    this.currentPos1y = position.y;
 
-} );
+    return true;
+  }
+
+  redrawImpl() {
+
+    this.setHandles();
+  }
+
+  handleCreateImpl() {
+
+    return;
+  },
+
+  handleMouseDownImpl( e ) {
+
+    this.moving = true;
+
+    return true;
+  },
+
+  handleMouseUpImpl() {
+
+    this.triggerChange();
+    return true;
+  },
+
+  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+
+    if ( this.isLocked() ) {
+      return;
+    }
+
+    var pos = this.getFromData( 'pos' );
+
+    if ( this.moving ) {
+
+      pos.x = this.graph.deltaPosition( pos.x, deltaX, this.getXAxis() );
+      pos.y = this.graph.deltaPosition( pos.y, deltaY, this.getYAxis() );
+    }
+
+    this.redrawImpl();
+
+    return true;
+
+  },
+
+  createHandles() {
+
+    this._createHandles( 1, 'rect', {
+      transform: "translate(-3 -3)",
+      width: 6,
+      height: 6,
+      stroke: "black",
+      fill: "white",
+      cursor: 'nwse-resize'
+    } );
+  },
+
+  setHandles() {
+
+    if ( !this.areHandlesInDom() ) {
+      return;
+    }
+
+    if ( isNaN( this.currentPos1x ) ) {
+      return;
+    }
+
+    this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
+    this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
+  },
+
+  selectStyle() {
+    this.setDom( 'stroke', 'red' );
+    this.setDom( 'stroke-width', '2' );
+  }
+}
+
+export default GraphCross;

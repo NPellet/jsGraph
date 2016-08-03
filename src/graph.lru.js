@@ -1,113 +1,109 @@
-define( [], function() {
 
-  var memory = {},
-    memoryHead = {},
-    memoryCount = {},
-    memoryLimit = {};
 
-  function createStoreMemory( store, limit ) {
-    limit = limit || 50;
-    if ( !memory[ store ] ) {
-      memory[ store ] = {};
-      memoryCount[ store ] = 0;
-    }
+var memory = {},
+  memoryHead = {},
+  memoryCount = {},
+  memoryLimit = {};
 
-    memoryLimit[ store ] = limit;
+function createStoreMemory( store, limit ) {
+  limit = limit || 50;
+  if ( !memory[ store ] ) {
+    memory[ store ] = {};
+    memoryCount[ store ] = 0;
   }
 
-  function getFromMemory( store, index ) {
-    var obj, head;
+  memoryLimit[ store ] = limit;
+}
 
-    if ( memory[ store ] && memory[ store ][ index ] ) {
+function getFromMemory( store, index ) {
+  var obj, head;
 
-      head = memoryHead[ store ];
+  if ( memory[ store ] && memory[ store ][ index ] ) {
 
-      obj = memory[ store ][ index ];
-      obj.prev = head;
-      obj.next = head.next;
-      head.next.prev = obj;
-      head.next = obj;
+    head = memoryHead[ store ];
 
-      memoryHead[ store ] = obj;
-      return obj.data;
-    }
+    obj = memory[ store ][ index ];
+    obj.prev = head;
+    obj.next = head.next;
+    head.next.prev = obj;
+    head.next = obj;
+
+    memoryHead[ store ] = obj;
+    return obj.data;
   }
+}
 
-  function storeInMemory( store, index, data ) {
+function storeInMemory( store, index, data ) {
 
-    var toStore, toDelete, head;
-    if ( memory[ store ] && memoryCount[ store ] !== undefined && memoryLimit[ store ] ) {
-      head = memoryHead[ store ];
+  var toStore, toDelete, head;
+  if ( memory[ store ] && memoryCount[ store ] !== undefined && memoryLimit[ store ] ) {
+    head = memoryHead[ store ];
 
-      if ( memory[ store ][ index ] ) {
+    if ( memory[ store ][ index ] ) {
 
-        getFromMemory( store, index );
-        memory[ store ][ index ].data.data = data;
-        memory[ store ][ index ].data.timeout = Date.now();
+      getFromMemory( store, index );
+      memory[ store ][ index ].data.data = data;
+      memory[ store ][ index ].data.timeout = Date.now();
 
-      } else {
+    } else {
 
-        toStore = {
-          data: {
-            data: data,
-            timeout: Date.now()
-          }
-        };
-
-        if ( typeof head == 'undefined' ) {
-          toStore.prev = toStore;
-          toStore.next = toStore;
-        } else {
-          toStore.prev = head.prev;
-          toStore.next = head.next;
-          head.next.prev = toStore;
-          head.next = toStore;
+      toStore = {
+        data: {
+          data: data,
+          timeout: Date.now()
         }
+      };
 
-        memoryHead[ store ] = toStore;
-        memory[ store ][ index ] = toStore;
-        memoryCount[ store ]++;
+      if ( typeof head == 'undefined' ) {
+        toStore.prev = toStore;
+        toStore.next = toStore;
+      } else {
+        toStore.prev = head.prev;
+        toStore.next = head.next;
+        head.next.prev = toStore;
+        head.next = toStore;
       }
 
-      // Remove oldest one
-      if ( memoryCount[ store ] > memoryLimit[ store ] && head ) {
-        toDelete = head.next;
-        head.next.next.prev = head;
-        head.next = head.next.next;
-        toDelete.next.next = undefined;
-        toDelete.next.prev = undefined;
-        memoryCount[ store ]--;
-      }
-
-      return data;
+      memoryHead[ store ] = toStore;
+      memory[ store ][ index ] = toStore;
+      memoryCount[ store ]++;
     }
-  }
 
-  return {
-
-    create: function( store, limitMemory ) {
-      createStoreMemory( store, limitMemory );
-    },
-
-    get: function( store, index ) {
-      var result;
-      if ( ( result = getFromMemory( store, index ) ) != undefined ) {
-        return result;
-      }
-
-    },
-
-    store: function( store, index, value ) {
-      storeInMemory( store, index, value );
-      return value;
-    },
-
-    empty: function( store ) {
-      emptyMemory( store );
-    },
-
-    exists: function( store ) {
-      return ( memory[ store ] );
+    // Remove oldest one
+    if ( memoryCount[ store ] > memoryLimit[ store ] && head ) {
+      toDelete = head.next;
+      head.next.next.prev = head;
+      head.next = head.next.next;
+      toDelete.next.next = undefined;
+      toDelete.next.prev = undefined;
+      memoryCount[ store ]--;
     }
+
+    return data;
   }
-} );
+}
+
+export create function( store, limitMemory ) {
+  createStoreMemory( store, limitMemory );
+};
+
+export get function( store, index ) {
+  var result;
+  if ( ( result = getFromMemory( store, index ) ) != undefined ) {
+    return result;
+  }
+}
+
+export store function( store, index, value ) {
+  storeInMemory( store, index, value );
+  return value;
+};
+
+export empty function( store ) {
+  emptyMemory( store );
+};
+
+export exists function( store ) {
+  return ( memory[ store ] );
+}
+

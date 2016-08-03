@@ -11,6 +11,8 @@ subtitle: 'AxisX'
     
         <h2>AxisX</h2>
         
+            <div class="class-description">Generic constructor of a y axis</div>
+        
     
 </header>
 
@@ -24,15 +26,13 @@ subtitle: 'AxisX'
 
 
     
+    <h2>Constructor</h2>
+    
 
     <h4 class="doc-code" id="AxisX"><span class="type-signature"></span>new <span></span><span class="doc-name">AxisX</span><span class="doc-signature">( )</span></h4>
 
 
 
-
-<div class="description">
-    Generic constructor of a y axis
-</div>
 
 
 <div class="doc-details">
@@ -97,6 +97,304 @@ subtitle: 'AxisX'
     
         <h3 class="subsection-title">Methods</h3>
 
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="drawSpecifics"><span class="type-signature"></span><span></span><span class="doc-name">drawSpecifics</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Paints the label, the axis line and anything else specific to x axes
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="drawTick"><span class="type-signature"></span><span></span><span class="doc-name">drawTick</span><span class="doc-signature">( <span class="doc-type">Number</span> value , <span class="doc-type">Number</span> level , <span class="doc-type">Object</span> options , <span class="doc-type">Number</span> forcedPos )</span></h4>
+
+
+
+
+<div class="description">
+    Draws a tick. Mostly used internally but it can be useful if you want to make your own axes
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value in axis unit to place the tick</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>level</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The importance of the tick</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Further options to be passed to ```setTickContent```</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>forcedPos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Forces the position of the tick (for axis dependency)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMaxSizeTick"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxSizeTick</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caclulates the maximum tick height
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The maximum tick height
+</div>
+
+        
+
+    
+
+    </div>
+</div>
         
             
 
@@ -316,6 +614,58 @@ subtitle: 'AxisX'
 </div>
 
         
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMinMaxFlipped"><span class="type-signature"></span><span></span><span class="doc-name">setMinMaxFlipped</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 

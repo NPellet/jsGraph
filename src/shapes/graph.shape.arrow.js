@@ -1,22 +1,23 @@
-define( [ './graph.shape.line' ], function( GraphLine ) {
+import ShapeLine from './graph.shape.line'
 
-  /** 
-   * Arrow shape
-   * @class ShapeArrow
-   * @static
-   */
-  function ShapeArrow( graph ) {
+/**
+ *  Displays an arrow
+ *  @extends GraphShapeLine
+ */
+class ShapeArrow extends ShapeLine {
+
+  constructor( graph ) {
+
+    super( graph );
 
   }
 
-  ShapeArrow.prototype = new GraphLine();
-
-  ShapeArrow.prototype.createDom = function() {
+  createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
     this._dom.setAttribute( 'marker-end', 'url(#arrow' + this.graph._creation + ')' );
 
-    this._createHandles( this.nbHandles, 'rect', {
+    this.createHandles( this.nbHandles, 'rect', {
       transform: "translate(-3 -3)",
       width: 6,
       height: 6,
@@ -27,9 +28,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
     this.setStrokeColor( 'black' );
     this.setStrokeWidth( 1 );
+  }
+}
 
-  };
-
-  return ShapeArrow;
-
-} );
+export default ShapeArrow;
