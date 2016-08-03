@@ -15,6 +15,7 @@
 	],
 	"Core": [],
 	"GraphPosition": [],
+	"Legend": [],
 	"Plugin": [
 		{
 			"title": "Drag",

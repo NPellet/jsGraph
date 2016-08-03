@@ -1,49 +1,65 @@
-define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) {
+import GraphPosition from './graph.position'
+import * as util from "./graph.util"
 
-  /** 
-   * Default legend configuration
-   * @name LegendOptionsDefault
-   * @object
-   * @static
-   * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
-   * @prop {Number} frameWidth - The width of the frame stroke
-   * @prop {String} frameColor - The stroke color of the frame
-   * @prop {String} backgroundColor - The background color of the frame
-   * @prop {Number} paddingLeft - The left padding
-   * @prop {Number} paddingRight - The right padding
-   * @prop {Number} paddingTop - The top padding
-   * @prop {Number} paddingBottom - The bottom padding
-   * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
-   * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
-   * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
-   */
-  var legendDefaults = {
+/** 
+ * Default legend configuration
+ * @name LegendOptionsDefault
+ * @object
+ * @static
+ * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
+ * @prop {Number} frameWidth - The width of the frame stroke
+ * @prop {String} frameColor - The stroke color of the frame
+ * @prop {String} backgroundColor - The background color of the frame
+ * @prop {Number} paddingLeft - The left padding
+ * @prop {Number} paddingRight - The right padding
+ * @prop {Number} paddingTop - The top padding
+ * @prop {Number} paddingBottom - The bottom padding
+ * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
+ * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+ * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
+ */
+var legendDefaults = {
 
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    frame: true,
-    frameWidth: 1,
-    frameColor: 'black',
-    paddingTop: 10,
-    paddingLeft: 10,
-    paddingBottom: 10,
-    paddingRight: 10,
-    frameRounding: 3,
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  frame: true,
+  frameWidth: 1,
+  frameColor: 'black',
+  paddingTop: 10,
+  paddingLeft: 10,
+  paddingBottom: 10,
+  paddingRight: 10,
+  frameRounding: 3,
 
-    movable: false,
+  movable: false,
 
-    shapesToggleable: true,
-    isSerieHideable: true,
-    isSerieSelectable: true
+  shapesToggleable: true,
+  isSerieHideable: true,
+  isSerieSelectable: true
 
-  };
+};
 
-  /** 
-   * Legend constructor
-   * @class Legend
-   * @private
-   * @example var legend = graph.makeLegend( {} );
-   */
-  var Legend = function( graph, options ) {
+/** 
+ * Legend constructor. You should not call this method directly, but rather use {@link graph.makeLegend}
+ * @example var legend = graph.makeLegend( {  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+ * frame: true,
+ * frameWidth: 1,
+ * frameColor: 'black',
+ * paddingTop: 10,
+ * paddingLeft: 10,
+ * paddingBottom: 10,
+ * paddingRight: 10,
+ * frameRounding: 3,
+ *
+ * movable: false,
+ *
+ * shapesToggleable: true,
+ * isSerieHideable: true,
+ * isSerieSelectable: true
+ * } );
+ */
+class Legend {
+
+  constructor( graph, options ) {
 
     this.options = util.extend( {}, legendDefaults, options );
 
@@ -80,17 +96,17 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
     //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
 
     /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
-    eyeClosed.setAttribute('id', this.eyeId );
-    eyeClosed.setAttribute("viewBox", '0 0 100 100');
+      eyeClosed.setAttribute('id', this.eyeId );
+      eyeClosed.setAttribute("viewBox", '0 0 100 100');
 
-    var rect = document.createElementNS( this.graph.ns, "rect" );
-    rect.setAttribute('width', 100 );
-    rect.setAttribute('height', 100 );
-    rect.setAttribute('x', 0 );
-    rect.setAttribute('y', 0 );
-    rect.setAttribute('fill', 'black');
-    eyeClosed.appendChild( rect );
-*/
+      var rect = document.createElementNS( this.graph.ns, "rect" );
+      rect.setAttribute('width', 100 );
+      rect.setAttribute('height', 100 );
+      rect.setAttribute('x', 0 );
+      rect.setAttribute('y', 0 );
+      rect.setAttribute('fill', 'black');
+      eyeClosed.appendChild( rect );
+  */
     var eye = util.SVGParser( '<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>' );
 
     this.svg.appendChild( document.adoptNode( eye.documentElement.firstChild ) );
@@ -99,501 +115,500 @@ define( [ "./graph.position", "./graph.util" ], function( GraphPosition, util ) 
     this.svg.appendChild( this.subG );
 
     this.applyStyle();
-  };
+  }
 
-  Legend.prototype = {
+  /** 
+   * Sets the position of the legend
+   * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
+   * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
+   * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
+   * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
+   */
+  setPosition( position, alignToX, alignToY ) {
 
-    /** 
-     * Sets the position of the legend
-     * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
-     * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
-     * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
-     * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
-     * @memberof Legend.prototype
-     */
-    setPosition: function( position, alignToX, alignToY ) {
+    if ( !position ) {
+      return;
+    }
 
-      if ( !position ) {
-        return;
-      }
+    this.position = position;
+    this.alignToX = alignToX;
+    this.alignToY = alignToY;
 
-      this.position = position;
-      this.alignToX = alignToX;
-      this.alignToY = alignToY;
+  }
 
-    },
+  setDraggable( bln ) {
+    this.options.movable = bln;
 
-    setDraggable: function( bln ) {
-      this.options.movable = bln;
+  }
 
-    },
+  setAutoPosition( position ) {
 
-    setAutoPosition: function( position ) {
+    if ( [ 'bottom', 'left', 'top', 'right' ].indexOf( ( position = position.toLowerCase() ) ) > -1 ) {
+      this.autoPosition = position;
+      return this;
+    }
 
-      if ( [ 'bottom', 'left', 'top', 'right' ].indexOf( ( position = position.toLowerCase() ) ) > -1 ) {
-        this.autoPosition = position;
-        return this;
-      }
+    this.autoPosition = false;
+  }
 
-      this.autoPosition = false;
-    },
+  calculatePosition() {
 
-    calculatePosition: function() {
+    if ( !this.autoPosition ) {
+      this.graph.graphingZone.appendChild( this.getDom() );
+    } else {
+      this.graph.getDom().appendChild( this.getDom() );
+    }
 
-      if ( !this.autoPosition ) {
-        this.graph.graphingZone.appendChild( this.getDom() );
-      } else {
-        this.graph.getDom().appendChild( this.getDom() );
-      }
+    var series = this.series || this.graph.getSeries(),
+      posX = 0,
+      posY = this.options.paddingTop;
 
-      var series = this.series || this.graph.getSeries(),
-        posX = 0,
-        posY = this.options.paddingTop;
+    for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      for ( var i = 0, l = series.length; i < l; i++ ) {
-
-        if ( !series[  i ].isInLegend() && !this.series ) {
-          continue;
-        }
-
-        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
-
-          var bbox = this.groups[ i ].getBBox();
-
-          if ( posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight ) {
-            posY += 16;
-            posX = 0;
-          }
-        }
-
-        this.groups[  i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
-
-        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
-
-          posX += bbox.width + 10;
-          posY += 0;
-
-        } else {
-
-          posX = 0;
-          posY += 16;
-        }
-      }
-
-      var bbox = this.subG.getBBox();
-
-      /* Independant on box position */
-      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
-      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
-
-      this.rect.setAttribute( 'width', this.width );
-      this.rect.setAttribute( 'height', this.height );
-      this.rect.setAttribute( 'fill', 'none' );
-      this.rect.setAttribute( 'pointer-events', 'fill' );
-
-      this.rect.setAttribute( 'display', 'none' );
-
-      if ( this.options.movable ) {
-        this.rectBottom.style.cursor = "move";
-      }
-
-      this.rectBottom.setAttribute( 'width', this.width );
-      this.rectBottom.setAttribute( 'height', this.height );
-
-      this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
-      this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
-      /* End independant on box position */
-
-      this.position = this.position || {};
-
-      switch ( this.autoPosition ) {
-
-        case 'bottom':
-          this.position.y = this.graph.getHeight() + "px";
-          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
-          this.alignToY = "bottom";
-          this.alignToX = false;
-          break;
-
-        case 'left':
-          this.position.x = "6px";
-          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
-          this.alignToX = "left";
-          this.alignToY = false;
-          break;
-
-        case 'right':
-          this.position.x = this.graph.getWidth() + "px";
-          this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
-          this.alignToX = "right";
-          this.alignToY = false;
-          break;
-
-        case 'top':
-          this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
-          this.position.y = "10px";
-          this.alignToY = "top";
-          this.alignToX = false;
-          break;
-      }
-
-      var pos = new GraphPosition( this.position ),
-        alignToY = this.alignToY,
-        alignToX = this.alignToX;
-
-      pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
-
-      if ( !pos ) {
-        return;
-      }
-
-      if ( alignToX == "right" ) {
-        pos.x -= this.width;
-      }
-
-      if ( alignToY == "bottom" ) {
-        pos.y -= this.height;
-      }
-
-      this.pos.transformX = pos.x;
-      this.pos.transformY = pos.y;
-
-      this._setPosition();
-
-      if ( this.autoPosition ) {
-        switch ( this.autoPosition ) {
-
-          case 'bottom':
-            this.graph.options.paddingBottom = this.height + 10;
-            break;
-
-          case 'left':
-            this.graph.options.paddingLeft = this.width + 5;
-            break;
-
-          case 'right':
-            this.graph.options.paddingRight = this.width + 10;
-            break;
-
-          case 'top':
-            this.graph.options.paddingTop = this.height + 14;
-            break;
-        }
-
-        this.graph.updateGraphingZone();
-
-      }
-    },
-
-    /** 
-     * Updates the legend position and content
-     * @memberof Legend.prototype
-     */
-    update: function() {
-
-      var self = this;
-
-      this.applyStyle();
-
-      while ( this.subG.hasChildNodes() ) {
-        this.subG.removeChild( this.subG.lastChild );
-      }
-
-      this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
-
-      var series = this.series || this.graph.getSeries(),
-        line,
-        text,
-        g;
-
-      if ( series.length > 0 )  {
-        this.svg.setAttribute( 'display', 'block' );
-      } else {
-        return;
+      if ( !series[  i ].isInLegend() && !this.series ) {
+        continue;
       }
 
       if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
-        var fullWidth = this.graph.getDrawingWidth();
+
+        var bbox = this.groups[ i ].getBBox();
+
+        if ( posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight ) {
+          posY += 16;
+          posX = 0;
+        }
       }
 
-      var posX, posY;
+      this.groups[  i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
 
-      for ( var i = 0, l = series.length; i < l; i++ ) {
+      if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
 
-        if ( !series[  i ].isInLegend() && !this.series ) {
-          continue;
+        posX += bbox.width + 10;
+        posY += 0;
+
+      } else {
+
+        posX = 0;
+        posY += 16;
+      }
+    }
+
+    var bbox = this.subG.getBBox();
+
+    /* Independant on box position */
+    this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
+    this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
+
+    this.rect.setAttribute( 'width', this.width );
+    this.rect.setAttribute( 'height', this.height );
+    this.rect.setAttribute( 'fill', 'none' );
+    this.rect.setAttribute( 'pointer-events', 'fill' );
+
+    this.rect.setAttribute( 'display', 'none' );
+
+    if ( this.options.movable ) {
+      this.rectBottom.style.cursor = "move";
+    }
+
+    this.rectBottom.setAttribute( 'width', this.width );
+    this.rectBottom.setAttribute( 'height', this.height );
+
+    this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
+    this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+    /* End independant on box position */
+
+    this.position = this.position || {};
+
+    switch ( this.autoPosition ) {
+
+      case 'bottom':
+        this.position.y = this.graph.getHeight() + "px";
+        this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
+        this.alignToY = "bottom";
+        this.alignToX = false;
+        break;
+
+      case 'left':
+        this.position.x = "6px";
+        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
+        this.alignToX = "left";
+        this.alignToY = false;
+        break;
+
+      case 'right':
+        this.position.x = this.graph.getWidth() + "px";
+        this.position.y = ( ( this.graph.getHeight() - this.height ) / 2 ) + "px";
+        this.alignToX = "right";
+        this.alignToY = false;
+        break;
+
+      case 'top':
+        this.position.x = ( ( this.graph.getWidth() - this.width ) / 2 ) + "px";
+        this.position.y = "10px";
+        this.alignToY = "top";
+        this.alignToX = false;
+        break;
+    }
+
+    var pos = new GraphPosition( this.position ),
+      alignToY = this.alignToY,
+      alignToX = this.alignToX;
+
+    pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
+
+    if ( !pos ) {
+      return;
+    }
+
+    if ( alignToX == "right" ) {
+      pos.x -= this.width;
+    }
+
+    if ( alignToY == "bottom" ) {
+      pos.y -= this.height;
+    }
+
+    this.pos.transformX = pos.x;
+    this.pos.transformY = pos.y;
+
+    this._setPosition();
+
+    if ( this.autoPosition ) {
+      switch ( this.autoPosition ) {
+
+        case 'bottom':
+          this.graph.options.paddingBottom = this.height + 10;
+          break;
+
+        case 'left':
+          this.graph.options.paddingLeft = this.width + 5;
+          break;
+
+        case 'right':
+          this.graph.options.paddingRight = this.width + 10;
+          break;
+
+        case 'top':
+          this.graph.options.paddingTop = this.height + 14;
+          break;
+      }
+
+      this.graph.updateGraphingZone();
+
+    }
+  }
+
+  /** 
+   * Updates the legend position and content
+   */
+  update() {
+
+    var self = this;
+
+    this.applyStyle();
+
+    while ( this.subG.hasChildNodes() ) {
+      this.subG.removeChild( this.subG.lastChild );
+    }
+
+    this.svg.insertBefore( this.rectBottom, this.svg.firstChild );
+
+    var series = this.series || this.graph.getSeries(),
+      line,
+      text,
+      g;
+
+    if ( series.length > 0 )  {
+      this.svg.setAttribute( 'display', 'block' );
+    } else {
+      return;
+    }
+
+    if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+      var fullWidth = this.graph.getDrawingWidth();
+    }
+
+    var posX, posY;
+
+    for ( var i = 0, l = series.length; i < l; i++ ) {
+
+      if ( !series[  i ].isInLegend() && !this.series ) {
+        continue;
+      }
+
+      ( function( j ) {
+
+        var g, line, text, xPadding = 0;
+
+        if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+          var fullWidth = this.graph.getDrawingWidth();
         }
 
-        ( function( j ) {
+        g = document.createElementNS( self.graph.ns, 'g' );
+        var rect = document.createElementNS( self.graph.ns, 'rect' );
 
-          var g, line, text, xPadding = 0;
+        self.subG.appendChild( g );
 
-          if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
-            var fullWidth = this.graph.getDrawingWidth();
-          }
+        g.appendChild( rect );
 
-          g = document.createElementNS( self.graph.ns, 'g' );
-          var rect = document.createElementNS( self.graph.ns, 'rect' );
+        var line = series[ j ].getSymbolForLegend();
+        var marker = series[ j ].getMarkerForLegend();
+        var text = series[ j ].getTextForLegend();
 
-          self.subG.appendChild( g );
+        var dx = 35;
 
-          g.appendChild( rect );
+        if ( this.isHideable() ) {
+          dx += 20;
 
-          var line = series[ j ].getSymbolForLegend();
-          var marker = series[ j ].getMarkerForLegend();
-          var text = series[ j ].getTextForLegend();
+          var eyeUse = document.createElementNS( self.graph.ns, "use" );
+          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + this.eyeId );
+          eyeUse.setAttribute( "width", 15 );
+          eyeUse.setAttribute( "height", 15 );
+          eyeUse.setAttribute( "x", 35 );
+          eyeUse.setAttribute( "y", -8 );
 
-          var dx = 35;
+          eyeUse.addEventListener( "click", function( e ) {
+            e.stopPropagation();
 
-          if ( this.isHideable() ) {
-            dx += 20;
-
-            var eyeUse = document.createElementNS( self.graph.ns, "use" );
-            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + this.eyeId );
-            eyeUse.setAttribute( "width", 15 );
-            eyeUse.setAttribute( "height", 15 );
-            eyeUse.setAttribute( "x", 35 );
-            eyeUse.setAttribute( "y", -8 );
-
-            eyeUse.addEventListener( "click", function( e ) {
-              e.stopPropagation();
-
-              var id;
-              if ( series[ j ].isShown() ) {
-                series[ j ].hide();
-                id = self.eyeCrossedId;
-              } else {
-                series[ j ].show();
-                id = self.eyeId;
-              }
-
-              eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + id );
-
-            } );
-
-          }
-
-          text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
-
-          g.appendChild( line );
-
-          if ( series[ j ].getType() == "scatter" ) {
-            line.setAttribute( 'transform', 'translate( 20, 0 )' );
-          }
-
-          if ( marker ) {
-            g.appendChild( marker );
-          }
-
-          if ( eyeUse ) {
-            g.appendChild( eyeUse );
-          }
-
-          g.appendChild( text );
-
-          var bbox = g.getBBox();
-
-          rect.setAttribute( 'x', bbox.x );
-          rect.setAttribute( 'y', bbox.y );
-          rect.setAttribute( 'width', bbox.width );
-          rect.setAttribute( 'height', bbox.height );
-          rect.setAttribute( 'fill', 'none' );
-          rect.setAttribute( 'pointer-events', 'fill' );
-
-          self.groups[ j ] = g;
-
-          g.addEventListener( 'click', function( e ) {
-
-            var serie = series[ j ];
-
-            if ( self.isSelectable() && !serie.isSelected() ) {
-
-              self.graph.selectSerie( serie );
+            var id;
+            if ( series[ j ].isShown() ) {
+              series[ j ].hide();
+              id = self.eyeCrossedId;
             } else {
-
-              self.graph.unselectSerie( serie );
+              series[ j ].show();
+              id = self.eyeId;
             }
 
-            e.preventDefault();
-            e.stopPropagation();
+            eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + id );
 
           } );
 
-        } ).call( this, i );
-      }
+        }
 
-      this.svg.appendChild( this.rect );
-      this.calculatePosition();
-    },
+        text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
 
-    /** 
-     * @memberof Legend.prototype
-     * @return {Boolean} true or false depending if the series can be hidden or not
-     */
-    isHideable: function() {
-      return this.options.isSerieHideable;
-    },
+        g.appendChild( line );
 
-    notHideable: function() {
-      this.options.isSerieHideable = false;
-      return this;
-    },
+        if ( series[ j ].getType() == "scatter" ) {
+          line.setAttribute( 'transform', 'translate( 20, 0 )' );
+        }
 
-    hideable: function() {
-      this.options.isSerieHideable = true;
-      return this;
-    },
+        if ( marker ) {
+          g.appendChild( marker );
+        }
 
-    /** 
-     * @memberof Legend.prototype
-     * @return {Boolean} true or false depending if the series can be selected or not
-     */
-    isSelectable: function() {
-      return this.options.isSerieSelectable;
-    },
+        if ( eyeUse ) {
+          g.appendChild( eyeUse );
+        }
 
-    /** 
-     * @memberof Legend.prototype
-     * @return {Boolean} true or false depending if the series can be t or not
-     */
-    isToggleShapes: function() {
-      return this.options.shapesToggleable;
-    },
+        g.appendChild( text );
 
-    /** 
-     * @memberof Legend.prototype
-     * @return {SVGGroupElement} The SVG group element wrapping the legend
-     */
-    getDom: function() {
-      return this.svg;
-    },
+        var bbox = g.getBBox();
 
-    setEvents: function() {
+        rect.setAttribute( 'x', bbox.x );
+        rect.setAttribute( 'y', bbox.y );
+        rect.setAttribute( 'width', bbox.width );
+        rect.setAttribute( 'height', bbox.height );
+        rect.setAttribute( 'fill', 'none' );
+        rect.setAttribute( 'pointer-events', 'fill' );
 
-      var self = this;
-      var pos = this.pos;
+        self.groups[ j ] = g;
 
-      var mousedown = function( e ) {
+        g.addEventListener( 'click', function( e ) {
 
-        e.stopPropagation();
+          var serie = series[ j ];
 
-        if ( self.options.movable ) {
-          pos.x = e.clientX;
-          pos.y = e.clientY;
+          if ( self.isSelectable() && !serie.isSelected() ) {
+
+            self.graph.selectSerie( serie );
+          } else {
+
+            self.graph.unselectSerie( serie );
+          }
 
           e.preventDefault();
-          self.mousedown = true;
-          self.graph.elementMoving( self );
+          e.stopPropagation();
 
-          self.rect.setAttribute( 'display', 'block' );
-        }
-      };
+        } );
 
-      var mousemove = function( e ) {
-        self.handleMouseMove( e );
-      };
-
-      this.rectBottom.addEventListener( 'mousedown', mousedown );
-      this.svg.addEventListener( 'click', function( e ) {
-        e.stopPropagation();
-      } );
-      this.svg.addEventListener( 'dblclick', function( e ) {
-        e.stopPropagation();
-      } );
-      this.rectBottom.addEventListener( 'mousemove', mousemove );
-      this.rect.addEventListener( 'mousemove', mousemove );
-    },
-
-    handleMouseUp: function( e ) {
-
-      e.stopPropagation();
-      e.preventDefault();
-      this.mousedown = false;
-      this.rect.setAttribute( 'display', 'none' );
-      this.graph.elementMoving( false );
-    },
-
-    handleMouseMove: function( e ) {
-
-      if ( !this.mousedown ) {
-        return;
-      }
-
-      var pos = this.pos;
-
-      var deltaX = e.clientX - pos.x;
-      var deltaY = e.clientY - pos.y;
-
-      pos.transformX += deltaX;
-      pos.transformY += deltaY;
-
-      pos.x = e.clientX;
-      pos.y = e.clientY;
-
-      e.stopPropagation();
-      e.preventDefault();
-
-      this._setPosition();
-    },
-
-    _setPosition: function() {
-
-      var pos = this.pos;
-      if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) && pos.transformX !== false && pos.transformY !== false ) {
-        this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
-      }
-    },
-
-    /** 
-     * Re-applies the legend style
-     * @memberof Legend.prototype
-     */
-    applyStyle: function() {
-
-      if ( this.options.frame ) {
-        this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
-        this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + "px" );
-        this.rectBottom.setAttribute( 'rx', this.options.frameRounding );
-        this.rectBottom.setAttribute( 'ry', this.options.frameRounding );
-      }
-
-      this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );
-
-    },
-
-    /** 
-     * Re-applies the legend style
-     * @memberof Legend.prototype
-     * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
-     */
-    fixSeries: function() {
-      var series = [];
-
-      if ( arguments[ 0 ] === false ) {
-        this.series = false;
-        this.update();
-        return;
-      }
-
-      for ( var i = 0, l = arguments.length; i < l; i++ ) {
-        if ( Array.isArray( arguments[  i ] ) ) {
-          series = series.concat( arguments[  i ] );
-        } else {
-          series.push( arguments[  i ] );
-        }
-      }
-
-      this.update();
-      this.series = series;
-    },
-
-    fixSeriesAdd: function( serie ) {
-      this.series = this.series || [];
-      this.series.push( serie );
+      } ).call( this, i );
     }
 
-  };
+    this.svg.appendChild( this.rect );
+    this.calculatePosition();
+  }
 
-  return Legend;
+  /** 
+   * @return {Boolean} true or false depending if the series can be hidden or not
+   */
+  isHideable() {
+    return this.options.isSerieHideable;
+  }
 
-} );
+  notHideable() {
+    this.options.isSerieHideable = false;
+    return this;
+  }
+
+  hideable() {
+    this.options.isSerieHideable = true;
+    return this;
+  }
+
+  set seriesHideable( hideable ) {
+    this.options.isSerieHideable = !!hideable;
+  }
+
+  /**
+   *  @type {Boolean}
+   */
+  get seriesHideable() {
+    return this.options.isSerieHideable;
+  }
+
+  /** 
+   * @return {Boolean} true or false depending if the series can be selected or not
+   */
+  isSelectable() {
+    return this.options.isSerieSelectable;
+  }
+
+  /** 
+   * @return {Boolean} true or false depending if the series can be t or not
+   */
+  isToggleShapes() {
+    return this.options.shapesToggleable;
+  }
+
+  /** 
+   * @return {SVGGroupElement} The SVG group element wrapping the legend
+   */
+  getDom() {
+    return this.svg;
+  }
+
+  setEvents() {
+
+    var self = this;
+    var pos = this.pos;
+
+    var mousedown = function( e ) {
+
+      e.stopPropagation();
+
+      if ( self.options.movable ) {
+        pos.x = e.clientX;
+        pos.y = e.clientY;
+
+        e.preventDefault();
+        self.mousedown = true;
+        self.graph.elementMoving( self );
+
+        self.rect.setAttribute( 'display', 'block' );
+      }
+    };
+
+    var mousemove = function( e ) {
+      self.handleMouseMove( e );
+    };
+
+    this.rectBottom.addEventListener( 'mousedown', mousedown );
+    this.svg.addEventListener( 'click', function( e ) {
+      e.stopPropagation();
+    } );
+    this.svg.addEventListener( 'dblclick', function( e ) {
+      e.stopPropagation();
+    } );
+    this.rectBottom.addEventListener( 'mousemove', mousemove );
+    this.rect.addEventListener( 'mousemove', mousemove );
+  }
+
+  handleMouseUp( e ) {
+
+    e.stopPropagation();
+    e.preventDefault();
+    this.mousedown = false;
+    this.rect.setAttribute( 'display', 'none' );
+    this.graph.elementMoving( false );
+  }
+
+  handleMouseMove( e ) {
+
+    if ( !this.mousedown ) {
+      return;
+    }
+
+    var pos = this.pos;
+
+    var deltaX = e.clientX - pos.x;
+    var deltaY = e.clientY - pos.y;
+
+    pos.transformX += deltaX;
+    pos.transformY += deltaY;
+
+    pos.x = e.clientX;
+    pos.y = e.clientY;
+
+    e.stopPropagation();
+    e.preventDefault();
+
+    this._setPosition();
+  }
+
+  _setPosition() {
+
+    var pos = this.pos;
+    if ( !isNaN( pos.transformX ) && !isNaN( pos.transformY ) && pos.transformX !== false && pos.transformY !== false ) {
+      this.svg.setAttribute( 'transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')' );
+    }
+  }
+
+  /** 
+   * Re-applies the legend style
+   */
+  applyStyle() {
+
+    if ( this.options.frame ) {
+      this.rectBottom.setAttribute( 'stroke', this.options.frameColor );
+      this.rectBottom.setAttribute( 'stroke-width', this.options.frameWidth + "px" );
+      this.rectBottom.setAttribute( 'rx', this.options.frameRounding );
+      this.rectBottom.setAttribute( 'ry', this.options.frameRounding );
+    }
+
+    this.rectBottom.setAttribute( 'fill', this.options.backgroundColor );
+
+  }
+
+  /** 
+   * Re-applies the legend style
+   * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
+   */
+  fixSeries() {
+    var series = [];
+
+    if ( arguments[ 0 ] === false ) {
+      this.series = false;
+      this.update();
+      return;
+    }
+
+    for ( var i = 0, l = arguments.length; i < l; i++ ) {
+      if ( Array.isArray( arguments[  i ] ) ) {
+        series = series.concat( arguments[  i ] );
+      } else {
+        series.push( arguments[  i ] );
+      }
+    }
+
+    this.update();
+    this.series = series;
+  }
+
+  fixSeriesAdd( serie ) {
+    this.series = this.series || [];
+    this.series.push( serie );
+  }
+
+};
+
+export default Legend;

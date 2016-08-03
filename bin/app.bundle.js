@@ -9339,54 +9339,88 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(2), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (GraphPosition, util) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /** 
-	   * Default legend configuration
-	   * @name LegendOptionsDefault
-	   * @object
-	   * @static
-	   * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
-	   * @prop {Number} frameWidth - The width of the frame stroke
-	   * @prop {String} frameColor - The stroke color of the frame
-	   * @prop {String} backgroundColor - The background color of the frame
-	   * @prop {Number} paddingLeft - The left padding
-	   * @prop {Number} paddingRight - The right padding
-	   * @prop {Number} paddingTop - The top padding
-	   * @prop {Number} paddingBottom - The bottom padding
-	   * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
-	   * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
-	   * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
-	   */
-	  var legendDefaults = {
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-	    frame: true,
-	    frameWidth: 1,
-	    frameColor: 'black',
-	    paddingTop: 10,
-	    paddingLeft: 10,
-	    paddingBottom: 10,
-	    paddingRight: 10,
-	    frameRounding: 3,
+	var _graph = __webpack_require__(2);
 
-	    movable: false,
+	var _graph2 = _interopRequireDefault(_graph);
 
-	    shapesToggleable: true,
-	    isSerieHideable: true,
-	    isSerieSelectable: true
+	var _graph3 = __webpack_require__(3);
 
-	  };
+	var util = _interopRequireWildcard(_graph3);
 
-	  /** 
-	   * Legend constructor
-	   * @class Legend
-	   * @private
-	   * @example var legend = graph.makeLegend( {} );
-	   */
-	  var Legend = function Legend(graph, options) {
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	/** 
+	 * Default legend configuration
+	 * @name LegendOptionsDefault
+	 * @object
+	 * @static
+	 * @prop {Boolean} frame - <code>true</code> to display a frame around the legend
+	 * @prop {Number} frameWidth - The width of the frame stroke
+	 * @prop {String} frameColor - The stroke color of the frame
+	 * @prop {String} backgroundColor - The background color of the frame
+	 * @prop {Number} paddingLeft - The left padding
+	 * @prop {Number} paddingRight - The right padding
+	 * @prop {Number} paddingTop - The top padding
+	 * @prop {Number} paddingBottom - The bottom padding
+	 * @prop {Boolean} shapesToggleable - <code>true</code> to toggle the shapes linked to serie with its status (shown or hidden)
+	 * @prop {Boolean} isSerieHideable - <code>true</code> to allow series to be hidden through the legend
+	 * @prop {Boolean} isSerieSelectable - <code>true</code> to allow series to be selected through the legend
+	 */
+	var legendDefaults = {
+
+	  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+	  frame: true,
+	  frameWidth: 1,
+	  frameColor: 'black',
+	  paddingTop: 10,
+	  paddingLeft: 10,
+	  paddingBottom: 10,
+	  paddingRight: 10,
+	  frameRounding: 3,
+
+	  movable: false,
+
+	  shapesToggleable: true,
+	  isSerieHideable: true,
+	  isSerieSelectable: true
+
+	};
+
+	/** 
+	 * Legend constructor. You should not call this method directly, but rather use {@link graph.makeLegend}
+	 * @example var legend = graph.makeLegend( {  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+	 * frame: true,
+	 * frameWidth: 1,
+	 * frameColor: 'black',
+	 * paddingTop: 10,
+	 * paddingLeft: 10,
+	 * paddingBottom: 10,
+	 * paddingRight: 10,
+	 * frameRounding: 3,
+	 *
+	 * movable: false,
+	 *
+	 * shapesToggleable: true,
+	 * isSerieHideable: true,
+	 * isSerieSelectable: true
+	 * } );
+	 */
+
+	var Legend = function () {
+	  function Legend(graph, options) {
+	    _classCallCheck(this, Legend);
 
 	    this.options = util.extend({}, legendDefaults, options);
 
@@ -9423,15 +9457,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    //  var eyeClosed = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 0 100 100"><rect fill="black" x="0" y="0" width="100" height="100" /></symbol></svg>');
 
 	    /* var eyeClosed = document.createElementNS( this.graph.ns, "symbol");
-	    eyeClosed.setAttribute('id', this.eyeId );
-	    eyeClosed.setAttribute("viewBox", '0 0 100 100');
-	     var rect = document.createElementNS( this.graph.ns, "rect" );
-	    rect.setAttribute('width', 100 );
-	    rect.setAttribute('height', 100 );
-	    rect.setAttribute('x', 0 );
-	    rect.setAttribute('y', 0 );
-	    rect.setAttribute('fill', 'black');
-	    eyeClosed.appendChild( rect );
+	      eyeClosed.setAttribute('id', this.eyeId );
+	      eyeClosed.setAttribute("viewBox", '0 0 100 100');
+	       var rect = document.createElementNS( this.graph.ns, "rect" );
+	      rect.setAttribute('width', 100 );
+	      rect.setAttribute('height', 100 );
+	      rect.setAttribute('x', 0 );
+	      rect.setAttribute('y', 0 );
+	      rect.setAttribute('fill', 'black');
+	      eyeClosed.appendChild( rect );
 	    */
 	    var eye = util.SVGParser('<svg xmlns="http://www.w3.org/2000/svg"><symbol id="' + this.eyeId + '" viewBox="0 -256 1850 1850"><rect pointer-events="fill" x="-256" y="0" fill="transparent" width="2106" height="1850" /><g transform="matrix(1,0,0,-1,30.372881,1259.8983)"><path d="m 1664,576 q -152,236 -381,353 61,-104 61,-225 0,-185 -131.5,-316.5 Q 1081,256 896,256 711,256 579.5,387.5 448,519 448,704 448,825 509,929 280,812 128,576 261,371 461.5,249.5 662,128 896,128 1130,128 1330.5,249.5 1531,371 1664,576 z M 944,960 q 0,20 -14,34 -14,14 -34,14 -125,0 -214.5,-89.5 Q 592,829 592,704 q 0,-20 14,-34 14,-14 34,-14 20,0 34,14 14,14 14,34 0,86 61,147 61,61 147,61 20,0 34,14 14,14 14,34 z m 848,-384 q 0,-34 -20,-69 Q 1632,277 1395.5,138.5 1159,0 896,0 633,0 396.5,139 160,278 20,507 0,542 0,576 q 0,34 20,69 140,229 376.5,368 236.5,139 499.5,139 263,0 499.5,-139 236.5,-139 376.5,-368 20,-35 20,-69 z" fill="#444444" /></g></symbol></svg>');
 
@@ -9441,19 +9475,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.svg.appendChild(this.subG);
 
 	    this.applyStyle();
-	  };
+	  }
 
-	  Legend.prototype = {
+	  /** 
+	   * Sets the position of the legend
+	   * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
+	   * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
+	   * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
+	   * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
+	   */
 
-	    /** 
-	     * Sets the position of the legend
-	     * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
-	     * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
-	     * @param {String} alignToY - "top" or "bottom". References the legend top or bottom boundary using the position parameter
-	     * @example legend.setPosition( { x: 'max', y: '0px' }, 'right', 'top' ); // The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top
-	     * @memberof Legend.prototype
-	     */
-	    setPosition: function setPosition(position, alignToX, alignToY) {
+
+	  _createClass(Legend, [{
+	    key: 'setPosition',
+	    value: function setPosition(position, alignToX, alignToY) {
 
 	      if (!position) {
 	        return;
@@ -9462,13 +9497,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.position = position;
 	      this.alignToX = alignToX;
 	      this.alignToY = alignToY;
-	    },
-
-	    setDraggable: function setDraggable(bln) {
+	    }
+	  }, {
+	    key: 'setDraggable',
+	    value: function setDraggable(bln) {
 	      this.options.movable = bln;
-	    },
-
-	    setAutoPosition: function setAutoPosition(position) {
+	    }
+	  }, {
+	    key: 'setAutoPosition',
+	    value: function setAutoPosition(position) {
 
 	      if (['bottom', 'left', 'top', 'right'].indexOf(position = position.toLowerCase()) > -1) {
 	        this.autoPosition = position;
@@ -9476,9 +9513,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.autoPosition = false;
-	    },
-
-	    calculatePosition: function calculatePosition() {
+	    }
+	  }, {
+	    key: 'calculatePosition',
+	    value: function calculatePosition() {
 
 	      if (!this.autoPosition) {
 	        this.graph.graphingZone.appendChild(this.getDom());
@@ -9576,7 +9614,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 	      }
 
-	      var pos = new GraphPosition(this.position),
+	      var pos = new _graph2.default(this.position),
 	          alignToY = this.alignToY,
 	          alignToX = this.alignToX;
 
@@ -9621,13 +9659,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.graph.updateGraphingZone();
 	      }
-	    },
+	    }
 
 	    /** 
 	     * Updates the legend position and content
-	     * @memberof Legend.prototype
 	     */
-	    update: function update() {
+
+	  }, {
+	    key: 'update',
+	    value: function update() {
 
 	      var self = this;
 
@@ -9761,51 +9801,62 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.svg.appendChild(this.rect);
 	      this.calculatePosition();
-	    },
+	    }
 
 	    /** 
-	     * @memberof Legend.prototype
 	     * @return {Boolean} true or false depending if the series can be hidden or not
 	     */
-	    isHideable: function isHideable() {
-	      return this.options.isSerieHideable;
-	    },
 
-	    notHideable: function notHideable() {
+	  }, {
+	    key: 'isHideable',
+	    value: function isHideable() {
+	      return this.options.isSerieHideable;
+	    }
+	  }, {
+	    key: 'notHideable',
+	    value: function notHideable() {
 	      this.options.isSerieHideable = false;
 	      return this;
-	    },
-
-	    hideable: function hideable() {
+	    }
+	  }, {
+	    key: 'hideable',
+	    value: function hideable() {
 	      this.options.isSerieHideable = true;
 	      return this;
-	    },
+	    }
+	  }, {
+	    key: 'isSelectable',
+
 
 	    /** 
-	     * @memberof Legend.prototype
 	     * @return {Boolean} true or false depending if the series can be selected or not
 	     */
-	    isSelectable: function isSelectable() {
+	    value: function isSelectable() {
 	      return this.options.isSerieSelectable;
-	    },
+	    }
 
 	    /** 
-	     * @memberof Legend.prototype
 	     * @return {Boolean} true or false depending if the series can be t or not
 	     */
-	    isToggleShapes: function isToggleShapes() {
+
+	  }, {
+	    key: 'isToggleShapes',
+	    value: function isToggleShapes() {
 	      return this.options.shapesToggleable;
-	    },
+	    }
 
 	    /** 
-	     * @memberof Legend.prototype
 	     * @return {SVGGroupElement} The SVG group element wrapping the legend
 	     */
-	    getDom: function getDom() {
-	      return this.svg;
-	    },
 
-	    setEvents: function setEvents() {
+	  }, {
+	    key: 'getDom',
+	    value: function getDom() {
+	      return this.svg;
+	    }
+	  }, {
+	    key: 'setEvents',
+	    value: function setEvents() {
 
 	      var self = this;
 	      var pos = this.pos;
@@ -9839,18 +9890,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	      this.rectBottom.addEventListener('mousemove', mousemove);
 	      this.rect.addEventListener('mousemove', mousemove);
-	    },
-
-	    handleMouseUp: function handleMouseUp(e) {
+	    }
+	  }, {
+	    key: 'handleMouseUp',
+	    value: function handleMouseUp(e) {
 
 	      e.stopPropagation();
 	      e.preventDefault();
 	      this.mousedown = false;
 	      this.rect.setAttribute('display', 'none');
 	      this.graph.elementMoving(false);
-	    },
-
-	    handleMouseMove: function handleMouseMove(e) {
+	    }
+	  }, {
+	    key: 'handleMouseMove',
+	    value: function handleMouseMove(e) {
 
 	      if (!this.mousedown) {
 	        return;
@@ -9871,21 +9924,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      e.preventDefault();
 
 	      this._setPosition();
-	    },
-
-	    _setPosition: function _setPosition() {
+	    }
+	  }, {
+	    key: '_setPosition',
+	    value: function _setPosition() {
 
 	      var pos = this.pos;
 	      if (!isNaN(pos.transformX) && !isNaN(pos.transformY) && pos.transformX !== false && pos.transformY !== false) {
 	        this.svg.setAttribute('transform', 'translate(' + pos.transformX + ', ' + pos.transformY + ')');
 	      }
-	    },
+	    }
 
 	    /** 
 	     * Re-applies the legend style
-	     * @memberof Legend.prototype
 	     */
-	    applyStyle: function applyStyle() {
+
+	  }, {
+	    key: 'applyStyle',
+	    value: function applyStyle() {
 
 	      if (this.options.frame) {
 	        this.rectBottom.setAttribute('stroke', this.options.frameColor);
@@ -9895,14 +9951,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.rectBottom.setAttribute('fill', this.options.backgroundColor);
-	    },
+	    }
 
 	    /** 
 	     * Re-applies the legend style
-	     * @memberof Legend.prototype
 	     * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
 	     */
-	    fixSeries: function fixSeries() {
+
+	  }, {
+	    key: 'fixSeries',
+	    value: function fixSeries() {
 	      var series = [];
 
 	      if (arguments[0] === false) {
@@ -9921,17 +9979,34 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.update();
 	      this.series = series;
-	    },
-
-	    fixSeriesAdd: function fixSeriesAdd(serie) {
+	    }
+	  }, {
+	    key: 'fixSeriesAdd',
+	    value: function fixSeriesAdd(serie) {
 	      this.series = this.series || [];
 	      this.series.push(serie);
 	    }
+	  }, {
+	    key: 'seriesHideable',
+	    set: function set(hideable) {
+	      this.options.isSerieHideable = !!hideable;
+	    }
 
-	  };
+	    /**
+	     *  @type {Boolean}
+	     */
+	    ,
+	    get: function get() {
+	      return this.options.isSerieHideable;
+	    }
+	  }]);
 
 	  return Legend;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}();
+
+	;
+
+	exports.default = Legend;
 
 /***/ },
 /* 14 */
