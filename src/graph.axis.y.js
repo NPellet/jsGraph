@@ -1,6 +1,6 @@
-define( [ './graph.util', './graph.axis' ], function( util, Axis ) {
+import Axis from './graph.axis'
 
-  "use strict";
+
 
   /** 
    * Generic constructor of a y axis
@@ -338,6 +338,5 @@ define( [ './graph.util', './graph.axis' ], function( util, Axis ) {
 
   }
 
-  return AxisY;
+  export default AxisY;
 
-} );

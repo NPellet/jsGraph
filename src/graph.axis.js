@@ -1,19 +1,7 @@
-define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function( EventEmitter, util ) {
+import EventEmitter from './dependencies/eventEmitter/EventEmitter'
+import * as util from './graph.util'
 
-  "use strict";
 
-  /** 
-   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
-   * @class Axis
-   * @static
-   * @augments EventEmitter
-   * @example function myAxis() {};
-   * myAxis.prototype = new Graph.getConstructor("axis");
-   * graph.setBottomAxis( new myAxis( { } ) );
-   */
-  function Axis() {}
-
-  Axis.prototype = new EventEmitter();
 
   /** 
    * Default graph parameters
@@ -39,7 +27,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
    * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
    */
-  Axis.prototype.defaults = {
+  const defaults = {
     lineAt0: false,
     display: true,
     flipped: false,
@@ -78,7 +66,23 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     unitWrapperAfter: ''
   };
 
-  Axis.prototype.init = function( graph, options, overwriteoptions ) {
+
+  /** 
+   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
+   * @class Axis
+   * @static
+   * @augments EventEmitter
+   * @example function myAxis() {};
+   * myAxis.prototype = new Graph.getConstructor("axis");
+   * graph.setBottomAxis( new myAxis( { } ) );
+   */
+  class Axis extends EventEmitter {
+
+    constructor() {
+      super();
+    }
+
+  init( graph, options, overwriteoptions ) {
 
     this.unitModificationTimeTicks = [
       [ 1, [ 1, 2, 5, 10, 20, 30 ] ],
@@ -89,7 +93,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     var self = this;
     this.graph = graph;
-    this.options = util.extend( true, {}, Axis.prototype.defaults, overwriteoptions, options );
+    this.options = util.extend( true, {}, defaults, overwriteoptions, options );
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
     this.hasChanged = true;
@@ -196,29 +200,29 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
     this.clip.appendChild( this.clipRect );
     this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-  };
+  }
 
-  Axis.prototype.handleMouseMoveLocal = function() {};
+  handleMouseMoveLocal() {}
 
   /**
    * Hides the axis
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.hide = function() {
+  hide() {
     this.options.display = false;
     return this;
-  };
+  }
 
   /**
    * Shows the axis
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.show = function() {
+  show() {
     this.options.display = true;
     return this;
-  };
+  }
 
   /**
    * Shows or hides the axis
@@ -226,18 +230,18 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Boolean} display - true to display the axis, false to hide it
    * @return {Axis} The current axis
    */
-  Axis.prototype.setDisplay = function( bool ) {
+  setDisplay( bool ) {
     this.options.display = !!bool;
     return this;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Boolean} A boolean indicating the displayed state of the axis
    */
-  Axis.prototype.isDisplayed = function() {
+  isDisplayed() {
     return this.options.display;
-  };
+  }
 
   /**
    * Forces the appearence of a straight perpendicular line at value 0
@@ -245,9 +249,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setLineAt0 = function( bool ) {
+  setLineAt0( bool ) {
     this.options.lineAt0 = !!bool;
-  };
+  }
 
   // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
 
@@ -261,7 +265,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.adaptTo = function( axis, thisValue, foreignValue, preference ) {
+  adaptTo( axis, thisValue, foreignValue, preference ) {
 
     if ( !axis ) {
       this.options.adaptTo = false;
@@ -278,7 +282,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.adapt();
 
     return this;
-  };
+  }
 
   /**
    * Adapts maximum and minimum of the axis if options.adaptTo is defined
@@ -286,7 +290,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @returns {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.adapt = function() {
+  adapt() {
 
     if ( !this.options.adaptTo ) {
       return;
@@ -336,7 +340,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     this.graph._axisHasChanged( this );
-  };
+  }
 
   // Floating axis. Adapts axis position orthogonally to another axis at a defined value. Not taken into account for margins
 
@@ -348,30 +352,30 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @example graph.getYAxis().setFloat( graph.getBottomAxis(), 0 ); // Alignes the y axis with the origin of the bottom axis
    */
-  Axis.prototype.setFloating = function( axis, value ) {
+  setFloating( axis, value ) {
 
     this.floating = true;
     this.floatingAxis = axis;
     this.floatingValue = value;
 
     return this;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Axis} The axis referencing the floating value of the current axis
    */
-  Axis.prototype.getFloatingAxis = function() {
+  getFloatingAxis() {
     return this.floatingAxis;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Axis} The value to which the current axis is aligned to
    */
-  Axis.prototype.getFloatingValue = function() {
+  getFloatingValue() {
     return this.floatingValue;
-  };
+  }
 
   /**
    * Sets the axis data spacing
@@ -381,11 +385,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Number} [ max = min ] - The spacing at the axis max value. If omitted, will be equal to the "min" parameter
    * @return {Axis} The current axis
    */
-  Axis.prototype.setAxisDataSpacing = function( val1, val2 ) {
+  setAxisDataSpacing( val1, val2 ) {
     this.options.axisDataSpacing.min = val1;
     this.options.axisDataSpacing.max = val2 || val1;
     return this;
-  };
+  }
 
   /**
    * Sets the axis data spacing at the minimum of the axis
@@ -394,9 +398,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Number} min - The spacing at the axis min value
    * @return {Axis} The current axis
    */
-  Axis.prototype.setAxisDataSpacingMin = function( val ) {
+  setAxisDataSpacingMin( val ) {
     this.options.axisDataSpacing.min = val;
-  };
+  }
 
   /**
    * Sets the axis data spacing at the maximum of the axis
@@ -405,43 +409,43 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Number} max - The spacing at the axis max value
    * @return {Axis} The current axis
    */
-  Axis.prototype.setAxisDataSpacingMax = function( val ) {
+  setAxisDataSpacingMax( val ) {
     this.options.axisDataSpacing.max = val;
-  };
+  }
 
-  Axis.prototype.setMinPx = function( px ) {
+  setMinPx( px ) {
     this.minPx = px;
     this.setMinMaxFlipped();
-  };
+  }
 
-  Axis.prototype.setMaxPx = function( px ) {
+  setMaxPx( px ) {
     this.maxPx = px;
     this.setMinMaxFlipped();
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} The position in px of the bottom of the axis
    */
-  Axis.prototype.getMinPx = function() {
+  getMinPx() {
     return this.minPxFlipped;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} The position in px of the top of the axis
    */
-  Axis.prototype.getMaxPx = function( px ) {
+  getMaxPx( px ) {
     return this.maxPxFlipped;
-  };
+  }
 
-  Axis.prototype.getMathMaxPx = function() {
+  getMathMaxPx() {
     return this.maxPx;
-  };
+  }
 
-  Axis.prototype.getMathMinPx = function() {
+  getMathMinPx() {
     return this.minPx;
-  };
+  }
 
   // Returns the true minimum of the axis. Either forced in options or the one from the data
 
@@ -450,26 +454,26 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Number} The minimum possible value of the axis
    */
-  Axis.prototype.getMinValue = function() {
+  getMinValue() {
     return this.options.forcedMin !== false ? this.options.forcedMin : this.dataMin;
-  };
+  }
 
   /**
    * Retrieves the maximum possible value of the axis. Can be set by "forcedMax", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
    * @memberof Axis
    * @return {Number} The maximum possible value of the axis
    */
-  Axis.prototype.getMaxValue = function() {
+  getMaxValue() {
     return this.options.forcedMax !== false ? this.options.forcedMax : this.dataMax;
-  };
+  }
 
-  Axis.prototype.setMinValueData = function( min ) {
+  setMinValueData( min ) {
     this.dataMin = min;
-  };
+  }
 
-  Axis.prototype.setMaxValueData = function( max ) {
+  setMaxValueData( max ) {
     this.dataMax = max;
-  };
+  }
 
   /**
    * Forces the minimum value of the axis (no more dependant on the serie values)
@@ -478,13 +482,13 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value
    * @return {Axis} The current axis
    */
-  Axis.prototype.forceMin = function( min, noRescale ) {
+  forceMin( min, noRescale ) {
     this.options.forcedMin = min;
 
     this.setCurrentMin( noRescale ? this.getCurrentMin() : undefined );
     this.graph._axisHasChanged( this );
     return this;
-  };
+  }
 
   /**
    * Forces the maximum value of the axis (no more dependant on the serie values).
@@ -493,31 +497,31 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value
    * @return {Axis} The current axis
    */
-  Axis.prototype.forceMax = function( max, noRescale ) {
+  forceMax( max, noRescale ) {
     this.options.forcedMax = max;
 
     this.setCurrentMax( noRescale ? this.getCurrentMax() : undefined );
     this.graph._axisHasChanged( this );
     return this;
-  };
+  }
 
   /**
    * Retrieves the forced minimum of the axis
    * @memberof Axis
    * @return {Number} The maximum possible value of the axis
    */
-  Axis.prototype.getForcedMin = function() {
+  getForcedMin() {
     return this.options.forcedMin;
-  };
+  }
 
   /**
    * Retrieves the forced minimum of the axis
    * @memberof Axis
    * @return {Number} The maximum possible value of the axis
    */
-  Axis.prototype.getForcedMax = function() {
+  getForcedMax() {
     return this.options.forcedMax;
-  };
+  }
 
   /**
    * Forces the min and max values of the axis to the min / max values of another axis
@@ -525,28 +529,28 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.forceToAxis = function( axis ) {
+  forceToAxis( axis ) {
     if ( axis.getMaxValue && axis.getMinValue ) {
       this.options.forcedMin = axis.getMinValue();
       this.options.forcedMax = axis.getMaxValue();
     }
 
     return this;
-  };
+  }
 
-  Axis.prototype.getNbTicksPrimary = function() {
+  getNbTicksPrimary() {
     return this.options.nbTicksPrimary;
-  };
+  }
 
-  Axis.prototype.getNbTicksSecondary = function() {
+  getNbTicksSecondary() {
     return this.options.nbTicksSecondary;
-  };
+  }
 
-  Axis.prototype.handleMouseMove = function( px, e ) {
+  handleMouseMove( px, e ) {
     this.mouseVal = this.getVal( px );
-  };
+  }
 
-  Axis.prototype.handleMouseWheel = function( delta, e, baseline ) {
+  handleMouseWheel( delta, e, baseline ) {
 
     delta = Math.min( 0.2, Math.max( -0.2, delta ) );
 
@@ -565,7 +569,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.graph.draw();
     //	this.graph.drawSeries(true);
 
-  };
+  }
 
   /**
    * Performs a zoom on the axis, without redraw afterwards
@@ -582,16 +586,16 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
    * graph.draw();
    */
-  Axis.prototype.zoom = function( val1, val2 ) {
+  zoom( val1, val2 ) {
     return this._doZoomVal( val1, val2, true );
-  };
+  }
 
-  Axis.prototype._doZoomVal = function( val1, val2, mute ) {
+  _doZoomVal( val1, val2, mute ) {
 
     return this._doZoom( this.getPx( val1 ), this.getPx( val2 ), val1, val2, mute );
-  };
+  }
 
-  Axis.prototype._doZoom = function( px1, px2, val1, val2, mute ) {
+  _doZoom( px1, px2, val1, val2, mute ) {
 
     //if(this.options.display || 1 == 1) {
     var val1 = val1 !== undefined ? val1 : this.getVal( px1 );
@@ -616,21 +620,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return this;
-  };
+  }
 
-  Axis.prototype.getSerieShift = function() {
+  getSerieShift() {
     return this._serieShift;
-  };
+  }
 
-  Axis.prototype.getSerieScale = function() {
+  getSerieScale() {
     return this._serieScale;
-  };
+  }
 
-  Axis.prototype.getMouseVal = function() {
+  getMouseVal() {
     return this.mouseVal;
-  };
+  }
 
-  Axis.prototype.getUnitPerTick = function( px, nbTick, valrange ) {
+  getUnitPerTick( px, nbTick, valrange ) {
 
     var umin;
     var pxPerTick = px / nbTicks; // 1000 / 100 = 10 px per tick
@@ -734,14 +738,14 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     var pxPerTick = px / nbTick;
 
     return [ unitPerTickCorrect, nbTicks, pxPerTick ];
-  };
+  }
 
   /**
    * Resets the min and max of the serie to fit the series it contains
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setMinMaxToFitSeries = function( noNotify ) {
+  setMinMaxToFitSeries( noNotify ) {
 
     var interval = this.getInterval();
 
@@ -784,63 +788,63 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.emit( "zoomOutFull", [ this.currentAxisMin, this.currentAxisMax, this ] );
 
     return this;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
    */
-  Axis.prototype.getInterval = function() {
+  getInterval() {
     return this.getMaxValue() - this.getMinValue()
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} the maximum interval ( max - min ) of the axis ( not nessarily the current one )
    */
-  Axis.prototype.getCurrentInterval = function() {
+  getCurrentInterval() {
     return this.cachedInterval;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} The current minimum value of the axis
    */
-  Axis.prototype.getCurrentMin = function() {
+  getCurrentMin() {
     return this.cachedCurrentMin;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {Number} The current maximum value of the axis
    */
-  Axis.prototype.getCurrentMax = function() {
+  getCurrentMax() {
     return this.cachedCurrentMax;
-  };
+  }
 
   /**
    * Caches the current axis minimum
    * @memberof Axis
    */
-  Axis.prototype.cacheCurrentMin = function() {
+  cacheCurrentMin() {
     this.cachedCurrentMin = this.currentAxisMin == this.currentAxisMax ? ( this.options.logScale ? this.currentAxisMin / 10 : this.currentAxisMin - 1 ) : this.currentAxisMin;
-  };
+  }
 
   /**
    * Caches the current axis maximum
    * @memberof Axis
    */
-  Axis.prototype.cacheCurrentMax = function() {
+  cacheCurrentMax() {
     this.cachedCurrentMax = this.currentAxisMax == this.currentAxisMin ? ( this.options.logScale ? this.currentAxisMax * 10 : this.currentAxisMax + 1 ) : this.currentAxisMax;
-  };
+  }
 
   /**
    * Caches the current interval
    * @memberof Axis
    */
-  Axis.prototype.cacheInterval = function() {
+  cacheInterval() {
     this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
-  };
+  }
 
   /**
    * Sets the current minimum value of the axis. If lower that the forced value, the forced value is used
@@ -848,7 +852,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Number} val - The new minimum value
    * @return {Axis} The current axis
    */
-  Axis.prototype.setCurrentMin = function( val ) {
+  setCurrentMin( val ) {
 
     if ( val === undefined || ( this.getForcedMin() !== false && val < this.getForcedMin() ) ) {
       val = this.getMinValue();
@@ -861,7 +865,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     this.graph._axisHasChanged( this );
     return this;
-  };
+  }
 
   /**
    * Sets the current maximum value of the axis. If higher that the forced value, the forced value is used
@@ -869,7 +873,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Number} val - The new maximum value
    * @return {Axis} The current axis
    */
-  Axis.prototype.setCurrentMax = function( val ) {
+  setCurrentMax( val ) {
 
     if ( val === undefined || ( this.getForcedMax() !== false && val > this.getForcedMax() ) ) {
       val = this.getMaxValue();
@@ -882,7 +886,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     this.graph._axisHasChanged( this );
-  };
+  }
 
   /**
    * Sets the flipping state of the axis. If enabled, the axis is descending rather than ascending.
@@ -890,13 +894,13 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @param {Boolean} flip - The new flipping state of the axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.flip = function( flip ) {
+  flip( flip ) {
     this.options.flipped = flip;
     this.setMinMaxFlipped();
     return this;
-  };
+  }
   /*
-    Axis.prototype.setMinMaxFlipped = function() {
+    setMinMaxFlipped() {
 
       var interval = this.maxPx - this.minPx;
       var maxPx = this.maxPx - interval * this.options.span[ 0 ];
@@ -913,11 +917,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Boolean} The current flipping state of the axis
    */
-  Axis.prototype.isFlipped = function() {
+  isFlipped() {
     return this.options.flipped;
-  };
+  }
 
-  Axis.prototype._draw = function( linkedToAxisOnly ) { // Redrawing of the axis
+  _draw( linkedToAxisOnly ) { // Redrawing of the axis
 
     var self = this;
     var visible;
@@ -1076,9 +1080,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return widthHeight + ( label ? 20 : 0 );
-  };
+  }
 
-  Axis.prototype.getExponentGreekLetter = function( val ) {
+  getExponentGreekLetter( val ) {
     switch ( val ) {
 
       case 3:
@@ -1122,9 +1126,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         break;
     }
 
-  };
+  }
 
-  Axis.prototype.drawInit = function() {
+  drawInit() {
 
     switch ( this.options.tickPosition ) {
       case 3:
@@ -1160,9 +1164,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
         this.groupGrids.removeChild( this.groupGrids.firstChild );
       }
 */
-  };
+  }
 
-  Axis.prototype.drawLinearTicksWrapper = function( widthPx, valrange ) {
+  drawLinearTicksWrapper( widthPx, valrange ) {
 
     var tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
 
@@ -1173,21 +1177,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
     // We need to get here the width of the ticks to display the axis properly, with the correct shift
     return this.drawTicks( tickPrimaryUnit, this.secondaryTicks() );
-  };
+  }
 
-  Axis.prototype.forcePrimaryTickUnitMax = function( value ) {
+  forcePrimaryTickUnitMax( value ) {
     this.options.maxPrimaryTickUnit = value;
-  };
+  }
 
-  Axis.prototype.forcePrimaryTickUnitMin = function( value ) {
+  forcePrimaryTickUnitMin( value ) {
     this.options.minPrimaryTickUnit = value;
-  };
+  }
 
-  Axis.prototype.setTickLabelRatio = function( tickRatio ) {
+  setTickLabelRatio( tickRatio ) {
     this.options.ticklabelratio = tickRatio;
-  };
+  }
 
-  Axis.prototype.draw = function( linkedToAxisOnly ) {
+  draw( linkedToAxisOnly ) {
 
     if ( ( linkedToAxisOnly && this.linkedToAxis ) || ( !linkedToAxisOnly && !this.linkedToAxis ) ) {
 
@@ -1198,9 +1202,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return 0;
-  };
+  }
 
-  Axis.prototype.drawTicks = function( primary, secondary ) {
+  drawTicks( primary, secondary ) {
 
     var unitPerTick = primary,
       min = this.getCurrentMin(),
@@ -1259,9 +1263,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     this.widthHeightTick = this.getMaxSizeTick();
     return this.widthHeightTick;
-  };
+  }
 
-  Axis.prototype.nextTick = function( level, callback ) {
+  nextTick( level, callback ) {
 
     this.ticks[ level ] = this.ticks[ level ] || [];
     this.lastCurrentTick[ level ] = this.lastCurrentTick[ level ] || 0;
@@ -1284,9 +1288,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.currentTick[ level ]++;
 
     return tick;
-  };
+  }
 
-  Axis.prototype.nextTickLabel = function( callback ) {
+  nextTickLabel( callback ) {
 
     this.ticksLabels = this.ticksLabels || [];
     this.lastCurrentTickLabel = this.lastCurrentTickLabel || 0;
@@ -1309,9 +1313,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.currentTickLabel++;
 
     return tickLabel;
-  };
+  }
 
-  Axis.prototype.removeUselessTicks = function() {
+  removeUselessTicks() {
 
     for ( var j in this.currentTick ) {
 
@@ -1322,9 +1326,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       this.lastCurrentTick[ j ] = this.currentTick[ j ];
       this.currentTick[ j ] = 0;
     }
-  };
+  }
 
-  Axis.prototype.removeUselessTickLabels = function() {
+  removeUselessTickLabels() {
 
     for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
       this.ticksLabels[ i ].setAttribute( 'display', 'none' );
@@ -1333,24 +1337,24 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     this.lastCurrentTickLabel = this.currentTickLabel;
     this.currentTickLabel = 0;
 
-  };
+  }
   /*
-    Axis.prototype.doGridLine = function() {
+    doGridLine() {
       var gridLine = document.createElementNS( this.graph.ns, 'line' );
       this.groupGrids.appendChild( gridLine );
       return gridLine;
     };*/
 
-  Axis.prototype.nextGridLine = function( primary, x1, x2, y1, y2 ) {
+  nextGridLine( primary, x1, x2, y1, y2 ) {
 
     if ( !( ( primary && this.options.primaryGrid ) || ( !primary && this.options.secondaryGrid ) ) ) {
       return;
     }
 
     this.gridLinePath[ primary ? "primary" : "secondary" ] += "M " + x1 + " " + y1 + " L " + x2 + " " + y2;
-  };
+  }
 
-  Axis.prototype.setGridLineStyle = function( gridLine, primary ) {
+  setGridLineStyle( gridLine, primary ) {
 
     gridLine.setAttribute( 'shape-rendering', 'crispEdges' );
     gridLine.setAttribute( 'stroke', primary ? this.getPrimaryGridColor() : this.getSecondaryGridColor() );
@@ -1362,21 +1366,21 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       gridLine.setAttribute( 'stroke-dasharray', dasharray );
     }
 
-  };
+  }
 
-  Axis.prototype.setGridLinesStyle = function() {
+  setGridLinesStyle() {
     this.setGridLineStyle( this.gridPrimary, true );
     this.setGridLineStyle( this.gridSecondary, false );
     return this;
-  };
+  }
 
-  Axis.prototype.resetTicksLength = function() {};
+  resetTicksLength() {}
 
-  Axis.prototype.secondaryTicks = function() {
+  secondaryTicks() {
     return this.options.nbTicksSecondary;
-  };
+  }
 
-  Axis.prototype.drawLogTicks = function() {
+  drawLogTicks() {
     var min = this.getCurrentMin(),
       max = this.getCurrentMax();
     var incr = Math.min( min, max );
@@ -1426,14 +1430,14 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     this.widthHeightTick = this.getMaxSizeTick();
     return this.widthHeightTick;
-  };
+  }
 
-  Axis.prototype.drawTickWrapper = function( value, label, level, options ) {
+  drawTickWrapper( value, label, level, options ) {
 
     //var pos = this.getPos( value );
 
     this.drawTick( value, level, options );
-  };
+  }
 
   /**
    * Used to scale the master axis into the slave axis
@@ -1450,7 +1454,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Number} The width or height used by the axis (used internally)
    */
-  Axis.prototype.linkToAxis = function( axis, scalingFunction, decimals ) {
+  linkToAxis( axis, scalingFunction, decimals ) {
 
     this.linkedToAxis = {
       axis: axis,
@@ -1458,9 +1462,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       decimals: decimals ||  1
     };
 
-  };
+  }
 
-  Axis.prototype.drawLinkedToAxisTicksWrapper = function( widthPx, valrange ) {
+  drawLinkedToAxisTicksWrapper( widthPx, valrange ) {
 
     var opts = this.linkedToAxis,
       px = 0,
@@ -1508,7 +1512,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
       px += opts.deltaPx;
 
     } while ( px < widthPx );
-  };
+  }
 
   /**
    * Transform a value into pixels, according to the axis scaling. The value is referenced to the drawing wrapper, not the the axis minimal value
@@ -1516,14 +1520,14 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Number} The value transformed into pixels
    */
-  Axis.prototype.getPos = function( value ) {
+  getPos( value ) {
     return this.getPx( value );
-  };
+  }
 
   /**
    * @alias Axis~getPos
    */
-  Axis.prototype.getPx = function( value ) {
+  getPx( value ) {
     //      if(this.getMaxPx() == undefined)
     //        console.log(this);
     //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -1544,12 +1548,12 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       return value;
     }
-  };
+  }
 
   /**
    * @alias Axis~getPos
    */
-  Axis.prototype.getRoundedPx = function( value ) {
+  getRoundedPx( value ) {
     //      if(this.getMaxPx() == undefined)
     //        console.log(this);
     //console.log(this.getMaxPx(), this.getMinPx(), this.getCurrentInterval());
@@ -1557,7 +1561,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
     return Math.round( this.getPx( value ) * 10 ) / 10;
-  };
+  }
 
   /**
    * Transform a pixel position (referenced to the graph zone, not to the axis minimum) into a value, according to the axis scaling.
@@ -1565,7 +1569,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Number} The axis value corresponding to the pixel position
    */
-  Axis.prototype.getVal = function( px ) {
+  getVal( px ) {
 
     if ( !this.options.logScale ) {
 
@@ -1575,15 +1579,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
       return Math.exp( ( px - this.getMinPx() ) / ( this.getMaxPx() - this.getMinPx() ) * ( Math.log( this.getCurrentMax() ) - Math.log( this.getCurrentMin() ) ) + Math.log( this.getCurrentMin() ) )
     }
-
-    // Ex 50 / (100) * (1000 - 700) + 700
-
-  };
-
-  /**
-   *  @alias Axis#getVal
-   */
-  Axis.prototype.getValue = Axis.prototype.getVal;
+  }
 
   /**
    * Transform a delta value into pixels
@@ -1592,15 +1588,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Number} The value transformed into pixels
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
    */
-  Axis.prototype.getRelPx = function( delta ) {
+  getRelPx( delta ) {
 
     return ( delta / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
-  };
-
-  /**
-   *  @alias Axis#getRelPx
-   */
-  Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+  }
 
   /**
    * Transform a delta pixels value into value
@@ -1610,12 +1601,12 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @see Axis~getRelPx
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
    */
-  Axis.prototype.getRelVal = function( px ) {
+  getRelVal( px ) {
 
     return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
-  };
+  }
 
-  Axis.prototype.valueToText = function( value ) {
+  valueToText( value ) {
 
     if ( this.scientificExponent ) {
 
@@ -1661,7 +1652,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    *  graph.getXAxis().valueToHtml( 3500 ); // Returns "3.5 km"
    *  @see Axis#valueToText
    */
-  Axis.prototype.valueToHtml = function( value, noScaling, noUnits ) {
+  valueToHtml( value, noScaling, noUnits ) {
 
     var text = this.valueToText( value );
     var letter;
@@ -1683,7 +1674,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     return text;
   }
 
-  Axis.prototype.getModifiedValue = function( value ) {
+  getModifiedValue( value ) {
     if ( this.options.ticklabelratio ) {
       value *= this.options.ticklabelratio;
     }
@@ -1693,9 +1684,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return value;
-  };
+  }
 
-  Axis.prototype.modifyUnit = function( value, mode ) {
+  modifyUnit( value, mode ) {
 
     var text = "";
     var incr = this.incrTick;
@@ -1750,23 +1741,23 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return text;
-  };
+  }
 
-  Axis.prototype.getExponentialFactor = function() {
+  getExponentialFactor() {
     return this.options.exponentialFactor;
-  };
+  }
 
-  Axis.prototype.setExponentialFactor = function( value ) {
+  setExponentialFactor( value ) {
     this.options.exponentialFactor = value;
-  };
+  }
 
-  Axis.prototype.setExponentialLabelFactor = function( value ) {
+  setExponentialLabelFactor( value ) {
     this.options.exponentialLabelFactor = value;
-  };
+  }
 
-  Axis.prototype.getExponentialLabelFactor = function() {
+  getExponentialLabelFactor() {
     return this.options.exponentialLabelFactor;
-  };
+  }
 
   /**
    * Sets the label of the axis
@@ -1774,47 +1765,47 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setLabel = function( label ) {
+  setLabel( label ) {
     this.options.labelValue = label;
     return this;
-  };
+  }
 
   /**
    * @memberof Axis
    * @return {String} The label value
    */
-  Axis.prototype.getLabel = function() {
+  getLabel() {
     return this.options.labelValue;
-  };
+  }
 
-  Axis.prototype.setSpan = function( _from, _to ) {
+  setSpan( _from, _to ) {
 
     this.options.span = [ _from, _to ];
     return this;
-  };
+  }
 
-  Axis.prototype.getSpan = function() {
+  getSpan() {
     return this.options.span;
-  };
+  }
 
-  Axis.prototype.setLevel = function( level ) {
+  setLevel( level ) {
     this._level = level;
     return this;
-  };
+  }
 
-  Axis.prototype.getLevel = function() {
+  getLevel() {
     return this._level;
-  };
+  }
 
-  Axis.prototype.setShift = function( shift ) {
+  setShift( shift ) {
     this.shift = shift;
     //this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
     this._setShift();
-  };
+  }
 
-  Axis.prototype.getShift = function() {
+  getShift() {
     return this.shift;
-  };
+  }
 
   /**
    * Changes the tick position
@@ -1822,7 +1813,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setTickPosition = function( pos ) {
+  setTickPosition( pos ) {
     switch ( pos ) {
       case 3:
       case 'outside':
@@ -1843,7 +1834,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
 
     this.options.tickPosition = pos;
     return this;
-  };
+  }
 
   /**
    * Displays or hides the axis grids
@@ -1851,11 +1842,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setGrids = function( on ) {
+  setGrids( on ) {
     this.options.primaryGrid = on;
     this.options.secondaryGrid = on;
     return this;
-  };
+  }
 
   /**
    * Displays or hides the axis primary grid
@@ -1863,10 +1854,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setPrimaryGrid = function( on ) {
+  setPrimaryGrid( on ) {
     this.options.primaryGrid = on;
     return this;
-  };
+  }
 
   /**
    * Displays or hides the axis secondary grid
@@ -1874,74 +1865,64 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.setSecondaryGrid = function( on ) {
+  setSecondaryGrid( on ) {
     this.options.secondaryGrid = on;
     return this;
-  };
+  }
 
   /**
    * Enables primary grid
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.primaryGridOn = function() {
+  primaryGridOn() {
     return this.setPrimaryGrid( true );
-  };
+  }
 
   /**
    * Disables primary grid
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.primaryGridOff = function() {
+  primaryGridOff() {
     return this.setPrimaryGrid( false );
-  };
+  }
 
   /**
    * Enables secondary grid
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.secondaryGridOn = function() {
+  secondaryGridOn() {
     return this.setSecondaryGrid( true );
-  };
+  }
 
   /**
    * Disables secondary grid
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.secondaryGridOff = function() {
+  secondaryGridOff() {
     return this.setSecondaryGrid( false );
-  };
+  }
 
   /**
    * Enables all the grids
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.gridsOn = function() {
+  gridsOn() {
     return this.setGrids( true );
-  };
+  }
 
   /**
    * Disables all the grids
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  Axis.prototype.gridsOff = function() {
+  gridsOff() {
     return this.setGrids( false );
-  };
-
-  /**
-   * @alias Axis#gridsOff
-   */
-  Axis.prototype.turnGridsOff = Axis.prototype.gridsOff;
-
-  /**
-   * @alias Axis#gridsOn
-   */
-  Axis.prototype.turnGridsOn = Axis.prototype.gridsOn;
+  }
 
   /**
    * Sets the axis color
@@ -1950,10 +1931,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.setAxisColor = function( color ) {
+  setAxisColor( color ) {
     this.options.axisColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the axis color
@@ -1961,9 +1942,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} The color of the axis
    * @since 1.13.2
    */
-  Axis.prototype.getAxisColor = function( color ) {
+  getAxisColor( color ) {
     return this.options.axisColor || 'black';
-  };
+  }
 
   /**
    * Sets the color of the main ticks
@@ -1972,10 +1953,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.setPrimaryTicksColor = function( color ) {
+  setPrimaryTicksColor( color ) {
     this.options.primaryTicksColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the color of the main ticks
@@ -1983,9 +1964,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} The color of the primary ticks
    * @since 1.13.2
    */
-  Axis.prototype.getPrimaryTicksColor = function( color ) {
+  getPrimaryTicksColor( color ) {
     return this.options.primaryTicksColor || 'black';
-  };
+  }
 
   /**
    * Sets the color of the secondary ticks
@@ -1994,10 +1975,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.setSecondaryTicksColor = function( color ) {
+  setSecondaryTicksColor( color ) {
     this.options.secondaryTicksColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the color of the secondary ticks
@@ -2005,9 +1986,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} The color of the secondary ticks
    * @since 1.13.2
    */
-  Axis.prototype.getSecondaryTicksColor = function( color ) {
+  getSecondaryTicksColor( color ) {
     return this.options.secondaryTicksColor || 'black';
-  };
+  }
 
   /**
    * Sets the color of the tick labels
@@ -2016,10 +1997,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.setTicksLabelColor = function( color ) {
+  setTicksLabelColor( color ) {
     this.options.ticksLabelColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the color of the tick labels
@@ -2027,9 +2008,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} The color of the tick labels
    * @since 1.13.2
    */
-  Axis.prototype.getTicksLabelColor = function( color ) {
+  getTicksLabelColor( color ) {
     return this.options.ticksLabelColor || 'black';
-  };
+  }
 
   /**
    * Sets the color of the primary grid
@@ -2038,10 +2019,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setPrimaryGridColor = function( color ) {
+  setPrimaryGridColor( color ) {
     this.options.primaryGridColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the color of the primary grid
@@ -2049,9 +2030,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} color - The primary grid color
    * @since 1.13.3
    */
-  Axis.prototype.getPrimaryGridColor = function() {
+  getPrimaryGridColor() {
     return this.options.primaryGridColor;
-  };
+  }
 
   /**
    * Sets the color of the primary grid
@@ -2060,10 +2041,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setSecondaryGridColor = function( color ) {
+  setSecondaryGridColor( color ) {
     this.options.secondaryGridColor = color;
     return this;
-  };
+  }
 
   /**
    * Gets the color of the secondary grid
@@ -2071,9 +2052,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} color - The secondary grid color
    * @since 1.13.3
    */
-  Axis.prototype.getSecondaryGridColor = function() {
+  getSecondaryGridColor() {
     return this.options.secondaryGridColor;
-  };
+  }
 
   /**
    * Sets the width of the primary grid lines
@@ -2082,10 +2063,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setPrimaryGridWidth = function( width ) {
+  setPrimaryGridWidth( width ) {
     this.options.primaryGridWidth = width;
     return this;
-  };
+  }
 
   /**
    * Gets the width of the primary grid lines
@@ -2093,9 +2074,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Number} width - The width of the primary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getPrimaryGridWidth = function() {
+  getPrimaryGridWidth() {
     return this.options.primaryGridWidth;
-  };
+  }
 
   /**
    * Sets the width of the secondary grid lines
@@ -2104,10 +2085,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setSecondaryGridWidth = function( width ) {
+  setSecondaryGridWidth( width ) {
     this.options.secondaryGridWidth = width;
     return this;
-  };
+  }
 
   /**
    * Gets the width of the secondary grid lines
@@ -2115,9 +2096,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Number} width - The width of the secondary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getSecondaryGridWidth = function() {
+  getSecondaryGridWidth() {
     return this.options.secondaryGridWidth;
-  };
+  }
 
   /**
    * Sets the opacity of the primary grid lines
@@ -2126,10 +2107,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setPrimaryGridOpacity = function( opacity ) {
+  setPrimaryGridOpacity( opacity ) {
     this.options.primaryGridOpacity = opacity;
     return this;
-  };
+  }
 
   /**
    * Gets the opacity of the primary grid lines
@@ -2137,9 +2118,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Number} opacity - The opacity of the primary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getPrimaryGridOpacity = function() {
+  getPrimaryGridOpacity() {
     return this.options.primaryGridOpacity;
-  };
+  }
 
   /**
    * Sets the opacity of the secondary grid lines
@@ -2148,10 +2129,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setSecondaryGridOpacity = function( opacity ) {
+  setSecondaryGridOpacity( opacity ) {
     this.options.secondaryGridOpacity = opacity;
     return this;
-  };
+  }
 
   /**
    * Gets the opacity of the secondary grid lines
@@ -2159,9 +2140,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Number} opacity - The opacity of the secondary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getSecondaryGridOpacity = function() {
+  getSecondaryGridOpacity() {
     return this.options.secondaryGridOpacity;
-  };
+  }
 
   /**
    * Sets the dasharray of the primary grid lines
@@ -2170,10 +2151,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setPrimaryGridDasharray = function( dasharray ) {
+  setPrimaryGridDasharray( dasharray ) {
     this.options.primaryGridDasharray = dasharray;
     return this;
-  };
+  }
 
   /**
    * Gets the dasharray of the primary grid lines
@@ -2181,9 +2162,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} dasharray - The dasharray of the primary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getPrimaryGridDasharray = function() {
+  getPrimaryGridDasharray() {
     return this.options.primaryGridDasharray;
-  };
+  }
 
   /**
    * Sets the dasharray of the secondary grid lines
@@ -2192,10 +2173,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.3
    */
-  Axis.prototype.setSecondaryGridDasharray = function( dasharray ) {
+  setSecondaryGridDasharray( dasharray ) {
     this.options.secondaryGridDasharray = dasharray;
     return this;
-  };
+  }
 
   /**
    * Gets the dasharray of the secondary grid lines
@@ -2203,9 +2184,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} dasharray - The dasharray of the secondary grid lines
    * @since 1.13.3
    */
-  Axis.prototype.getSecondaryGridDasharray = function() {
+  getSecondaryGridDasharray() {
     return this.options.secondaryGridDasharray;
-  };
+  }
 
   /**
    * Sets the color of the label
@@ -2214,9 +2195,9 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {Axis} The current axis
    * @since 1.13.2
    */
-  Axis.prototype.setLabelColor = function( color ) {
+  setLabelColor( color ) {
     this.options.labelColor = color;
-  };
+  }
 
   /**
    * Gets the color of the label
@@ -2224,11 +2205,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @return {String} The color of the label
    * @since 1.13.2
    */
-  Axis.prototype.getLabelColor = function() {
+  getLabelColor() {
     return this.options.labelColor;
-  };
+  }
 
-  Axis.prototype.setTickContent = function( dom, val, options ) {
+  setTickContent( dom, val, options ) {
     if ( !options ) options = {};
 
     if ( options.overwrite ||  !options.exponential ) {
@@ -2250,23 +2231,23 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     if ( options.fontSize ) {
       dom.setAttribute( 'font-size', options.fontSize );
     }
-  };
+  }
 
   /**
    * @memberof Axis
    * @returns {Boolean} true if it is an x axis, false otherwise
    */
-  Axis.prototype.isX = function() {
+  isX() {
     return false;
-  };
+  }
 
   /**
    * @memberof Axis
    * @returns {Boolean} true if it is an y axis, false otherwise
    */
-  Axis.prototype.isY = function() {
+  isY() {
     return false;
-  };
+  }
 
   /**
    * Sets the unit of the axis
@@ -2275,10 +2256,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @since 1.13.3
    */
-  Axis.prototype.setUnit = function( unit ) {
+  setUnit( unit ) {
     this.options.unit = unit;
     return this;
-  };
+  }
 
   /**
    * Sets characters wrapping the unit
@@ -2289,11 +2270,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @example axis.setUnitWrapper("[", "]").setUnit('m'); // Will display [m]
    * @since 1.13.3
    */
-  Axis.prototype.setUnitWrapper = function( before, after ) {
+  setUnitWrapper( before, after ) {
     this.options.unitWrapperBefore = before;
     this.options.unitWrapperAfter = after;
     return this;
-  };
+  }
 
   /**
    * Allows the unit to scale with thousands
@@ -2302,10 +2283,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @since 1.13.3
    */
-  Axis.prototype.setUnitDecade = function( on ) {
+  setUnitDecade( on ) {
     this.options.unitDecade = on;
     return this;
-  };
+  }
 
   /**
    * Enable the scientific mode for the axis values. This way, big numbers can be avoided, e.g. "1000000000" would be displayed 1 with 10<sup>9</sup> or "G" shown on near the axis unit.
@@ -2314,10 +2295,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @since 1.13.3
    */
-  Axis.prototype.setScientific = function( on ) {
+  setScientific( on ) {
     this.options.scientificScale = on;
     return this;
-  };
+  }
 
   /**
    * In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
@@ -2327,10 +2308,10 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @since 1.13.3
    * @see Axis#setScientific
    */
-  Axis.prototype.setScientificScaleExponent = function( scientificScaleExponent ) {
+  setScientificScaleExponent( scientificScaleExponent ) {
     this.options.scientificScaleExponent = scientificScaleExponent;
     return this;
-  };
+  }
 
   /**
    * The engineer scaling is similar to the scientific scaling ({@link Axis#setScientificScale}) but allowing only mupltiples of 3 to be used to scale the axis (for instance, go from grams to kilograms while skipping decagrams and hexagrams)
@@ -2340,11 +2321,11 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @since 1.13.3
    * @see Axis#setScientific
    */
-  Axis.prototype.setEngineering = function( engineeringScaling ) { //bool
+  setEngineering( engineeringScaling ) { //bool
     this.options.scientificScale = engineeringScaling;
     this.options.engineeringScale = engineeringScaling;
     return this;
-  };
+  }
 
   /**
    * Calculates the closest engineering exponent from a scientific exponent
@@ -2354,7 +2335,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @since 1.13.3
    * @private
    */
-  Axis.prototype.getEngineeringExponent = function( scientificExponent ) {
+  getEngineeringExponent( scientificExponent ) {
 
     if ( scientificExponent > 0 ) {
       scientificExponent -= ( scientificExponent % 3 );
@@ -2363,7 +2344,7 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
     }
 
     return scientificExponent
-  };
+  }
 
   /**
    * Enables log scaling
@@ -2372,15 +2353,36 @@ define( [ './dependencies/eventEmitter/EventEmitter', './graph.util' ], function
    * @memberof Axis
    * @since 1.13.3
    */
-  Axis.prototype.setLogScale = function( log ) {
+  setLogScale( log ) {
     this.options.logScale = log;
     return this;
-  };
+  }
 
-  Axis.prototype.isZoomed = function() {
+  isZoomed() {
     return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
-  };
+  }
+}
 
-  return Axis;
+/**
+ *  @alias Axis#getVal
+ */
+Axis.prototype.getValue = Axis.prototype.getVal;
 
-} );
+
+/**
+ *  @alias Axis#getRelPx
+ */
+Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
+
+
+/**
+ * @alias Axis#gridsOff
+ */
+Axis.prototype.turnGridsOff = Axis.prototype.gridsOff;
+
+/**
+ * @alias Axis#gridsOn
+ */
+Axis.prototype.turnGridsOn = Axis.prototype.gridsOn;
+
+export default Axis;

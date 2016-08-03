@@ -1,20 +1,25 @@
-define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
-
-  "use strict";
+import AxisX from './graph.axis.x'
 
   /** 
    * Generic constructor of a y axis
    * @class AxisXBar
    * @augments Axis
    */
-  class AxisXBar extends Axis {
+  class AxisXBar extends AxisX {
 
     constructor( graph, topbottom, options ) {
       super( graph, topbottom, options );
     }
 
+    /**
+     * @param {Object[]} categories - Categories array
+     * @param {(String|Number)} categories[].title - The title of the category (to be dispalyed)
+     * @param {(String|Number)} categories[].name - The name of the category (to indentify series)
+     * @returns {AxisBar} The current axis instance
+     */
     set categories( categories ) {
       this._barCategories = categories;
+      return this;
     }
 
     draw() {
@@ -64,9 +69,14 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
       }
 
       this.drawSpecifics();
-
+      return this;
     }
 
+
+    /**
+     * @param {...(Series|Number|String)} series - List of series identified either by their instance, or their index (string or number)
+     * @returns {AxisBar} The current axis instance
+     */
     setSeries() {
 
       var self = this;
@@ -82,8 +92,9 @@ define( [ './graph.util', './graph.axis.x' ], function( util, Axis ) {
           serie.setBarConfig( index, self._barCategories, self.series.length );
         }
       } );
+
+      return this;
     }
   }
 
-  return AxisXBar;
-} );
+export default AxisXBar;

@@ -2918,6 +2918,7 @@ function _getAxis( graph, num, options, pos ) {
     }
   };
 
+  
   switch ( options.type ) {
 
     case 'time':

@@ -1,18 +1,15 @@
 import Graph from './graph.core'
 import GraphPosition from './graph.position'
 
+import AxisX from './graph.axis.x'
+import AxisY from './graph.axis.y'
+import AxisXBar from './graph.axis.x.bar'
+import AxisXTime from './graph.axis.x.time'
+
+
 define( [
-
-    './graph.position',
-
-    './graph.axis',
-    './graph.axis.x',
-    './graph.axis.y',
-
-    './graph.axis.x.bar',
     './graph.axis.x.broken',
     './graph.axis.y.broken',
-    './graph.axis.x.time',
 
     './graph.legend',
 
@@ -56,17 +53,12 @@ define( [
   ],
 
   function(
-    
-    GraphPosition,
 
-    GraphAxis,
-    GraphXAxis,
-    GraphYAxis,
 
-    GraphXAxisBar,
+
     GraphXAxisBroken,
     GraphYAxisBroken,
-    GraphXAxisTime,
+    
     GraphLegend,
 
     GraphPlugin,
@@ -108,16 +100,19 @@ define( [
 
   ) {
 
+
+console.log( Graph, GraphPosition, AxisX );
+
     // Corrent naming is important here !
 
     Graph.registerConstructor( "graph.position", GraphPosition );
 
-    Graph.registerConstructor( "graph.axis.x", GraphXAxis );
-    Graph.registerConstructor( "graph.axis.y", GraphYAxis );
-    Graph.registerConstructor( "graph.axis.x.bar", GraphXAxisBar );
+    Graph.registerConstructor( "graph.axis.x", AxisX );
+    Graph.registerConstructor( "graph.axis.y", AxisY );
+    Graph.registerConstructor( "graph.axis.x.bar", AxisXBar );
     Graph.registerConstructor( "graph.axis.x.broken", GraphXAxisBroken );
     Graph.registerConstructor( "graph.axis.y.broken", GraphYAxisBroken );
-    Graph.registerConstructor( "graph.axis.x.time", GraphXAxisTime );
+    Graph.registerConstructor( "graph.axis.x.time", AxisXTime );
 
     Graph.registerConstructor( "graph.serie.line", GraphSerieLine );
     Graph.registerConstructor( "graph.serie.line.color", GraphSerieLineColor );

@@ -1,6 +1,5 @@
-define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
-
-  "use strict";
+import Axis from './graph.axis'
+import * as util from './graph.util'
 
   function GraphXAxis( graph, topbottom, options ) {
 
@@ -430,7 +429,7 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
 
   }
 
-  GraphXAxis.prototype = new GraphAxis();
+  GraphXAxis.prototype = new Axis();
 
   GraphXAxis.prototype.draw = function() { // Redrawing of the axis
     var visible;
@@ -976,5 +975,4 @@ define( [ './graph.axis', './graph.util' ], function( GraphAxis, util ) {
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
   };
 
-  return GraphXAxis;
-} );
+  export default GraphXAxis;
