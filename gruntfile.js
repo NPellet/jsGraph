@@ -37,7 +37,12 @@ module.exports = function(grunt) {
       });
     };
 
-
+    function WebpackUglifier(options) { }
+    WebpackUglifier.prototype.apply = function(compiler) {
+      compiler.plugin('done', function( stats ) {
+          grunt.task.run("uglify:dist"); 
+      });
+    };
 
     grunt.initConfig({
 
@@ -182,15 +187,16 @@ module.exports = function(grunt) {
 
                  entry: './src/graph.js',
                  output: {
-                     path: './bin',
-                     filename: 'app.bundle.js',
+                     path: './dist/',
+                     filename: 'jsgraph.js',
 
                      library: "Graph",
                      libraryTarget: 'umd'
                  },
 
                  plugins: [
-                    new WebpackBeautifier( { options: true } )
+                    new WebpackBeautifier( { options: true } ),
+                    new WebpackUglifier()
                  ],
 
                  module: {
