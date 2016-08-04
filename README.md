@@ -1,6 +1,7 @@
 # jsGraph
 
-  [![build status][travis-image]][travis-url]
+  [![build status][travis-image]][travis-url][![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/hyperium/hyper/master/LICENSE)
+
 
 jsGraph is a javascript library that can be used to renders scientific data in your browser in the form of graphs and charts. Its primary purpose is to display line plots, scatter plots, contour plots or zone plots, but a powerful shape drawing tool and API is available to annotate the data on the graph.
 
