@@ -1,5 +1,3 @@
-
-
 var memory = {},
   memoryHead = {},
   memoryCount = {},
@@ -83,27 +81,34 @@ function storeInMemory( store, index, data ) {
   }
 }
 
-export create function( store, limitMemory ) {
+export
+
+function create( store, limitMemory ) {
   createStoreMemory( store, limitMemory );
 };
 
-export get function( store, index ) {
+export function get( store, index ) {
   var result;
   if ( ( result = getFromMemory( store, index ) ) != undefined ) {
     return result;
   }
 }
 
-export store function( store, index, value ) {
+export
+
+function store( store, index, value ) {
   storeInMemory( store, index, value );
   return value;
 };
 
-export empty function( store ) {
+export
+
+function empty( store ) {
   emptyMemory( store );
 };
 
-export exists function( store ) {
+export
+
+function exist( store ) {
   return ( memory[ store ] );
 }
-

@@ -671,7 +671,6 @@ class Shape extends EventEmitter {
     return this;
   }
 
-
   /**
    * Hides a displayed label
    * @param {Number} [ index = 0 ] - The index of the label
@@ -852,7 +851,6 @@ class Shape extends EventEmitter {
 
     this.graph.throw();
   }
-
 
   /**
    * Returns a stored position object
@@ -1872,7 +1870,6 @@ class Shape extends EventEmitter {
   }
 }
 
-
 /**
  * @alias Shape#calculatePosition
  */
@@ -1887,6 +1884,5 @@ Shape.prototype.showLabel = Shape.prototype.displayLabel;
  * @alias Shape#kill
  */
 Shape.prototype.remove = Shape.prototype.kill;
-
 
 export default Shape;

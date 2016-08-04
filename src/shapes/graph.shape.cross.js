@@ -1,6 +1,5 @@
 import Shape from './graph.shape'
 
-
 /**
  *  Displays a cross
  *  @extends GraphShape
@@ -8,20 +7,20 @@ import Shape from './graph.shape'
 class GraphCross extends Shape {
 
   constructor( graph, options ) {
-    this.nbHandles = 1;
     super( graph, options );
+    this.nbHandles = 1;
   }
 
   /**
    * Width of the cross, also available from the constructor
    * @type {Number} width
    */
-  get width {
+  get width() {
     return this.options.width || 10;
   }
 
-  set width( l ) {
-    this.options.width = l || 10;
+  set width( l = 10 ) {
+    this.options.width = l;
   }
 
   createDom() {
@@ -29,7 +28,11 @@ class GraphCross extends Shape {
     this._dom = document.createElementNS( this.graph.ns, 'path' );
     this._dom.setAttribute( 'd', 'M -' + ( this.width / 2 ) + ' 0 h ' + ( this.width ) + ' m -' + ( this.width / 2 ) + ' -' + ( this.width / 2 ) + ' v ' + ( this.width ) + '' );
 
-    this.createHandles( this.nbHandles, 'rect', {
+  }
+
+  createHandles() {
+
+    this._createHandles( this.nbHandles, 'rect', {
       transform: "translate(-3 -3)",
       width: 6,
       height: 6,
@@ -37,8 +40,8 @@ class GraphCross extends Shape {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  }
 
+  }
   applyPosition() {
 
     var position = this.calculatePosition( 0 );
@@ -62,20 +65,20 @@ class GraphCross extends Shape {
   handleCreateImpl() {
 
     return;
-  },
+  }
 
   handleMouseDownImpl( e ) {
 
     this.moving = true;
 
     return true;
-  },
+  }
 
   handleMouseUpImpl() {
 
     this.triggerChange();
     return true;
-  },
+  }
 
   handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
 
@@ -95,7 +98,7 @@ class GraphCross extends Shape {
 
     return true;
 
-  },
+  }
 
   createHandles() {
 
@@ -107,7 +110,7 @@ class GraphCross extends Shape {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  },
+  }
 
   setHandles() {
 
@@ -121,7 +124,7 @@ class GraphCross extends Shape {
 
     this.handles[ 1 ].setAttribute( 'x', this.currentPos1x );
     this.handles[ 1 ].setAttribute( 'y', this.currentPos1y );
-  },
+  }
 
   selectStyle() {
     this.setDom( 'stroke', 'red' );

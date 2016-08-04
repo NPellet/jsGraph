@@ -1,40 +1,35 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+import GraphShape from './graph.shape'
 
-  "use strict";
+/** 
+ * Represents a line
+ * @extends Shape
+ * @see Graph#newShape
+ */
+class ShapeLine extends GraphShape {
 
-  /** 
-   * Represents a line that extends the Shape class
-   * @class ShapeLine
-   * @augments Shape
-   * @see Graph#newShape
-   */
-  function ShapeLine( graph, options ) {
-
+  constructor( graph, options ) {
+    super( graph, options );
   }
-
-  ShapeLine.prototype = new GraphShape();
 
   /**
    * Creates the DOM
-   * @memberof ShapeLine
    * @private
    * @return {Shape} The current shape
    */
-  ShapeLine.prototype.createDom = function() {
+  createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
 
     this.setStrokeColor( 'black' );
     this.setStrokeWidth( 1 );
-  };
+  }
 
   /**
    * Creates the handles
-   * @memberof ShapeLine
    * @private
    * @return {Shape} The current shape
    */
-  ShapeLine.prototype.createHandles = function() {
+  createHandles() {
 
     this._createHandles( 2, 'rect', {
       transform: "translate(-3 -3)",
@@ -44,15 +39,14 @@ define( [ './graph.shape' ], function( GraphShape ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  };
+  }
 
   /**
    * Recalculates the positions and applies them
-   * @memberof ShapeLine
    * @private
    * @return {Boolean} Whether the shape should be redrawn
    */
-  ShapeLine.prototype.applyPosition = function() {
+  applyPosition() {
 
     var position = this.calculatePosition( 0 );
     var position2 = this.calculatePosition( 1 );
@@ -74,14 +68,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
     this.currentPos1y = position.y;
 
     return true;
-  };
+  }
 
   /**
    * Handles mouse move events
-   * @memberof ShapeLine
    * @private
    */
-  ShapeLine.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
 
     if ( this.isLocked() ) {
       return;
@@ -165,15 +158,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
     this.setHandles();
 
     return true;
-
-  };
+  }
 
   /**
    * Sets the handle position
-   * @memberof ShapeLine
    * @private
    */
-  ShapeLine.prototype.setHandles = function() {
+  setHandles() {
 
     if ( !this.areHandlesInDom() ) {
       return;
@@ -188,14 +179,13 @@ define( [ './graph.shape' ], function( GraphShape ) {
 
     this.handles[ 2 ].setAttribute( 'x', this.currentPos2x );
     this.handles[ 2 ].setAttribute( 'y', this.currentPos2y );
-  };
+  }
 
   /**
    * Creates an line receptacle with the coordinates of the line, but continuous and thicker
-   * @memberof ShapeLine
    * @return {Shape} The current shape
    */
-  ShapeLine.prototype.setEventReceptacle = function() {
+  setEventReceptacle() {
 
     if ( !this.currentPos1x ) {
       return;
@@ -214,8 +204,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
     this.rectEvent.setAttribute( 'x2', this.currentPos2x );
     this.rectEvent.setAttribute( 'y2', this.currentPos2y );
     this.rectEvent.setAttribute( "stroke-width", this.getProp( "strokeWidth" ) + 2 );
-  };
+  }
+}
 
-  return ShapeLine;
-
-} );
+export default ShapeLine

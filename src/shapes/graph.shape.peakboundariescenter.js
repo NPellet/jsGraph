@@ -1,17 +1,17 @@
-define( [ './graph.shape.line' ], function( GraphLine ) {
+import ShapeLine from './graph.shape.line'
 
-  /** 
-   * Peak boundaries shape
-   * @class ShapePeakBoundaries
-   * @static
-   */
-  function ShapePeakBoundaries( graph ) {
+/**
+ *  Shows a horizontal line with three little vertical bars. Very useful to demonstrate a peak start, end and middle value
+ *  @extends ShapeLine
+ */
+class ShapePeakBoundaries extends ShapeLine {
+
+  constructor( graph ) {
+    super( graph );
     this.lineHeight = 6;
   }
 
-  ShapePeakBoundaries.prototype = new GraphLine();
-
-  ShapePeakBoundaries.prototype.createDom = function() {
+  createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'line' );
     this.line1 = document.createElementNS( this.graph.ns, 'line' );
@@ -31,9 +31,9 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.group.appendChild( this.line2 );
     this.group.appendChild( this.line3 );
     this._dom.element = this;
-  };
+  }
 
-  ShapePeakBoundaries.prototype.createHandles = function() {
+  createHandles() {
     this._createHandles( 3, 'rect', {
       transform: "translate(-3 -3)",
       width: 6,
@@ -42,9 +42,9 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
       fill: "white",
       cursor: 'nwse-resize'
     } );
-  };
+  }
 
-  ShapePeakBoundaries.prototype.redrawImpl = function() {
+  redrawImpl() {
 
     this.line1.setAttribute( 'stroke', this.getStrokeColor() );
     this.line2.setAttribute( 'stroke', this.getStrokeColor() );
@@ -56,7 +56,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
 
     this.setHandles();
     this.redrawLines();
-  };
+  }
 
   /**
    * @memberof ShapePeakBoundaries
@@ -64,7 +64,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    * Position 0 is the left line, position 1 is the right line and position 2 is the center line
    * @returns {ShapePeakBoundaries} The shape instance
    */
-  ShapePeakBoundaries.prototype.redrawLines = function() {
+  redrawLines() {
 
     var posLeft = this.computePosition( 0 );
     var posRight = this.computePosition( 1 );
@@ -90,15 +90,14 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     }
 
     return this;
-
-  };
+  }
 
   /**
    * @memberof ShapePeakBoundaries
    * Redraws the vertical positions of the shape
    * @returns {ShapePeakBoundaries} The shape instance
    */
-  ShapePeakBoundaries.prototype.redrawY = function() {
+  redrawY() {
 
     if ( !this.posYPx ) {
       return this;
@@ -119,9 +118,9 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this._dom.setAttribute( 'y2', this.posYPx );
 
     return this;
-  };
+  }
 
-  ShapePeakBoundaries.prototype.setHandles = function() {
+  setHandles() {
 
     if ( !this.posYPx ) {
       return;
@@ -142,7 +141,7 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
       this.handles[ 3 ].setAttribute( 'x', posCenter.x );
       this.handles[ 3 ].setAttribute( 'y', this.posYPx );
     }
-  };
+  }
 
   /**
    * @memberof ShapePeakBoundaries
@@ -150,10 +149,10 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    * @param {Number} y - The y position in px
    * @returns {ShapePeakBoundaries} The shape instance
    */
-  ShapePeakBoundaries.prototype.setY = function( y ) {
+  setY( y ) {
     this.posYPx = y;
     return this;
-  };
+  }
 
   /**
    * @memberof ShapePeakBoundaries
@@ -161,11 +160,11 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
    * @param {Number} height - The height of the lines in px
    * @returns {ShapePeakBoundaries} The shape instance
    */
-  ShapePeakBoundaries.prototype.setLineHeight = function( height ) {
+  setLineHeight( height ) {
     this.lineHeihgt = height;
-  };
+  }
 
-  ShapePeakBoundaries.prototype.handleMouseMoveImpl = function( e, deltaX, deltaY ) {
+  handleMouseMoveImpl( e, deltaX, deltaY ) {
 
     if ( this.isLocked() ) {
       return;
@@ -217,13 +216,14 @@ define( [ './graph.shape.line' ], function( GraphLine ) {
     this.updateLabels();
     this.redrawLines();
     this.setHandles();
-  };
+  }
 
-  ShapePeakBoundaries.prototype.applyPosition = function() {
+  applyPosition() {
 
     this.redrawLines();
     return true;
-  };
+  }
 
-  return ShapePeakBoundaries;
-} );
+}
+
+export default ShapePeakBoundaries;

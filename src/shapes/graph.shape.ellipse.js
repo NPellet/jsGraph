@@ -1,44 +1,39 @@
-define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
+import * as util from '../graph.util'
+import Shape from './graph.shape'
 
-  function GraphEllipse( graph, options ) {}
+/**
+ * Displays an ellipse
+ */
+class ShapeEllipse extends Shape {
 
-  util.extend( GraphEllipse.prototype, GraphShape.prototype, {
+  constructor( graph, options ) {
+    super( graph, options );
+  }
 
-    createDom: function() {
-      this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
-    },
+  createDom() {
+    this._dom = document.createElementNS( this.graph.ns, 'ellipse' );
+  }
 
-    applyPosition: function() {
+  applyPosition() {
 
-      var pos = this.computePosition( 0 );
+    var pos = this.computePosition( 0 );
 
-      this.setDom( 'cx', pos.x ||  0 );
-      this.setDom( 'cy', pos.y ||  0 );
+    this.setDom( 'cx', pos.x ||  0 );
+    this.setDom( 'cy', pos.y ||  0 );
 
-      this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
-      this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
+    this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
+    this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
 
-      return true;
-    },
+    return true;
+  }
 
-    handleMouseUpImpl: function() {
+  handleMouseUpImpl() {
+    this.triggerChange();
+  }
 
-      /*	if( pos2.y < pos.y ) {
-				var y = pos.y;
-				pos.y = pos2.y;
-				pos2.y = y;
-			}
-		*/
-      this.triggerChange();
-    },
+  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+    return;
+  }
+}
 
-    handleMouseMoveImpl: function( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
-      return;
-
-    }
-
-  } );
-
-  return GraphEllipse;
-
-} );
+export default ShapeEllipse;

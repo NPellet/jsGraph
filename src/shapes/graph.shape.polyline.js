@@ -1,54 +1,50 @@
-define( [ './graph.shape' ], function( GraphShape ) {
+import Shape from './graph.shape'
 
-  "use strict";
+/** 
+ * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
+ * @extends Shape
+ * @see Graph#newShape
+ */
+class ShapePolyline extends Shape {
 
-  /** 
-   * Represents a line that extends the Shape class
-   * @class ShapePolyLine
-   * @augments Shape
-   * @see Graph#newShape
-   */
-  function ShapePolyLine( graph, options ) {
-
-  }
-
-  ShapePolyLine.prototype = new GraphShape();
-
-  /**
-   * Creates the DOM
-   * @memberof ShapePolyLine
-   * @private
-   * @return {Shape} The current shape
-   */
-  ShapePolyLine.prototype.createDom = function() {
+  constructor( graph, options ) {
+      super( graph, options );
+    }
+    /**
+     * Creates the DOM
+     * @private
+     * @return {Shape} The current shape
+     */
+  createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'path' );
     this.setStrokeColor( 'black' );
     this.setStrokeWidth( 1 );
-  };
+  }
 
   /**
    * No handles for the polyline
-   * @memberof ShapePolyLine
    * @private
    * @return {Shape} The current shape
    */
-  ShapePolyLine.prototype.createHandles = function() {
+  createHandles() {}
 
-  };
-
-  ShapePolyLine.prototype.setPointsPx = function( points ) {
+  /**
+   *  Force the points of the polyline already computed in pixels
+   *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
+   *  @return {ShapePolyline} The current polyline instance
+   */
+  setPointsPx( points ) {
     this.pxPoints = points;
     return this;
   }
 
   /**
    * Recalculates the positions and applies them
-   * @memberof ShapePolyLine
    * @private
    * @return {Boolean} Whether the shape should be redrawn
    */
-  ShapePolyLine.prototype.applyPosition = function() {
+  applyPosition() {
 
     if ( this.pxPoints ) {
       this.setDom( 'd', this.pxPoints );
@@ -74,7 +70,7 @@ define( [ './graph.shape' ], function( GraphShape ) {
     }
 
     return true;
-  };
+  }
+}
 
-  return ShapePolyLine;
-} );
+export default ShapePolyline;

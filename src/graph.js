@@ -39,15 +39,15 @@ define( [
     './shapes/graph.shape.line',
     './shapes/graph.shape.nmrintegral',
     './shapes/graph.shape.peakintegration2d',
-    './shapes/graph.shape.peakinterval',
-    './shapes/graph.shape.peakinterval2',
-    './shapes/graph.shape.rangex',
+    //'./shapes/graph.shape.peakinterval',
+    //'./shapes/graph.shape.peakinterval2',
+    // './shapes/graph.shape.rangex',
     './shapes/graph.shape.rect',
     './shapes/graph.shape.cross',
-    './shapes/graph.shape.zoom2d',
+    //  './shapes/graph.shape.zoom2d',
     './shapes/graph.shape.peakboundariescenter',
 
-    './graph.toolbar'
+    // './graph.toolbar'
 
   ],
 
@@ -85,15 +85,15 @@ define( [
     GraphShapeLine,
     GraphShapeNMRIntegral,
     GraphShapePeakIntegration2D,
-    GraphShapePeakInterval,
-    GraphShapePeakInterval2,
-    GraphShapeRangeX,
+    //GraphShapePeakInterval,
+    //GraphShapePeakInterval2,
+    //  GraphShapeRangeX,
     GraphShapeRect,
     GraphShapeCross,
-    GraphShapeZoom2D,
+    //GraphShapeZoom2D,
     GraphShapePeakBoundariesCenter,
 
-    GraphToolbar
+    //  GraphToolbar
 
   ) {
 
@@ -136,16 +136,16 @@ define( [
     Graph.registerConstructor( "graph.shape.line", GraphShapeLine );
     Graph.registerConstructor( "graph.shape.nmrintegral", GraphShapeNMRIntegral );
     Graph.registerConstructor( "graph.shape.peakintegration2d", GraphShapePeakIntegration2D );
-    Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
-    Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
-    Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
+    //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
+    //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
+    //  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
     Graph.registerConstructor( "graph.shape.rect", GraphShapeRect );
     Graph.registerConstructor( "graph.shape.rectangle", GraphShapeRect );
     Graph.registerConstructor( "graph.shape.cross", GraphShapeCross );
     Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
     Graph.registerConstructor( "graph.shape.peakboundariescenter", GraphShapePeakBoundariesCenter );
 
-    Graph.registerConstructor( "graph.toolbar", GraphToolbar );
+    //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
     Graph.registerConstructor( "graph.legend", GraphLegend );
 
     return Graph;

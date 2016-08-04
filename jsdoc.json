@@ -28,11 +28,12 @@
 			"./src/plugins/graph.plugin.timeseriemanager.js",
 			"./src/graph.lru.js",
 			"./src/plugins/graph.plugin.serielinedifference.js",
-			"./src/series/graph.serie.js",
 			"./src/series/graph.serie.contour.js",
 			"./src/series/graph.serie.line.js",
+			"./src/series/graph.serie.js",
 			"./src/series/slotoptimizer.js",
 			"./src/mixins/graph.mixin.errorbars.js",
+			"./src/series/graph.serie.bar.js",
 			"./src/series/graph.serie.line.broken.js",
 			"./src/series/graph.serie.line.colored.js",
 			"./src/series/graph.serie.scatter.js",
@@ -48,14 +49,8 @@
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.rect.js",
-			"./src/shapes/graph.shape.peakinterval.js",
-			"./src/shapes/graph.shape.peakinterval2.js",
-			"./src/shapes/graph.shape.rangex.js",
 			"./src/shapes/graph.shape.cross.js",
-			"./src/shapes/graph.shape.zoom2d.js",
-			"./src/shapes/graph.shape.peakboundariescenter.js",
-			"./src/graph.toolbar.js",
-			"./src/series/graph.serie.bar.js"
+			"./src/shapes/graph.shape.peakboundariescenter.js"
 		]
 	}
 }

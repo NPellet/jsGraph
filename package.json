@@ -44,6 +44,7 @@
     "requirejs": "^2.1.18",
     "should": "^7.0.2",
     "webpack": "^1.13.1",
+    "webpack-dev-server": "^1.14.1",
     "wrench": "^1.5.9"
   },
   "dependencies": {},
