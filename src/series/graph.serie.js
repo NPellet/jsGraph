@@ -1,15 +1,16 @@
-define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], function( EventEmitter, util ) {
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
+import * as util from '../graph.util'
 
-  "use strict";
+console.log( EventEmitter );
+/** 
+ * Serie class to be extended
+ * @static
+ */
+class Serie extends EventEmitter {
 
-  /** 
-   * Serie class to be extended
-   * @class Serie
-   * @static
-   */
-  function Serie() {}
-
-  Serie.prototype = new EventEmitter();
+  constructor() {
+    super( ...arguments );
+  }
 
   /** 
    * Sets data to the serie
@@ -22,7 +23,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
    * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
    */
-  Serie.prototype.setData = function( data, oneDimensional, type ) {
+  setData( data, oneDimensional, type ) {
 
     function isArray( arr ) {
       var stringed = Object.prototype.toString.call( arr );
@@ -75,7 +76,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     if ( isData0Array ) {
 
       for ( var i = 0, k = data.length; i < k; i++ ) {
-        console.log( i, k );
+
         arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
         datas.push( arr );
         z = 0;
@@ -236,9 +237,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.dataHasChanged();
     this.graph.updateDataMinMaxAxes();
     return this;
-  };
+  }
 
-  Serie.prototype._addData = function( type, howmany ) {
+  _addData( type, howmany ) {
 
     switch ( type ) {
       case 'int':
@@ -261,31 +262,31 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
         return new Float64Array( arr );
         break;
     }
-  };
+  }
 
   /**
    * Returns the data in its current form
    * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
    * @memberof Serie
    */
-  Serie.prototype.getData = function() {
+  getData() {
     return this.data;
-  };
+  }
 
   /**
    * Sets the options of the serie (no extension of default options)
    * @param {Object} options - The options of the serie
    * @memberof Serie
    */
-  Serie.prototype.setOptions = function( options ) {
+  setOptions( options ) {
     this.options = options ||  {};
-  };
+  }
 
   /**
    * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
    * @memberof Serie
    */
-  Serie.prototype.kill = function() {
+  kill() {
 
     this.graph.removeSerieFromDom( this );
 
@@ -297,11 +298,11 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     }
 
     this.killImpl();
-  };
+  }
 
-  Serie.prototype.killImpl = function() {
+  killImpl() {
 
-  };
+  }
 
   /**
    * Hides the serie
@@ -309,7 +310,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  Serie.prototype.hide = function( hideShapes ) {
+  hide( hideShapes ) {
     this.hidden = true;
     this.groupMain.setAttribute( 'display', 'none' );
 
@@ -328,7 +329,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.emit( "hide" );
 
     return this;
-  };
+  }
 
   /**
    * Shows the serie
@@ -336,7 +337,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  Serie.prototype.show = function( showShapes ) {
+  show( showShapes ) {
     this.hidden = false;
     this.groupMain.setAttribute( 'display', 'block' );
 
@@ -357,10 +358,10 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.emit( "show" );
 
     return this;
-  };
+  }
 
-  Serie.prototype.hideImpl = function() {};
-  Serie.prototype.showImpl = function() {};
+  hideImpl() {}
+  showImpl() {}
 
   /**
    * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
@@ -368,7 +369,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
    * @returns {Serie} The current serie
    */
-  Serie.prototype.toggleDisplay = function() {
+  toggleDisplay() {
 
     if ( !this.isShown() ) {
       this.show();
@@ -377,16 +378,16 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     }
 
     return this;
-  };
+  }
 
   /**
    * Determines if the serie is currently visible
    * @memberof Serie
    * @returns {Boolean} The current visibility status of the serie
    */
-  Serie.prototype.isShown = function() {
+  isShown() {
     return !this.hidden;
-  };
+  }
 
   /**
    * Returns the x position of a certain value in pixels position, based on the serie's axis
@@ -394,9 +395,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Number} val - Value to convert to pixels position
    * @returns {Number} The x position in px corresponding to the x value
    */
-  Serie.prototype.getX = function( val ) {
+  getX( val ) {
     return ( val = this.getXAxis().getPx( val ) ) - val % 0.2;
-  };
+  }
 
   /**
    * Returns the y position of a certain value in pixels position, based on the serie's axis
@@ -404,37 +405,37 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Number} val - Value to convert to pixels position
    * @returns {Number} The y position in px corresponding to the y value
    */
-  Serie.prototype.getY = function( val ) {
+  getY( val ) {
     return ( val = this.getYAxis().getPx( val ) ) - val % 0.2;
-  };
+  }
 
   /**
    * Returns the selection state of the serie. Generic for most serie types
    * @memberof Serie
    * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
    */
-  Serie.prototype.isSelected = function() {
+  isSelected() {
     return this.selected || ( this.selectionType !== "unselected" );
-  };
+  }
 
-  Serie.prototype._checkX = function( val ) {
+  _checkX( val ) {
     this.minX = Math.min( this.minX, val );
     this.maxX = Math.max( this.maxX, val );
-  };
+  }
 
-  Serie.prototype._checkY = function( val ) {
+  _checkY( val ) {
     this.minY = Math.min( this.minY, val );
     this.maxY = Math.max( this.maxY, val );
-  };
+  }
 
   /**
    * Getter for the serie name
    * @memberof Serie
    * @returns {String} The serie name
    */
-  Serie.prototype.getName = function() {
+  getName() {
     return this.name;
-  };
+  }
 
   /* AXIS */
 
@@ -443,7 +444,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @memberof Serie
    * @returns {Serie} The current serie
    */
-  Serie.prototype.autoAxis = function() {
+  autoAxis() {
 
     if ( this.isFlipped() ) {
       this.setXAxis( this.graph.getYAxis() );
@@ -456,7 +457,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     // After axes have been assigned, the graph axes should update their min/max
     this.graph.updateDataMinMaxAxes();
     return this;
-  };
+  }
 
   /**
    * Assigns an x axis to the serie
@@ -465,7 +466,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
    */
-  Serie.prototype.setXAxis = function( axis ) {
+  setXAxis( axis ) {
 
     if ( typeof axis == "number" ) {
       this.xaxis = this.isFlipped() ? this.graph.getYAxis( axis ) : this.graph.getXAxis( axis );
@@ -476,7 +477,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.graph.updateDataMinMaxAxes();
 
     return this;
-  };
+  }
 
   /**
    * Assigns an y axis to the serie
@@ -485,7 +486,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
    */
-  Serie.prototype.setYAxis = function( axis ) {
+  setYAxis( axis ) {
     if ( typeof axis == "number" ) {
       this.xaxis = this.isFlipped() ? this.graph.getXAxis( axis ) : this.graph.getYAxis( axis );
     } else {
@@ -495,7 +496,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this.graph.updateDataMinMaxAxes();
 
     return this;
-  };
+  }
 
   /**
    * Assigns two axes to the serie
@@ -504,7 +505,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.setAxes = function() {
+  setAxes() {
 
     for ( var i = 0; i < 2; i++ ) {
 
@@ -514,23 +515,23 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     }
 
     return this;
-  };
+  }
 
   /**
    * @returns {GraphAxis} The x axis assigned to the serie
    * @memberof Serie
    */
-  Serie.prototype.getXAxis = function() {
+  getXAxis() {
     return this.xaxis;
-  };
+  }
 
   /**
    * @returns {GraphAxis} The y axis assigned to the serie
    * @memberof Serie
    */
-  Serie.prototype.getYAxis = function() {
+  getYAxis() {
     return this.yaxis;
-  };
+  }
 
   /* */
 
@@ -540,40 +541,40 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Number} Lowest x value of the serie's data
    * @memberof Serie
    */
-  Serie.prototype.getMinX = function() {
+  getMinX() {
     return this.minX;
-  };
+  }
 
   /**
    * @returns {Number} Highest x value of the serie's data
    * @memberof Serie
    */
-  Serie.prototype.getMaxX = function() {
+  getMaxX() {
     return this.maxX;
-  };
+  }
 
   /**
    * @returns {Number} Lowest y value of the serie's data
    * @memberof Serie
    */
-  Serie.prototype.getMinY = function() {
+  getMinY() {
     return this.minY;
-  };
+  }
 
   /**
    * @returns {Number} Highest y value of the serie's data
    * @memberof Serie
    */
-  Serie.prototype.getMaxY = function() {
+  getMaxY() {
     return this.maxY;
-  };
+  }
 
   /**
    * Computes and returns a line SVG element with the same line style as the serie, or width 20px
    * @returns {SVGElement}
    * @memberof Serie
    */
-  Serie.prototype.getSymbolForLegend = function() {
+  getSymbolForLegend() {
 
     if ( !this.lineForLegend ) {
 
@@ -592,7 +593,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
 
     return this.lineForLegend;
 
-  };
+  }
 
   /**
    * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
@@ -600,18 +601,18 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {SVGElement}
    * @memberof Serie
    */
-  Serie.prototype.setLegendSymbolStyle = function() {
+  setLegendSymbolStyle() {
     this.applyLineStyle( this.getSymbolForLegend() );
-  };
+  }
 
   /**
    * @alias Serie#setLegendSymbolStyle
    * @memberof Serie
    */
-  Serie.prototype.updateStyle = function() {
+  updateStyle() {
     this.setLegendSymbolStyle();
     this.graph.updateLegend();
-  };
+  }
 
   /**
    * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
@@ -619,7 +620,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @memberof Serie
    * @see Serie#getLabel
    */
-  Serie.prototype.getTextForLegend = function() {
+  getTextForLegend() {
 
     if ( !this.textForLegend ) {
 
@@ -631,23 +632,23 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     }
 
     return this.textForLegend;
-  };
+  }
 
   /**
    * @returns {Number} The current index of the serie
    * @memberof Serie
    */
-  Serie.prototype.getIndex = function() {
+  getIndex() {
     return this.graph.series.indexOf( this );
-  };
+  }
 
   /**
    * @returns {String} The label or, alternatively - the name of the serie
    * @memberof Serie
    */
-  Serie.prototype.getLabel = function() {
+  getLabel() {
     return this.options.label || this.name;
-  };
+  }
 
   /**
    * Sets the label of the serie. Note that this does not automatically updates the legend
@@ -655,14 +656,14 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.setLabel = function( label ) {
+  setLabel( label ) {
     this.options.label = label;
 
     if ( this.textForLegend ) {
       this.textForLegend.textContent = label;
     }
     return this;
-  };
+  }
 
   /* FLIP */
 
@@ -672,26 +673,26 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.setFlip = function( flipped ) {
+  setFlip( flipped ) {
     this.options.flip = flipped;
     return this;
-  };
+  }
 
   /**
    * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
    * @memberof Serie
    */
-  Serie.prototype.getFlip = function() {
+  getFlip() {
     return this.options.flip;
-  };
+  }
 
   /**
    * @alias Serie#getFlip
    * @memberof Serie
    */
-  Serie.prototype.isFlipped = function() {
+  isFlipped() {
     return this.options.flip;
-  };
+  }
 
   /**
    * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
@@ -699,19 +700,19 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
    * @returns {Serie} The current serie
    */
-  Serie.prototype.setLayer = function( layerIndex ) {
+  setLayer( layerIndex ) {
     this.options.layer = parseInt( layerIndex ) ||  1;
     return this;
-  };
+  }
 
   /**
    * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
    * @memberof Serie
    * @returns {Nunber} The index of the layer into which the serie will be drawn
    */
-  Serie.prototype.getLayer = function() {
+  getLayer() {
     return this.options.layer ||  1;
-  };
+  }
 
   /**
    * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
@@ -719,7 +720,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.styleHasChanged = function( selectionType ) {
+  styleHasChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
 
     if ( selectionType === false ) {
@@ -732,7 +733,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     }
 
     return this;
-  };
+  }
 
   /**
    * Checks if the style has changed for a selection type
@@ -741,20 +742,20 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @private
    * @memberof Serie
    */
-  Serie.prototype.hasStyleChanged = function( selectionType ) {
+  hasStyleChanged( selectionType ) {
     this._changedStyles = this._changedStyles || {};
     return this._changedStyles[ selectionType ||  "unselected" ];
-  };
+  }
 
   /**
    * Notifies jsGraph that the data of the serie has changed
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.dataHasChanged = function( arg ) {
+  dataHasChanged( arg ) {
     this._dataHasChanged = arg === undefined || arg;
     return this;
-  };
+  }
 
   /**
    * Checks if the data has changed
@@ -762,9 +763,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @private
    * @memberof Serie
    */
-  Serie.prototype.hasDataChanged = function() {
+  hasDataChanged() {
     return this._dataHasChanged;
-  };
+  }
 
   /**
    * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
@@ -774,11 +775,11 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @see Serie#getInfo
    * @memberof Serie
    */
-  Serie.prototype.setInfo = function( prop, value ) {
+  setInfo( prop, value ) {
     this.infos = this.infos || {};
     this.infos[ prop ] = value;
     return this;
-  };
+  }
 
   /**
    * Retrives an information value from its key
@@ -787,46 +788,46 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @see Serie#setInfo
    * @memberof Serie
    */
-  Serie.prototype.getInfo = function( prop, value ) {
+  getInfo( prop, value ) {
     return ( this.infos || {} )[ prop ];
-  };
+  }
 
   /**
    * @deprecated
    * @memberof Serie
    */
-  Serie.prototype.setAdditionalData = function( data ) {
+  setAdditionalData( data ) {
     this.additionalData = data;
     return this;
-  };
+  }
 
   /**
    * @deprecated
    * @memberof Serie
    */
-  Serie.prototype.getAdditionalData = function() {
+  getAdditionalData() {
     return this.additionalData;
-  };
+  }
 
   /**
    * Flags the serie as selected
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.select = function() {
+  select() {
     this.selected = true;
     return this;
-  };
+  }
 
   /**
    * Flags the serie as unselected
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  Serie.prototype.unselect = function() {
+  unselect() {
     this.selected = false;
     return this;
-  };
+  }
 
   /**
    * Allows mouse tracking of the serie
@@ -836,13 +837,13 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @param {Function} outCallback - Function to be called when the mouse exits the serie area
    * @private
    */
-  Serie.prototype.enableTracking = function( hoverCallback, outCallback ) {
+  enableTracking( hoverCallback, outCallback ) {
     this._tracker = true;
     this._trackingCallback = hoverCallback;
     this._trackingOutCallback = outCallback;
 
     return this;
-  };
+  }
 
   /**
    * Disables mouse tracking of the serie
@@ -850,7 +851,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    * @returns {Serie} The current serie
    * @private
    */
-  Serie.prototype.disableTracking = function() {
+  disableTracking() {
 
     if ( this._trackerDom ) {
       this._trackerDom.remove();
@@ -860,7 +861,7 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
     this._tracker = false;
     this._trackingCallback = null;
     return this;
-  };
+  }
 
   /**
    *  Allows mouse tracking of the serie
@@ -868,27 +869,27 @@ define( [ '../dependencies/eventEmitter/EventEmitter', '../graph.util' ], functi
    *  @param {Object} options - The tracking line options
    *  @returns {Serie} The current serie
    */
-  Serie.prototype.allowTrackingLine = function( options ) {
+  allowTrackingLine( options ) {
 
     options = options || {};
     this.graph.addSerieToTrackingLine( this, options );
-  };
+  }
 
-  Serie.prototype.setLegend = function( bln ) {
+  setLegend( bln ) {
     this._legend = bln;
-  };
+  }
 
-  Serie.prototype.isInLegend = function() {
+  isInLegend() {
     return this._legend === false ? false : true;
-  };
+  }
 
-  Serie.prototype.getMarkerForLegend = function() {
+  getMarkerForLegend() {
     return false;
-  };
+  }
 
-  Serie.prototype.getType = function() {
+  getType() {
     return this.type;
-  };
-  return Serie;
+  }
+}
 
-} );
+export default Serie;

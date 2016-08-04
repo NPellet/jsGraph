@@ -32,7 +32,6 @@ class Shape extends EventEmitter {
 
     this._selected = false;
     this.createDom();
-    this.setEvents();
 
     if ( this._dom ) {
       this._dom.jsGraphIsShape = this;

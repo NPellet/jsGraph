@@ -1,5 +1,5 @@
 /**
- *  Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
+ * Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
  * @param {SVGElement} to - The SVG element to apply the attributes to
  * @param {Object<String,Any>} attr - A key/value hashmap of attributes
  * @param {String} [ ns = undefined ] - The namespace to use (with <code>setAttributeNS</code>). Default if without namespacing
@@ -353,7 +353,7 @@ export function mix( baseClass, mixin ) {
 
   for ( let prop in mixin ) {
     if ( mixin.hasOwnProperty( prop ) ) {
-      target.prototype[ prop ] = mixin[ prop ];
+      baseClass.prototype[ prop ] = mixin[ prop ];
     }
   }
 }

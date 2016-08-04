@@ -7,7 +7,7 @@ requirejs.config({
 	}
 });
 
-require( [ 'bin/app.bundle', 'examples/series' ] , function( Graph, series ) {
+require( [ 'dist/jsgraph', 'examples/series' ] , function( Graph, series ) {
 
 	window.contour = series.contour;
 	window.series = series.numeric;

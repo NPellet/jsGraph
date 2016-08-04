@@ -1,32 +1,32 @@
-define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( SerieLineBase, util, ErrorBarMixin ) {
+import SerieLine from './graph.serie.line'
+import * as util from '../graph.util'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
-  "use strict";
+/** 
+ * Colored serie line
+ * @example graph.newSerie( name, options, "color" );
+ * @see Graph#newSerie
+ * @augments SerieLine
+ */
+class SerieLineColor extends SerieLine {
 
-  /** 
-   * Serie line
-   * @class SerieLineColor
-   * @example graph.newSerie( name, options, "line" );
-   * @see Graph#newSerie
-   * @augments SerieLine
-   */
-  function SerieLineColor() {}
+  constructor() {
+    super( ...arguments );
+  }
 
-  SerieLineColor.prototype = new SerieLineBase();
-
-  SerieLineColor.prototype.initExtended1 = function() {
+  initExtended1() {
 
     this.lines = this.lines ||  {};
     if ( this.initExtended2 ) {
       this.initExtended2();
     }
-  };
+  }
 
-  SerieLineColor.prototype.setColors = function( colors ) {
+  setColors( colors ) {
+    this.color = colors;
+  }
 
-    this.colors = colors;
-  };
-
-  SerieLineColor.prototype._draw_standard = function() {
+  _draw_standard() {
 
     var self = this,
       data = this._dataToUse,
@@ -286,9 +286,9 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     }
     return this;
 
-  };
+  }
 
-  SerieLineColor.prototype._addPoint = function( xpx, ypx, x, y, xpxbefore, ypxbefore, xbefore, ybefore, j, color, move, allowMarker ) {
+  _addPoint( xpx, ypx, x, y, xpxbefore, ypxbefore, xbefore, ybefore, j, color, move, allowMarker ) {
 
     if ( xpxbefore === undefined || ypxbefore === undefined ) {
       return;
@@ -320,14 +320,14 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     if ( this.markersShown() && allowMarker !== false ) {
       drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
     }
-  };
+  }
 
-  SerieLineColor.prototype.removeExtraLines = function() {
+  removeExtraLines() {
 
-  };
+  }
 
   // Returns the DOM
-  SerieLineColor.prototype.latchLines = function() {
+  latchLines() {
 
     for ( var i in this.lines ) {
       this.lines[ i ].object.setAttribute( 'd', this.lines[ i ].path );
@@ -335,19 +335,19 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
   };
 
   // Returns the DOM
-  SerieLineColor.prototype.eraseLines = function() {
+  eraseLines() {
 
     for ( var i in this.lines ) {
       this.lines[ i ].path = "";
       this.lines[ i ].object.setAttribute( 'd', "" );
     }
-  };
+  }
 
   /**
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieLine
    */
-  SerieLineColor.prototype.applyLineStyle = function( line ) {
+  applyLineStyle( line ) {
 
     //line.setAttribute( 'stroke', this.getLineColor() );
     line.setAttribute( 'stroke-width', this.getLineWidth() );
@@ -358,7 +358,7 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     }
     line.setAttribute( 'fill', 'none' );
     //	line.setAttribute('shape-rendering', 'optimizeSpeed');
-  };
+  }
+}
 
-  return SerieLineColor;
-} );
+export default SerieLineColor

@@ -1,28 +1,32 @@
-define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, util ) {
+import Serie from './graph.serie'
+import * as util from '../graph.util'
 
-  "use strict";
+/**
+ * @name SerieDensityMapDefaultOptions
+ * @object
+ * @static
+ * @memberof SerieDensityMap
+ */
+const defaults = {
 
-  var hexChar = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F" ];
+}
 
-  /** 
-   * Serie line
-   * @class SerieDensityMap
-   * @example graph.newSerie( name, options, "line" );
-   * @see Graph#newSerie
-   * @augments Serie
-   */
-  function SerieDensityMap() {}
-
-  SerieDensityMap.prototype = new SerieNonInstanciable();
+/** 
+ * Density map serie
+ * @example graph.newSerie( name, options, "densitymap" );
+ * @see Graph#newSerie
+ * @augments Serie
+ */
+class SerieDensityMap extends Serie {
 
   /**
    * Initializes the serie
    * @private
    * @memberof SerieDensityMap
    */
-  SerieDensityMap.prototype.init = function( graph, name, options ) {
+  init( graph, name, options ) {
 
-    this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) ); // Creates options
+    this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
     util.mapEventEmission( this.options, this ); // Register events
 
     this.graph = graph;
@@ -32,7 +36,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     this.paths = [];
 
     this.recalculateBinsOnDraw = false;
-  };
+  }
 
   /**
    * Sets the data of the serie. Careful, only one format allowed for now.
@@ -41,7 +45,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @return {SerieDensityMap} The current instance
    * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
    */
-  SerieDensityMap.prototype.setData = function( data ) {
+  setData( data ) {
 
     this.minX = this.maxX = this.minY = this.maxY = 0;
     var i = 0,
@@ -79,7 +83,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @see SerieDensityMap#autoColorMapBinBoundaries
    * @see SerieDensityMap#setPxPerBin
    */
-  SerieDensityMap.prototype.calculateDensity = function( fromX, deltaX, numX, fromY, deltaY, numY ) {
+  calculateDensity( fromX, deltaX, numX, fromY, deltaY, numY ) {
 
     var densitymap = [],
       i,
@@ -139,7 +143,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @see SerieDensityMap#autoColorMapBinBoundaries
    * @see SerieDensityMap#setPxPerBin
    */
-  SerieDensityMap.prototype.calculateDensityWeighted = function( fromX, deltaX, numX, fromY, deltaY, numY ) {
+  calculateDensityWeighted( fromX, deltaX, numX, fromY, deltaY, numY ) {
 
     var densitymap = [],
       i,
@@ -228,7 +232,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @return {SerieDensityMap} The current instance
    * @see SerieDensityMap#calculateDensity
    */
-  SerieDensityMap.prototype.autoBins = function( numX, numY ) {
+  autoBins( numX, numY ) {
 
     this.numX = numX || 400;
     this.numY = numY ||  this.numX;
@@ -253,7 +257,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @return {SerieDensityMap} The current instance
    * @see SerieDensityMap#calculateDensity
    */
-  SerieDensityMap.prototype.setPxPerBin = function( pxPerBinX, pxPerBinY, weightedDensityMap ) {
+  setPxPerBin( pxPerBinX, pxPerBinY, weightedDensityMap ) {
 
     if ( pxPerBinX ) {
       this.calculationDensityMap( {
@@ -286,7 +290,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @return {SerieDensityMap} The current instance
    * @see SerieDensityMap#calculateDensity
    */
-  SerieDensityMap.prototype.setBinsFromTo = function( mode, from, to, num ) {
+  setBinsFromTo( mode, from, to, num ) {
 
     this.densityMapCalculation = this.densityMapCalculation || {};
 
@@ -299,7 +303,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     return this;
   }
 
-  SerieDensityMap.prototype.calculationDensityMap = function( x, y ) {
+  calculationDensityMap( x, y ) {
 
     this.method = this.calculateDensityAdvanced;
     this.densityMapCalculation = this.densityMapCalculation ||  {};
@@ -313,7 +317,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
     }
   }
 
-  SerieDensityMap.prototype.calculateDensityAdvanced = function() {
+  calculateDensityAdvanced() {
 
     var results = {
       x: {
@@ -392,7 +396,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
    * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); 
    */
-  SerieDensityMap.prototype.setColorMapBinBoundaries = function( min, max ) {
+  setColorMapBinBoundaries( min, max ) {
     this.colorMapMin = min;
     this.colorMapMax = max;
     return this;
@@ -405,7 +409,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @param {Number} binMax - The maximum bin value
    * @return {SerieDensityMap} The current instance
    */
-  SerieDensityMap.prototype.autoColorMapBinBoundaries = function() {
+  autoColorMapBinBoundaries() {
     this.colorMapMin = this.binMin;
     this.colorMapMax = this.binMax;
     return this;
@@ -417,7 +421,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @param {(String|Function)} callback - The callback function to call. Should return an array with two elements ```[ colorMapMin, colorMapMax ]```. This parameter can also take the value ```auto```, in which case ```autoColorMapBinBoundaries``` will be called before redraw
    * @return {SerieDensityMap} The current instance
    */
-  SerieDensityMap.prototype.onRedrawColorMapBinBoundaries = function( callback ) {
+  onRedrawColorMapBinBoundaries( callback ) {
     this.callbackColorMapMinMax = callback;
     return this;
   };
@@ -433,7 +437,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code>, or <code>log</code>
    * @return {SerieDensityMap} The current instance
    */
-  SerieDensityMap.prototype.colorMapHSL = function( colorStops, numColors, method ) {
+  colorMapHSL( colorStops, numColors, method ) {
 
     method = method || "linear";
 
@@ -498,17 +502,17 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @param {String} [ method = "linear" ] - The method to use to calculate the density map: <code>linear</code>, <code>exp</code> or <code>log</code>
    * @return {SerieDensityMap} The current instance
    */
-  SerieDensityMap.prototype.autoColorMapHSL = function( colorStops, method ) {
+  autoColorMapHSL( colorStops, method ) {
     this.colorMapHSV( colorStops, 100, method || "linear" );
     return this;
   }
 
-  /*  SerieDensityMap.prototype.byteToHex = function( b ) {
+  /*  byteToHex( b ) {
         return hexChar[ ( b >> 4 ) & 0x0f ] + hexChar[ b & 0x0f ];
       }
       */
   /*
-    SerieDensityMap.prototype.HSVtoRGB = function( h, s, v ) {
+    HSVtoRGB( h, s, v ) {
       var r, g, b, i, f, p, q, t;
       if ( arguments.length === 1 ) {
         s = h.s, v = h.v, h = h.h;
@@ -548,7 +552,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @param {Number} binValue - The value of the bin
    * @return {Number} The color index
    */
-  SerieDensityMap.prototype.getColorIndex = function( binValue ) {
+  getColorIndex( binValue ) {
 
     return Math.max( 0, Math.min( this.colorMapNum, Math.floor( ( binValue - this.colorMapMin ) / ( this.colorMapMax - this.colorMapMin ) * this.colorMapNum ) ) );
   }
@@ -558,7 +562,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @memberof SerieDensityMap
    * @private
    */
-  SerieDensityMap.prototype.draw = function() {
+  draw() {
 
     var colorIndex;
 
@@ -610,7 +614,7 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
    * @memberof SerieDensityMap
    * @private
    */
-  SerieDensityMap.prototype.drawRects = function() {
+  drawRects() {
 
     for ( var i = 0; i < this.paths.length; i++ ) {
 
@@ -631,28 +635,18 @@ define( [ './graph.serie', '../graph.util' ], function( SerieNonInstanciable, ut
   }
 
   /**
-   * @name SerieDensityMapDefaultOptions
-   * @object
-   * @static
-   * @memberof SerieDensityMap
-   */
-  SerieDensityMap.prototype.defaults = {
-
-  };
-
-  /**
    * Sets the options of the serie
    * @see SerieDensityMapDefaultOptions
    * @param {Object} options - A object containing the options to set
    * @return {SerieDensityMap} The current serie
    * @memberof SerieDensityMap
    */
-  SerieDensityMap.prototype.setOptions = function( options ) {
-    this.options = util.extend( true, {}, SerieDensityMap.prototype.defaults, ( options || {} ) );
+  setOptions( options ) {
+    this.options = util.extend( true, {}, defaults, ( options || {} ) );
     // Unselected style
 
     return this;
-  };
+  }
+}
 
-  return SerieDensityMap;
-} );
+export default SerieDensityMap;

@@ -1,26 +1,25 @@
-"use strict";
+import Serie from './graph.serie'
+import * as util from '../graph.util'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
-define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( GraphSerieNonInstanciable, util, ErrorBarMixin ) {
+const defaults = {};
 
-  /** 
-   * @class SerieScatter
-   * @static
-   * @augments Serie
-   * @example graph.newSerie( name, options, "scatter" );
-   * @see Graph#newSerie
-   */
-  var GraphSerieScatter = function() {};
+/** 
+ * @static
+ * @augments Serie
+ * @example graph.newSerie( name, options, "scatter" );
+ * @see Graph#newSerie
+ */
+class SerieScatter extends Serie {
 
-  GraphSerieScatter.prototype = new GraphSerieNonInstanciable();
-
-  /**
-   * Initializes the series
-   * @memberof GraphSerieScatter
-   * @private
-   */
-  GraphSerieScatter.prototype.defaults = {};
-
-  GraphSerieScatter.prototype.init = function( graph, name, options ) {
+  constructor() {
+      super( ...arguments );
+    }
+    /**
+     * Initializes the series
+     * @private
+     */
+  init( graph, name, options ) {
 
     var self = this;
 
@@ -32,7 +31,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.shapes = []; // Stores all shapes
 
     this.shown = true;
-    this.options = util.extend( true, {}, GraphSerieScatter.prototype.defaults, options );
+    this.options = util.extend( true, {}, defaults, options );
     this.data = [];
 
     this.shapesDetails = [];
@@ -60,14 +59,14 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.selectedStyleModifiers = {};
 
     /*
-      this.groupPoints.addEventListener('mouseover', function(e) {
-      
-      });
+    this.groupPoints.addEventListener('mouseover', function(e) {
+    
+    });
 
 
-      this.groupPoints.addEventListener('mouseout', function(e) {
-      
-      });
+    this.groupPoints.addEventListener('mouseout', function(e) {
+    
+    });
 */
 
     this.groupPoints.addEventListener( 'mouseover', function( e ) {
@@ -114,14 +113,13 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
       fill: "black"
     };
 
-  };
+  }
 
   /** 
    * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
-   * @memberof GraphSerieScatter
    * @see GraphSerie#setData
    */
-  GraphSerieScatter.prototype.setData = function( data, oneDimensional, type ) {
+  setData( data, oneDimensional, type ) {
 
     var z = 0,
       x,
@@ -178,21 +176,20 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.data = arr;
 
     return this;
-  };
+  }
 
   /**
    * Removes all DOM points
    * @private
-   * @memberof GraphSerieScatter
    */
-  GraphSerieScatter.prototype.empty = function() {
+  empty() {
 
     while ( this.groupPoints.firstChild ) {
       this.groupPoints.removeChild( this.groupPoints.firstChild );
     }
-  };
+  }
 
-  GraphSerieScatter.prototype.getSymbolForLegend = function() {
+  getSymbolForLegend() {
 
     if ( this.symbol ) {
       return this.symbol;
@@ -213,7 +210,7 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     return g;
 
-  };
+  }
 
   /**
    * Sets style to the scatter points
@@ -226,13 +223,12 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
    * modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
    * serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20
    *
-   * @memberof GraphSerieScatter
    * @param {Object} allStyles - The general style for all markers
    * @param {Object} [ modifiers ] - The general style for all markers
    * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
    *
    */
-  GraphSerieScatter.prototype.setStyle = function( all, modifiers, mode ) {
+  setStyle( all, modifiers, mode ) {
 
     if ( typeof modifiers == "string" ) {
       mode = modifiers;
@@ -243,13 +239,13 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
       mode = "unselected"
     }
     /*
-      if( ! this.styles[ mode ] ) {
+    if( ! this.styles[ mode ] ) {
 
-      }
+    }
 
-      if ( mode !== "selected" && mode !== "unselected" ) {
-        throw "Style mode is not correct. Should be selected or unselected";
-      }
+    if ( mode !== "selected" && mode !== "unselected" ) {
+      throw "Style mode is not correct. Should be selected or unselected";
+    }
 */
     this.styles[ mode ] = this.styles[ mode ] ||  {};
     this.styles[ mode ].all = all;
@@ -258,16 +254,14 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.styleHasChanged( mode );
 
     return this;
-  };
+  }
 
   /**
    * Redraws the serie
    * @private
-   * @memberof SerieScatter.prototype
-   *
    * @param {force} Boolean - Forces redraw even if the data hasn't changed
    */
-  GraphSerieScatter.prototype.draw = function( force ) { // Serie redrawing
+  draw( force ) { // Serie redrawing
 
     if ( !force && !this.hasDataChanged() && !this.hasStyleChanged( 'unselected' ) ) {
       return;
@@ -338,9 +332,9 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     this.applyStyle( "unselected", keys );
 
     this.groupMain.appendChild( this.groupPoints );
-  };
+  }
 
-  GraphSerieScatter.prototype._addPoint = function( xpx, ypx, k ) {
+  _addPoint( xpx, ypx, k ) {
 
     var g = document.createElementNS( this.graph.ns, 'g' );
     g.setAttribute( 'transform', 'translate(' + xpx + ', ' + ypx + ')' );
@@ -361,15 +355,15 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     this.shapes[ k ] = shape;
     this.groupPoints.appendChild( g );
-  };
+  }
 
-  GraphSerieScatter.prototype.doShape = function( group, shape ) {
+  doShape( group, shape ) {
     var el = document.createElementNS( this.graph.ns, shape.shape );
     group.appendChild( el );
     return el;
-  };
+  }
 
-  GraphSerieScatter.prototype.getStyle = function( selection, index, noSetPosition ) {
+  getStyle( selection, index, noSetPosition ) {
 
     var selection = selection || 'unselected';
     var indices;
@@ -450,9 +444,9 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
     }
 
     return styles;
-  };
+  }
 
-  GraphSerieScatter.prototype.applyStyle = function( selection, index, noSetPosition ) {
+  applyStyle( selection, index, noSetPosition ) {
 
     var i, j;
     var styles = this.getStyle( selection, index, noSetPosition );
@@ -479,13 +473,13 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     }
 
-  };
+  }
 
-  GraphSerieScatter.prototype.unselectPoint = function( index ) {
+  unselectPoint( index ) {
     this.selectPoint( index, false );
-  };
+  }
 
-  GraphSerieScatter.prototype.selectPoint = function( index, setOn, selectionType ) {
+  selectPoint( index, setOn, selectionType ) {
 
     if ( this.shapesDetails[ index ][ 2 ] && this.shapesDetails[ index ][ 2 ] == selectionType ) {
       return;
@@ -525,9 +519,10 @@ define( [ './graph.serie', '../graph.util', '../mixins/graph.mixin.errorbars' ],
 
     }
 
-  };
+  }
 
-  ErrorBarMixin.call( GraphSerieScatter.prototype ); // Add error bar mixin
+}
 
-  return GraphSerieScatter;
-} );
+util.mix( SerieScatter, ErrorBarMixin );
+
+export default SerieScatter;

@@ -8,13 +8,14 @@ import Shape from './graph.shape'
 class ShapePolyline extends Shape {
 
   constructor( graph, options ) {
-      super( graph, options );
-    }
-    /**
-     * Creates the DOM
-     * @private
-     * @return {Shape} The current shape
-     */
+    super( graph, options );
+  }
+
+  /**
+   * Creates the DOM
+   * @private
+   * @return {Shape} The current shape
+   */
   createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'path' );
