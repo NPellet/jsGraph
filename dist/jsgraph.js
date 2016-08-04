@@ -16344,9 +16344,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/** 
-	 * Represents a bar serie.\n
-	 * Needs to be used exclusively with a bar axis ({@link AxisXBar}).\n
-	 * Supports error bars, line color, line width, fill color, fill opacity.
+	 * Represents a bar serie.  
+	   Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
+	   Supports error bars, line color, line width, fill color, fill opacity.
 	 * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
 	 * @extends Serie
 	 */

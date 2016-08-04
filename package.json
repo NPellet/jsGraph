@@ -5,7 +5,7 @@
   "scripts": {
     "build": "grunt webpack",
     "doc": "git subtree push --prefix doc origin gh-pages",
-    "test": "grunt && npm run test-mocha",
+    "test": "grunt webpack && npm run test-mocha",
     "test-mocha": "mocha test/node --require should --reporter mocha-better-spec-reporter"
   },
   "main": "dist/jsgraph.js",

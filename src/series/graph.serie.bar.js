@@ -3,9 +3,9 @@ import Serie from './graph.serie.line'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
 /** 
- * Represents a bar serie.\n
- * Needs to be used exclusively with a bar axis ({@link AxisXBar}).\n
- * Supports error bars, line color, line width, fill color, fill opacity.
+ * Represents a bar serie.  
+   Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
+   Supports error bars, line color, line width, fill color, fill opacity.
  * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
  * @extends Serie
  */
