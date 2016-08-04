@@ -3831,6 +3831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.setCSS = setCSS;
 	exports.ajaxGet = ajaxGet;
 	exports.extend = extend;
+	exports.mix = mix;
 	/**
 	 *  Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
 	 * @param {SVGElement} to - The SVG element to apply the attributes to
@@ -4171,6 +4172,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	exports.isArray = isArray;
 	exports.isPlainObject = isPlainObject;
+	function mix(baseClass, mixin) {
+
+	  for (var prop in mixin) {
+	    if (mixin.hasOwnProperty(prop)) {
+	      target.prototype[prop] = mixin[prop];
+	    }
+	  }
+	}
 
 /***/ },
 /* 4 */
@@ -16061,153 +16070,161 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  return function () {
+	var _graph = __webpack_require__(3);
 
-	    this.doErrorDraw = function (orientation, error, originVal, originPx, xpx, ypx) {
+	var util = _interopRequireWildcard(_graph);
 
-	      if (!(error instanceof Array)) {
-	        error = [error];
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var ErrorBarMixin = {
+
+	  doErrorDraw: function doErrorDraw(orientation, error, originVal, originPx, xpx, ypx) {
+
+	    if (!(error instanceof Array)) {
+	      error = [error];
+	    }
+
+	    var functionName = orientation == 'y' ? 'getY' : 'getX';
+	    var bars = orientation == 'y' ? ['top', 'bottom'] : ['left', 'right'];
+	    var j;
+
+	    if (isNaN(xpx) || isNaN(ypx)) {
+	      return;
+	    }
+
+	    for (var i = 0, l = error.length; i < l; i++) {
+
+	      if (error[i] instanceof Array) {
+	        // TOP
+
+	        j = bars[0];
+	        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
+	        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i][0]), originPx, j);
+
+	        j = bars[1];
+	        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
+	        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i][1]), originPx, j);
+	      } else {
+
+	        j = bars[0];
+
+	        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
+	        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i]), originPx, j);
+	        j = bars[1];
+	        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
+	        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i]), originPx, j);
+	      }
+	    }
+	  },
+
+	  makeError: function makeError(orientation, level, coord, origin, quadOrientation) {
+
+	    var method;
+	    switch (this.errorstyles[level].type) {
+	      case 'bar':
+	        method = "makeBar";
+	        break;
+
+	      case 'box':
+	        method = "makeBox";
+	        break;
+	    }
+
+	    return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
+	  },
+
+	  makeBarY: function makeBarY(coordY, origin, style) {
+	    var width = !util.isNumeric(style.width) ? 10 : style.width;
+	    return " V " + coordY + " m -" + width / 2 + " 0 h " + width + " m -" + width / 2 + " 0 V " + origin + " ";
+	  },
+
+	  makeBoxY: function makeBoxY(coordY, origin, style) {
+	    return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
+	  },
+
+	  makeBarX: function makeBarX(coordX, origin, style) {
+	    var height = !util.isNumeric(style.width) ? 10 : style.width;
+	    return " H " + coordX + " m 0 -" + height / 2 + " v " + height + " m 0 -" + height / 2 + " H " + origin + " ";
+	  },
+
+	  makeBoxX: function makeBoxX(coordX, origin, style) {
+
+	    return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
+	  },
+
+	  setDataError: function setDataError(error) {
+	    this.error = error;
+	    this.dataHasChanged();
+	    return this;
+	  },
+
+	  setErrorStyle: function setErrorStyle(errorstyles) {
+
+	    var self = this;
+
+	    errorstyles = errorstyles || ['box', 'bar'];
+
+	    // Ensure array
+	    if (!Array.isArray(errorstyles)) {
+	      errorstyles = [errorstyles];
+	    }
+
+	    var styles = [];
+	    var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
+
+	    function makePath(style) {
+
+	      style.dom = document.createElementNS(self.graph.ns, 'path');
+	      style.dom.setAttribute('fill', style.fillColor || 'none');
+	      style.dom.setAttribute('stroke', style.strokeColor || 'black');
+	      style.dom.setAttribute('stroke-opacity', style.strokeOpacity || 1);
+	      style.dom.setAttribute('fill-opacity', style.fillOpacity || 1);
+	      style.dom.setAttribute('stroke-width', style.strokeWidth || 1);
+
+	      self.groupMain.appendChild(style.dom);
+	    }
+
+	    for (var i = 0; i < errorstyles.length; i++) {
+	      // i is bar or box
+
+	      styles[i] = {};
+
+	      if (typeof errorstyles[i] == "string") {
+
+	        errorstyles[i] = {
+	          type: errorstyles[i],
+	          y: {}
+	        };
 	      }
 
-	      var functionName = orientation == 'y' ? 'getY' : 'getX';
-	      var bars = orientation == 'y' ? ['top', 'bottom'] : ['left', 'right'];
-	      var j;
+	      styles[i].type = errorstyles[i].type;
 
-	      if (isNaN(xpx) || isNaN(ypx)) {
-	        return;
-	      }
+	      for (var j = 0, l = pairs.length; j < l; j++) {
 
-	      for (var i = 0, l = error.length; i < l; i++) {
+	        if (errorstyles[i][pairs[j][0]]) {
+	          //.x, .y
 
-	        if (error[i] instanceof Array) {
-	          // TOP
-
-	          j = bars[0];
-	          this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-	          this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i][0]), originPx, j);
-
-	          j = bars[1];
-	          this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-	          this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i][1]), originPx, j);
-	        } else {
-
-	          j = bars[0];
-
-	          this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-	          this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i]), originPx, j);
-	          j = bars[1];
-	          this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-	          this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i]), originPx, j);
+	          errorstyles[i][pairs[j][1]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
+	          errorstyles[i][pairs[j][2]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
 	        }
-	      }
-	    };
 
-	    this.makeError = function (orientation, level, coord, origin, quadOrientation) {
+	        for (var k = 1; k <= 2; k++) {
 
-	      var method;
-	      switch (this.errorstyles[level].type) {
-	        case 'bar':
-	          method = "makeBar";
-	          break;
+	          if (errorstyles[i][pairs[j][k]]) {
 
-	        case 'box':
-	          method = "makeBox";
-	          break;
-	      }
-
-	      return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
-	    };
-
-	    this.makeBarY = function (coordY, origin, style) {
-	      var width = !util.isNumeric(style.width) ? 10 : style.width;
-	      return " V " + coordY + " m -" + width / 2 + " 0 h " + width + " m -" + width / 2 + " 0 V " + origin + " ";
-	    };
-
-	    this.makeBoxY = function (coordY, origin, style) {
-	      return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
-	    };
-
-	    this.makeBarX = function (coordX, origin, style) {
-	      var height = !util.isNumeric(style.width) ? 10 : style.width;
-	      return " H " + coordX + " m 0 -" + height / 2 + " v " + height + " m 0 -" + height / 2 + " H " + origin + " ";
-	    };
-
-	    this.makeBoxX = function (coordX, origin, style) {
-
-	      return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
-	    };
-
-	    this.setDataError = function (error) {
-	      this.error = error;
-	      this.dataHasChanged();
-	      return this;
-	    };
-
-	    this.setErrorStyle = function (errorstyles) {
-
-	      var self = this;
-
-	      errorstyles = errorstyles || ['box', 'bar'];
-
-	      // Ensure array
-	      if (!Array.isArray(errorstyles)) {
-	        errorstyles = [errorstyles];
-	      }
-
-	      var styles = [];
-	      var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
-
-	      function makePath(style) {
-
-	        style.dom = document.createElementNS(self.graph.ns, 'path');
-	        style.dom.setAttribute('fill', style.fillColor || 'none');
-	        style.dom.setAttribute('stroke', style.strokeColor || 'black');
-	        style.dom.setAttribute('stroke-opacity', style.strokeOpacity || 1);
-	        style.dom.setAttribute('fill-opacity', style.fillOpacity || 1);
-	        style.dom.setAttribute('stroke-width', style.strokeWidth || 1);
-
-	        self.groupMain.appendChild(style.dom);
-	      }
-
-	      for (var i = 0; i < errorstyles.length; i++) {
-	        // i is bar or box
-
-	        styles[i] = {};
-
-	        if (typeof errorstyles[i] == "string") {
-
-	          errorstyles[i] = {
-	            type: errorstyles[i],
-	            y: {}
-	          };
-	        }
-
-	        styles[i].type = errorstyles[i].type;
-
-	        for (var j = 0, l = pairs.length; j < l; j++) {
-
-	          if (errorstyles[i][pairs[j][0]]) {
-	            //.x, .y
-
-	            errorstyles[i][pairs[j][1]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
-	            errorstyles[i][pairs[j][2]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
+	            styles[i][pairs[j][k]] = errorstyles[i][pairs[j][k]];
+	            makePath(styles[i][pairs[j][k]]);
 	          }
-
-	          for (var k = 1; k <= 2; k++) {
-
-	            if (errorstyles[i][pairs[j][k]]) {
-
-	              styles[i][pairs[j][k]] = errorstyles[i][pairs[j][k]];
-	              makePath(styles[i][pairs[j][k]]);
-	            }
-	          }
 	        }
 	      }
-	      /*
+	    }
+	    /*
 	          // None is defined
 	          if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
 	             styles[ i ].top = errorstyles[ i ];
@@ -16223,264 +16240,361 @@ return /******/ (function(modules) { // webpackBootstrap
 	            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
 	            styles[ i ].top = null;
 	          }
-	      */
+	    */
 
-	      this.errorstyles = styles;
+	    this.errorstyles = styles;
 
-	      return this;
-	    };
+	    return this;
+	  },
 
-	    this.errorDrawInit = function () {
-	      var error;
-	      //  var pathError = "M 0 0 ";
+	  errorDrawInit: function errorDrawInit() {
+	    var error;
+	    //  var pathError = "M 0 0 ";
 
-	      if (this.errorstyles) {
+	    if (this.errorstyles) {
 
-	        for (var i = 0, l = this.errorstyles.length; i < l; i++) {
+	      for (var i = 0, l = this.errorstyles.length; i < l; i++) {
 
-	          this.errorstyles[i].paths = {
-	            top: "",
-	            bottom: "",
-	            left: "",
-	            right: ""
-	          };
-	        }
+	        this.errorstyles[i].paths = {
+	          top: "",
+	          bottom: "",
+	          left: "",
+	          right: ""
+	        };
 	      }
-	    };
+	    }
+	  },
 
-	    this.errorAddPoint = function (j, dataX, dataY, xpx, ypx) {
+	  errorAddPoint: function errorAddPoint(j, dataX, dataY, xpx, ypx) {
 
-	      var error;
-	      if (this.error && (error = this.error[j / 2])) {
+	    var error;
+	    if (this.error && (error = this.error[j / 2])) {
 
-	        //    pathError += "M " + xpx + " " + ypx;
+	      //    pathError += "M " + xpx + " " + ypx;
 
-	        if (error[0]) {
-	          this.doErrorDraw('y', error[0], dataY, ypx, xpx, ypx);
-	        }
-
-	        if (error[1]) {
-	          this.doErrorDraw('x', error[1], dataX, xpx, xpx, ypx);
-	        }
+	      if (error[0]) {
+	        this.doErrorDraw('y', error[0], dataY, ypx, xpx, ypx);
 	      }
-	    };
 
-	    this.errorAddPointBarChart = function (j, posY, xpx, ypx) {
-	      var error;
-	      if (this.error && (error = this.error[j])) {
-	        this.doErrorDraw('y', error, posY, ypx, xpx, ypx);
+	      if (error[1]) {
+	        this.doErrorDraw('x', error[1], dataX, xpx, xpx, ypx);
 	      }
-	    };
+	    }
+	  },
 
-	    this.errorDraw = function () {
+	  errorAddPointBarChart: function errorAddPointBarChart(j, posY, xpx, ypx) {
+	    var error;
+	    if (this.error && (error = this.error[j])) {
+	      this.doErrorDraw('y', error, posY, ypx, xpx, ypx);
+	    }
+	  },
 
-	      if (this.error && this.errorstyles) {
+	  errorDraw: function errorDraw() {
 
-	        for (var i = 0, l = this.errorstyles.length; i < l; i++) {
+	    if (this.error && this.errorstyles) {
 
-	          for (var j in this.errorstyles[i].paths) {
+	      for (var i = 0, l = this.errorstyles.length; i < l; i++) {
 
-	            if (this.errorstyles[i][j] && this.errorstyles[i][j].dom) {
-	              this.errorstyles[i][j].dom.setAttribute('d', this.errorstyles[i].paths[j]);
-	            }
+	        for (var j in this.errorstyles[i].paths) {
+
+	          if (this.errorstyles[i][j] && this.errorstyles[i][j].dom) {
+	            this.errorstyles[i][j].dom.setAttribute('d', this.errorstyles[i].paths[j]);
 	          }
 	        }
 	      }
-	    };
-	  };
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    }
+	  }
+
+	};
+
+	exports.default = ErrorBarMixin;
 
 /***/ },
 /* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(23), __webpack_require__(3), __webpack_require__(26)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Serie, util, ErrorBarMixin) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  "use strict";
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  /** 
-	   * Serie class to be extended
-	   * @class Serie
-	   * @static
-	   */
+	var _graph = __webpack_require__(3);
 
-	  function SerieBar() {}
+	var util = _interopRequireWildcard(_graph);
 
-	  SerieBar.prototype = new Serie();
+	var _graphSerie = __webpack_require__(23);
 
-	  SerieBar.prototype.init = function (graph, name, options) {
-	    this.graph = graph;
-	    this.name = name;
-	    this.options = options || {};
+	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	    this.groupMain = document.createElementNS(this.graph.ns, 'g');
+	var _graphMixin = __webpack_require__(26);
 
-	    this.pathDom = document.createElementNS(this.graph.ns, 'path');
-	    this.groupMain.appendChild(this.pathDom);
+	var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
-	    // Creates an empty style variable
-	    this.styles = {};
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	    // Unselected style
-	    this.styles.unselected = {
-	      lineColor: this.options.lineColor,
-	      lineStyle: this.options.lineStyle,
-	      lineWidth: this.options.lineWidth,
-	      markers: this.options.markers
-	    };
-	  };
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	  SerieBar.prototype.setData = function (data) {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	    this.data = data;
-	    this.minY = Number.MAX_SAFE_INTEGER;
-	    this.maxY = Number.MIN_SAFE_INTEGER;
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	    for (var i in this.data) {
-	      this._checkY(this.data[i]);
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/** 
+	 * Represents a bar serie.\n
+	 * Needs to be used exclusively with a bar axis ({@link AxisXBar}).\n
+	 * Supports error bars, line color, line width, fill color, fill opacity.
+	 * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
+	 * @extends Serie
+	 */
+	var SerieBar = function (_Serie) {
+	  _inherits(SerieBar, _Serie);
+
+	  function SerieBar() {
+	    _classCallCheck(this, SerieBar);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieBar).call(this));
+	  }
+
+	  _createClass(SerieBar, [{
+	    key: 'init',
+	    value: function init(graph, name, options) {
+	      this.graph = graph;
+	      this.name = name;
+	      this.options = options || {};
+
+	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
+
+	      this.pathDom = document.createElementNS(this.graph.ns, 'path');
+	      this.groupMain.appendChild(this.pathDom);
+
+	      // Creates an empty style variable
+	      this.styles = {};
+
+	      // Unselected style
+	      this.styles.unselected = {
+	        lineColor: this.options.lineColor,
+	        lineStyle: this.options.lineStyle,
+	        lineWidth: this.options.lineWidth,
+	        fillColor: this.options.fillColor,
+	        fillOpacity: this.options.fillOpacity,
+	        markers: this.options.markers
+	      };
 	    }
 
-	    return this;
-	  };
+	    /** 
+	     *  Sets the data of the bar serie
+	     *  @param {Object} data
+	     *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
+	     *  @return {SerieBar} The current serie instance
+	     */
 
-	  /*  
-	   * @memberof SerieBar
-	   */
-	  SerieBar.prototype.setFillColor = function (fillColor, selectionType, applyToSelected) {
+	  }, {
+	    key: 'setData',
+	    value: function setData(data) {
 
-	    selectionType = selectionType || "unselected";
-	    this.styles[selectionType] = this.styles[selectionType] || {};
-	    this.styles[selectionType].fillColor = fillColor;
+	      this.data = data;
+	      this.minY = Number.MAX_SAFE_INTEGER;
+	      this.maxY = Number.MIN_SAFE_INTEGER;
 
-	    if (applyToSelected) {
-	      this.setFillColor(fillColor, "selected");
-	    }
-
-	    this.styleHasChanged(selectionType);
-
-	    return this;
-	  };
-
-	  SerieBar.prototype.getFillColor = function (selectionType) {
-	    return this.getStyle(selectionType).fillColor;
-	  };
-
-	  /*  
-	   * @memberof SerieBar
-	   */
-	  SerieBar.prototype.setFillOpacity = function (opacity, selectionType, applyToSelected) {
-
-	    selectionType = selectionType || "unselected";
-	    this.styles[selectionType] = this.styles[selectionType] || {};
-	    this.styles[selectionType].fillOpacity = opacity;
-
-	    if (applyToSelected) {
-	      this.setLineWidth(opacity, "selected");
-	    }
-
-	    this.styleHasChanged(selectionType);
-
-	    return this;
-	  };
-
-	  SerieBar.prototype.getFillOpacity = function (selectionType) {
-
-	    return this.getStyle(selectionType).fillOpacity || 1;
-	  };
-
-	  /**
-	   * Reapply the current style to the serie lines elements. Mostly used internally
-	   * @memberof SerieBar
-	   */
-	  SerieBar.prototype.applyLineStyles = function () {
-	    this.applyLineStyle(this.pathDom);
-	  };
-
-	  /**
-	   * Applies the current style to a line element. Mostly used internally
-	   * @memberof SerieBar
-	   */
-	  SerieBar.prototype.applyLineStyle = function (line) {
-
-	    line.setAttribute('stroke', this.getLineColor());
-	    line.setAttribute('stroke-width', this.getLineWidth());
-	    if (this.getLineDashArray()) {
-	      line.setAttribute('stroke-dasharray', this.getLineDashArray());
-	    } else {
-	      line.removeAttribute('stroke-dasharray');
-	    }
-	    line.setAttribute('fill', this.getFillColor());
-	    line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
-	  };
-
-	  SerieBar.prototype.draw = function () {
-
-	    var path = "";
-	    var categoryNumber, position;
-
-	    if (this.error) {
-	      this.errorDrawInit();
-	    }
-
-	    for (var i in this.data) {
-
-	      if (false === (categoryNumber = this.getCategory(i))) {
-	        continue;
+	      for (var i in this.data) {
+	        this._checkY(this.data[i]);
 	      }
 
-	      position = this.calculatePosition(categoryNumber, this.order);
+	      return this;
+	    }
 
-	      path += "M " + this.getXAxis().getPos(position[0]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(position[1]) + " V " + this.getYAxis().getPos(0);
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setFillColor',
+	    value: function setFillColor(fillColor, selectionType, applyToSelected) {
+
+	      selectionType = selectionType || "unselected";
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType].fillColor = fillColor;
+
+	      if (applyToSelected) {
+	        this.setFillColor(fillColor, "selected");
+	      }
+
+	      this.styleHasChanged(selectionType);
+
+	      return this;
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getFillColor',
+	    value: function getFillColor(selectionType) {
+	      return this.getStyle(selectionType).fillColor;
+	    }
+
+	    /*  
+	     * @memberof SerieBar
+	     */
+
+	  }, {
+	    key: 'setFillOpacity',
+	    value: function setFillOpacity(opacity, selectionType, applyToSelected) {
+
+	      selectionType = selectionType || "unselected";
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType].fillOpacity = opacity;
+
+	      if (applyToSelected) {
+	        this.setLineWidth(opacity, "selected");
+	      }
+
+	      this.styleHasChanged(selectionType);
+
+	      return this;
+	    }
+	  }, {
+	    key: 'getFillOpacity',
+	    value: function getFillOpacity(selectionType) {
+
+	      return this.getStyle(selectionType).fillOpacity || 1;
+	    }
+
+	    /**
+	     * Reapply the current style to the serie lines elements. Mostly used internally
+	     */
+
+	  }, {
+	    key: 'applyLineStyles',
+	    value: function applyLineStyles() {
+	      this.applyLineStyle(this.pathDom);
+	    }
+
+	    /**
+	     * Applies the current style to a line element. Mostly used internally
+	     * @memberof SerieBar
+	     */
+
+	  }, {
+	    key: 'applyLineStyle',
+	    value: function applyLineStyle(line) {
+
+	      line.setAttribute('stroke', this.getLineColor());
+	      line.setAttribute('stroke-width', this.getLineWidth());
+	      if (this.getLineDashArray()) {
+	        line.setAttribute('stroke-dasharray', this.getLineDashArray());
+	      } else {
+	        line.removeAttribute('stroke-dasharray');
+	      }
+	      line.setAttribute('fill', this.getFillColor());
+	      line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
+	    }
+	  }, {
+	    key: 'draw',
+	    value: function draw() {
+
+	      var path = "";
+	      var categoryNumber, position;
 
 	      if (this.error) {
-	        this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(position[2]), this.getYAxis().getPos(this.data[i]));
+	        this.errorDrawInit();
 	      }
-	    }
 
-	    if (this.error) {
-	      this.errorDraw();
-	    }
+	      for (var i in this.data) {
 
-	    this.pathDom.setAttribute('d', path);
-	    this.applyLineStyles();
-	  };
+	        if (false === (categoryNumber = this.getCategoryIndex(i))) {
+	          continue;
+	        }
 
-	  SerieBar.prototype.getCategory = function (name) {
+	        position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
 
-	    if (!this.categories) {
-	      throw new Error("No categories were defined. Probably axis.setSeries was not called");
-	    }
+	        path += "M " + this.getXAxis().getPos(position[0]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(position[1]) + " V " + this.getYAxis().getPos(0);
 
-	    for (var i = 0; i < this.categories.length; i++) {
-
-	      if (this.categories[i].name == name) {
-	        return i;
+	        if (this.error) {
+	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(position[2]), this.getYAxis().getPos(this.data[i]));
+	        }
 	      }
+
+	      if (this.error) {
+	        this.errorDraw();
+	      }
+
+	      this.pathDom.setAttribute('d', path);
+	      this.applyLineStyles();
 	    }
 
-	    return false;
-	  };
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
 
-	  SerieBar.prototype.setBarConfig = function (order, categories, nbSeries) {
+	  }, {
+	    key: 'getCategoryIndex',
+	    value: function getCategoryIndex(name) {
 
-	    this.order = order;
-	    this.categories = categories;
-	    this.nbSeries = nbSeries;
-	  };
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
 
-	  SerieBar.prototype.calculatePosition = function (categoryNumber, serieNumber) {
+	      for (var i = 0; i < this.categories.length; i++) {
 
-	    var nbElements = (this.nbSeries + 1) * this.categories.length;
-	    var nb = categoryNumber * (this.nbSeries + 1) + serieNumber + 0.5;
-	    return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
-	  };
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
 
-	  ErrorBarMixin.call(SerieBar.prototype); // Add error bar mixin
+	      return false;
+	    }
+
+	    // Markers now allowed
+
+	  }, {
+	    key: 'setMarkers',
+	    value: function setMarkers() {}
+
+	    /**
+	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
+	     *  @private
+	     *  @param {Number} order - The index of the serie in the bar stack
+	     *  @param {Object[]} categories - The list of categories
+	     *  @param {Number} nbSeries - The number of series
+	     *  @see AxisXBar#setSeries
+	     */
+
+	  }, {
+	    key: 'setBarConfig',
+	    value: function setBarConfig(order, categories, nbSeries) {
+
+	      this.order = order;
+	      this.categories = categories;
+	      this.nbSeries = nbSeries;
+	    }
+	  }]);
 
 	  return SerieBar;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graphSerie2.default);
+
+	/**
+	 *  @private
+	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
+	 *  @param {Number} serieIndex - The index of the serie
+	 *  @param {Number} nbSeries - The number of series
+	 */
+
+
+	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
+
+	  var nbElements = (nbSeries + 1) * nbCategories;
+	  var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
+	  return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
+	}
+
+	exports.default = SerieBar;
 
 /***/ },
 /* 28 */
@@ -21111,16 +21225,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *  Displays a surface under a line serie
 	 *  @extends GraphShape
 	 */
-	var GraphSurfaceUnderCurve = function (_Shape) {
-	  _inherits(GraphSurfaceUnderCurve, _Shape);
+	var ShapeSurfaceUnderCurve = function (_Shape) {
+	  _inherits(ShapeSurfaceUnderCurve, _Shape);
 
-	  function GraphSurfaceUnderCurve() {
-	    _classCallCheck(this, GraphSurfaceUnderCurve);
+	  function ShapeSurfaceUnderCurve() {
+	    _classCallCheck(this, ShapeSurfaceUnderCurve);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(GraphSurfaceUnderCurve).call(this, graph));
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeSurfaceUnderCurve).call(this, graph));
 	  }
 
-	  _createClass(GraphSurfaceUnderCurve, [{
+	  _createClass(ShapeSurfaceUnderCurve, [{
 	    key: 'createDom',
 	    value: function createDom() {
 
@@ -21319,10 +21433,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return GraphSurfaceUnderCurve;
+	  return ShapeSurfaceUnderCurve;
 	}(_graph2.default);
 
-	exports.default = GraphSurfaceUnderCurve;
+	exports.default = ShapeSurfaceUnderCurve;
 
 /***/ },
 /* 35 */
@@ -21675,6 +21789,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * Displays an ellipse
+	 * @extends Shape
 	 */
 	var ShapeEllipse = function (_Shape) {
 	  _inherits(ShapeEllipse, _Shape);
@@ -21921,8 +22036,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/**
-	 * Displays an integral with NMR stylr
-	 * @extends GraphSurfaceUnderCurve
+	 * Displays an integral with NMR style
+	 * @extends ShapeSurfaceUnderCurve
 	 */
 	var ShapeNMRIntegral = function (_ShapeSurfaceUnderCur) {
 	  _inherits(ShapeNMRIntegral, _ShapeSurfaceUnderCur);
@@ -22171,6 +22286,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * User to screen coordinate transform. In (unit)/(px), (unit) being the unit of the integral (x * y)
 	     * @type {Number}
 	     */
 
@@ -22719,15 +22835,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 *  Displays a cross
-	 *  @extends GraphShape
+	 *  @extends Shape
 	 */
-	var GraphCross = function (_Shape) {
-	  _inherits(GraphCross, _Shape);
+	var ShapeCross = function (_Shape) {
+	  _inherits(ShapeCross, _Shape);
 
-	  function GraphCross(graph, options) {
-	    _classCallCheck(this, GraphCross);
+	  function ShapeCross(graph, options) {
+	    _classCallCheck(this, ShapeCross);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(GraphCross).call(this, graph, options));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeCross).call(this, graph, options));
 
 	    _this.nbHandles = 1;
 	    return _this;
@@ -22739,7 +22855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 
-	  _createClass(GraphCross, [{
+	  _createClass(ShapeCross, [{
 	    key: 'createDom',
 	    value: function createDom() {
 
@@ -22868,10 +22984,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return GraphCross;
+	  return ShapeCross;
 	}(_graph2.default);
 
-	exports.default = GraphCross;
+	exports.default = ShapeCross;
 
 /***/ },
 /* 44 */

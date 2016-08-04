@@ -2,9 +2,9 @@ import Shape from './graph.shape'
 
 /**
  *  Displays a cross
- *  @extends GraphShape
+ *  @extends Shape
  */
-class GraphCross extends Shape {
+class ShapeCross extends Shape {
 
   constructor( graph, options ) {
     super( graph, options );
@@ -132,4 +132,4 @@ class GraphCross extends Shape {
   }
 }
 
-export default GraphCross;
+export default ShapeCross;

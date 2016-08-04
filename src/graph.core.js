@@ -2191,7 +2191,6 @@ class Graph extends EventEmitter {
     }
     return constructor;
   }
-
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes

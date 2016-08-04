@@ -4,7 +4,7 @@ import Shape from './graph.shape'
  *  Displays a surface under a line serie
  *  @extends GraphShape
  */
-class GraphSurfaceUnderCurve extends Shape {
+class ShapeSurfaceUnderCurve extends Shape {
 
   constructor() {
 
@@ -209,4 +209,4 @@ class GraphSurfaceUnderCurve extends Shape {
   }
 }
 
-export default GraphSurfaceUnderCurve;
+export default ShapeSurfaceUnderCurve;

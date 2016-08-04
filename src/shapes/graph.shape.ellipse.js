@@ -3,6 +3,7 @@ import Shape from './graph.shape'
 
 /**
  * Displays an ellipse
+ * @extends Shape
  */
 class ShapeEllipse extends Shape {
 

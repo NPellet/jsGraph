@@ -1,19 +1,21 @@
-define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbars' ], function( Serie, util, ErrorBarMixin ) {
+import * as util from '../graph.util'
+import Serie from './graph.serie.line'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
-  "use strict";
+/** 
+ * Represents a bar serie.\n
+ * Needs to be used exclusively with a bar axis ({@link AxisXBar}).\n
+ * Supports error bars, line color, line width, fill color, fill opacity.
+ * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
+ * @extends Serie
+ */
+class SerieBar extends Serie {
 
-  /** 
-   * Serie class to be extended
-   * @class Serie
-   * @static
-   */
-  function SerieBar() {
-
+  constructor() {
+    super();
   }
 
-  SerieBar.prototype = new Serie();
-
-  SerieBar.prototype.init = function( graph, name, options ) {
+  init( graph, name, options ) {
     this.graph = graph;
     this.name = name;
     this.options = options ||  {};
@@ -31,12 +33,20 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
       lineColor: this.options.lineColor,
       lineStyle: this.options.lineStyle,
       lineWidth: this.options.lineWidth,
+      fillColor: this.options.fillColor,
+      fillOpacity: this.options.fillOpacity,
       markers: this.options.markers
     };
 
   }
 
-  SerieBar.prototype.setData = function( data ) {
+  /** 
+   *  Sets the data of the bar serie
+   *  @param {Object} data
+   *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
+   *  @return {SerieBar} The current serie instance
+   */
+  setData( data ) {
 
     this.data = data;
     this.minY = Number.MAX_SAFE_INTEGER;
@@ -47,12 +57,12 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     }
 
     return this;
-  };
+  }
 
-  /*  
-   * @memberof SerieBar
+  /** 
+   *  Sets the fill color
    */
-  SerieBar.prototype.setFillColor = function( fillColor, selectionType, applyToSelected ) {
+  setFillColor( fillColor, selectionType, applyToSelected ) {
 
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
@@ -65,16 +75,19 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     this.styleHasChanged( selectionType );
 
     return this;
-  };
+  }
 
-  SerieBar.prototype.getFillColor = function( selectionType ) {
+  /** 
+   *  Returns the fill color
+   */
+  getFillColor( selectionType ) {
     return this.getStyle( selectionType ).fillColor;
-  };
+  }
 
   /*  
    * @memberof SerieBar
    */
-  SerieBar.prototype.setFillOpacity = function( opacity, selectionType, applyToSelected ) {
+  setFillOpacity( opacity, selectionType, applyToSelected ) {
 
     selectionType = selectionType ||  "unselected";
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
@@ -87,26 +100,25 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     this.styleHasChanged( selectionType );
 
     return this;
-  };
+  }
 
-  SerieBar.prototype.getFillOpacity = function( selectionType ) {
+  getFillOpacity( selectionType ) {
 
     return this.getStyle( selectionType ).fillOpacity || 1;
-  };
+  }
 
   /**
    * Reapply the current style to the serie lines elements. Mostly used internally
-   * @memberof SerieBar
    */
-  SerieBar.prototype.applyLineStyles = function() {
+  applyLineStyles() {
     this.applyLineStyle( this.pathDom );
-  };
+  }
 
   /**
    * Applies the current style to a line element. Mostly used internally
    * @memberof SerieBar
    */
-  SerieBar.prototype.applyLineStyle = function( line ) {
+  applyLineStyle( line ) {
 
     line.setAttribute( 'stroke', this.getLineColor() );
     line.setAttribute( 'stroke-width', this.getLineWidth() );
@@ -117,9 +129,9 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     }
     line.setAttribute( 'fill', this.getFillColor() );
     line.setAttribute( 'fill-opacity', this.getFillOpacity() || 1 );
-  };
+  }
 
-  SerieBar.prototype.draw = function() {
+  draw() {
 
     var path = "";
     var categoryNumber,
@@ -131,11 +143,11 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
 
     for ( var i in this.data ) {
 
-      if ( false === ( categoryNumber = this.getCategory( i ) ) ) {
+      if ( false === ( categoryNumber = this.getCategoryIndex( i ) ) ) {
         continue;
       }
 
-      position = this.calculatePosition( categoryNumber, this.order );
+      position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
 
       path += "M " +
         this.getXAxis().getPos( position[ 0 ] ) +
@@ -161,7 +173,11 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     this.applyLineStyles();
   }
 
-  SerieBar.prototype.getCategory = function( name ) {
+  /**
+   * Returns the index of a category based on its name
+   * @param {String} name - The name of the category
+   */
+  getCategoryIndex( name ) {
 
     if ( !this.categories ) {
       throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
@@ -177,23 +193,36 @@ define( [ './graph.serie.line', '../graph.util', '../mixins/graph.mixin.errorbar
     return false;
   }
 
-  SerieBar.prototype.setBarConfig = function( order, categories, nbSeries ) {
+  // Markers now allowed
+  setMarkers() {}
+
+  /**
+   *  Informations needed for the redrawing of the bars, coming from AxisXBar
+   *  @private
+   *  @param {Number} order - The index of the serie in the bar stack
+   *  @param {Object[]} categories - The list of categories
+   *  @param {Number} nbSeries - The number of series
+   *  @see AxisXBar#setSeries
+   */
+  setBarConfig( order, categories, nbSeries ) {
 
     this.order = order;
     this.categories = categories;
     this.nbSeries = nbSeries;
-
   }
+}
 
-  SerieBar.prototype.calculatePosition = function( categoryNumber, serieNumber ) {
+/**
+ *  @private
+ *  @param {Number} categoryIndex - The index of the serie in the bar stack
+ *  @param {Number} serieIndex - The index of the serie
+ *  @param {Number} nbSeries - The number of series
+ */
+function calculatePosition( categoryIndex, serieIndex, nbSeries, nbCategories ) {
 
-    var nbElements = ( this.nbSeries + 1 ) * this.categories.length;
-    var nb = categoryNumber * ( this.nbSeries + 1 ) + serieNumber + 0.5;
-    return [ ( nb ) / nbElements, 1 / nbElements, ( nb + 0.5 ) / nbElements ];
-  }
+  var nbElements = ( nbSeries + 1 ) * nbCategories;
+  var nb = categoryIndex * ( nbSeries + 1 ) + serieIndex + 0.5;
+  return [ ( nb ) / nbElements, 1 / nbElements, ( nb + 0.5 ) / nbElements ];
+}
 
-  ErrorBarMixin.call( SerieBar.prototype ); // Add error bar mixin
-
-  return SerieBar;
-
-} );
+export default SerieBar;

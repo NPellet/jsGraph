@@ -2,7 +2,7 @@
 layout: page-doc
 title: Documentation
 docbar: Shape
-subtitle: 'ShapePolyLine'
+subtitle: 'ShapePolyline'
 ---
 
 
@@ -13,7 +13,9 @@ subtitle: 'ShapePolyLine'
 
 <header>
     
-        <h2>ShapePolyLine</h2>
+        <h2>ShapePolyline</h2>
+        
+            <div class="class-description">Represents a line that extends the Shape class. Used by the plugin <a href="PluginSerieLineDifference.html">PluginSerieLineDifference</a></div>
         
     
 </header>
@@ -28,15 +30,13 @@ subtitle: 'ShapePolyLine'
 
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="doc-code" id="ShapePolyLine"><span class="type-signature"></span>new <span></span><span class="doc-name">ShapePolyLine</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="ShapePolyline"><span class="type-signature"></span>new <span></span><span class="doc-name">ShapePolyline</span><span class="doc-signature">( )</span></h4>
 
 
 
-
-<div class="description">
-    Represents a line that extends the Shape class
-</div>
 
 
 <div class="doc-details">
@@ -140,6 +140,135 @@ subtitle: 'ShapePolyLine'
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPointsPx"><span class="type-signature"></span><span>{<span class="doc-return"><a href="ShapePolyline.html">ShapePolyline</a></span>} </span><span class="doc-name">setPointsPx</span><span class="doc-signature">( <span class="doc-type">String</span> a )</span></h4>
+
+
+
+
+<div class="description">
+    Force the points of the polyline already computed in pixels
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">SVG string to be used in the ```d``` attribute of the path.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="ShapePolyline.html">ShapePolyline</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current polyline instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
     
 
 
@@ -1464,12 +1593,12 @@ subtitle: 'ShapePolyLine'
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="Shape.html#calculatePosition">Shape#calculatePosition</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -1765,12 +1894,12 @@ subtitle: 'ShapePolyLine'
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="Shape.html#displayLabel">Shape#displayLabel</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -4530,6 +4659,160 @@ subtitle: 'ShapePolyLine'
 	
 
     The y axis associated to the shape.
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="handleMouseDown"><span class="type-signature"></span><span></span><span class="doc-name">handleMouseDown</span><span class="doc-signature">( <span class="doc-type">Event</span> e )</span></h4>
+
+
+
+
+<div class="description">
+    Handles mouse down events
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Event</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The native event</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Shape.html#handleMouseDown">Shape#handleMouseDown</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    The result of the Shape#handleMouseDownImpl method.prototype
 </div>
 
         

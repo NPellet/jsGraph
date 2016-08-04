@@ -20,7 +20,7 @@
 
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/theme.css">
-    <link rel="canonical" href="http://localhost:8000///docs/SerieLine.html">
+    <link rel="canonical" href="http://localhost:8000///docs/SerieBar.html">
     <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
 </head>
 
@@ -141,7 +141,7 @@
         <ul class="nav navbar-nav">
 			
 			  
-			  <li >
+			  <li  class="active" >
 			  	<a class="page-link" href="/docs/SerieBar.html">
 			  		Bar
 			  	</a>
@@ -157,7 +157,7 @@
 			  
 			
 			  
-			  <li  class="active" >
+			  <li >
 			  	<a class="page-link" href="/docs/SerieLine.html">
 			  		Line
 			  	</a>
@@ -205,7 +205,11 @@
 
 <header>
     
-        <h2>SerieLine</h2>
+        <h2>SerieBar</h2>
+        
+            <div class="class-description">Represents a bar serie
+Needs to be used exclusively with a bar axis BarXAxis
+Supports error bars, line color, line width, fill color, fill opacity</div>
         
     
 </header>
@@ -220,15 +224,13 @@
 
 
     
+    <h2>Constructor</h2>
+    
 
-    <h4 class="doc-code" id="SerieLine"><span class="type-signature"></span>new <span></span><span class="doc-name">SerieLine</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="SerieBar"><span class="type-signature"></span>new <span></span><span class="doc-name">SerieBar</span><span class="doc-signature">( )</span></h4>
 
 
 
-
-<div class="description">
-    Serie line
-</div>
 
 
 <div class="doc-details">
@@ -247,48 +249,6 @@
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="Graph.html#newSerie">Graph#newSerie</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
 
     
 
@@ -306,7 +266,7 @@
         <h5>Example</h5>
         
 
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="s2">"line"</span> <span class="p">);</span></code></pre></figure>
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"serieName"</span><span class="p">,</span> <span class="p">{</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span> <span class="na">fillOpacity</span><span class="p">:</span> <span class="mf">0.2</span> <span class="p">},</span> <span class="s2">"bar"</span> <span class="p">);</span></code></pre></figure>
 
     
 
@@ -337,512 +297,10 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        
-            
-
-
-<div class="doc-member">
-<h4 class="doc-code" id=".SerieLineDefaultOptions"><span class="type-signature">(static) </span><span class="doc-name">SerieLineDefaultOptions</span><span class="type-signature"></span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-
-
-
-
-
-
-
-
-
-</div>
-</div>
-        
-
-    
 
     
         <h3 class="subsection-title">Methods</h3>
 
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id=".getMax"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMax</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id=".getMin"><span class="type-signature">(static) </span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMin</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id=".searchClosestValue"><span class="type-signature">(static) </span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">searchClosestValue</span><span class="doc-signature">( <span class="doc-type">Number</span> valX )</span></h4>
-
-
-
-
-<div class="description">
-    Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>valX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x value to search for</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Object</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="applyLineStyle"><span class="type-signature">(static) </span><span></span><span class="doc-name">SerieLineColor#applyLineStyle</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Applies the current style to a line element. Mostly used internally
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
         
             
 
@@ -956,16 +414,13 @@
 
     
 
-    <h4 class="doc-code" id="degrade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">degrade</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+    <h4 class="doc-code" id="getCategoryIndex"><span class="type-signature"></span><span></span><span class="doc-name">getCategoryIndex</span><span class="doc-signature">( <span class="doc-type">String</span> name )</span></h4>
 
 
 
 
 <div class="description">
-    Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
-For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-<code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+    Returns the index of a category based on its name
 </div>
 
 
@@ -1005,1245 +460,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
         <tr>
             
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A object containing the options to set</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The newly created zone serie
-</div>
-
-        
-
-    
-        <h5>Example</h5>
-        
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">zone</span> <span class="o">=</span> <span class="nx">serie</span><span class="p">.</span><span class="nx">degrade</span><span class="p">(</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">{</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'rgba(100, 100, 100, 0.2'</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Will display 2 points per pixels</span>
-<span class="nx">zone</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span></code></pre></figure>
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="draw"><span class="type-signature"></span><span></span><span class="doc-name">draw</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Draws the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="empty"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">empty</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new <a href="Serie.html#setData">Serie#setData</a> is called
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getMarkerCurrentFamily"><span class="type-signature"></span><span></span><span class="doc-name">getMarkerCurrentFamily</span><span class="doc-signature">( <span class="doc-type">Number</span> k )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>k</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Index of the point for which we should get the family</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMax</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="getMin"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMin</span><span class="doc-signature">( <span class="doc-type">Number</span> startX , <span class="doc-type">Number</span> endX )</span></h4>
-
-
-
-
-<div class="description">
-    Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>startX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The start of the x values</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>endX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The end of the x values</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Maximal y value in between startX and endX
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="hidePeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">hidePeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Hides the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="hideTrackingMarker"><span class="type-signature"></span><span></span><span class="doc-name">hideTrackingMarker</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Hides the tracking marker (see the trackMouse option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="init"><span class="type-signature"></span><span></span><span class="doc-name">init</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Initializes the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="markersOffHover"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">markersOffHover</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Toggles off markers that have the hover mode "on"
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="markersOffSelect"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">markersOffSelect</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Toggles off markers that have the select mode "on"
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="searchClosestValue"><span class="type-signature"></span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">searchClosestValue</span><span class="doc-signature">( <span class="doc-type">Number</span> valX )</span></h4>
-
-
-
-
-<div class="description">
-    Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>valX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x value to search for</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Object</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="searchIndexByPxXY"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">searchIndexByPxXY</span><span class="doc-signature">( <span class="doc-type">Number</span> x , <span class="doc-type">Number</span> y )</span></h4>
-
-
-
-
-<div class="description">
-    Searches the closest point pair (x,y) to the a pair of pixel position
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>x</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The x position in pixels (from the left)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>y</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The y position in pixels (from the left)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Number</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="select"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">select</span><span class="doc-signature">( [ , <span class="doc-type">String</span> selectionType ] )</span></h4>
-
-
-
-
-<div class="description">
-    Applies a selection to the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>selectionType</code></td>
+                <td class="name"><code>name</code></td>
             
 
             <td class="type">
@@ -2256,26 +473,10 @@ It then creates a zone serie that will be show the minimum and maximum values ov
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
 
             
-                <td class="default">
-                
-                    "selected"
-                
-                </td>
-            
 
-            <td class="description last">The selection name</td>
+            <td class="description last">The name of the category</td>
         </tr>
 
     
@@ -2288,20 +489,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
 
 
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#select">Serie#select</a>
-    </li></ul></dd>
-    
 
     
 
@@ -2314,63 +501,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="SerieLine.html#unselect">SerieLine#unselect</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
 
     
 
@@ -2385,13 +515,65 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    <h4 class="doc-code" id="setOptions"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">setOptions</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+    <h4 class="doc-code" id="getFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getFillColor</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Sets the options of the serie
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieBar.html">SerieBar</a></span>} </span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object</span> data )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the data of the bar serie
 </div>
 
 
@@ -2431,7 +613,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
@@ -2447,7 +629,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
             
 
-            <td class="description last">A object containing the options to set</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -2471,7 +653,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#setOptions">Serie#setOptions</a>
+        <a href="Serie.html#setData">Serie#setData</a>
     </li></ul></dd>
     
 
@@ -2495,13 +677,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li>SerieLineDefaultOptions</li>
-        </ul>
-    </dd>
     
 
     
@@ -2531,7 +706,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 			{ 
 			<span class="doc-return">
 		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
+<span class="param-type"><a href="SerieBar.html">SerieBar</a></span>
 
 
 		    </span>
@@ -2539,464 +714,69 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 		</span>
 	
 
-    The current serie
+    The current serie instance
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="showPeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">showPeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Shows the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="toggleMarker"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">toggleMarker</span><span class="doc-signature">( <span class="doc-type">Number</span> index [ , <span class="doc-type">Boolean</span> force ] [ , <span class="doc-type">Boolean</span> hover ] )</span></h4>
-
-
-
-
-<div class="description">
-    Selects one of the markers of the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>index</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The point index to select (starting at 0)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>force</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>hover</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last"><code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type">Boolean</span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The new state of the marker
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="unselect"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">unselect</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Removes the selection to the serie. Effectively, calls <a href="SerieLine.html#select">SerieLine#select</a>("unselected").
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Serie.html#unselect">Serie#unselect</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="SerieLine.html#select">SerieLine#select</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="SerieLine.html">SerieLine</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie
-</div>
-
-        
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="updateStyle"><span class="type-signature"></span><span></span><span class="doc-name">updateStyle</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
         <h5>Example</h5>
         
 
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span> <span class="na">lineColor</span><span class="p">:</span> <span class="s1">'red'</span> <span class="p">};</span>
-<span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"name"</span><span class="p">,</span> <span class="nx">opts</span> <span class="p">).</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">someData</span> <span class="p">);</span>
-<span class="nx">opts</span><span class="p">.</span><span class="nx">lineColor</span> <span class="o">=</span> <span class="s1">'green'</span><span class="p">;</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">updateStyle</span><span class="p">();</span> <span class="c1">// Sets the lineColor to green</span>
-<span class="nx">s</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span> <span class="c1">// Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)</span></code></pre></figure>
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="nx">val1</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="nx">val2</span><span class="p">,</span> <span class="s2">"cat4"</span><span class="p">:</span> <span class="nx">val4</span> <span class="p">}</span> <span class="p">);</span>
+ </code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -6084,6 +3864,122 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
+    <h4 class="doc-code" id="select"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">select</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Flags the serie as selected
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#select">Serie#select</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setAdditionalData"><span class="type-signature"></span><span></span><span class="doc-name">setAdditionalData</span><span class="doc-signature">( )</span></h4>
 
 
@@ -6348,262 +4244,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] [ , <span class="doc-type">String</span> type ] )</span></h4>
-
-
-
-
-<div class="description">
-    Sets data to the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array</span>
-|
-
-<span class="param-type">Array.&lt;Array></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The data of the serie</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>oneDimensional</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    float
-                
-                </td>
-            
-
-            <td class="description last">Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Examples</h5>
-        
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Faster</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">,</span> <span class="nx">x</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nx">y</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">...]</span> <span class="p">],</span> <span class="kc">true</span> <span class="p">)</span> <span class="c1">// 1D array with a gap in the middle</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="nx">x0</span><span class="p">,</span> <span class="na">dx</span><span class="p">:</span> <span class="nx">spacing</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">[</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="nx">y3</span><span class="p">,</span> <span class="nx">y4</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Data with equal x separation. Fastest way</span></code></pre></figure>
 
     
 
@@ -7446,6 +5086,147 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
+    <h4 class="doc-code" id="setOptions"><span class="type-signature"></span><span></span><span class="doc-name">setOptions</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the options of the serie (no extension of default options)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The options of the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setOptions">Serie#setOptions</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="setXAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setXAxis</span><span class="doc-signature">( <span class="doc-type">Axis, Number</span> axis )</span></h4>
 
 
@@ -8249,6 +6030,122 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
         <a href="Serie.html#toggleDisplay">Serie#toggleDisplay</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="unselect"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">unselect</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Flags the serie as unselected
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#unselect">Serie#unselect</a>
     </li></ul></dd>
     
 

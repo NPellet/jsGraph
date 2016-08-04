@@ -348,3 +348,12 @@ export {
 export {
   isPlainObject
 };
+
+export function mix( baseClass, mixin ) {
+
+  for ( let prop in mixin ) {
+    if ( mixin.hasOwnProperty( prop ) ) {
+      target.prototype[ prop ] = mixin[ prop ];
+    }
+  }
+}

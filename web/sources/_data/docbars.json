@@ -14,7 +14,9 @@
 		}
 	],
 	"Core": [],
+	"GraphCross": [],
 	"GraphPosition": [],
+	"GraphSurfaceUnderCurve": [],
 	"Legend": [],
 	"Plugin": [
 		{
@@ -44,6 +46,10 @@
 	],
 	"Serie": [
 		{
+			"title": "Bar",
+			"url": "SerieBar"
+		},
+		{
 			"title": "DensityMap",
 			"url": "SerieDensityMap"
 		},
@@ -70,12 +76,24 @@
 			"url": "ShapeArrow"
 		},
 		{
+			"title": "Cross",
+			"url": "ShapeCross"
+		},
+		{
+			"title": "Ellipse",
+			"url": "ShapeEllipse"
+		},
+		{
 			"title": "Label",
 			"url": "ShapeLabel"
 		},
 		{
 			"title": "Line",
 			"url": "ShapeLine"
+		},
+		{
+			"title": "NMRIntegral",
+			"url": "ShapeNMRIntegral"
 		},
 		{
 			"title": "PeakBoundaries",
@@ -88,6 +106,10 @@
 		{
 			"title": "Rectangle",
 			"url": "ShapeRectangle"
+		},
+		{
+			"title": "SurfaceUnderCurve",
+			"url": "ShapeSurfaceUnderCurve"
 		}
 	]
 }

@@ -2,8 +2,8 @@ import ShapeSurfaceUnderCurve from './graph.shape.areaundercurve'
 import GraphPosition from '../graph.position'
 
 /**
- * Displays an integral with NMR stylr
- * @extends GraphSurfaceUnderCurve
+ * Displays an integral with NMR style
+ * @extends ShapeSurfaceUnderCurve
  */
 class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
 
@@ -244,6 +244,7 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
   }
 
   /**
+   * User to screen coordinate transform. In (unit)/(px), (unit) being the unit of the integral (x * y)
    * @type {Number}
    */
   set ratio( r = 1 ) {
