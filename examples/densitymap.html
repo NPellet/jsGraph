@@ -27,44 +27,36 @@ How to use this page
 			graph.getXAxis().turnGridsOff();
 			graph.getYAxis().turnGridsOff();
 	
-			graph.getXAxis().forceMin( 4.1 ).forceMax( 4.6 );
+		//	graph.getXAxis().forceMin( 4.1 ).forceMax( 4.6 );
 
 			graph.getXAxis().setLabel('Voltage').setUnitWrapper("[", "]").setUnit('V').setTickPosition('outside');
 
 
-			graph.getYAxis().forceMin( 70 ).forceMax( 98 );
+		//	graph.getYAxis().forceMin( 70 ).forceMax( 98 );
 			graph.getYAxis().setLabel('Power').setUnitWrapper("[", "]").setUnit('mW').setTickPosition('outside');
 
 
 
-			var shape3 = graph.newShape( 'cross', { position: [ { x: 4.2117, y: 92.13 } ], strokeColor: 'black', strokeWidth: 3 } ).draw();
-			var shape4 = graph.newShape( 'cross', { position: [ { x: 4.1709, y: 91.257 } ], strokeColor: 'black', strokeWidth: 3 } ).draw();
+			var shape3 = graph.newShape( 'cross', { position: [ { x: 3.1763, y: 92.094 } ], strokeColor: 'black', strokeWidth: 5 } ).draw();
+			var shape4 = graph.newShape( 'cross', { position: [ { x: 3.0827, y: 95.162 } ], strokeColor: 'black', strokeWidth: 5 } ).draw();
 
 
-			var shape1 = graph.newShape( 'cross', { position: [ { x: 4.2117, y: 92.13 } ], strokeColor: 'white' } ).draw();
-			shape1.setLabelText( "92.13 mW");
-			shape1.setLabelPosition( { dx: "20px", dy: "3px" } );
+			var shape1 = graph.newShape( 'cross', { position: [ { x: 3.1763, y: 92.094 } ], strokeColor: 'green', strokeWidth: 2 } ).draw();
+			shape1.setLabelText( "92.094 mW");
+			shape1.setLabelPosition( { dx: "30px", dy: "0" } );
 			shape1.getLabelPosition().relativeTo( shape1.getPosition() );
-			shape1.setLabelColor( 'white' );
+			shape1.setLabelSize( 20 );
+			shape1.setLabelColor( 'green' );
 			shape1.makeLabels();
 
-			var shape2 = graph.newShape( 'cross', { position: [ { x: 4.1709, y: 91.257 } ], strokeColor: 'white' } ).draw();
-			shape2.setLabelText( "91.26 mW");
-			shape2.setLabelPosition( { dx: "0px", dy: "23px" } );
-			shape2.setLabelAnchor( "middle" );
+			var shape2 = graph.newShape( 'cross', { position: [ { x: 3.0827, y: 95.162 } ], strokeColor: 'yellow', strokeWidth: 2 } ).draw();
+			shape2.setLabelText( "95.162 mW");
+			shape2.setLabelPosition( { dx: "-25px", dy: "20px" } );
+			shape2.setLabelAnchor( "end" );
+			shape2.setLabelSize( 20 );
 			shape2.getLabelPosition().relativeTo( shape2.getPosition() );
-			shape2.setLabelColor( 'white' );
+			shape2.setLabelColor( 'yellow' );
 			shape2.makeLabels();
-
-
-
-			var shape3 = graph.newShape( 'cross', { position: [ { x: 4.52, y: 75 } ], strokeColor: 'white' } ).draw();
-			shape3.setLabelText( "Poling");
-			shape3.setLabelPosition( { dx: "0px", dy: "23px" } );
-			shape3.setLabelAnchor( "middle" );
-			shape3.getLabelPosition().relativeTo( shape3.getPosition() );
-			shape3.setLabelColor( 'white' );
-			shape3.makeLabels();
 
 
 			function load( filename, colors ) {
@@ -82,10 +74,10 @@ How to use this page
 					});
 					
 					s.setData( d ).
-						setBinsPerPx(  5 ).
-						autoBinsBoundaries();
+						setPxPerBin(  5, 5 ).
+						autoColorMapBinBoundaries();
 
-					s.autoColorMapHSV( colors, "log" );
+					s.autoColorMapHSL( colors, "linear" );
 
 					graph.autoscaleAxes();
 					graph.draw( true );		
@@ -103,8 +95,12 @@ How to use this page
 			load( "data1.txt", [ { h: 0, s: 0.67, l: 0.04, a: 1 }, { h: 0, s: 1, l:0.5, a:1 }, { h: 60, s: 1, l:0.5, a:1 } ] )
 			load( "data2.txt", [ { h: 120, s: 0.67, l: 0.04, a: 1 }, { h: 120, s: 1, l:0.5, a:1 }, { h: 200, s: 1, l:0.5, a:1 } ] );
 
-		
+setTimeout( function() {
 
+				graph.newSerie("iv", {}, "scatter").autoAxis().setData( [ 3.6236, 75.258, 3.4909, 85.156, 3.2526, 90.05, 2.901, 84.644 ] ).setStyle(  { shape: 'circle', r: 3, fill: 'white', stroke: 'grey' } ).setLayer(2);
+
+				graph.draw( true );
+}, 200 );
 
 			
 			graph.setBackgroundColor('black');
