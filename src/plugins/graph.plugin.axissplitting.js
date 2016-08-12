@@ -155,7 +155,7 @@ var SplitAxis = function( mixin ) {
         axis.zoomLock = true;
         axis.init( this.graph, this.constructorOptions );
       }
-console.log( splits );
+
       let from = 0
       let i = 0;
       for ( let axis of this.axes.values() ) {
