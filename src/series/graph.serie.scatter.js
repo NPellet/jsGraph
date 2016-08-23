@@ -148,9 +148,6 @@ class SerieScatter extends Serie {
 
     z = 0;
 
-    console.log( data );
-    console.log( oneDimensional, _2d );
-
     for ( var j = 0, l = data.length; j < l; j++ ) {
 
       if ( _2d ) {

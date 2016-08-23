@@ -1,8 +1,7 @@
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
 import * as util from '../graph.util'
 
-console.log( EventEmitter );
-/** 
+/**
  * Serie class to be extended
  * @static
  */

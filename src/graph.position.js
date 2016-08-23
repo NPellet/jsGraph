@@ -300,27 +300,27 @@ class GraphPosition {
 
   /**
    *  Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"
-   *  @param {Position} pos - The reference position
-   *  @return {Position} The current position
+   *  @param {GraphPosition} pos - The reference position
+   *  @return {GraphPosition} The current position
    */
   relativeTo( pos ) {
-    this._relativeTo = Position.check( pos );
+    this._relativeTo = GraphPosition.check( pos );
     return this;
   }
 
   /**
-   *  Checks if an object is a position. If not, creates a new Position instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```Position``` instance which serves as the reference position.
+   *  Checks if an object is a position. If not, creates a new GraphPosition instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```GraphPosition``` instance which serves as the reference position.
    *  @example GraphPosition.check( { x: 1, y: 2 }, function() { return someOtherPosition; } );
-   *  @param {(Object|Position)} pos - The position object or the object fed into the constructor
+   *  @param {(Object|GraphPosition)} pos - The position object or the object fed into the constructor
    *  @param {Function} callback - The callback fired if a new position is created
-   *  @return {Position} The resulting position object
+   *  @return {GraphPosition} The resulting position object
    */
-  check( pos, callback ) {
-    if ( pos instanceof Position ) {
+  static check( pos, callback ) {
+    if ( pos instanceof GraphPosition ) {
       return pos;
     }
 
-    var posObject = new Position( pos );
+    var posObject = new GraphPosition( pos );
 
     if ( pos && pos.relativeTo ) {
       var position;
@@ -333,6 +333,4 @@ class GraphPosition {
   }
 }
 
-export {
-  GraphPosition
-};
+export default GraphPosition;

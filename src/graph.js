@@ -1,5 +1,6 @@
 import Graph from './graph.core'
 import GraphPosition from './graph.position'
+import GraphLegend from './graph.legend'
 
 import AxisX from './graph.axis.x'
 import AxisY from './graph.axis.y'
@@ -32,8 +33,6 @@ define( [
     './graph.axis.x.broken',
     './graph.axis.y.broken',
 
-    './graph.legend',
-
     './plugins/graph.plugin',
     './plugins/graph.plugin.drag',
     './plugins/graph.plugin.shape',
@@ -50,8 +49,6 @@ define( [
     GraphXAxisBroken,
     GraphYAxisBroken,
 
-    GraphLegend,
-
     GraphPlugin,
     GraphPluginDrag,
     GraphPluginShape,
@@ -63,8 +60,6 @@ define( [
     //  GraphToolbar
 
   ) {
-
-    console.log( Graph, GraphPosition, AxisX );
 
     // Corrent naming is important here !
 
