@@ -1,25 +1,19 @@
-define( function() {
-
-  "use strict";
-
-  function GraphAxis() {}
-
-  GraphAxis.prototype = {
-
-    getNbTicksPrimary: function() {
+function brokenAxis( BaseAxis ) {
+  return class AxisBroken extends BaseAxis {
+    getNbTicksPrimary() {
       return this.options.nbTicksPrimary;
-    },
+    }
 
-    getNbTicksSecondary: function() {
+    getNbTicksSecondary() {
       return this.options.nbTicksSecondary;
-    },
+    }
 
-    getBreakingSpacing: function() {
+    getBreakingSpacing() {
       return this.options.breakingSpacing || 5;
-    },
+    }
 
     // [ [ 0, 10 ], [ 50, 100 ] ]
-    setBrokenRanges: function( ranges ) {
+    setBrokenRanges( ranges ) {
       this.ranges = [];
       this._broken = true;
       var
@@ -47,9 +41,9 @@ define( function() {
       } );
 
       self.totalValRanges = total;
-    },
+    }
 
-    drawLinearTicksWrapper: function() {
+    drawLinearTicksWrapper() {
 
       var nbIntervals = this.ranges.length - 1,
         availableDrawingPxs = ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing(),
@@ -60,13 +54,13 @@ define( function() {
 
       // We need to get here the width of the ticks to display the axis properly, with the correct shift
       return this.drawTicks( ticksPrimary, nbSecondaryTicks );
-    },
+    }
 
-    setTickLabelRatio: function( tickRatio ) {
+    setTickLabelRatio( tickRatio ) {
       this.options.ticklabelratio = tickRatio;
-    },
+    }
 
-    drawTicks: function( primary, secondary ) {
+    drawTicks( primary, secondary ) {
 
       var self = this;
       var unitPerTick = primary[ 0 ];
@@ -143,69 +137,69 @@ define( function() {
 
       this.widthHeightTick = this.getMaxSizeTick();
       return this.widthHeightTick;
-    },
+    }
 
-    secondaryTicks: function() {
+    secondaryTicks() {
       return this.options.nbTicksSecondary;
-    },
+    }
 
-    drawLogTicks: function() {
+    drawLogTicks() {
       return 0;
-    },
+    }
 
-    getPx: function( value ) {
+    getPx( value ) {
       return this.getPos( value );
-    },
+    }
 
-    getPos: function( value ) {
+    getPos( value ) {
 
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
-        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
+        if ( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx
         }
       }
-    },
+    }
 
-    getRelPx: function( value ) {
+    getRelPx( value ) {
       return ( value / this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() );
-    },
+    }
 
-    getRelVal: function( px ) {
+    getRelVal( px ) {
       return px / ( ( this.maxPx - this.minPx ) - nbIntervals * this.getBreakingSpacing() ) * this.totalValRanges;
-    },
+    }
 
-    getVal: function( px ) {
+    getVal( px ) {
 
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
-        if ( px <= this.ranges[  i ].maxPx && px >= this.ranges[  i ].minPx ) {
+        if ( px <= this.ranges[ i ].maxPx && px >= this.ranges[ i ].minPx ) {
           return ( px - this.ranges[ i ].minPx ) / ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) * ( this.ranges[ i ].max - this.ranges[ i ].min ) + this.ranges[ i ].min
         }
       }
-    },
+    }
 
-    sign: function( v ) {
+    sign( v ) {
       return v > 0 ? 1 : -1;
-    },
+    }
 
-    getBoundary: function( inRangeOf, value ) {
+    getBoundary( inRangeOf, value ) {
 
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
-        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
+        if ( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
-          if ( value > this.ranges[  i ].max ) {
-            return this.ranges[  i ].max;
+          if ( value > this.ranges[ i ].max ) {
+            return this.ranges[ i ].max;
           }
 
-          return this.ranges[  i ].min;
+          return this.ranges[ i ].min;
 
           //return Math.abs( value - this.ranges[ i ].min ) / ( this.ranges[ i ].max - this.ranges[ i ].min );
         }
       }
-    },
+    }
 
-    getInRange: function( inRangeOf, value ) {
+    getInRange( inRangeOf, value ) {
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
-        if ( inRangeOf <= this.ranges[  i ].max && inRangeOf >= this.ranges[  i ].min ) {
+        if ( inRangeOf <= this.ranges[ i ].max && inRangeOf >= this.ranges[ i ].min ) {
           // This range
           return ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx;
 
@@ -213,19 +207,18 @@ define( function() {
         }
       }
 
-    },
+    }
 
-    getRange: function( value ) {
+    getRange( value ) {
       for ( var i = 0, l = this.ranges.length; i < l; i++ ) {
-        if ( value <= this.ranges[  i ].max && value >= this.ranges[  i ].min ) {
+        if ( value <= this.ranges[ i ].max && value >= this.ranges[ i ].min ) {
           return [ i, ( value - this.ranges[ i ].min ) / ( this.ranges[ i ].diff ) * ( this.ranges[ i ].maxPx - this.ranges[ i ].minPx ) + this.ranges[ i ].minPx ]
         }
       }
 
       return [ undefined, undefined ];
     }
-  };
+  }
+}
 
-  return GraphAxis;
-
-} );
+export default brokenAxis;

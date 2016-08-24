@@ -6,8 +6,9 @@ import AxisX from './graph.axis.x'
 import AxisY from './graph.axis.y'
 import AxisXBar from './graph.axis.x.bar'
 import AxisXTime from './graph.axis.x.time'
+import AxisXBroken from './graph.axis.x.broken';
+import AxisYBroken from './graph.axis.y.broken';
 
-import Serie from './series/graph.serie'
 import SerieLine from './series/graph.serie.line'
 import SerieBar from './series/graph.serie.bar'
 import SerieLineColor from './series/graph.serie.line.colored'
@@ -30,9 +31,6 @@ import ShapeCross from './shapes/graph.shape.cross'
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter'
 
 define( [
-    './graph.axis.x.broken',
-    './graph.axis.y.broken',
-
     './plugins/graph.plugin',
     './plugins/graph.plugin.drag',
     './plugins/graph.plugin.shape',
@@ -41,14 +39,9 @@ define( [
     './plugins/graph.plugin.timeseriemanager',
     './plugins/graph.plugin.serielinedifference'
     // './graph.toolbar'
-
   ],
 
   function(
-
-    GraphXAxisBroken,
-    GraphYAxisBroken,
-
     GraphPlugin,
     GraphPluginDrag,
     GraphPluginShape,
@@ -56,9 +49,7 @@ define( [
     GraphPluginZoom,
     GraphPluginTimeSerieManager,
     GraphPluginSerieLineDifference,
-
     //  GraphToolbar
-
   ) {
 
     // Corrent naming is important here !
@@ -68,8 +59,8 @@ define( [
     Graph.registerConstructor( "graph.axis.x", AxisX );
     Graph.registerConstructor( "graph.axis.y", AxisY );
     Graph.registerConstructor( "graph.axis.x.bar", AxisXBar );
-    Graph.registerConstructor( "graph.axis.x.broken", GraphXAxisBroken );
-    Graph.registerConstructor( "graph.axis.y.broken", GraphYAxisBroken );
+    Graph.registerConstructor( "graph.axis.x.broken", AxisXBroken );
+    Graph.registerConstructor( "graph.axis.y.broken", AxisYBroken );
     Graph.registerConstructor( "graph.axis.x.time", AxisXTime );
 
     Graph.registerConstructor( "graph.serie.line", SerieLine );
