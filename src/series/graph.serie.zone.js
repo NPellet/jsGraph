@@ -1,5 +1,8 @@
 import Serie from './graph.serie'
-import * as util from '../graph.util'
+import {
+  extend,
+  guid
+} from '../graph.util'
 
 /**
  * @name SerieZoneDefaultOptions
@@ -38,7 +41,7 @@ class SerieZone extends Serie {
     this.id = Math.random() + Date.now();
 
     this.shown = true;
-    this.options = util.extend( true, {}, GraphSerieZone.prototype.defaults, options );
+    this.options = extend( true, {}, defaults, options );
     this.data = [];
 
     this.groupZones = document.createElementNS( this.graph.ns, 'g' );
@@ -65,7 +68,7 @@ class SerieZone extends Serie {
     this.styleHasChanged();
 
     this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
-    this.clipId = util.guid();
+    this.clipId = guid();
     this.clip.setAttribute( 'id', this.clipId );
 
     this.graph.defs.appendChild( this.clip );

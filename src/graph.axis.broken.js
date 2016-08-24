@@ -70,7 +70,7 @@ function brokenAxis( BaseAxis ) {
       var nbIntervals = this.ranges.length - 1;
       var availableDrawingPxs = ( this.getMaxPx() - this.getMinPx() ) - nbIntervals * this.getBreakingSpacing() * ( self.isFlipped() ? -1 : 1 );
 
-      this.resetTicks();
+      this.resetTicksLength();
 
       this.ranges.map( function( range, index ) {
 
@@ -120,7 +120,7 @@ function brokenAxis( BaseAxis ) {
                 continue;
               }
 
-              self.drawTick( subIncrTick, false, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
+              self.drawTick( subIncrTick, 2, Math.abs( subIncrTick - incrTick - unitPerTick / 2 ) < 1e-4 ? 3 : 2 );
               subIncrTick += secondaryIncr;
             }
           }
@@ -130,7 +130,7 @@ function brokenAxis( BaseAxis ) {
             continue;
           }
 
-          self.drawTick( incrTick, true, 4 );
+          self.drawTick( incrTick, 1, 4 );
           incrTick += primary[ 0 ];
         }
       } );
