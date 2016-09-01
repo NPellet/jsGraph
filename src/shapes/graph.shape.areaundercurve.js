@@ -6,14 +6,7 @@ import Shape from './graph.shape'
  */
 class ShapeSurfaceUnderCurve extends Shape {
 
-  constructor() {
-
-    super( graph );
-  }
-
   createDom() {
-
-    var self = this;
     this._dom = document.createElementNS( this.graph.ns, 'path' );
   }
 

@@ -18,6 +18,7 @@ define( function () {
     examples = [
       'examples/src/10-basic/2-drawfunction',
       'examples/src/10-basic/3-axisspan',
+      'examples/src/30-axis/4-brokenaxis',
       'examples/src/65-shapes/1-basicshapes',
       'examples/src/70-others/3-peakpicking-continuous',
       'examples/src/70-others/4-peakpicking-discrete',
