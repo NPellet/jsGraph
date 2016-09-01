@@ -1,30 +1,48 @@
 
 define( function() {
 
-	return [ function( domGraph ) {
+	return [ 
 
-	var graph = new Graph( domGraph, {
+    function( domGraph ) {
 
-    plugins: {
-      'serielinedifference': {}
-    } 
-  
-  } );
+    	var graph = new Graph( domGraph, {
 
-graph
-.newSerie("s1")
-.autoAxis()
-.setData( [ [ 0, 0, 1, 1, 2, 3 ], [ 4, 6, 5, 10, 6, 10 ], [ 7, 6, 8, 5, 9, 4, 10, 3 ] ] );
+        plugins: {
+          'axissplitting': {}
+        } 
+      
+      } );
 
-graph
-.newSerie("s2")
-.autoAxis().setData( [ [ 0, 4, 1, 3, 2, 1, 3, -1], [  4, -1, 5, 7, 6, 15], [  7, 7, 8, 1, 9, 1, 10, 1 ] ] )
+      var bottom = graph.getPlugin('axissplitting').newBottomAxis();
+      bottom.init( graph, {} );
+      /*bottom.splitAxis( 0.5 );
+      bottom.splitValues( [ [ 0,3], [6,14] ]);
+      bottom.splitSpread( true );
+      */
 
-  graph.draw();
+      bottom.splitAxis( 0.5 );
+      bottom.splitValues( [ [ 0,3], 22 ]);
 
-  graph.getPlugin('serielinedifference').setSeries( graph.getSerie('s1'), graph.getSerie('s2') );
-  graph.getPlugin('serielinedifference').setBoundaries(0, 10 );
-  graph.getPlugin('serielinedifference').draw();
+      bottom.fixGridIntervalBasedOnAxis( 0 );
+
+      graph.setBottomAxis( bottom, 0 );
+
+//console.log( bottom );
+      
+      var serie = graph.getPlugin('axissplitting').newLineSerie( "s1" )
+        .autoAxis()
+        .setXAxis( bottom )
+  //      .setYAxis( left )
+        .setData( [ 0, 0, 1, 1, 2, 3, 4, 6, 5, 10, 6, 10, 7, 6, 8, 5, 9, 4, 10, 3 ] );
+
+      serie.setLineColor('red');
+      serie.setMarkers();
+
+      graph.autoscaleAxes();
+      graph.draw();
+
+
+      //graph.getPlugin('serielinedifference').draw();
 
 		}, 
 

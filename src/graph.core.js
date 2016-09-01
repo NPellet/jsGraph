@@ -253,19 +253,25 @@ class Graph extends EventEmitter {
       return;
     }
 
+
     if ( !this.sizeSet ) {
 
       this._resize();
+
+      this._pluginsExecute( "preDraw" );
       return true;
 
     } else {
 
       if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
         refreshDrawingZone( this );
+        this._pluginsExecute( "preDraw" );
+
         return true;
       }
     }
 
+    this._pluginsExecute( "preDraw" );
     return false;
   }
 
@@ -763,6 +769,7 @@ class Graph extends EventEmitter {
       }
 
       serieValue = serie[ func2use ]();
+      
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
     }
@@ -906,7 +913,7 @@ class Graph extends EventEmitter {
     }
 
     serie = makeSerie( this, name, options, type );
-    serie.type = type;
+    serie._type = type;
     self.series.push( serie );
 
     if ( self.legend ) {
@@ -1531,8 +1538,9 @@ class Graph extends EventEmitter {
 
       if ( constructor ) {
 
-        this.plugins[ pluginName ] = new constructor();
-        this.plugins[ pluginName ].options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+        var options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+        this.plugins[ pluginName ] = new constructor( options );
+        
 
         util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
         this.plugins[ pluginName ].init( this, pluginOptions );

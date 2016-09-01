@@ -160,9 +160,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphShape22 = _interopRequireDefault(_graphShape21);
 
+	var _graphPlugin = __webpack_require__(32);
+
+	var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(32), __webpack_require__(34), __webpack_require__(35), __webpack_require__(37), __webpack_require__(36), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(43)
+	console.log(_graphPlugin2.default);
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34), __webpack_require__(36), __webpack_require__(37), __webpack_require__(33), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(44)
 	// './graph.toolbar'
 
 	], __WEBPACK_AMD_DEFINE_RESULT__ = function (GraphXAxisBroken, GraphYAxisBroken, GraphLegend, GraphPlugin, GraphPluginDrag, GraphPluginShape, GraphPluginSelectScatter, GraphPluginZoom, GraphPluginTimeSerieManager, GraphPluginSerieLineDifference)
@@ -201,6 +206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.plugin.timeSerieManager", GraphPluginTimeSerieManager);
 	  _graph2.default.registerConstructor("graph.plugin.serielinedifference", GraphPluginSerieLineDifference);
 	  _graph2.default.registerConstructor("graph.plugin.serieLineDifference", GraphPluginSerieLineDifference);
+	  _graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin2.default);
 
 	  _graph2.default.registerConstructor("graph.shape", _graph8.default);
 	  _graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
@@ -542,15 +548,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this.sizeSet) {
 
 	        this._resize();
+
+	        this._pluginsExecute("preDraw");
 	        return true;
 	      } else {
 
 	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this)) {
 	          refreshDrawingZone(this);
+	          this._pluginsExecute("preDraw");
+
 	          return true;
 	        }
 	      }
 
+	      this._pluginsExecute("preDraw");
 	      return false;
 	    }
 
@@ -1170,6 +1181,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        serieValue = serie[func2use]();
+
 	        val = Math[minmax](isNaN(val) ? infinity2use : val, isNaN(serieValue) ? infinity2use : serieValue);
 	      }
 
@@ -1327,7 +1339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      serie = makeSerie(this, name, options, type);
-	      serie.type = type;
+	      serie._type = type;
 	      self.series.push(serie);
 
 	      if (self.legend) {
@@ -2038,8 +2050,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (constructor) {
 
-	          this.plugins[pluginName] = new constructor();
-	          this.plugins[pluginName].options = util.extend(true, {}, constructor.prototype.defaults || {}, pluginOptions);
+	          var options = util.extend(true, {}, constructor.prototype.defaults || {}, pluginOptions);
+	          this.plugins[pluginName] = new constructor(options);
 
 	          util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
 	          this.plugins[pluginName].init(this, pluginOptions);
@@ -4247,6 +4259,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function mix(baseClass, mixin) {
 
 	  for (var prop in mixin) {
+
 	    if (mixin.hasOwnProperty(prop)) {
 	      baseClass.prototype[prop] = mixin[prop];
 	    }
@@ -4886,7 +4899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
 	      // Place label correctly
-
+	      console.log(this.maxPx, this.minPx);
 	      this.label.setAttribute('text-anchor', 'middle');
 	      this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
 	      this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
@@ -4951,8 +4964,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setMinMaxFlipped() {
 
 	      var interval = this.maxPx - this.minPx;
-	      var maxPx = interval * this.options.span[1] + this.minPx;
-	      var minPx = interval * this.options.span[0] + this.minPx;
+
+	      if (isNaN(interval)) {
+	        return;
+	      }
+
+	      var maxPx = interval * this.options.span[1] + this.minPx - this.options.marginMax;
+	      var minPx = interval * this.options.span[0] + this.minPx + this.options.marginMin;
 
 	      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
 	      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
@@ -5048,6 +5066,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  forcedMax: false,
 
 	  span: [0, 1],
+	  marginMin: 0,
+	  marginMax: 0,
 
 	  scientificScale: false,
 	  scientificScaleExponent: false,
@@ -5633,6 +5653,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.graph.draw();
 	      //	this.graph.drawSeries(true);
 	    }
+	  }, {
+	    key: 'zoom',
+
 
 	    /**
 	     * Performs a zoom on the axis, without redraw afterwards
@@ -5649,10 +5672,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
 	     * graph.draw();
 	     */
+	    value: function zoom(val1, val2, forceLock) {
 
-	  }, {
-	    key: 'zoom',
-	    value: function zoom(val1, val2) {
+	      if (!forceLock && this.zoomLock) {
+	        return;
+	      }
+
 	      return this._doZoomVal(val1, val2, true);
 	    }
 	  }, {
@@ -6266,15 +6291,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'drawLinearTicksWrapper',
 	    value: function drawLinearTicksWrapper(widthPx, valrange) {
 
-	      var tickPrimaryUnit = this.getUnitPerTick(widthPx, this.getNbTicksPrimary(), valrange)[0];
+	      var tickPrimaryUnit = void 0;
 
-	      if (this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit) {
-	        tickPrimaryUnit = this.options.maxPrimaryTickUnit;
-	      } else if (this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit) {
-	        tickPrimaryUnit = this.options.minPrimaryTickUnit;
+	      if (this.options.primaryTickUnit) {
+
+	        tickPrimaryUnit = this.options.primaryTickUnit;
+	      } else {
+
+	        tickPrimaryUnit = this.getUnitPerTick(widthPx, this.getNbTicksPrimary(), valrange)[0];
+
+	        if (this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit) {
+	          tickPrimaryUnit = this.options.maxPrimaryTickUnit;
+	        } else if (this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit) {
+	          tickPrimaryUnit = this.options.minPrimaryTickUnit;
+	        }
 	      }
+
 	      // We need to get here the width of the ticks to display the axis properly, with the correct shift
 	      return this.drawTicks(tickPrimaryUnit, this.secondaryTicks());
+	    }
+	  }, {
+	    key: 'forcePrimaryTickUnit',
+	    value: function forcePrimaryTickUnit(primaryInterval) {
+	      this.options.primaryTickUnit = primaryInterval;
 	    }
 	  }, {
 	    key: 'forcePrimaryTickUnitMax',
@@ -6285,6 +6324,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'forcePrimaryTickUnitMin',
 	    value: function forcePrimaryTickUnitMin(value) {
 	      this.options.minPrimaryTickUnit = value;
+	    }
+	  }, {
+	    key: 'getPrimaryTickUnit',
+	    value: function getPrimaryTickUnit() {
+	      return this.incrTick;
 	    }
 	  }, {
 	    key: 'setTickLabelRatio',
@@ -6335,6 +6379,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (secondary) {
 
 	          subIncrTick = incrTick + secondaryIncr;
+	          this.subIncrTick = subIncrTick;
 	          //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
 	          var loop2 = 0;
 
@@ -7648,6 +7693,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function isZoomed() {
 	      return !(this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue());
 	    }
+	  }, {
+	    key: 'zoomLock',
+	    set: function set(bln) {
+	      this._zoomLocked = bln;
+	    },
+	    get: function get() {
+	      return this._zoomLocked || false;
+	    }
 	  }]);
 
 	  return Axis;
@@ -7849,7 +7902,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function drawSpecifics() {
 	      // Place label correctly
 	      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-
+	      console.log(this.getMaxPx(), this.getMinPx());
 	      this.label.setAttribute('transform', 'translate(' + (this.left ? 1 : -1) * (-this.widthHeightTick - 10 - 5) + ', ' + Math.abs(this.getMaxPx() + this.getMinPx()) / 2 + ') rotate(-90)');
 
 	      if (this.getLabelColor() !== 'black') {
@@ -8049,8 +8102,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setMinMaxFlipped() {
 
 	      var interval = this.maxPx - this.minPx;
-	      var maxPx = this.maxPx - interval * this.options.span[0];
-	      var minPx = this.maxPx - interval * this.options.span[1];
+
+	      if (isNaN(interval)) {
+	        return;
+	      }
+
+	      var maxPx = this.maxPx - interval * this.options.span[0] - this.options.marginMin;
+	      var minPx = this.maxPx - interval * this.options.span[1] + this.options.marginMax;
 
 	      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
 	      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
@@ -10219,7 +10277,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getType',
 	    value: function getType() {
-	      return this.type;
+	      return this._type;
+	    }
+	  }, {
+	    key: 'type',
+	    get: function get() {
+	      return this._type;
 	    }
 	  }]);
 
@@ -20674,9 +20737,789 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _graphAxis = __webpack_require__(5);
+
+	var _graphAxis2 = _interopRequireDefault(_graphAxis);
+
+	var _graphAxis3 = __webpack_require__(7);
+
+	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
+
+	var _graph = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph);
+
+	var _graphSerie = __webpack_require__(11);
+
+	var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+	var _graph2 = __webpack_require__(33);
+
+	var _graph3 = _interopRequireDefault(_graph2);
+
+	var _graph4 = __webpack_require__(6);
+
+	var _graph5 = _interopRequireDefault(_graph4);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var SerieLineExtended = function (_SerieLine) {
+	  _inherits(SerieLineExtended, _SerieLine);
+
+	  function SerieLineExtended() {
+	    _classCallCheck(this, SerieLineExtended);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLineExtended).apply(this, arguments));
+
+	    _this.subSeries = [];
+	    return _this;
+	  }
+
+	  _createClass(SerieLineExtended, [{
+	    key: "setData",
+	    value: function setData() {
+	      var _this2 = this;
+
+	      _get(Object.getPrototypeOf(SerieLineExtended.prototype), "setData", this).apply(this, arguments);
+	      this.subSeries.map(function (sub) {
+	        sub.data = _this2.data;
+	      });
+
+	      return this;
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      return this;
+	    }
+	    /*
+	      setSeries( ...series ) {
+	        this.series = series;
+	      }
+	      */
+
+	  }]);
+
+	  return SerieLineExtended;
+	}(_graphSerie2.default);
+
+	var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers'];
+	var addMethods = [];
+
+	Object.getOwnPropertyNames(_graphSerie2.default.prototype).concat(addMethods).map(function (i) {
+
+	  if (excludingMethods.indexOf(i) > -1) {
+	    return;
+	  }
+
+	  SerieLineExtended.prototype[i] = function (j) {
+	    console.log(j);
+	    return function () {
+
+	      var args = arguments;
+	      this.subSeries.map(function (subSerie) {
+	        subSerie[j].apply(subSerie, _toConsumableArray(args));
+	      });
+	    };
+	  }(i);
+	});
+
+	var PluginAxisSplitting = function (_Plugin) {
+	  _inherits(PluginAxisSplitting, _Plugin);
+
+	  function PluginAxisSplitting(graph) {
+	    _classCallCheck(this, PluginAxisSplitting);
+
+	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginAxisSplitting).apply(this, arguments));
+
+	    _this3.series = new Map();
+	    return _this3;
+	  }
+
+	  _createClass(PluginAxisSplitting, [{
+	    key: "init",
+	    value: function init(graph) {
+	      this.graph = graph;
+	    }
+	  }, {
+	    key: "update",
+	    value: function update() {}
+	  }, {
+	    key: "newXAxis",
+	    value: function newXAxis(options) {
+	      return newTopAxis(options);
+	    }
+	  }, {
+	    key: "newYAxis",
+	    value: function newYAxis(options) {
+	      return newLeftAxis(options);
+	    }
+	  }, {
+	    key: "newTopAxis",
+	    value: function newTopAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitXAxis(this.graph, "top", options);
+	    }
+	  }, {
+	    key: "newBottomAxis",
+	    value: function newBottomAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitXAxis(this.graph, "bottom", options);
+	    }
+	  }, {
+	    key: "newLeftAxis",
+	    value: function newLeftAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitYAxis(this.graph, "left", options);
+	    }
+	  }, {
+	    key: "newRight",
+	    value: function newRight(options) {
+	      options = this.getOptions(options);
+	      return new SplitYAxis(this.graph, "right", options);
+	    }
+	  }, {
+	    key: "getOptions",
+	    value: function getOptions(options) {
+	      var defaults = {
+	        marginMin: this.options.axes.margins.low,
+	        marginMax: this.options.axes.margins.high
+	      };
+	      return util.extend(true, defaults, options);
+	    }
+	  }, {
+	    key: "preDraw",
+	    value: function preDraw() {
+	      var _this4 = this;
+
+	      var xAxis, yAxis;
+
+	      //    for ( let { serie } of this.series.values() ) {
+	      this.series.forEach(function (_ref) {
+	        var serie = _ref.serie;
+
+
+	        xAxis = serie.getXAxis(), yAxis = serie.getYAxis();
+
+	        var splits = 1;
+
+	        if (xAxis.splitNumber) {
+	          splits *= xAxis.splitNumber;
+	        }
+
+	        if (yAxis.splitNumber) {
+	          splits *= yAxis.splitNumber;
+	        }
+
+	        while (serie.subSeries.length < splits) {
+
+	          var name = serie.getName() + "_" + serie.subSeries.length;
+	          var s = _this4.graph.newSerie(name, {}, serie.type || "line");
+	          console.log(serie.styles);
+	          s.styles = serie.styles;
+	          s.data = serie.data; // Copy data
+	          serie.subSeries.push(s);
+	        }
+
+	        while (serie.subSeries.length > splits) {
+
+	          _this4.graph.getSerie(serie.getName() + "_" + serie.subSeries.length - 1).kill();
+	          serie.subSeries.pop();
+	        }
+
+	        // Re-assign axes to the sub series
+	        serie.subSeries.map(function (sserie, index) {
+
+	          var xSubAxis, ySubAxis;
+
+	          if (serie.getXAxis().getSubAxis) {
+	            var subAxisIndex = index % (xAxis.splitNumber || 1);
+	            xSubAxis = serie.getXAxis().getSubAxis(subAxisIndex);
+	          } else {
+	            xSubAxis = serie.getXAxis();
+	          }
+
+	          sserie.setXAxis(xSubAxis);
+
+	          if (serie.getYAxis().getSubAxis) {
+
+	            var _subAxisIndex = Math.floor(index / (yAxis.splitNumber || 1));
+	            ySubAxis = serie.getYAxis().getSubAxis(_subAxisIndex);
+	          } else {
+	            ySubAxis = serie.getYAxis();
+	          }
+
+	          sserie.setYAxis(ySubAxis);
+
+	          sserie.draw(true);
+	        });
+	        //}
+	      });
+
+	      this.update();
+	    }
+	  }, {
+	    key: "newSerie",
+	    value: function newSerie(name) {
+	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	      var type = arguments[2];
+
+
+	      if (type == "line") {
+	        return newLineSerie(name, options);
+	      }
+
+	      throw "Cannot create a split serie of type " + type;
+	    }
+	  }, {
+	    key: "newLineSerie",
+	    value: function newLineSerie(name, options) {
+	      var serieObj = {
+	        type: "lineSerie",
+	        serie: new SerieLineExtended(name, options, "line")
+	      };
+	      this.series.set(name, serieObj);
+	      serieObj.serie.init(this.graph, options);
+	      this.graph.series.push(serieObj.serie);
+	      return serieObj.serie;
+	    }
+	  }]);
+
+	  return PluginAxisSplitting;
+	}(_graph3.default);
+
+	var SplitAxis = function SplitAxis(mixin) {
+
+	  return function (_mixin) {
+	    _inherits(SplitAxis, _mixin);
+
+	    function SplitAxis(graph, position) {
+	      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+	      _classCallCheck(this, SplitAxis);
+
+	      var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitAxis).call(this, graph, position, options));
+
+	      _this5.axes = [];
+	      _this5.position = position;
+	      _this5.constructorOptions = util.extend(true, {}, options);
+
+	      _this5._splitVal = [[0, 1]];
+	      return _this5;
+	    }
+
+	    _createClass(SplitAxis, [{
+	      key: "splitAxis",
+	      value: function splitAxis() {
+	        for (var _len = arguments.length, splits = Array(_len), _key = 0; _key < _len; _key++) {
+	          splits[_key] = arguments[_key];
+	        }
+
+	        splits.push(1);
+	        var splitNumber = splits.length;
+
+	        if (this.axes.length > splitNumber) {
+	          // TODO: Remove all needed axes
+	        }
+
+	        while (this.axes.length < splitNumber) {
+	          var axis = new (this.getConstructor())(this.graph, this.position, this.constructorOptions);
+	          this.axes.push(axis);
+	          axis.zoomLock = true;
+	          axis.init(this.graph, this.constructorOptions);
+	        }
+
+	        var from = 0;
+	        var i = 0;
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = this.axes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var _axis = _step.value;
+
+
+	            _axis.options.marginMin = 10;
+	            _axis.options.marginMax = 10;
+
+	            if (i == 0) {
+	              _axis.options.marginMin = 0;
+	            } else if (i == this.axes.length - 1) {
+	              _axis.options.marginMax = 0;
+	            }
+
+	            _axis.setSpan(from, from = splits[i]);
+	            _axis.setMinMaxFlipped();
+	            i++;
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+
+	        this._splits = splits;
+	      }
+	    }, {
+	      key: "fixGridIntervalBasedOnAxis",
+	      value: function fixGridIntervalBasedOnAxis(axisIndex) {
+	        this.fixGridFor = axisIndex;
+	      }
+	    }, {
+	      key: "splitSpread",
+	      value: function splitSpread(bln) {
+	        this.autoSpread = !!bln;
+	      }
+	    }, {
+	      key: "_splitSpread",
+	      value: function _splitSpread() {
+
+	        var splits = [],
+	            total = 0,
+	            currentSplit = 0;
+	        //console.log( this._splitVal );
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
+
+	        try {
+	          for (var _iterator2 = this._splitVal[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var split = _step2.value;
+
+	            total += split[1] - split[0];
+	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
+	          }
+	        }
+
+	        var _iteratorNormalCompletion3 = true;
+	        var _didIteratorError3 = false;
+	        var _iteratorError3 = undefined;
+
+	        try {
+	          for (var _iterator3 = this._splitVal[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	            var _split = _step3.value;
+
+
+	            splits.push(currentSplit += (_split[1] - _split[0]) / total);
+	          }
+	        } catch (err) {
+	          _didIteratorError3 = true;
+	          _iteratorError3 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	              _iterator3.return();
+	            }
+	          } finally {
+	            if (_didIteratorError3) {
+	              throw _iteratorError3;
+	            }
+	          }
+	        }
+
+	        splits.pop();
+	        this.splitAxis.apply(this, splits);
+	      }
+	    }, {
+	      key: "splitValues",
+	      value: function splitValues(values) {
+
+	        var index = 0,
+	            baseWidth = void 0,
+	            baseWidthIndex = void 0;
+
+	        var _iteratorNormalCompletion4 = true;
+	        var _didIteratorError4 = false;
+	        var _iteratorError4 = undefined;
+
+	        try {
+	          for (var _iterator4 = this.axes[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	            var axis = _step4.value;
+
+
+	            if (values[index].length > 1 && !baseWidth) {
+	              baseWidth = values[index][1] - values[index][0];
+	              baseWidthIndex = index;
+	            }
+
+	            if (values[index].length == 1 || !Array.isArray(values[index])) {
+	              axis._mean = values[index];
+
+	              if (Array.isArray(axis._mean)) {
+	                axis._mean = axis._mean[0];
+	              }
+	            } else {
+	              axis.forceMin(values[index][0]).forceMax(values[index][1]);
+	            }
+
+	            index++;
+	          }
+	        } catch (err) {
+	          _didIteratorError4 = true;
+	          _iteratorError4 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	              _iterator4.return();
+	            }
+	          } finally {
+	            if (_didIteratorError4) {
+	              throw _iteratorError4;
+	            }
+	          }
+	        }
+
+	        this._baseWidthVal = baseWidth;
+	        this._baseWidthIndex = baseWidthIndex;
+
+	        this._splitVal = values;
+	      }
+	    }, {
+	      key: "setMinMaxToFitSeries",
+	      value: function setMinMaxToFitSeries() {
+
+	        if (this._splitVal.length <= 1) {
+	          _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinMaxToFitSeries", this).apply(this, arguments);
+	          this._splitVal[0][0] = this.getCurrentMin();
+	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
+	          this.splitBoundaries(this._splitVal);
+	        }
+	      }
+	    }, {
+	      key: "draw",
+	      value: function draw() {
+	        var _this6 = this;
+
+	        if (this.autoSpread) {
+	          this._splitSpread();
+	        }
+
+	        var max = 0;
+	        var unit = void 0;
+	        var subAxis = void 0;
+	        var spanReference = void 0;
+
+	        if (this._baseWidthIndex >= 0 && (subAxis = this.getSubAxis(this._baseWidthIndex))) {
+	          spanReference = subAxis.getSpan();
+	          console.log(spanReference);
+	        }
+
+	        if (this.fixGridFor >= 0 && (subAxis = this.getSubAxis(this.fixGridFor))) {
+	          max = subAxis.draw();
+	          unit = subAxis.getPrimaryTickUnit();
+	        }
+
+	        this.axes.map(function (axis) {
+	          console.log(axis._mean, axis.getSpan());
+	          if (axis._mean !== undefined) {
+	            var width = (axis.getSpan()[1] - axis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * _this6._baseWidthVal;
+	            axis.forceMin(axis._mean - width / 2);
+	            axis.forceMax(axis._mean + width / 2);
+	          }
+
+	          if (subAxis === axis) {
+	            return;
+	          }
+
+	          if (unit) {
+	            axis.forcePrimaryTickUnit(unit);
+	          }
+
+	          max = Math.max(max, axis.draw());
+	        });
+
+	        return max;
+	      }
+	    }, {
+	      key: "setMinPx",
+	      value: function setMinPx(min) {
+	        var _iteratorNormalCompletion5 = true;
+	        var _didIteratorError5 = false;
+	        var _iteratorError5 = undefined;
+
+	        try {
+
+	          for (var _iterator5 = this.axes[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	            var axis = _step5.value;
+
+	            axis.setMinPx(min);
+	          }
+	        } catch (err) {
+	          _didIteratorError5 = true;
+	          _iteratorError5 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	              _iterator5.return();
+	            }
+	          } finally {
+	            if (_didIteratorError5) {
+	              throw _iteratorError5;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "setMaxPx",
+	      value: function setMaxPx(max) {
+	        var _iteratorNormalCompletion6 = true;
+	        var _didIteratorError6 = false;
+	        var _iteratorError6 = undefined;
+
+	        try {
+	          for (var _iterator6 = this.axes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	            var axis = _step6.value;
+
+	            axis.setMaxPx(max);
+	          }
+	        } catch (err) {
+	          _didIteratorError6 = true;
+	          _iteratorError6 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	              _iterator6.return();
+	            }
+	          } finally {
+	            if (_didIteratorError6) {
+	              throw _iteratorError6;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "setShift",
+	      value: function setShift() {
+	        var _iteratorNormalCompletion7 = true;
+	        var _didIteratorError7 = false;
+	        var _iteratorError7 = undefined;
+
+	        try {
+
+	          for (var _iterator7 = this.axes[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	            var axis = _step7.value;
+
+	            axis.setShift.apply(axis, arguments);
+	          }
+	        } catch (err) {
+	          _didIteratorError7 = true;
+	          _iteratorError7 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	              _iterator7.return();
+	            }
+	          } finally {
+	            if (_didIteratorError7) {
+	              throw _iteratorError7;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "init",
+	      value: function init() {
+	        _get(Object.getPrototypeOf(SplitAxis.prototype), "init", this).apply(this, arguments);
+	        this.splitAxis();
+	      }
+	    }, {
+	      key: "getAxisPosition",
+	      value: function getAxisPosition() {
+	        var max = 0;
+	        this.axes.map(function (axis) {
+	          max = Math.max(max, axis.getAxisPosition());
+	        });
+
+	        return max;
+	      }
+	    }, {
+	      key: "getSubAxis",
+	      value: function getSubAxis(index) {
+
+	        if (this.axes.length <= index) {
+	          throw "Impossible to reach axis. Index " + index + " is out of range";
+	        }
+
+	        return this.axes[index];
+	      }
+	    }, {
+	      key: "splitNumber",
+	      get: function get() {
+	        return this._splits.length;
+	      }
+	    }]);
+
+	    return SplitAxis;
+	  }(mixin);
+	};
+
+	PluginAxisSplitting.prototype.defaults = {
+	  axes: {
+	    margins: {
+	      high: 5,
+	      low: 5
+	    }
+	  }
+	};
+
+	var SplitXAxis = function (_SplitAxis) {
+	  _inherits(SplitXAxis, _SplitAxis);
+
+	  function SplitXAxis(graph, topbottom, options) {
+	    _classCallCheck(this, SplitXAxis);
+
+	    var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitXAxis).apply(this, arguments));
+
+	    _this7.topbottom = topbottom;
+	    return _this7;
+	  }
+
+	  _createClass(SplitXAxis, [{
+	    key: "getConstructor",
+	    value: function getConstructor() {
+	      return _graphAxis2.default;
+	    }
+	  }]);
+
+	  return SplitXAxis;
+	}(SplitAxis(_graphAxis2.default));
+
+	var SplitYAxis = function (_SplitAxis2) {
+	  _inherits(SplitYAxis, _SplitAxis2);
+
+	  function SplitYAxis(graph, leftright, options) {
+	    _classCallCheck(this, SplitYAxis);
+
+	    var _this8 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitYAxis).apply(this, arguments));
+
+	    _this8.topbottom = leftright;
+	    return _this8;
+	  }
+
+	  _createClass(SplitYAxis, [{
+	    key: "getConstructor",
+	    value: function getConstructor() {
+	      return _graphAxis4.default;
+	    }
+	  }]);
+
+	  return SplitYAxis;
+	}(SplitAxis(_graphAxis4.default));
+
+	util.mix(SplitXAxis, new _graphAxis2.default());
+	util.mix(SplitYAxis, new _graphAxis4.default());
+
+	exports.default = PluginAxisSplitting;
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(5), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, GraphXAxis, GraphBrokenAxis) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (EventEmitter) {
+
+	  /**
+	   * @class Plugin
+	   * @interface
+	   */
+	  var Plugin = function Plugin(options) {
+	    this.options = options;
+	  };
+
+	  Plugin.prototype = new EventEmitter();
+
+	  /**
+	   * Init function called by jsGraph on load
+	   * @memberof Plugin
+	   */
+	  Plugin.prototype.init = function () {};
+
+	  /**
+	   * Handles the mousedown event from jsGraph
+	   * @param {Graph} graph - The graph instance
+	   * @param {Number} x - The x position in px
+	   * @param {Number} y - The y position in px
+	   * @param {Event} e - The original event
+	   * @param {SVGElement} target - The target element
+	   * @memberof Plugin
+	   */
+	  Plugin.prototype.onMouseDown = function () {};
+
+	  /**
+	   * Handles the mouseup event from jsGraph
+	   * @param {Graph} graph - The graph instance
+	   * @param {Number} x - The x position in px
+	   * @param {Number} y - The y position in px
+	   * @param {Event} e - The original event
+	   * @param {SVGElement} target - The target element
+	   * @memberof Plugin
+	   */
+	  Plugin.prototype.onMouseUp = function () {};
+
+	  /**
+	   * Handles the mousemove event from jsGraph
+	   * @param {Graph} graph - The graph instance
+	   * @param {Number} x - The x position in px
+	   * @param {Number} y - The y position in px
+	   * @param {Event} e - The original event
+	   * @param {SVGElement} target - The target element
+	   * @memberof Plugin
+	   */
+	  Plugin.prototype.onMouseMove = function () {};
+
+	  return Plugin;
+	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(5), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, GraphXAxis, GraphBrokenAxis) {
 
 	  "use strict";
 
@@ -20708,7 +21551,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 33 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
@@ -20943,12 +21786,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 34 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(7), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, GraphYAxis, GraphBrokenAxis) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(7), __webpack_require__(35)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, GraphYAxis, GraphBrokenAxis) {
 
 	  "use strict";
 
@@ -20984,7 +21827,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 35 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21657,12 +22500,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Legend;
 
 /***/ },
-/* 36 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(37)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(33)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
 
 	  /** 
 	   * Constructor for the drag plugin. Do not use this constructor directly.
@@ -21846,70 +22689,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 37 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (EventEmitter) {
-
-	  /**
-	   * @class Plugin
-	   * @interface
-	   */
-	  var Plugin = function Plugin() {};
-
-	  Plugin.prototype = new EventEmitter();
-
-	  /**
-	   * Init function called by jsGraph on load
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.init = function () {};
-
-	  /**
-	   * Handles the mousedown event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseDown = function () {};
-
-	  /**
-	   * Handles the mouseup event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseUp = function () {};
-
-	  /**
-	   * Handles the mousemove event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseMove = function () {};
-
-	  return Plugin;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-
-/***/ },
-/* 38 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
-
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(37), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(33), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
 
 	  "use strict";
 
@@ -22060,12 +22845,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(37), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(33), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
 
 	  /**
 	   * @class PluginSelectScatter
@@ -22205,12 +22990,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(37)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, Plugin) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, Plugin) {
 
 	  /**
 	   * @class PluginZoom
@@ -22772,12 +23557,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(42), __webpack_require__(37), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (LRU, Plugin, util) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(43), __webpack_require__(33), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (LRU, Plugin, util) {
 
 	  /**
 	   * @class PluginTimeSerieManager
@@ -23262,7 +24047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -23382,12 +24167,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(37)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
+	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(33)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
 
 	  "use strict";
 

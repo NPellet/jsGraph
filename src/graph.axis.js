@@ -55,6 +55,8 @@ const defaults = {
   forcedMax: false,
 
   span: [ 0, 1 ],
+  marginMin: 0,
+  marginMax: 0,
 
   scientificScale: false,
   scientificScaleExponent: false,
@@ -568,6 +570,14 @@ class Axis extends EventEmitter {
 
   }
 
+  set zoomLock( bln ) {
+    this._zoomLocked = bln;
+  }
+
+  get zoomLock() {
+    return this._zoomLocked ||  false;
+  }
+
   /**
    * Performs a zoom on the axis, without redraw afterwards
    * @param {Number} val1 - The new axis minimum
@@ -583,7 +593,12 @@ class Axis extends EventEmitter {
    * graph.autoscaleAxes(); // New bottom axis boundaries will be 0 and 100, not 50 and 70 !
    * graph.draw();
    */
-  zoom( val1, val2 ) {
+  zoom( val1, val2, forceLock ) {
+
+    if ( !forceLock && this.zoomLock ) {
+      return;
+    }
+
     return this._doZoomVal( val1, val2, true );
   }
 
@@ -1165,15 +1180,30 @@ class Axis extends EventEmitter {
 
   drawLinearTicksWrapper( widthPx, valrange ) {
 
-    var tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
+    let tickPrimaryUnit;
 
-    if ( this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit ) {
-      tickPrimaryUnit = this.options.maxPrimaryTickUnit;
-    } else if ( this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit ) {
-      tickPrimaryUnit = this.options.minPrimaryTickUnit;
+    if( this.options.primaryTickUnit ) {
+
+      tickPrimaryUnit = this.options.primaryTickUnit;
+
+    } else {
+
+      tickPrimaryUnit = this.getUnitPerTick( widthPx, this.getNbTicksPrimary(), valrange )[ 0 ];
+
+      if ( this.options.maxPrimaryTickUnit && this.options.maxPrimaryTickUnit < tickPrimaryUnit ) {
+        tickPrimaryUnit = this.options.maxPrimaryTickUnit;
+      } else if ( this.options.minPrimaryTickUnit && this.options.minPrimaryTickUnit > tickPrimaryUnit ) {
+        tickPrimaryUnit = this.options.minPrimaryTickUnit;
+      }
+
     }
+
     // We need to get here the width of the ticks to display the axis properly, with the correct shift
     return this.drawTicks( tickPrimaryUnit, this.secondaryTicks() );
+  }
+
+  forcePrimaryTickUnit( primaryInterval ) {
+    this.options.primaryTickUnit = primaryInterval;
   }
 
   forcePrimaryTickUnitMax( value ) {
@@ -1182,6 +1212,10 @@ class Axis extends EventEmitter {
 
   forcePrimaryTickUnitMin( value ) {
     this.options.minPrimaryTickUnit = value;
+  }
+
+  getPrimaryTickUnit() {
+    return this.incrTick;
   }
 
   setTickLabelRatio( tickRatio ) {
@@ -1201,6 +1235,7 @@ class Axis extends EventEmitter {
     return 0;
   }
 
+
   drawTicks( primary, secondary ) {
 
     var unitPerTick = primary,
@@ -1211,6 +1246,7 @@ class Axis extends EventEmitter {
       incrTick,
       subIncrTick,
       loop = 0;
+
 
     if ( secondary ) {
       secondaryIncr = unitPerTick / secondary;
@@ -1229,6 +1265,7 @@ class Axis extends EventEmitter {
       if ( secondary ) {
 
         subIncrTick = incrTick + secondaryIncr;
+        this.subIncrTick = subIncrTick;
         //widthHeight = Math.max(widthHeight, this.drawTick(subIncrTick, 1));
         var loop2 = 0;
 

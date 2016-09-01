@@ -132,7 +132,7 @@ class AxisX extends Axis {
     //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
     // Place label correctly
-
+console.log( this.maxPx, this.minPx );
     this.label.setAttribute( 'text-anchor', 'middle' );
     this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
     this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
@@ -189,8 +189,13 @@ class AxisX extends Axis {
   setMinMaxFlipped() {
 
     var interval = this.maxPx - this.minPx;
-    var maxPx = interval * this.options.span[ 1 ] + this.minPx;
-    var minPx = interval * this.options.span[ 0 ] + this.minPx;
+
+    if( isNaN( interval ) ) {
+      return;
+    }
+
+    var maxPx = interval * this.options.span[ 1 ] + this.minPx - this.options.marginMax;
+    var minPx = interval * this.options.span[ 0 ] + this.minPx + this.options.marginMin;
 
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;

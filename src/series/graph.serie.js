@@ -887,8 +887,12 @@ class Serie extends EventEmitter {
     return false;
   }
 
+  get type() {
+    return this._type
+  }
+
   getType() {
-    return this.type;
+    return this._type;
   }
 }
 

@@ -28,6 +28,9 @@ import ShapeRect from './shapes/graph.shape.rect'
 import ShapeCross from './shapes/graph.shape.cross'
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter'
 
+import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting'
+
+console.log( GraphPluginAxisSplitting );
 define( [
     './graph.axis.x.broken',
     './graph.axis.y.broken',
@@ -94,6 +97,7 @@ define( [
     Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
     Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
     Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
+    Graph.registerConstructor( "graph.plugin.axissplitting", GraphPluginAxisSplitting );
 
     Graph.registerConstructor( "graph.shape", Shape );
     Graph.registerConstructor( "graph.shape.areaundercurve", ShapeAreaUnderCurve );

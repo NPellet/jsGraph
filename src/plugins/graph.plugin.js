@@ -4,7 +4,9 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @class Plugin
    * @interface
    */
-  var Plugin = function() {};
+  var Plugin = function( options ) {
+    this.options = options;
+  };
 
   Plugin.prototype = new EventEmitter();
 

@@ -183,7 +183,31 @@ module.exports = function(grunt) {
 
         webpack: {
 
-            test2: {
+            build: {
+                 entry: './src/graph.js',
+                 output: {
+                     path: './dist/',
+                     filename: 'jsgraph.js',
+                     library: "Graph",
+                     libraryTarget: 'umd'
+                 },
+                 
+                 module: {
+                     loaders: [{
+                         test: /\.js$/,
+                         exclude: /node_modules/,
+                         loader: 'babel-loader',
+                          query: {
+                            presets: [
+                                'babel-preset-es2015',
+                                'babel-preset-stage-1',
+                              ].map(require.resolve)
+                          }
+                     }]
+                 }
+            },
+
+            dist: {
 
                  entry: './src/graph.js',
                  output: {

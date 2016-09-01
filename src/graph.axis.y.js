@@ -126,7 +126,7 @@ class AxisY extends Axis {
   drawSpecifics() {
     // Place label correctly
     //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-
+    console.log( this.getMaxPx(), this.getMinPx() );
     this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
 
     if ( this.getLabelColor() !== 'black' ) {
@@ -305,8 +305,14 @@ class AxisY extends Axis {
   setMinMaxFlipped() {
 
     var interval = this.maxPx - this.minPx;
-    var maxPx = this.maxPx - interval * this.options.span[ 0 ];
-    var minPx = this.maxPx - interval * this.options.span[ 1 ];
+
+    if( isNaN( interval ) ) {
+      return;
+    }
+    
+    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
+    var minPx = this.maxPx - interval * this.options.span[ 1 ]  + this.options.marginMax;
+
 
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;

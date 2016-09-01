@@ -352,6 +352,7 @@ export {
 export function mix( baseClass, mixin ) {
 
   for ( let prop in mixin ) {
+
     if ( mixin.hasOwnProperty( prop ) ) {
       baseClass.prototype[ prop ] = mixin[ prop ];
     }
