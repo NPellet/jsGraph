@@ -1,11 +1,11 @@
 /*!
- * jsGraph JavaScript Graphing Library v1.15.3-0
+ * jsGraph JavaScript Graphing Library v1.15.3-1
  * http://github.com/NPellet/jsGraph
  *
  * Copyright 2014 Norman Pellet
  * Released under the MIT license
  *
- * Date: 2016-09-13T13:26Z
+ * Date: 2016-09-13T13:38Z
  */
 
 ( function( root, factory ) {
@@ -9061,7 +9061,7 @@
 
               g.appendChild( text );
 
-              var bbox = g.getBBox();
+              var bbox = getBBox( g );
 
               rect.setAttribute( 'x', bbox.x );
               rect.setAttribute( 'y', bbox.y );
