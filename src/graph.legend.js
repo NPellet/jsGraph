@@ -403,7 +403,7 @@ class Legend {
 
         g.appendChild( text );
 
-        var bbox = g.getBBox();
+        var bbox = getBBox( g );
 
         rect.setAttribute( 'x', bbox.x );
         rect.setAttribute( 'y', bbox.y );
