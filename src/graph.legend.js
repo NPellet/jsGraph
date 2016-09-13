@@ -171,7 +171,7 @@ class Legend {
 
       if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
 
-        var bbox = this.groups[ i ].getBBox();
+        var bbox = getBBox(this.groups[ i ]);
 
         if ( posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight ) {
           posY += 16;
@@ -193,7 +193,7 @@ class Legend {
       }
     }
 
-    var bbox = this.subG.getBBox();
+    var bbox = getBBox(this.subG);
 
     /* Independant on box position */
     this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
@@ -609,6 +609,16 @@ class Legend {
     this.series.push( serie );
   }
 
-};
+}
+
+function getBBox(svgElement) {
+  // Firefox throws when trying to call getBBox() on elements
+  // that are not yet rendered.
+  try {
+    return svgElement.getBBox();
+  } catch (e) {
+    return {height: 0, width: 0, x: 0, y: 0};
+  }
+}
 
 export default Legend;
