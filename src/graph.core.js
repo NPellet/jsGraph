@@ -253,7 +253,6 @@ class Graph extends EventEmitter {
       return;
     }
 
-
     if ( !this.sizeSet ) {
 
       this._resize();
@@ -769,7 +768,7 @@ class Graph extends EventEmitter {
       }
 
       serieValue = serie[ func2use ]();
-      
+
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
     }
@@ -1540,7 +1539,6 @@ class Graph extends EventEmitter {
 
         var options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
         this.plugins[ pluginName ] = new constructor( options );
-        
 
         util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
         this.plugins[ pluginName ].init( this, pluginOptions );

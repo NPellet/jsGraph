@@ -132,7 +132,6 @@ class AxisX extends Axis {
     //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
     // Place label correctly
-console.log( this.maxPx, this.minPx );
     this.label.setAttribute( 'text-anchor', 'middle' );
     this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
     this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
@@ -190,7 +189,7 @@ console.log( this.maxPx, this.minPx );
 
     var interval = this.maxPx - this.minPx;
 
-    if( isNaN( interval ) ) {
+    if ( isNaN( interval ) ) {
       return;
     }
 

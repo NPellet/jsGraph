@@ -4923,7 +4923,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (this.autoPosition == 'bottom' || this.autoPosition == 'top') {
 
-	          var bbox = this.groups[i].getBBox();
+	          var bbox = getBBox(this.groups[i]);
 
 	          if (posX + bbox.width > this.graph.getDrawingWidth() - this.options.paddingRight) {
 	            posY += 16;
@@ -4944,7 +4944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
-	      var bbox = this.subG.getBBox();
+	      var bbox = getBBox(this.subG);
 
 	      /* Independant on box position */
 	      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
@@ -5391,7 +5391,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Legend;
 	}();
 
-	;
+	function getBBox(svgElement) {
+	  // Firefox throws when trying to call getBBox() on elements
+	  // that are not yet rendered.
+	  try {
+	    return svgElement.getBBox();
+	  } catch (e) {
+	    return {
+	      height: 0,
+	      width: 0,
+	      x: 0,
+	      y: 0
+	    };
+	  }
+	}
 
 	exports.default = Legend;
 
@@ -5575,7 +5588,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
 	      // Place label correctly
-	      console.log(this.maxPx, this.minPx);
 	      this.label.setAttribute('text-anchor', 'middle');
 	      this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
 	      this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));

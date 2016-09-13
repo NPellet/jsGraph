@@ -1182,7 +1182,7 @@ class Axis extends EventEmitter {
 
     let tickPrimaryUnit;
 
-    if( this.options.primaryTickUnit ) {
+    if ( this.options.primaryTickUnit ) {
 
       tickPrimaryUnit = this.options.primaryTickUnit;
 
@@ -1235,7 +1235,6 @@ class Axis extends EventEmitter {
     return 0;
   }
 
-
   drawTicks( primary, secondary ) {
 
     var unitPerTick = primary,
@@ -1246,7 +1245,6 @@ class Axis extends EventEmitter {
       incrTick,
       subIncrTick,
       loop = 0;
-
 
     if ( secondary ) {
       secondaryIncr = unitPerTick / secondary;

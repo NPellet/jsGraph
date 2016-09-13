@@ -306,13 +306,12 @@ class AxisY extends Axis {
 
     var interval = this.maxPx - this.minPx;
 
-    if( isNaN( interval ) ) {
+    if ( isNaN( interval ) ) {
       return;
     }
-    
-    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
-    var minPx = this.maxPx - interval * this.options.span[ 1 ]  + this.options.marginMax;
 
+    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
+    var minPx = this.maxPx - interval * this.options.span[ 1 ] + this.options.marginMax;
 
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;

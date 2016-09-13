@@ -11,13 +11,17 @@
 			"./src/graph.position.js",
 			"./src/graph.util.js",
 			"./src/dependencies/eventEmitter/EventEmitter.js",
+			"./src/graph.legend.js",
 			"./src/graph.axis.x.js",
 			"./src/graph.axis.js",
 			"./src/graph.axis.y.js",
 			"./src/graph.axis.x.bar.js",
 			"./src/graph.axis.x.time.js",
-			"./src/series/graph.serie.js",
+			"./src/graph.axis.x.broken.js",
+			"./src/graph.axis.broken.js",
+			"./src/graph.axis.y.broken.js",
 			"./src/series/graph.serie.line.js",
+			"./src/series/graph.serie.js",
 			"./src/series/slotoptimizer.js",
 			"./src/mixins/graph.mixin.errorbars.js",
 			"./src/series/graph.serie.bar.js",
@@ -40,17 +44,13 @@
 			"./src/shapes/graph.shape.peakboundariescenter.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
 			"./src/plugins/graph.plugin.js",
-			"./src/graph.axis.x.broken.js",
-			"./src/graph.axis.broken.js",
-			"./src/graph.axis.y.broken.js",
-			"./src/graph.legend.js",
-			"./src/plugins/graph.plugin.drag.js",
 			"./src/plugins/graph.plugin.shape.js",
 			"./src/plugins/graph.plugin.selectScatter.js",
 			"./src/plugins/graph.plugin.zoom.js",
 			"./src/plugins/graph.plugin.timeseriemanager.js",
 			"./src/graph.lru.js",
-			"./src/plugins/graph.plugin.serielinedifference.js"
+			"./src/plugins/graph.plugin.serielinedifference.js",
+			"./src/plugins/graph.plugin.drag.js"
 		]
 	}
 }
