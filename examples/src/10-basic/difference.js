@@ -21,7 +21,7 @@ define( function() {
       */
 
       bottom.splitAxis( 0.5 );
-      bottom.splitValues( [ [ 0,3], 22 ]);
+      bottom.splitValues( [ [ 0,3], 7 ]);
 
       bottom.fixGridIntervalBasedOnAxis( 0 );
 
@@ -37,6 +37,7 @@ define( function() {
 
       serie.setLineColor('red');
       serie.setMarkers();
+      serie.showMarkers();
 
       graph.autoscaleAxes();
       graph.draw();

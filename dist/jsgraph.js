@@ -10443,6 +10443,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.markerHovered = 0;
 	      this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
 
+	      this.markerPoints = {};
+
 	      //this.scale = 1;
 	      //this.shift = 0;
 	      this.lines = [];
@@ -10454,6 +10456,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.groupMain.appendChild(this.groupMarkerSelected);
 	      this.groupMain.appendChild(this.markerLabelSquare);
 	      this.groupMain.appendChild(this.markerLabel);
+
+	      this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
+	      this.groupMain.appendChild(this.groupMarkers);
 
 	      this.independantMarkers = [];
 
@@ -11615,7 +11620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        return;
 	      }
-
+	      console.log(this.markersShown(), allowMarker, this.markerFamilies[this.selectionType || "unselected"], this.markerFamilies);
 	      if (this.markersShown() && allowMarker !== false && this.markerFamilies[this.selectionType || "unselected"]) {
 	        drawMarkerXY(this, this.markerFamilies[this.selectionType || "unselected"][this.markerCurrentFamily], xpx, ypx);
 	      }
@@ -11823,7 +11828,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.independantMarkers[index] = dom;
 	      }
 
-	      this.groupMain.appendChild(this.independantMarkers[index]);
+	      this.groupMarkers.appendChild(this.independantMarkers[index]);
 
 	      return this.independantMarkers[index];
 	    }
@@ -12472,7 +12477,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
-	      this.markerFamilies = this.markerFamilies || {};
 	      this.markerFamilies[selectionType || "unselected"] = families;
 
 	      // Let's sort if by the first index.
@@ -12480,7 +12484,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return a[0] - b[0] || (a[2] == null ? -1 : 1);
 	      });
 
-	      this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
 	      this.markerPoints[selectionType || "unselected"] = markerPoints;
 	    }
 	  }, {
@@ -12493,7 +12496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i = 0, l = this.markerFamilies[selectionType || this.selectionType].length; i < l; i++) {
 	        this.markerFamilies[selectionType || this.selectionType][i].dom.setAttribute('d', this.markerFamilies[selectionType || this.selectionType][i].path);
-	        this.groupMain.appendChild(this.markerFamilies[selectionType || this.selectionType][i].dom);
+	        this.groupMarkers.appendChild(this.markerFamilies[selectionType || this.selectionType][i].dom);
 	        this.currentMarkersSelectionType = this.selectionType;
 	      }
 	    }
@@ -12526,14 +12529,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.markersIndependant) {
 
 	        for (var i in this.independantMarkers) {
-	          self.groupMain.removeChild(this.independantMarkers[i]);
+	          self.groupMarkers.removeChild(this.independantMarkers[i]);
 	        }
 
 	        this.independantMarkers = {};
 	      } else if (this.currentMarkersSelectionType) {
 
 	        this.markerFamilies[this.currentMarkersSelectionType].map(function (el) {
-	          self.groupMain.removeChild(el.dom);
+	          /*
+	                  if( ! el.dom ) {
+	                    return;
+	                  }
+	          
+	                  self.groupMarkers.removeChild( el.dom );
+	          
+	                  */
 	          el.path = "";
 	        });
 
@@ -12682,7 +12692,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_graph2.default);
 
 	function drawMarkerXY(graph, family, x, y) {
-
+	  console.log(family, x, y);
 	  if (!family) {
 	    return;
 	  }
@@ -21870,6 +21880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "draw",
 	    value: function draw() {
+	      this.eraseMarkers();
 	      return this;
 	    }
 	    /*
@@ -21883,7 +21894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return SerieLineExtended;
 	}(_graphSerie2.default);
 
-	var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers'];
+	var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
 	var addMethods = [];
 
 	Object.getOwnPropertyNames(_graphSerie2.default.prototype).concat(addMethods).map(function (i) {
@@ -21995,8 +22006,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var name = serie.getName() + "_" + serie.subSeries.length;
 	          var s = _this4.graph.newSerie(name, {}, serie.type || "line");
-	          console.log(serie.styles);
+
 	          s.styles = serie.styles;
+	          s.markerPoints = serie.markerPoints;
+	          s.markerFamilies = serie.markerFamilies;
 	          s.data = serie.data; // Copy data
 	          serie.subSeries.push(s);
 	        }
@@ -22007,11 +22020,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	          serie.subSeries.pop();
 	        }
 
+	        var firstSubSerie = serie.subSeries[0];
+
 	        // Re-assign axes to the sub series
 	        serie.subSeries.map(function (sserie, index) {
 
 	          var xSubAxis, ySubAxis;
 
+	          //sserie.groupMarkers = firstSubSerie.groupMarkers;
 	          if (serie.getXAxis().getSubAxis) {
 	            var subAxisIndex = index % (xAxis.splitNumber || 1);
 	            xSubAxis = serie.getXAxis().getSubAxis(subAxisIndex);

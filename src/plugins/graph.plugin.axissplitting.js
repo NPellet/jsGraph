@@ -21,7 +21,9 @@ class SerieLineExtended extends SerieLine {
     return this;
   }
 
+
   draw() {
+    this.eraseMarkers();
     return this;
   }
 /*
@@ -31,7 +33,24 @@ class SerieLineExtended extends SerieLine {
   */
 }
 
-var excludingMethods = [ 'constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers' ];
+var excludingMethods = [ 
+  'constructor', 
+  'init', 
+  'draw', 
+  'setLineColor', 
+  'setLineWidth', 
+  'setLineStyle', 
+  'getLineColor', 
+  'getLineWidth', 
+  'getLineStyle', 
+  'setMarkers',
+  'showMarkers',
+  'hideMarkers',
+  'getMarkerDom',
+  'getMarkerDomIndependant',
+  'getMarkerPath',
+  'eraseMarkers',
+  '_recalculateMarkerPoints' ];
 var addMethods = [  ];
 
 Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( function( i ) {
@@ -132,8 +151,10 @@ class PluginAxisSplitting extends Plugin {
         
         const name = serie.getName() + "_" + serie.subSeries.length;
         const s = this.graph.newSerie( name, {}, serie.type || "line" );
-        console.log( serie.styles );
+        
         s.styles = serie.styles;
+        s.markerPoints = serie.markerPoints;
+        s.markerFamilies = serie.markerFamilies;
 		    s.data = serie.data; // Copy data
         serie.subSeries.push( s );
       }
@@ -144,11 +165,15 @@ class PluginAxisSplitting extends Plugin {
         serie.subSeries.pop();
       }
 
+      var firstSubSerie = serie.subSeries[ 0 ];
+
+
       // Re-assign axes to the sub series
       serie.subSeries.map( ( sserie, index ) => {
 
       	var xSubAxis, ySubAxis;
 
+        //sserie.groupMarkers = firstSubSerie.groupMarkers;
         if ( serie.getXAxis().getSubAxis ) {
           let subAxisIndex = index % ( ( xAxis.splitNumber || 1 ) );
           xSubAxis = serie.getXAxis().getSubAxis( subAxisIndex );
@@ -157,7 +182,7 @@ class PluginAxisSplitting extends Plugin {
           xSubAxis = serie.getXAxis();  
         }
 
-		sserie.setXAxis( xSubAxis );
+		  sserie.setXAxis( xSubAxis );
 
         if ( serie.getYAxis().getSubAxis ) {
 

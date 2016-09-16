@@ -121,6 +121,8 @@ class SerieLine extends Serie {
     this.markerHovered = 0;
     this.groupMarkerSelected = document.createElementNS( this.graph.ns, 'g' );
 
+    this.markerPoints = {};
+
     //this.scale = 1;
     //this.shift = 0;
     this.lines = [];
@@ -132,6 +134,9 @@ class SerieLine extends Serie {
     this.groupMain.appendChild( this.groupMarkerSelected );
     this.groupMain.appendChild( this.markerLabelSquare );
     this.groupMain.appendChild( this.markerLabel );
+
+    this.groupMarkers = document.createElementNS( this.graph.ns, 'g' );
+    this.groupMain.appendChild( this.groupMarkers );
 
     this.independantMarkers = [];
 
@@ -739,6 +744,7 @@ class SerieLine extends Serie {
           this.getMarkerCurrentFamily( this.counter2 );
         }
 
+
         xpx2 = this.getX( x );
         ypx2 = this.getY( y );
 
@@ -1277,7 +1283,7 @@ class SerieLine extends Serie {
 
       return;
     }
-
+console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selectionType || "unselected" ], this.markerFamilies );
     if ( this.markersShown() && allowMarker !== false && this.markerFamilies[ this.selectionType || "unselected" ] ) {
       drawMarkerXY( this, this.markerFamilies[ this.selectionType || "unselected" ][ this.markerCurrentFamily ], xpx, ypx );
     }
@@ -1467,7 +1473,7 @@ class SerieLine extends Serie {
       this.independantMarkers[ index ] = dom;
     }
 
-    this.groupMain.appendChild( this.independantMarkers[ index ] );
+    this.groupMarkers.appendChild( this.independantMarkers[ index ] );
 
     return this.independantMarkers[ index ];
   }
@@ -2082,7 +2088,7 @@ class SerieLine extends Serie {
       }
     }
 
-    this.markerFamilies = this.markerFamilies || {};
+    
     this.markerFamilies[ selectionType || "unselected" ] = families;
 
     // Let's sort if by the first index.
@@ -2090,7 +2096,7 @@ class SerieLine extends Serie {
       return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
     } );
 
-    this.markerPoints = this.markerPoints || {}; // By default, markerPoints doesn't exist, to optimize the cases without markers
+    
     this.markerPoints[ selectionType || "unselected" ] = markerPoints;
   }
 
@@ -2102,7 +2108,7 @@ class SerieLine extends Serie {
 
     for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i < l; i++ ) {
       this.markerFamilies[ selectionType || this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ selectionType || this.selectionType ][ i ].path );
-      this.groupMain.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
+      this.groupMarkers.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
       this.currentMarkersSelectionType = this.selectionType;
     }
   }
@@ -2133,7 +2139,7 @@ class SerieLine extends Serie {
     if ( this.options.markersIndependant ) {
 
       for ( var i in this.independantMarkers ) {
-        self.groupMain.removeChild( this.independantMarkers[ i ] );
+        self.groupMarkers.removeChild( this.independantMarkers[ i ] );
       }
 
       this.independantMarkers = {};
@@ -2141,7 +2147,14 @@ class SerieLine extends Serie {
     } else if ( this.currentMarkersSelectionType ) {
 
       this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
-        self.groupMain.removeChild( el.dom );
+/*
+        if( ! el.dom ) {
+          return;
+        }
+
+        self.groupMarkers.removeChild( el.dom );
+
+        */
         el.path = "";
       } );
 
@@ -2283,7 +2296,7 @@ class SerieLine extends Serie {
 }
 
 function drawMarkerXY( graph, family, x, y ) {
-
+console.log( family, x, y );
   if ( !family ) {
     return;
   }
