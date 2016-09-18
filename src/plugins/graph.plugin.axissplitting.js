@@ -1,3 +1,4 @@
+import Graph from "../graph.core"
 import AxisX from "../graph.axis.x"
 import AxisY from "../graph.axis.y"
 import * as util from "../graph.util"
@@ -207,12 +208,12 @@ class PluginAxisSplitting extends Plugin {
       while ( serie.subSeries.length < splits ) {
 
         const name = serie.getName() + "_" + serie.subSeries.length;
-        const s = this.graph.newSerie( name, {}, serie.getType() || "line" );
+        const s = this.graph.newSerie( name, {}, serie.getType() || Graph.SERIE_LINE );
 
         s.styles = serie.styles;
         s.data = serie.data; // Copy data
 
-        if ( serie.getType() == "line" ) {
+        if ( serie.getType() == Graph.SERIE_LINE ) {
           s.markerPoints = serie.markerPoints;
           s.markerFamilies = serie.markerFamilies;
         }

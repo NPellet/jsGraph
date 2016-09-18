@@ -69,6 +69,16 @@ define( [
     Graph.registerConstructor( "graph.serie.zone", SerieZone );
     Graph.registerConstructor( "graph.serie.densitymap", SerieDensityMap );
 
+
+    Graph.registerConstructor( Graph.SERIE_LINE, SerieLine );
+    Graph.registerConstructor( Graph.SERIE_LINE_COLORED, SerieLineColor );
+    Graph.registerConstructor( Graph.SERIE_CONTOUR, SerieContour );
+    Graph.registerConstructor( Graph.SERIE_BAR, SerieBar );
+    Graph.registerConstructor( Graph.SERIE_SCATTER, SerieScatter );
+    Graph.registerConstructor( Graph.SERIE_ZONE, SerieZone );
+    Graph.registerConstructor( Graph.SERIE_DENSITYMAP, SerieDensityMap );
+
+
     //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
     Graph.registerConstructor( "graph.plugin.shape", GraphPluginShape );

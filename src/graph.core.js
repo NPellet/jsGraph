@@ -54,7 +54,7 @@ const GraphOptionsDefault = {
   shapesUniqueSelection: true
 }
 
-var _constructors = {};
+var _constructors = new Map();
 
 /** 
  * Entry class of jsGraph that creates a new graph.
@@ -981,7 +981,7 @@ class Graph extends EventEmitter {
     var self = this;
 
     if ( !type ) {
-      type = "line";
+      type = Graph.SERIE_LINE;
     }
 
     var serie;
@@ -989,7 +989,10 @@ class Graph extends EventEmitter {
       return serie;
     }
 
-    serie = makeSerie( this, name, options, type );
+    if( ! ( serie = makeSerie( this, name, options, type ) ) ) {
+      return;
+    };
+
     serie._type = type;
     self.series.push( serie );
 
@@ -2297,11 +2300,11 @@ class Graph extends EventEmitter {
    */
   static registerConstructor( constructorName, constructor ) {
 
-    if ( _constructors[ constructorName ] ) {
+    if ( _constructors.has( constructorName ) ) {
       return util.throwError( "Constructor " + constructor + " already exists." );
     }
 
-    _constructors[ constructorName ] = constructor;
+    _constructors.set( constructorName, constructor );
   }
 
   /**
@@ -2313,11 +2316,12 @@ class Graph extends EventEmitter {
    * @static
    */
   static getConstructor( constructorName ) {
-    var constructor = _constructors[ constructorName ];
-    if ( !constructor ) {
+    
+    if ( !_constructors.has( constructorName ) ) {
       return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
     }
-    return constructor;
+    
+    return _constructors.get( constructorName );
   }
 }
 
@@ -2326,13 +2330,17 @@ Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie( graph, name, options, type ) {
 
-  var constructor = graph.getConstructor( "graph.serie." + type );
+  var constructor = graph.getConstructor( type );
   if ( constructor ) {
+
     var serie = new constructor();
     serie.init( graph, name, options );
     graph.appendSerieToDom( serie );
+
   } else {
-    return util.throwError( "No constructor exists for serie type \"" + type + "\"" );
+
+    return util.throwError( "No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series" );
+  
   }
 
   return serie;
@@ -3130,5 +3138,16 @@ function haveAxesChanged( graph ) {
   graph._axesHaveChanged = false;
   return temp;
 }
+
+
+// Constants
+Graph.SERIE_LINE = {};
+Graph.SERIE_SCATTER = {};
+Graph.SERIE_CONTOUR = {};
+Graph.SERIE_BAR = {};
+Graph.SERIE_ZONE = {};
+Graph.SERIE_LINE_COLORED = {};
+Graph.SERIE_ZONE = {};
+Graph.SERIE_DENSITYMAP = {};
 
 export default Graph;

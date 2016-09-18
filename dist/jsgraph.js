@@ -181,13 +181,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.axis.x.bar", _graphAxisX2.default);
 	  _graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
 
-	  _graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
-	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
-	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
-	  _graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
-	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
-	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
-	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
 
 	  //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
@@ -312,7 +312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  shapesUniqueSelection: true
 	};
 
-	var _constructors = {};
+	var _constructors = new Map();
 
 	/** 
 	 * Entry class of jsGraph that creates a new graph.
@@ -1407,7 +1407,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var self = this;
 
 	      if (!type) {
-	        type = "line";
+	        type = Graph.SERIE_LINE;
 	      }
 
 	      var serie;
@@ -1415,7 +1415,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return serie;
 	      }
 
-	      serie = makeSerie(this, name, options, type);
+	      if (!(serie = makeSerie(this, name, options, type))) {
+	        return;
+	      };
+
 	      serie._type = type;
 	      self.series.push(serie);
 
@@ -2835,11 +2838,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'registerConstructor',
 	    value: function registerConstructor(constructorName, constructor) {
 
-	      if (_constructors[constructorName]) {
+	      if (_constructors.has(constructorName)) {
 	        return util.throwError("Constructor " + constructor + " already exists.");
 	      }
 
-	      _constructors[constructorName] = constructor;
+	      _constructors.set(constructorName, constructor);
 	    }
 
 	    /**
@@ -2854,11 +2857,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getConstructor',
 	    value: function getConstructor(constructorName) {
-	      var constructor = _constructors[constructorName];
-	      if (!constructor) {
+
+	      if (!_constructors.has(constructorName)) {
 	        return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
 	      }
-	      return constructor;
+
+	      return _constructors.get(constructorName);
 	    }
 	  }]);
 
@@ -2872,13 +2876,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function makeSerie(graph, name, options, type) {
 
-	  var constructor = graph.getConstructor("graph.serie." + type);
+	  var constructor = graph.getConstructor(type);
 	  if (constructor) {
+
 	    var serie = new constructor();
 	    serie.init(graph, name, options);
 	    graph.appendSerieToDom(serie);
 	  } else {
-	    return util.throwError("No constructor exists for serie type \"" + type + "\"");
+
+	    return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series");
 	  }
 
 	  return serie;
@@ -3637,6 +3643,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph._axesHaveChanged = false;
 	  return temp;
 	}
+
+	// Constants
+	Graph.SERIE_LINE = {};
+	Graph.SERIE_SCATTER = {};
+	Graph.SERIE_CONTOUR = {};
+	Graph.SERIE_BAR = {};
+	Graph.SERIE_ZONE = {};
+	Graph.SERIE_LINE_COLORED = {};
+	Graph.SERIE_ZONE = {};
+	Graph.SERIE_DENSITYMAP = {};
 
 	exports.default = Graph;
 

@@ -1,3 +1,4 @@
+import Graph from '../graph.core'
 import LRU from '../graph.lru'
 import Plugin from './graph.plugin'
 import * as util from '../graph.util'
@@ -93,7 +94,7 @@ class PluginTimeSerieManager extends Plugin {
     s.setInfo( "timeSerieManagerDBElements", dbElements );
 
     if ( !noZoneSerie ) {
-      s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, "zone" );
+      s._zoneSerie = this.graph.newSerie( serieName + "_zone", {}, Graph.SERIE_ZONE );
     }
 
     this.series.push( s );

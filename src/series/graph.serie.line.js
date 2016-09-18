@@ -1,3 +1,4 @@
+import Graph from '../graph.core'
 import Serie from './graph.serie'
 import SlotOptimizer from './slotoptimizer'
 import * as util from '../graph.util'
@@ -460,7 +461,7 @@ class SerieLine extends Serie {
    */
   degrade( pxPerP, options ) {
 
-    var serie = this.graph.newSerie( this.name + "_degraded", options, 'zone' );
+    var serie = this.graph.newSerie( this.name + "_degraded", options, Graph.SERIE_ZONE );
 
     this.degradationPx = pxPerP;
 
