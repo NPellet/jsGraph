@@ -1,3 +1,7 @@
+---
+layout: page-doc
+title: Documentation
+docbar: Axis
 subtitle: 'cl'
 ---
 
@@ -644,7 +648,7 @@ subtitle: 'cl'
 
     
 
-    <h4 class="doc-code" id="splitValues"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">splitValues</span><span class="doc-signature">( <span class="doc-type">Array.&lt;(Array|Number)></span> values )</span></h4>
+    <h4 class="doc-code" id="setChunkBoundaries"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">setChunkBoundaries</span><span class="doc-signature">( <span class="doc-type">Array.&lt;(Array|Number)></span> values )</span></h4>
 
 
 
@@ -760,11 +764,11 @@ subtitle: 'cl'
         <h5>Examples</h5>
         
 
-    {% highlight JavaScript %}axis.splitValues( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+    {% highlight JavaScript %}axis.setChunkBoundaries( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
  {% endhighlight %}
 
 
-    {% highlight JavaScript %}axis.splitValues( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+    {% highlight JavaScript %}axis.setChunkBoundaries( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
  {% endhighlight %}
 
     

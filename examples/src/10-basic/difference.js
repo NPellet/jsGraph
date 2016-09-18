@@ -21,16 +21,16 @@ define( function() {
 
 
       /*bottom.splitAxis( 0.5 );
-      bottom.splitValues( [ [ 0,3], [6,14] ]);
+      bottom.setChunkBoundaries( [ [ 0,3], [6,14] ]);
       bottom.splitSpread( true );
       */
 
       bottom.splitAxis( 0.5 );
-      bottom.splitValues( [ [ 0, 3 ], 7 ] );
+      bottom.setChunkBoundaries( [ [ 0, 3 ], 7 ] );
       bottom.fixGridIntervalBasedOnAxis( 0 );
 
       left.splitAxis( 0.5 );
-      left.splitValues( [ [ 0, 100 ], 1000 ] );
+      left.setChunkBoundaries( [ [ 0, 100 ], 1000 ] );
 
       bottom.gridsOff();
       bottom.setLabel("ABC");

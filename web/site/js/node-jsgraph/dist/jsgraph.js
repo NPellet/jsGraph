@@ -189,6 +189,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
 	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
 
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
+
 	  //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
 	  _graph2.default.registerConstructor("graph.plugin.shape", GraphPluginShape);
@@ -312,7 +320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  shapesUniqueSelection: true
 	};
 
-	var _constructors = {};
+	var _constructors = new Map();
 
 	/** 
 	 * Entry class of jsGraph that creates a new graph.
@@ -1407,7 +1415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var self = this;
 
 	      if (!type) {
-	        type = "line";
+	        type = Graph.SERIE_LINE;
 	      }
 
 	      var serie;
@@ -1415,7 +1423,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return serie;
 	      }
 
-	      serie = makeSerie(this, name, options, type);
+	      if (!(serie = makeSerie(this, name, options, type))) {
+	        return;
+	      };
+
 	      serie._type = type;
 	      self.series.push(serie);
 
@@ -2127,7 +2138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (constructor) {
 
-	          var options = util.extend(true, {}, constructor.prototype.defaults || {}, pluginOptions);
+	          var options = util.extend(true, {}, constructor.defaults(), pluginOptions);
 	          this.plugins[pluginName] = new constructor(options);
 
 	          util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
@@ -2835,11 +2846,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'registerConstructor',
 	    value: function registerConstructor(constructorName, constructor) {
 
-	      if (_constructors[constructorName]) {
+	      if (_constructors.has(constructorName)) {
 	        return util.throwError("Constructor " + constructor + " already exists.");
 	      }
 
-	      _constructors[constructorName] = constructor;
+	      _constructors.set(constructorName, constructor);
 	    }
 
 	    /**
@@ -2853,12 +2864,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'getConstructor',
-	    value: function getConstructor(constructorName) {
-	      var constructor = _constructors[constructorName];
-	      if (!constructor) {
+	    value: function getConstructor(constructorName, softFail) {
+
+	      if (!_constructors.has(constructorName)) {
+
+	        if (softFail) {
+	          return false;
+	        }
+
 	        return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
 	      }
-	      return constructor;
+
+	      return _constructors.get(constructorName);
 	    }
 	  }]);
 
@@ -2872,13 +2889,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function makeSerie(graph, name, options, type) {
 
-	  var constructor = graph.getConstructor("graph.serie." + type);
+	  var constructor = graph.getConstructor(type, true);
+	  if (!constructor && typeof type == "string") {
+	    constructor = graph.getConstructor("graph.serie." + type, true);
+	  }
 	  if (constructor) {
+
 	    var serie = new constructor();
 	    serie.init(graph, name, options);
 	    graph.appendSerieToDom(serie);
 	  } else {
-	    return util.throwError("No constructor exists for serie type \"" + type + "\"");
+
+	    return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series");
 	  }
 
 	  return serie;
@@ -3637,6 +3659,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph._axesHaveChanged = false;
 	  return temp;
 	}
+
+	// Constants
+	Graph.SERIE_LINE = Symbol();
+	Graph.SERIE_SCATTER = Symbol();
+	Graph.SERIE_CONTOUR = Symbol();
+	Graph.SERIE_BAR = Symbol();
+	Graph.SERIE_ZONE = Symbol();
+	Graph.SERIE_LINE_COLORED = Symbol();
+	Graph.SERIE_ZONE = Symbol();
+	Graph.SERIE_DENSITYMAP = Symbol();
+
+	Graph.TICKS_OUTSIDE = Symbol();
+	Graph.TICKS_INSIDE = Symbol();
+	Graph.TICKS_CENTERED = Symbol();
 
 	exports.default = Graph;
 
@@ -5821,13 +5857,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _graph = __webpack_require__(1);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
 	var _EventEmitter2 = __webpack_require__(4);
 
 	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
 
-	var _graph = __webpack_require__(3);
+	var _graph3 = __webpack_require__(3);
 
-	var util = _interopRequireWildcard(_graph);
+	var util = _interopRequireWildcard(_graph3);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -6945,11 +6985,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.gridLinePath.secondary = "";
 
 	      /*
-	        var label;
-	        if ( label = this.getLabel() ) {
-	          // Sets the label
-	          this.labelTspan.textContent = label;
-	        }
+	      var label;
+	      if ( label = this.getLabel() ) {
+	        // Sets the label
+	        this.labelTspan.textContent = label;
+	      }
 	      */
 
 	      this.writeUnit();
@@ -7818,17 +7858,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      switch (pos) {
 	        case 3:
 	        case 'outside':
+	        case _graph2.default.TICKS_OUTSIDE:
 	          pos = 3;
 	          break;
 
 	        case 2:
 	        case 'centered':
+	        case _graph2.default.TICKS_CENTERED:
 	          pos = 2;
 	          break;
 
 	        default:
 	        case 1:
 	        case 'inside':
+	        case _graph2.default.TICKS_INSIDE:
 	          pos = 1;
 	          break;
 	      }
@@ -8773,13 +8816,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Place label correctly
 	      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
 	      /* 
-	       if ( !this.left ) {
-	          this.labelTspan.style.dominantBaseline = 'hanging';
-	         this.expTspan.style.dominantBaseline = 'hanging';
-	         this.expTspanExp.style.dominantBaseline = 'hanging';
-	          this.unitTspan.style.dominantBaseline = 'hanging';
-	         this.preunitTspan.style.dominantBaseline = 'hanging';
-	       }
+	      if ( !this.left ) {
+	         this.labelTspan.style.dominantBaseline = 'hanging';
+	        this.expTspan.style.dominantBaseline = 'hanging';
+	        this.expTspanExp.style.dominantBaseline = 'hanging';
+	         this.unitTspan.style.dominantBaseline = 'hanging';
+	        this.preunitTspan.style.dominantBaseline = 'hanging';
+	      }
 	      */
 	      this.line.setAttribute('y1', this.getMinPx());
 	      this.line.setAttribute('y2', this.getMaxPx());
@@ -10091,17 +10134,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(12);
+	var _graph = __webpack_require__(1);
 
 	var _graph2 = _interopRequireDefault(_graph);
+
+	var _graph3 = __webpack_require__(12);
+
+	var _graph4 = _interopRequireDefault(_graph3);
 
 	var _slotoptimizer = __webpack_require__(13);
 
 	var _slotoptimizer2 = _interopRequireDefault(_slotoptimizer);
 
-	var _graph3 = __webpack_require__(3);
+	var _graph5 = __webpack_require__(3);
 
-	var util = _interopRequireWildcard(_graph3);
+	var util = _interopRequireWildcard(_graph5);
 
 	var _graphMixin = __webpack_require__(14);
 
@@ -10605,7 +10652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'degrade',
 	    value: function degrade(pxPerP, options) {
 
-	      var serie = this.graph.newSerie(this.name + "_degraded", options, 'zone');
+	      var serie = this.graph.newSerie(this.name + "_degraded", options, _graph2.default.SERIE_ZONE);
 
 	      this.degradationPx = pxPerP;
 
@@ -11584,7 +11631,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var dom = document.createElementNS(this.graph.ns, 'path');
 	        this.setMarkerStyleTo(dom, family);
-	        this.markersDom.set(family, { dom: dom, path: "" });
+	        this.markersDom.set(family, {
+	          dom: dom,
+	          path: ""
+	        });
 
 	        dom.addEventListener('mouseover', function (e) {
 	          var closest = self._getMarkerIndexFromEvent(e);
@@ -12502,7 +12552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }]);
 
 	  return SerieLine;
-	}(_graph2.default);
+	}(_graph4.default);
 
 	function drawMarkerXY(graph, family, x, y, markerDom) {
 
@@ -13066,6 +13116,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Removes all the data from the serie, without redrawing
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'clearData',
+	    value: function clearData() {
+	      this.setData([]);
+	      return this;
+	    }
+
+	    /**
 	     * Returns the data in its current form
 	     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
 	     * @memberof Serie
@@ -13099,7 +13161,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function kill() {
 
 	      this.graph.removeSerieFromDom(this);
-
 	      this.graph._removeSerie(this);
 
 	      if (this.graph.legend) {
@@ -13107,11 +13168,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.legend.update();
 	      }
 
-	      this.killImpl();
+	      this.graph = undefined;
 	    }
-	  }, {
-	    key: 'killImpl',
-	    value: function killImpl() {}
 
 	    /**
 	     * Hides the serie
@@ -21632,6 +21690,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+	var _graph = __webpack_require__(1);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
 	var _graphAxis = __webpack_require__(6);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
@@ -21640,9 +21702,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
-	var _graph = __webpack_require__(3);
+	var _graph3 = __webpack_require__(3);
 
-	var util = _interopRequireWildcard(_graph);
+	var util = _interopRequireWildcard(_graph3);
 
 	var _graphSerie = __webpack_require__(11);
 
@@ -21652,13 +21714,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graph2 = __webpack_require__(34);
-
-	var _graph3 = _interopRequireDefault(_graph2);
-
-	var _graph4 = __webpack_require__(7);
+	var _graph4 = __webpack_require__(34);
 
 	var _graph5 = _interopRequireDefault(_graph4);
+
+	var _graph6 = __webpack_require__(7);
+
+	var _graph7 = _interopRequireDefault(_graph6);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -21760,10 +21822,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }(i);
 	});
 
+	/** 
+	 * Axis splitting plugin
+	 * @augments Plugin
+	 */
+
 	var PluginAxisSplitting = function (_Plugin) {
 	  _inherits(PluginAxisSplitting, _Plugin);
 
-	  function PluginAxisSplitting(graph) {
+	  function PluginAxisSplitting(options) {
 	    _classCallCheck(this, PluginAxisSplitting);
 
 	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginAxisSplitting).apply(this, arguments));
@@ -21777,37 +21844,76 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function init(graph) {
 	      this.graph = graph;
 	    }
-	  }, {
-	    key: "update",
-	    value: function update() {}
+
+	    /**
+	     *  Creates a new bottom split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newXAxis",
 	    value: function newXAxis(options) {
-	      return newTopAxis(options);
+	      return newBottomAxis(options);
 	    }
+
+	    /**
+	     *  Creates a new left split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newYAxis",
 	    value: function newYAxis(options) {
 	      return newLeftAxis(options);
 	    }
+
+	    /**
+	     *  Creates a new top split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newTopAxis",
 	    value: function newTopAxis(options) {
 	      options = this.getOptions(options);
 	      return new SplitXAxis(this.graph, "top", options);
 	    }
+
+	    /**
+	     *  Creates a new bottom split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newBottomAxis",
 	    value: function newBottomAxis(options) {
 	      options = this.getOptions(options);
 	      return new SplitXAxis(this.graph, "bottom", options);
 	    }
+
+	    /**
+	     *  Creates a new left split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newLeftAxis",
 	    value: function newLeftAxis(options) {
 	      options = this.getOptions(options);
 	      return new SplitYAxis(this.graph, "left", options);
 	    }
+
+	    /**
+	     *  Creates a new right split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
 	  }, {
 	    key: "newRightAxis",
 	    value: function newRightAxis(options) {
@@ -21851,12 +21957,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        while (serie.subSeries.length < splits) {
 
 	          var name = serie.getName() + "_" + serie.subSeries.length;
-	          var s = _this6.graph.newSerie(name, {}, serie.getType() || "line");
+	          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
 
 	          s.styles = serie.styles;
 	          s.data = serie.data; // Copy data
 
-	          if (serie.getType() == "line") {
+	          if (serie.getType() == _graph2.default.SERIE_LINE) {
 	            s.markerPoints = serie.markerPoints;
 	            s.markerFamilies = serie.markerFamilies;
 	          }
@@ -21908,9 +22014,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	        //}
 	      });
-
-	      this.update();
 	    }
+
+	    /**
+	     *  Creates a new serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @param {String} type - The type of the serie
+	     *  @return {Serie} The created serie
+	     */
+
 	  }, {
 	    key: "newSerie",
 	    value: function newSerie(name) {
@@ -21931,6 +22044,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      throw "Cannot create a split serie of type " + type;
 	    }
+
+	    /**
+	     *  Creates a new line serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @return {Serie} The created serie
+	     */
+
 	  }, {
 	    key: "newLineSerie",
 	    value: function newLineSerie(name, options) {
@@ -21943,6 +22064,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.graph.series.push(serieObj.serie);
 	      return serieObj.serie;
 	    }
+
+	    /**
+	     *  Creates a new scatter serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @return {Serie} The created serie
+	     */
+
 	  }, {
 	    key: "newScatterSerie",
 	    value: function newScatterSerie(name, options) {
@@ -21955,10 +22084,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.graph.series.push(serieObj.serie);
 	      return serieObj.serie;
 	    }
+	  }], [{
+	    key: "defaults",
+	    value: function defaults() {
+
+	      return {
+	        axes: {
+	          margins: {
+	            high: 5,
+	            low: 5
+	          }
+	        }
+	      };
+	    }
 	  }]);
 
 	  return PluginAxisSplitting;
-	}(_graph3.default);
+	}(_graph5.default);
 
 	var defaultAxisConstructorOptions = {
 	  splitMarks: true
@@ -21968,6 +22110,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var delegateMethods = ['turnGridsOff', 'turnGridsOn', 'gridsOff', 'gridsOn', 'setEngineering', 'setScientificScaleExponent', 'setScientific', 'setLabelColor', 'setSecondaryGridDasharray', 'setPrimaryGridDasharray', 'setSecondaryGridsOpacity', 'setPrimaryGridOpacity', 'setSecondaryGridWidth', 'setPrimaryGridWidth', 'setSecondaryGridColor', 'setPrimaryGridColor', 'setTicksLabelColor', 'setSecondaryTicksColor', 'setPrimaryTicksColor', 'setAxisColor', 'secondaryGridOn', 'secondaryGridOff', 'primaryGridOff', 'primaryGridOn', 'setSecondaryGrid', 'setPrimaryGrid', 'setGrids', 'setTickPosition', 'setExponentialFactor', 'setExponentialLabelFactor', 'setGridLinesStyle', 'forcePrimaryTickUnitMin', 'forcePrimaryTickUnitMax', 'forcePrimaryTickUnit', 'flip', 'show', 'hide', 'setDisplay'];
 
+	  /** 
+	   * Split axis
+	   * @mixes {AxisX|AxisY}
+	   * @name SplitAxis
+	   * @static
+	   */
 	  var cl = function (_mixin) {
 	    _inherits(SplitAxis, _mixin);
 
@@ -21986,6 +22134,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _this7;
 	    }
 
+	    /**
+	     *  Calls a callback onto each chunk axes. The callback receives two parameters: 1) the ```axis``` itself and 2) the ```index``` of the axis in the stack
+	     *  @param {Function} callback - The callback to be applied to each axes
+	     *  @return {SplitAxis} The current axis instance
+	     */
+
+
 	    _createClass(SplitAxis, [{
 	      key: "all",
 	      value: function all(callback) {
@@ -21997,6 +22152,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.axes.map(callback);
 	        return this;
 	      }
+
+	      /**
+	       *  Splits the axis into chunks at the positions defined as a list of parameters.
+	       *  @param {Function} ...splits - The positions of axis splitting
+	       *  @return {SplitAxis} The current axis instance
+	       *  @example axis.splitAxis( 0.2, 0.5, 0.8 ); // Creates 4 chunks (0-20%, 20%-50%, 50%-80%, 80%-100%)
+	       */
+
 	    }, {
 	      key: "splitAxis",
 	      value: function splitAxis() {
@@ -22062,6 +22225,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._splits = splits;
 	        return this;
 	      }
+
+	      /**
+	       *  Fixes the major tick interval of all axes based on the one provided as a parameter
+	       *  @param {Number} axisIndex - The index of the reference axis (starting at 0)
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
 	    }, {
 	      key: "fixGridIntervalBasedOnAxis",
 	      value: function fixGridIntervalBasedOnAxis(axisIndex) {
@@ -22070,10 +22240,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph._axisHasChanged();
 	        return this;
 	      }
+
+	      /**
+	       *  Spreads the chunks of the axis based on the relative interval of each one of them, so that the unit / px is constant for each chunk
+	       *  @param {Boolean} bln - ```true``` to enable the spread, ```false``` otherwise
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
 	    }, {
 	      key: "splitSpread",
 	      value: function splitSpread(bln) {
 	        this.autoSpread = !!bln;
+	        return this;
 	      }
 	    }, {
 	      key: "_splitSpread",
@@ -22137,9 +22315,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        splits.pop();
 	        this.splitAxis.apply(this, splits);
 	      }
+
+	      /**
+	       *  Defines the boundaries of each chunk in axis unit.
+	       *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
+	       *  @example axis.setChunkBoundaries( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+	       *  @example axis.setChunkBoundaries( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
 	    }, {
-	      key: "splitValues",
-	      value: function splitValues(values) {
+	      key: "setChunkBoundaries",
+	      value: function setChunkBoundaries(values) {
 
 	        var index = 0,
 	            baseWidth = void 0,
@@ -22194,6 +22381,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._splitVal = values;
 
 	        this.graph._axisHasChanged();
+
+	        return this;
 	      }
 	    }, {
 	      key: "setMinMaxToFitSeries",
@@ -22206,7 +22395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          this._splitVal[0][0] = this.getCurrentMin();
 	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
-	          this.splitValues(this._splitVal);
+	          this.setChunkBoundaries(this._splitVal);
 	        }
 	      }
 	    }, {
@@ -22414,15 +22603,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return cl;
 	};
 
-	PluginAxisSplitting.prototype.defaults = {
-	  axes: {
-	    margins: {
-	      high: 5,
-	      low: 5
-	    }
-	  }
-	};
-
 	var SplitXAxis = function (_SplitAxis) {
 	  _inherits(SplitXAxis, _SplitAxis);
 
@@ -22512,1419 +22692,1663 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(4)], __WEBPACK_AMD_DEFINE_RESULT__ = function (EventEmitter) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /**
-	   * @class Plugin
-	   * @interface
-	   */
-	  var Plugin = function Plugin(options) {
-	    this.options = options;
-	  };
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  Plugin.prototype = new EventEmitter();
+	var _EventEmitter2 = __webpack_require__(4);
+
+	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Represents a plugin
+	 * @interface
+	 */
+	var Plugin = function (_EventEmitter) {
+	  _inherits(Plugin, _EventEmitter);
+
+	  _createClass(Plugin, null, [{
+	    key: 'defaults',
+	    value: function defaults() {
+	      return {};
+	    }
+	  }]);
+
+	  function Plugin(options) {
+	    _classCallCheck(this, Plugin);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Plugin).apply(this, arguments));
+
+	    _this.options = options;
+	    return _this;
+	  }
 
 	  /**
 	   * Init function called by jsGraph on load
-	   * @memberof Plugin
 	   */
-	  Plugin.prototype.init = function () {};
 
-	  /**
-	   * Handles the mousedown event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseDown = function () {};
 
-	  /**
-	   * Handles the mouseup event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseUp = function () {};
+	  _createClass(Plugin, [{
+	    key: 'init',
+	    value: function init() {}
+	  }, {
+	    key: 'onMouseDown',
 
-	  /**
-	   * Handles the mousemove event from jsGraph
-	   * @param {Graph} graph - The graph instance
-	   * @param {Number} x - The x position in px
-	   * @param {Number} y - The y position in px
-	   * @param {Event} e - The original event
-	   * @param {SVGElement} target - The target element
-	   * @memberof Plugin
-	   */
-	  Plugin.prototype.onMouseMove = function () {};
+
+	    /**
+	     * Handles the mousedown event from jsGraph
+	     * @param {Graph} graph - The graph instance
+	     * @param {Number} x - The x position in px
+	     * @param {Number} y - The y position in px
+	     * @param {Event} e - The original event
+	     * @param {SVGElement} target - The target element
+	     */
+	    value: function onMouseDown() {}
+	  }, {
+	    key: 'onMouseUp',
+
+
+	    /**
+	     * Handles the mouseup event from jsGraph
+	     * @param {Graph} graph - The graph instance
+	     * @param {Number} x - The x position in px
+	     * @param {Number} y - The y position in px
+	     * @param {Event} e - The original event
+	     * @param {SVGElement} target - The target element
+	     */
+	    value: function onMouseUp() {}
+	  }, {
+	    key: 'onMouseMove',
+
+
+	    /**
+	     * Handles the mousemove event from jsGraph
+	     * @param {Graph} graph - The graph instance
+	     * @param {Number} x - The x position in px
+	     * @param {Number} y - The y position in px
+	     * @param {Event} e - The original event
+	     * @param {SVGElement} target - The target element
+	     */
+	    value: function onMouseMove() {}
+	  }]);
 
 	  return Plugin;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_EventEmitter3.default);
+
+	exports.default = Plugin;
 
 /***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  "use strict";
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  /**
-	   * @class PluginShape
-	   * @implements Plugin
-	   */
+	var _graph = __webpack_require__(34);
 
-	  var PluginShape = function PluginShape() {};
+	var _graph2 = _interopRequireDefault(_graph);
 
-	  PluginShape.prototype = new Plugin();
+	var _graph3 = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph3);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * @class PluginShape
+	 * @implements Plugin
+	 */
+	var PluginShape = function (_Plugin) {
+	  _inherits(PluginShape, _Plugin);
+
+	  function PluginShape() {
+	    _classCallCheck(this, PluginShape);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginShape).apply(this, arguments));
+	  }
 
 	  /**
 	   * Init method
 	   * @private
-	   * @memberof PluginShape
 	   */
-	  PluginShape.prototype.init = function (graph, options) {
 
-	    this.graph = graph;
-	    this.shapeType = options.type;
-	  };
 
-	  /**
-	   * Sets the shape that is created by the plugin
-	   * @param {String} shapeType - The type of the shape
-	   * @memberof PluginShape
-	   */
-	  PluginShape.prototype.setShape = function (shapeType) {
-	    this.shapeInfo.shapeType = shapeType;
-	  };
+	  _createClass(PluginShape, [{
+	    key: 'init',
+	    value: function init(graph, options) {
 
-	  /**
-	   * @private
-	   * @memberof PluginShape
-	   */
-	  PluginShape.prototype.onMouseDown = function (graph, x, y, e, target) {
-
-	    if (!this.shapeType && !this.options.url) {
-	      return;
+	      this.graph = graph;
+	      this.shapeType = options.type;
 	    }
 
-	    var self = this,
-	        selfPlugin = this;
+	    /**
+	     * Sets the shape that is created by the plugin
+	     * @param {String} shapeType - The type of the shape
+	     */
 
-	    var xVal, yVal;
-
-	    this.count = this.count || 0;
-
-	    x -= graph.getPaddingLeft();
-	    y -= graph.getPaddingTop();
-
-	    xVal = graph.getXAxis().getVal(x);
-	    yVal = graph.getYAxis().getVal(y);
-
-	    var shapeInfo = {
-
-	      position: [{
-	        x: xVal,
-	        y: yVal
-	      }, {
-	        x: xVal,
-	        y: yVal
-	      }],
-
-	      onChange: function onChange(newData) {
-	        graph.triggerEvent('onAnnotationChange', newData);
-	      },
-
-	      locked: false,
-	      selectable: true,
-	      resizable: true,
-	      movable: true
-	    };
-
-	    util.extend(true, shapeInfo, this.options);
-
-	    this.emit("beforeNewShape", shapeInfo, e);
-
-	    if (this.graph.prevent(false)) {
-	      return;
+	  }, {
+	    key: 'setShape',
+	    value: function setShape(shapeType) {
+	      this.shapeInfo.shapeType = shapeType;
 	    }
 
-	    var shape = graph.newShape(shapeInfo.type, shapeInfo);
+	    /**
+	     * @private
+	     */
 
-	    this.emit("createdShape", shape, e);
+	  }, {
+	    key: 'onMouseDown',
+	    value: function onMouseDown(graph, x, y, e, target) {
 
-	    if (shape) {
-	      self.currentShape = shape;
-	      self.currentShapeEvent = e;
-	    }
-
-	    graph.once("mouseUp", function () {
-	      self.emit("newShape", shape);
-	    });
-	  };
-
-	  /**
-	   * @private
-	   * @memberof PluginShape
-	   */
-	  PluginShape.prototype.onMouseMove = function (graph, x, y, e) {
-
-	    var self = this;
-	    if (self.currentShape) {
-
-	      self.count++;
-
-	      var shape = self.currentShape;
-
-	      self.currentShape = false;
-
-	      if (graph.selectedSerie) {
-	        shape.setSerie(graph.selectedSerie);
+	      if (!this.shapeType && !this.options.url) {
+	        return;
 	      }
 
-	      shape.resizing = true;
+	      var self = this,
+	          selfPlugin = this;
 
-	      if (shape.options && shape.options.onCreate) {
-	        shape.options.onCreate.call(shape);
+	      var xVal, yVal;
+
+	      this.count = this.count || 0;
+
+	      x -= graph.getPaddingLeft();
+	      y -= graph.getPaddingTop();
+
+	      xVal = graph.getXAxis().getVal(x);
+	      yVal = graph.getYAxis().getVal(y);
+
+	      var shapeInfo = {
+
+	        position: [{
+	          x: xVal,
+	          y: yVal
+	        }, {
+	          x: xVal,
+	          y: yVal
+	        }],
+
+	        onChange: function onChange(newData) {
+	          graph.triggerEvent('onAnnotationChange', newData);
+	        },
+
+	        locked: false,
+	        selectable: true,
+	        resizable: true,
+	        movable: true
+	      };
+
+	      util.extend(true, shapeInfo, this.options);
+
+	      this.emit("beforeNewShape", shapeInfo, e);
+
+	      if (this.graph.prevent(false)) {
+	        return;
 	      }
 
-	      shape.draw();
+	      var shape = graph.newShape(shapeInfo.type, shapeInfo);
 
-	      graph.selectShape(shape);
+	      this.emit("createdShape", shape, e);
 
-	      shape.handleMouseDown(self.currentShapeEvent, true);
-	      shape.handleSelected = 1;
-	      shape.handleMouseMove(e, true);
+	      if (shape) {
+	        self.currentShape = shape;
+	        self.currentShapeEvent = e;
+	      }
+
+	      graph.once("mouseUp", function () {
+	        self.emit("newShape", shape);
+	      });
 	    }
-	  };
 
-	  /**
-	   * @private
-	   * @memberof PluginShape
-	   */
-	  PluginShape.prototype.onMouseUp = function () {
+	    /**
+	     * @private
+	     */
 
-	    var self = this;
-	    if (self.currentShape) {
-	      // No need to kill it as it hasn't been actually put in the dom right now
-	      //self.currentShape.kill();
-	      self.currentShape = false;
+	  }, {
+	    key: 'onMouseMove',
+	    value: function onMouseMove(graph, x, y, e) {
+
+	      var self = this;
+	      if (self.currentShape) {
+
+	        self.count++;
+
+	        var shape = self.currentShape;
+
+	        self.currentShape = false;
+
+	        if (graph.selectedSerie) {
+	          shape.setSerie(graph.selectedSerie);
+	        }
+
+	        shape.resizing = true;
+
+	        if (shape.options && shape.options.onCreate) {
+	          shape.options.onCreate.call(shape);
+	        }
+
+	        shape.draw();
+
+	        graph.selectShape(shape);
+
+	        shape.handleMouseDown(self.currentShapeEvent, true);
+	        shape.handleSelected = 1;
+	        shape.handleMouseMove(e, true);
+	      }
 	    }
-	  };
+
+	    /**
+	     * @private
+	     */
+
+	  }, {
+	    key: 'onMouseUp',
+	    value: function onMouseUp() {
+
+	      var self = this;
+	      if (self.currentShape) {
+	        // No need to kill it as it hasn't been actually put in the dom right now
+	        //self.currentShape.kill();
+	        self.currentShape = false;
+	      }
+	    }
+	  }]);
 
 	  return PluginShape;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph2.default);
+
+	exports.default = PluginShape;
 
 /***/ },
 /* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin, util) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /**
-	   * @class PluginSelectScatter
-	   * @implements Plugin
-	   */
-	  var PluginSelectScatter = function PluginSelectScatter() {};
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  PluginSelectScatter.prototype = new Plugin();
+	var _graph = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph);
+
+	var _graph2 = __webpack_require__(34);
+
+	var _graph3 = _interopRequireDefault(_graph2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * @extends Plugin
+	 */
+	var PluginSelectScatter = function (_Plugin) {
+	  _inherits(PluginSelectScatter, _Plugin);
+
+	  function PluginSelectScatter() {
+	    _classCallCheck(this, PluginSelectScatter);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginSelectScatter).apply(this, arguments));
+	  }
 
 	  /**
 	   * Init method
 	   * @private
-	   * @memberof PluginSelectScatter
 	   */
-	  PluginSelectScatter.prototype.init = function (graph, options) {
 
-	    this._path = document.createElementNS(graph.ns, 'path');
 
-	    util.setAttributeTo(this._path, {
-	      'display': 'none',
-	      'fill': 'rgba(0,0,0,0.1)',
-	      'stroke': 'rgba(0,0,0,1)',
-	      'shape-rendering': 'crispEdges',
-	      'x': 0,
-	      'y': 0,
-	      'height': 0,
-	      'width': 0,
-	      'd': ''
-	    });
+	  _createClass(PluginSelectScatter, [{
+	    key: 'init',
+	    value: function init(graph, options) {
 
-	    this.graph = graph;
+	      this._path = document.createElementNS(graph.ns, 'path');
 
-	    graph.dom.appendChild(this._path);
-	  };
+	      util.setAttributeTo(this._path, {
+	        'display': 'none',
+	        'fill': 'rgba(0,0,0,0.1)',
+	        'stroke': 'rgba(0,0,0,1)',
+	        'shape-rendering': 'crispEdges',
+	        'x': 0,
+	        'y': 0,
+	        'height': 0,
+	        'width': 0,
+	        'd': ''
+	      });
 
-	  /**
-	   * Assigns the scatter serie that should be selected to the plugin
-	   * @param {ScatterSerie} serie - The serie
-	   * @memberof PluginSelectScatter
-	   */
-	  PluginSelectScatter.prototype.setSerie = function (serie) {
-	    this.serie = serie;
-	  };
+	      this.graph = graph;
 
-	  /**
-	   * @memberof PluginSelectScatter
-	   * @private
-	   */
-	  PluginSelectScatter.prototype.onMouseDown = function (graph, x, y, e, mute) {
-
-	    if (!this.serie) {
-	      return;
+	      graph.dom.appendChild(this._path);
 	    }
 
-	    this.path = 'M ' + x + ' ' + y + ' ';
-	    this.currentX = x;
-	    this.currentY = y;
+	    /**
+	     * Assigns the scatter serie that should be selected to the plugin
+	     * @param {ScatterSerie} serie - The serie
+	     * @return {PluginSelectScatter} The current plugin instance
+	     */
 
-	    this.xs = [this.serie.getXAxis().getVal(x - graph.getPaddingLeft())];
-	    this.ys = [this.serie.getYAxis().getVal(y - graph.getPaddingTop())];
-	    this._path.setAttribute('d', '');
-	    this._path.setAttribute('display', 'block');
-	  };
+	  }, {
+	    key: 'setSerie',
+	    value: function setSerie(serie) {
+	      this.serie = serie;
+	    }
 
-	  /**
-	   * @memberof PluginSelectScatter
-	   * @private
-	   */
-	  PluginSelectScatter.prototype.onMouseMove = function (graph, x, y, e, mute) {
+	    /**
+	     * @private
+	     */
 
-	    if (Math.pow(x - this.currentX, 2) + Math.pow(y - this.currentY, 2) > 25) {
+	  }, {
+	    key: 'onMouseDown',
+	    value: function onMouseDown(graph, x, y, e, mute) {
 
-	      this.path += " L " + x + " " + y + " ";
+	      if (!this.serie) {
+	        return;
+	      }
+
+	      this.path = 'M ' + x + ' ' + y + ' ';
 	      this.currentX = x;
 	      this.currentY = y;
 
-	      this.xs.push(this.serie.getXAxis().getVal(x - graph.getPaddingLeft()));
-	      this.ys.push(this.serie.getYAxis().getVal(y - graph.getPaddingTop()));
-
-	      this._path.setAttribute('d', this.path + " z");
-
-	      this.findPoints();
+	      this.xs = [this.serie.getXAxis().getVal(x - graph.getPaddingLeft())];
+	      this.ys = [this.serie.getYAxis().getVal(y - graph.getPaddingTop())];
+	      this._path.setAttribute('d', '');
+	      this._path.setAttribute('display', 'block');
 	    }
-	  };
 
-	  /**
-	   * @memberof PluginSelectScatter
-	   * @private
-	   */
-	  PluginSelectScatter.prototype.findPoints = function () {
+	    /**
+	     * @private
+	     */
 
-	    var data = this.serie.data;
-	    var selected = [];
-	    var counter = 0,
-	        j2;
-	    for (var i = 0, l = data.length; i < l; i += 2) {
+	  }, {
+	    key: 'onMouseMove',
+	    value: function onMouseMove(graph, x, y, e, mute) {
 
-	      counter = 0;
-	      for (var j = 0, k = this.xs.length; j < k; j += 1) {
+	      if (Math.pow(x - this.currentX, 2) + Math.pow(y - this.currentY, 2) > 25) {
 
-	        if (j == k - 1) {
-	          j2 = 0;
-	        } else {
-	          j2 = j + 1;
-	        }
+	        this.path += " L " + x + " " + y + " ";
+	        this.currentX = x;
+	        this.currentY = y;
 
-	        if (this.ys[j] < data[i + 1] && this.ys[j2] > data[i + 1] || this.ys[j] > data[i + 1] && this.ys[j2] < data[i + 1]) {
+	        this.xs.push(this.serie.getXAxis().getVal(x - graph.getPaddingLeft()));
+	        this.ys.push(this.serie.getYAxis().getVal(y - graph.getPaddingTop()));
 
-	          if (data[i] > (data[i + 1] - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
-	            counter++;
+	        this._path.setAttribute('d', this.path + " z");
+
+	        this.findPoints();
+	      }
+	    }
+
+	    /**
+	     * @private
+	     */
+
+	  }, {
+	    key: 'findPoints',
+	    value: function findPoints() {
+
+	      var data = this.serie.data;
+	      var selected = [];
+	      var counter = 0,
+	          j2;
+	      for (var i = 0, l = data.length; i < l; i += 2) {
+
+	        counter = 0;
+	        for (var j = 0, k = this.xs.length; j < k; j += 1) {
+
+	          if (j == k - 1) {
+	            j2 = 0;
+	          } else {
+	            j2 = j + 1;
+	          }
+
+	          if (this.ys[j] < data[i + 1] && this.ys[j2] > data[i + 1] || this.ys[j] > data[i + 1] && this.ys[j2] < data[i + 1]) {
+
+	            if (data[i] > (data[i + 1] - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
+	              counter++;
+	            }
 	          }
 	        }
+
+	        if (counter % 2 == 1) {
+	          selected.push(i / 2);
+	          this.serie.selectPoint(i / 2, true, "selected");
+	        } else {
+	          this.serie.unselectPoint(i / 2);
+	        }
 	      }
 
-	      if (counter % 2 == 1) {
-	        selected.push(i / 2);
-	        this.serie.selectPoint(i / 2, true, "selected");
-	      } else {
-	        this.serie.unselectPoint(i / 2);
-	      }
+	      this.selected = selected;
+	      this.emit("selectionProcess", selected);
 	    }
 
-	    this.selected = selected;
-	    this.emit("selectionProcess", selected);
-	  };
+	    /**
+	     * @private
+	     */
 
-	  /**
-	   * @memberof PluginSelectScatter
-	   * @private
-	   */
-	  PluginSelectScatter.prototype.onMouseUp = function (graph, x, y, e) {
-	    this._path.setAttribute('display', 'none');
-	    this.emit("selectionEnd", this.selected);
-	  };
+	  }, {
+	    key: 'onMouseUp',
+	    value: function onMouseUp(graph, x, y, e) {
+	      this._path.setAttribute('display', 'none');
+	      this.emit("selectionEnd", this.selected);
+	    }
+	  }]);
 
 	  return PluginSelectScatter;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph3.default);
+
+	exports.default = PluginSelectScatter;
 
 /***/ },
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(3), __webpack_require__(34)], __WEBPACK_AMD_DEFINE_RESULT__ = function (util, Plugin) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /**
-	   * @class PluginZoom
-	   * @implements Plugin
-	   */
-	  var PluginZoom = function PluginZoom() {};
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  PluginZoom.prototype = new Plugin();
+	var _graph = __webpack_require__(3);
 
-	  /**
-	   * Init method
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.init = function (graph, options) {
+	var util = _interopRequireWildcard(_graph);
 
-	    this._zoomingGroup = document.createElementNS(graph.ns, 'g');
-	    this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
-	    this._zoomingSquare.setAttribute('display', 'none');
+	var _graph2 = __webpack_require__(34);
 
-	    util.setAttributeTo(this._zoomingSquare, {
-	      'display': 'none',
-	      'fill': 'rgba(171,12,12,0.2)',
-	      'stroke': 'rgba(171,12,12,1)',
-	      'shape-rendering': 'crispEdges',
-	      'x': 0,
-	      'y': 0,
-	      'height': 0,
-	      'width': 0
-	    });
+	var _graph3 = _interopRequireDefault(_graph2);
 
-	    this.graph = graph;
-	    graph.groupEvent.appendChild(this._zoomingGroup);
-	    this._zoomingGroup.appendChild(this._zoomingSquare);
-	  };
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	  PluginZoom.prototype.defaults = {
-	    "axes": "all"
-	  };
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.onMouseDown = function (graph, x, y, e, mute) {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	    var zoomMode = this.options.zoomMode;
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	    if (!zoomMode) {
-	      return;
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * @class PluginZoom
+	 * @implements Plugin
+	 */
+	var PluginZoom = function (_Plugin) {
+	  _inherits(PluginZoom, _Plugin);
+
+	  function PluginZoom() {
+	    _classCallCheck(this, PluginZoom);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginZoom).apply(this, arguments));
+	  }
+
+	  _createClass(PluginZoom, [{
+	    key: 'init',
+
+
+	    /**
+	     * Init method
+	     * @private
+	     */
+	    value: function init(graph, options) {
+
+	      this._zoomingGroup = document.createElementNS(graph.ns, 'g');
+	      this._zoomingSquare = document.createElementNS(graph.ns, 'rect');
+	      this._zoomingSquare.setAttribute('display', 'none');
+
+	      util.setAttributeTo(this._zoomingSquare, {
+	        'display': 'none',
+	        'fill': 'rgba(171,12,12,0.2)',
+	        'stroke': 'rgba(171,12,12,1)',
+	        'shape-rendering': 'crispEdges',
+	        'x': 0,
+	        'y': 0,
+	        'height': 0,
+	        'width': 0
+	      });
+
+	      this.graph = graph;
+	      graph.groupEvent.appendChild(this._zoomingGroup);
+	      this._zoomingGroup.appendChild(this._zoomingSquare);
 	    }
 
-	    this._zoomingMode = zoomMode;
+	    /**
+	     * @private
+	     */
 
-	    if (x === undefined) {
-	      this._backedUpZoomMode = this._zoomingMode;
-	      this._zoomingMode = 'y';
-	      x = 0;
-	    }
+	  }, {
+	    key: 'onMouseDown',
+	    value: function onMouseDown(graph, x, y, e, mute) {
 
-	    if (y === undefined) {
-	      this._backedUpZoomMode = this._zoomingMode;
-	      this._zoomingMode = 'x';
-	      y = 0;
-	    }
+	      var zoomMode = this.options.zoomMode;
 
-	    this._zoomingXStart = x;
-	    this._zoomingYStart = y;
-	    this.x1 = x - graph.getPaddingLeft();
-	    this.y1 = y - graph.getPaddingTop();
-
-	    this._zoomingSquare.setAttribute('width', 0);
-	    this._zoomingSquare.setAttribute('height', 0);
-	    this._zoomingSquare.setAttribute('display', 'block');
-
-	    switch (this._zoomingMode) {
-
-	      case 'x':
-	        this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
-	        this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift.bottom);
-	        break;
-
-	      case 'y':
-	        this._zoomingSquare.setAttribute('x', graph.options.paddingLeft /* + this.shift[1]*/);
-	        this._zoomingSquare.setAttribute('width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/);
-	        break;
-
-	      case 'forceY2':
-
-	        this.y2 = graph.getYAxis().getPx(this.options.forcedY) + graph.options.paddingTop;
-
-	        break;
-
-	    }
-
-	    if (this.options.onZoomStart && !mute) {
-	      this.options.onZoomStart(graph, x, y, e, mute);
-	    }
-	  };
-
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.onMouseMove = function (graph, x, y, e, mute) {
-
-	    //	this._zoomingSquare.setAttribute('display', 'none');
-
-	    //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
-	    switch (this._zoomingMode) {
-
-	      case 'xy':
-	        this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-	        this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-	        this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-	        this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-
-	        break;
-
-	      case 'forceY2':
-	        this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, this.y2));
-	        this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - this.y2));
-	        this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-	        this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-
-	        break;
-
-	      case 'x':
-	        this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
-	        this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
-
-	        break;
-
-	      case 'y':
-	        this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
-	        this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
-	        break;
-
-	    }
-
-	    if (this.options.onZoomMove && !mute) {
-
-	      this.options.onZoomMove(graph, x, y, e, mute);
-	    }
-	    //		this._zoomingSquare.setAttribute('display', 'block');
-	  };
-
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.onMouseUp = function (graph, x, y, e, mute) {
-
-	    var self = this;
-	    this.removeZone();
-	    var _x = x - graph.options.paddingLeft;
-	    var _y = y - graph.options.paddingTop;
-
-	    if (x - this._zoomingXStart == 0 && this._zoomingMode != 'y' || y - this._zoomingYStart == 0 && this._zoomingMode != 'x') {
-	      return;
-	    }
-
-	    graph.cancelClick = true;
-
-	    if (this.options.transition) {
-
-	      var modeX = false,
-	          modeY = false;
-
-	      if (this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2') {
-
-	        this.fullX = false;
-	        this.toAxes(function (axis) {
-
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
-
-	          axis._pluginZoomMinFinal = Math.min(axis.getVal(_x), axis.getVal(self.x1));
-	          axis._pluginZoomMaxFinal = Math.max(axis.getVal(_x), axis.getVal(self.x1));
-	        }, false, true, false);
-
-	        modeX = true;
+	      if (!zoomMode) {
+	        return;
 	      }
 
-	      if (this._zoomingMode == 'y' || this._zoomingMode == 'xy') {
+	      this._zoomingMode = zoomMode;
 
-	        this.fullY = false;
-	        this.toAxes(function (axis) {
-
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
-
-	          axis._pluginZoomMinFinal = Math.min(axis.getVal(_y), axis.getVal(self.y1));
-	          axis._pluginZoomMaxFinal = Math.max(axis.getVal(_y), axis.getVal(self.y1));
-	        }, false, false, true);
-
-	        modeY = true;
+	      if (x === undefined) {
+	        this._backedUpZoomMode = this._zoomingMode;
+	        this._zoomingMode = 'y';
+	        x = 0;
 	      }
 
-	      if (this._zoomingMode == 'forceY2') {
-
-	        this.fullY = false;
-	        this.toAxes(function (axis) {
-
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
-
-	          axis._pluginZoomMinFinal = Math.min(axis.getVal(self.y2), axis.getVal(self.y1));
-	          axis._pluginZoomMaxFinal = Math.max(axis.getVal(self.y2), axis.getVal(self.y1));
-	        }, false, false, true);
-
-	        modeY = true;
+	      if (y === undefined) {
+	        this._backedUpZoomMode = this._zoomingMode;
+	        this._zoomingMode = 'x';
+	        y = 0;
 	      }
 
-	      this.transition(modeX, modeY, "zoomEnd");
-	    } else {
+	      this._zoomingXStart = x;
+	      this._zoomingYStart = y;
+	      this.x1 = x - graph.getPaddingLeft();
+	      this.y1 = y - graph.getPaddingTop();
+
+	      this._zoomingSquare.setAttribute('width', 0);
+	      this._zoomingSquare.setAttribute('height', 0);
+	      this._zoomingSquare.setAttribute('display', 'block');
 
 	      switch (this._zoomingMode) {
+
 	        case 'x':
-	          this.fullX = false;
-	          this.toAxes('_doZoom', [_x, this.x1], true, false);
+	          this._zoomingSquare.setAttribute('y', graph.options.paddingTop);
+	          this._zoomingSquare.setAttribute('height', graph.getDrawingHeight() - graph.shift.bottom);
 	          break;
+
 	        case 'y':
-	          this.fullY = false;
-	          this.toAxes('_doZoom', [_y, this.y1], false, true);
-	          break;
-	        case 'xy':
-	          this.fullX = false;
-	          this.fullY = false;
-	          this.toAxes('_doZoom', [_x, this.x1], true, false);
-	          this.toAxes('_doZoom', [_y, this.y1], false, true);
+	          this._zoomingSquare.setAttribute('x', graph.options.paddingLeft /* + this.shift[1]*/);
+	          this._zoomingSquare.setAttribute('width', graph.getDrawingWidth() /* - this.shift[1] - this.shift[2]*/);
 	          break;
 
 	        case 'forceY2':
 
-	          this.fullX = false;
-	          this.fullY = false;
-
-	          this.toAxes('_doZoom', [_x, this.x1], true, false);
-	          this.toAxes('_doZoom', [this.y1, this.y2], false, true);
+	          this.y2 = graph.getYAxis().getPx(this.options.forcedY) + graph.options.paddingTop;
 
 	          break;
+
 	      }
 
-	      graph.prevent(true);
-	      graph.draw();
+	      if (this.options.onZoomStart && !mute) {
+	        this.options.onZoomStart(graph, x, y, e, mute);
+	      }
+	    }
 
-	      if (this._backedUpZoomMode) {
-	        this._zoomingMode = this._backedUpZoomMode;
+	    /**
+	     * @private
+	     */
+
+	  }, {
+	    key: 'onMouseMove',
+	    value: function onMouseMove(graph, x, y, e, mute) {
+
+	      //	this._zoomingSquare.setAttribute('display', 'none');
+
+	      //	this._zoomingSquare.setAttribute('transform', 'translate(' + Math.random() + ', ' + Math.random() + ') scale(10, 10)');
+	      switch (this._zoomingMode) {
+
+	        case 'xy':
+	          this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+	          this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+	          this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+	          this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+
+	          break;
+
+	        case 'forceY2':
+	          this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, this.y2));
+	          this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - this.y2));
+	          this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+	          this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+
+	          break;
+
+	        case 'x':
+	          this._zoomingSquare.setAttribute('x', Math.min(this._zoomingXStart, x));
+	          this._zoomingSquare.setAttribute('width', Math.abs(this._zoomingXStart - x));
+
+	          break;
+
+	        case 'y':
+	          this._zoomingSquare.setAttribute('y', Math.min(this._zoomingYStart, y));
+	          this._zoomingSquare.setAttribute('height', Math.abs(this._zoomingYStart - y));
+	          break;
+
 	      }
 
-	      this.emit("zoomed");
-	    }
-	  };
+	      if (this.options.onZoomMove && !mute) {
 
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.removeZone = function () {
-	    this._zoomingSquare.setAttribute('display', 'none');
-	  };
-
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.onMouseWheel = function (delta, e, options) {
-
-	    if (!options) {
-	      options = {};
+	        this.options.onZoomMove(graph, x, y, e, mute);
+	      }
+	      //		this._zoomingSquare.setAttribute('display', 'block');
 	    }
 
-	    if (!options.baseline) {
-	      options.baseline = 0;
-	    }
+	    /**
+	     * @private
+	     */
 
-	    /*var serie;
-	    if ( ( serie = this.graph.getSelectedSerie() ) ) {
-	       if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+	  }, {
+	    key: 'onMouseUp',
+	    value: function onMouseUp(graph, x, y, e, mute) {
+
+	      var self = this;
+	      this.removeZone();
+	      var _x = x - graph.options.paddingLeft;
+	      var _y = y - graph.options.paddingTop;
+
+	      if (x - this._zoomingXStart == 0 && this._zoomingMode != 'y' || y - this._zoomingYStart == 0 && this._zoomingMode != 'x') {
 	        return;
 	      }
-	    }*/
 
-	    var doX = options.direction == 'x';
-	    var doY = !(options.direction !== 'y');
+	      graph.cancelClick = true;
 
-	    this.toAxes('handleMouseWheel', [delta, e, options.baseline], doX, doY);
+	      if (this.options.transition) {
 
-	    this.graph.drawSeries();
-	  };
+	        var modeX = false,
+	            modeY = false;
 
-	  /**
-	   * @private
-	   * @memberof PluginZoom
-	   */
-	  PluginZoom.prototype.onDblClick = function (x, y, e, pref, mute) {
+	        if (this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2') {
 
-	    var graph = this.graph;
-	    this.emit("beforeDblClick", {
-	      graph: graph,
-	      x: x,
-	      y: y,
-	      pref: pref,
-	      e: e,
-	      mute: mute
-	    });
+	          this.fullX = false;
+	          this.toAxes(function (axis) {
 
-	    if (graph.prevent(false)) {
-	      return;
-	    }
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	    if (this.options.transition) {
+	            axis._pluginZoomMinFinal = Math.min(axis.getVal(_x), axis.getVal(self.x1));
+	            axis._pluginZoomMaxFinal = Math.max(axis.getVal(_x), axis.getVal(self.x1));
+	          }, false, true, false);
 
-	      var modeX = false,
-	          modeY = false;
-
-	      if (pref.mode == 'xtotal' || pref.mode == 'total') {
-
-	        this.toAxes(function (axis) {
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
-
-	          axis._pluginZoomMinFinal = axis.getMinValue();
-	          axis._pluginZoomMaxFinal = axis.getMaxValue();
-	        }, false, true, false);
-
-	        modeX = true;
-	      }
-
-	      if (pref.mode == 'ytotal' || pref.mode == 'total') {
-
-	        this.toAxes(function (axis) {
-
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
-
-	          axis._pluginZoomMinFinal = axis.getMinValue();
-	          axis._pluginZoomMaxFinal = axis.getMaxValue();
-	        }, false, false, true);
-
-	        modeY = true;
-	      }
-
-	      if (pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
-
-	        var x = false,
-	            y = false;
-
-	        if (pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
-	          x = true;
 	          modeX = true;
 	        }
 
-	        if (pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
-	          y = true;
+	        if (this._zoomingMode == 'y' || this._zoomingMode == 'xy') {
+
+	          this.fullY = false;
+	          this.toAxes(function (axis) {
+
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
+
+	            axis._pluginZoomMinFinal = Math.min(axis.getVal(_y), axis.getVal(self.y1));
+	            axis._pluginZoomMaxFinal = Math.max(axis.getVal(_y), axis.getVal(self.y1));
+	          }, false, false, true);
+
 	          modeY = true;
 	        }
 
-	        this.toAxes(function (axis) {
+	        if (this._zoomingMode == 'forceY2') {
 
-	          axis._pluginZoomMin = axis.getCurrentMin();
-	          axis._pluginZoomMax = axis.getCurrentMax();
+	          this.fullY = false;
+	          this.toAxes(function (axis) {
 
-	          axis._pluginZoomMinFinal = axis.getCurrentMin() - (axis.getCurrentMax() - axis.getCurrentMin());
-	          axis._pluginZoomMaxFinal = axis.getCurrentMax() + (axis.getCurrentMax() - axis.getCurrentMin());
-	        }, false, x, y);
-	      }
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	      this.transition(modeX, modeY, "dblClick");
-	      return;
-	    }
+	            axis._pluginZoomMinFinal = Math.min(axis.getVal(self.y2), axis.getVal(self.y1));
+	            axis._pluginZoomMaxFinal = Math.max(axis.getVal(self.y2), axis.getVal(self.y1));
+	          }, false, false, true);
 
-	    var xAxis = this.graph.getXAxis(),
-	        yAxis = this.graph.getYAxis();
-
-	    if (pref.mode == 'xtotal') {
-
-	      this.toAxes("setMinMaxToFitSeries", null, true, false);
-	      this.fullX = true;
-	      this.fullY = false;
-	    } else if (pref.mode == 'ytotal') {
-
-	      this.toAxes("setMinMaxToFitSeries", null, false, true);
-	      this.fullX = false;
-	      this.fullY = true;
-	    } else if (pref.mode == 'total') {
-
-	      this.toAxes("setMinMaxToFitSeries", null, true, true);
-
-	      this.fullX = true;
-	      this.fullY = true;
-	      // Nothing to do here
-	      /*        this.graph._applyToAxes( function( axis ) {
-	           axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
-	         }, null, true, true );
-	      */
-	    } else {
-
-	      x -= this.graph.options.paddingLeft;
-	      y -= this.graph.options.paddingTop;
-
-	      var xMin = xAxis.getCurrentMin(),
-	          xMax = xAxis.getCurrentMax(),
-	          xActual = xAxis.getVal(x),
-	          diffX = xMax - xMin,
-	          yMin = yAxis.getCurrentMin(),
-	          yMax = yAxis.getCurrentMax(),
-	          yActual = yAxis.getVal(y),
-	          diffY = yMax - yMin;
-
-	      if (pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
-
-	        var ratio = (xActual - xMin) / (xMax - xMin);
-	        xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-	        xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
-	        xAxis.setCurrentMin(xMin);
-	        xAxis.setCurrentMax(xMax);
-
-	        if (xAxis.options.onZoom) {
-	          xAxis.options.onZoom(xMin, xMax);
+	          modeY = true;
 	        }
 
-	        xAxis.cacheCurrentMin();
-	        xAxis.cacheCurrentMax();
-	        xAxis.cacheInterval();
-	      }
-
-	      if (pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
-
-	        var ratio = (yActual - yMin) / (yMax - yMin);
-	        yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-	        yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
-	        yAxis.setCurrentMin(yMin);
-	        yAxis.setCurrentMax(yMax);
-
-	        if (yAxis.options.onZoom) {
-	          yAxis.options.onZoom(yMin, yMax);
-	        }
-
-	        yAxis.cacheCurrentMin();
-	        yAxis.cacheCurrentMax();
-	        yAxis.cacheInterval();
-	      }
-	    }
-
-	    this.graph.draw();
-	    /*
-	        this.emit( "dblClick", {
-	          graph: graph,
-	          x: x,
-	          y: y,
-	          pref: pref,
-	          e: e,
-	          mute: mute
-	        } );
-	         if ( this.options.onDblClick && !mute ) {
-	          this.options.onDblClick( graph, x, y, e, mute );
-	        }*/
-	  };
-
-	  PluginZoom.prototype.transition = function (modeX, modeY, eventName) {
-
-	    var self = this,
-	        maxTime = 500;
-
-	    if (!self.gradualUnzoomStart) {
-	      self.gradualUnzoomStart = Date.now();
-	    }
-
-	    window.requestAnimationFrame(function () {
-
-	      var dt = Date.now() - self.gradualUnzoomStart;
-
-	      if (dt > maxTime) {
-	        dt = maxTime;
-	      }
-	      var progress = Math.sin(dt / maxTime * Math.PI / 2);
-
-	      self.toAxes(function (axis) {
-
-	        axis.setCurrentMin(axis._pluginZoomMin + (axis._pluginZoomMinFinal - axis._pluginZoomMin) * progress);
-	        axis.setCurrentMax(axis._pluginZoomMax + (axis._pluginZoomMaxFinal - axis._pluginZoomMax) * progress);
-
-	        axis.cacheCurrentMin();
-	        axis.cacheCurrentMax();
-	        axis.cacheInterval();
-	      }, false, modeX, modeY);
-
-	      self.graph.draw();
-
-	      if (dt < maxTime) {
-
-	        self.transition(modeX, modeY, eventName);
-	        self.emit("zooming");
+	        this.transition(modeX, modeY, "zoomEnd");
 	      } else {
 
-	        self.emit("zoomed");
+	        switch (this._zoomingMode) {
+	          case 'x':
+	            this.fullX = false;
+	            this.toAxes('_doZoom', [_x, this.x1], true, false);
+	            break;
+	          case 'y':
+	            this.fullY = false;
+	            this.toAxes('_doZoom', [_y, this.y1], false, true);
+	            break;
+	          case 'xy':
+	            this.fullX = false;
+	            this.fullY = false;
+	            this.toAxes('_doZoom', [_x, this.x1], true, false);
+	            this.toAxes('_doZoom', [_y, this.y1], false, true);
+	            break;
 
-	        if (eventName) {
-	          self.emit(eventName);
+	          case 'forceY2':
+
+	            this.fullX = false;
+	            this.fullY = false;
+
+	            this.toAxes('_doZoom', [_x, this.x1], true, false);
+	            this.toAxes('_doZoom', [this.y1, this.y2], false, true);
+
+	            break;
 	        }
-	        self.gradualUnzoomStart = 0;
+
+	        graph.prevent(true);
+	        graph.draw();
+
+	        if (this._backedUpZoomMode) {
+	          this._zoomingMode = this._backedUpZoomMode;
+	        }
+
+	        this.emit("zoomed");
 	      }
-	    });
-	  };
-
-	  PluginZoom.prototype.isFullX = function () {
-	    return this.fullX;
-	  };
-
-	  PluginZoom.prototype.isFullY = function () {
-	    return this.fullY;
-	  };
-
-	  PluginZoom.prototype.toAxes = function (func, params, tb, lr) {
-
-	    var axes = this.options.axes;
-
-	    if (!this.graph.getSelectedSerie()) {
-	      axes = 'all';
 	    }
 
-	    switch (axes) {
+	    /**
+	     * @private
+	     */
 
-	      case 'all':
-	        this.graph._applyToAxes.apply(this.graph, arguments);
-	        break;
+	  }, {
+	    key: 'removeZone',
+	    value: function removeZone() {
+	      this._zoomingSquare.setAttribute('display', 'none');
+	    }
 
-	      case 'serieSelected':
+	    /**
+	     * @private
+	     */
 
-	        var serie = this.graph.getSelectedSerie();
-	        if (serie) {
+	  }, {
+	    key: 'onMouseWheel',
+	    value: function onMouseWheel(delta, e, options) {
 
-	          if (tb) {
+	      if (!options) {
+	        options = {};
+	      }
 
-	            if (typeof func == "string") {
-	              serie.getXAxis()[func].apply(serie.getXAxis(), params);
-	            } else {
-	              func.apply(serie.getXAxis(), params);
-	            }
-	          }
+	      if (!options.baseline) {
+	        options.baseline = 0;
+	      }
 
-	          if (lr) {
+	      /*var serie;
+	      if ( ( serie = this.graph.getSelectedSerie() ) ) {
+	         if ( serie.getYAxis().handleMouseWheel( delta, e ) ) {
+	          return;
+	        }
+	      }*/
 
-	            if (typeof func == "string") {
-	              serie.getYAxis()[func].apply(serie.getYAxis(), params);
-	            } else {
-	              func.apply(serie.getYAxis(), params);
-	            }
-	          }
+	      var doX = options.direction == 'x';
+	      var doY = !(options.direction !== 'y');
+
+	      this.toAxes('handleMouseWheel', [delta, e, options.baseline], doX, doY);
+
+	      this.graph.drawSeries();
+	    }
+
+	    /**
+	     * @private
+	     */
+
+	  }, {
+	    key: 'onDblClick',
+	    value: function onDblClick(x, y, e, pref, mute) {
+
+	      var graph = this.graph;
+	      this.emit("beforeDblClick", {
+	        graph: graph,
+	        x: x,
+	        y: y,
+	        pref: pref,
+	        e: e,
+	        mute: mute
+	      });
+
+	      if (graph.prevent(false)) {
+	        return;
+	      }
+
+	      if (this.options.transition) {
+
+	        var modeX = false,
+	            modeY = false;
+
+	        if (pref.mode == 'xtotal' || pref.mode == 'total') {
+
+	          this.toAxes(function (axis) {
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
+
+	            axis._pluginZoomMinFinal = axis.getMinValue();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	          }, false, true, false);
+
+	          modeX = true;
 	        }
 
-	        break;
+	        if (pref.mode == 'ytotal' || pref.mode == 'total') {
+
+	          this.toAxes(function (axis) {
+
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
+
+	            axis._pluginZoomMinFinal = axis.getMinValue();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	          }, false, false, true);
+
+	          modeY = true;
+	        }
+
+	        if (pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
+
+	          var x = false,
+	              y = false;
+
+	          if (pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
+	            x = true;
+	            modeX = true;
+	          }
+
+	          if (pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
+	            y = true;
+	            modeY = true;
+	          }
+
+	          this.toAxes(function (axis) {
+
+	            axis._pluginZoomMin = axis.getCurrentMin();
+	            axis._pluginZoomMax = axis.getCurrentMax();
+
+	            axis._pluginZoomMinFinal = axis.getCurrentMin() - (axis.getCurrentMax() - axis.getCurrentMin());
+	            axis._pluginZoomMaxFinal = axis.getCurrentMax() + (axis.getCurrentMax() - axis.getCurrentMin());
+	          }, false, x, y);
+	        }
+
+	        this.transition(modeX, modeY, "dblClick");
+	        return;
+	      }
+
+	      var xAxis = this.graph.getXAxis(),
+	          yAxis = this.graph.getYAxis();
+
+	      if (pref.mode == 'xtotal') {
+
+	        this.toAxes("setMinMaxToFitSeries", null, true, false);
+	        this.fullX = true;
+	        this.fullY = false;
+	      } else if (pref.mode == 'ytotal') {
+
+	        this.toAxes("setMinMaxToFitSeries", null, false, true);
+	        this.fullX = false;
+	        this.fullY = true;
+	      } else if (pref.mode == 'total') {
+
+	        this.toAxes("setMinMaxToFitSeries", null, true, true);
+
+	        this.fullX = true;
+	        this.fullY = true;
+	        // Nothing to do here
+	        /*        this.graph._applyToAxes( function( axis ) {
+	             axis.emit( 'zoom', axis.currentAxisMin, axis.currentAxisMax, axis );
+	           }, null, true, true );
+	        */
+	      } else {
+
+	        x -= this.graph.options.paddingLeft;
+	        y -= this.graph.options.paddingTop;
+
+	        var xMin = xAxis.getCurrentMin(),
+	            xMax = xAxis.getCurrentMax(),
+	            xActual = xAxis.getVal(x),
+	            diffX = xMax - xMin,
+	            yMin = yAxis.getCurrentMin(),
+	            yMax = yAxis.getCurrentMax(),
+	            yActual = yAxis.getVal(y),
+	            diffY = yMax - yMin;
+
+	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
+
+	          var ratio = (xActual - xMin) / (xMax - xMin);
+	          xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
+	          xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+	          xAxis.setCurrentMin(xMin);
+	          xAxis.setCurrentMax(xMax);
+
+	          if (xAxis.options.onZoom) {
+	            xAxis.options.onZoom(xMin, xMax);
+	          }
+
+	          xAxis.cacheCurrentMin();
+	          xAxis.cacheCurrentMax();
+	          xAxis.cacheInterval();
+	        }
+
+	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
+
+	          var ratio = (yActual - yMin) / (yMax - yMin);
+	          yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
+	          yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+	          yAxis.setCurrentMin(yMin);
+	          yAxis.setCurrentMax(yMax);
+
+	          if (yAxis.options.onZoom) {
+	            yAxis.options.onZoom(yMin, yMax);
+	          }
+
+	          yAxis.cacheCurrentMin();
+	          yAxis.cacheCurrentMax();
+	          yAxis.cacheInterval();
+	        }
+	      }
+
+	      this.graph.draw();
+	      /*
+	          this.emit( "dblClick", {
+	            graph: graph,
+	            x: x,
+	            y: y,
+	            pref: pref,
+	            e: e,
+	            mute: mute
+	          } );
+	           if ( this.options.onDblClick && !mute ) {
+	            this.options.onDblClick( graph, x, y, e, mute );
+	          }*/
 	    }
-	  };
+	  }, {
+	    key: 'transition',
+	    value: function transition(modeX, modeY, eventName) {
+
+	      var self = this,
+	          maxTime = 500;
+
+	      if (!self.gradualUnzoomStart) {
+	        self.gradualUnzoomStart = Date.now();
+	      }
+
+	      window.requestAnimationFrame(function () {
+
+	        var dt = Date.now() - self.gradualUnzoomStart;
+
+	        if (dt > maxTime) {
+	          dt = maxTime;
+	        }
+	        var progress = Math.sin(dt / maxTime * Math.PI / 2);
+
+	        self.toAxes(function (axis) {
+
+	          axis.setCurrentMin(axis._pluginZoomMin + (axis._pluginZoomMinFinal - axis._pluginZoomMin) * progress);
+	          axis.setCurrentMax(axis._pluginZoomMax + (axis._pluginZoomMaxFinal - axis._pluginZoomMax) * progress);
+
+	          axis.cacheCurrentMin();
+	          axis.cacheCurrentMax();
+	          axis.cacheInterval();
+	        }, false, modeX, modeY);
+
+	        self.graph.draw();
+
+	        if (dt < maxTime) {
+
+	          self.transition(modeX, modeY, eventName);
+	          self.emit("zooming");
+	        } else {
+
+	          self.emit("zoomed");
+
+	          if (eventName) {
+	            self.emit(eventName);
+	          }
+	          self.gradualUnzoomStart = 0;
+	        }
+	      });
+	    }
+	  }, {
+	    key: 'isFullX',
+	    value: function isFullX() {
+	      return this.fullX;
+	    }
+	  }, {
+	    key: 'isFullY',
+	    value: function isFullY() {
+	      return this.fullY;
+	    }
+	  }, {
+	    key: 'toAxes',
+	    value: function toAxes(func, params, tb, lr) {
+
+	      var axes = this.options.axes;
+
+	      if (!this.graph.getSelectedSerie()) {
+	        axes = 'all';
+	      }
+
+	      switch (axes) {
+
+	        case 'all':
+	          this.graph._applyToAxes.apply(this.graph, arguments);
+	          break;
+
+	        case 'serieSelected':
+
+	          var serie = this.graph.getSelectedSerie();
+	          if (serie) {
+
+	            if (tb) {
+
+	              if (typeof func == "string") {
+	                serie.getXAxis()[func].apply(serie.getXAxis(), params);
+	              } else {
+	                func.apply(serie.getXAxis(), params);
+	              }
+	            }
+
+	            if (lr) {
+
+	              if (typeof func == "string") {
+	                serie.getYAxis()[func].apply(serie.getYAxis(), params);
+	              } else {
+	                func.apply(serie.getYAxis(), params);
+	              }
+	            }
+	          }
+
+	          break;
+	      }
+	    }
+	  }], [{
+	    key: 'defaults',
+	    value: function defaults() {
+
+	      return {
+	        "axes": "all"
+	      };
+	    }
+	  }]);
 
 	  return PluginZoom;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph3.default);
+
+	exports.default = PluginZoom;
 
 /***/ },
 /* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(39), __webpack_require__(34), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_RESULT__ = function (LRU, Plugin, util) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /**
-	   * @class PluginTimeSerieManager
-	   * @implements Plugin
-	   */
-	  var PluginTimeSerieManager = function PluginTimeSerieManager() {
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	    var self = this;
+	var _graph = __webpack_require__(1);
 
-	    this.series = [];
-	    this.plugins = [];
-	    this.currentSlots = {};
+	var _graph2 = _interopRequireDefault(_graph);
 
-	    this.requestLevels = {};
-	    this.update = function (noRecalculate, force) {
+	var _graph3 = __webpack_require__(39);
 
-	      self.series.forEach(function (serie) {
+	var _graph4 = _interopRequireDefault(_graph3);
 
-	        self.updateSerie(serie, noRecalculate);
+	var _graph5 = __webpack_require__(34);
+
+	var _graph6 = _interopRequireDefault(_graph5);
+
+	var _graph7 = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph7);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * @class PluginTimeSerieManager
+	 * @implements Plugin
+	 */
+	var PluginTimeSerieManager = function (_Plugin) {
+	  _inherits(PluginTimeSerieManager, _Plugin);
+
+	  function PluginTimeSerieManager() {
+	    _classCallCheck(this, PluginTimeSerieManager);
+
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginTimeSerieManager).apply(this, arguments));
+
+	    _this.series = [];
+	    _this.plugins = [];
+	    _this.currentSlots = {};
+
+	    _this.requestLevels = {};
+	    _this.update = function (noRecalculate, force) {
+
+	      _this.series.forEach(function (serie) {
+
+	        this.updateSerie(serie, noRecalculate);
 	      });
 
 	      if (!noRecalculate) {
-	        self.recalculateSeries(force);
+	        _this.recalculateSeries(force);
 	      }
 	    };
-	  };
 
-	  PluginTimeSerieManager.prototype = new Plugin();
+	    return _this;
+	  }
 
-	  PluginTimeSerieManager.prototype.defaults = {
+	  _createClass(PluginTimeSerieManager, [{
+	    key: 'init',
 
-	    LRUName: "PluginTimeSerieManager",
-	    intervals: [1000, 15000, 60000, 900000, 3600000, 8640000],
-	    maxParallelRequests: 3,
-	    optimalPxPerPoint: 2,
-	    nbPoints: 1000,
-	    url: ""
-	  };
 
-	  /**
-	   * Init method
-	   * @private
-	   * @memberof PluginTimeSerieManager
-	   */
-	  PluginTimeSerieManager.prototype.init = function (graph, options) {
-	    this.graph = graph;
-	    LRU.create(this.options.LRUName, 200);
-	    this.requestsRunning = 0;
-	  };
-
-	  PluginTimeSerieManager.prototype.setURL = function (url) {
-	    this.options.url = url;
-	    return this;
-	  };
-
-	  PluginTimeSerieManager.prototype.setAvailableIntervals = function () {
-	    this.options.intervals = arguments;
-	  };
-
-	  PluginTimeSerieManager.prototype.newSerie = function (serieName, serieOptions, serieType, dbElements, noZoneSerie) {
-	    var s = this.graph.newSerie(serieName, serieOptions, serieType);
-
-	    this.currentSlots[serieName] = {
-	      min: 0,
-	      max: 0,
-	      interval: 0
-	    };
-
-	    s.on("hide", function () {
-
-	      if (s._zoneSerie) {
-
-	        s._zoneSerie.hide();
-	      }
-	    });
-
-	    s.on("show", function () {
-
-	      if (s._zoneSerie) {
-	        s._zoneSerie.show();
-	      }
-	    });
-
-	    s.setInfo("timeSerieManagerDBElements", dbElements);
-
-	    if (!noZoneSerie) {
-	      s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, "zone");
+	    /**
+	     * Init method
+	     * @private
+	     * @memberof PluginTimeSerieManager
+	     */
+	    value: function init(graph, options) {
+	      this.graph = graph;
+	      _graph4.default.create(this.options.LRUName, 200);
+	      this.requestsRunning = 0;
 	    }
-
-	    this.series.push(s);
-	    return s;
-	  };
-
-	  PluginTimeSerieManager.prototype.registerPlugin = function (plugin, event) {
-
-	    var index;
-	    if ((index = this.plugins.indexOf(plugin)) > -1) {
-
-	      for (var i = 1; i < arguments.length; i++) {
-	        plugin.removeListener(arguments[i], this.update);
-	      }
+	  }, {
+	    key: 'setURL',
+	    value: function setURL(url) {
+	      this.options.url = url;
+	      return this;
 	    }
-
-	    for (var i = 1; i < arguments.length; i++) {
-	      plugin.on(arguments[i], this.update);
+	  }, {
+	    key: 'setAvailableIntervals',
+	    value: function setAvailableIntervals() {
+	      this.options.intervals = arguments;
 	    }
-	  };
+	  }, {
+	    key: 'newSerie',
+	    value: function newSerie(serieName, serieOptions, serieType, dbElements, noZoneSerie) {
+	      var s = this.graph.newSerie(serieName, serieOptions, serieType);
 
-	  PluginTimeSerieManager.prototype.updateSerie = function (serie, noRecalculate) {
+	      this.currentSlots[serieName] = {
+	        min: 0,
+	        max: 0,
+	        interval: 0
+	      };
 
-	    var self = this;
-	    var from = serie.getXAxis().getCurrentMin();
-	    var to = serie.getXAxis().getCurrentMax();
-	    var priority = 1;
+	      s.on("hide", function () {
 
-	    var optimalInterval = this.getOptimalInterval(to - from);
-	    var optimalIntervalIndex = this.options.intervals.indexOf(optimalInterval);
-	    var interval;
+	        if (s._zoneSerie) {
 
-	    for (var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++) {
-
-	      interval = this.options.intervals[i];
-	      var startSlotId = self.computeSlotID(from, interval);
-	      var endSlotId = self.computeSlotID(to, interval);
-
-	      var intervalMultipliers = [[2, 5, 6], [1, 2, 4], [0, 1, 3]];
-
-	      intervalMultipliers.forEach(function (multiplier) {
-
-	        var firstSlotId = startSlotId - multiplier[0] * (endSlotId - startSlotId);
-	        var lastSlotId = endSlotId + multiplier[0] * (endSlotId - startSlotId);
-
-	        var slotId = firstSlotId;
-
-	        while (slotId <= lastSlotId) {
-
-	          if (self.computeTimeMin(slotId, interval) > Date.now()) {
-	            break;
-	          }
-
-	          self.register(serie, slotId, interval, interval == optimalInterval ? multiplier[1] : multiplier[2], true, noRecalculate);
-	          slotId++;
+	          s._zoneSerie.hide();
 	        }
 	      });
-	    }
 
-	    this.processRequests();
-	  };
+	      s.on("show", function () {
 
-	  PluginTimeSerieManager.prototype.register = function (serie, slotId, interval, priority, noProcess, noRecalculate) {
+	        if (s._zoneSerie) {
+	          s._zoneSerie.show();
+	        }
+	      });
 
-	    var id = this.computeUniqueID(serie, slotId, interval);
+	      s.setInfo("timeSerieManagerDBElements", dbElements);
 
-	    var data = LRU.get(this.options.LRUName, id);
-
-	    if (!data || this.computeTimeMax(slotId, interval) > Date.now() && data.timeout < Date.now() - (noRecalculate ? 5000 : 100000) && priority == 1) {
-
-	      this.request(serie, slotId, interval, priority, id, noProcess);
-	    }
-	  };
-
-	  PluginTimeSerieManager.prototype.request = function (serie, slotId, interval, priority, slotName, noProcess) {
-
-	    for (var i in this.requestLevels) {
-
-	      if (i == priority) {
-	        continue;
+	      if (!noZoneSerie) {
+	        s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, _graph2.default.SERIE_ZONE);
 	      }
 
-	      if (this.requestLevels[i][slotName]) {
+	      this.series.push(s);
+	      return s;
+	    }
+	  }, {
+	    key: 'registerPlugin',
+	    value: function registerPlugin(plugin, event) {
 
-	        if (this.requestLevels[i][slotName][0] !== 1) {
-	          // If the request is not pending
+	      var index;
+	      if ((index = this.plugins.indexOf(plugin)) > -1) {
 
-	          delete this.requestLevels[i][slotName];
-	        } else {
-	          this.requestLevels[i][slotName][5] = priority;
+	        for (var i = 1; i < arguments.length; i++) {
+	          plugin.removeListener(arguments[i], this.update);
 	        }
 	      }
+
+	      for (var i = 1; i < arguments.length; i++) {
+	        plugin.on(arguments[i], this.update);
+	      }
 	    }
+	  }, {
+	    key: 'updateSerie',
+	    value: function updateSerie(serie, noRecalculate) {
 
-	    if (this.requestLevels[priority] && this.requestLevels[priority][slotName]) {
-	      return;
-	    }
+	      var self = this;
+	      var from = serie.getXAxis().getCurrentMin();
+	      var to = serie.getXAxis().getCurrentMax();
+	      var priority = 1;
 
-	    this.requestLevels[priority] = this.requestLevels[priority] || {};
-	    this.requestLevels[priority][slotName] = [0, slotName, serie.getName(), slotId, interval, priority, serie.getInfo('timeSerieManagerDBElements')];
+	      var optimalInterval = this.getOptimalInterval(to - from);
+	      var optimalIntervalIndex = this.options.intervals.indexOf(optimalInterval);
+	      var interval;
 
-	    if (!noProcess) {
+	      for (var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++) {
+
+	        interval = this.options.intervals[i];
+	        var startSlotId = self.computeSlotID(from, interval);
+	        var endSlotId = self.computeSlotID(to, interval);
+
+	        var intervalMultipliers = [[2, 5, 6], [1, 2, 4], [0, 1, 3]];
+
+	        intervalMultipliers.forEach(function (multiplier) {
+
+	          var firstSlotId = startSlotId - multiplier[0] * (endSlotId - startSlotId);
+	          var lastSlotId = endSlotId + multiplier[0] * (endSlotId - startSlotId);
+
+	          var slotId = firstSlotId;
+
+	          while (slotId <= lastSlotId) {
+
+	            if (self.computeTimeMin(slotId, interval) > Date.now()) {
+	              break;
+	            }
+
+	            self.register(serie, slotId, interval, interval == optimalInterval ? multiplier[1] : multiplier[2], true, noRecalculate);
+	            slotId++;
+	          }
+	        });
+	      }
+
 	      this.processRequests();
 	    }
-	  };
+	  }, {
+	    key: 'register',
+	    value: function register(serie, slotId, interval, priority, noProcess, noRecalculate) {
 
-	  PluginTimeSerieManager.prototype.processRequests = function () {
+	      var id = this.computeUniqueID(serie, slotId, interval);
 
-	    if (this.requestsRunning >= this.options.maxParallelRequests) {
-	      return;
+	      var data = _graph4.default.get(this.options.LRUName, id);
+
+	      if (!data || this.computeTimeMax(slotId, interval) > Date.now() && data.timeout < Date.now() - (noRecalculate ? 5000 : 100000) && priority == 1) {
+
+	        this.request(serie, slotId, interval, priority, id, noProcess);
+	      }
 	    }
+	  }, {
+	    key: 'request',
+	    value: function request(serie, slotId, interval, priority, slotName, noProcess) {
 
-	    var self = this,
-	        currentLevelChecking = 1,
-	        requestToMake;
+	      for (var i in this.requestLevels) {
 
-	    while (true) {
-
-	      for (var i in this.requestLevels[currentLevelChecking]) {
-
-	        if (this.requestLevels[currentLevelChecking][i][0] == 1) {
-	          // Running request
+	        if (i == priority) {
 	          continue;
 	        }
 
-	        requestToMake = this.requestLevels[currentLevelChecking][i];
-	        break;
+	        if (this.requestLevels[i][slotName]) {
+
+	          if (this.requestLevels[i][slotName][0] !== 1) {
+	            // If the request is not pending
+
+	            delete this.requestLevels[i][slotName];
+	          } else {
+	            this.requestLevels[i][slotName][5] = priority;
+	          }
+	        }
 	      }
 
-	      if (requestToMake) {
-	        break;
-	      }
-
-	      currentLevelChecking++;
-
-	      if (currentLevelChecking > 10) {
+	      if (this.requestLevels[priority] && this.requestLevels[priority][slotName]) {
 	        return;
 	      }
-	    }
 
-	    this.requestsRunning++;
+	      this.requestLevels[priority] = this.requestLevels[priority] || {};
+	      this.requestLevels[priority][slotName] = [0, slotName, serie.getName(), slotId, interval, priority, serie.getInfo('timeSerieManagerDBElements')];
 
-	    if (!requestToMake) {
-	      return;
-	    }
-
-	    requestToMake[0] = 1;
-
-	    util.ajaxGet({
-
-	      url: this.getURL(requestToMake),
-	      method: 'GET',
-	      json: true
-
-	    }).done(function (data) {
-
-	      if (data.status == 1) {
-	        // Success
-
-	        self.requestsRunning--;
-
-	        delete self.requestLevels[currentLevelChecking][i];
-
-	        LRU.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
-	        self.processRequests();
-
-	        if (requestToMake[5] == 1 && Object.keys(self.requestLevels[1]).length == 0) {
-
-	          self.recalculateSeries(true);
-	        }
+	      if (!noProcess) {
+	        this.processRequests();
 	      }
-	    });
-	  };
-
-	  PluginTimeSerieManager.prototype.computeTimeMax = function (slotId, interval) {
-	    return (slotId + 1) * (interval * this.options.nbPoints);
-	  };
-
-	  PluginTimeSerieManager.prototype.computeTimeMin = function (slotId, interval) {
-	    return slotId * (interval * this.options.nbPoints);
-	  };
-
-	  PluginTimeSerieManager.prototype.getURL = function (requestElements) {
-
-	    var url = this.options.url.replace("<measurementid>", requestElements[2]).replace('<from>', this.computeTimeMin(requestElements[3], requestElements[4])).replace('<to>', this.computeTimeMax(requestElements[3], requestElements[4])).replace('<interval>', requestElements[4]);
-
-	    var dbElements = requestElements[6] || {};
-
-	    for (var i in dbElements) {
-	      url = url.replace("<" + i + ">", dbElements[i]);
 	    }
+	  }, {
+	    key: 'processRequests',
+	    value: function processRequests() {
 
-	    return url;
-	  };
-
-	  PluginTimeSerieManager.prototype.getOptimalInterval = function (totalspan) {
-
-	    var optimalInterval = (this.options.optimalPxPerPoint || 1) * totalspan / this.graph.getDrawingWidth(),
-	        diff = Infinity,
-	        optimalIntervalAmongAvailable;
-
-	    this.options.intervals.forEach(function (interval) {
-
-	      var newDiff = Math.min(diff, Math.abs(interval - optimalInterval));
-	      if (diff !== newDiff) {
-
-	        optimalIntervalAmongAvailable = interval;
-	        diff = newDiff;
-	      }
-	    });
-
-	    return optimalIntervalAmongAvailable || 1000;
-	  };
-
-	  PluginTimeSerieManager.prototype.computeUniqueID = function (serie, slotId, interval) {
-	    var extra = "";
-	    var info = serie.getInfo('timeSerieManagerDBElements');
-	    for (var i in info) {
-	      extra += ";" + i + ":" + info[i];
-	    }
-
-	    return serie.getName() + ";" + slotId + ";" + interval + extra;
-	  };
-
-	  PluginTimeSerieManager.prototype.computeSlotID = function (time, interval) {
-	    return Math.floor(time / (interval * this.options.nbPoints));
-	  };
-
-	  PluginTimeSerieManager.prototype.computeSlotTime = function (slotId, interval) {
-	    return slotId * (interval * this.options.nbPoints);
-	  };
-
-	  PluginTimeSerieManager.prototype.getZoneSerie = function (serie) {
-	    return serie._zoneSerie;
-	  };
-
-	  PluginTimeSerieManager.prototype.updateZoneSerie = function (serieName) {
-
-	    var serie = this.graph.getSerie(serieName);
-
-	    if (!serie) {
-	      return;
-	    }
-
-	    if (!serie._zoneSerie) {
-	      return;
-	    }
-
-	    serie._zoneSerie.setXAxis(serie.getXAxis());
-	    serie._zoneSerie.setYAxis(serie.getYAxis());
-	    serie._zoneSerie.setFillColor(serie.getLineColor());
-	    serie._zoneSerie.setLineColor(serie.getLineColor());
-	    serie._zoneSerie.setFillOpacity(0.2);
-	    serie._zoneSerie.setLineOpacity(0.3);
-	  };
-
-	  PluginTimeSerieManager.prototype.recalculateSeries = function (force) {
-
-	    var self = this;
-
-	    if (this.locked) {
-	      return;
-	    }
-
-	    this.changed = false;
-
-	    this.series.map(function (serie) {
-	      self.recalculateSerie(serie, force);
-	    });
-
-	    /*if ( this.changed ) {
-	      self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
-	    }
-	    */
-	    this.changed = false;
-	    //self.graph.autoscaleAxes();
-
-	    self.graph.draw();
-	  };
-
-	  PluginTimeSerieManager.prototype.recalculateSerie = function (serie, force) {
-
-	    var from = serie.getXAxis().getCurrentMin(),
-	        to = serie.getXAxis().getCurrentMax(),
-	        interval = this.getOptimalInterval(to - from);
-
-	    var startSlotId = this.computeSlotID(from, interval);
-	    var endSlotId = this.computeSlotID(to, interval);
-
-	    var data = [];
-	    var dataMinMax = [];
-	    var lruData;
-
-	    if (!force && interval == this.currentSlots[serie.getName()].interval && this.currentSlots[serie.getName()].min <= startSlotId && this.currentSlots[serie.getName()].max >= endSlotId) {
-	      return;
-	    }
-
-	    startSlotId -= 2;
-	    endSlotId += 2;
-
-	    this.currentSlots[serie.getName()].min = startSlotId;
-	    this.currentSlots[serie.getName()].max = endSlotId;
-	    this.currentSlots[serie.getName()].interval = interval;
-
-	    var slotId = startSlotId;
-
-	    while (slotId <= endSlotId) {
-
-	      if (lruData = LRU.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval))) {
-
-	        data = data.concat(lruData.data.mean);
-	        dataMinMax = dataMinMax.concat(lruData.data.minmax);
-	      } else {
-
-	        this.recalculateSerieUpwards(serie, slotId, interval, data, dataMinMax);
+	      if (this.requestsRunning >= this.options.maxParallelRequests) {
+	        return;
 	      }
 
-	      slotId++;
-	    }
+	      var self = this,
+	          currentLevelChecking = 1,
+	          requestToMake;
 
-	    this.changed = true;
+	      while (true) {
 
-	    serie.setData(data);
+	        for (var i in this.requestLevels[currentLevelChecking]) {
 
-	    if (serie._zoneSerie) {
-	      serie._zoneSerie.setData(dataMinMax);
-	    }
-	  };
+	          if (this.requestLevels[currentLevelChecking][i][0] == 1) {
+	            // Running request
+	            continue;
+	          }
 
-	  PluginTimeSerieManager.prototype.setIntervalCheck = function (interval) {
-
-	    if (this.interval) {
-	      clearInterval(this.interval);
-	    }
-
-	    var self = this;
-
-	    this.interval = setInterval(function () {
-	      self.update(true, false);
-	    }, interval);
-	  };
-
-	  PluginTimeSerieManager.prototype.recalculateSerieUpwards = function (serie, downSlotId, downInterval, data, dataMinMax) {
-
-	    var intervals = this.options.intervals.slice(0);
-	    intervals.sort();
-
-	    var nextInterval = intervals[intervals.indexOf(downInterval) + 1] || -1;
-	    var lruData;
-	    if (nextInterval < 0) {
-	      return [];
-	    }
-
-	    var newSlotTime = this.computeSlotTime(downSlotId, downInterval);
-	    var newSlotTimeEnd = this.computeSlotTime(downSlotId + 1, downInterval);
-	    var newSlotId = this.computeSlotID(newSlotTime, nextInterval),
-	        start = false;
-
-	    if (lruData = LRU.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval))) {
-
-	      for (var i = 0, l = lruData.data.mean.length; i < l; i += 2) {
-
-	        if (lruData.data.mean[i] < newSlotTime) {
-	          continue;
-	        } else if (start === false) {
-	          start = i;
+	          requestToMake = this.requestLevels[currentLevelChecking][i];
+	          break;
 	        }
 
-	        if (lruData.data.mean[i] >= newSlotTimeEnd) {
+	        if (requestToMake) {
+	          break;
+	        }
 
-	          data = data.concat(lruData.data.mean.slice(start, i));
-	          dataMinMax = data.concat(lruData.data.minmax.slice(start, i));
+	        currentLevelChecking++;
 
+	        if (currentLevelChecking > 10) {
 	          return;
 	        }
 	      }
+
+	      this.requestsRunning++;
+
+	      if (!requestToMake) {
+	        return;
+	      }
+
+	      requestToMake[0] = 1;
+
+	      util.ajaxGet({
+
+	        url: this.getURL(requestToMake),
+	        method: 'GET',
+	        json: true
+
+	      }).done(function (data) {
+
+	        if (data.status == 1) {
+	          // Success
+
+	          self.requestsRunning--;
+
+	          delete self.requestLevels[currentLevelChecking][i];
+
+	          _graph4.default.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
+	          self.processRequests();
+
+	          if (requestToMake[5] == 1 && Object.keys(self.requestLevels[1]).length == 0) {
+
+	            self.recalculateSeries(true);
+	          }
+	        }
+	      });
 	    }
+	  }, {
+	    key: 'computeTimeMax',
+	    value: function computeTimeMax(slotId, interval) {
+	      return (slotId + 1) * (interval * this.options.nbPoints);
+	    }
+	  }, {
+	    key: 'computeTimeMin',
+	    value: function computeTimeMin(slotId, interval) {
+	      return slotId * (interval * this.options.nbPoints);
+	    }
+	  }, {
+	    key: 'getURL',
+	    value: function getURL(requestElements) {
 
-	    return this.recalculateSerieUpwards(serie, newSlotId, nextInterval, data, dataMinMax);
-	  };
+	      var url = this.options.url.replace("<measurementid>", requestElements[2]).replace('<from>', this.computeTimeMin(requestElements[3], requestElements[4])).replace('<to>', this.computeTimeMax(requestElements[3], requestElements[4])).replace('<interval>', requestElements[4]);
 
-	  PluginTimeSerieManager.prototype.lockRedraw = function () {
-	    this.locked = true;
-	  };
+	      var dbElements = requestElements[6] || {};
 
-	  PluginTimeSerieManager.prototype.unlockRedraw = function () {
-	    this.locked = false;
-	  };
+	      for (var i in dbElements) {
+	        url = url.replace("<" + i + ">", dbElements[i]);
+	      }
 
-	  PluginTimeSerieManager.prototype.isRedrawLocked = function () {
-	    return !!this.locked;
-	  };
+	      return url;
+	    }
+	  }, {
+	    key: 'getOptimalInterval',
+	    value: function getOptimalInterval(totalspan) {
+
+	      var optimalInterval = (this.options.optimalPxPerPoint || 1) * totalspan / this.graph.getDrawingWidth(),
+	          diff = Infinity,
+	          optimalIntervalAmongAvailable;
+
+	      this.options.intervals.forEach(function (interval) {
+
+	        var newDiff = Math.min(diff, Math.abs(interval - optimalInterval));
+	        if (diff !== newDiff) {
+
+	          optimalIntervalAmongAvailable = interval;
+	          diff = newDiff;
+	        }
+	      });
+
+	      return optimalIntervalAmongAvailable || 1000;
+	    }
+	  }, {
+	    key: 'computeUniqueID',
+	    value: function computeUniqueID(serie, slotId, interval) {
+	      var extra = "";
+	      var info = serie.getInfo('timeSerieManagerDBElements');
+	      for (var i in info) {
+	        extra += ";" + i + ":" + info[i];
+	      }
+
+	      return serie.getName() + ";" + slotId + ";" + interval + extra;
+	    }
+	  }, {
+	    key: 'computeSlotID',
+	    value: function computeSlotID(time, interval) {
+	      return Math.floor(time / (interval * this.options.nbPoints));
+	    }
+	  }, {
+	    key: 'computeSlotTime',
+	    value: function computeSlotTime(slotId, interval) {
+	      return slotId * (interval * this.options.nbPoints);
+	    }
+	  }, {
+	    key: 'getZoneSerie',
+	    value: function getZoneSerie(serie) {
+	      return serie._zoneSerie;
+	    }
+	  }, {
+	    key: 'updateZoneSerie',
+	    value: function updateZoneSerie(serieName) {
+
+	      var serie = this.graph.getSerie(serieName);
+
+	      if (!serie) {
+	        return;
+	      }
+
+	      if (!serie._zoneSerie) {
+	        return;
+	      }
+
+	      serie._zoneSerie.setXAxis(serie.getXAxis());
+	      serie._zoneSerie.setYAxis(serie.getYAxis());
+	      serie._zoneSerie.setFillColor(serie.getLineColor());
+	      serie._zoneSerie.setLineColor(serie.getLineColor());
+	      serie._zoneSerie.setFillOpacity(0.2);
+	      serie._zoneSerie.setLineOpacity(0.3);
+	    }
+	  }, {
+	    key: 'recalculateSeries',
+	    value: function recalculateSeries(force) {
+
+	      var self = this;
+
+	      if (this.locked) {
+	        return;
+	      }
+
+	      this.changed = false;
+
+	      this.series.map(function (serie) {
+	        self.recalculateSerie(serie, force);
+	      });
+
+	      /*if ( this.changed ) {
+	          self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
+	        }
+	      */
+	      this.changed = false;
+	      //self.graph.autoscaleAxes();
+
+	      self.graph.draw();
+	    }
+	  }, {
+	    key: 'recalculateSerie',
+	    value: function recalculateSerie(serie, force) {
+
+	      var from = serie.getXAxis().getCurrentMin(),
+	          to = serie.getXAxis().getCurrentMax(),
+	          interval = this.getOptimalInterval(to - from);
+
+	      var startSlotId = this.computeSlotID(from, interval);
+	      var endSlotId = this.computeSlotID(to, interval);
+
+	      var data = [];
+	      var dataMinMax = [];
+	      var lruData;
+
+	      if (!force && interval == this.currentSlots[serie.getName()].interval && this.currentSlots[serie.getName()].min <= startSlotId && this.currentSlots[serie.getName()].max >= endSlotId) {
+	        return;
+	      }
+
+	      startSlotId -= 2;
+	      endSlotId += 2;
+
+	      this.currentSlots[serie.getName()].min = startSlotId;
+	      this.currentSlots[serie.getName()].max = endSlotId;
+	      this.currentSlots[serie.getName()].interval = interval;
+
+	      var slotId = startSlotId;
+
+	      while (slotId <= endSlotId) {
+
+	        if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval))) {
+
+	          data = data.concat(lruData.data.mean);
+	          dataMinMax = dataMinMax.concat(lruData.data.minmax);
+	        } else {
+
+	          this.recalculateSerieUpwards(serie, slotId, interval, data, dataMinMax);
+	        }
+
+	        slotId++;
+	      }
+
+	      this.changed = true;
+
+	      serie.setData(data);
+
+	      if (serie._zoneSerie) {
+	        serie._zoneSerie.setData(dataMinMax);
+	      }
+	    }
+	  }, {
+	    key: 'setIntervalCheck',
+	    value: function setIntervalCheck(interval) {
+
+	      if (this.interval) {
+	        clearInterval(this.interval);
+	      }
+
+	      var self = this;
+
+	      this.interval = setInterval(function () {
+	        self.update(true, false);
+	      }, interval);
+	    }
+	  }, {
+	    key: 'recalculateSerieUpwards',
+	    value: function recalculateSerieUpwards(serie, downSlotId, downInterval, data, dataMinMax) {
+
+	      var intervals = this.options.intervals.slice(0);
+	      intervals.sort();
+
+	      var nextInterval = intervals[intervals.indexOf(downInterval) + 1] || -1;
+	      var lruData;
+	      if (nextInterval < 0) {
+	        return [];
+	      }
+
+	      var newSlotTime = this.computeSlotTime(downSlotId, downInterval);
+	      var newSlotTimeEnd = this.computeSlotTime(downSlotId + 1, downInterval);
+	      var newSlotId = this.computeSlotID(newSlotTime, nextInterval),
+	          start = false;
+
+	      if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval))) {
+
+	        for (var i = 0, l = lruData.data.mean.length; i < l; i += 2) {
+
+	          if (lruData.data.mean[i] < newSlotTime) {
+	            continue;
+	          } else if (start === false) {
+	            start = i;
+	          }
+
+	          if (lruData.data.mean[i] >= newSlotTimeEnd) {
+
+	            data = data.concat(lruData.data.mean.slice(start, i));
+	            dataMinMax = data.concat(lruData.data.minmax.slice(start, i));
+
+	            return;
+	          }
+	        }
+	      }
+
+	      return this.recalculateSerieUpwards(serie, newSlotId, nextInterval, data, dataMinMax);
+	    }
+	  }, {
+	    key: 'lockRedraw',
+	    value: function lockRedraw() {
+	      this.locked = true;
+	    }
+	  }, {
+	    key: 'unlockRedraw',
+	    value: function unlockRedraw() {
+	      this.locked = false;
+	    }
+	  }, {
+	    key: 'isRedrawLocked',
+	    value: function isRedrawLocked() {
+	      return !!this.locked;
+	    }
+	  }], [{
+	    key: 'defaults',
+	    value: function defaults() {
+
+	      return {
+
+	        LRUName: "PluginTimeSerieManager",
+	        intervals: [1000, 15000, 60000, 900000, 3600000, 8640000],
+	        maxParallelRequests: 3,
+	        optimalPxPerPoint: 2,
+	        nbPoints: 1000,
+	        url: ""
+	      };
+	    }
+	  }]);
 
 	  return PluginTimeSerieManager;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph6.default);
+
+	exports.default = PluginTimeSerieManager;
 
 /***/ },
 /* 39 */
@@ -24050,237 +24474,219 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  "use strict";
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  /**
-	   * @class PluginSerieLineDifference
-	   * @implements Plugin
-	   */
+	var _graph = __webpack_require__(34);
 
-	  var PluginSerieLineDifference = function PluginSerieLineDifference() {};
+	var _graph2 = _interopRequireDefault(_graph);
 
-	  PluginSerieLineDifference.prototype = new Plugin();
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	  PluginSerieLineDifference.prototype.defaults = {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	    positiveStyle: {
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	      fillColor: 'green',
-	      fillOpacity: 0.2,
-	      strokeWidth: 0
-	    },
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	    negativeStyle: {
-	      fillColor: 'red',
-	      fillOpacity: 0.2,
-	      strokeWidth: 0
-	    },
+	/**
+	 * @class PluginSerieLineDifference
+	 * @implements Plugin
+	 */
+	var PluginSerieLineDifference = function (_Plugin) {
+	  _inherits(PluginSerieLineDifference, _Plugin);
 
-	    from: 0,
-	    to: 0
-	  };
+	  function PluginSerieLineDifference() {
+	    _classCallCheck(this, PluginSerieLineDifference);
 
-	  /**
-	   * Init method
-	   * @private
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.init = function (graph, options) {
-	    this.graph = graph;
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginSerieLineDifference).apply(this, arguments));
+	  }
 
-	    this.pathsPositive = [];
-	    this.pathsNegative = [];
+	  _createClass(PluginSerieLineDifference, [{
+	    key: 'init',
 
-	    this.positivePolyline = this.graph.newShape('polyline').draw();
 
-	    this.positivePolyline.setFillColor(this.options.positiveStyle.fillColor).setFillOpacity(this.options.positiveStyle.fillOpacity).setStrokeWidth(this.options.positiveStyle.strokeWidth).applyStyle();
+	    /**
+	     * Init method
+	     * @private
+	     */
+	    value: function init(graph, options) {
+	      this.graph = graph;
 
-	    this.negativePolyline = this.graph.newShape('polyline').draw();
+	      this.pathsPositive = [];
+	      this.pathsNegative = [];
 
-	    this.negativePolyline.setFillColor(this.options.negativeStyle.fillColor).setFillOpacity(this.options.negativeStyle.fillOpacity).setStrokeWidth(this.options.negativeStyle.strokeWidth).applyStyle();
-	  };
+	      this.positivePolyline = this.graph.newShape('polyline').draw();
 
-	  /**
-	   * Assigns the two series for the shape. Postive values are defined when ```serieTop``` is higher than ```serieBottom```.
-	   * @param {SerieLine} serieTop - The top serie
-	   * @param {SerieLine} serieBottom - The bottom serie
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.setSeries = function (serieTop, serieBottom) {
-	    this.serie1 = serieTop;
-	    this.serie2 = serieBottom;
-	  };
+	      this.positivePolyline.setFillColor(this.options.positiveStyle.fillColor).setFillOpacity(this.options.positiveStyle.fillOpacity).setStrokeWidth(this.options.positiveStyle.strokeWidth).applyStyle();
 
-	  /**
-	   * Assigns the boundaries
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.setBoundaries = function (from, to) {
-	    this.options.from = from;
-	    this.options.to = to;
-	  };
+	      this.negativePolyline = this.graph.newShape('polyline').draw();
 
-	  /**
-	   * @returns the starting value used to draw the zone
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.getFrom = function () {
-	    return this.options.from;
-	  };
-
-	  /**
-	   * @returns the ending value used to draw the zone
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.getTo = function () {
-	    return this.options.to;
-	  };
-
-	  /**
-	   * Calculates and draws the zone series
-	   * @returns {Plugin} The current plugin instance
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.draw = function () {
-
-	    var self = this;
-	    var s1 = this.serie1.searchClosestValue(this.getFrom());
-	    var i1, j1, i2, j2, y, y2, crossing;
-
-	    var top = [];
-	    var bottom = [];
-
-	    var bottomBroken;
-
-	    if (!s1) {
-	      i1 = 0;
-	      j1 = 0;
-	    } else {
-
-	      i1 = s1.dataIndex;
-	      j1 = s1.xAfterIndex * 2;
+	      this.negativePolyline.setFillColor(this.options.negativeStyle.fillColor).setFillOpacity(this.options.negativeStyle.fillOpacity).setStrokeWidth(this.options.negativeStyle.strokeWidth).applyStyle();
 	    }
 
-	    y = this.interpolate(this.serie1, this.getFrom());
-	    top.push(this.getFrom()); // x 
-	    top.push(y); // y
+	    /**
+	     * Assigns the two series for the shape. Postive values are defined when ```serieTop``` is higher than ```serieBottom```.
+	     * @param {SerieLine} serieTop - The top serie
+	     * @param {SerieLine} serieBottom - The bottom serie
+	     */
 
-	    y = this.interpolate(this.serie2, this.getFrom());
-	    bottom.push(this.getFrom()); // x 
-	    bottom.push(y); // y
+	  }, {
+	    key: 'setSeries',
+	    value: function setSeries(serieTop, serieBottom) {
+	      this.serie1 = serieTop;
+	      this.serie2 = serieBottom;
+	    }
 
-	    var s2;
+	    /**
+	     * Assigns the boundaries
+	     */
 
-	    var order;
+	  }, {
+	    key: 'setBoundaries',
+	    value: function setBoundaries(from, to) {
+	      this.options.from = from;
+	      this.options.to = to;
+	    }
 
-	    function nextSet() {
+	    /**
+	     * @returns the starting value used to draw the zone
+	     */
 
-	      if (order === true) {
-	        self.pathsPositive.push([top, bottom]);
-	      } else if (order === false) {
-	        self.pathsNegative.push([top, bottom]);
+	  }, {
+	    key: 'getFrom',
+	    value: function getFrom() {
+	      return this.options.from;
+	    }
+
+	    /**
+	     * @returns the ending value used to draw the zone
+	     */
+
+	  }, {
+	    key: 'getTo',
+	    value: function getTo() {
+	      return this.options.to;
+	    }
+
+	    /**
+	     * Calculates and draws the zone series
+	     * @returns {Plugin} The current plugin instance
+	     */
+
+	  }, {
+	    key: 'draw',
+	    value: function draw() {
+
+	      var self = this;
+	      var s1 = this.serie1.searchClosestValue(this.getFrom());
+	      var i1, j1, i2, j2, y, y2, crossing;
+
+	      var top = [];
+	      var bottom = [];
+
+	      var bottomBroken;
+
+	      if (!s1) {
+	        i1 = 0;
+	        j1 = 0;
+	      } else {
+
+	        i1 = s1.dataIndex;
+	        j1 = s1.xAfterIndex * 2;
 	      }
 
-	      top = [];
-	      bottom = [];
-	      order = undefined;
-	    }
-	    var ended;
-	    for (; i1 < this.serie1.data.length; i1++) {
+	      y = this.interpolate(this.serie1, this.getFrom());
+	      top.push(this.getFrom()); // x 
+	      top.push(y); // y
 
-	      for (; j1 < this.serie1.data[i1].length; j1 += 2) {
+	      y = this.interpolate(this.serie2, this.getFrom());
+	      bottom.push(this.getFrom()); // x 
+	      bottom.push(y); // y
 
-	        if (this.serie1.data[i1][j1] > this.getTo()) {
-	          // FINISHED !
+	      var s2;
 
-	          y = this.interpolate(this.serie1, this.getTo());
-	          y2 = this.interpolate(this.serie2, this.getTo());
+	      var order;
 
-	          crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.getTo(), y, bottom[bottom.length - 2], bottom[bottom.length - 1], this.getTo(), y2);
+	      function nextSet() {
 
-	          if (crossing) {
-
-	            top.push(crossing.x);
-	            top.push(crossing.y);
-	            bottom.push(crossing.x);
-	            bottom.push(crossing.y);
-	            nextSet();
-	            top.push(crossing.x);
-	            top.push(crossing.y);
-	            bottom.push(crossing.x);
-	            bottom.push(crossing.y);
-
-	            order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-	          }
-
-	          top.push(this.getTo()); // x 
-	          top.push(y); // y
-
-	          bottom.push(this.getTo()); // x 
-	          bottom.push(y2); // y
-
-	          ended = true;
-	          break;
+	        if (order === true) {
+	          self.pathsPositive.push([top, bottom]);
+	        } else if (order === false) {
+	          self.pathsNegative.push([top, bottom]);
 	        }
 
-	        if (!s2) {
-	          s2 = this.serie2.searchClosestValue(this.serie1.data[i1][j1]); // Finds the first point
+	        top = [];
+	        bottom = [];
+	        order = undefined;
+	      }
+	      var ended;
+	      for (; i1 < this.serie1.data.length; i1++) {
 
-	          if (s2) {
-	            i2 = s2.dataIndex;
-	            j2 = s2.xBeforeIndex * 2;
+	        for (; j1 < this.serie1.data[i1].length; j1 += 2) {
 
-	            // TODO: Add here first points
+	          if (this.serie1.data[i1][j1] > this.getTo()) {
+	            // FINISHED !
 
-	            y = this.interpolate(this.serie2, this.serie1.data[i1][j1]);
+	            y = this.interpolate(this.serie1, this.getTo());
+	            y2 = this.interpolate(this.serie2, this.getTo());
 
-	            top.push(this.serie1.data[i1][j1]); // x 
-	            top.push(this.serie1.data[i1][j1 + 1]); // y
+	            crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.getTo(), y, bottom[bottom.length - 2], bottom[bottom.length - 1], this.getTo(), y2);
 
-	            bottom.push(this.serie1.data[i1][j1]); // x 
-	            bottom.push(y); // y
+	            if (crossing) {
 
-	            order = this.serie1.data[i1][j1 + 1] > y;
-	          } else {
-	            continue;
-	          }
-	        }
+	              top.push(crossing.x);
+	              top.push(crossing.y);
+	              bottom.push(crossing.x);
+	              bottom.push(crossing.y);
+	              nextSet();
+	              top.push(crossing.x);
+	              top.push(crossing.y);
+	              bottom.push(crossing.x);
+	              bottom.push(crossing.y);
 
-	        bottomBroken = false;
+	              order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
+	            }
 
-	        crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
+	            top.push(this.getTo()); // x 
+	            top.push(y); // y
 
-	        if (crossing) {
+	            bottom.push(this.getTo()); // x 
+	            bottom.push(y2); // y
 
-	          top.push(crossing.x);
-	          top.push(crossing.y);
-	          bottom.push(crossing.x);
-	          bottom.push(crossing.y);
-	          nextSet();
-	          top.push(crossing.x);
-	          top.push(crossing.y);
-	          bottom.push(crossing.x);
-	          bottom.push(crossing.y);
-
-	          order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
-	        }
-
-	        while (this.serie2.data[i2][j2] < this.serie1.data[i1][j1]) {
-
-	          bottom.push(this.serie2.data[i2][j2]);
-	          bottom.push(this.serie2.data[i2][j2 + 1]);
-
-	          j2 += 2;
-	          if (j2 == this.serie2.data[i2].length) {
-	            bottomBroken = this.serie2.data[i2][j2 - 2];
-	            i2++;
-	            j2 = 0;
+	            ended = true;
 	            break;
 	          }
+
+	          if (!s2) {
+	            s2 = this.serie2.searchClosestValue(this.serie1.data[i1][j1]); // Finds the first point
+
+	            if (s2) {
+	              i2 = s2.dataIndex;
+	              j2 = s2.xBeforeIndex * 2;
+
+	              // TODO: Add here first points
+
+	              y = this.interpolate(this.serie2, this.serie1.data[i1][j1]);
+
+	              top.push(this.serie1.data[i1][j1]); // x 
+	              top.push(this.serie1.data[i1][j1 + 1]); // y
+
+	              bottom.push(this.serie1.data[i1][j1]); // x 
+	              bottom.push(y); // y
+
+	              order = this.serie1.data[i1][j1 + 1] > y;
+	            } else {
+	              continue;
+	            }
+	          }
+
+	          bottomBroken = false;
 
 	          crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
 
@@ -24298,349 +24704,447 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
 	          }
+
+	          while (this.serie2.data[i2][j2] < this.serie1.data[i1][j1]) {
+
+	            bottom.push(this.serie2.data[i2][j2]);
+	            bottom.push(this.serie2.data[i2][j2 + 1]);
+
+	            j2 += 2;
+	            if (j2 == this.serie2.data[i2].length) {
+	              bottomBroken = this.serie2.data[i2][j2 - 2];
+	              i2++;
+	              j2 = 0;
+	              break;
+	            }
+
+	            crossing = this.computeCrossing(top[top.length - 2], top[top.length - 1], this.serie1.data[i1][j1], this.serie1.data[i1][j1 + 1], bottom[bottom.length - 2], bottom[bottom.length - 1], this.serie2.data[i2][j2], this.serie2.data[i2][j2 + 1]);
+
+	            if (crossing) {
+
+	              top.push(crossing.x);
+	              top.push(crossing.y);
+	              bottom.push(crossing.x);
+	              bottom.push(crossing.y);
+	              nextSet();
+	              top.push(crossing.x);
+	              top.push(crossing.y);
+	              bottom.push(crossing.x);
+	              bottom.push(crossing.y);
+
+	              order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
+	            }
+	          }
+
+	          if (bottomBroken === false) {
+	            top.push(this.serie1.data[i1][j1]);
+	            top.push(this.serie1.data[i1][j1 + 1]);
+	          } else {
+
+	            top.push(bottomBroken);
+	            top.push(this.interpolate(this.serie1, bottomBroken));
+
+	            s2 = false;
+	            j1 -= 2;
+	            nextSet();
+	          }
 	        }
 
-	        if (bottomBroken === false) {
-	          top.push(this.serie1.data[i1][j1]);
-	          top.push(this.serie1.data[i1][j1 + 1]);
-	        } else {
-
-	          top.push(bottomBroken);
-	          top.push(this.interpolate(this.serie1, bottomBroken));
-
-	          s2 = false;
-	          j1 -= 2;
+	        if (ended) {
 	          nextSet();
+	          break;
 	        }
-	      }
+	        // End of X
 
-	      if (ended) {
+	        if (y = this.interpolate(this.serie2, top[top.length - 2])) {
+	          bottom.push(top[top.length - 2]);
+	          bottom.push(y);
+	        }
+
 	        nextSet();
-	        break;
-	      }
-	      // End of X
 
-	      if (y = this.interpolate(this.serie2, top[top.length - 2])) {
-	        bottom.push(top[top.length - 2]);
-	        bottom.push(y);
+	        j1 = 0;
+	        s2 = false;
 	      }
 
-	      nextSet();
+	      var d = this.pathsPositive.reduce(makePaths, "");
+	      this.positivePolyline.setPointsPx(d).redraw();
 
-	      j1 = 0;
-	      s2 = false;
-	    };
+	      var d = this.pathsNegative.reduce(makePaths, "");
+	      this.negativePolyline.setPointsPx(d).redraw();
 
-	    var d = this.pathsPositive.reduce(makePaths, "");
-	    console.log(d);
-	    this.positivePolyline.setPointsPx(d).redraw();
+	      //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
 
-	    var d = this.pathsNegative.reduce(makePaths, "");
-	    this.negativePolyline.setPointsPx(d).redraw();
+	      function makePaths(d, path) {
 
-	    //pathsBottom.map( function( map ) { makePaths( map, self.options.negativeStyle ); } );
-
-	    function makePaths(d, path) {
-
-	      for (var i = 0; i < path[0].length; i += 2) {
-	        if (i == 0) {
-	          d += "M ";
+	        for (var i = 0; i < path[0].length; i += 2) {
+	          if (i == 0) {
+	            d += "M ";
+	          }
+	          d += " " + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ", " + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
+	          if (i < path[0].length - 2) {
+	            d += " L ";
+	          }
 	        }
-	        d += " " + Math.round(self.serie1.getXAxis().getPx(path[0][i])) + ", " + Math.round(self.serie1.getYAxis().getPx(path[0][i + 1]));
-	        if (i < path[0].length - 2) {
-	          d += " L ";
+
+	        for (var i = path[1].length - 2; i >= 0; i -= 2) {
+	          d += " L " + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ", " + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
+	          if (i == 0) {
+	            d += " z ";
+	          }
 	        }
+	        return d;
+	      }
+	    }
+
+	    /**
+	     * Finds the interpolated y value at point ```valX``` of the serie ```serie```
+	     * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
+	     * @param {Serie} serie - The serie for which the y value should be computed
+	     * @param {Number} valX - The x value
+	     */
+
+	  }, {
+	    key: 'interpolate',
+	    value: function interpolate(serie, valX) {
+
+	      var value = serie.searchClosestValue(valX);
+
+	      if (!value) {
+	        return false;
 	      }
 
-	      for (var i = path[1].length - 2; i >= 0; i -= 2) {
-	        d += " L " + Math.round(self.serie2.getXAxis().getPx(path[1][i])) + ", " + Math.round(self.serie2.getYAxis().getPx(path[1][i + 1]));
-	        if (i == 0) {
-	          d += " z ";
-	        }
+	      if (value.xMax == undefined) {
+	        return value.yMin;
 	      }
-	      return d;
-	    }
-	  };
 
-	  /**
-	   * Finds the interpolated y value at point ```valX``` of the serie ```serie```
-	   * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
-	   * @param {Serie} serie - The serie for which the y value should be computed
-	   * @param {Number} valX - The x value
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.interpolate = function (serie, valX) {
+	      if (value.xMin == undefined) {
+	        return value.yMax;
+	      }
 
-	    var value = serie.searchClosestValue(valX);
-
-	    if (!value) {
-	      return false;
+	      var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
+	      return (1 - ratio) * value.yMin + ratio * value.yMax;
 	    }
 
-	    if (value.xMax == undefined) {
-	      return value.yMin;
-	    }
+	    /**
+	     * Finds the crossing point between two vector and returns it, or ```false``` if it is not within the x boundaries
+	     * @returns {(Object|Boolean)} An object containing the crossing point in the following format: ```{ x: xCrossing, y: yCrossing }``` or ```false``` if no crossing point can be found
+	     * @param {Number} x11 - First x point of the first vector
+	     * @param {Number} y11 - First y point of the first vector
+	     * @param {Number} x12 - Second x point of the first vector
+	     * @param {Number} y12 - Second y point of the first vector
+	     * @param {Number} x21 - First x point of the second vector
+	     * @param {Number} y21 - First y point of the second vector
+	     * @param {Number} y22 - Second x point of the second vector
+	     * @param {Number} y22 - Second y point of the second vector
+	     */
 
-	    if (value.xMin == undefined) {
-	      return value.yMax;
-	    }
+	  }, {
+	    key: 'computeCrossing',
+	    value: function computeCrossing(x11, y11, x12, y12, x21, y21, x22, y22) {
+	      var a1 = (y12 - y11) / (x12 - x11);
+	      var a2 = (y22 - y21) / (x22 - x21);
 
-	    var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-	    return (1 - ratio) * value.yMin + ratio * value.yMax;
-	  };
+	      var b1 = y12 - a1 * x12;
+	      var b2 = y22 - a2 * x22;
 
-	  /**
-	   * Finds the crossing point between two vector and returns it, or ```false``` if it is not within the x boundaries
-	   * @returns {(Object|Boolean)} An object containing the crossing point in the following format: ```{ x: xCrossing, y: yCrossing }``` or ```false``` if no crossing point can be found
-	   * @param {Number} x11 - First x point of the first vector
-	   * @param {Number} y11 - First y point of the first vector
-	   * @param {Number} x12 - Second x point of the first vector
-	   * @param {Number} y12 - Second y point of the first vector
-	   * @param {Number} x21 - First x point of the second vector
-	   * @param {Number} y21 - First y point of the second vector
-	   * @param {Number} y22 - Second x point of the second vector
-	   * @param {Number} y22 - Second y point of the second vector
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.computeCrossing = function (x11, y11, x12, y12, x21, y21, x22, y22) {
-	    var a1 = (y12 - y11) / (x12 - x11);
-	    var a2 = (y22 - y21) / (x22 - x21);
+	      if (x11 == x12 || x21 == x22) {
 
-	    var b1 = y12 - a1 * x12;
-	    var b2 = y22 - a2 * x22;
+	        return false;
+	      }
 
-	    if (x11 == x12 || x21 == x22) {
+	      if (a1 == a2) {
+	        return {
+	          x: x11,
+	          y1: y11,
+	          y2: y11
+	        };
+	      }
 
-	      return false;
-	    }
+	      var x = (b1 - b2) / (a2 - a1);
 
-	    if (a1 == a2) {
+	      if (x > x12 || x < x11 || x < x21 || x > x22) {
+	        return false;
+	      }
+
 	      return {
-	        x: x11,
-	        y1: y11,
-	        y2: y11
+	        x: x,
+	        y: a1 * x + b1
 	      };
 	    }
 
-	    var x = (b1 - b2) / (a2 - a1);
+	    /**
+	     * @returns The positive polyline
+	     */
 
-	    if (x > x12 || x < x11 || x < x21 || x > x22) {
-	      return false;
+	  }, {
+	    key: 'getPositivePolyline',
+	    value: function getPositivePolyline() {
+	      return this.positivePolyline;
 	    }
 
-	    return {
-	      x: x,
-	      y: a1 * x + b1
-	    };
-	  };
+	    /**
+	     * @returns The negative polyline
+	     */
 
-	  /**
-	   * @returns The positive polyline
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.getPositivePolyline = function () {
-	    return this.positivePolyline;
-	  };
+	  }, {
+	    key: 'getNegativePolyline',
+	    value: function getNegativePolyline() {
+	      return this.negativePolyline;
+	    }
+	  }], [{
+	    key: 'defaults',
+	    value: function defaults() {
+	      return {
 
-	  /**
-	   * @returns The negative polyline
-	   * @memberof PluginSerieLineDifference
-	   */
-	  PluginSerieLineDifference.prototype.getNegativePolyline = function () {
-	    return this.negativePolyline;
-	  };
+	        positiveStyle: {
+
+	          fillColor: 'green',
+	          fillOpacity: 0.2,
+	          strokeWidth: 0
+	        },
+
+	        negativeStyle: {
+	          fillColor: 'red',
+	          fillOpacity: 0.2,
+	          strokeWidth: 0
+	        },
+
+	        from: 0,
+	        to: 0
+	      };
+	    }
+	  }]);
 
 	  return PluginSerieLineDifference;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph2.default);
+
+	exports.default = PluginSerieLineDifference;
 
 /***/ },
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;"use strict";
+	"use strict";
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34)], __WEBPACK_AMD_DEFINE_RESULT__ = function (Plugin) {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
-	  /** 
-	   * Constructor for the drag plugin. Do not use this constructor directly.
-	   * @class PluginDrag
-	   * @implements Plugin
-	   */
-	  var PluginDrag = function PluginDrag() {};
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	  PluginDrag.prototype = new Plugin();
+	var _graph = __webpack_require__(34);
 
-	  PluginDrag.prototype.defaults = {
+	var _graph2 = _interopRequireDefault(_graph);
 
-	    dragX: true,
-	    dragY: true,
-	    persistanceX: false,
-	    persistanceY: false
-	  };
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	  /**
-	   * @memberof PluginDrag
-	   * @private
-	   */
-	  PluginDrag.prototype.init = function (graph) {
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	    this.graph = graph;
-	    this.time = null;
-	    this.totaltime = 2000;
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	    // x = ( 1 / 2 a t^2 + v0 * t * x0 );
-	  };
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	  /**
-	   * @memberof PluginDrag
-	   * @private
-	   */
-	  PluginDrag.prototype.onMouseDown = function (graph, x, y, e, target) {
-	    this._draggingX = x;
-	    this._draggingY = y;
+	/** 
+	 * Constructor for the drag plugin. Do not use this constructor directly.
+	 * @class PluginDrag
+	 * @implements Plugin
+	 */
+	var PluginDrag = function (_Plugin) {
+	  _inherits(PluginDrag, _Plugin);
 
-	    this._lastDraggingX = this._draggingX;
-	    this._lastDraggingY = this._draggingY;
+	  function PluginDrag() {
+	    _classCallCheck(this, PluginDrag);
 
-	    this.stopAnimation = true;
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginDrag).apply(this, arguments));
+	  }
 
-	    this.moved = false;
+	  _createClass(PluginDrag, [{
+	    key: "init",
 
-	    return true;
-	  };
 
-	  /**
-	   * @memberof PluginDrag
-	   * @private
-	   */
-	  PluginDrag.prototype.onMouseMove = function (graph, x, y, e, target) {
+	    /**
+	     * @private
+	     */
+	    value: function init(graph) {
 
-	    var deltaX = x - this._draggingX;
-	    var deltaY = y - this._draggingY;
-
-	    if (this.options.dragX) {
-	      graph._applyToAxes(function (axis) {
-	        axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
-	        axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
-	      }, false, true, false);
+	      this.graph = graph;
+	      this.time = null;
+	      this.totaltime = 2000;
 	    }
 
-	    if (this.options.dragY) {
+	    /**
+	     * @private
+	     */
 
-	      graph._applyToAxes(function (axis) {
-	        axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
-	        axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
-	      }, false, false, true);
+	  }, {
+	    key: "onMouseDown",
+	    value: function onMouseDown(graph, x, y, e, target) {
+	      this._draggingX = x;
+	      this._draggingY = y;
+
+	      this._lastDraggingX = this._draggingX;
+	      this._lastDraggingY = this._draggingY;
+
+	      this.stopAnimation = true;
+
+	      this.moved = false;
+
+	      return true;
 	    }
 
-	    this._lastDraggingX = this._draggingX;
-	    this._lastDraggingY = this._draggingY;
+	    /**
+	     * @memberof PluginDrag
+	     * @private
+	     */
 
-	    this._draggingX = x;
-	    this._draggingY = y;
+	  }, {
+	    key: "onMouseMove",
+	    value: function onMouseMove(graph, x, y, e, target) {
 
-	    this.moved = true;
+	      var deltaX = x - this._draggingX;
+	      var deltaY = y - this._draggingY;
 
-	    this.time = Date.now();
-
-	    this.emit("dragging");
-
-	    graph.draw(true);
-	  };
-
-	  PluginDrag.prototype.onMouseUp = function (graph, x, y, e, target) {
-
-	    var dt = Date.now() - this.time;
-
-	    if (x == this._lastDraggingX || y == this._lastDraggingY) {
-
-	      if (this.moved) {
-	        this.emit("dragged");
-	      }
-
-	      return;
-	    }
-
-	    this.speedX = (x - this._lastDraggingX) / dt;
-	    this.speedY = (y - this._lastDraggingY) / dt;
-
-	    if (isNaN(this.speedX) || isNaN(this.speedY)) {
-	      this.emit("dragged");
-	      return;
-	    }
-
-	    graph._applyToAxes(function (axis) {
-	      axis._pluginDragMin = axis.getCurrentMin();
-	      axis._pluginDragMax = axis.getCurrentMax();
-	    }, false, true, true);
-
-	    this.stopAnimation = false;
-	    this.accelerationX = -this.speedX / this.totaltime;
-	    this.accelerationY = -this.speedY / this.totaltime;
-
-	    if (this.options.persistanceX || this.options.persistanceY) {
-
-	      this._persistanceMove(graph);
-	    } else {
-
-	      this.emit("dragged");
-	    }
-	  };
-
-	  PluginDrag.prototype._persistanceMove = function (graph) {
-
-	    var self = this;
-
-	    if (self.stopAnimation) {
-	      self.emit("dragged");
-	      return;
-	    }
-
-	    window.requestAnimationFrame(function () {
-
-	      var dt = Date.now() - self.time;
-	      var dx = (0.5 * self.accelerationX * dt + self.speedX) * dt;
-	      var dy = (0.5 * self.accelerationY * dt + self.speedY) * dt;
-
-	      if (self.options.persistanceX) {
-
+	      if (this.options.dragX) {
 	        graph._applyToAxes(function (axis) {
-
-	          axis.setCurrentMin(-axis.getRelVal(dx) + axis._pluginDragMin);
-	          axis.setCurrentMax(-axis.getRelVal(dx) + axis._pluginDragMax);
-
-	          axis.cacheCurrentMin();
-	          axis.cacheCurrentMax();
-	          axis.cacheInterval();
+	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
+	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
 	        }, false, true, false);
 	      }
 
-	      if (self.options.persistanceY) {
+	      if (this.options.dragY) {
 
 	        graph._applyToAxes(function (axis) {
-
-	          axis.setCurrentMin(-axis.getRelVal(dy) + axis._pluginDragMin);
-	          axis.setCurrentMax(-axis.getRelVal(dy) + axis._pluginDragMax);
-
-	          axis.cacheCurrentMin();
-	          axis.cacheCurrentMax();
-	          axis.cacheInterval();
+	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
+	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
 	        }, false, false, true);
 	      }
 
-	      graph.draw();
+	      this._lastDraggingX = this._draggingX;
+	      this._lastDraggingY = this._draggingY;
 
-	      if (dt < self.totaltime) {
-	        self.emit("dragging");
-	        self._persistanceMove(graph);
-	      } else {
-	        self.emit("dragged");
+	      this._draggingX = x;
+	      this._draggingY = y;
+
+	      this.moved = true;
+
+	      this.time = Date.now();
+
+	      this.emit("dragging");
+
+	      graph.draw(true);
+	    }
+	  }, {
+	    key: "onMouseUp",
+	    value: function onMouseUp(graph, x, y, e, target) {
+
+	      var dt = Date.now() - this.time;
+
+	      if (x == this._lastDraggingX || y == this._lastDraggingY) {
+
+	        if (this.moved) {
+	          this.emit("dragged");
+	        }
+
+	        return;
 	      }
-	    });
-	  };
+
+	      this.speedX = (x - this._lastDraggingX) / dt;
+	      this.speedY = (y - this._lastDraggingY) / dt;
+
+	      if (isNaN(this.speedX) || isNaN(this.speedY)) {
+	        this.emit("dragged");
+	        return;
+	      }
+
+	      graph._applyToAxes(function (axis) {
+	        axis._pluginDragMin = axis.getCurrentMin();
+	        axis._pluginDragMax = axis.getCurrentMax();
+	      }, false, true, true);
+
+	      this.stopAnimation = false;
+	      this.accelerationX = -this.speedX / this.totaltime;
+	      this.accelerationY = -this.speedY / this.totaltime;
+
+	      if (this.options.persistanceX || this.options.persistanceY) {
+
+	        this._persistanceMove(graph);
+	      } else {
+
+	        this.emit("dragged");
+	      }
+	    }
+	  }, {
+	    key: "_persistanceMove",
+	    value: function _persistanceMove(graph) {
+
+	      var self = this;
+
+	      if (self.stopAnimation) {
+	        self.emit("dragged");
+	        return;
+	      }
+
+	      window.requestAnimationFrame(function () {
+
+	        var dt = Date.now() - self.time;
+	        var dx = (0.5 * self.accelerationX * dt + self.speedX) * dt;
+	        var dy = (0.5 * self.accelerationY * dt + self.speedY) * dt;
+
+	        if (self.options.persistanceX) {
+
+	          graph._applyToAxes(function (axis) {
+
+	            axis.setCurrentMin(-axis.getRelVal(dx) + axis._pluginDragMin);
+	            axis.setCurrentMax(-axis.getRelVal(dx) + axis._pluginDragMax);
+
+	            axis.cacheCurrentMin();
+	            axis.cacheCurrentMax();
+	            axis.cacheInterval();
+	          }, false, true, false);
+	        }
+
+	        if (self.options.persistanceY) {
+
+	          graph._applyToAxes(function (axis) {
+
+	            axis.setCurrentMin(-axis.getRelVal(dy) + axis._pluginDragMin);
+	            axis.setCurrentMax(-axis.getRelVal(dy) + axis._pluginDragMax);
+
+	            axis.cacheCurrentMin();
+	            axis.cacheCurrentMax();
+	            axis.cacheInterval();
+	          }, false, false, true);
+	        }
+
+	        graph.draw();
+
+	        if (dt < self.totaltime) {
+	          self.emit("dragging");
+	          self._persistanceMove(graph);
+	        } else {
+	          self.emit("dragged");
+	        }
+	      });
+	    }
+	  }], [{
+	    key: "defaults",
+	    value: function defaults() {
+	      return {
+
+	        dragX: true,
+	        dragY: true,
+	        persistanceX: false,
+	        persistanceY: false
+
+	      };
+	    }
+	  }]);
 
 	  return PluginDrag;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	}(_graph2.default);
+
+	exports.default = PluginDrag;
 
 /***/ }
 /******/ ])

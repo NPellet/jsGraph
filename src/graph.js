@@ -28,88 +28,73 @@ import ShapeRect from './shapes/graph.shape.rect'
 import ShapeCross from './shapes/graph.shape.cross'
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter'
 
+import GraphPlugin from './plugins/graph.plugin'
+import GraphPluginDrag from './plugins/graph.plugin.drag'
+import GraphPluginShape from './plugins/graph.plugin.shape'
+import GraphPluginSelectScatter from './plugins/graph.plugin.selectScatter'
+import GraphPluginZoom from './plugins/graph.plugin.zoom'
+import GraphPluginTimeSerieManager from './plugins/graph.plugin.timeseriemanager'
+import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinedifference'
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting'
 
-define( [
-    './plugins/graph.plugin',
-    './plugins/graph.plugin.drag',
-    './plugins/graph.plugin.shape',
-    './plugins/graph.plugin.selectScatter',
-    './plugins/graph.plugin.zoom',
-    './plugins/graph.plugin.timeseriemanager',
-    './plugins/graph.plugin.serielinedifference'
-    // './graph.toolbar'
-  ],
 
-  function(
-    GraphPlugin,
-    GraphPluginDrag,
-    GraphPluginShape,
-    GraphPluginSelectScatter,
-    GraphPluginZoom,
-    GraphPluginTimeSerieManager,
-    GraphPluginSerieLineDifference,
-    //  GraphToolbar
-  ) {
+// Corrent naming is important here !
 
-    // Corrent naming is important here !
+Graph.registerConstructor( "graph.position", GraphPosition );
 
-    Graph.registerConstructor( "graph.position", GraphPosition );
+Graph.registerConstructor( "graph.axis.x", AxisX );
+Graph.registerConstructor( "graph.axis.y", AxisY );
+Graph.registerConstructor( "graph.axis.x.bar", AxisXBar );
+Graph.registerConstructor( "graph.axis.x.time", AxisXTime );
 
-    Graph.registerConstructor( "graph.axis.x", AxisX );
-    Graph.registerConstructor( "graph.axis.y", AxisY );
-    Graph.registerConstructor( "graph.axis.x.bar", AxisXBar );
-    Graph.registerConstructor( "graph.axis.x.time", AxisXTime );
-
-    Graph.registerConstructor( "graph.serie.line", SerieLine );
-    Graph.registerConstructor( "graph.serie.line.color", SerieLineColor );
-    Graph.registerConstructor( "graph.serie.contour", SerieContour );
-    Graph.registerConstructor( "graph.serie.bar", SerieBar );
-    Graph.registerConstructor( "graph.serie.scatter", SerieScatter );
-    Graph.registerConstructor( "graph.serie.zone", SerieZone );
-    Graph.registerConstructor( "graph.serie.densitymap", SerieDensityMap );
+Graph.registerConstructor( "graph.serie.line", SerieLine );
+Graph.registerConstructor( "graph.serie.line.color", SerieLineColor );
+Graph.registerConstructor( "graph.serie.contour", SerieContour );
+Graph.registerConstructor( "graph.serie.bar", SerieBar );
+Graph.registerConstructor( "graph.serie.scatter", SerieScatter );
+Graph.registerConstructor( "graph.serie.zone", SerieZone );
+Graph.registerConstructor( "graph.serie.densitymap", SerieDensityMap );
 
 
-    Graph.registerConstructor( Graph.SERIE_LINE, SerieLine );
-    Graph.registerConstructor( Graph.SERIE_LINE_COLORED, SerieLineColor );
-    Graph.registerConstructor( Graph.SERIE_CONTOUR, SerieContour );
-    Graph.registerConstructor( Graph.SERIE_BAR, SerieBar );
-    Graph.registerConstructor( Graph.SERIE_SCATTER, SerieScatter );
-    Graph.registerConstructor( Graph.SERIE_ZONE, SerieZone );
-    Graph.registerConstructor( Graph.SERIE_DENSITYMAP, SerieDensityMap );
+Graph.registerConstructor( Graph.SERIE_LINE, SerieLine );
+Graph.registerConstructor( Graph.SERIE_LINE_COLORED, SerieLineColor );
+Graph.registerConstructor( Graph.SERIE_CONTOUR, SerieContour );
+Graph.registerConstructor( Graph.SERIE_BAR, SerieBar );
+Graph.registerConstructor( Graph.SERIE_SCATTER, SerieScatter );
+Graph.registerConstructor( Graph.SERIE_ZONE, SerieZone );
+Graph.registerConstructor( Graph.SERIE_DENSITYMAP, SerieDensityMap );
 
 
-    //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
+//Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
-    Graph.registerConstructor( "graph.plugin.shape", GraphPluginShape );
-    Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
-    Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
-    Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
-    Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
-    Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
-    Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
-    Graph.registerConstructor( "graph.plugin.axissplitting", GraphPluginAxisSplitting );
+Graph.registerConstructor( "graph.plugin.shape", GraphPluginShape );
+Graph.registerConstructor( "graph.plugin.drag", GraphPluginDrag );
+Graph.registerConstructor( "graph.plugin.zoom", GraphPluginZoom );
+Graph.registerConstructor( "graph.plugin.selectScatter", GraphPluginSelectScatter );
+Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerieManager );
+Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
+Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
+Graph.registerConstructor( "graph.plugin.axissplitting", GraphPluginAxisSplitting );
 
-    Graph.registerConstructor( "graph.shape", Shape );
-    Graph.registerConstructor( "graph.shape.areaundercurve", ShapeAreaUnderCurve );
-    Graph.registerConstructor( "graph.shape.arrow", ShapeArrow );
-    Graph.registerConstructor( "graph.shape.ellipse", ShapeEllipse );
-    Graph.registerConstructor( "graph.shape.label", ShapeLabel );
-    Graph.registerConstructor( "graph.shape.polyline", ShapePolyline );
-    Graph.registerConstructor( "graph.shape.line", ShapeLine );
-    Graph.registerConstructor( "graph.shape.nmrintegral", ShapeNMRIntegral );
-    Graph.registerConstructor( "graph.shape.peakintegration2d", ShapePeakIntegration2D );
-    //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
-    //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
-    //  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
-    Graph.registerConstructor( "graph.shape.rect", ShapeRect );
-    Graph.registerConstructor( "graph.shape.rectangle", ShapeRect );
-    Graph.registerConstructor( "graph.shape.cross", ShapeCross );
-    //Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
-    Graph.registerConstructor( "graph.shape.peakboundariescenter", ShapePeakBoundariesCenter );
+Graph.registerConstructor( "graph.shape", Shape );
+Graph.registerConstructor( "graph.shape.areaundercurve", ShapeAreaUnderCurve );
+Graph.registerConstructor( "graph.shape.arrow", ShapeArrow );
+Graph.registerConstructor( "graph.shape.ellipse", ShapeEllipse );
+Graph.registerConstructor( "graph.shape.label", ShapeLabel );
+Graph.registerConstructor( "graph.shape.polyline", ShapePolyline );
+Graph.registerConstructor( "graph.shape.line", ShapeLine );
+Graph.registerConstructor( "graph.shape.nmrintegral", ShapeNMRIntegral );
+Graph.registerConstructor( "graph.shape.peakintegration2d", ShapePeakIntegration2D );
+//  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
+//  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
+//  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
+Graph.registerConstructor( "graph.shape.rect", ShapeRect );
+Graph.registerConstructor( "graph.shape.rectangle", ShapeRect );
+Graph.registerConstructor( "graph.shape.cross", ShapeCross );
+//Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
+Graph.registerConstructor( "graph.shape.peakboundariescenter", ShapePeakBoundariesCenter );
 
-    //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
-    Graph.registerConstructor( "graph.legend", GraphLegend );
+//   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
+Graph.registerConstructor( "graph.legend", GraphLegend );
 
-    return Graph;
-  } );
+export default Graph;

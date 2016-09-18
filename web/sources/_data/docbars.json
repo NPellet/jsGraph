@@ -1,24 +1,18 @@
 {
 	"Axis": [
 		{
-			"title": "X",
-			"url": "AxisX"
-		},
-		{
-			"title": "XBar",
-			"url": "AxisXBar"
-		},
-		{
-			"title": "Y",
-			"url": "AxisY"
+			"title": "Plugin",
+			"url": "PluginAxisSplitting"
 		}
 	],
 	"Core": [],
-	"GraphCross": [],
 	"GraphPosition": [],
-	"GraphSurfaceUnderCurve": [],
 	"Legend": [],
 	"Plugin": [
+		{
+			"title": "AxisSplitting",
+			"url": "PluginAxisSplitting"
+		},
 		{
 			"title": "Drag",
 			"url": "PluginDrag"
@@ -100,8 +94,8 @@
 			"url": "ShapePeakBoundaries"
 		},
 		{
-			"title": "PolyLine",
-			"url": "ShapePolyLine"
+			"title": "Polyline",
+			"url": "ShapePolyline"
 		},
 		{
 			"title": "Rectangle",

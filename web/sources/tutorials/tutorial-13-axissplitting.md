@@ -105,7 +105,7 @@ We will see a bit later what happens with more than one cut.
 Now, we have to define the boundaries of the two chunks of axes. The easy way to do it is to specify the values for all chunks. Here, we basically make a zoom on the 12-14° region, while on the other 80% of the graph width, we will display the full spectrum:
 
 {% highlight javascript %}
-bottom.splitValues( [ [ 12, 14 ], [ 10, 80 ] ] );
+bottom.setChunkBoundaries( [ [ 12, 14 ], [ 10, 80 ] ] );
 {%endhighlight%}
 
 
@@ -147,7 +147,7 @@ var bottom = graph
 graph.setBottomAxis( bottom, 0 );
 bottom.init( graph, {} ); // The axis needs initialization. DO NOT FORGET
 bottom.splitAxis( 0.2 ); // Splits the axis at 20% of the width
-bottom.splitValues( [ [ 11, 16 ], [ 10, 80 ] ] );
+bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
 
 serie
 	.autoAxis()
@@ -178,7 +178,7 @@ function makeGraph( dom ) {
 
 	bottom.init( g, {} ); // The axis needs initialization. DO NOT FORGET
 	bottom.splitAxis( 0.2 ); // Splits the axis at 20% of the width
-	bottom.splitValues( [ [ 11, 16 ], [ 10, 80 ] ] );
+	bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
 
 	var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 
@@ -278,9 +278,19 @@ makeGraph2( 'example-5' );
 </script>
 
 
+
+
+
+
+
+
 ### <a id="going-further"></a>Going further
 
+
+
 #### <a id="going-further"></a>Setting mean values
+
+
 
 However, you can do more with the axis splittings. For example, the ```setChunksBoundaries``` method can take a slightly different format. Before, we were using an array of arrays, each containing two elements, i.e. the start and the end of the chunk. It looked like ```[ [ from1, to1 ], [ from2, to2 ] ]```. But if, instead of using an array, you use a single value, it will be treated as the middle point of the chunk ```[ middle1, [ from2, to2 ] ]```. The full span of the chunk is calculated on the fly upon redraw based on the relative widths of the chunk with the reference chunk (the one containing two elements). 
 * The reference chunk is the first one in the list containing an array of 2 elements
@@ -291,7 +301,7 @@ Here's an example to explain this perhaps better:
 <div id="example-6" class="jsgraph-example"></div>
 <script>
 var re = makeGraph2( 'example-6' );
-re.bottom.splitValues( [ 14, [ 10, 80 ] ] );
+re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
 re.g.draw();
 </script>
 
@@ -307,7 +317,7 @@ Using ```bottom.fixGridIntervalBasedOnAxis( 0 );``` we would get:
 <div id="example-3" class="jsgraph-example"></div>
 <script>
 	var re = makeGraph2( 'example-3' );
-	re.bottom.splitValues( [ 14, [ 10, 80 ] ] );
+	re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
 	re.bottom.fixGridIntervalBasedOnAxis( 0 );
 	re.g.draw();
 </script>
@@ -320,7 +330,7 @@ Using ```bottom.fixGridIntervalBasedOnAxis( 1 );``` we would get:
 <script>
 
 	var re = makeGraph2( "example-4" );
-	re.bottom.splitValues( [ 14, [ 10, 80 ] ] );
+	re.bottom.setChunkBoundaries( [ 14, [ 10, 80 ] ] );
 	re.bottom.fixGridIntervalBasedOnAxis( 1 );
 	re.g.draw();
 
@@ -328,11 +338,11 @@ Using ```bottom.fixGridIntervalBasedOnAxis( 1 );``` we would get:
 
 #### <a id="chunk-spreading"></a>Chunk spreading
 
-Chunk spreading is basically the opposite of setting the mean values, where the boundaries were calculated from the width of each chunk. Here, on the contrary, the width of each chunk is calculated from the relative widths set from the ```splitValues``` method. Note that in this case, setting mean is allowed.
+Chunk spreading is basically the opposite of setting the mean values, where the boundaries were calculated from the width of each chunk. Here, on the contrary, the width of each chunk is calculated from the relative widths set from the ```setChunkBoundaries``` method. Note that in this case, setting mean is not allowed.
 To enable the spread behaviour, call ```axis.splitSpread( true )``` at any time before a redraw. Using our previous examples, we could write
 
 {% highlight javascript %}
-bottom.splitValues( [ [ 11, 16 ], [ 20, 30 ] ] );
+bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 30 ] ] );
 bottom.splitSpread( true );
 graph.draw();
 {%endhighlight%}
@@ -342,7 +352,7 @@ graph.draw();
 <script>
 
 	var re = makeGraph2( "example-7" );
-	re.bottom.splitValues( [ [ 11, 16 ], [ 20, 30 ] ] );
+	re.bottom.setChunkBoundaries( [ [ 11, 16 ], [ 20, 25 ] ] );
 	re.bottom.splitSpread( true );
 	re.g.draw();
 

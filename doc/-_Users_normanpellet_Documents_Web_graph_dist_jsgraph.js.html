@@ -22558,8 +22558,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.splitAxis.apply(this, splits);
 	      }
 	    }, {
-	      key: "splitValues",
-	      value: function splitValues(values) {
+	      key: "setChunkBoundaries",
+	      value: function setChunkBoundaries(values) {
 
 	        var index = 0,
 	            baseWidth = void 0,
@@ -22624,7 +22624,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          this._splitVal[0][0] = this.getCurrentMin();
 	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
-	          this.splitValues(this._splitVal);
+	          this.setChunkBoundaries(this._splitVal);
 	        }
 	      }
 	    }, {

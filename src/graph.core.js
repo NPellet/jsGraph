@@ -2315,9 +2315,14 @@ class Graph extends EventEmitter {
    * @see Graph.registerConstructor
    * @static
    */
-  static getConstructor( constructorName ) {
+  static getConstructor( constructorName, softFail ) {
     
     if ( !_constructors.has( constructorName ) ) {
+
+      if( softFail ) {
+        return false;
+      }
+
       return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
     }
 
@@ -2330,7 +2335,10 @@ Graph.prototype.getConstructor = Graph.getConstructor;
 
 function makeSerie( graph, name, options, type ) {
 
-  var constructor = graph.getConstructor( type );
+  var constructor = graph.getConstructor( type, true );
+  if( ! constructor && typeof type == "string" ) {
+    constructor = graph.getConstructor( "graph.serie." + type, true );
+  }
   if ( constructor ) {
 
     var serie = new constructor();
@@ -3141,17 +3149,17 @@ function haveAxesChanged( graph ) {
 
 
 // Constants
-Graph.SERIE_LINE = {};
-Graph.SERIE_SCATTER = {};
-Graph.SERIE_CONTOUR = {};
-Graph.SERIE_BAR = {};
-Graph.SERIE_ZONE = {};
-Graph.SERIE_LINE_COLORED = {};
-Graph.SERIE_ZONE = {};
-Graph.SERIE_DENSITYMAP = {};
+Graph.SERIE_LINE = Symbol();
+Graph.SERIE_SCATTER = Symbol();
+Graph.SERIE_CONTOUR = Symbol();
+Graph.SERIE_BAR = Symbol();
+Graph.SERIE_ZONE = Symbol();
+Graph.SERIE_LINE_COLORED = Symbol();
+Graph.SERIE_ZONE = Symbol();
+Graph.SERIE_DENSITYMAP = Symbol();
 
-Graph.TICKS_OUTSIDE = {};
-Graph.TICKS_INSIDE = {};
-Graph.TICKS_CENTERED = {};
+Graph.TICKS_OUTSIDE = Symbol();
+Graph.TICKS_INSIDE = Symbol();
+Graph.TICKS_CENTERED = Symbol();
 
 export default Graph;

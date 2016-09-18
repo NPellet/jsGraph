@@ -1,58 +1,58 @@
 {
-     "1_basic": {
+     "10_basic": {
          "title": "Basic introduction"
      },
 
-     "2_adaptto": {
+     "18_adaptto": {
          "title": "Adapt axes"
     },
-    "3-axesadvanced": {
+    "20-axesadvanced": {
          "title": "Axes unit and scientific scaling"
     },
 
-    "9-axisspan": {
+    "19-axisspan": {
          "title": "Axes spanning"
     },
 
-    "4-shapes": {
+    "12-shapes": {
          "title": "Handling shapes (basic)"
     },
 
 
-    "5-shapes-types": {
+    "13-shapes-types": {
          "title": "Types of shapes"
     },
 
 
-    "6-shapes-events": {
+    "15-shapes-events": {
          "title": "Shape events"
     },
 
-    "7-errorbars": {
+    "16-errorbars": {
          "title": "Error bars"
     },
 
-    "8-trackingline": {
+    "17-trackingline": {
          "title": "Tracking line"
     },
 
-    "9-densitymap": {
+    "23-densitymap": {
          "title": "Density maps"
     },
 
-    "10-seriestyle": {
+    "11-seriestyle": {
          "title": "Serie styles"
     },
 
-    "11-linedifference": {
+    "22-linedifference": {
          "title": "Difference between two series"
     },
 
-    "12-barcharts": {
+    "15-barcharts": {
        "title": "Bar charts"
     },
 
-    "13-axissplitting": {
+    "21-axissplitting": {
          "title": "Axis splitting"
     }
  }

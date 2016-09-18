@@ -267,7 +267,6 @@ class PluginAxisSplitting extends Plugin {
 
     } );
 
-    this.update();
   }
 
   /**
@@ -380,6 +379,8 @@ var SplitAxis = function( mixin ) {
   /** 
    * Split axis
    * @mixes {AxisX|AxisY}
+   * @name SplitAxis
+   * @static
    */
   var cl = class SplitAxis extends( mixin ) {
 
