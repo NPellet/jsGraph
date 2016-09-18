@@ -264,6 +264,15 @@ class Serie extends EventEmitter {
   }
 
   /**
+   * Removes all the data from the serie, without redrawing
+   * @returns {Serie} The current serie
+   */
+  clearData() {
+    this.setData( [] );
+    return this;
+  }
+
+  /**
    * Returns the data in its current form
    * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
    * @memberof Serie
@@ -288,7 +297,6 @@ class Serie extends EventEmitter {
   kill() {
 
     this.graph.removeSerieFromDom( this );
-
     this.graph._removeSerie( this );
 
     if ( this.graph.legend ) {
@@ -296,12 +304,9 @@ class Serie extends EventEmitter {
       this.graph.legend.update();
     }
 
-    this.killImpl();
+    this.graph = undefined;
   }
 
-  killImpl() {
-
-  }
 
   /**
    * Hides the serie
