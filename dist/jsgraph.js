@@ -56,10 +56,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
 	var _graph = __webpack_require__(1);
 
 	var _graph2 = _interopRequireDefault(_graph);
@@ -255,7 +251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	//   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 	_graph2.default.registerConstructor("graph.legend", _graph6.default);
 
-	exports.default = _graph2.default;
+	module.exports = _graph2.default;
 
 /***/ },
 /* 1 */
@@ -3727,9 +3723,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @class
 	 */
 
-	var GraphPosition = function () {
-	  function GraphPosition(x, y, dx, dy) {
-	    _classCallCheck(this, GraphPosition);
+	var Position = function () {
+	  function Position(x, y, dx, dy) {
+	    _classCallCheck(this, Position);
 
 	    if (!(x instanceof Number) && x instanceof Object) {
 	      this.x = x.x;
@@ -3754,7 +3750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 
 
-	  _createClass(GraphPosition, [{
+	  _createClass(Position, [{
 	    key: 'compute',
 	    value: function compute(graph, xAxis, yAxis, serie) {
 
@@ -4028,30 +4024,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     *  Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"
-	     *  @param {GraphPosition} pos - The reference position
-	     *  @return {GraphPosition} The current position
+	     *  @param {Position} pos - The reference position
+	     *  @return {Position} The current position
 	     */
 	    value: function relativeTo(pos) {
-	      this._relativeTo = GraphPosition.check(pos);
+	      this._relativeTo = Position.check(pos);
 	      return this;
 	    }
 
 	    /**
-	     *  Checks if an object is a position. If not, creates a new GraphPosition instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```GraphPosition``` instance which serves as the reference position.
-	     *  @example GraphPosition.check( { x: 1, y: 2 }, function() { return someOtherPosition; } );
-	     *  @param {(Object|GraphPosition)} pos - The position object or the object fed into the constructor
+	     *  Checks if an object is a position. If not, creates a new Position instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```Position``` instance which serves as the reference position.
+	     *  @example Position.check( { x: 1, y: 2 }, function() { return someOtherPosition; } );
+	     *  @param {(Object|Position)} pos - The position object or the object fed into the constructor
 	     *  @param {Function} callback - The callback fired if a new position is created
-	     *  @return {GraphPosition} The resulting position object
+	     *  @return {Position} The resulting position object
 	     */
 
 	  }], [{
 	    key: 'check',
 	    value: function check(pos, callback) {
-	      if (pos instanceof GraphPosition) {
+	      if (pos instanceof Position) {
 	        return pos;
 	      }
 
-	      var posObject = new GraphPosition(pos);
+	      var posObject = new Position(pos);
 
 	      if (pos && pos.relativeTo) {
 	        var position;
@@ -4064,10 +4060,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }]);
 
-	  return GraphPosition;
+	  return Position;
 	}();
 
-	exports.default = GraphPosition;
+	exports.default = Position;
 
 /***/ },
 /* 3 */
@@ -6183,7 +6179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
 
 	    /**
-	     * Forces the alignment of the 0 of the axis to the zero of another axis
+	     * Aligns ```thisValue``` of the axis to ```foreignValue``` of another axis
 	     * @param {(Axis|Boolean)} axis - The axis with which the 0 should be aligned. Use "false" to deactivate the adapt to 0 mode.
 	     * @param {Number} thisValue - The value of the current axis that should be aligned
 	     * @param {Number} foreignValue - The value of the reference axis that should be aligned
@@ -7625,7 +7621,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Transform a delta value into pixels
 	     * @param {Number} value - The value to translate into pixels
-	     * @memberof Axis
 	     * @return {Number} The value transformed into pixels
 	     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
 	     */
@@ -7640,7 +7635,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Transform a delta pixels value into value
 	     * @param {Number} pixels - The pixel to convert into a value
-	     * @memberof Axis
 	     * @return {Number} The delta value corresponding to delta pixels
 	     * @see Axis~getRelPx
 	     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
@@ -8004,7 +7998,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Disables secondary grid
-	     * @memberof Axis
 	     * @return {Axis} The current axis
 	     */
 
@@ -8016,7 +8009,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Enables all the grids
-	     * @memberof Axis
 	     * @return {Axis} The current axis
 	     */
 
@@ -8028,7 +8020,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Disables all the grids
-	     * @memberof Axis
 	     * @return {Axis} The current axis
 	     */
 
@@ -8036,6 +8027,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'gridsOff',
 	    value: function gridsOff() {
 	      return this.setGrids(false);
+	    }
+
+	    /**
+	     * @alias Axis#gridsOff
+	     */
+
+	  }, {
+	    key: 'turnGridsOff',
+	    value: function turnGridsOff() {
+	      this.gridsOff.apply(this, arguments);
+	    }
+
+	    /**
+	     * @alias Axis#gridsOn
+	     */
+
+	  }, {
+	    key: 'turnGridsOn',
+	    value: function turnGridsOn() {
+	      this.gridsOn.apply(this, arguments);
 	    }
 
 	    /**
@@ -8610,16 +8621,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
 
-	/**
-	 * @alias Axis#gridsOff
-	 */
-	Axis.prototype.turnGridsOff = Axis.prototype.gridsOff;
-
-	/**
-	 * @alias Axis#gridsOn
-	 */
-	Axis.prototype.turnGridsOn = Axis.prototype.gridsOn;
-
 	exports.default = Axis;
 
 /***/ },
@@ -8947,7 +8948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Scales the axis with respect to the series contained in an x axis
 	     * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
-	     * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+	     * @param {Serie} [ excludeSerie ] - A serie to exclude
 	     * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
 	     * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
 	     * @param {Boolean} [ min = true ] - Adapt the min
@@ -15415,9 +15416,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          shape = this.shapes[index];
 	        }
 
-	        console.log(this.shapesDetails);
 	        if (!noSetPosition) {
-
 	          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
 	        }
 
@@ -24802,14 +24801,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      /**
 	       *  Defines the boundaries of each chunk in axis unit.
 	       *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
-	       *  @example axis.splitValues( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
-	       *  @example axis.splitValues( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+	       *  @example axis.setChunkBoundaries( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+	       *  @example axis.setChunkBoundaries( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
 	       *  @return {SplitAxis} The current axis instance
 	       */
 
 	    }, {
-	      key: "splitValues",
-	      value: function splitValues(values) {
+	      key: "setChunkBoundaries",
+	      value: function setChunkBoundaries(values) {
 
 	        var index = 0,
 	            baseWidth = void 0,
@@ -24878,7 +24877,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          this._splitVal[0][0] = this.getCurrentMin();
 	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
-	          this.splitValues(this._splitVal);
+	          this.setChunkBoundaries(this._splitVal);
 	        }
 	      }
 	    }, {
@@ -24932,7 +24931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          max = Math.max(max, axis.draw());
 	        });
 
-	        this.drawLabel();
+	        //    this.drawLabel();
 	        this.writeUnit();
 
 	        return max;
@@ -25121,6 +25120,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function drawLabel() {
 	      _get(Object.getPrototypeOf(SplitXAxis.prototype), "drawLabel", this).call(this);
 	      this.label.setAttribute('y', (this.top ? -1 : 1) * (this.graph.options.fontSize + this.labelPosY));
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      var height = _get(Object.getPrototypeOf(SplitXAxis.prototype), "draw", this).apply(this, arguments);
+	      this.drawLabel();
+	      return height;
 	    }
 	  }]);
 

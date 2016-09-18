@@ -263,7 +263,7 @@ class Axis extends EventEmitter {
   // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
 
   /**
-   * Forces the alignment of the 0 of the axis to the zero of another axis
+   * Aligns ```thisValue``` of the axis to ```foreignValue``` of another axis
    * @param {(Axis|Boolean)} axis - The axis with which the 0 should be aligned. Use "false" to deactivate the adapt to 0 mode.
    * @param {Number} thisValue - The value of the current axis that should be aligned
    * @param {Number} foreignValue - The value of the reference axis that should be aligned
@@ -1598,7 +1598,6 @@ class Axis extends EventEmitter {
   /**
    * Transform a delta value into pixels
    * @param {Number} value - The value to translate into pixels
-   * @memberof Axis
    * @return {Number} The value transformed into pixels
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelPx( 2 ); // Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px
    */
@@ -1610,7 +1609,6 @@ class Axis extends EventEmitter {
   /**
    * Transform a delta pixels value into value
    * @param {Number} pixels - The pixel to convert into a value
-   * @memberof Axis
    * @return {Number} The delta value corresponding to delta pixels
    * @see Axis~getRelPx
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
@@ -1932,7 +1930,6 @@ class Axis extends EventEmitter {
 
   /**
    * Disables secondary grid
-   * @memberof Axis
    * @return {Axis} The current axis
    */
   secondaryGridOff() {
@@ -1941,7 +1938,6 @@ class Axis extends EventEmitter {
 
   /**
    * Enables all the grids
-   * @memberof Axis
    * @return {Axis} The current axis
    */
   gridsOn() {
@@ -1950,11 +1946,24 @@ class Axis extends EventEmitter {
 
   /**
    * Disables all the grids
-   * @memberof Axis
    * @return {Axis} The current axis
    */
   gridsOff() {
     return this.setGrids( false );
+  }
+
+  /**
+   * @alias Axis#gridsOff
+   */
+  turnGridsOff() {
+    this.gridsOff( ...arguments );
+  }
+
+  /**
+   * @alias Axis#gridsOn
+   */
+  turnGridsOn() {
+    this.gridsOn( ...arguments );
   }
 
   /**
@@ -2405,15 +2414,5 @@ Axis.prototype.getValue = Axis.prototype.getVal;
  *  @alias Axis#getRelPx
  */
 Axis.prototype.getDeltaPx = Axis.prototype.getRelPx;
-
-/**
- * @alias Axis#gridsOff
- */
-Axis.prototype.turnGridsOff = Axis.prototype.gridsOff;
-
-/**
- * @alias Axis#gridsOn
- */
-Axis.prototype.turnGridsOn = Axis.prototype.gridsOn;
 
 export default Axis;

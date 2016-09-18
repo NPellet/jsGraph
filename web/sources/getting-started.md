@@ -128,10 +128,12 @@ Creating a graph requires only a few lines of code, which involve:
 Which translates into the following code:
 
 {% highlight javascript %}
-var graph = new Graph("containerId"); // Can also be new Graph( containerDOM );
-graph.resize( width, height );
+var graph = new Graph("containerId"); // Also accepts a DOM element (but not a jQuery element);
+graph.resize( width, height );	// Resizes the container
 
-graph.newSerie( "serieName" )
-	.autoAxis()
-	.setData( [ [ x1, y1 ], [ x2, y2 ], [ x3, y3 ], [ xn, yn ] ] );
+graph.newSerie( "serieName" ) // Creates a new serie
+	.autoAxis()	// Assigns axes
+	.setData( [ [ x1, y1 ], [ x2, y2 ], [ x3, y3 ], [ xn, yn ] ] ); // Set data
+
+graph.draw(); // Draw
 {% endhighlight %}

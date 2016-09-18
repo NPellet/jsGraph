@@ -86,15 +86,15 @@ var data = [ 10.0052,116,10.0135,127,10.0219,133,10.0302,114,10.0386,162,10.047
 <span class="nx">g</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s2">"XRD spectrum"</span><span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"2 theta"</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">gridsOff</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"2 theta"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">gridsOff</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">turnGridsOff</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">.</span><span class="nx">turnGridsOff</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">dataSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
 
 <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"xrd_1"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"line"</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">).</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s2">"#aa0000"</span> <span class="p">);</span>
 <span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
@@ -127,11 +127,9 @@ g.draw();
 <p>To do so, let’s use the axis splitting plugin:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
-
-	<span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-	  <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
-	<span class="p">}</span> 
-
+  <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span> 
 <span class="p">}</span> <span class="p">);</span></code></pre></figure>
 
 <p>Which, in itself, does nothing but initialize the plugin. The next step is to <em>use the plugin to create a new split axis</em>. In other words, the axis need to be created via the plugin and not via the graph like it is done normally. The syntax is quite simple, though:</p>
@@ -139,8 +137,8 @@ g.draw();
 <h3 id="a-idinitializeacreating-axes"><a id="initialize"></a>Creating axes</h3>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">graph</span>
-	<span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
-	<span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
+  <span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
+  <span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
 
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="p">{}</span> <span class="p">);</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
@@ -183,15 +181,15 @@ We will see a bit later what happens with more than one cut.</p>
 <p>So now we’re up ! The only thing left is to call <code class="highlighter-rouge">graph.draw();</code> and this should work. Let’s summarize</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">domGraph</span><span class="p">,</span> <span class="p">{</span>
-	<span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
-	  <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
-	<span class="p">}</span> 
+  <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s1">'axissplitting'</span><span class="p">:</span> <span class="p">{}</span>
+  <span class="p">}</span> 
 <span class="p">}</span> <span class="p">);</span>
 
 <span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
 <span class="kd">var</span> <span class="nx">bottom</span> <span class="o">=</span> <span class="nx">graph</span>
-	<span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
-	<span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
+  <span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'axissplitting'</span><span class="p">)</span> <span class="c1">// Gets the plugin</span>
+  <span class="p">.</span><span class="nx">newBottomAxis</span><span class="p">();</span> <span class="c1">// Creates the new axis</span>
 
 <span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">bottom</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="p">{}</span> <span class="p">);</span> <span class="c1">// The axis needs initialization. DO NOT FORGET</span>
@@ -199,9 +197,9 @@ We will see a bit later what happens with more than one cut.</p>
 <span class="nx">bottom</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">80</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span>
 
 <span class="nx">serie</span>
-	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">bottom</span> <span class="p">)</span>
-	<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">);</span>
+  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">bottom</span> <span class="p">)</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">);</span>
 
 <span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
@@ -229,9 +227,9 @@ bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
 var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 
 serie
-	.autoAxis()
-	.setXAxis( bottom )
-	.setData( data );
+  .autoAxis()
+  .setXAxis( bottom )
+  .setData( data );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }
@@ -268,9 +266,9 @@ For example, we can add the following to the previous example:</p>
 
 <span class="c1">// The following have no delegation</span>
 <span class="nx">bottom</span>
-	<span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Angle"</span> <span class="p">)</span>
-	<span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
-	<span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">);</span>
+  <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Angle"</span> <span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"°"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"("</span><span class="p">,</span> <span class="s2">")"</span><span class="p">);</span>
 
 <span class="c1">// Serie delegation</span>
 <span class="nx">serie</span>

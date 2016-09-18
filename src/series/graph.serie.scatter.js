@@ -436,9 +436,7 @@ class SerieScatter extends Serie {
         shape = this.shapes[ index ];
       }
 
-      console.log( this.shapesDetails );
       if ( !noSetPosition ) {
-
         shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
       }
 

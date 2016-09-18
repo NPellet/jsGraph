@@ -253,7 +253,7 @@ class AxisY extends Axis {
   /**
    * Scales the axis with respect to the series contained in an x axis
    * @param {Axis} [ axis = graph.getXAxis() ] - The X axis to use as a reference
-   * @param {GraphSerie} [ excludeSerie ] - A serie to exclude
+   * @param {Serie} [ excludeSerie ] - A serie to exclude
    * @param {Number} [ start = xaxis.getCurrentMin() ] - The start of the boundary
    * @param {Number} [ end = xaxis.getCurrentMax() ] - The end of the boundary
    * @param {Boolean} [ min = true ] - Adapt the min

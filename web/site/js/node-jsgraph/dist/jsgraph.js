@@ -54,7 +54,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
 
 	var _graph = __webpack_require__(1);
 
@@ -160,77 +164,98 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphShape22 = _interopRequireDefault(_graphShape21);
 
-	var _graphPlugin = __webpack_require__(33);
+	var _graph9 = __webpack_require__(33);
+
+	var _graph10 = _interopRequireDefault(_graph9);
+
+	var _graphPlugin = __webpack_require__(34);
 
 	var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
+	var _graphPlugin3 = __webpack_require__(35);
+
+	var _graphPlugin4 = _interopRequireDefault(_graphPlugin3);
+
+	var _graphPlugin5 = __webpack_require__(36);
+
+	var _graphPlugin6 = _interopRequireDefault(_graphPlugin5);
+
+	var _graphPlugin7 = __webpack_require__(37);
+
+	var _graphPlugin8 = _interopRequireDefault(_graphPlugin7);
+
+	var _graphPlugin9 = __webpack_require__(38);
+
+	var _graphPlugin10 = _interopRequireDefault(_graphPlugin9);
+
+	var _graphPlugin11 = __webpack_require__(40);
+
+	var _graphPlugin12 = _interopRequireDefault(_graphPlugin11);
+
+	var _graphPlugin13 = __webpack_require__(41);
+
+	var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	!(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(34), __webpack_require__(41), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(40)
-	// './graph.toolbar'
-	], __WEBPACK_AMD_DEFINE_RESULT__ = function (GraphPlugin, GraphPluginDrag, GraphPluginShape, GraphPluginSelectScatter, GraphPluginZoom, GraphPluginTimeSerieManager, GraphPluginSerieLineDifference)
-	//  GraphToolbar
-	{
+	// Corrent naming is important here !
 
-	  // Corrent naming is important here !
+	_graph2.default.registerConstructor("graph.position", _graph4.default);
 
-	  _graph2.default.registerConstructor("graph.position", _graph4.default);
+	_graph2.default.registerConstructor("graph.axis.x", _graphAxis2.default);
+	_graph2.default.registerConstructor("graph.axis.y", _graphAxis4.default);
+	_graph2.default.registerConstructor("graph.axis.x.bar", _graphAxisX2.default);
+	_graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
 
-	  _graph2.default.registerConstructor("graph.axis.x", _graphAxis2.default);
-	  _graph2.default.registerConstructor("graph.axis.y", _graphAxis4.default);
-	  _graph2.default.registerConstructor("graph.axis.x.bar", _graphAxisX2.default);
-	  _graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
+	_graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
+	_graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
+	_graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
+	_graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
+	_graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
+	_graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
+	_graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
 
-	  _graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
-	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
-	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
-	  _graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
-	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
-	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
-	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
 
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
+	//Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
-	  //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
+	_graph2.default.registerConstructor("graph.plugin.shape", _graphPlugin4.default);
+	_graph2.default.registerConstructor("graph.plugin.drag", _graphPlugin2.default);
+	_graph2.default.registerConstructor("graph.plugin.zoom", _graphPlugin8.default);
+	_graph2.default.registerConstructor("graph.plugin.selectScatter", _graphPlugin6.default);
+	_graph2.default.registerConstructor("graph.plugin.timeSerieManager", _graphPlugin10.default);
+	_graph2.default.registerConstructor("graph.plugin.serielinedifference", _graphPlugin12.default);
+	_graph2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPlugin12.default);
+	_graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin14.default);
 
-	  _graph2.default.registerConstructor("graph.plugin.shape", GraphPluginShape);
-	  _graph2.default.registerConstructor("graph.plugin.drag", GraphPluginDrag);
-	  _graph2.default.registerConstructor("graph.plugin.zoom", GraphPluginZoom);
-	  _graph2.default.registerConstructor("graph.plugin.selectScatter", GraphPluginSelectScatter);
-	  _graph2.default.registerConstructor("graph.plugin.timeSerieManager", GraphPluginTimeSerieManager);
-	  _graph2.default.registerConstructor("graph.plugin.serielinedifference", GraphPluginSerieLineDifference);
-	  _graph2.default.registerConstructor("graph.plugin.serieLineDifference", GraphPluginSerieLineDifference);
-	  _graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin2.default);
+	_graph2.default.registerConstructor("graph.shape", _graph8.default);
+	_graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
+	_graph2.default.registerConstructor("graph.shape.arrow", _graphShape4.default);
+	_graph2.default.registerConstructor("graph.shape.ellipse", _graphShape6.default);
+	_graph2.default.registerConstructor("graph.shape.label", _graphShape8.default);
+	_graph2.default.registerConstructor("graph.shape.polyline", _graphShape10.default);
+	_graph2.default.registerConstructor("graph.shape.line", _graphShape12.default);
+	_graph2.default.registerConstructor("graph.shape.nmrintegral", _graphShape14.default);
+	_graph2.default.registerConstructor("graph.shape.peakintegration2d", _graphShape16.default);
+	//  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
+	//  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
+	//  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
+	_graph2.default.registerConstructor("graph.shape.rect", _graphShape18.default);
+	_graph2.default.registerConstructor("graph.shape.rectangle", _graphShape18.default);
+	_graph2.default.registerConstructor("graph.shape.cross", _graphShape20.default);
+	//Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
+	_graph2.default.registerConstructor("graph.shape.peakboundariescenter", _graphShape22.default);
 
-	  _graph2.default.registerConstructor("graph.shape", _graph8.default);
-	  _graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
-	  _graph2.default.registerConstructor("graph.shape.arrow", _graphShape4.default);
-	  _graph2.default.registerConstructor("graph.shape.ellipse", _graphShape6.default);
-	  _graph2.default.registerConstructor("graph.shape.label", _graphShape8.default);
-	  _graph2.default.registerConstructor("graph.shape.polyline", _graphShape10.default);
-	  _graph2.default.registerConstructor("graph.shape.line", _graphShape12.default);
-	  _graph2.default.registerConstructor("graph.shape.nmrintegral", _graphShape14.default);
-	  _graph2.default.registerConstructor("graph.shape.peakintegration2d", _graphShape16.default);
-	  //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
-	  //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
-	  //  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
-	  _graph2.default.registerConstructor("graph.shape.rect", _graphShape18.default);
-	  _graph2.default.registerConstructor("graph.shape.rectangle", _graphShape18.default);
-	  _graph2.default.registerConstructor("graph.shape.cross", _graphShape20.default);
-	  //Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
-	  _graph2.default.registerConstructor("graph.shape.peakboundariescenter", _graphShape22.default);
+	//   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
+	_graph2.default.registerConstructor("graph.legend", _graph6.default);
 
-	  //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
-	  _graph2.default.registerConstructor("graph.legend", _graph6.default);
-
-	  return _graph2.default;
-	}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	exports.default = _graph2.default;
 
 /***/ },
 /* 1 */
@@ -5761,7 +5786,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Adjusts group shift
 	      //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
-	      console.log(this.getMinPx());
+
 	      this.drawLabel();
 
 	      this.line.setAttribute('x1', this.getMinPx());
@@ -21680,1018 +21705,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-	var _graph = __webpack_require__(1);
-
-	var _graph2 = _interopRequireDefault(_graph);
-
-	var _graphAxis = __webpack_require__(6);
-
-	var _graphAxis2 = _interopRequireDefault(_graphAxis);
-
-	var _graphAxis3 = __webpack_require__(8);
-
-	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
-
-	var _graph3 = __webpack_require__(3);
-
-	var util = _interopRequireWildcard(_graph3);
-
-	var _graphSerie = __webpack_require__(11);
-
-	var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
-	var _graphSerie3 = __webpack_require__(17);
-
-	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
-
-	var _graph4 = __webpack_require__(34);
-
-	var _graph5 = _interopRequireDefault(_graph4);
-
-	var _graph6 = __webpack_require__(7);
-
-	var _graph7 = _interopRequireDefault(_graph6);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var SerieLineExtended = function (_SerieLine) {
-	  _inherits(SerieLineExtended, _SerieLine);
-
-	  function SerieLineExtended() {
-	    _classCallCheck(this, SerieLineExtended);
-
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLineExtended).apply(this, arguments));
-
-	    _this.subSeries = [];
-	    return _this;
-	  }
-
-	  _createClass(SerieLineExtended, [{
-	    key: "setData",
-	    value: function setData() {
-	      var _this2 = this;
-
-	      _get(Object.getPrototypeOf(SerieLineExtended.prototype), "setData", this).apply(this, arguments);
-	      this.subSeries.map(function (sub) {
-	        sub.data = _this2.data;
-	      });
-	      return this;
-	    }
-	  }, {
-	    key: "draw",
-	    value: function draw() {
-	      this.eraseMarkers();
-	      return this;
-	    }
-	  }]);
-
-	  return SerieLineExtended;
-	}(_graphSerie2.default);
-
-	var SerieScatterExtended = function (_SerieScatter) {
-	  _inherits(SerieScatterExtended, _SerieScatter);
-
-	  function SerieScatterExtended() {
-	    _classCallCheck(this, SerieScatterExtended);
-
-	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieScatterExtended).apply(this, arguments));
-
-	    _this3.subSeries = [];
-	    return _this3;
-	  }
-
-	  _createClass(SerieScatterExtended, [{
-	    key: "setData",
-	    value: function setData() {
-	      var _this4 = this;
-
-	      _get(Object.getPrototypeOf(SerieScatterExtended.prototype), "setData", this).apply(this, arguments);
-	      this.subSeries.map(function (sub) {
-	        sub.data = _this4.data;
-	      });
-	      return this;
-	    }
-	  }, {
-	    key: "draw",
-	    value: function draw() {
-	      return this;
-	    }
-	  }]);
-
-	  return SerieScatterExtended;
-	}(_graphSerie4.default);
-
-	var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
-	var addMethods = [];
-
-	Object.getOwnPropertyNames(_graphSerie2.default.prototype).concat(addMethods).map(function (i) {
-
-	  if (excludingMethods.indexOf(i) > -1) {
-	    return;
-	  }
-
-	  SerieLineExtended.prototype[i] = function (j) {
-
-	    return function () {
-
-	      var args = arguments;
-	      this.subSeries.map(function (subSerie) {
-	        subSerie[j].apply(subSerie, _toConsumableArray(args));
-	      });
-	    };
-	  }(i);
-	});
-
-	/** 
-	 * Axis splitting plugin
-	 * @augments Plugin
-	 */
-
-	var PluginAxisSplitting = function (_Plugin) {
-	  _inherits(PluginAxisSplitting, _Plugin);
-
-	  function PluginAxisSplitting(options) {
-	    _classCallCheck(this, PluginAxisSplitting);
-
-	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginAxisSplitting).apply(this, arguments));
-
-	    _this5.series = new Map();
-	    return _this5;
-	  }
-
-	  _createClass(PluginAxisSplitting, [{
-	    key: "init",
-	    value: function init(graph) {
-	      this.graph = graph;
-	    }
-
-	    /**
-	     *  Creates a new bottom split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newXAxis",
-	    value: function newXAxis(options) {
-	      return newBottomAxis(options);
-	    }
-
-	    /**
-	     *  Creates a new left split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newYAxis",
-	    value: function newYAxis(options) {
-	      return newLeftAxis(options);
-	    }
-
-	    /**
-	     *  Creates a new top split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newTopAxis",
-	    value: function newTopAxis(options) {
-	      options = this.getOptions(options);
-	      return new SplitXAxis(this.graph, "top", options);
-	    }
-
-	    /**
-	     *  Creates a new bottom split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newBottomAxis",
-	    value: function newBottomAxis(options) {
-	      options = this.getOptions(options);
-	      return new SplitXAxis(this.graph, "bottom", options);
-	    }
-
-	    /**
-	     *  Creates a new left split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newLeftAxis",
-	    value: function newLeftAxis(options) {
-	      options = this.getOptions(options);
-	      return new SplitYAxis(this.graph, "left", options);
-	    }
-
-	    /**
-	     *  Creates a new right split axis
-	     *  @param {Object} [ options = {} ] The axis options
-	     *  @return {Axis} The newly created split axis
-	     */
-
-	  }, {
-	    key: "newRightAxis",
-	    value: function newRightAxis(options) {
-	      options = this.getOptions(options);
-	      return new SplitYAxis(this.graph, "right", options);
-	    }
-	  }, {
-	    key: "getOptions",
-	    value: function getOptions(options) {
-	      var defaults = {
-	        marginMin: this.options.axes.margins.low,
-	        marginMax: this.options.axes.margins.high
-	      };
-	      return util.extend(true, defaults, options);
-	    }
-	  }, {
-	    key: "preDraw",
-	    value: function preDraw() {
-	      var _this6 = this;
-
-	      var xAxis, yAxis;
-
-	      //    for ( let { serie } of this.series.values() ) {
-	      this.series.forEach(function (_ref) {
-	        var serie = _ref.serie;
-
-
-	        xAxis = serie.getXAxis();
-	        yAxis = serie.getYAxis();
-
-	        var splits = 1;
-
-	        if (xAxis.splitNumber) {
-	          splits *= xAxis.splitNumber;
-	        }
-
-	        if (yAxis.splitNumber) {
-	          splits *= yAxis.splitNumber;
-	        }
-
-	        while (serie.subSeries.length < splits) {
-
-	          var name = serie.getName() + "_" + serie.subSeries.length;
-	          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
-
-	          s.styles = serie.styles;
-	          s.data = serie.data; // Copy data
-
-	          if (serie.getType() == _graph2.default.SERIE_LINE) {
-	            s.markerPoints = serie.markerPoints;
-	            s.markerFamilies = serie.markerFamilies;
-	          }
-
-	          serie.subSeries.push(s);
-	        }
-
-	        while (serie.subSeries.length > splits) {
-
-	          _this6.graph.getSerie(serie.getName() + "_" + (serie.subSeries.length - 1)).kill();
-	          serie.subSeries.pop();
-	        }
-
-	        if (!serie.getXAxis().splitNumber && serie.getXAxis().splitAxis) {
-	          serie.getXAxis().splitAxis();
-	        }
-
-	        if (!serie.getYAxis().splitNumber && serie.getYAxis().splitAxis) {
-	          serie.getYAxis().splitAxis();
-	        }
-
-	        // Re-assign axes to the sub series
-	        serie.subSeries.map(function (sserie, index) {
-
-	          var xSubAxis, ySubAxis;
-
-	          //sserie.groupMarkers = firstSubSerie.groupMarkers;
-
-	          if (serie.getXAxis().getSubAxis) {
-	            var subAxisIndex = index % (xAxis.splitNumber || 1);
-	            xSubAxis = serie.getXAxis().getSubAxis(subAxisIndex);
-	          } else {
-	            xSubAxis = serie.getXAxis();
-	          }
-
-	          sserie.setXAxis(xSubAxis);
-
-	          if (serie.getYAxis().getSubAxis) {
-
-	            var _subAxisIndex = Math.floor(index / (xAxis.splitNumber || 1));
-	            ySubAxis = serie.getYAxis().getSubAxis(_subAxisIndex);
-	          } else {
-	            ySubAxis = serie.getYAxis();
-	          }
-
-	          sserie.setYAxis(ySubAxis);
-
-	          sserie.draw(true);
-	        });
-	        //}
-	      });
-	    }
-
-	    /**
-	     *  Creates a new serie
-	     *  @param {(String|Number)} name - The name of the serie
-	     *  @param {Object} [ options = {} ] The options of the serie
-	     *  @param {String} type - The type of the serie
-	     *  @return {Serie} The created serie
-	     */
-
-	  }, {
-	    key: "newSerie",
-	    value: function newSerie(name) {
-	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-	      var type = arguments[2];
-
-
-	      switch (type) {
-
-	        case 'line':
-	          return newLineSerie(name, options);
-	          break;
-
-	        case 'scatter':
-	          return newScatterSerie(name, options);
-	          break;
-	      }
-
-	      throw "Cannot create a split serie of type " + type;
-	    }
-
-	    /**
-	     *  Creates a new line serie
-	     *  @param {(String|Number)} name - The name of the serie
-	     *  @param {Object} [ options = {} ] The options of the serie
-	     *  @return {Serie} The created serie
-	     */
-
-	  }, {
-	    key: "newLineSerie",
-	    value: function newLineSerie(name, options) {
-	      var serieObj = {
-	        type: "lineSerie",
-	        serie: new SerieLineExtended(name, options, "line")
-	      };
-	      this.series.set(name, serieObj);
-	      serieObj.serie.init(this.graph, options);
-	      this.graph.series.push(serieObj.serie);
-	      return serieObj.serie;
-	    }
-
-	    /**
-	     *  Creates a new scatter serie
-	     *  @param {(String|Number)} name - The name of the serie
-	     *  @param {Object} [ options = {} ] The options of the serie
-	     *  @return {Serie} The created serie
-	     */
-
-	  }, {
-	    key: "newScatterSerie",
-	    value: function newScatterSerie(name, options) {
-	      var serieObj = {
-	        type: "scatterSerie",
-	        serie: new SerieScatterExtended(name, options, "scatter")
-	      };
-	      this.series.set(name, serieObj);
-	      serieObj.serie.init(this.graph, options);
-	      this.graph.series.push(serieObj.serie);
-	      return serieObj.serie;
-	    }
-	  }], [{
-	    key: "defaults",
-	    value: function defaults() {
-
-	      return {
-	        axes: {
-	          margins: {
-	            high: 5,
-	            low: 5
-	          }
-	        }
-	      };
-	    }
-	  }]);
-
-	  return PluginAxisSplitting;
-	}(_graph5.default);
-
-	var defaultAxisConstructorOptions = {
-	  splitMarks: true
-	};
-
-	var SplitAxis = function SplitAxis(mixin) {
-
-	  var delegateMethods = ['turnGridsOff', 'turnGridsOn', 'gridsOff', 'gridsOn', 'setEngineering', 'setScientificScaleExponent', 'setScientific', 'setLabelColor', 'setSecondaryGridDasharray', 'setPrimaryGridDasharray', 'setSecondaryGridsOpacity', 'setPrimaryGridOpacity', 'setSecondaryGridWidth', 'setPrimaryGridWidth', 'setSecondaryGridColor', 'setPrimaryGridColor', 'setTicksLabelColor', 'setSecondaryTicksColor', 'setPrimaryTicksColor', 'setAxisColor', 'secondaryGridOn', 'secondaryGridOff', 'primaryGridOff', 'primaryGridOn', 'setSecondaryGrid', 'setPrimaryGrid', 'setGrids', 'setTickPosition', 'setExponentialFactor', 'setExponentialLabelFactor', 'setGridLinesStyle', 'forcePrimaryTickUnitMin', 'forcePrimaryTickUnitMax', 'forcePrimaryTickUnit', 'flip', 'show', 'hide', 'setDisplay'];
-
-	  /** 
-	   * Split axis
-	   * @mixes {AxisX|AxisY}
-	   * @name SplitAxis
-	   * @static
-	   */
-	  var cl = function (_mixin) {
-	    _inherits(SplitAxis, _mixin);
-
-	    function SplitAxis(graph, position) {
-	      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
-	      _classCallCheck(this, SplitAxis);
-
-	      var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitAxis).call(this, graph, position, options));
-
-	      _this7.axes = [];
-	      _this7.position = position;
-	      _this7.constructorOptions = util.extend(true, {}, defaultAxisConstructorOptions, options);
-
-	      _this7._splitVal = [];
-	      return _this7;
-	    }
-
-	    /**
-	     *  Calls a callback onto each chunk axes. The callback receives two parameters: 1) the ```axis``` itself and 2) the ```index``` of the axis in the stack
-	     *  @param {Function} callback - The callback to be applied to each axes
-	     *  @return {SplitAxis} The current axis instance
-	     */
-
-
-	    _createClass(SplitAxis, [{
-	      key: "all",
-	      value: function all(callback) {
-
-	        if (!(typeof callback == "function")) {
-	          return;
-	        }
-
-	        this.axes.map(callback);
-	        return this;
-	      }
-
-	      /**
-	       *  Splits the axis into chunks at the positions defined as a list of parameters.
-	       *  @param {Function} ...splits - The positions of axis splitting
-	       *  @return {SplitAxis} The current axis instance
-	       *  @example axis.splitAxis( 0.2, 0.5, 0.8 ); // Creates 4 chunks (0-20%, 20%-50%, 50%-80%, 80%-100%)
-	       */
-
-	    }, {
-	      key: "splitAxis",
-	      value: function splitAxis() {
-	        for (var _len = arguments.length, splits = Array(_len), _key = 0; _key < _len; _key++) {
-	          splits[_key] = arguments[_key];
-	        }
-
-	        splits.push(1);
-	        var splitNumber = splits.length;
-
-	        while (this.axes.length > splitNumber) {
-	          this.axes.pop().kill(true, true);
-	        }
-
-	        while (this.axes.length < splitNumber) {
-	          var axis = new (this.getConstructor())(this.graph, this.position, this.constructorOptions);
-	          this.axes.push(axis);
-	          axis.zoomLock = true;
-	          axis.init(this.graph, this.constructorOptions);
-	        }
-
-	        var from = 0;
-	        var i = 0;
-	        var _iteratorNormalCompletion = true;
-	        var _didIteratorError = false;
-	        var _iteratorError = undefined;
-
-	        try {
-	          for (var _iterator = this.axes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	            var _axis = _step.value;
-
-
-	            _axis.options.marginMin = 10;
-	            _axis.options.marginMax = 10;
-
-	            if (i == 0) {
-	              _axis.options.marginMin = 0;
-	            }
-
-	            if (i == this.axes.length - 1) {
-	              _axis.options.marginMax = 0;
-	            }
-
-	            _axis.setSpan(from, from = splits[i]);
-	            _axis.setMinMaxFlipped();
-	            i++;
-	          }
-	        } catch (err) {
-	          _didIteratorError = true;
-	          _iteratorError = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion && _iterator.return) {
-	              _iterator.return();
-	            }
-	          } finally {
-	            if (_didIteratorError) {
-	              throw _iteratorError;
-	            }
-	          }
-	        }
-
-	        this._splits = splits;
-	        return this;
-	      }
-
-	      /**
-	       *  Fixes the major tick interval of all axes based on the one provided as a parameter
-	       *  @param {Number} axisIndex - The index of the reference axis (starting at 0)
-	       *  @return {SplitAxis} The current axis instance
-	       */
-
-	    }, {
-	      key: "fixGridIntervalBasedOnAxis",
-	      value: function fixGridIntervalBasedOnAxis(axisIndex) {
-
-	        this.fixGridFor = axisIndex;
-	        this.graph._axisHasChanged();
-	        return this;
-	      }
-
-	      /**
-	       *  Spreads the chunks of the axis based on the relative interval of each one of them, so that the unit / px is constant for each chunk
-	       *  @param {Boolean} bln - ```true``` to enable the spread, ```false``` otherwise
-	       *  @return {SplitAxis} The current axis instance
-	       */
-
-	    }, {
-	      key: "splitSpread",
-	      value: function splitSpread(bln) {
-	        this.autoSpread = !!bln;
-	        return this;
-	      }
-	    }, {
-	      key: "_splitSpread",
-	      value: function _splitSpread() {
-
-	        var splits = [],
-	            total = 0,
-	            currentSplit = 0;
-	        //console.log( this._splitVal );
-	        var _iteratorNormalCompletion2 = true;
-	        var _didIteratorError2 = false;
-	        var _iteratorError2 = undefined;
-
-	        try {
-	          for (var _iterator2 = this._splitVal[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	            var split = _step2.value;
-
-	            total += split[1] - split[0];
-	          }
-	        } catch (err) {
-	          _didIteratorError2 = true;
-	          _iteratorError2 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	              _iterator2.return();
-	            }
-	          } finally {
-	            if (_didIteratorError2) {
-	              throw _iteratorError2;
-	            }
-	          }
-	        }
-
-	        var _iteratorNormalCompletion3 = true;
-	        var _didIteratorError3 = false;
-	        var _iteratorError3 = undefined;
-
-	        try {
-	          for (var _iterator3 = this._splitVal[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-	            var _split = _step3.value;
-
-
-	            splits.push(currentSplit += (_split[1] - _split[0]) / total);
-	          }
-	        } catch (err) {
-	          _didIteratorError3 = true;
-	          _iteratorError3 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion3 && _iterator3.return) {
-	              _iterator3.return();
-	            }
-	          } finally {
-	            if (_didIteratorError3) {
-	              throw _iteratorError3;
-	            }
-	          }
-	        }
-
-	        splits.pop();
-	        this.splitAxis.apply(this, splits);
-	      }
-
-	      /**
-	       *  Defines the boundaries of each chunk in axis unit.
-	       *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
-	       *  @example axis.setChunkBoundaries( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
-	       *  @example axis.setChunkBoundaries( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
-	       *  @return {SplitAxis} The current axis instance
-	       */
-
-	    }, {
-	      key: "setChunkBoundaries",
-	      value: function setChunkBoundaries(values) {
-
-	        var index = 0,
-	            baseWidth = void 0,
-	            baseWidthIndex = void 0;
-
-	        var _iteratorNormalCompletion4 = true;
-	        var _didIteratorError4 = false;
-	        var _iteratorError4 = undefined;
-
-	        try {
-	          for (var _iterator4 = this.axes[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-	            var axis = _step4.value;
-	            // List all axes
-
-	            // Two elements in the array => becomes the new reference
-	            if (Array.isArray(values[index]) && values[index].length > 1 && !baseWidth) {
-	              baseWidth = values[index][1] - values[index][0];
-	              baseWidthIndex = index;
-	            }
-
-	            if (values[index].length == 1 || !Array.isArray(values[index])) {
-	              axis._mean = values[index];
-
-	              if (Array.isArray(axis._mean)) {
-	                axis._mean = axis._mean[0];
-	              }
-	            } else {
-
-	              axis.forceMin(values[index][0]).forceMax(values[index][1]);
-	            }
-
-	            index++;
-	          }
-	        } catch (err) {
-	          _didIteratorError4 = true;
-	          _iteratorError4 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion4 && _iterator4.return) {
-	              _iterator4.return();
-	            }
-	          } finally {
-	            if (_didIteratorError4) {
-	              throw _iteratorError4;
-	            }
-	          }
-	        }
-
-	        this._baseWidthVal = baseWidth;
-	        this._baseWidthIndex = baseWidthIndex;
-
-	        this._splitVal = values;
-
-	        this.graph._axisHasChanged();
-
-	        return this;
-	      }
-	    }, {
-	      key: "setMinMaxToFitSeries",
-	      value: function setMinMaxToFitSeries() {
-
-	        if (!this._splitVal || this._splitVal.length < 1) {
-	          _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinMaxToFitSeries", this).apply(this, arguments);
-	          this._splitVal[0] = this._splitVal[0] || [];
-	          this._splitVal[this._splitVal.length - 1] = this._splitVal[this._splitVal.length - 1] || [];
-
-	          this._splitVal[0][0] = this.getCurrentMin();
-	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
-	          this.setChunkBoundaries(this._splitVal);
-	        }
-	      }
-	    }, {
-	      key: "draw",
-	      value: function draw() {
-	        var _this8 = this;
-
-	        if (this.autoSpread) {
-	          this._splitSpread();
-	        }
-
-	        var max = 0;
-	        var unit = void 0;
-	        var subAxis = void 0;
-	        var spanReference = void 0;
-
-	        if (this._baseWidthIndex >= 0 && (subAxis = this.getSubAxis(this._baseWidthIndex))) {
-	          spanReference = subAxis.getSpan();
-	        }
-
-	        subAxis = undefined;
-
-	        if (this.fixGridFor >= 0 && (subAxis = this.getSubAxis(this.fixGridFor))) {
-
-	          if (subAxis._mean !== undefined) {
-	            var width = (subAxis.getSpan()[1] - subAxis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * this._baseWidthVal;
-	            subAxis.forceMin(subAxis._mean - width / 2);
-	            subAxis.forceMax(subAxis._mean + width / 2);
-	          }
-
-	          max = subAxis.draw();
-	          unit = subAxis.getPrimaryTickUnit();
-	        }
-
-	        this.axes.map(function (axis) {
-
-	          if (subAxis === axis) {
-	            return;
-	          }
-
-	          if (axis._mean !== undefined) {
-	            var _width = (axis.getSpan()[1] - axis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * _this8._baseWidthVal;
-	            axis.forceMin(axis._mean - _width / 2);
-	            axis.forceMax(axis._mean + _width / 2);
-	          }
-
-	          if (unit) {
-	            axis.forcePrimaryTickUnit(unit);
-	          }
-
-	          max = Math.max(max, axis.draw());
-	        });
-
-	        this.drawLabel();
-	        this.writeUnit();
-
-	        return max;
-	      }
-	    }, {
-	      key: "setMinPx",
-	      value: function setMinPx(min) {
-
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinPx", this).call(this, min);
-	        var _iteratorNormalCompletion5 = true;
-	        var _didIteratorError5 = false;
-	        var _iteratorError5 = undefined;
-
-	        try {
-	          for (var _iterator5 = this.axes[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-	            var axis = _step5.value;
-
-	            axis.setMinPx(min);
-	          }
-	        } catch (err) {
-	          _didIteratorError5 = true;
-	          _iteratorError5 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion5 && _iterator5.return) {
-	              _iterator5.return();
-	            }
-	          } finally {
-	            if (_didIteratorError5) {
-	              throw _iteratorError5;
-	            }
-	          }
-	        }
-	      }
-	    }, {
-	      key: "setMaxPx",
-	      value: function setMaxPx(max) {
-
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMaxPx", this).call(this, max);
-
-	        var _iteratorNormalCompletion6 = true;
-	        var _didIteratorError6 = false;
-	        var _iteratorError6 = undefined;
-
-	        try {
-	          for (var _iterator6 = this.axes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-	            var axis = _step6.value;
-
-	            axis.setMaxPx(max);
-	          }
-	        } catch (err) {
-	          _didIteratorError6 = true;
-	          _iteratorError6 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion6 && _iterator6.return) {
-	              _iterator6.return();
-	            }
-	          } finally {
-	            if (_didIteratorError6) {
-	              throw _iteratorError6;
-	            }
-	          }
-	        }
-	      }
-	    }, {
-	      key: "setShift",
-	      value: function setShift() {
-
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setShift", this).apply(this, arguments);
-
-	        var _iteratorNormalCompletion7 = true;
-	        var _didIteratorError7 = false;
-	        var _iteratorError7 = undefined;
-
-	        try {
-	          for (var _iterator7 = this.axes[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-	            var axis = _step7.value;
-
-	            axis.setShift.apply(axis, arguments);
-	          }
-	        } catch (err) {
-	          _didIteratorError7 = true;
-	          _iteratorError7 = err;
-	        } finally {
-	          try {
-	            if (!_iteratorNormalCompletion7 && _iterator7.return) {
-	              _iterator7.return();
-	            }
-	          } finally {
-	            if (_didIteratorError7) {
-	              throw _iteratorError7;
-	            }
-	          }
-	        }
-	      }
-	    }, {
-	      key: "init",
-	      value: function init() {
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "init", this).apply(this, arguments);
-	        this.splitAxis();
-	      }
-	    }, {
-	      key: "getAxisPosition",
-	      value: function getAxisPosition() {
-	        var max = 0;
-
-	        this.axes.map(function (axis) {
-	          max = Math.max(max, axis.getAxisPosition());
-	        });
-
-	        return max;
-	      }
-	    }, {
-	      key: "getSubAxis",
-	      value: function getSubAxis(index) {
-
-	        if (this.axes.length <= index) {
-	          throw "Impossible to reach axis. Index " + index + " is out of range";
-	        }
-
-	        return this.axes[index];
-	      }
-	    }, {
-	      key: "splitNumber",
-	      get: function get() {
-	        return this._splits.length;
-	      }
-	    }]);
-
-	    return SplitAxis;
-	  }(mixin);
-
-	  delegateMethods.map(function (methodName) {
-
-	    cl.prototype[methodName] = function (method) {
-
-	      return function () {
-	        var _arguments = arguments;
-
-	        //super[ method ]( ...arguments )
-
-	        this.axes.map(function (axis) {
-	          axis[method].apply(axis, _arguments);
-	        });
-	        return this;
-	      };
-	    }(methodName);
-	  });
-
-	  return cl;
-	};
-
-	var SplitXAxis = function (_SplitAxis) {
-	  _inherits(SplitXAxis, _SplitAxis);
-
-	  function SplitXAxis(graph, topbottom, options) {
-	    _classCallCheck(this, SplitXAxis);
-
-	    var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitXAxis).apply(this, arguments));
-
-	    _this9.topbottom = topbottom;
-	    return _this9;
-	  }
-
-	  _createClass(SplitXAxis, [{
-	    key: "getConstructor",
-	    value: function getConstructor() {
-	      return _graphAxis2.default;
-	    }
-	  }, {
-	    key: "getAxisPosition",
-	    value: function getAxisPosition() {
-	      var max = _get(Object.getPrototypeOf(SplitXAxis.prototype), "getAxisPosition", this).apply(this, arguments);
-
-	      this.labelPosY = max;
-
-	      if (this.getLabel()) {
-	        max += this.graph.options.fontSize;
-	      }
-
-	      return max;
-	    }
-	  }, {
-	    key: "drawLabel",
-	    value: function drawLabel() {
-	      _get(Object.getPrototypeOf(SplitXAxis.prototype), "drawLabel", this).call(this);
-	      this.label.setAttribute('y', (this.top ? -1 : 1) * (this.graph.options.fontSize + this.labelPosY));
-	    }
-	  }]);
-
-	  return SplitXAxis;
-	}(SplitAxis(_graphAxis2.default));
-
-	var SplitYAxis = function (_SplitAxis2) {
-	  _inherits(SplitYAxis, _SplitAxis2);
-
-	  function SplitYAxis(graph, leftright, options) {
-	    _classCallCheck(this, SplitYAxis);
-
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SplitYAxis).apply(this, arguments));
-	    ///this.leftright = leftright;
-	  }
-
-	  _createClass(SplitYAxis, [{
-	    key: "getConstructor",
-	    value: function getConstructor() {
-	      return _graphAxis4.default;
-	    }
-	  }, {
-	    key: "draw",
-	    value: function draw() {
-	      var _this11 = this;
-
-	      if (this.getLabel()) {
-	        this.axes.map(function (axis) {
-	          axis.setAxisPosition(_this11.graph.options.fontSize);
-	        }); // Extra shift allowed for the label
-	        //this.setShift( this.graph.options.fontSize );
-	      }
-	      return _get(Object.getPrototypeOf(SplitYAxis.prototype), "draw", this).apply(this, arguments);
-	    }
-	  }, {
-	    key: "drawLabel",
-	    value: function drawLabel() {
-	      _get(Object.getPrototypeOf(SplitYAxis.prototype), "drawLabel", this).call(this);
-	      this.placeLabel(this.left ? -this.getShift() : this.getShift());
-	    }
-	  }]);
-
-	  return SplitYAxis;
-	}(SplitAxis(_graphAxis4.default));
-
-	util.mix(SplitXAxis, new _graphAxis2.default());
-	util.mix(SplitYAxis, new _graphAxis4.default());
-
-	exports.default = PluginAxisSplitting;
-
-/***/ },
-/* 34 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
@@ -22790,6 +21803,231 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Plugin;
 
 /***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _graph = __webpack_require__(33);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/** 
+	 * Constructor for the drag plugin. Do not use this constructor directly.
+	 * @class PluginDrag
+	 * @implements Plugin
+	 */
+	var PluginDrag = function (_Plugin) {
+	  _inherits(PluginDrag, _Plugin);
+
+	  function PluginDrag() {
+	    _classCallCheck(this, PluginDrag);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginDrag).apply(this, arguments));
+	  }
+
+	  _createClass(PluginDrag, [{
+	    key: "init",
+
+
+	    /**
+	     * @private
+	     */
+	    value: function init(graph) {
+
+	      this.graph = graph;
+	      this.time = null;
+	      this.totaltime = 2000;
+	    }
+
+	    /**
+	     * @private
+	     */
+
+	  }, {
+	    key: "onMouseDown",
+	    value: function onMouseDown(graph, x, y, e, target) {
+	      this._draggingX = x;
+	      this._draggingY = y;
+
+	      this._lastDraggingX = this._draggingX;
+	      this._lastDraggingY = this._draggingY;
+
+	      this.stopAnimation = true;
+
+	      this.moved = false;
+
+	      return true;
+	    }
+
+	    /**
+	     * @memberof PluginDrag
+	     * @private
+	     */
+
+	  }, {
+	    key: "onMouseMove",
+	    value: function onMouseMove(graph, x, y, e, target) {
+
+	      var deltaX = x - this._draggingX;
+	      var deltaY = y - this._draggingY;
+
+	      if (this.options.dragX) {
+	        graph._applyToAxes(function (axis) {
+	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
+	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
+	        }, false, true, false);
+	      }
+
+	      if (this.options.dragY) {
+
+	        graph._applyToAxes(function (axis) {
+	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
+	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
+	        }, false, false, true);
+	      }
+
+	      this._lastDraggingX = this._draggingX;
+	      this._lastDraggingY = this._draggingY;
+
+	      this._draggingX = x;
+	      this._draggingY = y;
+
+	      this.moved = true;
+
+	      this.time = Date.now();
+
+	      this.emit("dragging");
+
+	      graph.draw(true);
+	    }
+	  }, {
+	    key: "onMouseUp",
+	    value: function onMouseUp(graph, x, y, e, target) {
+
+	      var dt = Date.now() - this.time;
+
+	      if (x == this._lastDraggingX || y == this._lastDraggingY) {
+
+	        if (this.moved) {
+	          this.emit("dragged");
+	        }
+
+	        return;
+	      }
+
+	      this.speedX = (x - this._lastDraggingX) / dt;
+	      this.speedY = (y - this._lastDraggingY) / dt;
+
+	      if (isNaN(this.speedX) || isNaN(this.speedY)) {
+	        this.emit("dragged");
+	        return;
+	      }
+
+	      graph._applyToAxes(function (axis) {
+	        axis._pluginDragMin = axis.getCurrentMin();
+	        axis._pluginDragMax = axis.getCurrentMax();
+	      }, false, true, true);
+
+	      this.stopAnimation = false;
+	      this.accelerationX = -this.speedX / this.totaltime;
+	      this.accelerationY = -this.speedY / this.totaltime;
+
+	      if (this.options.persistanceX || this.options.persistanceY) {
+
+	        this._persistanceMove(graph);
+	      } else {
+
+	        this.emit("dragged");
+	      }
+	    }
+	  }, {
+	    key: "_persistanceMove",
+	    value: function _persistanceMove(graph) {
+
+	      var self = this;
+
+	      if (self.stopAnimation) {
+	        self.emit("dragged");
+	        return;
+	      }
+
+	      window.requestAnimationFrame(function () {
+
+	        var dt = Date.now() - self.time;
+	        var dx = (0.5 * self.accelerationX * dt + self.speedX) * dt;
+	        var dy = (0.5 * self.accelerationY * dt + self.speedY) * dt;
+
+	        if (self.options.persistanceX) {
+
+	          graph._applyToAxes(function (axis) {
+
+	            axis.setCurrentMin(-axis.getRelVal(dx) + axis._pluginDragMin);
+	            axis.setCurrentMax(-axis.getRelVal(dx) + axis._pluginDragMax);
+
+	            axis.cacheCurrentMin();
+	            axis.cacheCurrentMax();
+	            axis.cacheInterval();
+	          }, false, true, false);
+	        }
+
+	        if (self.options.persistanceY) {
+
+	          graph._applyToAxes(function (axis) {
+
+	            axis.setCurrentMin(-axis.getRelVal(dy) + axis._pluginDragMin);
+	            axis.setCurrentMax(-axis.getRelVal(dy) + axis._pluginDragMax);
+
+	            axis.cacheCurrentMin();
+	            axis.cacheCurrentMax();
+	            axis.cacheInterval();
+	          }, false, false, true);
+	        }
+
+	        graph.draw();
+
+	        if (dt < self.totaltime) {
+	          self.emit("dragging");
+	          self._persistanceMove(graph);
+	        } else {
+	          self.emit("dragged");
+	        }
+	      });
+	    }
+	  }], [{
+	    key: "defaults",
+	    value: function defaults() {
+	      return {
+
+	        dragX: true,
+	        dragY: true,
+	        persistanceX: false,
+	        persistanceY: false
+
+	      };
+	    }
+	  }]);
+
+	  return PluginDrag;
+	}(_graph2.default);
+
+	exports.default = PluginDrag;
+
+/***/ },
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -22801,7 +22039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(34);
+	var _graph = __webpack_require__(33);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -22999,7 +22237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(34);
+	var _graph2 = __webpack_require__(33);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -23187,7 +22425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(34);
+	var _graph2 = __webpack_require__(33);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -23811,7 +23049,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(34);
+	var _graph5 = __webpack_require__(33);
 
 	var _graph6 = _interopRequireDefault(_graph5);
 
@@ -24482,7 +23720,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(34);
+	var _graph = __webpack_require__(33);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -24933,11 +24171,45 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(34);
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+	var _graph = __webpack_require__(1);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
+	var _graphAxis = __webpack_require__(6);
+
+	var _graphAxis2 = _interopRequireDefault(_graphAxis);
+
+	var _graphAxis3 = __webpack_require__(8);
+
+	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
+
+	var _graph3 = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph3);
+
+	var _graphSerie = __webpack_require__(11);
+
+	var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+	var _graphSerie3 = __webpack_require__(17);
+
+	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
+
+	var _graph4 = __webpack_require__(33);
+
+	var _graph5 = _interopRequireDefault(_graph4);
+
+	var _graph6 = __webpack_require__(7);
+
+	var _graph7 = _interopRequireDefault(_graph6);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -24945,206 +24217,959 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	/** 
-	 * Constructor for the drag plugin. Do not use this constructor directly.
-	 * @class PluginDrag
-	 * @implements Plugin
-	 */
-	var PluginDrag = function (_Plugin) {
-	  _inherits(PluginDrag, _Plugin);
+	var SerieLineExtended = function (_SerieLine) {
+	  _inherits(SerieLineExtended, _SerieLine);
 
-	  function PluginDrag() {
-	    _classCallCheck(this, PluginDrag);
+	  function SerieLineExtended() {
+	    _classCallCheck(this, SerieLineExtended);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginDrag).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLineExtended).apply(this, arguments));
+
+	    _this.subSeries = [];
+	    return _this;
 	  }
 
-	  _createClass(PluginDrag, [{
-	    key: "init",
+	  _createClass(SerieLineExtended, [{
+	    key: "setData",
+	    value: function setData() {
+	      var _this2 = this;
 
-
-	    /**
-	     * @private
-	     */
-	    value: function init(graph) {
-
-	      this.graph = graph;
-	      this.time = null;
-	      this.totaltime = 2000;
-	    }
-
-	    /**
-	     * @private
-	     */
-
-	  }, {
-	    key: "onMouseDown",
-	    value: function onMouseDown(graph, x, y, e, target) {
-	      this._draggingX = x;
-	      this._draggingY = y;
-
-	      this._lastDraggingX = this._draggingX;
-	      this._lastDraggingY = this._draggingY;
-
-	      this.stopAnimation = true;
-
-	      this.moved = false;
-
-	      return true;
-	    }
-
-	    /**
-	     * @memberof PluginDrag
-	     * @private
-	     */
-
-	  }, {
-	    key: "onMouseMove",
-	    value: function onMouseMove(graph, x, y, e, target) {
-
-	      var deltaX = x - this._draggingX;
-	      var deltaY = y - this._draggingY;
-
-	      if (this.options.dragX) {
-	        graph._applyToAxes(function (axis) {
-	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaX));
-	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaX));
-	        }, false, true, false);
-	      }
-
-	      if (this.options.dragY) {
-
-	        graph._applyToAxes(function (axis) {
-	          axis.setCurrentMin(axis.getVal(axis.getMinPx() - deltaY));
-	          axis.setCurrentMax(axis.getVal(axis.getMaxPx() - deltaY));
-	        }, false, false, true);
-	      }
-
-	      this._lastDraggingX = this._draggingX;
-	      this._lastDraggingY = this._draggingY;
-
-	      this._draggingX = x;
-	      this._draggingY = y;
-
-	      this.moved = true;
-
-	      this.time = Date.now();
-
-	      this.emit("dragging");
-
-	      graph.draw(true);
-	    }
-	  }, {
-	    key: "onMouseUp",
-	    value: function onMouseUp(graph, x, y, e, target) {
-
-	      var dt = Date.now() - this.time;
-
-	      if (x == this._lastDraggingX || y == this._lastDraggingY) {
-
-	        if (this.moved) {
-	          this.emit("dragged");
-	        }
-
-	        return;
-	      }
-
-	      this.speedX = (x - this._lastDraggingX) / dt;
-	      this.speedY = (y - this._lastDraggingY) / dt;
-
-	      if (isNaN(this.speedX) || isNaN(this.speedY)) {
-	        this.emit("dragged");
-	        return;
-	      }
-
-	      graph._applyToAxes(function (axis) {
-	        axis._pluginDragMin = axis.getCurrentMin();
-	        axis._pluginDragMax = axis.getCurrentMax();
-	      }, false, true, true);
-
-	      this.stopAnimation = false;
-	      this.accelerationX = -this.speedX / this.totaltime;
-	      this.accelerationY = -this.speedY / this.totaltime;
-
-	      if (this.options.persistanceX || this.options.persistanceY) {
-
-	        this._persistanceMove(graph);
-	      } else {
-
-	        this.emit("dragged");
-	      }
-	    }
-	  }, {
-	    key: "_persistanceMove",
-	    value: function _persistanceMove(graph) {
-
-	      var self = this;
-
-	      if (self.stopAnimation) {
-	        self.emit("dragged");
-	        return;
-	      }
-
-	      window.requestAnimationFrame(function () {
-
-	        var dt = Date.now() - self.time;
-	        var dx = (0.5 * self.accelerationX * dt + self.speedX) * dt;
-	        var dy = (0.5 * self.accelerationY * dt + self.speedY) * dt;
-
-	        if (self.options.persistanceX) {
-
-	          graph._applyToAxes(function (axis) {
-
-	            axis.setCurrentMin(-axis.getRelVal(dx) + axis._pluginDragMin);
-	            axis.setCurrentMax(-axis.getRelVal(dx) + axis._pluginDragMax);
-
-	            axis.cacheCurrentMin();
-	            axis.cacheCurrentMax();
-	            axis.cacheInterval();
-	          }, false, true, false);
-	        }
-
-	        if (self.options.persistanceY) {
-
-	          graph._applyToAxes(function (axis) {
-
-	            axis.setCurrentMin(-axis.getRelVal(dy) + axis._pluginDragMin);
-	            axis.setCurrentMax(-axis.getRelVal(dy) + axis._pluginDragMax);
-
-	            axis.cacheCurrentMin();
-	            axis.cacheCurrentMax();
-	            axis.cacheInterval();
-	          }, false, false, true);
-	        }
-
-	        graph.draw();
-
-	        if (dt < self.totaltime) {
-	          self.emit("dragging");
-	          self._persistanceMove(graph);
-	        } else {
-	          self.emit("dragged");
-	        }
+	      _get(Object.getPrototypeOf(SerieLineExtended.prototype), "setData", this).apply(this, arguments);
+	      this.subSeries.map(function (sub) {
+	        sub.data = _this2.data;
 	      });
+	      return this;
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      this.eraseMarkers();
+	      return this;
+	    }
+	  }]);
+
+	  return SerieLineExtended;
+	}(_graphSerie2.default);
+
+	var SerieScatterExtended = function (_SerieScatter) {
+	  _inherits(SerieScatterExtended, _SerieScatter);
+
+	  function SerieScatterExtended() {
+	    _classCallCheck(this, SerieScatterExtended);
+
+	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieScatterExtended).apply(this, arguments));
+
+	    _this3.subSeries = [];
+	    return _this3;
+	  }
+
+	  _createClass(SerieScatterExtended, [{
+	    key: "setData",
+	    value: function setData() {
+	      var _this4 = this;
+
+	      _get(Object.getPrototypeOf(SerieScatterExtended.prototype), "setData", this).apply(this, arguments);
+	      this.subSeries.map(function (sub) {
+	        sub.data = _this4.data;
+	      });
+	      return this;
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      return this;
+	    }
+	  }]);
+
+	  return SerieScatterExtended;
+	}(_graphSerie4.default);
+
+	var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
+	var addMethods = [];
+
+	Object.getOwnPropertyNames(_graphSerie2.default.prototype).concat(addMethods).map(function (i) {
+
+	  if (excludingMethods.indexOf(i) > -1) {
+	    return;
+	  }
+
+	  SerieLineExtended.prototype[i] = function (j) {
+
+	    return function () {
+
+	      var args = arguments;
+	      this.subSeries.map(function (subSerie) {
+	        subSerie[j].apply(subSerie, _toConsumableArray(args));
+	      });
+	    };
+	  }(i);
+	});
+
+	/** 
+	 * Axis splitting plugin
+	 * @augments Plugin
+	 */
+
+	var PluginAxisSplitting = function (_Plugin) {
+	  _inherits(PluginAxisSplitting, _Plugin);
+
+	  function PluginAxisSplitting(options) {
+	    _classCallCheck(this, PluginAxisSplitting);
+
+	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginAxisSplitting).apply(this, arguments));
+
+	    _this5.series = new Map();
+	    return _this5;
+	  }
+
+	  _createClass(PluginAxisSplitting, [{
+	    key: "init",
+	    value: function init(graph) {
+	      this.graph = graph;
+	    }
+
+	    /**
+	     *  Creates a new bottom split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newXAxis",
+	    value: function newXAxis(options) {
+	      return newBottomAxis(options);
+	    }
+
+	    /**
+	     *  Creates a new left split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newYAxis",
+	    value: function newYAxis(options) {
+	      return newLeftAxis(options);
+	    }
+
+	    /**
+	     *  Creates a new top split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newTopAxis",
+	    value: function newTopAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitXAxis(this.graph, "top", options);
+	    }
+
+	    /**
+	     *  Creates a new bottom split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newBottomAxis",
+	    value: function newBottomAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitXAxis(this.graph, "bottom", options);
+	    }
+
+	    /**
+	     *  Creates a new left split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newLeftAxis",
+	    value: function newLeftAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitYAxis(this.graph, "left", options);
+	    }
+
+	    /**
+	     *  Creates a new right split axis
+	     *  @param {Object} [ options = {} ] The axis options
+	     *  @return {Axis} The newly created split axis
+	     */
+
+	  }, {
+	    key: "newRightAxis",
+	    value: function newRightAxis(options) {
+	      options = this.getOptions(options);
+	      return new SplitYAxis(this.graph, "right", options);
+	    }
+	  }, {
+	    key: "getOptions",
+	    value: function getOptions(options) {
+	      var defaults = {
+	        marginMin: this.options.axes.margins.low,
+	        marginMax: this.options.axes.margins.high
+	      };
+	      return util.extend(true, defaults, options);
+	    }
+	  }, {
+	    key: "preDraw",
+	    value: function preDraw() {
+	      var _this6 = this;
+
+	      var xAxis, yAxis;
+
+	      //    for ( let { serie } of this.series.values() ) {
+	      this.series.forEach(function (_ref) {
+	        var serie = _ref.serie;
+
+
+	        xAxis = serie.getXAxis();
+	        yAxis = serie.getYAxis();
+
+	        var splits = 1;
+
+	        if (xAxis.splitNumber) {
+	          splits *= xAxis.splitNumber;
+	        }
+
+	        if (yAxis.splitNumber) {
+	          splits *= yAxis.splitNumber;
+	        }
+
+	        while (serie.subSeries.length < splits) {
+
+	          var name = serie.getName() + "_" + serie.subSeries.length;
+	          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
+
+	          s.styles = serie.styles;
+	          s.data = serie.data; // Copy data
+
+	          if (serie.getType() == _graph2.default.SERIE_LINE) {
+	            s.markerPoints = serie.markerPoints;
+	            s.markerFamilies = serie.markerFamilies;
+	          }
+
+	          serie.subSeries.push(s);
+	        }
+
+	        while (serie.subSeries.length > splits) {
+
+	          _this6.graph.getSerie(serie.getName() + "_" + (serie.subSeries.length - 1)).kill();
+	          serie.subSeries.pop();
+	        }
+
+	        if (!serie.getXAxis().splitNumber && serie.getXAxis().splitAxis) {
+	          serie.getXAxis().splitAxis();
+	        }
+
+	        if (!serie.getYAxis().splitNumber && serie.getYAxis().splitAxis) {
+	          serie.getYAxis().splitAxis();
+	        }
+
+	        // Re-assign axes to the sub series
+	        serie.subSeries.map(function (sserie, index) {
+
+	          var xSubAxis, ySubAxis;
+
+	          //sserie.groupMarkers = firstSubSerie.groupMarkers;
+
+	          if (serie.getXAxis().getSubAxis) {
+	            var subAxisIndex = index % (xAxis.splitNumber || 1);
+	            xSubAxis = serie.getXAxis().getSubAxis(subAxisIndex);
+	          } else {
+	            xSubAxis = serie.getXAxis();
+	          }
+
+	          sserie.setXAxis(xSubAxis);
+
+	          if (serie.getYAxis().getSubAxis) {
+
+	            var _subAxisIndex = Math.floor(index / (xAxis.splitNumber || 1));
+	            ySubAxis = serie.getYAxis().getSubAxis(_subAxisIndex);
+	          } else {
+	            ySubAxis = serie.getYAxis();
+	          }
+
+	          sserie.setYAxis(ySubAxis);
+
+	          sserie.draw(true);
+	        });
+	        //}
+	      });
+	    }
+
+	    /**
+	     *  Creates a new serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @param {String} type - The type of the serie
+	     *  @return {Serie} The created serie
+	     */
+
+	  }, {
+	    key: "newSerie",
+	    value: function newSerie(name) {
+	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	      var type = arguments[2];
+
+
+	      switch (type) {
+
+	        case 'line':
+	          return newLineSerie(name, options);
+	          break;
+
+	        case 'scatter':
+	          return newScatterSerie(name, options);
+	          break;
+	      }
+
+	      throw "Cannot create a split serie of type " + type;
+	    }
+
+	    /**
+	     *  Creates a new line serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @return {Serie} The created serie
+	     */
+
+	  }, {
+	    key: "newLineSerie",
+	    value: function newLineSerie(name, options) {
+	      var serieObj = {
+	        type: "lineSerie",
+	        serie: new SerieLineExtended(name, options, "line")
+	      };
+	      this.series.set(name, serieObj);
+	      serieObj.serie.init(this.graph, options);
+	      this.graph.series.push(serieObj.serie);
+	      return serieObj.serie;
+	    }
+
+	    /**
+	     *  Creates a new scatter serie
+	     *  @param {(String|Number)} name - The name of the serie
+	     *  @param {Object} [ options = {} ] The options of the serie
+	     *  @return {Serie} The created serie
+	     */
+
+	  }, {
+	    key: "newScatterSerie",
+	    value: function newScatterSerie(name, options) {
+	      var serieObj = {
+	        type: "scatterSerie",
+	        serie: new SerieScatterExtended(name, options, "scatter")
+	      };
+	      this.series.set(name, serieObj);
+	      serieObj.serie.init(this.graph, options);
+	      this.graph.series.push(serieObj.serie);
+	      return serieObj.serie;
 	    }
 	  }], [{
 	    key: "defaults",
 	    value: function defaults() {
+
 	      return {
-
-	        dragX: true,
-	        dragY: true,
-	        persistanceX: false,
-	        persistanceY: false
-
+	        axes: {
+	          margins: {
+	            high: 5,
+	            low: 5
+	          }
+	        }
 	      };
 	    }
 	  }]);
 
-	  return PluginDrag;
-	}(_graph2.default);
+	  return PluginAxisSplitting;
+	}(_graph5.default);
 
-	exports.default = PluginDrag;
+	var defaultAxisConstructorOptions = {
+	  splitMarks: true
+	};
+
+	var SplitAxis = function SplitAxis(mixin) {
+
+	  var delegateMethods = ['turnGridsOff', 'turnGridsOn', 'gridsOff', 'gridsOn', 'setEngineering', 'setScientificScaleExponent', 'setScientific', 'setLabelColor', 'setSecondaryGridDasharray', 'setPrimaryGridDasharray', 'setSecondaryGridsOpacity', 'setPrimaryGridOpacity', 'setSecondaryGridWidth', 'setPrimaryGridWidth', 'setSecondaryGridColor', 'setPrimaryGridColor', 'setTicksLabelColor', 'setSecondaryTicksColor', 'setPrimaryTicksColor', 'setAxisColor', 'secondaryGridOn', 'secondaryGridOff', 'primaryGridOff', 'primaryGridOn', 'setSecondaryGrid', 'setPrimaryGrid', 'setGrids', 'setTickPosition', 'setExponentialFactor', 'setExponentialLabelFactor', 'setGridLinesStyle', 'forcePrimaryTickUnitMin', 'forcePrimaryTickUnitMax', 'forcePrimaryTickUnit', 'flip', 'show', 'hide', 'setDisplay'];
+
+	  /** 
+	   * Split axis
+	   * @mixes {AxisX|AxisY}
+	   * @name SplitAxis
+	   * @static
+	   */
+	  var cl = function (_mixin) {
+	    _inherits(SplitAxis, _mixin);
+
+	    function SplitAxis(graph, position) {
+	      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+	      _classCallCheck(this, SplitAxis);
+
+	      var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitAxis).call(this, graph, position, options));
+
+	      _this7.axes = [];
+	      _this7.position = position;
+	      _this7.constructorOptions = util.extend(true, {}, defaultAxisConstructorOptions, options);
+
+	      _this7._splitVal = [];
+	      return _this7;
+	    }
+
+	    /**
+	     *  Calls a callback onto each chunk axes. The callback receives two parameters: 1) the ```axis``` itself and 2) the ```index``` of the axis in the stack
+	     *  @param {Function} callback - The callback to be applied to each axes
+	     *  @return {SplitAxis} The current axis instance
+	     */
+
+
+	    _createClass(SplitAxis, [{
+	      key: "all",
+	      value: function all(callback) {
+
+	        if (!(typeof callback == "function")) {
+	          return;
+	        }
+
+	        this.axes.map(callback);
+	        return this;
+	      }
+
+	      /**
+	       *  Splits the axis into chunks at the positions defined as a list of parameters.
+	       *  @param {Function} ...splits - The positions of axis splitting
+	       *  @return {SplitAxis} The current axis instance
+	       *  @example axis.splitAxis( 0.2, 0.5, 0.8 ); // Creates 4 chunks (0-20%, 20%-50%, 50%-80%, 80%-100%)
+	       */
+
+	    }, {
+	      key: "splitAxis",
+	      value: function splitAxis() {
+	        for (var _len = arguments.length, splits = Array(_len), _key = 0; _key < _len; _key++) {
+	          splits[_key] = arguments[_key];
+	        }
+
+	        splits.push(1);
+	        var splitNumber = splits.length;
+
+	        while (this.axes.length > splitNumber) {
+	          this.axes.pop().kill(true, true);
+	        }
+
+	        while (this.axes.length < splitNumber) {
+	          var axis = new (this.getConstructor())(this.graph, this.position, this.constructorOptions);
+	          this.axes.push(axis);
+	          axis.zoomLock = true;
+	          axis.init(this.graph, this.constructorOptions);
+	        }
+
+	        var from = 0;
+	        var i = 0;
+	        var _iteratorNormalCompletion = true;
+	        var _didIteratorError = false;
+	        var _iteratorError = undefined;
+
+	        try {
+	          for (var _iterator = this.axes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	            var _axis = _step.value;
+
+
+	            _axis.options.marginMin = 10;
+	            _axis.options.marginMax = 10;
+
+	            if (i == 0) {
+	              _axis.options.marginMin = 0;
+	            }
+
+	            if (i == this.axes.length - 1) {
+	              _axis.options.marginMax = 0;
+	            }
+
+	            _axis.setSpan(from, from = splits[i]);
+	            _axis.setMinMaxFlipped();
+	            i++;
+	          }
+	        } catch (err) {
+	          _didIteratorError = true;
+	          _iteratorError = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion && _iterator.return) {
+	              _iterator.return();
+	            }
+	          } finally {
+	            if (_didIteratorError) {
+	              throw _iteratorError;
+	            }
+	          }
+	        }
+
+	        this._splits = splits;
+	        return this;
+	      }
+
+	      /**
+	       *  Fixes the major tick interval of all axes based on the one provided as a parameter
+	       *  @param {Number} axisIndex - The index of the reference axis (starting at 0)
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
+	    }, {
+	      key: "fixGridIntervalBasedOnAxis",
+	      value: function fixGridIntervalBasedOnAxis(axisIndex) {
+
+	        this.fixGridFor = axisIndex;
+	        this.graph._axisHasChanged();
+	        return this;
+	      }
+
+	      /**
+	       *  Spreads the chunks of the axis based on the relative interval of each one of them, so that the unit / px is constant for each chunk
+	       *  @param {Boolean} bln - ```true``` to enable the spread, ```false``` otherwise
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
+	    }, {
+	      key: "splitSpread",
+	      value: function splitSpread(bln) {
+	        this.autoSpread = !!bln;
+	        return this;
+	      }
+	    }, {
+	      key: "_splitSpread",
+	      value: function _splitSpread() {
+
+	        var splits = [],
+	            total = 0,
+	            currentSplit = 0;
+	        //console.log( this._splitVal );
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
+
+	        try {
+	          for (var _iterator2 = this._splitVal[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var split = _step2.value;
+
+	            total += split[1] - split[0];
+	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
+	          }
+	        }
+
+	        var _iteratorNormalCompletion3 = true;
+	        var _didIteratorError3 = false;
+	        var _iteratorError3 = undefined;
+
+	        try {
+	          for (var _iterator3 = this._splitVal[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+	            var _split = _step3.value;
+
+
+	            splits.push(currentSplit += (_split[1] - _split[0]) / total);
+	          }
+	        } catch (err) {
+	          _didIteratorError3 = true;
+	          _iteratorError3 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+	              _iterator3.return();
+	            }
+	          } finally {
+	            if (_didIteratorError3) {
+	              throw _iteratorError3;
+	            }
+	          }
+	        }
+
+	        splits.pop();
+	        this.splitAxis.apply(this, splits);
+	      }
+
+	      /**
+	       *  Defines the boundaries of each chunk in axis unit.
+	       *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
+	       *  @example axis.splitValues( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+	       *  @example axis.splitValues( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+	       *  @return {SplitAxis} The current axis instance
+	       */
+
+	    }, {
+	      key: "splitValues",
+	      value: function splitValues(values) {
+
+	        var index = 0,
+	            baseWidth = void 0,
+	            baseWidthIndex = void 0;
+
+	        var _iteratorNormalCompletion4 = true;
+	        var _didIteratorError4 = false;
+	        var _iteratorError4 = undefined;
+
+	        try {
+	          for (var _iterator4 = this.axes[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+	            var axis = _step4.value;
+	            // List all axes
+
+	            // Two elements in the array => becomes the new reference
+	            if (Array.isArray(values[index]) && values[index].length > 1 && !baseWidth) {
+	              baseWidth = values[index][1] - values[index][0];
+	              baseWidthIndex = index;
+	            }
+
+	            if (values[index].length == 1 || !Array.isArray(values[index])) {
+	              axis._mean = values[index];
+
+	              if (Array.isArray(axis._mean)) {
+	                axis._mean = axis._mean[0];
+	              }
+	            } else {
+
+	              axis.forceMin(values[index][0]).forceMax(values[index][1]);
+	            }
+
+	            index++;
+	          }
+	        } catch (err) {
+	          _didIteratorError4 = true;
+	          _iteratorError4 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion4 && _iterator4.return) {
+	              _iterator4.return();
+	            }
+	          } finally {
+	            if (_didIteratorError4) {
+	              throw _iteratorError4;
+	            }
+	          }
+	        }
+
+	        this._baseWidthVal = baseWidth;
+	        this._baseWidthIndex = baseWidthIndex;
+
+	        this._splitVal = values;
+
+	        this.graph._axisHasChanged();
+
+	        return this;
+	      }
+	    }, {
+	      key: "setMinMaxToFitSeries",
+	      value: function setMinMaxToFitSeries() {
+
+	        if (!this._splitVal || this._splitVal.length < 1) {
+	          _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinMaxToFitSeries", this).apply(this, arguments);
+	          this._splitVal[0] = this._splitVal[0] || [];
+	          this._splitVal[this._splitVal.length - 1] = this._splitVal[this._splitVal.length - 1] || [];
+
+	          this._splitVal[0][0] = this.getCurrentMin();
+	          this._splitVal[this._splitVal.length - 1][1] = this.getCurrentMax();
+	          this.splitValues(this._splitVal);
+	        }
+	      }
+	    }, {
+	      key: "draw",
+	      value: function draw() {
+	        var _this8 = this;
+
+	        if (this.autoSpread) {
+	          this._splitSpread();
+	        }
+
+	        var max = 0;
+	        var unit = void 0;
+	        var subAxis = void 0;
+	        var spanReference = void 0;
+
+	        if (this._baseWidthIndex >= 0 && (subAxis = this.getSubAxis(this._baseWidthIndex))) {
+	          spanReference = subAxis.getSpan();
+	        }
+
+	        subAxis = undefined;
+
+	        if (this.fixGridFor >= 0 && (subAxis = this.getSubAxis(this.fixGridFor))) {
+
+	          if (subAxis._mean !== undefined) {
+	            var width = (subAxis.getSpan()[1] - subAxis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * this._baseWidthVal;
+	            subAxis.forceMin(subAxis._mean - width / 2);
+	            subAxis.forceMax(subAxis._mean + width / 2);
+	          }
+
+	          max = subAxis.draw();
+	          unit = subAxis.getPrimaryTickUnit();
+	        }
+
+	        this.axes.map(function (axis) {
+
+	          if (subAxis === axis) {
+	            return;
+	          }
+
+	          if (axis._mean !== undefined) {
+	            var _width = (axis.getSpan()[1] - axis.getSpan()[0]) / (spanReference[1] - spanReference[0]) * _this8._baseWidthVal;
+	            axis.forceMin(axis._mean - _width / 2);
+	            axis.forceMax(axis._mean + _width / 2);
+	          }
+
+	          if (unit) {
+	            axis.forcePrimaryTickUnit(unit);
+	          }
+
+	          max = Math.max(max, axis.draw());
+	        });
+
+	        this.drawLabel();
+	        this.writeUnit();
+
+	        return max;
+	      }
+	    }, {
+	      key: "setMinPx",
+	      value: function setMinPx(min) {
+
+	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinPx", this).call(this, min);
+	        var _iteratorNormalCompletion5 = true;
+	        var _didIteratorError5 = false;
+	        var _iteratorError5 = undefined;
+
+	        try {
+	          for (var _iterator5 = this.axes[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+	            var axis = _step5.value;
+
+	            axis.setMinPx(min);
+	          }
+	        } catch (err) {
+	          _didIteratorError5 = true;
+	          _iteratorError5 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion5 && _iterator5.return) {
+	              _iterator5.return();
+	            }
+	          } finally {
+	            if (_didIteratorError5) {
+	              throw _iteratorError5;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "setMaxPx",
+	      value: function setMaxPx(max) {
+
+	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMaxPx", this).call(this, max);
+
+	        var _iteratorNormalCompletion6 = true;
+	        var _didIteratorError6 = false;
+	        var _iteratorError6 = undefined;
+
+	        try {
+	          for (var _iterator6 = this.axes[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+	            var axis = _step6.value;
+
+	            axis.setMaxPx(max);
+	          }
+	        } catch (err) {
+	          _didIteratorError6 = true;
+	          _iteratorError6 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion6 && _iterator6.return) {
+	              _iterator6.return();
+	            }
+	          } finally {
+	            if (_didIteratorError6) {
+	              throw _iteratorError6;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "setShift",
+	      value: function setShift() {
+
+	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setShift", this).apply(this, arguments);
+
+	        var _iteratorNormalCompletion7 = true;
+	        var _didIteratorError7 = false;
+	        var _iteratorError7 = undefined;
+
+	        try {
+	          for (var _iterator7 = this.axes[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+	            var axis = _step7.value;
+
+	            axis.setShift.apply(axis, arguments);
+	          }
+	        } catch (err) {
+	          _didIteratorError7 = true;
+	          _iteratorError7 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion7 && _iterator7.return) {
+	              _iterator7.return();
+	            }
+	          } finally {
+	            if (_didIteratorError7) {
+	              throw _iteratorError7;
+	            }
+	          }
+	        }
+	      }
+	    }, {
+	      key: "init",
+	      value: function init() {
+	        _get(Object.getPrototypeOf(SplitAxis.prototype), "init", this).apply(this, arguments);
+	        this.splitAxis();
+	      }
+	    }, {
+	      key: "getAxisPosition",
+	      value: function getAxisPosition() {
+	        var max = 0;
+
+	        this.axes.map(function (axis) {
+	          max = Math.max(max, axis.getAxisPosition());
+	        });
+
+	        return max;
+	      }
+	    }, {
+	      key: "getSubAxis",
+	      value: function getSubAxis(index) {
+
+	        if (this.axes.length <= index) {
+	          throw "Impossible to reach axis. Index " + index + " is out of range";
+	        }
+
+	        return this.axes[index];
+	      }
+	    }, {
+	      key: "splitNumber",
+	      get: function get() {
+	        return this._splits.length;
+	      }
+	    }]);
+
+	    return SplitAxis;
+	  }(mixin);
+
+	  delegateMethods.map(function (methodName) {
+
+	    cl.prototype[methodName] = function (method) {
+
+	      return function () {
+	        var _arguments = arguments;
+
+	        //super[ method ]( ...arguments )
+
+	        this.axes.map(function (axis) {
+	          axis[method].apply(axis, _arguments);
+	        });
+	        return this;
+	      };
+	    }(methodName);
+	  });
+
+	  return cl;
+	};
+
+	var SplitXAxis = function (_SplitAxis) {
+	  _inherits(SplitXAxis, _SplitAxis);
+
+	  function SplitXAxis(graph, topbottom, options) {
+	    _classCallCheck(this, SplitXAxis);
+
+	    var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitXAxis).apply(this, arguments));
+
+	    _this9.topbottom = topbottom;
+	    return _this9;
+	  }
+
+	  _createClass(SplitXAxis, [{
+	    key: "getConstructor",
+	    value: function getConstructor() {
+	      return _graphAxis2.default;
+	    }
+	  }, {
+	    key: "getAxisPosition",
+	    value: function getAxisPosition() {
+	      var max = _get(Object.getPrototypeOf(SplitXAxis.prototype), "getAxisPosition", this).apply(this, arguments);
+
+	      this.labelPosY = max;
+
+	      if (this.getLabel()) {
+	        max += this.graph.options.fontSize;
+	      }
+
+	      return max;
+	    }
+	  }, {
+	    key: "drawLabel",
+	    value: function drawLabel() {
+	      _get(Object.getPrototypeOf(SplitXAxis.prototype), "drawLabel", this).call(this);
+	      this.label.setAttribute('y', (this.top ? -1 : 1) * (this.graph.options.fontSize + this.labelPosY));
+	    }
+	  }]);
+
+	  return SplitXAxis;
+	}(SplitAxis(_graphAxis2.default));
+
+	var SplitYAxis = function (_SplitAxis2) {
+	  _inherits(SplitYAxis, _SplitAxis2);
+
+	  function SplitYAxis(graph, leftright, options) {
+	    _classCallCheck(this, SplitYAxis);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SplitYAxis).apply(this, arguments));
+	    ///this.leftright = leftright;
+	  }
+
+	  _createClass(SplitYAxis, [{
+	    key: "getConstructor",
+	    value: function getConstructor() {
+	      return _graphAxis4.default;
+	    }
+	  }, {
+	    key: "draw",
+	    value: function draw() {
+	      var _this11 = this;
+
+	      if (this.getLabel()) {
+	        this.axes.map(function (axis) {
+	          axis.setAxisPosition(_this11.graph.options.fontSize);
+	        }); // Extra shift allowed for the label
+	        //this.setShift( this.graph.options.fontSize );
+	      }
+	      return _get(Object.getPrototypeOf(SplitYAxis.prototype), "draw", this).apply(this, arguments);
+	    }
+	  }, {
+	    key: "drawLabel",
+	    value: function drawLabel() {
+	      _get(Object.getPrototypeOf(SplitYAxis.prototype), "drawLabel", this).call(this);
+	      this.placeLabel(this.left ? -this.getShift() : this.getShift());
+	    }
+	  }]);
+
+	  return SplitYAxis;
+	}(SplitAxis(_graphAxis4.default));
+
+	util.mix(SplitXAxis, new _graphAxis2.default());
+	util.mix(SplitYAxis, new _graphAxis4.default());
+
+	exports.default = PluginAxisSplitting;
 
 /***/ }
 /******/ ])

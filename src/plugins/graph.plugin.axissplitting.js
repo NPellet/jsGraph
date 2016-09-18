@@ -499,11 +499,11 @@ var SplitAxis = function( mixin ) {
     /**
      *  Defines the boundaries of each chunk in axis unit.
      *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
-     *  @example axis.splitValues( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
-     *  @example axis.splitValues( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+     *  @example axis.setChunkBoundaries( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+     *  @example axis.setChunkBoundaries( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
      *  @return {SplitAxis} The current axis instance
      */
-    splitValues( values ) {
+    setChunkBoundaries( values ) {
 
       let index = 0,
         baseWidth,
@@ -553,7 +553,7 @@ var SplitAxis = function( mixin ) {
 
         this._splitVal[ 0 ][ 0 ] = this.getCurrentMin();
         this._splitVal[ this._splitVal.length - 1 ][ 1 ] = this.getCurrentMax();
-        this.splitValues( this._splitVal );
+        this.setChunkBoundaries( this._splitVal );
       }
     }
 
@@ -606,7 +606,7 @@ var SplitAxis = function( mixin ) {
 
       } );
 
-      this.drawLabel();
+  //    this.drawLabel();
       this.writeUnit();
 
       return max;
@@ -713,6 +713,13 @@ class SplitXAxis extends SplitAxis( AxisX ) {
     super.drawLabel();
     this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( this.graph.options.fontSize + this.labelPosY ) );
   }
+
+  draw() {
+    var height = super.draw( ...arguments );
+    this.drawLabel();
+    return height;
+  }
+
 }
 
 class SplitYAxis extends SplitAxis( AxisY ) {

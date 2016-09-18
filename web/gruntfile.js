@@ -154,7 +154,12 @@ module.exports = function(grunt) {
           { 
             title: "Axis",
             main: "Axis",
-            contains: /^(.*)Axis(.*)$/ 
+            contains: /^Axis(.*)$/,
+            content: [
+              {
+                title: 'SplitAxis'
+              }
+            ]
           },
           { 
             title: "Plugin",

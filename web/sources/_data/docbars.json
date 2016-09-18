@@ -1,8 +1,16 @@
 {
 	"Axis": [
 		{
-			"title": "Plugin",
-			"url": "PluginAxisSplitting"
+			"title": "X",
+			"url": "AxisX"
+		},
+		{
+			"title": "XBar",
+			"url": "AxisXBar"
+		},
+		{
+			"title": "Y",
+			"url": "AxisY"
 		}
 	],
 	"Core": [],
@@ -38,6 +46,7 @@
 			"url": "PluginZoom"
 		}
 	],
+	"Position": [],
 	"Serie": [
 		{
 			"title": "Bar",

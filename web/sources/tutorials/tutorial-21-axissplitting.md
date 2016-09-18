@@ -13,25 +13,23 @@ Axis splitting is a powerful way to display the useful bits of information of yo
 Let's take the following example throughout this tutorial. This is a power X-ray diffraction diagram of a powder I prepared in my lab. Because I have indentified the compound, I know that the peaks of interest are 14° and the two peaks between 28° and 35°, corresponding to different diffraction planes of the crystals making my powder. In particular, there's a small impurity at 12°, but I'd like to enhance it significantly.
 
 {% highlight javascript %}
-
 var g = new Graph("example-1"); // Creates a new graph
 g.resize( 400, 300 ); // Resizes the graph
 g.setTitle("XRD spectrum");
 
 g.getBottomAxis()
-	.setLabel("2 theta")
-	.setUnit("°")
-	.setUnitWrapper("(", ")")
-	.gridsOff()
-	.dataSpacing( 0, 0 );
+  .setLabel("2 theta")
+  .setUnit("°")
+  .setUnitWrapper("(", ")")
+  .gridsOff()
+  .dataSpacing( 0, 0 );
 
 g.getLeftAxis()
-	.turnGridsOff()
-	.dataSpacing(0,0);
+  .turnGridsOff()
+  .dataSpacing(0,0);
 
 g.newSerie("xrd_1", {}, "line" ).autoAxis().setData( data ).setLineColor( "#aa0000" );
 g.draw();
-
 {% endhighlight %}
 
 <div id="example-1" class="jsgraph-example"></div>
@@ -64,11 +62,9 @@ To do so, let's use the axis splitting plugin:
 
 {% highlight javascript %}
 var graph = new Graph( domGraph, {
-
-	plugins: {
-	  'axissplitting': {}
-	} 
-
+  plugins: {
+    'axissplitting': {}
+  } 
 } );
 {% endhighlight %}
 
@@ -78,8 +74,8 @@ Which, in itself, does nothing but initialize the plugin. The next step is to *u
 
 {% highlight javascript %}
 var bottom = graph
-	.getPlugin('axissplitting') // Gets the plugin
-	.newBottomAxis(); // Creates the new axis
+  .getPlugin('axissplitting') // Gets the plugin
+  .newBottomAxis(); // Creates the new axis
 
 bottom.init( graph, {} ); // The axis needs initialization. DO NOT FORGET
 graph.setBottomAxis( bottom, 0 );
@@ -132,17 +128,16 @@ It is important to understand that at this point, a normal serie (created by ```
 So now we're up ! The only thing left is to call ```graph.draw();``` and this should work. Let's summarize
 
 {% highlight javascript %}
-
 var graph = new Graph( domGraph, {
-	plugins: {
-	  'axissplitting': {}
-	} 
+  plugins: {
+    'axissplitting': {}
+  } 
 } );
 
 graph.resize( 400, 300 );
 var bottom = graph
-	.getPlugin('axissplitting') // Gets the plugin
-	.newBottomAxis(); // Creates the new axis
+  .getPlugin('axissplitting') // Gets the plugin
+  .newBottomAxis(); // Creates the new axis
 
 graph.setBottomAxis( bottom, 0 );
 bottom.init( graph, {} ); // The axis needs initialization. DO NOT FORGET
@@ -150,9 +145,9 @@ bottom.splitAxis( 0.2 ); // Splits the axis at 20% of the width
 bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
 
 serie
-	.autoAxis()
-	.setXAxis( bottom )
-	.setData( data );
+  .autoAxis()
+  .setXAxis( bottom )
+  .setData( data );
 
 graph.draw();
 {%endhighlight%}
@@ -182,9 +177,9 @@ bottom.setChunkBoundaries( [ [ 11, 16 ], [ 10, 80 ] ] );
 var serie = g.getPlugin('axissplitting').newLineSerie( "xrd-split" )
 
 serie
-	.autoAxis()
-	.setXAxis( bottom )
-	.setData( data );
+  .autoAxis()
+  .setXAxis( bottom )
+  .setData( data );
 
 	return { g: g, bottom: bottom, left: g.getLeftAxis(), serie: serie };
 }
@@ -222,9 +217,9 @@ bottom.axes[ 1 ].setLabel("Second part");
 
 // The following have no delegation
 bottom
-	.setLabel( "Angle" )
-	.setUnit("°")
-	.setUnitWrapper("(", ")");
+  .setLabel( "Angle" )
+  .setUnit("°")
+  .setUnitWrapper("(", ")");
 
 // Serie delegation
 serie

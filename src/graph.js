@@ -97,4 +97,4 @@ Graph.registerConstructor( "graph.shape.peakboundariescenter", ShapePeakBoundari
 //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 Graph.registerConstructor( "graph.legend", GraphLegend );
 
-export default Graph;
+module.exports = Graph;
