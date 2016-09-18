@@ -1,3 +1,4 @@
+import Graph from '../graph.core'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import * as util from './graph.util'
 
@@ -1828,17 +1829,20 @@ class Axis extends EventEmitter {
     switch ( pos ) {
       case 3:
       case 'outside':
+      case Graph.TICKS_OUTSIDE:
         pos = 3;
         break;
 
       case 2:
       case 'centered':
+      case Graph.TICKS_CENTERED:
         pos = 2;
         break;
 
       default:
       case 1:
       case 'inside':
+      case Graph.TICKS_INSIDE:
         pos = 1;
         break;
     }

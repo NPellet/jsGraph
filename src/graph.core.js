@@ -2320,7 +2320,7 @@ class Graph extends EventEmitter {
     if ( !_constructors.has( constructorName ) ) {
       return util.throwError( "Constructor \"" + constructorName + "\" doesn't exist" );
     }
-    
+
     return _constructors.get( constructorName );
   }
 }
@@ -3149,5 +3149,9 @@ Graph.SERIE_ZONE = {};
 Graph.SERIE_LINE_COLORED = {};
 Graph.SERIE_ZONE = {};
 Graph.SERIE_DENSITYMAP = {};
+
+Graph.TICKS_OUTSIDE = {};
+Graph.TICKS_INSIDE = {};
+Graph.TICKS_CENTERED = {};
 
 export default Graph;
