@@ -1,4 +1,4 @@
-import Graph from '../graph.core'
+import Graph from './graph.core'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import * as util from './graph.util'
 
