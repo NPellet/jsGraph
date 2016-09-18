@@ -79,6 +79,7 @@ class SerieLine extends Serie {
     };
 
     this.extendStyles();
+    this.markersDom = new Map();
 
     if ( this.options.markers ) {
       this.setMarkers( this.options.markers, "unselected" );
@@ -744,7 +745,6 @@ class SerieLine extends Serie {
           this.getMarkerCurrentFamily( this.counter2 );
         }
 
-
         xpx2 = this.getX( x );
         ypx2 = this.getY( y );
 
@@ -1117,7 +1117,8 @@ class SerieLine extends Serie {
     }
   }
 
-  killImpl() {
+  kill() {
+    super.kill();
     this.killPeakPicking();
   }
 
@@ -1131,20 +1132,21 @@ class SerieLine extends Serie {
       return;
     }
 
+    var family;
+
     for ( var z = 0; z < this.markerPoints[ this.selectionType ].length; z++ ) {
       if ( this.markerPoints[ this.selectionType ][ z ][ 0 ] <= k )  { // This one is a possibility !
         if ( this.markerPoints[ this.selectionType ][ z ][ 1 ] >= k ) { // Verify that it's in the boundary
           this.markerCurrentFamily = this.markerPoints[ this.selectionType ][ z ][ 2 ];
-
+          family = this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ];
         }
       } else {
         break;
       }
-
     }
 
+    this.getMarkerDom( family );
     return this.markerCurrentFamily;
-
   }
 
   drawSlot( slotToUse, y ) {
@@ -1283,9 +1285,16 @@ class SerieLine extends Serie {
 
       return;
     }
-console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selectionType || "unselected" ], this.markerFamilies );
-    if ( this.markersShown() && allowMarker !== false && this.markerFamilies[ this.selectionType || "unselected" ] ) {
-      drawMarkerXY( this, this.markerFamilies[ this.selectionType || "unselected" ][ this.markerCurrentFamily ], xpx, ypx );
+
+    let family;
+    if ( this.markersShown() && allowMarker !== false && ( family = this.markerFamilies[ this.selectionType || "unselected" ] ) ) {
+      drawMarkerXY(
+        this,
+        family[ this.markerCurrentFamily ],
+        xpx,
+        ypx,
+        this.markersDom.get( family[  this.markerCurrentFamily ] )
+      );
     }
 
     this.counter++;
@@ -1419,11 +1428,15 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
   getMarkerDom( family )  {
 
     var self = this;
-    if ( !family.dom ) {
+
+    if ( !this.markersDom.has( family ) ) {
+
       var dom = document.createElementNS( this.graph.ns, 'path' );
       this.setMarkerStyleTo( dom, family );
-      family.dom = dom;
-      family.path = "";
+      this.markersDom.set( family, { 
+        dom: dom,
+        path: ""
+      } );
 
       dom.addEventListener( 'mouseover', function( e ) {
         var closest = self._getMarkerIndexFromEvent( e );
@@ -2046,8 +2059,8 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
     if ( recalculatePoints ) {
       this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
     }
-
-    this.setMarkerStyleTo( this.styles[ selectionType ].markers[ family ].dom, this.styles[ selectionType ].markers[ family ] );
+    console.log( this.markersDom[ this.styles[ selectionType ].markers[ family ] ] );
+    this.setMarkerStyleTo( this.markersDom[ this.styles[ selectionType ].markers[ family ] ].dom, this.styles[ selectionType ].markers[ family ] );
 
   }
 
@@ -2059,7 +2072,6 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
 
     for ( var i = 0, k = families.length; i < k; i++ ) {
 
-      this.getMarkerDom( families[ i ] );
       families[ i ].markerPath = this.getMarkerPath( families[ i ] );
 
       if ( !families[ i ].points ) {
@@ -2088,7 +2100,6 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
       }
     }
 
-    
     this.markerFamilies[ selectionType || "unselected" ] = families;
 
     // Let's sort if by the first index.
@@ -2096,7 +2107,6 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
       return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
     } );
 
-    
     this.markerPoints[ selectionType || "unselected" ] = markerPoints;
   }
 
@@ -2107,8 +2117,22 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
     }
 
     for ( var i = 0, l = this.markerFamilies[ selectionType || this.selectionType ].length; i < l; i++ ) {
-      this.markerFamilies[ selectionType || this.selectionType ][ i ].dom.setAttribute( 'd', this.markerFamilies[ selectionType || this.selectionType ][ i ].path );
-      this.groupMarkers.appendChild( this.markerFamilies[ selectionType || this.selectionType ][ i ].dom );
+
+      if ( !this.markersDom.has( this.markerFamilies[ selectionType || this.selectionType ][ i ] ) ) {
+        continue;
+      }
+
+      let dom =
+        this
+        .markersDom
+        .get(  this.markerFamilies[ selectionType || this.selectionType ][ i ] );
+
+      dom.dom
+        .setAttribute(
+          'd',
+          dom.path );
+
+      this.groupMarkers.appendChild( dom.dom );
       this.currentMarkersSelectionType = this.selectionType;
     }
   }
@@ -2146,15 +2170,13 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
 
     } else if ( this.currentMarkersSelectionType ) {
 
-      this.markerFamilies[ this.currentMarkersSelectionType ].map( function( el ) {
-/*
-        if( ! el.dom ) {
+      this.markersDom.forEach( function( el ) {
+
+        if ( !el.dom ) {
           return;
         }
 
         self.groupMarkers.removeChild( el.dom );
-
-        */
         el.path = "";
       } );
 
@@ -2295,8 +2317,8 @@ console.log( this.markersShown(), allowMarker, this.markerFamilies[ this.selecti
   }
 }
 
-function drawMarkerXY( graph, family, x, y ) {
-console.log( family, x, y );
+function drawMarkerXY( graph, family, x, y, markerDom ) {
+
   if ( !family ) {
     return;
   }
@@ -2309,9 +2331,9 @@ console.log( family, x, y );
     dom.setAttribute( 'd', p );
   }
 
-  family.path = family.path ||  "";
-  family.path += 'M ' + x + ' ' + y + ' ';
-  family.path += family.markerPath + ' ';
+  markerDom.path = markerDom.path ||  "";
+  markerDom.path += 'M ' + x + ' ' + y + ' ';
+  markerDom.path += family.markerPath + ' ';
 }
 
 function getDegradedData( graph ) { // Serie redrawing

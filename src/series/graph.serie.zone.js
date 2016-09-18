@@ -2,7 +2,8 @@ import Serie from './graph.serie'
 import {
   extend,
   guid
-} from '../graph.util'
+}
+from '../graph.util'
 
 /**
  * @name SerieZoneDefaultOptions

@@ -2,6 +2,7 @@ import AxisX from "../graph.axis.x"
 import AxisY from "../graph.axis.y"
 import * as util from "../graph.util"
 import SerieLine from '../series/graph.serie.line'
+import SerieScatter from '../series/graph.serie.scatter'
 import Plugin from './graph.plugin'
 import Axis from "../graph.axis"
 
@@ -13,36 +14,49 @@ class SerieLineExtended extends SerieLine {
   }
 
   setData() {
-  	super.setData( ...arguments );
-  	this.subSeries.map( ( sub ) => {
-  		sub.data = this.data;
-  	});
-
+    super.setData( ...arguments );
+    this.subSeries.map( ( sub ) => {
+      sub.data = this.data;
+    } );
     return this;
   }
-
 
   draw() {
     this.eraseMarkers();
     return this;
   }
-/*
-  setSeries( ...series ) {
-    this.series = series;
-  }
-  */
 }
 
-var excludingMethods = [ 
-  'constructor', 
-  'init', 
-  'draw', 
-  'setLineColor', 
-  'setLineWidth', 
-  'setLineStyle', 
-  'getLineColor', 
-  'getLineWidth', 
-  'getLineStyle', 
+class SerieScatterExtended extends SerieScatter {
+
+  constructor() {
+    super( ...arguments );
+    this.subSeries = [];
+  }
+
+  setData() {
+    super.setData( ...arguments );
+    this.subSeries.map( ( sub ) => {
+      sub.data = this.data;
+    } );
+    return this;
+  }
+
+  draw() {
+    return this;
+  }
+}
+
+var excludingMethods = [
+  'constructor',
+  'init',
+  'draw',
+  'setLineColor',
+  'setLineWidth',
+  'setLineStyle',
+  'getLineColor',
+  'getLineWidth',
+  'getLineStyle',
   'setMarkers',
   'showMarkers',
   'hideMarkers',
@@ -50,92 +64,135 @@ var excludingMethods = [
   'getMarkerDomIndependant',
   'getMarkerPath',
   'eraseMarkers',
-  '_recalculateMarkerPoints' ];
-var addMethods = [  ];
+  '_recalculateMarkerPoints'
+];
+var addMethods = [  ];
 
 Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( function( i ) {
 
-	if( excludingMethods.indexOf( i ) > -1 ) {
-		return;
-	}
+  if ( excludingMethods.indexOf( i ) > -1 ) {
+    return;
+  }
 
-	SerieLineExtended.prototype[ i ] = ( function( j ) { 
-    console.log( j );
-	  return function() {
-  		
+  SerieLineExtended.prototype[ i ] = ( function( j ) {
+
+    return function() {
+
       var args = arguments;
-	    this.subSeries.map( ( subSerie ) => {
-	      subSerie[ j ]( ...args );
-	    } );
-	  }
+      this.subSeries.map( ( subSerie ) => {
+        subSerie[ j ]( ...args );
+      } );
+    }
 
-	} ) ( i );
+  } )( i );
 } );
-  
 
-
+/** 
+ * Axis splitting plugin
+ * @augments Plugin
+ */
 class PluginAxisSplitting extends Plugin {
 
-  constructor( graph ) {
+  constructor( options ) {
     super( ...arguments );
     this.series = new Map();
   }
+
+
+  static defaults() {
+
+    return {
+      axes: {
+        margins: {
+          high: 5,
+          low: 5
+        }
+      }
+    };
+  }
+
 
   init( graph ) {
     this.graph = graph;
   }
 
-  update() {
-
-  }
-
+  /**
+   *  Creates a new bottom split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
   newXAxis( options ) {
-    return newTopAxis( options );
+    return newBottomAxis( options );
   }
 
+  /**
+   *  Creates a new left split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
   newYAxis( options ) {
     return newLeftAxis( options );
   }
 
+  /**
+   *  Creates a new top split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
   newTopAxis( options ) {
-  	options = this.getOptions( options );
-    return new SplitXAxis( this.graph, "top", options )
+    options = this.getOptions( options );
+    return new SplitXAxis( this.graph, "top", options );
   }
 
+  /**
+   *  Creates a new bottom split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
   newBottomAxis( options ) {
-  	options = this.getOptions( options );
-    return new SplitXAxis( this.graph, "bottom", options )
+    options = this.getOptions( options );
+    return new SplitXAxis( this.graph, "bottom", options );
   }
 
+  /**
+   *  Creates a new left split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
   newLeftAxis( options ) {
-  	options = this.getOptions( options );
-    return new SplitYAxis( this.graph, "left", options )
+    options = this.getOptions( options );
+    return new SplitYAxis( this.graph, "left", options );
   }
 
-  newRight( options ) {
-  	options = this.getOptions( options );
-    return new SplitYAxis( this.graph, "right", options )
+  /**
+   *  Creates a new right split axis
+   *  @param {Object} [ options = {} ] The axis options
+   *  @return {Axis} The newly created split axis
+   */
+  newRightAxis( options ) {
+    options = this.getOptions( options );
+    return new SplitYAxis( this.graph, "right", options );
   }
 
   getOptions( options ) {
-  	var defaults = {
-  		marginMin: this.options.axes.margins.low,
-  		marginMax: this.options.axes.margins.high,
-  	};
-  	return util.extend( true, defaults, options );
+    var defaults = {
+      marginMin: this.options.axes.margins.low,
+      marginMax: this.options.axes.margins.high,
+    };
+    return util.extend( true, defaults, options );
   }
 
   preDraw() {
 
-  	var xAxis, yAxis;
+    var xAxis, yAxis;
 
+    //    for ( let { serie } of this.series.values() ) {
+    this.series.forEach( ( { 
+      serie
+    } ) => {
 
-//    for ( let { serie } of this.series.values() ) {
-	this.series.forEach( ( { serie } ) => { 
-
-    xAxis = serie.getXAxis(),
-    yAxis = serie.getYAxis();
-
+      xAxis = serie.getXAxis();
+      yAxis = serie.getYAxis();
 
       let splits = 1;
 
@@ -148,45 +205,54 @@ class PluginAxisSplitting extends Plugin {
       }
 
       while ( serie.subSeries.length < splits ) {
-        
+
         const name = serie.getName() + "_" + serie.subSeries.length;
-        const s = this.graph.newSerie( name, {}, serie.type || "line" );
-        
+        const s = this.graph.newSerie( name, {}, serie.getType() || "line" );
+
         s.styles = serie.styles;
-        s.markerPoints = serie.markerPoints;
-        s.markerFamilies = serie.markerFamilies;
-		    s.data = serie.data; // Copy data
+        s.data = serie.data; // Copy data
+
+        if ( serie.getType() == "line" ) {
+          s.markerPoints = serie.markerPoints;
+          s.markerFamilies = serie.markerFamilies;
+        }
+
         serie.subSeries.push( s );
       }
 
       while ( serie.subSeries.length > splits ) {
-      	
-        this.graph.getSerie( serie.getName() + "_" + serie.subSeries.length - 1 ).kill();
+
+        this.graph.getSerie( serie.getName() + "_" + ( serie.subSeries.length - 1 ) ).kill();
         serie.subSeries.pop();
       }
 
-      var firstSubSerie = serie.subSeries[ 0 ];
+      if ( !serie.getXAxis().splitNumber && serie.getXAxis().splitAxis ) {
+        serie.getXAxis().splitAxis();
+      }
 
+      if ( !serie.getYAxis().splitNumber && serie.getYAxis().splitAxis ) {
+        serie.getYAxis().splitAxis();
+      }
 
       // Re-assign axes to the sub series
       serie.subSeries.map( ( sserie, index ) => {
 
-      	var xSubAxis, ySubAxis;
+        var xSubAxis, ySubAxis;
 
         //sserie.groupMarkers = firstSubSerie.groupMarkers;
+
         if ( serie.getXAxis().getSubAxis ) {
           let subAxisIndex = index % ( ( xAxis.splitNumber || 1 ) );
           xSubAxis = serie.getXAxis().getSubAxis( subAxisIndex );
-         
         } else {
-          xSubAxis = serie.getXAxis();  
+          xSubAxis = serie.getXAxis();
         }
 
-		  sserie.setXAxis( xSubAxis );
+        sserie.setXAxis( xSubAxis );
 
         if ( serie.getYAxis().getSubAxis ) {
 
-          let subAxisIndex = Math.floor( index / ( ( yAxis.splitNumber || 1 ) ) );
+          let subAxisIndex = Math.floor( index / ( ( xAxis.splitNumber || 1 ) ) );
           ySubAxis = serie.getYAxis().getSubAxis( subAxisIndex );
         } else {
           ySubAxis = serie.getYAxis();
@@ -194,24 +260,44 @@ class PluginAxisSplitting extends Plugin {
 
         sserie.setYAxis( ySubAxis );
 
-        sserie.draw(true);
+        sserie.draw( true );
       } );
-    //}
+      //}
 
-	});
+    } );
 
     this.update();
   }
 
+  /**
+   *  Creates a new serie
+   *  @param {(String|Number)} name - The name of the serie
+   *  @param {Object} [ options = {} ] The options of the serie
+   *  @param {String} type - The type of the serie
+   *  @return {Serie} The created serie
+   */
   newSerie( name, options = {}, type ) {
 
-    if ( type == "line" ) {
-      return newLineSerie( name, options );
+    switch ( type ) {
+
+      case 'line':
+        return newLineSerie( name, options );
+        break;
+
+      case 'scatter':
+        return newScatterSerie( name, options );
+        break;
     }
 
     throw "Cannot create a split serie of type " + type;
   }
 
+  /**
+   *  Creates a new line serie
+   *  @param {(String|Number)} name - The name of the serie
+   *  @param {Object} [ options = {} ] The options of the serie
+   *  @return {Serie} The created serie
+   */
   newLineSerie( name, options ) {
     var serieObj = {
       type: "lineSerie",
@@ -222,31 +308,120 @@ class PluginAxisSplitting extends Plugin {
     this.graph.series.push( serieObj.serie );
     return serieObj.serie;
   }
+
+  /**
+   *  Creates a new scatter serie
+   *  @param {(String|Number)} name - The name of the serie
+   *  @param {Object} [ options = {} ] The options of the serie
+   *  @return {Serie} The created serie
+   */
+  newScatterSerie( name, options ) {
+    var serieObj = {
+      type: "scatterSerie",
+      serie: new SerieScatterExtended( name, options, "scatter" )
+    };
+    this.series.set( name, serieObj );
+    serieObj.serie.init( this.graph, options );
+    this.graph.series.push( serieObj.serie );
+    return serieObj.serie;
+  }
+
 }
+
+var defaultAxisConstructorOptions = {
+  splitMarks: true
+};
 
 var SplitAxis = function( mixin ) {
 
-  return class SplitAxis extends( mixin ) {
+  var delegateMethods = [
+
+    'turnGridsOff',
+    'turnGridsOn',
+    'gridsOff',
+    'gridsOn',
+    'setEngineering',
+    'setScientificScaleExponent',
+    'setScientific',
+    'setLabelColor',
+    'setSecondaryGridDasharray',
+    'setPrimaryGridDasharray',
+    'setSecondaryGridsOpacity',
+    'setPrimaryGridOpacity',
+    'setSecondaryGridWidth',
+    'setPrimaryGridWidth',
+    'setSecondaryGridColor',
+    'setPrimaryGridColor',
+    'setTicksLabelColor',
+    'setSecondaryTicksColor',
+    'setPrimaryTicksColor',
+    'setAxisColor',
+    'secondaryGridOn',
+    'secondaryGridOff',
+    'primaryGridOff',
+    'primaryGridOn',
+    'setSecondaryGrid',
+    'setPrimaryGrid',
+    'setGrids',
+    'setTickPosition',
+    'setExponentialFactor',
+    'setExponentialLabelFactor',
+    'setGridLinesStyle',
+    'forcePrimaryTickUnitMin',
+    'forcePrimaryTickUnitMax',
+    'forcePrimaryTickUnit',
+    'flip',
+    'show',
+    'hide',
+    'setDisplay'
+  ];
+
+  /** 
+   * Split axis
+   * @mixes {AxisX|AxisY}
+   */
+  var cl = class SplitAxis extends( mixin ) {
 
     constructor( graph, position, options = {} ) {
 
       super( graph, position, options );
       this.axes = [];
       this.position = position;
-      this.constructorOptions = util.extend( true, {}, options );
+      this.constructorOptions = util.extend( true, {}, defaultAxisConstructorOptions, options );
 
-      this._splitVal = [ [ 0, 1 ] ];
+      this._splitVal = [];
     }
 
+    /**
+     *  Calls a callback onto each chunk axes. The callback receives two parameters: 1) the ```axis``` itself and 2) the ```index``` of the axis in the stack
+     *  @param {Function} callback - The callback to be applied to each axes
+     *  @return {SplitAxis} The current axis instance
+     */
+    all( callback ) {
+
+      if ( !( typeof callback == "function" ) ) {
+        return;
+      }
+
+      this.axes.map( callback );
+      return this;
+    }
+
+    /**
+     *  Splits the axis into chunks at the positions defined as a list of parameters.
+     *  @param {Function} ...splits - The positions of axis splitting
+     *  @return {SplitAxis} The current axis instance
+     *  @example axis.splitAxis( 0.2, 0.5, 0.8 ); // Creates 4 chunks (0-20%, 20%-50%, 50%-80%, 80%-100%)
+     */
     splitAxis( ...splits ) {
 
       splits.push( 1 );
       let splitNumber = splits.length;
 
-      if ( this.axes.length > splitNumber ) {
-        // TODO: Remove all needed axes
+      while ( this.axes.length > splitNumber ) {
+        this.axes.pop().kill( true, true );
       }
-      
+
       while ( this.axes.length < splitNumber ) {
         let axis = new( this.getConstructor() )( this.graph, this.position, this.constructorOptions );
         this.axes.push( axis );
@@ -257,15 +432,17 @@ var SplitAxis = function( mixin ) {
       let from = 0
       let i = 0;
       for ( let axis of this.axes ) {
-      	
-      	axis.options.marginMin = 10;
-      	axis.options.marginMax = 10;
 
-      	if( i == 0 ) {
-      		axis.options.marginMin = 0;
-      	} else if( i == this.axes.length - 1 ) {
-      		axis.options.marginMax = 0;
-      	}
+        axis.options.marginMin = 10;
+        axis.options.marginMax = 10;
+
+        if ( i == 0 ) {
+          axis.options.marginMin = 0;
+        }
+
+        if ( i == this.axes.length - 1 ) {
+          axis.options.marginMax = 0;
+        }
 
         axis.setSpan( from, ( from = splits[ i ] ) )
         axis.setMinMaxFlipped();
@@ -273,84 +450,114 @@ var SplitAxis = function( mixin ) {
       }
 
       this._splits = splits;
+      return this;
     }
 
+    /**
+     *  Fixes the major tick interval of all axes based on the one provided as a parameter
+     *  @param {Number} axisIndex - The index of the reference axis (starting at 0)
+     *  @return {SplitAxis} The current axis instance
+     */
     fixGridIntervalBasedOnAxis( axisIndex ) {
+
       this.fixGridFor = axisIndex;
+      this.graph._axisHasChanged();
+      return this;
     }
 
+    /**
+     *  Spreads the chunks of the axis based on the relative interval of each one of them, so that the unit / px is constant for each chunk
+     *  @param {Boolean} bln - ```true``` to enable the spread, ```false``` otherwise
+     *  @return {SplitAxis} The current axis instance
+     */
     splitSpread( bln ) {
-      this.autoSpread = !! bln; 
+      this.autoSpread = !!bln;
+      return this;
     }
-    
+
     _splitSpread() {
 
       let splits = [],
-          total = 0,
-          currentSplit = 0;
-//console.log( this._splitVal );
-      for( let split of this._splitVal ) {
+        total = 0,
+        currentSplit = 0;
+      //console.log( this._splitVal );
+      for ( let split of this._splitVal ) {
         total += split[ 1 ] - split[ 0 ];
       }
-      
-      for( let split of this._splitVal ) {
-        
+
+      for ( let split of this._splitVal ) {
+
         splits.push( currentSplit += ( split[ 1 ] - split[ 0 ] ) / total );
       }
-      
+
       splits.pop();
       this.splitAxis( ...splits );
     }
 
+    /**
+     *  Defines the boundaries of each chunk in axis unit.
+     *  @param {Array<(Array|Number)>} values - An array of either 2-component arrays (from-to) or number (mean)
+     *  @example axis.splitValues( [ [ 12, 20 ], [ 100, 200 ] ] ); // First chunk from 12 to 20, second one from 100 to 200
+     *  @example axis.splitValues( [ 12, [ 100, 200 ] ] ); // Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks
+     *  @return {SplitAxis} The current axis instance
+     */
     splitValues( values ) {
 
-  	  let index = 0,
-          baseWidth,
-          baseWidthIndex;
-    
-      for( let axis of this.axes ) {
+      let index = 0,
+        baseWidth,
+        baseWidthIndex;
 
-        if( values[ index ].length > 1 && ! baseWidth ) {
+      for ( let axis of this.axes ) { // List all axes
+
+        // Two elements in the array => becomes the new reference
+        if ( Array.isArray( values[ index ] ) && values[ index ].length > 1 && !baseWidth ) {
           baseWidth = values[ index ][ 1 ] - values[ index ][ 0 ];
           baseWidthIndex = index;
         }
 
-        if( values[ index ].length == 1 || ! Array.isArray( values[ index ] ) ) {
+        if ( values[ index ].length == 1 ||  !Array.isArray( values[ index ] ) ) {
           axis._mean = values[ index ];
 
-          if( Array.isArray( axis._mean ) ) {
+          if ( Array.isArray( axis._mean ) ) {
             axis._mean = axis._mean[ 0 ];
           }
 
         } else {
+
           axis
-          	.forceMin( values[ index ][ 0 ] )
-          	.forceMax( values[ index ][ 1 ] );
+            .forceMin( values[ index ][ 0 ] )
+            .forceMax( values[ index ][ 1 ] );
         }
 
-        	index++;
+        index++;
       }
 
       this._baseWidthVal = baseWidth;
       this._baseWidthIndex = baseWidthIndex;
 
       this._splitVal = values;
-    }
 
+      this.graph._axisHasChanged();
+
+      return this;
+    }
 
     setMinMaxToFitSeries() {
 
-      if( this._splitVal.length <= 1 ) {
+      if ( !this._splitVal || this._splitVal.length < 1 ) {
         super.setMinMaxToFitSeries( ...arguments );
+        this._splitVal[ 0 ] = this._splitVal[ 0 ] || [];
+        this._splitVal[ this._splitVal.length - 1 ] = this._splitVal[ this._splitVal.length - 1 ] || [];
+
         this._splitVal[ 0 ][ 0 ] = this.getCurrentMin();
         this._splitVal[ this._splitVal.length - 1 ][ 1 ] = this.getCurrentMax();
-        this.splitBoundaries( this._splitVal );
+        this.splitValues( this._splitVal );
       }
-    }	
+    }
 
     draw() {
 
-      if( this.autoSpread ) {
+      if ( this.autoSpread ) {
         this._splitSpread();
       }
 
@@ -359,30 +566,37 @@ var SplitAxis = function( mixin ) {
       let subAxis;
       let spanReference;
 
-
-      if( this._baseWidthIndex >= 0 && ( subAxis = this.getSubAxis( this._baseWidthIndex ) ) ) {
+      if ( this._baseWidthIndex >= 0 && ( subAxis = this.getSubAxis( this._baseWidthIndex ) ) ) {
         spanReference = subAxis.getSpan();
-        console.log( spanReference)
       }
 
-      if( this.fixGridFor >= 0 && ( subAxis = this.getSubAxis( this.fixGridFor ) ) ) {
+      subAxis = undefined;
+
+      if ( this.fixGridFor >= 0 && ( subAxis = this.getSubAxis( this.fixGridFor ) ) ) {
+
+        if ( subAxis._mean !== undefined ) {
+          let width = ( subAxis.getSpan()[ 1 ] - subAxis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[  0 ] ) * this._baseWidthVal;
+          subAxis.forceMin( subAxis._mean - width / 2 );
+          subAxis.forceMax( subAxis._mean + width / 2 );
+        }
+
         max = subAxis.draw();
         unit = subAxis.getPrimaryTickUnit();
       }
 
-      this.axes.map( ( axis ) => {      	
-        console.log( axis._mean, axis.getSpan() );
-        if( axis._mean !== undefined ) {
-          let width = ( axis.getSpan()[ 1 ] - axis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[ 0 ] ) * this._baseWidthVal;
+      this.axes.map( ( axis ) => {
+
+        if ( subAxis === axis ) {
+          return;
+        }
+
+        if ( axis._mean !== undefined ) {
+          let width = ( axis.getSpan()[ 1 ] - axis.getSpan()[ 0 ] ) / ( spanReference[ 1 ] - spanReference[  0 ] ) * this._baseWidthVal;
           axis.forceMin( axis._mean - width / 2 );
           axis.forceMax( axis._mean + width / 2 );
         }
 
-        if( subAxis === axis ) {
-          return;
-        }
-
-        if( unit ) {
+        if ( unit ) {
           axis.forcePrimaryTickUnit( unit );
         }
 
@@ -390,45 +604,55 @@ var SplitAxis = function( mixin ) {
 
       } );
 
+      this.drawLabel();
+      this.writeUnit();
+
       return max;
     }
 
     setMinPx( min ) {
 
-      for( let axis of this.axes ) {
+      super.setMinPx( min );
+      for ( let axis of this.axes ) {
         axis.setMinPx( min );
       }
     }
 
     setMaxPx( max ) {
-      for( let axis of this.axes ) {
+
+      super.setMaxPx( max );
+
+      for ( let axis of this.axes ) {
         axis.setMaxPx( max );
       }
     }
 
     setShift() {
 
-      for( let axis of this.axes ) {
-      	axis.setShift( ...arguments );
+      super.setShift( ...arguments );
+
+      for ( let axis of this.axes ) {
+        axis.setShift( ...arguments );
       }
     }
 
     init() {
       super.init( ...arguments );
-      this.splitAxis( );
+      this.splitAxis();
     }
 
     getAxisPosition() {
       var max = 0;
+
       this.axes.map( ( axis ) => { 
-        max = Math.max( max, axis.getAxisPosition() )
+        max = Math.max( max, axis.getAxisPosition() );
       } );
 
       return max;
     }
 
     getSubAxis( index ) {
-    	
+
       if ( this.axes.length <= index ) {
         throw "Impossible to reach axis. Index " + index + " is out of range";
       }
@@ -440,17 +664,25 @@ var SplitAxis = function( mixin ) {
       return this._splits.length;
     }
   }
+
+  delegateMethods.map( ( methodName ) => {
+
+    cl.prototype[ methodName ] = ( function( method ) {
+
+      return function() {
+        //super[ method ]( ...arguments )
+
+        this.axes.map( ( axis ) => {
+          axis[ method ]( ...arguments )
+        } );
+        return this;
+      }
+
+    } )( methodName );
+  } );
+
+  return cl;
 }
-
-PluginAxisSplitting.prototype.defaults = {
-	axes: {
-		margins: {
-			high: 5,
-			low: 5
-		}
-	}
-};
-
 
 class SplitXAxis extends SplitAxis( AxisX ) {
 
@@ -462,17 +694,50 @@ class SplitXAxis extends SplitAxis( AxisX ) {
   getConstructor() {
     return AxisX;
   }
+
+  getAxisPosition() {
+    var max = super.getAxisPosition( ...arguments );
+
+    this.labelPosY = max;
+
+    if ( this.getLabel() ) {
+      max += this.graph.options.fontSize;
+    }
+
+    return max;
+  }
+
+  drawLabel() {
+    super.drawLabel();
+    this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( this.graph.options.fontSize + this.labelPosY ) );
+  }
 }
 
 class SplitYAxis extends SplitAxis( AxisY ) {
 
   constructor( graph, leftright, options ) {
     super( ...arguments );
-    this.topbottom = leftright;
+    ///this.leftright = leftright;
   }
 
   getConstructor() {
     return AxisY;
+  }
+
+  draw() {
+
+    if ( this.getLabel() ) {
+      this.axes.map( ( axis ) => {
+        axis.setAxisPosition( this.graph.options.fontSize );
+      } ); // Extra shift allowed for the label
+      //this.setShift( this.graph.options.fontSize );
+    }
+    return super.draw( ...arguments );
+  }
+
+  drawLabel() {
+    super.drawLabel();
+    this.placeLabel( this.left ? -this.getShift() : this.getShift() );
   }
 }
 

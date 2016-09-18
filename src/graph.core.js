@@ -199,6 +199,15 @@ class Graph extends EventEmitter {
     return this.dom;
   }
 
+  /**
+   * Returns the unique id representing the graph
+   * @public
+   * @return {String} The unique ID of the graph
+   */
+  getId() {
+    return this._creation;
+  }
+
   /** 
    * Returns the graph wrapper element passed during the graph creation
    * @public
@@ -252,7 +261,6 @@ class Graph extends EventEmitter {
     if ( !this.width || !this.height ) {
       return;
     }
-
 
     if ( !this.sizeSet ) {
 
@@ -528,6 +536,10 @@ class Graph extends EventEmitter {
    */
   setLeftAxis( axis, index ) {
     index = index || 0;
+
+    if ( this.axis.left[ index ] ) {
+      this.axis.left[ index ].kill();
+    }
     this.axis.left[ index ] = axis;
   }
 
@@ -543,6 +555,10 @@ class Graph extends EventEmitter {
    */
   setRightAxis( axis, index ) {
     index = index || 0;
+
+    if ( this.axis.right[ index ] ) {
+      this.axis.right[ index ].kill();
+    }
     this.axis.right[ index ] = axis;
   }
 
@@ -558,22 +574,83 @@ class Graph extends EventEmitter {
    */
   setTopAxis( axis, index ) {
     index = index || 0;
+
+    if ( this.axis.top[ index ] ) {
+      this.axis.top[ index ].kill();
+    }
     this.axis.top[ index ] = axis;
   }
 
   /**
    * Sets a bottom axis
    * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ number=0 ] - The index of the axis
+   * @param {Number} [ index=0 ] - The index of the axis
    * @see Graph#setTopAxis
    * @see Graph#setLeftAxis
    * @see Graph#setRightAxis
    * @see Graph#getTopAxis
    * @see Graph#getXAxis
    */
-  setBottomAxis( axis, num ) {
-    num = num || 0;
-    this.axis.bottom[ num ] = axis;
+  setBottomAxis( axis, index ) {
+    index = index || 0;
+
+    if ( this.axis.bottom[ index ] ) {
+      this.axis.bottom[ index ].kill();
+    }
+    this.axis.bottom[ index ] = axis;
+  }
+
+  killAxis( axis, noRedraw = false, noSerieKill = false ) {
+
+    var index;
+
+    if ( axis.isX() ) {
+
+      if ( ( index = this.axis.bottom.indexOf( axis ) ) > -1 ) {
+        this.axis.bottom.splice( index, 1 );
+      }
+
+      if ( ( index = this.axis.top.indexOf( axis ) ) > -1 ) {
+        this.axis.top.splice( index, 1 );
+      }
+
+      if ( !noSerieKill ) {
+        this.series.map( ( serie ) => {
+
+          if ( serie.getXAxis() == axis ) {
+            serie.kill();
+          }
+        } );
+      }
+    }
+
+    if ( axis.isY() ) {
+
+      if ( ( index = this.axis.left.indexOf( axis ) ) > -1 ) {
+        this.axis.left.splice( index, 1 );
+      }
+
+      if ( ( index = this.axis.right.indexOf( axis ) ) > -1 ) {
+        this.axis.right.splice( index, 1 );
+      }
+
+      if ( !noSerieKill ) {
+        this.series.map( ( serie ) => {
+
+          if ( serie.getYAxis() == axis ) {
+            serie.kill();
+          }
+        } );
+      }
+    }
+
+    this.axisGroup.removeChild( axis.group ); // Removes all DOM
+    this.groupPrimaryGrids.removeChild( axis.gridPrimary );
+    this.groupSecondaryGrids.removeChild( axis.gridSecondary );
+
+    if ( !noRedraw ) {
+      this.draw( true );
+    }
   }
 
   /**
@@ -769,7 +846,7 @@ class Graph extends EventEmitter {
       }
 
       serieValue = serie[ func2use ]();
-      
+
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
 
     }
@@ -890,8 +967,8 @@ class Graph extends EventEmitter {
   }
 
   /**
-   * Creates a new serie<br />
-   * If the a serie with the same name exists, returns this serie with update options <br />
+   * Creates a new serie.
+   * If the a serie with the same name exists, returns this serie with update options.
    * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
    * Built-in series types are "line", "contour", "zone" and "scatter".
    * @param {String} name - The name of the serie (unique)
@@ -1538,9 +1615,8 @@ class Graph extends EventEmitter {
 
       if ( constructor ) {
 
-        var options = util.extend( true, {}, constructor.prototype.defaults || {}, pluginOptions );
+        var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
         this.plugins[ pluginName ] = new constructor( options );
-        
 
         util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
         this.plugins[ pluginName ].init( this, pluginOptions );
@@ -1796,6 +1872,50 @@ class Graph extends EventEmitter {
     this.markerArrow.appendChild( pathArrow );
 
     this.defs.appendChild( this.markerArrow );
+
+    // Horionzal split marker for axis 
+    this.markerHorizontalSplit = document.createElementNS( this.ns, 'marker' );
+    this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
+    this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
+    this.markerHorizontalSplit.setAttribute( 'refX', '3' );
+    this.markerHorizontalSplit.setAttribute( 'refY', '4' );
+    this.markerHorizontalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
+    this.markerHorizontalSplit.setAttribute( 'markerWidth', '6' );
+    this.markerHorizontalSplit.setAttribute( 'markerHeight', '8' );
+
+    var path = document.createElementNS( this.ns, 'line' );
+    path.setAttribute( 'x1', '0' );
+    path.setAttribute( 'y1', '8' );
+
+    path.setAttribute( 'x2', '6' );
+    path.setAttribute( 'y2', '0' );
+
+    path.setAttribute( 'stroke', 'black' );
+    this.markerHorizontalSplit.appendChild( path );
+
+    this.defs.appendChild( this.markerHorizontalSplit );
+
+    // Vertical split marker for axis 
+    this.markerVerticalSplit = document.createElementNS( this.ns, 'marker' );
+    this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
+    this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
+    this.markerVerticalSplit.setAttribute( 'refX', '4' );
+    this.markerVerticalSplit.setAttribute( 'refY', '3' );
+    this.markerVerticalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
+    this.markerVerticalSplit.setAttribute( 'markerWidth', '8' );
+    this.markerVerticalSplit.setAttribute( 'markerHeight', '6' );
+
+    var path = document.createElementNS( this.ns, 'line' );
+
+    path.setAttribute( 'x1', '0' );
+    path.setAttribute( 'y1', '0' );
+
+    path.setAttribute( 'x2', '8' );
+    path.setAttribute( 'y2', '6' );
+
+    path.setAttribute( 'stroke', 'black' );
+    this.markerVerticalSplit.appendChild( path );
+    this.defs.appendChild( this.markerVerticalSplit );
 
     this.vertLineArrow = document.createElementNS( this.ns, 'marker' );
     this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
@@ -2317,12 +2437,12 @@ function refreshDrawingZone( graph ) {
     // First we need to draw it in order to determine the width to allocate
     // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
 
-    var drawn = axis.draw();
-    // Get axis position gives the extra shift that is common
+    // Let's not draw dependant axes yet
+    let drawn = ( !axis.linkedToAxis ) ? axis.draw() : 0;
 
+    // Get axis position gives the extra shift that is common
     var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
     axis.setLevel( level );
-
     shift[ position ][ level ] = Math.max( drawn + axis.getAxisPosition(), shift[ position ][ level ] || 0 );
 
   }, false, false, true );
@@ -2366,10 +2486,13 @@ function refreshDrawingZone( graph ) {
       return;
     }
 
-    axis.draw();
+    if ( !axis.linkedToAxis ) {
+      axis.draw();
+    }
 
   }, false, true, false );
 
+  // Floating axes
   graph._applyToAxes( function( axis ) {
 
     if ( !axis.floating ) {
@@ -2381,7 +2504,10 @@ function refreshDrawingZone( graph ) {
     var floatingPx = floatingAxis.getPx( floatingValue );
 
     axis.setShift( floatingPx );
-    axis.draw();
+
+    if ( !axis.linkedToAxis ) {
+      axis.draw();
+    }
 
   }, false, true, true );
 
@@ -2893,11 +3019,6 @@ function _getAxis( graph, num, options, pos ) {
     def: {
       x: graph.getConstructor( "graph.axis.x" ),
       y: graph.getConstructor( "graph.axis.y" )
-    },
-
-    broken: {
-      x: graph.getConstructor( "graph.axis.x.broken" ),
-      y: graph.getConstructor( "graph.axis.y.broken" )
     },
 
     time: {

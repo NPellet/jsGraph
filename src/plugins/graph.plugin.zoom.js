@@ -1,19 +1,28 @@
-define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
+import * as util from '../graph.util'
+import Plugin from './graph.plugin'
 
-  /**
-   * @class PluginZoom
-   * @implements Plugin
-   */
-  var PluginZoom = function() {};
+/**
+ * @class PluginZoom
+ * @implements Plugin
+ */
+class PluginZoom extends Plugin {
 
-  PluginZoom.prototype = new Plugin();
+  constructor() {
+    super( ...arguments );
+  }
+
+  static defaults() {
+
+    return {
+      "axes": "all"
+    };
+  }
 
   /**
    * Init method
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.init = function( graph, options ) {
+  init( graph, options ) {
 
     this._zoomingGroup = document.createElementNS( graph.ns, 'g' );
     this._zoomingSquare = document.createElementNS( graph.ns, 'rect' );
@@ -33,17 +42,12 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
     this.graph = graph;
     graph.groupEvent.appendChild( this._zoomingGroup );
     this._zoomingGroup.appendChild( this._zoomingSquare );
-  };
-
-  PluginZoom.prototype.defaults = {
-    "axes": "all"
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.onMouseDown = function( graph, x, y, e, mute ) {
+  onMouseDown( graph, x, y, e, mute ) {
 
     var zoomMode = this.options.zoomMode;
 
@@ -97,13 +101,12 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
     if ( this.options.onZoomStart && !mute ) {
       this.options.onZoomStart( graph, x, y, e, mute );
     }
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.onMouseMove = function( graph, x, y, e, mute ) {
+  onMouseMove( graph, x, y, e, mute ) {
 
     //	this._zoomingSquare.setAttribute('display', 'none');
 
@@ -145,13 +148,12 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
     }
     //		this._zoomingSquare.setAttribute('display', 'block');
 
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.onMouseUp = function( graph, x, y, e, mute ) {
+  onMouseUp( graph, x, y, e, mute ) {
 
     var self = this;
     this.removeZone();
@@ -259,21 +261,19 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
 
     }
 
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.removeZone = function() {
+  removeZone() {
     this._zoomingSquare.setAttribute( 'display', 'none' );
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.onMouseWheel = function( delta, e, options ) {
+  onMouseWheel( delta, e, options ) {
 
     if ( !options ) {
       options = {};
@@ -298,13 +298,12 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
 
     this.graph.drawSeries();
 
-  };
+  }
 
   /**
    * @private
-   * @memberof PluginZoom
    */
-  PluginZoom.prototype.onDblClick = function( x, y, e, pref, mute ) {
+  onDblClick( x, y, e, pref, mute ) {
 
     var graph = this.graph;
     this.emit( "beforeDblClick", {
@@ -484,9 +483,9 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
           this.options.onDblClick( graph, x, y, e, mute );
         }*/
 
-  };
+  }
 
-  PluginZoom.prototype.transition = function( modeX, modeY, eventName ) {
+  transition( modeX, modeY, eventName ) {
 
     var self = this,
       maxTime = 500;
@@ -534,17 +533,17 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
       }
 
     } );
-  };
+  }
 
-  PluginZoom.prototype.isFullX = function() {
+  isFullX() {
     return this.fullX;
-  };
+  }
 
-  PluginZoom.prototype.isFullY = function() {
+  isFullY() {
     return this.fullY;
-  };
+  }
 
-  PluginZoom.prototype.toAxes = function( func, params, tb, lr ) {
+  toAxes( func, params, tb, lr ) {
 
     var axes = this.options.axes;
 
@@ -585,7 +584,8 @@ define( [ '../graph.util', './graph.plugin', ], function( util, Plugin ) {
 
         break;
     }
-  };
+  }
 
-  return PluginZoom;
-} );
+}
+
+export default PluginZoom;

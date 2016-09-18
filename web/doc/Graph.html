@@ -2792,6 +2792,82 @@ Finds and returns all the axes that are linked to a specific axis. Mostly used i
 
     
 
+    <h4 class="doc-code" id="getId"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getId</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the unique id representing the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The unique ID of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="getLeftAxis"><span class="type-signature"></span><span></span><span class="doc-name">getLeftAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
 
 
@@ -5725,8 +5801,8 @@ Caution ! The <code>options</code> parameter will only be effective if an axis i
 
 
 <div class="description">
-    Creates a new serie<br />
-If the a serie with the same name exists, returns this serie with update options <br />
+    Creates a new serie.
+If the a serie with the same name exists, returns this serie with update options.
 The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
 Built-in series types are "line", "contour", "zone" and "scatter".
 </div>
@@ -6372,10 +6448,6 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
-<div class="description">
-    Removes all series from the graph
-</div>
-
 
 <div class="doc-details">
 
@@ -6423,6 +6495,10 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+
+<div class="description">
+    Removes all series from the graph
+</div>
 
 
 <div class="doc-details">
@@ -7166,7 +7242,7 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
-    <h4 class="doc-code" id="setBottomAxis"><span class="type-signature"></span><span></span><span class="doc-name">setBottomAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> number ] )</span></h4>
+    <h4 class="doc-code" id="setBottomAxis"><span class="type-signature"></span><span></span><span class="doc-name">setBottomAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
 
 
 
@@ -7251,7 +7327,7 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
         <tr>
             
-                <td class="name"><code>number</code></td>
+                <td class="name"><code>index</code></td>
             
 
             <td class="type">

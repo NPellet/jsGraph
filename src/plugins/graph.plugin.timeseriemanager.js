@@ -1,67 +1,72 @@
-define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Plugin, util ) {
+import LRU from '../graph.lru'
+import Plugin from './graph.plugin'
+import * as util from '../graph.util'
 
-  /**
-   * @class PluginTimeSerieManager
-   * @implements Plugin
-   */
-  var PluginTimeSerieManager = function() {
+/**
+ * @class PluginTimeSerieManager
+ * @implements Plugin
+ */
+class PluginTimeSerieManager extends Plugin {
 
-    var self = this;
+  constructor() {
+
+    super( ...arguments );
 
     this.series = [];
     this.plugins = [];
     this.currentSlots = {};
 
     this.requestLevels = {};
-    this.update = function( noRecalculate, force ) {
+    this.update = ( noRecalculate, force ) => {
 
-      self.series.forEach( function( serie ) {
+      this.series.forEach( function( serie ) {
 
-        self.updateSerie( serie, noRecalculate );
+        this.updateSerie( serie, noRecalculate );
 
       } );
 
       if ( !noRecalculate ) {
-        self.recalculateSeries( force );
+        this.recalculateSeries( force );
       }
     }
 
-  };
+  }
 
-  PluginTimeSerieManager.prototype = new Plugin();
+  static defaults() {
 
-  PluginTimeSerieManager.prototype.defaults = {
+    return {
 
-    LRUName: "PluginTimeSerieManager",
-    intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
-    maxParallelRequests: 3,
-    optimalPxPerPoint: 2,
-    nbPoints: 1000,
-    url: ""
-  };
+      LRUName: "PluginTimeSerieManager",
+      intervals: [ 1000, 15000, 60000, 900000, 3600000, 8640000 ],
+      maxParallelRequests: 3,
+      optimalPxPerPoint: 2,
+      nbPoints: 1000,
+      url: ""
+    };
+  }
 
   /**
    * Init method
    * @private
    * @memberof PluginTimeSerieManager
    */
-  PluginTimeSerieManager.prototype.init = function( graph, options ) {
+  init( graph, options ) {
     this.graph = graph;
     LRU.create( this.options.LRUName, 200 );
     this.requestsRunning = 0;
 
-  };
+  }
 
-  PluginTimeSerieManager.prototype.setURL = function( url ) {
+  setURL( url ) {
     this.options.url = url;
     return this;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.setAvailableIntervals = function() {
+  setAvailableIntervals() {
     this.options.intervals = arguments;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.newSerie = function( serieName, serieOptions, serieType, dbElements, noZoneSerie ) {
+  newSerie( serieName, serieOptions, serieType, dbElements, noZoneSerie ) {
     var s = this.graph.newSerie( serieName, serieOptions, serieType );
 
     this.currentSlots[ serieName ] = { 
@@ -93,9 +98,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
 
     this.series.push( s );
     return s;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.registerPlugin = function( plugin, event ) {
+  registerPlugin( plugin, event ) {
 
     var index;
     if ( ( index = this.plugins.indexOf( plugin ) ) > -1 ) {
@@ -108,9 +113,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     for ( var i = 1; i < arguments.length; i++ ) {
       plugin.on( arguments[  i ], this.update );
     }
-  };
+  }
 
-  PluginTimeSerieManager.prototype.updateSerie = function( serie, noRecalculate ) {
+  updateSerie( serie, noRecalculate ) {
 
     var self = this;
     var from = serie.getXAxis().getCurrentMin();
@@ -155,9 +160,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     }
 
     this.processRequests();
-  };
+  }
 
-  PluginTimeSerieManager.prototype.register = function( serie, slotId, interval, priority, noProcess, noRecalculate ) {
+  register( serie, slotId, interval, priority, noProcess, noRecalculate ) {
 
     var id = this.computeUniqueID( serie, slotId, interval );
 
@@ -167,9 +172,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
 
       this.request( serie, slotId, interval, priority, id, noProcess );
     }
-  };
+  }
 
-  PluginTimeSerieManager.prototype.request = function( serie, slotId, interval, priority, slotName, noProcess ) {
+  request( serie, slotId, interval, priority, slotName, noProcess ) {
 
     for ( var i in this.requestLevels ) {
 
@@ -200,9 +205,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     if ( !noProcess ) {
       this.processRequests();
     }
-  };
+  }
 
-  PluginTimeSerieManager.prototype.processRequests = function() {
+  processRequests() {
 
     if ( this.requestsRunning >= this.options.maxParallelRequests ) {
       return;
@@ -268,17 +273,17 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
       }
 
     } );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.computeTimeMax = function( slotId, interval ) {
+  computeTimeMax( slotId, interval ) {
     return ( slotId + 1 ) * ( interval * this.options.nbPoints );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.computeTimeMin = function( slotId, interval ) {
+  computeTimeMin( slotId, interval ) {
     return ( slotId ) * ( interval * this.options.nbPoints );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.getURL = function( requestElements ) {
+  getURL( requestElements ) {
 
     var url = this.options.url
       .replace( "<measurementid>", requestElements[  2 ] )
@@ -293,9 +298,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     }
 
     return url;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.getOptimalInterval = function( totalspan ) {
+  getOptimalInterval( totalspan ) {
 
     var optimalInterval = ( this.options.optimalPxPerPoint ||  1 ) * totalspan / this.graph.getDrawingWidth(),
       diff = Infinity,
@@ -312,9 +317,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     } );
 
     return optimalIntervalAmongAvailable ||  1000;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.computeUniqueID = function( serie, slotId, interval ) {
+  computeUniqueID( serie, slotId, interval ) {
     var extra = "";
     var info = serie.getInfo( 'timeSerieManagerDBElements' );
     for ( var i in info ) {
@@ -322,21 +327,21 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     }
 
     return serie.getName() + ";" + slotId + ";" + interval + extra;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.computeSlotID = function( time, interval ) {
+  computeSlotID( time, interval ) {
     return Math.floor( time / ( interval * this.options.nbPoints ) );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.computeSlotTime = function( slotId, interval ) {
+  computeSlotTime( slotId, interval ) {
     return slotId * ( interval * this.options.nbPoints );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.getZoneSerie = function( serie ) {
+  getZoneSerie( serie ) {
     return serie._zoneSerie;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.updateZoneSerie = function( serieName ) {
+  updateZoneSerie( serieName ) {
 
     var serie = this.graph.getSerie( serieName );
 
@@ -354,9 +359,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     serie._zoneSerie.setLineColor( serie.getLineColor() );
     serie._zoneSerie.setFillOpacity( 0.2 );
     serie._zoneSerie.setLineOpacity( 0.3 );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.recalculateSeries = function( force ) {
+  recalculateSeries( force ) {
 
     var self = this;
 
@@ -371,16 +376,16 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     } );
 
     /*if ( this.changed ) {
-      self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
-    }
-*/
+        self.graph._applyToAxes( "scaleToFitAxis", [ this.graph.getXAxis(), false, undefined, undefined, false, true ], false, true );
+      }
+  */
     this.changed = false;
     //self.graph.autoscaleAxes();
 
     self.graph.draw();
-  };
+  }
 
-  PluginTimeSerieManager.prototype.recalculateSerie = function( serie, force ) {
+  recalculateSerie( serie, force ) {
 
     var from = serie.getXAxis().getCurrentMin(),
       to = serie.getXAxis().getCurrentMax(),
@@ -428,9 +433,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     if ( serie._zoneSerie ) {
       serie._zoneSerie.setData( dataMinMax );
     }
-  };
+  }
 
-  PluginTimeSerieManager.prototype.setIntervalCheck = function( interval ) {
+  setIntervalCheck( interval ) {
 
     if ( this.interval ) {
       clearInterval( this.interval )
@@ -441,9 +446,9 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     this.interval = setInterval( function() {
       self.update( true, false );
     }, interval );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.recalculateSerieUpwards = function( serie, downSlotId, downInterval, data, dataMinMax ) {
+  recalculateSerieUpwards( serie, downSlotId, downInterval, data, dataMinMax ) {
 
     var intervals = this.options.intervals.slice( 0 );
     intervals.sort();
@@ -481,19 +486,19 @@ define( [ '../graph.lru', './graph.plugin', '../graph.util' ], function( LRU, Pl
     }
 
     return this.recalculateSerieUpwards( serie, newSlotId, nextInterval, data, dataMinMax );
-  };
+  }
 
-  PluginTimeSerieManager.prototype.lockRedraw = function() {
+  lockRedraw() {
     this.locked = true;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.unlockRedraw = function() {
+  unlockRedraw() {
     this.locked = false;
-  };
+  }
 
-  PluginTimeSerieManager.prototype.isRedrawLocked = function() {
+  isRedrawLocked() {
     return !!this.locked;
-  };
+  }
+}
 
-  return PluginTimeSerieManager;
-} );
+export default PluginTimeSerieManager;

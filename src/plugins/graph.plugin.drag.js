@@ -1,41 +1,37 @@
-define( [ './graph.plugin' ], function( Plugin ) {
+import Plugin from './graph.plugin'
 
-  /** 
-   * Constructor for the drag plugin. Do not use this constructor directly.
-   * @class PluginDrag
-   * @implements Plugin
-   */
-  var PluginDrag = function() {};
+/** 
+ * Constructor for the drag plugin. Do not use this constructor directly.
+ * @class PluginDrag
+ * @implements Plugin
+ */
+class PluginDrag extends Plugin {
 
-  PluginDrag.prototype = new Plugin();
+  static defaults() {
+    return {
 
-  PluginDrag.prototype.defaults = {
+      dragX: true,
+      dragY: true,
+      persistanceX: false,
+      persistanceY: false
 
-    dragX: true,
-    dragY: true,
-    persistanceX: false,
-    persistanceY: false
-  };
+    };
+  }
 
   /**
-   * @memberof PluginDrag
    * @private
    */
-  PluginDrag.prototype.init = function( graph ) {
+  init( graph ) {
 
     this.graph = graph;
     this.time = null;
     this.totaltime = 2000;
-
-    // x = ( 1 / 2 a t^2 + v0 * t * x0 );
-
-  };
+  }
 
   /**
-   * @memberof PluginDrag
    * @private
    */
-  PluginDrag.prototype.onMouseDown = function( graph, x, y, e, target ) {
+  onMouseDown( graph, x, y, e, target ) {
     this._draggingX = x;
     this._draggingY = y;
 
@@ -47,13 +43,13 @@ define( [ './graph.plugin' ], function( Plugin ) {
     this.moved = false;
 
     return true;
-  };
+  }
 
   /**
    * @memberof PluginDrag
    * @private
    */
-  PluginDrag.prototype.onMouseMove = function( graph, x, y, e, target ) {
+  onMouseMove( graph, x, y, e, target ) {
 
     var deltaX = x - this._draggingX;
     var deltaY = y - this._draggingY;
@@ -87,9 +83,9 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
     graph.draw( true );
 
-  };
+  }
 
-  PluginDrag.prototype.onMouseUp = function( graph, x, y, e, target ) {
+  onMouseUp( graph, x, y, e, target ) {
 
     var dt = ( Date.now() - this.time );
 
@@ -128,9 +124,9 @@ define( [ './graph.plugin' ], function( Plugin ) {
       this.emit( "dragged" );
     }
 
-  };
+  }
 
-  PluginDrag.prototype._persistanceMove = function( graph ) {
+  _persistanceMove( graph ) {
 
     var self = this;
 
@@ -184,8 +180,7 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
     } );
 
-  };
+  }
+}
 
-  return PluginDrag;
-
-} );
+export default PluginDrag;

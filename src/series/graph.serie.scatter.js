@@ -4,6 +4,8 @@ import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
 const defaults = {};
 
+var type = "scatter";
+
 /** 
  * @static
  * @augments Serie
@@ -13,12 +15,13 @@ const defaults = {};
 class SerieScatter extends Serie {
 
   constructor() {
-      super( ...arguments );
-    }
-    /**
-     * Initializes the series
-     * @private
-     */
+    super( ...arguments );
+  }
+
+  /**
+   * Initializes the series
+   * @private
+   */
   init( graph, name, options ) {
 
     var self = this;
@@ -36,6 +39,8 @@ class SerieScatter extends Serie {
 
     this.shapesDetails = [];
     this.shapes = [];
+
+    this._type = type;
 
     util.mapEventEmission( this.options, this );
 
@@ -57,17 +62,6 @@ class SerieScatter extends Serie {
 
     this.selectedStyleGeneral = {};
     this.selectedStyleModifiers = {};
-
-    /*
-    this.groupPoints.addEventListener('mouseover', function(e) {
-    
-    });
-
-
-    this.groupPoints.addEventListener('mouseout', function(e) {
-    
-    });
-*/
 
     this.groupPoints.addEventListener( 'mouseover', function( e ) {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
@@ -303,6 +297,15 @@ class SerieScatter extends Serie {
 
     for ( ; j < m; j += 2 ) {
 
+      if (
+        this.data[ j + incrXFlip ] < this.getXAxis().getCurrentMin() ||
+        this.data[ j + incrXFlip ] > this.getXAxis().getCurrentMax() ||
+        this.data[ j + incrYFlip ] < this.getYAxis().getCurrentMin() ||
+        this.data[ j + incrYFlip ] > this.getYAxis().getCurrentMax()
+      ) {
+        continue;
+      }
+
       xpx = this.getX( this.data[ j + incrXFlip ] );
       ypx = this.getY( this.data[ j + incrYFlip ] );
 
@@ -433,7 +436,9 @@ class SerieScatter extends Serie {
         shape = this.shapes[ index ];
       }
 
+      console.log( this.shapesDetails );
       if ( !noSetPosition ) {
+
         shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
       }
 

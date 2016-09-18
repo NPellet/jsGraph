@@ -9,9 +9,6 @@ class AxisY extends Axis {
   constructor( graph, leftright, options ) {
 
     super( graph, leftright, options );
-
-    // this.init( graph, options );
-
     this.leftright = leftright;
     this.left = leftright == 'left';
 
@@ -20,12 +17,21 @@ class AxisY extends Axis {
   /**
    *  @private
    */
-  getAxisPosition() {
+  setAxisPosition( shift ) {
+    this.shiftPosition = shift;
+  }
 
-    if ( !this.options.display ) {
-      return 0;
+  getAxisPosition( shift ) {
+    return this.shiftPosition ||  0;
+  }
+
+  getAdditionalWidth() {
+    let pos = 0;
+    if ( this.getLabel() ) {
+      pos += this.graph.options.fontSize;
     }
-    return ( this.options.tickPosition == 1 ? 15 : 0 );
+    pos += Math.abs( this.tickMargin );
+    return pos;
   }
 
   /**
@@ -54,7 +60,16 @@ class AxisY extends Axis {
    */
   getMaxSizeTick() {
 
-    return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ) + 10; //(this.left ? 10 : 0);
+    return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ); //(this.left ? 10 : 0);
+  }
+
+  draw() {
+
+    this.tickMargin = ( this.left ? -5 - this.tickPx1 * this.tickScaling[ 1 ] : 5 + this.tickPx1 * this.tickScaling[ 1 ] );
+    var tickWidth = super.draw( ...arguments );
+    tickWidth += this.getAdditionalWidth();
+    this.drawSpecifics( tickWidth );
+    return tickWidth;
   }
 
   /**
@@ -73,15 +88,15 @@ class AxisY extends Axis {
       return;
     }
 
-    var tick = this.nextTick( level, function( tick ) {
+    var tick = this.nextTick( level, ( tick ) => {
 
-      tick.setAttribute( 'x1', ( self.left ? 1 : -1 ) * self.tickPx1 * self.tickScaling[ level ] );
-      tick.setAttribute( 'x2', ( self.left ? 1 : -1 ) * self.tickPx2 * self.tickScaling[ level ] );
+      tick.setAttribute( 'x1', ( this.left ? 1 : -1 ) * this.tickPx1 * this.tickScaling[ level ] );
+      tick.setAttribute( 'x2', ( this.left ? 1 : -1 ) * this.tickPx2 * this.tickScaling[ level ] );
 
       if ( level == 1 ) {
-        tick.setAttribute( 'stroke', self.getPrimaryTicksColor() );
+        tick.setAttribute( 'stroke', this.getPrimaryTicksColor() );
       } else {
-        tick.setAttribute( 'stroke', self.getSecondaryTicksColor() );
+        tick.setAttribute( 'stroke', this.getSecondaryTicksColor() );
       }
 
     } );
@@ -93,14 +108,14 @@ class AxisY extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if ( level == 1 ) {
-      var tickLabel = this.nextTickLabel( function( tickLabel ) {
+      var tickLabel = this.nextTickLabel( ( tickLabel ) => {
 
-        tickLabel.setAttribute( 'x', self.left ? -10 : 10 );
-        if ( self.getTicksLabelColor() !== 'black' ) {
-          tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );
+        tickLabel.setAttribute( 'x', this.tickMargin );
+        if ( this.getTicksLabelColor() !== 'black' ) {
+          tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
         }
 
-        if ( self.left ) {
+        if ( this.left ) {
           tickLabel.setAttribute( 'text-anchor', 'end' );
         } else {
           tickLabel.setAttribute( 'text-anchor', 'start' );
@@ -120,31 +135,44 @@ class AxisY extends Axis {
     }
   }
 
+  drawLabel() {
+    let pos = this.shift - this.getAxisPosition();
+    if ( this.left ) {
+      pos = -pos;
+    } else {
+      pos = pos;
+    }
+
+    this.placeLabel( pos );
+    if ( this.getLabelColor() !== 'black' ) {
+      this.label.setAttribute( 'fill', this.getLabelColor() );
+    }
+
+    this.label.setAttribute( 'dominant-baseline', this.left ? 'hanging' : 'auto' );
+    this.labelTspan.textContent = this.getLabel();
+  }
+
+  placeLabel( y ) {
+    this.label.setAttribute( 'transform', 'translate(' + y + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
+  }
+
   /**
    *  @private
    */
   drawSpecifics() {
     // Place label correctly
     //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-    console.log( this.getMaxPx(), this.getMinPx() );
-    this.label.setAttribute( 'transform', 'translate(' + ( ( this.left ? 1 : -1 ) * ( -this.widthHeightTick - 10 - 5 ) ) + ', ' + ( Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 ) + ') rotate(-90)' );
-
-    if ( this.getLabelColor() !== 'black' ) {
-      this.label.setAttribute( 'fill', this.getLabelColor() );
-    }
-
-    this.labelTspan.textContent = this.getLabel();
-
+    /* 
     if ( !this.left ) {
+
       this.labelTspan.style.dominantBaseline = 'hanging';
       this.expTspan.style.dominantBaseline = 'hanging';
       this.expTspanExp.style.dominantBaseline = 'hanging';
 
       this.unitTspan.style.dominantBaseline = 'hanging';
       this.preunitTspan.style.dominantBaseline = 'hanging';
-
     }
-
+*/
     this.line.setAttribute( 'y1', this.getMinPx() );
     this.line.setAttribute( 'y2', this.getMaxPx() );
     this.line.setAttribute( 'x1', 0 );
@@ -152,19 +180,26 @@ class AxisY extends Axis {
 
     this.line.setAttribute( 'stroke', this.getAxisColor() );
 
+    var span = this.getSpan();
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks ||  span[ 0 ] == 0 ? "" : "url(#verticalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks ||  span[ 1 ] == 1 ? "" : "url(#verticalsplit_" + this.graph.getId() + ")" ) );
   }
 
   /**
    *  @private
    */
-  _setShift() {
+  setShift( shift ) {
 
-    if ( !this.getShift() ||  !this.graph.getWidth() ) {
+    this.shift = shift;
+
+    if ( !this.shift ||  !this.graph.getWidth() ) {
       return;
     }
 
-    var xshift = this.floating ? this.getShift() : ( this.isLeft() ? this.getShift() : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - this.getShift() );
+    let xshift = this.shift;
+    xshift = this.floating ? xshift : ( this.isLeft() ? xshift : this.graph.getWidth() - this.graph.getPaddingRight() - this.graph.getPaddingLeft() - xshift );
     this.group.setAttribute( 'transform', 'translate( ' + xshift + ' 0 )' );
+    this.drawLabel();
   }
 
   /**
@@ -306,13 +341,12 @@ class AxisY extends Axis {
 
     var interval = this.maxPx - this.minPx;
 
-    if( isNaN( interval ) ) {
+    if ( isNaN( interval ) ) {
       return;
     }
-    
-    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
-    var minPx = this.maxPx - interval * this.options.span[ 1 ]  + this.options.marginMax;
 
+    var maxPx = this.maxPx - interval * this.options.span[ 0 ] - this.options.marginMin;
+    var minPx = this.maxPx - interval * this.options.span[ 1 ] + this.options.marginMax;
 
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;

@@ -49,7 +49,9 @@ class AxisX extends Axis {
    *  @private
    *  Used to set the x position of the axis
    */
-  _setShift() {
+  setShift( shift ) {
+
+    this.shift = shift;
     if ( this.getShift() === undefined || !this.graph.getDrawingHeight() ) {
       return;
     }
@@ -123,20 +125,29 @@ class AxisX extends Axis {
     return [ tick, tickLabel ];
   }
 
-  /**
-   *  Paints the label, the axis line and anything else specific to x axes
-   */
-  drawSpecifics() {
-
-    // Adjusts group shift
-    //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
-
+  drawLabel() {
     // Place label correctly
-console.log( this.maxPx, this.minPx );
     this.label.setAttribute( 'text-anchor', 'middle' );
     this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
     this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
     this.labelTspan.textContent = this.getLabel();
+  }
+
+  draw() {
+      var tickWidth = super.draw( ...arguments );
+      this.drawSpecifics();
+
+      return tickWidth;
+    }
+    /**
+     *  Paints the label, the axis line and anything else specific to x axes
+     */
+  drawSpecifics() {
+
+    // Adjusts group shift
+    //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
+    console.log( this.getMinPx() );
+    this.drawLabel();
 
     this.line.setAttribute( 'x1', this.getMinPx() );
     this.line.setAttribute( 'x2', this.getMaxPx() );
@@ -155,6 +166,11 @@ console.log( this.maxPx, this.minPx );
       this.preunitTspan.style.dominantBaseline = 'hanging';
 
     }
+
+    var span = this.getSpan();
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks ||  span[ 0 ] == 0 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks ||  span[ 1 ] == 1 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
+
   }
 
   /**
@@ -190,7 +206,7 @@ console.log( this.maxPx, this.minPx );
 
     var interval = this.maxPx - this.minPx;
 
-    if( isNaN( interval ) ) {
+    if ( isNaN( interval ) ) {
       return;
     }
 

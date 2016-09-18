@@ -143,6 +143,313 @@ subtitle: 'SerieScatter'
     
 
     
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Serie.html#setData">Serie#setData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>GraphSerie#setData</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setStyle"><span class="type-signature"></span><span></span><span class="doc-name">setStyle</span><span class="doc-signature">( <span class="doc-type">Object</span> allStyles [ , <span class="doc-type">Object</span> modifiers ] [ , <span class="doc-type">String</span> selectionMode ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets style to the scatter points
+First argument is the style applied by default to all points
+Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>allStyles</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The general style for all markers</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>modifiers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The general style for all markers</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectionMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "unselected"
+                
+                </td>
+            
+
+            <td class="description last">The selection mode to which this style corresponds. Default is unselected</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    {% highlight JavaScript %}var modifiers = [];
+modifiers[ 20 ] = { shape: 'circle', r: 12, fill: 'rgba(0, 100, 255, 0.3)', stroke: 'rgb(0, 150, 255)' };
+serie.setStyle( { shape: 'circle', r: 2, fill: 'rgba(255, 0, 0, 0.3)', stroke: 'rgb(255, 100, 0)' }, modifiers ); // Will modify scatter point n°20{% endhighlight %}
+
+    
+
+    </div>
+</div>
+        
+    
 
 
        
@@ -1970,12 +2277,12 @@ subtitle: 'SerieScatter'
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -3603,262 +3910,6 @@ subtitle: 'SerieScatter'
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] [ , <span class="doc-type">String</span> type ] )</span></h4>
-
-
-
-
-<div class="description">
-    Sets data to the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array</span>
-|
-
-<span class="param-type">Array.&lt;Array></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The data of the serie</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>oneDimensional</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    float
-                
-                </td>
-            
-
-            <td class="description last">Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Examples</h5>
-        
-
-    {% highlight JavaScript %}serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );{% endhighlight %}
-
-
-    {% highlight JavaScript %}serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster{% endhighlight %}
-
-
-    {% highlight JavaScript %}serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle{% endhighlight %}
-
-
-    {% highlight JavaScript %}serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way{% endhighlight %}
 
     
 

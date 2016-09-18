@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>jsGraph Difference between two series</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="fluid">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">jsGraph</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Axis.html">Axis</a></li><li><a href="AxisXBar.html">AxisXBar</a></li><li><a href="Shape.html">Shape</a></li><li><a href="ShapeRectangle.html">ShapeRectangle</a></li><li><a href="PluginShape.html">PluginShape</a></li><li><a href="PluginSelectScatter.html">PluginSelectScatter</a></li><li><a href="PluginZoom.html">PluginZoom</a></li><li><a href="PluginTimeSerieManager.html">PluginTimeSerieManager</a></li><li><a href="PluginSerieLineDifference.html">PluginSerieLineDifference</a></li><li><a href="PluginDrag.html">PluginDrag</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="interfaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Interfaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Plugin.html">Plugin</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="tutorials.list.html" class="dropdown-toggle" data-toggle="dropdown">Tutorials<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="tutorial-10-seriestyle.html">Serie styles</a></li><li><a href="tutorial-11-linedifference.html">Difference between two series</a></li><li><a href="tutorial-12-barcharts.html">Bar charts</a></li><li><a href="tutorial-13-axissplitting.html">Axis splitting</a></li><li><a href="tutorial-1_basic.html">Basic introduction</a></li><li><a href="tutorial-2_adaptto.html">Adapt axes</a></li><li><a href="tutorial-3-axesadvanced.html">Axes unit and scientific scaling</a></li><li><a href="tutorial-4-shapes.html">Handling shapes (basic)</a></li><li><a href="tutorial-5-shapes-types.html">Types of shapes</a></li><li><a href="tutorial-6-shapes-events.html">Shape events</a></li><li><a href="tutorial-7-errorbars.html">Error bars</a></li><li><a href="tutorial-8-trackingline.html">Tracking line</a></li><li><a href="tutorial-9-axisspan.html">Axes spanning</a></li><li><a href="tutorial-9-densitymap.html">Density maps</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></li><li><a href="global.html#value">value</a></li><li><a href="global.html">LegendOptionsDefault</a></li><li><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></li><li><a href="global.html">SerieZoneDefaultOptions</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+
+	
+	<div class="row">
+
+		
+
+
+		
+		<div class="col-md-12">
+		
+			<div id="main">
+	    		<h1 class="page-title">Difference between two series</h1>
+				<section class="tutorial-section">
+
+<header>
+    
+
+    
+</header>
+
+<article>
+    <p>The plugin <code>serielinedifference</code> (or <code>serieLineDifference</code>, using camel-casing) allows you to color the area between two series, <code>serieTop</code> and <code>serieBottom</code>. Different styles can be applied whether <code>serieTop</code> is above (positive) or below (negative) <code>serieBottom</code>. The only requirement for this plugin is that the x values of each serie is monotoneously increasing (decreasing will <em>not</em> work).</p>
+<h3><a id="doc-example"></a> Example</h3><p>Let us take the following example:</p>
+<p>{% highlight javascript %}
+var graph = new Graph( domGraph );</p>
+<p>graph.setTitle(&quot;Gas purchases in Baud (Switzerland)&quot;)</p>
+<p>graph.getYAxis().setUnit(&quot;TJ&quot;).setLabel(&quot;Energy&quot;).setUnitWrapper(&quot;[&quot;, &quot;]&quot;);
+graph.getXAxis().setLabel(&quot;Years&quot;);</p>
+<p>graph
+.newSerie(&quot;data&quot;)
+.setLabel(&quot;Yearly&quot;)
+.setLineWidth( 2 )
+.setMarkers( { type: 0, zoom: 1.5, strokeColor: 'white', fillColor: '#2b1fcc' } )
+.setLineColor('#2b1fcc')
+.autoAxis()
+.setData( [ 1986,6.934,1987,7.920,1988,7.623,1989,8.817,1990,8.978,1991,10.308,1992,10.285,1993,10.561,1994,10.013,1995,11.501,1996,12.308,1997,11.405,1998,11.651,1999,12.430,2000,12.147,2001,12.669,2002,12.312,2003,13.297,2004,13.951,2005,14.578,2006,13.927,2007,13.220,2008,13.938,2009,13.647,2010,15.565,2011,13.459,2012,14.767,2013,16.074,2014,13.921] );</p>
+<p>graph
+.newSerie(&quot;median&quot;)
+.setLabel(&quot;10 years average&quot;)
+.setLineStyle( 3 )
+.setLineColor('blue')
+.autoAxis().setData( [ 1986,9.48093,1987,9.50349,1988,9.57039,1989,9.67934,1990,9.82672,1991,10.0078,1992,10.2173,1993,10.4492,1994,10.6978,1995,10.9574,1996,11.223,1997,11.4901,1998,11.7548,1999,12.0142,2000,12.2657,2001,12.5076,2002,12.7383,2003,12.9565,2004,13.1612,2005,13.3514,2006,13.5259,2007,13.6838,2008,13.8238,2009,13.9449,2010,14.0458,2011,14.1255,2012,14.1832,2013,14.2181,2014,14.2298] )</p>
+<p>graph.makeLegend().notHideable().setAutoPosition('bottom');
+graph.getLegend().update();
+graph.draw();
+{% endhighlight %}</p>
+<p>This code should display the following graph:</p>
+<div id="doc-example-1"></div>
+
+<script>
+var graph = new Graph("doc-example-1");
+
+function makeGraph( graph ) {
+    graph.resize( 400, 300 );
+    graph.setTitle("Gas purchases in Baud (Switzerland)")
+
+    graph.getYAxis().setUnit("TJ").setLabel("Energy").setUnitWrapper("[", "]");
+    graph.getXAxis().setLabel("Years");
+
+    graph
+    .newSerie("data")
+    .setLabel("Yearly")
+    .setLineWidth( 2 )
+    .setMarkers( { type: 0, zoom: 1.5, strokeColor: 'white', fillColor: '#2b1fcc' } )
+    .setLineColor('#2b1fcc')
+    .autoAxis()
+    .setData( [ 1986,6.934,1987,7.920,1988,7.623,1989,8.817,1990,8.978,1991,10.308,1992,10.285,1993,10.561,1994,10.013,1995,11.501,1996,12.308,1997,11.405,1998,11.651,1999,12.430,2000,12.147,2001,12.669,2002,12.312,2003,13.297,2004,13.951,2005,14.578,2006,13.927,2007,13.220,2008,13.938,2009,13.647,2010,15.565,2011,13.459,2012,14.767,2013,16.074,2014,13.921] );
+
+    graph
+    .newSerie("median")
+    .setLabel("10 years average")
+    .setLineStyle( 3 )
+    .setLineColor('blue')
+    .autoAxis().setData( [ 1986,9.48093,1987,9.50349,1988,9.57039,1989,9.67934,1990,9.82672,1991,10.0078,1992,10.2173,1993,10.4492,1994,10.6978,1995,10.9574,1996,11.223,1997,11.4901,1998,11.7548,1999,12.0142,2000,12.2657,2001,12.5076,2002,12.7383,2003,12.9565,2004,13.1612,2005,13.3514,2006,13.5259,2007,13.6838,2008,13.8238,2009,13.9449,2010,14.0458,2011,14.1255,2012,14.1832,2013,14.2181,2014,14.2298] )
+
+    graph.makeLegend().notHideable().setAutoPosition('bottom');
+    graph.getLegend().update();
+    graph.draw();
+}
+
+makeGraph( graph );
+</script>
+
+<p>Now, we have the data and the smoothed data, and we want to highlight when gas imports are higher than the 10 years average, and when they are lower. A nice way to do that is to color the area between the two series in green when it's higher, and in red when it's lower. The plugin <code>serielinedifference</code> allows you to do that in a few lines of code.</p>
+<p>Note that you could do it yourself by adding a polyline shape and calculate the path yourself, but jsGraph does all of that for you.</p>
+<h4><a id="doc-example-enable"></a> Enabling the <code>serieLineDifference</code> plugin</h4><p>You need to enable the plugin by feeding the following options to the graph constructor:</p>
+<p>{% highlight javascript %}
+&quot;plugins&quot;: {
+    &quot;serielinedifference&quot;: {}
+} 
+{% endhighlight %}</p>
+<p>and to call the following lines after the <em>graph has been drawn</em>:</p>
+<p>{% highlight javascript %}</p>
+<p>// Drawing instruction that you needed to have anyway
+graph.draw();</p>
+<p>var serieTopName = 'data'; // Use here your serie name
+var serieBottomName = 'median'; // Use here your serie name</p>
+<p>var from = 1986; // From value. Must be specified.
+var to = 2014; // To value. Must be specified.
+// Note that you could use from = graph.getXAxis().getMinValue(); and to = graph.getXAxis().getMaxValue();</p>
+<p>graph.getPlugin('serielinedifference').setSeries( graph.getSerie( serieTopName ), graph.getSerie( serieBottomName ) );
+graph.getPlugin('serielinedifference').setBoundaries( from, to );
+graph.getPlugin('serielinedifference').draw(); // Draws the shapes
+{% endhighlight %}</p>
+<p>And... tadaam:</p>
+<div id="doc-example-2"></div>
+
+<script>
+var graph = new Graph("doc-example-2", {
+    plugins: {
+        'serielinedifference': {}
+    } 
+});
+
+makeGraph( graph );
+
+
+var serieTopName = 'data'; // Use here your serie name
+var serieBottomName = 'median'; // Use here your serie name
+
+var from = 1986; // From value. Must be specified.
+var to = 2014; // To value. Must be specified.
+// Note that you could use from = graph.getXAxis().getMinValue(); and to = graph.getXAxis().getMaxValue();
+
+graph.getPlugin('serielinedifference').setSeries( graph.getSerie( serieTopName ), graph.getSerie( serieBottomName ) );
+graph.getPlugin('serielinedifference').setBoundaries( from, to );
+graph.getPlugin('serielinedifference').draw(); // Draws the shapes
+
+</script>
+
+<h3><a id="doc-styling"></a> Styling the zones</h3><p>You can observe in the previous example that by default, negative zones are colored in red with an opacity of 20% and the positive zones in green, with the same opacity. Those rendering options can be changed either:</p>
+<ul>
+<li>in the plugin constructor</li>
+<li>by fetching the <code>Shape</code> objects of the zones and modifying them</li>
+</ul>
+<h4><a id="doc-styling-constructor"></a> In the constructor</h4><p>Applying the style of the zones in the constructor options is the easiest way to proceed and takes the following format:</p>
+<p>{% highlight javascript %}
+&quot;plugins&quot;: {
+    &quot;serielinedifference&quot;: {</p>
+<pre class="prettyprint source"><code>    positiveStyle: {
+        fillColor: 'green',
+        fillOpacity: 0.2,
+        strokeWidth: 0,
+        strokeColor: 'green'
+    },
+
+    negativeStyle: {
+        fillColor: 'red',
+        fillOpacity: 0.2,
+        strokeWidth: 0,
+        strokeColor: 'negative'
+    },
+}</code></pre><p>} 
+{% endhighlight %}</p>
+<p>These options are the only one available for styling the polylines from the constructor. Moreover, they will be applied once to the shapes upon creation, not every time they are redrawn. If you change their style after the initialization of the graph, the original style will not be recovered.</p>
+<h4><a id="doc-styling-objects"></a> By fetching the objects</h4><p>jsGraph uses the <code>polyline</code> shape to draw the zones between the two line series. They both can be retrieved using the  methods</p>
+<p>{% highlight javascript %}
+graph.getPlugin('serielinedifference').getPositivePolyline();
+graph.getPlugin('serielinedifference').getNegativePolyline();
+{% endhighlight %}</p>
+<p>For further styling of those shapes, read the documentation of the <code>Shape</code> object or the <code>ShapePolyLine</code> object.</p>
+<h3><a id="doc-piecewise"></a> Piecewise data set</h3><p>The real force of the <code>serieLineDifference</code> plugin is its handling of datasets that contain gaps. In this case, the zone will stop as close as possible to the gap and resume after the first point of the next piece of the dataset can be found:</p>
+<div id="doc-example-3"></div>
+
+<script>
+var graph = new Graph("doc-example-3", {
+    plugins: {
+        'serielinedifference': {}
+    } 
+});
+
+graph.resize( 400, 300 );
+
+graph
+.newSerie("s1")
+.autoAxis()
+.setData( [ [ 0, 0, 1, 1, 2, 3 ], [ 4, 6, 5, 10, 6, 10 ], [ 7, 6, 8, 5, 9, 4, 10, 3 ] ] );
+
+graph
+.newSerie("s2")
+.autoAxis().setData( [ [ 0, 4, 1, 3, 2, 1, 3, -1], [  4, -1, 5, 7, 6, 15, 7, 7, 8, 1, 9, 1, 10, 1 ] ] )
+
+graph.draw();
+
+graph.getPlugin('serielinedifference').setSeries( graph.getSerie('s1'), graph.getSerie('s2') );
+graph.getPlugin('serielinedifference').setBoundaries(0, 10 );
+graph.getPlugin('serielinedifference').draw();
+
+</script>
+
+<p>A final word of warning, though. This feature is quite new and though it seems to work fine, you might find it buggy in some specific edge cases. In that case, I'd appreciate if you could report it on the github where the project is hosted. Thanks in advance !</p>
+</article>
+
+</section>
+
+			</div>
+		</div>
+
+
+	</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	jsGraph Copyright © 2012-2015 Norman Pellet
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a>
+	on Sat Sep 17th 2016 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		headerText: function(i, heading, $heading) {
+			var main;
+			return ( main = $heading.find('.mainname') ).length == 1 ? main.text() : $heading.text();
+		  },
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		console.log( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : false,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

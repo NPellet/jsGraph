@@ -10,7 +10,7 @@
     <meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
 ">
 
-    <script src="/js/node-jsgraph/dist/jsgraph.min.js"></script> <!-- jsGraph should load first -->
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
 
     <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
     
@@ -334,6 +334,313 @@
 
     
 
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Serie.html#setData">Serie#setData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>GraphSerie#setData</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setStyle"><span class="type-signature"></span><span></span><span class="doc-name">setStyle</span><span class="doc-signature">( <span class="doc-type">Object</span> allStyles [ , <span class="doc-type">Object</span> modifiers ] [ , <span class="doc-type">String</span> selectionMode ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets style to the scatter points
+First argument is the style applied by default to all points
+Second argument is an array of modifiers that allows customization of any point of the scatter plot. Data for each elements of the array will augment <code>allStyles</code>, so be sure to reset the style if needed.
+All parameters - except <code>shape</code> - will be set as parameters to the DOM element of the shape
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>allStyles</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The general style for all markers</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>modifiers</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The general style for all markers</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectionMode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    "unselected"
+                
+                </td>
+            
+
+            <td class="description last">The selection mode to which this style corresponds. Default is unselected</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">modifiers</span> <span class="o">=</span> <span class="p">[];</span>
+<span class="nx">modifiers</span><span class="p">[</span> <span class="mi">20</span> <span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="na">shape</span><span class="p">:</span> <span class="s1">'circle'</span><span class="p">,</span> <span class="na">r</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="na">fill</span><span class="p">:</span> <span class="s1">'rgba(0, 100, 255, 0.3)'</span><span class="p">,</span> <span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb(0, 150, 255)'</span> <span class="p">};</span>
+<span class="nx">serie</span><span class="p">.</span><span class="nx">setStyle</span><span class="p">(</span> <span class="p">{</span> <span class="na">shape</span><span class="p">:</span> <span class="s1">'circle'</span><span class="p">,</span> <span class="na">r</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">fill</span><span class="p">:</span> <span class="s1">'rgba(255, 0, 0, 0.3)'</span><span class="p">,</span> <span class="na">stroke</span><span class="p">:</span> <span class="s1">'rgb(255, 100, 0)'</span> <span class="p">},</span> <span class="nx">modifiers</span> <span class="p">);</span> <span class="c1">// Will modify scatter point n°20</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
     
 
 
@@ -2162,12 +2469,12 @@
     
 
     
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
         <a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a>
     </li></ul></dd>
-    
-
     
 
     
@@ -3795,262 +4102,6 @@
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span></span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object, Array, Array.&lt;Array></span> data [ , <span class="doc-type">Boolean</span> oneDimensional ] [ , <span class="doc-type">String</span> type ] )</span></h4>
-
-
-
-
-<div class="description">
-    Sets data to the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array</span>
-|
-
-<span class="param-type">Array.&lt;Array></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">The data of the serie</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>oneDimensional</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    float
-                
-                </td>
-            
-
-            <td class="description last">Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="Serie.html#setData">Serie#setData</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h5>Examples</h5>
-        
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Faster</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">,</span> <span class="p">[</span> <span class="nx">xm</span><span class="p">,</span> <span class="nx">ym</span><span class="p">,</span> <span class="nx">x</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nx">y</span><span class="p">(</span><span class="nx">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="p">...]</span> <span class="p">],</span> <span class="kc">true</span> <span class="p">)</span> <span class="c1">// 1D array with a gap in the middle</span></code></pre></figure>
-
-
-    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="nx">x0</span><span class="p">,</span> <span class="na">dx</span><span class="p">:</span> <span class="nx">spacing</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">[</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="nx">y3</span><span class="p">,</span> <span class="nx">y4</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span> <span class="c1">// Data with equal x separation. Fastest way</span></code></pre></figure>
 
     
 

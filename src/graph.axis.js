@@ -63,7 +63,9 @@ const defaults = {
   engineeringScale: false,
   unit: false,
   unitWrapperBefore: '',
-  unitWrapperAfter: ''
+  unitWrapperAfter: '',
+
+  splitMarks: false
 };
 
 /** 
@@ -137,6 +139,8 @@ class Axis extends EventEmitter {
     this.expTspanExp.setAttribute( 'font-size', "0.8em" );
 
     this.label.setAttribute( 'text-anchor', 'middle' );
+
+    this.setTickPosition( this.options.tickPosition );
 
     this.gridLinePath = {
       primary: "",
@@ -242,12 +246,15 @@ class Axis extends EventEmitter {
     return this.options.display;
   }
 
-  /**
-   * Forces the appearence of a straight perpendicular line at value 0
-   * @param {Boolean} lineAt0 - true to display the line, false not to.
-   * @memberof Axis
-   * @return {Axis} The current axis
-   */
+  kill( noRedraw, noSerieKill ) {
+      this.graph.killAxis( this, noRedraw, noSerieKill );
+    }
+    /**
+     * Forces the appearence of a straight perpendicular line at value 0
+     * @param {Boolean} lineAt0 - true to display the line, false not to.
+     * @memberof Axis
+     * @return {Axis} The current axis
+     */
   setLineAt0( bool ) {
     this.options.lineAt0 = !!bool;
   }
@@ -388,6 +395,10 @@ class Axis extends EventEmitter {
     this.options.axisDataSpacing.min = val1;
     this.options.axisDataSpacing.max = val2 || val1;
     return this;
+  }
+
+  dataSpacing() {
+    return this.setAxisDataSpacing( ...arguments );
   }
 
   /**
@@ -933,12 +944,12 @@ class Axis extends EventEmitter {
     return this.options.flipped;
   }
 
-  _draw( linkedToAxisOnly ) { // Redrawing of the axis
+  _draw() { // Redrawing of the axis
 
     var self = this;
     var visible;
 
-    this.drawInit();
+    //    this.drawInit();
 
     this.cacheCurrentMax();
     this.cacheCurrentMin();
@@ -990,24 +1001,15 @@ class Axis extends EventEmitter {
     this.gridLinePath.primary = "";
     this.gridLinePath.secondary = "";
 
+    /*
     var label;
     if ( label = this.getLabel() ) {
       // Sets the label
       this.labelTspan.textContent = label;
     }
+*/
 
-    if ( this.options.unit ) {
-
-      this.unitTspan.setAttribute( 'display', 'visible' );
-      this.unitTspan.setAttribute( 'dx', 5 );
-
-      this.expTspan.setAttribute( 'display', 'none' );
-      this.expTspanExp.setAttribute( 'display', 'none' );
-      this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
-
-    } else {
-      this.unitTspan.setAttribute( 'display', 'none' );
-    }
+    this.writeUnit();
 
     var letter;
 
@@ -1076,22 +1078,42 @@ class Axis extends EventEmitter {
     var axes = this.graph.findAxesLinkedTo( this );
     axes.map( function( axis ) {
 
+      if ( !axis.linkedToAxis ) {
+        return;
+      }
       axis.setMinPx( self.getMinPx() );
       axis.setMaxPx( self.getMaxPx() );
 
-      axis.draw( true );
+      axis.draw();
+
     } );
 
     /************************************/
     /*** DRAW CHILDREN IMPL SPECIFIC ****/
     /************************************/
 
-    this.drawSpecifics();
+    //   this.drawSpecifics();
     if ( this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0 ) {
       this._draw0Line( this.getPx( 0 ) );
     }
 
-    return widthHeight + ( label ? 20 : 0 );
+    return widthHeight;
+  }
+
+  writeUnit() {
+    if ( this.options.unit ) {
+
+      this.unitTspan.setAttribute( 'display', 'visible' );
+      this.unitTspan.setAttribute( 'dx', 5 );
+
+      this.expTspan.setAttribute( 'display', 'none' );
+      this.expTspanExp.setAttribute( 'display', 'none' );
+      this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
+
+    } else {
+      this.unitTspan.setAttribute( 'display', 'none' );
+    }
+
   }
 
   getExponentGreekLetter( val ) {
@@ -1140,49 +1162,11 @@ class Axis extends EventEmitter {
 
   }
 
-  drawInit() {
-
-    switch ( this.options.tickPosition ) {
-      case 3:
-        this.tickPx1 = -2;
-        this.tickPx2 = 0;
-        break;
-
-      case 2:
-        this.tickPx1 = -1;
-        this.tickPx2 = 1;
-        break;
-
-      case 1:
-        this.tickPx1 = 0;
-        this.tickPx2 = 2;
-        break;
-    }
-
-    // Remove all ticks
-    //   while ( this.groupTicks.firstChild ) {
-    //    this.groupTicks.removeChild( this.groupTicks.firstChild );
-    // }
-
-    //    this.removeTicks();
-
-    // Remove all ticks
-    /*while ( this.groupTickLabels.firstChild ) {
-      this.groupTickLabels.removeChild( this.groupTickLabels.firstChild );
-    }*/
-
-    // Remove all grids
-    /*    while ( this.groupGrids.firstChild ) {
-        this.groupGrids.removeChild( this.groupGrids.firstChild );
-      }
-*/
-  }
-
   drawLinearTicksWrapper( widthPx, valrange ) {
 
     let tickPrimaryUnit;
 
-    if( this.options.primaryTickUnit ) {
+    if ( this.options.primaryTickUnit ) {
 
       tickPrimaryUnit = this.options.primaryTickUnit;
 
@@ -1222,19 +1206,15 @@ class Axis extends EventEmitter {
     this.options.ticklabelratio = tickRatio;
   }
 
-  draw( linkedToAxisOnly ) {
+  draw() {
 
-    if ( ( linkedToAxisOnly && this.linkedToAxis ) || ( !linkedToAxisOnly && !this.linkedToAxis ) ) {
-
-      this._widthLabels = 0;
-      var drawn = this._draw();
-      this._widthLabels += drawn;
-      return drawn;
-    }
+    this._widthLabels = 0;
+    var drawn = this._draw();
+    this._widthLabels += drawn;
+    return drawn;
 
     return 0;
   }
-
 
   drawTicks( primary, secondary ) {
 
@@ -1246,7 +1226,6 @@ class Axis extends EventEmitter {
       incrTick,
       subIncrTick,
       loop = 0;
-
 
     if ( secondary ) {
       secondaryIncr = unitPerTick / secondary;
@@ -1536,7 +1515,7 @@ class Axis extends EventEmitter {
 
       if ( delta2 > opts.deltaPx ) {
         opts.deltaPx = delta2;
-        this.drawInit();
+        //     this.drawInit();
         this.drawLinkedToAxisTicksWrapper( widthPx, valrange );
         return;
       }
@@ -1833,8 +1812,6 @@ class Axis extends EventEmitter {
 
   setShift( shift ) {
     this.shift = shift;
-    //this.totalDimension = totalDimension; // Width (axis y) or height (axis x) of the axis.
-    this._setShift();
   }
 
   getShift() {
@@ -1867,6 +1844,24 @@ class Axis extends EventEmitter {
     }
 
     this.options.tickPosition = pos;
+
+    switch ( this.options.tickPosition ) {
+      case 3:
+        this.tickPx1 = -2;
+        this.tickPx2 = 0;
+        break;
+
+      case 2:
+        this.tickPx1 = -1;
+        this.tickPx2 = 1;
+        break;
+
+      case 1:
+        this.tickPx1 = 0;
+        this.tickPx2 = 2;
+        break;
+    }
+
     return this;
   }
 

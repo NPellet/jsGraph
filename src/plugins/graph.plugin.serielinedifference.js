@@ -1,42 +1,41 @@
-define( [ './graph.plugin' ], function( Plugin ) {
+import Plugin from './graph.plugin'
 
-  "use strict";
+/**
+ * @class PluginSerieLineDifference
+ * @implements Plugin
+ */
+class PluginSerieLineDifference extends Plugin {
 
-  /**
-   * @class PluginSerieLineDifference
-   * @implements Plugin
-   */
-  var PluginSerieLineDifference = function() {
+  constructor() {
+    super( ...arguments );
+  }
 
-  };
+  static defaults() {
+    return {
 
-  PluginSerieLineDifference.prototype = new Plugin();
+      positiveStyle: {
 
-  PluginSerieLineDifference.prototype.defaults = {
+        fillColor: 'green',
+        fillOpacity: 0.2,
+        strokeWidth: 0
+      },
 
-    positiveStyle: {
+      negativeStyle: {
+        fillColor: 'red',
+        fillOpacity: 0.2,
+        strokeWidth: 0
+      },
 
-      fillColor: 'green',
-      fillOpacity: 0.2,
-      strokeWidth: 0
-    },
-
-    negativeStyle: {
-      fillColor: 'red',
-      fillOpacity: 0.2,
-      strokeWidth: 0
-    },
-
-    from: 0,
-    to: 0
-  };
+      from: 0,
+      to: 0
+    }
+  }
 
   /**
    * Init method
    * @private
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.init = function( graph, options ) {
+  init( graph, options ) {
     this.graph = graph;
 
     this.pathsPositive = [];
@@ -57,50 +56,45 @@ define( [ './graph.plugin' ], function( Plugin ) {
     setFillOpacity( this.options.negativeStyle.fillOpacity ).
     setStrokeWidth( this.options.negativeStyle.strokeWidth ).
     applyStyle();
-  };
+  }
 
   /**
    * Assigns the two series for the shape. Postive values are defined when ```serieTop``` is higher than ```serieBottom```.
    * @param {SerieLine} serieTop - The top serie
    * @param {SerieLine} serieBottom - The bottom serie
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.setSeries = function( serieTop, serieBottom ) {
+  setSeries( serieTop, serieBottom ) {
     this.serie1 = serieTop;
     this.serie2 = serieBottom;
-  };
+  }
 
   /**
    * Assigns the boundaries
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.setBoundaries = function( from, to ) {
+  setBoundaries( from, to ) {
     this.options.from = from;
     this.options.to = to;
-  };
+  }
 
   /**
    * @returns the starting value used to draw the zone
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.getFrom = function() {
+  getFrom() {
     return this.options.from;
-  };
+  }
 
   /**
    * @returns the ending value used to draw the zone
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.getTo = function() {
+  getTo() {
     return this.options.to;
-  };
+  }
 
   /**
    * Calculates and draws the zone series
    * @returns {Plugin} The current plugin instance
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.draw = function() {
+  draw() {
 
     var self = this;
     var s1 = this.serie1.searchClosestValue( this.getFrom() );
@@ -301,10 +295,9 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
       j1 = 0;
       s2 = false;
-    };
+    }
 
     var d = this.pathsPositive.reduce( makePaths, "" );
-    console.log( d );
     this.positivePolyline.setPointsPx( d ).redraw();
 
     var d = this.pathsNegative.reduce( makePaths, "" );
@@ -340,9 +333,8 @@ define( [ './graph.plugin' ], function( Plugin ) {
    * @returns {(Number|Boolean)} The interpolated y value is possible, ```false``` otherwise
    * @param {Serie} serie - The serie for which the y value should be computed
    * @param {Number} valX - The x value
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.interpolate = function( serie, valX ) {
+  interpolate( serie, valX ) {
 
     var value = serie.searchClosestValue( valX );
 
@@ -373,9 +365,8 @@ define( [ './graph.plugin' ], function( Plugin ) {
    * @param {Number} y21 - First y point of the second vector
    * @param {Number} y22 - Second x point of the second vector
    * @param {Number} y22 - Second y point of the second vector
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.computeCrossing = function( x11, y11, x12, y12, x21, y21, x22, y22 ) {
+  computeCrossing( x11, y11, x12, y12, x21, y21, x22, y22 ) {
     var a1 = ( y12 - y11 ) / ( x12 - x11 );
     var a2 = ( y22 - y21 ) / ( x22 - x21 );
 
@@ -409,20 +400,18 @@ define( [ './graph.plugin' ], function( Plugin ) {
 
   /**
    * @returns The positive polyline
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.getPositivePolyline = function() {
+  getPositivePolyline() {
     return this.positivePolyline;
   }
 
   /**
    * @returns The negative polyline
-   * @memberof PluginSerieLineDifference
    */
-  PluginSerieLineDifference.prototype.getNegativePolyline = function() {
+  getNegativePolyline() {
     return this.negativePolyline;
   }
 
-  return PluginSerieLineDifference;
+}
 
-} );
+export default PluginSerieLineDifference;

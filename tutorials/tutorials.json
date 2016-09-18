@@ -46,5 +46,13 @@
 
     "11-linedifference": {
          "title": "Difference between two series"
+    },
+
+    "12-barcharts": {
+       "title": "Bar charts"
+    },
+
+    "13-axissplitting": {
+         "title": "Axis splitting"
     }
  }

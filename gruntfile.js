@@ -107,50 +107,14 @@ module.exports = function(grunt) {
                 }
             },
 
-            exportToNMR: {
+            web: {
 
                 files: {
-                    '../nmr/lib/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
-                    '../nmr/lib/components/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
+                    './web/site/js/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    './web/site/js/node-jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
                 }
             },
 
-            exportToPages: {
-
-                files: {
-                    '../jsgraphwww/js/jsgraph/jsgraph.js': 'dist/jsgraph.min.js',
-                    '../jsgraphwww/js/jquery/jquery.min.js': 'dist/jquery.min.js'
-                }
-            },
-
-
-            exportToVisualizer: {
-
-                files: {
-                    '../visualizer-dev/src/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
-                    '../visualizer-dev/src/components/jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.js',
-                    
-                }
-            },
-
-
-            exportToGCMS: {
-
-                files: {
-                    '../gcms-module/app/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
-                    '../gcms-module/app/components/dist/jsgraph.min.js': 'dist/jsgraph.min.js',
-                    
-                }
-            },
-
-
-            exportDevToPages: {
-
-                files: {
-                    '../jsgraphwww/js/jsgraph/jsgraph.js': 'dist/jsgraph.js',
-                    '../jsgraphwww/js/jquery/jquery.min.js': 'dist/jquery.min.js'
-                }
-            }
         },
 
 

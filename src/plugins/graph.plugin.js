@@ -1,20 +1,24 @@
-define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter ) {
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
 
-  /**
-   * @class Plugin
-   * @interface
-   */
-  var Plugin = function( options ) {
+/**
+ * Represents a plugin
+ * @interface
+ */
+class Plugin extends EventEmitter {
+
+  static defaults() {
+    return {};
+  }
+
+  constructor( options ) {
+    super( ...arguments );
     this.options = options;
-  };
-
-  Plugin.prototype = new EventEmitter();
+  }
 
   /**
    * Init function called by jsGraph on load
-   * @memberof Plugin
    */
-  Plugin.prototype.init = function() {};
+  init() {};
 
   /**
    * Handles the mousedown event from jsGraph
@@ -23,9 +27,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {Number} y - The y position in px
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
-   * @memberof Plugin
    */
-  Plugin.prototype.onMouseDown = function() {};
+  onMouseDown() {};
 
   /**
    * Handles the mouseup event from jsGraph
@@ -34,9 +37,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {Number} y - The y position in px
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
-   * @memberof Plugin
    */
-  Plugin.prototype.onMouseUp = function() {};
+  onMouseUp() {};
 
   /**
    * Handles the mousemove event from jsGraph
@@ -45,9 +47,8 @@ define( [ '../dependencies/eventEmitter/EventEmitter' ], function( EventEmitter 
    * @param {Number} y - The y position in px
    * @param {Event} e - The original event
    * @param {SVGElement} target - The target element
-   * @memberof Plugin
    */
-  Plugin.prototype.onMouseMove = function() {};
+  onMouseMove() {}
+}
 
-  return Plugin;
-} );
+export default Plugin;

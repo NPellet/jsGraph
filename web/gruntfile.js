@@ -58,6 +58,10 @@ module.exports = function(grunt) {
                 },
 
                 { 
+                  cwd: './node_modules', src: 'node-jsgraph/dist/jsgraph.js', dest: './site/js/', expand: true
+                },
+
+                { 
                   cwd: './node_modules', src: 'requirejs/require.js', dest: './site/js/', expand: true
                 }
 

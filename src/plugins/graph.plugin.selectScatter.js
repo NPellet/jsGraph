@@ -1,19 +1,20 @@
-define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
+import * as util from '../graph.util'
+import Plugin from './graph.plugin'
 
-  /**
-   * @class PluginSelectScatter
-   * @implements Plugin
-   */
-  var PluginSelectScatter = function() {};
+/**
+ * @extends Plugin
+ */
+class PluginSelectScatter extends Plugin {
 
-  PluginSelectScatter.prototype = new Plugin();
+  constructor() {
+    super( ...arguments );
+  }
 
   /**
    * Init method
    * @private
-   * @memberof PluginSelectScatter
    */
-  PluginSelectScatter.prototype.init = function( graph, options ) {
+  init( graph, options ) {
 
     this._path = document.createElementNS( graph.ns, 'path' );
 
@@ -32,23 +33,21 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
     this.graph = graph;
 
     graph.dom.appendChild( this._path );
-
-  };
+  }
 
   /**
    * Assigns the scatter serie that should be selected to the plugin
    * @param {ScatterSerie} serie - The serie
-   * @memberof PluginSelectScatter
+   * @return {PluginSelectScatter} The current plugin instance
    */
-  PluginSelectScatter.prototype.setSerie = function( serie ) {
+  setSerie( serie ) {
     this.serie = serie;
-  };
+  }
 
   /**
-   * @memberof PluginSelectScatter
    * @private
    */
-  PluginSelectScatter.prototype.onMouseDown = function( graph, x, y, e, mute ) {
+  onMouseDown( graph, x, y, e, mute ) {
 
     if ( !this.serie ) {
       return;
@@ -63,13 +62,12 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
     this._path.setAttribute( 'd', '' );
     this._path.setAttribute( 'display', 'block' );
 
-  };
+  }
 
   /**
-   * @memberof PluginSelectScatter
    * @private
    */
-  PluginSelectScatter.prototype.onMouseMove = function( graph, x, y, e, mute ) {
+  onMouseMove( graph, x, y, e, mute ) {
 
     if ( Math.pow( ( x - this.currentX ), 2 ) + Math.pow( ( y - this.currentY ), 2 ) > 25 ) {
 
@@ -84,13 +82,12 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
 
       this.findPoints();
     }
-  };
+  }
 
   /**
-   * @memberof PluginSelectScatter
    * @private
    */
-  PluginSelectScatter.prototype.findPoints = function() {
+  findPoints() {
 
     var data = this.serie.data;
     var selected = [];
@@ -126,17 +123,16 @@ define( [ './graph.plugin', '../graph.util' ], function( Plugin, util ) {
 
     this.selected = selected;
     this.emit( "selectionProcess", selected );
-  };
+  }
 
   /**
-   * @memberof PluginSelectScatter
    * @private
    */
-  PluginSelectScatter.prototype.onMouseUp = function( graph, x, y, e ) {
+  onMouseUp( graph, x, y, e ) {
     this._path.setAttribute( 'display', 'none' );
     this.emit( "selectionEnd", this.selected );
-  };
+  }
 
-  return PluginSelectScatter;
+}
 
-} );
+export default PluginSelectScatter
