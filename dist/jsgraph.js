@@ -181,6 +181,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.axis.x.bar", _graphAxisX2.default);
 	  _graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
 
+	  _graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
+	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
+	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
+	  _graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
+	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
+	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
+	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
+
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
@@ -10107,17 +10115,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(12);
+	var _graph = __webpack_require__(1);
 
 	var _graph2 = _interopRequireDefault(_graph);
+
+	var _graph3 = __webpack_require__(12);
+
+	var _graph4 = _interopRequireDefault(_graph3);
 
 	var _slotoptimizer = __webpack_require__(13);
 
 	var _slotoptimizer2 = _interopRequireDefault(_slotoptimizer);
 
-	var _graph3 = __webpack_require__(3);
+	var _graph5 = __webpack_require__(3);
 
-	var util = _interopRequireWildcard(_graph3);
+	var util = _interopRequireWildcard(_graph5);
 
 	var _graphMixin = __webpack_require__(14);
 
@@ -10621,7 +10633,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'degrade',
 	    value: function degrade(pxPerP, options) {
 
-	      var serie = this.graph.newSerie(this.name + "_degraded", options, 'zone');
+	      var serie = this.graph.newSerie(this.name + "_degraded", options, _graph2.default.SERIE_ZONE);
 
 	      this.degradationPx = pxPerP;
 
@@ -12521,7 +12533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }]);
 
 	  return SerieLine;
-	}(_graph2.default);
+	}(_graph4.default);
 
 	function drawMarkerXY(graph, family, x, y, markerDom) {
 
@@ -21651,6 +21663,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+	var _graph = __webpack_require__(1);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
 	var _graphAxis = __webpack_require__(6);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
@@ -21659,9 +21675,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
-	var _graph = __webpack_require__(3);
+	var _graph3 = __webpack_require__(3);
 
-	var util = _interopRequireWildcard(_graph);
+	var util = _interopRequireWildcard(_graph3);
 
 	var _graphSerie = __webpack_require__(11);
 
@@ -21671,13 +21687,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graph2 = __webpack_require__(34);
-
-	var _graph3 = _interopRequireDefault(_graph2);
-
-	var _graph4 = __webpack_require__(7);
+	var _graph4 = __webpack_require__(34);
 
 	var _graph5 = _interopRequireDefault(_graph4);
+
+	var _graph6 = __webpack_require__(7);
+
+	var _graph7 = _interopRequireDefault(_graph6);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -21914,12 +21930,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        while (serie.subSeries.length < splits) {
 
 	          var name = serie.getName() + "_" + serie.subSeries.length;
-	          var s = _this6.graph.newSerie(name, {}, serie.getType() || "line");
+	          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
 
 	          s.styles = serie.styles;
 	          s.data = serie.data; // Copy data
 
-	          if (serie.getType() == "line") {
+	          if (serie.getType() == _graph2.default.SERIE_LINE) {
 	            s.markerPoints = serie.markerPoints;
 	            s.markerFamilies = serie.markerFamilies;
 	          }
@@ -22059,7 +22075,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }]);
 
 	  return PluginAxisSplitting;
-	}(_graph3.default);
+	}(_graph5.default);
 
 	var defaultAxisConstructorOptions = {
 	  splitMarks: true
@@ -23760,17 +23776,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(39);
+	var _graph = __webpack_require__(1);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graph3 = __webpack_require__(34);
+	var _graph3 = __webpack_require__(39);
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(3);
+	var _graph5 = __webpack_require__(34);
 
-	var util = _interopRequireWildcard(_graph5);
+	var _graph6 = _interopRequireDefault(_graph5);
+
+	var _graph7 = __webpack_require__(3);
+
+	var util = _interopRequireWildcard(_graph7);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -23825,7 +23845,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    value: function init(graph, options) {
 	      this.graph = graph;
-	      _graph2.default.create(this.options.LRUName, 200);
+	      _graph4.default.create(this.options.LRUName, 200);
 	      this.requestsRunning = 0;
 	    }
 	  }, {
@@ -23868,7 +23888,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      s.setInfo("timeSerieManagerDBElements", dbElements);
 
 	      if (!noZoneSerie) {
-	        s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, "zone");
+	        s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, _graph2.default.SERIE_ZONE);
 	      }
 
 	      this.series.push(s);
@@ -23938,7 +23958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var id = this.computeUniqueID(serie, slotId, interval);
 
-	      var data = _graph2.default.get(this.options.LRUName, id);
+	      var data = _graph4.default.get(this.options.LRUName, id);
 
 	      if (!data || this.computeTimeMax(slotId, interval) > Date.now() && data.timeout < Date.now() - (noRecalculate ? 5000 : 100000) && priority == 1) {
 
@@ -24037,7 +24057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          delete self.requestLevels[currentLevelChecking][i];
 
-	          _graph2.default.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
+	          _graph4.default.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
 	          self.processRequests();
 
 	          if (requestToMake[5] == 1 && Object.keys(self.requestLevels[1]).length == 0) {
@@ -24193,7 +24213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      while (slotId <= endSlotId) {
 
-	        if (lruData = _graph2.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval))) {
+	        if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval))) {
 
 	          data = data.concat(lruData.data.mean);
 	          dataMinMax = dataMinMax.concat(lruData.data.minmax);
@@ -24245,7 +24265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var newSlotId = this.computeSlotID(newSlotTime, nextInterval),
 	          start = false;
 
-	      if (lruData = _graph2.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval))) {
+	      if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval))) {
 
 	        for (var i = 0, l = lruData.data.mean.length; i < l; i += 2) {
 
@@ -24299,7 +24319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }]);
 
 	  return PluginTimeSerieManager;
-	}(_graph4.default);
+	}(_graph6.default);
 
 	exports.default = PluginTimeSerieManager;
 

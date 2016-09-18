@@ -21,7 +21,7 @@ define( ['jquery'], function($) {
 $.when( 
   $.getJSON("http://api.eia.gov/series/?api_key=060737529563C657DFA3E60961449915&series_id=ELEC.CONS_TOT.COW-CO-99.A", {}, function( data ) {
 
-    var serie = graph.newSerie('CA').setLineColor("#2B65EC").setLineWidth( 2 );
+    var serie = graph.newSerie('CA', {}, Graph.SERIE_LINE ).setLineColor("#2B65EC").setLineWidth( 2 );
     serie.setData( data.series[ 0 ].data );
     serie.autoAxis();
 
