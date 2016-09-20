@@ -16,7 +16,7 @@ function isNumeric(n) {
 class Position {
 
   constructor( x, y, dx, dy ) {
-console.log( arguments );
+
     if ( typeof x == "object" ) {
       this.x = x.x;
       this.y = x.y;

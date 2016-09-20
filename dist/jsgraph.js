@@ -5297,7 +5297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!poscoords) {
 	        return;
 	      }
-	      console.log(this.alignToX, this.alignToY, this.width, this.height, poscoords);
+
 	      if (this.alignToX == "right") {
 	        poscoords.x -= this.width;
 	        poscoords.x += this.bbox.x;
@@ -5311,7 +5311,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        poscoords.y += this.bbox.y;
 	      }
-	      console.log(this.alignToX, this.alignToY, this.width, this.height, poscoords);
 
 	      this.pos.transformX = poscoords.x;
 	      this.pos.transformY = poscoords.y;
@@ -5325,7 +5324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'update',
 	    value: function update() {
-	      console.trace();
+
 	      var self = this;
 
 	      this.applyStyle();
