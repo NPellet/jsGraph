@@ -72,8 +72,22 @@ class AxisY extends Axis {
     var tickWidth = super.draw( ...arguments );
     tickWidth += this.getAdditionalWidth();
     this.drawSpecifics( tickWidth );
+
+    this.fullwidthlabel = tickWidth;
+
     return tickWidth;
   }
+
+
+  equalizePosition( width ) {
+
+    this.placeLabel( this.left ? -width : width );
+
+    if( this.getLabel() ) {
+      return width + this.graph.options.fontSize;
+    }
+  }
+
 
   /**
    *  @private
@@ -139,14 +153,7 @@ class AxisY extends Axis {
   }
 
   drawLabel() {
-    let pos = this.shift - this.getAxisPosition();
-    if ( this.left ) {
-      pos = -pos;
-    } else {
-      pos = pos;
-    }
-
-    this.placeLabel( pos );
+    
     if ( this.getLabelColor() !== 'black' ) {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }

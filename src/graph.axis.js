@@ -1966,14 +1966,14 @@ class Axis extends EventEmitter {
    * @alias Axis#gridsOff
    */
   turnGridsOff() {
-    this.gridsOff( ...arguments );
+    return this.gridsOff( ...arguments );
   }
 
   /**
    * @alias Axis#gridsOn
    */
   turnGridsOn() {
-    this.gridsOn( ...arguments );
+    return this.gridsOn( ...arguments );
   }
 
   /**
@@ -2412,6 +2412,10 @@ class Axis extends EventEmitter {
 
   isZoomed() {
     return !( this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue() );
+  }
+
+  hasAxis() {
+    return false;
   }
 }
 

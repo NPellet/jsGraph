@@ -511,6 +511,10 @@ var SplitAxis = function( mixin ) {
       return this;
     }
 
+    hasAxis( axis ) {
+      return this.axes.indexOf( axis ) > -1;
+    }
+
     _splitSpread() {
 
       let splits = [],
@@ -766,7 +770,7 @@ class SplitYAxis extends SplitAxis( AxisY ) {
   getConstructor() {
     return AxisY;
   }
-
+/*
   draw() {
 
     if ( this.getLabel() ) {
@@ -777,11 +781,31 @@ class SplitYAxis extends SplitAxis( AxisY ) {
     }
     return super.draw( ...arguments );
   }
-
+*/
   drawLabel() {
     super.drawLabel();
-    this.placeLabel( this.left ? -this.getShift() : this.getShift() );
   }
+
+
+  equalizePosition( width ) {
+
+    var widthAfter = width;
+
+    if ( this.getLabel() ) {
+      this.axes.map( ( axis ) => {
+        widthAfter = Math.max( axis.equalizePosition( width ), widthAfter );
+      } ); // Extra shift allowed for the label
+      //this.setShift( this.graph.options.fontSize );
+    }
+
+    if( this.getLabel() ) {
+      this.placeLabel( this.left ? -widthAfter : widthAfter );
+      return widthAfter + this.graph.options.fontSize;
+    }
+  }
+
+
+
 }
 
 util.mix( SplitXAxis, new AxisX() );

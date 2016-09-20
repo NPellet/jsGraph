@@ -710,7 +710,17 @@ class Graph extends EventEmitter {
    * @private
    */
   hasAxis( axis, axisList ) {
-    return axisList.indexOf( axis ) > -1;
+    for( var i = 0, l = axisList.length; i  < l; i ++ ) {
+      if( axisList[ i ] == axis ) {
+        return true;
+      }
+
+      if( axisList[ i ].hasAxis( axis ) ) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -2421,6 +2431,13 @@ function refreshDrawingZone( graph ) {
     right: []
   };
 
+  var shift2 = {
+    top: [],
+    bottom: [],
+    left: [],
+    right: []
+  };
+
   var levels = {
     top: [],
     bottom: [],
@@ -2493,9 +2510,30 @@ function refreshDrawingZone( graph ) {
     // Get axis position gives the extra shift that is common
     var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
     axis.setLevel( level );
-    shift[ position ][ level ] = Math.max( drawn + axis.getAxisPosition(), shift[ position ][ level ] || 0 );
+    shift[ position ][ level ] = Math.max( drawn, shift[ position ][ level ] || 0 );
 
   }, false, false, true );
+
+
+
+  // Applied to left and right
+  graph._applyToAxes( function( axis, position ) {
+
+    if ( axis.disabled ) {
+      return;
+    }
+
+    if ( axis.floating ) {
+      return;
+    }
+
+
+    shift2[ position ][ axis.getLevel( ) ] = Math.max( shift[ position ][ axis.getLevel( ) ], axis.equalizePosition( shift[ position ][ axis.getLevel( ) ] ) );
+
+  }, false, false, true );
+
+  shift = shift2;
+
 
   var shiftLeft = shift.left.reduce( function( prev, curr ) {
     return prev + curr;

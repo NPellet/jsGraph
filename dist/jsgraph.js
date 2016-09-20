@@ -1131,7 +1131,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'hasAxis',
 	    value: function hasAxis(axis, axisList) {
-	      return axisList.indexOf(axis) > -1;
+	      for (var i = 0, l = axisList.length; i < l; i++) {
+	        if (axisList[i] == axis) {
+	          return true;
+	        }
+
+	        if (axisList[i].hasAxis(axis)) {
+	          return true;
+	        }
+	      }
+
+	      return false;
 	    }
 
 	    /**
@@ -3024,6 +3034,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    right: []
 	  };
 
+	  var shift2 = {
+	    top: [],
+	    bottom: [],
+	    left: [],
+	    right: []
+	  };
+
 	  var levels = {
 	    top: [],
 	    bottom: [],
@@ -3094,8 +3111,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Get axis position gives the extra shift that is common
 	    var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
 	    axis.setLevel(level);
-	    shift[position][level] = Math.max(drawn + axis.getAxisPosition(), shift[position][level] || 0);
+	    shift[position][level] = Math.max(drawn, shift[position][level] || 0);
 	  }, false, false, true);
+
+	  // Applied to left and right
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled) {
+	      return;
+	    }
+
+	    if (axis.floating) {
+	      return;
+	    }
+
+	    shift2[position][axis.getLevel()] = Math.max(shift[position][axis.getLevel()], axis.equalizePosition(shift[position][axis.getLevel()]));
+	  }, false, false, true);
+
+	  shift = shift2;
 
 	  var shiftLeft = shift.left.reduce(function (prev, curr) {
 	    return prev + curr;
@@ -3803,7 +3836,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Position(x, y, dx, dy) {
 	    _classCallCheck(this, Position);
 
-	    console.log(arguments);
 	    if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) == "object") {
 	      this.x = x.x;
 	      this.y = x.y;
@@ -3832,15 +3864,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function compute(graph, xAxis, yAxis, serie) {
 
 	      if (!graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis) {
-	        this.graph.throw();
+	        graph.throw();
 	      }
 
 	      if (!graph.hasXAxis(xAxis)) {
-	        graph.throw("Graph does not contain the x axis that was used as a parameter");
+	        throw "Graph does not contain the x axis that was used as a parameter";
 	      }
 
 	      if (!graph.hasYAxis(yAxis)) {
-	        graph.throw("Graph does not contain the x axis that was used as a parameter");
+	        throw "Graph does not contain the x axis that was used as a parameter";
 	      }
 
 	      return this._compute(graph, xAxis, yAxis, serie);
@@ -8145,7 +8177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'turnGridsOff',
 	    value: function turnGridsOff() {
-	      this.gridsOff.apply(this, arguments);
+	      return this.gridsOff.apply(this, arguments);
 	    }
 
 	    /**
@@ -8155,7 +8187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'turnGridsOn',
 	    value: function turnGridsOn() {
-	      this.gridsOn.apply(this, arguments);
+	      return this.gridsOn.apply(this, arguments);
 	    }
 
 	    /**
@@ -8706,6 +8738,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !(this.currentAxisMin == this.getMinValue() || this.currentAxisMax == this.getMaxValue());
 	    }
 	  }, {
+	    key: 'hasAxis',
+	    value: function hasAxis() {
+	      return false;
+	    }
+	  }, {
 	    key: 'zoomLock',
 	    set: function set(bln) {
 	      this._zoomLocked = bln;
@@ -8853,7 +8890,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var tickWidth = _get(Object.getPrototypeOf(AxisY.prototype), 'draw', this).apply(this, arguments);
 	      tickWidth += this.getAdditionalWidth();
 	      this.drawSpecifics(tickWidth);
+
+	      this.fullwidthlabel = tickWidth;
+
 	      return tickWidth;
+	    }
+	  }, {
+	    key: 'equalizePosition',
+	    value: function equalizePosition(width) {
+
+	      this.placeLabel(this.left ? -width : width);
+
+	      if (this.getLabel()) {
+	        return width + this.graph.options.fontSize;
+	      }
 	    }
 
 	    /**
@@ -8923,14 +8973,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'drawLabel',
 	    value: function drawLabel() {
-	      var pos = this.shift - this.getAxisPosition();
-	      if (this.left) {
-	        pos = -pos;
-	      } else {
-	        pos = pos;
-	      }
 
-	      this.placeLabel(pos);
 	      if (this.getLabelColor() !== 'black') {
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
@@ -24886,6 +24929,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	      }
 	    }, {
+	      key: "hasAxis",
+	      value: function hasAxis(axis) {
+	        return this.axes.indexOf(axis) > -1;
+	      }
+	    }, {
 	      key: "_splitSpread",
 	      value: function _splitSpread() {
 
@@ -25298,24 +25346,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getConstructor() {
 	      return _graphAxis4.default;
 	    }
-	  }, {
-	    key: "draw",
-	    value: function draw() {
-	      var _this11 = this;
-
-	      if (this.getLabel()) {
-	        this.axes.map(function (axis) {
-	          axis.setAxisPosition(_this11.graph.options.fontSize);
-	        }); // Extra shift allowed for the label
-	        //this.setShift( this.graph.options.fontSize );
+	    /*
+	      draw() {
+	    
+	        if ( this.getLabel() ) {
+	          this.axes.map( ( axis ) => {
+	            axis.setAxisPosition( this.graph.options.fontSize );
+	          } ); // Extra shift allowed for the label
+	          //this.setShift( this.graph.options.fontSize );
+	        }
+	        return super.draw( ...arguments );
 	      }
-	      return _get(Object.getPrototypeOf(SplitYAxis.prototype), "draw", this).apply(this, arguments);
-	    }
+	    */
+
 	  }, {
 	    key: "drawLabel",
 	    value: function drawLabel() {
 	      _get(Object.getPrototypeOf(SplitYAxis.prototype), "drawLabel", this).call(this);
-	      this.placeLabel(this.left ? -this.getShift() : this.getShift());
+	    }
+	  }, {
+	    key: "equalizePosition",
+	    value: function equalizePosition(width) {
+
+	      var widthAfter = width;
+
+	      if (this.getLabel()) {
+	        this.axes.map(function (axis) {
+	          widthAfter = Math.max(axis.equalizePosition(width), widthAfter);
+	        }); // Extra shift allowed for the label
+	        //this.setShift( this.graph.options.fontSize );
+	      }
+
+	      if (this.getLabel()) {
+	        this.placeLabel(this.left ? -widthAfter : widthAfter);
+	        return widthAfter + this.graph.options.fontSize;
+	      }
 	    }
 	  }]);
 

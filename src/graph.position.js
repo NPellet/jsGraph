@@ -41,15 +41,15 @@ class Position {
   compute( graph, xAxis, yAxis, serie ) {
 
     if ( !graph || !xAxis || !yAxis || !graph.hasXAxis || !graph.hasYAxis ) {
-      this.graph.throw();
+      graph.throw();
     }
 
     if ( !graph.hasXAxis( xAxis ) ) {
-      graph.throw( "Graph does not contain the x axis that was used as a parameter" )
+      throw( "Graph does not contain the x axis that was used as a parameter" )
     }
 
     if ( !graph.hasYAxis( yAxis ) ) {
-      graph.throw( "Graph does not contain the x axis that was used as a parameter" )
+      throw( "Graph does not contain the x axis that was used as a parameter" )
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
