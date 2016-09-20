@@ -295,7 +295,7 @@ class Legend {
     if ( !poscoords ) {
       return;
     }
-console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
+
     if ( this.alignToX == "right" ) {
       poscoords.x -= this.width;
       poscoords.x += this.bbox.x;
@@ -310,7 +310,7 @@ console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
     } else {
       poscoords.y += this.bbox.y;  
     }
-    console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
+
 
     this.pos.transformX = poscoords.x;
     this.pos.transformY = poscoords.y;
@@ -321,7 +321,7 @@ console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
    * Updates the legend position and content
    */
   update() {
-console.trace();
+
     var self = this;
 
     this.applyStyle();
