@@ -579,23 +579,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (!this.sizeSet) {
-
 	        this._resize();
-
-	        this._pluginsExecute("preDraw");
+	        this.executeRedrawSlaves();
 	        return true;
 	      } else {
 
 	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this)) {
+	          this.executeRedrawSlaves();
 	          refreshDrawingZone(this);
-	          this._pluginsExecute("preDraw");
-
 	          return true;
 	        }
 	      }
 
-	      this._pluginsExecute("preDraw");
+	      this.executeRedrawSlaves(true);
 	      return false;
+	    }
+	  }, {
+	    key: 'executeRedrawSlaves',
+	    value: function executeRedrawSlaves(noLegend) {
+	      this._pluginsExecute("preDraw");
 	    }
 
 	    /**
@@ -1451,10 +1453,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      serie._type = type;
 	      self.series.push(serie);
 
-	      if (self.legend) {
-	        self.legend.update();
-	      }
-
+	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
+	      /*
+	          if ( self.legend ) {
+	            self.legend.update();
+	          }
+	      */
 	      self.emit("newSerie", serie);
 	      return serie;
 	    }
@@ -1840,6 +1844,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'newPosition',
 	    value: function newPosition(var_args) {
 
+	      return new (Function.prototype.bind.apply(_graph2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+
+	      // 18 September 2016 Norman: What is that ?
 	      Array.prototype.unshift.call(arguments, null);
 	      return new (Function.prototype.bind.apply(_graph2.default, arguments))();
 	    }
@@ -2523,6 +2530,63 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
 	      });
 	    }
+
+	    // We have to proxy the methods in case they are called anonymously
+
+	  }, {
+	    key: 'getDrawingSpaceWidth',
+	    value: function getDrawingSpaceWidth() {
+	      var _this2 = this;
+
+	      return function () {
+	        return _this2.drawingSpaceWidth;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceHeight',
+	    value: function getDrawingSpaceHeight() {
+	      var _this3 = this;
+
+	      return function () {
+	        return _this3.drawingSpaceHeight;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMinX',
+	    value: function getDrawingSpaceMinX() {
+	      var _this4 = this;
+
+	      return function () {
+	        return _this4.drawingSpaceMinX;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMinY',
+	    value: function getDrawingSpaceMinY() {
+	      var _this5 = this;
+
+	      return function () {
+	        return _this5.drawingSpaceMinY;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMaxX',
+	    value: function getDrawingSpaceMaxX() {
+	      var _this6 = this;
+
+	      return function () {
+	        return _this6.drawingSpaceMaxX;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMaxY',
+	    value: function getDrawingSpaceMaxY() {
+	      var _this7 = this;
+
+	      return function () {
+	        return _this7.drawingSpaceMaxY;
+	      };
+	    }
 	  }, {
 	    key: 'trackingLine',
 	    value: function trackingLine(options) {
@@ -3112,6 +3176,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  graph.rectEvent.setAttribute('width', graph.drawingSpaceWidth);
 	  graph.rectEvent.setAttribute('height', graph.drawingSpaceHeight);
+
+	  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft(); // + "px";
+	  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
+	  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
+	  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
 
 	  /*
 	  graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -3707,6 +3777,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3718,6 +3790,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return false;
 	};
 
+	function isNumeric(n) {
+	  return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
 	/**
 	 * Utility class to compute positioning
 	 * @class
@@ -3727,7 +3803,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Position(x, y, dx, dy) {
 	    _classCallCheck(this, Position);
 
-	    if (!(x instanceof Number) && x instanceof Object) {
+	    console.log(arguments);
+	    if ((typeof x === 'undefined' ? 'undefined' : _typeof(x)) == "object") {
 	      this.x = x.x;
 	      this.y = x.y;
 	      this.dx = x.dx;
@@ -3824,7 +3901,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 	        } else if (val !== undefined) {
-
 	          pos[i] = this.getPx(val, axis);
 	        }
 
@@ -3979,7 +4055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     *  Computes a value in pixels
 	     *  @param {Number} value - The value in axis unit
-	     *  @param {Axis} axis - The x axis to consider (has to belong to the graph)
+	     *  @param {Axis} axis - The x or y axis to consider (has to belong to the graph)
 	     *  @param {Boolean} rel - Whether or not the value is a distance 
 	     *  @return {(Number|String)} The computed value
 	     */
@@ -3990,7 +4066,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var parsed;
 
-	      if ((parsed = _parsePx(value)) !== false) {
+	      if (typeof value == "function") {
+
+	        return value(axis, rel);
+	      } else if ((parsed = _parsePx(value)) !== false) {
 
 	        return parsed; // return integer (will be interpreted as px)
 	      } else if (parsed = this._parsePercent(value)) {
@@ -4007,7 +4086,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else if (rel) {
 
 	          return axis.getRelPx(value);
-	        } else {
+	        } else if (isNumeric(value)) {
 
 	          return axis.getPos(value);
 	        }
@@ -4951,7 +5030,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  paddingLeft: 10,
 	  paddingBottom: 10,
 	  paddingRight: 10,
-	  frameRounding: 3,
+	  frameRounding: 0,
 
 	  movable: false,
 
@@ -5058,8 +5137,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.position = position;
-	      this.alignToX = alignToX;
-	      this.alignToY = alignToY;
+	      this.alignToX = alignToX || 'left';
+	      this.alignToY = alignToY || 'top';
 	    }
 	  }, {
 	    key: 'setDraggable',
@@ -5078,14 +5157,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.autoPosition = false;
 	    }
 	  }, {
-	    key: 'calculatePosition',
-	    value: function calculatePosition() {
-
-	      if (!this.autoPosition) {
-	        this.graph.graphingZone.appendChild(this.getDom());
-	      } else {
-	        this.graph.getDom().appendChild(this.getDom());
-	      }
+	    key: 'autoPosition',
+	    value: function autoPosition() {
+	      return this.setAutoPosition.apply(this, arguments);
+	    }
+	  }, {
+	    key: 'buildLegendBox',
+	    value: function buildLegendBox() {
 
 	      var series = this.series || this.graph.getSeries(),
 	          posX = 0,
@@ -5093,7 +5171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i = 0, l = series.length; i < l; i++) {
 
-	        if (!series[i].isInLegend() && !this.series) {
+	        if (series[i].excludedFromLegend && !this.series) {
 	          continue;
 	        }
 
@@ -5177,29 +5255,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 	      }
 
-	      var pos = new _graph2.default(this.position),
-	          alignToY = this.alignToY,
-	          alignToX = this.alignToX;
-
-	      pos = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
-
-	      if (!pos) {
-	        return;
-	      }
-
-	      if (alignToX == "right") {
-	        pos.x -= this.width;
-	      }
-
-	      if (alignToY == "bottom") {
-	        pos.y -= this.height;
-	      }
-
-	      this.pos.transformX = pos.x;
-	      this.pos.transformY = pos.y;
-
-	      this._setPosition();
-
 	      if (this.autoPosition) {
 	        switch (this.autoPosition) {
 
@@ -5221,7 +5276,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        this.graph.updateGraphingZone();
+	        this.graph.redraw(true);
 	      }
+
+	      this.bbox = bbox;
+	    }
+	  }, {
+	    key: 'calculatePosition',
+	    value: function calculatePosition() {
+
+	      if (!this.autoPosition) {
+	        this.graph.graphingZone.appendChild(this.getDom());
+	      } else {
+	        this.graph.getDom().appendChild(this.getDom());
+	      }
+
+	      var pos = _graph2.default.check(this.position);
+	      var poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
+
+	      if (!poscoords) {
+	        return;
+	      }
+	      console.log(this.alignToX, this.alignToY, this.width, this.height, poscoords);
+	      if (this.alignToX == "right") {
+	        poscoords.x -= this.width;
+	        poscoords.x += this.bbox.x;
+	      } else {
+	        //poscoords.x -= this.bbox.x;
+	      }
+
+	      if (this.alignToY == "bottom") {
+	        poscoords.y -= this.height;
+	        poscoords.y += this.bbox.y;
+	      } else {
+	        poscoords.y += this.bbox.y;
+	      }
+	      console.log(this.alignToX, this.alignToY, this.width, this.height, poscoords);
+
+	      this.pos.transformX = poscoords.x;
+	      this.pos.transformY = poscoords.y;
+	      this._setPosition();
 	    }
 
 	    /** 
@@ -5231,7 +5325,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'update',
 	    value: function update() {
-
+	      console.trace();
 	      var self = this;
 
 	      this.applyStyle();
@@ -5261,7 +5355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i = 0, l = series.length; i < l; i++) {
 
-	        if (!series[i].isInLegend() && !this.series) {
+	        if (series[i].excludedFromLegend && !this.series) {
 	          continue;
 	        }
 
@@ -5317,7 +5411,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          text.setAttribute('transform', 'translate(' + dx + ', 3)');
 
-	          g.appendChild(line);
+	          if (line) {
+	            g.appendChild(line);
+	          }
 
 	          if (series[j].getType() == "scatter") {
 	            line.setAttribute('transform', 'translate( 20, 0 )');
@@ -5363,6 +5459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.svg.appendChild(this.rect);
+	      this.buildLegendBox();
 	      this.calculatePosition();
 	    }
 
@@ -6159,6 +6256,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.display;
 	    }
 	  }, {
+	    key: 'isShown',
+	    value: function isShown() {
+	      return this.isDisplayed.apply(this, arguments);
+	    }
+	  }, {
 	    key: 'kill',
 	    value: function kill(noRedraw, noSerieKill) {
 	      this.graph.killAxis(this, noRedraw, noSerieKill);
@@ -6526,6 +6628,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.nbTicksPrimary;
 	    }
 	  }, {
+	    key: 'setNbTicksPrimary',
+	    value: function setNbTicksPrimary(nb) {
+	      this.options.nbTicksPrimary = nb;
+	    }
+	  }, {
 	    key: 'getNbTicksSecondary',
 	    value: function getNbTicksSecondary() {
 	      return this.options.nbTicksSecondary;
@@ -6711,7 +6818,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (!closest || Math.abs(possibleTicks[i] - numberToNatural) < Math.abs(closest - numberToNatural)) {
 	              closest = possibleTicks[i];
 	            }
-	          } // Ok now closest is the number of unit per tick in the natural number
+	          }
+
+	          // Ok now closest is the number of unit per tick in the natural number
 	          /*
 	          Example:
 	          13'453 (4) (1.345) => 1
@@ -6720,6 +6829,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          // Let's scale it back
 	          var unitPerTickCorrect = closest * Math.pow(10, decimals);
+
 	          /*
 	          Example:
 	          13'453 (4) (1.345) (1) => 10'000
@@ -6729,8 +6839,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var nbTicks = valrange / unitPerTickCorrect;
-	      var pxPerTick = px / nbTick;
 
+	      var pxPerTick = px / nbTick;
 	      return [unitPerTickCorrect, nbTicks, pxPerTick];
 	    }
 
@@ -8689,7 +8799,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.getLabel()) {
 	        pos += this.graph.options.fontSize;
 	      }
-	      pos += Math.abs(this.tickMargin);
+
+	      if (this.isShown()) {
+	        pos += Math.abs(this.tickMargin);
+	      }
 	      return pos;
 	    }
 
@@ -13900,16 +14013,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.graph.addSerieToTrackingLine(this, options);
 	    }
 	  }, {
-	    key: 'setLegend',
-	    value: function setLegend(bln) {
-	      this._legend = bln;
-	    }
-	  }, {
-	    key: 'isInLegend',
-	    value: function isInLegend() {
-	      return this._legend === false ? false : true;
-	    }
-	  }, {
 	    key: 'getMarkerForLegend',
 	    value: function getMarkerForLegend() {
 	      return false;
@@ -13923,6 +14026,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'type',
 	    get: function get() {
 	      return this._type;
+	    }
+	  }, {
+	    key: 'excludedFromLegend',
+	    set: function set() {
+	      var bln = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+
+	      this._excludedFromLegend = bln;
+	    },
+	    get: function get() {
+	      return !!this._excludedFromLegend;
 	    }
 	  }]);
 
@@ -24245,6 +24358,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.eraseMarkers();
 	      return this;
 	    }
+	  }, {
+	    key: "getSymbolForLegend",
+	    value: function getSymbolForLegend() {
+	      if (!this.subSeries[0]) {
+	        return false;
+	      }
+
+	      return this.subSeries[0].getSymbolForLegend();
+	    }
+	  }, {
+	    key: "getMarkerForLegend",
+	    value: function getMarkerForLegend() {
+	      if (!this.subSeries[0]) {
+	        return false;
+	      }
+
+	      return this.subSeries[0].getMarkerForLegend();
+	    }
 	  }]);
 
 	  return SerieLineExtended;
@@ -24277,6 +24408,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: "draw",
 	    value: function draw() {
 	      return this;
+	    }
+	  }, {
+	    key: "getSymbolForLegend",
+	    value: function getSymbolForLegend() {
+	      if (!this.subSeries[0]) {
+	        return false;
+	      }
+
+	      return this.subSeries[0].getSymbolForLegend();
+	    }
+	  }, {
+	    key: "getMarkerForLegend",
+	    value: function getMarkerForLegend() {
+	      if (!this.subSeries[0]) {
+	        return false;
+	      }
+
+	      return this.subSeries[0].getMarkerForLegend();
 	    }
 	  }]);
 
@@ -24439,8 +24588,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        while (serie.subSeries.length < splits) {
 
 	          var name = serie.getName() + "_" + serie.subSeries.length;
+
 	          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
 
+	          s.excludedFromLegend = true;
 	          s.styles = serie.styles;
 	          s.data = serie.data; // Copy data
 
@@ -24542,7 +24693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        serie: new SerieLineExtended(name, options, "line")
 	      };
 	      this.series.set(name, serieObj);
-	      serieObj.serie.init(this.graph, options);
+	      serieObj.serie.init(this.graph, name, options);
 	      this.graph.series.push(serieObj.serie);
 	      return serieObj.serie;
 	    }

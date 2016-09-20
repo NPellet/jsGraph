@@ -263,24 +263,26 @@ class Graph extends EventEmitter {
     }
 
     if ( !this.sizeSet ) {
-
       this._resize();
-
-      this._pluginsExecute( "preDraw" );
+      this.executeRedrawSlaves();
       return true;
 
     } else {
 
       if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+        this.executeRedrawSlaves();
         refreshDrawingZone( this );
-        this._pluginsExecute( "preDraw" );
-
         return true;
       }
     }
 
-    this._pluginsExecute( "preDraw" );
+    this.executeRedrawSlaves( true );
     return false;
+  }
+
+  executeRedrawSlaves( noLegend ) {
+    this._pluginsExecute( "preDraw" );
+    
   }
 
   /**
@@ -996,10 +998,12 @@ class Graph extends EventEmitter {
     serie._type = type;
     self.series.push( serie );
 
+// 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
+/*
     if ( self.legend ) {
       self.legend.update();
     }
-
+*/
     self.emit( "newSerie", serie );
     return serie;
   }
@@ -1343,6 +1347,9 @@ class Graph extends EventEmitter {
    */
   newPosition( var_args ) {
 
+    return new GraphPosition( ...arguments );
+
+    // 18 September 2016 Norman: What is that ?
     Array.prototype.unshift.call( arguments, null );
     return new( Function.prototype.bind.apply( GraphPosition, arguments ) );
   }
@@ -1945,11 +1952,38 @@ class Graph extends EventEmitter {
 
     this.bypassHandleMouse = false;
   }
+
   updateGraphingZone() {
     util.setAttributeTo( this.graphingZone, {
       'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
     } );
   }
+
+  // We have to proxy the methods in case they are called anonymously
+  getDrawingSpaceWidth() {
+    return () => this.drawingSpaceWidth;
+  }
+
+  getDrawingSpaceHeight() {
+    return () => this.drawingSpaceHeight;
+  }
+
+  getDrawingSpaceMinX() {
+    return () => this.drawingSpaceMinX;
+  }
+
+  getDrawingSpaceMinY() {
+    return () => this.drawingSpaceMinY;
+  }
+
+  getDrawingSpaceMaxX() {
+    return () => this.drawingSpaceMaxX;
+  }
+
+  getDrawingSpaceMaxY() {
+    return () => this.drawingSpaceMaxY;
+  }
+
   trackingLine( options ) {
 
     var self = this;
@@ -2540,11 +2574,18 @@ function refreshDrawingZone( graph ) {
   graph.rectEvent.setAttribute( 'y', shiftTop + graph.getPaddingTop() );
   graph.rectEvent.setAttribute( 'x', shiftLeft + graph.getPaddingLeft() );
 
-  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight
+  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
   graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
 
   graph.rectEvent.setAttribute( 'width', graph.drawingSpaceWidth );
   graph.rectEvent.setAttribute( 'height', graph.drawingSpaceHeight );
+
+  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft();// + "px";
+  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop();// + "px";
+  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft();// + "px";
+  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop();//  + "px";
+
+
 
   /*
 	graph.shapeZoneRect.setAttribute('x', shift[1]);

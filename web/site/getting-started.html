@@ -189,12 +189,14 @@ Installing jsGraph from <a href="http://npmjs.org">npm</a> is an easy way to ins
 
 <p>Which translates into the following code:</p>
 
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"containerId"</span><span class="p">);</span> <span class="c1">// Can also be new Graph( containerDOM );</span>
-<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span> <span class="p">);</span>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"containerId"</span><span class="p">);</span> <span class="c1">// Also accepts a DOM element (but not a jQuery element);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span> <span class="p">);</span>	<span class="c1">// Resizes the container</span>
 
-<span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serieName"</span> <span class="p">)</span>
-	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
-	<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x3</span><span class="p">,</span> <span class="nx">y3</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serieName"</span> <span class="p">)</span> <span class="c1">// Creates a new serie</span>
+	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>	<span class="c1">// Assigns axes</span>
+	<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x3</span><span class="p">,</span> <span class="nx">y3</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Set data</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span> <span class="c1">// Draw</span></code></pre></figure>
 
 
 </div>

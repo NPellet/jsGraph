@@ -247,6 +247,10 @@ class Axis extends EventEmitter {
     return this.options.display;
   }
 
+  isShown() {
+    return this.isDisplayed( ...arguments );
+  }
+
   kill( noRedraw, noSerieKill ) {
       this.graph.killAxis( this, noRedraw, noSerieKill );
     }
@@ -553,6 +557,10 @@ class Axis extends EventEmitter {
     return this.options.nbTicksPrimary;
   }
 
+  setNbTicksPrimary( nb ) {
+    this.options.nbTicksPrimary = nb;
+  }
+
   getNbTicksSecondary() {
     return this.options.nbTicksSecondary;
   }
@@ -736,10 +744,11 @@ class Axis extends EventEmitter {
 
         var possibleTicks = [ 1, 2, 5, 10 ];
         var closest = false;
-        for ( var i = possibleTicks.length - 1; i >= 0; i-- )
+        for ( var i = possibleTicks.length - 1; i >= 0; i-- ) {
           if ( !closest || ( Math.abs( possibleTicks[ i ] - numberToNatural ) < Math.abs( closest - numberToNatural ) ) ) {
             closest = possibleTicks[ i ];
           }
+        }
 
           // Ok now closest is the number of unit per tick in the natural number
           /*
@@ -750,6 +759,7 @@ class Axis extends EventEmitter {
 
           // Let's scale it back
         var unitPerTickCorrect = closest * Math.pow( 10, decimals );
+   
         /*
   					Example:
   						13'453 (4) (1.345) (1) => 10'000
@@ -759,8 +769,8 @@ class Axis extends EventEmitter {
     }
 
     var nbTicks = valrange / unitPerTickCorrect;
-    var pxPerTick = px / nbTick;
 
+    var pxPerTick = px / nbTick;
     return [ unitPerTickCorrect, nbTicks, pxPerTick ];
   }
 

@@ -28,7 +28,7 @@ var legendDefaults = {
   paddingLeft: 10,
   paddingBottom: 10,
   paddingRight: 10,
-  frameRounding: 3,
+  frameRounding: 0,
 
   movable: false,
 
@@ -131,8 +131,8 @@ class Legend {
     }
 
     this.position = position;
-    this.alignToX = alignToX;
-    this.alignToY = alignToY;
+    this.alignToX = alignToX || 'left';
+    this.alignToY = alignToY || 'top';
 
   }
 
@@ -151,13 +151,12 @@ class Legend {
     this.autoPosition = false;
   }
 
-  calculatePosition() {
+  autoPosition() {
+    return this.setAutoPosition( ...arguments );
+  }
 
-    if ( !this.autoPosition ) {
-      this.graph.graphingZone.appendChild( this.getDom() );
-    } else {
-      this.graph.getDom().appendChild( this.getDom() );
-    }
+
+  buildLegendBox() {
 
     var series = this.series || this.graph.getSeries(),
       posX = 0,
@@ -165,11 +164,11 @@ class Legend {
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      if ( !series[  i ].isInLegend() && !this.series ) {
+      if ( series[ i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
-      if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
+      if ( this.autoPosition == 'bottom' || this.autoPosition == 'top' ) {
 
         var bbox = getBBox( this.groups[ i ] );
 
@@ -179,7 +178,7 @@ class Legend {
         }
       }
 
-      this.groups[  i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
+      this.groups[ i ].setAttribute( 'transform', "translate( " + posX + ", " + posY + ")" );
 
       if ( this.autoPosition == 'bottom' ||  this.autoPosition == 'top' ) {
 
@@ -250,28 +249,6 @@ class Legend {
         break;
     }
 
-    var pos = new GraphPosition( this.position ),
-      alignToY = this.alignToY,
-      alignToX = this.alignToX;
-
-    pos = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
-
-    if ( !pos ) {
-      return;
-    }
-
-    if ( alignToX == "right" ) {
-      pos.x -= this.width;
-    }
-
-    if ( alignToY == "bottom" ) {
-      pos.y -= this.height;
-    }
-
-    this.pos.transformX = pos.x;
-    this.pos.transformY = pos.y;
-
-    this._setPosition();
 
     if ( this.autoPosition ) {
       switch ( this.autoPosition ) {
@@ -294,15 +271,57 @@ class Legend {
       }
 
       this.graph.updateGraphingZone();
+      this.graph.redraw( true );
+
 
     }
+
+    this.bbox = bbox;
+  }
+
+
+  calculatePosition() {
+
+    if ( !this.autoPosition ) {
+      this.graph.graphingZone.appendChild( this.getDom() );
+    } else {
+      this.graph.getDom().appendChild( this.getDom() );
+    }
+
+
+    var pos = GraphPosition.check( this.position );
+    let poscoords = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
+
+    if ( !poscoords ) {
+      return;
+    }
+console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
+    if ( this.alignToX == "right" ) {
+      poscoords.x -= this.width;
+      poscoords.x += this.bbox.x;
+    } else {
+      //poscoords.x -= this.bbox.x;
+    }
+
+    if ( this.alignToY == "bottom" ) {
+      poscoords.y -= this.height;
+      poscoords.y += this.bbox.y;
+
+    } else {
+      poscoords.y += this.bbox.y;  
+    }
+    console.log( this.alignToX, this.alignToY, this.width, this.height, poscoords );
+
+    this.pos.transformX = poscoords.x;
+    this.pos.transformY = poscoords.y;
+    this._setPosition();
   }
 
   /** 
    * Updates the legend position and content
    */
   update() {
-
+console.trace();
     var self = this;
 
     this.applyStyle();
@@ -332,7 +351,7 @@ class Legend {
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      if ( !series[  i ].isInLegend() && !this.series ) {
+      if ( series[  i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
@@ -387,7 +406,9 @@ class Legend {
 
         text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
 
-        g.appendChild( line );
+        if( line ) {
+          g.appendChild( line );
+        }
 
         if ( series[ j ].getType() == "scatter" ) {
           line.setAttribute( 'transform', 'translate( 20, 0 )' );
@@ -435,6 +456,7 @@ class Legend {
     }
 
     this.svg.appendChild( this.rect );
+    this.buildLegendBox();
     this.calculatePosition();
   }
 

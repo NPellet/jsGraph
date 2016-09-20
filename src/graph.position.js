@@ -5,6 +5,10 @@ function _parsePx( px ) {
   return false;
 };
 
+function isNumeric(n) {
+  return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 /**
  * Utility class to compute positioning
  * @class
@@ -12,8 +16,8 @@ function _parsePx( px ) {
 class Position {
 
   constructor( x, y, dx, dy ) {
-
-    if ( !( x instanceof Number ) && x instanceof Object ) {
+console.log( arguments );
+    if ( typeof x == "object" ) {
       this.x = x.x;
       this.y = x.y;
       this.dx = x.dx;
@@ -107,9 +111,7 @@ class Position {
         }
 
       } else if ( val !== undefined ) {
-
-        pos[ i ] = this.getPx( val, axis );
-
+        pos[ i ] = this.getPx( val, axis );  
       }
 
       if ( dval !== undefined ) {
@@ -258,7 +260,7 @@ class Position {
   /**
    *  Computes a value in pixels
    *  @param {Number} value - The value in axis unit
-   *  @param {Axis} axis - The x axis to consider (has to belong to the graph)
+   *  @param {Axis} axis - The x or y axis to consider (has to belong to the graph)
    *  @param {Boolean} rel - Whether or not the value is a distance 
    *  @return {(Number|String)} The computed value
    */
@@ -266,7 +268,11 @@ class Position {
 
     var parsed;
 
-    if ( ( parsed = _parsePx( value ) ) !== false ) {
+    if( typeof value == "function" ) {
+
+      return value( axis, rel );
+
+    } else if ( ( parsed = _parsePx( value ) ) !== false ) {
 
       return parsed; // return integer (will be interpreted as px)
 
@@ -287,7 +293,8 @@ class Position {
       } else if ( rel ) {
 
         return axis.getRelPx( value );
-      } else {
+
+      } else if( isNumeric( value ) ) {
 
         return axis.getPos( value );
       }

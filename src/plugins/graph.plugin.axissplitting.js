@@ -26,6 +26,22 @@ class SerieLineExtended extends SerieLine {
     this.eraseMarkers();
     return this;
   }
+
+  getSymbolForLegend() {
+    if( ! this.subSeries[ 0 ] ) {
+      return false;
+    }
+
+    return this.subSeries[ 0 ].getSymbolForLegend();
+  }
+
+  getMarkerForLegend() {
+    if( ! this.subSeries[ 0 ] ) {
+      return false;
+    }
+
+    return this.subSeries[ 0 ].getMarkerForLegend();
+  }
 }
 
 class SerieScatterExtended extends SerieScatter {
@@ -45,6 +61,22 @@ class SerieScatterExtended extends SerieScatter {
 
   draw() {
     return this;
+  }
+
+  getSymbolForLegend() {
+    if( ! this.subSeries[ 0 ] ) {
+      return false;
+    }
+
+    return this.subSeries[ 0 ].getSymbolForLegend();
+  }
+
+  getMarkerForLegend() {
+    if( ! this.subSeries[ 0 ] ) {
+      return false;
+    }
+
+    return this.subSeries[ 0 ].getMarkerForLegend();
   }
 }
 
@@ -208,8 +240,10 @@ class PluginAxisSplitting extends Plugin {
       while ( serie.subSeries.length < splits ) {
 
         const name = serie.getName() + "_" + serie.subSeries.length;
+        
         const s = this.graph.newSerie( name, {}, serie.getType() || Graph.SERIE_LINE );
 
+        s.excludedFromLegend = true;
         s.styles = serie.styles;
         s.data = serie.data; // Copy data
 
@@ -304,7 +338,7 @@ class PluginAxisSplitting extends Plugin {
       serie: new SerieLineExtended( name, options, "line" )
     }
     this.series.set( name, serieObj );
-    serieObj.serie.init( this.graph, options );
+    serieObj.serie.init( this.graph, name, options );
     this.graph.series.push( serieObj.serie );
     return serieObj.serie;
   }

@@ -30,7 +30,10 @@ class AxisY extends Axis {
     if ( this.getLabel() ) {
       pos += this.graph.options.fontSize;
     }
-    pos += Math.abs( this.tickMargin );
+
+    if( this.isShown() ) {
+      pos += Math.abs( this.tickMargin );
+    }
     return pos;
   }
 

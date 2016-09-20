@@ -879,14 +879,6 @@ class Serie extends EventEmitter {
     this.graph.addSerieToTrackingLine( this, options );
   }
 
-  setLegend( bln ) {
-    this._legend = bln;
-  }
-
-  isInLegend() {
-    return this._legend === false ? false : true;
-  }
-
   getMarkerForLegend() {
     return false;
   }
@@ -897,6 +889,14 @@ class Serie extends EventEmitter {
 
   getType() {
     return this._type;
+  }
+
+  set excludedFromLegend( bln = true ) {
+    this._excludedFromLegend = bln;
+  }
+
+  get excludedFromLegend() {
+    return !! this._excludedFromLegend;
   }
 }
 
