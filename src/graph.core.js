@@ -2111,6 +2111,7 @@ class Graph extends EventEmitter {
       options.title = schema.title;
     }
 
+
     if ( schema.axis ) {
 
       schema.axis.map( function( schemaAxis ) {
@@ -2125,19 +2126,19 @@ class Graph extends EventEmitter {
         }
 
         if ( schemaAxis.unit !== undefined ) {
-          axisOption.unit = schemaAxis.unit;
+          axisOptions.unit = schemaAxis.unit;
         }
 
         if ( schemaAxis.min !== undefined ) {
-          axisOption.forcedMin = schemaAxis.min;
+          axisOptions.forcedMin = schemaAxis.min;
         }
 
         if ( schemaAxis.max !== undefined ) {
-          axisOption.forcedMax = schemaAxis.max;
+          axisOptions.forcedMax = schemaAxis.max;
         }
 
         if ( schemaAxis.flip !== undefined ) {
-          axisOption.flipped = schemaAxis.flip;
+          axisOptions.flipped = schemaAxis.flip;
         }
 
         axes[ schemaAxis.type ].push( axisOptions );
@@ -2147,6 +2148,18 @@ class Graph extends EventEmitter {
     }
 
     graph = new Graph( wrapper, options, axes );
+
+
+    if( schema.width ) {
+      graph.setWidth( schema.width );
+    }
+
+    if( schema.height ) {
+      graph.setHeight( schema.width );
+    }
+
+    graph._resize();
+
 
     if ( schema.data ) {
 
@@ -2165,11 +2178,11 @@ class Graph extends EventEmitter {
             break;
 
           case 'scatter':
-            serieType = 'scatter';
+            serieType = Graph.SERIE_SCATTER;
             break;
 
           default:
-            serieType = 'line';
+            serieType = Graph.SERIE_LINE;
             break;
         }
 
@@ -2178,7 +2191,7 @@ class Graph extends EventEmitter {
           return;
         }
 
-        serie = graph.newSerie( schemaSerie.label || util.guid(), serieOptions, serieType );
+        serie = graph.newSerie(  schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType );
 
         if ( schemaSerie.lineStyle ) {
 
@@ -2189,7 +2202,7 @@ class Graph extends EventEmitter {
 
             switch ( serieType ) {
 
-              case 'line':
+              case Graph.SERIE_LINE:
                 if ( style.lineWidth !== undefined ) {
                   styleSerie.lineWidth = style.lineWidth;
                 }
@@ -2224,7 +2237,7 @@ class Graph extends EventEmitter {
 
               switch ( serieType ) {
 
-                case "line":
+                case Graph.SERIE_LINE:
 
                   return {
                     type: style.shape,
@@ -2237,7 +2250,7 @@ class Graph extends EventEmitter {
 
                   break;
 
-                case "scatter":
+                case Graph.SERIE_SCATTER:
 
                   break;
               }
@@ -2245,12 +2258,12 @@ class Graph extends EventEmitter {
 
             switch ( serieType ) {
 
-              case "line":
+              case Graph.SERIE_LINE:
 
                 serie.setMarkers( styles, style.styleName );
                 break;
 
-              case "scatter":
+              case Graph.SERIE_SCATTER:
 
                 serie.setStyle( styles, {}, style.styleName );
                 break;
@@ -2332,8 +2345,151 @@ class Graph extends EventEmitter {
 
     }
 
+    graph.autoscaleAxes();
+    graph.draw();
+
     return graph;
   }
+
+
+  exportToSchema() {
+
+    let schema = {};
+
+    schema.title = this.options.title;
+
+    schema.width = this.getWidth();
+    schema.height = this.getHeight();
+
+    let axesPositions = [ 'top', 'bottom', 'left', 'right' ];
+    let axesExport = [];
+    let allaxes = { x: [], y: [] };
+
+    axesPositions.map( ( axisPosition ) => {
+
+      if( ! this.axis[ axisPosition ] ) {
+        return;
+      }
+
+      axesExport = axesExport.concat( this.axis[ axisPosition ].map( ( axis ) => { return {
+
+        type: axisPosition,
+        label: axis.options.label,
+        unit: axis.options.unit,
+        min: axis.options.forcedMin,
+        max: axis.options.forcedMax,
+        flip: axis.options.flipped
+
+      } } ) );
+
+      if( axisPosition == 'top' || axisPosition == 'bottom' ) {
+        allaxes.x = allaxes.x.concat( this.axis[ axisPosition ] );
+      } else {
+        allaxes.y = allaxes.y.concat( this.axis[ axisPosition ] );
+      }
+    } );
+
+    schema.axis = axesExport;
+
+    let seriesExport = [];
+
+    let toType = ( type ) => {
+      switch( type ) {
+
+        case Graph.SERIE_LINE:
+          return 'line';
+        break;
+
+        case Graph.SERIE_BAR:
+          return 'bar';
+        break;
+
+        case Graph.SERIE_SCATTER:
+          return 'scatter';
+        break;
+      }
+    }
+
+    let exportData = ( serie, x ) => {
+
+      let data = [];
+
+      switch( serie.getType( ) ) {
+
+        case Graph.SERIE_LINE:
+
+          for( var i = 0; i < serie.data.length; i ++ ) {
+
+            for( var j = 0; j < serie.data[ i ].length - 1; j += 2 ) {
+
+              data.push( serie.data[ i ][ j + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+            }
+          }
+        break;
+
+        case Graph.SERIE_SCATTER:
+
+
+          for( var j = 0; j < serie.data.length - 1; j += 2 ) {
+
+            data.push( serie.data[ i + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+          }
+        
+
+        break;
+      }
+
+
+      return data;
+    }
+
+    schema.data = seriesExport.concat( this.series.map( ( serie ) => {
+
+      let style = [];
+      let linestyle = [];
+
+      if( serie.getType() == Graph.SERIE_LINE ) {
+
+        for( var stylename in serie.styles ) {
+          linestyle.push( {
+            styleName: stylename,
+            color: serie.styles[ stylename ].lineColor,
+            lineWidth: serie.styles[ stylename ].lineWidth,
+            lineStyle: serie.styles[ stylename ].lineStyle,
+          });
+
+          let styleObj = { styleName: stylename, styles: [] };
+          style.push( styleObj ); 
+
+          styleObj.styles = styleObj.styles.concat( ( serie.styles[ stylename ].markers || [] ).map( ( markers ) => { return { 
+            shape: markers.type,
+            zoom: markers.zoom,
+            lineWidth: markers.strokeWidth,
+            lineColor: markers.strokeColor,
+            color: markers.fillColor,
+            points: markers.points
+          } } ) );
+            
+        }
+      }
+
+      return {
+        label: serie.getLabel(),
+        id: serie.getName(),
+        type: toType( serie.getType() ),
+        x: exportData( serie, true ),
+        y: exportData( serie, false ),
+        xAxis: allaxes.x.indexOf( serie.getXAxis() ),
+        yAxis: allaxes.y.indexOf( serie.getYAxis() ),
+        style: style,
+        lineStyle: linestyle
+        }
+      } ) );
+
+
+    return schema;
+  }
+
 
   /**
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
@@ -2372,6 +2528,8 @@ class Graph extends EventEmitter {
 
     return _constructors.get( constructorName );
   }
+
+
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes
@@ -2425,13 +2583,6 @@ function refreshDrawingZone( graph ) {
 
   var i, j, l, xy, min, max, axis;
   var shift = {
-    top: [],
-    bottom: [],
-    left: [],
-    right: []
-  };
-
-  var shift2 = {
     top: [],
     bottom: [],
     left: [],
@@ -2515,7 +2666,8 @@ function refreshDrawingZone( graph ) {
   }, false, false, true );
 
 
-
+  var shift2 = util.extend( true, {}, shift );
+  console.log( shift, shift2 );
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
@@ -2533,6 +2685,8 @@ function refreshDrawingZone( graph ) {
   }, false, false, true );
 
   shift = shift2;
+
+  console.log( shift, shift2 );
 
 
   var shiftLeft = shift.left.reduce( function( prev, curr ) {

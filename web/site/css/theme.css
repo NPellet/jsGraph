@@ -6979,4 +6979,9 @@ h2 {
 #jsgraph-highlights p.larger {
   font-size: 1.3em;
 }
+.example {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2d5956;
+}
 /*# sourceMappingURL=site/css/theme.css.map */

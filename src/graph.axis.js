@@ -429,11 +429,15 @@ class Axis extends EventEmitter {
   }
 
   setMinPx( px ) {
+    
+    console.warn("setmin", px);
     this.minPx = px;
     this.setMinMaxFlipped();
   }
 
   setMaxPx( px ) {
+    
+    console.warn("setmax", px);
     this.maxPx = px;
     this.setMinMaxFlipped();
   }

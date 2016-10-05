@@ -71,4 +71,11 @@ require( [ 'bootstrap' ], function( ) {
 	$('body').scrollspy({ target: '#jsgraph-sidebar' })
 	$('#jsgraph-sidebar').affix({offset: {top: 50} });
 
+	$(".showExampleCode").on('click', function() {
+
+		var code = $( this ).parent().parent().parent().find('.code');
+		code.toggleClass('hidden');
+		$( this ).text( code.hasClass('hidden') ? 'Show code' : 'Hide code' );
+	});
+
 });

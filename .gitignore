@@ -1,3 +1,8 @@
 node_modules
 lib
 .idea
+examples/node_modules
+examples/requirejs
+examples/src
+examples/workingplace
+examples/DD/

@@ -1146,6 +1146,9 @@ class SerieLine extends Serie {
       }
     }
 
+    if( ! family ) {
+      return false;
+    }
     this.getMarkerDom( family );
     return this.markerCurrentFamily;
   }
@@ -1777,16 +1780,16 @@ class SerieLine extends Serie {
   /* LINE STYLE * @memberof SerieLine
    */
 
-  setStyle( style, selectionType ) {
+  setStyle( style, selectionType = "unselected") {
     //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 
   }
 
-  setLineStyle( number, selectionType, applyToSelected ) {
+  setLineStyle( number, selectionType = "unselected", applyToSelected ) {
 
-    selectionType = selectionType ||  "unselected";
+    selectionType = selectionType;
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineStyle = number;
 
@@ -1803,7 +1806,7 @@ class SerieLine extends Serie {
     return this.getStyle( selectionType ).lineStyle;
   }
 
-  getLineDashArray( selectionType ) {
+  getLineDashArray( selectionType = this.selectionType || "unselected" ) {
 
     switch ( this.getStyle( selectionType ).lineStyle ) {
 
@@ -1849,7 +1852,7 @@ class SerieLine extends Serie {
         break;
 
       default:
-        return this.styles[ selectionType ||  this.selectionType || "unselected" ].lineStyle;
+        return this.styles[ selectionType ].lineStyle;
         break;
     }
 
@@ -1857,8 +1860,8 @@ class SerieLine extends Serie {
 
   }
 
-  getStyle( selectionType ) {
-    return this.styles[ selectionType || this.selectionType || "unselected" ];
+  getStyle( selectionType = this.selectionType || "unselected" ) {
+    return this.styles[ selectionType ];
   }
 
   extendStyles() {

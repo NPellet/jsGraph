@@ -2698,6 +2698,154 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {Graph} Newly created graph
 	     */
 
+	  }, {
+	    key: 'exportToSchema',
+	    value: function exportToSchema() {
+	      var _this8 = this;
+
+	      var schema = {};
+
+	      schema.title = this.options.title;
+
+	      schema.width = this.getWidth();
+	      schema.height = this.getHeight();
+
+	      var axesPositions = ['top', 'bottom', 'left', 'right'];
+	      var axesExport = [];
+	      var allaxes = { x: [], y: [] };
+
+	      axesPositions.map(function (axisPosition) {
+
+	        if (!_this8.axis[axisPosition]) {
+	          return;
+	        }
+
+	        axesExport = axesExport.concat(_this8.axis[axisPosition].map(function (axis) {
+	          return {
+
+	            type: axisPosition,
+	            label: axis.options.label,
+	            unit: axis.options.unit,
+	            min: axis.options.forcedMin,
+	            max: axis.options.forcedMax,
+	            flip: axis.options.flipped
+
+	          };
+	        }));
+
+	        if (axisPosition == 'top' || axisPosition == 'bottom') {
+	          allaxes.x = allaxes.x.concat(_this8.axis[axisPosition]);
+	        } else {
+	          allaxes.y = allaxes.y.concat(_this8.axis[axisPosition]);
+	        }
+	      });
+
+	      schema.axis = axesExport;
+
+	      var seriesExport = [];
+
+	      var toType = function toType(type) {
+	        switch (type) {
+
+	          case Graph.SERIE_LINE:
+	            return 'line';
+	            break;
+
+	          case Graph.SERIE_BAR:
+	            return 'bar';
+	            break;
+
+	          case Graph.SERIE_SCATTER:
+	            return 'scatter';
+	            break;
+	        }
+	      };
+
+	      var exportData = function exportData(serie, x) {
+
+	        var data = [];
+
+	        switch (serie.getType()) {
+
+	          case Graph.SERIE_LINE:
+
+	            for (var i = 0; i < serie.data.length; i++) {
+
+	              for (var j = 0; j < serie.data[i].length - 1; j += 2) {
+
+	                data.push(serie.data[i][j + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+	              }
+	            }
+	            break;
+
+	          case Graph.SERIE_SCATTER:
+
+	            for (var j = 0; j < serie.data.length - 1; j += 2) {
+
+	              data.push(serie.data[i + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+	            }
+
+	            break;
+	        }
+
+	        return data;
+	      };
+
+	      schema.data = seriesExport.concat(this.series.map(function (serie) {
+
+	        var style = [];
+	        var linestyle = [];
+
+	        if (serie.getType() == Graph.SERIE_LINE) {
+
+	          for (var stylename in serie.styles) {
+	            linestyle.push({
+	              styleName: stylename,
+	              color: serie.styles[stylename].lineColor,
+	              lineWidth: serie.styles[stylename].lineWidth,
+	              lineStyle: serie.styles[stylename].lineStyle
+	            });
+
+	            var styleObj = { styleName: stylename, styles: [] };
+	            style.push(styleObj);
+
+	            styleObj.styles = styleObj.styles.concat((serie.styles[stylename].markers || []).map(function (markers) {
+	              return {
+	                shape: markers.type,
+	                zoom: markers.zoom,
+	                lineWidth: markers.strokeWidth,
+	                lineColor: markers.strokeColor,
+	                color: markers.fillColor,
+	                points: markers.points
+	              };
+	            }));
+	          }
+	        }
+
+	        return {
+	          label: serie.getLabel(),
+	          id: serie.getName(),
+	          type: toType(serie.getType()),
+	          x: exportData(serie, true),
+	          y: exportData(serie, false),
+	          xAxis: allaxes.x.indexOf(serie.getXAxis()),
+	          yAxis: allaxes.y.indexOf(serie.getYAxis()),
+	          style: style,
+	          lineStyle: linestyle
+	        };
+	      }));
+
+	      return schema;
+	    }
+
+	    /**
+	     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+	     * @param {String} constructorName - The name of the constructor
+	     * @param {Function} constructor - The constructor method
+	     * @see Graph.getConstructor
+	     * @static
+	     */
+
 	  }], [{
 	    key: 'fromSchema',
 	    value: function fromSchema(schema, wrapper) {
@@ -2730,19 +2878,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 
 	          if (schemaAxis.unit !== undefined) {
-	            axisOption.unit = schemaAxis.unit;
+	            axisOptions.unit = schemaAxis.unit;
 	          }
 
 	          if (schemaAxis.min !== undefined) {
-	            axisOption.forcedMin = schemaAxis.min;
+	            axisOptions.forcedMin = schemaAxis.min;
 	          }
 
 	          if (schemaAxis.max !== undefined) {
-	            axisOption.forcedMax = schemaAxis.max;
+	            axisOptions.forcedMax = schemaAxis.max;
 	          }
 
 	          if (schemaAxis.flip !== undefined) {
-	            axisOption.flipped = schemaAxis.flip;
+	            axisOptions.flipped = schemaAxis.flip;
 	          }
 
 	          axes[schemaAxis.type].push(axisOptions);
@@ -2751,6 +2899,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      graph = new Graph(wrapper, options, axes);
+
+	      if (schema.width) {
+	        graph.setWidth(schema.width);
+	      }
+
+	      if (schema.height) {
+	        graph.setHeight(schema.width);
+	      }
+
+	      graph._resize();
 
 	      if (schema.data) {
 
@@ -2769,11 +2927,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	              break;
 
 	            case 'scatter':
-	              serieType = 'scatter';
+	              serieType = Graph.SERIE_SCATTER;
 	              break;
 
 	            default:
-	              serieType = 'line';
+	              serieType = Graph.SERIE_LINE;
 	              break;
 	          }
 
@@ -2782,7 +2940,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return;
 	          }
 
-	          serie = graph.newSerie(schemaSerie.label || util.guid(), serieOptions, serieType);
+	          serie = graph.newSerie(schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType);
 
 	          if (schemaSerie.lineStyle) {
 
@@ -2793,7 +2951,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              switch (serieType) {
 
-	                case 'line':
+	                case Graph.SERIE_LINE:
 	                  if (style.lineWidth !== undefined) {
 	                    styleSerie.lineWidth = style.lineWidth;
 	                  }
@@ -2827,7 +2985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                switch (serieType) {
 
-	                  case "line":
+	                  case Graph.SERIE_LINE:
 
 	                    return {
 	                      type: style.shape,
@@ -2840,7 +2998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                    break;
 
-	                  case "scatter":
+	                  case Graph.SERIE_SCATTER:
 
 	                    break;
 	                }
@@ -2848,12 +3006,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              switch (serieType) {
 
-	                case "line":
+	                case Graph.SERIE_LINE:
 
 	                  serie.setMarkers(styles, style.styleName);
 	                  break;
 
-	                case "scatter":
+	                case Graph.SERIE_SCATTER:
 
 	                  serie.setStyle(styles, {}, style.styleName);
 	                  break;
@@ -2926,17 +3084,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 
+	      graph.autoscaleAxes();
+	      graph.draw();
+
 	      return graph;
 	    }
-
-	    /**
-	     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-	     * @param {String} constructorName - The name of the constructor
-	     * @param {Function} constructor - The constructor method
-	     * @see Graph.getConstructor
-	     * @static
-	     */
-
 	  }, {
 	    key: 'registerConstructor',
 	    value: function registerConstructor(constructorName, constructor) {
@@ -3034,13 +3186,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    right: []
 	  };
 
-	  var shift2 = {
-	    top: [],
-	    bottom: [],
-	    left: [],
-	    right: []
-	  };
-
 	  var levels = {
 	    top: [],
 	    bottom: [],
@@ -3114,6 +3259,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    shift[position][level] = Math.max(drawn, shift[position][level] || 0);
 	  }, false, false, true);
 
+	  var shift2 = util.extend(true, {}, shift);
+	  console.log(shift, shift2);
 	  // Applied to left and right
 	  graph._applyToAxes(function (axis, position) {
 
@@ -3129,6 +3276,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, false, false, true);
 
 	  shift = shift2;
+
+	  console.log(shift, shift2);
 
 	  var shiftLeft = shift.left.reduce(function (prev, curr) {
 	    return prev + curr;
@@ -5975,6 +6124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setMinMaxFlipped',
 	    value: function setMinMaxFlipped() {
 
+	      console.log(this.maxPx, this.minPx);
 	      var interval = this.maxPx - this.minPx;
 
 	      if (isNaN(interval)) {
@@ -6498,12 +6648,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setMinPx',
 	    value: function setMinPx(px) {
+
+	      console.warn("setmin", px);
 	      this.minPx = px;
 	      this.setMinMaxFlipped();
 	    }
 	  }, {
 	    key: 'setMaxPx',
 	    value: function setMaxPx(px) {
+
+	      console.warn("setmax", px);
 	      this.maxPx = px;
 	      this.setMinMaxFlipped();
 	    }
@@ -8904,6 +9058,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.getLabel()) {
 	        return width + this.graph.options.fontSize;
 	      }
+
+	      return 0;
 	    }
 
 	    /**
@@ -11513,6 +11669,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
+	      if (!family) {
+	        return false;
+	      }
 	      this.getMarkerDom(family);
 	      return this.markerCurrentFamily;
 	    }
@@ -12164,16 +12323,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'setStyle',
-	    value: function setStyle(style, selectionType) {
+	    value: function setStyle(style) {
+	      var selectionType = arguments.length <= 1 || arguments[1] === undefined ? "unselected" : arguments[1];
+
 	      //console.log( style, selectionType );
 	      this.styles[selectionType] = style;
 	      this.styleHasChanged(selectionType);
 	    }
 	  }, {
 	    key: 'setLineStyle',
-	    value: function setLineStyle(number, selectionType, applyToSelected) {
+	    value: function setLineStyle(number) {
+	      var selectionType = arguments.length <= 1 || arguments[1] === undefined ? "unselected" : arguments[1];
+	      var applyToSelected = arguments[2];
 
-	      selectionType = selectionType || "unselected";
+
+	      selectionType = selectionType;
 	      this.styles[selectionType] = this.styles[selectionType] || {};
 	      this.styles[selectionType].lineStyle = number;
 
@@ -12192,7 +12356,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'getLineDashArray',
-	    value: function getLineDashArray(selectionType) {
+	    value: function getLineDashArray() {
+	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? this.selectionType || "unselected" : arguments[0];
+
 
 	      switch (this.getStyle(selectionType).lineStyle) {
 
@@ -12238,7 +12404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 
 	        default:
-	          return this.styles[selectionType || this.selectionType || "unselected"].lineStyle;
+	          return this.styles[selectionType].lineStyle;
 	          break;
 	      }
 
@@ -12246,8 +12412,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'getStyle',
-	    value: function getStyle(selectionType) {
-	      return this.styles[selectionType || this.selectionType || "unselected"];
+	    value: function getStyle() {
+	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? this.selectionType || "unselected" : arguments[0];
+
+	      return this.styles[selectionType];
 	    }
 	  }, {
 	    key: 'extendStyles',

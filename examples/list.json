@@ -1,0 +1,29 @@
+[
+
+{
+	"file": "30-axisspan",
+	"title": "Axis spanning",
+	"description": "You can use axis spanning to display multiple axes next to each other, in the x or in the y direction.\nAxes that would clash together will be shifted as to avoid collisions."
+},
+
+
+{
+	"file": "40-xrd",
+	"title": "XRD spectrum using axis splitting"
+},
+
+
+{
+	"file": "50-gradient",
+	"title": "Using color map"
+},
+
+
+{
+	"file": "52-gradient2",
+	"title": "Density map usage"
+}
+
+
+
+]

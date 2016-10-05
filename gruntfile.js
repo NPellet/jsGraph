@@ -266,6 +266,32 @@ module.exports = function(grunt) {
     });
 
 
+
+    grunt.registerTask( "buildExamples", "Builds new examples", function() {
+
+        var examples = [];
+        var list = JSON.parse( fs.readFileSync("examples/list.json", 'utf8') );
+        
+        for( var i = 0, l = list.length; i < l; i ++ ) {
+            var code = fs.readFileSync("examples/v2/" + list[ i ].file + ".js", 'utf8' );
+            var example = {};
+            example.id = list[ i ].file;
+            example.title = list[ i ].title;
+            example.code = code;
+
+            example.description = list[ i ].description;
+
+            example.codeShown = code.replace(/\/\* START IGNORE \*\/([\s\S]*)\/\* END IGNORE \*\//, function( ) { return ""; } );
+            example.codeShown = beautify( example.codeShown, { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } )
+
+
+            examples.push( example );
+        }
+        
+
+        fs.writeFileSync( "web/sources/_data/examples.json", JSON.stringify( examples, undefined, "\t" ) );
+    });
+
     grunt.registerMultiTask( 'build', 'Build jsGraph distributions', function() {
 
         var done = this.async();

@@ -86,6 +86,8 @@ class AxisY extends Axis {
     if( this.getLabel() ) {
       return width + this.graph.options.fontSize;
     }
+
+    return 0;
   }
 
 

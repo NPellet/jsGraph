@@ -203,7 +203,8 @@ class AxisX extends Axis {
    *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
    */
   setMinMaxFlipped() {
-
+    
+console.log( this.maxPx, this.minPx );
     var interval = this.maxPx - this.minPx;
 
     if ( isNaN( interval ) ) {
