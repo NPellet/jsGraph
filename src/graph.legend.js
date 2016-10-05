@@ -250,6 +250,7 @@ class Legend {
     }
 
 
+
     if ( this.autoPosition ) {
       switch ( this.autoPosition ) {
 
@@ -270,8 +271,11 @@ class Legend {
           break;
       }
 
+
       this.graph.updateGraphingZone();
-      this.graph.redraw( true );
+      this.graph.getDrawingHeight();
+      this.graph.getDrawingWidth();
+      this.graph.redraw( false );
 
 
     }

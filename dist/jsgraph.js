@@ -2150,6 +2150,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'pluginYieldActiveState',
+	    value: function pluginYieldActiveState() {
+	      this.activePlugin = false;
+	    }
+	  }, {
 	    key: '_serieExecute',
 	    value: function _serieExecute(which, func, args) {
 
@@ -5457,7 +5462,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        this.graph.updateGraphingZone();
-	        this.graph.redraw(true);
+	        this.graph.getDrawingHeight();
+	        this.graph.getDrawingWidth();
+	        this.graph.redraw(false);
 	      }
 
 	      this.bbox = bbox;
@@ -23022,6 +23029,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        this.emit("zoomed");
+
+	        graph.pluginYieldActiveState();
 	      }
 	    }
 
@@ -23275,6 +23284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 
 	          self.emit("zoomed");
+	          self.graph.pluginYieldActiveState();
 
 	          if (eventName) {
 	            self.emit(eventName);

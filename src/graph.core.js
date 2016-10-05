@@ -1612,6 +1612,11 @@ class Graph extends EventEmitter {
       this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
     }
   }
+
+  pluginYieldActiveState() {
+    this.activePlugin = false;
+  }
+
   _serieExecute( which, func, args ) {
 
     if ( typeof serie !== 'object' ) {
@@ -2667,7 +2672,7 @@ function refreshDrawingZone( graph ) {
 
 
   var shift2 = util.extend( true, {}, shift );
-  console.log( shift, shift2 );
+  
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
@@ -2685,8 +2690,6 @@ function refreshDrawingZone( graph ) {
   }, false, false, true );
 
   shift = shift2;
-
-  console.log( shift, shift2 );
 
 
   var shiftLeft = shift.left.reduce( function( prev, curr ) {
@@ -3242,7 +3245,6 @@ function _handleMouseUp( graph, x, y, e ) {
 
   graph._pluginExecute( graph.activePlugin, 'onMouseUp', [ graph, x, y, e ] );
   graph.activePlugin = false;
-
 }
 
 function _handleClick( graph, x, y, e ) {
