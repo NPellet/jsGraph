@@ -79,7 +79,6 @@ class Graph extends EventEmitter {
 
     super();
 
-    var self = this;
 
     /*
       The unique ID of the graph
@@ -282,7 +281,7 @@ class Graph extends EventEmitter {
 
   executeRedrawSlaves( noLegend ) {
     this._pluginsExecute( "preDraw" );
-    
+
   }
 
   /**
@@ -710,12 +709,12 @@ class Graph extends EventEmitter {
    * @private
    */
   hasAxis( axis, axisList ) {
-    for( var i = 0, l = axisList.length; i  < l; i ++ ) {
-      if( axisList[ i ] == axis ) {
+    for ( var i = 0, l = axisList.length; i < l; i++ ) {
+      if ( axisList[ i ] == axis ) {
         return true;
       }
 
-      if( axisList[ i ].hasAxis( axis ) ) {
+      if ( axisList[ i ].hasAxis( axis ) ) {
         return true;
       }
     }
@@ -990,7 +989,6 @@ class Graph extends EventEmitter {
    */
   newSerie( name, options, type ) {
 
-    var self = this;
 
     if ( !type ) {
       type = Graph.SERIE_LINE;
@@ -1001,20 +999,20 @@ class Graph extends EventEmitter {
       return serie;
     }
 
-    if( ! ( serie = makeSerie( this, name, options, type ) ) ) {
+    if ( !( serie = makeSerie( this, name, options, type ) ) ) {
       return;
     };
 
     serie._type = type;
-    self.series.push( serie );
+    this.series.push( serie );
 
-// 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
-/*
-    if ( self.legend ) {
-      self.legend.update();
-    }
-*/
-    self.emit( "newSerie", serie );
+    // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
+    /*
+        if ( self.legend ) {
+          self.legend.update();
+        }
+    */
+    this.emit( "newSerie", serie );
     return serie;
   }
 
@@ -1079,7 +1077,7 @@ class Graph extends EventEmitter {
     var i = this.series.length - 1;
     for ( ; i >= 0; i-- ) {
       if ( this.series[ i ].isShown() ) {
-        this.drawSerie( this.series[  i ], force );
+        this.drawSerie( this.series[ i ], force );
       }
     }
   }
@@ -2116,7 +2114,6 @@ class Graph extends EventEmitter {
       options.title = schema.title;
     }
 
-
     if ( schema.axis ) {
 
       schema.axis.map( function( schemaAxis ) {
@@ -2132,6 +2129,14 @@ class Graph extends EventEmitter {
 
         if ( schemaAxis.unit !== undefined ) {
           axisOptions.unit = schemaAxis.unit;
+        }
+
+        if ( schemaAxis.unitWrapperAfter !== undefined ) {
+          axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
+        }
+
+        if ( schemaAxis.unitWrapperBefore !== undefined ) {
+          axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
         }
 
         if ( schemaAxis.min !== undefined ) {
@@ -2154,17 +2159,15 @@ class Graph extends EventEmitter {
 
     graph = new Graph( wrapper, options, axes );
 
-
-    if( schema.width ) {
+    if ( schema.width ) {
       graph.setWidth( schema.width );
     }
 
-    if( schema.height ) {
+    if ( schema.height ) {
       graph.setHeight( schema.width );
     }
 
     graph._resize();
-
 
     if ( schema.data ) {
 
@@ -2196,7 +2199,7 @@ class Graph extends EventEmitter {
           return;
         }
 
-        serie = graph.newSerie(  schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType );
+        serie = graph.newSerie( schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType );
 
         if ( schemaSerie.lineStyle ) {
 
@@ -2356,7 +2359,6 @@ class Graph extends EventEmitter {
     return graph;
   }
 
-
   exportToSchema() {
 
     let schema = {};
@@ -2368,26 +2370,31 @@ class Graph extends EventEmitter {
 
     let axesPositions = [ 'top', 'bottom', 'left', 'right' ];
     let axesExport = [];
-    let allaxes = { x: [], y: [] };
+    let allaxes = {
+      x: [],
+      y: []
+    };
 
     axesPositions.map( ( axisPosition ) => {
 
-      if( ! this.axis[ axisPosition ] ) {
+      if ( !this.axis[ axisPosition ] ) {
         return;
       }
 
-      axesExport = axesExport.concat( this.axis[ axisPosition ].map( ( axis ) => { return {
+      axesExport = axesExport.concat( this.axis[ axisPosition ].map( ( axis ) => {
+        return {
 
-        type: axisPosition,
-        label: axis.options.label,
-        unit: axis.options.unit,
-        min: axis.options.forcedMin,
-        max: axis.options.forcedMax,
-        flip: axis.options.flipped
+          type: axisPosition,
+          label: axis.options.label,
+          unit: axis.options.unit,
+          min: axis.options.forcedMin,
+          max: axis.options.forcedMax,
+          flip: axis.options.flipped
 
-      } } ) );
+        }
+      } ) );
 
-      if( axisPosition == 'top' || axisPosition == 'bottom' ) {
+      if ( axisPosition == 'top' || axisPosition == 'bottom' ) {
         allaxes.x = allaxes.x.concat( this.axis[ axisPosition ] );
       } else {
         allaxes.y = allaxes.y.concat( this.axis[ axisPosition ] );
@@ -2399,19 +2406,19 @@ class Graph extends EventEmitter {
     let seriesExport = [];
 
     let toType = ( type ) => {
-      switch( type ) {
+      switch ( type ) {
 
         case Graph.SERIE_LINE:
           return 'line';
-        break;
+          break;
 
         case Graph.SERIE_BAR:
           return 'bar';
-        break;
+          break;
 
         case Graph.SERIE_SCATTER:
           return 'scatter';
-        break;
+          break;
       }
     }
 
@@ -2419,31 +2426,28 @@ class Graph extends EventEmitter {
 
       let data = [];
 
-      switch( serie.getType( ) ) {
+      switch ( serie.getType() ) {
 
         case Graph.SERIE_LINE:
 
-          for( var i = 0; i < serie.data.length; i ++ ) {
+          for ( var i = 0; i < serie.data.length; i++ ) {
 
-            for( var j = 0; j < serie.data[ i ].length - 1; j += 2 ) {
+            for ( var j = 0; j < serie.data[ i ].length - 1; j += 2 ) {
 
-              data.push( serie.data[ i ][ j + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+              data.push( serie.data[ i ][ j + ( ( x && serie.isFlipped() ||  !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
             }
           }
-        break;
+          break;
 
         case Graph.SERIE_SCATTER:
 
+          for ( var j = 0; j < serie.data.length - 1; j += 2 ) {
 
-          for( var j = 0; j < serie.data.length - 1; j += 2 ) {
-
-            data.push( serie.data[ i + ( ( x && serie.isFlipped() || !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
+            data.push( serie.data[ i + ( ( x && serie.isFlipped() ||  !x && !serie.isFlipped() ) ? 1 : 0 ) ] );
           }
-        
 
-        break;
+          break;
       }
-
 
       return data;
     }
@@ -2453,28 +2457,33 @@ class Graph extends EventEmitter {
       let style = [];
       let linestyle = [];
 
-      if( serie.getType() == Graph.SERIE_LINE ) {
+      if ( serie.getType() == Graph.SERIE_LINE ) {
 
-        for( var stylename in serie.styles ) {
+        for ( var stylename in serie.styles ) {
           linestyle.push( {
             styleName: stylename,
             color: serie.styles[ stylename ].lineColor,
             lineWidth: serie.styles[ stylename ].lineWidth,
             lineStyle: serie.styles[ stylename ].lineStyle,
-          });
+          } );
 
-          let styleObj = { styleName: stylename, styles: [] };
-          style.push( styleObj ); 
+          let styleObj = {
+            styleName: stylename,
+            styles: []
+          };
+          style.push( styleObj );
 
-          styleObj.styles = styleObj.styles.concat( ( serie.styles[ stylename ].markers || [] ).map( ( markers ) => { return { 
-            shape: markers.type,
-            zoom: markers.zoom,
-            lineWidth: markers.strokeWidth,
-            lineColor: markers.strokeColor,
-            color: markers.fillColor,
-            points: markers.points
-          } } ) );
-            
+          styleObj.styles = styleObj.styles.concat( ( serie.styles[ stylename ].markers || [] ).map( ( markers ) => {
+            return {
+              shape: markers.type,
+              zoom: markers.zoom,
+              lineWidth: markers.strokeWidth,
+              lineColor: markers.strokeColor,
+              color: markers.fillColor,
+              points: markers.points
+            }
+          } ) );
+
         }
       }
 
@@ -2488,13 +2497,11 @@ class Graph extends EventEmitter {
         yAxis: allaxes.y.indexOf( serie.getYAxis() ),
         style: style,
         lineStyle: linestyle
-        }
-      } ) );
-
+      }
+    } ) );
 
     return schema;
   }
-
 
   /**
    * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
@@ -2521,10 +2528,10 @@ class Graph extends EventEmitter {
    * @static
    */
   static getConstructor( constructorName, softFail ) {
-    
+
     if ( !_constructors.has( constructorName ) ) {
 
-      if( softFail ) {
+      if ( softFail ) {
         return false;
       }
 
@@ -2534,7 +2541,6 @@ class Graph extends EventEmitter {
     return _constructors.get( constructorName );
   }
 
-
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes
@@ -2543,7 +2549,7 @@ Graph.prototype.getConstructor = Graph.getConstructor;
 function makeSerie( graph, name, options, type ) {
 
   var constructor = graph.getConstructor( type, true );
-  if( ! constructor && typeof type == "string" ) {
+  if ( !constructor && typeof type == "string" ) {
     constructor = graph.getConstructor( "graph.serie." + type, true );
   }
   if ( constructor ) {
@@ -2555,7 +2561,7 @@ function makeSerie( graph, name, options, type ) {
   } else {
 
     return util.throwError( "No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series" );
-  
+
   }
 
   return serie;
@@ -2670,9 +2676,8 @@ function refreshDrawingZone( graph ) {
 
   }, false, false, true );
 
-
   var shift2 = util.extend( true, {}, shift );
-  
+
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
@@ -2684,13 +2689,11 @@ function refreshDrawingZone( graph ) {
       return;
     }
 
-
-    shift2[ position ][ axis.getLevel( ) ] = Math.max( shift[ position ][ axis.getLevel( ) ], axis.equalizePosition( shift[ position ][ axis.getLevel( ) ] ) );
+    shift2[ position ][ axis.getLevel() ] = Math.max( shift[ position ][ axis.getLevel() ], axis.equalizePosition( shift[ position ][ axis.getLevel() ] ) );
 
   }, false, false, true );
 
   shift = shift2;
-
 
   var shiftLeft = shift.left.reduce( function( prev, curr ) {
     return prev + curr;
@@ -2708,7 +2711,7 @@ function refreshDrawingZone( graph ) {
   } );
 
   // Apply to left and right
-  graph._applyToAxes( function( axis, position ) {
+  graph._applyToAxes( ( axis, position ) => {
 
     if ( axis.disabled ||  axis.floating ) {
       return;
@@ -2775,12 +2778,10 @@ function refreshDrawingZone( graph ) {
   graph.rectEvent.setAttribute( 'width', graph.drawingSpaceWidth );
   graph.rectEvent.setAttribute( 'height', graph.drawingSpaceHeight );
 
-  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft();// + "px";
-  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop();// + "px";
-  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft();// + "px";
-  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop();//  + "px";
-
-
+  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft(); // + "px";
+  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
+  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
+  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
 
   /*
 	graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -3381,7 +3382,6 @@ function haveAxesChanged( graph ) {
   graph._axesHaveChanged = false;
   return temp;
 }
-
 
 // Constants
 Graph.SERIE_LINE = Symbol();

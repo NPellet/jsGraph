@@ -29,25 +29,25 @@
 			"./src/series/graph.serie.contour.js",
 			"./src/shapes/graph.shape.js",
 			"./src/shapes/graph.shape.areaundercurve.js",
-			"./src/shapes/graph.shape.arrow.js",
-			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.ellipse.js",
 			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
+			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.rect.js",
 			"./src/shapes/graph.shape.cross.js",
 			"./src/shapes/graph.shape.peakboundariescenter.js",
-			"./src/plugins/graph.plugin.axissplitting.js",
 			"./src/plugins/graph.plugin.js",
+			"./src/plugins/graph.plugin.drag.js",
 			"./src/plugins/graph.plugin.shape.js",
 			"./src/plugins/graph.plugin.selectScatter.js",
 			"./src/plugins/graph.plugin.zoom.js",
 			"./src/plugins/graph.plugin.timeseriemanager.js",
 			"./src/graph.lru.js",
 			"./src/plugins/graph.plugin.serielinedifference.js",
-			"./src/plugins/graph.plugin.drag.js"
+			"./src/plugins/graph.plugin.axissplitting.js",
+			"./src/shapes/graph.shape.arrow.js"
 		]
 	}
 }

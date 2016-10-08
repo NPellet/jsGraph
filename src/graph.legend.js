@@ -132,7 +132,7 @@ class Legend {
 
     this.position = position;
     this.alignToX = alignToX || 'left';
-    this.alignToY = alignToY || 'top';
+    this.alignToY = alignToY ||  'top';
 
   }
 
@@ -155,7 +155,6 @@ class Legend {
     return this.setAutoPosition( ...arguments );
   }
 
-
   buildLegendBox() {
 
     var series = this.series || this.graph.getSeries(),
@@ -164,7 +163,7 @@ class Legend {
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
-      if ( series[ i ].excludedFromLegend && !this.series ) {
+      if ( series[  i ].excludedFromLegend && !this.series ) {
         continue;
       }
 
@@ -249,8 +248,6 @@ class Legend {
         break;
     }
 
-
-
     if ( this.autoPosition ) {
       switch ( this.autoPosition ) {
 
@@ -271,18 +268,15 @@ class Legend {
           break;
       }
 
-
       this.graph.updateGraphingZone();
       this.graph.getDrawingHeight();
       this.graph.getDrawingWidth();
       this.graph.redraw( false );
 
-
     }
 
     this.bbox = bbox;
   }
-
 
   calculatePosition() {
 
@@ -291,7 +285,6 @@ class Legend {
     } else {
       this.graph.getDom().appendChild( this.getDom() );
     }
-
 
     var pos = GraphPosition.check( this.position );
     let poscoords = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
@@ -312,9 +305,8 @@ class Legend {
       poscoords.y += this.bbox.y;
 
     } else {
-      poscoords.y += this.bbox.y;  
+      poscoords.y += this.bbox.y;
     }
-
 
     this.pos.transformX = poscoords.x;
     this.pos.transformY = poscoords.y;
@@ -410,7 +402,7 @@ class Legend {
 
         text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
 
-        if( line ) {
+        if ( line ) {
           g.appendChild( line );
         }
 

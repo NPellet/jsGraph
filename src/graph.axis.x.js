@@ -134,21 +134,21 @@ class AxisX extends Axis {
   }
 
   draw() {
-    var tickWidth = super.draw( ...arguments );
-    this.drawSpecifics();
+      var tickWidth = super.draw( ...arguments );
+      this.drawSpecifics();
 
-    return tickWidth;
-  }
-  /**
-   *  Paints the label, the axis line and anything else specific to x axes
-   */
+      return tickWidth;
+    }
+    /**
+     *  Paints the label, the axis line and anything else specific to x axes
+     */
   drawSpecifics() {
 
     // Adjusts group shift
     //this.group.setAttribute('transform', 'translate(0 ' + this.getShift() + ')');
 
     this.drawLabel();
-    
+
     this.line.setAttribute( 'x1', this.getMinPx() );
     this.line.setAttribute( 'x2', this.getMaxPx() );
     this.line.setAttribute( 'y1', 0 );
@@ -168,8 +168,8 @@ class AxisX extends Axis {
     }
 
     var span = this.getSpan();
-    this.line.setAttribute( 'marker-start', ( ! this.options.splitMarks || span[ 0 ] == 0 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
-    this.line.setAttribute( 'marker-end', ( ! this.options.splitMarks || span[ 1 ] == 1 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-start', ( !this.options.splitMarks ||  span[ 0 ] == 0 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
+    this.line.setAttribute( 'marker-end', ( !this.options.splitMarks ||  span[ 1 ] == 1 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")" ) );
 
   }
 
@@ -203,8 +203,8 @@ class AxisX extends Axis {
    *  Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
    */
   setMinMaxFlipped() {
-    
-console.log( this.maxPx, this.minPx );
+
+    console.log( this.maxPx, this.minPx );
     var interval = this.maxPx - this.minPx;
 
     if ( isNaN( interval ) ) {

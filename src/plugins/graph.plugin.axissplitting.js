@@ -28,19 +28,19 @@ class SerieLineExtended extends SerieLine {
   }
 
   getSymbolForLegend() {
-    if( ! this.subSeries[ 0 ] ) {
+    if ( !this.subSeries[ 0 ] ) {
       return false;
     }
 
-    return this.subSeries[ 0 ].getSymbolForLegend();
+    return this.subSeries[  0 ].getSymbolForLegend();
   }
 
   getMarkerForLegend() {
-    if( ! this.subSeries[ 0 ] ) {
+    if ( !this.subSeries[ 0 ] ) {
       return false;
     }
 
-    return this.subSeries[ 0 ].getMarkerForLegend();
+    return this.subSeries[  0 ].getMarkerForLegend();
   }
 }
 
@@ -64,19 +64,19 @@ class SerieScatterExtended extends SerieScatter {
   }
 
   getSymbolForLegend() {
-    if( ! this.subSeries[ 0 ] ) {
+    if ( !this.subSeries[ 0 ] ) {
       return false;
     }
 
-    return this.subSeries[ 0 ].getSymbolForLegend();
+    return this.subSeries[  0 ].getSymbolForLegend();
   }
 
   getMarkerForLegend() {
-    if( ! this.subSeries[ 0 ] ) {
+    if ( !this.subSeries[ 0 ] ) {
       return false;
     }
 
-    return this.subSeries[ 0 ].getMarkerForLegend();
+    return this.subSeries[  0 ].getMarkerForLegend();
   }
 }
 
@@ -131,7 +131,6 @@ class PluginAxisSplitting extends Plugin {
     this.series = new Map();
   }
 
-
   static defaults() {
 
     return {
@@ -143,7 +142,6 @@ class PluginAxisSplitting extends Plugin {
       }
     };
   }
-
 
   init( graph ) {
     this.graph = graph;
@@ -240,7 +238,7 @@ class PluginAxisSplitting extends Plugin {
       while ( serie.subSeries.length < splits ) {
 
         const name = serie.getName() + "_" + serie.subSeries.length;
-        
+
         const s = this.graph.newSerie( name, {}, serie.getType() || Graph.SERIE_LINE );
 
         s.excludedFromLegend = true;
@@ -644,7 +642,7 @@ var SplitAxis = function( mixin ) {
 
       } );
 
-  //    this.drawLabel();
+      //    this.drawLabel();
       this.writeUnit();
 
       return max;
@@ -768,24 +766,23 @@ class SplitYAxis extends SplitAxis( AxisY ) {
   }
 
   getConstructor() {
-    return AxisY;
-  }
-/*
-  draw() {
-
-    if ( this.getLabel() ) {
-      this.axes.map( ( axis ) => {
-        axis.setAxisPosition( this.graph.options.fontSize );
-      } ); // Extra shift allowed for the label
-      //this.setShift( this.graph.options.fontSize );
+      return AxisY;
     }
-    return super.draw( ...arguments );
-  }
-*/
+    /*
+      draw() {
+
+        if ( this.getLabel() ) {
+          this.axes.map( ( axis ) => {
+            axis.setAxisPosition( this.graph.options.fontSize );
+          } ); // Extra shift allowed for the label
+          //this.setShift( this.graph.options.fontSize );
+        }
+        return super.draw( ...arguments );
+      }
+    */
   drawLabel() {
     super.drawLabel();
   }
-
 
   equalizePosition( width ) {
 
@@ -798,13 +795,11 @@ class SplitYAxis extends SplitAxis( AxisY ) {
       //this.setShift( this.graph.options.fontSize );
     }
 
-    if( this.getLabel() ) {
+    if ( this.getLabel() ) {
       this.placeLabel( this.left ? -widthAfter : widthAfter );
       return widthAfter + this.graph.options.fontSize;
     }
   }
-
-
 
 }
 

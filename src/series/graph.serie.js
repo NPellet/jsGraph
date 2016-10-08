@@ -307,7 +307,6 @@ class Serie extends EventEmitter {
     this.graph = undefined;
   }
 
-
   /**
    * Hides the serie
    * @memberof Serie
@@ -896,7 +895,7 @@ class Serie extends EventEmitter {
   }
 
   get excludedFromLegend() {
-    return !! this._excludedFromLegend;
+    return !!this._excludedFromLegend;
   }
 }
 

@@ -257,7 +257,6 @@ class PluginZoom extends Plugin {
         this._zoomingMode = this._backedUpZoomMode;
       }
 
-
       this.emit( "zoomed" );
 
       graph.pluginYieldActiveState();

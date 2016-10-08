@@ -1146,7 +1146,7 @@ class SerieLine extends Serie {
       }
     }
 
-    if( ! family ) {
+    if ( !family ) {
       return false;
     }
     this.getMarkerDom( family );
@@ -1780,7 +1780,7 @@ class SerieLine extends Serie {
   /* LINE STYLE * @memberof SerieLine
    */
 
-  setStyle( style, selectionType = "unselected") {
+  setStyle( style, selectionType = "unselected" ) {
     //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
@@ -1806,7 +1806,7 @@ class SerieLine extends Serie {
     return this.getStyle( selectionType ).lineStyle;
   }
 
-  getLineDashArray( selectionType = this.selectionType || "unselected" ) {
+  getLineDashArray( selectionType =  this.selectionType || "unselected" ) {
 
     switch ( this.getStyle( selectionType ).lineStyle ) {
 
@@ -1860,7 +1860,7 @@ class SerieLine extends Serie {
 
   }
 
-  getStyle( selectionType = this.selectionType || "unselected" ) {
+  getStyle( selectionType = this.selectionType ||  "unselected" ) {
     return this.styles[ selectionType ];
   }
 

@@ -429,15 +429,13 @@ class Axis extends EventEmitter {
   }
 
   setMinPx( px ) {
-    
-    
+
     this.minPx = px;
     this.setMinMaxFlipped();
   }
 
   setMaxPx( px ) {
-    
-    
+
     this.maxPx = px;
     this.setMinMaxFlipped();
   }
@@ -754,16 +752,16 @@ class Axis extends EventEmitter {
           }
         }
 
-          // Ok now closest is the number of unit per tick in the natural number
-          /*
+        // Ok now closest is the number of unit per tick in the natural number
+        /*
   					Example:
   						13'453 (4) (1.345) => 1
   						0.0000341 (-5) (3.41) => 5
   				*/
 
-          // Let's scale it back
+        // Let's scale it back
         var unitPerTickCorrect = closest * Math.pow( 10, decimals );
-   
+
         /*
   					Example:
   						13'453 (4) (1.345) (1) => 10'000

@@ -31,7 +31,7 @@ class AxisY extends Axis {
       pos += this.graph.options.fontSize;
     }
 
-    if( this.isShown() ) {
+    if ( this.isShown() ) {
       pos += Math.abs( this.tickMargin );
     }
     return pos;
@@ -78,18 +78,16 @@ class AxisY extends Axis {
     return tickWidth;
   }
 
-
   equalizePosition( width ) {
 
     this.placeLabel( this.left ? -width : width );
 
-    if( this.getLabel() ) {
+    if ( this.getLabel() ) {
       return width + this.graph.options.fontSize;
     }
 
     return 0;
   }
-
 
   /**
    *  @private
@@ -155,7 +153,7 @@ class AxisY extends Axis {
   }
 
   drawLabel() {
-    
+
     if ( this.getLabelColor() !== 'black' ) {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }

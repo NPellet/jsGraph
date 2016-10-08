@@ -5,8 +5,8 @@ function _parsePx( px ) {
   return false;
 };
 
-function isNumeric(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
+function isNumeric( n ) {
+  return !isNaN( parseFloat( n ) ) && isFinite( n );
 }
 
 /**
@@ -45,11 +45,11 @@ class Position {
     }
 
     if ( !graph.hasXAxis( xAxis ) ) {
-      throw( "Graph does not contain the x axis that was used as a parameter" )
+      throw ( "Graph does not contain the x axis that was used as a parameter" )
     }
 
     if ( !graph.hasYAxis( yAxis ) ) {
-      throw( "Graph does not contain the x axis that was used as a parameter" )
+      throw ( "Graph does not contain the x axis that was used as a parameter" )
     }
 
     return this._compute( graph, xAxis, yAxis, serie );
@@ -111,7 +111,7 @@ class Position {
         }
 
       } else if ( val !== undefined ) {
-        pos[ i ] = this.getPx( val, axis );  
+        pos[ i ] = this.getPx( val, axis );
       }
 
       if ( dval !== undefined ) {
@@ -268,7 +268,7 @@ class Position {
 
     var parsed;
 
-    if( typeof value == "function" ) {
+    if ( typeof value == "function" ) {
 
       return value( axis, rel );
 
@@ -294,7 +294,7 @@ class Position {
 
         return axis.getRelPx( value );
 
-      } else if( isNumeric( value ) ) {
+      } else if ( isNumeric( value ) ) {
 
         return axis.getPos( value );
       }
