@@ -34,7 +34,7 @@
     "grunt-webpack": "^1.0.14",
     "install": "^0.1.7",
     "js-beautify": "^1.5.1",
-    "jsdom": "^5.6.0",
+    "jsdom": "^9.6.0",
     "mocha": "^3.1.0",
     "mocha-better-spec-reporter": "^3.0.2",
     "mocha-jsdom": "^1.0.0",
