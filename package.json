@@ -41,7 +41,6 @@
     "mocha-better-spec-reporter": "^3.0.2",
     "mocha-jsdom": "^1.0.0",
     "ncp": "^2.0.0",
-    "path": "^0.11.14",
     "requirejs": "^2.1.18",
     "should": "^11.1.0",
     "webpack": "^1.13.1",
