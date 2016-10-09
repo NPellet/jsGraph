@@ -199,7 +199,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
 
-    grunt.registerTask( 'gcms', [ 'default', 'copy:exportToGCMS'] );
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
     });
