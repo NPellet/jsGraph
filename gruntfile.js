@@ -181,7 +181,6 @@ module.exports = function(grunt) {
 
 
     var fs = require('fs');
-    var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
     var babel = require('babel-core');
