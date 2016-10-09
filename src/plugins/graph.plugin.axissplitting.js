@@ -410,7 +410,8 @@ var SplitAxis = function( mixin ) {
 
   /** 
    * Split axis
-   * @mixes {AxisX|AxisY}
+   * @mixes AxisX
+   * @mixes AxisY
    * @name SplitAxis
    * @static
    */
