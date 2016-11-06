@@ -181,7 +181,6 @@ module.exports = function(grunt) {
 
 
     var fs = require('fs');
-    var requirejs = require('requirejs');
     var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
     var babel = require('babel-core');
@@ -200,7 +199,6 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
 
-    grunt.registerTask( 'gcms', [ 'default', 'copy:exportToGCMS'] );
     grunt.registerTask( "minify", "Minifying distribution file", function() {
         grunt.task.run( "uglify" ); // Uglifies the dist file        
     });
