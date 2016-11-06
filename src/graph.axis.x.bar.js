@@ -44,7 +44,7 @@ class AxisXBar extends AxisX {
       elements = [ elements ];
     }
 
-    this.drawInit();
+    // this.drawInit();
 
     //var widthPerElement = width / elements.length;
     for ( var i = 0; i <= elements.length; i++ ) {

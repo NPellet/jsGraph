@@ -9472,7 +9472,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        elements = [elements];
 	      }
 
-	      this.drawInit();
+	      // this.drawInit();
 
 	      //var widthPerElement = width / elements.length;
 	      for (var i = 0; i <= elements.length; i++) {
@@ -15529,13 +15529,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function draw() {
 	      var _this2 = this;
 
-	      var categoryNumber, position;
-
+	      var position = void 0;
 	      var axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
 	      var axis2 = this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
 	      var boxOtherDimension = void 0; // width or height of the box
 	      var useCategories = false;
-
 	      var mean = void 0,
 	          boxAbove = void 0,
 	          boxBelow = void 0,
@@ -15544,12 +15542,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          outliers = void 0,
 	          posAbove = void 0,
 	          posBelow = void 0;
+	      var categoryNumber = void 0;
 
 	      (0, _graph3.emptyDom)(this.groupMain);
 
-	      if (axis.getType() == 'category') {
+	      if (axis2.getType() == 'category') {
 
-	        boxOtherDimension = axis.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length));
+	        boxOtherDimension = axis2.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length)) * 0.75;
 	        useCategories = true;
 	      } else {
 	        // Get all the spacing and determine the smallest one
@@ -15562,9 +15561,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i = 0, l = this.data.length; i < l; i++) {
 
-	        if (axis.getType() == 'category') {
+	        if (axis2.getType() == 'category') {
+
+	          if (false === (categoryNumber = this.getCategoryIndex(this.options.orientation == 'y' ? this.data[i].x : this.data[i].y))) {
+	            continue;
+	          }
 
 	          position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+
 	          position[0] = axis2.getPos(position[0]);
 	        } else {
 
@@ -15818,6 +15822,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        box.setAttribute(blnX ? 'width' : 'height', extremity - mean);
 	      }
 	    }
+
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
+
+	  }, {
+	    key: 'getCategoryIndex',
+	    value: function getCategoryIndex(name) {
+
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
+
+	      for (var i = 0; i < this.categories.length; i++) {
+
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
+
+	      return false;
+	    }
 	  }]);
 
 	  return SerieBox;
@@ -15835,7 +15862,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var nbElements = (nbSeries + 1) * nbCategories;
 	  var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
-	  return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
+
+	  return [(nb + 0.5) / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
 	}
 
 	exports.default = SerieBox;
