@@ -2,7 +2,8 @@ import Serie from './graph.serie'
 import {
   extend,
   guid,
-  throwError
+  throwError,
+  emptyDom
 }
 from '../graph.util'
 
@@ -342,7 +343,7 @@ class SerieBox extends Serie {
      *  Sets the fill color
      */
   setBarBelowLineColor() {
-    return this._style( 'boxBelowLineColor', ...arguments );
+    return this._style( 'barBelowLineColor', ...arguments );
   }
 
   /** 
@@ -381,8 +382,8 @@ class SerieBox extends Serie {
   /** 
    *  Sets the fill color
    */
-  setOutlierLineWidth() {
-    return this._style( 'outlierLineWidth', ...arguments );
+  setOutlierLineColor() {
+    return this._style( 'outlierLineColor', ...arguments );
   }
 
   /** 
@@ -465,6 +466,8 @@ class SerieBox extends Serie {
     let useCategories = false;
 
     let mean, boxAbove, boxBelow, barAbove, barBelow, outliers, posAbove, posBelow;
+
+    emptyDom( this.groupMain );
 
     if ( axis.getType() == 'category' ) {
 

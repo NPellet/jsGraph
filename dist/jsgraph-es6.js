@@ -3980,6 +3980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  exports.ajaxGet = ajaxGet;
 	  exports.extend = extend;
 	  exports.mix = mix;
+	  exports.emptyDom = emptyDom;
 	  /**
 	   * Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
 	   * @param {SVGElement} to - The SVG element to apply the attributes to
@@ -4327,6 +4328,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (mixin.hasOwnProperty(prop)) {
 	        baseClass.prototype[prop] = mixin[prop];
 	      }
+	    }
+	  }
+
+	  function emptyDom(dom) {
+	    while (dom.firstChild) {
+	      dom.removeChild(dom.firstChild);
 	    }
 	  }
 	});
@@ -14216,7 +14223,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  Sets the fill color
 	     */
 	    setBarBelowLineColor() {
-	      return this._style('boxBelowLineColor', ...arguments);
+	      return this._style('barBelowLineColor', ...arguments);
 	    }
 
 	    /** 
@@ -14255,8 +14262,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /** 
 	     *  Sets the fill color
 	     */
-	    setOutlierLineWidth() {
-	      return this._style('outlierLineWidth', ...arguments);
+	    setOutlierLineColor() {
+	      return this._style('outlierLineColor', ...arguments);
 	    }
 
 	    /** 
@@ -14338,6 +14345,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let useCategories = false;
 
 	      let mean, boxAbove, boxBelow, barAbove, barBelow, outliers, posAbove, posBelow;
+
+	      (0, _graph3.emptyDom)(this.groupMain);
 
 	      if (axis.getType() == 'category') {
 
@@ -23939,7 +23948,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     * Split axis
-	     * @mixes {AxisX|AxisY}
+	     * @mixes AxisX
+	     * @mixes AxisY
 	     * @name SplitAxis
 	     * @static
 	     */

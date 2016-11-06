@@ -358,3 +358,9 @@ export function mix( baseClass, mixin ) {
     }
   }
 }
+
+export function emptyDom( dom ) {
+  while ( dom.firstChild ) {
+    dom.removeChild( dom.firstChild );
+  }
+}

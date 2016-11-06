@@ -4374,6 +4374,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ajaxGet = ajaxGet;
 	exports.extend = extend;
 	exports.mix = mix;
+	exports.emptyDom = emptyDom;
 	/**
 	 * Easy set attribute method to apply to a SVG Element the attributes listed. Optional namespacing
 	 * @param {SVGElement} to - The SVG element to apply the attributes to
@@ -4721,6 +4722,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (mixin.hasOwnProperty(prop)) {
 	      baseClass.prototype[prop] = mixin[prop];
 	    }
+	  }
+	}
+
+	function emptyDom(dom) {
+	  while (dom.firstChild) {
+	    dom.removeChild(dom.firstChild);
 	  }
 	}
 
@@ -15361,7 +15368,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setBarBelowLineColor',
 	    value: function setBarBelowLineColor() {
-	      return this._style.apply(this, ['boxBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
+	      return this._style.apply(this, ['barBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
 
 	    /** 
@@ -15417,9 +15424,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	  }, {
-	    key: 'setOutlierLineWidth',
-	    value: function setOutlierLineWidth() {
-	      return this._style.apply(this, ['outlierLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    key: 'setOutlierLineColor',
+	    value: function setOutlierLineColor() {
+	      return this._style.apply(this, ['outlierLineColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
 
 	    /** 
@@ -15537,6 +15544,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          outliers = void 0,
 	          posAbove = void 0,
 	          posBelow = void 0;
+
+	      (0, _graph3.emptyDom)(this.groupMain);
 
 	      if (axis.getType() == 'category') {
 
@@ -25908,7 +25917,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  /** 
 	   * Split axis
-	   * @mixes {AxisX|AxisY}
+	   * @mixes AxisX
+	   * @mixes AxisY
 	   * @name SplitAxis
 	   * @static
 	   */
