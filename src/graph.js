@@ -9,6 +9,7 @@ import AxisXTime from './graph.axis.x.time'
 
 import SerieLine from './series/graph.serie.line'
 import SerieBar from './series/graph.serie.bar'
+import SerieBox from './series/graph.serie.box'
 import SerieLineColor from './series/graph.serie.line.colored'
 import SerieScatter from './series/graph.serie.scatter'
 import SerieZone from './series/graph.serie.zone'
@@ -50,6 +51,7 @@ Graph.registerConstructor( "graph.serie.line", SerieLine );
 Graph.registerConstructor( "graph.serie.line.color", SerieLineColor );
 Graph.registerConstructor( "graph.serie.contour", SerieContour );
 Graph.registerConstructor( "graph.serie.bar", SerieBar );
+Graph.registerConstructor( "graph.serie.box", SerieBox );
 Graph.registerConstructor( "graph.serie.scatter", SerieScatter );
 Graph.registerConstructor( "graph.serie.zone", SerieZone );
 Graph.registerConstructor( "graph.serie.densitymap", SerieDensityMap );
@@ -58,6 +60,7 @@ Graph.registerConstructor( Graph.SERIE_LINE, SerieLine );
 Graph.registerConstructor( Graph.SERIE_LINE_COLORED, SerieLineColor );
 Graph.registerConstructor( Graph.SERIE_CONTOUR, SerieContour );
 Graph.registerConstructor( Graph.SERIE_BAR, SerieBar );
+Graph.registerConstructor( Graph.SERIE_BOX, SerieBox );
 Graph.registerConstructor( Graph.SERIE_SCATTER, SerieScatter );
 Graph.registerConstructor( Graph.SERIE_ZONE, SerieZone );
 Graph.registerConstructor( Graph.SERIE_DENSITYMAP, SerieDensityMap );

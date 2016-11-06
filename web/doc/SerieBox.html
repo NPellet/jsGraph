@@ -1,4 +1,4 @@
-subtitle: 'SerieBar'
+subtitle: 'SerieBox'
 ---
 
 
@@ -9,11 +9,7 @@ subtitle: 'SerieBar'
 
 <header>
     
-        <h2>SerieBar</h2>
-        
-            <div class="class-description">Represents a bar serie.  
-   Needs to be used exclusively with a bar axis (<a href="AxisXBar.html">AxisXBar</a>).  
-   Supports error bars, line color, line width, fill color, fill opacity.</div>
+        <h2>SerieBox</h2>
         
     
 </header>
@@ -28,10 +24,8 @@ subtitle: 'SerieBar'
 
 
     
-    <h2>Constructor</h2>
-    
 
-    <h4 class="doc-code" id="SerieBar"><span class="type-signature"></span>new <span></span><span class="doc-name">SerieBar</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="SerieBox"><span class="type-signature"></span>new <span></span><span class="doc-name">SerieBox</span><span class="doc-signature">( )</span></h4>
 
 
 
@@ -53,6 +47,48 @@ subtitle: 'SerieBar'
 
 
 
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#newSerie">Graph#newSerie</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
 
     
 
@@ -70,7 +106,7 @@ subtitle: 'SerieBar'
         <h5>Example</h5>
         
 
-    {% highlight JavaScript %}graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );{% endhighlight %}
+    {% highlight JavaScript %}graph.newSerie( name, options, "scatter" );{% endhighlight %}
 
     
 
@@ -114,110 +150,6 @@ subtitle: 'SerieBar'
 
     
 
-    <h4 class="doc-code" id="applyLineStyle"><span class="type-signature">(static) </span><span></span><span class="doc-name">SerieBox#applyLineStyle</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Applies the current style to a line element. Mostly used internally
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="applyLineStyle"><span class="type-signature"></span><span></span><span class="doc-name">applyLineStyle</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Applies the current style to a line element. Mostly used internally
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="applyLineStyles"><span class="type-signature"></span><span></span><span class="doc-name">applyLineStyles</span><span class="doc-signature">( )</span></h4>
 
 
@@ -225,6 +157,630 @@ subtitle: 'SerieBar'
 
 <div class="description">
     Reapply the current style to the serie lines elements. Mostly used internally
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBarAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBarAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBarBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBarBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
 </div>
 
 
@@ -371,13 +927,897 @@ subtitle: 'SerieBar'
 
     
 
-    <h4 class="doc-code" id="getFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getFillColor</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="getMeanLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getMeanLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the mean line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMeanLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getMeanLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the mean line width
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierFillColor</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
     Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBarAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBarAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBarBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBarBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
 </div>
 
 
@@ -579,7 +2019,7 @@ subtitle: 'SerieBar'
         <h5>Example</h5>
         
 
-    {% highlight JavaScript %}serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
+    {% highlight JavaScript %}serie.setData( [ { x: 'cat', mean: valMean, boxMin: valBoxMin, boxMax: valBoxMax, barMin: valBarMin, barMax: valBarMax, outliers: [ ...yList ] } ] );
  {% endhighlight %}
 
     
@@ -595,7 +2035,267 @@ subtitle: 'SerieBar'
 
     
 
-    <h4 class="doc-code" id="setFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setFillColor</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="setMeanLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setMeanLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the mean line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMeanLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setMeanLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the mean line width
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierLineWidth</span><span class="doc-signature">( )</span></h4>
 
 
 

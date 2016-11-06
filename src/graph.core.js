@@ -79,7 +79,6 @@ class Graph extends EventEmitter {
 
     super();
 
-
     /*
       The unique ID of the graph
       @name Graph#uniqueid
@@ -988,7 +987,6 @@ class Graph extends EventEmitter {
    * @returns {Serie} The newly created serie
    */
   newSerie( name, options, type ) {
-
 
     if ( !type ) {
       type = Graph.SERIE_LINE;
@@ -3388,6 +3386,7 @@ Graph.SERIE_LINE = Symbol();
 Graph.SERIE_SCATTER = Symbol();
 Graph.SERIE_CONTOUR = Symbol();
 Graph.SERIE_BAR = Symbol();
+Graph.SERIE_BOX = Symbol();
 Graph.SERIE_ZONE = Symbol();
 Graph.SERIE_LINE_COLORED = Symbol();
 Graph.SERIE_ZONE = Symbol();

@@ -94,6 +94,10 @@ class AxisXBar extends AxisX {
 
     return this;
   }
+
+  getType() {
+    return 'category';
+  }
 }
 
 export default AxisXBar;

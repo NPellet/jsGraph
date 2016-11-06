@@ -92,13 +92,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graphSerieLine = __webpack_require__(16);
-
-	var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
-
-	var _graphSerie5 = __webpack_require__(17);
+	var _graphSerie5 = __webpack_require__(16);
 
 	var _graphSerie6 = _interopRequireDefault(_graphSerie5);
+
+	var _graphSerieLine = __webpack_require__(17);
+
+	var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
 	var _graphSerie7 = __webpack_require__(18);
 
@@ -112,83 +112,87 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphSerie12 = _interopRequireDefault(_graphSerie11);
 
-	var _graph7 = __webpack_require__(21);
+	var _graphSerie13 = __webpack_require__(21);
+
+	var _graphSerie14 = _interopRequireDefault(_graphSerie13);
+
+	var _graph7 = __webpack_require__(22);
 
 	var _graph8 = _interopRequireDefault(_graph7);
 
-	var _graphShape = __webpack_require__(22);
+	var _graphShape = __webpack_require__(23);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
-	var _graphShape3 = __webpack_require__(23);
+	var _graphShape3 = __webpack_require__(24);
 
 	var _graphShape4 = _interopRequireDefault(_graphShape3);
 
-	var _graphShape5 = __webpack_require__(25);
+	var _graphShape5 = __webpack_require__(26);
 
 	var _graphShape6 = _interopRequireDefault(_graphShape5);
 
-	var _graphShape7 = __webpack_require__(26);
+	var _graphShape7 = __webpack_require__(27);
 
 	var _graphShape8 = _interopRequireDefault(_graphShape7);
 
-	var _graphShape9 = __webpack_require__(27);
+	var _graphShape9 = __webpack_require__(28);
 
 	var _graphShape10 = _interopRequireDefault(_graphShape9);
 
-	var _graphShape11 = __webpack_require__(24);
+	var _graphShape11 = __webpack_require__(25);
 
 	var _graphShape12 = _interopRequireDefault(_graphShape11);
 
-	var _graphShape13 = __webpack_require__(28);
+	var _graphShape13 = __webpack_require__(29);
 
 	var _graphShape14 = _interopRequireDefault(_graphShape13);
 
-	var _graphShape15 = __webpack_require__(29);
+	var _graphShape15 = __webpack_require__(30);
 
 	var _graphShape16 = _interopRequireDefault(_graphShape15);
 
-	var _graphShape17 = __webpack_require__(30);
+	var _graphShape17 = __webpack_require__(31);
 
 	var _graphShape18 = _interopRequireDefault(_graphShape17);
 
-	var _graphShape19 = __webpack_require__(31);
+	var _graphShape19 = __webpack_require__(32);
 
 	var _graphShape20 = _interopRequireDefault(_graphShape19);
 
-	var _graphShape21 = __webpack_require__(32);
+	var _graphShape21 = __webpack_require__(33);
 
 	var _graphShape22 = _interopRequireDefault(_graphShape21);
 
-	var _graph9 = __webpack_require__(33);
+	var _graph9 = __webpack_require__(34);
 
 	var _graph10 = _interopRequireDefault(_graph9);
 
-	var _graphPlugin = __webpack_require__(34);
+	var _graphPlugin = __webpack_require__(35);
 
 	var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-	var _graphPlugin3 = __webpack_require__(35);
+	var _graphPlugin3 = __webpack_require__(36);
 
 	var _graphPlugin4 = _interopRequireDefault(_graphPlugin3);
 
-	var _graphPlugin5 = __webpack_require__(36);
+	var _graphPlugin5 = __webpack_require__(37);
 
 	var _graphPlugin6 = _interopRequireDefault(_graphPlugin5);
 
-	var _graphPlugin7 = __webpack_require__(37);
+	var _graphPlugin7 = __webpack_require__(38);
 
 	var _graphPlugin8 = _interopRequireDefault(_graphPlugin7);
 
-	var _graphPlugin9 = __webpack_require__(38);
+	var _graphPlugin9 = __webpack_require__(39);
 
 	var _graphPlugin10 = _interopRequireDefault(_graphPlugin9);
 
-	var _graphPlugin11 = __webpack_require__(40);
+	var _graphPlugin11 = __webpack_require__(41);
 
 	var _graphPlugin12 = _interopRequireDefault(_graphPlugin11);
 
-	var _graphPlugin13 = __webpack_require__(41);
+	var _graphPlugin13 = __webpack_require__(42);
 
 	var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
 
@@ -205,19 +209,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	_graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
 	_graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
-	_graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
+	_graph2.default.registerConstructor("graph.serie.contour", _graphSerie14.default);
 	_graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
-	_graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
-	_graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
-	_graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
+	_graph2.default.registerConstructor("graph.serie.box", _graphSerie6.default);
+	_graph2.default.registerConstructor("graph.serie.scatter", _graphSerie8.default);
+	_graph2.default.registerConstructor("graph.serie.zone", _graphSerie10.default);
+	_graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie12.default);
 
 	_graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
 	_graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
-	_graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie14.default);
 	_graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
-	_graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
-	_graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
-	_graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_BOX, _graphSerie6.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie8.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie10.default);
+	_graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie12.default);
 
 	//Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
@@ -367,15 +373,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Graph(wrapper, options, axis) {
 	    _classCallCheck(this, Graph);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Graph).call(this));
-
-	    var self = _this;
-
 	    /*
 	      The unique ID of the graph
 	      @name Graph#uniqueid
 	      @type String
 	    */
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Graph).call(this));
+
 	    _this._creation = util.guid();
 
 	    if (typeof wrapper == "string") {
@@ -1445,8 +1449,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'newSerie',
 	    value: function newSerie(name, options, type) {
 
-	      var self = this;
-
 	      if (!type) {
 	        type = Graph.SERIE_LINE;
 	      }
@@ -1461,7 +1463,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      serie._type = type;
-	      self.series.push(serie);
+	      this.series.push(serie);
 
 	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
 	      /*
@@ -1469,7 +1471,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            self.legend.update();
 	          }
 	      */
-	      self.emit("newSerie", serie);
+	      this.emit("newSerie", serie);
 	      return serie;
 	    }
 
@@ -3954,6 +3956,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Graph.SERIE_SCATTER = Symbol();
 	Graph.SERIE_CONTOUR = Symbol();
 	Graph.SERIE_BAR = Symbol();
+	Graph.SERIE_BOX = Symbol();
 	Graph.SERIE_ZONE = Symbol();
 	Graph.SERIE_LINE_COLORED = Symbol();
 	Graph.SERIE_ZONE = Symbol();
@@ -8913,6 +8916,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    }
 	  }, {
+	    key: 'getType',
+	    value: function getType() {
+	      return null;
+	    }
+	  }, {
 	    key: 'zoomLock',
 	    set: function set(bln) {
 	      this._zoomLocked = bln;
@@ -9507,6 +9515,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 
 	      return this;
+	    }
+	  }, {
+	    key: 'getType',
+	    value: function getType() {
+	      return 'category';
 	    }
 	  }, {
 	    key: 'categories',
@@ -13678,6 +13691,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _checkX(val) {
 	      this.minX = Math.min(this.minX, val);
 	      this.maxX = Math.max(this.maxX, val);
+	      console.log(this.minX, this.maxX, val);
 	    }
 	  }, {
 	    key: '_checkY',
@@ -14909,6 +14923,926 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _graph = __webpack_require__(12);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
+	var _graph3 = __webpack_require__(3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * @name SerieZoneDefaultOptions
+	 * @object
+	 * @static
+	 * @param {String} fillColor - The color to fill the zone with
+	 * @param {String} lineColor - The line color
+	 * @param {String} lineWidth - The line width (in px)
+	 */
+	var defaults = {
+
+	  orientation: 'y',
+	  maxBoxWidth: 20,
+
+	  defaultStyle: {
+
+	    meanLineColor: 'rgb( 100, 0, 0 )',
+	    meanLineWidth: 2,
+
+	    boxAboveLineWidth: 1,
+	    boxAboveLineColor: 'rgb( 0, 0, 0 )',
+	    boxAboveFillColor: 'rgb( 255, 255, 255 )',
+	    boxAboveFillOpacity: 1,
+	    boxBelowLineWidth: 1,
+	    boxBelowLineColor: 'rgb( 0, 0, 0 )',
+	    boxBelowFillColor: 'rgb( 255, 255, 255 )',
+	    boxBelowFillOpacity: 1,
+
+	    barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+	    barAboveLineWidth: 1,
+	    barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+	    barBelowLineWidth: 1,
+
+	    outlierLineWidth: 1,
+	    outlierLineColor: 'rgb( 255, 255, 255 )',
+	    outlierFillColor: 'rgb( 0, 0, 0 )',
+	    outlierFillOpacity: 1
+	  }
+
+	};
+	/** 
+	 * @static
+	 * @extends Serie
+	 * @example graph.newSerie( name, options, "scatter" );
+	 * @see Graph#newSerie
+	 */
+
+	var SerieBox = function (_Serie) {
+	  _inherits(SerieBox, _Serie);
+
+	  function SerieBox() {
+	    _classCallCheck(this, SerieBox);
+
+	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieBox).call(this));
+	  }
+
+	  _createClass(SerieBox, [{
+	    key: 'init',
+	    value: function init(graph, name, options) {
+	      this.graph = graph;
+	      this.name = name;
+	      this.options = (0, _graph3.extend)(true, {}, defaults, options || {}); // Creates options
+
+	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
+
+	      this.pathDom = document.createElementNS(this.graph.ns, 'path');
+	      this.groupMain.appendChild(this.pathDom);
+
+	      // Creates an empty style variable
+	      this.styles = {};
+
+	      // Unselected style
+	      this.styles.unselected = this.options.defaultStyle;
+	    }
+
+	    /** 
+	     *  Sets the data of the bar serie
+	     *  @param {Object} data
+	     *  @example serie.setData( [ { x: 'cat', mean: valMean, boxMin: valBoxMin, boxMax: valBoxMax, barMin: valBarMin, barMax: valBarMax, outliers: [ ...yList ] } ] );
+	     *  @return {SerieBar} The current serie instance
+	     */
+
+	  }, {
+	    key: 'setData',
+	    value: function setData(data) {
+
+	      this.data = data;
+
+	      var axisref = void 0,
+	          axisval = void 0,
+	          methodref = void 0,
+	          methodval = void 0,
+	          blnX = void 0;
+
+	      if (this.options.orientation == 'y') {
+	        axisref = this.getXAxis();
+	        axisval = this.getYAxis();
+	        methodref = this._checkX.bind(this);
+	        methodval = this._checkY.bind(this);
+	        blnX = true;
+
+	        this.minY = data[0].Q2;
+	        this.maxY = data[0].Q2;
+	        this.maxX = data[0].x;
+	        this.minX = data[0].x;
+	      } else {
+	        axisref = this.getYAxis();
+	        axisval = this.getXAxis();
+	        methodref = this._checkX.bind(this);
+	        methodval = this._checkY.bind(this);
+	        blnX = false;
+
+	        this.minX = data[0].Q2;
+	        this.maxX = data[0].Q2;
+	        this.maxY = data[0].y;
+	        this.minY = data[0].y;
+	      }
+
+	      if (!axisref || !axisval) {
+	        (0, _graph3.throwError)("Error in setting data of the box serie. The X and Y axes must be set beforehand");
+	      }
+
+	      for (var i in this.data) {
+
+	        if (blnX) {
+	          methodref(this.data[i].x);
+	          this.data[i].pos = this.data[i].x;
+	        } else {
+	          methodref(this.data[i].y);
+	          this.data[i].pos = this.data[i].y;
+	        }
+
+	        if (this.data[i].Q3) {
+	          methodval(this.data[i].Q3);
+	        }
+
+	        if (this.data[i].Q1) {
+	          methodval(this.data[i].Q1);
+	        }
+
+	        if (this.data[i].whiskers) {
+
+	          if (Array.isArray(this.data[i].whiskers)) {
+
+	            if (this.data[i].whiskers.length > 0) {
+	              methodval(this.data[i].whiskers[0]);
+	            }
+
+	            if (this.data[i].whiskers.length > 1) {
+	              methodval(this.data[i].whiskers[1]);
+	            }
+	          } else {
+	            methodval(this.data[i].whiskers);
+	            this.data[i].whiskers = [this.data[i].whiskers];
+	          }
+	        } else {
+	          this.data[i].whiskers = [];
+	        }
+
+	        if (Array.isArray(this.data[i].outliers)) {
+	          this.data[i].outliers.map(function (val) {
+	            return methodval(val);
+	          });
+	        } else {
+	          this.data[i].outliers = [];
+	        }
+	      }
+
+	      this.dataHasChanged();
+	      this.graph.updateDataMinMaxAxes();
+
+	      return this;
+	    }
+	  }, {
+	    key: '_style',
+	    value: function _style(type, styleValue) {
+	      var selectionType = arguments.length <= 2 || arguments[2] === undefined ? "unselected" : arguments[2];
+	      var applyToSelected = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType][type] = styleValue;
+
+	      if (applyToSelected) {
+	        this._set(type, styleValue, "selected");
+	      }
+
+	      this.styleHasChanged(selectionType);
+	      return this;
+	    }
+	  }, {
+	    key: '_gstyle',
+	    value: function _gstyle(type, selectionType) {
+	      return this.getStyle(selectionType)[type];
+	    }
+	  }, {
+	    key: 'getStyle',
+	    value: function getStyle() {
+	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? "unselected" : arguments[0];
+
+
+	      return this.styles[selectionType] || {};
+	    }
+
+	    /** 
+	     *  Sets the mean line color
+	     */
+
+	  }, {
+	    key: 'setMeanLineColor',
+	    value: function setMeanLineColor() {
+	      return this._style.apply(this, ['meanLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the mean line color
+	     */
+
+	  }, {
+	    key: 'getMeanLineColor',
+	    value: function getMeanLineColor() {
+	      return this._gstyle.apply(this, ['meanLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the mean line width
+	     */
+
+	  }, {
+	    key: 'setMeanLineWidth',
+	    value: function setMeanLineWidth() {
+	      return this._style.apply(this, ['meanLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the mean line width
+	     */
+
+	  }, {
+	    key: 'getMeanLineWidth',
+	    value: function getMeanLineWidth() {
+	      return this._gstyle.apply(this, ['meanLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the box line color
+	     */
+
+	  }, {
+	    key: 'setBoxAboveLineColor',
+	    value: function setBoxAboveLineColor() {
+	      return this._style.apply(this, ['boxAboveLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the box line color
+	     */
+
+	  }, {
+	    key: 'getBoxAboveLineColor',
+	    value: function getBoxAboveLineColor() {
+	      return this._gstyle.apply(this, ['boxAboveLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxBelowLineColor',
+	    value: function setBoxBelowLineColor() {
+	      return this._style.apply(this, ['boxBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxBelowLineColor',
+	    value: function getBoxBelowLineColor() {
+	      return this._gstyle.apply(this, ['boxBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxAboveLineWidth',
+	    value: function setBoxAboveLineWidth() {
+	      return this._style.apply(this, ['boxAboveLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxAboveLineWidth',
+	    value: function getBoxAboveLineWidth() {
+	      return this._gstyle.apply(this, ['boxAboveLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxBelowLineWidth',
+	    value: function setBoxBelowLineWidth() {
+	      return this._style.apply(this, ['boxBelowLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxBelowLineWidth',
+	    value: function getBoxBelowLineWidth() {
+	      return this._gstyle.apply(this, ['boxBelowLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxAboveFillColor',
+	    value: function setBoxAboveFillColor() {
+	      return this._style.apply(this, ['boxAboveFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxAboveFillColor',
+	    value: function getBoxAboveFillColor() {
+	      return this._gstyle.apply(this, ['boxAboveFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxBelowFillColor',
+	    value: function setBoxBelowFillColor() {
+	      return this._style.apply(this, ['boxBelowFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxBelowFillColor',
+	    value: function getBoxBelowFillColor() {
+	      return this._gstyle.apply(this, ['boxBelowFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxAboveFillOpacity',
+	    value: function setBoxAboveFillOpacity() {
+	      return this._style.apply(this, ['boxAboveFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxAboveFillOpacity',
+	    value: function getBoxAboveFillOpacity() {
+	      return this._gstyle.apply(this, ['boxAboveFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBoxBelowFillOpacity',
+	    value: function setBoxBelowFillOpacity() {
+	      return this._style.apply(this, ['boxBelowFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBoxBelowFillOpacity',
+	    value: function getBoxBelowFillOpacity() {
+	      return this._gstyle.apply(this, ['boxBelowFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBarAboveLineColor',
+	    value: function setBarAboveLineColor() {
+	      return this._style.apply(this, ['barAboveLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBarAboveLineColor',
+	    value: function getBarAboveLineColor() {
+	      return this._gstyle.apply(this, ['barAboveLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBarBelowLineColor',
+	    value: function setBarBelowLineColor() {
+	      return this._style.apply(this, ['boxBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBarBelowLineColor',
+	    value: function getBarBelowLineColor() {
+	      return this._gstyle.apply(this, ['barBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBarAboveLineWidth',
+	    value: function setBarAboveLineWidth() {
+	      return this._style.apply(this, ['barAboveLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBarAboveLineWidth',
+	    value: function getBarAboveLineWidth() {
+	      return this._gstyle.apply(this, ['barAboveLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setBarBelowLineWidth',
+	    value: function setBarBelowLineWidth() {
+	      return this._style.apply(this, ['barBelowLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getBarBelowLineWidth',
+	    value: function getBarBelowLineWidth() {
+	      return this._gstyle.apply(this, ['barBelowLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setOutlierLineWidth',
+	    value: function setOutlierLineWidth() {
+	      return this._style.apply(this, ['outlierLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the box line color
+	     */
+
+	  }, {
+	    key: 'getOutlierLineColor',
+	    value: function getOutlierLineColor() {
+	      return this._gstyle.apply(this, ['outlierLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setOutlierLineWidth',
+	    value: function setOutlierLineWidth() {
+	      return this._style.apply(this, ['outlierLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getOutlierLineWidth',
+	    value: function getOutlierLineWidth() {
+	      return this._gstyle.apply(this, ['outlierLineWidth'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setOutlierFillColor',
+	    value: function setOutlierFillColor() {
+	      return this._style.apply(this, ['outlierFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getOutlierFillColor',
+	    value: function getOutlierFillColor() {
+	      return this._gstyle.apply(this, ['outlierFillColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+
+	  }, {
+	    key: 'setOutlierFillOpacity',
+	    value: function setOutlierFillOpacity() {
+	      return this._style.apply(this, ['outlierFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+
+	  }, {
+	    key: 'getOutlierFillOpacity',
+	    value: function getOutlierFillOpacity() {
+	      return this._gstyle.apply(this, ['outlierFillOpacity'].concat(Array.prototype.slice.call(arguments)));
+	    }
+
+	    /**
+	     * Reapply the current style to the serie lines elements. Mostly used internally
+	     */
+
+	  }, {
+	    key: 'applyLineStyles',
+	    value: function applyLineStyles() {
+	      this.applyLineStyle(this.pathDom);
+	    }
+
+	    /**
+	     * Applies the current style to a line element. Mostly used internally
+	     * @memberof SerieBar
+	     */
+
+	  }, {
+	    key: 'applyLineStyle',
+	    value: function applyLineStyle(line) {
+
+	      line.setAttribute('stroke', this.getLineColor());
+	      line.setAttribute('stroke-width', this.getLineWidth());
+	      line.removeAttribute('stroke-dasharray');
+	      line.setAttribute('fill', this.getFillColor());
+	      line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
+	    }
+	  }, {
+	    key: 'draw',
+	    value: function draw() {
+	      var _this2 = this;
+
+	      var categoryNumber, position;
+
+	      var axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
+	      var axis2 = this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
+	      var boxOtherDimension = void 0; // width or height of the box
+	      var useCategories = false;
+
+	      var mean = void 0,
+	          boxAbove = void 0,
+	          boxBelow = void 0,
+	          barAbove = void 0,
+	          barBelow = void 0,
+	          outliers = void 0,
+	          posAbove = void 0,
+	          posBelow = void 0;
+
+	      if (axis.getType() == 'category') {
+
+	        boxOtherDimension = axis.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length));
+	        useCategories = true;
+	      } else {
+	        // Get all the spacing and determine the smallest one
+	        boxOtherDimension = this.options.maxBoxWidth;
+
+	        for (var i = 0, l = this.data.length; i < l - 2; i++) {
+	          boxOtherDimension = Math.min(boxOtherDimension, Math.abs(axis.getPos(this.data[i + 1].pos) - axis.getPos(this.data[i].pos)));
+	        }
+	      }
+
+	      for (var i = 0, l = this.data.length; i < l; i++) {
+
+	        if (axis.getType() == 'category') {
+
+	          position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+	          position[0] = axis2.getPos(position[0]);
+	        } else {
+
+	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
+	        }
+
+	        mean = axis.getPos(this.data[i].Q2);
+	        boxAbove = axis.getPos(this.data[i].Q3);
+	        boxBelow = axis.getPos(this.data[i].Q1);
+
+	        this.data[i].whiskers.map(function (val) {
+
+	          if (val < _this2.data[i].Q1) {
+	            barBelow = axis.getPos(val);
+	          } else {
+	            barAbove = axis.getPos(val);
+	          }
+	        });
+
+	        outliers = this.data[i].outliers.map(function (val) {
+	          return axis.getPos(val);
+	        });
+
+	        var lineMean = document.createElementNS(this.graph.ns, 'line');
+
+	        this.applyMeanStyle(lineMean);
+
+	        var rectAbove = document.createElementNS(this.graph.ns, 'rect');
+	        var rectBelow = document.createElementNS(this.graph.ns, 'rect');
+
+	        if (this.options.orientation == 'y') {
+
+	          rectAbove.setAttribute('width', boxOtherDimension);
+	          rectAbove.setAttribute('x', position[0] - boxOtherDimension / 2);
+
+	          rectBelow.setAttribute('width', boxOtherDimension);
+	          rectBelow.setAttribute('x', position[0] - boxOtherDimension / 2);
+
+	          lineMean.setAttribute('x1', position[0] - boxOtherDimension / 2);
+	          lineMean.setAttribute('x2', position[0] + boxOtherDimension / 2);
+	          lineMean.setAttribute('y1', mean);
+	          lineMean.setAttribute('y2', mean);
+	        } else {
+
+	          rectAbove.setAttribute('height', boxOtherDimension);
+	          rectAbove.setAttribute('y', position[0] - boxOtherDimension / 2);
+
+	          rectBelow.setAttribute('height', boxOtherDimension);
+	          rectBelow.setAttribute('y', position[0] - boxOtherDimension / 2);
+
+	          lineMean.setAttribute('y1', position[0] - boxOtherDimension / 2);
+	          lineMean.setAttribute('y2', position[0] + boxOtherDimension / 2);
+	          lineMean.setAttribute('x1', mean);
+	          lineMean.setAttribute('x2', mean);
+	        }
+
+	        this.boxPos(rectAbove, mean, boxAbove, this.options.orientation == 'x');
+	        this.boxPos(rectBelow, mean, boxBelow, this.options.orientation == 'x');
+
+	        this.applyBoxStyle(rectAbove, rectBelow);
+
+	        var whiskerAbove = document.createElementNS(this.graph.ns, 'line');
+	        var whiskerBelow = document.createElementNS(this.graph.ns, 'line');
+
+	        if (this.options.orientation == 'y') {
+
+	          if (barAbove !== undefined) {
+	            whiskerAbove.setAttribute('y1', boxAbove);
+	            whiskerAbove.setAttribute('y2', barAbove);
+	            whiskerAbove.setAttribute('x1', position[0]);
+	            whiskerAbove.setAttribute('x2', position[0]);
+	          }
+
+	          if (barBelow !== undefined) {
+	            whiskerBelow.setAttribute('y1', boxBelow);
+	            whiskerBelow.setAttribute('y2', barBelow);
+	            whiskerBelow.setAttribute('x1', position[0]);
+	            whiskerBelow.setAttribute('x2', position[0]);
+	          }
+	        } else {
+
+	          if (barAbove !== undefined) {
+	            whiskerAbove.setAttribute('x1', boxAbove);
+	            whiskerAbove.setAttribute('x2', barAbove);
+	            whiskerAbove.setAttribute('y1', position[0]);
+	            whiskerAbove.setAttribute('y2', position[0]);
+	          }
+
+	          if (barBelow !== undefined) {
+	            whiskerBelow.setAttribute('x1', boxBelow);
+	            whiskerBelow.setAttribute('x2', barBelow);
+	            whiskerBelow.setAttribute('y1', position[0]);
+	            whiskerBelow.setAttribute('y2', position[0]);
+	          }
+	        }
+
+	        outliers.map(function (outliervalue) {
+
+	          var outlier = document.createElementNS(_this2.graph.ns, 'circle');
+
+	          outlier.setAttribute('r', 2);
+
+	          if (_this2.options.orientation == 'y') {
+
+	            outlier.setAttribute('cx', position[0]);
+	            outlier.setAttribute('cy', outliervalue);
+	          } else {
+
+	            outlier.setAttribute('cy', position[0]);
+	            outlier.setAttribute('cx', outliervalue);
+	          }
+
+	          _this2.setOutlierStyle(outlier);
+
+	          _this2.groupMain.appendChild(outlier);
+	        });
+
+	        if (barAbove !== undefined) {
+	          this.groupMain.appendChild(whiskerAbove);
+	        }
+
+	        if (barBelow !== undefined) {
+	          this.groupMain.appendChild(whiskerBelow);
+	        }
+
+	        if (boxAbove !== undefined) {
+	          this.groupMain.appendChild(rectAbove);
+	        }
+
+	        if (boxBelow !== undefined) {
+	          this.groupMain.appendChild(rectBelow);
+	        }
+
+	        this.groupMain.appendChild(lineMean);
+
+	        this.applyWhiskerStyle(whiskerAbove, whiskerBelow);
+	      }
+	    }
+	  }, {
+	    key: 'applyBoxStyle',
+	    value: function applyBoxStyle(above, below) {
+
+	      above.setAttribute('stroke', this.getBoxAboveLineColor());
+	      above.setAttribute('stroke-width', this.getBoxAboveLineWidth());
+
+	      if (this.getBoxAboveFillColor() !== undefined) {
+	        above.setAttribute('fill', this.getBoxAboveFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        above.setAttribute('fill-opacity', this.getBoxAboveFillOpacity());
+	      }
+
+	      below.setAttribute('stroke', this.getBoxBelowLineColor());
+	      below.setAttribute('stroke-width', this.getBoxBelowLineWidth());
+
+	      if (this.getBoxBelowFillColor() !== undefined) {
+	        below.setAttribute('fill', this.getBoxBelowFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        below.setAttribute('fill-opacity', this.getBoxBelowFillOpacity());
+	      }
+	    }
+	  }, {
+	    key: 'applyWhiskerStyle',
+	    value: function applyWhiskerStyle(above, below) {
+
+	      above.setAttribute('stroke', this.getBarAboveLineColor());
+	      above.setAttribute('stroke-width', this.getBarAboveLineWidth());
+
+	      below.setAttribute('stroke', this.getBarBelowLineColor());
+	      below.setAttribute('stroke-width', this.getBarBelowLineWidth());
+	    }
+	  }, {
+	    key: 'applyMeanStyle',
+	    value: function applyMeanStyle(line) {
+
+	      line.setAttribute('stroke', this.getMeanLineColor());
+	      line.setAttribute('stroke-width', this.getMeanLineWidth());
+	    }
+	  }, {
+	    key: 'setOutlierStyle',
+	    value: function setOutlierStyle(outlier) {
+
+	      outlier.setAttribute('stroke', this.getOutlierLineColor());
+	      outlier.setAttribute('stroke-width', this.getOutlierLineWidth());
+
+	      if (this.getBoxBelowFillColor() !== undefined) {
+	        outlier.setAttribute('fill', this.getOutlierFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        outlier.setAttribute('fill-opacity', this.getOutlierFillOpacity());
+	      }
+	    }
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
+
+	  }, {
+	    key: 'getCategoryIndex',
+	    value: function getCategoryIndex(name) {
+
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
+
+	      for (var i = 0; i < this.categories.length; i++) {
+
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
+
+	      return false;
+	    }
+
+	    // Markers now allowed
+
+	  }, {
+	    key: 'setMarkers',
+	    value: function setMarkers() {}
+
+	    /**
+	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
+	     *  @private
+	     *  @param {Number} order - The index of the serie in the bar stack
+	     *  @param {Object[]} categories - The list of categories
+	     *  @param {Number} nbSeries - The number of series
+	     *  @see AxisXBar#setSeries
+	     */
+
+	  }, {
+	    key: 'setBarConfig',
+	    value: function setBarConfig(order, categories, nbSeries) {
+
+	      this.order = order;
+	      this.categories = categories;
+	      this.nbSeries = nbSeries;
+	    }
+	  }, {
+	    key: 'boxPos',
+	    value: function boxPos(box, mean, extremity, blnX) {
+
+	      if (mean > extremity) {
+
+	        box.setAttribute(blnX ? 'x' : 'y', extremity);
+	        box.setAttribute(blnX ? 'width' : 'height', mean - extremity);
+	      } else {
+
+	        box.setAttribute(blnX ? 'x' : 'y', mean);
+	        box.setAttribute(blnX ? 'width' : 'height', extremity - mean);
+	      }
+	    }
+	  }]);
+
+	  return SerieBox;
+	}(_graph2.default);
+
+	/**
+	 *  @private
+	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
+	 *  @param {Number} serieIndex - The index of the serie
+	 *  @param {Number} nbSeries - The number of series
+	 */
+
+
+	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
+
+	  var nbElements = (nbSeries + 1) * nbCategories;
+	  var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
+	  return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
+	}
+
+	exports.default = SerieBox;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _graphSerie = __webpack_require__(11);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
@@ -15277,7 +16211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieLineColor;
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15842,7 +16776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieScatter;
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16549,7 +17483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieZone;
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17281,7 +18215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieDensityMap;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17718,7 +18652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieContour;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19970,7 +20904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Shape;
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19981,7 +20915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -20209,7 +21143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeSurfaceUnderCurve;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20220,7 +21154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(24);
+	var _graphShape = __webpack_require__(25);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -20272,7 +21206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeArrow;
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20283,7 +21217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -20528,7 +21462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeLine;
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20543,7 +21477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(21);
+	var _graph2 = __webpack_require__(22);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -20607,7 +21541,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeEllipse;
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20618,7 +21552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -20662,7 +21596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeLabel;
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20673,7 +21607,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -20779,7 +21713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePolyline;
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20790,7 +21724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(22);
+	var _graphShape = __webpack_require__(23);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -21129,7 +22063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeNMRIntegral;
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21140,7 +22074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(30);
+	var _graphShape = __webpack_require__(31);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -21196,7 +22130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePeakIntegration2D;
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21209,7 +22143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -21581,7 +22515,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeRectangle;
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21592,7 +22526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(21);
+	var _graph = __webpack_require__(22);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -21761,7 +22695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeCross;
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21772,7 +22706,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(24);
+	var _graphShape = __webpack_require__(25);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -22040,7 +22974,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePeakBoundaries;
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22141,7 +23075,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Plugin;
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22152,7 +23086,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(33);
+	var _graph = __webpack_require__(34);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -22366,7 +23300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginDrag;
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22377,7 +23311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(33);
+	var _graph = __webpack_require__(34);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -22560,7 +23494,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginShape;
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22575,7 +23509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(33);
+	var _graph2 = __webpack_require__(34);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -22748,7 +23682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginSelectScatter;
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22763,7 +23697,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(33);
+	var _graph2 = __webpack_require__(34);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -23371,7 +24305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginZoom;
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23386,11 +24320,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graph3 = __webpack_require__(39);
+	var _graph3 = __webpack_require__(40);
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(33);
+	var _graph5 = __webpack_require__(34);
 
 	var _graph6 = _interopRequireDefault(_graph5);
 
@@ -23930,7 +24864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginTimeSerieManager;
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24050,7 +24984,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24061,7 +24995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(33);
+	var _graph = __webpack_require__(34);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -24501,7 +25435,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginSerieLineDifference;
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -24534,11 +25468,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	var _graphSerie3 = __webpack_require__(17);
+	var _graphSerie3 = __webpack_require__(18);
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graph4 = __webpack_require__(33);
+	var _graph4 = __webpack_require__(34);
 
 	var _graph5 = _interopRequireDefault(_graph4);
 

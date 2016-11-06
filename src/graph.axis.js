@@ -2419,6 +2419,10 @@ class Axis extends EventEmitter {
   hasAxis() {
     return false;
   }
+
+  getType() {
+    return null;
+  }
 }
 
 /**

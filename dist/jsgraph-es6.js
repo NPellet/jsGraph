@@ -56,17 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(5), __webpack_require__(6), __webpack_require__(8), __webpack_require__(9), __webpack_require__(10), __webpack_require__(11), __webpack_require__(15), __webpack_require__(16), __webpack_require__(17), __webpack_require__(18), __webpack_require__(19), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(41), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(39), __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(5), __webpack_require__(6), __webpack_require__(8), __webpack_require__(9), __webpack_require__(10), __webpack_require__(11), __webpack_require__(15), __webpack_require__(16), __webpack_require__(17), __webpack_require__(18), __webpack_require__(19), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(42), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(40), __webpack_require__(41)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.bar'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'));
+	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin);
+	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin);
 	    global.graph = mod.exports;
 	  }
-	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerie3, _graphSerieLine, _graphSerie5, _graphSerie7, _graphSerie9, _graphSerie11, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13) {
+	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerie3, _graphSerie5, _graphSerieLine, _graphSerie7, _graphSerie9, _graphSerie11, _graphSerie13, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13) {
 	  'use strict';
 
 	  var _graph2 = _interopRequireDefault(_graph);
@@ -87,15 +87,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
-
 	  var _graphSerie6 = _interopRequireDefault(_graphSerie5);
+
+	  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
 	  var _graphSerie8 = _interopRequireDefault(_graphSerie7);
 
 	  var _graphSerie10 = _interopRequireDefault(_graphSerie9);
 
 	  var _graphSerie12 = _interopRequireDefault(_graphSerie11);
+
+	  var _graphSerie14 = _interopRequireDefault(_graphSerie13);
 
 	  var _graph8 = _interopRequireDefault(_graph7);
 
@@ -154,19 +156,21 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
 	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
-	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie12.default);
+	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie14.default);
 	  _graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
-	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie6.default);
-	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie8.default);
-	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie10.default);
+	  _graph2.default.registerConstructor("graph.serie.box", _graphSerie6.default);
+	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie8.default);
+	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie10.default);
+	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie12.default);
 
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie12.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie14.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie6.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie8.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie10.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_BOX, _graphSerie6.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie8.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie10.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie12.default);
 
 	  //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
@@ -314,7 +318,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @extends EventEmitter
 	   * @tutorial basic
 	   */
-	  class Graph {
+	  class Graph extends _EventEmitter2.default {
 
 	    /**
 	     * Graph constructor
@@ -331,8 +335,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(wrapper, options, axis) {
 
 	      super();
-
-	      var self = this;
 
 	      /*
 	        The unique ID of the graph
@@ -1236,8 +1238,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    newSerie(name, options, type) {
 
-	      var self = this;
-
 	      if (!type) {
 	        type = Graph.SERIE_LINE;
 	      }
@@ -1252,7 +1252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      serie._type = type;
-	      self.series.push(serie);
+	      this.series.push(serie);
 
 	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
 	      /*
@@ -1260,7 +1260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            self.legend.update();
 	          }
 	      */
-	      self.emit("newSerie", serie);
+	      this.emit("newSerie", serie);
 	      return serie;
 	    }
 
@@ -3570,6 +3570,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Graph.SERIE_SCATTER = Symbol();
 	  Graph.SERIE_CONTOUR = Symbol();
 	  Graph.SERIE_BAR = Symbol();
+	  Graph.SERIE_BOX = Symbol();
 	  Graph.SERIE_ZONE = Symbol();
 	  Graph.SERIE_LINE_COLORED = Symbol();
 	  Graph.SERIE_ZONE = Symbol();
@@ -8163,6 +8164,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    hasAxis() {
 	      return false;
 	    }
+
+	    getType() {
+	      return null;
+	    }
 	  }
 
 	  /**
@@ -8691,6 +8696,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 
 	      return this;
+	    }
+
+	    getType() {
+	      return 'category';
 	    }
 	  }
 
@@ -12706,6 +12715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _checkX(val) {
 	      this.minX = Math.min(this.minX, val);
 	      this.maxX = Math.max(this.maxX, val);
+	      console.log(this.minX, this.maxX, val);
 	    }
 
 	    _checkY(val) {
@@ -13849,6 +13859,765 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(12), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('./graph.serie'), require('../graph.util'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph, global.graph);
+	    global.graphSerieBox = mod.exports;
+	  }
+	})(this, function (exports, _graph, _graph3) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * @name SerieZoneDefaultOptions
+	   * @object
+	   * @static
+	   * @param {String} fillColor - The color to fill the zone with
+	   * @param {String} lineColor - The line color
+	   * @param {String} lineWidth - The line width (in px)
+	   */
+	  const defaults = {
+
+	    orientation: 'y',
+	    maxBoxWidth: 20,
+
+	    defaultStyle: {
+
+	      meanLineColor: 'rgb( 100, 0, 0 )',
+	      meanLineWidth: 2,
+
+	      boxAboveLineWidth: 1,
+	      boxAboveLineColor: 'rgb( 0, 0, 0 )',
+	      boxAboveFillColor: 'rgb( 255, 255, 255 )',
+	      boxAboveFillOpacity: 1,
+	      boxBelowLineWidth: 1,
+	      boxBelowLineColor: 'rgb( 0, 0, 0 )',
+	      boxBelowFillColor: 'rgb( 255, 255, 255 )',
+	      boxBelowFillOpacity: 1,
+
+	      barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+	      barAboveLineWidth: 1,
+	      barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+	      barBelowLineWidth: 1,
+
+	      outlierLineWidth: 1,
+	      outlierLineColor: 'rgb( 255, 255, 255 )',
+	      outlierFillColor: 'rgb( 0, 0, 0 )',
+	      outlierFillOpacity: 1
+	    }
+
+	  };
+	  /** 
+	   * @static
+	   * @extends Serie
+	   * @example graph.newSerie( name, options, "scatter" );
+	   * @see Graph#newSerie
+	   */
+	  class SerieBox extends _graph2.default {
+
+	    constructor() {
+	      super();
+	    }
+
+	    init(graph, name, options) {
+	      this.graph = graph;
+	      this.name = name;
+	      this.options = (0, _graph3.extend)(true, {}, defaults, options || {}); // Creates options
+
+	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
+
+	      this.pathDom = document.createElementNS(this.graph.ns, 'path');
+	      this.groupMain.appendChild(this.pathDom);
+
+	      // Creates an empty style variable
+	      this.styles = {};
+
+	      // Unselected style
+	      this.styles.unselected = this.options.defaultStyle;
+	    }
+
+	    /** 
+	     *  Sets the data of the bar serie
+	     *  @param {Object} data
+	     *  @example serie.setData( [ { x: 'cat', mean: valMean, boxMin: valBoxMin, boxMax: valBoxMax, barMin: valBarMin, barMax: valBarMax, outliers: [ ...yList ] } ] );
+	     *  @return {SerieBar} The current serie instance
+	     */
+	    setData(data) {
+
+	      this.data = data;
+
+	      let axisref, axisval, methodref, methodval, blnX;
+
+	      if (this.options.orientation == 'y') {
+	        axisref = this.getXAxis();
+	        axisval = this.getYAxis();
+	        methodref = this._checkX.bind(this);
+	        methodval = this._checkY.bind(this);
+	        blnX = true;
+
+	        this.minY = data[0].Q2;
+	        this.maxY = data[0].Q2;
+	        this.maxX = data[0].x;
+	        this.minX = data[0].x;
+	      } else {
+	        axisref = this.getYAxis();
+	        axisval = this.getXAxis();
+	        methodref = this._checkX.bind(this);
+	        methodval = this._checkY.bind(this);
+	        blnX = false;
+
+	        this.minX = data[0].Q2;
+	        this.maxX = data[0].Q2;
+	        this.maxY = data[0].y;
+	        this.minY = data[0].y;
+	      }
+
+	      if (!axisref || !axisval) {
+	        (0, _graph3.throwError)("Error in setting data of the box serie. The X and Y axes must be set beforehand");
+	      }
+
+	      for (var i in this.data) {
+
+	        if (blnX) {
+	          methodref(this.data[i].x);
+	          this.data[i].pos = this.data[i].x;
+	        } else {
+	          methodref(this.data[i].y);
+	          this.data[i].pos = this.data[i].y;
+	        }
+
+	        if (this.data[i].Q3) {
+	          methodval(this.data[i].Q3);
+	        }
+
+	        if (this.data[i].Q1) {
+	          methodval(this.data[i].Q1);
+	        }
+
+	        if (this.data[i].whiskers) {
+
+	          if (Array.isArray(this.data[i].whiskers)) {
+
+	            if (this.data[i].whiskers.length > 0) {
+	              methodval(this.data[i].whiskers[0]);
+	            }
+
+	            if (this.data[i].whiskers.length > 1) {
+	              methodval(this.data[i].whiskers[1]);
+	            }
+	          } else {
+	            methodval(this.data[i].whiskers);
+	            this.data[i].whiskers = [this.data[i].whiskers];
+	          }
+	        } else {
+	          this.data[i].whiskers = [];
+	        }
+
+	        if (Array.isArray(this.data[i].outliers)) {
+	          this.data[i].outliers.map(val => methodval(val));
+	        } else {
+	          this.data[i].outliers = [];
+	        }
+	      }
+
+	      this.dataHasChanged();
+	      this.graph.updateDataMinMaxAxes();
+
+	      return this;
+	    }
+
+	    _style(type, styleValue, selectionType = "unselected", applyToSelected = false) {
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType][type] = styleValue;
+
+	      if (applyToSelected) {
+	        this._set(type, styleValue, "selected");
+	      }
+
+	      this.styleHasChanged(selectionType);
+	      return this;
+	    }
+
+	    _gstyle(type, selectionType) {
+	      return this.getStyle(selectionType)[type];
+	    }
+
+	    getStyle(selectionType = "unselected") {
+
+	      return this.styles[selectionType] || {};
+	    }
+
+	    /** 
+	     *  Sets the mean line color
+	     */
+	    setMeanLineColor() {
+	      return this._style('meanLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the mean line color
+	     */
+	    getMeanLineColor() {
+	      return this._gstyle('meanLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the mean line width
+	     */
+	    setMeanLineWidth() {
+	      return this._style('meanLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the mean line width
+	     */
+	    getMeanLineWidth() {
+	      return this._gstyle('meanLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the box line color
+	     */
+	    setBoxAboveLineColor() {
+	      return this._style('boxAboveLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the box line color
+	     */
+	    getBoxAboveLineColor() {
+	      return this._gstyle('boxAboveLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxBelowLineColor() {
+	      return this._style('boxBelowLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxBelowLineColor() {
+	      return this._gstyle('boxBelowLineColor', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxAboveLineWidth() {
+	      return this._style('boxAboveLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxAboveLineWidth() {
+	      return this._gstyle('boxAboveLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxBelowLineWidth() {
+	      return this._style('boxBelowLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxBelowLineWidth() {
+	      return this._gstyle('boxBelowLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxAboveFillColor() {
+	      return this._style('boxAboveFillColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxAboveFillColor() {
+	      return this._gstyle('boxAboveFillColor', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxBelowFillColor() {
+	      return this._style('boxBelowFillColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxBelowFillColor() {
+	      return this._gstyle('boxBelowFillColor', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxAboveFillOpacity() {
+	      return this._style('boxAboveFillOpacity', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxAboveFillOpacity() {
+	      return this._gstyle('boxAboveFillOpacity', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBoxBelowFillOpacity() {
+	      return this._style('boxBelowFillOpacity', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBoxBelowFillOpacity() {
+	      return this._gstyle('boxBelowFillOpacity', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBarAboveLineColor() {
+	      return this._style('barAboveLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBarAboveLineColor() {
+	      return this._gstyle('barAboveLineColor', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBarBelowLineColor() {
+	      return this._style('boxBelowLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBarBelowLineColor() {
+	      return this._gstyle('barBelowLineColor', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBarAboveLineWidth() {
+	      return this._style('barAboveLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBarAboveLineWidth() {
+	      return this._gstyle('barAboveLineWidth', ...arguments);
+	    }
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setBarBelowLineWidth() {
+	      return this._style('barBelowLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getBarBelowLineWidth() {
+	      return this._gstyle('barBelowLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setOutlierLineWidth() {
+	      return this._style('outlierLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the box line color
+	     */
+	    getOutlierLineColor() {
+	      return this._gstyle('outlierLineColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setOutlierLineWidth() {
+	      return this._style('outlierLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getOutlierLineWidth() {
+	      return this._gstyle('outlierLineWidth', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setOutlierFillColor() {
+	      return this._style('outlierFillColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getOutlierFillColor() {
+	      return this._gstyle('outlierFillColor', ...arguments);
+	    }
+
+	    /** 
+	     *  Sets the fill color
+	     */
+	    setOutlierFillOpacity() {
+	      return this._style('outlierFillOpacity', ...arguments);
+	    }
+
+	    /** 
+	     *  Returns the fill color
+	     */
+	    getOutlierFillOpacity() {
+	      return this._gstyle('outlierFillOpacity', ...arguments);
+	    }
+
+	    /**
+	     * Reapply the current style to the serie lines elements. Mostly used internally
+	     */
+	    applyLineStyles() {
+	      this.applyLineStyle(this.pathDom);
+	    }
+
+	    /**
+	     * Applies the current style to a line element. Mostly used internally
+	     * @memberof SerieBar
+	     */
+	    applyLineStyle(line) {
+
+	      line.setAttribute('stroke', this.getLineColor());
+	      line.setAttribute('stroke-width', this.getLineWidth());
+	      line.removeAttribute('stroke-dasharray');
+	      line.setAttribute('fill', this.getFillColor());
+	      line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
+	    }
+
+	    draw() {
+
+	      var categoryNumber, position;
+
+	      let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
+	      let axis2 = this.options.orientation == 'y' ? this.getXAxis() : this.getYAxis();
+	      let boxOtherDimension; // width or height of the box
+	      let useCategories = false;
+
+	      let mean, boxAbove, boxBelow, barAbove, barBelow, outliers, posAbove, posBelow;
+
+	      if (axis.getType() == 'category') {
+
+	        boxOtherDimension = axis.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length));
+	        useCategories = true;
+	      } else {
+	        // Get all the spacing and determine the smallest one
+	        boxOtherDimension = this.options.maxBoxWidth;
+
+	        for (var i = 0, l = this.data.length; i < l - 2; i++) {
+	          boxOtherDimension = Math.min(boxOtherDimension, Math.abs(axis.getPos(this.data[i + 1].pos) - axis.getPos(this.data[i].pos)));
+	        }
+	      }
+
+	      for (var i = 0, l = this.data.length; i < l; i++) {
+
+	        if (axis.getType() == 'category') {
+
+	          position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+	          position[0] = axis2.getPos(position[0]);
+	        } else {
+
+	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
+	        }
+
+	        mean = axis.getPos(this.data[i].Q2);
+	        boxAbove = axis.getPos(this.data[i].Q3);
+	        boxBelow = axis.getPos(this.data[i].Q1);
+
+	        this.data[i].whiskers.map(val => {
+
+	          if (val < this.data[i].Q1) {
+	            barBelow = axis.getPos(val);
+	          } else {
+	            barAbove = axis.getPos(val);
+	          }
+	        });
+
+	        outliers = this.data[i].outliers.map(val => axis.getPos(val));
+
+	        var lineMean = document.createElementNS(this.graph.ns, 'line');
+
+	        this.applyMeanStyle(lineMean);
+
+	        var rectAbove = document.createElementNS(this.graph.ns, 'rect');
+	        var rectBelow = document.createElementNS(this.graph.ns, 'rect');
+
+	        if (this.options.orientation == 'y') {
+
+	          rectAbove.setAttribute('width', boxOtherDimension);
+	          rectAbove.setAttribute('x', position[0] - boxOtherDimension / 2);
+
+	          rectBelow.setAttribute('width', boxOtherDimension);
+	          rectBelow.setAttribute('x', position[0] - boxOtherDimension / 2);
+
+	          lineMean.setAttribute('x1', position[0] - boxOtherDimension / 2);
+	          lineMean.setAttribute('x2', position[0] + boxOtherDimension / 2);
+	          lineMean.setAttribute('y1', mean);
+	          lineMean.setAttribute('y2', mean);
+	        } else {
+
+	          rectAbove.setAttribute('height', boxOtherDimension);
+	          rectAbove.setAttribute('y', position[0] - boxOtherDimension / 2);
+
+	          rectBelow.setAttribute('height', boxOtherDimension);
+	          rectBelow.setAttribute('y', position[0] - boxOtherDimension / 2);
+
+	          lineMean.setAttribute('y1', position[0] - boxOtherDimension / 2);
+	          lineMean.setAttribute('y2', position[0] + boxOtherDimension / 2);
+	          lineMean.setAttribute('x1', mean);
+	          lineMean.setAttribute('x2', mean);
+	        }
+
+	        this.boxPos(rectAbove, mean, boxAbove, this.options.orientation == 'x');
+	        this.boxPos(rectBelow, mean, boxBelow, this.options.orientation == 'x');
+
+	        this.applyBoxStyle(rectAbove, rectBelow);
+
+	        var whiskerAbove = document.createElementNS(this.graph.ns, 'line');
+	        var whiskerBelow = document.createElementNS(this.graph.ns, 'line');
+
+	        if (this.options.orientation == 'y') {
+
+	          if (barAbove !== undefined) {
+	            whiskerAbove.setAttribute('y1', boxAbove);
+	            whiskerAbove.setAttribute('y2', barAbove);
+	            whiskerAbove.setAttribute('x1', position[0]);
+	            whiskerAbove.setAttribute('x2', position[0]);
+	          }
+
+	          if (barBelow !== undefined) {
+	            whiskerBelow.setAttribute('y1', boxBelow);
+	            whiskerBelow.setAttribute('y2', barBelow);
+	            whiskerBelow.setAttribute('x1', position[0]);
+	            whiskerBelow.setAttribute('x2', position[0]);
+	          }
+	        } else {
+
+	          if (barAbove !== undefined) {
+	            whiskerAbove.setAttribute('x1', boxAbove);
+	            whiskerAbove.setAttribute('x2', barAbove);
+	            whiskerAbove.setAttribute('y1', position[0]);
+	            whiskerAbove.setAttribute('y2', position[0]);
+	          }
+
+	          if (barBelow !== undefined) {
+	            whiskerBelow.setAttribute('x1', boxBelow);
+	            whiskerBelow.setAttribute('x2', barBelow);
+	            whiskerBelow.setAttribute('y1', position[0]);
+	            whiskerBelow.setAttribute('y2', position[0]);
+	          }
+	        }
+
+	        outliers.map(outliervalue => {
+
+	          let outlier = document.createElementNS(this.graph.ns, 'circle');
+
+	          outlier.setAttribute('r', 2);
+
+	          if (this.options.orientation == 'y') {
+
+	            outlier.setAttribute('cx', position[0]);
+	            outlier.setAttribute('cy', outliervalue);
+	          } else {
+
+	            outlier.setAttribute('cy', position[0]);
+	            outlier.setAttribute('cx', outliervalue);
+	          }
+
+	          this.setOutlierStyle(outlier);
+
+	          this.groupMain.appendChild(outlier);
+	        });
+
+	        if (barAbove !== undefined) {
+	          this.groupMain.appendChild(whiskerAbove);
+	        }
+
+	        if (barBelow !== undefined) {
+	          this.groupMain.appendChild(whiskerBelow);
+	        }
+
+	        if (boxAbove !== undefined) {
+	          this.groupMain.appendChild(rectAbove);
+	        }
+
+	        if (boxBelow !== undefined) {
+	          this.groupMain.appendChild(rectBelow);
+	        }
+
+	        this.groupMain.appendChild(lineMean);
+
+	        this.applyWhiskerStyle(whiskerAbove, whiskerBelow);
+	      }
+	    }
+
+	    applyBoxStyle(above, below) {
+
+	      above.setAttribute('stroke', this.getBoxAboveLineColor());
+	      above.setAttribute('stroke-width', this.getBoxAboveLineWidth());
+
+	      if (this.getBoxAboveFillColor() !== undefined) {
+	        above.setAttribute('fill', this.getBoxAboveFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        above.setAttribute('fill-opacity', this.getBoxAboveFillOpacity());
+	      }
+
+	      below.setAttribute('stroke', this.getBoxBelowLineColor());
+	      below.setAttribute('stroke-width', this.getBoxBelowLineWidth());
+
+	      if (this.getBoxBelowFillColor() !== undefined) {
+	        below.setAttribute('fill', this.getBoxBelowFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        below.setAttribute('fill-opacity', this.getBoxBelowFillOpacity());
+	      }
+	    }
+
+	    applyWhiskerStyle(above, below) {
+
+	      above.setAttribute('stroke', this.getBarAboveLineColor());
+	      above.setAttribute('stroke-width', this.getBarAboveLineWidth());
+
+	      below.setAttribute('stroke', this.getBarBelowLineColor());
+	      below.setAttribute('stroke-width', this.getBarBelowLineWidth());
+	    }
+
+	    applyMeanStyle(line) {
+
+	      line.setAttribute('stroke', this.getMeanLineColor());
+	      line.setAttribute('stroke-width', this.getMeanLineWidth());
+	    }
+
+	    setOutlierStyle(outlier) {
+
+	      outlier.setAttribute('stroke', this.getOutlierLineColor());
+	      outlier.setAttribute('stroke-width', this.getOutlierLineWidth());
+
+	      if (this.getBoxBelowFillColor() !== undefined) {
+	        outlier.setAttribute('fill', this.getOutlierFillColor());
+	      }
+	      if (this.getBoxAboveFillOpacity() !== undefined) {
+	        outlier.setAttribute('fill-opacity', this.getOutlierFillOpacity());
+	      }
+	    }
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
+	    getCategoryIndex(name) {
+
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
+
+	      for (var i = 0; i < this.categories.length; i++) {
+
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
+
+	      return false;
+	    }
+
+	    // Markers now allowed
+	    setMarkers() {}
+
+	    /**
+	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
+	     *  @private
+	     *  @param {Number} order - The index of the serie in the bar stack
+	     *  @param {Object[]} categories - The list of categories
+	     *  @param {Number} nbSeries - The number of series
+	     *  @see AxisXBar#setSeries
+	     */
+	    setBarConfig(order, categories, nbSeries) {
+
+	      this.order = order;
+	      this.categories = categories;
+	      this.nbSeries = nbSeries;
+	    }
+
+	    boxPos(box, mean, extremity, blnX) {
+
+	      if (mean > extremity) {
+
+	        box.setAttribute(blnX ? 'x' : 'y', extremity);
+	        box.setAttribute(blnX ? 'width' : 'height', mean - extremity);
+	      } else {
+
+	        box.setAttribute(blnX ? 'x' : 'y', mean);
+	        box.setAttribute(blnX ? 'width' : 'height', extremity - mean);
+	      }
+	    }
+	  }
+
+	  /**
+	   *  @private
+	   *  @param {Number} categoryIndex - The index of the serie in the bar stack
+	   *  @param {Number} serieIndex - The index of the serie
+	   *  @param {Number} nbSeries - The number of series
+	   */
+	  function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
+
+	    var nbElements = (nbSeries + 1) * nbCategories;
+	    var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
+	    return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
+	  }
+
+	  exports.default = SerieBox;
+	});
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(11), __webpack_require__(3), __webpack_require__(14)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.serie.line'), require('../graph.util'), require('../mixins/graph.mixin.errorbars'));
@@ -14221,7 +14990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -14774,7 +15543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -15426,7 +16195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16117,7 +16886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16551,7 +17320,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -18460,12 +19229,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18689,12 +19458,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.shape'));
 	  } else {
@@ -18778,12 +19547,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18833,12 +19602,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 25 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18939,12 +19708,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 26 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -19178,12 +19947,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 27 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(23), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.areaundercurve'), require('../graph.position'));
 	  } else {
@@ -19512,12 +20281,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 28 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.rect'));
 	  } else {
@@ -19578,12 +20347,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 29 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'), require('../graph.util'));
 	  } else {
@@ -19961,12 +20730,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 30 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(21)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(22)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -20124,12 +20893,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 31 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {
@@ -20385,7 +21154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 32 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -20470,12 +21239,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 33 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(32)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("./graph.plugin"));
 	  } else {
@@ -20680,12 +21449,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 34 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(32), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -20874,12 +21643,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 35 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(32)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -21059,12 +21828,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 36 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(32)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -21671,12 +22440,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(38), __webpack_require__(32), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(39), __webpack_require__(33), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.core'), require('../graph.lru'), require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -22211,7 +22980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -22345,12 +23114,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(32)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'));
 	  } else {
@@ -22767,12 +23536,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(6), __webpack_require__(8), __webpack_require__(3), __webpack_require__(11), __webpack_require__(17), __webpack_require__(32), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(6), __webpack_require__(8), __webpack_require__(3), __webpack_require__(11), __webpack_require__(18), __webpack_require__(33), __webpack_require__(7)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("../graph.core"), require("../graph.axis.x"), require("../graph.axis.y"), require("../graph.util"), require("../series/graph.serie.line"), require("../series/graph.serie.scatter"), require("./graph.plugin"), require("../graph.axis"));
 	  } else {
@@ -23565,12 +24334,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {

@@ -22,6 +22,7 @@
 			"./src/series/slotoptimizer.js",
 			"./src/mixins/graph.mixin.errorbars.js",
 			"./src/series/graph.serie.bar.js",
+			"./src/series/graph.serie.box.js",
 			"./src/series/graph.serie.line.colored.js",
 			"./src/series/graph.serie.scatter.js",
 			"./src/series/graph.serie.zone.js",
