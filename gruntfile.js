@@ -93,7 +93,7 @@ module.exports = function(grunt) {
         },
 
         webpack: {
-
+/*
             build: {
                  entry: './src/graph.js',
                  output: {
@@ -116,10 +116,10 @@ module.exports = function(grunt) {
                      }]
                  }
             },
-
+*/
             dist: {
 
-                 entry: './src/graph.js',
+                 entry: [ 'babel-polyfill', './src/graph.js' ],
                  output: {
                      path: './dist/',
                      filename: 'jsgraph.js',
@@ -272,9 +272,16 @@ module.exports = function(grunt) {
       compiler.plugin('done', function( stats ) {
         var json = stats.toJson({assets: false, chunks: false, modules: true }).modules;
         json.map( function( el ) {
+            //console.log( el );
+
+            if( el.name == 'multi main' || el.name.indexOf('~') > -1) {
+                return;
+            }
+            
             grunt.file.write( el.name, beautify( grunt.file.read( el.name ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
         });
 
+/*
 
         grunt.file.write( "jsdoc.json", JSON.stringify( {
             opts: {
@@ -295,6 +302,8 @@ module.exports = function(grunt) {
                 return;
             }
         });
+
+        */
       });
     };
 };
