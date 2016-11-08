@@ -5722,7 +5722,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setMinMaxFlipped() {
 
-	      console.log(this.maxPx, this.minPx);
 	      var interval = this.maxPx - this.minPx;
 
 	      if (isNaN(interval)) {
@@ -11743,7 +11742,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (recalculatePoints) {
 	        this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
 	      }
-	      console.log(this.markersDom[this.styles[selectionType].markers[family]]);
 	      this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
 	    }
 
@@ -12722,7 +12720,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _checkX(val) {
 	      this.minX = Math.min(this.minX, val);
 	      this.maxX = Math.max(this.maxX, val);
-	      console.log(this.minX, this.maxX, val);
 	    }
 
 	    _checkY(val) {
