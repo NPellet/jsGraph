@@ -2063,7 +2063,6 @@ class SerieLine extends Serie {
     if ( recalculatePoints ) {
       this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
     }
-    console.log( this.markersDom[ this.styles[ selectionType ].markers[ family ] ] );
     this.setMarkerStyleTo( this.markersDom[ this.styles[ selectionType ].markers[ family ] ].dom, this.styles[ selectionType ].markers[ family ] );
 
   }
