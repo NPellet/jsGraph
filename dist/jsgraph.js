@@ -7332,8 +7332,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
 
 	  function wrap(innerFn, outerFn, self, tryLocsList) {
-	    // If outerFn provided, then outerFn.prototype instanceof Generator.
-	    var generator = Object.create((outerFn || Generator).prototype);
+	    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+	    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+	    var generator = Object.create(protoGenerator.prototype);
 	    var context = new Context(tryLocsList || []);
 
 	    // The ._invoke method unifies the implementations of the .next,
@@ -7981,35 +7982,83 @@ return /******/ (function(modules) { // webpackBootstrap
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
 	    try {
-	        cachedSetTimeout = setTimeout;
-	    } catch (e) {
-	        cachedSetTimeout = function () {
-	            throw new Error('setTimeout is not defined');
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
 	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
 	    try {
-	        cachedClearTimeout = clearTimeout;
-	    } catch (e) {
-	        cachedClearTimeout = function () {
-	            throw new Error('clearTimeout is not defined');
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
 	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
 	} ())
 	function runTimeout(fun) {
 	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
 	        return setTimeout(fun, 0);
-	    } else {
-	        return cachedSetTimeout.call(null, fun, 0);
 	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+
+
 	}
 	function runClearTimeout(marker) {
 	    if (cachedClearTimeout === clearTimeout) {
-	        clearTimeout(marker);
-	    } else {
-	        cachedClearTimeout.call(null, marker);
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
 	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+
+
+
 	}
 	var queue = [];
 	var draining = false;
@@ -8354,7 +8403,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -8463,7 +8512,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      @name Graph#uniqueid
 	      @type String
 	    */
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Graph).call(this));
+	    var _this = _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).call(this));
 
 	    _this._creation = util.guid();
 
@@ -9089,8 +9138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'killAxis',
 	    value: function killAxis(axis) {
-	      var noRedraw = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
-	      var noSerieKill = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+	      var noRedraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+	      var noSerieKill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
 
 	      var index;
@@ -12063,7 +12112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -12439,7 +12488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	exports.setAttributeTo = setAttributeTo;
 	exports.mapEventEmission = mapEventEmission;
@@ -12822,7 +12871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	/*!
 	 * EventEmitter v4.2.9 - git.io/ee
@@ -14010,7 +14059,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function AxisX(graph, topbottom, options) {
 	    _classCallCheck(this, AxisX);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AxisX).call(this, graph, topbottom, options));
+	    var _this = _possibleConstructorReturn(this, (AxisX.__proto__ || Object.getPrototypeOf(AxisX)).call(this, graph, topbottom, options));
 
 	    _this.top = topbottom == 'top';
 	    return _this;
@@ -14157,7 +14206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'draw',
 	    value: function draw() {
-	      var tickWidth = _get(Object.getPrototypeOf(AxisX.prototype), 'draw', this).apply(this, arguments);
+	      var tickWidth = _get(AxisX.prototype.__proto__ || Object.getPrototypeOf(AxisX.prototype), 'draw', this).apply(this, arguments);
 	      this.drawSpecifics();
 
 	      return tickWidth;
@@ -14374,7 +14423,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Axis() {
 	    _classCallCheck(this, Axis);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Axis).call(this));
+	    return _possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this));
 	  }
 
 	  _createClass(Axis, [{
@@ -17075,7 +17124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function AxisY(graph, leftright, options) {
 	    _classCallCheck(this, AxisY);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AxisY).call(this, graph, leftright, options));
+	    var _this = _possibleConstructorReturn(this, (AxisY.__proto__ || Object.getPrototypeOf(AxisY)).call(this, graph, leftright, options));
 
 	    _this.leftright = leftright;
 	    _this.left = leftright == 'left';
@@ -17157,7 +17206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function draw() {
 
 	      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 5 + this.tickPx1 * this.tickScaling[1];
-	      var tickWidth = _get(Object.getPrototypeOf(AxisY.prototype), 'draw', this).apply(this, arguments);
+	      var tickWidth = _get(AxisY.prototype.__proto__ || Object.getPrototypeOf(AxisY.prototype), 'draw', this).apply(this, arguments);
 	      tickWidth += this.getAdditionalWidth();
 	      this.drawSpecifics(tickWidth);
 
@@ -17495,7 +17544,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -17522,7 +17571,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function AxisXBar(graph, topbottom, options) {
 	    _classCallCheck(this, AxisXBar);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AxisXBar).call(this, graph, topbottom, options));
+	    return _possibleConstructorReturn(this, (AxisXBar.__proto__ || Object.getPrototypeOf(AxisXBar)).call(this, graph, topbottom, options));
 	  }
 
 	  /**
@@ -18586,7 +18635,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -18666,7 +18715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieLine() {
 	    _classCallCheck(this, SerieLine);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLine).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieLine.__proto__ || Object.getPrototypeOf(SerieLine)).apply(this, arguments));
 	  }
 
 	  /**
@@ -19758,7 +19807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'kill',
 	    value: function kill() {
-	      _get(Object.getPrototypeOf(SerieLine.prototype), 'kill', this).call(this);
+	      _get(SerieLine.prototype.__proto__ || Object.getPrototypeOf(SerieLine.prototype), 'kill', this).call(this);
 	      this.killPeakPicking();
 	    }
 
@@ -20445,7 +20494,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setStyle',
 	    value: function setStyle(style) {
-	      var selectionType = arguments.length <= 1 || arguments[1] === undefined ? "unselected" : arguments[1];
+	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
 
 	      //console.log( style, selectionType );
 	      this.styles[selectionType] = style;
@@ -20454,7 +20503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setLineStyle',
 	    value: function setLineStyle(number) {
-	      var selectionType = arguments.length <= 1 || arguments[1] === undefined ? "unselected" : arguments[1];
+	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
 	      var applyToSelected = arguments[2];
 
 
@@ -20478,7 +20527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getLineDashArray',
 	    value: function getLineDashArray() {
-	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? this.selectionType || "unselected" : arguments[0];
+	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.selectionType || "unselected";
 
 
 	      switch (this.getStyle(selectionType).lineStyle) {
@@ -20534,7 +20583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getStyle',
 	    value: function getStyle() {
-	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? this.selectionType || "unselected" : arguments[0];
+	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.selectionType || "unselected";
 
 	      return this.styles[selectionType];
 	    }
@@ -21294,7 +21343,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21326,7 +21375,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Serie() {
 	    _classCallCheck(this, Serie);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Serie).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (Serie.__proto__ || Object.getPrototypeOf(Serie)).apply(this, arguments));
 	  }
 
 	  /** 
@@ -22362,7 +22411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'excludedFromLegend',
 	    set: function set() {
-	      var bln = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+	      var bln = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
 	      this._excludedFromLegend = bln;
 	    },
@@ -22763,7 +22812,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieBar() {
 	    _classCallCheck(this, SerieBar);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieBar).call(this));
+	    return _possibleConstructorReturn(this, (SerieBar.__proto__ || Object.getPrototypeOf(SerieBar)).call(this));
 	  }
 
 	  _createClass(SerieBar, [{
@@ -23081,7 +23130,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieBox() {
 	    _classCallCheck(this, SerieBox);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieBox).call(this));
+	    return _possibleConstructorReturn(this, (SerieBox.__proto__ || Object.getPrototypeOf(SerieBox)).call(this));
 	  }
 
 	  _createClass(SerieBox, [{
@@ -23204,8 +23253,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: '_style',
 	    value: function _style(type, styleValue) {
-	      var selectionType = arguments.length <= 2 || arguments[2] === undefined ? "unselected" : arguments[2];
-	      var applyToSelected = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+	      var selectionType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "unselected";
+	      var applyToSelected = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
 	      this.styles[selectionType] = this.styles[selectionType] || {};
 	      this.styles[selectionType][type] = styleValue;
@@ -23225,7 +23274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getStyle',
 	    value: function getStyle() {
-	      var selectionType = arguments.length <= 0 || arguments[0] === undefined ? "unselected" : arguments[0];
+	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "unselected";
 
 
 	      return this.styles[selectionType] || {};
@@ -23999,7 +24048,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieLineColor() {
 	    _classCallCheck(this, SerieLineColor);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLineColor).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieLineColor.__proto__ || Object.getPrototypeOf(SerieLineColor)).apply(this, arguments));
 	  }
 
 	  _createClass(SerieLineColor, [{
@@ -24342,7 +24391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -24385,7 +24434,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieScatter() {
 	    _classCallCheck(this, SerieScatter);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieScatter).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieScatter.__proto__ || Object.getPrototypeOf(SerieScatter)).apply(this, arguments));
 	  }
 
 	  /**
@@ -24949,7 +24998,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieZone() {
 	    _classCallCheck(this, SerieZone);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieZone).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieZone.__proto__ || Object.getPrototypeOf(SerieZone)).apply(this, arguments));
 	  }
 
 	  _createClass(SerieZone, [{
@@ -25655,7 +25704,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieDensityMap() {
 	    _classCallCheck(this, SerieDensityMap);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SerieDensityMap).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieDensityMap.__proto__ || Object.getPrototypeOf(SerieDensityMap)).apply(this, arguments));
 	  }
 
 	  _createClass(SerieDensityMap, [{
@@ -26346,7 +26395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -26381,7 +26430,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieContour() {
 	    _classCallCheck(this, SerieContour);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieContour).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (SerieContour.__proto__ || Object.getPrototypeOf(SerieContour)).apply(this, arguments));
 
 	    _this.negativeDelta = 0;
 	    _this.positiveDelta = 0;
@@ -26818,7 +26867,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Shape() {
 	    _classCallCheck(this, Shape);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(Shape).call(this));
+	    return _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).call(this));
 	  }
 
 	  /**
@@ -29059,7 +29108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeSurfaceUnderCurve() {
 	    _classCallCheck(this, ShapeSurfaceUnderCurve);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeSurfaceUnderCurve).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (ShapeSurfaceUnderCurve.__proto__ || Object.getPrototypeOf(ShapeSurfaceUnderCurve)).apply(this, arguments));
 	  }
 
 	  _createClass(ShapeSurfaceUnderCurve, [{
@@ -29298,7 +29347,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeArrow(graph) {
 	    _classCallCheck(this, ShapeArrow);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeArrow).call(this, graph));
+	    return _possibleConstructorReturn(this, (ShapeArrow.__proto__ || Object.getPrototypeOf(ShapeArrow)).call(this, graph));
 	  }
 
 	  _createClass(ShapeArrow, [{
@@ -29362,7 +29411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeLine(graph, options) {
 	    _classCallCheck(this, ShapeLine);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeLine).call(this, graph, options));
+	    return _possibleConstructorReturn(this, (ShapeLine.__proto__ || Object.getPrototypeOf(ShapeLine)).call(this, graph, options));
 	  }
 
 	  /**
@@ -29623,7 +29672,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeEllipse(graph, options) {
 	    _classCallCheck(this, ShapeEllipse);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeEllipse).call(this, graph, options));
+	    return _possibleConstructorReturn(this, (ShapeEllipse.__proto__ || Object.getPrototypeOf(ShapeEllipse)).call(this, graph, options));
 	  }
 
 	  _createClass(ShapeEllipse, [{
@@ -29697,7 +29746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeLabel(graph, options) {
 	    _classCallCheck(this, ShapeLabel);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeLabel).call(this, graph, options));
+	    return _possibleConstructorReturn(this, (ShapeLabel.__proto__ || Object.getPrototypeOf(ShapeLabel)).call(this, graph, options));
 	  }
 
 	  _createClass(ShapeLabel, [{
@@ -29752,7 +29801,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapePolyline(graph, options) {
 	    _classCallCheck(this, ShapePolyline);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapePolyline).call(this, graph, options));
+	    return _possibleConstructorReturn(this, (ShapePolyline.__proto__ || Object.getPrototypeOf(ShapePolyline)).call(this, graph, options));
 	  }
 
 	  /**
@@ -29872,7 +29921,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeNMRIntegral(graph, options) {
 	    _classCallCheck(this, ShapeNMRIntegral);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeNMRIntegral).call(this, graph, options));
+	    var _this = _possibleConstructorReturn(this, (ShapeNMRIntegral.__proto__ || Object.getPrototypeOf(ShapeNMRIntegral)).call(this, graph, options));
 
 	    _this.nbHandles = 2;
 	    return _this;
@@ -30160,7 +30209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'ratio',
 	    set: function set() {
-	      var r = arguments.length <= 0 || arguments[0] === undefined ? 1 : arguments[0];
+	      var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
 	      this._ratio = r;
 	    },
@@ -30170,7 +30219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'yBaseline',
 	    set: function set() {
-	      var y = arguments.length <= 0 || arguments[0] === undefined ? 30 : arguments[0];
+	      var y = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 30;
 
 	      this._yBaseline = y;
 	    },
@@ -30214,7 +30263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapePeakIntegration2D(graph, options) {
 	    _classCallCheck(this, ShapePeakIntegration2D);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ShapePeakIntegration2D).call(this, graph, options));
+	    var _this = _possibleConstructorReturn(this, (ShapePeakIntegration2D.__proto__ || Object.getPrototypeOf(ShapePeakIntegration2D)).call(this, graph, options));
 
 	    _this.nbHandles = 4;
 	    return _this;
@@ -30261,7 +30310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -30295,7 +30344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeRectangle(graph, options) {
 	    _classCallCheck(this, ShapeRectangle);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeRectangle).call(this, graph, options));
+	    return _possibleConstructorReturn(this, (ShapeRectangle.__proto__ || Object.getPrototypeOf(ShapeRectangle)).call(this, graph, options));
 	  }
 
 	  /**
@@ -30670,7 +30719,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapeCross(graph, options) {
 	    _classCallCheck(this, ShapeCross);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ShapeCross).call(this, graph, options));
+	    var _this = _possibleConstructorReturn(this, (ShapeCross.__proto__ || Object.getPrototypeOf(ShapeCross)).call(this, graph, options));
 
 	    _this.nbHandles = 1;
 	    return _this;
@@ -30805,7 +30854,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.width || 10;
 	    },
 	    set: function set() {
-	      var l = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+	      var l = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
 
 	      this.options.width = l;
 	    }
@@ -30850,7 +30899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function ShapePeakBoundaries(graph) {
 	    _classCallCheck(this, ShapePeakBoundaries);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ShapePeakBoundaries).call(this, graph));
+	    var _this = _possibleConstructorReturn(this, (ShapePeakBoundaries.__proto__ || Object.getPrototypeOf(ShapePeakBoundaries)).call(this, graph));
 
 	    _this.lineHeight = 6;
 	    return _this;
@@ -31136,7 +31185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function Plugin(options) {
 	    _classCallCheck(this, Plugin);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Plugin).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (Plugin.__proto__ || Object.getPrototypeOf(Plugin)).apply(this, arguments));
 
 	    _this.options = options;
 	    return _this;
@@ -31231,7 +31280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginDrag() {
 	    _classCallCheck(this, PluginDrag);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginDrag).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PluginDrag.__proto__ || Object.getPrototypeOf(PluginDrag)).apply(this, arguments));
 	  }
 
 	  _createClass(PluginDrag, [{
@@ -31461,7 +31510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginShape() {
 	    _classCallCheck(this, PluginShape);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginShape).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PluginShape.__proto__ || Object.getPrototypeOf(PluginShape)).apply(this, arguments));
 	  }
 
 	  /**
@@ -31654,7 +31703,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginSelectScatter() {
 	    _classCallCheck(this, PluginSelectScatter);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginSelectScatter).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PluginSelectScatter.__proto__ || Object.getPrototypeOf(PluginSelectScatter)).apply(this, arguments));
 	  }
 
 	  /**
@@ -31843,7 +31892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginZoom() {
 	    _classCallCheck(this, PluginZoom);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginZoom).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PluginZoom.__proto__ || Object.getPrototypeOf(PluginZoom)).apply(this, arguments));
 	  }
 
 	  _createClass(PluginZoom, [{
@@ -32474,7 +32523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginTimeSerieManager() {
 	    _classCallCheck(this, PluginTimeSerieManager);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginTimeSerieManager).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (PluginTimeSerieManager.__proto__ || Object.getPrototypeOf(PluginTimeSerieManager)).apply(this, arguments));
 
 	    _this.series = [];
 	    _this.plugins = [];
@@ -33139,7 +33188,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginSerieLineDifference() {
 	    _classCallCheck(this, PluginSerieLineDifference);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(PluginSerieLineDifference).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (PluginSerieLineDifference.__proto__ || Object.getPrototypeOf(PluginSerieLineDifference)).apply(this, arguments));
 	  }
 
 	  _createClass(PluginSerieLineDifference, [{
@@ -33620,7 +33669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieLineExtended() {
 	    _classCallCheck(this, SerieLineExtended);
 
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieLineExtended).apply(this, arguments));
+	    var _this = _possibleConstructorReturn(this, (SerieLineExtended.__proto__ || Object.getPrototypeOf(SerieLineExtended)).apply(this, arguments));
 
 	    _this.subSeries = [];
 	    return _this;
@@ -33631,7 +33680,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setData() {
 	      var _this2 = this;
 
-	      _get(Object.getPrototypeOf(SerieLineExtended.prototype), "setData", this).apply(this, arguments);
+	      _get(SerieLineExtended.prototype.__proto__ || Object.getPrototypeOf(SerieLineExtended.prototype), "setData", this).apply(this, arguments);
 	      this.subSeries.map(function (sub) {
 	        sub.data = _this2.data;
 	      });
@@ -33672,7 +33721,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieScatterExtended() {
 	    _classCallCheck(this, SerieScatterExtended);
 
-	    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(SerieScatterExtended).apply(this, arguments));
+	    var _this3 = _possibleConstructorReturn(this, (SerieScatterExtended.__proto__ || Object.getPrototypeOf(SerieScatterExtended)).apply(this, arguments));
 
 	    _this3.subSeries = [];
 	    return _this3;
@@ -33683,7 +33732,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setData() {
 	      var _this4 = this;
 
-	      _get(Object.getPrototypeOf(SerieScatterExtended.prototype), "setData", this).apply(this, arguments);
+	      _get(SerieScatterExtended.prototype.__proto__ || Object.getPrototypeOf(SerieScatterExtended.prototype), "setData", this).apply(this, arguments);
 	      this.subSeries.map(function (sub) {
 	        sub.data = _this4.data;
 	      });
@@ -33749,7 +33798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function PluginAxisSplitting(options) {
 	    _classCallCheck(this, PluginAxisSplitting);
 
-	    var _this5 = _possibleConstructorReturn(this, Object.getPrototypeOf(PluginAxisSplitting).apply(this, arguments));
+	    var _this5 = _possibleConstructorReturn(this, (PluginAxisSplitting.__proto__ || Object.getPrototypeOf(PluginAxisSplitting)).apply(this, arguments));
 
 	    _this5.series = new Map();
 	    return _this5;
@@ -33945,7 +33994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "newSerie",
 	    value: function newSerie(name) {
-	      var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	      var type = arguments[2];
 
 
@@ -34039,11 +34088,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _inherits(SplitAxis, _mixin);
 
 	    function SplitAxis(graph, position) {
-	      var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+	      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	      _classCallCheck(this, SplitAxis);
 
-	      var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitAxis).call(this, graph, position, options));
+	      var _this7 = _possibleConstructorReturn(this, (SplitAxis.__proto__ || Object.getPrototypeOf(SplitAxis)).call(this, graph, position, options));
 
 	      _this7.axes = [];
 	      _this7.position = position;
@@ -34313,7 +34362,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function setMinMaxToFitSeries() {
 
 	        if (!this._splitVal || this._splitVal.length < 1) {
-	          _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinMaxToFitSeries", this).apply(this, arguments);
+	          _get(SplitAxis.prototype.__proto__ || Object.getPrototypeOf(SplitAxis.prototype), "setMinMaxToFitSeries", this).apply(this, arguments);
 	          this._splitVal[0] = this._splitVal[0] || [];
 	          this._splitVal[this._splitVal.length - 1] = this._splitVal[this._splitVal.length - 1] || [];
 
@@ -34382,7 +34431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: "setMinPx",
 	      value: function setMinPx(min) {
 
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMinPx", this).call(this, min);
+	        _get(SplitAxis.prototype.__proto__ || Object.getPrototypeOf(SplitAxis.prototype), "setMinPx", this).call(this, min);
 	        var _iteratorNormalCompletion5 = true;
 	        var _didIteratorError5 = false;
 	        var _iteratorError5 = undefined;
@@ -34412,7 +34461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: "setMaxPx",
 	      value: function setMaxPx(max) {
 
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setMaxPx", this).call(this, max);
+	        _get(SplitAxis.prototype.__proto__ || Object.getPrototypeOf(SplitAxis.prototype), "setMaxPx", this).call(this, max);
 
 	        var _iteratorNormalCompletion6 = true;
 	        var _didIteratorError6 = false;
@@ -34443,7 +34492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: "setShift",
 	      value: function setShift() {
 
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "setShift", this).apply(this, arguments);
+	        _get(SplitAxis.prototype.__proto__ || Object.getPrototypeOf(SplitAxis.prototype), "setShift", this).apply(this, arguments);
 
 	        var _iteratorNormalCompletion7 = true;
 	        var _didIteratorError7 = false;
@@ -34473,7 +34522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: "init",
 	      value: function init() {
-	        _get(Object.getPrototypeOf(SplitAxis.prototype), "init", this).apply(this, arguments);
+	        _get(SplitAxis.prototype.__proto__ || Object.getPrototypeOf(SplitAxis.prototype), "init", this).apply(this, arguments);
 	        this.splitAxis();
 	      }
 	    }, {
@@ -34533,7 +34582,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SplitXAxis(graph, topbottom, options) {
 	    _classCallCheck(this, SplitXAxis);
 
-	    var _this9 = _possibleConstructorReturn(this, Object.getPrototypeOf(SplitXAxis).apply(this, arguments));
+	    var _this9 = _possibleConstructorReturn(this, (SplitXAxis.__proto__ || Object.getPrototypeOf(SplitXAxis)).apply(this, arguments));
 
 	    _this9.topbottom = topbottom;
 	    return _this9;
@@ -34547,7 +34596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "getAxisPosition",
 	    value: function getAxisPosition() {
-	      var max = _get(Object.getPrototypeOf(SplitXAxis.prototype), "getAxisPosition", this).apply(this, arguments);
+	      var max = _get(SplitXAxis.prototype.__proto__ || Object.getPrototypeOf(SplitXAxis.prototype), "getAxisPosition", this).apply(this, arguments);
 
 	      this.labelPosY = max;
 
@@ -34560,13 +34609,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "drawLabel",
 	    value: function drawLabel() {
-	      _get(Object.getPrototypeOf(SplitXAxis.prototype), "drawLabel", this).call(this);
+	      _get(SplitXAxis.prototype.__proto__ || Object.getPrototypeOf(SplitXAxis.prototype), "drawLabel", this).call(this);
 	      this.label.setAttribute('y', (this.top ? -1 : 1) * (this.graph.options.fontSize + this.labelPosY));
 	    }
 	  }, {
 	    key: "draw",
 	    value: function draw() {
-	      var height = _get(Object.getPrototypeOf(SplitXAxis.prototype), "draw", this).apply(this, arguments);
+	      var height = _get(SplitXAxis.prototype.__proto__ || Object.getPrototypeOf(SplitXAxis.prototype), "draw", this).apply(this, arguments);
 	      this.drawLabel();
 	      return height;
 	    }
@@ -34581,7 +34630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SplitYAxis(graph, leftright, options) {
 	    _classCallCheck(this, SplitYAxis);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(SplitYAxis).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SplitYAxis.__proto__ || Object.getPrototypeOf(SplitYAxis)).apply(this, arguments));
 	    ///this.leftright = leftright;
 	  }
 
@@ -34605,7 +34654,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "drawLabel",
 	    value: function drawLabel() {
-	      _get(Object.getPrototypeOf(SplitYAxis.prototype), "drawLabel", this).call(this);
+	      _get(SplitYAxis.prototype.__proto__ || Object.getPrototypeOf(SplitYAxis.prototype), "drawLabel", this).call(this);
 	    }
 	  }, {
 	    key: "equalizePosition",

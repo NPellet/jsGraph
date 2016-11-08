@@ -1,7 +1,7 @@
 {
   "name": "node-jsgraph",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "scripts": {
     "build": "grunt webpack",
     "doc": "git subtree push --prefix doc origin gh-pages",
