@@ -204,7 +204,6 @@ class AxisX extends Axis {
    */
   setMinMaxFlipped() {
 
-    console.log( this.maxPx, this.minPx );
     var interval = this.maxPx - this.minPx;
 
     if ( isNaN( interval ) ) {

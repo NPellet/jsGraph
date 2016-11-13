@@ -5722,7 +5722,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setMinMaxFlipped() {
 
-	      console.log(this.maxPx, this.minPx);
 	      var interval = this.maxPx - this.minPx;
 
 	      if (isNaN(interval)) {
@@ -11743,7 +11742,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (recalculatePoints) {
 	        this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
 	      }
-	      console.log(this.markersDom[this.styles[selectionType].markers[family]]);
 	      this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
 	    }
 
@@ -12722,7 +12720,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _checkX(val) {
 	      this.minX = Math.min(this.minX, val);
 	      this.maxX = Math.max(this.maxX, val);
-	      console.log(this.minX, this.maxX, val);
 	    }
 
 	    _checkY(val) {
@@ -13418,7 +13415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          method = "makeBox";
 	          break;
 	      }
-	      console.log(this.errorstyles, level, quadOrientation);
+
 	      return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
 	    },
 
@@ -13500,6 +13497,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        styles[i].type = errorstyles[i].type;
 
 	        for (var j = 0, l = pairs.length; j < l; j++) {
+
+	          if (errorstyles[i].all) {
+
+	            errorstyles[i][pairs[j][1]] = util.extend(true, {}, errorstyles[i].all);
+	            errorstyles[i][pairs[j][2]] = util.extend(true, {}, errorstyles[i].all);
+	          }
 
 	          if (errorstyles[i][pairs[j][0]]) {
 	            //.x, .y

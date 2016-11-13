@@ -29,7 +29,6 @@ module.exports = function(grunt) {
         uglify: {
             dist: {
               files: {
-        //        'dist/jsgraph-es6.min.js': 'dist/jsgraph-es6.js',
                 'dist/jsgraph.min.js': 'dist/jsgraph.js',
               },
               options: {
@@ -93,30 +92,6 @@ module.exports = function(grunt) {
         },
 
         webpack: {
-/*
-            build: {
-                 entry: './src/graph.js',
-                 output: {
-                     path: './dist/',
-                     filename: 'jsgraph.js',
-                     library: "Graph",
-                     libraryTarget: 'umd'
-                 },
-                 
-                 module: {
-                     loaders: [{
-                         test: /\.js$/,
-                         exclude: /node_modules/,
-                         loader: 'babel',
-                          query: {
-                            presets: [
-                               
-                              ].map(require.resolve)
-                          }
-                     }]
-                 }
-            },
-*/
             dist: {
 
                  entry: [ 'babel-polyfill', './src/graph.js' ],
@@ -175,17 +150,27 @@ module.exports = function(grunt) {
                      }]
                  }
              }
+        },
+
+        babel: {
+          es6_min: {
+            options: {
+              sourceMap: true,
+              comments: false,
+              presets: ['babili']
+            },
+            files: {
+              'dist/jsgraph-es6.min.js': 'dist/jsgraph-es6.js'
+            }
+          }
         }
 
     });
 
 
     var fs = require('fs');
-    var npmpath = require('path');
     var beautify = require('js-beautify').js_beautify;
-    var babel = require('babel-core');
     var exec = require('child_process').exec;
-
 
     grunt.loadNpmTasks('grunt-sloc');
     grunt.loadNpmTasks('grunt-bump');
@@ -195,13 +180,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-webpack');
+    grunt.loadNpmTasks('grunt-babel');
 
 
     grunt.registerTask( 'default', [ 'build', 'minify', 'copy:dist', 'copy:examples' ] );
 
-    grunt.registerTask( "minify", "Minifying distribution file", function() {
-        grunt.task.run( "uglify" ); // Uglifies the dist file        
-    });
+    grunt.registerTask( "minify", "Minifying distribution file", [ 'uglify', 'babel:es6_min' ]);
 
     grunt.registerTask( "release", "Make a new release", function() {
 

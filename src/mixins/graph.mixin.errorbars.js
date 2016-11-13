@@ -53,7 +53,7 @@ var ErrorBarMixin = {
         method = "makeBox";
         break;
     }
-    
+
     return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
 
   },
@@ -140,6 +140,13 @@ var ErrorBarMixin = {
       styles[ i ].type = errorstyles[ i ].type;
 
       for ( var j = 0, l = pairs.length; j < l; j++ ) {
+
+        if ( errorstyles[ i ].all ) {
+
+          errorstyles[ i ][ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ i ].all );
+          errorstyles[ i ][ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ i ].all );
+
+        }
 
         if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
 
