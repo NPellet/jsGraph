@@ -53,6 +53,10 @@
 			"url": "SerieBar"
 		},
 		{
+			"title": "Box",
+			"url": "SerieBox"
+		},
+		{
 			"title": "DensityMap",
 			"url": "SerieDensityMap"
 		},
@@ -103,8 +107,8 @@
 			"url": "ShapePeakBoundaries"
 		},
 		{
-			"title": "Polyline",
-			"url": "ShapePolyline"
+			"title": "PolyLine",
+			"url": "ShapePolyLine"
 		},
 		{
 			"title": "Rectangle",

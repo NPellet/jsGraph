@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-19-axisspan.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="axes-spanning">Axes spanning</h2>
+
+<p>jsGraph allows you to have in a single graph more than one axis at the same position (top, left, right, bottom). Axes don’t actually have to take up the 100% of the space, horizontally or vertically.</p>
+
+<p>For example, let us imagine that you want to display different kind of data in the y direction (for example, speed, angle and height), versus one single x axis (let’s say time), it might make sense to display all three series in different regions of the graph, because the axes would have nothing to do with each other…</p>
+
+<p>You can do that using the method <code class="highlighter-rouge">axis.setSpan( spanFrom, spanTo )</code>, where <code class="highlighter-rouge">spanFrom</code> and <code class="highlighter-rouge">spanTo</code> must range between <code class="highlighter-rouge">0</code> and <code class="highlighter-rouge">1</code> and represents the position in percentage where the axis will start and end.</p>
+
+<p>For the x axis, 0 is always at the left, and 1 is at the right. For the y axis, 0 is the <em>bottom</em>, and 1 is the <em>top</em> (inverse of the traditional SVG coordinates).</p>
+
+<h3 id="a-idexamplea--basic-example"><a id="example"></a>  Basic example</h3>
+
+<p>To illustrate the <code class="highlighter-rouge">setSpan</code> method, let us make a nice graph with two y axes spanning from 0 to 45% and from 55% to 100%:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"example-1"</span> <span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.45</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Colorado"</span><span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.55</span><span class="p">,</span> <span class="mi">1</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"California"</span><span class="p">);</span>
+  
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">setPrimaryGridColor</span><span class="p">(</span><span class="s2">"rgba( 100, 100, 0, 0.5 )"</span><span class="p">).</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Year"</span><span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"colorado"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataColorado</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#CF4E4E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"california"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataCalifornia</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#3EA63E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+
+<script>
+	
+  var graph = new Graph( "example-1" );
+  graph.resize( 700, 300 );
+  graph.getLeftAxis(0).setSpan( 0.0, 0.45 ).turnGridsOff().setLabel("Colorado");
+  graph.getLeftAxis(1).setSpan( 0.55, 1 ).turnGridsOff().setLabel("California");
+  
+  graph.getBottomAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Year");
+
+  var dataColorado = [[2015,17559.393],[2014,17944.255],[2013,18881.823],[2012,19263.158],[2011,18744.067],[2010,18978.981],[2009,17351.28],[2008,18961.826],[2007,19532.855],[2006,19707.00899],[2005,19013.11703],[2004,19251.20903],[2003,19595.836],[2002,19446.04],[2001,19764.973]];
+  var dataCalifornia = [[2015,34522.242],[2014,39213.757],[2013,39474.651],[2012,38978.114],[2011,42542.656],[2010,41890.627],[2009,39271.173],[2008,42190.776],[2007,41064.161],[2006,41937.83301],[2005,40352.02201],[2004,39342.39199],[2003,38521.048],[2002,38604.897],[2001,41305.269]];
+
+  graph
+    .newSerie( "colorado" )
+    .setData( dataColorado )
+    .autoAxis()
+    .setYAxis( graph.getLeftAxis( 0 ) )
+    .setLineColor("#CF4E4E")
+    .setLineWidth( 2 );
+
+  graph
+    .newSerie( "california" )
+    .setData( dataCalifornia )
+    .autoAxis()
+    .setYAxis( graph.getLeftAxis( 1 ) )
+    .setLineColor("#3EA63E")
+    .setLineWidth( 2 );
+
+  graph.draw();
+
+</script>
+
+<p>Of course, this also works with the X axis:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"example-2"</span> <span class="p">);</span>
+  
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.45</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Years"</span><span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.55</span><span class="p">,</span> <span class="mi">1</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Years"</span><span class="p">);</span>
+  
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">().</span><span class="nx">setPrimaryGridColor</span><span class="p">(</span><span class="s2">"rgba( 100, 100, 0, 0.5 )"</span><span class="p">).</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Coal consumption"</span><span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"colorado"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataColorado</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#CF4E4E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"california"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataCalifornia</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#3EA63E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-2" class="jsgraph-example"></div>
+
+<script>
+  
+ 
+  var graph = new Graph( "example-2" );
+  graph.resize( 700, 300 );
+  graph.getBottomAxis(0).setSpan( 0.0, 0.45 ).turnGridsOff().setLabel("Years");
+  graph.getBottomAxis(1).setSpan( 0.55, 1 ).turnGridsOff().setLabel("Years");
+  
+  graph.getLeftAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Coal consumption");
+
+  graph
+    .newSerie( "colorado" )
+    .setData( dataColorado )
+    .autoAxis()
+    .setXAxis( graph.getBottomAxis( 0 ) )
+    .setLineColor("#CF4E4E")
+    .setLineWidth( 2 );
+
+  graph
+    .newSerie( "california" )
+    .setData( dataCalifornia )
+    .autoAxis()
+    .setXAxis( graph.getBottomAxis( 1 ) )
+    .setLineColor("#3EA63E")
+    .setLineWidth( 2 );
+
+  graph.draw();
+
+</script>
+
+<h3 id="a-idoverlapa--overlapping-axes"><a id="overlap"></a>  Overlapping axes</h3>
+
+<p>One might wonder how jsgraph handles cases where axis spans overlap. For example <code class="highlighter-rouge">axisA.setSpan( 0, 55 )</code> would clash with <code class="highlighter-rouge">axisB.setSpan( 50, 100 )</code>. In such cases, jsGraph determines automatically such clashes and offsets one of the axis (the one with the largest index in the stack) by a sufficient amount so that visual perception is not deteriorated. In general, jsGraph will try to place as many axis in the first level, and perform iteratively for the following levels. For example, if you have <code class="highlighter-rouge">axisA.setSpan( 0, 55 )</code>, <code class="highlighter-rouge">axisB.setSpan( 50, 100 )</code> and <code class="highlighter-rouge">axisC.setSpan( 60, 80 )</code>, then axisC will be placed together with axisA because they don’t overlap. It will not take a third level.</p>
+
+<p>To make it clear, here is how this example would turn out:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">  <span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"example-3"</span> <span class="p">);</span>
+
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.55</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Colorado"</span><span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"California"</span><span class="p">);</span>
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nx">setSpan</span><span class="p">(</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">8</span> <span class="p">).</span><span class="nx">turnGridsOff</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Kentucky"</span><span class="p">);</span>
+  
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">setPrimaryGridColor</span><span class="p">(</span><span class="s2">"rgba( 100, 100, 0, 0.5 )"</span><span class="p">).</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Year"</span><span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"colorado"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataColorado</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#CF4E4E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"california"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataCalifornia</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#3EA63E"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+
+  <span class="nx">graph</span>
+    <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"kentucky"</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">dataKentucky</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+    <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s2">"#2F7C7C"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
+
+  <span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-3" class="jsgraph-example"></div>
+
+<script>
+  
+  var graph = new Graph( "example-3" );
+  graph.resize( 700, 300 );
+  
+var dataKentucky = [[2015,664.166],[2014,878.434],[2013,915.246],[2012,1183.112],[2011,1539.699],[2010,1542.78],[2009,1521.939],[2008,1723.062],[2007,1752.384],[2006,1710.887],[2005,1676.522],[2004,1731.218],[2003,1727.233],[2002,1821.618],[2001,1739.07]];
+
+ graph.getLeftAxis(0).setSpan( 0.0, 0.55 ).turnGridsOff().setLabel("Colorado");
+  graph.getLeftAxis(1).setSpan( 0.5, 1 ).turnGridsOff().setLabel("California");
+  graph.getLeftAxis(2).setSpan( 0.6, 0.8 ).turnGridsOff().setLabel("Kentucky");
+  
+  graph.getBottomAxis().setPrimaryGridColor("rgba( 100, 100, 0, 0.5 )").setLabel("Year");
+
+  graph
+    .newSerie( "colorado" )
+    .setData( dataColorado )
+    .autoAxis()
+    .setYAxis( graph.getLeftAxis( 0 ) )
+    .setLineColor("#CF4E4E")
+    .setLineWidth( 2 );
+
+  graph
+    .newSerie( "california" )
+    .setData( dataCalifornia )
+    .autoAxis()
+    .setYAxis( graph.getLeftAxis( 1 ) )
+    .setLineColor("#3EA63E")
+    .setLineWidth( 2 );
+
+
+  graph
+    .newSerie( "kentucky" )
+    .setData( dataKentucky )
+    .autoAxis()
+    .setYAxis( graph.getLeftAxis( 2 ) )
+    .setLineColor("#2F7C7C")
+    .setLineWidth( 2 );
+
+
+  graph.draw();
+
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

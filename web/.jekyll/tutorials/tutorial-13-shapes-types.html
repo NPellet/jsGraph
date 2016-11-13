@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-13-shapes-types.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="types-of-shapes">Types of shapes</h2>
+
+<script>
+	
+</script>
+
+<p>In the previous tutorial (4-shapes) we have shown the basics of shape creation, styling and modifications. Here, we simply showcase the different provided with jsGraph with their specificities.
+Let us consider the following graph as a basic:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var g = new Graph("example-1") // Creates a new graph
+g.resize( 400, 300 ); // Resizes the graph
+var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+	.autoAxis()
+	.setLineColor('purple')
+	.setLineWidth( 2 );
+	
+g.setTitle("Number of employed people in Switzerland (yearly average)");
+g.getXAxis().setLabel('Year').gridsOff();
+g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+g.draw();
+
+</code></pre>
+</div>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+
+function makeGraph( dom ) {
+
+	var g = new Graph( dom ) // Creates a new graph
+	g.resize( 400, 300 ); // Resizes the graph
+	var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+		.autoAxis()
+		.setLineColor('purple')
+		.setLineWidth( 2 );
+
+	g.setTitle("Number of employed people in Switzerland (yearly average)");
+	g.getXAxis().setLabel('Year').gridsOff();
+	g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+	g.draw();
+
+	return g;
+}
+
+
+makeGraph( "example-1" );
+</script>
+
+<h2 id="lines">Lines</h2>
+
+<p>The basic line with the type <code class="highlighter-rouge">line</code> and only two positions (the start and the end of the line).</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var line = graph.newShape( 'line', {
+	
+	selectable: true,
+	handles: true,
+	resizable: true,
+	movable: true,
+
+	position: [
+		{ x: 1950, y: 3000 },
+		{ x: 1960, y: "50px" }
+	],
+
+	labels: [
+		{
+			text: "Shape label",
+			color: "braun",
+			size: 2,
+			angle: 10,
+			baseline: "hanging",
+			anchor: "end",
+			position: {
+				x: 1950,
+				y: 3200
+			}
+		}
+	]
+});
+
+line.draw();
+</code></pre>
+</div>
+
+<div id="example-2" class="jsgraph-example"></div>
+<script>
+
+( function() {
+
+	var graph = makeGraph( 'example-2' );
+	var line = graph.newShape( 'line', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
+
+		strokeWidth: 3,
+		strokeColor: "ForestGreen",
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		],
+
+		labels: [
+			{
+				text: "Shape label",
+				color: "ForestGreen",
+				size: 12,
+				angle: 20,
+				baseline: "hanging",
+				anchor: "end",
+				position: {
+					x: 1950,
+					y: 3200
+				}
+			}
+		]
+	});
+
+	line.draw();
+
+
+}) ();
+
+</script>
+
+<h2 id="rectangles">Rectangles</h2>
+
+<p>Rectangles with the type <code class="highlighter-rouge">rect</code> and only two positions (two opposite corners).</p>
+
+<div id="example-3" class="jsgraph-example"></div>
+<pre id="example-3-pos"></pre>
+<script>
+
+( function() {
+
+	var graph = makeGraph( "example-3" );
+	var rect = graph.newShape( 'rect', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
+
+		strokeWidth: 2,
+		strokeColor: "ForestGreen",
+		fill: 'GreenSnake',
+		fillOpacity: 0.2,
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		]
+	});
+
+	graph.on("shapeChanged", function( shape ) {
+		updatePre( shape );
+	});
+
+	function updatePre( shape ) {
+		$("#example-3-pos").html( JSON.stringify( { position1: shape.getPosition( 0 ), position2: shape.getPosition( 1 ) }, false, "\t") );
+	}
+	
+	updatePre( rect );
+	rect.draw();
+
+}) ();
+
+</script>
+
+<h2 id="arrows">Arrows</h2>
+
+<p>Arrows with the type <code class="highlighter-rouge">arrow</code> and only two positions (the start and the end position).</p>
+
+<div id="example-4" class="jsgraph-example"></div>
+<script>
+( function() {
+
+	var graph = makeGraph( "example-4" );
+	var arrow = graph.newShape( 'arrow', {
+		
+		selectable: true,
+		handles: true,
+		resizable: true,
+		movable: true,
+
+		strokeWidth: 2,
+		strokeColor: "ForestGreen",
+		fill: 'GreenSnake',
+		fillOpacity: 0.2,
+		
+		position: [
+			{ x: 1950, y: 3000 },
+			{ x: 1960, y: "50px" }
+		]
+	});
+
+	arrow.draw();
+
+}) ();
+
+</script>
+
+<h2 id="label">Label</h2>
+
+<p>The label shape (type <code class="highlighter-rouge">label</code>) displays a label without particular shape. It can be used as simply as:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>graph.newShape( 'label', {
+	
+	labels: [ {
+		text: "Shape label",
+		color: "ForestGreen",
+		size: 12,
+		angle: 20,
+		baseline: "hanging",
+		anchor: "end",
+		position: {
+			x: 1950,
+			y: 3200
+		}
+	} ]
+} ).draw();
+</code></pre>
+</div>
+
+<div id="example-5" class="jsgraph-example"></div>
+<script>
+( function() {
+
+	var graph = makeGraph( "example-5" );
+	graph.newShape( 'label', {
+
+		labels: [ {
+			text: "Shape label",
+			color: "ForestGreen",
+			size: 12,
+			angle: 20,
+			baseline: "hanging",
+			anchor: "end",
+			position: {
+				x: 1950,
+				y: 3200
+			}
+		} ]
+
+	}).draw();
+
+
+}) ();
+
+</script>
+
+<p>asasdasd</p>
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

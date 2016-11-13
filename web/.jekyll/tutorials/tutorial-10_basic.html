@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-10_basic.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="basic-introduction">Basic introduction</h2>
+
+<script>
+var serie1 = [-1,-20.499747544838275,-0.95,-20.499659532985874,-0.8999999999999999,-20.499540838115898,-0.8499999999999999,-20.49938076340126,-0.7999999999999998,-20.499164882847428,-0.7499999999999998,-20.4988737412163,-0.6999999999999997,-20.498481100712695,-0.6499999999999997,-20.497951576424207,-0.5999999999999996,-20.497237447419362,-0.5499999999999996,-20.49627435611903,-0.4999999999999996,-20.494975508366757,-0.4499999999999996,-20.493223851506187,-0.39999999999999963,-20.490861525550883,-0.34999999999999964,-20.48767563678195,-0.29999999999999966,-20.483379071684652,-0.24999999999999967,-20.477584622168607,-0.19999999999999968,-20.469770090226536,-0.1499999999999997,-20.45923122725008,-0.09999999999999969,-20.44501826687575,-0.049999999999999684,-20.425850331676905,3.191891195797325e-16,-20.4,0.05000000000000032,-20.365137630064282,0.10000000000000032,-20.318121411753218,0.15000000000000033,-20.25471422548477,0.20000000000000034,-20.16920179137358,0.25000000000000033,-20.053877696141516,0.3000000000000003,-19.89834888820463,0.3500000000000003,-19.68859905188818,0.4000000000000003,-19.405725451695528,0.4500000000000003,-19.024235410553235,0.5000000000000003,-18.509748899999998,0.5500000000000004,-17.81590019886833,0.6000000000000004,-16.88015939675398,0.6500000000000005,-15.618197174567083,0.7000000000000005,-13.916285014032407,0.7500000000000006,-11.621045940111184,0.8000000000000006,-8.52563212933044,0.8500000000000006,-4.351083704794043,0.9000000000000007,1.2788112346498295,0.9500000000000007,8.87142097487483,1.0000000000000007,19.11099441051224,1.0500000000000007,32.920325817120975,1.1000000000000008,51.543917424350724,1.1500000000000008,76.66013443300987,1.2000000000000008,110.53245992908506,1.2500000000000009,156.21348084543214,1.300000000000001,217.8199882640481,1.350000000000001,300.90398420341603,1.400000000000001,412.9530301645426,1.450000000000001,564.065029038078];
+var serie2 = [-1,20.499747544838275,-0.95,19.47467655633658,-0.8999999999999999,18.449586754304306,-0.8499999999999999,17.424473648891066,-0.7999999999999998,16.39933190627794,-0.7499999999999998,15.37415530591222,-0.6999999999999997,14.34893677049888,-0.6499999999999997,13.323668524675728,-0.5999999999999996,12.29834246845161,-0.5499999999999996,11.272950895865458,-0.4999999999999996,10.247487754183371,-0.4499999999999996,9.221950733177776,-0.39999999999999963,8.196344610220345,-0.34999999999999964,7.170686472873675,-0.29999999999999966,6.145013721505388,-0.24999999999999967,5.1193961555421446,-0.19999999999999968,4.0939540180453005,-0.1499999999999997,3.0688846840875055,-0.09999999999999969,2.0445018266875685,-0.049999999999999684,1.0212925165838387,3.191891195797325e-16,-6.511458039426543e-15,0.05000000000000032,-1.0182568815032207,0.10000000000000032,-2.0318121411753283,0.15000000000000033,-3.038207133822722,0.20000000000000034,-4.033840358274723,0.25000000000000033,-5.013469424035386,0.3000000000000003,-5.969504666461395,0.3500000000000003,-6.891009668160868,0.4000000000000003,-7.7622901806782165,0.4500000000000003,-8.560905934748961,0.5000000000000003,-9.254874450000004,0.5500000000000004,-9.798745109377588,0.6000000000000004,-10.128095638052397,0.6500000000000005,-10.151828163468611,0.7000000000000005,-9.741399509822692,0.7500000000000006,-8.715784455083394,0.8000000000000006,-6.820505703464357,0.8500000000000006,-3.6984211490749392,0.9000000000000007,1.1509301111848473,0.9500000000000007,8.427849926131096,1.0000000000000007,19.110994410512255,1.0500000000000007,34.56634210797705,1.1000000000000008,56.69830916678583,1.1500000000000008,88.15915459796142,1.2000000000000008,132.63895191490218,1.2500000000000009,195.26685105679033,1.300000000000001,283.16598474326275,1.350000000000001,406.22037867461194,1.400000000000001,578.1342422303601,1.450000000000001,817.8942921052137]
+</script>
+
+<h3 id="a-iddoc-introductiona-introduction"><a id="doc-introduction"></a> Introduction</h3>
+
+<p>In this tutorial, we will review the basics of jsGraph, through examples and explanations. This tutorial isn’t meant to be thorough in every aspect of jsGraph, but rather show you what can be done in a couple of lines of code. Links to more comprehensive tutorials will be given along the text.</p>
+
+<h3 id="a-iddoc-setupa-setting-up-jsgraph"><a id="doc-setup"></a> Setting up jsGraph</h3>
+<p>jsGraph depends only on jQuery to work. Include both files inside your <code class="highlighter-rouge">head</code> tag to make it work.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"path/to/jquery/jquery.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">src=</span><span class="s">"path/to/jsgraph/jsgraph.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<p>In this situation, jsGraph exposes the constructor <code class="highlighter-rouge">Graph</code> to the window element. Everything else is done from there.
+Alternatively, is you use an AMD loader, jsGraph may be loaded accordingly</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">require</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'path/to/jsgraph'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">jsGraph</span> <span class="p">)</span> <span class="p">{</span>
+	<span class="p">...</span>
+<span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="a-iddoc-dataformatathe-data-format"><a id="doc-dataformat"></a>The data format</h3>
+
+<p>For starters, it is useful to discuss briefly the format of data that can be used. All the points in all the series available in jsGraph contain coordinates as point vectors defined as <code class="highlighter-rouge">(x,y)</code>. Since bar charts or pie charts are not supported, <code>x</code> and <code>y</code> must be numbers.</p>
+
+<p>We review now the three main ways to define data:</p>
+
+<ul>
+  <li>One-dimensional x/y array:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xj</span><span class="p">,</span> <span class="nx">yj</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">];</span></code></pre></figure>
+
+<ul>
+  <li>Array of x/y pairs:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...,</span> <span class="p">[</span> <span class="nx">xj</span><span class="p">,</span> <span class="nx">yj</span> <span class="p">],</span> <span class="p">...,</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">];</span></code></pre></figure>
+
+<ul>
+  <li>Object of uniformely spaced y data</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="kd">var</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">{</span> <span class="na">x0</span><span class="p">:</span> <span class="nx">_x0</span><span class="p">,</span> <span class="na">dx</span><span class="p">:</span> <span class="nx">_dx</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">[</span> <span class="nx">y1</span><span class="p">,</span> <span class="nx">y2</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">yj</span><span class="p">,</span> <span class="p">...,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">};</span></code></pre></figure>
+
+<p>where x0 is the starting x value (corresponding to y1), and dx is the horizontal increment value between each y value. This data definition is only available for line series.</p>
+
+<h3 id="a-iddoc-creatingacreating-a-graph"><a id="doc-creating"></a>Creating a graph</h3>
+
+<p>Before we start, we will use the following data throughout the tutorial. You can copy it to run on your side too.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">serie1</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mf">20.499747544838275</span><span class="p">,</span><span class="o">-</span><span class="mf">0.95</span><span class="p">,</span><span class="o">-</span><span class="mf">20.499659532985874</span><span class="p">,</span><span class="o">-</span><span class="mf">0.8999999999999999</span><span class="p">,</span><span class="o">-</span><span class="mf">20.499540838115898</span><span class="p">,</span><span class="o">-</span><span class="mf">0.8499999999999999</span><span class="p">,</span><span class="o">-</span><span class="mf">20.49938076340126</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7999999999999998</span><span class="p">,</span><span class="o">-</span><span class="mf">20.499164882847428</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7499999999999998</span><span class="p">,</span><span class="o">-</span><span class="mf">20.4988737412163</span><span class="p">,</span><span class="o">-</span><span class="mf">0.6999999999999997</span><span class="p">,</span><span class="o">-</span><span class="mf">20.498481100712695</span><span class="p">,</span><span class="o">-</span><span class="mf">0.6499999999999997</span><span class="p">,</span><span class="o">-</span><span class="mf">20.497951576424207</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5999999999999996</span><span class="p">,</span><span class="o">-</span><span class="mf">20.497237447419362</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5499999999999996</span><span class="p">,</span><span class="o">-</span><span class="mf">20.49627435611903</span><span class="p">,</span><span class="o">-</span><span class="mf">0.4999999999999996</span><span class="p">,</span><span class="o">-</span><span class="mf">20.494975508366757</span><span class="p">,</span><span class="o">-</span><span class="mf">0.4499999999999996</span><span class="p">,</span><span class="o">-</span><span class="mf">20.493223851506187</span><span class="p">,</span><span class="o">-</span><span class="mf">0.39999999999999963</span><span class="p">,</span><span class="o">-</span><span class="mf">20.490861525550883</span><span class="p">,</span><span class="o">-</span><span class="mf">0.34999999999999964</span><span class="p">,</span><span class="o">-</span><span class="mf">20.48767563678195</span><span class="p">,</span><span class="o">-</span><span class="mf">0.29999999999999966</span><span class="p">,</span><span class="o">-</span><span class="mf">20.483379071684652</span><span class="p">,</span><span class="o">-</span><span class="mf">0.24999999999999967</span><span class="p">,</span><span class="o">-</span><span class="mf">20.477584622168607</span><span class="p">,</span><span class="o">-</span><span class="mf">0.19999999999999968</span><span class="p">,</span><span class="o">-</span><span class="mf">20.469770090226536</span><span class="p">,</span><span class="o">-</span><span class="mf">0.1499999999999997</span><span class="p">,</span><span class="o">-</span><span class="mf">20.45923122725008</span><span class="p">,</span><span class="o">-</span><span class="mf">0.09999999999999969</span><span class="p">,</span><span class="o">-</span><span class="mf">20.44501826687575</span><span class="p">,</span><span class="o">-</span><span class="mf">0.049999999999999684</span><span class="p">,</span><span class="o">-</span><span class="mf">20.425850331676905</span><span class="p">,</span><span class="mf">3.191891195797325</span><span class="nx">e</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="o">-</span><span class="mf">20.4</span><span class="p">,</span><span class="mf">0.05000000000000032</span><span class="p">,</span><span class="o">-</span><span class="mf">20.365137630064282</span><span class="p">,</span><span class="mf">0.10000000000000032</span><span class="p">,</span><span class="o">-</span><span class="mf">20.318121411753218</span><span class="p">,</span><span class="mf">0.15000000000000033</span><span class="p">,</span><span class="o">-</span><span class="mf">20.25471422548477</span><span class="p">,</span><span class="mf">0.20000000000000034</span><span class="p">,</span><span class="o">-</span><span class="mf">20.16920179137358</span><span class="p">,</span><span class="mf">0.25000000000000033</span><span class="p">,</span><span class="o">-</span><span class="mf">20.053877696141516</span><span class="p">,</span><span class="mf">0.3000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">19.89834888820463</span><span class="p">,</span><span class="mf">0.3500000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">19.68859905188818</span><span class="p">,</span><span class="mf">0.4000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">19.405725451695528</span><span class="p">,</span><span class="mf">0.4500000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">19.024235410553235</span><span class="p">,</span><span class="mf">0.5000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">18.509748899999998</span><span class="p">,</span><span class="mf">0.5500000000000004</span><span class="p">,</span><span class="o">-</span><span class="mf">17.81590019886833</span><span class="p">,</span><span class="mf">0.6000000000000004</span><span class="p">,</span><span class="o">-</span><span class="mf">16.88015939675398</span><span class="p">,</span><span class="mf">0.6500000000000005</span><span class="p">,</span><span class="o">-</span><span class="mf">15.618197174567083</span><span class="p">,</span><span class="mf">0.7000000000000005</span><span class="p">,</span><span class="o">-</span><span class="mf">13.916285014032407</span><span class="p">,</span><span class="mf">0.7500000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">11.621045940111184</span><span class="p">,</span><span class="mf">0.8000000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">8.52563212933044</span><span class="p">,</span><span class="mf">0.8500000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">4.351083704794043</span><span class="p">,</span><span class="mf">0.9000000000000007</span><span class="p">,</span><span class="mf">1.2788112346498295</span><span class="p">,</span><span class="mf">0.9500000000000007</span><span class="p">,</span><span class="mf">8.87142097487483</span><span class="p">,</span><span class="mf">1.0000000000000007</span><span class="p">,</span><span class="mf">19.11099441051224</span><span class="p">,</span><span class="mf">1.0500000000000007</span><span class="p">,</span><span class="mf">32.920325817120975</span><span class="p">,</span><span class="mf">1.1000000000000008</span><span class="p">,</span><span class="mf">51.543917424350724</span><span class="p">,</span><span class="mf">1.1500000000000008</span><span class="p">,</span><span class="mf">76.66013443300987</span><span class="p">,</span><span class="mf">1.2000000000000008</span><span class="p">,</span><span class="mf">110.53245992908506</span><span class="p">,</span><span class="mf">1.2500000000000009</span><span class="p">,</span><span class="mf">156.21348084543214</span><span class="p">,</span><span class="mf">1.300000000000001</span><span class="p">,</span><span class="mf">217.8199882640481</span><span class="p">,</span><span class="mf">1.350000000000001</span><span class="p">,</span><span class="mf">300.90398420341603</span><span class="p">,</span><span class="mf">1.400000000000001</span><span class="p">,</span><span class="mf">412.9530301645426</span><span class="p">,</span><span class="mf">1.450000000000001</span><span class="p">,</span><span class="mf">564.065029038078</span><span class="p">];</span>
+<span class="kd">var</span> <span class="nx">serie2</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mf">20.499747544838275</span><span class="p">,</span><span class="o">-</span><span class="mf">0.95</span><span class="p">,</span><span class="mf">19.47467655633658</span><span class="p">,</span><span class="o">-</span><span class="mf">0.8999999999999999</span><span class="p">,</span><span class="mf">18.449586754304306</span><span class="p">,</span><span class="o">-</span><span class="mf">0.8499999999999999</span><span class="p">,</span><span class="mf">17.424473648891066</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7999999999999998</span><span class="p">,</span><span class="mf">16.39933190627794</span><span class="p">,</span><span class="o">-</span><span class="mf">0.7499999999999998</span><span class="p">,</span><span class="mf">15.37415530591222</span><span class="p">,</span><span class="o">-</span><span class="mf">0.6999999999999997</span><span class="p">,</span><span class="mf">14.34893677049888</span><span class="p">,</span><span class="o">-</span><span class="mf">0.6499999999999997</span><span class="p">,</span><span class="mf">13.323668524675728</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5999999999999996</span><span class="p">,</span><span class="mf">12.29834246845161</span><span class="p">,</span><span class="o">-</span><span class="mf">0.5499999999999996</span><span class="p">,</span><span class="mf">11.272950895865458</span><span class="p">,</span><span class="o">-</span><span class="mf">0.4999999999999996</span><span class="p">,</span><span class="mf">10.247487754183371</span><span class="p">,</span><span class="o">-</span><span class="mf">0.4499999999999996</span><span class="p">,</span><span class="mf">9.221950733177776</span><span class="p">,</span><span class="o">-</span><span class="mf">0.39999999999999963</span><span class="p">,</span><span class="mf">8.196344610220345</span><span class="p">,</span><span class="o">-</span><span class="mf">0.34999999999999964</span><span class="p">,</span><span class="mf">7.170686472873675</span><span class="p">,</span><span class="o">-</span><span class="mf">0.29999999999999966</span><span class="p">,</span><span class="mf">6.145013721505388</span><span class="p">,</span><span class="o">-</span><span class="mf">0.24999999999999967</span><span class="p">,</span><span class="mf">5.1193961555421446</span><span class="p">,</span><span class="o">-</span><span class="mf">0.19999999999999968</span><span class="p">,</span><span class="mf">4.0939540180453005</span><span class="p">,</span><span class="o">-</span><span class="mf">0.1499999999999997</span><span class="p">,</span><span class="mf">3.0688846840875055</span><span class="p">,</span><span class="o">-</span><span class="mf">0.09999999999999969</span><span class="p">,</span><span class="mf">2.0445018266875685</span><span class="p">,</span><span class="o">-</span><span class="mf">0.049999999999999684</span><span class="p">,</span><span class="mf">1.0212925165838387</span><span class="p">,</span><span class="mf">3.191891195797325</span><span class="nx">e</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="o">-</span><span class="mf">6.511458039426543</span><span class="nx">e</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span><span class="mf">0.05000000000000032</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0182568815032207</span><span class="p">,</span><span class="mf">0.10000000000000032</span><span class="p">,</span><span class="o">-</span><span class="mf">2.0318121411753283</span><span class="p">,</span><span class="mf">0.15000000000000033</span><span class="p">,</span><span class="o">-</span><span class="mf">3.038207133822722</span><span class="p">,</span><span class="mf">0.20000000000000034</span><span class="p">,</span><span class="o">-</span><span class="mf">4.033840358274723</span><span class="p">,</span><span class="mf">0.25000000000000033</span><span class="p">,</span><span class="o">-</span><span class="mf">5.013469424035386</span><span class="p">,</span><span class="mf">0.3000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">5.969504666461395</span><span class="p">,</span><span class="mf">0.3500000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">6.891009668160868</span><span class="p">,</span><span class="mf">0.4000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">7.7622901806782165</span><span class="p">,</span><span class="mf">0.4500000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">8.560905934748961</span><span class="p">,</span><span class="mf">0.5000000000000003</span><span class="p">,</span><span class="o">-</span><span class="mf">9.254874450000004</span><span class="p">,</span><span class="mf">0.5500000000000004</span><span class="p">,</span><span class="o">-</span><span class="mf">9.798745109377588</span><span class="p">,</span><span class="mf">0.6000000000000004</span><span class="p">,</span><span class="o">-</span><span class="mf">10.128095638052397</span><span class="p">,</span><span class="mf">0.6500000000000005</span><span class="p">,</span><span class="o">-</span><span class="mf">10.151828163468611</span><span class="p">,</span><span class="mf">0.7000000000000005</span><span class="p">,</span><span class="o">-</span><span class="mf">9.741399509822692</span><span class="p">,</span><span class="mf">0.7500000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">8.715784455083394</span><span class="p">,</span><span class="mf">0.8000000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">6.820505703464357</span><span class="p">,</span><span class="mf">0.8500000000000006</span><span class="p">,</span><span class="o">-</span><span class="mf">3.6984211490749392</span><span class="p">,</span><span class="mf">0.9000000000000007</span><span class="p">,</span><span class="mf">1.1509301111848473</span><span class="p">,</span><span class="mf">0.9500000000000007</span><span class="p">,</span><span class="mf">8.427849926131096</span><span class="p">,</span><span class="mf">1.0000000000000007</span><span class="p">,</span><span class="mf">19.110994410512255</span><span class="p">,</span><span class="mf">1.0500000000000007</span><span class="p">,</span><span class="mf">34.56634210797705</span><span class="p">,</span><span class="mf">1.1000000000000008</span><span class="p">,</span><span class="mf">56.69830916678583</span><span class="p">,</span><span class="mf">1.1500000000000008</span><span class="p">,</span><span class="mf">88.15915459796142</span><span class="p">,</span><span class="mf">1.2000000000000008</span><span class="p">,</span><span class="mf">132.63895191490218</span><span class="p">,</span><span class="mf">1.2500000000000009</span><span class="p">,</span><span class="mf">195.26685105679033</span><span class="p">,</span><span class="mf">1.300000000000001</span><span class="p">,</span><span class="mf">283.16598474326275</span><span class="p">,</span><span class="mf">1.350000000000001</span><span class="p">,</span><span class="mf">406.22037867461194</span><span class="p">,</span><span class="mf">1.400000000000001</span><span class="p">,</span><span class="mf">578.1342422303601</span><span class="p">,</span><span class="mf">1.450000000000001</span><span class="p">,</span><span class="mf">817.8942921052137</span><span class="p">]</span></code></pre></figure>
+
+<p>(For information, <code class="highlighter-rouge">serie1</code> represents a solar cell j-V curve, while <code class="highlighter-rouge">serie2</code> represents its calculated power output)</p>
+
+<p>Let us first display <code class="highlighter-rouge">serie1</code> on a new graph.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"example-1"</span><span class="p">)</span> <span class="c1">// Creates a new graph</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Resizes the graph</span>
+
+<span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">()</span> <span class="c1">// Creates a new seire</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span> <span class="c1">// Assigns automatic axes to the serie</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">);</span> <span class="c1">// Assigns the data to the serie</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span> <span class="c1">// Draws the whole thing</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+var g = new Graph("example-1") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+g.newSerie() // Creates a new seire
+ .autoAxis() // Assigns automatic axes to the serie
+ .setData( serie1 ); // Assigns the data to the serie
+g.draw();
+</script>
+
+<p>And here is the description of the example taken line by line:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">new Graph( "example-1" )</code>. This line effectively creates a new graph. The first parameter here is the id of the DOM element where the graph should be located. Note that <code class="highlighter-rouge">new Graph( document.getElementByID( "example-1" ) )</code> would have been ok too. See <a href="Graph.html">Graph</a> for more details. The graph is stored in the variable <code class="highlighter-rouge">g</code></li>
+  <li><code class="highlighter-rouge">g.resize( 400, 300 );</code> You need to notify to jsGraph the size of your container through the <code class="highlighter-rouge">resize</code> method (see <a href="Graph.html#resize">Graph#resize</a>). First parameter is the width in pixels, second is the height in pixels</li>
+  <li><code class="highlighter-rouge">g.newSerie()</code> This method creates a new serie <strong>and returns it</strong>. jsGraph is chainable, so you can directly append <a href="Serie.html">Serie</a> methods to it.</li>
+  <li><code class="highlighter-rouge">.autoAxis()</code> jsGraph works with multiple horizontal and vertical axes. Use <a href="Serie.html#autoAxis">Serie#autoAxis</a> to assign the default <code class="highlighter-rouge">x</code>and <code class="highlighter-rouge">y</code>axis.</li>
+  <li><code class="highlighter-rouge">.setData( serie1 )</code> will simply assign the variable <code class="highlighter-rouge">serie1</code> as the data for this serie</li>
+  <li><code class="highlighter-rouge">g.draw();</code> will trigger a redraw of the graph. For efficiency purposes, you will be required to call this method whenever you want a repaint to occur. Some methods have automatic repaint, but this is not the rule. Repainting is typically the most time consuming operation for the browser if you have large amounts of data (when it matters), so jsGraph keeps it to a minimum and lets you decide when the graph should be repainted.</li>
+</ul>
+
+<p>Let us do some styling of the serie now. For instance, we shall display the serie in red, with a thicker line. While we are at it, let’s also display a marker for each data point.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span>
+ <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s1">'red'</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="p">);</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-2" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-2") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+s = g.newSerie() // Creates a new seire
+ .autoAxis() // Assigns automatic axes to the serie
+ .setData( serie1 ); // Assigns the data to the serie
+
+s
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers( );
+
+g.draw();
+
+</script>
+
+<p>However, we’d like to change the style of the default markers:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span><span class="p">.</span><span class="nx">setMarkers</span><span class="p">({</span>
+	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
+<span class="p">});</span></code></pre></figure>
+
+<div id="example-3" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-3") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+s = g.newSerie()
+ .autoAxis()
+ .setData( serie1 )
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers({
+	strokeWidth: 1,
+	strokeColor: 'rgb( 200, 0, 0 )',
+	fillColor: 'white'
+ });
+
+g.draw();
+
+</script>
+
+<p>More advanced marker description will be covered in an advanced tutorial.
+We will cover the axes in more details in the following text, but for now, you might be interesting in simply labeling your axis and setting units:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Voltage (V)"</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Current density"</span> <span class="p">).</span><span class="nx">setUnit</span><span class="p">(</span> <span class="s2">"mA cm^-2"</span> <span class="p">);</span></code></pre></figure>
+
+<div id="example-4" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-4") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+s = g.newSerie()
+ .autoAxis()
+ .setData( serie1 )
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers({
+	strokeWidth: 1,
+	strokeColor: 'rgb( 200, 0, 0 )',
+	fillColor: 'white'
+ });
+
+g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
+g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+
+g.draw();
+
+</script>
+
+<h3 id="a-iddoc-multipleseriesaplotting-multiple-series"><a id="doc-multipleseries"></a>Plotting multiple series</h3>
+
+<p>Before plotting the second serie, you need to understand the following:</p>
+
+<p><strong>Each serie must have a unique name</strong></p>
+
+<p>The name of the serie is actually the first parameter in the <a href="Graph.html#newSerie">Graph#newSerie</a> method. In our previous examples, the name was empty, which is ok if you have only one serie. But starting at the second one, you’ll need to start naming them.</p>
+
+<p>For example, let’s us assume that you have</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"myName"</span><span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data1</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"myName"</span><span class="p">).</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data2</span> <span class="p">);</span></code></pre></figure>
+
+<p>This example would not throw any warning, but the second <code class="highlighter-rouge">g.newSerie("myName")</code> would actually return the existing serie. The only thing you will end up doing is overwriting the data of the first serie (<code class="highlighter-rouge">data1</code>) with <code class="highlighter-rouge">data2</code>. jsGraph doesn’t throw any error because in the end, you will end up being too lazy to check if a serie exists before creating it. So instead of that, you may just call <code class="highlighter-rouge">g.newSerie()</code> to either create it or return it, whether it already exists or not.</p>
+
+<p>Let us get back to the example and add the second serie</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"example-4"</span><span class="p">)</span> <span class="c1">// Creates a new graph</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">jV</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"jV"</span> <span class="p">)</span> <span class="c1">// Note the same of the serie</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span> <span class="s1">'red'</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">({</span>
+	<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+	<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+	<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
+ <span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span> <span class="c1">// Note the same of the serie</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">)</span>
+ 
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-5" class="jsgraph-example"></div>
+<script>
+
+var g = new Graph("example-5") // Creates a new graph
+
+g.resize( 400, 300 ); // Resizes the graph
+
+var jV = g.newSerie( "jV" ) // Note the same of the serie
+ .autoAxis()
+ .setData( serie1 )
+ .setLineColor( 'red' )
+ .setLineWidth( 2 )
+ .setMarkers({
+	strokeWidth: 1,
+	strokeColor: 'rgb( 200, 0, 0 )',
+	fillColor: 'white'
+ });
+
+var pV = g.newSerie( "pV" ) // Note the same of the serie
+ .autoAxis()
+ .setData( serie2 )
+
+g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
+g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+
+
+g.draw();
+
+</script>
+
+<p>However this makes no scientific sense. Power density has not the same units as current density, and hence it should be displayed on the same scale at all ! So instead of calling <a href="Serie.html#autoAxis">Serie#autoAxis</a>, let’s rather use another y axis for the power density.</p>
+
+<h3 id="a-iddoc-multipleaxesa-plotting-on-multiple-axes"><a id="doc-multipleaxes"></a> Plotting on multiple axes</h3>
+
+<p>jsGraph can use as many axis as you want. X axes can be at the top or bottom position, and Y axes can be at the left or at the right position. You can specify to jsGraph which axes you want with which options during graph creation (<a href="Graph.html">Graph</a>), but axes can also be created on the fly, which is probably easiers to understand.
+For instance, if you call</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(</span> <span class="nx">n</span><span class="p">[,</span> <span class="nx">options</span> <span class="p">]</span> <span class="p">)</span></code></pre></figure>
+
+<p>where <code class="highlighter-rouge">n</code> is a number, jsGraph will try to fetch the nth bottom axis. If it doesn’t find it, a new bottom axis at index <code class="highlighter-rouge">n</code> will be created. You can use the optional parameter <code class="highlighter-rouge">options</code> to specify axis options. However be careful, as <strong>these options will only be effective if no axis existed at this index</strong>.
+By default <code class="highlighter-rouge">g.getXAxis()</code> will behave like this:
+ 1. Look for a bottom axis at index 0
+ 2. if failed, look for a top axis at index 0
+ 3. if failed, create a bottom axis at index 0</p>
+
+<p>The index can be changed by using</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getAxis</span><span class="p">(</span> <span class="nx">n</span> <span class="p">)</span> <span class="c1">// n being the index of the axis, starting at 0</span></code></pre></figure>
+
+<p>See <a href="Graph.html#getXAxis">Graph#getXAxis</a>, <a href="Graph.html#getYAxis">Graph#getYAxis</a>, <a href="Graph.html#getBottomAxis">Graph#getBottomAxis</a>, <a href="Graph.html#getTopAxis">Graph#getTopAxis</a>, <a href="Graph.html#getRightAxis">Graph#getRightAxis</a>, <a href="Graph.html#getLeftAxis">Graph#getLeftAxis</a> for the reference API.</p>
+
+<p>So let us apply this to the example:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span> <span class="c1">// Note the name of the serie</span>
+ <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">)</span> <span class="c1">// Use the left axis at index 1</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">)</span></code></pre></figure>
+
+<p>Here it is the <code class="highlighter-rouge">1</code> that makes all the difference. The first axis was indexed at <code class="highlighter-rouge">0</code>, so <code class="highlighter-rouge">g.getLeftAxis( 1 )</code> will actually create a new axis on the left side of the graph (See <a href="Graph.html#getLeftAxis">Graph#getLeftAxis</a> and related for more details).</p>
+
+<div id="example-6" class="jsgraph-example"></div>
+<script>
+
+	var g = new Graph("example-6") // Creates a new graph
+
+	g.resize( 400, 300 ); // Resizes the graph
+
+	var jV = g.newSerie( "jV" ) // Note the same of the serie
+	 .autoAxis()
+	 .setData( serie1 )
+	 .setLineColor( 'red' )
+	 .setLineWidth( 2 )
+	 .setMarkers({
+		strokeWidth: 1,
+		strokeColor: 'rgb( 200, 0, 0 )',
+		fillColor: 'white'
+	 });
+
+	var pV = g.newSerie( "pV" ) // Note the same of the serie
+	 .setXAxis( g.getXAxis() )
+	 .setYAxis( g.getLeftAxis( 1 ) )
+	 .setData( serie2 )
+
+	g.getXAxis().setLabel( "Voltage" ).setUnit( "V" );
+	g.getYAxis().setLabel( "Current density" ).setUnit( "mA cm^-2" );
+
+	g.draw();
+
+</script>
+
+<p>Now things are getting really ugly. This is because primary grids and secondary grids exist for all the axes. For the y axis this leads to the superimposition of too many lines. Let’s just turn off some of those grids. While we are at it, let’s use a right axis for the power density instead of a left axis to clear up some space.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">pV</span><span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">(</span> <span class="p">)</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">)</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">(</span> <span class="p">).</span><span class="nx">gridsOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<p>The whole example (with some cleanup) becomes:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"example-7"</span><span class="p">);</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">jV</span> <span class="o">=</span> <span class="nx">g</span>
+ <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"jV"</span><span class="p">,</span> <span class="p">{</span>
+ 	<span class="na">lineColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span>
+ 	<span class="na">lineWidth</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+ 	<span class="na">markers</span><span class="p">:</span> <span class="p">{</span>
+ 		<span class="na">strokeWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+		<span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'rgb( 200, 0, 0 )'</span><span class="p">,</span>
+		<span class="na">fillColor</span><span class="p">:</span> <span class="s1">'white'</span>
+ 	<span class="p">}</span>
+ <span class="p">}</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">)</span>
+ 
+<span class="kd">var</span> <span class="nx">pV</span> <span class="o">=</span> <span class="nx">g</span>
+ <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"pV"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">(</span> <span class="p">)</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">);</span>
+
+<span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getXAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span> <span class="s2">"V"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Voltage"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
+
+<span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span> <span class="s2">"mA cm^-2"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Current density"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
+
+<span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getRightAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setUnit</span><span class="p">(</span> <span class="s2">"mW cm^-2"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span> <span class="s2">"Power density"</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">gridsOff</span><span class="p">();</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-7" class="jsgraph-example"></div>
+<script>
+
+	var g = new Graph("example-7");
+
+	g.resize( 400, 300 );
+
+	var jV = g
+	 .newSerie( "jV", {
+	 	lineColor: 'red',
+	 	lineWidth: 2,
+	 	markers: {
+	 		strokeWidth: 1,
+			strokeColor: 'rgb( 200, 0, 0 )',
+			fillColor: 'white'
+	 	}
+	 } )
+	 .autoAxis()
+	 .setData( serie1 )
+	 
+	var pV = g
+	 .newSerie( "pV" )
+	 .setXAxis( g.getXAxis() )
+	 .setYAxis( g.getRightAxis( ) )
+	 .setData( serie2 );
+
+	g
+	 .getXAxis()
+	 .setUnit( "V" )
+	 .setLabel( "Voltage" )
+	 .secondaryGridOff();
+
+	g
+	 .getLeftAxis()
+	 .setUnit("mA cm^-2")
+	 .setLabel( "Current density" )
+	 .secondaryGridOff();
+
+	g
+	 .getRightAxis()
+	 .setUnit("mW cm^-2")
+	 .setLabel( "Power density" )
+	 .gridsOff();
+
+	g.draw();
+
+</script>
+
+<p>Good ! Let’s now see what we can do with the axes.</p>
+
+<h3 id="a-iddoc-stylingastyling-the-axis"><a id="doc-styling"></a>Styling the axis</h3>
+
+<h4 id="a-iddoc-boundariesasetting-axis-boundaries"><a id="doc-boundaries"></a>Setting axis boundaries</h4>
+
+<p>The first thing you will probably want to do is not to rely on the series data to set the axis minimum / maximum.
+By default, there is a 10% margin on each side of the serie, so that the serie doesn’t directly touch the axis. This can be changed or removed using {@see Axis#setAxisDataSpacing}</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setAxisDataSpacing</span><span class="p">(</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="p">);</span> <span class="c1">// 0 margin at the lower part of the axis, 30% at the higher part</span>
+
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<p>You can also chose to force the axis boundaries independantly of the data of the series:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">forceMin</span><span class="p">(</span> <span class="o">-</span><span class="mi">5</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">20</span> <span class="p">);</span>
+
+ <span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getRightAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">0</span> <span class="p">);</span>
+
+ <span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-8" class="jsgraph-example"></div>
+<script>
+
+	var g = new Graph("example-8");
+
+	g.resize( 400, 300 );
+
+	var jV = g
+	 .newSerie( "jV", {
+	 	lineColor: 'red',
+	 	lineWidth: 2,
+	 	markers: {
+	 		strokeWidth: 1,
+			strokeColor: 'rgb( 200, 0, 0 )',
+			fillColor: 'white'
+	 	}
+	 } )
+	 .autoAxis()
+	 .setData( serie1 )
+	 
+	var pV = g
+	 .newSerie( "pV" )
+	 .setXAxis( g.getXAxis() )
+	 .setYAxis( g.getRightAxis( ) )
+	 .setData( serie2 );
+
+	g
+	 .getXAxis()
+	 .setUnit( "V" )
+	 .setLabel( "Voltage" )
+	 .secondaryGridOff();
+
+	g
+	 .getLeftAxis()
+	 .setUnit("mA cm^-2")
+	 .setLabel( "Current density" )
+	 .secondaryGridOff()
+	 .forceMin( -25 )
+ 	 .forceMax( 60 );
+
+	g
+	 .getRightAxis()
+	 .setUnit("mW cm^-2")
+	 .setLabel( "Power density" )
+	 .gridsOff()
+	 .forceMax( 5 );
+
+	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
+
+	g.draw();
+
+</script>
+
+<h4 id="a-iddoc-alignmentaaligning-the-axes"><a id="doc-alignment"></a>Aligning the axes</h4>
+
+<p>Sometimes, if you have two axes that should be aligned on a common value, it would be nice to force the axes to behave accordingly. For example, in our example, it makes sense to align the 0 of the current density with the 0 of the power output. So one of the axis will have to behave differently. Let’s pick the power output. A more detailed tutorial adaptto has been written to detail the behavior of the <code class="highlighter-rouge">adaptTo</code> method.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"min"</span> <span class="p">);</span> <span class="c1">// The 0 of the right axis should be aligned with the 0 of the left axis</span></code></pre></figure>
+
+<div id="example-9" class="jsgraph-example"></div>
+<script>
+
+	var g = new Graph("example-9");
+
+	g.resize( 400, 300 );
+
+	var jV = g
+	 .newSerie( "jV", {
+	 	lineColor: 'red',
+	 	lineWidth: 2,
+	 	markers: {
+	 		strokeWidth: 1,
+			strokeColor: 'rgb( 200, 0, 0 )',
+			fillColor: 'white'
+	 	}
+	 } )
+	 .autoAxis()
+	 .setData( serie1 )
+	 
+	var pV = g
+	 .newSerie( "pV" )
+	 .setXAxis( g.getXAxis() )
+	 .setYAxis( g.getRightAxis( ) )
+	 .setData( serie2 );
+
+	g
+	 .getXAxis()
+	 .setUnit( "V" )
+	 .setLabel( "Voltage" )
+	 .secondaryGridOff();
+
+	g
+	 .getLeftAxis()
+	 .setUnit("mA cm^-2")
+	 .setLabel( "Current density" )
+	 .secondaryGridOff()
+	 .forceMin( -25 )
+ 	 .forceMax( 60 );
+
+	g
+	 .getRightAxis()
+	 .setUnit("mW cm^-2")
+	 .setLabel( "Power density" )
+	 .gridsOff()
+	 .forceMax( 5 );
+
+	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
+	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
+
+	g.draw();
+
+</script>
+
+<h4 id="a-iddoc-coloringacoloring-the-axes"><a id="doc-coloring"></a>Coloring the axes</h4>
+
+<p>Since v1.13.2, you have the possibility to change the color of the axes. Use the <a href="Axis.html#setAxisColor">Axis#setAxisColor</a> method. The color of the ticks can be changed using <a href="Axis.html#setPrimaryTicksColor">Axis#setPrimaryTicksColor</a> and <a href="Axis.html#setSecondaryTicksColor">Axis#setSecondaryTicksColor</a>. The color of the tick labels can be changed using <a href="Axis.html#setTicksLabelColor">Axis#setTicksLabelColor</a>. The color of the label can be selected using <a href="Axis.html#setLabelColor">Axis#setLabelColor</a>.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span>
+ <span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setAxisColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span>
+ <span class="p">.</span><span class="nx">setPrimaryTicksColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">)</span>
+ <span class="p">.</span><span class="nx">setSecondaryTicksColor</span><span class="p">(</span><span class="s1">'rgba( 150, 10, 10, 0.9 )'</span><span class="p">)</span>
+ <span class="p">.</span><span class="nx">setTicksLabelColor</span><span class="p">(</span><span class="s1">'#880000'</span><span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLabelColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">);</span></code></pre></figure>
+
+<div id="example-10" class="jsgraph-example"></div>
+<script>
+
+	var g = new Graph("example-10");
+
+	g.resize( 400, 300 );
+
+	var jV = g
+	 .newSerie( "jV", {
+	 	lineColor: 'red',
+	 	lineWidth: 2,
+	 	markers: {
+	 		strokeWidth: 1,
+			strokeColor: 'rgb( 200, 0, 0 )',
+			fillColor: 'white'
+	 	}
+	 } )
+	 .autoAxis()
+	 .setData( serie1 )
+	 
+	var pV = g
+	 .newSerie( "pV" )
+	 .setXAxis( g.getXAxis() )
+	 .setYAxis( g.getRightAxis( ) )
+	 .setData( serie2 );
+
+	g
+	 .getXAxis()
+	 .setUnit( "V" )
+	 .setLabel( "Voltage" )
+	 .secondaryGridOff();
+
+	g
+	 .getLeftAxis()
+	 .setUnit("mA cm^-2")
+	 .setLabel( "Current density" )
+	 .secondaryGridOff()
+	 .forceMin( -25 )
+ 	 .forceMax( 60 );
+
+	g
+	 .getRightAxis()
+	 .setUnit("mW cm^-2")
+	 .setLabel( "Power density" )
+	 .gridsOff()
+	 .forceMax( 5 );
+
+	g.getBottomAxis().setAxisDataSpacing( 0, 0.3 );
+	g.getRightAxis().adaptTo( g.getLeftAxis(), 0, 0, "min" ); // The 0 of the right axis should be aligned with the 0 of the left axis
+
+	g
+	 .getLeftAxis()
+	 .setAxisColor('red')
+	 .setPrimaryTicksColor('red')
+	 .setSecondaryTicksColor('rgba( 150, 10, 10, 0.9 )')
+	 .setTicksLabelColor('#880000')
+	 .setLabelColor('red');
+
+	g.draw();
+
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

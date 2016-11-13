@@ -1,0 +1,13422 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/AxisY.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<nav class="navbar navbar-default" id="jsgraph-subdocnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/AxisX.html">
+			  		X
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/AxisXBar.html">
+			  		XBar
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li  class="active" >
+			  	<a class="page-link" href="/docs/AxisY.html">
+			  		Y
+			  	</a>
+			  </li>
+			  
+				
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>AxisY</h2>
+        
+            <div class="class-description">Generic constructor of a y axis</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="doc-code" id="AxisY"><span class="type-signature"></span>new <span></span><span class="doc-name">AxisY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Axis.html">Axis</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isX"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isX</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#isX">Axis#isX</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    always ```false```
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isY"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#isY">Axis#isY</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    always ```true```
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="scaleToFitAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">scaleToFitAxis</span><span class="doc-signature">( [ , <span class="doc-type">Axis</span> axis ] [ , <span class="doc-type">Serie</span> excludeSerie ] [ , <span class="doc-type">Number</span> start ] [ , <span class="doc-type">Number</span> end ] [ , <span class="doc-type">Boolean</span> min ] [ , <span class="doc-type">Boolean</span> max ] )</span></h4>
+
+
+
+
+<div class="description">
+    Scales the axis with respect to the series contained in an x axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    graph.getXAxis()
+                
+                </td>
+            
+
+            <td class="description last">The X axis to use as a reference</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>excludeSerie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">A serie to exclude</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>start</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    xaxis.getCurrentMin()
+                
+                </td>
+            
+
+            <td class="description last">The start of the boundary</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>end</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    xaxis.getCurrentMax()
+                
+                </td>
+            
+
+            <td class="description last">The end of the boundary</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Adapt the min</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Adapt the max</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMinMaxFlipped"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setMinMaxFlipped</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the minimum px and maximum px position of the axis. Includes axis spans and flipping. Mostly used internally
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+        <h3 class="subsection-title">Inherited Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="adapt"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">adapt</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Adapts maximum and minimum of the axis if options.adaptTo is defined
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#adapt">Axis#adapt</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="adaptTo"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">adaptTo</span><span class="doc-signature">( <span class="doc-type">Axis, Boolean</span> axis , <span class="doc-type">Number</span> thisValue , <span class="doc-type">Number</span> foreignValue , <span class="doc-type">String</span> preference )</span></h4>
+
+
+
+
+<div class="description">
+    Aligns ```thisValue``` of the axis to ```foreignValue``` of another axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis with which the 0 should be aligned. Use "false" to deactivate the adapt to 0 mode.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>thisValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value of the current axis that should be aligned</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>foreignValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value of the reference axis that should be aligned</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>preference</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">"min" or "max". Defined the boundary that should behave the more normally</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#adaptTo">Axis#adaptTo</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="cacheCurrentMax"><span class="type-signature"></span><span></span><span class="doc-name">cacheCurrentMax</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the current axis maximum
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#cacheCurrentMax">Axis#cacheCurrentMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="cacheCurrentMin"><span class="type-signature"></span><span></span><span class="doc-name">cacheCurrentMin</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the current axis minimum
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#cacheCurrentMin">Axis#cacheCurrentMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="cacheInterval"><span class="type-signature"></span><span></span><span class="doc-name">cacheInterval</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the current interval
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#cacheInterval">Axis#cacheInterval</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="flip"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">flip</span><span class="doc-signature">( <span class="doc-type">Boolean</span> flip )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the flipping state of the axis. If enabled, the axis is descending rather than ascending.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>flip</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new flipping state of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#flip">Axis#flip</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="forceMax"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">forceMax</span><span class="doc-signature">( <span class="doc-type">Number</span> max , <span class="doc-type">Boolean</span> noRescale )</span></h4>
+
+
+
+
+<div class="description">
+    Forces the maximum value of the axis (no more dependant on the serie values).
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The maximum value of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noRescale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#forceMax">Axis#forceMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="forceMin"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">forceMin</span><span class="doc-signature">( <span class="doc-type">Number</span> min , <span class="doc-type">Boolean</span> noRescale )</span></h4>
+
+
+
+
+<div class="description">
+    Forces the minimum value of the axis (no more dependant on the serie values)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The minimum value of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noRescale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#forceMin">Axis#forceMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="forceToAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">forceToAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Forces the min and max values of the axis to the min / max values of another axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis from which the min / max values are retrieved.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#forceToAxis">Axis#forceToAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getAxisColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getAxisColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the axis color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getAxisColor">Axis#getAxisColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The color of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getCurrentInterval"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getCurrentInterval</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getCurrentInterval">Axis#getCurrentInterval</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getCurrentMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getCurrentMax</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getCurrentMax">Axis#getCurrentMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current maximum value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getCurrentMin"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getCurrentMin</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getCurrentMin">Axis#getCurrentMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current minimum value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getFloatingAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">getFloatingAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getFloatingAxis">Axis#getFloatingAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The axis referencing the floating value of the current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getFloatingValue"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">getFloatingValue</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getFloatingValue">Axis#getFloatingValue</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The value to which the current axis is aligned to
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getForcedMax"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getForcedMax</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the forced minimum of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getForcedMax">Axis#getForcedMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The maximum possible value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getForcedMin"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getForcedMin</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the forced minimum of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getForcedMin">Axis#getForcedMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The maximum possible value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getInterval"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getInterval</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getInterval">Axis#getInterval</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    the maximum interval ( max - min ) of the axis ( not nessarily the current one )
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getLabel"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getLabel</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getLabel">Axis#getLabel</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The label value
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getLabelColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getLabelColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the label
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getLabelColor">Axis#getLabelColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The color of the label
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMaxPx"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxPx</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getMaxPx">Axis#getMaxPx</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The position in px of the top of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMaxValue"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxValue</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the maximum possible value of the axis. Can be set by "forcedMax", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getMaxValue">Axis#getMaxValue</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The maximum possible value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMinPx"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinPx</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getMinPx">Axis#getMinPx</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The position in px of the bottom of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMinValue"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinValue</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Retrieves the minimum possible value of the axis. Can be set by "forcedMin", "adapt0ToAxis" or by the values of the series the axis contains. Does not take into account any zooming.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getMinValue">Axis#getMinValue</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The minimum possible value of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPos"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPos</span><span class="doc-signature">( <span class="doc-type">Number</span> value )</span></h4>
+
+
+
+
+<div class="description">
+    Transform a value into pixels, according to the axis scaling. The value is referenced to the drawing wrapper, not the the axis minimal value
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value to translate into pixels</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPos">Axis#getPos</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The value transformed into pixels
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPrimaryGridColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getPrimaryGridColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPrimaryGridColor">Axis#getPrimaryGridColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    color - The primary grid color
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPrimaryGridDasharray"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getPrimaryGridDasharray</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the dasharray of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPrimaryGridDasharray">Axis#getPrimaryGridDasharray</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    dasharray - The dasharray of the primary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPrimaryGridOpacity"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPrimaryGridOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the opacity of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPrimaryGridOpacity">Axis#getPrimaryGridOpacity</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    opacity - The opacity of the primary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPrimaryGridWidth"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPrimaryGridWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the width of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPrimaryGridWidth">Axis#getPrimaryGridWidth</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    width - The width of the primary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPrimaryTicksColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getPrimaryTicksColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the main ticks
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getPrimaryTicksColor">Axis#getPrimaryTicksColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The color of the primary ticks
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getRelPx"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getRelPx</span><span class="doc-signature">( <span class="doc-type">Number</span> value )</span></h4>
+
+
+
+
+<div class="description">
+    Transform a delta value into pixels
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value to translate into pixels</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#getRelPx">Axis#getRelPx</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The value transformed into pixels
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="mi">20</span> <span class="p">).</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">50</span> <span class="p">).</span><span class="nx">getRelPx</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span> <span class="c1">// Returns how many pixels will be covered by 2 units. Let's assume 600px of width, it's ( 2 / 30 ) * 600 = 40px</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getRelVal"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getRelVal</span><span class="doc-signature">( <span class="doc-type">Number</span> pixels )</span></h4>
+
+
+
+
+<div class="description">
+    Transform a delta pixels value into value
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pixels</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The pixel to convert into a value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getRelVal">Axis#getRelVal</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>Axis~getRelPx</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The delta value corresponding to delta pixels
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="mi">20</span> <span class="p">).</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">50</span> <span class="p">).</span><span class="nx">getRelVal</span><span class="p">(</span> <span class="mi">40</span> <span class="p">);</span> <span class="c1">// Returns 2 (for 600px width)</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSecondaryGridColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getSecondaryGridColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the secondary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getSecondaryGridColor">Axis#getSecondaryGridColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    color - The secondary grid color
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSecondaryGridDasharray"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getSecondaryGridDasharray</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the dasharray of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getSecondaryGridDasharray">Axis#getSecondaryGridDasharray</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    dasharray - The dasharray of the secondary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSecondaryGridOpacity"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getSecondaryGridOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the opacity of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getSecondaryGridOpacity">Axis#getSecondaryGridOpacity</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    opacity - The opacity of the secondary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSecondaryGridWidth"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getSecondaryGridWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the width of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getSecondaryGridWidth">Axis#getSecondaryGridWidth</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    width - The width of the secondary grid lines
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSecondaryTicksColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getSecondaryTicksColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the secondary ticks
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getSecondaryTicksColor">Axis#getSecondaryTicksColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The color of the secondary ticks
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getTicksLabelColor"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getTicksLabelColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Gets the color of the tick labels
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#getTicksLabelColor">Axis#getTicksLabelColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The color of the tick labels
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getVal"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getVal</span><span class="doc-signature">( <span class="doc-type">Number</span> pixels )</span></h4>
+
+
+
+
+<div class="description">
+    Transform a pixel position (referenced to the graph zone, not to the axis minimum) into a value, according to the axis scaling.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pixels</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of pixels to translate into a value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#getVal">Axis#getVal</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The axis value corresponding to the pixel position
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="gridsOff"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">gridsOff</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Disables all the grids
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#gridsOff">Axis#gridsOff</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="gridsOn"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">gridsOn</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Enables all the grids
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Axis.html#gridsOn">Axis#gridsOn</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hide"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">hide</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Hides the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#hide">Axis#hide</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isDisplayed"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isDisplayed</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#isDisplayed">Axis#isDisplayed</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    A boolean indicating the displayed state of the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="linkToAxis"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">linkToAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis , <span class="doc-type">SlaveAxisScalingFunction</span> scalingFunction , <span class="doc-type">Number</span> decimals )</span></h4>
+
+
+
+
+<div class="description">
+    Makes this axis a slave. This can be used to show the same data with different units, specifically when a conversion function exists from axis -> slaveAxis but not in reverse. This axis should actually have no series.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The master axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>scalingFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#SlaveAxisScalingFunction">SlaveAxisScalingFunction</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The scaling function used to map masterValue -> slaveValue</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>decimals</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The number of decimals to round the value to</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#linkToAxis">Axis#linkToAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The width or height used by the axis (used internally)
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="primaryGridOff"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">primaryGridOff</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Disables primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#primaryGridOff">Axis#primaryGridOff</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="primaryGridOn"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">primaryGridOn</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Enables primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#primaryGridOn">Axis#primaryGridOn</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="secondaryGridOff"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">secondaryGridOff</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Disables secondary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#secondaryGridOff">Axis#secondaryGridOff</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="secondaryGridOn"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">secondaryGridOn</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Enables secondary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#secondaryGridOn">Axis#secondaryGridOn</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAxisColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setAxisColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the axis color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The color to set the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setAxisColor">Axis#setAxisColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAxisDataSpacing"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setAxisDataSpacing</span><span class="doc-signature">( <span class="doc-type">Number</span> min [ , <span class="doc-type">Number</span> max ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the axis data spacing
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The spacing at the axis min value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    min
+                
+                </td>
+            
+
+            <td class="description last">The spacing at the axis max value. If omitted, will be equal to the "min" parameter</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setAxisDataSpacing">Axis#setAxisDataSpacing</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>AxisOptionsDefault</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAxisDataSpacingMax"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setAxisDataSpacingMax</span><span class="doc-signature">( <span class="doc-type">Number</span> max )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the axis data spacing at the maximum of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The spacing at the axis max value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setAxisDataSpacingMax">Axis#setAxisDataSpacingMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>AxisOptionsDefault</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAxisDataSpacingMin"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setAxisDataSpacingMin</span><span class="doc-signature">( <span class="doc-type">Number</span> min )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the axis data spacing at the minimum of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The spacing at the axis min value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setAxisDataSpacingMin">Axis#setAxisDataSpacingMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>AxisOptionsDefault</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setCurrentMax"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setCurrentMax</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the current maximum value of the axis. If higher that the forced value, the forced value is used
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new maximum value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setCurrentMax">Axis#setCurrentMax</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setCurrentMin"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setCurrentMin</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the current minimum value of the axis. If lower that the forced value, the forced value is used
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new minimum value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setCurrentMin">Axis#setCurrentMin</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setDisplay"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setDisplay</span><span class="doc-signature">( <span class="doc-type">Boolean</span> display )</span></h4>
+
+
+
+
+<div class="description">
+    Shows or hides the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>display</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to display the axis, false to hide it</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setDisplay">Axis#setDisplay</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setEngineering"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setEngineering</span><span class="doc-signature">( <span class="doc-type">Boolean</span> engineeringScaling )</span></h4>
+
+
+
+
+<div class="description">
+    The engineer scaling is similar to the scientific scaling (Axis#setScientificScale) but allowing only mupltiples of 3 to be used to scale the axis (for instance, go from grams to kilograms while skipping decagrams and hexagrams)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>engineeringScaling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><code>true</code> to turn on the engineering scaling</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setEngineering">Axis#setEngineering</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Axis.html#setScientific">Axis#setScientific</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setFloating"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setFloating</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis , <span class="doc-type">Number</span> value )</span></h4>
+
+
+
+
+<div class="description">
+    Makes the axis floating (not aligned to the right or the left anymore). You need to specify another axis (perpendicular) and a value at which this axis should be located
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis on which the current axis should be aligned to</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value on which the current axis should be aligned</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setFloating">Axis#setFloating</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">setFloat</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">(),</span> <span class="mi">0</span> <span class="p">);</span> <span class="c1">// Alignes the y axis with the origin of the bottom axis</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setGrids"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setGrids</span><span class="doc-signature">( <span class="doc-type">Boolean</span> on )</span></h4>
+
+
+
+
+<div class="description">
+    Displays or hides the axis grids
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to enable the grids, false to disable them</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setGrids">Axis#setGrids</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLabel"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLabel</span><span class="doc-signature">( <span class="doc-type">Number</span> label )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the label of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The label to display under the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setLabel">Axis#setLabel</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLabelColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLabelColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the label
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new color of the label</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setLabelColor">Axis#setLabelColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLineAt0"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLineAt0</span><span class="doc-signature">( <span class="doc-type">Boolean</span> lineAt0 )</span></h4>
+
+
+
+
+<div class="description">
+    Forces the appearence of a straight perpendicular line at value 0
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lineAt0</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to display the line, false not to.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setLineAt0">Axis#setLineAt0</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLogScale"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setLogScale</span><span class="doc-signature">( <span class="doc-type">Boolean</span> logScale )</span></h4>
+
+
+
+
+<div class="description">
+    Enables log scaling
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>logScale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">```true``` to enable the log scaling, ```false``` to disable it</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setLogScale">Axis#setLogScale</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMinMaxToFitSeries"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setMinMaxToFitSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Resets the min and max of the serie to fit the series it contains
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setMinMaxToFitSeries">Axis#setMinMaxToFitSeries</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryGrid"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryGrid</span><span class="doc-signature">( <span class="doc-type">Boolean</span> on )</span></h4>
+
+
+
+
+<div class="description">
+    Displays or hides the axis primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to enable the grids, false to disable it</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryGrid">Axis#setPrimaryGrid</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryGridColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryGridColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The primary grid color</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryGridColor">Axis#setPrimaryGridColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryGridDasharray"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryGridDasharray</span><span class="doc-signature">( <span class="doc-type">String</span> dasharray )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the dasharray of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dasharray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The dasharray of the primary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryGridDasharray">Axis#setPrimaryGridDasharray</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryGridOpacity"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryGridOpacity</span><span class="doc-signature">( <span class="doc-type">Number</span> opacity )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the opacity of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The opacity of the primary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryGridOpacity">Axis#setPrimaryGridOpacity</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryGridWidth"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryGridWidth</span><span class="doc-signature">( <span class="doc-type">Number</span> width )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the width of the primary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the primary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryGridWidth">Axis#setPrimaryGridWidth</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPrimaryTicksColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setPrimaryTicksColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the main ticks
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new color of the primary ticks</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setPrimaryTicksColor">Axis#setPrimaryTicksColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setScientific"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setScientific</span><span class="doc-signature">( <span class="doc-type">Boolean</span> on )</span></h4>
+
+
+
+
+<div class="description">
+    Enable the scientific mode for the axis values. This way, big numbers can be avoided, e.g. "1000000000" would be displayed 1 with 10<sup>9</sup> or "G" shown on near the axis unit.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Enables the scientific mode</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setScientific">Axis#setScientific</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setScientificScaleExponent"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setScientificScaleExponent</span><span class="doc-signature">( <span class="doc-type">Number</span> scientificScaleExponent )</span></h4>
+
+
+
+
+<div class="description">
+    In the scientific mode, forces the axis to take a specific power of ten. Useful if you want to show kilometers instead of meters for example. In this case you would use "3" as a value.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>scientificScaleExponent</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Forces the scientific scale to take a defined power of ten</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setScientificScaleExponent">Axis#setScientificScaleExponent</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Axis.html#setScientific">Axis#setScientific</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryGrid"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryGrid</span><span class="doc-signature">( <span class="doc-type">Boolean</span> on )</span></h4>
+
+
+
+
+<div class="description">
+    Displays or hides the axis secondary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to enable the grids, false to disable it</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryGrid">Axis#setSecondaryGrid</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryGridColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryGridColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the primary grid
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The primary grid color</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryGridColor">Axis#setSecondaryGridColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryGridDasharray"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryGridDasharray</span><span class="doc-signature">( <span class="doc-type">String</span> dasharray )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the dasharray of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>dasharray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The dasharray of the secondary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryGridDasharray">Axis#setSecondaryGridDasharray</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryGridOpacity"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryGridOpacity</span><span class="doc-signature">( <span class="doc-type">Number</span> opacity )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the opacity of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The opacity of the secondary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryGridOpacity">Axis#setSecondaryGridOpacity</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryGridWidth"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryGridWidth</span><span class="doc-signature">( <span class="doc-type">Number</span> width )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the width of the secondary grid lines
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The width of the secondary grid lines</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryGridWidth">Axis#setSecondaryGridWidth</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSecondaryTicksColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setSecondaryTicksColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the secondary ticks
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new color of the secondary ticks</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setSecondaryTicksColor">Axis#setSecondaryTicksColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setTickPosition"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setTickPosition</span><span class="doc-signature">( <span class="doc-type">Number</span> pos )</span></h4>
+
+
+
+
+<div class="description">
+    Changes the tick position
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new position ( "outside", "centered" or "inside" )</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setTickPosition">Axis#setTickPosition</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setTicksLabelColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setTicksLabelColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the color of the tick labels
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new color of the tick labels</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.2</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setTicksLabelColor">Axis#setTicksLabelColor</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setUnit"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setUnit</span><span class="doc-signature">( <span class="doc-type">String</span> unit )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the unit of the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>unit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The unit of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setUnit">Axis#setUnit</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setUnitDecade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setUnitDecade</span><span class="doc-signature">( <span class="doc-type">Boolean</span> on )</span></h4>
+
+
+
+
+<div class="description">
+    Allows the unit to scale with thousands
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>on</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Enables this mode</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setUnitDecade">Axis#setUnitDecade</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setUnitWrapper"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">setUnitWrapper</span><span class="doc-signature">( <span class="doc-type">String</span> before , <span class="doc-type">String</span> after )</span></h4>
+
+
+
+
+<div class="description">
+    Sets characters wrapping the unit
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>before</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The string to insert before</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>after</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The string to insert after</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.13.3</li></ul></dd>
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#setUnitWrapper">Axis#setUnitWrapper</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"["</span><span class="p">,</span> <span class="s2">"]"</span><span class="p">).</span><span class="nx">setUnit</span><span class="p">(</span><span class="s1">'m'</span><span class="p">);</span> <span class="c1">// Will display [m]</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="show"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">show</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Shows the axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#show">Axis#show</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="valueToHtml"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">valueToHtml</span><span class="doc-signature">( <span class="doc-type">Number</span> value , <span class="doc-type">Boolean</span> noScaling , <span class="doc-type">Boolean</span> noUnits )</span></h4>
+
+
+
+
+<div class="description">
+    Computes a value and returns it in HTML formatting
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value to compute</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noScaling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does not display scaling</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>noUnits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does not display units</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#valueToHtml">Axis#valueToHtml</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>Axis#valueToText</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An HTML string containing the computed value
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setUnit</span><span class="p">(</span> <span class="s2">"m"</span> <span class="p">).</span><span class="nx">setUnitDecade</span><span class="p">(</span> <span class="kc">true</span> <span class="p">).</span><span class="nx">setScientific</span><span class="p">(</span> <span class="kc">true</span> <span class="p">);</span>
+ <span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">valueToHtml</span><span class="p">(</span> <span class="mi">3500</span> <span class="p">);</span> <span class="c1">// Returns "3.5 km"</span>
+ </code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="zoom"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Axis.html">Axis</a></span>} </span><span class="doc-name">zoom</span><span class="doc-signature">( <span class="doc-type">Number</span> val1 , <span class="doc-type">Number</span> val2 )</span></h4>
+
+
+
+
+<div class="description">
+    Performs a zoom on the axis, without redraw afterwards
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new axis minimum</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>val2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new axis maximum</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Axis.html#zoom">Axis#zoom</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis
+</div>
+
+        
+
+    
+        <h5>Examples</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">zoom</span><span class="p">(</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span> <span class="p">);</span> <span class="c1">// Axis boundaries will be 50 and 70 after next redraw</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">redraw</span><span class="p">();</span></code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getBottomAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="mi">0</span> <span class="p">).</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">100</span> <span class="p">).</span><span class="nx">zoom</span><span class="p">(</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span> <span class="p">);</span>  <span class="c1">// Axis boundaries will be 50 and 70 after next redraw</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">autoscaleAxes</span><span class="p">();</span> <span class="c1">// New bottom axis boundaries will be 0 and 100, not 50 and 70 !</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

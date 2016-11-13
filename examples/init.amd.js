@@ -7,7 +7,7 @@ requirejs.config({
 	}
 });
 
-require( [ 'dist/jsgraph', 'examples/series' ] , function( Graph, series ) {
+require( [ 'dist/jsgraph-es6', 'examples/series' ] , function( Graph, series ) {
 
 	window.contour = series.contour;
 	window.series = series.numeric;

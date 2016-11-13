@@ -161,7 +161,7 @@ module.exports = function(grunt) {
                  },
 
                  plugins: [
-                    new WebpackBeautifier( { options: true } )
+                    new WebpackBeautifier( { jsdoc: true } )
                  ],
 
                   module: {
@@ -265,10 +265,13 @@ module.exports = function(grunt) {
     grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'uglify:dist' ] );
 
 
-    function WebpackBeautifier(options) { }
+    function WebpackBeautifier(options) {
+        this._options = options;
+    }
 
     WebpackBeautifier.prototype.apply = function(compiler) {
 
+        var self = this;
       compiler.plugin('done', function( stats ) {
         var json = stats.toJson({assets: false, chunks: false, modules: true }).modules;
         json.map( function( el ) {
@@ -281,8 +284,9 @@ module.exports = function(grunt) {
             grunt.file.write( el.name, beautify( grunt.file.read( el.name ), { indent_size: 2, preserve_newlines: true, space_in_paren: true, max_preserve_newlines: 2 } ) );
         });
 
-/*
-
+        if( ! self._options.jsdoc ) {
+            return;
+        }
         grunt.file.write( "jsdoc.json", JSON.stringify( {
             opts: {
                 "destination": "./web/doc/",
@@ -291,7 +295,14 @@ module.exports = function(grunt) {
             },
 
             "source": {
-                "include": json.map( ( el ) => el.name ),
+                "include": json.map( ( el ) => { 
+
+                     if( el.name == 'multi main' || el.name.indexOf('~') > -1) {
+                        return;
+                    }
+                   
+                   return el.name;
+                } ),
             }
             
         }, false, "\t" ) );
@@ -302,8 +313,6 @@ module.exports = function(grunt) {
                 return;
             }
         });
-
-        */
       });
     };
 };

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-22-linedifference.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="difference-between-two-series">Difference between two series</h2>
+
+<p>The plugin <code class="highlighter-rouge">serielinedifference</code> (or <code class="highlighter-rouge">serieLineDifference</code>, using camel-casing) allows you to color the area between two series, <code class="highlighter-rouge">serieTop</code> and <code class="highlighter-rouge">serieBottom</code>. Different styles can be applied whether <code class="highlighter-rouge">serieTop</code> is above (positive) or below (negative) <code class="highlighter-rouge">serieBottom</code>. The only requirement for this plugin is that the x values of each serie is monotoneously increasing (decreasing will <em>not</em> work).</p>
+
+<h3 id="a-iddoc-examplea-example"><a id="doc-example"></a> Example</h3>
+
+<p>Let us take the following example:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">domGraph</span> <span class="p">);</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s2">"Gas purchases in Baud (Switzerland)"</span><span class="p">)</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">setUnit</span><span class="p">(</span><span class="s2">"TJ"</span><span class="p">).</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Energy"</span><span class="p">).</span><span class="nx">setUnitWrapper</span><span class="p">(</span><span class="s2">"["</span><span class="p">,</span> <span class="s2">"]"</span><span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Years"</span><span class="p">);</span>
+
+<span class="nx">graph</span>
+<span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"data"</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Yearly"</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">)</span>
+<span class="p">.</span><span class="nx">setMarkers</span><span class="p">(</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">zoom</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'white'</span><span class="p">,</span> <span class="na">fillColor</span><span class="p">:</span> <span class="s1">'#2b1fcc'</span> <span class="p">}</span> <span class="p">)</span>
+<span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'#2b1fcc'</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="mi">1986</span><span class="p">,</span><span class="mf">6.934</span><span class="p">,</span><span class="mi">1987</span><span class="p">,</span><span class="mf">7.920</span><span class="p">,</span><span class="mi">1988</span><span class="p">,</span><span class="mf">7.623</span><span class="p">,</span><span class="mi">1989</span><span class="p">,</span><span class="mf">8.817</span><span class="p">,</span><span class="mi">1990</span><span class="p">,</span><span class="mf">8.978</span><span class="p">,</span><span class="mi">1991</span><span class="p">,</span><span class="mf">10.308</span><span class="p">,</span><span class="mi">1992</span><span class="p">,</span><span class="mf">10.285</span><span class="p">,</span><span class="mi">1993</span><span class="p">,</span><span class="mf">10.561</span><span class="p">,</span><span class="mi">1994</span><span class="p">,</span><span class="mf">10.013</span><span class="p">,</span><span class="mi">1995</span><span class="p">,</span><span class="mf">11.501</span><span class="p">,</span><span class="mi">1996</span><span class="p">,</span><span class="mf">12.308</span><span class="p">,</span><span class="mi">1997</span><span class="p">,</span><span class="mf">11.405</span><span class="p">,</span><span class="mi">1998</span><span class="p">,</span><span class="mf">11.651</span><span class="p">,</span><span class="mi">1999</span><span class="p">,</span><span class="mf">12.430</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mf">12.147</span><span class="p">,</span><span class="mi">2001</span><span class="p">,</span><span class="mf">12.669</span><span class="p">,</span><span class="mi">2002</span><span class="p">,</span><span class="mf">12.312</span><span class="p">,</span><span class="mi">2003</span><span class="p">,</span><span class="mf">13.297</span><span class="p">,</span><span class="mi">2004</span><span class="p">,</span><span class="mf">13.951</span><span class="p">,</span><span class="mi">2005</span><span class="p">,</span><span class="mf">14.578</span><span class="p">,</span><span class="mi">2006</span><span class="p">,</span><span class="mf">13.927</span><span class="p">,</span><span class="mi">2007</span><span class="p">,</span><span class="mf">13.220</span><span class="p">,</span><span class="mi">2008</span><span class="p">,</span><span class="mf">13.938</span><span class="p">,</span><span class="mi">2009</span><span class="p">,</span><span class="mf">13.647</span><span class="p">,</span><span class="mi">2010</span><span class="p">,</span><span class="mf">15.565</span><span class="p">,</span><span class="mi">2011</span><span class="p">,</span><span class="mf">13.459</span><span class="p">,</span><span class="mi">2012</span><span class="p">,</span><span class="mf">14.767</span><span class="p">,</span><span class="mi">2013</span><span class="p">,</span><span class="mf">16.074</span><span class="p">,</span><span class="mi">2014</span><span class="p">,</span><span class="mf">13.921</span><span class="p">]</span> <span class="p">);</span>
+
+<span class="nx">graph</span>
+<span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"median"</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"10 years average"</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">setLineStyle</span><span class="p">(</span> <span class="mi">3</span> <span class="p">)</span>
+<span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'blue'</span><span class="p">)</span>
+<span class="p">.</span><span class="nx">autoAxis</span><span class="p">().</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="mi">1986</span><span class="p">,</span><span class="mf">9.48093</span><span class="p">,</span><span class="mi">1987</span><span class="p">,</span><span class="mf">9.50349</span><span class="p">,</span><span class="mi">1988</span><span class="p">,</span><span class="mf">9.57039</span><span class="p">,</span><span class="mi">1989</span><span class="p">,</span><span class="mf">9.67934</span><span class="p">,</span><span class="mi">1990</span><span class="p">,</span><span class="mf">9.82672</span><span class="p">,</span><span class="mi">1991</span><span class="p">,</span><span class="mf">10.0078</span><span class="p">,</span><span class="mi">1992</span><span class="p">,</span><span class="mf">10.2173</span><span class="p">,</span><span class="mi">1993</span><span class="p">,</span><span class="mf">10.4492</span><span class="p">,</span><span class="mi">1994</span><span class="p">,</span><span class="mf">10.6978</span><span class="p">,</span><span class="mi">1995</span><span class="p">,</span><span class="mf">10.9574</span><span class="p">,</span><span class="mi">1996</span><span class="p">,</span><span class="mf">11.223</span><span class="p">,</span><span class="mi">1997</span><span class="p">,</span><span class="mf">11.4901</span><span class="p">,</span><span class="mi">1998</span><span class="p">,</span><span class="mf">11.7548</span><span class="p">,</span><span class="mi">1999</span><span class="p">,</span><span class="mf">12.0142</span><span class="p">,</span><span class="mi">2000</span><span class="p">,</span><span class="mf">12.2657</span><span class="p">,</span><span class="mi">2001</span><span class="p">,</span><span class="mf">12.5076</span><span class="p">,</span><span class="mi">2002</span><span class="p">,</span><span class="mf">12.7383</span><span class="p">,</span><span class="mi">2003</span><span class="p">,</span><span class="mf">12.9565</span><span class="p">,</span><span class="mi">2004</span><span class="p">,</span><span class="mf">13.1612</span><span class="p">,</span><span class="mi">2005</span><span class="p">,</span><span class="mf">13.3514</span><span class="p">,</span><span class="mi">2006</span><span class="p">,</span><span class="mf">13.5259</span><span class="p">,</span><span class="mi">2007</span><span class="p">,</span><span class="mf">13.6838</span><span class="p">,</span><span class="mi">2008</span><span class="p">,</span><span class="mf">13.8238</span><span class="p">,</span><span class="mi">2009</span><span class="p">,</span><span class="mf">13.9449</span><span class="p">,</span><span class="mi">2010</span><span class="p">,</span><span class="mf">14.0458</span><span class="p">,</span><span class="mi">2011</span><span class="p">,</span><span class="mf">14.1255</span><span class="p">,</span><span class="mi">2012</span><span class="p">,</span><span class="mf">14.1832</span><span class="p">,</span><span class="mi">2013</span><span class="p">,</span><span class="mf">14.2181</span><span class="p">,</span><span class="mi">2014</span><span class="p">,</span><span class="mf">14.2298</span><span class="p">]</span> <span class="p">)</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">makeLegend</span><span class="p">().</span><span class="nx">notHideable</span><span class="p">().</span><span class="nx">setAutoPosition</span><span class="p">(</span><span class="s1">'bottom'</span><span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getLegend</span><span class="p">().</span><span class="nx">update</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<p>This code should display the following graph:</p>
+
+<div id="doc-example-1"></div>
+
+<script>
+var graph = new Graph("doc-example-1");
+
+function makeGraph( graph ) {
+	graph.resize( 400, 300 );
+	graph.setTitle("Gas purchases in Baud (Switzerland)")
+
+	graph.getYAxis().setUnit("TJ").setLabel("Energy").setUnitWrapper("[", "]");
+	graph.getXAxis().setLabel("Years");
+
+	graph
+	.newSerie("data")
+	.setLabel("Yearly")
+	.setLineWidth( 2 )
+	.setMarkers( { type: 0, zoom: 1.5, strokeColor: 'white', fillColor: '#2b1fcc' } )
+	.setLineColor('#2b1fcc')
+	.autoAxis()
+	.setData( [ 1986,6.934,1987,7.920,1988,7.623,1989,8.817,1990,8.978,1991,10.308,1992,10.285,1993,10.561,1994,10.013,1995,11.501,1996,12.308,1997,11.405,1998,11.651,1999,12.430,2000,12.147,2001,12.669,2002,12.312,2003,13.297,2004,13.951,2005,14.578,2006,13.927,2007,13.220,2008,13.938,2009,13.647,2010,15.565,2011,13.459,2012,14.767,2013,16.074,2014,13.921] );
+
+	graph
+	.newSerie("median")
+	.setLabel("10 years average")
+	.setLineStyle( 3 )
+	.setLineColor('blue')
+	.autoAxis().setData( [ 1986,9.48093,1987,9.50349,1988,9.57039,1989,9.67934,1990,9.82672,1991,10.0078,1992,10.2173,1993,10.4492,1994,10.6978,1995,10.9574,1996,11.223,1997,11.4901,1998,11.7548,1999,12.0142,2000,12.2657,2001,12.5076,2002,12.7383,2003,12.9565,2004,13.1612,2005,13.3514,2006,13.5259,2007,13.6838,2008,13.8238,2009,13.9449,2010,14.0458,2011,14.1255,2012,14.1832,2013,14.2181,2014,14.2298] )
+
+	graph.makeLegend().notHideable().setAutoPosition('bottom');
+	graph.getLegend().update();
+	graph.draw();
+}
+
+makeGraph( graph );
+</script>
+
+<p>Now, we have the data and the smoothed data, and we want to highlight when gas imports are higher than the 10 years average, and when they are lower. A nice way to do that is to color the area between the two series in green when it’s higher, and in red when it’s lower. The plugin <code class="highlighter-rouge">serielinedifference</code> allows you to do that in a few lines of code.</p>
+
+<p>Note that you could do it yourself by adding a polyline shape and calculate the path yourself, but jsGraph does all of that for you.</p>
+
+<h4 id="a-iddoc-example-enablea-enabling-the-serielinedifference-plugin"><a id="doc-example-enable"></a> Enabling the <code class="highlighter-rouge">serieLineDifference</code> plugin</h4>
+
+<p>You need to enable the plugin by feeding the following options to the graph constructor:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"plugins"</span><span class="err">:</span> <span class="p">{</span>
+	<span class="s2">"serielinedifference"</span><span class="err">:</span> <span class="p">{}</span>
+<span class="p">}</span> </code></pre></figure>
+
+<p>and to call the following lines after the <em>graph has been drawn</em>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Drawing instruction that you needed to have anyway</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+
+<span class="kd">var</span> <span class="nx">serieTopName</span> <span class="o">=</span> <span class="s1">'data'</span><span class="p">;</span> <span class="c1">// Use here your serie name</span>
+<span class="kd">var</span> <span class="nx">serieBottomName</span> <span class="o">=</span> <span class="s1">'median'</span><span class="p">;</span> <span class="c1">// Use here your serie name</span>
+
+<span class="kd">var</span> <span class="nx">from</span> <span class="o">=</span> <span class="mi">1986</span><span class="p">;</span> <span class="c1">// From value. Must be specified.</span>
+<span class="kd">var</span> <span class="nx">to</span> <span class="o">=</span> <span class="mi">2014</span><span class="p">;</span> <span class="c1">// To value. Must be specified.</span>
+<span class="c1">// Note that you could use from = graph.getXAxis().getMinValue(); and to = graph.getXAxis().getMaxValue();</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'serielinedifference'</span><span class="p">).</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span> <span class="nx">serieTopName</span> <span class="p">),</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getSerie</span><span class="p">(</span> <span class="nx">serieBottomName</span> <span class="p">)</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'serielinedifference'</span><span class="p">).</span><span class="nx">setBoundaries</span><span class="p">(</span> <span class="nx">from</span><span class="p">,</span> <span class="nx">to</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'serielinedifference'</span><span class="p">).</span><span class="nx">draw</span><span class="p">();</span> <span class="c1">// Draws the shapes</span></code></pre></figure>
+
+<p>And… tadaam:</p>
+
+<div id="doc-example-2"></div>
+
+<script>
+var graph = new Graph("doc-example-2", {
+	plugins: {
+		'serielinedifference': {}
+	} 
+});
+
+makeGraph( graph );
+
+
+var serieTopName = 'data'; // Use here your serie name
+var serieBottomName = 'median'; // Use here your serie name
+
+var from = 1986; // From value. Must be specified.
+var to = 2014; // To value. Must be specified.
+// Note that you could use from = graph.getXAxis().getMinValue(); and to = graph.getXAxis().getMaxValue();
+
+graph.getPlugin('serielinedifference').setSeries( graph.getSerie( serieTopName ), graph.getSerie( serieBottomName ) );
+graph.getPlugin('serielinedifference').setBoundaries( from, to );
+graph.getPlugin('serielinedifference').draw(); // Draws the shapes
+
+</script>
+
+<h3 id="a-iddoc-stylinga-styling-the-zones"><a id="doc-styling"></a> Styling the zones</h3>
+
+<p>You can observe in the previous example that by default, negative zones are colored in red with an opacity of 20% and the positive zones in green, with the same opacity. Those rendering options can be changed either:</p>
+
+<ul>
+  <li>in the plugin constructor</li>
+  <li>by fetching the <code class="highlighter-rouge">Shape</code> objects of the zones and modifying them</li>
+</ul>
+
+<h4 id="a-iddoc-styling-constructora-in-the-constructor"><a id="doc-styling-constructor"></a> In the constructor</h4>
+
+<p>Applying the style of the zones in the constructor options is the easiest way to proceed and takes the following format:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"plugins"</span><span class="err">:</span> <span class="p">{</span>
+	<span class="s2">"serielinedifference"</span><span class="err">:</span> <span class="p">{</span>
+
+		<span class="nl">positiveStyle</span><span class="p">:</span> <span class="p">{</span>
+	    	<span class="nl">fillColor</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">,</span>
+	    	<span class="nx">fillOpacity</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
+	    	<span class="nx">strokeWidth</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
+	    	<span class="nx">strokeColor</span><span class="err">:</span> <span class="s1">'green'</span>
+	    <span class="p">},</span>
+
+	    <span class="nx">negativeStyle</span><span class="err">:</span> <span class="p">{</span>
+	    	<span class="nl">fillColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span>
+	    	<span class="nx">fillOpacity</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
+	    	<span class="nx">strokeWidth</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
+	    	<span class="nx">strokeColor</span><span class="err">:</span> <span class="s1">'negative'</span>
+	    <span class="p">},</span>
+	<span class="p">}</span>
+<span class="p">}</span> </code></pre></figure>
+
+<p>These options are the only one available for styling the polylines from the constructor. Moreover, they will be applied once to the shapes upon creation, not every time they are redrawn. If you change their style after the initialization of the graph, the original style will not be recovered.</p>
+
+<h4 id="a-iddoc-styling-objectsa-by-fetching-the-objects"><a id="doc-styling-objects"></a> By fetching the objects</h4>
+
+<p>jsGraph uses the <code class="highlighter-rouge">polyline</code> shape to draw the zones between the two line series. They both can be retrieved using the  methods</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'serielinedifference'</span><span class="p">).</span><span class="nx">getPositivePolyline</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'serielinedifference'</span><span class="p">).</span><span class="nx">getNegativePolyline</span><span class="p">();</span></code></pre></figure>
+
+<p>For further styling of those shapes, read the documentation of the <code class="highlighter-rouge">Shape</code> object or the <code class="highlighter-rouge">ShapePolyLine</code> object.</p>
+
+<h3 id="a-iddoc-piecewisea-piecewise-data-set"><a id="doc-piecewise"></a> Piecewise data set</h3>
+
+<p>The real force of the <code class="highlighter-rouge">serieLineDifference</code> plugin is its handling of datasets that contain gaps. In this case, the zone will stop as close as possible to the gap and resume after the first point of the next piece of the dataset can be found:</p>
+
+<div id="doc-example-3"></div>
+
+<script>
+var graph = new Graph("doc-example-3", {
+	plugins: {
+		'serielinedifference': {}
+	} 
+});
+
+graph.resize( 400, 300 );
+
+graph
+.newSerie("s1")
+.autoAxis()
+.setData( [ [ 0, 0, 1, 1, 2, 3 ], [ 4, 6, 5, 10, 6, 10 ], [ 7, 6, 8, 5, 9, 4, 10, 3 ] ] );
+
+graph
+.newSerie("s2")
+.autoAxis().setData( [ [ 0, 4, 1, 3, 2, 1, 3, -1], [  4, -1, 5, 7, 6, 15, 7, 7, 8, 1, 9, 1, 10, 1 ] ] )
+
+graph.draw();
+
+graph.getPlugin('serielinedifference').setSeries( graph.getSerie('s1'), graph.getSerie('s2') );
+graph.getPlugin('serielinedifference').setBoundaries(0, 10 );
+graph.getPlugin('serielinedifference').draw();
+
+</script>
+
+<p>A final word of warning, though. This feature is quite new and though it seems to work fine, you might find it buggy in some specific edge cases. In that case, I’d appreciate if you could report it on the github where the project is hosted. Thanks in advance !</p>
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

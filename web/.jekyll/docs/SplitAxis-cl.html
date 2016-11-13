@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/SplitAxis-cl.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<nav class="navbar navbar-default" id="jsgraph-subdocnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/AxisX.html">
+			  		X
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/AxisXBar.html">
+			  		XBar
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/AxisY.html">
+			  		Y
+			  	</a>
+			  </li>
+			  
+				
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>cl</h2>
+        
+            <div class="class-description">Split axis</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="doc-code" id="cl"><span class="type-signature"></span>new <span></span><span class="doc-name">cl</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="mixes">Mixes In:</dt>
+
+        <dd class="mixes"><ul>
+        
+            <li></li>
+        
+        </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="all"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">all</span><span class="doc-signature">( <span class="doc-type">function</span> callback )</span></h4>
+
+
+
+
+<div class="description">
+    Calls a callback onto each chunk axes. The callback receives two parameters: 1) the ```axis``` itself and 2) the ```index``` of the axis in the stack
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The callback to be applied to each axes</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SplitAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="fixGridIntervalBasedOnAxis"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">fixGridIntervalBasedOnAxis</span><span class="doc-signature">( <span class="doc-type">Number</span> axisIndex )</span></h4>
+
+
+
+
+<div class="description">
+    Fixes the major tick interval of all axes based on the one provided as a parameter
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axisIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The index of the reference axis (starting at 0)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SplitAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="splitAxis"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">splitAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Splits the axis into chunks at the positions defined as a list of parameters.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>...splits</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The positions of axis splitting</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SplitAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">splitAxis</span><span class="p">(</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.8</span> <span class="p">);</span> <span class="c1">// Creates 4 chunks (0-20%, 20%-50%, 50%-80%, 80%-100%)</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="splitSpread"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">splitSpread</span><span class="doc-signature">( <span class="doc-type">Boolean</span> bln )</span></h4>
+
+
+
+
+<div class="description">
+    Spreads the chunks of the axis based on the relative interval of each one of them, so that the unit / px is constant for each chunk
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bln</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">```true``` to enable the spread, ```false``` otherwise</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SplitAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setChunkBoundaries"><span class="type-signature"></span><span>{<span class="doc-return">SplitAxis</span>} </span><span class="doc-name">setChunkBoundaries</span><span class="doc-signature">( <span class="doc-type">Array.&lt;(Array|Number)></span> values )</span></h4>
+
+
+
+
+<div class="description">
+    Defines the boundaries of each chunk in axis unit.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>values</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;(Array|Number)></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array of either 2-component arrays (from-to) or number (mean)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SplitAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current axis instance
+</div>
+
+        
+
+    
+        <h5>Examples</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span> <span class="p">],</span> <span class="p">[</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// First chunk from 12 to 20, second one from 100 to 200</span>
+ </code></pre></figure>
+
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setChunkBoundaries</span><span class="p">(</span> <span class="p">[</span> <span class="mi">12</span><span class="p">,</span> <span class="p">[</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">200</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Second chunk from 100 to 200, first chunk with a mean at 12 and min / max determined by the relative widths of the chunks</span>
+ </code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

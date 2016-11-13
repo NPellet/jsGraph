@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/Legend.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>Legend</h2>
+        
+            <div class="class-description">Legend constructor. You should not call this method directly, but rather use graph.makeLegend</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="doc-code" id="Legend"><span class="type-signature"></span>new <span></span><span class="doc-name">Legend</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">legend</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">makeLegend</span><span class="p">(</span> <span class="p">{</span>  <span class="na">backgroundColor</span><span class="p">:</span> <span class="s1">'rgba(255, 255, 255, 0.8)'</span><span class="p">,</span>
+<span class="na">frame</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="na">frameWidth</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="na">frameColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span>
+<span class="na">paddingTop</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="na">paddingLeft</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="na">paddingBottom</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="na">paddingRight</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="na">frameRounding</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+
+<span class="na">movable</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+
+<span class="na">shapesToggleable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="na">isSerieHideable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+<span class="na">isSerieSelectable</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+
+
+<div class="doc-member">
+<h4 class="doc-code" id="seriesHideable"><span class="type-signature"></span><span class="doc-name">seriesHideable</span><span class="type-signature"> :Boolean</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+
+
+
+
+</div>
+</div>
+        
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="applyStyle"><span class="type-signature"></span><span></span><span class="doc-name">applyStyle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Re-applies the legend style
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="fixSeries"><span class="type-signature"></span><span></span><span class="doc-name">fixSeries</span><span class="doc-signature">( <span class="doc-type">GraphSerie, Array.&lt;GraphSerie></span> &hellip;a )</span></h4>
+
+
+
+
+<div class="description">
+    Re-applies the legend style
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GraphSerie</span>
+|
+
+<span class="param-type">Array.&lt;GraphSerie></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">serie or an array of series</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDom"><span class="type-signature"></span><span>{<span class="doc-return">SVGGroupElement</span>} </span><span class="doc-name">getDom</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SVGGroupElement</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The SVG group element wrapping the legend
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isHideable"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isHideable</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    true or false depending if the series can be hidden or not
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isSelectable"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isSelectable</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    true or false depending if the series can be selected or not
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isToggleShapes"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isToggleShapes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    true or false depending if the series can be t or not
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setPosition"><span class="type-signature"></span><span></span><span class="doc-name">setPosition</span><span class="doc-signature">( <span class="doc-type">Position</span> position , <span class="doc-type">String</span> alignToX , <span class="doc-type">String</span> alignToY )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the position of the legend
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Position.html">Position</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the position to set the legend to versus the graph main axes (<a href="Graph.html#getXAxis">Graph#getXAxis</a> and <a href="Graph.html#getYAxis">Graph#getYAxis</a>)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>alignToX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">"right" or "left". References the legend right or left boundary using the position parameter</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>alignToY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">"top" or "bottom". References the legend top or bottom boundary using the position parameter</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">legend</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'max'</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="s1">'0px'</span> <span class="p">},</span> <span class="s1">'right'</span><span class="p">,</span> <span class="s1">'top'</span> <span class="p">);</span> <span class="c1">// The rightmost side of the legend will at the maximum value of the axis, and will be positioned at the top</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="update"><span class="type-signature"></span><span></span><span class="doc-name">update</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Updates the legend position and content
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

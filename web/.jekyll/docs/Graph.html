@@ -1,0 +1,9862 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/Graph.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>Graph</h2>
+        
+            <div class="class-description">Entry class of jsGraph that creates a new graph.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="doc-code" id="Graph"><span class="type-signature"></span>new <span></span><span class="doc-name">Graph</span><span class="doc-signature">( <span class="doc-type">HTMLElement, String</span> wrapper [ , <span class="doc-type">GraphOptions</span> options ] [ , <span class="doc-type">Object</span> axis ] )</span></h4>
+
+
+
+
+<div class="description">
+    Graph constructor
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>wrapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The DOM Wrapper element or the element ```id``` where it can be found</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GraphOptions</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The options of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The list of axes
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>left</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The list of left axes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The list of bottom axes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>top</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The list of top axes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>right</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The list of right axes</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-tutorial">Tutorials:</dt>
+    <dd class="tag-tutorial">
+        <ul>
+            <li><em class="disabled">Tutorial: basic</em></li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>EventEmitter</li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+
+
+<div class="doc-member">
+<h4 class="doc-code" id=".GraphOptions"><span class="type-signature">(static) </span><span class="doc-name">GraphOptions</span><span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Default graph parameters
+</div>
+
+
+<div class="doc-details">
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>title</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Title of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paddingTop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The top padding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paddingLeft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The left padding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paddingRight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The right padding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>paddingBottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The bottom padding</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>padding</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A common padding value for top, bottom, left and right</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The basic text size of the graphs</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fontFamily</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The basic font family. Should be installed on the computer of the user</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>plugins</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A list of plugins to import with their options</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pluginAction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The default key combination to access those actions</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mouseActions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object.&lt;String, Object></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Alias of pluginActions</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>wheel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Define the mouse wheel action</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>dblclick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Define the double click action</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>shapesUniqueSelection</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to allow only one shape to be selected at the time</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>shapesUnselectOnClick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true to unselect all shapes on click</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+</div>
+</div>
+        
+            
+
+
+<div class="doc-member">
+<h4 class="doc-code" id="options"><span class="type-signature"></span><span class="doc-name">options</span><span class="type-signature"> :GraphOptions</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">GraphOptions</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy">
+            <li>GraphOptionsDefault
+Access directly the options of the graph using this public object.</li>
+        </ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+    <h5>Example</h5>
+    
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span> <span class="p">{</span>  <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+
+</div>
+</div>
+        
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".fromSchema"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">fromSchema</span><span class="doc-signature">( <span class="doc-type">Object</span> schema , <span class="doc-type">HTMLElement</span> wrapper )</span></h4>
+
+
+
+
+<div class="description">
+    Returns a graph created from a schema
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>schema</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>wrapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The wrapping element</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Newly created graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".getConstructor"><span class="type-signature">(static) </span><span>{<span class="doc-return">function</span>} </span><span class="doc-name">getConstructor</span><span class="doc-signature">( <span class="doc-type">String</span> constructorName )</span></h4>
+
+
+
+
+<div class="description">
+    Returns a registered constructor
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>constructorName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The constructor name to look for</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#.registerConstructor">Graph.registerConstructor</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Throws:</h5>
+    
+            
+
+    <div class="param-desc">
+    
+        Error
+    
+    </div>
+
+
+        
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">function</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The registered constructor
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".registerConstructor"><span class="type-signature">(static) </span><span></span><span class="doc-name">registerConstructor</span><span class="doc-signature">( <span class="doc-type">String</span> constructorName , <span class="doc-type">function</span> constructor )</span></h4>
+
+
+
+
+<div class="description">
+    Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>constructorName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the constructor</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>constructor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The constructor method</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#.getConstructor">Graph.getConstructor</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="_applyToAxes"><span class="type-signature"></span><span></span><span class="doc-name">_applyToAxes</span><span class="doc-signature">( <span class="doc-type">AxisCallbackFunction, String</span> func , params , <span class="doc-type">Boolean</span> topbottom , <span class="doc-type">Boolean</span> leftright )</span></h4>
+
+
+
+
+<div class="description">
+    Applies a function to axes. The function will be executed once for every axis.
+If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
+If func is a function, the function will be called with the axis, its type and params as parameters. See <a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a> for more details.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#AxisCallbackFunction">AxisCallbackFunction</a></span>
+|
+
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The function or function name to execute</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>params</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Extra parameters to pass to the function</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>topbottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">True to apply to function to top and bottom axes</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>leftright</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">True to apply to function to left and right axes</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Autoscales the x and y axes of the graph<br />
+Repains the canvas
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="cacheOffset"><span class="type-signature"></span><span></span><span class="doc-name">cacheOffset</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Caches the wrapper offset in the page.<br />
+The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
+If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#uncacheOffset">Graph#uncacheOffset</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="displayTitle"><span class="type-signature"></span><span></span><span class="doc-name">displayTitle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Shows the title of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="draw"><span class="type-signature"></span><span></span><span class="doc-name">draw</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="drawSerie"><span class="type-signature"></span><span></span><span class="doc-name">drawSerie</span><span class="doc-signature">( <span class="doc-type">Serie</span> serie , <span class="doc-type">Boolean</span> force )</span></h4>
+
+
+
+
+<div class="description">
+    Draws a specific serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serie to redraw</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Forces redraw even if no data has changed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="drawSeries"><span class="type-signature"></span><span></span><span class="doc-name">drawSeries</span><span class="doc-signature">( <span class="doc-type">Boolean</span> force )</span></h4>
+
+
+
+
+<div class="description">
+    Redraws all visible series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Forces redraw even if no data has changed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="findAxesLinkedTo"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Axis.html">Axis</a>></span>} </span><span class="doc-name">findAxesLinkedTo</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Axes can be dependant of one another (for instance for unit conversions)
+Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis that links one or multiple other dependant axes</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Axis.html">Axis</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The list of axes linked to the axis passed as parameter
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBottomAxis"><span class="type-signature"></span><span></span><span class="doc-name">getBottomAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the bottom axis at a certain index. Creates it if non-existant
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoundaryAxis"><span class="type-signature"></span><span></span><span class="doc-name">getBoundaryAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDom"><span class="type-signature"></span><span>{<span class="doc-return">SVGElement</span>} </span><span class="doc-name">getDom</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the graph SVG wrapper element
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">SVGElement</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The DOM element wrapping the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDrawingHeight"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getDrawingHeight</span><span class="doc-signature">( <span class="doc-type">Boolean</span> useCache )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the height of the drawable zone, including the space used by the axes
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>useCache</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Height of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDrawingWidth"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getDrawingWidth</span><span class="doc-signature">( <span class="doc-type">Boolean</span> useCache )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the width of the drawable zone, including the space used by the axes
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>useCache</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Width of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getHeight"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getHeight</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the height of the graph (set by setSize, setHeight or resize methods)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Height of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getId"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getId</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the unique id representing the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The unique ID of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getLeftAxis"><span class="type-signature"></span><span></span><span class="doc-name">getLeftAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the left axis at a certain index. Creates it if non-existant
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPaddingBottom"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPaddingBottom</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    paddingTop
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPaddingLeft"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPaddingLeft</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    paddingTop
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPaddingRight"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPaddingRight</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    paddingRight
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPaddingTop"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getPaddingTop</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    paddingTop
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPlugin"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Plugin.html">Plugin</a></span>} </span><span class="doc-name">getPlugin</span><span class="doc-signature">( <span class="doc-type">String</span> pluginName )</span></h4>
+
+
+
+
+<div class="description">
+    Returns an initialized plugin
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pluginName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Plugin.html">Plugin</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The plugin which name is <pluginName>
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getRightAxis"><span class="type-signature"></span><span></span><span class="doc-name">getRightAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the right axis at a certain index. Creates it if non-existant
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSelectedSerie"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a>|undefined</span>} </span><span class="doc-name">getSelectedSerie</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the selected serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+|
+
+<span class="param-type">undefined</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The selected serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSerie"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">getSerie</span><span class="doc-signature">( <span class="doc-type">String, Number</span> name )</span></h4>
+
+
+
+
+<div class="description">
+    Looks for an existing serie by name or by index and returns it.
+The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name or the index of the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div>
+
+	<span class="doc-return">
+        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+    </span>
+
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSeries"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Serie.html">Serie</a>></span>} </span><span class="doc-name">getSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns all the series
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Serie.html">Serie</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array of all the series
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSeriesFromAxis"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Serie.html">Serie</a>></span>} </span><span class="doc-name">getSeriesFromAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Returns all the series associated to an axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis to which the series belong</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Serie.html">Serie</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array containing the list of series that belong to the axis
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getShapes"><span class="type-signature"></span><span></span><span class="doc-name">getShapes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns all shapes from the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getShapesOfSerie"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Shape.html">Shape</a>></span>} </span><span class="doc-name">getShapesOfSerie</span><span class="doc-signature">( <span class="doc-type">Serie</span> serie )</span></h4>
+
+
+
+
+<div class="description">
+    Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serie containing the shapes</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Shape.html">Shape</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array containing a list of shapes associated to the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getTopAxis"><span class="type-signature"></span><span></span><span class="doc-name">getTopAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the top axis at a certain index. Creates it if non-existant
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getWidth"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the width of the graph (set by setSize, setWidth or resize methods)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Width of the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getWrapper"><span class="type-signature"></span><span>{<span class="doc-return">HTMLElement</span>} </span><span class="doc-name">getWrapper</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the graph wrapper element passed during the graph creation
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">HTMLElement</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The DOM element wrapping the graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getXAxis"><span class="type-signature"></span><span></span><span class="doc-name">getXAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+Caution ! The <code>options</code> parameter will only be effective if an axis is created
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getYAxis"><span class="type-signature"></span><span></span><span class="doc-name">getYAxis</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> index ] [ , <span class="doc-type">Object</span> options ] )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+Caution ! The <code>options</code> parameter will only be effective if an axis is created
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    {}
+                
+                </td>
+            
+
+            <td class="description last">The options to pass to the axis constructor</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasBottomAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasBottomAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if an x axis belongs to bottom axes list of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasLeftAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasLeftAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if a y axis belongs to left axes list of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasRightAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasRightAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if a y axis belongs to right axes list of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasTopAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasTopAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if an x axis belongs to top axes list of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasXAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasXAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if an x axis belongs to the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hasYAxis"><span class="type-signature"></span><span></span><span class="doc-name">hasYAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if an x axis belongs to the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis instance to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hideTitle"><span class="type-signature"></span><span></span><span class="doc-name">hideTitle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Hides the title of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Kills the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="makeLegend"><span class="type-signature"></span><span></span><span class="doc-name">makeLegend</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+
+
+
+
+<div class="description">
+    Creates a legend. Only one legend is allowed per graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The legend options</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="newPosition"><span class="type-signature"></span><span></span><span class="doc-name">newPosition</span><span class="doc-signature">( <span class="doc-type">*</span> &hellip;var_args )</span></h4>
+
+
+
+
+<div class="description">
+    Creates a new position. Arguments are passed to the position constructor
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>var_args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Position.html">Position</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="newSerie"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">newSerie</span><span class="doc-signature">( <span class="doc-type">String</span> name , <span class="doc-type">Object</span> options , <span class="doc-type">Type</span> type )</span></h4>
+
+
+
+
+<div class="description">
+    Creates a new serie.
+If the a serie with the same name exists, returns this serie with update options.
+The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
+Built-in series types are "line", "contour", "zone" and "scatter".
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the serie (unique)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serie options</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Type</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The type of the serie.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The newly created serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="newShape"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Shape.html">Shape</a></span>} </span><span class="doc-name">newShape</span><span class="doc-signature">( <span class="doc-type">String</span> shapeType [ , <span class="doc-type">Object</span> shapeData ] [ , <span class="doc-type">Boolean</span> mute ] [ , <span class="doc-type">Object</span> shapeProperties ] )</span></h4>
+
+
+
+
+<div class="description">
+    Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shapeType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The type of the shape</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>shapeData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The options passed to the shape creator</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mute</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><code>true</code> to create the shape quietly</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>shapeProperties</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The native object containing the shape properties in the jsGraph format (caution when using it)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li>Graph#getConstructor</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Shape.html">Shape</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The created shape
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="redraw"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">redraw</span><span class="doc-signature">( <span class="doc-type">Boolean</span> onlyIfAxesHaveChanged )</span></h4>
+
+
+
+
+<div class="description">
+    Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see <a href="Graph.html#autoscaleAxes">Graph#autoscaleAxes</a>).<br />
+To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyIfAxesHaveChanged</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Triggers a redraw only if min/max values of the axes have changed.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    if the redraw has been successful
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="redrawShapes"><span class="type-signature"></span><span></span><span class="doc-name">redrawShapes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Redraws all shapes. To be called if their definitions have changed
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Removes all series from the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeShapes"><span class="type-signature"></span><span></span><span class="doc-name">removeShapes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Removes all shapes from the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="resize"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">resize</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> width ] [ , <span class="doc-type">Number</span> height ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new width of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new height of the graph</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setWidth">Graph#setWidth</a></li>
+        
+            <li><a href="Graph.html#setHeight">Graph#setHeight</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="selectSerie"><span class="type-signature"></span><span></span><span class="doc-name">selectSerie</span><span class="doc-signature">( <span class="doc-type">Serie</span> serie , <span class="doc-type">String</span> selectName )</span></h4>
+
+
+
+
+<div class="description">
+    Selects a serie. Only one serie per graph can be selected.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The serie to select</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>selectName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    "selected"
+                
+                </td>
+            
+
+            <td class="description last">The name of the selection</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="selectShape"><span class="type-signature"></span><span></span><span class="doc-name">selectShape</span><span class="doc-signature">( <span class="doc-type">Shape</span> shape , <span class="doc-type">Boolean</span> mute )</span></h4>
+
+
+
+
+<div class="description">
+    Selects a shape
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Shape.html">Shape</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The shape to select</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mute</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Select the shape quietly</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBackgroundColor"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">setBackgroundColor</span><span class="doc-signature">( <span class="doc-type">String</span> color )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the background color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An SVG accepted color for the background</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBottomAxis"><span class="type-signature"></span><span></span><span class="doc-name">setBottomAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a bottom axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setTopAxis">Graph#setTopAxis</a></li>
+        
+            <li><a href="Graph.html#setLeftAxis">Graph#setLeftAxis</a></li>
+        
+            <li><a href="Graph.html#setRightAxis">Graph#setRightAxis</a></li>
+        
+            <li><a href="Graph.html#getTopAxis">Graph#getTopAxis</a></li>
+        
+            <li><a href="Graph.html#getXAxis">Graph#getXAxis</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setHeight"><span class="type-signature"></span><span></span><span class="doc-name">setHeight</span><span class="doc-signature">( <span class="doc-type">Number</span> height , <span class="doc-type">Boolean</span> skipResize )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the total height of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new height of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skipResize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><code>true</code> to defer graph repaint. Use <a href="Graph.html#resize">Graph#resize</a> to force repain later on. (Useful if many graph sizing operations are done successively)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setWidth">Graph#setWidth</a></li>
+        
+            <li><a href="Graph.html#resize">Graph#resize</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLeftAxis"><span class="type-signature"></span><span></span><span class="doc-name">setLeftAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a left axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setBottomAxis">Graph#setBottomAxis</a></li>
+        
+            <li><a href="Graph.html#setTopAxis">Graph#setTopAxis</a></li>
+        
+            <li><a href="Graph.html#setRightAxis">Graph#setRightAxis</a></li>
+        
+            <li><a href="Graph.html#getLeftAxis">Graph#getLeftAxis</a></li>
+        
+            <li><a href="Graph.html#getYAxis">Graph#getYAxis</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOption"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">setOption</span><span class="doc-signature">( <span class="doc-type">String</span> name , value )</span></h4>
+
+
+
+
+<div class="description">
+    Sets an option of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Option name</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">New option value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    - Graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setRightAxis"><span class="type-signature"></span><span></span><span class="doc-name">setRightAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a right axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setBottomAxis">Graph#setBottomAxis</a></li>
+        
+            <li><a href="Graph.html#setLeftAxis">Graph#setLeftAxis</a></li>
+        
+            <li><a href="Graph.html#setTopAxis">Graph#setTopAxis</a></li>
+        
+            <li><a href="Graph.html#getRightAxis">Graph#getRightAxis</a></li>
+        
+            <li><a href="Graph.html#getYAxis">Graph#getYAxis</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setSize"><span class="type-signature"></span><span></span><span class="doc-name">setSize</span><span class="doc-signature">( [ , <span class="doc-type">Number</span> width ] [ , <span class="doc-type">Number</span> height ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the new dimension of the graph without repainting it. Use <a href="Graph.html#resize">Graph#resize</a> to perform the actual resizing of the graph.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new width of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>height</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The new height of the graph</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setWidth">Graph#setWidth</a></li>
+        
+            <li><a href="Graph.html#setHeight">Graph#setHeight</a></li>
+        
+            <li><a href="Graph.html#resize">Graph#resize</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setTitle"><span class="type-signature"></span><span></span><span class="doc-name">setTitle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the title of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setTopAxis"><span class="type-signature"></span><span></span><span class="doc-name">setTopAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a top axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setBottomAxis">Graph#setBottomAxis</a></li>
+        
+            <li><a href="Graph.html#setLeftAxis">Graph#setLeftAxis</a></li>
+        
+            <li><a href="Graph.html#setRightAxis">Graph#setRightAxis</a></li>
+        
+            <li><a href="Graph.html#getBottomAxis">Graph#getBottomAxis</a></li>
+        
+            <li><a href="Graph.html#getXAxis">Graph#getXAxis</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setWidth"><span class="type-signature"></span><span></span><span class="doc-name">setWidth</span><span class="doc-signature">( <span class="doc-type">Number</span> width , <span class="doc-type">Boolean</span> skipResize )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the total width of the graph
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new width of the graph</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>skipResize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><code>true</code> to defer graph repaint. Use <a href="Graph.html#resize">Graph#resize</a> to force repain later on. (Useful if many graph sizing operations are done successively)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#setHeight">Graph#setHeight</a></li>
+        
+            <li><a href="Graph.html#resize">Graph#resize</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setXAxis"><span class="type-signature"></span><span></span><span class="doc-name">setXAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a bottom axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setYAxis"><span class="type-signature"></span><span></span><span class="doc-name">setYAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> axis [ , <span class="doc-type">Number</span> index ] )</span></h4>
+
+
+
+
+<div class="description">
+    Sets a left axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The axis instance to set</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last">The index of the axis</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="uncacheOffset"><span class="type-signature"></span><span></span><span class="doc-name">uncacheOffset</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Un-caches the wrapper offset value
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#cacheOffset">Graph#cacheOffset</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="unselectSerie"><span class="type-signature"></span><span></span><span class="doc-name">unselectSerie</span><span class="doc-signature">( <span class="doc-type">Serie</span> serie )</span></h4>
+
+
+
+
+<div class="description">
+    Unselects a serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The serie to unselect</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="unselectShape"><span class="type-signature"></span><span></span><span class="doc-name">unselectShape</span><span class="doc-signature">( <span class="doc-type">Shape</span> shape , <span class="doc-type">Boolean</span> mute )</span></h4>
+
+
+
+
+<div class="description">
+    Unselects a shape
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Shape.html">Shape</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The shape to unselect</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>mute</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Unselect the shape quietly</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="unselectShapes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">unselectShapes</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> mute ] )</span></h4>
+
+
+
+
+<div class="description">
+    Unselects all shapes
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mute</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Mutes all unselection events</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="updateDataMinMaxAxes"><span class="type-signature"></span><span></span><span class="doc-name">updateDataMinMaxAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Determines the maximum and minimum of each axes, based on <a href="Graph.html#getBoundaryAxis">Graph#getBoundaryAxis</a>. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#getBoundaryAxis">Graph#getBoundaryAxis</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span></span><span class="doc-name">updateLegend</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Redraw the legend
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

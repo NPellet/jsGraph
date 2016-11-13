@@ -1,0 +1,8216 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/SerieBox.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<nav class="navbar navbar-default" id="jsgraph-subdocnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieBar.html">
+			  		Bar
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li  class="active" >
+			  	<a class="page-link" href="/docs/SerieBox.html">
+			  		Box
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieDensityMap.html">
+			  		DensityMap
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieLine.html">
+			  		Line
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieLineColor.html">
+			  		LineColor
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieScatter.html">
+			  		Scatter
+			  	</a>
+			  </li>
+			  
+			
+			  
+			  <li >
+			  	<a class="page-link" href="/docs/SerieZone.html">
+			  		Zone
+			  	</a>
+			  </li>
+			  
+				
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>SerieBox</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="SerieBox"><span class="type-signature"></span>new <span></span><span class="doc-name">SerieBox</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#newSerie">Graph#newSerie</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="s2">"scatter"</span> <span class="p">);</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="Serie.html">Serie</a></li>
+    </ul>
+
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="applyLineStyles"><span class="type-signature"></span><span></span><span class="doc-name">applyLineStyles</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Reapply the current style to the serie lines elements. Mostly used internally
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBarAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBarAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBarBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBarBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBarBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBoxAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getBoxBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getBoxBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getCategoryIndex"><span class="type-signature"></span><span></span><span class="doc-name">getCategoryIndex</span><span class="doc-signature">( <span class="doc-type">String</span> name )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the index of a category based on its name
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the category</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getCategoryIndex"><span class="type-signature"></span><span></span><span class="doc-name">getCategoryIndex</span><span class="doc-signature">( <span class="doc-type">String</span> name )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the index of a category based on its name
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The name of the category</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMeanLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getMeanLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the mean line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMeanLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getMeanLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the mean line width
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierFillColor"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierLineColor"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getOutlierLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">getOutlierLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBarAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBarAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBarBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBarBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBarBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the box line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxAboveLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBoxAboveLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setBoxBelowLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setBoxBelowLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setData"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieBar.html">SerieBar</a></span>} </span><span class="doc-name">setData</span><span class="doc-signature">( <span class="doc-type">Object</span> data )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the data of the bar serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Serie.html#setData">Serie#setData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="SerieBar.html">SerieBar</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'cat'</span><span class="p">,</span> <span class="na">mean</span><span class="p">:</span> <span class="nx">valMean</span><span class="p">,</span> <span class="na">boxMin</span><span class="p">:</span> <span class="nx">valBoxMin</span><span class="p">,</span> <span class="na">boxMax</span><span class="p">:</span> <span class="nx">valBoxMax</span><span class="p">,</span> <span class="na">barMin</span><span class="p">:</span> <span class="nx">valBarMin</span><span class="p">,</span> <span class="na">barMax</span><span class="p">:</span> <span class="nx">valBarMax</span><span class="p">,</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="p">...</span><span class="nx">yList</span> <span class="p">]</span> <span class="p">}</span> <span class="p">]</span> <span class="p">);</span>
+ </code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMeanLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setMeanLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the mean line color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setMeanLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setMeanLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the mean line width
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierFillColor"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierFillColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierFillOpacity"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierFillOpacity</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierLineColor"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierLineColor</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOutlierLineWidth"><span class="type-signature"></span><span></span><span class="doc-name">setOutlierLineWidth</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the fill color
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+        <h3 class="subsection-title">Inherited Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="allowTrackingLine"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">allowTrackingLine</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+
+
+
+
+<div class="description">
+    Allows mouse tracking of the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The tracking line options</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#allowTrackingLine">Serie#allowTrackingLine</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">autoAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns axes automatically, based on <a href="Graph.html#getXAxis">Graph#getXAxis</a> and <a href="Graph.html#getYAxis">Graph#getYAxis</a>.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#autoAxis">Serie#autoAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="clearData"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">clearData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Removes all the data from the serie, without redrawing
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#clearData">Serie#clearData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="dataHasChanged"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">dataHasChanged</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Notifies jsGraph that the data of the serie has changed
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#dataHasChanged">Serie#dataHasChanged</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getAdditionalData"><span class="type-signature"></span><span></span><span class="doc-name">getAdditionalData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getAdditionalData">Serie#getAdditionalData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getData"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;(Float64Array|Int32Array)></span>} </span><span class="doc-name">getData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the data in its current form
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getData">Serie#getData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;(Float64Array|Int32Array)></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array containing the data chunks. Has only one member if the data has no gaps
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getFlip"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">getFlip</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Serie.html#getFlip">Serie#getFlip</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    <code>true</code> if the serie is flipped, <code>false</code> otherwise
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getIndex"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getIndex</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getIndex">Serie#getIndex</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current index of the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getInfo"><span class="type-signature"></span><span></span><span class="doc-name">getInfo</span><span class="doc-signature">( <span class="doc-type">String</span> prop )</span></h4>
+
+
+
+
+<div class="description">
+    Retrives an information value from its key
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The property</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getInfo">Serie#getInfo</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Serie.html#setInfo">Serie#setInfo</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+
+    The value associated to the prop parameter
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getLabel"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getLabel</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getLabel">Serie#getLabel</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The label or, alternatively - the name of the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getLayer"><span class="type-signature"></span><span>{<span class="doc-return">Nunber</span>} </span><span class="doc-name">getLayer</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getLayer">Serie#getLayer</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Nunber</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The index of the layer into which the serie will be drawn
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMaxX"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxX</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getMaxX">Serie#getMaxX</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Highest x value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMaxY"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMaxY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getMaxY">Serie#getMaxY</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Highest y value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMinX"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinX</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getMinX">Serie#getMinX</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Lowest x value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getMinY"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getMinY</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getMinY">Serie#getMinY</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    Lowest y value of the serie's data
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getName"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getName</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Getter for the serie name
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getName">Serie#getName</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The serie name
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getSymbolForLegend"><span class="type-signature"></span><span>{<span class="doc-return">SVGElement</span>} </span><span class="doc-name">getSymbolForLegend</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Computes and returns a line SVG element with the same line style as the serie, or width 20px
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div>
+
+	<span class="doc-return">
+        
+<span class="param-type">SVGElement</span>
+
+
+    </span>
+
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getTextForLegend"><span class="type-signature"></span><span>{<span class="doc-return">SVGElement</span>} </span><span class="doc-name">getTextForLegend</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getTextForLegend">Serie#getTextForLegend</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Serie.html#getLabel">Serie#getLabel</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div>
+
+	<span class="doc-return">
+        
+<span class="param-type">SVGElement</span>
+
+
+    </span>
+
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getX"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getX</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the x position of a certain value in pixels position, based on the serie's axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to convert to pixels position</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getX">Serie#getX</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The x position in px corresponding to the x value
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getXAxis"><span class="type-signature"></span><span>{<span class="doc-return">GraphAxis</span>} </span><span class="doc-name">getXAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getXAxis">Serie#getXAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">GraphAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The x axis assigned to the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getY"><span class="type-signature"></span><span>{<span class="doc-return">Number</span>} </span><span class="doc-name">getY</span><span class="doc-signature">( <span class="doc-type">Number</span> val )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the y position of a certain value in pixels position, based on the serie's axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>val</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to convert to pixels position</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getY">Serie#getY</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The y position in px corresponding to the y value
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getYAxis"><span class="type-signature"></span><span>{<span class="doc-return">GraphAxis</span>} </span><span class="doc-name">getYAxis</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#getYAxis">Serie#getYAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">GraphAxis</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The y axis assigned to the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="hide"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">hide</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> hideShapes ] )</span></h4>
+
+
+
+
+<div class="description">
+    Hides the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>hideShapes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><code>true</code> to hide the shapes associated to the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#hide">Serie#hide</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isSelected"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isSelected</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Returns the selection state of the serie. Generic for most serie types
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#isSelected">Serie#isSelected</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    <code>true</code> if the serie is selected, <code>false</code> otherwise
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="isShown"><span class="type-signature"></span><span>{<span class="doc-return">Boolean</span>} </span><span class="doc-name">isShown</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Determines if the serie is currently visible
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#isShown">Serie#isShown</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Boolean</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current visibility status of the serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#kill">Serie#kill</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="select"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">select</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Flags the serie as selected
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#select">Serie#select</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAdditionalData"><span class="type-signature"></span><span></span><span class="doc-name">setAdditionalData</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setAdditionalData">Serie#setAdditionalData</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <dt class="important tag-deprecated">Deprecated:</dt><dd class="yes-def tag-deprecated"><ul class="dummy"><li>Yes</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setAxes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setAxes</span><span class="doc-signature">( <span class="doc-type">GraphAxis</span> axis1 , <span class="doc-type">GraphAxis</span> axis2 )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns two axes to the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis1</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GraphAxis</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">First axis to assign to the serie (x or y)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>axis2</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GraphAxis</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Second axis to assign to the serie (y or x)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setAxes">Serie#setAxes</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setFlip"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setFlip</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> flipped ] )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call <a href="Serie.html#autoAxis">Serie#autoAxis</a> to re-assign the axes automatically, or any other axis setting method.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>flipped</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><code>true</code> to flip the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setFlip">Serie#setFlip</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setInfo"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setInfo</span><span class="doc-signature">( <span class="doc-type">String</span> prop , value )</span></h4>
+
+
+
+
+<div class="description">
+    Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The property</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setInfo">Serie#setInfo</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Serie.html#getInfo">Serie#getInfo</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLabel"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setLabel</span><span class="doc-signature">( <span class="doc-type">String</span> label )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the label of the serie. Note that this does not automatically updates the legend
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The new label of the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setLabel">Serie#setLabel</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLayer"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setLayer</span><span class="doc-signature">( <span class="doc-type">Number</span> layerIndex )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>layerIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">The index of the layer into which the serie will be drawn</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setLayer">Serie#setLayer</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setLegendSymbolStyle"><span class="type-signature"></span><span>{<span class="doc-return">SVGElement</span>} </span><span class="doc-name">setLegendSymbolStyle</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Explicitely applies the line style to the SVG element returned by <a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a>
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Serie.html#setLegendSymbolStyle">Serie#setLegendSymbolStyle</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Serie.html#getSymbolForLegend">Serie#getSymbolForLegend</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div>
+
+	<span class="doc-return">
+        
+<span class="param-type">SVGElement</span>
+
+
+    </span>
+
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setOptions"><span class="type-signature"></span><span></span><span class="doc-name">setOptions</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+
+
+
+
+<div class="description">
+    Sets the options of the serie (no extension of default options)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The options of the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setOptions">Serie#setOptions</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setXAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setXAxis</span><span class="doc-signature">( <span class="doc-type">Axis, Number</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns an x axis to the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+|
+
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis to use as an x axis. If an integer, <a href="Graph.html#getXAxis">Graph#getXAxis</a> or <a href="Graph.html#getYAxis">Graph#getYAxis</a> will be used</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setXAxis">Serie#setXAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setXAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getTopAxis</span><span class="p">(</span> <span class="mi">1</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// Assigns the second top axis to the serie</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="setYAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">setYAxis</span><span class="doc-signature">( <span class="doc-type">Axis, Number</span> axis )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns an y axis to the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+|
+
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The axis to use as an y axis. If an integer, <a href="Graph.html#getXAxis">Graph#getXAxis</a> or <a href="Graph.html#getYAxis">Graph#getYAxis</a> will be used</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#setYAxis">Serie#setYAxis</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(</span> <span class="mi">4</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// Assigns the 5th left axis to the serie</span></code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="show"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">show</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> showShapes ] )</span></h4>
+
+
+
+
+<div class="description">
+    Shows the serie
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>showShapes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><code>true</code> to show the shapes associated to the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#show">Serie#show</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="styleHasChanged"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">styleHasChanged</span><span class="doc-signature">( <span class="doc-type">String</span> selectionType )</span></h4>
+
+
+
+
+<div class="description">
+    Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>selectionType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The selection for which the style may have changed</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#styleHasChanged">Serie#styleHasChanged</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="toggleDisplay"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">toggleDisplay</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> hideShapes ] )</span></h4>
+
+
+
+
+<div class="description">
+    Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>hideShapes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><code>true</code> to hide the shapes associated to the serie</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#toggleDisplay">Serie#toggleDisplay</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="unselect"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">unselect</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Flags the serie as unselected
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+    <dt class="inherited-from">Inherited From:</dt>
+    <dd class="inherited-from"><ul class="dummy"><li>
+        <a href="Serie.html#unselect">Serie#unselect</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

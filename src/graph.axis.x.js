@@ -6,7 +6,7 @@ import Axis from './graph.axis'
  */
 class AxisX extends Axis {
 
-  constructor( graph, topbottom, options ) {
+  constructor( graph, topbottom, options = {} ) {
 
     super( graph, topbottom, options );
     this.top = topbottom == 'top';

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-9-densitymap.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="density-maps">Density maps</h2>
+<p>Density maps are a great way to render a lot of overlapping data. When data points that have some kind of an <code class="highlighter-rouge">(x,y)</code> relationships and you have sampled a lot of data, it would make little sense to render it with a normal line serie because:</p>
+
+<ul>
+  <li>It looks really bad</li>
+  <li>It doesn’t show any weighing of your dataset</li>
+  <li>It can become really slow</li>
+  <li>Sometimes, a line serie wouldn’t even make sense (think population density, for example)</li>
+</ul>
+
+<p>This is where density maps come in. Density maps are really a great way to render a huge amount of data in a nutshell. They take as an input as many (x,y) datapoints as you wish, and will resample the data into a 2D matrix <code class="highlighter-rouge">(x,y) = nb</code> where <code class="highlighter-rouge">nb</code> is the number of datapoints falling into the boundaries <code class="highlighter-rouge">[ x-dx, x+dx [ U [ y-dy, y+dy [</code>. We will call one set of <code class="highlighter-rouge">(x,y,nb)</code> as a bin. Basically, jsGraph calculates the density map by looping through your data and incrementing one of the 2D counters, the one closest to the <code class="highlighter-rouge">(x,y)</code> vector.</p>
+
+<h3 id="a-iddoc-seriedefadefining-density-map-series"><a id="doc-seriedef"></a>Defining density map series</h3>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">serieMapDensity</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="nx">serieName</span><span class="p">,</span> <span class="nx">serieOptions</span><span class="p">,</span> <span class="s1">'densitymap'</span> <span class="p">);</span> <span class="c1">// Case sensitive</span></code></pre></figure>
+
+<p>Where, as usual, <code class="highlighter-rouge">serieName</code> should be unique for your instance of jsGraph and serieOptions are currently not implemented for the density map.</p>
+
+<h3 id="a-iddoc-dataformatadata-format"><a id="doc-dataformat"></a>Data format</h3>
+
+<p>As of today, there is only one way to set the <code class="highlighter-rouge">(x,y)</code> data of the serie: an array of <code class="highlighter-rouge">(x,y)</code> arrays:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serieMapDensity</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">...,</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+<p>NB: Don’t forget setting the axes of the serie using <code class="highlighter-rouge">serie.setXAxis</code>, <code class="highlighter-rouge">serie.setYAxis</code> or <code class="highlighter-rouge">serie.autoAxis</code>.</p>
+
+<h3 id="a-iddoc-densitymapacalculate-a-density-map"><a id="doc-densitymap"></a>Calculate a density map</h3>
+
+<p>Calculate the density map takes only one instruction, but it requires you to select the minimum values, interval values and number of bins you want to use. This can allow you to calculate the map on a subset of your data. The instruction goes as follows</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="nx">serieMapDensity</span><span class="p">.</span><span class="nx">calculateDensityMap</span><span class="p">(</span> <span class="nx">fromX</span><span class="p">,</span> <span class="nx">deltaX</span><span class="p">,</span> <span class="nx">numX</span><span class="p">,</span> <span class="nx">fromY</span><span class="p">,</span> <span class="nx">deltaY</span><span class="p">,</span> <span class="nx">numY</span> <span class="p">);</span></code></pre></figure>
+
+<ul>
+  <li><code class="highlighter-rouge">fromX</code> could be <code class="highlighter-rouge">serieMapDensity.getDataMin()</code> to select the minimum value to start computing with as the minimum value of your <code class="highlighter-rouge">(x,y)</code> data</li>
+  <li><code class="highlighter-rouge">deltaX</code> could be ```( serieMapDensity.getDataMax() - serieMapDensity.getDataMin() ) / ( numX - 1 )</li>
+  <li><code class="highlighter-rouge">numX</code> is simply the number of bins you want to be shown</li>
+</ul>
+
+<h4 id="a-iddoc-autobinsa-the-automatic-way-with-autobins"><a id="doc-autobins"></a> The automatic way with <code class="highlighter-rouge">autoBins</code></h4>
+
+<p>In practice <code class="highlighter-rouge">calculateDensityMap</code> is rather used internally. Although nothing prevents you from using explicitely, as a starting point, jsGraph exposes an easier method, <code class="highlighter-rouge">serieMapDensity.autoBins( numX, numY )</code> which does exactly what I described above: it uses the minimum value and maximum value of your data in the x and y direction to set the boundaries of the density map.</p>
+
+<h4 id="a-iddoc-adapt-screenaadapt-it-to-your-screen"><a id="doc-adapt-screen"></a> Adapt it to your screen</h4>
+
+<p>A perhaps more clever way to calculate a density map is to take into account the amount of space on your graph. It doesn’t make sense to show 1’000 bins x 1’000 bins on a 300x300 drawing area. <code class="highlighter-rouge">serieMapDensity.setPxPerBin</code> takes care of that problem by replacing <code class="highlighter-rouge">calculateDensityMap</code> and <code class="highlighter-rouge">autoBins</code>. When the serie is about to be redrawn, <code class="highlighter-rouge">setPxPerBin</code> will look at the drawing width and height, divide it by a certain number you can specifiy (the number of bins per pixels) and recalculate the density map on the fly. Here’s how to call it:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">map</span> <span class="o">=</span> <span class="nx">serieMapDensity</span><span class="p">.</span><span class="nx">setPxPerBin</span><span class="p">(</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span> <span class="p">);</span> <span class="c1">// 3px per bin in x direction, 5px per bin in y direction</span></code></pre></figure>
+
+<h3 id="a-iddoc-colormapacolor-maps"><a id="doc-colormap"></a>Color maps</h3>
+
+<p>At this point, we have calculate a density map, but still there is nothing to display because we haven’t told jsGraph how to color each one of the bins. We introduce now the color maps, which is basically just like defining a gradient. Color maps are not limited to only 2 stop colors, but can take as many as you want. You can even define yourself the number of colors you want.</p>
+
+<div class="warning">A word of warning though. The more colors you want, the more DOM elements will have to be created. I would avoid 16-bit coloring if I were you</div>
+
+<p>Ok, let’s see now how to create a color map:</p>
+
+<h4 id="a-iddoc-colormap-hslaa-hsla-color-maps"><a id="doc-colormap-hsla"></a> HSL(A) color maps</h4>
+
+<p>Currently, they are the only kind of maps supported by jsGraph but they are probably the easier to handle in my opinion. The format for each HSLA element is <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">h:</span><span class="w"> </span><span class="err">[</span><span class="w"> </span><span class="err">0-360</span><span class="w"> </span><span class="err">],</span><span class="w"> </span><span class="err">s:</span><span class="w"> </span><span class="err">[</span><span class="w"> </span><span class="err">0-1</span><span class="w"> </span><span class="err">],</span><span class="w"> </span><span class="err">l:</span><span class="w"> </span><span class="err">[0-1],</span><span class="w"> </span><span class="err">a:</span><span class="w"> </span><span class="err">[0-1]</span><span class="w"> </span><span class="p">}</span></code></p>
+
+<p>Let’s take the classical black-to-red-to-yellow example (the heat map):</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serieMapDensity</span><span class="p">.</span><span class="nx">colorMapHSL</span><span class="p">(</span> <span class="p">[</span>
+	<span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mi">0</span> <span class="p">},</span> <span class="c1">// Black</span>
+	<span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">},</span> <span class="c1">// Red</span>
+	<span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">}</span> <span class="c1">// Yellow</span>
+<span class="p">],</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Use 300 colors</span></code></pre></figure>
+
+<div id="graph-example-1"></div>
+<script language="javascript">
+
+	var graph = new Graph("graph-example-1").resize(800, 100);
+	graph.getXAxis().turnGridsOff().setDisplay( false );
+	graph.getYAxis().turnGridsOff().setDisplay( false );
+	var s = graph.newSerie("s1", {}, "densitymap");
+	var data = []; for( var i = 1; i < 200; i ++ ) { for( var j = 0; j < i; j ++ ) {  data.push( [ i + j / i, 0 ] ) } }
+	s.setData( data ).autoAxis();
+	graph.getYAxis().forceMin(-2).forceMax(2);
+	s.setPxPerBin( false, 20, true );
+	s.setBinsFromTo( 'x', 0.5, 199.5, 199 );
+
+	s.colorMapHSL( [
+		{ h: 0, s: 1, l: 0 }, // Black
+		{ h: 0, s: 1, l: 0.5 }, // Red
+		{ h: 60, s: 1, l: 0.5 } // Yellow
+	], 300 ); // Use 300 colors
+	graph.draw();
+
+</script>
+
+<p>Another classic example is the rainbow color map, from blue to red, corresponding to three quarter of the hue wheel:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serieMapDensity</span><span class="p">.</span><span class="nx">colorMapHSL</span><span class="p">(</span> <span class="p">[</span>
+	<span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">270</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">},</span> <span class="c1">// Blue</span>
+	<span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">}</span> <span class="c1">// Red</span>
+<span class="p">],</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Use 300 colors</span></code></pre></figure>
+
+<div id="graph-example-2"></div>
+<script language="javascript">
+
+	var graph = new Graph("graph-example-2").resize(800, 100);
+	graph.getXAxis().turnGridsOff().setDisplay( false );
+	graph.getYAxis().turnGridsOff().setDisplay( false );
+	var s = graph.newSerie("s1", {}, "densitymap");
+	var data = []; for( var i = 1; i < 200; i ++ ) { for( var j = 0; j < i; j ++ ) {  data.push( [ i + j / i, 0 ] ) } }
+	s.setData( data ).autoAxis();
+	graph.getYAxis().forceMin(-2).forceMax(2);
+	s.setPxPerBin( false, 20, true );
+	s.setBinsFromTo( 'x', 0.5, 199.5, 199 );
+
+	s.colorMapHSL( [
+		{ h: 270, s: 1, l: 0.5 }, // Black
+		{ h: 0, s: 1, l: 0.5 }, // Red
+	], 300 ); // Use 300 colors
+	graph.draw();
+
+</script>
+
+<h4 id="a-iddoc-autocolorsa-automatic-color-map-boundaries"><a id="doc-autocolors"></a> Automatic color map boundaries</h4>
+
+<p>jsGraph can use only a sub-set of the color map by changing the boundaries of the color map. There will be more to that later, but let’s skip it for a second, and let’s use the minimum and maximum bin number found by <code class="highlighter-rouge">colorMapDensity</code>. For this, you need to call the method:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">serie</span><span class="p">.</span><span class="nx">autoColorMapBinBoundaries</span><span class="p">();</span></code></pre></figure>
+
+<h3 id="a-iddoc-alltogetheralets-put-all-of-this-together"><a id="doc-alltogether"></a>Let’s put all of this together</h3>
+
+<p>Let’s display your first color map. From there on we will use this example to demonstrate more advanced features.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"graph-example-3"</span><span class="p">).</span><span class="nx">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">250</span><span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">turnGridsOff</span><span class="p">();</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">turnGridsOff</span><span class="p">();</span>
+<span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"s1"</span><span class="p">,</span> <span class="p">{},</span> <span class="s2">"densitymap"</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">data</span> <span class="p">).</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setPxPerBin</span><span class="p">(</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="kc">false</span> <span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">colorMapHSL</span><span class="p">(</span> <span class="p">[</span>
+  <span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">270</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">},</span> <span class="c1">// Blue</span>
+  <span class="p">{</span> <span class="na">h</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">s</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">l</span><span class="p">:</span> <span class="mf">0.5</span> <span class="p">},</span> <span class="c1">// Red</span>
+<span class="p">],</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Use 300 colors</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="graph-example-3"></div>
+<script language="javascript">
+
+	$.get( baseUrl + 'datasets/density.txt', {}, function( txt ) {
+		var data = txt.split("\n").map( function(el ) { return el.split("\t" ).map( parseFloat ) } );
+		var graph = new Graph("graph-example-3").resize(400, 250);
+		graph.getXAxis().turnGridsOff();
+		graph.getYAxis().turnGridsOff();
+		var s = graph.newSerie("s1", {}, "densitymap");
+		s.setData( data ).autoAxis();
+		s.setPxPerBin( 5, 5, false );
+		s.colorMapHSL( [
+			{ h: 270, s: 1, l: 0.5 }, // Blue
+			{ h: 0, s: 1, l: 0.5 }, // Red
+		], 300 ); // Use 300 colors
+		graph.draw();
+	});
+
+</script>
+
+<p>Neat, no ?</p>
+
+<h3 id="a-iddoc-custom-boundariesa-custom-bin-boundaries"><a id="doc-custom-boundaries"></a> Custom bin boundaries</h3>
+
+<p>To go a little further, let’s imagine that in the previous data set, every bin with a value lower that half the full range should be purple. For this purpose, we can use the <code class="highlighter-rouge">onRedrawColorMapBinBoundaries</code> and <code class="highlighter-rouge">setColorMapBinBoundaries</code> methods. So what’s the difference ?</p>
+
+<ul>
+  <li><code class="highlighter-rouge">setColorMapBinBoundaries( minBin, maxBin )</code> will directly set the bin values and works when the map is not recalculated on the fly. When is the map recalculated on the fly ? It’s done when you are using the <code class="highlighter-rouge">setPxPerBins</code> method, or you called the <code class="highlighter-rouge">setBinsFromTo</code>. In either case, the series enters a mode where any direct call to <code class="highlighter-rouge">calculateDensityMap</code> has no impact, because it’s called internally upon redraw</li>
+  <li><code class="highlighter-rouge">onRedrawColorMapBinBoundaries( callback )</code> is used for the other case. You need to feed a callback that returns a 2-element vector, the first value being the new min bin value, the second the new max bin value. The callback will fire with 2 parameters, the binMin and binMax values calculated by the <code class="highlighter-rouge">calculateDensityMap</code> method. These values are the extremeties of the density map and settings your color map bins boundaries further than them would have no impact.</li>
+</ul>
+
+<p>Let’s take a look at the same example, but with an additional method in there:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s</span><span class="p">.</span><span class="nx">onRedrawColorMapBinBoundaries</span><span class="p">(</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">min</span><span class="p">,</span> <span class="nx">max</span> <span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="p">[</span> <span class="p">(</span><span class="nx">min</span> <span class="o">+</span> <span class="nx">max</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="nx">max</span> <span class="p">];</span>
+<span class="p">});</span></code></pre></figure>
+
+<div id="graph-example-4"></div>
+<script language="javascript">
+
+	$.get( baseUrl + 'datasets/density.txt', {}, function( txt ) {
+		var data = txt.split("\n").map( function(el ) { return el.split("\t" ).map( parseFloat ) } );
+		var graph = new Graph("graph-example-4").resize(400, 250);
+		graph.getXAxis().turnGridsOff();
+		graph.getYAxis().turnGridsOff();
+		var s = graph.newSerie("s1", {}, "densitymap");
+		s.setData( data ).autoAxis();
+		s.setPxPerBin( 5, 5, false );
+
+		s.onRedrawColorMapBinBoundaries( function( min, max ) {
+			return [ ( max + min ) / 2, max ];
+		});
+
+		s.colorMapHSL( [
+			{ h: 270, s: 1, l: 0.5 }, // Black
+			{ h: 0, s: 1, l: 0.5 }, // Red
+		], 300 ); // Use 300 colors
+		graph.draw();
+	});
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

@@ -5528,7 +5528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class AxisX extends _graph2.default {
 
-	    constructor(graph, topbottom, options) {
+	    constructor(graph, topbottom, options = {}) {
 
 	      super(graph, topbottom, options);
 	      this.top = topbottom == 'top';
@@ -8619,7 +8619,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class AxisXBar extends _graphAxis2.default {
 
-	    constructor(graph, topbottom, options) {
+	    constructor(graph, topbottom, options = {}) {
 	      super(graph, topbottom, options);
 	    }
 
@@ -13418,26 +13418,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	          method = "makeBox";
 	          break;
 	      }
-
+	      console.log(this.errorstyles, level, quadOrientation);
 	      return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
 	    },
 
 	    makeBarY: function (coordY, origin, style) {
+	      if (!coordY || !style) {
+	        return;
+	      }
 	      var width = !util.isNumeric(style.width) ? 10 : style.width;
 	      return " V " + coordY + " m -" + width / 2 + " 0 h " + width + " m -" + width / 2 + " 0 V " + origin + " ";
 	    },
 
 	    makeBoxY: function (coordY, origin, style) {
+	      if (!coordY || !style) {
+	        return;
+	      }
 	      return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
 	    },
 
 	    makeBarX: function (coordX, origin, style) {
+	      if (!coordX || !style) {
+	        return;
+	      }
 	      var height = !util.isNumeric(style.width) ? 10 : style.width;
 	      return " H " + coordX + " m 0 -" + height / 2 + " v " + height + " m 0 -" + height / 2 + " H " + origin + " ";
 	    },
 
 	    makeBoxX: function (coordX, origin, style) {
-
+	      if (!coordX || !style) {
+	        return;
+	      }
 	      return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
 	    },
 

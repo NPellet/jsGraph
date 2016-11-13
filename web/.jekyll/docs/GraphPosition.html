@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Documentation</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///docs/GraphPosition.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    
+
+
+<nav class="navbar navbar-default" id="jsgraph-docnav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+            
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Graph.html">Core</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Serie.html">Serie</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Axis.html">Axis</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Plugin.html">Plugin</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Shape.html">Shape</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li  class="active" >
+            <a class="page-link" href="/docs/GraphPosition.html">GraphPosition</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Legend.html">Legend</a>
+          </li>
+  			  
+  			
+  			  
+  			  <li >
+            <a class="page-link" href="/docs/Position.html">Position</a>
+          </li>
+  			  
+  			
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
+
+
+
+
+<div class="container">
+
+
+<section>
+
+<header>
+    
+        <h2>GraphPosition</h2>
+        
+            <div class="class-description">Utility class to compute positioning</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+<div class="doc-method">
+
+
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="doc-code" id="GraphPosition"><span class="type-signature"></span>new <span></span><span class="doc-name">GraphPosition</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id=".check"><span class="type-signature">(static) </span><span>{<span class="doc-return"><a href="GraphPosition.html">GraphPosition</a></span>} </span><span class="doc-name">check</span><span class="doc-signature">( <span class="doc-type">Object, GraphPosition</span> pos , <span class="doc-type">function</span> callback )</span></h4>
+
+
+
+
+<div class="description">
+    Checks if an object is a position. If not, creates a new GraphPosition instance with the ```pos``` object. If a new position is created, ```callback``` is fired with the position as a unique parameter. The return of the function, if not false, should be a ```GraphPosition``` instance which serves as the reference position.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type"><a href="GraphPosition.html">GraphPosition</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The position object or the object fed into the constructor</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The callback fired if a new position is created</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="GraphPosition.html">GraphPosition</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The resulting position object
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">GraphPosition</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">someOtherPosition</span><span class="p">;</span> <span class="p">}</span> <span class="p">);</span>
+ </code></pre></figure>
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="compute"><span class="type-signature"></span><span>{<span class="doc-return">Object</span>} </span><span class="doc-name">compute</span><span class="doc-signature">( <span class="doc-type">Graph</span> graph , <span class="doc-type">AxisX</span> xAxis , <span class="doc-type">AxisY</span> yAxis [ , <span class="doc-type">Serie</span> serie ] )</span></h4>
+
+
+
+
+<div class="description">
+    Computes the position of the position
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>graph</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The graph for which the position has to be computed</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>xAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="AxisX.html">AxisX</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The x axis to consider (has to belong to the graph)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>yAxis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="AxisY.html">AxisY</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The y axis to consider (has to belong to the graph)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>serie</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">For non-existing y value, use a serie to compute it automatically from the serie data</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Object</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An object in the format ```{x: xPx, y: yPx}``` containing the position in pixels of the position
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getDeltaPx"><span class="type-signature"></span><span>{<span class="doc-return">String</span>} </span><span class="doc-name">getDeltaPx</span><span class="doc-signature">( <span class="doc-type">Number</span> value , <span class="doc-type">Axis</span> Axis )</span></h4>
+
+
+
+
+<div class="description">
+    Computes the value in pixels of an amplitude (or a distance) for a certain axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value in axis unit</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x axis to consider (has to belong to the graph)</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The value in pixels, e.g. "20px"
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="getPx"><span class="type-signature"></span><span>{<span class="doc-return">Number|String</span>} </span><span class="doc-name">getPx</span><span class="doc-signature">( <span class="doc-type">Number</span> value , <span class="doc-type">Axis</span> axis , <span class="doc-type">Boolean</span> rel )</span></h4>
+
+
+
+
+<div class="description">
+    Computes a value in pixels
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The value in axis unit</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>axis</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The x axis to consider (has to belong to the graph)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rel</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether or not the value is a distance</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Number</span>
+|
+
+<span class="param-type">String</span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The computed value
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="relativeTo"><span class="type-signature"></span><span>{<span class="doc-return"><a href="GraphPosition.html">GraphPosition</a></span>} </span><span class="doc-name">relativeTo</span><span class="doc-signature">( <span class="doc-type">GraphPosition</span> pos )</span></h4>
+
+
+
+
+<div class="description">
+    Assigns the current position as relative to another. This is used when a position is used with "dx" or "dy" and not "x" or "y"
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>pos</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="GraphPosition.html">GraphPosition</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The reference position</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="GraphPosition.html">GraphPosition</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current position
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+    
+
+
+       
+
+
+
+    
+
+    
+</article>
+
+</section>
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

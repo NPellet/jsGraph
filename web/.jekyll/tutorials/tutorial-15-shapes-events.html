@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-15-shapes-events.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="shape-events">Shape events</h2>
+
+<p>Shapes feature events. However those events are fired at the <a href="Graph.html">Graph</a> level, to avoid registering too many event handlers which would slow down jsGraph and use up too much memory.</p>
+
+<p><em>NB: In the future, shape-specific event emitting will likely be introduced as well. Stay tuned for updates</em></p>
+
+<p>The events that shape fire are the following</p>
+
+<ul>
+  <li><code class="highlighter-rouge">shapeNew</code> - Fired when a shape is created</li>
+  <li><code class="highlighter-rouge">shapeRemoved</code> - Fired when a shape is removed</li>
+  <li><code class="highlighter-rouge">shapeChanged</code> - Fired whenever a shape has changed (color, style, position, size, …). This event depends partly on the inherited shape implementation code and may therefore not be fired properly.</li>
+  <li><code class="highlighter-rouge">shapeBeforeMove</code> - Fired before a shape is set for moving. Use <code class="highlighter-rouge">graph.prevent()</code> to prevent the subsequent shape moving.</li>
+  <li><code class="highlighter-rouge">shapeMoved</code> - Fired after a shape has moved</li>
+  <li><code class="highlighter-rouge">shapeBeforeResize</code> - Fired before a shape is set for resizing. Use <code class="highlighter-rouge">graph.prevent()</code> to prevent the subsequent shape moving.</li>
+  <li><code class="highlighter-rouge">shapeResized</code> - Fired after a shape has been resized</li>
+  <li><code class="highlighter-rouge">shapeSelected</code> - Fired when a shape is selected</li>
+  <li><code class="highlighter-rouge">shapeUnselected</code> - Fired when a shape is unselected</li>
+  <li><code class="highlighter-rouge">beforeShapeMouseMove</code> - Fired when the shape has focus and before any mouse move event is implemented (resize, move or anything else, really). Use <code class="highlighter-rouge">graph.prevent()</code> to prevent the shape from performing any further action at this stage</li>
+  <li><code class="highlighter-rouge">shapeMouseOver</code> - Fired when the mouse enters the shape perimeter. The perimeter depends on the shape type and whether you are using a bounding box.</li>
+  <li><code class="highlighter-rouge">shapeMouseOut</code> - Fired when the mouse leaves the shape perimeter.</li>
+</ul>
+
+<h2 id="attaching-event-listeners">Attaching event listeners</h2>
+
+<p>Like mentionned above, attaching event listeners is done at the {@see Graph} level. The first argument in the event callback is the shape instance that you can use to compare with a known reference:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>var rectangle = graph.newShape("rect", { selectable: true, position: [ { x: "100px", y: "100px" }, { dx: "100px", dy: "100px" } ] } ).draw();
+rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) ); // Just fix the positioning of pos2 vs pos1
+graph.on("shapeSelected", function( shape ) {
+	
+	if( shape == rectangle ) {
+		// Do something for this specific rectangle
+	}
+
+	if( shape.getType() == "rect" ) {
+		// Do something for all rectangles
+	}
+});
+</code></pre>
+</div>
+
+<p>
+	<em><span id="action-1">Select the rectangle to trigger the ```shapeSelected``` event</span></em>
+</p>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+
+function makeGraph( dom ) {
+
+	var g = new Graph( dom ) // Creates a new graph
+	g.resize( 400, 300 ); // Resizes the graph
+	var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
+		.autoAxis()
+		.setLineColor('purple')
+		.setLineWidth( 2 );
+
+	g.setTitle("Number of employed people in Switzerland (yearly average)");
+	g.getXAxis().setLabel('Year').gridsOff();
+	g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
+	g.draw();
+
+	return g;
+}
+
+var g = makeGraph( "example-1" );
+
+var rectangle = g.newShape("rect", { selectable: true, position: [ { x: "150px", y: "100px" }, { dx: "100px", dy: "100px" } ] } );
+rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) );
+rectangle.draw();
+
+g.on("shapeSelected", function( shape ) {
+	
+	if( shape == rectangle ) {		
+		$("#action-1").html("Rectangle selected !");
+	}
+
+	if( shape.getType() == "rect" ) {
+		// Do something for all rectangles
+	}
+});
+
+
+
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

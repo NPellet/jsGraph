@@ -7,7 +7,7 @@ import AxisX from './graph.axis.x'
  */
 class AxisXBar extends AxisX {
 
-  constructor( graph, topbottom, options ) {
+  constructor( graph, topbottom, options = {} ) {
     super( graph, topbottom, options );
   }
 

@@ -83,12 +83,181 @@
 <p>Alternatively, you can also overwrite the default x axis using:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
-<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
 
-<h3 id="defining-the-bar-categories">Defining the bar categories</h3>
+<h3 id="defining-the-categories">Defining the categories</h3>
 
-<p>The next step is to assign</p>
+<p>The next step is to assign the categories that jsGraph should recognize. A category is like an axis value, except that it can take text. When multiple series are used, the values that have the same category will be displayed next to each other.</p>
+
+<p>To define categories, simply use the following setter</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 1"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat1"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 2"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat2"</span> <span class="p">}</span> <span class="p">];</span></code></pre></figure>
+
+<h3 id="creating-series">Creating series</h3>
+
+<p>Alright, then we have to create a few series. The serie creation is the same as for any other serie, and take the type <code class="highlighter-rouge">Graph.SERIE_BAR</code> or, if you prefer, the string <code class="highlighter-rouge">"bar"</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="c1">// Equivalent to var s1 = graph.newSerie( "serie1", {}, "bar" );</span>
+
+<span class="c1">// Let's define a second one</span>
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+
+<span class="nx">s1</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span></code></pre></figure>
+
+<p>There is however one extra step you need to make: you need to tell the axis that the series belong to it. That extra step is, we realize, a real pain, because you need to reassign the series to the axis when creating new ones and when removing them. But it also allows you to specify the order of the series. Maybe we will be able to remove this extra instruction in future releases. In the meantime, here’s the syntax:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">[,</span> <span class="p">...]</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="setting-data">Setting data</h3>
+
+<p>Setting data to the serie takes an object which keys are the names of the categories:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="styling-the-series">Styling the series</h3>
+
+<p>Some additional styling options are available to differentiate series from one another. In additions to the methods provided by the line serie (<code class="highlighter-rouge">setLineWidth</code>, <code class="highlighter-rouge">setLineColor</code>, the bar series take the additional <code class="highlighter-rouge">setFillColor</code> and <code class="highlighter-rouge">setFillOpacity</code> method which set the inner color and inner opacity of the bars, respectively. Bar charts take no markers.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="results">Results</h3>
+
+<p>Ok, let’s take all of this code, put it together and display the result:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"example-1"</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 1"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat1"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 2"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat2"</span> <span class="p">}</span> <span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-1" );
+	graph.resize( 400, 300 );
+
+	var axis = new ( Graph.getConstructor( 'graph.axis.x.bar' ) )
+	var options = {};
+	axis.init( graph, options );
+	graph.setBottomAxis( axis, 0 );
+	axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2", name: "cat2" } ];
+
+	var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
+	s1.autoAxis();
+	s1.setData( { "cat1": 5, "cat2": 12 } );
+	s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
+
+	var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
+	s2.autoAxis();
+	s2.setData( { "cat1": 8, "cat2": 10 } );
+	s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
+
+	axis.setSeries( s1, s2 );
+	graph.draw();
+</script>
+
+<p>### Adding error bars</p>
+
+<p>Adding error bars in bar charts is similar to the line series. The style has to be defined first using the <code class="highlighter-rouge">setErrorStyle</code> method. Here’s an example:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">{</span> <span class="na">width</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'black'</span><span class="p">,</span> <span class="na">strokeOpacity</span><span class="p">:</span> <span class="mf">0.7</span> <span class="p">}</span> <span class="p">}</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+<p>The <code class="highlighter-rouge">y</code> key can also be <code class="highlighter-rouge">top</code> or/and <code class="highlighter-rouge">bottom</code> for different styles of the error bar.
+Note that x error bars are technically also possible, but don’t make much sense in this example.</p>
+
+<p>Setting the error data goes with the following:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setDataError</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="p">]</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<p>Where the first value is the positive error bar value and the second is the negative error bar.</p>
+
+<p>Here is the result of the error bar example:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"example-1"</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 1"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat1"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 2"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat2"</span> <span class="p">}</span> <span class="p">];</span>
+
+<span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">{</span> <span class="na">width</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'crimson'</span><span class="p">,</span> <span class="na">strokeOpacity</span><span class="p">:</span> <span class="mf">0.7</span> <span class="p">}</span> <span class="p">}</span> <span class="p">]</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setDataError</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span> <span class="p">]</span> <span class="p">],</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="p">[</span> <span class="mf">0.4</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span>
+
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setErrorStyle</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="p">{</span> <span class="na">width</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="na">strokeColor</span><span class="p">:</span> <span class="s1">'DarkGreen'</span><span class="p">,</span> <span class="na">strokeOpacity</span><span class="p">:</span> <span class="mf">0.7</span> <span class="p">}</span> <span class="p">}</span> <span class="p">]</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setDataError</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span> <span class="mf">0.9</span> <span class="p">]</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="mi">0</span> <span class="p">);</span>
+
+<span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-2" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-2" );
+	graph.resize( 400, 300 );
+
+	var axis = new ( Graph.getConstructor( 'graph.axis.x.bar' ) )
+	var options = {};
+	axis.init( graph, options );
+	graph.setBottomAxis( axis, 0 );
+	axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2", name: "cat2" } ];
+
+	var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
+	s1.autoAxis();
+	s1.setData( { "cat1": 5, "cat2": 12 } );
+	s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
+
+	var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
+	s2.autoAxis();
+	s2.setData( { "cat1": 8, "cat2": 10 } );
+	s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
+
+	s1.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'crimson', strokeOpacity: 0.7 } } ] );
+	s1.setDataError( { "cat1": [ [ 2, 1 ] ], "cat2": [ 0.4 ] } );
+
+	s2.setErrorStyle( [ { type: 'bar', y: { width: 10, strokeColor: 'DarkGreen', strokeOpacity: 0.7 } } ] );
+	s2.setDataError( { "cat1": [ 0.9 ] } );
+
+	graph.getYAxis().forceMin( 0 );
+
+	axis.setSeries( s1, s2 );
+	graph.draw();
+</script>
+
 
 	</div>
 </div>

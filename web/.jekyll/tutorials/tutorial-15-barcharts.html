@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-15-barcharts.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="bar-charts">Bar charts</h2>
+<p>Since v1.15, jsGraph allows you to use the bar chart series together with the bar x axis. The two have to work together, i.e. you cannot assign a line serie to a bar axis neither a bar serie to a normal or a time axis. In addition, for now, bar graphs are only accepted in the x direction (vertical bars).</p>
+
+<h3 id="defining-the-bar-axis">Defining the bar axis</h3>
+
+<p>To define the bar axis, you need to pass its reference to the <code class="highlighter-rouge">Graph</code> constructor:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="p">{</span> <span class="na">bottom</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<p>Alternatively, you can also overwrite the default x axis using:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="defining-the-categories">Defining the categories</h3>
+
+<p>The next step is to assign the categories that jsGraph should recognize. A category is like an axis value, except that it can take text. When multiple series are used, the values that have the same category will be displayed next to each other.</p>
+
+<p>To define categories, simply use</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setCategories</span><span class="p">(</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 1"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat1"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 2"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat2"</span> <span class="p">}</span> <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="creating-series">Creating series</h3>
+
+<p>Alright, then we have to create a few series. The serie creation is the same as for any other serie, and take the type <code class="highlighter-rouge">Graph.SERIE_BAR</code> or, if you prefer, the string <code class="highlighter-rouge">"bar"</code>:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="c1">// Equivalent to var s1 = graph.newSerie( "serie1", {}, "bar" );</span>
+
+<span class="c1">// Let's define a second one</span>
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+
+<span class="nx">s1</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span></code></pre></figure>
+
+<p>There is however one extra step you need to make: you need to tell the axis that the series belong to it. That extra step is, we realize, a real pain, because you need to reassign the series to the axis when creating new ones and when removing them. But it also allows you to specify the order of the series. Maybe we will be able to remove this extra instruction in future releases. In the meantime, here’s the syntax:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">[,</span> <span class="p">...]</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="setting-data">Setting data</h3>
+
+<p>Setting data to the serie takes an object which keys are the names of the categories:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="styling-the-series">Styling the series</h3>
+
+<p>Some additional styling options are available to differentiate series from one another. In additions to the methods provided by the line serie (<code class="highlighter-rouge">setLineWidth</code>, <code class="highlighter-rouge">setLineColor</code>, the bar series take the additional <code class="highlighter-rouge">setFillColor</code> and <code class="highlighter-rouge">setFillOpacity</code> method which set the inner color and inner opacity of the bars, respectively. Bar charts take no markers.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span></code></pre></figure>
+
+<h3 id="results">Results</h3>
+
+<p>Ok, let’s take all of this code, put it together and display the result:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">s1</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BAR</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">autoAxis</span><span class="p">();</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
+
+<span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-1" );
+	graph.resize( 500, 300 );
+
+	var axis = new ( Graph.getConstructor( 'graph.axis.x.bar' ) )
+	graph.setBottomAxis( axis, 0 );
+
+	var s1 = graph.newSerie( "serie1", {}, Graph.SERIE_BAR );
+	s1.autoAxis();
+	s1.setData( { "cat1": 5, "cat2": 12 } );
+	s1.setLineColor('crimson').setFillColor('crimson').setFillOpacity( 0.5 );
+
+	var s2 = graph.newSerie( "serie2", {}, Graph.SERIE_BAR );
+	s2.autoAxis();
+	s2.setData( { "cat1": 8, "cat2": 10 } );
+	s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
+
+	axis.setSeries( s1, s2 );
+	graph.draw();
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

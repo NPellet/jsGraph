@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>Getting Started</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///getting-started">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div id="jsgraph-page" class="container-fluid">
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-8">
+				<h1 id="jsgraph-title">Getting Started</h1>
+				<p id="jsgraph-subtitle">
+					Download, install and run jsGraph in a nutshell
+				</p>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="container">
+
+<h2 id="download">Download</h2>
+
+<p class="larger">
+	jsGraph can be downloaded and installed manually or via a package manager, such as npm or bower. The project is hosted on Github and the distribution files can be found there. jsGraph has no dependencies and can be utilized without jQuery.
+</p>
+
+<div class="row" id="jsgraph-download">
+	<div class="col-sm-4">
+
+		<h3>
+			Minified version
+		</h3>
+
+		<p class="">
+			The full-featured, compact version of jsGraph, shipped with all plugins, shapes and series available
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.min.js">Download minified (kb)</a>
+		</button>
+
+	</div>
+	<div class="col-sm-4">
+
+		<h3>
+			Source code
+		</h3>
+
+		<p class="">
+			The compiled but not uglified source code can be used for testing purposes and bug reporting
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">Expanded version (kb)</a>
+		</button>
+
+	</div>
+
+	<div class="col-sm-4">
+
+
+		<h3>
+			Github repo
+		</h3>
+
+		<p class="">
+			The project is hosted on Github, for those who want to contribute to the project
+		</p>
+
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph.js">View on Github</a>
+		</button>
+
+	</div>
+</div>
+
+<h2 id="load-with-npm">Load with npm</h2>
+<p class="larger">
+
+
+Installing jsGraph from <a href="http://npmjs.org">npm</a> is an easy way to install jsGraph and keep it up to date
+
+</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>npm install node-jsgraph --save-dev
+</code></pre>
+</div>
+
+<h2 id="load-with-bower">Load with bower</h2>
+<p class="larger">
+	Alternatively, jsGraph is also available from the bower package manager
+</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>bower install jsgraph
+</code></pre>
+</div>
+
+<h2 id="loading-jsgraph-into-your-browser">Loading jsGraph into your browser</h2>
+<p class="larger">
+	jsGraph is available both for direct inclusion or as an anonymous AMD module loadable with [requirejs](http://requirejs.org). It does not rely on external libraries, therefore does not necessarily have to be loaded after jQuery, for example.
+</p>
+
+<h3 id="loading-manually">Loading manually</h3>
+
+<p>Simply paste the script inclusion tag anywhere in your webpage. jsGraph loads synchronously, so if you place it the header part of your page, it will be readily available in the other scripts. When loaded manually, jsGraph creates a unique global object named <code class="highlighter-rouge">Graph</code> - the graph constructor - available from the <code class="highlighter-rouge">window</code> object.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- Includes jsGraph library --&gt;</span>
+<span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"path/to/jsgraph/jsgraph.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span></code></pre></figure>
+
+<h3 id="loading-with-requirejs">Loading with requirejs</h3>
+
+<p>If you are using a AMD structure using requirejs or other, jsGraph will register itself as an anonymous module. To load it, just use:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">require</span><span class="p">(</span> <span class="p">[</span> <span class="s1">'path/to/jsgraph'</span> <span class="p">],</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">Graph</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// new Graph(); is available</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>In this case, the Graph object is not exposed to the <code class="highlighter-rouge">window</code> element anymore.</p>
+
+<h3 id="your-first-graph">Your first graph</h3>
+
+<p>Creating a graph requires only a few lines of code, which involve:</p>
+
+<ul>
+  <li>Creation of a new graph instance, for which you need to specify the DOM element container.</li>
+  <li>Set the size of the container</li>
+  <li>Creation of a least one serie (although not necessary)</li>
+  <li>Assign some axes to the serie</li>
+  <li>Set some data of the serie</li>
+  <li><em>Draw everything</em></li>
+</ul>
+
+<p>Which translates into the following code:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"containerId"</span><span class="p">);</span> <span class="c1">// Also accepts a DOM element (but not a jQuery element);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span> <span class="p">);</span>	<span class="c1">// Resizes the container</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serieName"</span> <span class="p">)</span> <span class="c1">// Creates a new serie</span>
+	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>	<span class="c1">// Assigns axes</span>
+	<span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="p">[</span> <span class="nx">x1</span><span class="p">,</span> <span class="nx">y1</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x2</span><span class="p">,</span> <span class="nx">y2</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">x3</span><span class="p">,</span> <span class="nx">y3</span> <span class="p">],</span> <span class="p">[</span> <span class="nx">xn</span><span class="p">,</span> <span class="nx">yn</span> <span class="p">]</span> <span class="p">]</span> <span class="p">);</span> <span class="c1">// Set data</span>
+
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span> <span class="c1">// Draw</span></code></pre></figure>
+
+
+</div>
+
+
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

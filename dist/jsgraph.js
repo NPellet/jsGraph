@@ -14007,7 +14007,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var AxisX = function (_Axis) {
 	  _inherits(AxisX, _Axis);
 
-	  function AxisX(graph, topbottom, options) {
+	  function AxisX(graph, topbottom) {
+	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
 	    _classCallCheck(this, AxisX);
 
 	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AxisX).call(this, graph, topbottom, options));
@@ -17519,7 +17521,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var AxisXBar = function (_AxisX) {
 	  _inherits(AxisXBar, _AxisX);
 
-	  function AxisXBar(graph, topbottom, options) {
+	  function AxisXBar(graph, topbottom) {
+	    var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
 	    _classCallCheck(this, AxisXBar);
 
 	    return _possibleConstructorReturn(this, Object.getPrototypeOf(AxisXBar).call(this, graph, topbottom, options));
@@ -22542,26 +22546,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	        method = "makeBox";
 	        break;
 	    }
-
+	    console.log(this.errorstyles, level, quadOrientation);
 	    return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
 	  },
 
 	  makeBarY: function makeBarY(coordY, origin, style) {
+	    if (!coordY || !style) {
+	      return;
+	    }
 	    var width = !util.isNumeric(style.width) ? 10 : style.width;
 	    return " V " + coordY + " m -" + width / 2 + " 0 h " + width + " m -" + width / 2 + " 0 V " + origin + " ";
 	  },
 
 	  makeBoxY: function makeBoxY(coordY, origin, style) {
+	    if (!coordY || !style) {
+	      return;
+	    }
 	    return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
 	  },
 
 	  makeBarX: function makeBarX(coordX, origin, style) {
+	    if (!coordX || !style) {
+	      return;
+	    }
 	    var height = !util.isNumeric(style.width) ? 10 : style.width;
 	    return " H " + coordX + " m 0 -" + height / 2 + " v " + height + " m 0 -" + height / 2 + " H " + origin + " ";
 	  },
 
 	  makeBoxX: function makeBoxX(coordX, origin, style) {
-
+	    if (!coordX || !style) {
+	      return;
+	    }
 	    return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
 	  },
 
