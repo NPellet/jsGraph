@@ -5,103 +5,104 @@ subtitle: 'Error bars'
 ## Error bars
 
 <script>
-var data = {"x":[1447597298000,1447596769000,1447596423000,1447596077000,1447595732000,1447595204000,1447594858000,1447594513000,1447594177000,1447593639000,1447593293000,1447592947000,1447592612000,1447592074000,1447591728000,1447591382000,1447591047000,1447590509000,1447590163000,1447589817000,1447589481000,1447588944000,1447588598000,1447588262000,1447587916000,1447587377000,1447587032000,1447586696000,1447586351000,1447585813000,1447585467000,1447585131000,1447584786000,1447584249000,1447583903000,1447583567000,1447583221000,1447582682000,1447582337000,1447582001000,1447581655000,1447581116000,1447580781000,1447580436000,1447580090000,1447579550000,1447579215000,1447578869000,1447578524000,1447577985000,1447577650000,1447577304000,1447576958000,1447576429000,1447576084000,1447575738000,1447575392000,1447574864000,1447574519000,1447574173000,1447573827000,1447573297000,1447572952000,1447572606000,1447572271000,1447571732000,1447571387000,1447571041000,1447570705000,1447570165000,1447569820000,1447569474000,1447569139000,1447568601000,1447568255000,1447567909000,1447567573000,1447567033000,1447566688000,1447566352000,1447566006000,1447565467000,1447565122000,1447564787000,1447564441000,1447563902000,1447563556000,1447563221000,1447562875000,1447562335000,1447561989000,1447561654000,1447561308000,1447560770000,1447560424000,1447560088000,1447559742000,1447559203000,1447558867000,1447558522000,1447558176000,1447557636000,1447557300000,1447556954000,1447556609000,1447556070000,1447555734000,1447555388000,1447555043000,1447554504000,1447554168000,1447553822000,1447553477000,1447552937000,1447552601000,1447552255000,1447551910000,1447551381000,1447551035000,1447550689000,1447550344000,1447549814000,1447549468000,1447549122000,1447548776000,1447548247000,1447547901000,1447547555000,1447547220000,1447546680000,1447546334000,1447545988000,1447545653000,1447545114000,1447544768000,1447544422000,1447544087000,1447543546000,1447543201000,1447542855000,1447542519000,1447541979000,1447541634000,1447541288000,1447540952000,1447540413000,1447540068000,1447539722000,1447539386000,1447538845000,1447538499000,1447538164000,1447537818000,1447537278000,1447536932000,1447536596000,1447536251000,1447535710000,1447535364000,1447535029000,1447534683000,1447534143000,1447533807000,1447533461000,1447533116000,1447532575000,1447532239000,1447531893000,1447531548000,1447531009000,1447530673000,1447530327000,1447529981000,1447529441000,1447529105000,1447528759000,1447528414000,1447527874000,1447527538000,1447527192000,1447526846000,1447526307000,1447525971000,1447525625000,1447525279000,1447524749000,1447524403000,1447524058000,1447523712000,1447523182000,1447522837000,1447522491000,1447522145000,1447521614000,1447521269000,1447520923000,1447520588000,1447520049000,1447519703000,1447519357000,1447519022000,1447518482000,1447518136000,1447517790000,1447517455000,1447516916000,1447516570000,1447516225000,1447515889000,1447515349000,1447515004000,1447514668000,1447514322000,1447513784000,1447513438000,1447513102000,1447512756000,1447512218000,1447511872000,1447511536000,1447511191000,1447510650000,1447510315000,1447509969000,1447509624000,1447509086000,1447508750000,1447508404000,1447508059000,1447507518000,1447507183000,1447506837000,1447506492000,1447505963000,1447505618000,1447505272000,1447504926000,1447504396000,1447504050000,1447503705000,1447503360000,1447502830000,1447502485000,1447502139000,1447501794000,1447501264000,1447500918000,1447500572000,1447500227000,1447499698000,1447499353000,1447499007000,1447498661000,1447498131000,1447497786000,1447497440000,1447496901000,1447496566000,1447496220000,1447495874000,1447495538000,1447494999000,1447494654000,1447494308000,1447493972000,1447493432000,1447493087000,1447492741000,1447492405000,1447491866000,1447491520000,1447491175000,1447490839000,1447490298000,1447489953000,1447489607000,1447489271000,1447488732000,1447488386000,1447488050000,1447487705000,1447487165000,1447486819000,1447486484000,1447486138000,1447485598000,1447485252000,1447484916000,1447484571000,1447484031000,1447483685000,1447483349000,1447483003000,1447482464000,1447482128000,1447481783000,1447481437000,1447480896000,1447480560000,1447480214000],"y":[27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.43,27.5,27.5,27.5,27.5,27.5,27.560000000000002,27.5,27.5,27.560000000000002,27.560000000000002,27.560000000000002,27.560000000000002,27.62,27.62,27.62,27.68,27.71,27.75,27.68,27.75,27.78,27.810000000000002,27.810000000000002,27.810000000000002,27.84,27.87,27.87,27.87,27.900000000000002,27.93,27.93,27.93,28,28,28,28,28,28.060000000000002,28.03,28.060000000000002,28.060000000000002,28.12,28.12,28.18,28.18,28.25,28.25,28.25,28.310000000000002,28.310000000000002,28.310000000000002,28.34,28.37,28.43,28.400000000000002,28.43,28.43,28.5,28.46,28.5,28.53,28.560000000000002,28.560000000000002,28.560000000000002,28.62,28.62,28.62,28.68,28.68,28.68,28.68,28.68,28.71,28.75,28.75,28.75,28.810000000000002,28.810000000000002,28.810000000000002,28.87,28.87,28.87,28.87,28.87,28.93,28.93,28.93,28.93,29,29.03,29,29.060000000000002,29.060000000000002,29.060000000000002,28.900000000000002,29.060000000000002,29.060000000000002,29.09,29.060000000000002,29.060000000000002,29.12,29.12,29.12,29.12,29.12,29.18,29.12,29.12,29.12,29.12,29.09,29.18,29.25,29.25,29.28,29.310000000000002,29.34,29.37,29.37,29.43,29.5,29.53,29.560000000000002,29.62,29.75,29.810000000000002,29.810000000000002,29.87,29.87,29.93,29.93,29.93,30,30.060000000000002,30.060000000000002,30.12,30.12,30.18,30.150000000000002,30.18,30.21,30.25,30.18,30.18,30.150000000000002,30.18,30.18,30.18,30.18,30.18,30.150000000000002,30.18,30.18,30.18,30.18,30.18,30.18,30.12,30.060000000000002,30.03,30,29.96,29.900000000000002,29.87,29.84,29.810000000000002,29.68,29.62,29.53,29.46,29.37,29.310000000000002,29.25,29.18,29.060000000000002,29,28.93,28.87,28.810000000000002,28.75,28.650000000000002,28.59,28.53,28.46,28.400000000000002,28.37,28.28,28.18,28.12,28.12,28.03,28,27.93,27.93,27.810000000000002,27.810000000000002,27.78,27.75,27.68,27.68,27.650000000000002,27.62,27.560000000000002,27.560000000000002,27.560000000000002,27.560000000000002,27.5,27.5,27.5,27.5,27.43,27.43,27.5,27.46,27.43,27.43,27.46,27.5,27.43,27.43,27.5,27.5,27.46,27.5,27.53,27.560000000000002,27.53,27.560000000000002,27.560000000000002,27.62,27.62,27.62,27.68,27.68,27.68,27.71,27.75,27.810000000000002,27.75,27.810000000000002,27.810000000000002,27.87,27.87,27.87,27.93,27.93,27.93,27.93,28,28.060000000000002,28,28.060000000000002,28.09,28.12,28.12,28.12,28.18,28.25,28.18,28.25,28.25,28.310000000000002,28.310000000000002,28.310000000000002,28.37,28.43,28.37,28.400000000000002,28.43,28.5,28.46,28.5,28.560000000000002,28.62,28.46,28.62,28.68,28.68,28.68,28.75,28.78,28.810000000000002]}
+
 </script>
 
 
-jsGraph can display error bars and error boxes in ```scatter``` and ```line``` series. Such error bars are useful to describe the statistical accuracy of your data point and usually represents some multiple of the standard deviation of your system. For instance, you could assign 1 &sigma; to the box and 3 &sigma; to the bars. (**Note: ** The syntax used to define error bars in line and scatter series is exactly **the same**. It can be used interchangeably.)
-
-## A simple example
-
-Here we show how to add a single level error in the y direction. The error here will be defined as ```1 / y``` where ```y = sin(x)```.
+jsGraph can display error bars and error boxes in ```scatter```, ```line``` and ```bar``` series. Error bars are used to display the uncertainty in a measurement that can be represented by one standard deviation, one standard error, or a certain interval of considence. They are used to visually check for stastical significance between different measurements. jsGraph implements multiple levels of error bars.
+For instance, you could assign 1 &sigma; to the box and 3 &sigma; to the bars. (**Note: ** The syntax used to define error bars in line and scatter series is exactly the same. It can be used interchangeably.)
 
 
-```
-	var error = [];
+### <a id="format"></a>Error bar format
 
-	for( var i = 0; i < data.x.length; i ++  ) {
-		
-		if( i % 10 == 0 ) {
-			error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );	
-		} else {
-			error.push( null );
-		}
-	}
+Error data are essentially stored in multi-level array, such as : ```[ [ [ [ 0.5, 0.2 ], [ 0.8, 0.2 ] ] ] ]```
 
-	var graph = new Graph( "example-1", {}, { bottom: [ { type: 'time' } ] } );
-	graph.resize( 700, 300 ); // Resizes the graph
+* The first level corresponds to your data. Error at index n of the array will be assigned to dat at index n.
+* The second level differentiates error bars in the x or the y direction. First argument is y, second is x. You can omit the x value if needed, but there still needs to be an array.
+* The third level reprensents bars or boxes. To know which one is which, refer to the order you specified in the ```setErrorStyle``` function. Use ```false``` or ```null``` not to display errors of this level for this particular point
+* The fourth level represents above/below or lefthand/righthand error bars/boxes. Use only one argument to make it symmetric.
 
-	var serie = graph.newSerie("example", {}, "line" )
-		.setLabel( "Room light" )
-		.autoAxis()
-		.setData( data )
-		.setLineColor('DarkOrange')
-		.setMarkers( {
-			strokeWidth: 1,
-			fillColor: 'orange',
-			strokeColor: '#E56717'
-		} )
-		.setDataError( error ) // Adds the error data
-		.setErrorStyle( [ { type: 'bar', width: 0, strokeColor: '#E56717', strokeOpacity: 0.3 } ] ) // Display bar errors
+#### <a id="format-example"></a>Example
 
-	graph.draw( );
+Here are a few examples to help the reader understand
 
-```
+* [ null, [ [ 3 ], [ [ 4, 5 ] ] ] ] Assigns to the second point of your data a value in the y direction (3) and a value in the x direction (4 and 5). Both of these values are in the first level of error (they have the same type). The value in the y direction (3) is symmetrical above and below the point (+3 and -3). While in the x dimension, the value on the lefthand side is 4 and on the righthand side 5.
+
+* [ null, null, [ null, [ 4, 5 ] ] ] assigns to the third point of your data no error bar in the y dimension, and two error bar (or boxes) in the x dimension (level 3, remember ?). Both values are symmetrical left and right of the point.
+
+* [ null, null, [ null, [ 4, [ 3, 2 ] ] ] ] same as before, except that the second error level is no more symmetrical, but takes the value 3 (left) and 2 (right).
+
+### <a id="styling"></a>Styling 
+
+Setting error data is not enough. You need to tell jsGraph how you want the error to be handled. For that, you need to call the method ```setErrorStyle``` that takes only one parameter: an array which elements are styles for each level of error. Example:
+
+{% highlight javascript %}
+serie.setErrorStyle( [ 
+  { type: 'bar', x: {} }, // First level: bars, only displayed in the x direction (top and bottom)
+    { type: 'box', // Second level: boxes
+      top: { strokeColor: 'black', fillColor: 'olive' }, // Displayed in green for boxes above the point
+      bottom: { strokeColor: 'black', fillColor: "crimson" } // And in red for those below
+  } ] );
+{% endhighlight %}
+
+
+
+### <a id="example"></a>Example with 2 level error bars
+
+Here is an example that displays error bars over a scatter plot
+
+{% highlight javascript %}
+var data = [[0,0],[0.5,0.479425538604203],[1,0.8414709848078965],[1.5,0.9974949866040544],[2,0.9092974268256817],[2.5,0.5984721441039564],[3,0.1411200080598672],[3.5,-0.35078322768961984],[4,-0.7568024953079282],[4.5,-0.977530117665097]];
+var errors = [[[false,[0.364,0.278]],[[0.355,0.1]]],[[false,[0.376,0.398]],[[0.055,0.37]]],[[false,[0.39,0.286]],[[0.34,0.205]]],[[false,[0.22999999999999998,0.356]],[[0.39,0.41]]],[[false,[0.27599999999999997,0.21800000000000003]],[[0.455,0.345]]],[[false,[0.396,0.328]],[[0.145,0.33]]],[[false,[0.24,0.266]],[[0.455,0.46]]],[[false,[0.20600000000000002,0.274]],[[0.215,0.47]]],[[false,[0.20400000000000001,0.23399999999999999]],[[0.195,0.305]]],[[false,[0.302,0.282]],[[0.46,0.49]]]];
+
+var graph = new Graph( "someHTMLId" );
+var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
+
+serie
+  .setLabel( "My serie" )
+  .autoAxis()
+  .setData( data )
+  .setDataError( error )
+  .setErrorStyle( [ 
+    { type: 'bar', x: {} }, 
+      { type: 'box', 
+        top: { strokeColor: 'green', fillColor: 'olive' }, 
+        bottom: { strokeColor: 'red', fillColor: "#800000" }
+      } ] 
+    );
+
+graph.draw();
+{% endhighlight %}
 
 
 <div id="example-1" class="jsgraph-example"></div>
 
 <script>
 	
-	var error = [];
+	( function() {
 
-	for( var i = 0; i < data.x.length; i ++  ) {
-		
-		
-		error.push( [ [ [ data.y[ i ] / 40 , data.y[ i ] / 40 ] ] ] );	
-		
-	}
+		var data = [[0,0],[0.5,0.479425538604203],[1,0.8414709848078965],[1.5,0.9974949866040544],[2,0.9092974268256817],[2.5,0.5984721441039564],[3,0.1411200080598672],[3.5,-0.35078322768961984],[4,-0.7568024953079282],[4.5,-0.977530117665097]];
+		var errors = [[[false,[0.364,0.278]],[[0.355,0.1]]],[[false,[0.376,0.398]],[[0.055,0.37]]],[[false,[0.39,0.286]],[[0.34,0.205]]],[[false,[0.22999999999999998,0.356]],[[0.39,0.41]]],[[false,[0.27599999999999997,0.21800000000000003]],[[0.455,0.345]]],[[false,[0.396,0.328]],[[0.145,0.33]]],[[false,[0.24,0.266]],[[0.455,0.46]]],[[false,[0.20600000000000002,0.274]],[[0.215,0.47]]],[[false,[0.20400000000000001,0.23399999999999999]],[[0.195,0.305]]],[[false,[0.302,0.282]],[[0.46,0.49]]]];
 
-	var graph = new Graph( "example-1", {
+		var graph = new Graph( "example-1" );
+		graph.resize( 400, 300 );
+		var serie = graph.newSerie("serieTest", {}, "scatter" );
 
-		dblclick: {
-			type: 'plugin',
-			plugin: 'zoom',
-			options: {
-				mode: 'total'
-			}
-		},
+		serie
+			.setLabel( "My serie" )
+			.autoAxis()
+			.setData( data )
+			.setDataError( errors )
+			.setErrorStyle( [ 
+				{ type: 'bar', x: {} }, 
+				{ type: 'box', 
+					top: { strokeColor: 'green', fillColor: 'olive' }, 
+					bottom: { strokeColor: 'red', fillColor: "#800000" }
+				} ] 
+			);
 
-		plugins: {
-			'zoom': { zoomMode: 'xy' }
-		},
+		graph.draw();
 
-		pluginAction: {
-			'zoom': { shift: false, ctrl: false }
-		}
 
-	}, { bottom: [ { type: 'time' } ] } );
-	graph.resize( 700, 300 ); // Resizes the graph
-	var serie = graph.newSerie("example", {}, "line" )
-		.setLabel( "Room light" )
-		.autoAxis()
-		.setData( data )
-		.setLineColor('DarkOrange')
-		.setMarkers( {
-			strokeWidth: 1,
-			fillColor: 'orange',
-			strokeColor: '#E56717'
-		} )
-		.setDataError( error )
-		.setErrorStyle( [ { type: 'bar', y: { width: 0, strokeColor: '#E56717', strokeOpacity: 0.3 } }  ] ) // Display bar errors
-
-	graph.draw( );
+	} ) ();
 </script>
-
-Defining the error data is a bit cryptic, to say the least. But here is a detailed explanation which hopefully will make things clearer. 
-Error data are essentially stored in multi-level array, such as : ```[ [ [ [ 0.5, 0.2 ], [ 0.8, 0.2 ] ] ] ]```
-
-* The first level corresponds to your data. Error at index n will be assigned to dat at index n
-* The second level differentiates error bars in the x or the y direction. First argument is y, second is x
-* The third level reprensents bars or boxes. To know which one is which, refer to the order you specified in the ```setErrorStyle``` function. Use ```false``` or ```null``` not to display errors of this level for this particular point
-* The fourth level represents above/below or lefthand/righthand error bars/boxes. Use only one argument to make it symmetric.

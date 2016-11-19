@@ -7,11 +7,13 @@ requirejs.config({
 	}
 });
 
-require( [ 'dist/jsgraph-es6', 'examples/series' ] , function( Graph, series ) {
+//import Graph from '../src/graph.core'
+
+require( [ 'dist/jsgraph-es6', 'examples/series' ] , function( disted, series ) {
 
 	window.contour = series.contour;
 	window.series = series.numeric;
-	window.Graph = Graph;
+	window.Graph = disted;	
 
 	require( [ 'examples/loadexamples'] );
 	

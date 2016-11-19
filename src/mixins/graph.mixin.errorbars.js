@@ -94,6 +94,10 @@ var ErrorBarMixin = {
     return this;
   },
 
+  /**
+   *
+   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+   */
   setErrorStyle: function( errorstyles ) {
 
     var self = this;

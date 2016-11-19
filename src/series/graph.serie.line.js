@@ -82,10 +82,6 @@ class SerieLine extends Serie {
     this.extendStyles();
     this.markersDom = new Map();
 
-    if ( this.options.markers ) {
-      this.setMarkers( this.options.markers, "unselected" );
-    }
-
     this.shown = true;
 
     this.data = [];
@@ -193,6 +189,10 @@ class SerieLine extends Serie {
         }
       }
     } );
+
+    if ( this.options.markers ) {
+      this.setMarkers( this.options.markers, "unselected" );
+    }
 
   }
 
@@ -2063,6 +2063,11 @@ class SerieLine extends Serie {
     if ( recalculatePoints ) {
       this._recalculateMarkerPoints( selectionType, this.styles[ selectionType ].markers );
     }
+
+    if ( !this.markersDom[ this.styles[ selectionType ].markers[ family ] ] ) { // DOM doesn't exist yet.
+      return;
+    }
+
     this.setMarkerStyleTo( this.markersDom[ this.styles[ selectionType ].markers[ family ] ].dom, this.styles[ selectionType ].markers[ family ] );
 
   }
@@ -2176,6 +2181,10 @@ class SerieLine extends Serie {
       this.markersDom.forEach( function( el ) {
 
         if ( !el.dom ) {
+          return;
+        }
+
+        if ( el.dom.parentNode !== self.groupMarkers ) {
           return;
         }
 

@@ -7,7 +7,7 @@ define( function() {
 
 		for( var i = 0; i < 5; i += 0.5  ) {
 			seriedata.push([ i , Math.sin( i ) ]);
-			error.push( [ [ false, [  ( 1 + Math.random() ) / 5, ( 1 + Math.random() )  / 5 ] ], [ [ Math.random() / 2, Math.random() / 2 ] ] ] );
+			error.push( [ [ false, [  ( 1 + Math.round( Math.random() * 100 ) / 100 ) / 5, ( 1 + Math.round( Math.random() * 100 ) / 100 )  / 5 ] ], [ [ Math.round( Math.random() * 100 ) / 100 / 2, Math.round( Math.random() * 100 ) / 100 / 2 ] ] ] );
 		}
 
 		var graphinstance = new Graph( domGraph );
@@ -22,16 +22,8 @@ define( function() {
 				.setData( seriedata )
 				.setDataError( error )
 				.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
-
-			graphinstance.draw( );
-			graphinstance.draw( );
-			graphinstance.draw( );
-			graphinstance.draw( );
-			graphinstance.draw( );
-			graphinstance.draw( );
-			graphinstance.draw( );
 			
-
+			graphinstance.draw();
 	}, "Error bars (style)", [ 
 
 

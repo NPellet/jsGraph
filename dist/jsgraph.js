@@ -18791,10 +18791,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.extendStyles();
 	      this.markersDom = new Map();
 
-	      if (this.options.markers) {
-	        this.setMarkers(this.options.markers, "unselected");
-	      }
-
 	      this.shown = true;
 
 	      this.data = [];
@@ -18899,6 +18895,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	      });
+
+	      if (this.options.markers) {
+	        this.setMarkers(this.options.markers, "unselected");
+	      }
 	    }
 
 	    /**
@@ -20848,6 +20848,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (recalculatePoints) {
 	        this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
 	      }
+
+	      if (!this.markersDom[this.styles[selectionType].markers[family]]) {
+	        // DOM doesn't exist yet.
+	        return;
+	      }
+
 	      this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
 	    }
 	  }, {
@@ -20955,6 +20961,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.markersDom.forEach(function (el) {
 
 	          if (!el.dom) {
+	            return;
+	          }
+
+	          if (el.dom.parentNode !== self.groupMarkers) {
 	            return;
 	          }
 
@@ -22663,6 +22673,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this;
 	  },
 
+	  /**
+	   *
+	   *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
+	   */
 	  setErrorStyle: function setErrorStyle(errorstyles) {
 
 	    var self = this;

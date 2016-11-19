@@ -80,20 +80,17 @@
 <p>In the previous tutorial (4-shapes) we have shown the basics of shape creation, styling and modifications. Here, we simply showcase the different provided with jsGraph with their specificities.
 Let us consider the following graph as a basic:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var g = new Graph("example-1") // Creates a new graph
-g.resize( 400, 300 ); // Resizes the graph
-var s = g.newSerie("employment_nb").setData( [ 1900, 1555, 1910, 1783, 1920, 1872, 1930, 1943, 1941, 1992, 1948, 2378, 1949, 2339, 1950, 2309, 1951, 2437, 1953, 2455, 1954, 2482, 1955, 2533, 1956, 2606, 1957, 2666, 1958, 2644, 1959, 2644, 1960, 2717, 1961, 2644, 1962, 2954, 1963, 2999, 1964, 3046, 1965, 3025, 1966, 3014, 1967, 3030, 1968, 3048, 1969, 3098, 1970, 3143, 1971, 3199, 1972, 3243, 1973, 3277, 1974, 3273, 1975, 3108, 1976, 3019, 1977, 3032, 1978, 3062, 1979, 3095, 1980, 3166, 1981, 3240, 1982, 3256, 1983, 3257, 1984, 3288, 1985, 3354, 1986, 3430, 1987, 3515, 1988, 3607, 1989, 3704, 1990, 3821, 1991, 4136, 1992, 4069, 1993, 4025, 1994, 3999, 1995, 3996, 1996, 3994, 1997, 3991, 1998, 4044, 1999, 4075, 2000, 4116, 2001, 4183, 2002, 4213, 2003, 4198, 2004, 4210, 2005, 4241, 2006, 4328, 2007, 4440, 2008, 4548, 2009, 4588, 2010, 4593, 2011, 4705, 2012, 4776, 2013, 4837, 2014, 4918 ] )
-	.autoAxis()
-	.setLineColor('purple')
-	.setLineWidth( 2 );
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span><span class="s2">"example-1"</span><span class="p">)</span> <span class="c1">// Creates a new graph</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Resizes the graph</span>
+<span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span><span class="s2">"employment_nb"</span><span class="p">).</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> <span class="mi">1900</span><span class="p">,</span> <span class="mi">1555</span><span class="p">,</span> <span class="mi">1910</span><span class="p">,</span> <span class="mi">1783</span><span class="p">,</span> <span class="mi">1920</span><span class="p">,</span> <span class="mi">1872</span><span class="p">,</span> <span class="mi">1930</span><span class="p">,</span> <span class="mi">1943</span><span class="p">,</span> <span class="mi">1941</span><span class="p">,</span> <span class="mi">1992</span><span class="p">,</span> <span class="mi">1948</span><span class="p">,</span> <span class="mi">2378</span><span class="p">,</span> <span class="mi">1949</span><span class="p">,</span> <span class="mi">2339</span><span class="p">,</span> <span class="mi">1950</span><span class="p">,</span> <span class="mi">2309</span><span class="p">,</span> <span class="mi">1951</span><span class="p">,</span> <span class="mi">2437</span><span class="p">,</span> <span class="mi">1953</span><span class="p">,</span> <span class="mi">2455</span><span class="p">,</span> <span class="mi">1954</span><span class="p">,</span> <span class="mi">2482</span><span class="p">,</span> <span class="mi">1955</span><span class="p">,</span> <span class="mi">2533</span><span class="p">,</span> <span class="mi">1956</span><span class="p">,</span> <span class="mi">2606</span><span class="p">,</span> <span class="mi">1957</span><span class="p">,</span> <span class="mi">2666</span><span class="p">,</span> <span class="mi">1958</span><span class="p">,</span> <span class="mi">2644</span><span class="p">,</span> <span class="mi">1959</span><span class="p">,</span> <span class="mi">2644</span><span class="p">,</span> <span class="mi">1960</span><span class="p">,</span> <span class="mi">2717</span><span class="p">,</span> <span class="mi">1961</span><span class="p">,</span> <span class="mi">2644</span><span class="p">,</span> <span class="mi">1962</span><span class="p">,</span> <span class="mi">2954</span><span class="p">,</span> <span class="mi">1963</span><span class="p">,</span> <span class="mi">2999</span><span class="p">,</span> <span class="mi">1964</span><span class="p">,</span> <span class="mi">3046</span><span class="p">,</span> <span class="mi">1965</span><span class="p">,</span> <span class="mi">3025</span><span class="p">,</span> <span class="mi">1966</span><span class="p">,</span> <span class="mi">3014</span><span class="p">,</span> <span class="mi">1967</span><span class="p">,</span> <span class="mi">3030</span><span class="p">,</span> <span class="mi">1968</span><span class="p">,</span> <span class="mi">3048</span><span class="p">,</span> <span class="mi">1969</span><span class="p">,</span> <span class="mi">3098</span><span class="p">,</span> <span class="mi">1970</span><span class="p">,</span> <span class="mi">3143</span><span class="p">,</span> <span class="mi">1971</span><span class="p">,</span> <span class="mi">3199</span><span class="p">,</span> <span class="mi">1972</span><span class="p">,</span> <span class="mi">3243</span><span class="p">,</span> <span class="mi">1973</span><span class="p">,</span> <span class="mi">3277</span><span class="p">,</span> <span class="mi">1974</span><span class="p">,</span> <span class="mi">3273</span><span class="p">,</span> <span class="mi">1975</span><span class="p">,</span> <span class="mi">3108</span><span class="p">,</span> <span class="mi">1976</span><span class="p">,</span> <span class="mi">3019</span><span class="p">,</span> <span class="mi">1977</span><span class="p">,</span> <span class="mi">3032</span><span class="p">,</span> <span class="mi">1978</span><span class="p">,</span> <span class="mi">3062</span><span class="p">,</span> <span class="mi">1979</span><span class="p">,</span> <span class="mi">3095</span><span class="p">,</span> <span class="mi">1980</span><span class="p">,</span> <span class="mi">3166</span><span class="p">,</span> <span class="mi">1981</span><span class="p">,</span> <span class="mi">3240</span><span class="p">,</span> <span class="mi">1982</span><span class="p">,</span> <span class="mi">3256</span><span class="p">,</span> <span class="mi">1983</span><span class="p">,</span> <span class="mi">3257</span><span class="p">,</span> <span class="mi">1984</span><span class="p">,</span> <span class="mi">3288</span><span class="p">,</span> <span class="mi">1985</span><span class="p">,</span> <span class="mi">3354</span><span class="p">,</span> <span class="mi">1986</span><span class="p">,</span> <span class="mi">3430</span><span class="p">,</span> <span class="mi">1987</span><span class="p">,</span> <span class="mi">3515</span><span class="p">,</span> <span class="mi">1988</span><span class="p">,</span> <span class="mi">3607</span><span class="p">,</span> <span class="mi">1989</span><span class="p">,</span> <span class="mi">3704</span><span class="p">,</span> <span class="mi">1990</span><span class="p">,</span> <span class="mi">3821</span><span class="p">,</span> <span class="mi">1991</span><span class="p">,</span> <span class="mi">4136</span><span class="p">,</span> <span class="mi">1992</span><span class="p">,</span> <span class="mi">4069</span><span class="p">,</span> <span class="mi">1993</span><span class="p">,</span> <span class="mi">4025</span><span class="p">,</span> <span class="mi">1994</span><span class="p">,</span> <span class="mi">3999</span><span class="p">,</span> <span class="mi">1995</span><span class="p">,</span> <span class="mi">3996</span><span class="p">,</span> <span class="mi">1996</span><span class="p">,</span> <span class="mi">3994</span><span class="p">,</span> <span class="mi">1997</span><span class="p">,</span> <span class="mi">3991</span><span class="p">,</span> <span class="mi">1998</span><span class="p">,</span> <span class="mi">4044</span><span class="p">,</span> <span class="mi">1999</span><span class="p">,</span> <span class="mi">4075</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">4116</span><span class="p">,</span> <span class="mi">2001</span><span class="p">,</span> <span class="mi">4183</span><span class="p">,</span> <span class="mi">2002</span><span class="p">,</span> <span class="mi">4213</span><span class="p">,</span> <span class="mi">2003</span><span class="p">,</span> <span class="mi">4198</span><span class="p">,</span> <span class="mi">2004</span><span class="p">,</span> <span class="mi">4210</span><span class="p">,</span> <span class="mi">2005</span><span class="p">,</span> <span class="mi">4241</span><span class="p">,</span> <span class="mi">2006</span><span class="p">,</span> <span class="mi">4328</span><span class="p">,</span> <span class="mi">2007</span><span class="p">,</span> <span class="mi">4440</span><span class="p">,</span> <span class="mi">2008</span><span class="p">,</span> <span class="mi">4548</span><span class="p">,</span> <span class="mi">2009</span><span class="p">,</span> <span class="mi">4588</span><span class="p">,</span> <span class="mi">2010</span><span class="p">,</span> <span class="mi">4593</span><span class="p">,</span> <span class="mi">2011</span><span class="p">,</span> <span class="mi">4705</span><span class="p">,</span> <span class="mi">2012</span><span class="p">,</span> <span class="mi">4776</span><span class="p">,</span> <span class="mi">2013</span><span class="p">,</span> <span class="mi">4837</span><span class="p">,</span> <span class="mi">2014</span><span class="p">,</span> <span class="mi">4918</span> <span class="p">]</span> <span class="p">)</span>
+	<span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+	<span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'purple'</span><span class="p">)</span>
+	<span class="p">.</span><span class="nx">setLineWidth</span><span class="p">(</span> <span class="mi">2</span> <span class="p">);</span>
 	
-g.setTitle("Number of employed people in Switzerland (yearly average)");
-g.getXAxis().setLabel('Year').gridsOff();
-g.getYAxis().setLabel("Number of people (in thousands)").secondaryGridOff();
-g.draw();
-
-</code></pre>
-</div>
+<span class="nx">g</span><span class="p">.</span><span class="nx">setTitle</span><span class="p">(</span><span class="s2">"Number of employed people in Switzerland (yearly average)"</span><span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s1">'Year'</span><span class="p">).</span><span class="nx">gridsOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">setLabel</span><span class="p">(</span><span class="s2">"Number of people (in thousands)"</span><span class="p">).</span><span class="nx">secondaryGridOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
@@ -280,23 +277,21 @@ line.draw();
 
 <p>The label shape (type <code class="highlighter-rouge">label</code>) displays a label without particular shape. It can be used as simply as:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>graph.newShape( 'label', {
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">newShape</span><span class="p">(</span> <span class="s1">'label'</span><span class="p">,</span> <span class="p">{</span>
 	
-	labels: [ {
-		text: "Shape label",
-		color: "ForestGreen",
-		size: 12,
-		angle: 20,
-		baseline: "hanging",
-		anchor: "end",
-		position: {
-			x: 1950,
-			y: 3200
-		}
-	} ]
-} ).draw();
-</code></pre>
-</div>
+  <span class="na">labels</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span>
+    <span class="na">text</span><span class="p">:</span> <span class="s2">"Shape label"</span><span class="p">,</span>
+    <span class="na">color</span><span class="p">:</span> <span class="s2">"ForestGreen"</span><span class="p">,</span>
+    <span class="na">size</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span>
+	<span class="na">angle</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+	<span class="na">baseline</span><span class="p">:</span> <span class="s2">"hanging"</span><span class="p">,</span>
+	<span class="na">anchor</span><span class="p">:</span> <span class="s2">"end"</span><span class="p">,</span>
+	<span class="na">position</span><span class="p">:</span> <span class="p">{</span>
+	  <span class="na">x</span><span class="p">:</span> <span class="mi">1950</span><span class="p">,</span>
+	  <span class="na">y</span><span class="p">:</span> <span class="mi">3200</span>
+	<span class="p">}</span>
+  <span class="p">}</span> <span class="p">]</span>
+<span class="p">}</span> <span class="p">).</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
 <div id="example-5" class="jsgraph-example"></div>
 <script>
