@@ -39,19 +39,7 @@ define( function() {
 		var s = graphinstance.newSerie( 'serie', { useSlots: true } )
 			.autoAxis()
 			.setData( spectrum.data[ 0 ] )
-			.XIsMonotoneous()
 			.setLineColor('green');
-
-
-		var s = graphinstance.newSerie( 'serie2', { useSlots: true } )
-			.autoAxis()
-			.setData( spectrum2.data[ 0 ] )
-			.XIsMonotoneous()
-			.setLineColor('red');
-
-		graphinstance.getYAxis().setDisplay( false );
-		graphinstance.getXAxis().toggleGrids( false );
-
 		graphinstance.draw( );
 		
 		

@@ -1,36 +1,429 @@
 import Axis from './graph.axis'
 import * as util from './graph.util'
 
-function GraphXAxis( graph, topbottom, options ) {
+var axisFormat = [
 
-  this.wrapper = {
-    1: document.createElementNS( graph.ns, 'g' ),
-    2: document.createElementNS( graph.ns, 'g' )
-  };
-  this.groups = {
-    1: [],
-    2: []
-  };
+  {
 
-  var rect = document.createElementNS( graph.ns, 'rect' );
-  rect.setAttribute( 'fill', '#c0c0c0' );
-  rect.setAttribute( 'stroke', '#808080' );
-  rect.setAttribute( 'height', '20' );
-  rect.setAttribute( 'x', '0' );
-  rect.setAttribute( 'y', '0' );
+    threshold: 20,
+    increments: {
 
-  this.rect = rect;
+      1: {
+        increment: 1, // 1 minute
+        unit: 'i',
+        format: 'HH"h"MM (dd/mm/yy)'
+      },
 
-  this.wrapper[ 1 ].appendChild( this.rect );
+      2: { // 10 seconds
+        increment: 1,
+        unit: 's',
+        format: 'MM:ss"s"'
+      }
+    }
+  },
 
-  //    this.init( graph, options );
+  {
 
-  this.group.appendChild( this.wrapper[  1 ] );
-  this.group.appendChild( this.wrapper[  2 ] );
+    threshold: 50,
+    increments: {
 
-  this.wrapper[ 1 ].setAttribute( 'transform', 'translate( 0, 25 )' );
-  this.wrapper[ 2 ].setAttribute( 'transform', 'translate( 0, 00 )' );
-}
+      1: {
+        increment: 1, // 1 minute
+        unit: 'i',
+        format: 'HH"h"MM (dd/mm/yy)'
+      },
+
+      2: { // 2 seconds
+        increment: 2,
+        unit: 's',
+        format: 'MM:ss"s"'
+      }
+    }
+  },
+
+  {
+
+    threshold: 100,
+    increments: {
+
+      1: {
+        increment: 1, // 1 minute
+        unit: 'i',
+        format: 'HH"h"MM (dd/mm/yy)'
+      },
+
+      2: { // 5 seconds
+        increment: 5,
+        unit: 's',
+        format: 'MM:ss"s"'
+      }
+    }
+  },
+
+  {
+
+    threshold: 600,
+    increments: {
+
+      1: {
+        increment: 10, // 1 minute
+        unit: 'i',
+        format: 'HH"h"MM (dd/mm/yy)'
+      },
+
+      2: { // 10 seconds
+        increment: 30,
+        unit: 's',
+        format: 'MM:ss"s"'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 1000,
+    increments: {
+
+      1: { // 1h
+        increment: 1,
+        unit: 'h',
+        format: 'HH"h"MM (dd/mm/yy)'
+      },
+
+      2: { // 10 minutes
+        increment: 10,
+        unit: 'i',
+        format: 'MM"min"'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 1500,
+    increments: {
+
+      1: {
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+        increment: 1,
+        unit: 'i',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 3000,
+    increments: {
+
+      1: {
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+        increment: 2,
+        unit: 'i',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 8000,
+    increments: {
+
+      1: {
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+        increment: 10,
+        unit: 'i',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 26400,
+    increments: {
+
+      1: {
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+        increment: 20,
+        unit: 'i',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 86400,
+    increments: {
+
+      1: {
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+        increment: 1,
+        unit: 'h',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 200000,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+
+        increment: 2, // One day on the first axis
+        unit: 'h',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 400000,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+
+        increment: 6, // One day on the first axis
+        unit: 'h',
+        format: 'H"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 1400000,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'd',
+        format: 'dd/mm/yyyy'
+      },
+
+      2: {
+
+        increment: 12, // One day on the first axis
+        unit: 'h',
+        format: 'HH"h"MM'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 6400000,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'm',
+        format: 'mmmm yyyy'
+      },
+
+      2: {
+
+        increment: 1, // One day on the first axis
+        unit: 'd',
+        format: 'dd'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 12400000,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'm',
+        format: 'mmmm yyyy'
+      },
+
+      2: {
+
+        increment: 2, // One day on the first axis
+        unit: 'd',
+        format: 'dd'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 86400000 * 0.5,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'm',
+        format: 'mmmm yyyy'
+      },
+
+      2: {
+
+        increment: 7, // One day on the first axis
+        unit: 'd',
+        format: 'dd'
+      }
+    }
+  },
+
+  { // One day
+
+    threshold: 86400000 * 0.8,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'm',
+        format: 'mmmm yyyy'
+      },
+
+      2: {
+
+        increment: 15, // One day on the first axis
+        unit: 'd',
+        format: 'dd'
+      }
+    }
+  },
+
+  { // One month
+
+    threshold: 86400000 * 1,
+    increments: {
+
+      1: {
+        increment: 1,
+        unit: 'y',
+        format: 'yyyy'
+      },
+
+      2: {
+
+        increment: 3, // One day on the first axis
+        unit: 'm',
+        format: 'mm/yyyy'
+      }
+    }
+  },
+
+  { // One month
+
+    threshold: 86400000 * 2,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'y',
+        format: 'yyyy'
+      },
+
+      2: {
+
+        increment: 4, // One day on the first axis
+        unit: 'm',
+        format: 'mm/yyyy'
+      }
+    }
+  },
+
+  { // One month
+
+    threshold: 86400000 * 10,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'y',
+        format: 'yyyy'
+      },
+
+      2: {
+
+        increment: 6, // One day on the first axis
+        unit: 'm',
+        format: 'mm/yyyy'
+      }
+    }
+  },
+
+  { // One month
+
+    threshold: 86400000 * 12,
+    increments: {
+
+      1: {
+
+        increment: 1,
+        unit: 'y',
+        format: 'yyyy'
+      },
+
+      2: {
+
+        increment: 1, // One day on the first axis
+        unit: 'y',
+        format: 'yyyy'
+      }
+    }
+  },
+
+];
 
 /*
  * Date Format 1.2.3
@@ -429,550 +822,166 @@ function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
 }
 
-GraphXAxis.prototype = new Axis();
+class GraphXAxis extends Axis {
 
-GraphXAxis.prototype.draw = function() { // Redrawing of the axis
-  var visible;
+  constructor( graph, topbottom, options ) {
 
-  this.drawInit();
-
-  this.cacheCurrentMax();
-  this.cacheCurrentMin();
-
-  if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
-    this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
-
+    super( ...arguments );
   }
 
-  this.line.setAttribute( 'x1', this.getMinPx() );
-  this.line.setAttribute( 'x2', this.getMaxPx() );
-  this.line.setAttribute( 'y1', 0 );
-  this.line.setAttribute( 'y2', 0 );
+  init( graph, options ) {
 
-  var widthPx = this.maxPx - this.minPx;
-  var widthTime = this.getCurrentInterval();
+    super.init( graph, options );
 
-  var timePerPx = widthTime / widthPx;
+    this.wrapper = {
+      1: document.createElementNS( graph.ns, 'g' ),
+      2: document.createElementNS( graph.ns, 'g' )
+    };
+    this.groups = {
+      1: [],
+      2: []
+    };
 
-  var maxVal = this.getCurrentMax();
-  var minVal = this.getCurrentMin();
+    var rect = document.createElementNS( graph.ns, 'rect' );
+    rect.setAttribute( 'fill', '#c0c0c0' );
+    rect.setAttribute( 'stroke', '#808080' );
+    rect.setAttribute( 'height', '20' );
+    rect.setAttribute( 'x', '0' );
+    rect.setAttribute( 'y', '0' );
 
-  this.rect.setAttribute( 'width', widthPx );
-  this.rect.setAttribute( 'x', this.minPx );
+    this.rect = rect;
 
-  if ( !maxVal ||  !minVal ) {
-    return 0;
+    this.wrapper[ 1 ].appendChild( this.rect );
+
+    //    this.init( graph, options );
+
+    this.group.appendChild( this.wrapper[  1 ] );
+    this.group.appendChild( this.wrapper[  2 ] );
+
+    this.wrapper[ 1 ].setAttribute( 'transform', 'translate( 0, 25 )' );
+    this.wrapper[ 2 ].setAttribute( 'transform', 'translate( 0, 00 )' );
   }
 
-  var axisFormat = [
+  draw() { // Redrawing of the axis
+    var visible;
 
-    {
+    //this.drawInit();
 
-      threshold: 20,
-      increments: {
+    this.cacheCurrentMax();
+    this.cacheCurrentMin();
 
-        1: {
-          increment: 1, // 1 minute
-          unit: 'i',
-          format: 'HH"h"MM (dd/mm/yy)'
-        },
+    if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
+      this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
 
-        2: { // 10 seconds
-          increment: 1,
-          unit: 's',
-          format: 'MM:ss"s"'
-        }
-      }
-    },
-
-    {
-
-      threshold: 50,
-      increments: {
-
-        1: {
-          increment: 1, // 1 minute
-          unit: 'i',
-          format: 'HH"h"MM (dd/mm/yy)'
-        },
-
-        2: { // 2 seconds
-          increment: 2,
-          unit: 's',
-          format: 'MM:ss"s"'
-        }
-      }
-    },
-
-    {
-
-      threshold: 100,
-      increments: {
-
-        1: {
-          increment: 1, // 1 minute
-          unit: 'i',
-          format: 'HH"h"MM (dd/mm/yy)'
-        },
-
-        2: { // 5 seconds
-          increment: 5,
-          unit: 's',
-          format: 'MM:ss"s"'
-        }
-      }
-    },
-
-    {
-
-      threshold: 600,
-      increments: {
-
-        1: {
-          increment: 10, // 1 minute
-          unit: 'i',
-          format: 'HH"h"MM (dd/mm/yy)'
-        },
-
-        2: { // 10 seconds
-          increment: 30,
-          unit: 's',
-          format: 'MM:ss"s"'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 1000,
-      increments: {
-
-        1: { // 1h
-          increment: 1,
-          unit: 'h',
-          format: 'HH"h"MM (dd/mm/yy)'
-        },
-
-        2: { // 10 minutes
-          increment: 10,
-          unit: 'i',
-          format: 'MM"min"'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 1500,
-      increments: {
-
-        1: {
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-          increment: 1,
-          unit: 'i',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 3000,
-      increments: {
-
-        1: {
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-          increment: 2,
-          unit: 'i',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 8000,
-      increments: {
-
-        1: {
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-          increment: 10,
-          unit: 'i',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 26400,
-      increments: {
-
-        1: {
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-          increment: 20,
-          unit: 'i',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 86400,
-      increments: {
-
-        1: {
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-          increment: 1,
-          unit: 'h',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 200000,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-
-          increment: 2, // One day on the first axis
-          unit: 'h',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 400000,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-
-          increment: 6, // One day on the first axis
-          unit: 'h',
-          format: 'H"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 1400000,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'd',
-          format: 'dd/mm/yyyy'
-        },
-
-        2: {
-
-          increment: 12, // One day on the first axis
-          unit: 'h',
-          format: 'HH"h"MM'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 6400000,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'm',
-          format: 'mmmm yyyy'
-        },
-
-        2: {
-
-          increment: 1, // One day on the first axis
-          unit: 'd',
-          format: 'dd'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 12400000,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'm',
-          format: 'mmmm yyyy'
-        },
-
-        2: {
-
-          increment: 2, // One day on the first axis
-          unit: 'd',
-          format: 'dd'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 86400000 * 0.5,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'm',
-          format: 'mmmm yyyy'
-        },
-
-        2: {
-
-          increment: 7, // One day on the first axis
-          unit: 'd',
-          format: 'dd'
-        }
-      }
-    },
-
-    { // One day
-
-      threshold: 86400000 * 0.8,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'm',
-          format: 'mmmm yyyy'
-        },
-
-        2: {
-
-          increment: 15, // One day on the first axis
-          unit: 'd',
-          format: 'dd'
-        }
-      }
-    },
-
-    { // One month
-
-      threshold: 86400000 * 1,
-      increments: {
-
-        1: {
-          increment: 1,
-          unit: 'y',
-          format: 'yyyy'
-        },
-
-        2: {
-
-          increment: 3, // One day on the first axis
-          unit: 'm',
-          format: 'mm/yyyy'
-        }
-      }
-    },
-
-    { // One month
-
-      threshold: 86400000 * 2,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'y',
-          format: 'yyyy'
-        },
-
-        2: {
-
-          increment: 4, // One day on the first axis
-          unit: 'm',
-          format: 'mm/yyyy'
-        }
-      }
-    },
-
-    { // One month
-
-      threshold: 86400000 * 10,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'y',
-          format: 'yyyy'
-        },
-
-        2: {
-
-          increment: 6, // One day on the first axis
-          unit: 'm',
-          format: 'mm/yyyy'
-        }
-      }
-    },
-
-    { // One month
-
-      threshold: 86400000 * 12,
-      increments: {
-
-        1: {
-
-          increment: 1,
-          unit: 'y',
-          format: 'yyyy'
-        },
-
-        2: {
-
-          increment: 1, // One day on the first axis
-          unit: 'y',
-          format: 'yyyy'
-        }
-      }
-    },
-
-  ];
-
-  var currentFormat;
-
-  for ( i = 0; i < axisFormat.length; i++ ) {
-
-    if ( axisFormat[ i ].threshold > timePerPx ) {
-      currentFormat = axisFormat[ i ];
-
-      break;
     }
 
-  }
+    this.line.setAttribute( 'x1', this.getMinPx() );
+    this.line.setAttribute( 'x2', this.getMaxPx() );
+    this.line.setAttribute( 'y1', 0 );
+    this.line.setAttribute( 'y2', 0 );
 
-  if ( !currentFormat ) {
-    currentFormat = axisFormat[ axisFormat.length - 1 ];
-  }
+    var widthPx = this.maxPx - this.minPx;
+    var widthTime = this.getCurrentInterval();
 
-  var xVal1,
-    xVal2,
-    level = 0,
-    dateFirst,
-    currentDate,
-    text,
-    group,
-    i;
+    var timePerPx = widthTime / widthPx;
 
-  for ( level = 1; level <= 2; level++ ) {
+    var maxVal = this.getCurrentMax();
+    var minVal = this.getCurrentMin();
 
-    if ( !util.isNumeric( minVal ) ) {
-      hideGroups( this, level, 0 );
-      break;
+    this.rect.setAttribute( 'width', widthPx );
+    this.rect.setAttribute( 'x', this.minPx );
+
+    if ( !maxVal ||  !minVal ) {
+      return 0;
     }
 
-    dateFirst = new Date( minVal );
+    var currentFormat;
 
-    currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+    for ( i = 0; i < axisFormat.length; i++ ) {
 
-    i = 0;
+      if ( axisFormat[ i ].threshold > timePerPx ) {
+        currentFormat = axisFormat[ i ];
 
-    do {
-      /** @ignore */
-      text = getDateText( currentDate, currentFormat.increments[ level ].format );
-      group = getGroup( this, level, i );
-
-      xVal1 = this.getPx( currentDate.getTime() );
-      currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
-      xVal2 = this.getPx( currentDate.getTime() );
-
-      renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
-
-      i++;
-      if ( i > 100 ) {
         break;
       }
-    } while ( currentDate.getTime() < maxVal );
 
-    hideGroups( this, level, i );
+    }
+
+    if ( !currentFormat ) {
+      currentFormat = axisFormat[ axisFormat.length - 1 ];
+    }
+
+    var xVal1,
+      xVal2,
+      level = 0,
+      dateFirst,
+      currentDate,
+      text,
+      group,
+      i;
+
+    for ( level = 1; level <= 2; level++ ) {
+
+      if ( !util.isNumeric( minVal ) ) {
+        hideGroups( this, level, 0 );
+        break;
+      }
+
+      dateFirst = new Date( minVal );
+
+      currentDate = roundDate( dateFirst, currentFormat.increments[ level ] );
+
+      i = 0;
+
+      do {
+        /** @ignore */
+        text = getDateText( currentDate, currentFormat.increments[ level ].format );
+        group = getGroup( this, level, i );
+
+        xVal1 = this.getPx( currentDate.getTime() );
+        currentDate = incrementDate( currentDate, currentFormat.increments[ level ] );
+        xVal2 = this.getPx( currentDate.getTime() );
+
+        renderGroup( level, group, text, this.getMinPx(), this.getMaxPx(), xVal1, xVal2 );
+
+        i++;
+        if ( i > 100 ) {
+          break;
+        }
+      } while ( currentDate.getTime() < maxVal );
+
+      hideGroups( this, level, i );
+    }
+
   }
 
-};
+  isX() {
+    return true
+  }
 
-GraphXAxis.prototype.isX = function() {
-  return true
-};
+  getWrapper( level ) {
+    return this.wrapper[ level ]
+  }
 
-GraphXAxis.prototype.getWrapper = function( level ) {
-  return this.wrapper[ level ]
-};
+  setShift( shift, totalDimension ) {
+    this.shift = shift;
+    this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' )
+  }
 
-GraphXAxis.prototype.setShift = function( shift, totalDimension ) {
-  this.shift = shift;
-  this.group.setAttribute( 'transform', 'translate(0 ' + ( this.top ? this.shift : ( this.graph.getDrawingHeight() - this.shift ) ) + ')' )
-};
+  getAxisPosition() {
+    return 60;
+  }
 
-GraphXAxis.prototype.getAxisPosition = function() {
-  return 60;
-};
+  setMinMaxFlipped() {
 
-GraphXAxis.prototype.setMinMaxFlipped = function() {
+    var interval = this.maxPx - this.minPx;
+    var maxPx = interval * this.options.span[ 1 ] + this.minPx;
+    var minPx = interval * this.options.span[ 0 ] + this.minPx;
 
-  var interval = this.maxPx - this.minPx;
-  var maxPx = interval * this.options.span[ 1 ] + this.minPx;
-  var minPx = interval * this.options.span[ 0 ] + this.minPx;
+    this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+    this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+  }
 
-  this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-  this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-};
+}
 
 export default GraphXAxis;

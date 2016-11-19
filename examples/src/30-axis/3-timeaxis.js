@@ -5,16 +5,15 @@ define( function() {
 
 		var serie = [];
 		var date = new Date();
-		date.setTime( date.getTime() - 8640000 * 3)
+		date.setTime( date.getTime() - 0 )
 		
-		while( date.getTime() < Date.now() ) {
+		while( date.getTime() < Date.now() + 100000 ) {
 		
 			serie.push( date.getTime() );
 			serie.push( Math.sin( date.getHours() / 24 * Math.PI + Math.random() / 5 ) );
 
 			date.setSeconds( date.getSeconds() + 1 );
 		}
-
 
 		var graphinstance = new Graph( domGraph, {
 
@@ -38,17 +37,9 @@ define( function() {
 		}, { bottom: [ { type: 'time' } ] } );
 
 	
-		var s = graphinstance.newSerie( "sf", {
-  
-    })
-			.autoAxis();
-
-
-    graphinstance.draw();
-
-		graphinstance.getSerie("sf").setData( serie )
-		
-    graphinstance.autoscaleAxes();
+		var s = graphinstance.newSerie( "sf").autoAxis();
+		graphinstance.getSerie("sf").setData( serie );
+    	graphinstance.autoscaleAxes();
 		graphinstance.draw( );
 		
 			
