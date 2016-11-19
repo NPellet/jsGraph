@@ -33,14 +33,14 @@ function makeGraph( dom ) {
 
 </script>
 
-### Introduction
+###<a id="introduction"></a> Introduction
 Herein, we describe how to force different axes to behave dependently of each other. jsGraph gives you the possibility to adapt the value of one axis (in this example, the right one) to another value on another axis (in this example, the left one). For this, the function to employ is {@link Axis.adaptTo}, which was introduced in v1.3.12 (and replaces the previous ```adapt0To``` method which is covered and extended in the current ```adaptTo``` method).
 
 The method takes the following syntax:
 
-```
+{% highlight javascript %}
 	myAxis.adaptTo( myAxisRef, myValueToAdaptTo, myReferenceValueOnAxisRef[, MinOrMaxPreferred = "min" ] )
-```
+{% endhighlight %}
 
 With the following arguments:
 
@@ -49,38 +49,37 @@ With the following arguments:
 * ```myReferenceValueOnAxisRef``` is the value on the ```myAxisRef``` to which ```myValueToAdaptTo``` will be aligned to.
 * ```MinOrMaxPreferred``` will define the behavior of the boundaries (see text later)
 
-### Example
+###<a id="example"></a> Example
 
 Let us start with a basic example
 
 
-```
-	var serie1 = [ 0, -6, 2, 5, 5, 0 ];
-	var serie2 = [ 0, 10, 2, 0, 5, 12 ];
+{% highlight javascript %}
+var serie1 = [ 0, -6, 2, 5, 5, 0 ];
+var serie2 = [ 0, 10, 2, 0, 5, 12 ];
 
-	var g = new Graph( dom ) // Creates a new graph
-	g.resize( 400, 300 ); // Resizes the graph
+var g = new Graph( dom ) // Creates a new graph
+g.resize( 400, 300 ); // Resizes the graph
 
-	g.newSerie( "serie1" ) // Creates a new seire
-	 .autoAxis() // Assigns automatic axes to the serie
-	 .setLineColor('blue')
-	 .setMarkers()
-	 .setData( serie1 ); // Assigns the data to the serie
+g.newSerie( "serie1" ) // Creates a new seire
+ .autoAxis() // Assigns automatic axes to the serie
+ .setLineColor('blue')
+ .setMarkers()
+ .setData( serie1 ); // Assigns the data to the serie
 
-	g.newSerie( "serie2" ) // Creates a new seire
-	 .autoAxis() // Assigns automatic axes to the serie
-	 .setYAxis( g.getRightAxis() )
-	 .setLineColor('red')
-	 .setMarkers()
-	 .setData( serie2 ); // Assigns the data to the serie
+g.newSerie( "serie2" ) // Creates a new seire
+ .autoAxis() // Assigns automatic axes to the serie
+ .setYAxis( g.getRightAxis() )
+ .setLineColor('red')
+ .setMarkers()
+ .setData( serie2 ); // Assigns the data to the serie
 
-	g.getYAxis().gridsOff();
-	g.getXAxis().gridsOff();
-	g.getRightAxis().gridsOff();
+g.getYAxis().gridsOff();
+g.getXAxis().gridsOff();
+g.getRightAxis().gridsOff();
 
-	g.draw();
-
-```
+g.draw();
+{% endhighlight %}
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
@@ -89,14 +88,14 @@ makeGraph("example-1")
 
 Ok so here there's no adapt. The two axis behave independantly and adapt to their own serie.
 
-#### Natural behavior
+####<a id="natural-behaviour"></a> Natural behavior
 
 Now, let's force the right axis to align to the left axis. In this example, the value ```0``` of the right axis will align with ```-3``` on the left axis:
 
-```
+{% highlight javascript %}
 g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3 ); // Aligns the 0 of the right axis with -3 of the left axis
 g.draw();
-```
+{% endhighlight %}
 
 <div id="example-2" class="jsgraph-example"></div>
 <script>
@@ -108,10 +107,10 @@ g.draw();
 So here you can see that the minimum of the right axis has been preserved (roughly -1). This is because of the ```MinOrMaxPreferred``` which is by default ```min```. If we set it to ```max```, a different behavior is observed:
 
 
-```
+{% highlight javascript %}
 g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
 g.draw();
-```
+{% endhighlight %}
 <div id="example-3" class="jsgraph-example"></div>
 <script>
 var g = makeGraph("example-3");
@@ -119,7 +118,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of th
 g.draw();
 </script>
 
-#### Behavior when axes are forced
+####<a id="forced-behaviour"></a> Behavior when axes are forced
 
 Here is the rule when a boundary of the axis is forced:
 
@@ -129,11 +128,11 @@ Here is the rule when a boundary of the axis is forced:
 
 In this example, both boundaries are forced (case 3):
 
-```
+{% highlight javascript %}
 g.getRightAxis().forceMax( 50 );
 g.getRightAxis().forceMin( -50 );
 g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
-```
+{% endhighlight %}
 
 <div id="example-4" class="jsgraph-example"></div>
 <script>
@@ -146,10 +145,10 @@ g.draw();
 
 While in the following example, case 2 applies (if one boundary only is forced, then ```MinOrMaxPreferred``` has no influence)
 
-```
+{% highlight javascript %}
 g.getRightAxis().forceMin( -50 );
 g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
-```
+{% endhighlight %}
 <div id="example-5" class="jsgraph-example"></div>
 <script>
 var g = makeGraph("example-5");

@@ -107,14 +107,12 @@ function makeGraph( dom ) {
 
 </script>
 
-<h3 id="introduction">Introduction</h3>
-<p>Herein, we describe how to force different axes to behave dependently of each other. jsGraph gives you the possibility to adapt the value of one axis (in this example, the right one) to another value on another axis (in this example, the left one). For this, the function to employ is Axis.adaptTo, which was introduced in v1.3.12 (and replaces the previous <code class="highlighter-rouge">adapt0To</code> method which is covered and extended in the current <code class="highlighter-rouge">adaptTo</code> method).</p>
+<p>###<a id="introduction"></a> Introduction
+Herein, we describe how to force different axes to behave dependently of each other. jsGraph gives you the possibility to adapt the value of one axis (in this example, the right one) to another value on another axis (in this example, the left one). For this, the function to employ is Axis.adaptTo, which was introduced in v1.3.12 (and replaces the previous <code class="highlighter-rouge">adapt0To</code> method which is covered and extended in the current <code class="highlighter-rouge">adaptTo</code> method).</p>
 
 <p>The method takes the following syntax:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>	myAxis.adaptTo( myAxisRef, myValueToAdaptTo, myReferenceValueOnAxisRef[, MinOrMaxPreferred = "min" ] )
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">	<span class="nx">myAxis</span><span class="p">.</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">myAxisRef</span><span class="p">,</span> <span class="nx">myValueToAdaptTo</span><span class="p">,</span> <span class="nx">myReferenceValueOnAxisRef</span><span class="p">[,</span> <span class="nx">MinOrMaxPreferred</span> <span class="o">=</span> <span class="s2">"min"</span> <span class="p">]</span> <span class="p">)</span></code></pre></figure>
 
 <p>With the following arguments:</p>
 
@@ -125,37 +123,34 @@ function makeGraph( dom ) {
   <li><code class="highlighter-rouge">MinOrMaxPreferred</code> will define the behavior of the boundaries (see text later)</li>
 </ul>
 
-<h3 id="example">Example</h3>
+<p>###<a id="example"></a> Example</p>
 
 <p>Let us start with a basic example</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>	var serie1 = [ 0, -6, 2, 5, 5, 0 ];
-	var serie2 = [ 0, 10, 2, 0, 5, 12 ];
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">serie1</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span> <span class="p">];</span>
+<span class="kd">var</span> <span class="nx">serie2</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">12</span> <span class="p">];</span>
 
-	var g = new Graph( dom ) // Creates a new graph
-	g.resize( 400, 300 ); // Resizes the graph
+<span class="kd">var</span> <span class="nx">g</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="nx">dom</span> <span class="p">)</span> <span class="c1">// Creates a new graph</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">resize</span><span class="p">(</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">300</span> <span class="p">);</span> <span class="c1">// Resizes the graph</span>
 
-	g.newSerie( "serie1" ) // Creates a new seire
-	 .autoAxis() // Assigns automatic axes to the serie
-	 .setLineColor('blue')
-	 .setMarkers()
-	 .setData( serie1 ); // Assigns the data to the serie
+<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie1"</span> <span class="p">)</span> <span class="c1">// Creates a new seire</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span> <span class="c1">// Assigns automatic axes to the serie</span>
+ <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'blue'</span><span class="p">)</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie1</span> <span class="p">);</span> <span class="c1">// Assigns the data to the serie</span>
 
-	g.newSerie( "serie2" ) // Creates a new seire
-	 .autoAxis() // Assigns automatic axes to the serie
-	 .setYAxis( g.getRightAxis() )
-	 .setLineColor('red')
-	 .setMarkers()
-	 .setData( serie2 ); // Assigns the data to the serie
+<span class="nx">g</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s2">"serie2"</span> <span class="p">)</span> <span class="c1">// Creates a new seire</span>
+ <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span> <span class="c1">// Assigns automatic axes to the serie</span>
+ <span class="p">.</span><span class="nx">setYAxis</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">()</span> <span class="p">)</span>
+ <span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'red'</span><span class="p">)</span>
+ <span class="p">.</span><span class="nx">setMarkers</span><span class="p">()</span>
+ <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="nx">serie2</span> <span class="p">);</span> <span class="c1">// Assigns the data to the serie</span>
 
-	g.getYAxis().gridsOff();
-	g.getXAxis().gridsOff();
-	g.getRightAxis().gridsOff();
+<span class="nx">g</span><span class="p">.</span><span class="nx">getYAxis</span><span class="p">().</span><span class="nx">gridsOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getXAxis</span><span class="p">().</span><span class="nx">gridsOff</span><span class="p">();</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">gridsOff</span><span class="p">();</span>
 
-	g.draw();
-
-</code></pre>
-</div>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
 <div id="example-1" class="jsgraph-example"></div>
 <script>
@@ -164,14 +159,12 @@ makeGraph("example-1")
 
 <p>Ok so here there’s no adapt. The two axis behave independantly and adapt to their own serie.</p>
 
-<h4 id="natural-behavior">Natural behavior</h4>
+<p>####<a id="natural-behaviour"></a> Natural behavior</p>
 
 <p>Now, let’s force the right axis to align to the left axis. In this example, the value <code class="highlighter-rouge">0</code> of the right axis will align with <code class="highlighter-rouge">-3</code> on the left axis:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3 ); // Aligns the 0 of the right axis with -3 of the left axis
-g.draw();
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span> <span class="p">);</span> <span class="c1">// Aligns the 0 of the right axis with -3 of the left axis</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
 
 <div id="example-2" class="jsgraph-example"></div>
 <script>
@@ -182,10 +175,9 @@ g.draw();
 
 <p>So here you can see that the minimum of the right axis has been preserved (roughly -1). This is because of the <code class="highlighter-rouge">MinOrMaxPreferred</code> which is by default <code class="highlighter-rouge">min</code>. If we set it to <code class="highlighter-rouge">max</code>, a different behavior is observed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
-g.draw();
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"max"</span> <span class="p">);</span> <span class="c1">// Aligns the 0 of the right axis with -3 of the left axis</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span></code></pre></figure>
+
 <div id="example-3" class="jsgraph-example"></div>
 <script>
 var g = makeGraph("example-3");
@@ -193,7 +185,7 @@ g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of th
 g.draw();
 </script>
 
-<h4 id="behavior-when-axes-are-forced">Behavior when axes are forced</h4>
+<p>####<a id="forced-behaviour"></a> Behavior when axes are forced</p>
 
 <p>Here is the rule when a boundary of the axis is forced:</p>
 
@@ -205,11 +197,9 @@ g.draw();
 
 <p>In this example, both boundaries are forced (case 3):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>g.getRightAxis().forceMax( 50 );
-g.getRightAxis().forceMin( -50 );
-g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">forceMax</span><span class="p">(</span> <span class="mi">50</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="o">-</span><span class="mi">50</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"max"</span> <span class="p">);</span> <span class="c1">// Aligns the 0 of the right axis with -3 of the left axis</span></code></pre></figure>
 
 <div id="example-4" class="jsgraph-example"></div>
 <script>
@@ -222,10 +212,9 @@ g.draw();
 
 <p>While in the following example, case 2 applies (if one boundary only is forced, then <code class="highlighter-rouge">MinOrMaxPreferred</code> has no influence)</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>g.getRightAxis().forceMin( -50 );
-g.getRightAxis().adaptTo( g.getLeftAxis(), 0, -3, "max" ); // Aligns the 0 of the right axis with -3 of the left axis
-</code></pre>
-</div>
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">forceMin</span><span class="p">(</span> <span class="o">-</span><span class="mi">50</span> <span class="p">);</span>
+<span class="nx">g</span><span class="p">.</span><span class="nx">getRightAxis</span><span class="p">().</span><span class="nx">adaptTo</span><span class="p">(</span> <span class="nx">g</span><span class="p">.</span><span class="nx">getLeftAxis</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="s2">"max"</span> <span class="p">);</span> <span class="c1">// Aligns the 0 of the right axis with -3 of the left axis</span></code></pre></figure>
+
 <div id="example-5" class="jsgraph-example"></div>
 <script>
 var g = makeGraph("example-5");

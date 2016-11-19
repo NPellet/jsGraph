@@ -260,5 +260,3 @@ graph.newShape( 'label', {
 
 </script>
 
-
-asasdasd

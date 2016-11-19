@@ -26,21 +26,21 @@ The events that shape fire are the following
 Like mentionned above, attaching event listeners is done at the {@see Graph} level. The first argument in the event callback is the shape instance that you can use to compare with a known reference:
 
 
-```
+
+{% highlight javascript %}
 var rectangle = graph.newShape("rect", { selectable: true, position: [ { x: "100px", y: "100px" }, { dx: "100px", dy: "100px" } ] } ).draw();
 rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) ); // Just fix the positioning of pos2 vs pos1
 graph.on("shapeSelected", function( shape ) {
 	
-	if( shape == rectangle ) {
-		// Do something for this specific rectangle
-	}
+  if( shape == rectangle ) {
+    // Do something for this specific rectangle
+  }
 
-	if( shape.getType() == "rect" ) {
-		// Do something for all rectangles
-	}
+  if( shape.getType() == "rect" ) {
+    // Do something for all rectangles
+  }
 });
-```
-
+{% endhighlight %}
 
 <p>
 	<em><span id="action-1">Select the rectangle to trigger the ```shapeSelected``` event</span></em>

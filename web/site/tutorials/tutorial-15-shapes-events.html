@@ -98,20 +98,18 @@
 
 <p>Like mentionned above, attaching event listeners is done at the {@see Graph} level. The first argument in the event callback is the shape instance that you can use to compare with a known reference:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>var rectangle = graph.newShape("rect", { selectable: true, position: [ { x: "100px", y: "100px" }, { dx: "100px", dy: "100px" } ] } ).draw();
-rectangle.getPosition( 1 ).relativeTo( rectangle.getPosition( 0 ) ); // Just fix the positioning of pos2 vs pos1
-graph.on("shapeSelected", function( shape ) {
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">rectangle</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newShape</span><span class="p">(</span><span class="s2">"rect"</span><span class="p">,</span> <span class="p">{</span> <span class="na">selectable</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="na">position</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s2">"100px"</span><span class="p">,</span> <span class="na">y</span><span class="p">:</span> <span class="s2">"100px"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">dx</span><span class="p">:</span> <span class="s2">"100px"</span><span class="p">,</span> <span class="na">dy</span><span class="p">:</span> <span class="s2">"100px"</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span> <span class="p">).</span><span class="nx">draw</span><span class="p">();</span>
+<span class="nx">rectangle</span><span class="p">.</span><span class="nx">getPosition</span><span class="p">(</span> <span class="mi">1</span> <span class="p">).</span><span class="nx">relativeTo</span><span class="p">(</span> <span class="nx">rectangle</span><span class="p">.</span><span class="nx">getPosition</span><span class="p">(</span> <span class="mi">0</span> <span class="p">)</span> <span class="p">);</span> <span class="c1">// Just fix the positioning of pos2 vs pos1</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s2">"shapeSelected"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">shape</span> <span class="p">)</span> <span class="p">{</span>
 	
-	if( shape == rectangle ) {
-		// Do something for this specific rectangle
-	}
+  <span class="k">if</span><span class="p">(</span> <span class="nx">shape</span> <span class="o">==</span> <span class="nx">rectangle</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Do something for this specific rectangle</span>
+  <span class="p">}</span>
 
-	if( shape.getType() == "rect" ) {
-		// Do something for all rectangles
-	}
-});
-</code></pre>
-</div>
+  <span class="k">if</span><span class="p">(</span> <span class="nx">shape</span><span class="p">.</span><span class="nx">getType</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"rect"</span> <span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Do something for all rectangles</span>
+  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
 
 <p>
 	<em><span id="action-1">Select the rectangle to trigger the ```shapeSelected``` event</span></em>
