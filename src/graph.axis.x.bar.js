@@ -73,6 +73,24 @@ class AxisXBar extends AxisX {
   }
 
   /**
+   * Sets the series automatically
+   * @returns {AxisBar} The current axis instance
+   */
+  autoSeries() {
+
+    let series = [];
+    for ( let serie of this.graph.series ) {
+      if ( serie.getXAxis() == this ) {
+        series.push( serie );
+      }
+    }
+
+    this.setSeries( ...series );
+    return this;
+  }
+
+  /**
+   * Sets the series that should belong to the axis
    * @param {...(Series|Number|String)} series - List of series identified either by their instance, or their index (string or number)
    * @returns {AxisBar} The current axis instance
    */
