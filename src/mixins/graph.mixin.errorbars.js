@@ -88,9 +88,83 @@ var ErrorBarMixin = {
     return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
   },
 
-  setDataError: function( error ) {
+  check: function( index, valY, valX ) {
+
+    var dx, dy;
+
+    if ( ( this.getType() == Graph.SERIE_LINE ||  this.getType() == Graph.SERIE_SCATTER ) ) {
+
+      if ( !( dx = this.data[ index * 2 ] ) ||  !( dy = this.data[ index * 2 + 1 ] ) ) { //
+        return;
+      }
+    }
+
+    if ( dx === undefined ) {
+      return;
+    }
+
+    for ( var i = 0, l = valY.length; i < l; i++ ) {
+
+      if ( Array.isArray( valY[ i ] ) ) {
+
+        if ( !isNaN( valY[ i ][ 0 ] ) ) {
+          this._checkY( dy + valY[ i ][ 0 ] );
+        }
+
+        if ( !isNaN( valY[ i ][ 1 ] ) ) {
+          this._checkY( dy - valY[ i ][ 1 ] );
+        }
+
+      } else {
+
+        if ( !isNaN( valY[ i ] ) ) {
+          this._checkY( dy + valY[ i ] );
+          this._checkY( dy - valY[ i ] );
+        }
+      }
+    }
+
+    for ( var i = 0, l = valX.length; i < l; i++ ) {
+
+      if ( Array.isArray( valX[ i ] ) ) {
+
+        if ( !isNaN( valX[ i ][ 0 ] ) ) {
+          this._checkX( dx - valX[ i ][ 0 ] );
+        }
+
+        if ( !isNaN( valX[ i ][ 1 ] ) ) {
+          this._checkX( dx + valX[ i ][ 1 ] );
+        }
+
+      } else {
+
+        if ( !isNaN( valY[ i ] ) ) {
+          this._checkX( dx - valX[ i ] );
+          this._checkX( dx + valX[ i ] );
+        }
+      }
+    }
+
+  },
+  /**
+   *  Sets the data error values
+   */
+  setDataError: function( error, noCheck ) {
     this.error = error;
+
+    if ( !noCheck ) {
+      for ( let i = 0, l = this.error.length; i < l; i++ ) {
+
+        if ( this.error[ i ] ) {
+
+          this.check( i, this.error[ i ][ 0 ], this.error[ i ][ 1 ] );
+
+        }
+      }
+    }
+
     this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
     return this;
   },
 
