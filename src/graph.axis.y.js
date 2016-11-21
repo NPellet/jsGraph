@@ -61,9 +61,8 @@ class AxisY extends Axis {
   /**
    *  @private
    */
-  getMaxSizeTick() {
-
-    return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() : 0 ); //(this.left ? 10 : 0);
+  getMaxSizeTick() { // Gives an extra margin of 5px
+    return ( this.longestTick && this.longestTick[ 0 ] ? this.longestTick[ 0 ].getComputedTextLength() + 5 : 0 ); //(this.left ? 10 : 0);
   }
 
   draw() {
@@ -158,7 +157,7 @@ class AxisY extends Axis {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }
 
-    this.label.setAttribute( 'dominant-baseline', this.left ? 'hanging' : 'auto' );
+    this.label.setAttribute( 'dominant-baseline', !this.left ? 'hanging' : 'auto' );
     this.labelTspan.textContent = this.getLabel();
   }
 

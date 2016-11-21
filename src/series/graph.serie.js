@@ -291,6 +291,17 @@ class Serie extends EventEmitter {
   }
 
   /**
+   * Sets the options of the serie (no extension of default options)
+   * @param {String} name - The option name
+   * @param value - The option value
+   * @memberof Serie
+   * @example serie.setOption('selectableOnClick', true );
+   */
+  setOption( name, value ) {
+    this.options[ name ] = value;
+  }
+
+  /**
    * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
    * @memberof Serie
    */

@@ -166,7 +166,7 @@ class PluginZoom extends Plugin {
 
     graph.cancelClick = true;
 
-    if ( this.options.transition ) {
+    if ( this.options.transition || this.options.smooth ) {
 
       var modeX = false,
         modeY = false;
@@ -321,7 +321,7 @@ class PluginZoom extends Plugin {
       return;
     }
 
-    if ( this.options.transition ) {
+    if ( this.options.transition ||  this.options.smooth ) {
 
       var modeX = false,
         modeY = false;
@@ -550,7 +550,7 @@ class PluginZoom extends Plugin {
 
     var axes = this.options.axes;
 
-    if ( !this.graph.getSelectedSerie() ) {
+    if ( !axes || ( axes == 'serieSelected' && !this.graph.getSelectedSerie() ) ) {
       axes = 'all';
     }
 
@@ -585,6 +585,34 @@ class PluginZoom extends Plugin {
           }
         }
 
+        break;
+
+      default:
+
+        if ( !Array.isArray( axes ) ) {
+          axes = [ axes ];
+        }
+
+        for ( let axis of axes ) {
+
+          if ( axis.isX() && tb ) { // Not the best check
+
+            if ( typeof func == "string" ) {
+              axis[ func ].apply( axis, params )
+            } else {
+              func.apply( axis, params );
+            }
+
+          } else if ( axis.isY() && lr ) { // Not the best check
+
+            if ( typeof func == "string" ) {
+              axis[ func ].apply( axis, params )
+            } else {
+              func.apply( axis, params );
+            }
+
+          }
+        }
         break;
     }
   }

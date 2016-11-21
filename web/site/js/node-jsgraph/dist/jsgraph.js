@@ -12606,6 +12606,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the options of the serie (no extension of default options)
+	     * @param {String} name - The option name
+	     * @param value - The option value
+	     * @memberof Serie
+	     * @example serie.setOption('selectableOnClick', true );
+	     */
+	    setOption(name, value) {
+	      this.options[name] = value;
+	    }
+
+	    /**
 	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 	     * @memberof Serie
 	     */
@@ -22113,7 +22124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      graph.cancelClick = true;
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -22260,7 +22271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -22468,7 +22479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var axes = this.options.axes;
 
-	      if (!this.graph.getSelectedSerie()) {
+	      if (!axes || axes == 'serieSelected' && !this.graph.getSelectedSerie()) {
 	        axes = 'all';
 	      }
 
@@ -22502,6 +22513,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 
+	          break;
+
+	        default:
+
+	          if (!Array.isArray(axes)) {
+	            axes = [axes];
+	          }
+
+	          for (let axis of axes) {
+
+	            if (axis.isX() && tb) {
+	              // Not the best check
+
+	              if (typeof func == "string") {
+	                axis[func].apply(axis, params);
+	              } else {
+	                func.apply(axis, params);
+	              }
+	            } else if (axis.isY() && lr) {
+	              // Not the best check
+
+	              if (typeof func == "string") {
+	                axis[func].apply(axis, params);
+	              } else {
+	                func.apply(axis, params);
+	              }
+	            }
+	          }
 	          break;
 	      }
 	    }

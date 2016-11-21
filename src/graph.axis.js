@@ -1225,8 +1225,6 @@ class Axis extends EventEmitter {
     var drawn = this._draw();
     this._widthLabels += drawn;
     return drawn;
-
-    return 0;
   }
 
   drawTicks( primary, secondary ) {

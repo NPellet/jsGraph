@@ -213,22 +213,21 @@ graph.getPlugin('serielinedifference').draw(); // Draws the shapes
 <p>Applying the style of the zones in the constructor options is the easiest way to proceed and takes the following format:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="s2">"plugins"</span><span class="err">:</span> <span class="p">{</span>
-	<span class="s2">"serielinedifference"</span><span class="err">:</span> <span class="p">{</span>
+  <span class="s2">"serielinedifference"</span><span class="err">:</span> <span class="p">{</span>
+    <span class="s2">"positiveStyle"</span><span class="err">:</span> <span class="p">{</span>
+	  <span class="s2">"fillColor"</span><span class="err">:</span> <span class="s2">"green"</span><span class="p">,</span>
+	  <span class="s2">"fillOpacity"</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
+	  <span class="s2">"strokeWidth"</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
+	  <span class="s2">"strokeColor"</span><span class="err">:</span> <span class="s2">"green"</span>
+	<span class="p">},</span>
 
-		<span class="nl">positiveStyle</span><span class="p">:</span> <span class="p">{</span>
-	    	<span class="nl">fillColor</span><span class="p">:</span> <span class="s1">'green'</span><span class="p">,</span>
-	    	<span class="nx">fillOpacity</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
-	    	<span class="nx">strokeWidth</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
-	    	<span class="nx">strokeColor</span><span class="err">:</span> <span class="s1">'green'</span>
-	    <span class="p">},</span>
-
-	    <span class="nx">negativeStyle</span><span class="err">:</span> <span class="p">{</span>
-	    	<span class="nl">fillColor</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span>
-	    	<span class="nx">fillOpacity</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
-	    	<span class="nx">strokeWidth</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
-	    	<span class="nx">strokeColor</span><span class="err">:</span> <span class="s1">'negative'</span>
-	    <span class="p">},</span>
-	<span class="p">}</span>
+	<span class="s2">"negativeStyle"</span><span class="err">:</span> <span class="p">{</span>
+	  <span class="s2">"fillColor"</span><span class="err">:</span> <span class="s2">"red"</span><span class="p">,</span>
+	  <span class="s2">"fillOpacity"</span><span class="err">:</span> <span class="mf">0.2</span><span class="p">,</span>
+	  <span class="s2">"strokeWidth"</span><span class="err">:</span> <span class="mi">0</span><span class="p">,</span>
+	  <span class="s2">"strokeColor"</span><span class="err">:</span> <span class="s2">"negative"</span>
+	<span class="p">},</span>
+  <span class="p">}</span>
 <span class="p">}</span> </code></pre></figure>
 
 <p>These options are the only one available for styling the polylines from the constructor. Moreover, they will be applied once to the shapes upon creation, not every time they are redrawn. If you change their style after the initialization of the graph, the original style will not be recovered.</p>

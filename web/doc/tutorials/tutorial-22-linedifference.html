@@ -149,22 +149,21 @@ Applying the style of the zones in the constructor options is the easiest way to
 
 {% highlight javascript %}
 "plugins": {
-	"serielinedifference": {
+  "serielinedifference": {
+    "positiveStyle": {
+	  "fillColor": "green",
+	  "fillOpacity": 0.2,
+	  "strokeWidth": 0,
+	  "strokeColor": "green"
+	},
 
-		positiveStyle: {
-	    	fillColor: 'green',
-	    	fillOpacity: 0.2,
-	    	strokeWidth: 0,
-	    	strokeColor: 'green'
-	    },
-
-	    negativeStyle: {
-	    	fillColor: 'red',
-	    	fillOpacity: 0.2,
-	    	strokeWidth: 0,
-	    	strokeColor: 'negative'
-	    },
-	}
+	"negativeStyle": {
+	  "fillColor": "red",
+	  "fillOpacity": 0.2,
+	  "strokeWidth": 0,
+	  "strokeColor": "negative"
+	},
+  }
 } 
 {% endhighlight %}
 

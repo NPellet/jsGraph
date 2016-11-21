@@ -74,7 +74,7 @@
 		<h2 id="bar-charts">Bar charts</h2>
 <p>Since v1.15, jsGraph allows you to use the bar chart series together with the bar x axis. The two have to work together, i.e. you cannot assign a line serie to a bar axis neither a bar serie to a normal or a time axis. In addition, for now, bar graphs are only accepted in the x direction (vertical bars).</p>
 
-<h3 id="defining-the-bar-axis">Defining the bar axis</h3>
+<h3 id="a-iddefinitiona-defining-the-bar-axis"><a id="definition"></a> Defining the bar axis</h3>
 
 <p>To define the bar axis, you need to pass its reference to the <code class="highlighter-rouge">Graph</code> constructor:</p>
 
@@ -88,7 +88,7 @@
 <span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
 <span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
 
-<h3 id="defining-the-categories">Defining the categories</h3>
+<h3 id="a-idcategoriesadefining-the-categories"><a id="categories"></a>Defining the categories</h3>
 
 <p>The next step is to assign the categories that jsGraph should recognize. A category is like an axis value, except that it can take text. When multiple series are used, the values that have the same category will be displayed next to each other.</p>
 
@@ -96,7 +96,7 @@
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 1"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat1"</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s2">"Category 2"</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"cat2"</span> <span class="p">}</span> <span class="p">];</span></code></pre></figure>
 
-<h3 id="creating-series">Creating series</h3>
+<h3 id="a-idseriesacreating-series"><a id="series"></a>Creating series</h3>
 
 <p>Alright, then we have to create a few series. The serie creation is the same as for any other serie, and take the type <code class="highlighter-rouge">Graph.SERIE_BAR</code> or, if you prefer, the string <code class="highlighter-rouge">"bar"</code>:</p>
 
@@ -113,21 +113,21 @@
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s1</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">[,</span> <span class="p">...]</span> <span class="p">);</span></code></pre></figure>
 
-<h3 id="setting-data">Setting data</h3>
+<h3 id="a-iddataasetting-data"><a id="data"></a>Setting data</h3>
 
 <p>Setting data to the serie takes an object which keys are the names of the categories:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">12</span> <span class="p">}</span> <span class="p">);</span>
 <span class="nx">s2</span><span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">{</span> <span class="s2">"cat1"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"cat2"</span><span class="p">:</span> <span class="mi">10</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
 
-<h3 id="styling-the-series">Styling the series</h3>
+<h3 id="a-idstylingastyling-the-series"><a id="styling"></a>Styling the series</h3>
 
 <p>Some additional styling options are available to differentiate series from one another. In additions to the methods provided by the line serie (<code class="highlighter-rouge">setLineWidth</code>, <code class="highlighter-rouge">setLineColor</code>, the bar series take the additional <code class="highlighter-rouge">setFillColor</code> and <code class="highlighter-rouge">setFillOpacity</code> method which set the inner color and inner opacity of the bars, respectively. Bar charts take no markers.</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">s1</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'crimson'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span>
 <span class="nx">s2</span><span class="p">.</span><span class="nx">setLineColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillColor</span><span class="p">(</span><span class="s1">'DarkGreen'</span><span class="p">).</span><span class="nx">setFillOpacity</span><span class="p">(</span> <span class="mf">0.5</span> <span class="p">);</span></code></pre></figure>
 
-<h3 id="results">Results</h3>
+<h3 id="a-idexamplearesults"><a id="example"></a>Results</h3>
 
 <p>Ok, let’s take all of this code, put it together and display the result:</p>
 
@@ -178,7 +178,7 @@
 	graph.draw();
 </script>
 
-<p>### Adding error bars</p>
+<p>### <a id="errorbars"></a>Adding error bars</p>
 
 <p>Adding error bars in bar charts is similar to the line series. The style has to be defined first using the <code class="highlighter-rouge">setErrorStyle</code> method. Here’s an example:</p>
 

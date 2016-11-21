@@ -1,6 +1,6 @@
 Since v1.15, jsGraph allows you to use the bar chart series together with the bar x axis. The two have to work together, i.e. you cannot assign a line serie to a bar axis neither a bar serie to a normal or a time axis. In addition, for now, bar graphs are only accepted in the x direction (vertical bars).
 
-### Defining the bar axis
+### <a id="definition"></a> Defining the bar axis
 
 To define the bar axis, you need to pass its reference to the ```Graph``` constructor:
 
@@ -18,7 +18,7 @@ axis.init( graph, options );
 graph.setBottomAxis( axis, 0 );
 {% endhighlight %}
 
-### Defining the categories
+### <a id="categories"></a>Defining the categories
 
 The next step is to assign the categories that jsGraph should recognize. A category is like an axis value, except that it can take text. When multiple series are used, the values that have the same category will be displayed next to each other.
 
@@ -28,7 +28,7 @@ To define categories, simply use the following setter
 axis.categories = [ { title: "Category 1", name: "cat1" }, { title: "Category 2", name: "cat2" } ];
 {% endhighlight %}
 
-### Creating series
+### <a id="series"></a>Creating series
 
 Alright, then we have to create a few series. The serie creation is the same as for any other serie, and take the type ```Graph.SERIE_BAR``` or, if you prefer, the string ```"bar"```:
 
@@ -49,7 +49,7 @@ There is however one extra step you need to make: you need to tell the axis that
 axis.setSeries( s1, s2 [, ...] );
 {% endhighlight %}
 
-### Setting data
+### <a id="data"></a>Setting data
 
 Setting data to the serie takes an object which keys are the names of the categories:
 
@@ -58,7 +58,7 @@ s1.setData( { "cat1": 5, "cat2": 12 } );
 s2.setData( { "cat1": 8, "cat2": 10 } );
 {% endhighlight %}
 
-### Styling the series
+### <a id="styling"></a>Styling the series
 
 Some additional styling options are available to differentiate series from one another. In additions to the methods provided by the line serie (```setLineWidth```, ```setLineColor```, the bar series take the additional ```setFillColor``` and ```setFillOpacity``` method which set the inner color and inner opacity of the bars, respectively. Bar charts take no markers.
 
@@ -68,7 +68,7 @@ s2.setLineColor('DarkGreen').setFillColor('DarkGreen').setFillOpacity( 0.5 );
 {% endhighlight %}
 
 
-### Results
+### <a id="example"></a>Results
 
 Ok, let's take all of this code, put it together and display the result:
 
@@ -121,7 +121,7 @@ graph.draw();
 	graph.draw();
 </script>
 
-### Adding error bars
+### <a id="errorbars"></a>Adding error bars
 
 Adding error bars in bar charts is similar to the line series. The style has to be defined first using the ```setErrorStyle``` method. Here's an example:
 
@@ -174,7 +174,6 @@ graph.getYAxis().forceMin( 0 );
 
 axis.setSeries( s1, s2 );
 graph.draw();
-
 {% endhighlight %}
 
 <div id="example-2" class="jsgraph-example"></div>

@@ -6988,8 +6988,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var drawn = this._draw();
 	      this._widthLabels += drawn;
 	      return drawn;
-
-	      return 0;
 	    }
 
 	    drawTicks(primary, secondary) {
@@ -8281,8 +8279,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @private
 	     */
 	    getMaxSizeTick() {
-
-	      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0; //(this.left ? 10 : 0);
+	      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() + 5 : 0; //(this.left ? 10 : 0);
 	    }
 
 	    draw() {
@@ -8374,7 +8371,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      this.label.setAttribute('dominant-baseline', this.left ? 'hanging' : 'auto');
+	      this.label.setAttribute('dominant-baseline', !this.left ? 'hanging' : 'auto');
 	      this.labelTspan.textContent = this.getLabel();
 	    }
 
@@ -12603,6 +12600,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setOptions(options) {
 	      this.options = options || {};
+	    }
+
+	    /**
+	     * Sets the options of the serie (no extension of default options)
+	     * @param {String} name - The option name
+	     * @param value - The option value
+	     * @memberof Serie
+	     * @example serie.setOption('selectableOnClick', true );
+	     */
+	    setOption(name, value) {
+	      this.options[name] = value;
 	    }
 
 	    /**
@@ -22113,7 +22121,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      graph.cancelClick = true;
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -22260,7 +22268,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -22468,7 +22476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var axes = this.options.axes;
 
-	      if (!this.graph.getSelectedSerie()) {
+	      if (!axes || axes == 'serieSelected' && !this.graph.getSelectedSerie()) {
 	        axes = 'all';
 	      }
 
@@ -22502,6 +22510,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 
+	          break;
+
+	        default:
+
+	          if (!Array.isArray(axes)) {
+	            axes = [axes];
+	          }
+
+	          for (let axis of axes) {
+
+	            if (axis.isX() && tb) {
+	              // Not the best check
+
+	              if (typeof func == "string") {
+	                axis[func].apply(axis, params);
+	              } else {
+	                func.apply(axis, params);
+	              }
+	            } else if (axis.isY() && lr) {
+	              // Not the best check
+
+	              if (typeof func == "string") {
+	                axis[func].apply(axis, params);
+	              } else {
+	                func.apply(axis, params);
+	              }
+	            }
+	          }
 	          break;
 	      }
 	    }

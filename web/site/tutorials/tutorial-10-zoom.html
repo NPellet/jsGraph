@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-10-zoom.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+    <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="zoom">10-zoom</h2>
+<script>
+
+function makeGraph( domID, zoomOptions, mouseActions, secondSerie ) {
+
+var graph = new Graph( domID, {
+
+plugins: {
+  'zoom': zoomOptions || {}
+},
+
+mouseActions: mouseActions || []
+
+} );
+
+graph.resize( 400, 300 );
+
+var data = [];
+for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
+data.push( i );
+data.push( Math.sin( i ) );
+}
+
+var serie = graph.newSerie( "firstSerie" ).autoAxis().setData( data );
+
+if( secondSerie ) {
+
+  serie.setLineColor('ForestGreen').setOption('selectableOnClick', true);
+
+  var data = [];
+  for( var i = 0; i < 2 * Math.PI; i += 0.1 ) {
+  data.push( i );
+  data.push( Math.cos( i ) );
+  }
+
+  var serie = graph.newSerie( "secondSerie" ).autoAxis().setYAxis( graph.getRightAxis( 0 ) ).setData( data ).setLineColor('crimson').setOption('selectableOnClick', true);
+
+  graph.getRightAxis( 0 ).turnGridsOff();
+
+
+
+}
+graph.draw();
+
+return { Graph: graph }
+}
+
+</script>
+
+<p>The Zoom plugin allows the use to zoom on the graph using the mouse. When the use clicks on the graph, holds the mouse down and moves it around, a red rectangle is formed, which defined the new zooming boundaries that the graph will take when the mouse is released.</p>
+
+<p>### Enabling the zoom plugin</p>
+
+<p>The zoom plugin, like any other plugin, needs to be enabled upon graph creation:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
+     <span class="s1">'zoom'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1">// ... zoom options</span>
+      <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span></code></pre></figure>
+
+<h3 id="features">Features</h3>
+
+<p>Here are a few features that the zoom plugin can provide you:</p>
+
+<ul>
+  <li>Zooming in x and y direction or forced in the x or y-direction</li>
+  <li>Zooming on one axis only</li>
+  <li>Double click to unzoom</li>
+  <li>Mouse wheel to zoom gradually</li>
+  <li>Smooth transition (animated zooming)</li>
+  <li>Event calls and cancellation possible</li>
+</ul>
+
+<h3 id="basics">Basics</h3>
+
+<p>We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option <code class="highlighter-rouge">mouseAction</code> of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let’s take the following code as it is:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
+  <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
+     <span class="s1">'zoom'</span><span class="p">:</span> <span class="p">{</span>
+        <span class="c1">// ... zoom options</span>
+      <span class="p">}</span>
+  <span class="p">},</span>
+
+  <span class="na">mouseAction</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="na">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="na">shift</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="na">ctrl</span><span class="p">:</span> <span class="kc">false</span> <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">});</span></code></pre></figure>
+
+<p>The following code enables the zoom plugin only when the <code class="highlighter-rouge">Shift</code> and <code class="highlighter-rouge">Ctrl</code> key are not pressed. If one of these were <code class="highlighter-rouge">true</code>, the use would need to have the key pressed to enable zooming.</p>
+
+<h4 id="example">Example</h4>
+
+<p>Using the previous code, we create the zoom plugin and enable it using the mouse action. The buttons below the graph trigger the following code.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Enabling button</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span> <span class="mi">0</span> <span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+<span class="c1">// Disabling button</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">options</span><span class="p">.</span><span class="nx">mouseActions</span><span class="p">[</span> <span class="mi">0</span> <span class="p">].</span><span class="nx">shift</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+
+<script>
+
+var graphResponse = makeGraph( "example-1", { zoomMode: 'xy' }, [ { plugin: 'zoom' } ] ); 
+
+$( document ).ready( function() {
+
+  $( '#example-1-shift' ).on( 'click', function() {
+    
+    graphResponse.Graph.options.mouseActions[ 0 ].shift = true;
+
+    $( this ).siblings( ).removeClass( 'active' );
+    $( this ).addClass( 'active' );
+  });
+
+  $( '#example-1-shift2' ).on('click', function() {
+    
+    graphResponse.Graph.options.mouseActions[ 0 ].shift = false;
+
+    $( this ).siblings( ).removeClass( 'active' );
+    $( this ).addClass( 'active' );
+  });
+});
+</script>
+
+<div class="btn-group">
+  <button class="btn btn-default" id="example-1-shift">Enable shift</button>
+  <button class="btn btn-default active" id="example-1-shift2">Disable shift</button>
+</div>
+
+<h3 id="unzoom-on-double-click">Unzoom on double click</h3>
+
+<p>So far, the only way to unzoom on a graph is to active the double click. The double click behavior is also defined through mouse actions, in the following way:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// Enabling button</span>
+<span class="p">{</span> <span class="nl">type</span><span class="p">:</span> <span class="s1">'dblclick'</span><span class="p">,</span> <span class="nx">plugin</span><span class="err">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">mode</span><span class="p">:</span> <span class="s1">'total'</span> <span class="p">}</span> <span class="p">}</span></code></pre></figure>
+
+<p>Where the <code class="highlighter-rouge">type</code> defines the mouse action (dblclick in this case), upon which the plugin <code class="highlighter-rouge">zoom</code> is called with the options <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">mode:</span><span class="w"> </span><span class="err">'total'</span><span class="w"> </span><span class="p">}</span></code>.</p>
+
+<div id="example-2" class="jsgraph-example"></div>
+
+<script>
+
+var graphResponse = makeGraph( "example-2", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
+ ] ); 
+
+</script>
+
+<p>The only available option in the double click mouse events is the <code class="highlighter-rouge">mode</code> options, which takes the following values:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">total</code> (default): Unzooms the axes to fit the natural boundaries of the axes (defined by the data or by the <code class="highlighter-rouge">forcedMin</code>/<code class="highlighter-rouge">forcedMax</code> options)</li>
+  <li><code class="highlighter-rouge">xtotal</code>. Only unzooms the x axis</li>
+  <li><code class="highlighter-rouge">ytotal</code>. Only unzooms the y axis</li>
+  <li><code class="highlighter-rouge">gradualXY</code>. Unzooms the axes by a factor 2 only. The unzooming is centered on the position where the mouse is clicked</li>
+  <li><code class="highlighter-rouge">gradualX</code>. Same as <code class="highlighter-rouge">gradualXY</code> but in the x direction only</li>
+  <li><code class="highlighter-rouge">gradualY</code>. Same as <code class="highlighter-rouge">gradualY</code> but in the y direction only</li>
+</ul>
+
+<div id="example-3" class="jsgraph-example"></div>
+
+<script>
+
+( function() {
+
+var graphResponse = makeGraph( "example-3", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
+ ] ); 
+
+$( document ).ready( function() {
+
+  $( 'button.example-3' ).on( 'click', function() {
+    
+    switch( $( this ).attr( 'id' ).replace('example-3-', '' ) ) {
+
+      case 'total':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'total';
+      break;
+      case 'xtotal':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'xtotal';
+      break;
+      case 'ytotal':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'ytotal';
+      break;
+      case 'gradualXY':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'gradualXY';
+      break;
+      case 'gradualX':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'gradualX';
+      break;
+      case 'gradualY':
+        graphResponse.Graph.options.mouseActions[ 1 ].options.mode = 'gradualY';
+      break;
+
+    }  
+    
+    $( this ).siblings( ).removeClass( 'active' );
+    $( this ).addClass( 'active' );
+  });
+
+});
+
+
+}) ();
+</script>
+
+<div class="btn-group">
+  <button class="btn btn-default example-3 active" id="example-3-total">total</button>
+  <button class="btn btn-default example-3" id="example-3-xtotal">xtotal</button>
+  <button class="btn btn-default example-3" id="example-3-ytotal">ytotal</button>
+  <button class="btn btn-default example-3" id="example-3-gradualXY">gradualXY</button>
+  <button class="btn btn-default example-3" id="example-3-gradualX">gradualX</button>
+  <button class="btn btn-default example-3" id="example-3-gradualY">gradualY</button>
+</div>
+
+<p>### Zooming on one axis only</p>
+
+<p>The default behaviour of jsGraph is to unzoom all present axes on the graph. The mouse coordinates are transformed into respective axes coordinates and used accordingly. However jsGraph also allows you to select which axis should be zoomed.</p>
+
+<p>Changing the zooming axis(es) can be done through the <code class="highlighter-rouge">axes</code> options of the zoom plugin and can take the following values:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">all</code> (default): Zooms and unzooms on all axes.</li>
+  <li><code class="highlighter-rouge">serieSelected</code>: Zooms and unzooms on the axes belonging to the selected series</li>
+  <li><code class="highlighter-rouge">[ axis0, axis1, ..., axisN ]</code>. Provide a user-defined list of axes</li>
+</ul>
+
+<p>Reminder: line series can be made selectable on click using the <code class="highlighter-rouge">selectableOnClick: (bool)</code> option and all series can be programmatically selected or unselected using the <code class="highlighter-rouge">.select()</code> or <code class="highlighter-rouge">.unselect()</code> API.</p>
+
+<div id="example-4" class="jsgraph-example"></div>
+
+<script>
+
+( function() {
+
+var graphResponse = makeGraph( "example-4", { zoomMode: 'xy' }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
+ ], true ); 
+
+$( document ).ready( function() {
+
+  $( 'button.example-4' ).on( 'click', function() {
+    
+    graphResponse.Graph.options.mouseActions[ 0 ].options = graphResponse.Graph.options.mouseActions[ 0 ].options || {};
+
+    switch( $( this ).attr( 'id' ).replace('example-4-', '' ) ) {
+
+      case 'all':
+
+        graphResponse.Graph.getPlugin('zoom').options.axes = 'all';
+      break;
+      case 'serieSelected':
+        graphResponse.Graph.getPlugin('zoom').options.axes = 'serieSelected';
+      break;
+
+      case 'bottom':
+        graphResponse.Graph.getPlugin('zoom').options.axes = [ graphResponse.Graph.getBottomAxis() ];
+      break;
+    }  
+    
+    $( this ).siblings( ).removeClass( 'active' );
+    $( this ).addClass( 'active' );
+  });
+
+});
+
+
+}) ();
+</script>
+
+<p>Note: In this example, the x axis is shared between the two series. Hence the serie that is not selected will also be scaled in the x direction when the option <code class="highlighter-rouge">serieSelected</code> is set</p>
+<div class="btn-group">
+  <button class="btn btn-default example-4 active" id="example-4-all">all</button>
+  <button class="btn btn-default example-4" id="example-4-serieSelected">serieSelected</button>
+  <button class="btn btn-default example-4" id="example-4-bottom">[ graph.getBottomAxis() ]</button>
+</div>
+
+<h3 id="smooth-transitioning">Smooth transitioning</h3>
+
+<p>Smooth zooming and unzooming using animations is possible with jsGraph, by setting the <code class="highlighter-rouge">smooth</code> flag to true in the plugin constructor or after its creation</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span><span class="p">.</span><span class="nx">getPlugin</span><span class="p">(</span><span class="s1">'zoom'</span><span class="p">).</span><span class="nx">options</span><span class="p">.</span><span class="nx">smooth</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span> <span class="c1">// Enables smoothing</span></code></pre></figure>
+
+<p>This option will apply to zooming and unzooming indepedently</p>
+
+<div id="example-5" class="jsgraph-example"></div>
+
+<script>
+
+( function() {
+
+var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ { plugin: 'zoom' }, { type: 'dblclick', plugin: 'zoom', shift: false, options: { mode: 'total' } }
+ ], false ); 
+
+}) ();
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

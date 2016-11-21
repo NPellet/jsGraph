@@ -71,21 +71,7 @@ module.exports = function(grunt) {
           },
         },
 
-        jsdoc : {
-            dist : {
-                src: [
-                    'dist/jsgraph.js', 
-                    ],
-                options: {
-                    destination: 'doc',
-                    template : "node_modules/ink-docstrap/template",
-                    configure : "node_modules/ink-docstrap/template/jsdoc.conf.json",
-                    private: false,
-                    tutorials:"./tutorials/"
-
-                }
-            }
-        },
+      
 
         exec: {
             npm_publish: 'npm publish'
@@ -246,6 +232,20 @@ module.exports = function(grunt) {
         fs.writeFileSync( "web/sources/_data/examples.json", JSON.stringify( examples, undefined, "\t" ) );
     });
 
+
+    grunt.registerTask( "tutorials", "Builds tutorials", function() {
+
+        exec("./node_modules/.bin/jsdoc -c jsdoc.json", ( err, out ) => {
+            if( err ) {
+                console.error( err );
+                return;
+            }
+            console.log('DONE');
+        });
+    });
+
+
+
     grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'uglify:dist' ] );
 
 
@@ -296,6 +296,8 @@ module.exports = function(grunt) {
                 console.error( err );
                 return;
             }
+
+            console.log('DONE');
         });
       });
     };

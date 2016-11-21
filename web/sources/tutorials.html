@@ -13,17 +13,19 @@ permalink: /tutorials
 <p class="larger">
 	To help you kick-off your own graphs as soon as possible, we wrote a bunch of tutorials which focus of certain aspects of jsGraph. Feel free to copy/paste the code in your own project and play around with it. Practice is the best way to master the very extensive API of jsGraph
 </p>
-
-<h3>Available tutorials</h3>
-
-<ul class="list-group">
   
 {% for tuto in site.data.tutorials %}
-
-	<li class="list-group-item">
-		<a href="{{ tuto.url | prepend: 'tutorials/' | prepend: site.baseurl }}">
-			{{ tuto.title }}
-		</a>
-	</li>
+	{% assign title = tuto[0] %}
+		{% assign list = tuto[1] %}
+		<h3>{{ title }}</h3>
+		<ul class="list-group">
+			{% for tuto2 in list %}
+			<li class="list-group-item">
+				<a href="{{ tuto2.url | prepend: 'tutorials/' | prepend: site.baseurl }}">
+					{{ tuto2.title }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
 {% endfor %}
-</ul>
+

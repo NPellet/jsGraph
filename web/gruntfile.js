@@ -98,11 +98,17 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'parseTutorials', function() {
 
+      var bundleFile = JSON.parse( fs.readFileSync( 'tutorials.json' ) );
+      
+
       var dirPath = './doc/tutorials';
-
-
       var files = fs.readdirSync( dirPath );
-      var tutoConfig = [];
+      var tutoConfig = {};
+
+      for( var i in bundleFile ) {
+        tutoConfig[ i ] = [];  
+      }
+      
 
       files.map( function( file ) {
 
@@ -111,12 +117,28 @@ module.exports = function(grunt) {
         
         var found = false;
 
-        tutoConfig.push( { title: title[ 1 ], url: file } );
+        var obj = { title: title[ 1 ], url: file };
+
+        for( var i in bundleFile ) {
+
+          if( bundleFile[ i ].indexOf( file.replace('tutorial-', '' ).replace('.html', '') ) > -1 ) {
+            
+            tutoConfig[ i ] = tutoConfig[ i ] || [];
+            tutoConfig[ i ].push( obj );
+            found = true;
+          }
+        }
+
+        if( found == false ) {
+          tutoConfig['Others'].push( obj );
+        }
+        
         var text = '---\nlayout: page-sidemenu\n' + inner;
         fs.writeFileSync('./sources/tutorials/' + file.replace('.html', '' ) + ".md", text );
       });
 
-      fs.writeFileSync( './sources/_data/tutorials.json', JSON.stringify( tutoConfig ) );
+      fs.writeFileSync( './sources/_data/tutorials.json', JSON.stringify( tutoConfig, undefined, "\t" ) );
+
     });
 
     grunt.registerTask( 'parseDoc', function() {

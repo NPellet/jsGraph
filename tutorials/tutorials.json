@@ -1,9 +1,9 @@
 {
      "10_basic": {
-         "title": "Basic introduction"
+         "title": "Getting started"
      },
 
-     "18_adaptto": {
+    "18-adaptto": {
          "title": "Adapt axes"
     },
     "20-axesadvanced": {
