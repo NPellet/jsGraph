@@ -14,7 +14,7 @@ define( function() {
 
 
 
-			var serie = graphinstance.newSerie("serieTest", {}, "scatter" );
+			var serie = graphinstance.newSerie("serieTest", {}, Graph.SERIE_SCATTER );
 
 			serie
 				.setLabel( "My serie" )

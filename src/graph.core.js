@@ -1001,15 +1001,9 @@ class Graph extends EventEmitter {
       return;
     };
 
-    serie._type = type;
-    this.series.push( serie );
-
-    // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
-    /*
-        if ( self.legend ) {
-          self.legend.update();
-        }
-    */
+    this.series.push( serie );  
+    this.updateLegend();
+  
     this.emit( "newSerie", serie );
     return serie;
   }
@@ -1706,6 +1700,11 @@ class Graph extends EventEmitter {
 
     this.legend.update();
   }
+
+
+  /**
+   * @returns {Legend} The legend item
+   */
   getLegend() {
     if ( !this.legend ) {
       return;

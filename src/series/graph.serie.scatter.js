@@ -169,6 +169,31 @@ class SerieScatter extends Serie {
     return this;
   }
 
+  /** 
+   * Applies for x as the category axis
+   * @example serie.setData( { x: "someName", y: [ ...values ] } );
+   */
+  setDataCategory( data ) {
+
+    for ( var i in data ) {
+
+      if ( Array.isArray( data[ i ].y ) ) {
+
+        for ( let j of data[ i ].y ) {
+
+          this._checkY( j );
+        }
+      }
+    }
+
+    this.dataHasChanged();
+    this.graph.updateDataMinMaxAxes();
+
+    this.data = data;
+
+    return this;
+  }
+
   /**
    * Removes all DOM points
    * @private
@@ -269,6 +294,8 @@ class SerieScatter extends Serie {
       max,
       self = this;
 
+    var isCategory = this.getXAxis().getType() == 'category';
+
     this._drawn = true;
 
     this.dataHasChanged( false );
@@ -295,33 +322,72 @@ class SerieScatter extends Serie {
       this.errorDrawInit();
     }
 
-    for ( ; j < m; j += 2 ) {
+    if ( isCategory ) {
 
-      if (
-        this.data[ j + incrXFlip ] < this.getXAxis().getCurrentMin() ||
-        this.data[ j + incrXFlip ] > this.getXAxis().getCurrentMax() ||
-        this.data[ j + incrYFlip ] < this.getYAxis().getCurrentMin() ||
-        this.data[ j + incrYFlip ] > this.getYAxis().getCurrentMax()
-      ) {
-        continue;
+      let k = 0;
+
+      for ( ; j < m; j += 1 ) {
+
+        let categoryNumber = this.getCategoryIndex( this.data[ j ].x );
+
+        if ( categoryNumber === false ) {
+          continue;
+        }
+
+        let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
+
+        //xpx = this.getX( categoryNumber );
+
+        let ys = this.data[ j ].y,
+          l = ys.length,
+          i = 0;
+
+        if ( this.error ) {
+          //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+        }
+
+        for ( let y of this.data[ j ].y ) {
+
+          let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+
+          ypx = this.getY( y );
+          xpx = this.getX( xpos );
+          i++;
+
+          this.shapesDetails[ k ] = this.shapesDetails[ k ] || [];
+          this.shapesDetails[ k ][ 0 ] = xpx;
+          this.shapesDetails[ k ][ 1 ] = ypx;
+          keys.push( k );
+          k++;
+        }
       }
+    } else {
+      for ( ; j < m; j += 2 ) {
 
-      xpx = this.getX( this.data[ j + incrXFlip ] );
-      ypx = this.getY( this.data[ j + incrYFlip ] );
+        if (
+          this.data[ j + incrXFlip ] < this.getXAxis().getCurrentMin() ||
+          this.data[ j + incrXFlip ] > this.getXAxis().getCurrentMax() ||
+          this.data[ j + incrYFlip ] < this.getYAxis().getCurrentMin() ||
+          this.data[ j + incrYFlip ] > this.getYAxis().getCurrentMax()
 
-      var valY = this.data[ j + incrYFlip ],
-        coordY;
+        ) {
+          continue;
+        }
 
-      if ( this.error ) {
-        this.errorAddPoint( j, this.data[ j + incrXFlip ], this.data[ j + incrYFlip ], xpx, ypx );
+        xpx = this.getX( this.data[ j + incrXFlip ] );
+        ypx = this.getY( this.data[ j + incrYFlip ] );
+
+        if ( this.error ) {
+          this.errorAddPoint( j, this.data[ j + incrXFlip ], this.data[ j + incrYFlip ], xpx, ypx );
+        }
+
+        this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
+        this.shapesDetails[ j / 2 ][ 0 ] = xpx;
+        this.shapesDetails[ j / 2 ][ 1 ] = ypx;
+        keys.push( j / 2 );
+
+        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
       }
-
-      this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
-      this.shapesDetails[ j / 2 ][ 0 ] = xpx;
-      this.shapesDetails[ j / 2 ][ 1 ] = ypx;
-      keys.push( j / 2 );
-
-      //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
     }
 
     if ( this.error ) {
@@ -521,6 +587,55 @@ class SerieScatter extends Serie {
 
   }
 
+  /**
+   *  Informations needed for the redrawing of the bars, coming from AxisXBar
+   *  @private
+   *  @param {Number} order - The index of the serie in the bar stack
+   *  @param {Object[]} categories - The list of categories
+   *  @param {Number} nbSeries - The number of series
+   *  @see AxisXBar#setSeries
+   */
+  setCategoryConfig( order, categories, nbSeries ) {
+
+    this.order = order;
+    this.categories = categories;
+    this.nbSeries = nbSeries;
+  }
+
+  /**
+   * Returns the index of a category based on its name
+   * @param {String} name - The name of the category
+   */
+  getCategoryIndex( name ) {
+
+    if ( !this.categories ) {
+      throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
+    }
+
+    for ( var i = 0; i < this.categories.length; i++ ) {
+
+      if ( this.categories[ i ].name == name ) {
+        return i;
+      }
+    }
+
+    return false;
+  }
+
+}
+
+/**
+ *  @private
+ *  @param {Number} categoryIndex - The index of the serie in the bar stack
+ *  @param {Number} serieIndex - The index of the serie
+ *  @param {Number} nbSeries - The number of series
+ */
+function calculatePosition( categoryIndex, serieIndex, nbSeries, nbCategories ) {
+
+  var nbElements = ( nbSeries + 1 ) * nbCategories;
+  var nb = categoryIndex * ( nbSeries + 1 ) + serieIndex;
+  console.log( nbElements );
+  return [ ( nb ) / nbElements, 1 / nbElements ];
 }
 
 util.mix( SerieScatter, ErrorBarMixin );

@@ -9596,7 +9596,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      };
 
-	      serie._type = type;
 	      this.series.push(serie);
 
 	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
@@ -15671,8 +15670,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var drawn = this._draw();
 	      this._widthLabels += drawn;
 	      return drawn;
-
-	      return 0;
 	    }
 	  }, {
 	    key: 'drawTicks',
@@ -17199,8 +17196,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getMaxSizeTick',
 	    value: function getMaxSizeTick() {
-
-	      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() : 0; //(this.left ? 10 : 0);
+	      // Gives an extra margin of 5px
+	      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() + 5 : 0; //(this.left ? 10 : 0);
 	    }
 	  }, {
 	    key: 'draw',
@@ -17300,7 +17297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      this.label.setAttribute('dominant-baseline', this.left ? 'hanging' : 'auto');
+	      this.label.setAttribute('dominant-baseline', !this.left ? 'hanging' : 'auto');
 	      this.labelTspan.textContent = this.getLabel();
 	    }
 	  }, {
@@ -17636,6 +17633,48 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the series automatically
+	     * @returns {AxisBar} The current axis instance
+	     */
+
+	  }, {
+	    key: 'autoSeries',
+	    value: function autoSeries() {
+
+	      var series = [];
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
+
+	      try {
+	        for (var _iterator = this.graph.series[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var serie = _step.value;
+
+	          if (serie.getXAxis() == this) {
+	            series.push(serie);
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
+	          }
+	        }
+	      }
+
+	      this.setSeries.apply(this, series);
+	      return this;
+	    }
+
+	    /**
+	     * Sets the series that should belong to the axis
 	     * @param {...(Series|Number|String)} series - List of series identified either by their instance, or their index (string or number)
 	     * @returns {AxisBar} The current axis instance
 	     */
@@ -17653,8 +17692,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          serie = self.graph.getSerie(serie);
 	        }
 
-	        if (serie.setBarConfig) {
-	          serie.setBarConfig(index, self._barCategories, self.series.length);
+	        if (serie.setCategoryConfig) {
+	          serie.setCategoryConfig(index, self._barCategories, self.series.length);
 	        }
 	      });
 
@@ -21714,6 +21753,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the options of the serie (no extension of default options)
+	     * @param {String} name - The option name
+	     * @param value - The option value
+	     * @memberof Serie
+	     * @example serie.setOption('selectableOnClick', true );
+	     */
+
+	  }, {
+	    key: 'setOption',
+	    value: function setOption(name, value) {
+	      this.options[name] = value;
+	    }
+
+	    /**
 	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 	     * @memberof Serie
 	     */
@@ -22667,9 +22720,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
 	  },
 
-	  setDataError: function setDataError(error) {
+	  check: function check(index, valY, valX) {
+
+	    var dx, dy;
+
+	    if (this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER) {
+
+	      if (!(dx = this.data[index * 2]) || !(dy = this.data[index * 2 + 1])) {
+	        //
+	        return;
+	      }
+	    }
+
+	    if (dx === undefined) {
+	      return;
+	    }
+
+	    for (var i = 0, l = valY.length; i < l; i++) {
+
+	      if (Array.isArray(valY[i])) {
+
+	        if (!isNaN(valY[i][0])) {
+	          this._checkY(dy + valY[i][0]);
+	        }
+
+	        if (!isNaN(valY[i][1])) {
+	          this._checkY(dy - valY[i][1]);
+	        }
+	      } else {
+
+	        if (!isNaN(valY[i])) {
+	          this._checkY(dy + valY[i]);
+	          this._checkY(dy - valY[i]);
+	        }
+	      }
+	    }
+
+	    for (var i = 0, l = valX.length; i < l; i++) {
+
+	      if (Array.isArray(valX[i])) {
+
+	        if (!isNaN(valX[i][0])) {
+	          this._checkX(dx - valX[i][0]);
+	        }
+
+	        if (!isNaN(valX[i][1])) {
+	          this._checkX(dx + valX[i][1]);
+	        }
+	      } else {
+
+	        if (!isNaN(valY[i])) {
+	          this._checkX(dx - valX[i]);
+	          this._checkX(dx + valX[i]);
+	        }
+	      }
+	    }
+	  },
+	  /**
+	   *  Sets the data error values
+	   */
+	  setDataError: function setDataError(error, noCheck) {
 	    this.error = error;
+
+	    if (!noCheck) {
+	      for (var i = 0, l = this.error.length; i < l; i++) {
+
+	        if (this.error[i]) {
+
+	          this.check(i, this.error[i][0], this.error[i][1]);
+	        }
+	      }
+	    }
+
 	    this.dataHasChanged();
+	    this.graph.updateDataMinMaxAxes();
 	    return this;
 	  },
 
@@ -23086,8 +23210,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	  }, {
-	    key: 'setBarConfig',
-	    value: function setBarConfig(order, categories, nbSeries) {
+	    key: 'setCategoryConfig',
+	    value: function setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
@@ -23998,8 +24122,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	  }, {
-	    key: 'setBarConfig',
-	    value: function setBarConfig(order, categories, nbSeries) {
+	    key: 'setCategoryConfig',
+	    value: function setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
@@ -32118,7 +32242,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      graph.cancelClick = true;
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -32274,7 +32398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      if (this.options.transition) {
+	      if (this.options.transition || this.options.smooth) {
 
 	        var modeX = false,
 	            modeY = false;
@@ -32486,7 +32610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var axes = this.options.axes;
 
-	      if (!this.graph.getSelectedSerie()) {
+	      if (!axes || axes == 'serieSelected' && !this.graph.getSelectedSerie()) {
 	        axes = 'all';
 	      }
 
@@ -32516,6 +32640,56 @@ return /******/ (function(modules) { // webpackBootstrap
 	                serie.getYAxis()[func].apply(serie.getYAxis(), params);
 	              } else {
 	                func.apply(serie.getYAxis(), params);
+	              }
+	            }
+	          }
+
+	          break;
+
+	        default:
+
+	          if (!Array.isArray(axes)) {
+	            axes = [axes];
+	          }
+
+	          var _iteratorNormalCompletion = true;
+	          var _didIteratorError = false;
+	          var _iteratorError = undefined;
+
+	          try {
+	            for (var _iterator = axes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	              var axis = _step.value;
+
+
+	              if (axis.isX() && tb) {
+	                // Not the best check
+
+	                if (typeof func == "string") {
+	                  axis[func].apply(axis, params);
+	                } else {
+	                  func.apply(axis, params);
+	                }
+	              } else if (axis.isY() && lr) {
+	                // Not the best check
+
+	                if (typeof func == "string") {
+	                  axis[func].apply(axis, params);
+	                } else {
+	                  func.apply(axis, params);
+	                }
+	              }
+	            }
+	          } catch (err) {
+	            _didIteratorError = true;
+	            _iteratorError = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	              }
+	            } finally {
+	              if (_didIteratorError) {
+	                throw _iteratorError;
 	              }
 	            }
 	          }

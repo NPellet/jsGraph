@@ -20,7 +20,7 @@ define( function() {
 			graphinstance.newSerie("test3", {}, "bar" ).setData( { "1st": 1, 2: 2, 3: 2, "fourth": 3 } ).autoAxis().setFillColor('green').setFillOpacity(0.1).setLineColor('green');
 
 			graphinstance.getSerie("test").setDataError( { "1st": [ [ 0.2, 0.6 ] ], 3: 1 } ).setErrorStyle( [ { type: 'bar', y: {} } ] );
-			graphinstance.getBottomAxis().setSeries( "test", "test2", "test3" );
+			graphinstance.getBottomAxis().autoSeries();
     		graphinstance.autoscaleAxes();
 
     		graphinstance.getLeftAxis().forceMin( 0 );

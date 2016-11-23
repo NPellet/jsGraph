@@ -714,7 +714,7 @@ class SerieBox extends Serie {
    *  @param {Number} nbSeries - The number of series
    *  @see AxisXBar#setSeries
    */
-  setBarConfig( order, categories, nbSeries ) {
+  setCategoryConfig( order, categories, nbSeries ) {
 
     this.order = order;
     this.categories = categories;

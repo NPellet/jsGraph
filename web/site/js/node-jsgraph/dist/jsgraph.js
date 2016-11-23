@@ -8696,8 +8696,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          serie = self.graph.getSerie(serie);
 	        }
 
-	        if (serie.setBarConfig) {
-	          serie.setBarConfig(index, self._barCategories, self.series.length);
+	        if (serie.setCategoryConfig) {
+	          serie.setCategoryConfig(index, self._barCategories, self.series.length);
 	        }
 	      });
 
@@ -13884,7 +13884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @param {Number} nbSeries - The number of series
 	     *  @see AxisXBar#setSeries
 	     */
-	    setBarConfig(order, categories, nbSeries) {
+	    setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
@@ -14636,7 +14636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @param {Number} nbSeries - The number of series
 	     *  @see AxisXBar#setSeries
 	     */
-	    setBarConfig(order, categories, nbSeries) {
+	    setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;

@@ -105,8 +105,8 @@ class AxisXBar extends AxisX {
         serie = self.graph.getSerie( serie );
       }
 
-      if ( serie.setBarConfig ) {
-        serie.setBarConfig( index, self._barCategories, self.series.length );
+      if ( serie.setCategoryConfig ) {
+        serie.setCategoryConfig( index, self._barCategories, self.series.length );
       }
     } );
 

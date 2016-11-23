@@ -1251,7 +1251,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      };
 
-	      serie._type = type;
 	      this.series.push(serie);
 
 	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
@@ -8279,6 +8278,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @private
 	     */
 	    getMaxSizeTick() {
+	      // Gives an extra margin of 5px
 	      return this.longestTick && this.longestTick[0] ? this.longestTick[0].getComputedTextLength() + 5 : 0; //(this.left ? 10 : 0);
 	    }
 
@@ -8679,6 +8679,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the series automatically
+	     * @returns {AxisBar} The current axis instance
+	     */
+	    autoSeries() {
+
+	      let series = [];
+	      for (let serie of this.graph.series) {
+	        if (serie.getXAxis() == this) {
+	          series.push(serie);
+	        }
+	      }
+
+	      this.setSeries(...series);
+	      return this;
+	    }
+
+	    /**
+	     * Sets the series that should belong to the axis
 	     * @param {...(Series|Number|String)} series - List of series identified either by their instance, or their index (string or number)
 	     * @returns {AxisBar} The current axis instance
 	     */
@@ -8693,8 +8711,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          serie = self.graph.getSerie(serie);
 	        }
 
-	        if (serie.setBarConfig) {
-	          serie.setBarConfig(index, self._barCategories, self.series.length);
+	        if (serie.setCategoryConfig) {
+	          serie.setCategoryConfig(index, self._barCategories, self.series.length);
 	        }
 	      });
 
@@ -13476,9 +13494,80 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
 	    },
 
-	    setDataError: function (error) {
+	    check: function (index, valY, valX) {
+
+	      var dx, dy;
+
+	      if (this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER) {
+
+	        if (!(dx = this.data[index * 2]) || !(dy = this.data[index * 2 + 1])) {
+	          //
+	          return;
+	        }
+	      }
+
+	      if (dx === undefined) {
+	        return;
+	      }
+
+	      for (var i = 0, l = valY.length; i < l; i++) {
+
+	        if (Array.isArray(valY[i])) {
+
+	          if (!isNaN(valY[i][0])) {
+	            this._checkY(dy + valY[i][0]);
+	          }
+
+	          if (!isNaN(valY[i][1])) {
+	            this._checkY(dy - valY[i][1]);
+	          }
+	        } else {
+
+	          if (!isNaN(valY[i])) {
+	            this._checkY(dy + valY[i]);
+	            this._checkY(dy - valY[i]);
+	          }
+	        }
+	      }
+
+	      for (var i = 0, l = valX.length; i < l; i++) {
+
+	        if (Array.isArray(valX[i])) {
+
+	          if (!isNaN(valX[i][0])) {
+	            this._checkX(dx - valX[i][0]);
+	          }
+
+	          if (!isNaN(valX[i][1])) {
+	            this._checkX(dx + valX[i][1]);
+	          }
+	        } else {
+
+	          if (!isNaN(valY[i])) {
+	            this._checkX(dx - valX[i]);
+	            this._checkX(dx + valX[i]);
+	          }
+	        }
+	      }
+	    },
+	    /**
+	     *  Sets the data error values
+	     */
+	    setDataError: function (error, noCheck) {
 	      this.error = error;
+
+	      if (!noCheck) {
+	        for (let i = 0, l = this.error.length; i < l; i++) {
+
+	          if (this.error[i]) {
+
+	            this.check(i, this.error[i][0], this.error[i][1]);
+	          }
+	        }
+	      }
+
 	      this.dataHasChanged();
+	      this.graph.updateDataMinMaxAxes();
 	      return this;
 	    },
 
@@ -13881,7 +13970,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @param {Number} nbSeries - The number of series
 	     *  @see AxisXBar#setSeries
 	     */
-	    setBarConfig(order, categories, nbSeries) {
+	    setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
@@ -14633,7 +14722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @param {Number} nbSeries - The number of series
 	     *  @see AxisXBar#setSeries
 	     */
-	    setBarConfig(order, categories, nbSeries) {
+	    setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
@@ -15288,6 +15377,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
+	    /** 
+	     * Applies for x as the category axis
+	     * @example serie.setData( { x: "someName", y: [ ...values ] } );
+	     */
+	    setDataCategory(data) {
+
+	      for (var i in data) {
+
+	        if (Array.isArray(data[i].y)) {
+
+	          for (let j of data[i].y) {
+
+	            this._checkY(j);
+	          }
+	        }
+	      }
+
+	      this.dataHasChanged();
+	      this.graph.updateDataMinMaxAxes();
+
+	      this.data = data;
+
+	      return this;
+	    }
+
 	    /**
 	     * Removes all DOM points
 	     * @private
@@ -15386,6 +15500,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          max,
 	          self = this;
 
+	      var isCategory = this.getXAxis().getType() == 'category';
+
 	      this._drawn = true;
 
 	      this.dataHasChanged(false);
@@ -15412,28 +15528,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorDrawInit();
 	      }
 
-	      for (; j < m; j += 2) {
+	      if (isCategory) {
 
-	        if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
-	          continue;
+	        let k = 0;
+
+	        for (; j < m; j += 1) {
+
+	          let categoryNumber = this.getCategoryIndex(this.data[j].x);
+
+	          if (categoryNumber === false) {
+	            continue;
+	          }
+
+	          let position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+
+	          //xpx = this.getX( categoryNumber );
+
+	          let ys = this.data[j].y,
+	              l = ys.length,
+	              i = 0;
+
+	          if (this.error) {
+	            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+	          }
+
+	          for (let y of this.data[j].y) {
+
+	            let xpos = i / (l - 1) * position[1] + position[0];
+
+	            ypx = this.getY(y);
+	            xpx = this.getX(xpos);
+	            i++;
+
+	            this.shapesDetails[k] = this.shapesDetails[k] || [];
+	            this.shapesDetails[k][0] = xpx;
+	            this.shapesDetails[k][1] = ypx;
+	            keys.push(k);
+	            k++;
+	          }
 	        }
+	      } else {
+	        for (; j < m; j += 2) {
 
-	        xpx = this.getX(this.data[j + incrXFlip]);
-	        ypx = this.getY(this.data[j + incrYFlip]);
+	          if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
+	            continue;
+	          }
 
-	        var valY = this.data[j + incrYFlip],
-	            coordY;
+	          xpx = this.getX(this.data[j + incrXFlip]);
+	          ypx = this.getY(this.data[j + incrYFlip]);
 
-	        if (this.error) {
-	          this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+	          if (this.error) {
+	            this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+	          }
+
+	          this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
+	          this.shapesDetails[j / 2][0] = xpx;
+	          this.shapesDetails[j / 2][1] = ypx;
+	          keys.push(j / 2);
+
+	          //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
 	        }
-
-	        this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
-	        this.shapesDetails[j / 2][0] = xpx;
-	        this.shapesDetails[j / 2][1] = ypx;
-	        keys.push(j / 2);
-
-	        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
 	      }
 
 	      if (this.error) {
@@ -15615,6 +15769,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
+	    /**
+	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
+	     *  @private
+	     *  @param {Number} order - The index of the serie in the bar stack
+	     *  @param {Object[]} categories - The list of categories
+	     *  @param {Number} nbSeries - The number of series
+	     *  @see AxisXBar#setSeries
+	     */
+	    setCategoryConfig(order, categories, nbSeries) {
+
+	      this.order = order;
+	      this.categories = categories;
+	      this.nbSeries = nbSeries;
+	    }
+
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
+	    getCategoryIndex(name) {
+
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
+
+	      for (var i = 0; i < this.categories.length; i++) {
+
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
+
+	      return false;
+	    }
+
+	  }
+
+	  /**
+	   *  @private
+	   *  @param {Number} categoryIndex - The index of the serie in the bar stack
+	   *  @param {Number} serieIndex - The index of the serie
+	   *  @param {Number} nbSeries - The number of series
+	   */
+	  function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
+
+	    var nbElements = (nbSeries + 1) * nbCategories;
+	    var nb = categoryIndex * (nbSeries + 1) + serieIndex;
+	    console.log(nbElements);
+	    return [nb / nbElements, 1 / nbElements];
 	  }
 
 	  util.mix(SerieScatter, _graphMixin2.default);

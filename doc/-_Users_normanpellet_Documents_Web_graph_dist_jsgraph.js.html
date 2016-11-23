@@ -9147,8 +9147,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          serie = self.graph.getSerie(serie);
 	        }
 
-	        if (serie.setBarConfig) {
-	          serie.setBarConfig(index, self._barCategories, self.series.length);
+	        if (serie.setCategoryConfig) {
+	          serie.setCategoryConfig(index, self._barCategories, self.series.length);
 	        }
 	      });
 
@@ -14882,8 +14882,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	  }, {
-	    key: 'setBarConfig',
-	    value: function setBarConfig(order, categories, nbSeries) {
+	    key: 'setCategoryConfig',
+	    value: function setCategoryConfig(order, categories, nbSeries) {
 
 	      this.order = order;
 	      this.categories = categories;
