@@ -1001,9 +1001,9 @@ class Graph extends EventEmitter {
       return;
     };
 
-    this.series.push( serie );  
+    this.series.push( serie );
     this.updateLegend();
-  
+
     this.emit( "newSerie", serie );
     return serie;
   }
@@ -1700,7 +1700,6 @@ class Graph extends EventEmitter {
 
     this.legend.update();
   }
-
 
   /**
    * @returns {Legend} The legend item

@@ -9597,13 +9597,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      this.series.push(serie);
+	      this.updateLegend();
 
-	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
-	      /*
-	          if ( self.legend ) {
-	            self.legend.update();
-	          }
-	      */
 	      this.emit("newSerie", serie);
 	      return serie;
 	    }
@@ -10396,6 +10391,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.legend.update();
 	    }
+
+	    /**
+	     * @returns {Legend} The legend item
+	     */
+
 	  }, {
 	    key: 'getLegend',
 	    value: function getLegend() {
@@ -24782,6 +24782,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
+	    /** 
+	     * Applies for x as the category axis
+	     * @example serie.setData( { x: "someName", y: [ ...values ] } );
+	     */
+
+	  }, {
+	    key: 'setDataCategory',
+	    value: function setDataCategory(data) {
+
+	      for (var i in data) {
+
+	        if (Array.isArray(data[i].y)) {
+	          var _iteratorNormalCompletion = true;
+	          var _didIteratorError = false;
+	          var _iteratorError = undefined;
+
+	          try {
+
+	            for (var _iterator = data[i].y[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	              var j = _step.value;
+
+
+	              this._checkY(j);
+	            }
+	          } catch (err) {
+	            _didIteratorError = true;
+	            _iteratorError = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion && _iterator.return) {
+	                _iterator.return();
+	              }
+	            } finally {
+	              if (_didIteratorError) {
+	                throw _iteratorError;
+	              }
+	            }
+	          }
+	        }
+	      }
+
+	      this.dataHasChanged();
+	      this.graph.updateDataMinMaxAxes();
+
+	      this.data = data;
+
+	      return this;
+	    }
+
 	    /**
 	     * Removes all DOM points
 	     * @private
@@ -24890,6 +24939,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          max,
 	          self = this;
 
+	      var isCategory = this.getXAxis().getType() == 'category';
+
 	      this._drawn = true;
 
 	      this.dataHasChanged(false);
@@ -24916,28 +24967,87 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorDrawInit();
 	      }
 
-	      for (; j < m; j += 2) {
+	      if (isCategory) {
 
-	        if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
-	          continue;
+	        var _k = 0;
+
+	        for (; j < m; j += 1) {
+
+	          var categoryNumber = this.getCategoryIndex(this.data[j].x);
+
+	          if (categoryNumber === false) {
+	            continue;
+	          }
+
+	          var position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+
+	          //xpx = this.getX( categoryNumber );
+
+	          var ys = this.data[j].y,
+	              l = ys.length,
+	              i = 0;
+
+	          if (this.error) {
+	            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
+	          }
+
+	          var _iteratorNormalCompletion2 = true;
+	          var _didIteratorError2 = false;
+	          var _iteratorError2 = undefined;
+
+	          try {
+	            for (var _iterator2 = this.data[j].y[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	              var _y = _step2.value;
+
+
+	              var xpos = i / (l - 1) * position[1] + position[0];
+
+	              ypx = this.getY(_y);
+	              xpx = this.getX(xpos);
+	              i++;
+
+	              this.shapesDetails[_k] = this.shapesDetails[_k] || [];
+	              this.shapesDetails[_k][0] = xpx;
+	              this.shapesDetails[_k][1] = ypx;
+	              keys.push(_k);
+	              _k++;
+	            }
+	          } catch (err) {
+	            _didIteratorError2 = true;
+	            _iteratorError2 = err;
+	          } finally {
+	            try {
+	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                _iterator2.return();
+	              }
+	            } finally {
+	              if (_didIteratorError2) {
+	                throw _iteratorError2;
+	              }
+	            }
+	          }
 	        }
+	      } else {
+	        for (; j < m; j += 2) {
 
-	        xpx = this.getX(this.data[j + incrXFlip]);
-	        ypx = this.getY(this.data[j + incrYFlip]);
+	          if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
+	            continue;
+	          }
 
-	        var valY = this.data[j + incrYFlip],
-	            coordY;
+	          xpx = this.getX(this.data[j + incrXFlip]);
+	          ypx = this.getY(this.data[j + incrYFlip]);
 
-	        if (this.error) {
-	          this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+	          if (this.error) {
+	            this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+	          }
+
+	          this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
+	          this.shapesDetails[j / 2][0] = xpx;
+	          this.shapesDetails[j / 2][1] = ypx;
+	          keys.push(j / 2);
+
+	          //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
 	        }
-
-	        this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
-	        this.shapesDetails[j / 2][0] = xpx;
-	        this.shapesDetails[j / 2][1] = ypx;
-	        keys.push(j / 2);
-
-	        //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
 	      }
 
 	      if (this.error) {
@@ -25124,10 +25234,67 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+
+	    /**
+	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
+	     *  @private
+	     *  @param {Number} order - The index of the serie in the bar stack
+	     *  @param {Object[]} categories - The list of categories
+	     *  @param {Number} nbSeries - The number of series
+	     *  @see AxisXBar#setSeries
+	     */
+
+	  }, {
+	    key: 'setCategoryConfig',
+	    value: function setCategoryConfig(order, categories, nbSeries) {
+
+	      this.order = order;
+	      this.categories = categories;
+	      this.nbSeries = nbSeries;
+	    }
+
+	    /**
+	     * Returns the index of a category based on its name
+	     * @param {String} name - The name of the category
+	     */
+
+	  }, {
+	    key: 'getCategoryIndex',
+	    value: function getCategoryIndex(name) {
+
+	      if (!this.categories) {
+	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      }
+
+	      for (var i = 0; i < this.categories.length; i++) {
+
+	        if (this.categories[i].name == name) {
+	          return i;
+	        }
+	      }
+
+	      return false;
+	    }
 	  }]);
 
 	  return SerieScatter;
 	}(_graph2.default);
+
+	/**
+	 *  @private
+	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
+	 *  @param {Number} serieIndex - The index of the serie
+	 *  @param {Number} nbSeries - The number of series
+	 */
+
+
+	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
+
+	  var nbElements = (nbSeries + 1) * nbCategories;
+	  var nb = categoryIndex * (nbSeries + 1) + serieIndex;
+	  console.log(nbElements);
+	  return [nb / nbElements, 1 / nbElements];
+	}
 
 	util.mix(SerieScatter, _graphMixin2.default);
 

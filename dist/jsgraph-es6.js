@@ -1252,13 +1252,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      this.series.push(serie);
+	      this.updateLegend();
 
-	      // 18 Sept 2016: Should we really update the legend here and not on draw or manually ?
-	      /*
-	          if ( self.legend ) {
-	            self.legend.update();
-	          }
-	      */
 	      this.emit("newSerie", serie);
 	      return serie;
 	    }
@@ -1948,6 +1943,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.legend.update();
 	    }
+
+	    /**
+	     * @returns {Legend} The legend item
+	     */
 	    getLegend() {
 	      if (!this.legend) {
 	        return;
