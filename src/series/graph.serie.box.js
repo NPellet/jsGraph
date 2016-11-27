@@ -27,11 +27,11 @@ const defaults = {
 
     boxAboveLineWidth: 1,
     boxAboveLineColor: 'rgb( 0, 0, 0 )',
-    boxAboveFillColor: 'rgb( 255, 255, 255 )',
+    boxAboveFillColor: 'transparent',
     boxAboveFillOpacity: 1,
     boxBelowLineWidth: 1,
     boxBelowLineColor: 'rgb( 0, 0, 0 )',
-    boxBelowFillColor: 'rgb( 255, 255, 255 )',
+    boxBelowFillColor: 'transparent',
     boxBelowFillOpacity: 1,
 
     barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
@@ -81,7 +81,7 @@ class SerieBox extends Serie {
    *  @example serie.setData( [ { x: 'cat', mean: valMean, boxMin: valBoxMin, boxMax: valBoxMax, barMin: valBarMin, barMax: valBarMax, outliers: [ ...yList ] } ] );
    *  @return {SerieBar} The current serie instance
    */
-  setData( data ) {
+  setData( data, noRescale ) {
 
     this.data = data;
 
@@ -111,6 +111,11 @@ class SerieBox extends Serie {
       this.maxY = data[ 0 ].y;
       this.minY = data[ 0 ].y;
 
+    }
+
+    if ( noRescale ) {
+      methodref = function() {};
+      methodval = function() {};
     }
 
     if ( !axisref ||  !axisval ) {
@@ -469,7 +474,7 @@ class SerieBox extends Serie {
 
     if ( axis2.getType() == 'category' ) {
 
-      boxOtherDimension = axis2.getRelPx( 1 / this.nbCategories ) * 0.8;
+      boxOtherDimension = axis2.getRelPx( 0.8 / ( this.nbCategories ) );
       useCategories = true;
 
     } else {
@@ -487,11 +492,31 @@ class SerieBox extends Serie {
 
         let cat = this.options.orientation == 'y' ? this.data[ i ].x : this.data[  i ].y;
 
-        if ( !this.categoryIndices[  cat ] ) {
-          continue;
-        }
+        if ( !this.categoryIndices.hasOwnProperty( cat ) ) {
 
-        position = [ axis2.getPos( this.categoryIndices[ cat ] ) + boxOtherDimension / 2 ];
+          if ( Array.isArray( this._linkedToScatterSeries ) ) {
+            for ( let scatter_serie of this._linkedToScatterSeries ) {
+
+              if ( scatter_serie.categoryIndices.hasOwnProperty( cat ) ) {
+
+                position = [ axis2.getPos( scatter_serie.categoryIndices[ cat ] ) + 1.2 * boxOtherDimension / 2 ];
+
+                if ( this.options.orientation == 'y' ) {
+                  axis = scatter_serie.getYAxis();
+                } else {
+                  axis = scatter_serie.getXAxis();
+                }
+
+                break;
+              }
+            }
+          }
+        } else {
+
+          console.log( this.categoryIndices[ cat ] );
+          position = [ axis2.getPos( this.categoryIndices[ cat ] ) + 1.2 * boxOtherDimension / 2 ];
+
+        }
 
       } else {
 
@@ -737,7 +762,29 @@ class SerieBox extends Serie {
 
   getUsedCategories() {
     let xymode = this.options.orientation == 'y' ? 'x' : 'y';
-    return this.data.map( ( d ) => d[ xymode ] );
+
+    let categories = this.data.map( ( d ) => d[ xymode ] );
+
+    if ( Array.isArray( this._linkedToScatterSeries ) ) {
+      this._linkedToScatterSeries.map( ( scatter_serie ) => {
+
+        scatter_serie.getUsedCategories().map( ( scatter_serie_cat ) => {
+          let index;
+          if ( ( index = categories.indexOf( scatter_serie_cat ) ) > -1 ) {
+            categories.splice( index, 1 );
+          }
+
+        } );
+      } );
+
+    }
+
+    console.log( categories );
+    return categories;
+  }
+
+  linkToScatterSerie( ...series ) {
+    this._linkedToScatterSeries = series;
   }
 }
 

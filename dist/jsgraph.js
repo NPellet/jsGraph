@@ -23310,11 +23310,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    boxAboveLineWidth: 1,
 	    boxAboveLineColor: 'rgb( 0, 0, 0 )',
-	    boxAboveFillColor: 'rgb( 255, 255, 255 )',
+	    boxAboveFillColor: 'transparent',
 	    boxAboveFillOpacity: 1,
 	    boxBelowLineWidth: 1,
 	    boxBelowLineColor: 'rgb( 0, 0, 0 )',
-	    boxBelowFillColor: 'rgb( 255, 255, 255 )',
+	    boxBelowFillColor: 'transparent',
 	    boxBelowFillOpacity: 1,
 
 	    barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
@@ -23373,7 +23373,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'setData',
-	    value: function setData(data) {
+	    value: function setData(data, noRescale) {
 
 	      this.data = data;
 
@@ -23405,6 +23405,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.maxX = data[0].Q2;
 	        this.maxY = data[0].y;
 	        this.minY = data[0].y;
+	      }
+
+	      if (noRescale) {
+	        methodref = function methodref() {};
+	        methodval = function methodval() {};
 	      }
 
 	      if (!axisref || !axisval) {
@@ -23894,7 +23899,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (axis2.getType() == 'category') {
 
-	        boxOtherDimension = axis2.getRelPx(1 / this.nbCategories) * 0.8;
+	        boxOtherDimension = axis2.getRelPx(0.8 / this.nbCategories);
 	        useCategories = true;
 	      } else {
 	        // Get all the spacing and determine the smallest one
@@ -23911,11 +23916,51 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var cat = this.options.orientation == 'y' ? this.data[i].x : this.data[i].y;
 
-	          if (!this.categoryIndices[cat]) {
-	            continue;
-	          }
+	          if (!this.categoryIndices.hasOwnProperty(cat)) {
 
-	          position = [axis2.getPos(this.categoryIndices[cat]) + boxOtherDimension / 2];
+	            if (Array.isArray(this._linkedToScatterSeries)) {
+	              var _iteratorNormalCompletion = true;
+	              var _didIteratorError = false;
+	              var _iteratorError = undefined;
+
+	              try {
+	                for (var _iterator = this._linkedToScatterSeries[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                  var scatter_serie = _step.value;
+
+
+	                  if (scatter_serie.categoryIndices.hasOwnProperty(cat)) {
+
+	                    position = [axis2.getPos(scatter_serie.categoryIndices[cat]) + 1.2 * boxOtherDimension / 2];
+
+	                    if (this.options.orientation == 'y') {
+	                      axis = scatter_serie.getYAxis();
+	                    } else {
+	                      axis = scatter_serie.getXAxis();
+	                    }
+
+	                    break;
+	                  }
+	                }
+	              } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion && _iterator.return) {
+	                    _iterator.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError) {
+	                    throw _iteratorError;
+	                  }
+	                }
+	              }
+	            }
+	          } else {
+
+	            console.log(this.categoryIndices[cat]);
+	            position = [axis2.getPos(this.categoryIndices[cat]) + 1.2 * boxOtherDimension / 2];
+	          }
 	        } else {
 
 	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
@@ -24172,9 +24217,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'getUsedCategories',
 	    value: function getUsedCategories() {
 	      var xymode = this.options.orientation == 'y' ? 'x' : 'y';
-	      return this.data.map(function (d) {
+
+	      var categories = this.data.map(function (d) {
 	        return d[xymode];
 	      });
+
+	      if (Array.isArray(this._linkedToScatterSeries)) {
+	        this._linkedToScatterSeries.map(function (scatter_serie) {
+
+	          scatter_serie.getUsedCategories().map(function (scatter_serie_cat) {
+	            var index = void 0;
+	            if ((index = categories.indexOf(scatter_serie_cat)) > -1) {
+	              categories.splice(index, 1);
+	            }
+	          });
+	        });
+	      }
+
+	      console.log(categories);
+	      return categories;
+	    }
+	  }, {
+	    key: 'linkToScatterSerie',
+	    value: function linkToScatterSerie() {
+	      for (var _len = arguments.length, series = Array(_len), _key = 0; _key < _len; _key++) {
+	        series[_key] = arguments[_key];
+	      }
+
+	      this._linkedToScatterSeries = series;
 	    }
 	  }]);
 
