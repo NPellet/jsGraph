@@ -143,25 +143,23 @@ class SerieBar extends Serie {
 
     for ( var i in this.data ) {
 
-      if ( false === ( categoryNumber = this.getCategoryIndex( i ) ) ) {
+      if ( !this.categoryIndices[ i ] ) {
         continue;
       }
 
-      position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
-
       path += "M " +
-        this.getXAxis().getPos( position[ 0 ] ) +
+        this.getXAxis().getPos( this.categoryIndices[ i ] ) +
         " " +
         this.getYAxis().getPos( 0 ) +
         " V " +
         this.getYAxis().getPos( this.data[ i ] ) +
         " h " +
-        this.getXAxis().getDeltaPx( position[ 1 ] ) +
+        this.getXAxis().getDeltaPx( 1 / this.nbCategories ) +
         " V " +
         this.getYAxis().getPos( 0 );
 
       if ( this.error ) {
-        this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( position[ 2 ] ), this.getYAxis().getPos( this.data[ i ] ) );
+        this.errorAddPointBarChart( i, this.data[ i ], this.getXAxis().getPos( this.categoryIndices[ i ] + 0.5 / this.nbCategories ), this.getYAxis().getPos( this.data[ i ] ) );
       }
     }
 
@@ -173,56 +171,13 @@ class SerieBar extends Serie {
     this.applyLineStyles();
   }
 
-  /**
-   * Returns the index of a category based on its name
-   * @param {String} name - The name of the category
-   */
-  getCategoryIndex( name ) {
-
-    if ( !this.categories ) {
-      throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
-    }
-
-    for ( var i = 0; i < this.categories.length; i++ ) {
-
-      if ( this.categories[ i ].name == name ) {
-        return i;
-      }
-    }
-
-    return false;
-  }
-
   // Markers now allowed
   setMarkers() {}
 
-  /**
-   *  Informations needed for the redrawing of the bars, coming from AxisXBar
-   *  @private
-   *  @param {Number} order - The index of the serie in the bar stack
-   *  @param {Object[]} categories - The list of categories
-   *  @param {Number} nbSeries - The number of series
-   *  @see AxisXBar#setSeries
-   */
-  setCategoryConfig( order, categories, nbSeries ) {
-
-    this.order = order;
-    this.categories = categories;
-    this.nbSeries = nbSeries;
+  getUsedCategories() {
+    return Object.keys( this.data );
   }
-}
 
-/**
- *  @private
- *  @param {Number} categoryIndex - The index of the serie in the bar stack
- *  @param {Number} serieIndex - The index of the serie
- *  @param {Number} nbSeries - The number of series
- */
-function calculatePosition( categoryIndex, serieIndex, nbSeries, nbCategories ) {
-
-  var nbElements = ( nbSeries + 1 ) * nbCategories;
-  var nb = categoryIndex * ( nbSeries + 1 ) + serieIndex + 0.5;
-  return [ ( nb ) / nbElements, 1 / nbElements, ( nb + 0.5 ) / nbElements ];
 }
 
 export default SerieBar;

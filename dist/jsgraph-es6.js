@@ -8715,7 +8715,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      });
 
+	      this._getUsedCategories();
+
 	      return this;
+	    }
+
+	    _getUsedCategories() {
+
+	      let categories = {},
+	          total = 0;
+
+	      Array.prototype.map.call(this.series, serie => {
+	        let usedCategories = serie.getUsedCategories();
+	        for (let cat of usedCategories) {
+
+	          if (!categories.hasOwnProperty(cat)) {
+	            categories[cat] = 1;
+	            total += 1;
+	          }
+
+	          categories[cat]++;
+	          total++;
+	        }
+	      });
+
+	      let accumulator = 0;
+	      for (let i in categories) {
+	        let temp = categories[i];
+	        categories[i] = accumulator;
+	        accumulator += temp;
+	      }
+	      console.log(categories, total);
+	      let dispatchedCategories = {};
+
+	      let i = 0;
+	      Array.prototype.map.call(this.series, serie => {
+
+	        let scategories = serie.getUsedCategories(),
+	            indices = {};
+
+	        scategories.map(cat => {
+
+	          dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
+	          indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
+	          dispatchedCategories[cat]++;
+	        });
+
+	        console.log(indices, scategories, categories);
+
+	        serie.setDataIndices(indices, total);
+	        i++;
+	      });
 	    }
 
 	    getType() {
@@ -13235,6 +13285,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    get excludedFromLegend() {
 	      return !!this._excludedFromLegend;
 	    }
+
+	    setDataIndices(categories, nb) {
+	      this.categoryIndices = categories;
+	      this.nbCategories = nb;
+	    }
 	  }
 
 	  exports.default = Serie;
@@ -13917,16 +13972,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i in this.data) {
 
-	        if (false === (categoryNumber = this.getCategoryIndex(i))) {
+	        if (!this.categoryIndices[i]) {
 	          continue;
 	        }
 
-	        position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
-
-	        path += "M " + this.getXAxis().getPos(position[0]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(position[1]) + " V " + this.getYAxis().getPos(0);
+	        path += "M " + this.getXAxis().getPos(this.categoryIndices[i]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(1 / this.nbCategories) + " V " + this.getYAxis().getPos(0);
 
 	        if (this.error) {
-	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(position[2]), this.getYAxis().getPos(this.data[i]));
+	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
 	        }
 	      }
 
@@ -13938,56 +13991,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.applyLineStyles();
 	    }
 
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-	    getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
-	      }
-
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
-	    }
-
 	    // Markers now allowed
 	    setMarkers() {}
 
-	    /**
-	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
-	     *  @private
-	     *  @param {Number} order - The index of the serie in the bar stack
-	     *  @param {Object[]} categories - The list of categories
-	     *  @param {Number} nbSeries - The number of series
-	     *  @see AxisXBar#setSeries
-	     */
-	    setCategoryConfig(order, categories, nbSeries) {
-
-	      this.order = order;
-	      this.categories = categories;
-	      this.nbSeries = nbSeries;
+	    getUsedCategories() {
+	      return Object.keys(this.data);
 	    }
-	  }
 
-	  /**
-	   *  @private
-	   *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	   *  @param {Number} serieIndex - The index of the serie
-	   *  @param {Number} nbSeries - The number of series
-	   */
-	  function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	    var nbElements = (nbSeries + 1) * nbCategories;
-	    var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
-	    return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
 	  }
 
 	  exports.default = SerieBar;
@@ -14482,7 +14492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (axis2.getType() == 'category') {
 
-	        boxOtherDimension = axis2.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length)) * 0.75;
+	        boxOtherDimension = axis2.getRelPx(1 / this.nbCategories) * 0.8;
 	        useCategories = true;
 	      } else {
 	        // Get all the spacing and determine the smallest one
@@ -14497,13 +14507,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (axis2.getType() == 'category') {
 
-	          if (false === (categoryNumber = this.getCategoryIndex(this.options.orientation == 'y' ? this.data[i].x : this.data[i].y))) {
+	          let cat = this.options.orientation == 'y' ? this.data[i].x : this.data[i].y;
+
+	          if (!this.categoryIndices[cat]) {
 	            continue;
 	          }
 
-	          position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
-
-	          position[0] = axis2.getPos(position[0]);
+	          position = [axis2.getPos(this.categoryIndices[cat]) + boxOtherDimension / 2];
 	        } else {
 
 	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
@@ -14741,40 +14751,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-	    getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
-	      }
-
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
+	    getUsedCategories() {
+	      let xymode = this.options.orientation == 'y' ? 'x' : 'y';
+	      return this.data.map(d => d[xymode]);
 	    }
-
-	  }
-
-	  /**
-	   *  @private
-	   *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	   *  @param {Number} serieIndex - The index of the serie
-	   *  @param {Number} nbSeries - The number of series
-	   */
-	  function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	    var nbElements = (nbSeries + 1) * nbCategories;
-	    var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
-
-	    return [(nb + 0.5) / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
 	  }
 
 	  exports.default = SerieBox;
@@ -15533,13 +15513,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        for (; j < m; j += 1) {
 
-	          let categoryNumber = this.getCategoryIndex(this.data[j].x);
-
-	          if (categoryNumber === false) {
+	          if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
 	            continue;
 	          }
 
-	          let position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+	          //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
 
 	          //xpx = this.getX( categoryNumber );
 
@@ -15553,7 +15531,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          for (let y of this.data[j].y) {
 
-	            let xpos = i / (l - 1) * position[1] + position[0];
+	            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+	            let xpos = i / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories;
 
 	            ypx = this.getY(y);
 	            xpx = this.getX(xpos);
@@ -15768,55 +15747,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    /**
-	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
-	     *  @private
-	     *  @param {Number} order - The index of the serie in the bar stack
-	     *  @param {Object[]} categories - The list of categories
-	     *  @param {Number} nbSeries - The number of series
-	     *  @see AxisXBar#setSeries
-	     */
-	    setCategoryConfig(order, categories, nbSeries) {
+	    getUsedCategories() {
 
-	      this.order = order;
-	      this.categories = categories;
-	      this.nbSeries = nbSeries;
-	    }
-
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-	    getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      if (typeof this.data[0] == 'object') {
+	        return this.data.map(d => d.x);
 	      }
 
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
+	      return [];
 	    }
 
-	  }
-
-	  /**
-	   *  @private
-	   *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	   *  @param {Number} serieIndex - The index of the serie
-	   *  @param {Number} nbSeries - The number of series
-	   */
-	  function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	    var nbElements = (nbSeries + 1) * nbCategories;
-	    var nb = categoryIndex * (nbSeries + 1) + serieIndex;
-	    console.log(nbElements);
-	    return [nb / nbElements, 1 / nbElements];
 	  }
 
 	  util.mix(SerieScatter, _graphMixin2.default);

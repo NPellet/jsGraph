@@ -110,7 +110,58 @@ class AxisXBar extends AxisX {
       }
     } );
 
+    this._getUsedCategories();
+
     return this;
+  }
+
+  _getUsedCategories() {
+
+    let categories = {},
+      total = 0;
+
+    Array.prototype.map.call( this.series, ( serie ) => {
+      let usedCategories = serie.getUsedCategories();
+      for ( let cat of usedCategories ) {
+
+        if ( !categories.hasOwnProperty( cat ) ) {
+          categories[ cat ] = 1;
+          total += 1;
+        }
+
+        categories[ cat ]++;
+        total++;
+      }
+    } );
+
+    let accumulator = 0;
+    for ( let i in categories ) {
+      let temp = categories[ i ];
+      categories[ i ] = accumulator;
+      accumulator += temp;
+    }
+    console.log( categories, total );
+    let dispatchedCategories = {};
+
+    let i = 0;
+    Array.prototype.map.call( this.series, ( serie ) => {
+
+      let scategories = serie.getUsedCategories(),
+        indices = {};
+
+      scategories.map( ( cat ) => {
+
+        dispatchedCategories[ cat ] = dispatchedCategories[ cat ] || 0.5;
+        indices[ cat ] = ( categories[ cat ] + dispatchedCategories[ cat ] ) / total;
+        dispatchedCategories[ cat ]++;
+      } );
+
+      console.log( indices, scategories, categories );
+
+      serie.setDataIndices( indices, total );
+      i++;
+    } );
+
   }
 
   getType() {

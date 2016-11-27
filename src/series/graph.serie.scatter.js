@@ -328,13 +328,11 @@ class SerieScatter extends Serie {
 
       for ( ; j < m; j += 1 ) {
 
-        let categoryNumber = this.getCategoryIndex( this.data[ j ].x );
-
-        if ( categoryNumber === false ) {
+        if ( !this.categoryIndices.hasOwnProperty( this.data[ j ].x ) ) {
           continue;
         }
 
-        let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
+        //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
 
         //xpx = this.getX( categoryNumber );
 
@@ -348,7 +346,8 @@ class SerieScatter extends Serie {
 
         for ( let y of this.data[ j ].y ) {
 
-          let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+          //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+          let xpos = i / ( l - 1 ) * ( 0.8 / this.nbCategories ) + this.categoryIndices[ this.data[ j ].x ] + 0.1 / this.nbCategories;
 
           ypx = this.getY( y );
           xpx = this.getX( xpos );
@@ -587,55 +586,15 @@ class SerieScatter extends Serie {
 
   }
 
-  /**
-   *  Informations needed for the redrawing of the bars, coming from AxisXBar
-   *  @private
-   *  @param {Number} order - The index of the serie in the bar stack
-   *  @param {Object[]} categories - The list of categories
-   *  @param {Number} nbSeries - The number of series
-   *  @see AxisXBar#setSeries
-   */
-  setCategoryConfig( order, categories, nbSeries ) {
+  getUsedCategories() {
 
-    this.order = order;
-    this.categories = categories;
-    this.nbSeries = nbSeries;
-  }
-
-  /**
-   * Returns the index of a category based on its name
-   * @param {String} name - The name of the category
-   */
-  getCategoryIndex( name ) {
-
-    if ( !this.categories ) {
-      throw new Error( "No categories were defined. Probably axis.setSeries was not called" );
+    if ( typeof this.data[ 0 ] == 'object' ) {
+      return this.data.map( ( d ) => d.x );
     }
 
-    for ( var i = 0; i < this.categories.length; i++ ) {
-
-      if ( this.categories[ i ].name == name ) {
-        return i;
-      }
-    }
-
-    return false;
+    return [];
   }
 
-}
-
-/**
- *  @private
- *  @param {Number} categoryIndex - The index of the serie in the bar stack
- *  @param {Number} serieIndex - The index of the serie
- *  @param {Number} nbSeries - The number of series
- */
-function calculatePosition( categoryIndex, serieIndex, nbSeries, nbCategories ) {
-
-  var nbElements = ( nbSeries + 1 ) * nbCategories;
-  var nb = categoryIndex * ( nbSeries + 1 ) + serieIndex;
-  console.log( nbElements );
-  return [ ( nb ) / nbElements, 1 / nbElements ];
 }
 
 util.mix( SerieScatter, ErrorBarMixin );

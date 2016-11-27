@@ -908,6 +908,11 @@ class Serie extends EventEmitter {
   get excludedFromLegend() {
     return !!this._excludedFromLegend;
   }
+
+  setDataIndices( categories, nb ) {
+    this.categoryIndices = categories;
+    this.nbCategories = nb;
+  }
 }
 
 export default Serie;

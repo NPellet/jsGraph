@@ -17697,7 +17697,79 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      });
 
+	      this._getUsedCategories();
+
 	      return this;
+	    }
+	  }, {
+	    key: '_getUsedCategories',
+	    value: function _getUsedCategories() {
+
+	      var categories = {},
+	          total = 0;
+
+	      Array.prototype.map.call(this.series, function (serie) {
+	        var usedCategories = serie.getUsedCategories();
+	        var _iteratorNormalCompletion2 = true;
+	        var _didIteratorError2 = false;
+	        var _iteratorError2 = undefined;
+
+	        try {
+	          for (var _iterator2 = usedCategories[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	            var cat = _step2.value;
+
+
+	            if (!categories.hasOwnProperty(cat)) {
+	              categories[cat] = 1;
+	              total += 1;
+	            }
+
+	            categories[cat]++;
+	            total++;
+	          }
+	        } catch (err) {
+	          _didIteratorError2 = true;
+	          _iteratorError2 = err;
+	        } finally {
+	          try {
+	            if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	              _iterator2.return();
+	            }
+	          } finally {
+	            if (_didIteratorError2) {
+	              throw _iteratorError2;
+	            }
+	          }
+	        }
+	      });
+
+	      var accumulator = 0;
+	      for (var _i in categories) {
+	        var temp = categories[_i];
+	        categories[_i] = accumulator;
+	        accumulator += temp;
+	      }
+	      console.log(categories, total);
+	      var dispatchedCategories = {};
+
+	      var i = 0;
+	      Array.prototype.map.call(this.series, function (serie) {
+
+	        var scategories = serie.getUsedCategories(),
+	            indices = {};
+
+	        scategories.map(function (cat) {
+
+	          dispatchedCategories[cat] = dispatchedCategories[cat] || 0.5;
+	          indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
+	          dispatchedCategories[cat]++;
+	        });
+
+	        console.log(indices, scategories, categories);
+
+	        serie.setDataIndices(indices, total);
+	        i++;
+	      });
 	    }
 	  }, {
 	    key: 'getType',
@@ -22499,6 +22571,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._type;
 	    }
 	  }, {
+	    key: 'setDataIndices',
+	    value: function setDataIndices(categories, nb) {
+	      this.categoryIndices = categories;
+	      this.nbCategories = nb;
+	    }
+	  }, {
 	    key: 'type',
 	    get: function get() {
 	      return this._type;
@@ -23150,16 +23228,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i in this.data) {
 
-	        if (false === (categoryNumber = this.getCategoryIndex(i))) {
+	        if (!this.categoryIndices[i]) {
 	          continue;
 	        }
 
-	        position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
-
-	        path += "M " + this.getXAxis().getPos(position[0]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(position[1]) + " V " + this.getYAxis().getPos(0);
+	        path += "M " + this.getXAxis().getPos(this.categoryIndices[i]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(1 / this.nbCategories) + " V " + this.getYAxis().getPos(0);
 
 	        if (this.error) {
-	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(position[2]), this.getYAxis().getPos(this.data[i]));
+	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
 	        }
 	      }
 
@@ -23171,71 +23247,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.applyLineStyles();
 	    }
 
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-
-	  }, {
-	    key: 'getCategoryIndex',
-	    value: function getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
-	      }
-
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
-	    }
-
 	    // Markers now allowed
 
 	  }, {
 	    key: 'setMarkers',
 	    value: function setMarkers() {}
-
-	    /**
-	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
-	     *  @private
-	     *  @param {Number} order - The index of the serie in the bar stack
-	     *  @param {Object[]} categories - The list of categories
-	     *  @param {Number} nbSeries - The number of series
-	     *  @see AxisXBar#setSeries
-	     */
-
 	  }, {
-	    key: 'setCategoryConfig',
-	    value: function setCategoryConfig(order, categories, nbSeries) {
-
-	      this.order = order;
-	      this.categories = categories;
-	      this.nbSeries = nbSeries;
+	    key: 'getUsedCategories',
+	    value: function getUsedCategories() {
+	      return Object.keys(this.data);
 	    }
 	  }]);
 
 	  return SerieBar;
 	}(_graphSerie2.default);
-
-	/**
-	 *  @private
-	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	 *  @param {Number} serieIndex - The index of the serie
-	 *  @param {Number} nbSeries - The number of series
-	 */
-
-
-	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	  var nbElements = (nbSeries + 1) * nbCategories;
-	  var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
-	  return [nb / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
-	}
 
 	exports.default = SerieBar;
 
@@ -23869,7 +23894,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (axis2.getType() == 'category') {
 
-	        boxOtherDimension = axis2.getRelPx(1 / ((this.nbSeries + 1) * this.categories.length)) * 0.75;
+	        boxOtherDimension = axis2.getRelPx(1 / this.nbCategories) * 0.8;
 	        useCategories = true;
 	      } else {
 	        // Get all the spacing and determine the smallest one
@@ -23884,13 +23909,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (axis2.getType() == 'category') {
 
-	          if (false === (categoryNumber = this.getCategoryIndex(this.options.orientation == 'y' ? this.data[i].x : this.data[i].y))) {
+	          var cat = this.options.orientation == 'y' ? this.data[i].x : this.data[i].y;
+
+	          if (!this.categoryIndices[cat]) {
 	            continue;
 	          }
 
-	          position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
-
-	          position[0] = axis2.getPos(position[0]);
+	          position = [axis2.getPos(this.categoryIndices[cat]) + boxOtherDimension / 2];
 	        } else {
 
 	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
@@ -24143,49 +24168,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	        box.setAttribute(blnX ? 'width' : 'height', extremity - mean);
 	      }
 	    }
-
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-
 	  }, {
-	    key: 'getCategoryIndex',
-	    value: function getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
-	      }
-
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
+	    key: 'getUsedCategories',
+	    value: function getUsedCategories() {
+	      var xymode = this.options.orientation == 'y' ? 'x' : 'y';
+	      return this.data.map(function (d) {
+	        return d[xymode];
+	      });
 	    }
 	  }]);
 
 	  return SerieBox;
 	}(_graph2.default);
-
-	/**
-	 *  @private
-	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	 *  @param {Number} serieIndex - The index of the serie
-	 *  @param {Number} nbSeries - The number of series
-	 */
-
-
-	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	  var nbElements = (nbSeries + 1) * nbCategories;
-	  var nb = categoryIndex * (nbSeries + 1) + serieIndex + 0.5;
-
-	  return [(nb + 0.5) / nbElements, 1 / nbElements, (nb + 0.5) / nbElements];
-	}
 
 	exports.default = SerieBox;
 
@@ -24973,13 +24967,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        for (; j < m; j += 1) {
 
-	          var categoryNumber = this.getCategoryIndex(this.data[j].x);
-
-	          if (categoryNumber === false) {
+	          if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
 	            continue;
 	          }
 
-	          var position = calculatePosition(categoryNumber, this.order, this.nbSeries, this.categories.length);
+	          //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
 
 	          //xpx = this.getX( categoryNumber );
 
@@ -25000,7 +24992,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	              var _y = _step2.value;
 
 
-	              var xpos = i / (l - 1) * position[1] + position[0];
+	              //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
+	              var xpos = i / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories;
 
 	              ypx = this.getY(_y);
 	              xpx = this.getX(xpos);
@@ -25234,67 +25227,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
-
-	    /**
-	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
-	     *  @private
-	     *  @param {Number} order - The index of the serie in the bar stack
-	     *  @param {Object[]} categories - The list of categories
-	     *  @param {Number} nbSeries - The number of series
-	     *  @see AxisXBar#setSeries
-	     */
-
 	  }, {
-	    key: 'setCategoryConfig',
-	    value: function setCategoryConfig(order, categories, nbSeries) {
+	    key: 'getUsedCategories',
+	    value: function getUsedCategories() {
 
-	      this.order = order;
-	      this.categories = categories;
-	      this.nbSeries = nbSeries;
-	    }
-
-	    /**
-	     * Returns the index of a category based on its name
-	     * @param {String} name - The name of the category
-	     */
-
-	  }, {
-	    key: 'getCategoryIndex',
-	    value: function getCategoryIndex(name) {
-
-	      if (!this.categories) {
-	        throw new Error("No categories were defined. Probably axis.setSeries was not called");
+	      if (_typeof(this.data[0]) == 'object') {
+	        return this.data.map(function (d) {
+	          return d.x;
+	        });
 	      }
 
-	      for (var i = 0; i < this.categories.length; i++) {
-
-	        if (this.categories[i].name == name) {
-	          return i;
-	        }
-	      }
-
-	      return false;
+	      return [];
 	    }
 	  }]);
 
 	  return SerieScatter;
 	}(_graph2.default);
-
-	/**
-	 *  @private
-	 *  @param {Number} categoryIndex - The index of the serie in the bar stack
-	 *  @param {Number} serieIndex - The index of the serie
-	 *  @param {Number} nbSeries - The number of series
-	 */
-
-
-	function calculatePosition(categoryIndex, serieIndex, nbSeries, nbCategories) {
-
-	  var nbElements = (nbSeries + 1) * nbCategories;
-	  var nb = categoryIndex * (nbSeries + 1) + serieIndex;
-	  console.log(nbElements);
-	  return [nb / nbElements, 1 / nbElements];
-	}
 
 	util.mix(SerieScatter, _graphMixin2.default);
 
