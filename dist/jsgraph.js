@@ -11070,7 +11070,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          var serieType = schemaSerie.type,
 	              serie,
-	              serieOptions,
+	              serieOptions = {},
 	              serieAxis;
 
 	          switch (schemaSerie.type) {
@@ -11086,6 +11086,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            case 'box':
 	              serieType = Graph.SERIE_BOX;
+
+	              if (schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y') {
+	                serieOptions.orientation = schemaSerie.orientation;
+	              }
 	              break;
 
 	            default:
@@ -23417,8 +23421,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        axisref = this.getYAxis();
 	        axisval = this.getXAxis();
-	        methodref = this._checkX.bind(this);
-	        methodval = this._checkY.bind(this);
+	        methodref = this._checkY.bind(this);
+	        methodval = this._checkX.bind(this);
 	        blnX = false;
 
 	        this.minX = data[0].Q2;
@@ -24025,12 +24029,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          } else {
 
-	            console.log(this.categoryIndices[cat]);
 	            position = [axis2.getPos(this.categoryIndices[cat]) + 1.2 * boxOtherDimension / 2];
 	          }
 	        } else {
 
-	          position = [axis2.getPos(this.data[i].x), boxOtherDimension];
+	          position = [axis2.getPos(this.options.orientation == 'y' ? this.data[i].x : this.data[i].y), boxOtherDimension];
 	        }
 
 	        mean = axis.getPos(this.data[i].Q2);

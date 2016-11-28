@@ -2171,7 +2171,7 @@ class Graph extends EventEmitter {
 
         var serieType = schemaSerie.type,
           serie,
-          serieOptions,
+          serieOptions = {},
           serieAxis;
 
         switch ( schemaSerie.type ) {
@@ -2187,6 +2187,10 @@ class Graph extends EventEmitter {
 
           case 'box':
             serieType = Graph.SERIE_BOX;
+
+            if ( schemaSerie.orientation == 'x' ||  schemaSerie.orientation == 'y' ) {
+              serieOptions.orientation = schemaSerie.orientation;
+            }
             break;
 
           default:

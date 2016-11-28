@@ -102,8 +102,8 @@ class SerieBox extends Serie {
     } else {
       axisref = this.getYAxis();
       axisval = this.getXAxis();
-      methodref = this._checkX.bind( this );
-      methodval = this._checkY.bind( this );
+      methodref = this._checkY.bind( this );
+      methodval = this._checkX.bind( this );
       blnX = false;
 
       this.minX = data[ 0 ].Q2;
@@ -560,14 +560,13 @@ class SerieBox extends Serie {
           }
         } else {
 
-          console.log( this.categoryIndices[ cat ] );
           position = [ axis2.getPos( this.categoryIndices[ cat ] ) + 1.2 * boxOtherDimension / 2 ];
 
         }
 
       } else {
 
-        position = [ axis2.getPos( this.data[ i ].x ), boxOtherDimension ];
+        position = [ axis2.getPos( this.options.orientation == 'y' ? this.data[ i ].x : this.data[ i ].y ), boxOtherDimension ];
 
       }
 
