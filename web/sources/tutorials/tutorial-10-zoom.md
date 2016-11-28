@@ -1,8 +1,8 @@
 ---
 layout: page-sidemenu
-subtitle: '10-zoom'
+subtitle: 'Zoom plugin'
 ---
-## 10-zoom
+## Zoom plugin
 <script>
 
 function makeGraph( domID, zoomOptions, mouseActions, secondSerie ) {
@@ -89,6 +89,7 @@ new Graph( "domID", {
   plugins: {
      'zoom': {
         // ... zoom options
+        zoomMode: 'xy'
       }
   },
 
@@ -142,6 +143,16 @@ $( document ).ready( function() {
   <button class="btn btn-default" id="example-1-shift">Enable shift</button>
   <button class="btn btn-default active" id="example-1-shift2">Disable shift</button>
 </div>
+
+
+### Forcing the x or y direction
+ 
+The ```zoomMode``` options passed in the plugin creation or after its initialization defined the behaviour of the zoom and takes the following possible values:
+
+* ```xy``` lets the use zoom in both directions
+* ```x``` forces zooming in the x direction only
+* ```y``` forces zooming in the y direction only
+
 
 ### Unzoom on double click
 
@@ -291,7 +302,7 @@ Note: In this example, the x axis is shared between the two series. Hence the se
 
 
 
-### Smooth transitioning
+### Smooth zooming
 
 Smooth zooming and unzooming using animations is possible with jsGraph, by setting the ```smooth``` flag to true in the plugin constructor or after its creation
 
@@ -313,3 +324,15 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 
 }) ();
 </script>
+
+
+### Mouse wheel
+
+The mousewheel behavior is set in the ```mouseAction``` array of the graph instance. Options include:
+
+* ```baseline``` sets the zero of the scaling
+* ```direction``` (```y``` or ```x```) sets the direction of the zooming
+
+{% highlight javascript %}
+{ plugin: 'zoom', shift: true, type: 'mousewheel', options: { baseline: 0, direction: 'y' } },
+{% endhighlight %}

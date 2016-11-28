@@ -1,6 +1,7 @@
 var fs = require('fs');
 
 var statsMin = fs.statSync("node_modules/node-jsgraph/dist/jsgraph.min.js");
+var statsMinEs6 = fs.statSync("node_modules/node-jsgraph/dist/jsgraph-es6.min.js");
 var statsMax = fs.statSync("node_modules/node-jsgraph/dist/jsgraph.js");
 
 module.exports = function(grunt) {
@@ -21,6 +22,8 @@ module.exports = function(grunt) {
                 config: './sources/_config.yml',
                 raw: 'title: <%= pkg.title %>\n' + 
                       'minifiedsize: ' + Math.round( statsMin.size / 1000 ) + '\n' + 
+                      'minifiedsize_es6: ' + Math.round( statsMinEs6.size / 1000 ) + '\n' + 
+                      
                       'size: ' + Math.round( statsMax.size / 1000 )
               }
             },
@@ -112,11 +115,17 @@ module.exports = function(grunt) {
 
       files.map( function( file ) {
 
-        var inner = fs.readFileSync( dirPath + "/" + file );
+        var inner = fs.readFileSync( dirPath + "/" + file, 'utf-8' );
         var title = /title: '([^\n]*)'\n/.exec( inner );
-        
+
         var found = false;
 
+        if( title == null ) {
+
+          console.error("Could not find tutorial title");
+          console.log( file );
+          return;
+        }
         var obj = { title: title[ 1 ], url: file };
 
         for( var i in bundleFile ) {

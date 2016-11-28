@@ -29,6 +29,10 @@
 			"url": "tutorial-15-barcharts.html"
 		},
 		{
+			"title": "Box plots",
+			"url": "tutorial-16-boxcharts.html"
+		},
+		{
 			"title": "Density maps",
 			"url": "tutorial-23-densitymap.html"
 		}
@@ -41,7 +45,7 @@
 	],
 	"Others": [
 		{
-			"title": "10-zoom",
+			"title": "Zoom plugin",
 			"url": "tutorial-10-zoom.html"
 		},
 		{
@@ -67,10 +71,6 @@
 		{
 			"title": "Adapt axes",
 			"url": "tutorial-18-adaptto.html"
-		},
-		{
-			"title": "Adapt axes",
-			"url": "tutorial-18_adaptto.html"
 		}
 	]
 }

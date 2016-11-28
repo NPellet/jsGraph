@@ -14,7 +14,7 @@ Download
 </p>
 
 <div class="row" id="jsgraph-download">
-	<div class="col-sm-4">
+	<div class="col-sm-3">
 
 		<h3>
 			Minified version
@@ -29,7 +29,23 @@ Download
 		</button>
 
 	</div>
-	<div class="col-sm-4">
+
+
+	<div class="col-sm-3">
+		<h3>
+			ES6 version
+		</h3>
+
+		<p class="">
+			The source code without ES6 transpilation. Targets ES6-comptatible browsers for specific applications
+		</p>
+		<button class="btn btn-default">
+			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-es6.min.js">Download minified ({{ site.minifiedsize_es6 }}kb)</a>
+		</button>
+
+
+	</div>
+	<div class="col-sm-3">
 
 		<h3>
 			Source code
@@ -45,7 +61,7 @@ Download
 
 	</div>
 
-	<div class="col-sm-4">
+	<div class="col-sm-3">
 
 
 		<h3>
@@ -53,7 +69,7 @@ Download
 		</h3>
 
 		<p class="">
-			The project is hosted on Github, for those who want to contribute to the project
+			The project is hosted on Github, for those who want to contribute to the project. Come check it out !
 		</p>
 
 		<button class="btn btn-default">
@@ -61,6 +77,8 @@ Download
 		</button>
 
 	</div>
+
+
 </div>
 
 

@@ -14,7 +14,6 @@
 		}
 	],
 	"Core": [],
-	"GraphPosition": [],
 	"Legend": [],
 	"Plugin": [
 		{
@@ -107,8 +106,8 @@
 			"url": "ShapePeakBoundaries"
 		},
 		{
-			"title": "PolyLine",
-			"url": "ShapePolyLine"
+			"title": "Polyline",
+			"url": "ShapePolyline"
 		},
 		{
 			"title": "Rectangle",

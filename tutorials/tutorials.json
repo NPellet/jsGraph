@@ -32,6 +32,17 @@
          "title": "Error bars"
     },
 
+
+    "16-boxcharts": {
+         "title": "Box plots"
+    },
+
+
+    "10-zoom": {
+         "title": "Zoom plugin"
+    },
+
+
     "17-trackingline": {
          "title": "Tracking line"
     },

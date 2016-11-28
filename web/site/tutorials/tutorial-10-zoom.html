@@ -71,7 +71,7 @@
 	</div>
 
 	<div class="col-sm-9" id="main">
-		<h2 id="zoom">10-zoom</h2>
+		<h2 id="zoom-plugin">Zoom plugin</h2>
 <script>
 
 function makeGraph( domID, zoomOptions, mouseActions, secondSerie ) {
@@ -155,6 +155,7 @@ return { Graph: graph }
   <span class="na">plugins</span><span class="p">:</span> <span class="p">{</span>
      <span class="s1">'zoom'</span><span class="p">:</span> <span class="p">{</span>
         <span class="c1">// ... zoom options</span>
+        <span class="na">zoomMode</span><span class="p">:</span> <span class="s1">'xy'</span>
       <span class="p">}</span>
   <span class="p">},</span>
 
@@ -205,6 +206,16 @@ $( document ).ready( function() {
   <button class="btn btn-default" id="example-1-shift">Enable shift</button>
   <button class="btn btn-default active" id="example-1-shift2">Disable shift</button>
 </div>
+
+<h3 id="forcing-the-x-or-y-direction">Forcing the x or y direction</h3>
+
+<p>The <code class="highlighter-rouge">zoomMode</code> options passed in the plugin creation or after its initialization defined the behaviour of the zoom and takes the following possible values:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">xy</code> lets the use zoom in both directions</li>
+  <li><code class="highlighter-rouge">x</code> forces zooming in the x direction only</li>
+  <li><code class="highlighter-rouge">y</code> forces zooming in the y direction only</li>
+</ul>
 
 <h3 id="unzoom-on-double-click">Unzoom on double click</h3>
 
@@ -351,7 +362,7 @@ $( document ).ready( function() {
   <button class="btn btn-default example-4" id="example-4-bottom">[ graph.getBottomAxis() ]</button>
 </div>
 
-<h3 id="smooth-transitioning">Smooth transitioning</h3>
+<h3 id="smooth-zooming">Smooth zooming</h3>
 
 <p>Smooth zooming and unzooming using animations is possible with jsGraph, by setting the <code class="highlighter-rouge">smooth</code> flag to true in the plugin constructor or after its creation</p>
 
@@ -371,6 +382,16 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 }) ();
 </script>
 
+<h3 id="mouse-wheel">Mouse wheel</h3>
+
+<p>The mousewheel behavior is set in the <code class="highlighter-rouge">mouseAction</code> array of the graph instance. Options include:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">baseline</code> sets the zero of the scaling</li>
+  <li><code class="highlighter-rouge">direction</code> (<code class="highlighter-rouge">y</code> or <code class="highlighter-rouge">x</code>) sets the direction of the zooming</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span> <span class="nl">plugin</span><span class="p">:</span> <span class="s1">'zoom'</span><span class="p">,</span> <span class="nx">shift</span><span class="err">:</span> <span class="kc">true</span><span class="p">,</span> <span class="nx">type</span><span class="err">:</span> <span class="s1">'mousewheel'</span><span class="p">,</span> <span class="nx">options</span><span class="err">:</span> <span class="p">{</span> <span class="nl">baseline</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">direction</span><span class="err">:</span> <span class="s1">'y'</span> <span class="p">}</span> <span class="p">},</span></code></pre></figure>
 
 	</div>
 </div>

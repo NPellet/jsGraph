@@ -255,8 +255,13 @@ class PluginAxisSplitting extends Plugin {
 
       while ( serie.subSeries.length > splits ) {
 
-        this.graph.getSerie( serie.getName() + "_" + ( serie.subSeries.length - 1 ) ).kill();
+        let subserie = this.graph.getSerie( serie.getName() + "_" + ( serie.subSeries.length - 1 ) );
+
+        if ( subserie && subserie.kill ) {
+          subserie.kill();
+        }
         serie.subSeries.pop();
+
       }
 
       if ( !serie.getXAxis().splitNumber && serie.getXAxis().splitAxis ) {

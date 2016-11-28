@@ -271,6 +271,7 @@ module.exports = function(grunt) {
         if( ! self._options.jsdoc ) {
             return;
         }
+        console.log('Parsing documentation...');
         grunt.file.write( "jsdoc.json", JSON.stringify( {
             opts: {
                 "destination": "./web/doc/",

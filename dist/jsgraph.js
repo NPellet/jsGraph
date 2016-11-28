@@ -23367,7 +23367,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /** 
 	     *  Sets the data of the bar serie
 	     *  @param {Object} data
-	     *  @example serie.setData( [ { x: 'cat', mean: valMean, boxMin: valBoxMin, boxMax: valBoxMax, barMin: valBarMin, barMax: valBarMax, outliers: [ ...yList ] } ] );
+	     *  @example serie.setData( [ { x: 'cat', Q2: valMean, Q1: valBoxMin, Q3: valBoxMax, whiskers: [ val1, val2 ], outliers: [ ...yList ] } ] );
 	     *  @return {SerieBar} The current serie instance
 	     */
 
@@ -23499,6 +23499,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the mean line color
+	     *  @param {String} color - The mean line color
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23519,6 +23521,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the mean line width
+	     *  @param {Number} width - The line width
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23539,6 +23543,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the box line color
+	     *  @param {Number} color - The color of the box above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23559,6 +23565,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} color - The color of the box below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23576,8 +23584,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBoxBelowLineColor() {
 	      return this._gstyle.apply(this, ['boxBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} width - The contour width of the box above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23598,6 +23609,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} width - The contour width of the box below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23618,6 +23631,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {String} color - The fill color of the box above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23635,8 +23650,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBoxAboveFillColor() {
 	      return this._gstyle.apply(this, ['boxAboveFillColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {String} color - The fill color of the box below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23654,8 +23672,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBoxBelowFillColor() {
 	      return this._gstyle.apply(this, ['boxBelowFillColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} opacity - The fill opacity of the box above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23676,6 +23697,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} opacity - The fill opacity of the box below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23693,8 +23716,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBoxBelowFillOpacity() {
 	      return this._gstyle.apply(this, ['boxBelowFillOpacity'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
-	     *  Sets the fill color
+	     *  Sets the whisker color
+	     *  @param {String} color - The line color of the whisker above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23712,8 +23738,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBarAboveLineColor() {
 	      return this._gstyle.apply(this, ['barAboveLineColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {String} color - The line color of the whisker below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23731,8 +23760,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBarBelowLineColor() {
 	      return this._gstyle.apply(this, ['barBelowLineColor'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} width - The line width of the whisker above the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23750,8 +23782,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getBarAboveLineWidth() {
 	      return this._gstyle.apply(this, ['barAboveLineWidth'].concat(Array.prototype.slice.call(arguments)));
 	    }
+
 	    /** 
 	     *  Sets the fill color
+	     *  @param {Number} width - The line width of the whisker below the median
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23772,6 +23807,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {String} color - The outlier stroke color
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23791,7 +23828,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Sets the fill color
+	     *  Sets the stroke width
+	     *  @param {Number} width - The outlier stroke width
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23812,6 +23851,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Sets the fill color
+	     *  @param {String} color - The outlier fill color
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23831,7 +23872,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Sets the fill color
+	     *  Sets the outlier fill opacity
+	     *  @param {Number} opacity - The outlier fill opacity
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23841,7 +23884,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     *  Returns the outlier fill opacity
 	     */
 
 	  }, {
@@ -23852,6 +23895,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Reapply the current style to the serie lines elements. Mostly used internally
+	     *  @returns {SerieBox} The current serie instance
 	     */
 
 	  }, {
@@ -23904,10 +23948,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        // Get all the spacing and determine the smallest one
 	        boxOtherDimension = this.options.maxBoxWidth;
+	        //      console.log( boxOtherDimension );
+	        for (var i = 0, l = this.data.length; i < l - 1; i++) {
 
-	        for (var i = 0, l = this.data.length; i < l - 2; i++) {
-	          boxOtherDimension = Math.min(boxOtherDimension, Math.abs(axis.getPos(this.data[i + 1].pos) - axis.getPos(this.data[i].pos)));
+	          //     console.log( Math.abs( axis.getPx( this.data[ i + 1 ].pos ) - axis.getPx( this.data[ i ].pos ) ), axis.getPx( this.data[ i + 1 ].pos ), axis.getPx( this.data[ i ].pos ) );
+	          boxOtherDimension = Math.min(boxOtherDimension, Math.abs(axis2.getPx(this.data[i + 1].pos) - axis2.getPx(this.data[i].pos)));
 	        }
+	        // console.log( boxOtherDimension );
 	      }
 
 	      for (var i = 0, l = this.data.length; i < l; i++) {
@@ -24181,24 +24228,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setMarkers',
 	    value: function setMarkers() {}
-
-	    /**
-	     *  Informations needed for the redrawing of the bars, coming from AxisXBar
-	     *  @private
-	     *  @param {Number} order - The index of the serie in the bar stack
-	     *  @param {Object[]} categories - The list of categories
-	     *  @param {Number} nbSeries - The number of series
-	     *  @see AxisXBar#setSeries
-	     */
-
-	  }, {
-	    key: 'setCategoryConfig',
-	    value: function setCategoryConfig(order, categories, nbSeries) {
-
-	      this.order = order;
-	      this.categories = categories;
-	      this.nbSeries = nbSeries;
-	    }
 	  }, {
 	    key: 'boxPos',
 	    value: function boxPos(box, mean, extremity, blnX) {
@@ -24234,7 +24263,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 
-	      console.log(categories);
 	      return categories;
 	    }
 	  }, {
@@ -34361,7 +34389,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        while (serie.subSeries.length > splits) {
 
-	          _this6.graph.getSerie(serie.getName() + "_" + (serie.subSeries.length - 1)).kill();
+	          var subserie = _this6.graph.getSerie(serie.getName() + "_" + (serie.subSeries.length - 1));
+
+	          if (subserie && subserie.kill) {
+	            subserie.kill();
+	          }
 	          serie.subSeries.pop();
 	        }
 
