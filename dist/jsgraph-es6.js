@@ -2421,6 +2421,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	              serieType = Graph.SERIE_SCATTER;
 	              break;
 
+	            case 'box':
+	              serieType = Graph.SERIE_BOX;
+	              break;
+
 	            default:
 	              serieType = Graph.SERIE_LINE;
 	              break;
@@ -2510,32 +2514,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 	          }
 
-	          var errors = [];
-	          if (schemaSerie.errorX) {
+	          if (schemaSerie.errorX || schemaSerie.errorY) {
+	            var errors = [];
+	            if (schemaSerie.errorX) {
 
-	            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
 
-	              errors[i] = errors[i] || [[], []];
+	                errors[i] = errors[i] || [[], []];
 
-	              errors[i][0][0] = schemaSerie.errorX[i];
+	                errors[i][0][0] = schemaSerie.errorX[i];
+	              }
 	            }
-	          }
 
-	          if (schemaSerie.errorY) {
+	            if (schemaSerie.errorY) {
 
-	            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
 
-	              errors[i] = errors[i] || [[]];
-	              errors[i][1][0] = schemaSerie.errorY[i];
+	                errors[i] = errors[i] || [[]];
+	                errors[i][1][0] = schemaSerie.errorY[i];
+	              }
 	            }
-	          }
 
-	          serie.setDataError(errors) // Adds the error data
-	          .setErrorStyle([{
-	            type: 'bar',
-	            x: {},
-	            y: {}
-	          }]); // Display bar errors
+	            serie.setDataError(errors) // Adds the error data
+	            .setErrorStyle([{
+	              type: 'bar',
+	              x: {},
+	              y: {}
+	            }]); // Display bar errors
+	          }
 
 	          if (schema.axis) {
 	            serieAxis = schema.axis[schemaSerie.xAxis];
@@ -2568,10 +2574,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	            serie.autoAxis();
 	          }
 
-	          serie.setData([{
-	            x: schemaSerie.x,
-	            y: schemaSerie.y
-	          }]);
+	          switch (serieType) {
+
+	            case Graph.SERIE_BOX:
+	              serie.setData(schemaSerie.data);
+
+	              break;
+
+	            default:
+	            case Graph.SERIE_SCATTER:
+	            case Graph.SERIE_LINE:
+
+	              serie.setData([{
+	                x: schemaSerie.x,
+	                y: schemaSerie.y
+	              }]);
+
+	              break;
+	          }
 	        });
 	      }
 

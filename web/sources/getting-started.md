@@ -37,7 +37,7 @@ Download
 		</h3>
 
 		<p class="">
-			The source code without ES6 transpilation. Targets ES6-comptatible browsers for specific applications
+			The source code without ES6 transpilation. Targets ES6-compatible browsers for specific applications
 		</p>
 		<button class="btn btn-default">
 			<a href="https://raw.githubusercontent.com/NPellet/jsGraph/master/dist/jsgraph-es6.min.js">Download minified ({{ site.minifiedsize_es6 }}kb)</a>

@@ -8,7 +8,7 @@ requirejs.config({
 	}
 });
 
-require( [ 'jquery', './src/graph'] , function( $, Graph ) {
+require( [ 'jquery', './dist/jsgraph-es6'] , function( $, Graph ) {
 
 	window.Graph = Graph;
 
