@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>jsGraph - Scientific graphs in javascript</title>
+    <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
+">
+
+    <script src="/js/node-jsgraph/dist/jsgraph.js"></script> <!-- jsGraph should load first -->
+
+    <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
+    
+    <script>
+        var baseUrl = "/";
+    </script>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="canonical" href="http://localhost:8000///tutorials/tutorial-16-boxcharts.html">
+    <link href='https://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+</head>
+
+
+  <body>
+
+    
+<nav class="navbar navbar-default" id="jsgraph-nav">
+  <div class="container-fluid">
+  <div class="col-sm-offset-2">
+      <div class="navbar-header">
+
+        <a class="navbar-brand" href="/index.html">
+          jsGraph
+        </a>
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#jsgraph-menu" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+
+      <div class="collapse navbar-collapse" id="jsgraph-menu">
+        <ul class="nav navbar-nav">
+
+
+          <li><a href="/getting-started.html">Getting started</a></li>
+          <li><a href="/tutorials.html">Tutorials</a></li>
+          <li><a href="/docs/Graph.html">Documentation</a></li>
+          <li><a href="/examples.html">Examples</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+    
+    <div class="container">
+
+	<div class="col-sm-3">
+		
+		<nav id="jsgraph-sidebar" class="affix-top">
+			<ul class="nav">
+
+			</ul>
+		</nav>
+	</div>
+
+	<div class="col-sm-9" id="main">
+		<h2 id="box-plots">Box plots</h2>
+<p>Since v1.16, jsGraph support box charts. Box charts are a nice way to render statistical data, and is similar but more flexible than bar charts. While bar charts start at zero and display a cityscape till a certain value, plus potentially an error bar, box charts displays the median (second quartile, Q2), two box boundaries (first and third quartile, Q1 and Q3), and two whiskers that can take any data.</p>
+
+<p><strong>Note:</strong> jsGraph does not calculate those values itself. You can use <a href="http://github.com/cheminfo/mljs">mljs</a> to do so. You must feed those values to jsGraph directly.</p>
+
+<h3 id="a-iddefinitiona-defining-the-axis"><a id="definition"></a> Defining the axis</h3>
+
+<p>The x axis can be a normal, decimal axis, or it can be a <code class="highlighter-rouge">category</code> axis created using the following code:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="p">{</span> <span class="na">bottom</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> <span class="na">type</span><span class="p">:</span> <span class="s1">'bar'</span> <span class="p">}</span> <span class="p">]</span> <span class="p">}</span> <span class="p">);</span></code></pre></figure>
+
+<p>Alternatively, you can also overwrite the default x axis using:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">graph</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domId"</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{};</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span><span class="p">,</span> <span class="nx">options</span> <span class="p">);</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span></code></pre></figure>
+
+<p>For a more complete description on how to use the categories, you can check the <a href="./barchars.html">bar charts</a> tutorial. The example at the end of this tutorial provides a code sample featuring category axes.</p>
+
+<h3 id="a-iddefinition-seriea-defining-the-box-serie"><a id="definition-serie"></a> Defining the box serie</h3>
+
+<p>To define a box serie, use the <code class="highlighter-rouge">Graph.SERIE_BOX</code> type, where <code class="highlighter-rouge">Graph</code> should be your constructor.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span>
+  <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s1">'boxserie'</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BOX</span> <span class="p">)</span>
+  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> 
+	<span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span>  <span class="o">-</span><span class="mi">7</span> <span class="p">]</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">16</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span> <span class="p">]</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">12</span> <span class="p">]</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8</span> <span class="p">]</span> <span class="p">}</span>
+ <span class="p">]</span> <span class="p">);</span></code></pre></figure>
+
+<div id="example-1" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-1" );
+	graph.resize( 400, 300 );
+
+graph
+  .newSerie( 'cat2', {}, Graph.SERIE_BOX )
+  .autoAxis()
+  .setData( [ 
+	{ x: 0, Q1: -1, Q2: 2, Q3: 5, whiskers: [-5,10], outliers: [  -7 ] },
+	{ x: 1, Q1: 5, Q2: 7, Q3: 15, whiskers: [-3,16], outliers: [ -5, 15 ] },
+	{ x: 2, Q1: 3, Q2: 8, Q3: 9, whiskers: [1,11], outliers: [ 0, -2, 12 ] },
+	{ x: 3, Q1: -2, Q2: 1, Q3: 3, whiskers: [-4,6], outliers: [ -6, 8 ] }
+ ] );
+
+	graph.draw();
+</script>
+
+<h3 id="a-idmax-box-widtha-maximum-box-width"><a id="max-box-width"></a> Maximum box width</h3>
+
+<p>Boxes width will be automatically determined so that they can fit the graph. However, there’s a default maximum width of 20px. You can use the <code class="highlighter-rouge">maxBoxWidth</code> option to change it:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">graph</span>
+  <span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s1">'boxserie'</span><span class="p">,</span> <span class="p">{</span> <span class="na">maxBoxWidth</span><span class="p">:</span> <span class="mi">40</span> <span class="p">},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BOX</span> <span class="p">);</span></code></pre></figure>
+
+<div id="example-2" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-2" );
+	graph.resize( 400, 300 );
+
+graph
+  .newSerie( 'cat2', { maxBoxWidth: 40 }, Graph.SERIE_BOX )
+  .autoAxis()
+  .setData( [ 
+	{ x: 0, Q1: -1, Q2: 2, Q3: 5, whiskers: [-5,10], outliers: [  -7 ] },
+	{ x: 1, Q1: 5, Q2: 7, Q3: 15, whiskers: [-3,16], outliers: [ -5, 15 ] },
+	{ x: 2, Q1: 3, Q2: 8, Q3: 9, whiskers: [1,11], outliers: [ 0, -2, 12 ] },
+	{ x: 3, Q1: -2, Q2: 1, Q3: 3, whiskers: [-4,6], outliers: [ -6, 8 ] }
+ ] );
+
+	graph.draw();
+</script>
+
+<h3 id="a-iddefault-optionsa-default-options"><a id="default-options"></a> Default options</h3>
+
+<p>Here are the default options of the box serie that can be overwritten during the serie creation.</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+	<span class="nl">orientation</span><span class="p">:</span> <span class="s1">'y'</span><span class="p">,</span>
+	<span class="nx">maxBoxWidth</span><span class="err">:</span> <span class="mi">20</span><span class="p">,</span>
+
+	<span class="nx">defaultStyle</span><span class="err">:</span> <span class="p">{</span>
+	  <span class="nl">meanLineColor</span><span class="p">:</span> <span class="s1">'rgb( 100, 0, 0 )'</span><span class="p">,</span>
+	  <span class="nx">meanLineWidth</span><span class="err">:</span> <span class="mi">2</span><span class="p">,</span>
+
+	  <span class="nx">boxAboveLineWidth</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+	  <span class="nx">boxAboveLineColor</span><span class="err">:</span> <span class="s1">'rgb( 0, 0, 0 )'</span><span class="p">,</span>
+	  <span class="nx">boxAboveFillColor</span><span class="err">:</span> <span class="s1">'transparent'</span><span class="p">,</span>
+	  <span class="nx">boxAboveFillOpacity</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+	  <span class="nx">boxBelowLineWidth</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+	  <span class="nx">boxBelowLineColor</span><span class="err">:</span> <span class="s1">'rgb( 0, 0, 0 )'</span><span class="p">,</span>
+	  <span class="nx">boxBelowFillColor</span><span class="err">:</span> <span class="s1">'transparent'</span><span class="p">,</span>
+	  <span class="nx">boxBelowFillOpacity</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+
+	  <span class="nx">barAboveLineColor</span><span class="err">:</span> <span class="s1">'rgba( 0, 0, 0, 1 )'</span><span class="p">,</span>
+	  <span class="nx">barAboveLineWidth</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+	  <span class="nx">barBelowLineColor</span><span class="err">:</span> <span class="s1">'rgba( 0, 0, 0, 1 )'</span><span class="p">,</span>
+	  <span class="nx">barBelowLineWidth</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+
+	  <span class="nx">outlierLineWidth</span><span class="err">:</span> <span class="mi">1</span><span class="p">,</span>
+	  <span class="nx">outlierLineColor</span><span class="err">:</span> <span class="s1">'rgb( 255, 255, 255 )'</span><span class="p">,</span>
+	  <span class="nx">outlierFillColor</span><span class="err">:</span> <span class="s1">'rgb( 0, 0, 0 )'</span><span class="p">,</span>
+	  <span class="nx">outlierFillOpacity</span><span class="err">:</span> <span class="mi">1</span>
+	<span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="a-idstylinga-styling"><a id="styling"></a> Styling</h3>
+
+<p>All styling options are available through the API and can be checked in the documentation.
+Here’s just a simple example of box styling for future references:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">var</span> <span class="nx">s</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s1">'cat'</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BOX</span> <span class="p">);</span>
+<span class="kd">var</span> <span class="nx">s2</span> <span class="o">=</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">newSerie</span><span class="p">(</span> <span class="s1">'cat2'</span><span class="p">,</span> <span class="p">{},</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">SERIE_BOX</span> <span class="p">);</span>
+
+<span class="kd">var</span> <span class="nx">axis</span> <span class="o">=</span> <span class="k">new</span> <span class="p">(</span> <span class="nx">Graph</span><span class="p">.</span><span class="nx">getConstructor</span><span class="p">(</span> <span class="s1">'graph.axis.x.bar'</span> <span class="p">)</span> <span class="p">)</span>
+<span class="nx">graph</span><span class="p">.</span><span class="nx">setBottomAxis</span><span class="p">(</span> <span class="nx">axis</span><span class="p">,</span> <span class="mi">0</span> <span class="p">);</span>
+<span class="nx">axis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span> <span class="nx">graph</span> <span class="p">);</span>
+
+<span class="nx">axis</span><span class="p">.</span><span class="nx">categories</span> <span class="o">=</span> <span class="p">[</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Sample 1'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s1">'s1'</span> <span class="p">},</span> <span class="p">{</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Sample 2'</span><span class="p">,</span> <span class="na">name</span><span class="p">:</span> <span class="s1">'s2'</span> <span class="p">}</span> <span class="p">];</span>
+
+<span class="nx">s</span>
+  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> 
+    <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'s1'</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="o">-</span><span class="mi">12</span> <span class="p">]</span> <span class="p">},</span>
+	<span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'s2'</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">]</span> <span class="p">}</span>
+  <span class="p">]</span> <span class="p">);</span>
+
+
+<span class="nx">s2</span>
+  <span class="p">.</span><span class="nx">autoAxis</span><span class="p">()</span>
+  <span class="p">.</span><span class="nx">setData</span><span class="p">(</span> <span class="p">[</span> 
+    <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'s1'</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span>  <span class="o">-</span><span class="mi">2</span> <span class="p">]</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="na">x</span><span class="p">:</span> <span class="s1">'s2'</span><span class="p">,</span> <span class="na">Q1</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="na">Q2</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="na">Q3</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="na">whiskers</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">13</span><span class="p">],</span> <span class="na">outliers</span><span class="p">:</span> <span class="p">[</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span> <span class="p">]</span> <span class="p">}</span>
+  <span class="p">]</span> <span class="p">);</span>
+
+<span class="nx">axis</span><span class="p">.</span><span class="nx">setSeries</span><span class="p">(</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">s2</span> <span class="p">);</span>
+
+<span class="nx">s</span><span class="p">.</span><span class="nx">setBoxAboveFillColor</span><span class="p">(</span><span class="s1">'ForestGreen'</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setBoxBelowFillColor</span><span class="p">(</span><span class="s1">'ForestGreen'</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setBoxAboveFillOpacity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span>
+<span class="nx">s</span><span class="p">.</span><span class="nx">setBoxBelowFillOpacity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span>
+
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setBoxAboveFillColor</span><span class="p">(</span><span class="s1">'Crimson'</span><span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setBoxBelowFillColor</span><span class="p">(</span><span class="s1">'Crimson'</span><span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setBoxAboveFillOpacity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span>
+<span class="nx">s2</span><span class="p">.</span><span class="nx">setBoxBelowFillOpacity</span><span class="p">(</span><span class="mf">0.2</span><span class="p">);</span></code></pre></figure>
+
+<div id="example-3" class="jsgraph-example"></div>
+<script>
+	var graph = new Graph( "example-3" );
+	graph.resize( 400, 300 );
+
+var s = graph.newSerie( 'cat', {}, Graph.SERIE_BOX );
+var s2 = graph.newSerie( 'cat2', {}, Graph.SERIE_BOX );
+
+var axis = new ( Graph.getConstructor( 'graph.axis.x.bar' ) )
+graph.setBottomAxis( axis, 0 );
+axis.init( graph );
+
+axis.categories = [ { title: 'Sample 1', name: 's1' }, { title: 'Sample 2', name: 's2' } ];
+
+s
+  .autoAxis()
+  .setData( [ 
+    { x: 's1', Q1: 1, Q2: 2, Q3: 5, whiskers: [-5,10], outliers: [ 11, 17, 22, -9, -12 ] },
+	{ x: 's2', Q1: 2, Q2: 5, Q3: 6, whiskers: [-2,8] }
+  ] );
+
+
+s2
+  .autoAxis()
+  .setData( [ 
+    { x: 's1', Q1: -1, Q2: 2, Q3: 5, whiskers: [-5,10], outliers: [  -2 ] },
+    { x: 's2', Q1: 5, Q2: 7, Q3: 11, whiskers: [-2,13], outliers: [ -5, 15 ] }
+  ] );
+
+axis.setSeries( s, s2 );
+
+s.setBoxAboveFillColor('ForestGreen');
+s.setBoxBelowFillColor('ForestGreen');
+s.setBoxAboveFillOpacity(0.2);
+s.setBoxBelowFillOpacity(0.2);
+
+s2.setBoxAboveFillColor('Crimson');
+s2.setBoxBelowFillColor('Crimson');
+s2.setBoxAboveFillOpacity(0.2);
+s2.setBoxBelowFillOpacity(0.2);
+
+graph.draw();
+</script>
+
+
+	</div>
+</div>
+  
+    <footer class="site-footer">
+
+  <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
+
+</footer>
+
+
+  </body>
+
+</html>

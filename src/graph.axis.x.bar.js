@@ -140,7 +140,7 @@ class AxisXBar extends AxisX {
       categories[ i ] = accumulator;
       accumulator += temp;
     }
-    console.log( categories, total );
+    
     let dispatchedCategories = {};
 
     let i = 0;
@@ -155,8 +155,6 @@ class AxisXBar extends AxisX {
         indices[ cat ] = ( categories[ cat ] + dispatchedCategories[ cat ] ) / total;
         dispatchedCategories[ cat ]++;
       } );
-
-      console.log( indices, scategories, categories );
 
       serie.setDataIndices( indices, total );
       i++;
