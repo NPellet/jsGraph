@@ -728,13 +728,19 @@ class Serie extends EventEmitter {
     return this.options.layer ||  1;
   }
 
+  setStyle( style, selectionType = "unselected" ) {
+    //console.log( style, selectionType );
+    this.styles[ selectionType ] = style;
+    this.styleHasChanged( selectionType );
+  }
+
   /**
    * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
    * @param {String} selectionType - The selection for which the style may have changed
    * @returns {Serie} The current serie
    * @memberof Serie
    */
-  styleHasChanged( selectionType ) {
+  styleHasChanged( selectionType = "unselected" ) {
     this._changedStyles = this._changedStyles || {};
 
     if ( selectionType === false ) {

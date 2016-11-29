@@ -2262,6 +2262,12 @@ class Graph extends EventEmitter {
 
                   break;
 
+                case Graph.SERIE_BOX:
+
+                  return style;
+
+                  break;
+
                 case Graph.SERIE_SCATTER:
 
                   break;
@@ -2278,6 +2284,11 @@ class Graph extends EventEmitter {
               case Graph.SERIE_SCATTER:
 
                 serie.setStyle( styles, {}, style.styleName );
+                break;
+
+              case Graph.SERIE_BOX:
+
+                serie.setStyle( styles[ 0 ], style.stylename );
                 break;
             }
 

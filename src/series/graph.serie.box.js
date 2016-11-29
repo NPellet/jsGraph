@@ -85,6 +85,10 @@ class SerieBox extends Serie {
 
     this.data = data;
 
+    if ( !Array.isArray( data ) ) {
+      return;
+    }
+
     let axisref, axisval, methodref, methodval, blnX;
 
     if ( this.options.orientation == 'y' ) {
@@ -209,6 +213,12 @@ class SerieBox extends Serie {
    */
   getMeanLineColor() {
     return this._gstyle( 'meanLineColor', ...arguments );
+  }
+
+  setStyle( style, selectionType = "unselected" ) {
+    //console.log( style, selectionType );
+    this.styles[ selectionType ] = extend( {}, defaults.defaultStyle, this.styles.unselected, style );
+    this.styleHasChanged( selectionType );
   }
 
   /** 
@@ -505,6 +515,10 @@ class SerieBox extends Serie {
   }
 
   draw() {
+
+    if ( !this.data ) {
+      return;
+    }
 
     let position;
     let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();

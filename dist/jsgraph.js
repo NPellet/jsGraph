@@ -11160,6 +11160,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                    break;
 
+	                  case Graph.SERIE_BOX:
+
+	                    return style;
+
+	                    break;
+
 	                  case Graph.SERIE_SCATTER:
 
 	                    break;
@@ -11176,6 +11182,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                case Graph.SERIE_SCATTER:
 
 	                  serie.setStyle(styles, {}, style.styleName);
+	                  break;
+
+	                case Graph.SERIE_BOX:
+
+	                  serie.setStyle(styles[0], style.stylename);
 	                  break;
 	              }
 	            });
@@ -22383,6 +22394,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getLayer() {
 	      return this.options.layer || 1;
 	    }
+	  }, {
+	    key: 'setStyle',
+	    value: function setStyle(style) {
+	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
+
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = style;
+	      this.styleHasChanged(selectionType);
+	    }
 
 	    /**
 	     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
@@ -22393,7 +22413,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'styleHasChanged',
-	    value: function styleHasChanged(selectionType) {
+	    value: function styleHasChanged() {
+	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "unselected";
+
 	      this._changedStyles = this._changedStyles || {};
 
 	      if (selectionType === false) {
@@ -23399,6 +23421,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.data = data;
 
+	      if (!Array.isArray(data)) {
+	        return;
+	      }
+
 	      var axisref = void 0,
 	          axisval = void 0,
 	          methodref = void 0,
@@ -23539,6 +23565,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'getMeanLineColor',
 	    value: function getMeanLineColor() {
 	      return this._gstyle.apply(this, ['meanLineColor'].concat(Array.prototype.slice.call(arguments)));
+	    }
+	  }, {
+	    key: 'setStyle',
+	    value: function setStyle(style) {
+	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
+
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = (0, _graph3.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
+	      this.styleHasChanged(selectionType);
 	    }
 
 	    /** 
@@ -23945,6 +23980,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'draw',
 	    value: function draw() {
 	      var _this2 = this;
+
+	      if (!this.data) {
+	        return;
+	      }
 
 	      var position = void 0;
 	      var axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
