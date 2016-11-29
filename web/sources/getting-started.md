@@ -82,7 +82,7 @@ Download
 </div>
 
 
-Load with npm
+Install with npm
 -------
 <p class="larger">
 
@@ -95,7 +95,7 @@ Installing jsGraph from <a href="http://npmjs.org">npm</a> is an easy way to ins
 npm install node-jsgraph --save-dev
 ```
 
-Load with bower
+Install with bower
 -------
 <p class="larger">
 	Alternatively, jsGraph is also available from the bower package manager

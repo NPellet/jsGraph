@@ -11244,7 +11244,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          switch (serieType) {
 
 	            case Graph.SERIE_BOX:
-	              serie.setData(schemaSerie.data);
+	              serie.setData(schemaSerie.boxes);
 
 	              break;
 
@@ -17773,7 +17773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        categories[_i] = accumulator;
 	        accumulator += temp;
 	      }
-	      console.log(categories, total);
+
 	      var dispatchedCategories = {};
 
 	      var i = 0;
@@ -17788,8 +17788,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          indices[cat] = (categories[cat] + dispatchedCategories[cat]) / total;
 	          dispatchedCategories[cat]++;
 	        });
-
-	        console.log(indices, scategories, categories);
 
 	        serie.setDataIndices(indices, total);
 	        i++;

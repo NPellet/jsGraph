@@ -39,15 +39,15 @@
 	],
 	"Plugins": [
 		{
+			"title": "Zoom plugin",
+			"url": "tutorial-10-zoom.html"
+		},
+		{
 			"title": "Difference between two series",
 			"url": "tutorial-22-linedifference.html"
 		}
 	],
 	"Others": [
-		{
-			"title": "Zoom plugin",
-			"url": "tutorial-10-zoom.html"
-		},
 		{
 			"title": "Handling shapes (basic)",
 			"url": "tutorial-12-shapes.html"

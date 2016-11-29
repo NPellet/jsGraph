@@ -54,8 +54,7 @@ return { Graph: graph }
 The Zoom plugin allows the use to zoom on the graph using the mouse. When the use clicks on the graph, holds the mouse down and moves it around, a red rectangle is formed, which defined the new zooming boundaries that the graph will take when the mouse is released.
 
 
-### Enabling the zoom plugin
-
+### <a id="enabling"></a>Enabling the zoom plugin
 The zoom plugin, like any other plugin, needs to be enabled upon graph creation:
 
 {% highlight javascript %}
@@ -80,7 +79,7 @@ Here are a few features that the zoom plugin can provide you:
 * Event calls and cancellation possible
 
 
-### Basics
+### <a id="basics"></a>Basics
 
 We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option ```mouseAction``` of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let's take the following code as it is:
 
@@ -101,7 +100,7 @@ new Graph( "domID", {
 
 The following code enables the zoom plugin only when the ```Shift``` and ```Ctrl``` key are not pressed. If one of these were ```true```, the use would need to have the key pressed to enable zooming.
 
-#### Example
+#### <a id="example"></a>Example
 
 Using the previous code, we create the zoom plugin and enable it using the mouse action. The buttons below the graph trigger the following code.
 
@@ -145,7 +144,7 @@ $( document ).ready( function() {
 </div>
 
 
-### Forcing the x or y direction
+### <a id="forcing"></a>Forcing the x or y direction
  
 The ```zoomMode``` options passed in the plugin creation or after its initialization defined the behaviour of the zoom and takes the following possible values:
 
@@ -154,7 +153,7 @@ The ```zoomMode``` options passed in the plugin creation or after its initializa
 * ```y``` forces zooming in the y direction only
 
 
-### Unzoom on double click
+### <a id="unzooming"></a>Unzoom on double click
 
 So far, the only way to unzoom on a graph is to active the double click. The double click behavior is also defined through mouse actions, in the following way:
 
@@ -231,18 +230,17 @@ $( document ).ready( function() {
 </script>
 
 <div class="btn-group">
-  <button class="btn btn-default example-3 active" id="example-3-total">total</button>
-  <button class="btn btn-default example-3" id="example-3-xtotal">xtotal</button>
-  <button class="btn btn-default example-3" id="example-3-ytotal">ytotal</button>
-  <button class="btn btn-default example-3" id="example-3-gradualXY">gradualXY</button>
-  <button class="btn btn-default example-3" id="example-3-gradualX">gradualX</button>
-  <button class="btn btn-default example-3" id="example-3-gradualY">gradualY</button>
+<button class="btn btn-default example-3 active" id="example-3-total">total</button>
+<button class="btn btn-default example-3" id="example-3-xtotal">xtotal</button>
+<button class="btn btn-default example-3" id="example-3-ytotal">ytotal</button>
+<button class="btn btn-default example-3" id="example-3-gradualXY">gradualXY</button>
+<button class="btn btn-default example-3" id="example-3-gradualX">gradualX</button>
+<button class="btn btn-default example-3" id="example-3-gradualY">gradualY</button>
 </div>
 
 
 
-### Zooming on one axis only
-
+### <a id="oneaxis"></a> Zooming on one axis only
 The default behaviour of jsGraph is to unzoom all present axes on the graph. The mouse coordinates are transformed into respective axes coordinates and used accordingly. However jsGraph also allows you to select which axis should be zoomed.
 
 Changing the zooming axis(es) can be done through the ```axes``` options of the zoom plugin and can take the following values:
@@ -302,7 +300,7 @@ Note: In this example, the x axis is shared between the two series. Hence the se
 
 
 
-### Smooth zooming
+### <a id="smooth"></a>Smooth zooming
 
 Smooth zooming and unzooming using animations is possible with jsGraph, by setting the ```smooth``` flag to true in the plugin constructor or after its creation
 
@@ -326,7 +324,7 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 </script>
 
 
-### Mouse wheel
+### <a id="mousewheel"></a>Mouse wheel
 
 The mousewheel behavior is set in the ```mouseAction``` array of the graph instance. Options include:
 

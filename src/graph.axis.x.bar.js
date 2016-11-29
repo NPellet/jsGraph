@@ -140,7 +140,7 @@ class AxisXBar extends AxisX {
       categories[ i ] = accumulator;
       accumulator += temp;
     }
-    
+
     let dispatchedCategories = {};
 
     let i = 0;

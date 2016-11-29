@@ -6729,9 +6729,17 @@ button.close {
   src: url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.eot');
   src: url('../node_modules/bootstrap/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../node_modules/bootstrap/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
 }
+* {
+  margin: 0;
+}
+html {
+  height: 100%;
+}
 body {
   font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   position: relative;
+  min-height: 100%;
+  height: 100%;
 }
 .larger {
   font-size: 1.2em;
@@ -6739,27 +6747,38 @@ body {
 h2 {
   margin-top: 25px;
 }
+#jsgraph-wrapper {
+  /*	height: 100%;*/
+  min-height: 100%;
+  margin: 0 auto -40px;
+  padding-bottom: 80px;
+}
 #jsgraph-index,
 #jsgraph-page {
-  background: #5e8e8b;
+  background: #0b733f;
   /* Old browsers */
-  background: linear-gradient(to bottom, #5e8e8b 0%, #557e7f 100%);
+  background: linear-gradient(to bottom, #0b733f 0%, #074b29 100%);
   color: white;
-  min-height: 300px;
+  min-height: 250px;
   padding-top: 40px;
   margin-bottom: 20px;
-  border-bottom: 1px solid #2d5956;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #032e18;
+}
+#jsgraph-index .github-btns,
+#jsgraph-page .github-btns {
+  margin-top: 10px;
 }
 #jsgraph-index #jsgraph-title,
 #jsgraph-page #jsgraph-title {
-  text-shadow: -1px -1px 0 #2d5956, 1px -1px 0 #2d5956, -1px 1px 0 #2d5956, 1px 1px 0 #2d5956;
-  font-size: 4em;
+  text-shadow: -1px -1px 0 #032e18, 1px -1px 0 #032e18, -1px 1px 0 #032e18, 1px 1px 0 #032e18;
+  font-size: 3em;
 }
 #jsgraph-index #jsgraph-subtitle,
 #jsgraph-page #jsgraph-subtitle {
   font-size: 1.3em;
   font-weight: 250;
-  font-color: #afdbd8;
+  font-color: #2cbb73;
   margin-bottom: 15px;
 }
 #jsgraph-index #jsgraph-install,
@@ -6770,12 +6789,13 @@ h2 {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  background-color: #2d5956;
+  background-color: #032e18;
   height: 80px;
   margin-top: 50px;
   padding-top: 10px;
   padding-left: 20px;
   border: 1px solid #a0a0a0;
+  margin: 20px;
 }
 #jsgraph-index #jsgraph-install pre.code,
 #jsgraph-page #jsgraph-install pre.code {
@@ -6794,20 +6814,24 @@ h2 {
   margin-top: 0px;
 }
 #jsgraph-page h1 {
-  font-size: 2em;
+  font-size: 1.8em;
 }
 #jsgraph-nav {
   margin-bottom: 0px;
-  border-bottom-color: #2d5956;
+  border-bottom-color: #032e18;
 }
 #jsgraph-nav a {
-  color: #2d5956;
+  color: #032e18;
+}
+#jsgraph-docnav,
+#jsgraph-subdocnav {
+  position: static;
 }
 .doc-member,
 .doc-method {
   margin-top: 25px;
   padding-bottom: 25px;
-  border-bottom: 1px solid #afdbd8;
+  border-bottom: 1px solid #2cbb73;
 }
 .doc-member.expanded:not(.not-expandable) h4::before,
 .doc-method.expanded:not(.not-expandable) h4::before {
@@ -6878,7 +6902,7 @@ h2 {
 .doc-method table.params tbody tr,
 .doc-member table.props tbody tr,
 .doc-method table.props tbody tr {
-  border-bottom: 1px solid #afdbd8;
+  border-bottom: 1px solid #2cbb73;
 }
 .doc-member table.params td,
 .doc-method table.params td,
@@ -6917,12 +6941,12 @@ h2 {
 }
 #jsgraph-subdocnav,
 #jsgraph-docnav {
-  color: #2d5956;
+  color: #032e18;
 }
 #jsgraph-subdocnav a,
 #jsgraph-docnav a {
   color: white;
-  color: #2d5956;
+  color: #032e18;
 }
 #jsgraph-subdocnav {
   font-size: 0.9em;
@@ -6946,7 +6970,7 @@ h2 {
   top: 20px;
 }
 #jsgraph-sidebar a {
-  color: #2d5956;
+  color: #032e18;
 }
 #jsgraph-sidebar li ul {
   display: none !important;
@@ -6961,20 +6985,18 @@ h2 {
 }
 #jsgraph-sidebar li.active > a {
   color: white;
-  background-color: #5e8e8b;
+  background-color: #0b733f;
   font-weight: bold;
 }
 #jsgraph-sidebar li.active ul {
   display: block !important;
 }
-#jsgraph-highlights {
-  text-align: center;
-}
 #jsgraph-highlights .row {
   margin-bottom: 20px;
 }
 #jsgraph-highlights h2 {
-  color: #2d5956;
+  text-align: center;
+  color: #032e18;
 }
 #jsgraph-highlights p.larger {
   font-size: 1.3em;
@@ -6982,6 +7004,14 @@ h2 {
 .example {
   padding-bottom: 20px;
   margin-bottom: 20px;
-  border-bottom: 1px solid #2d5956;
+  border-bottom: 1px solid #032e18;
+}
+footer {
+  border-top: 1px solid #0b733f;
+  height: 40px;
+  line-height: 40px;
+}
+footer a {
+  color: #074b29;
 }
 /*# sourceMappingURL=site/css/theme.css.map */

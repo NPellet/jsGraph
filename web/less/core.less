@@ -4,17 +4,27 @@
 @import "bootstrap-mixins.less";
 
 
-@theme-dark: #5e8e8b;
-@theme-bit-darker: #557e7f;
+@theme-dark: #0b733f;
+@theme-bit-darker: #074b29;
 
-@theme-darker: #2d5956;
+@theme-darker: #032e18;
 
-@theme-lighter: #afdbd8;
+@theme-lighter: #2cbb73;
 
+* {
+    margin: 0;
+}
+
+html {
+	height: 100%;
+}
 
 body {
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	position: relative;
+	min-height: 100%;
+	height: 100%;
+
 }
 
 .larger {
@@ -23,6 +33,13 @@ body {
 
 h2 {
 	margin-top: 25px;
+}
+
+#jsgraph-wrapper {
+/*	height: 100%;*/
+	min-height: 100%;
+	margin: 0 auto -40px;
+	padding-bottom: 80px;
 }
 
 .text-stroke( @strokewidth, @color:@theme-darker ) {
@@ -63,15 +80,20 @@ h2 {
 	
 
 	color: white;
-	min-height: 300px;
+	min-height: 250px;
 	padding-top: 40px;
 	margin-bottom: 20px;
+	padding-bottom: 20px;
 	border-bottom: 1px solid @theme-darker;
+
+	.github-btns {
+		margin-top: 10px;
+	}
 
 	#jsgraph-title {
 
 		.text-stroke( 1px );
-		font-size: 4em;
+		font-size: 3em;
 
 		
 	}
@@ -95,6 +117,7 @@ h2 {
 		padding-top: 10px;
 		padding-left: 20px;
 		border: 1px solid #a0a0a0;
+		margin: 20px;
 
 	
 		pre.code {
@@ -118,7 +141,7 @@ h2 {
 	min-height: 120px;
 	margin-top: 0px;
 	h1 {
-		font-size: 2em;
+		font-size: 1.8em;
 	}
 }
 
@@ -133,6 +156,9 @@ h2 {
 	}
 }
 
+#jsgraph-docnav, #jsgraph-subdocnav {
+	position: static;
+}
 
 @doc-blue: #59859E;
 @doc-green: #629E59;
@@ -315,9 +341,9 @@ h2 {
 		margin-bottom: 20px;
 	}
 		
-	text-align: center;
-
 	h2 {
+
+		text-align: center;
 		color: @theme-darker;
 	}
 
@@ -330,4 +356,14 @@ h2 {
 	padding-bottom: 20px;
 	margin-bottom: 20px;
 	border-bottom: 1px solid @theme-darker;
+}
+
+footer {
+	border-top: 1px solid @theme-dark;
+	height: 40px;
+	line-height: 40px;
+
+	a {
+		color: @theme-bit-darker;
+	}
 }

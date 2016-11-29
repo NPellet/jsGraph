@@ -81,7 +81,7 @@ Now, we have the data and the smoothed data, and we want to highlight when gas i
 
 Note that you could do it yourself by adding a polyline shape and calculate the path yourself, but jsGraph does all of that for you.
 
-#### <a id="doc-example-enable"></a> Enabling the ```serieLineDifference``` plugin
+#### <a id="doc-example-enable"></a> Enabling the plugin
 
 You need to enable the plugin by feeding the following options to the graph constructor:
 

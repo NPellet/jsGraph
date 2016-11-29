@@ -2353,7 +2353,7 @@ class Graph extends EventEmitter {
         switch ( serieType ) {
 
           case Graph.SERIE_BOX:
-            serie.setData( schemaSerie.data );
+            serie.setData( schemaSerie.boxes );
 
             break;
 

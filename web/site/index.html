@@ -14,6 +14,9 @@
 
     <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
     
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
     <script>
         var baseUrl = "/";
     </script>
@@ -27,7 +30,9 @@
 
   <body>
 
-    
+  	<div id="jsgraph-wrapper">
+	    
+
 <nav class="navbar navbar-default" id="jsgraph-nav">
   <div class="container-fluid">
   <div class="col-sm-offset-2">
@@ -58,14 +63,16 @@
   </div>
 </nav>
 
-    
-    <div id="jsgraph-index" class="container-fluid">
+
+<a href="https://github.com/NPellet/jsGraph"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a>
+	    
+	    <div id="jsgraph-index" class="container-fluid">
 
 	<div class="row">
 		<div class="col-sm-4 col-sm-offset-2">
 			<h1 id="jsgraph-title">jsGraph</h1>
 			<p id="jsgraph-subtitle">
-				javascript library that plots scientific data in any web browser.
+				A powerful javascript library that plots scientific data in web browsers.
 			</p>
 		</div>
 
@@ -73,17 +80,26 @@
 
 			<pre class="code">// Quick install
 npm install node-jsgraph</pre>
+
+			<div class="github-btns">
+				<!-- Place this tag where you want the button to render. -->
+				<a class="github-button" href="https://github.com/NPellet/jsGraph/archive/master.zip" data-icon="octicon-cloud-download" data-style="mega" aria-label="Download NPellet/jsGraph on GitHub">Download</a>
+				<!-- Place this tag where you want the button to render. -->
+				<a class="github-button" href="https://github.com/NPellet/jsGraph" data-icon="octicon-star" data-style="mega" aria-label="Star NPellet/jsGraph on GitHub">Star</a>
+			</div>
 		</div>
+
 	</div>
 
 </div>
+
 
 <div class="container" id="jsgraph-highlights">
 
 	<div class="row">
 		<h2>What is jsGraph and why use it ?</h2>
 		<p class="larger">	
-			jsGraph plots scientific data into the browser. It is written in javascript and has no dependencies. It renders scientific data into line plots, scatter plots, zone plots or density map. Through a full-featured API, customize your graphs and use the resulting SVG for your website or for publications.
+			jsGraph plots scientific data into the browser. It is written in javascript and is self-contained. Embed it within seconds in your web application or web page. jsGraph renders line plots, scatter plots, bars, boxes, zone plots or density map. Through a full-featured API, you can customize and interact with your graph, or download the resulting SVG for static display or for scientific publications.
 		</p>
 	</div>
 
@@ -91,15 +107,15 @@ npm install node-jsgraph</pre>
 		<div class="col-sm-4">
 			<h2>Professional</h2>
 			<p class="larger">
-				Thanks to SVG, display high-quality graphs can be generated for use in scientific publications. Customize your graph with the full-featured API.
+				Using scalable vector graphics is the best way to generate high-quality graphs for scientific publications. Customize your graph with the full-featured API to make it look like exactly how you want it to.
 			</p>
 		</div>
 
 
 		<div class="col-sm-4">
-			<h2>Speed</h2>
+			<h2>Fast</h2>
 			<p class="larger">
-				Several layers of optimization for blazing fast rendering. Millions of data points can be displayed in a few milliseconds.
+				jsGraph implements several layers of optimizations that allow blazing fast rendering. Millions of data points can be displayed in a few milliseconds. Very useful to display high quantity of data such as XRD or NMR spectra.
 			</p>
 		</div>
 
@@ -107,17 +123,19 @@ npm install node-jsgraph</pre>
 		<div class="col-sm-4">
 			<h2>Interactive</h2>
 			<p class="larger">
-				Zoom over your graph, drag it around or annotate some specific points using mouse and keyboard. All of that from the browser.
+				Zoom over your graph, drag it around or annotate some specific points using mouse and keyboard. All of that from the browser. Enable or disable mouse features at will.
 			</p>
 		</div>
 	</div>
 
 </div>
-  
+  	</div>
     <footer class="site-footer">
 
   <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
 
+  <div class="col-sm-3"><a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a></div>
+  <div class="col-sm-9 text-right">jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license</div>
 </footer>
 
 

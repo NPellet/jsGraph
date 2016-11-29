@@ -14,6 +14,9 @@
 
     <script src="/js/jquery/dist/jquery.min.js"></script> <!-- jQuery should load first -->
     
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+
     <script>
         var baseUrl = "/";
     </script>
@@ -27,7 +30,9 @@
 
   <body>
 
-    
+  	<div id="jsgraph-wrapper">
+	    
+
 <nav class="navbar navbar-default" id="jsgraph-nav">
   <div class="container-fluid">
   <div class="col-sm-offset-2">
@@ -58,8 +63,10 @@
   </div>
 </nav>
 
-    
-    <div class="container">
+
+<a href="https://github.com/NPellet/jsGraph"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/8b6b8ccc6da3aa5722903da7b58eb5ab1081adee/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_orange_ff7600.png"></a>
+	    
+	    <div class="container">
 
 	<div class="col-sm-3">
 		
@@ -122,8 +129,7 @@ return { Graph: graph }
 
 <p>The Zoom plugin allows the use to zoom on the graph using the mouse. When the use clicks on the graph, holds the mouse down and moves it around, a red rectangle is formed, which defined the new zooming boundaries that the graph will take when the mouse is released.</p>
 
-<p>### Enabling the zoom plugin</p>
-
+<h3 id="a-idenablingaenabling-the-zoom-plugin"><a id="enabling"></a>Enabling the zoom plugin</h3>
 <p>The zoom plugin, like any other plugin, needs to be enabled upon graph creation:</p>
 
 <figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">new</span> <span class="nx">Graph</span><span class="p">(</span> <span class="s2">"domID"</span><span class="p">,</span> <span class="p">{</span>  
@@ -147,7 +153,7 @@ return { Graph: graph }
   <li>Event calls and cancellation possible</li>
 </ul>
 
-<h3 id="basics">Basics</h3>
+<h3 id="a-idbasicsabasics"><a id="basics"></a>Basics</h3>
 
 <p>We will now cover the basics of the zoom plugin. The zoom plugin is intimate with the option <code class="highlighter-rouge">mouseAction</code> of the graph, which can be accessed in the constructor options or via direct settings. The mouse actions define what jsGraph should do upon various mouse events. We will cover the mouse actions in details somewhere else, but for now, let’s take the following code as it is:</p>
 
@@ -166,7 +172,7 @@ return { Graph: graph }
 
 <p>The following code enables the zoom plugin only when the <code class="highlighter-rouge">Shift</code> and <code class="highlighter-rouge">Ctrl</code> key are not pressed. If one of these were <code class="highlighter-rouge">true</code>, the use would need to have the key pressed to enable zooming.</p>
 
-<h4 id="example">Example</h4>
+<h4 id="a-idexampleaexample"><a id="example"></a>Example</h4>
 
 <p>Using the previous code, we create the zoom plugin and enable it using the mouse action. The buttons below the graph trigger the following code.</p>
 
@@ -207,7 +213,7 @@ $( document ).ready( function() {
   <button class="btn btn-default active" id="example-1-shift2">Disable shift</button>
 </div>
 
-<h3 id="forcing-the-x-or-y-direction">Forcing the x or y direction</h3>
+<h3 id="a-idforcingaforcing-the-x-or-y-direction"><a id="forcing"></a>Forcing the x or y direction</h3>
 
 <p>The <code class="highlighter-rouge">zoomMode</code> options passed in the plugin creation or after its initialization defined the behaviour of the zoom and takes the following possible values:</p>
 
@@ -217,7 +223,7 @@ $( document ).ready( function() {
   <li><code class="highlighter-rouge">y</code> forces zooming in the y direction only</li>
 </ul>
 
-<h3 id="unzoom-on-double-click">Unzoom on double click</h3>
+<h3 id="a-idunzoomingaunzoom-on-double-click"><a id="unzooming"></a>Unzoom on double click</h3>
 
 <p>So far, the only way to unzoom on a graph is to active the double click. The double click behavior is also defined through mouse actions, in the following way:</p>
 
@@ -293,16 +299,15 @@ $( document ).ready( function() {
 </script>
 
 <div class="btn-group">
-  <button class="btn btn-default example-3 active" id="example-3-total">total</button>
-  <button class="btn btn-default example-3" id="example-3-xtotal">xtotal</button>
-  <button class="btn btn-default example-3" id="example-3-ytotal">ytotal</button>
-  <button class="btn btn-default example-3" id="example-3-gradualXY">gradualXY</button>
-  <button class="btn btn-default example-3" id="example-3-gradualX">gradualX</button>
-  <button class="btn btn-default example-3" id="example-3-gradualY">gradualY</button>
+<button class="btn btn-default example-3 active" id="example-3-total">total</button>
+<button class="btn btn-default example-3" id="example-3-xtotal">xtotal</button>
+<button class="btn btn-default example-3" id="example-3-ytotal">ytotal</button>
+<button class="btn btn-default example-3" id="example-3-gradualXY">gradualXY</button>
+<button class="btn btn-default example-3" id="example-3-gradualX">gradualX</button>
+<button class="btn btn-default example-3" id="example-3-gradualY">gradualY</button>
 </div>
 
-<p>### Zooming on one axis only</p>
-
+<h3 id="a-idoneaxisa-zooming-on-one-axis-only"><a id="oneaxis"></a> Zooming on one axis only</h3>
 <p>The default behaviour of jsGraph is to unzoom all present axes on the graph. The mouse coordinates are transformed into respective axes coordinates and used accordingly. However jsGraph also allows you to select which axis should be zoomed.</p>
 
 <p>Changing the zooming axis(es) can be done through the <code class="highlighter-rouge">axes</code> options of the zoom plugin and can take the following values:</p>
@@ -362,7 +367,7 @@ $( document ).ready( function() {
   <button class="btn btn-default example-4" id="example-4-bottom">[ graph.getBottomAxis() ]</button>
 </div>
 
-<h3 id="smooth-zooming">Smooth zooming</h3>
+<h3 id="a-idsmoothasmooth-zooming"><a id="smooth"></a>Smooth zooming</h3>
 
 <p>Smooth zooming and unzooming using animations is possible with jsGraph, by setting the <code class="highlighter-rouge">smooth</code> flag to true in the plugin constructor or after its creation</p>
 
@@ -382,7 +387,7 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 }) ();
 </script>
 
-<h3 id="mouse-wheel">Mouse wheel</h3>
+<h3 id="a-idmousewheelamouse-wheel"><a id="mousewheel"></a>Mouse wheel</h3>
 
 <p>The mousewheel behavior is set in the <code class="highlighter-rouge">mouseAction</code> array of the graph instance. Options include:</p>
 
@@ -395,11 +400,13 @@ var graphResponse = makeGraph( "example-5", { zoomMode: 'xy', smooth: true }, [ 
 
 	</div>
 </div>
-  
+  	</div>
     <footer class="site-footer">
 
   <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
 
+  <div class="col-sm-3"><a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;<a href="https://github.com/NPellet/jsGraph/issues/new">Report an issue</a></div>
+  <div class="col-sm-9 text-right">jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license</div>
 </footer>
 
 

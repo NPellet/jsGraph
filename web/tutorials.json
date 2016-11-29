@@ -2,6 +2,6 @@
     "Basic": [ "10_basic" ],
     "Axes": [ "18-adapto", "20-axesadvanced", "21-axissplitting", "19-axisspan" ],
     "Series": [ "11-seriestyle", "15-barcharts", "23-densitymap", "16-boxcharts" ],
-    "Plugins": [ "22-linedifference" ],
+    "Plugins": [ "22-linedifference", "10-zoom" ],
     "Others": [ "16-errorbars", "17-trackingline", "13-shapes", "15-shapes-events" ]
 }
