@@ -38,6 +38,9 @@ import GraphPluginTimeSerieManager from './plugins/graph.plugin.timeseriemanager
 import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinedifference'
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting'
 
+import Waveform from './util/waveform'
+import FitLM from './util/fit_lm'
+
 // Corrent naming is important here !
 
 Graph.registerConstructor( "graph.position", GraphPosition );
@@ -96,5 +99,6 @@ Graph.registerConstructor( "graph.shape.peakboundariescenter", ShapePeakBoundari
 
 //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 Graph.registerConstructor( "graph.legend", GraphLegend );
+Graph.registerConstructor( "graph.waveform", Waveform );
 
 module.exports = Graph;

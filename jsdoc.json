@@ -11,6 +11,8 @@
 			"./src/graph.position.js",
 			"./src/graph.util.js",
 			"./src/dependencies/eventEmitter/EventEmitter.js",
+			"./src/util/waveform.js",
+			"./src/util/fit_lm.js",
 			"./src/graph.legend.js",
 			"./src/graph.axis.x.js",
 			"./src/graph.axis.js",
@@ -30,10 +32,10 @@
 			"./src/series/graph.serie.contour.js",
 			"./src/shapes/graph.shape.js",
 			"./src/shapes/graph.shape.areaundercurve.js",
-			"./src/shapes/graph.shape.ellipse.js",
+			"./src/shapes/graph.shape.arrow.js",
+			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
-			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.rect.js",
@@ -48,7 +50,7 @@
 			"./src/graph.lru.js",
 			"./src/plugins/graph.plugin.serielinedifference.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
-			"./src/shapes/graph.shape.arrow.js"
+			"./src/shapes/graph.shape.ellipse.js"
 		]
 	}
 }

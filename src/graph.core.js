@@ -1,6 +1,7 @@
 import GraphPosition from './graph.position'
 import * as util from './graph.util'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
+import Waveform from './util/waveform'
 
 /** 
  * Default graph parameters
@@ -2571,6 +2572,9 @@ class Graph extends EventEmitter {
     return _constructors.get( constructorName );
   }
 
+  static newWaveform() {
+    return new Waveform();
+  }
 }
 
 // Adds getConstructor to the prototype. Cannot do that in ES6 classes

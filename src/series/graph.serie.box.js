@@ -194,6 +194,11 @@ class SerieBox extends Serie {
     return this.getStyle( selectionType )[ type ];
   }
 
+  /** 
+   *  Retrives a selection object
+   *  @param {String} [ selectionType = "unselected" ] - The selection type
+   *  @returns {Object} The selection object
+   */
   getStyle( selectionType = "unselected" ) {
 
     return this.styles[ selectionType ] || {};
@@ -210,6 +215,7 @@ class SerieBox extends Serie {
 
   /** 
    *  Returns the mean line color
+   * @return {String} The mean line color
    */
   getMeanLineColor() {
     return this._gstyle( 'meanLineColor', ...arguments );
@@ -232,6 +238,7 @@ class SerieBox extends Serie {
 
   /** 
    *  Returns the mean line width
+   * @return {Number} The mean line width
    */
   getMeanLineWidth() {
     return this._gstyle( 'meanLineWidth', ...arguments );
@@ -247,7 +254,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the box line color
+   * Returns the box line color
+   * @return {String} The line color of the box above the median
    */
   getBoxAboveLineColor() {
     return this._gstyle( 'boxAboveLineColor', ...arguments );
@@ -264,6 +272,7 @@ class SerieBox extends Serie {
 
   /** 
    *  Returns the fill color
+   * @return {String} The line color of the box below the median
    */
   getBoxBelowLineColor() {
     return this._gstyle( 'boxBelowLineColor', ...arguments );
@@ -279,7 +288,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line width of the box above the median
+   * @return {Number} The line width of the box above the median
    */
   getBoxAboveLineWidth() {
     return this._gstyle( 'boxAboveLineWidth', ...arguments );
@@ -295,7 +305,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line width of the box below the median
+   * @return {Number} The line width of the box below the median
    */
   getBoxBelowLineWidth() {
     return this._gstyle( 'boxBelowLineWidth', ...arguments );
@@ -311,7 +322,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the fill color of the box above the median
+   * @return {String} The fill color of the box above the median
    */
   getBoxAboveFillColor() {
     return this._gstyle( 'boxAboveFillColor', ...arguments );
@@ -327,7 +339,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the fill color of the box below the median
+   * @return {String} The fill color of the box below the median
    */
   getBoxBelowFillColor() {
     return this._gstyle( 'boxBelowFillColor', ...arguments );
@@ -343,7 +356,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the fill opacity of the box above the median
+   * @return {Number} The fill opacity of the box above the median
    */
   getBoxAboveFillOpacity() {
     return this._gstyle( 'boxAboveFillOpacity', ...arguments );
@@ -359,7 +373,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the fill opacity of the box below the median
+   * @return {Number} The fill opacity of the box below the median
    */
   getBoxBelowFillOpacity() {
     return this._gstyle( 'boxBelowFillOpacity', ...arguments );
@@ -375,7 +390,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line color of the whisker above the median
+   * @return {String} The line color of the whisker above the median
    */
   getBarAboveLineColor() {
     return this._gstyle( 'barAboveLineColor', ...arguments );
@@ -391,7 +407,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line color of the whisker below the median
+   * @return {String} The line color of the whisker below the median
    */
   getBarBelowLineColor() {
     return this._gstyle( 'barBelowLineColor', ...arguments );
@@ -407,7 +424,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line width of the whisker above the median
+   * @return {Number} The line width of the whisker above the median
    */
   getBarAboveLineWidth() {
     return this._gstyle( 'barAboveLineWidth', ...arguments );
@@ -423,7 +441,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line width of the whisker below the median
+   * @return {Number} The line width of the whisker below the median
    */
   getBarBelowLineWidth() {
     return this._gstyle( 'barBelowLineWidth', ...arguments );
@@ -439,7 +458,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the box line color
+   * Returns the line color of the outliers
+   * @return {String} The line color of the outliers
    */
   getOutlierLineColor() {
     return this._gstyle( 'outlierLineColor', ...arguments );
@@ -455,7 +475,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the line width of the outliers
+   * @return {Number} The line width of the outliers
    */
   getOutlierLineWidth() {
     return this._gstyle( 'outlierLineWidth', ...arguments );
@@ -471,7 +492,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the fill color
+   * Returns the fill color of the outliers
+   * @return {String} The fill color of the outliers
    */
   getOutlierFillColor() {
     return this._gstyle( 'outlierFillColor', ...arguments );
@@ -487,7 +509,8 @@ class SerieBox extends Serie {
   }
 
   /** 
-   *  Returns the outlier fill opacity
+   * Returns the fill opacity of the outliers
+   * @return {Number} The fill opacity of the outliers
    */
   getOutlierFillOpacity() {
     return this._gstyle( 'outlierFillOpacity', ...arguments );

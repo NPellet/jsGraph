@@ -3,7 +3,7 @@ import Serie from './graph.serie'
 import SlotOptimizer from './slotoptimizer'
 import * as util from '../graph.util'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
-
+import Waveform from '../util/waveform'
 /**
  * @name SerieLineDefaultOptions
  * @object
@@ -194,6 +194,25 @@ class SerieLine extends Serie {
       this.setMarkers( this.options.markers, "unselected" );
     }
 
+  }
+
+  setWaveform( waveform ) {
+
+    if ( !( waveform instanceof Waveform ) ) {
+      throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+    }
+
+    this._waveform = waveform;
+
+    this.minX = this._waveform.getXMin();
+    this.maxX = this._waveform.getXMax();
+    this.minY = this._waveform.getMin();
+    this.maxY = this._waveform.getMax();
+
+    this.graph.updateDataMinMaxAxes();
+    this.dataHasChanged();
+
+    return this;
   }
 
   /**
@@ -497,6 +516,10 @@ class SerieLine extends Serie {
       this._dataToUse = data;
       this._xDataToUse = xData;
 
+    } else if ( this._waveform ) {
+
+      this._dataToUse = [ this._waveform.flatten() ];
+
     } else {
 
       this._dataToUse = this.data;
@@ -636,7 +659,6 @@ class SerieLine extends Serie {
         } else {
 
           this._draw_standard();
-
         }
       }
 

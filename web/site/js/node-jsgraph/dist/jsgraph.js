@@ -2497,6 +2497,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                    break;
 
+	                  case Graph.SERIE_BOX:
+
+	                    return style;
+
+	                    break;
+
 	                  case Graph.SERIE_SCATTER:
 
 	                    break;
@@ -2513,6 +2519,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                case Graph.SERIE_SCATTER:
 
 	                  serie.setStyle(styles, {}, style.styleName);
+	                  break;
+
+	                case Graph.SERIE_BOX:
+
+	                  serie.setStyle(styles[0], style.stylename);
 	                  break;
 	              }
 	            });
@@ -2581,7 +2592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          switch (serieType) {
 
 	            case Graph.SERIE_BOX:
-	              serie.setData(schemaSerie.data);
+	              serie.setData(schemaSerie.boxes);
 
 	              break;
 
@@ -13128,13 +13139,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.layer || 1;
 	    }
 
+	    setStyle(style, selectionType = "unselected") {
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = style;
+	      this.styleHasChanged(selectionType);
+	    }
+
 	    /**
 	     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
 	     * @param {String} selectionType - The selection for which the style may have changed
 	     * @returns {Serie} The current serie
 	     * @memberof Serie
 	     */
-	    styleHasChanged(selectionType) {
+	    styleHasChanged(selectionType = "unselected") {
 	      this._changedStyles = this._changedStyles || {};
 
 	      if (selectionType === false) {
@@ -14134,6 +14151,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.data = data;
 
+	      if (!Array.isArray(data)) {
+	        return;
+	      }
+
 	      let axisref, axisval, methodref, methodval, blnX;
 
 	      if (this.options.orientation == 'y') {
@@ -14235,6 +14256,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getStyle(selectionType)[type];
 	    }
 
+	    /** 
+	     *  Retrives a selection object
+	     *  @param {String} [ selectionType = "unselected" ] - The selection type
+	     *  @returns {Object} The selection object
+	     */
 	    getStyle(selectionType = "unselected") {
 
 	      return this.styles[selectionType] || {};
@@ -14251,9 +14277,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line color
+	     * @return {String} The mean line color
 	     */
 	    getMeanLineColor() {
 	      return this._gstyle('meanLineColor', ...arguments);
+	    }
+
+	    setStyle(style, selectionType = "unselected") {
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = (0, _graph3.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
+	      this.styleHasChanged(selectionType);
 	    }
 
 	    /** 
@@ -14267,6 +14300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line width
+	     * @return {Number} The mean line width
 	     */
 	    getMeanLineWidth() {
 	      return this._gstyle('meanLineWidth', ...arguments);
@@ -14282,7 +14316,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the box line color
+	     * @return {String} The line color of the box above the median
 	     */
 	    getBoxAboveLineColor() {
 	      return this._gstyle('boxAboveLineColor', ...arguments);
@@ -14299,6 +14334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the fill color
+	     * @return {String} The line color of the box below the median
 	     */
 	    getBoxBelowLineColor() {
 	      return this._gstyle('boxBelowLineColor', ...arguments);
@@ -14314,7 +14350,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box above the median
+	     * @return {Number} The line width of the box above the median
 	     */
 	    getBoxAboveLineWidth() {
 	      return this._gstyle('boxAboveLineWidth', ...arguments);
@@ -14330,7 +14367,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box below the median
+	     * @return {Number} The line width of the box below the median
 	     */
 	    getBoxBelowLineWidth() {
 	      return this._gstyle('boxBelowLineWidth', ...arguments);
@@ -14346,7 +14384,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box above the median
+	     * @return {String} The fill color of the box above the median
 	     */
 	    getBoxAboveFillColor() {
 	      return this._gstyle('boxAboveFillColor', ...arguments);
@@ -14362,7 +14401,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box below the median
+	     * @return {String} The fill color of the box below the median
 	     */
 	    getBoxBelowFillColor() {
 	      return this._gstyle('boxBelowFillColor', ...arguments);
@@ -14378,7 +14418,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box above the median
+	     * @return {Number} The fill opacity of the box above the median
 	     */
 	    getBoxAboveFillOpacity() {
 	      return this._gstyle('boxAboveFillOpacity', ...arguments);
@@ -14394,7 +14435,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box below the median
+	     * @return {Number} The fill opacity of the box below the median
 	     */
 	    getBoxBelowFillOpacity() {
 	      return this._gstyle('boxBelowFillOpacity', ...arguments);
@@ -14410,7 +14452,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker above the median
+	     * @return {String} The line color of the whisker above the median
 	     */
 	    getBarAboveLineColor() {
 	      return this._gstyle('barAboveLineColor', ...arguments);
@@ -14426,7 +14469,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker below the median
+	     * @return {String} The line color of the whisker below the median
 	     */
 	    getBarBelowLineColor() {
 	      return this._gstyle('barBelowLineColor', ...arguments);
@@ -14442,7 +14486,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker above the median
+	     * @return {Number} The line width of the whisker above the median
 	     */
 	    getBarAboveLineWidth() {
 	      return this._gstyle('barAboveLineWidth', ...arguments);
@@ -14458,7 +14503,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker below the median
+	     * @return {Number} The line width of the whisker below the median
 	     */
 	    getBarBelowLineWidth() {
 	      return this._gstyle('barBelowLineWidth', ...arguments);
@@ -14474,7 +14520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the line color of the outliers
+	     * @return {String} The line color of the outliers
 	     */
 	    getOutlierLineColor() {
 	      return this._gstyle('outlierLineColor', ...arguments);
@@ -14490,7 +14537,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the outliers
+	     * @return {Number} The line width of the outliers
 	     */
 	    getOutlierLineWidth() {
 	      return this._gstyle('outlierLineWidth', ...arguments);
@@ -14506,7 +14554,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the outliers
+	     * @return {String} The fill color of the outliers
 	     */
 	    getOutlierFillColor() {
 	      return this._gstyle('outlierFillColor', ...arguments);
@@ -14522,7 +14571,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the outlier fill opacity
+	     * Returns the fill opacity of the outliers
+	     * @return {Number} The fill opacity of the outliers
 	     */
 	    getOutlierFillOpacity() {
 	      return this._gstyle('outlierFillOpacity', ...arguments);
@@ -14550,6 +14600,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    draw() {
+
+	      if (!this.data) {
+	        return;
+	      }
 
 	      let position;
 	      let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
