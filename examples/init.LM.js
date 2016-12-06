@@ -2,26 +2,21 @@
 
 requirejs.config({
 
-	baseUrl: '../',
+	baseUrl: './',
 	paths: {
-		'jquery': 'src/dependencies/jquery/dist/jquery'
+		'jquery': 'node_modules/jquery/dist/jquery'
 	}
 });
 
 //import Graph from '../src/graph.core'
 
-require( [ 'jquery', 'dist/jsgraph-es6' ] , function( $, disted ) {
+require( [ 'jquery', 'node_modules/node-jsgraph/dist/jsgraph-es6' ] , function( $, disted ) {
 
 	
 	window.Graph = disted;	
 
-
-
-
-	var graph = new Graph( "graph", {
-    
-  } );
-
+var graph = new Graph( "graph", { } );
+graph.resize( 700, 400 );
 
 var sine;
 

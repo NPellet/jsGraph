@@ -49,7 +49,8 @@ module.exports = function(grunt) {
 
             examples: {
                 files: {
-                    './examples/node_modules/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js'
+                    './examples/node_modules/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    './examples/node_modules/node-jsgraph/dist/jsgraph-es6.js': 'dist/jsgraph-es6.js',
                 }
             },
 
