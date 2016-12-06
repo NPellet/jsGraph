@@ -2497,6 +2497,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                    break;
 
+	                  case Graph.SERIE_BOX:
+
+	                    return style;
+
+	                    break;
+
 	                  case Graph.SERIE_SCATTER:
 
 	                    break;
@@ -2513,6 +2519,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	                case Graph.SERIE_SCATTER:
 
 	                  serie.setStyle(styles, {}, style.styleName);
+	                  break;
+
+	                case Graph.SERIE_BOX:
+
+	                  serie.setStyle(styles[0], style.stylename);
 	                  break;
 	              }
 	            });
@@ -2581,7 +2592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          switch (serieType) {
 
 	            case Graph.SERIE_BOX:
-	              serie.setData(schemaSerie.data);
+	              serie.setData(schemaSerie.boxes);
 
 	              break;
 
@@ -13128,13 +13139,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.layer || 1;
 	    }
 
+	    setStyle(style, selectionType = "unselected") {
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = style;
+	      this.styleHasChanged(selectionType);
+	    }
+
 	    /**
 	     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
 	     * @param {String} selectionType - The selection for which the style may have changed
 	     * @returns {Serie} The current serie
 	     * @memberof Serie
 	     */
-	    styleHasChanged(selectionType) {
+	    styleHasChanged(selectionType = "unselected") {
 	      this._changedStyles = this._changedStyles || {};
 
 	      if (selectionType === false) {
@@ -14134,6 +14151,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.data = data;
 
+	      if (!Array.isArray(data)) {
+	        return;
+	      }
+
 	      let axisref, axisval, methodref, methodval, blnX;
 
 	      if (this.options.orientation == 'y') {
@@ -14254,6 +14275,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    getMeanLineColor() {
 	      return this._gstyle('meanLineColor', ...arguments);
+	    }
+
+	    setStyle(style, selectionType = "unselected") {
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = (0, _graph3.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
+	      this.styleHasChanged(selectionType);
 	    }
 
 	    /** 
@@ -14550,6 +14577,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    draw() {
+
+	      if (!this.data) {
+	        return;
+	      }
 
 	      let position;
 	      let axis = this.options.orientation == 'y' ? this.getYAxis() : this.getXAxis();
