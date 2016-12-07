@@ -5010,10 +5010,46 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return sum[0] / sum[2];
 	    }
 
+	    checkMonotonicity() {
+
+	      let i = 0;
+	      const l = this.data.length;
+	      let dir = this.data[1][0] > this.data[0][0];
+
+	      for (; i < l; i++) {
+	        if (dir !== this.data[1][0] > this.data[0][0]) {
+	          return false;
+	        }
+	      }
+
+	      return true;
+	    }
+
+	    requireMonotonicity() {
+	      if (!this.checkMonotonicity()) {
+	        throw "The x wave must be monotonic";
+	      }
+	    }
+
+	    invert(data) {
+	      let d = data || this.data;
+	      d.reverse();
+	      return d;
+	    }
+
 	    resampleForDisplay(options) {
 	      // Serie redrawing
 
 	      let i = 0;
+
+	      this.requireMonotonicity();
+
+	      let inverting = false;
+	      console.log(this.data[1][0], this.data[0][0]);
+	      if (this.data[1][0] < this.data[0][0]) {
+	        this.invert();
+	        inverting = true;
+	      }
 
 	      const l = this.getLength();
 
@@ -5098,8 +5134,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resampleMax = Math.max(resampleMax, dataY[i]);
 	      }
 
-	      this.dataInUse = data;
+	      if (inverting) {
+	        console.log(data);
+	        this.dataInUse = this.invert(data);
+	        inverting = true;
+	        return this.invert(dataMinMax);
+	      }
 
+	      this.dataInUse = data;
 	      return dataMinMax;
 	    }
 	  };
