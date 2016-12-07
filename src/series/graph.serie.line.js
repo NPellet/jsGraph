@@ -510,15 +510,28 @@ class SerieLine extends Serie {
     // Degradation
     if ( this.degradationPx ) {
 
-      data = getDegradedData( this );
-      xData = data[ 1 ];
-      data = data[ 0 ];
-      this._dataToUse = data;
-      this._xDataToUse = xData;
+      if ( this._waveform ) {
+
+        this._waveform.resampleForDisplay( {
+
+          resampleToPx: this.degradationPx,
+          xPosition: this.getXAxis().getPx.bind( this.getXAxis() )
+
+        } );
+
+        this._dataToUse = [ this._waveform.getDataToUseFlat() ];
+
+      } else {
+        data = getDegradedData( this );
+        xData = data[ 1 ];
+        data = data[ 0 ];
+        this._dataToUse = data;
+        this._xDataToUse = xData;
+      }
 
     } else if ( this._waveform ) {
 
-      this._dataToUse = [ this._waveform.flatten() ];
+      this._dataToUse = [ this._waveform.getDataToUseFlat() ];
 
     } else {
 

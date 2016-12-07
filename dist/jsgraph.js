@@ -8198,137 +8198,145 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(303);
+	var _graph5 = __webpack_require__(305);
 
 	var _graph6 = _interopRequireDefault(_graph5);
 
-	var _graphAxis = __webpack_require__(304);
+	var _graphAxis = __webpack_require__(306);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-	var _graphAxis3 = __webpack_require__(306);
+	var _graphAxis3 = __webpack_require__(308);
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
-	var _graphAxisX = __webpack_require__(307);
+	var _graphAxisX = __webpack_require__(309);
 
 	var _graphAxisX2 = _interopRequireDefault(_graphAxisX);
 
-	var _graphAxisX3 = __webpack_require__(308);
+	var _graphAxisX3 = __webpack_require__(310);
 
 	var _graphAxisX4 = _interopRequireDefault(_graphAxisX3);
 
-	var _graphSerie = __webpack_require__(309);
+	var _graphSerie = __webpack_require__(311);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	var _graphSerie3 = __webpack_require__(313);
+	var _graphSerie3 = __webpack_require__(315);
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graphSerie5 = __webpack_require__(314);
+	var _graphSerie5 = __webpack_require__(316);
 
 	var _graphSerie6 = _interopRequireDefault(_graphSerie5);
 
-	var _graphSerieLine = __webpack_require__(315);
+	var _graphSerieLine = __webpack_require__(317);
 
 	var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-	var _graphSerie7 = __webpack_require__(316);
+	var _graphSerie7 = __webpack_require__(318);
 
 	var _graphSerie8 = _interopRequireDefault(_graphSerie7);
 
-	var _graphSerie9 = __webpack_require__(317);
+	var _graphSerie9 = __webpack_require__(319);
 
 	var _graphSerie10 = _interopRequireDefault(_graphSerie9);
 
-	var _graphSerie11 = __webpack_require__(318);
+	var _graphSerie11 = __webpack_require__(320);
 
 	var _graphSerie12 = _interopRequireDefault(_graphSerie11);
 
-	var _graphSerie13 = __webpack_require__(319);
+	var _graphSerie13 = __webpack_require__(321);
 
 	var _graphSerie14 = _interopRequireDefault(_graphSerie13);
 
-	var _graph7 = __webpack_require__(320);
+	var _graph7 = __webpack_require__(322);
 
 	var _graph8 = _interopRequireDefault(_graph7);
 
-	var _graphShape = __webpack_require__(321);
+	var _graphShape = __webpack_require__(323);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
-	var _graphShape3 = __webpack_require__(322);
+	var _graphShape3 = __webpack_require__(324);
 
 	var _graphShape4 = _interopRequireDefault(_graphShape3);
 
-	var _graphShape5 = __webpack_require__(324);
+	var _graphShape5 = __webpack_require__(326);
 
 	var _graphShape6 = _interopRequireDefault(_graphShape5);
 
-	var _graphShape7 = __webpack_require__(325);
+	var _graphShape7 = __webpack_require__(327);
 
 	var _graphShape8 = _interopRequireDefault(_graphShape7);
 
-	var _graphShape9 = __webpack_require__(326);
+	var _graphShape9 = __webpack_require__(328);
 
 	var _graphShape10 = _interopRequireDefault(_graphShape9);
 
-	var _graphShape11 = __webpack_require__(323);
+	var _graphShape11 = __webpack_require__(325);
 
 	var _graphShape12 = _interopRequireDefault(_graphShape11);
 
-	var _graphShape13 = __webpack_require__(327);
+	var _graphShape13 = __webpack_require__(329);
 
 	var _graphShape14 = _interopRequireDefault(_graphShape13);
 
-	var _graphShape15 = __webpack_require__(328);
+	var _graphShape15 = __webpack_require__(330);
 
 	var _graphShape16 = _interopRequireDefault(_graphShape15);
 
-	var _graphShape17 = __webpack_require__(329);
+	var _graphShape17 = __webpack_require__(331);
 
 	var _graphShape18 = _interopRequireDefault(_graphShape17);
 
-	var _graphShape19 = __webpack_require__(330);
+	var _graphShape19 = __webpack_require__(332);
 
 	var _graphShape20 = _interopRequireDefault(_graphShape19);
 
-	var _graphShape21 = __webpack_require__(331);
+	var _graphShape21 = __webpack_require__(333);
 
 	var _graphShape22 = _interopRequireDefault(_graphShape21);
 
-	var _graph9 = __webpack_require__(332);
+	var _graph9 = __webpack_require__(334);
 
 	var _graph10 = _interopRequireDefault(_graph9);
 
-	var _graphPlugin = __webpack_require__(333);
+	var _graphPlugin = __webpack_require__(335);
 
 	var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-	var _graphPlugin3 = __webpack_require__(334);
+	var _graphPlugin3 = __webpack_require__(336);
 
 	var _graphPlugin4 = _interopRequireDefault(_graphPlugin3);
 
-	var _graphPlugin5 = __webpack_require__(335);
+	var _graphPlugin5 = __webpack_require__(337);
 
 	var _graphPlugin6 = _interopRequireDefault(_graphPlugin5);
 
-	var _graphPlugin7 = __webpack_require__(336);
+	var _graphPlugin7 = __webpack_require__(338);
 
 	var _graphPlugin8 = _interopRequireDefault(_graphPlugin7);
 
-	var _graphPlugin9 = __webpack_require__(337);
+	var _graphPlugin9 = __webpack_require__(339);
 
 	var _graphPlugin10 = _interopRequireDefault(_graphPlugin9);
 
-	var _graphPlugin11 = __webpack_require__(339);
+	var _graphPlugin11 = __webpack_require__(341);
 
 	var _graphPlugin12 = _interopRequireDefault(_graphPlugin11);
 
-	var _graphPlugin13 = __webpack_require__(340);
+	var _graphPlugin13 = __webpack_require__(342);
 
 	var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
+
+	var _fit_lm = __webpack_require__(304);
+
+	var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8390,6 +8398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	//   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 	_graph2.default.registerConstructor("graph.legend", _graph6.default);
+	_graph2.default.registerConstructor("graph.waveform", _waveform2.default);
 
 	module.exports = _graph2.default;
 
@@ -8418,6 +8427,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _EventEmitter2 = __webpack_require__(302);
 
 	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -11313,6 +11326,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return _constructors.get(constructorName);
 	    }
+	  }, {
+	    key: 'newWaveform',
+	    value: function newWaveform() {
+	      return new _waveform2.default();
+	    }
 	  }]);
 
 	  return Graph;
@@ -13364,6 +13382,820 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _fit_lm = __webpack_require__(304);
+
+	var _fit_lm2 = _interopRequireDefault(_fit_lm);
+
+	var _graph = __webpack_require__(301);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var Waveform = function () {
+	  function Waveform() {
+	    _classCallCheck(this, Waveform);
+	  }
+
+	  /** [ [   x1, y1 ], [ x2, y2 ] ] */
+
+
+	  _createClass(Waveform, [{
+	    key: 'setDataXY',
+	    value: function setDataXY(data) {
+	      this.data = data;
+	      return this;
+	    }
+	  }, {
+	    key: 'setDataY',
+	    value: function setDataY(data) {
+	      this.data = data.map(function (el, index) {
+	        return [index, el];
+	      });
+	      return this;
+	    }
+	  }, {
+	    key: '_getMin',
+	    value: function _getMin(dim, from, to) {
+
+	      var min = this.data[from][dim];
+	      for (var i = from + 1; i <= to; i++) {
+	        min = this.data[i][dim] < min ? this.data[i][dim] : min;
+	      }
+	      return min;
+	    }
+	  }, {
+	    key: '_getMax',
+	    value: function _getMax(dim, from, to) {
+	      var max = this.data[from][dim];
+	      for (var i = from + 1; i <= to; i++) {
+	        max = this.data[i][dim] > max ? this.data[i][dim] : max;
+	      }
+	      return max;
+	    }
+	  }, {
+	    key: 'getXMin',
+	    value: function getXMin() {
+	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
+
+	      return this._getMin(0, subsetFromIndex, subsetToIndex);
+	    }
+	  }, {
+	    key: 'getXMax',
+	    value: function getXMax() {
+	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
+
+	      return this._getMax(0, subsetFromIndex, subsetToIndex);
+	    }
+	  }, {
+	    key: 'getMin',
+	    value: function getMin() {
+	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
+
+	      return this._getMin(1, subsetFromIndex, subsetToIndex);
+	    }
+	  }, {
+	    key: 'getMax',
+	    value: function getMax() {
+	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
+
+	      return this._getMax(1, subsetFromIndex, subsetToIndex);
+	    }
+	  }, {
+	    key: 'getLength',
+	    value: function getLength() {
+	      return this.data.length;
+	    }
+	  }, {
+	    key: 'getDataY',
+	    value: function getDataY() {
+
+	      return this.data.map(function (el) {
+	        return el[1];
+	      });
+	    }
+	  }, {
+	    key: 'getDataX',
+	    value: function getDataX() {
+	      return this.data.map(function (el) {
+	        return el[0];
+	      });
+	    }
+	  }, {
+	    key: 'getDataToUseFlat',
+	    value: function getDataToUseFlat() {
+
+	      var dataToUse = this.dataInUse ? this.dataInUse : this.data;
+
+	      var arr = new Array(dataToUse.length * 2).fill(0);
+	      var j = 0;
+	      for (var i = 0, l = dataToUse.length; i < l; i += 1) {
+	        arr[j] = dataToUse[i][0];
+	        arr[j + 1] = dataToUse[i][1];
+	        j += 2;
+	      }
+
+	      return arr;
+	    }
+	  }, {
+	    key: 'fit',
+	    value: function fit(options) {
+
+	      var fit = new _fit_lm2.default((0, _graph.extend)({}, {
+	        dataY: this
+	      }, options));
+	      fit.init();
+	      fit.fit();
+	      return this;
+	    }
+	  }, {
+	    key: '_integrateP',
+	    value: function _integrateP() {
+	      var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var to = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
+
+
+	      from = Math.round(from);
+	      to = Math.round(to);
+
+	      var l = to - from + 1;
+	      var sum = 0,
+	          delta;
+
+	      var deltaTot = 0;
+	      var arrX = this.getDataX();
+	      var arrY = this.getDataY();
+
+	      for (; from <= to; from++) {
+
+	        if (arrX.length - 1 > from) {
+
+	          deltaTot += arrX[from + 1] - arrX[from];
+	          sum += arrY[from] * (arrX[from + 1] - arrX[from]);
+	        }
+	      }
+	      return [sum, l, deltaTot];
+	    }
+	  }, {
+	    key: 'integrateP',
+	    value: function integrateP(from, to) {
+	      var val = this._integrateP(from, to);
+	      return val[0];
+	    }
+	  }, {
+	    key: 'average',
+	    value: function average() {
+	      var p0 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+	      var p1 = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getLength() - 1;
+
+	      return this.getAverageP(p0, p1);
+	    }
+	  }, {
+	    key: 'mean',
+	    value: function mean() {
+	      return this.average();
+	    }
+	  }, {
+	    key: 'getAverageP',
+	    value: function getAverageP(from, to) {
+	      var sum = this._integrateP(from, to);
+	      return sum[0] / sum[2];
+	    }
+	  }, {
+	    key: 'getAverageX',
+	    value: function getAverageX(from, to) {
+	      var sum = this._integrateX(from, to);
+	      return sum[0] / sum[2];
+	    }
+	  }, {
+	    key: 'resampleForDisplay',
+	    value: function resampleForDisplay(options) {
+	      // Serie redrawing
+
+	      var i = 0;
+
+	      var l = this.getLength();
+
+	      var data = [],
+	          dataMinMax = [],
+	          resampleSum = void 0,
+	          resampleMin = void 0,
+	          resampleMax = void 0,
+	          resampleNum = void 0,
+	          resample_x_start = void 0,
+	          resample_x_px_start = void 0;
+
+	      var x_px = void 0;
+
+	      var dataY = this.getDataY();
+	      var dataX = this.getDataX();
+
+	      var doing_mean = false;
+	      var firstPointIndex = 0;
+
+	      if (!options.xPosition) {
+	        throw "No position calculation method provided";
+	      }
+
+	      if (!options.resampleToPx) {
+	        throw "No \"resampleToPx\" method was provided. Unit: px per point";
+	      }
+
+	      for (; i < l; i++) {
+
+	        if (options.minX > dataX[i]) {
+
+	          firstPointIndex = i;
+	          continue;
+	        }
+
+	        x_px = options.xPosition(dataX[i]);
+
+	        if (!doing_mean) {
+
+	          if (!firstPointIndex) {
+
+	            firstPointIndex = i;
+	          }
+
+	          while (isNaN(dataY[i])) {
+	            i++;
+	          }
+
+	          resampleSum = resampleMin = resampleMax = dataY[firstPointIndex];
+	          resampleNum = 1;
+	          resample_x_px_start = x_px;
+	          resample_x_start = dataX[i];
+	          firstPointIndex = 0;
+
+	          doing_mean = true;
+
+	          continue;
+	        }
+
+	        if (Math.abs(x_px - resample_x_px_start) > options.resampleToPx || i == l || isNaN(dataY[i])) {
+
+	          var xpos = (resample_x_start + dataX[i]) / 2;
+
+	          data.push([xpos, resampleSum / resampleNum]);
+
+	          dataMinMax.push(xpos, resampleMin, resampleMax);
+
+	          if (options.maxX !== undefined && dataX > options.maxX) {
+	            return;
+	          }
+
+	          doing_mean = false;
+
+	          continue;
+	        }
+
+	        resampleSum += dataY[i];
+	        resampleNum++;
+
+	        resampleMin = Math.min(resampleMin, dataY[i]);
+	        resampleMax = Math.max(resampleMax, dataY[i]);
+	      }
+
+	      this.dataInUse = data;
+
+	      return dataMinMax;
+	    }
+	  }]);
+
+	  return Waveform;
+	}();
+
+	;
+
+	exports.default = Waveform;
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	var FitHost = function () {
+	  function FitHost(options) {
+	    _classCallCheck(this, FitHost);
+
+	    this.DELTAP = 1e-6;
+	    this.BIGVAL = 9e99;
+	    this.WEIGHT = 1.0;
+
+	    this.setYData(options.dataY);
+	    this.setXData(options.dataX);
+	    this.setWeight(options.weight);
+	    this.setInitialParams(options.params);
+
+	    if (options.subsetIndex) {
+	      this.setSubset.apply(this, _toConsumableArray(options.subsetIndex));
+	    }
+	    this.setFunction(options.function);
+
+	    if (options.progress) {
+	      this.hookIteration(options.progress);
+	    }
+
+	    this.options = options;
+	  }
+
+	  //[ [ x1, y1 ], [ x2, y2 ] ]
+
+
+	  _createClass(FitHost, [{
+	    key: 'setYData',
+	    value: function setYData(data) {
+	      // Waveform instance
+	      this.data = data;
+	    }
+	  }, {
+	    key: 'setXData',
+	    value: function setXData(data) {
+	      // Waveform instance
+	      this.dataX = data;
+	    }
+	  }, {
+	    key: 'setWeight',
+	    value: function setWeight(weight) {
+	      // Waveform instance
+	      this.weight = weight;
+	    }
+	  }, {
+	    key: 'setInitialParams',
+	    value: function setInitialParams(params) {
+	      var _this = this;
+
+	      this.parms = params;
+
+	      this.parms = this.parms.map(function (el) {
+	        if (typeof el == 'function') {
+	          return el(_this.data, _this.dataX);
+	        } else {
+	          return el;
+	        }
+	      });
+	      this.NPARMS = params.length;
+	    }
+	  }, {
+	    key: 'setSubset',
+	    value: function setSubset(fromIndex, toIndex) {
+	      if (fromIndex !== undefined && toIndex !== undefined) {
+	        this._from = fromIndex;
+	        this._to = toIndex;
+	      }
+	    }
+	  }, {
+	    key: 'hookIteration',
+	    value: function hookIteration(f) {
+	      var _this2 = this;
+
+	      this.hookIteration = function (params) {
+	        var data = _this2.buildFit(params, 200);
+	        f(data);
+	      };
+	    }
+	  }, {
+	    key: 'setFunction',
+	    value: function setFunction(func) {
+	      this._func = func;
+	    }
+	  }, {
+	    key: 'init',
+	    value: function init() {
+	      var _this3 = this;
+
+	      // Get data length
+	      if (this._from !== undefined && this._to !== undefined) {
+
+	        if (this._from >= this._to) {
+	          throw "Impossible to fit negative subranges. The starting index must be lower than the ending index";
+	        }
+
+	        this.NPTS = this._to - this._from + 1;
+
+	        if (this.data && this.data.getLength() <= this._to) {
+	          throw "Wave Y has not enough point to be fitted to subrange [" + this._from + ", " + this._to + "]";
+	        }
+
+	        if (this._from < 0) {
+	          throw "Impossible to fit a subrange with negative indices";
+	        }
+	      } else {
+
+	        this.NPTS = this.data.getLength();
+	        this._from = 0;
+	        this._to = this.data.getLength() - 1;
+	      }
+
+	      if (this.dataX && this.dataX.getLength() <= this._to) {
+	        throw "Wave X has not enough point to be fitted to subrange [" + this._from + ", " + this._to + "]";
+	      }
+
+	      this.arrY = this.data.getDataY();
+
+	      if (this.dataX) {
+	        this.arrX = this.dataX.getDataY();
+	      } else {
+	        this.arrX = this.data.getDataX();
+	      }
+
+	      this.resid = new Array(this.NPTS).fill(0);
+	      this.jac = new Array(this.NPTS).fill(0);
+	      this.jac = this.jac.map(function (el) {
+	        return new Array(_this3.NPARMS);
+	      });
+	    }
+	  }, {
+	    key: 'fit',
+	    value: function fit() {
+
+	      this.log("Starting the fit with initial parameter list {" + this.parms.join() + "};");
+	      new LM(this, this.NPARMS, this.NPTS, this.hookIteration);
+	      this.log("Fit successful. Output parameters {" + this.parms.join() + "};");
+
+	      this._result = this.buildFit(this.parms, 200);
+
+	      if (this.options.done) {
+	        this.options.done(this._result);
+	      }
+
+	      return this._result;
+	    }
+	  }, {
+	    key: 'func',
+	    value: function func(x, param) {
+	      return this._func(x, param);
+	    }
+	  }, {
+	    key: 'computeResiduals',
+	    value: function computeResiduals() {
+	      var sumsq = 0;
+	      for (var i = 0; i < this.NPTS; i++) {
+	        this.resid[i] = (this.func(this.arrX[i + this._from], this.parms) - this.arrY[i + this._from]) * this.WEIGHT;
+	        sumsq += this.resid[i] * this.resid[i];
+	      }
+
+	      return sumsq;
+	    }
+	  }, {
+	    key: 'log',
+	    value: function log(message) {
+	      console.info(message);
+	    }
+
+	    //------the four mandated interface methods------------
+
+	  }, {
+	    key: 'nudge',
+	    value: function nudge(dp) {
+
+	      for (var j = 0; j < this.NPARMS; j++) {
+	        this.parms[j] += dp[j];
+	      }
+	      return this.computeResiduals();
+	    }
+	  }, {
+	    key: 'buildJacobian',
+	    value: function buildJacobian() {
+	      // Allows LM to compute a new Jacobian.
+	      // Uses current parms[] and two-sided finite difference.
+	      // If current parms[] is bad, returns false.  
+	      var delta = new Array(this.NPARMS);
+	      var FACTOR = 0.5 / this.DELTAP;
+	      var d = 0;
+
+	      for (var j = 0; j < this.NPARMS; j++) {
+	        for (var k = 0; k < this.NPARMS; k++) {
+	          delta[k] = k == j ? this.DELTAP : 0.0;
+	        }d = this.nudge(delta); // resid at pplus
+	        if (d == this.BIGVAL) {
+	          throw "Bad dBuildJacobian() exit 2";
+	        }
+
+	        for (var i = 0; i < this.NPTS; i++) {
+	          this.jac[i][j] = this.getResidualElement(i);
+	        }
+
+	        for (var k = 0; k < this.NPARMS; k++) {
+	          delta[k] = k == j ? -2 * this.DELTAP : 0.0;
+	        }
+
+	        d = this.nudge(delta); // resid at pminus
+	        if (d == this.BIGVAL) {
+	          throw "Bad dBuildJacobian(). exit 3";
+	        }
+
+	        for (var i = 0; i < this.NPTS; i++) {
+	          this.jac[i][j] -= this.getResidualElement(i);
+	        } // fetches resid[]
+
+	        for (var i = 0; i < this.NPTS; i++) {
+	          this.jac[i][j] *= FACTOR;
+	        }for (var k = 0; k < this.NPARMS; k++) {
+	          delta[k] = k == j ? this.DELTAP : 0.0;
+	        }d = this.nudge(delta);
+	        if (d == this.BIGVAL) {
+	          throw "Bad dBuildJacobian(). exit 4";
+	        }
+	      }
+	      return true;
+	    }
+	  }, {
+	    key: 'getResidualElement',
+	    value: function getResidualElement(i) {
+	      // Allows LM to see one element of the resid[] vector. 
+	      return this.resid[i];
+	    }
+	  }, {
+	    key: 'getJacobianElement',
+	    value: function getJacobianElement(i, j) {
+	      // Allows LM to see one element of the Jacobian matrix. 
+	      return this.jac[i][j];
+	    }
+	  }, {
+	    key: 'buildFit',
+	    value: function buildFit(parms, length) {
+	      var _this4 = this;
+
+	      var x = void 0;
+
+	      if (!length) {
+	        x = this.arrX;
+	      } else {
+	        (function () {
+
+	          var xmin = (_this4.dataX || _this4.data).getXMin(_this4._from, _this4._to);
+	          var xmax = (_this4.dataX || _this4.data).getXMax(_this4._from, _this4._to);
+
+	          x = new Array(length).fill(0).map(function (el, index) {
+	            return index * (xmax - xmin) / (length - 1) + xmin;
+	          });
+	        })();
+	      }
+
+	      var fit = new Array(x.length);
+	      for (var i = 0, l = x.length; i < l; i++) {
+	        fit[i] = [x[i], this.func(x[i], this.parms)];
+	      }
+	      var waveformResult = new _waveform2.default.default();
+
+	      waveformResult.setDataXY(fit);
+	      return waveformResult;
+	    }
+	  }]);
+
+	  return FitHost;
+	}();
+
+	var LM = function () {
+	  function LM(gH, gnadj, gnpnts, hook) {
+	    var _this5 = this;
+
+	    _classCallCheck(this, LM);
+
+	    this.LMITER = 100; // max number of L-M iterations
+	    this.LMBOOST = 2.0; // damping increase per failed step
+	    this.LMSHRINK = 0.10; // damping decrease per successful step
+	    this.LAMBDAZERO = 0.001; // initial damping
+	    this.LAMBDAMAX = 1E9; // max damping
+	    this.LMTOL = 1E-12; // exit tolerance
+	    this.BIGVAL = 9e99; // trouble flag 
+
+	    this.sos;
+	    this.sosprev;
+	    this.lambda;
+
+	    this.myH = null; // overwritten by constructor
+	    this.nadj = 0; // overwritten by constructor
+	    this.npts = 0; // overwritten by constructor
+
+	    this.delta; // local parm change
+	    this.beta;
+	    this.alpha;
+	    this.amatrix;
+
+	    // Constructor sets up fields and drives iterations. 
+	    this.myH = gH;
+	    this.nadj = gnadj;
+	    this.npts = gnpnts;
+
+	    this.delta = new Array(this.nadj).fill(0);
+	    this.beta = new Array(this.nadj).fill(0);
+
+	    this.alpha = new Array(this.nadj).fill(0);
+	    this.amatrix = new Array(this.nadj).fill(0);
+
+	    this.alpha = this.alpha.map(function () {
+	      return new Array(_this5.nadj);
+	    });
+	    this.amatrix = this.amatrix.map(function () {
+	      return new Array(_this5.nadj);
+	    });
+
+	    this.lambda = this.LAMBDAZERO;
+
+	    var niter = 0;
+	    var done = false;
+	    do {
+	      done = this.bLMiter();
+
+	      if (hook) {
+	        hook(this.myH.params);
+	      }
+
+	      niter++;
+	    } while (!done && niter < this.LMITER);
+	  }
+
+	  _createClass(LM, [{
+	    key: 'bLMiter',
+	    value: function bLMiter() {
+	      // Each call performs one LM iteration. 
+	      // Returns true if done with iterations; false=wants more. 
+	      // Global nadj, npts; needs nadj, myH to be preset. 
+	      // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
+	      for (var k = 0; k < this.nadj; k++) {
+	        this.delta[k] = 0.0;
+	      }this.sos = this.myH.nudge(this.delta);
+	      if (this.sos == this.BIGVAL) {
+	        console.error("  bLMiter finds faulty initial nudge()");
+	        return false;
+	      }
+	      this.sosprev = this.sos;
+
+	      console.log("  bLMiter..SumOfSquares= " + this.sos);
+	      if (!this.myH.buildJacobian()) {
+	        console.error("  bLMiter finds buildJacobian()=false");
+	        return false;
+	      }
+
+	      for (var k = 0; k < this.nadj; k++) // get downhill gradient beta
+	      {
+	        this.beta[k] = 0.0;
+	        for (var i = 0; i < this.npts; i++) {
+	          this.beta[k] -= this.myH.getResidualElement(i) * this.myH.getJacobianElement(i, k);
+	        }
+	      }
+
+	      for (var k = 0; k < this.nadj; k++) {
+	        // get curvature matrix alpha
+	        for (var j = 0; j < this.nadj; j++) {
+	          this.alpha[j][k] = 0.0;
+	          for (var i = 0; i < this.npts; i++) {
+	            this.alpha[j][k] += this.myH.getJacobianElement(i, j) * this.myH.getJacobianElement(i, k);
+	          }
+	        }
+	      }var rrise = 0;
+	      do // inner damping loop searches for one downhill step
+	      {
+	        for (var k = 0; k < this.nadj; k++) {
+	          // copy and damp it
+	          for (var j = 0; j < this.nadj; j++) {
+	            this.amatrix[j][k] = this.alpha[j][k] + (j == k ? this.lambda : 0.0);
+	          }
+	        }
+
+	        this.gaussj(this.amatrix, this.nadj); // invert
+
+	        for (var k = 0; k < this.nadj; k++) // compute delta[]
+	        {
+	          this.delta[k] = 0.0;
+	          for (var j = 0; j < this.nadj; j++) {
+	            this.delta[k] += this.amatrix[j][k] * this.beta[j];
+	          }
+	        }
+	        this.sos = this.myH.nudge(this.delta); // try it out.
+	        if (this.sos == this.BIGVAL) {
+	          console.error("  LMinner failed SOS step");
+	          return false;
+	        }
+	        rrise = (this.sos - this.sosprev) / (1 + this.sos);
+	        if (rrise <= 0.0) // good step!
+	          {
+	            this.lambda *= this.LMSHRINK; // shrink lambda
+	            break; // leave lmInner.
+	          }
+	        for (var q = 0; q < this.nadj; q++) {
+	          // reverse course!
+	          this.delta[q] *= -1.0;
+	        }
+	        this.myH.nudge(this.delta); // sosprev should still be OK
+	        if (rrise < this.LMTOL) {
+	          // finished but keep prev parms
+	          break; // leave inner loop
+	        }
+	        this.lambda *= this.LMBOOST; // else try more damping.
+	      } while (this.lambda < this.LAMBDAMAX);
+	      return rrise > -this.LMTOL || this.lambda > this.LAMBDAMAX;
+	    }
+	  }, {
+	    key: 'gaussj',
+	    value: function gaussj(a, N) {
+	      // Inverts the double array a[N][N] by Gauss-Jordan method
+	      // M.Lampton UCB SSL (c)2003, 2005
+
+	      var det = 1.0,
+	          big,
+	          save;
+	      var i, j, k, L;
+	      var ik = new Array(100);
+	      var jk = new Array(100);
+
+	      for (k = 0; k < N; k++) {
+	        big = 0.0;
+	        for (i = k; i < N; i++) {
+	          for (j = k; j < N; j++) {
+	            // find biggest element
+	            if (Math.abs(big) <= Math.abs(a[i][j])) {
+	              big = a[i][j];
+	              ik[k] = i;
+	              jk[k] = j;
+	            }
+	          }
+	        }if (big == 0.0) return 0.0;
+	        i = ik[k];
+	        if (i > k) for (j = 0; j < N; j++) // exchange rows
+	        {
+	          save = a[k][j];
+	          a[k][j] = a[i][j];
+	          a[i][j] = -save;
+	        }
+	        j = jk[k];
+	        if (j > k) for (i = 0; i < N; i++) {
+	          save = a[i][k];
+	          a[i][k] = a[i][j];
+	          a[i][j] = -save;
+	        }
+	        for (i = 0; i < N; i++) {
+	          // build the inverse
+	          if (i != k) a[i][k] = -a[i][k] / big;
+	        }for (i = 0; i < N; i++) {
+	          for (j = 0; j < N; j++) {
+	            if (i != k && j != k) a[i][j] += a[i][k] * a[k][j];
+	          }
+	        }for (j = 0; j < N; j++) {
+	          if (j != k) a[k][j] /= big;
+	        }a[k][k] = 1.0 / big;
+	        det *= big; // bomb point
+	      } // end k loop
+	      for (L = 0; L < N; L++) {
+	        k = N - L - 1;
+	        j = ik[k];
+	        if (j > k) for (i = 0; i < N; i++) {
+	          save = a[i][k];
+	          a[i][k] = -a[i][j];
+	          a[i][j] = save;
+	        }
+	        i = jk[k];
+	        if (i > k) for (j = 0; j < N; j++) {
+	          save = a[k][j];
+	          a[k][j] = -a[i][j];
+	          a[i][j] = save;
+	        }
+	      }
+	      return det;
+	    }
+	  }]);
+
+	  return LM;
+	}();
+
+	exports.default = FitHost;
+
+/***/ },
+/* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _graph = __webpack_require__(300);
 
 	var _graph2 = _interopRequireDefault(_graph);
@@ -14058,7 +14890,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Legend;
 
 /***/ },
-/* 304 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14071,7 +14903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(305);
+	var _graph = __webpack_require__(307);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -14342,7 +15174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisX;
 
 /***/ },
-/* 305 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17122,7 +17954,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Axis;
 
 /***/ },
-/* 306 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17135,7 +17967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(305);
+	var _graph = __webpack_require__(307);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -17568,7 +18400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisY;
 
 /***/ },
-/* 307 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17581,7 +18413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphAxis = __webpack_require__(304);
+	var _graphAxis = __webpack_require__(306);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
@@ -17823,7 +18655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisXBar;
 
 /***/ },
-/* 308 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17836,7 +18668,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(305);
+	var _graph = __webpack_require__(307);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -18804,7 +19636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = GraphXAxis;
 
 /***/ },
-/* 309 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18823,11 +19655,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graph3 = __webpack_require__(310);
+	var _graph3 = __webpack_require__(312);
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _slotoptimizer = __webpack_require__(311);
+	var _slotoptimizer = __webpack_require__(313);
 
 	var _slotoptimizer2 = _interopRequireDefault(_slotoptimizer);
 
@@ -18835,9 +19667,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph5);
 
-	var _graphMixin = __webpack_require__(312);
+	var _graphMixin = __webpack_require__(314);
 
 	var _graphMixin2 = _interopRequireDefault(_graphMixin);
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -19043,6 +19879,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.markers) {
 	        this.setMarkers(this.options.markers, "unselected");
 	      }
+	    }
+	  }, {
+	    key: 'setWaveform',
+	    value: function setWaveform(waveform) {
+
+	      if (!(waveform instanceof _waveform2.default)) {
+	        throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+	      }
+
+	      this._waveform = waveform;
+
+	      this.minX = this._waveform.getXMin();
+	      this.maxX = this._waveform.getXMax();
+	      this.minY = this._waveform.getMin();
+	      this.maxY = this._waveform.getMax();
+
+	      this.graph.updateDataMinMaxAxes();
+	      this.dataHasChanged();
+
+	      return this;
 	    }
 
 	    /**
@@ -19368,11 +20224,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // Degradation
 	      if (this.degradationPx) {
 
-	        data = getDegradedData(this);
-	        xData = data[1];
-	        data = data[0];
-	        this._dataToUse = data;
-	        this._xDataToUse = xData;
+	        if (this._waveform) {
+
+	          this._waveform.resampleForDisplay({
+
+	            resampleToPx: this.degradationPx,
+	            xPosition: this.getXAxis().getPx.bind(this.getXAxis())
+
+	          });
+
+	          this._dataToUse = [this._waveform.getDataToUseFlat()];
+	        } else {
+	          data = getDegradedData(this);
+	          xData = data[1];
+	          data = data[0];
+	          this._dataToUse = data;
+	          this._xDataToUse = xData;
+	        }
+	      } else if (this._waveform) {
+
+	        this._dataToUse = [this._waveform.getDataToUseFlat()];
 	      } else {
 
 	        this._dataToUse = this.data;
@@ -21521,7 +22392,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieLine;
 
 /***/ },
-/* 310 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22643,7 +23514,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Serie;
 
 /***/ },
-/* 311 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22740,7 +23611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 312 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23075,7 +23946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ErrorBarMixin;
 
 /***/ },
-/* 313 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23090,11 +23961,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graphSerie = __webpack_require__(309);
+	var _graphSerie = __webpack_require__(311);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	var _graphMixin = __webpack_require__(312);
+	var _graphMixin = __webpack_require__(314);
 
 	var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
@@ -23309,7 +24180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieBar;
 
 /***/ },
-/* 314 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23320,7 +24191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(310);
+	var _graph = __webpack_require__(312);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -23536,6 +24407,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function _gstyle(type, selectionType) {
 	      return this.getStyle(selectionType)[type];
 	    }
+
+	    /** 
+	     *  Retrives a selection object
+	     *  @param {String} [ selectionType = "unselected" ] - The selection type
+	     *  @returns {Object} The selection object
+	     */
+
 	  }, {
 	    key: 'getStyle',
 	    value: function getStyle() {
@@ -23559,6 +24437,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line color
+	     * @return {String} The mean line color
 	     */
 
 	  }, {
@@ -23590,6 +24469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line width
+	     * @return {Number} The mean line width
 	     */
 
 	  }, {
@@ -23611,7 +24491,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the box line color
+	     * @return {String} The line color of the box above the median
 	     */
 
 	  }, {
@@ -23634,6 +24515,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the fill color
+	     * @return {String} The line color of the box below the median
 	     */
 
 	  }, {
@@ -23655,7 +24537,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box above the median
+	     * @return {Number} The line width of the box above the median
 	     */
 
 	  }, {
@@ -23677,7 +24560,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box below the median
+	     * @return {Number} The line width of the box below the median
 	     */
 
 	  }, {
@@ -23699,7 +24583,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box above the median
+	     * @return {String} The fill color of the box above the median
 	     */
 
 	  }, {
@@ -23721,7 +24606,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box below the median
+	     * @return {String} The fill color of the box below the median
 	     */
 
 	  }, {
@@ -23743,7 +24629,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box above the median
+	     * @return {Number} The fill opacity of the box above the median
 	     */
 
 	  }, {
@@ -23765,7 +24652,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box below the median
+	     * @return {Number} The fill opacity of the box below the median
 	     */
 
 	  }, {
@@ -23787,7 +24675,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker above the median
+	     * @return {String} The line color of the whisker above the median
 	     */
 
 	  }, {
@@ -23809,7 +24698,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker below the median
+	     * @return {String} The line color of the whisker below the median
 	     */
 
 	  }, {
@@ -23831,7 +24721,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker above the median
+	     * @return {Number} The line width of the whisker above the median
 	     */
 
 	  }, {
@@ -23853,7 +24744,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker below the median
+	     * @return {Number} The line width of the whisker below the median
 	     */
 
 	  }, {
@@ -23875,7 +24767,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the line color of the outliers
+	     * @return {String} The line color of the outliers
 	     */
 
 	  }, {
@@ -23897,7 +24790,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the outliers
+	     * @return {Number} The line width of the outliers
 	     */
 
 	  }, {
@@ -23919,7 +24813,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the outliers
+	     * @return {String} The fill color of the outliers
 	     */
 
 	  }, {
@@ -23941,7 +24836,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the outlier fill opacity
+	     * Returns the fill opacity of the outliers
+	     * @return {Number} The fill opacity of the outliers
 	     */
 
 	  }, {
@@ -24342,7 +25238,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieBox;
 
 /***/ },
-/* 315 */
+/* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24353,7 +25249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphSerie = __webpack_require__(309);
+	var _graphSerie = __webpack_require__(311);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -24361,7 +25257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graphMixin = __webpack_require__(312);
+	var _graphMixin = __webpack_require__(314);
 
 	var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
@@ -24721,7 +25617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieLineColor;
 
 /***/ },
-/* 316 */
+/* 318 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24734,7 +25630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(310);
+	var _graph = __webpack_require__(312);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -24742,7 +25638,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph3);
 
-	var _graphMixin = __webpack_require__(312);
+	var _graphMixin = __webpack_require__(314);
 
 	var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
@@ -25407,7 +26303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieScatter;
 
 /***/ },
-/* 317 */
+/* 319 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -25418,7 +26314,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(310);
+	var _graph = __webpack_require__(312);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -26114,7 +27010,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieZone;
 
 /***/ },
-/* 318 */
+/* 320 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26125,7 +27021,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(310);
+	var _graph = __webpack_require__(312);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -26846,7 +27742,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieDensityMap;
 
 /***/ },
-/* 319 */
+/* 321 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -26859,7 +27755,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphSerie = __webpack_require__(309);
+	var _graphSerie = __webpack_require__(311);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -27283,7 +28179,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieContour;
 
 /***/ },
-/* 320 */
+/* 322 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29535,7 +30431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Shape;
 
 /***/ },
-/* 321 */
+/* 323 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29546,7 +30442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -29774,7 +30670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeSurfaceUnderCurve;
 
 /***/ },
-/* 322 */
+/* 324 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29785,7 +30681,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(323);
+	var _graphShape = __webpack_require__(325);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -29837,7 +30733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeArrow;
 
 /***/ },
-/* 323 */
+/* 325 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -29848,7 +30744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -30093,7 +30989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeLine;
 
 /***/ },
-/* 324 */
+/* 326 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30108,7 +31004,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(320);
+	var _graph2 = __webpack_require__(322);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -30172,7 +31068,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeEllipse;
 
 /***/ },
-/* 325 */
+/* 327 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30183,7 +31079,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -30227,7 +31123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeLabel;
 
 /***/ },
-/* 326 */
+/* 328 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30238,7 +31134,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -30344,7 +31240,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePolyline;
 
 /***/ },
-/* 327 */
+/* 329 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30355,7 +31251,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(321);
+	var _graphShape = __webpack_require__(323);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -30694,7 +31590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeNMRIntegral;
 
 /***/ },
-/* 328 */
+/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30705,7 +31601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(329);
+	var _graphShape = __webpack_require__(331);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -30761,7 +31657,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePeakIntegration2D;
 
 /***/ },
-/* 329 */
+/* 331 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -30774,7 +31670,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -31146,7 +32042,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeRectangle;
 
 /***/ },
-/* 330 */
+/* 332 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31157,7 +32053,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(320);
+	var _graph = __webpack_require__(322);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -31326,7 +32222,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapeCross;
 
 /***/ },
-/* 331 */
+/* 333 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31337,7 +32233,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphShape = __webpack_require__(323);
+	var _graphShape = __webpack_require__(325);
 
 	var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -31605,7 +32501,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = ShapePeakBoundaries;
 
 /***/ },
-/* 332 */
+/* 334 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31706,7 +32602,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Plugin;
 
 /***/ },
-/* 333 */
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -31717,7 +32613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(332);
+	var _graph = __webpack_require__(334);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -31931,7 +32827,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginDrag;
 
 /***/ },
-/* 334 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -31942,7 +32838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(332);
+	var _graph = __webpack_require__(334);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -32125,7 +33021,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginShape;
 
 /***/ },
-/* 335 */
+/* 337 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32140,7 +33036,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(332);
+	var _graph2 = __webpack_require__(334);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -32313,7 +33209,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginSelectScatter;
 
 /***/ },
-/* 336 */
+/* 338 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -32328,7 +33224,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = __webpack_require__(332);
+	var _graph2 = __webpack_require__(334);
 
 	var _graph3 = _interopRequireDefault(_graph2);
 
@@ -32986,7 +33882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginZoom;
 
 /***/ },
-/* 337 */
+/* 339 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33001,11 +33897,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graph3 = __webpack_require__(338);
+	var _graph3 = __webpack_require__(340);
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(332);
+	var _graph5 = __webpack_require__(334);
 
 	var _graph6 = _interopRequireDefault(_graph5);
 
@@ -33545,7 +34441,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginTimeSerieManager;
 
 /***/ },
-/* 338 */
+/* 340 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -33665,7 +34561,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 339 */
+/* 341 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33676,7 +34572,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(332);
+	var _graph = __webpack_require__(334);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -34116,7 +35012,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = PluginSerieLineDifference;
 
 /***/ },
-/* 340 */
+/* 342 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -34133,11 +35029,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graphAxis = __webpack_require__(304);
+	var _graphAxis = __webpack_require__(306);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-	var _graphAxis3 = __webpack_require__(306);
+	var _graphAxis3 = __webpack_require__(308);
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
@@ -34145,19 +35041,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph3);
 
-	var _graphSerie = __webpack_require__(309);
+	var _graphSerie = __webpack_require__(311);
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	var _graphSerie3 = __webpack_require__(316);
+	var _graphSerie3 = __webpack_require__(318);
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graph4 = __webpack_require__(332);
+	var _graph4 = __webpack_require__(334);
 
 	var _graph5 = _interopRequireDefault(_graph4);
 
-	var _graph6 = __webpack_require__(305);
+	var _graph6 = __webpack_require__(307);
 
 	var _graph7 = _interopRequireDefault(_graph6);
 

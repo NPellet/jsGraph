@@ -64,12 +64,15 @@ class Waveform {
     return this.data.map( ( el ) => el[ 0 ] );
   }
 
-  flatten() {
-    let arr = new Array( this.data.length * 2 ).fill( 0 );
+  getDataToUseFlat() {
+
+    let dataToUse = this.dataInUse ? this.dataInUse : this.data;
+
+    let arr = new Array( dataToUse.length * 2 ).fill( 0 );
     let j = 0;
-    for ( var i = 0, l = this.data.length; i < l; i += 1 ) {
-      arr[ j ] = this.data[ i ][ 0 ];
-      arr[ j + 1 ] = this.data[ i ][ 1 ];
+    for ( var i = 0, l = dataToUse.length; i < l; i += 1 ) {
+      arr[ j ] = dataToUse[ i ][ 0 ];
+      arr[ j + 1 ] = dataToUse[ i ][ 1 ];
       j += 2;
     }
 
@@ -101,7 +104,7 @@ class Waveform {
 
     for ( ; from <= to; from++ ) {
 
-      if ( xWave.length - 1 > from ) {
+      if ( arrX.length - 1 > from ) {
 
         deltaTot += arrX[ from + 1 ] - arrX[ from ]
         sum += arrY[ from ] * ( arrX[ from + 1 ] - arrX[ from ] );
@@ -131,6 +134,96 @@ class Waveform {
   getAverageX( from, to ) {
     var sum = this._integrateX( from, to );
     return sum[ 0 ] / sum[ 2 ];
+  }
+
+  resampleForDisplay( options ) { // Serie redrawing
+
+    let i = 0;
+
+    const l = this.getLength();
+
+    let data = [],
+      dataMinMax = [],
+      resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start;
+
+    let x_px;
+
+    let dataY = this.getDataY();
+    let dataX = this.getDataX();
+
+    let doing_mean = false;
+    let firstPointIndex = 0;
+
+    if ( !options.xPosition ) {
+      throw "No position calculation method provided";
+    }
+
+    if ( !options.resampleToPx ) {
+      throw "No \"resampleToPx\" method was provided. Unit: px per point";
+    }
+
+    for ( ; i < l; i++ ) {
+
+      if ( options.minX > dataX[ i ] ) {
+
+        firstPointIndex = i;
+        continue;
+      }
+
+      x_px = options.xPosition( dataX[ i ] );
+
+      if ( !doing_mean ) {
+
+        if ( !firstPointIndex ) {
+
+          firstPointIndex = i;
+        }
+
+        while ( isNaN( dataY[ i ] ) ) {
+          i++;
+        }
+
+        resampleSum = resampleMin = resampleMax = dataY[ firstPointIndex ];
+        resampleNum = 1;
+        resample_x_px_start = x_px;
+        resample_x_start = dataX[ i ];
+        firstPointIndex = 0;
+
+        doing_mean = true;
+
+        continue;
+      }
+
+      if ( Math.abs( x_px - resample_x_px_start ) > options.resampleToPx || i == l || isNaN( dataY[ i ] ) ) {
+
+        let xpos = ( resample_x_start + dataX[ i ] ) / 2;
+
+        data.push( [
+          xpos,
+          resampleSum / resampleNum
+        ] );
+
+        dataMinMax.push( xpos, resampleMin, resampleMax );
+
+        if ( options.maxX !== undefined && dataX > options.maxX ) {
+          return;
+        }
+
+        doing_mean = false;
+
+        continue;
+      }
+
+      resampleSum += dataY[ i ];
+      resampleNum++;
+
+      resampleMin = Math.min( resampleMin, dataY[ i ] );
+      resampleMax = Math.max( resampleMax, dataY[ i ] );
+    }
+
+    this.dataInUse = data;
+
+    return dataMinMax;
   }
 };
 
