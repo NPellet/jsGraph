@@ -12533,6 +12533,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.hue2rgb = hue2rgb;
 	exports.hslToRgb = hslToRgb;
 	exports.saveDomAttributes = saveDomAttributes;
+	exports.hasSavedAttribute = hasSavedAttribute;
+	exports.overwriteDomAttribute = overwriteDomAttribute;
 	exports.restoreDomAttributes = restoreDomAttributes;
 	exports.debounce = debounce;
 	exports.SVGParser = SVGParser;
@@ -12690,6 +12692,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    to.setAttribute(i, attributes[i]);
 	  }
 	};
+
+	function hasSavedAttribute(dom, attr) {
+	  return dom._savedAttributes && dom._savedAttributes[attr] !== undefined;
+	}
+
+	function overwriteDomAttribute(dom, attribute, newValue) {
+	  if (hasSavedAttribute(dom, attribute)) {
+	    dom._savedAttributes[attribute] = newValue;
+	  }
+	}
 
 	function restoreDomAttributes(to, identification) {
 
@@ -27911,9 +27923,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'setDom',
-	    value: function setDom(prop, val) {
+	    value: function setDom(prop, val, noForce) {
 	      if (this._dom) {
-	        this._dom.setAttribute(prop, val);
+
+	        if (!noForce || !util.hasSavedAttribute(this._dom, prop)) {
+	          this._dom.setAttribute(prop, val);
+	        }
 	      }
 	    }
 
@@ -27938,6 +27953,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setStrokeColor',
 	    value: function setStrokeColor(color) {
 	      this.setProp('strokeColor', color);
+	      this.overwriteSavedProp('stroke', color);
 	      return this;
 	    }
 
@@ -27962,6 +27978,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setFillColor',
 	    value: function setFillColor(color) {
 	      this.setProp('fillColor', color);
+	      this.overwriteSavedProp('fill', color);
 	      return this;
 	    }
 
@@ -27984,8 +28001,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'setFillOpacity',
-	    value: function setFillOpacity(color) {
-	      this.setProp('fillOpacity', color);
+	    value: function setFillOpacity(opacity) {
+	      this.setProp('fillOpacity', opacity);
+	      this.overwriteSavedProp('fill-opacity', opacity);
 	      return this;
 	    }
 
@@ -27999,6 +28017,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setStrokeWidth',
 	    value: function setStrokeWidth(width) {
 	      this.setProp('strokeWidth', width);
+	      this.overwriteSavedProp('stroke-width', width);
 	      return this;
 	    }
 
@@ -28025,6 +28044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setStrokeDasharray',
 	    value: function setStrokeDasharray(dasharray) {
 	      this.setProp('strokeDasharray', dasharray);
+	      this.overwriteSavedProp('stroke-dasharray', opacity);
 	      return this;
 	    }
 
@@ -28041,6 +28061,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setAttributes(attributes) {
 	      this.setProp("attributes", attributes);
 	      return this;
+	    }
+	  }, {
+	    key: 'overwriteSavedProp',
+	    value: function overwriteSavedProp(prop, newValue) {
+	      util.overwriteDomAttribute(this._dom, prop, newValue);
 	    }
 
 	    /**
@@ -28294,17 +28319,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'applyGenericStyle',
 	    value: function applyGenericStyle() {
 
-	      this.setDom("fill", this.getProp("fillColor"));
-	      this.setDom("fill-opacity", this.getProp("fillOpacity"));
-	      this.setDom("stroke", this.getProp("strokeColor"));
-	      this.setDom("stroke-width", this.getProp("strokeWidth"));
-	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"));
+	      this.setDom("fill", this.getProp("fillColor"), true);
+	      this.setDom("fill-opacity", this.getProp("fillOpacity"), true);
+	      this.setDom("stroke", this.getProp("strokeColor"), true);
+	      this.setDom("stroke-width", this.getProp("strokeWidth"), true);
+	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"), true);
 
 	      var attributes = this.getProps("attributes");
 	      for (var j = 0, l = attributes.length; j < l; j++) {
 
 	        for (var i in attributes[j]) {
-	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i]);
+	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i], true);
 	        }
 	      }
 

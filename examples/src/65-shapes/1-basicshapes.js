@@ -12,28 +12,29 @@ define( function() {
         graphinstance.getYAxis().forceMin( 0 );
         graphinstance.getYAxis().forceMax( 100 );
 
-
-        graphinstance.newShape({ 
-           type: 'arrow', 
-           position: [ { x: "60px", y: "80px" }, { dx: "-20px", dy: "-20px" } ],
-           strokeColor: 'black',
-           strokeWidth: 0,
-           locked: false,
-           selectable: true
-
-         }).draw();
-
-
-        graphinstance.newShape({ 
+        var s = graphinstance.newShape({ 
             type: 'rect', 
             position: [ { x: 60, y: 80 },{ x: 20, y: 20 } ],
              strokeColor: 'red',
              strokeWidth: 1,
-            fillColor: 'transparent'
+            fillColor: 'transparent',
+            selectable: true
         }).draw();
+
 
         
         graphinstance.draw();
+     
+        s.setSelectStyle( { stroke: 'green' } );
+
+        graphinstance.selectShape( s );
+   //
+        s.applyStyle();
+     
+        s.setStrokeColor('black');
+        s.applyStyle();
+        graphinstance.unselectShape( s );
+        //s.redraw();
         
 
 
