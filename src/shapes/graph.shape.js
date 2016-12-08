@@ -501,9 +501,12 @@ class Shape extends EventEmitter {
   /**
    * Sets a DOM property to the shape
    */
-  setDom( prop, val ) {
+  setDom( prop, val, noForce ) {
     if ( this._dom ) {
-      this._dom.setAttribute( prop, val );
+
+      if ( !noForce || !util.hasSavedAttribute( this._dom, prop ) ) {
+        this._dom.setAttribute( prop, val );
+      }
     }
   }
 
@@ -522,6 +525,7 @@ class Shape extends EventEmitter {
    */
   setStrokeColor( color ) {
     this.setProp( 'strokeColor', color );
+    this.overwriteSavedProp( 'stroke', color );
     return this;
   }
 
@@ -540,6 +544,7 @@ class Shape extends EventEmitter {
    */
   setFillColor( color ) {
     this.setProp( 'fillColor', color );
+    this.overwriteSavedProp( 'fill', color );
     return this;
   }
 
@@ -556,8 +561,9 @@ class Shape extends EventEmitter {
    * @param {Number} opacity - The filling opacity (0 to 1)
    * @return {Shape} The current shape
    */
-  setFillOpacity( color ) {
-    this.setProp( 'fillOpacity', color );
+  setFillOpacity( opacity ) {
+    this.setProp( 'fillOpacity', opacity );
+    this.overwriteSavedProp( 'fill-opacity', opacity );
     return this;
   }
 
@@ -568,6 +574,7 @@ class Shape extends EventEmitter {
    */
   setStrokeWidth( width ) {
     this.setProp( 'strokeWidth', width );
+    this.overwriteSavedProp( 'stroke-width', width );
     return this;
   }
 
@@ -588,6 +595,7 @@ class Shape extends EventEmitter {
    */
   setStrokeDasharray( dasharray ) {
     this.setProp( 'strokeDasharray', dasharray );
+    this.overwriteSavedProp( 'stroke-dasharray', opacity );
     return this;
   }
 
@@ -601,6 +609,10 @@ class Shape extends EventEmitter {
   setAttributes( attributes ) {
     this.setProp( "attributes", attributes );
     return this;
+  }
+
+  overwriteSavedProp( prop, newValue ) {
+    util.overwriteDomAttribute( this._dom, prop, newValue );
   }
 
   /**
@@ -800,17 +812,17 @@ class Shape extends EventEmitter {
    */
   applyGenericStyle() {
 
-    this.setDom( "fill", this.getProp( "fillColor" ) );
-    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ) );
-    this.setDom( "stroke", this.getProp( "strokeColor" ) );
-    this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
-    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
+    this.setDom( "fill", this.getProp( "fillColor" ), true );
+    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ), true );
+    this.setDom( "stroke", this.getProp( "strokeColor" ), true );
+    this.setDom( "stroke-width", this.getProp( "strokeWidth" ), true );
+    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ), true );
 
     var attributes = this.getProps( "attributes" );
     for ( var j = 0, l = attributes.length; j < l; j++ ) {
 
       for ( var i in attributes[ j ] ) {
-        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ] );
+        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ], true );
       }
 
     }

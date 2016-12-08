@@ -150,6 +150,16 @@ export function saveDomAttributes( to, attributes, identification ) {
 
 };
 
+export function hasSavedAttribute( dom, attr ) {
+  return dom._savedAttributes && dom._savedAttributes[ attr ] !== undefined;
+}
+
+export function overwriteDomAttribute( dom, attribute, newValue ) {
+  if ( hasSavedAttribute( dom, attribute ) ) {
+    dom._savedAttributes[ attribute ] = newValue;
+  }
+}
+
 export function restoreDomAttributes( to, identification ) {
 
   if ( !to || !to._savedAttributesIds ) {
