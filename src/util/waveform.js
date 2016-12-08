@@ -180,15 +180,12 @@ class Waveform {
 
     let data = [],
       dataMinMax = [],
-      resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start;
-
-    let x_px;
-
-    let dataY = this.getDataY();
-    let dataX = this.getDataX();
-
-    let doing_mean = false;
-    let firstPointIndex = 0;
+      resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start,
+      x_px,
+      dataY = this.getDataY(),
+      dataX = this.getDataX(),
+      doing_mean = false,
+      firstPointIndex = 0;
 
     if ( !options.xPosition ) {
       throw "No position calculation method provided";
