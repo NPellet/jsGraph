@@ -18319,7 +18319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeDasharray(dasharray) {
 	      this.setProp('strokeDasharray', dasharray);
-	      this.overwriteSavedProp('stroke-dasharray', opacity);
+	      this.overwriteSavedProp('stroke-dasharray', dasharray);
 	      return this;
 	    }
 

@@ -595,7 +595,7 @@ class Shape extends EventEmitter {
    */
   setStrokeDasharray( dasharray ) {
     this.setProp( 'strokeDasharray', dasharray );
-    this.overwriteSavedProp( 'stroke-dasharray', opacity );
+    this.overwriteSavedProp( 'stroke-dasharray', dasharray );
     return this;
   }
 
