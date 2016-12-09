@@ -4130,9 +4130,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 	      var p = 2 * l - q;
-	      r = util.hue2rgb(p, q, h + 1 / 3);
-	      g = util.hue2rgb(p, q, h);
-	      b = util.hue2rgb(p, q, h - 1 / 3);
+	      r = hue2rgb(p, q, h + 1 / 3);
+	      g = hue2rgb(p, q, h);
+	      b = hue2rgb(p, q, h - 1 / 3);
 	    }
 
 	    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -4145,7 +4145,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    to._savedAttributesIds = to._savedAttributesIds || [];
 
 	    if (to._savedAttributesIds.indexOf(identification) > -1) {
-	      util.restoreDomAttributes(to, identification);
+	      restoreDomAttributes(to, identification);
 	    }
 
 	    to._savedAttributes = to._savedAttributes || {};
@@ -18250,6 +18250,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setStrokeColor(color) {
 	      this.setProp('strokeColor', color);
 	      this.overwriteSavedProp('stroke', color);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18269,6 +18270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setFillColor(color) {
 	      this.setProp('fillColor', color);
 	      this.overwriteSavedProp('fill', color);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18288,6 +18290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setFillOpacity(opacity) {
 	      this.setProp('fillOpacity', opacity);
 	      this.overwriteSavedProp('fill-opacity', opacity);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18299,6 +18302,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setStrokeWidth(width) {
 	      this.setProp('strokeWidth', width);
 	      this.overwriteSavedProp('stroke-width', width);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18320,6 +18324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setStrokeDasharray(dasharray) {
 	      this.setProp('strokeDasharray', dasharray);
 	      this.overwriteSavedProp('stroke-dasharray', dasharray);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18943,6 +18948,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
 	      this._selectStatus = true;
+
+	      this.applySelectedStyle();
+
+	      if (this.hasHandles() && !this.hasStaticHandles()) {
+	        this.addHandles();
+	        this.setHandles();
+	      }
+
+	      if (!mute) {
+	        this.graph.emit("shapeSelected", this);
+	      }
+	    }
+
+	    applySelectedStyle() {
+
+	      if (!this._selectStatus) {
+	        return;
+	      }
+
 	      var style = this.getSelectStyle();
 	      var style2 = {};
 	      for (var i in style) {
@@ -18954,15 +18978,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      util.saveDomAttributes(this._dom, style2, 'select');
-
-	      if (this.hasHandles() && !this.hasStaticHandles()) {
-	        this.addHandles();
-	        this.setHandles();
-	      }
-
-	      if (!mute) {
-	        this.graph.emit("shapeSelected", this);
-	      }
 	    }
 
 	    /**
@@ -19003,6 +19018,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setSelectStyle(attr) {
 	      this.selectStyle = attr;
+	      this.applySelectedStyle(); // Maybe the shape is already selected
 	      return this;
 	    }
 

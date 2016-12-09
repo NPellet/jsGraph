@@ -15,26 +15,41 @@ define( function() {
         var s = graphinstance.newShape({ 
             type: 'rect', 
             position: [ { x: 60, y: 80 },{ x: 20, y: 20 } ],
-             strokeColor: 'red',
+             
              strokeWidth: 1,
-            fillColor: 'transparent',
+            strokeColor: 'rgb(200, 200, 0)',
+            fillColor: 'rgb(200, 0, 0)',
             selectable: true
         }).draw();
 
 
         
         graphinstance.draw();
+     s.redraw();
+     s.applyStyle();
      
-        s.setSelectStyle( { stroke: 'green' } );
-
         graphinstance.selectShape( s );
+
+        s.setSelectStyle({
+          stroke: function() {
+          return this.getStrokeColor().replace(", 0)", ", 100)");
+          },
+          fill: function() {
+          return this.getFillColor().replace(", 0)", ", 200)");
+          },
+          'stroke-width': 2
+          });
+
+
+
+        s.setStrokeColor('rgb(0, 100, 0)')
    //
-        s.applyStyle();
+//        s.applyStyle();
      
-        s.setStrokeColor('black');
-        s.applyStyle();
-        graphinstance.unselectShape( s );
-        //s.redraw();
+  //      s.setStrokeColor('black');
+    //    s.applyStyle();
+        //graphinstance.unselectShape( s );
+        
         
 
 
