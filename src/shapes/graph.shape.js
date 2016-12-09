@@ -1232,7 +1232,7 @@ class Shape extends EventEmitter {
     this._selectStatus = true;
 
     this.applySelectedStyle();
-    
+
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
       this.addHandles();
       this.setHandles();
@@ -1245,7 +1245,7 @@ class Shape extends EventEmitter {
 
   applySelectedStyle() {
 
-    if( ! this._selectStatus ) {
+    if ( !this._selectStatus ) {
       return;
     }
 
