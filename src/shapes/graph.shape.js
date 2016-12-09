@@ -526,6 +526,7 @@ class Shape extends EventEmitter {
   setStrokeColor( color ) {
     this.setProp( 'strokeColor', color );
     this.overwriteSavedProp( 'stroke', color );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -545,6 +546,7 @@ class Shape extends EventEmitter {
   setFillColor( color ) {
     this.setProp( 'fillColor', color );
     this.overwriteSavedProp( 'fill', color );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -564,6 +566,7 @@ class Shape extends EventEmitter {
   setFillOpacity( opacity ) {
     this.setProp( 'fillOpacity', opacity );
     this.overwriteSavedProp( 'fill-opacity', opacity );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -575,6 +578,7 @@ class Shape extends EventEmitter {
   setStrokeWidth( width ) {
     this.setProp( 'strokeWidth', width );
     this.overwriteSavedProp( 'stroke-width', width );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -596,6 +600,7 @@ class Shape extends EventEmitter {
   setStrokeDasharray( dasharray ) {
     this.setProp( 'strokeDasharray', dasharray );
     this.overwriteSavedProp( 'stroke-dasharray', dasharray );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -1225,6 +1230,25 @@ class Shape extends EventEmitter {
     //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
     this._selectStatus = true;
+
+    this.applySelectedStyle();
+    
+    if ( this.hasHandles() && !this.hasStaticHandles() ) {
+      this.addHandles();
+      this.setHandles();
+    }
+
+    if ( !mute ) {
+      this.graph.emit( "shapeSelected", this );
+    }
+  }
+
+  applySelectedStyle() {
+
+    if( ! this._selectStatus ) {
+      return;
+    }
+
     var style = this.getSelectStyle();
     var style2 = {};
     for ( var i in style ) {
@@ -1236,15 +1260,6 @@ class Shape extends EventEmitter {
     }
 
     util.saveDomAttributes( this._dom, style2, 'select' );
-
-    if ( this.hasHandles() && !this.hasStaticHandles() ) {
-      this.addHandles();
-      this.setHandles();
-    }
-
-    if ( !mute ) {
-      this.graph.emit( "shapeSelected", this );
-    }
   }
 
   /**
@@ -1285,6 +1300,7 @@ class Shape extends EventEmitter {
    */
   setSelectStyle( attr ) {
     this.selectStyle = attr;
+    this.applySelectedStyle(); // Maybe the shape is already selected
     return this;
   }
 
