@@ -3,6 +3,18 @@ import {
   extend
 } from '../graph.util'
 
+import aggregator from './data_aggregator'
+
+// http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
+function pow2ceil( v ) {
+  v--;
+  var p = 2;
+  while ( v >>= 1 ) {
+    p <<= 1;
+  }
+  return p;
+}
+
 class Waveform {
 
   constructor() {}
@@ -10,12 +22,53 @@ class Waveform {
   /** [ [   x1, y1 ], [ x2, y2 ] ] */
   setDataXY( data ) {
     this.data = data;
+    this.dataUpdated();
     return this;
   }
 
   setDataY( data ) {
     this.data = data.map( ( el, index ) => [ index, el ] );
+    this.dataUpdated();
     return this;
+  }
+
+  flipXY() {
+    let temp;
+    this.data = data.map( ( el ) => {
+      temp = el[ 0 ];
+      el[ 0 ] = el[ 1 ];
+      el[ 1 ] = temp;
+      return el;
+    } );
+    this.dataUpdated();
+  }
+
+  dataUpdated() {
+    const l = this.data.length;
+    let i = 0,
+      monoDir = this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ],
+      minX = this.data[ 0 ][ 0 ],
+      maxX = this.data[ 0 ][ 0 ],
+      minY = this.data[ 0 ][ 1 ],
+      maxY = this.data[ 0 ][ 1 ];
+
+    this._monotoneous = true;
+
+    for ( ; i < l; i++ ) {
+      if ( monoDir !== ( this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ] ) ) {
+        this._monotoneous = false;
+      }
+
+      minX = Math.min( this.data[ i ][ 0 ], minX );
+      maxX = Math.max( this.data[ i ][ 0 ], maxX );
+      minY = Math.min( this.data[ i ][ 1 ], minY );
+      maxY = Math.max( this.data[ i ][ 1 ], maxY );
+    }
+
+    this.minX = minX;
+    this.maxX = maxX;
+    this.minY = minY;
+    this.maxY = maxY;
   }
 
   _getMin( dim, from, to ) {
@@ -28,27 +81,68 @@ class Waveform {
   }
 
   _getMax( dim, from, to ) {
-    let max = this.data[ from ][ dim ];
-    for ( var i = from + 1; i <= to; i++ ) {
-      max = this.data[ i ][ dim ] > max ? this.data[ i ][ dim ] : max;
+      let max = this.data[ from ][ dim ];
+      for ( var i = from + 1; i <= to; i++ ) {
+        max = this.data[ i ][ dim ] > max ? this.data[ i ][ dim ] : max;
+      }
+      return max;
     }
-    return max;
+    /*
+      getXMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
+        return this._getMin( 0, subsetFromIndex, subsetToIndex );
+      }
+
+      getXMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
+        return this._getMax( 0, subsetFromIndex, subsetToIndex );
+      }
+
+      getMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
+        return this._getMin( 1, subsetFromIndex, subsetToIndex );
+      }
+
+      getMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
+        return this._getMax( 1, subsetFromIndex, subsetToIndex );
+      }
+      */
+
+  getXMin() {
+    return this.minX;
   }
 
-  getXMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-    return this._getMin( 0, subsetFromIndex, subsetToIndex );
+  getXMax() {
+    return this.maxX;
   }
 
-  getXMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-    return this._getMax( 0, subsetFromIndex, subsetToIndex );
+  getYMin() {
+    return this.minY;
   }
 
-  getMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-    return this._getMin( 1, subsetFromIndex, subsetToIndex );
+  getYMax() {
+    return this.maxY;
   }
 
-  getMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-    return this._getMax( 1, subsetFromIndex, subsetToIndex );
+  getMin() {
+    return this.minY;
+  }
+
+  getMax() {
+    return this.maxY;
+  }
+
+  getMinX() {
+    return this.minX;
+  }
+
+  getMaxX() {
+    return this.maxX;
+  }
+
+  getMinY() {
+    return this.minY;
+  }
+
+  getMaxY() {
+    return this.maxY;
   }
 
   getLength() {
@@ -144,17 +238,21 @@ class Waveform {
 
     for ( ; i < l; i++ ) {
       if ( dir !== ( this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ] ) ) {
-        return false;
+        return this._monotoneous = false;
       }
     }
 
-    return true;
+    return this._monotoneous = true;
   }
 
   requireMonotonicity() {
-    if ( !this.checkMonotonicity() ) {
+    if ( !this.isMonotoneous() ) {
       throw "The x wave must be monotonic";
     }
+  }
+
+  isMonotoneous() {
+    return !!this._monotoneous;
   }
 
   invert( data ) {
@@ -170,7 +268,7 @@ class Waveform {
     this.requireMonotonicity();
 
     let inverting = false;
-    
+
     if ( this.data[ 1 ][ 0 ] < this.data[ 0 ][ 0 ] ) {
       this.invert();
       inverting = true;
@@ -263,6 +361,121 @@ class Waveform {
     this.dataInUse = data;
     return dataMinMax;
   }
+
+  multiply( numberOrWave ) {
+
+    if ( numberOrWave instanceof Waveform ) {
+      return this._multiplyByWave( numberOrWave );
+    } else if ( typeof numberOrWave == 'number' ) {
+      return this._multiplyByNumber( numberOrWave );
+    }
+  }
+
+  _multiplyByNumber( num ) {
+
+    let i = 0,
+      l = this.getLength();
+
+    for ( ; i < l; i++ ) {
+      this.data[ i ][ 0 ] *= num;
+    }
+    return this;
+  }
+
+  _multiplyByWave( wave ) {
+
+    let y = wave.getDataY();
+    let i = 0,
+      l = this.getLength();
+
+    for ( ; i < l; i++ ) {
+      this.data[ i ][ 0 ] *= y[ i ];
+    }
+    return this;
+  }
+
+  divide( numberOrWave ) {
+
+    if ( numberOrWave instanceof Waveform ) {
+      return this._multiplyByWave( numberOrWave );
+    } else if ( typeof numberOrWave == 'number' ) {
+      return this._multiplyByNumber( numberOrWave );
+    }
+  }
+
+  _divideByNumber( num ) {
+
+    let i = 0,
+      l = this.getLength();
+
+    for ( ; i < l; i++ ) {
+      this.data[ i ][ 0 ] /= num;
+    }
+    return this;
+  }
+
+  _divideByWave( wave ) {
+
+    let y = wave.getDataY();
+    let i = 0,
+      l = this.getLength();
+
+    for ( ; i < l; i++ ) {
+      this.data[ i ][ 0 ] /= y[ i ];
+    }
+    return this;
+  }
+
+  aggregate() {
+
+    const levels = 10;
+
+    let level = 128; // 128 points
+
+    let i = 0;
+
+    this._dataAggregating = {};
+    this._dataAggregated = {};
+
+    for ( ; i < levels; i++ ) {
+
+      this._dataAggregating[ level ] = aggregator( {
+
+        min: this.getMinX(),
+        max: this.getMaxX(),
+        data: this.data,
+        numPoints: level
+
+      } ).then( ( data ) => {
+
+        this._dataAggregated[ data.numPoints ] = data.data;
+      } );
+
+      if ( level > this.getLength() ) {
+        break;
+      }
+
+      level *= 2;
+    }
+  }
+
+  hasAggregation() {
+    return !!this._dataAggregated;
+  }
+
+  getAggregatedData( pxWidth ) {
+
+    var level = pow2ceil( pxWidth );
+    if ( this._dataAggregated[ level ] ) {
+      this.dataInUse = this._dataAggregated[ level ];
+      return;
+    } else if ( this._dataAggregating[ level ] ) {
+      return this._dataAggregating[ level ];
+    }
+
+    this.dataInUse = this.data;
+  }
+
 };
 
 export default Waveform

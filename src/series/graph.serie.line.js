@@ -296,8 +296,7 @@ class SerieLine extends Serie {
    */
   toggleMarker( index, force, hover ) {
 
-    var i = index[ 0 ],
-      k = index[ 1 ] || 0;
+    let i = index[ 0 ];
 
     index = index.join();
 
@@ -324,11 +323,11 @@ class SerieLine extends Serie {
       var x, y;
 
       if ( this.mode == 'x_equally_separated' ) {
-        x = this._xDataToUse[ k ].x + i * this._xDataToUse[ k ].dx;
-        y = this.data[ k ][ i ];
+        x = this._xDataToUse.x + i * this._xDataToUse.dx;
+        y = this.data[ i ];
       } else {
-        x = this.data[ k ][ i * 2 ];
-        y = this.data[ k ][ i * 2 + 1 ];
+        x = this.data[ i * 2 ];
+        y = this.data[ i * 2 + 1 ];
       }
 
       x = this.getX( x );
@@ -498,7 +497,7 @@ class SerieLine extends Serie {
     return serie;
   }
 
-  drawInit() {
+  drawInit( force ) {
 
     var data, xData;
 
@@ -508,9 +507,10 @@ class SerieLine extends Serie {
     this.currentLine = "";
 
     // Degradation
-    if ( this.degradationPx ) {
 
-      if ( this._waveform ) {
+    if ( this._waveform ) {
+
+      if ( this.degradationPx ) {
 
         this._waveform.resampleForDisplay( {
 
@@ -521,17 +521,24 @@ class SerieLine extends Serie {
 
         this._dataToUse = [ this._waveform.getDataToUseFlat() ];
 
-      } else {
-        data = getDegradedData( this );
-        xData = data[ 1 ];
-        data = data[ 0 ];
-        this._dataToUse = data;
-        this._xDataToUse = xData;
+      } else if ( this._waveform.hasAggregation() ) {
+
+        let promise = this._waveform.getAggregatedData( this.graph.getDrawingWidth() );
+
+        if ( promise instanceof Promise ) {
+
+          promise.then( () => {
+
+            this.draw( force );
+
+          } );
+
+          return false;
+        }
+
       }
 
-    } else if ( this._waveform ) {
-
-      this._dataToUse = [ this._waveform.getDataToUseFlat() ];
+      this._dataToUse = this._waveform.getDataToUseFlat();
 
     } else {
 
@@ -540,33 +547,12 @@ class SerieLine extends Serie {
     }
 
     this._optimizeMonotoneous = this.isXMonotoneous();
-
     this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
-
     this._optimizeBreak;
     this._optimizeBuffer;
-
-    // Slots
-    this._slotToUse = false;
-    if ( this.options.useSlots && this.slots && this.slots.length > 0 ) {
-      if ( this.isFlipped() ) {
-        var slot = this.graph.getDrawingHeight() * ( this.maxY - this.minY ) / ( this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin() );
-      } else {
-        var slot = this.graph.getDrawingWidth() * ( this.maxX - this.minX ) / ( this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin() );
-      }
-
-      for ( var y = 0, z = this.slots.length; y < z; y++ ) {
-        if ( slot < this.slots[ y ] ) {
-          this._slotToUse = this.slotsData[ this.slots[ y ] ];
-          this._slotId = y;
-          break;
-        }
-      }
-    }
-
     this.detectedPeaks = [];
     this.lastYPeakPicking = false;
-
+    return true;
   }
 
   removeLinesGroup() {
@@ -647,7 +633,9 @@ class SerieLine extends Serie {
   draw( force ) { // Serie redrawing
 
     if ( force || this.hasDataChanged() ) {
-      this.drawInit();
+      if ( !this.drawInit( force ) ) {
+        return;
+      }
 
       var data = this._dataToUse,
         xData = this._xDataToUse,
@@ -663,18 +651,22 @@ class SerieLine extends Serie {
         this.errorDrawInit();
       }
 
-      if ( !this._draw_slot() ) {
+      //    if ( ! this.hasAggregatedData() ) {
 
-        if ( this.mode == 'x_equally_separated' ) {
+      if ( this.mode == 'x_equally_separated' ) {
 
-          this._draw_equally_separated();
+        this._draw_equally_separated();
 
-        } else {
+      } else {
 
-          this._draw_standard();
-        }
+        this._draw_standard();
+
       }
+      /*   } else {
 
+        this.drawAggregated();
+      }
+*/
       if ( this.error ) {
         this.errorDraw();
       }
@@ -706,18 +698,10 @@ class SerieLine extends Serie {
 
   _draw_standard() {
 
-    var self = this,
+    let self = this,
       data = this._dataToUse,
-      toBreak,
-      i = 0,
-      l = data.length,
-      j,
-      k,
-      m,
       x,
       y,
-      k,
-      o,
       lastX = false,
       lastY = false,
       xpx,
@@ -732,7 +716,7 @@ class SerieLine extends Serie {
       yMax = yAxis.getCurrentMax();
 
     // Y crossing
-    var yLeftCrossingRatio,
+    let yLeftCrossingRatio,
       yLeftCrossing,
       yRightCrossingRatio,
       yRightCrossing,
@@ -741,211 +725,213 @@ class SerieLine extends Serie {
       xBottomCrossingRatio,
       xBottomCrossing;
 
-    var incrXFlip = 0;
-    var incrYFlip = 1;
+    let pointOutside = false;
+    let lastPointOutside = false;
+    let pointOnAxis;
 
-    var pointOutside = false;
-    var lastPointOutside = false;
-    var pointOnAxis;
+    let _monotoneous = this.isMonotoneous(),
+      _markersShown = this.markersShown();
 
-    if ( this.isFlipped() ) {
-      incrXFlip = 1;
-      incrYFlip = 0;
-    }
+    let i = 0,
+      l = data.length;
 
-    for ( i = 0; i < l; i++ ) {
+    if ( _monotoneous ) {
 
-      toBreak = false;
-      this.counter1 = i;
+      let min = this.searchClosestValue( xMin, data ),
+        max = this.searchClosestValue( xMax, data );
 
-      this.currentLine = "";
-      j = 0;
-      k = 0;
-      m = data[ i ].length;
-
-      for ( j = 0; j < m; j += 2 ) {
-
-        x = data[ i ][ j + incrXFlip ];
-        y = data[ i ][ j + incrYFlip ];
-
-        if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
-          lastX = x;
-          lastY = y;
-          lastPointOutside = true;
-          continue;
-        }
-
-        this.counter2 = j / 2;
-
-        if ( this.markersShown() ) {
-          this.getMarkerCurrentFamily( this.counter2 );
-        }
-
-        xpx2 = this.getX( x );
-        ypx2 = this.getY( y );
-
-        if ( xpx2 == xpx && ypx2 == ypx ) {
-          continue;
-        }
-
-        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
-
-        if ( this.options.lineToZero ) {
-          pointOutside = ( x < xMin || x > xMax );
-
-          if ( pointOutside ) {
-            continue;
-          }
+      if ( min && max ) {
+        if ( min.xBeforeIndexArr > max.xBeforeIndexArr ) { // Data is flipped
+          let temp = max;
+          max = min.xBeforeIndexArr + 2;
+          min = temp.xBeforeIndexArr;
         } else {
 
-          if ( pointOutside || lastPointOutside ) {
+          min = min.xBeforeIndexArr;
+          max = max.xBeforeIndexArr + 2;
+        }
 
-            if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
+        i = min;
+        l = max + 2; // Condition is <, not <=, hence the +2
+      }
+    }
 
-              xpx = xpx2;
-              ypx = ypx2;
-              lastX = x;
-              lastY = y;
+    this.counter1 = 0;
+    this.currentLine = "";
 
-            } else {
+    for ( ; i < l; i += 2 ) {
 
-              pointOnAxis = [];
-              // Y crossing
-              yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
-              yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
-              yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
-              yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
+      x = data[ i ];
+      y = data[ i + 1 ];
 
-              // X crossing
-              xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
-              xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
-              xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
-              xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
+      if ( x != x || y != y ) { // NaN checks
+        this._createLine();
+        continue;
+      }
 
-              if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
-                pointOnAxis.push( [ xMin, yLeftCrossing ] );
-              }
+      if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
+        lastX = x;
+        lastY = y;
+        lastPointOutside = true;
+        continue;
+      }
 
-              if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
-                pointOnAxis.push( [ xMax, yRightCrossing ] );
-              }
+      this.counter2 = i;
 
-              if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
-                pointOnAxis.push( [ xTopCrossing, yMin ] );
-              }
+      if ( _markersShown ) {
+        this.getMarkerCurrentFamily( this.counter2 );
+      }
 
-              if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
-                pointOnAxis.push( [ xBottomCrossing, yMax ] );
-              }
+      xpx2 = this.getX( x );
+      ypx2 = this.getY( y );
+      //xpx2 = 0;
+      //ypx2 = 0;
 
-              if ( pointOnAxis.length > 0 ) {
+      if ( xpx2 == xpx && ypx2 == ypx ) {
+        continue;
+      }
 
-                if ( !pointOutside ) { // We were outside and now go inside
+      if ( !_monotoneous ) {
+        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+      } else {
+        pointOutside = ( y < yMin ||  y > yMax );
+      }
 
-                  if ( pointOnAxis.length > 1 ) {
-                    console.error( "Programmation error. Please e-mail me." );
-                    console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                  }
+      if ( this.options.lineToZero ) {
+        pointOutside = ( x < xMin || x > xMax );
 
-                  this._createLine();
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                  this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
+        if ( pointOutside ) {
+          continue;
+        }
+      } else {
 
-                } else if ( !lastPointOutside ) { // We were inside and now go outside
+        if ( pointOutside || lastPointOutside ) {
 
-                  if ( pointOnAxis.length > 1 ) {
-                    console.error( "Programmation error. Please e-mail me." );
-                    console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                  }
-
-                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-
-                } else {
-
-                  // No crossing: do nothing
-                  if ( pointOnAxis.length == 2 ) {
-                    this._createLine();
-
-                    this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                    this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                  }
-
-                }
-              } else if ( !pointOutside ) {
-                this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
-              } // else {
-              // Norman:
-              // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
-              // However, there's no need to draw anything because the point is on the axis and will already be covered.
-              // 28 Aug 2015
-
-              /*
-                if ( lastPointOutside !== pointOutside ) {
-                  console.error( "Programmation error. A crossing should have been found" );
-                  console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
-                  console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
-                  console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
-                  console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
-                  console.log( pointOutside, lastPointOutside )
-
-                }
-                */
-              // }
-            }
+          if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
 
             xpx = xpx2;
             ypx = ypx2;
             lastX = x;
             lastY = y;
 
-            lastPointOutside = pointOutside;
+          } else {
 
-            continue;
+            pointOnAxis = [];
+            // Y crossing
+            yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+            yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+            yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+            yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
+
+            // X crossing
+            xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+            xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+            xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+            xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
+
+            if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+              pointOnAxis.push( [ xMin, yLeftCrossing ] );
+            }
+
+            if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+              pointOnAxis.push( [ xMax, yRightCrossing ] );
+            }
+
+            if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+              pointOnAxis.push( [ xTopCrossing, yMin ] );
+            }
+
+            if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+              pointOnAxis.push( [ xBottomCrossing, yMax ] );
+            }
+
+            if ( pointOnAxis.length > 0 ) {
+
+              if ( !pointOutside ) { // We were outside and now go inside
+
+                if ( pointOnAxis.length > 1 ) {
+                  console.error( "Programmation error. Please e-mail me." );
+                  console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                }
+
+                this._createLine();
+                this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
+
+              } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+                if ( pointOnAxis.length > 1 ) {
+                  console.error( "Programmation error. Please e-mail me." );
+                  console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                }
+
+                this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+
+              } else {
+
+                // No crossing: do nothing
+                if ( pointOnAxis.length == 2 ) {
+                  this._createLine();
+
+                  this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                  this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                }
+
+              }
+            } else if ( !pointOutside ) {
+              this._addPoint( xpx2, ypx2, lastX, lastY, i, false, false );
+            } // else {
+            // Norman:
+            // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
+            // However, there's no need to draw anything because the point is on the axis and will already be covered.
+            // 28 Aug 2015
+
+            /*
+              if ( lastPointOutside !== pointOutside ) {
+                console.error( "Programmation error. A crossing should have been found" );
+                console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
+                console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
+                console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
+                console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
+                console.log( pointOutside, lastPointOutside )
+
+              }
+              */
+            // }
           }
 
-        }
+          xpx = xpx2;
+          ypx = ypx2;
+          lastX = x;
+          lastY = y;
 
-        if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
-          if ( this.counter > 0 ) {
+          lastPointOutside = pointOutside;
 
-            this._createLine();
-          }
           continue;
         }
 
-        // OPTIMIZATION START
-        if ( !this._optimize_before( xpx2, ypx2 ) ) {
-          continue;
-
-        }
-        // OPTIMIZATION END
-
-        this._addPoint( xpx2, ypx2, x, y, j, false, true );
-
-        this.detectPeaks( x, y );
-
-        // OPTIMIZATION START
-        if ( !this._optimize_after( xpx2, ypx2 ) ) {
-          toBreak = true;
-          break;
-
-        }
-        // OPTIMIZATION END
-
-        xpx = xpx2;
-        ypx = ypx2;
-
-        lastX = x;
-        lastY = y;
       }
 
-      this._createLine();
+      if ( xpx2 != xpx2 || ypx2 != ypx2 ) { // NaN checks
+        if ( this.counter > 0 ) {
 
-      if ( toBreak ) {
-        break;
+          this._createLine();
+        }
+        continue;
       }
 
+      this._addPoint( xpx2, ypx2, x, y, i, false, true );
+
+      //this.detectPeaks( x, y );
+
+      xpx = xpx2;
+      ypx = ypx2;
+
+      lastX = x;
+      lastY = y;
     }
+
+    this._createLine();
 
     if ( this._tracker ) {
 
@@ -956,7 +942,7 @@ class SerieLine extends Serie {
       var cloned = this.groupLines.cloneNode( true );
       this.groupMain.appendChild( cloned );
 
-      for ( var i = 0, l = cloned.children.length; i < l; i++ ) {
+      for ( i = 0, l = cloned.children.length; i < l; i++ ) {
 
         cloned.children[ i ].setAttribute( 'stroke', 'transparent' );
         cloned.children[ i ].setAttribute( 'stroke-width', '25px' );
@@ -975,31 +961,9 @@ class SerieLine extends Serie {
         self._trackingOutCallback( self );
       } );
     }
+
     return this;
 
-  }
-
-  _draw_slot() {
-
-    var self = this;
-    if ( this._slotToUse ) {
-
-      if ( this._slotToUse.done ) {
-
-        this._slotToUse.done( function( data ) {
-          self.drawSlot( data, self._slotId );
-        } );
-
-      } else {
-
-        this.drawSlot( this._slotToUse, self._slotId );
-
-      }
-      return true;
-
-    }
-
-    return false;
   }
 
   _draw_equally_separated() {
@@ -1590,31 +1554,33 @@ class SerieLine extends Serie {
    * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  searchClosestValue( valX ) {
+  searchClosestValue( valX, data ) {
 
     var xMinIndex;
+    data = data || this.data;
 
-    for ( var i = 0; i < this.data.length; i++ ) {
+    if ( ( valX <= data[ data.length - 2 ] && valX >= data[ 0 ] ) ) {
 
-      if ( ( valX <= this.data[ i ][ this.data[ i ].length - 2 ] && valX >= this.data[ i ][ 0 ] ) ) {
-        xMinIndex = this._searchBinary( valX, this.data[ i ], false );
-      } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 2 ] && valX <= this.data[ i ][ 0 ] ) ) {
-        xMinIndex = this._searchBinary( valX, this.data[ i ], true );
-      } else {
-        continue;
-      }
+      xMinIndex = this._searchBinary( valX, data, false );
 
-      return {
-        dataIndex: i,
-        xMin: this.data[ i ][ xMinIndex ],
-        xMax: this.data[ i ][ xMinIndex + 2 ],
-        yMin: this.data[ i ][ xMinIndex + 1 ],
-        yMax: this.data[ i ][ xMinIndex + 3 ],
-        xBeforeIndex: xMinIndex / 2,
-        xAfterIndex: xMinIndex / 2 + 1,
-        xBeforeIndexArr: xMinIndex,
-        xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 2 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
-      }
+    } else if ( ( valX >= data[ data.length - 2 ] && valX <= data[ 0 ] ) ) {
+
+      xMinIndex = this._searchBinary( valX, data, true );
+
+    } else {
+
+      return;
+    }
+
+    return {
+      xMin: data[ xMinIndex ],
+      xMax: data[ xMinIndex + 2 ],
+      yMin: data[ xMinIndex + 1 ],
+      yMax: data[ xMinIndex + 3 ],
+      xBeforeIndex: xMinIndex / 2,
+      xAfterIndex: xMinIndex / 2 + 1,
+      xBeforeIndexArr: xMinIndex,
+      xClosest: ( Math.abs( data[ xMinIndex + 2 ] - valX ) < Math.abs( data[ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
     }
   }
 
@@ -1686,18 +1652,20 @@ class SerieLine extends Serie {
   }
 
   _searchBinary( target, haystack, reverse ) {
-    var seedA = 0,
+    let seedA = 0,
       length = haystack.length,
-      seedB = ( length - 2 );
+      seedB = ( length - 2 ),
+      seedInt,
+      i = 0,
+      nanDirection = 2;
 
-    if ( haystack[ seedA ] == target )
+    if ( haystack[ seedA ] == target ) {
       return seedA;
+    }
 
-    if ( haystack[ seedB ] == target )
+    if ( haystack[ seedB ] == target ) {
       return seedB;
-
-    var seedInt;
-    var i = 0;
+    }
 
     while ( true ) {
       i++;
@@ -1708,21 +1676,30 @@ class SerieLine extends Serie {
       seedInt = ( seedA + seedB ) / 2;
       seedInt -= seedInt % 2; // Always looks for an x.
 
-      if ( seedInt == seedA || haystack[ seedInt ] == target )
+      while ( isNaN( haystack[ seedInt ] ) ) {
+        seedInt += nanDirection;
+      }
+
+      if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
         return seedInt;
+      }
 
       //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
       if ( haystack[ seedInt ] <= target ) {
-        if ( reverse )
+        if ( reverse ) {
           seedB = seedInt;
-        else
+        } else {
           seedA = seedInt;
+        }
       } else if ( haystack[ seedInt ] > target ) {
-        if ( reverse )
+        if ( reverse ) {
           seedA = seedInt;
-        else
+        } else {
           seedB = seedInt;
+        }
       }
+
+      nanDirection *= -1;
     }
   }
 
@@ -2240,6 +2217,14 @@ class SerieLine extends Serie {
     this.hidePeakPicking();
   }
 
+  isMonotoneous() {
+    if ( this._waveform ) {
+      return this._waveform.isMonotoneous();
+    }
+
+    return !!this.xmonotoneous;
+  }
+
   XIsMonotoneous() {
     this.xmonotoneous = true;
     return this;
@@ -2381,225 +2366,6 @@ function drawMarkerXY( graph, family, x, y, markerDom ) {
   markerDom.path = markerDom.path ||  "";
   markerDom.path += 'M ' + x + ' ' + y + ' ';
   markerDom.path += family.markerPath + ' ';
-}
-
-function getDegradedData( graph ) { // Serie redrawing
-
-  var self = graph,
-    xpx,
-    ypx,
-    xpx2,
-    ypx2,
-    i = 0,
-    l = graph.data.length,
-    j = 0,
-    k,
-    m,
-    degradationMin, degradationMax, degradationNb, degradationValue, degradation, degradationMinMax = [],
-    incrXFlip = 0,
-    incrYFlip = 1,
-    degradeFirstX, degradeFirstXPx,
-    optimizeMonotoneous = graph.isXMonotoneous(),
-    optimizeMaxPxX = graph.getXAxis().getMathMaxPx(),
-    optimizeBreak, buffer;
-
-  if ( graph.isFlipped() ) {
-    incrXFlip = 1;
-    incrYFlip = 0;
-  }
-
-  var datas = [];
-  var xData = [],
-    dataY = [],
-    sum = 0;
-
-  if ( graph.mode == 'x_equally_separated' ) {
-
-    if ( graph.isFlipped() ) {
-      return [ graph.data, graph.xData ];
-    }
-
-    dataY = [];
-
-    for ( ; i < l; i++ ) {
-
-      j = 0;
-      k = 0;
-      m = graph.data[ i ].length;
-
-      var delta = Math.round( graph.degradationPx / graph.getXAxis().getRelPx( graph.xData[ i ].dx ) );
-
-      if ( delta == 1 ) {
-        xData.push( graph.xData[ i ] );
-        datas.push( graph.data[ i ] );
-      }
-
-      degradationMin = Infinity;
-      degradationMax = -Infinity;
-
-      for ( ; j < m; j += 1 ) {
-
-        xpx = graph.xData[ i ].x + j * graph.xData[ i ].dx;
-
-        if ( optimizeMonotoneous && xpx < 0 ) {
-          buffer = [ xpx, ypx, graph.data[ i ][ j ] ];
-          continue;
-        }
-
-        if ( optimizeMonotoneous && buffer ) {
-
-          sum += buffer[ 2 ];
-          degradationMin = Math.min( degradationMin, buffer[ 2 ] );
-          degradationMax = Math.max( degradationMax, buffer[ 2 ] );
-
-          buffer = false;
-          k++;
-        }
-
-        sum += graph.data[ i ][ j ];
-        degradationMin = Math.min( degradationMin, graph.data[ i ][ j ] );
-        degradationMax = Math.max( degradationMax, graph.data[ i ][ j ] );
-
-        if ( ( j % delta == 0 && j > 0 ) || optimizeBreak ) {
-
-          dataY.push( sum / delta );
-
-          degradationMinMax.push( ( graph.xData[ i ].x + j * graph.xData[ i ].dx - ( delta / 2 ) * graph.xData[ i ].dx ), degradationMin, degradationMax );
-
-          degradationMin = Infinity;
-          degradationMax = -Infinity;
-
-          sum = 0;
-        }
-
-        if ( optimizeMonotoneous && xpx > optimizeMaxPxX ) {
-
-          optimizeBreak = true;
-
-          break;
-        }
-
-        k++;
-      }
-
-      datas.push( dataY );
-      xData.push( {
-        dx: delta * graph.xData[ i ].dx,
-        x: graph.xData[ i ].x + ( delta * graph.xData[ i ].dx / 2 )
-      } );
-    }
-
-    if ( graph.degradationSerie ) {
-      graph.degradationSerie.setData( degradationMinMax );
-      graph.degradationSerie.draw();
-    }
-
-    return [ datas, xData ]
-
-  }
-
-  for ( ; i < l; i++ ) {
-
-    j = 0;
-    k = 0;
-    m = graph.data[ i ].length;
-
-    degradationNb = 0;
-    degradationValue = 0;
-
-    degradationMin = Infinity;
-    degradationMax = -Infinity;
-
-    var data = [];
-    for ( ; j < m; j += 2 ) {
-
-      xpx2 = graph.getX( graph.data[ i ][ j + incrXFlip ] );
-
-      if ( optimizeMonotoneous && xpx2 < 0 ) {
-
-        buffer = [
-          xpx2,
-          graph.getY( graph.data[ i ][ j + incrYFlip ] ),
-          graph.data[ i ][ j + incrXFlip ],
-          graph.data[ i ][ j + incrYFlip ]
-        ];
-
-        continue;
-      }
-
-      if ( optimizeMonotoneous && buffer ) {
-
-        degradationValue += buffer[  3 ];
-        degradationNb++;
-
-        degradationMin = Math.min( degradationMin, buffer[ 3 ] );
-        degradationMax = Math.max( degradationMax, buffer[ 3 ] );
-
-        degradeFirstX = buffer[  2 ];
-        degradeFirstXPx = buffer[  0 ];
-
-        buffer = false;
-        k++;
-
-      } else if ( degradeFirstX === undefined ) {
-
-        degradeFirstX = graph.data[ i ][ j + incrXFlip ];
-        degradeFirstXPx = xpx2;
-      }
-
-      if ( Math.abs( xpx2 - degradeFirstXPx ) > graph.degradationPx && j < m ) {
-
-        data.push(
-          ( degradeFirstX + graph.data[ i ][ j + incrXFlip ] ) / 2,
-          degradationValue / degradationNb
-        );
-
-        degradationMinMax.push( ( graph.data[ i ][ j + incrXFlip ] + degradeFirstX ) / 2, degradationMin, degradationMax );
-
-        if ( degradeFirstXPx > optimizeMaxPxX ) {
-
-          break;
-        }
-
-        degradeFirstX = undefined;
-        degradationNb = 0;
-        degradationValue = 0;
-        degradationMin = Infinity;
-        degradationMax = -Infinity;
-
-        k++;
-      }
-
-      degradationValue += graph.data[ i ][ j + incrYFlip ];
-      degradationNb++;
-
-      degradationMin = Math.min( degradationMin, graph.data[ i ][ j + incrYFlip ] );
-      degradationMax = Math.max( degradationMax, graph.data[ i ][ j + incrYFlip ] );
-
-      if ( optimizeMonotoneous && xpx2 > optimizeMaxPxX ) {
-
-        optimizeBreak = true;
-      }
-
-      xpx = xpx2;
-      ypx = ypx2;
-
-    }
-
-    datas.push( data );
-
-    if ( optimizeBreak ) {
-
-      break;
-    }
-  }
-
-  if ( graph.degradationSerie ) {
-    graph.degradationSerie.setData( degradationMinMax );
-    graph.degradationSerie.draw();
-  }
-
-  return [ datas ];
 }
 
 function hidePeakPicking( graph ) {

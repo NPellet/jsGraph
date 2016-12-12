@@ -47,15 +47,14 @@ class Serie extends EventEmitter {
     this.minY = Number.MAX_SAFE_INTEGER;
     this.maxY = Number.MIN_SAFE_INTEGER;
 
+    let datas;
+
     var isDataArray = isArray( data );
 
-    // Single object
-    var datas = [];
-
     if ( !isDataArray && typeof data == 'object' ) {
-      data = [ data ];
+      data = data;
     } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
-      data = [ data ];
+      data = data;
       oneDimensional = true;
     } else if ( isDataArray && isArray( data[ 0 ] ) && data[ 0 ].length > 2 ) {
       oneDimensional = true;
@@ -70,39 +69,35 @@ class Serie extends EventEmitter {
     var isData00Array = isArray( data[ 0 ][ 0 ] );
 
     if ( isData0Array && !oneDimensional && !isData00Array ) {
-      data = [ data ];
+      data = data;
     }
     if ( isData0Array ) {
 
-      for ( var i = 0, k = data.length; i < k; i++ ) {
+      arr = this._addData( type, !oneDimensional ? data.length * 2 : data.length );
+      datas = arr;
+      z = 0;
 
-        arr = this._addData( type, !oneDimensional ? data[ i ].length * 2 : data[ i ].length );
-        datas.push( arr );
-        z = 0;
+      for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-        for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
+        if ( !oneDimensional ) {
+          arr[ z ] = ( data[ i ][ j ][ 0 ] );
 
-          if ( !oneDimensional ) {
-            arr[ z ] = ( data[ i ][ j ][ 0 ] );
+          this._checkX( arr[ z ] );
+          z++;
+          arr[ z ] = ( data[ i ][ j ][ 1 ] );
+          this._checkY( arr[ z ] );
+          z++;
+          total++;
 
-            this._checkX( arr[ z ] );
-            z++;
-            arr[ z ] = ( data[ i ][ j ][ 1 ] );
-            this._checkY( arr[ z ] );
-            z++;
-            total++;
+        } else { // 1D Array
+          arr[ z ] = data[ i ][ j ];
+          this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
 
-          } else { // 1D Array
-            arr[ z ] = data[ i ][ j ];
-            this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
+          z++;
+          total += j % 2 ? 1 : 0;
 
-            z++;
-            total += j % 2 ? 1 : 0;
-
-          }
         }
       }
-
     } else if ( typeof data[ 0 ] == 'object' ) {
 
       if ( data[ 0 ].x ) {
@@ -110,7 +105,7 @@ class Serie extends EventEmitter {
         for ( var i = 0, l = data.length; i < l; i++ ) {
 
           var arr = this._addData( type, data[ i ].x.length * 2 );
-          datas.push( arr );
+          datas = arr;
 
           z = 0;
           for ( var j = 0, m = data[ 0 ].x.length; j < m; j++ ) { // Several piece of data together
@@ -130,7 +125,6 @@ class Serie extends EventEmitter {
 
         var number = 0,
           numbers = [],
-          datas = [],
           k = 0,
           o;
 
@@ -144,7 +138,7 @@ class Serie extends EventEmitter {
           number += data[ i ].y.length;
           continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
           if ( !continuous ) {
-            datas.push( this._addData( type, number ) );
+            datas = this._addData( type, number );
             numbers.push( number );
             number = 0;
           }

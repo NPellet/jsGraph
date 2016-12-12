@@ -13,6 +13,7 @@
 			"./src/dependencies/eventEmitter/EventEmitter.js",
 			"./src/util/waveform.js",
 			"./src/util/fit_lm.js",
+			"./src/util/data_aggregator.js",
 			"./src/graph.legend.js",
 			"./src/graph.axis.x.js",
 			"./src/graph.axis.js",
