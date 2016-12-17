@@ -19,30 +19,13 @@ define( function() {
              strokeWidth: 1,
             strokeColor: 'rgb(200, 200, 0)',
             fillColor: 'rgb(200, 0, 0)',
-            selectable: true
+            selectable: true,
+            selectOnClick: true
         }).draw();
+    s.setSelectStyle( { 'fill': 'blue' });
 
-
-        
-        graphinstance.draw();
-     s.redraw();
-     s.applyStyle();
+     graphinstance.draw();
      
-        graphinstance.selectShape( s );
-
-        s.setSelectStyle({
-          stroke: function() {
-          return this.getStrokeColor().replace(", 0)", ", 100)");
-          },
-          fill: function() {
-          return this.getFillColor().replace(", 0)", ", 200)");
-          },
-          'stroke-width': 2
-          });
-
-
-
-        s.setStrokeColor('rgb(0, 100, 0)')
    //
 //        s.applyStyle();
      
