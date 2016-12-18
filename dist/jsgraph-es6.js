@@ -522,7 +522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	      } else {
 
-	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this)) {
+	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
 	          this.executeRedrawSlaves();
 	          refreshDrawingZone(this);
 	          return true;
@@ -543,6 +543,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	    draw() {
 
 	      this.drawSeries(this.redraw(true));
+	    }
+
+	    /**
+	     *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+	    delayUpdate() {
+	      this._lockUpdate = true;
+	      return this;
+	    }
+
+	    /**
+	     *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @since 1.16.19
+	     */
+	    doUpdate() {
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      this.draw();
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      return this;
+	    }
+
+	    /**
+	     *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+	    resumeUpdate() {
+	      this._lockUpdate = false;
+	      return this;
+	    }
+
+	    isDelayedUpdate() {
+	      return this._lockUpdate;
 	    }
 
 	    /**
@@ -1346,6 +1395,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.series[0].kill(true);
 	      }
 	      this.series = [];
+
+	      if (this.legend) {
+	        this.legend.update();
+	      }
 	    }
 
 	    /**
@@ -2208,6 +2261,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      util.setAttributeTo(this.graphingZone, {
 	        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
 	      });
+
+	      this._sizeChanged = true;
 	    }
 
 	    // We have to proxy the methods in case they are called anonymously
@@ -3595,6 +3650,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function haveAxesChanged(graph) {
 	    var temp = graph._axesHaveChanged;
 	    graph._axesHaveChanged = false;
+	    return temp;
+	  }
+
+	  function hasSizeChanged(graph) {
+	    var temp = graph._sizeChanged;
+	    graph._sizeChanged = false;
 	    return temp;
 	  }
 
@@ -5055,6 +5116,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	          posX = 0,
 	          posY = this.options.paddingTop;
 
+	      if (!this.autoPosition) {
+	        this.graph.graphingZone.appendChild(this.getDom());
+	      } else {
+	        this.graph.getDom().appendChild(this.getDom());
+	      }
+
 	      for (var i = 0, l = series.length; i < l; i++) {
 
 	        if (series[i].excludedFromLegend && !this.series) {
@@ -5085,7 +5152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var bbox = getBBox(this.subG);
-
+	      console.log(bbox);
 	      /* Independant on box position */
 	      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
 	      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -5164,19 +5231,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.updateGraphingZone();
 	        this.graph.getDrawingHeight();
 	        this.graph.getDrawingWidth();
-	        this.graph.redraw(false);
+	        // this.graph.redraw( false );
 	      }
 
 	      this.bbox = bbox;
 	    }
 
 	    calculatePosition() {
-
-	      if (!this.autoPosition) {
-	        this.graph.graphingZone.appendChild(this.getDom());
-	      } else {
-	        this.graph.getDom().appendChild(this.getDom());
-	      }
 
 	      var pos = _graph2.default.check(this.position);
 	      let poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
@@ -5201,6 +5262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.pos.transformX = poscoords.x;
 	      this.pos.transformY = poscoords.y;
+
 	      this._setPosition();
 	    }
 
@@ -5208,6 +5270,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Updates the legend position and content
 	     */
 	    update() {
+	      console.time('updatelegend');
+	      if (this.graph.isDelayedUpdate()) {
+	        return;
+	      }
 
 	      var self = this;
 
@@ -5342,8 +5408,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.svg.appendChild(this.rect);
+	      console.timeEnd('updatelegend');
+
+	      console.time('bb');
+
 	      this.buildLegendBox();
+	      console.timeEnd('bb');
+
+	      console.time('pos');
+
 	      this.calculatePosition();
+	      console.timeEnd('pos');
 	    }
 
 	    /** 
@@ -12726,20 +12801,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+	     * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+	     * @return {Serie} The current serie instance
 	     * @memberof Serie
 	     */
-	    kill() {
+	    kill(noLegendUpdate) {
 
 	      this.graph.removeSerieFromDom(this);
 	      this.graph._removeSerie(this);
 
-	      if (this.graph.legend) {
+	      if (this.graph.legend && !noLegendUpdate) {
 
 	        this.graph.legend.update();
 	      }
 
 	      this.graph = undefined;
+	      return this;
 	    }
 
 	    /**

@@ -161,6 +161,12 @@ class Legend {
       posX = 0,
       posY = this.options.paddingTop;
 
+    if ( !this.autoPosition ) {
+      this.graph.graphingZone.appendChild( this.getDom() );
+    } else {
+      this.graph.getDom().appendChild( this.getDom() );
+    }
+
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
       if ( series[  i ].excludedFromLegend && !this.series ) {
@@ -192,7 +198,7 @@ class Legend {
     }
 
     var bbox = getBBox( this.subG );
-
+    console.log( bbox );
     /* Independant on box position */
     this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
     this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -271,7 +277,7 @@ class Legend {
       this.graph.updateGraphingZone();
       this.graph.getDrawingHeight();
       this.graph.getDrawingWidth();
-      this.graph.redraw( false );
+      // this.graph.redraw( false );
 
     }
 
@@ -279,12 +285,6 @@ class Legend {
   }
 
   calculatePosition() {
-
-    if ( !this.autoPosition ) {
-      this.graph.graphingZone.appendChild( this.getDom() );
-    } else {
-      this.graph.getDom().appendChild( this.getDom() );
-    }
 
     var pos = GraphPosition.check( this.position );
     let poscoords = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
@@ -310,13 +310,19 @@ class Legend {
 
     this.pos.transformX = poscoords.x;
     this.pos.transformY = poscoords.y;
+
     this._setPosition();
+
   }
 
   /** 
    * Updates the legend position and content
    */
   update() {
+    console.time( 'updatelegend' );
+    if ( this.graph.isDelayedUpdate() ) {
+      return;
+    }
 
     var self = this;
 
@@ -452,8 +458,18 @@ class Legend {
     }
 
     this.svg.appendChild( this.rect );
+    console.timeEnd( 'updatelegend' );
+
+    console.time( 'bb' );
+
     this.buildLegendBox();
+    console.timeEnd( 'bb' );
+
+    console.time( 'pos' );
+
     this.calculatePosition();
+    console.timeEnd( 'pos' );
+
   }
 
   /** 
