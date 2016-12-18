@@ -270,7 +270,7 @@ class Graph extends EventEmitter {
 
     } else {
 
-      if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+      if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) || hasSizeChanged( this ) ) {
         this.executeRedrawSlaves();
         refreshDrawingZone( this );
         return true;
@@ -292,6 +292,55 @@ class Graph extends EventEmitter {
   draw() {
 
     this.drawSeries( this.redraw( true ) );
+  }
+
+  /**
+   *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#resumeUpdate}
+   *  @see {@link Graph#doUpdate}
+   *  @since 1.16.19
+   */
+  delayUpdate() {
+    this._lockUpdate = true;
+    return this;
+  }
+
+  /**
+   *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#delayUpdate}
+   *  @see {@link Graph#resumeUpdate}
+   *  @since 1.16.19
+   */
+  doUpdate() {
+    if ( this.legend ) {
+      this.legend.update();
+    }
+    this.draw();
+    if ( this.legend ) {
+      this.legend.update();
+    }
+    return this;
+  }
+
+  /**
+   *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#delayUpdate}
+   *  @see {@link Graph#doUpdate}
+   *  @since 1.16.19
+   */
+  resumeUpdate() {
+    this._lockUpdate = false;
+    return this;
+  }
+
+  isDelayedUpdate() {
+    return this._lockUpdate;
   }
 
   /**
@@ -1999,6 +2048,8 @@ class Graph extends EventEmitter {
     util.setAttributeTo( this.graphingZone, {
       'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
     } );
+
+    this._sizeChanged = true;
   }
 
   // We have to proxy the methods in case they are called anonymously
@@ -3514,6 +3565,12 @@ function _handleMouseLeave( graph ) {
 function haveAxesChanged( graph ) {
   var temp = graph._axesHaveChanged;
   graph._axesHaveChanged = false;
+  return temp;
+}
+
+function hasSizeChanged( graph ) {
+  var temp = graph._sizeChanged;
+  graph._sizeChanged = false;
   return temp;
 }
 

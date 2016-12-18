@@ -267,7 +267,7 @@ class Serie extends EventEmitter {
     this.graph.removeSerieFromDom( this );
     this.graph._removeSerie( this );
 
-    if ( this.graph.legend && ! noLegendUpdate ) {
+    if ( this.graph.legend && !noLegendUpdate ) {
 
       this.graph.legend.update();
     }
