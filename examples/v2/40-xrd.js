@@ -73,6 +73,8 @@ legend.setPosition(
     ), "right", "top" );
 
 
+graph.draw();
+
 graph
 .newShape( "label" )
 .setLabelPosition( { x: 14.22, dy: "-8px" } )
