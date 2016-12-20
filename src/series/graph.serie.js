@@ -1,6 +1,8 @@
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
 import * as util from '../graph.util'
 
+import Waveform from '../util/waveform'
+
 /**
  * Serie class to be extended
  * @static
@@ -47,14 +49,14 @@ class Serie extends EventEmitter {
     this.minY = Number.MAX_SAFE_INTEGER;
     this.maxY = Number.MIN_SAFE_INTEGER;
 
-    let datas;
+    let datas = [];
 
     var isDataArray = isArray( data );
 
     if ( !isDataArray && typeof data == 'object' ) {
-      data = data;
+      data = [ data ];
     } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
-      data = data;
+      data = [  data ];
       oneDimensional = true;
     } else if ( isDataArray && isArray( data[ 0 ] ) && data[ 0 ].length > 2 ) {
       oneDimensional = true;
@@ -69,32 +71,28 @@ class Serie extends EventEmitter {
     var isData00Array = isArray( data[ 0 ][ 0 ] );
 
     if ( isData0Array && !oneDimensional && !isData00Array ) {
-      data = data;
+      data = [ data ];
     }
     if ( isData0Array ) {
 
-      arr = this._addData( type, !oneDimensional ? data.length * 2 : data.length );
-      datas = arr;
-      z = 0;
+      for ( var i = 0, k = data.length; i < k; i++ ) {
 
-      for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
+        arr = this._addData( type, !oneDimensional ? data.length * 2 : data.length );
+        datas.push( arr );
+        z = 0;
 
-        if ( !oneDimensional ) {
-          arr[ z ] = ( data[ i ][ j ][ 0 ] );
+        for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
 
-          this._checkX( arr[ z ] );
-          z++;
-          arr[ z ] = ( data[ i ][ j ][ 1 ] );
-          this._checkY( arr[ z ] );
-          z++;
-          total++;
+          if ( !oneDimensional ) {
+            arr[ z ] = [ data[ i ][ j ][ 0 ], data[ i ][ j ][ 1 ] ];
+            total++;
+            z++;
+          } else { // 1D Array
+            arr[ z ] = [ data[ i ][ j ], data[ i ][ j + 1 ] ];
+            z++;
+            total += j % 2 ? 1 : 0;
 
-        } else { // 1D Array
-          arr[ z ] = data[ i ][ j ];
-          this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
-
-          z++;
-          total += j % 2 ? 1 : 0;
+          }
 
         }
       }
@@ -105,17 +103,13 @@ class Serie extends EventEmitter {
         for ( var i = 0, l = data.length; i < l; i++ ) {
 
           var arr = this._addData( type, data[ i ].x.length * 2 );
-          datas = arr;
+          datas.push( arr );
 
           z = 0;
           for ( var j = 0, m = data[ 0 ].x.length; j < m; j++ ) { // Several piece of data together
-            arr[ z ] = ( data[ i ].x[ j ] );
-            z++;
-            arr[ z ] = ( data[ i ].y[ j ] );
-            z++;
-            this._checkX( data[ i ].x[ j ] );
-            this._checkY( data[ i ].y[ j ] );
+            arr[ z ] = [ data[ i ].x[ j ], data[ i ].y[ j ] ];
             total++;
+            z++;
           }
         }
 
@@ -138,7 +132,7 @@ class Serie extends EventEmitter {
           number += data[ i ].y.length;
           continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
           if ( !continuous ) {
-            datas = this._addData( type, number );
+            datas.push( this._addData( type, number ) );
             numbers.push( number );
             number = 0;
           }
@@ -154,27 +148,13 @@ class Serie extends EventEmitter {
           x = data[ i ].x;
           dx = data[ i ].dx;
 
-          this.xData.push( {
-            x: x,
-            dx: dx
-          } );
-
-          o = data[ i ].y.length;
-          this._checkX( x );
-          this._checkX( x + dx * o );
-
           for ( var j = 0; j < o; j++ ) {
-            /*datas[k][z] = (x + j * dx);
-  						this._checkX(datas[k][z]);
-  						z++;*/
-            // 30 june 2014. To save memory I suggest that we do not add this stupid data.
 
-            datas[ k ][ z ] = ( data[ i ].y[ j ] );
-            this._checkY( datas[ k ][ z ] );
+            datas[ k ][ z ] = [ ( x + j * dx ), data[ i ].y[ j ] ];
             z++;
             total++;
-
           }
+
           number += data[ i ].y.length;
 
           if ( numbers[ k ] == number ) {
@@ -195,45 +175,26 @@ class Serie extends EventEmitter {
 
     var min = this.graph.getDrawingWidth();
     var max = total;
-
-    this.data = datas;
-
-    if ( min > 0 ) {
-
-      while ( min < max ) {
-        ws.push( min );
-        min *= 4;
+    console.log( datas );
+    datas = datas.reduce( function( a, b, index ) {
+      if ( index > 0 ) {
+        a.push( [ NaN, NaN ] );
       }
+      //console.log( a, b );
+      return a.concat( b );
+    }, [] );
+    console.log( datas );
+    var wave = new Waveform();
+    wave.setDataXY( datas );
+    this.setWaveform( wave );
 
-      this.slots = ws;
-
-      if ( this.options.useSlots ) {
-
-        this.calculateSlots();
-      }
-    }
-
-    if ( this.isFlipped() ) {
-
-      var maxX = this.maxX;
-      var maxY = this.maxY;
-      var minX = this.minX;
-      var minY = this.minY;
-
-      this.maxX = maxY;
-      this.maxY = maxX;
-
-      this.minX = minY;
-      this.minY = minX;
-    }
-
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
     return this;
   }
 
   _addData( type, howmany ) {
 
+    return [];
+    /*
     switch ( type ) {
       case 'int':
         var size = howmany * 4; // 4 byte per number (32 bits)
@@ -255,6 +216,7 @@ class Serie extends EventEmitter {
         return new Float64Array( arr );
         break;
     }
+    */
   }
 
   /**
