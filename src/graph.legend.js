@@ -198,7 +198,7 @@ class Legend {
     }
 
     var bbox = getBBox( this.subG );
-    console.log( bbox );
+    
     /* Independant on box position */
     this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
     this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -319,7 +319,7 @@ class Legend {
    * Updates the legend position and content
    */
   update() {
-    console.time( 'updatelegend' );
+    
     if ( this.graph.isDelayedUpdate() ) {
       return;
     }
@@ -458,17 +458,8 @@ class Legend {
     }
 
     this.svg.appendChild( this.rect );
-    console.timeEnd( 'updatelegend' );
-
-    console.time( 'bb' );
-
     this.buildLegendBox();
-    console.timeEnd( 'bb' );
-
-    console.time( 'pos' );
-
     this.calculatePosition();
-    console.timeEnd( 'pos' );
 
   }
 

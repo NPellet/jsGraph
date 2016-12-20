@@ -343,6 +343,8 @@ graph.draw();
     <span class="na">y</span><span class="p">:</span> <span class="nx">graph</span><span class="p">.</span><span class="nx">getDrawingSpaceMinY</span><span class="p">()</span>
   <span class="p">}</span> <span class="p">),</span> <span class="s2">"right"</span><span class="p">,</span> <span class="s2">"top"</span> <span class="p">);</span>
 
+<span class="nx">graph</span><span class="p">.</span><span class="nx">draw</span><span class="p">();</span>
+
 <span class="nx">graph</span>
   <span class="p">.</span><span class="nx">newShape</span><span class="p">(</span> <span class="s2">"label"</span> <span class="p">)</span>
   <span class="p">.</span><span class="nx">setLabelPosition</span><span class="p">(</span> <span class="p">{</span>
@@ -493,6 +495,8 @@ legend.setPosition(
     { x: graph.getDrawingSpaceMaxX(), dx: "0px", y: graph.getDrawingSpaceMinY() }
     ), "right", "top" );
 
+
+graph.draw();
 
 graph
 .newShape( "label" )
