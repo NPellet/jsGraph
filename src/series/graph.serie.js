@@ -678,6 +678,8 @@ class Serie extends EventEmitter {
     if ( this.textForLegend ) {
       this.textForLegend.textContent = label;
     }
+
+    this.graph.requireLegendUpdate();
     return this;
   }
 
@@ -734,6 +736,7 @@ class Serie extends EventEmitter {
     //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
+
   }
 
   /**
@@ -754,6 +757,7 @@ class Serie extends EventEmitter {
       this._changedStyles[ selectionType ||  "unselected" ] = true;
     }
 
+    this.graph.requireLegendUpdate();
     return this;
   }
 

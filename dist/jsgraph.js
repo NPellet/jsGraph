@@ -8746,6 +8746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'draw',
 	    value: function draw() {
 
+	      this.updateLegend(true);
 	      this.drawSeries(this.redraw(true));
 	    }
 
@@ -9656,7 +9657,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      this.series.push(serie);
-	      this.updateLegend();
+	      //    this.updateLegend();
 
 	      this.emit("newSerie", serie);
 	      return serie;
@@ -10435,24 +10436,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return util.throwError("Graph legend is not available as it has not been registered");
 	      }
 
-	      this.legend.update();
+	      //    this.legend.update();
 
 	      return this.legend;
 	    }
 
 	    /**
-	     * Redraw the legend
+	     * Redraws the legend if it exists
+	     * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+	     * @return {Graph} The graph instance
 	     */
 
 	  }, {
 	    key: 'updateLegend',
 	    value: function updateLegend() {
+	      var onlyIfRequired = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
 
 	      if (!this.legend) {
 	        return;
 	      }
 
-	      this.legend.update();
+	      this.legend.update(onlyIfRequired);
+	      return this;
 	    }
 
 	    /**
@@ -10467,6 +10473,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return this.legend;
+	    }
+	  }, {
+	    key: 'requireLegendUpdate',
+	    value: function requireLegendUpdate() {
+
+	      if (!this.legend) {
+	        return;
+	      }
+
+	      this.legend.requireDelayedUpdate();
 	    }
 
 	    /**
@@ -10552,13 +10568,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.dom.setAttribute('height', this.height);
 	      this.domTitle.setAttribute('x', this.width / 2);
 
-	      this.redraw();
-	      this.drawSeries(true);
-	      //refreshDrawingZone( this );
-
-	      if (this.legend) {
-	        this.legend.update();
-	      }
+	      this.requireLegendUpdate();
+	      this.draw();
 	    }
 	  }, {
 	    key: '_doDom',
@@ -13612,6 +13623,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	      }
 
+	      this.requireDelayedUpdate();
 	      this.autoPosition = false;
 	    }
 	  }, {
@@ -13663,7 +13675,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var bbox = getBBox(this.subG);
-	      console.log(bbox);
+
 	      /* Independant on box position */
 	      this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
 	      this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -13682,8 +13694,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.rectBottom.setAttribute('width', this.width);
 	      this.rectBottom.setAttribute('height', this.height);
 
-	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingTop);
-	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingLeft);
+	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingLeft);
+	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingTop);
 	      /* End independant on box position */
 
 	      this.position = this.position || {};
@@ -13784,11 +13796,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'update',
-	    value: function update() {
-	      console.time('updatelegend');
-	      if (this.graph.isDelayedUpdate()) {
+	    value: function update(onlyIfRequired) {
+
+	      if (this.graph.isDelayedUpdate() || !this._requiredUpdate && onlyIfRequired) {
 	        return;
 	      }
+
+	      this._requiredUpdate = false;
 
 	      var self = this;
 
@@ -13923,17 +13937,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.svg.appendChild(this.rect);
-	      console.timeEnd('updatelegend');
-
-	      console.time('bb');
-
 	      this.buildLegendBox();
-	      console.timeEnd('bb');
-
-	      console.time('pos');
-
 	      this.calculatePosition();
-	      console.timeEnd('pos');
 	    }
 
 	    /** 
@@ -14118,6 +14123,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function fixSeriesAdd(serie) {
 	      this.series = this.series || [];
 	      this.series.push(serie);
+	    }
+	  }, {
+	    key: 'requireDelayedUpdate',
+	    value: function requireDelayedUpdate() {
+	      this._requiredUpdate = true;
 	    }
 	  }, {
 	    key: 'seriesHideable',
@@ -22427,6 +22437,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.textForLegend) {
 	        this.textForLegend.textContent = label;
 	      }
+
+	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 
@@ -22525,6 +22537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._changedStyles[selectionType || "unselected"] = true;
 	      }
 
+	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 

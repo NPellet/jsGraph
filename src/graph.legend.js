@@ -148,6 +148,7 @@ class Legend {
       return this;
     }
 
+    this.requireDelayedUpdate();
     this.autoPosition = false;
   }
 
@@ -198,7 +199,7 @@ class Legend {
     }
 
     var bbox = getBBox( this.subG );
-    
+
     /* Independant on box position */
     this.width = bbox.width + this.options.paddingRight + this.options.paddingLeft;
     this.height = bbox.height + this.options.paddingBottom + this.options.paddingTop;
@@ -217,8 +218,8 @@ class Legend {
     this.rectBottom.setAttribute( 'width', this.width );
     this.rectBottom.setAttribute( 'height', this.height );
 
-    this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
-    this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+    this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingLeft );
+    this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingTop );
     /* End independant on box position */
 
     this.position = this.position || {};
@@ -318,11 +319,13 @@ class Legend {
   /** 
    * Updates the legend position and content
    */
-  update() {
-    
-    if ( this.graph.isDelayedUpdate() ) {
+  update( onlyIfRequired ) {
+
+    if ( this.graph.isDelayedUpdate() ||  ( !this._requiredUpdate && onlyIfRequired ) ) {
       return;
     }
+
+    this._requiredUpdate = false;
 
     var self = this;
 
@@ -632,6 +635,10 @@ class Legend {
   fixSeriesAdd( serie ) {
     this.series = this.series || [];
     this.series.push( serie );
+  }
+
+  requireDelayedUpdate() {
+    this._requiredUpdate = true;
   }
 
 }

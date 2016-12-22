@@ -34,7 +34,7 @@ define( function() {
 			movable: true,
 			isSerieHideable: true
 
-		});
+		}).autoPosition('bottom');
 
 
 		graphinstance.newSerie( "sin" )
@@ -58,12 +58,12 @@ define( function() {
 			.setLineColor('#891abd');
 
 		graphinstance.getXAxis().setLabel( 'x' );
-		graphinstance.getYAxis().setLabel( 'y' );
+			graphinstance.getYAxis().setLabel( 'y' );
 		//graphinstance.getYAxis().setLineAt0( true );
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		//graphinstance.redraw( );
 		
+		/*
 		legend.setPosition(
 
 			{ dx: "-10px", dy: "10px", x: "max", y: "max" }, 
@@ -71,13 +71,17 @@ define( function() {
 			"top" // Reference point
 
 		);
-
-		var state = graphinstance.getAxisState();
+*/
+/*		var state = graphinstance.getAxisState();
 		state.left[ 0 ] = [ 10, 20 ];
 		state.bottom[ 0 ] = [ 10, 20 ];
 		graphinstance.setAxisState( state );
+*/
+		//legend.update();
 
-		legend.update();
+
+		graphinstance.draw();
+
 
 	}, "Legend", [ 
 

@@ -10100,13 +10100,13 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
-    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span></span><span class="doc-name">updateLegend</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">updateLegend</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> onlyIfRequired ] )</span></h4>
 
 
 
 
 <div class="description">
-    Redraw the legend
+    Redraws the legend if it exists
 </div>
 
 
@@ -10121,6 +10121,75 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyIfRequired</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">```true``` to redraw the legend only when it actually needs to be updated</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
 
     
 
@@ -10138,6 +10207,30 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The graph instance
+</div>
+
+        
 
     
 
