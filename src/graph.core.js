@@ -291,6 +291,7 @@ class Graph extends EventEmitter {
    */
   draw() {
 
+    this.updateLegend( true );
     this.drawSeries( this.redraw( true ) );
   }
 
@@ -1054,7 +1055,7 @@ class Graph extends EventEmitter {
     }
 
     this.series.push( serie );
-    this.updateLegend();
+    //    this.updateLegend();
 
     this.emit( "newSerie", serie );
     return serie;
@@ -1766,21 +1767,24 @@ class Graph extends EventEmitter {
       return util.throwError( "Graph legend is not available as it has not been registered" );
     }
 
-    this.legend.update();
+    //    this.legend.update();
 
     return this.legend;
   }
 
   /**
-   * Redraw the legend
+   * Redraws the legend if it exists
+   * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+   * @return {Graph} The graph instance
    */
-  updateLegend() {
+  updateLegend( onlyIfRequired = false ) {
 
     if ( !this.legend ) {
       return;
     }
 
-    this.legend.update();
+    this.legend.update( onlyIfRequired );
+    return this;
   }
 
   /**
@@ -1793,6 +1797,15 @@ class Graph extends EventEmitter {
 
     return this.legend;
 
+  }
+
+  requireLegendUpdate() {
+
+    if ( !this.legend ) {
+      return;
+    }
+
+    this.legend.requireDelayedUpdate();
   }
 
   /**
@@ -1861,13 +1874,8 @@ class Graph extends EventEmitter {
     this.dom.setAttribute( 'height', this.height );
     this.domTitle.setAttribute( 'x', this.width / 2 );
 
-    this.redraw();
-    this.drawSeries( true );
-    //refreshDrawingZone( this );
-
-    if ( this.legend ) {
-      this.legend.update();
-    }
+    this.requireLegendUpdate();
+    this.draw();
   }
   _doDom() {
 
