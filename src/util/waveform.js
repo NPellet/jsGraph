@@ -5,6 +5,11 @@ import {
 
 import aggregator from './data_aggregator'
 
+const MULTIPLY = Symbol();
+const ADD = Symbol();
+const SUBTRACT = Symbol();
+const DIVIDE = Symbol();
+
 // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
 function pow2ceil( v ) {
   v--;
@@ -75,7 +80,7 @@ class Waveform {
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
   setDataXY( data ) {
 
-    let newData = [ this._makeArray( data[ 0 ].length ), this._makeArray( data[ 0 ].length ) ];
+    let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ];
     data.map( ( el, index ) => {
       newData[ 0 ][ index ] = el[ 0 ];
       newData[ 1 ][ index ] = el[ 1 ];
@@ -107,14 +112,50 @@ class Waveform {
   }
 
   getTypedArrayClass() {
-    return false;
+    return this._typedArrayClass || false;
+  }
+
+  setTypedArrayClass( constructor ) {
+
+    if ( this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed( constructor ) ) {
+      this.warn( "NaN values are not allowed by the new constructor (" + constructor.name + ") while it was allowed by the previous one (" + this._typedArrayClass.name + ")" );
+    }
+
+    if ( this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned( constructor ) ) {
+      this.warn( "You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values." );
+    }
+
+    this._typedArrayClass = constructor;
+
+    if ( this.data ) {
+      this._dataUpdated( ( constructor ).from( this.data.x ), ( constructor ).from( this.data.y ) );
+    }
+  }
+
+  isNaNAllowed( constructor = this._typedArrayClass ) {
+
+    // The following types accept NaNs
+    return
+    constructor == Array ||  
+      constructor == Float32Array ||  
+      constructor == Float64Array;
+  }
+
+  isUnsigned( constructor = this._typedArrayClass ) {
+
+    // The following types accept NaNs
+    return
+    constructor == Uint8Array ||  
+      constructor == Uint8ClampedArray ||  
+      constructor == Uint16Array ||
+      constructor == Uint32Array;
   }
 
   _makeArray( length ) {
 
     let constructor;
     if ( constructor = this.getTypedArrayClass() ) {
-      return new( constructor )( length * constructor.BYTES_PER_ELEMENT );
+      return new( constructor )( length );
     }
     return new Array( length );
   }
@@ -331,8 +372,8 @@ class Waveform {
 
     let inverting = false,
       dataX = this.getDataX(),
-      dataY = this.getDataY()
-    data = { 
+      dataY = this.getDataY(),
+      data = { 
         x: [],
         y: []
       },
@@ -425,38 +466,6 @@ class Waveform {
     return dataMinMax;
   }
 
-  multiply( numberOrWave ) {
-
-    if ( numberOrWave instanceof Waveform ) {
-      return this._multiplyByWave( numberOrWave );
-    } else if ( typeof numberOrWave == 'number' ) {
-      return this._multiplyByNumber( numberOrWave );
-    }
-  }
-
-  _multiplyByNumber( num ) {
-
-    let i = 0,
-      l = this.getLength();
-
-    for ( ; i < l; i++ ) {
-      this.data[ i ][ 0 ] *= num;
-    }
-    return this;
-  }
-
-  _multiplyByWave( wave ) {
-
-    let y = wave.getDataY();
-    let i = 0,
-      l = this.getLength();
-
-    for ( ; i < l; i++ ) {
-      this.data[ i ][ 0 ] *= y[ i ];
-    }
-    return this;
-  }
-
   interpolate( x ) {
 
     let xData = this.getDataX(),
@@ -475,44 +484,108 @@ class Waveform {
   }
 
   divide( numberOrWave ) {
-
-    if ( numberOrWave instanceof Waveform ) {
-      return this._divideByWave( numberOrWave );
-    } else if ( typeof numberOrWave == 'number' ) {
-      return this._divideByNumber( numberOrWave );
-    }
+    return this._arithmetic( numberOrWave, DIVIDE );
   }
 
   divideBy() {
     return this.divide( ...arguments );
   }
 
-  _divideByNumber( num ) {
+  multiply( numberOrWave ) {
+    return this._arithmetic( numberOrWave, MULTIPLY );
+  }
+
+  multiplyBy() {
+    return this.multiply( ...arguments );
+  }
+
+  add( numberOrWave ) {
+    return this._arithmetic( numberOrWave, ADD );
+  }
+
+  addBy() {
+    return this.add( ...arguments );
+  }
+
+  subtract( numberOrWave ) {
+    return this._arithmetic( numberOrWave, SUBTRACT );
+  }
+
+  subtractBy() {
+    return this.subtract( ...arguments );
+  }
+
+  _arithmetic( numberOrWave, operator ) {
+
+    if ( numberOrWave instanceof Waveform ) {
+      return this._waveArithmetic( numberOrWave, DIVIDE );
+    } else if ( typeof numberOrWave == 'number' ) {
+
+      return this._numberArithmetic( numberOrWave );
+    }
+  }
+
+  _numberArithmetic( num ) {
 
     let i = 0,
       l = this.getLength();
 
-    for ( ; i < l; i++ ) {
-      this.data[ i ][ 0 ] /= num;
+    if ( operation == MULTIPLY ) {
+
+      for ( ; i < l; i++ ) {
+        this.data.y[ i ] *= num;
+      }
+    } else if ( operation == DIVIDE ) {
+
+      for ( ; i < l; i++ ) {
+        this.data.y[ i ] /= num;
+      }
+    } else if ( operation == ADD ) {
+
+      for ( ; i < l; i++ ) {
+        this.data.y[ i ] += num;
+      }
+    } else if ( operation == SUBTRACT ) {
+
+      for ( ; i < l; i++ ) {
+        this.data.y[ i ] -= num;
+      }
     }
+
     return this;
   }
 
-  _divideByWave( wave ) {
+  _waveArithmetic( wave, operation ) {
 
     let yDataThis = this.getDataY(),
       xDataThis = this.getDataX(),
       i = 0;
-
     const l = this.getLength();
-
     this.requireMonotonicity();
     wave.requireMonotonicity();
 
-    for ( ; i < l; i++ ) {
-      yDataThis[ i ] /= wave.interpolate( xDataThis[ i ] );
+    if ( operation == MULTIPLY ) {
+
+      for ( ; i < l; i++ ) {
+        yDataThis[ i ] *= wave.interpolate( xDataThis[ i ] );
+      }
+    } else if ( operation == DIVIDE ) {
+
+      for ( ; i < l; i++ ) {
+        yDataThis[ i ] /= wave.interpolate( xDataThis[ i ] );
+      }
+    } else if ( operation == ADD ) {
+
+      for ( ; i < l; i++ ) {
+        yDataThis[ i ] += wave.interpolate( xDataThis[ i ] );
+      }
+    } else if ( operation == SUBTRACT ) {
+
+      for ( ; i < l; i++ ) {
+        yDataThis[ i ] -= wave.interpolate( xDataThis[ i ] );
+      }
     }
-    console.log( xDataThis, yDataThis );
+
     return this;
   }
 
