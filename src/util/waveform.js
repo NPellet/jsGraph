@@ -75,25 +75,25 @@ class Waveform {
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
   setDataXY( data ) {
 
-    let newData = [ [], [] ];
+    let newData = [ this._makeArray( data[ 0 ].length ), this._makeArray( data[ 0 ].length ) ];
     data.map( ( el, index ) => { 
       newData[ 0 ][ index ] = el[ 0 ];
       newData[ 1 ][ index ] = el[ 1 ];
     } );
 
-    this._dataUpdated( data );
+    this._dataUpdated( ...newData );
     return this;
   }
 
   setDataY( data ) {
     
-    let newData = [ [], [] ];
+    let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ];
     data.map( ( el, index ) => {
       newData[ index ][ 1 ] = el;
       newData[ index ][ 0 ] = index; 
     } );
 
-    this._dataUpdated( newData );
+    this._dataUpdated( ...newData );
     return this;
   }
 
@@ -103,70 +103,52 @@ class Waveform {
     this.data.x = this.data.y;
     this.data.y = temp;
     
-    this.dataUpdated( [ this.data.x, this.data.y ] );
+    this._dataUpdated( this.data.x, this.data.y );
   }
 
-  dataUpdated() {
-    const l = this.data.length;
-    let i = 0,
-      monoDir = this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ],
-      minX = this.data[ 0 ][ 0 ],
-      maxX = this.data[ 0 ][ 0 ],
-      minY = this.data[ 0 ][ 1 ],
-      maxY = this.data[ 0 ][ 1 ];
+  _makeArray( length ) {
+
+    if( this.useTypedArray() ) {
+      let constructor = this.getTypedArrayClass();
+      return new ( constructor )( length * constructor.BYTES_PER_ELEMENT );
+    }
+    return new Array( length );
+  }
+
+
+  _dataUpdated( dataX, dataY ) {
+    const l = dataX.length;
+    let i = 1,
+      monoDir = dataX[ 1 ] > dataX[ 0 ],
+      minX = dataX[ 0 ],
+      maxX = dataX[ 0 ],
+      minY = dataY[ 0 ],
+      maxY = dataY[ 0 ];
 
     this._monotoneous = true;
 
     for ( ; i < l; i++ ) {
-      if ( monoDir !== ( this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ] ) ) {
+      if ( monoDir !== ( dataX[ i ] > dataX[ i - 1 ] ) ) {
         this._monotoneous = false;
       }
 
-      minX = Math.min( this.data[ i ][ 0 ], minX );
-      maxX = Math.max( this.data[ i ][ 0 ], maxX );
-      minY = Math.min( this.data[ i ][ 1 ], minY );
-      maxY = Math.max( this.data[ i ][ 1 ], maxY );
+      minX = Math.min( dataX[ i ], minX );
+      maxX = Math.max( dataX[ i ], maxX );
+      minY = Math.min( dataY[ i ], minY );
+      maxY = Math.max( dataY[ i ], maxY );
+    }
+
+    if( this._monotoneous ) {
+      this._monotoneousAscending = dataX[ 1 ] > dataX[ 0 ];
     }
 
     this.minX = minX;
     this.maxX = maxX;
     this.minY = minY;
     this.maxY = maxY;
+
+    this.data = { x: newDataX, y: newDataY }; 
   }
-
-  _getMin( dim, from, to ) {
-
-    let min = this.data[ from ][ dim ];
-    for ( var i = from + 1; i <= to; i++ ) {
-      min = this.data[ i ][ dim ] < min ? this.data[ i ][ dim ] : min;
-    }
-    return min;
-  }
-
-  _getMax( dim, from, to ) {
-      let max = this.data[ from ][ dim ];
-      for ( var i = from + 1; i <= to; i++ ) {
-        max = this.data[ i ][ dim ] > max ? this.data[ i ][ dim ] : max;
-      }
-      return max;
-    }
-    /*
-      getXMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-        return this._getMin( 0, subsetFromIndex, subsetToIndex );
-      }
-
-      getXMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-        return this._getMax( 0, subsetFromIndex, subsetToIndex );
-      }
-
-      getMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-        return this._getMin( 1, subsetFromIndex, subsetToIndex );
-      }
-
-      getMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-        return this._getMax( 1, subsetFromIndex, subsetToIndex );
-      }
-      */
 
   getXMin() {
     return this.minX;
@@ -213,12 +195,11 @@ class Waveform {
   }
 
   getDataY() {
-
-    return this.data.map( ( el ) => el[ 1 ] );
+    return this.data.y;
   }
 
   getDataX() {
-    return this.data.map( ( el ) => el[ 0 ] );
+    return this.data.x;
   }
 
   getDataToUseFlat() {
@@ -228,8 +209,8 @@ class Waveform {
     let arr = new Array( dataToUse.length * 2 ).fill( 0 );
     let j = 0;
     for ( var i = 0, l = dataToUse.length; i < l; i += 1 ) {
-      arr[ j ] = dataToUse[ i ][ 0 ];
-      arr[ j + 1 ] = dataToUse[ i ][ 1 ];
+      arr[ j ] = dataToUse.x[ 0 ];
+      arr[ j + 1 ] = dataToUse.y[ 1 ];
       j += 2;
     }
 
@@ -295,15 +276,19 @@ class Waveform {
 
   checkMonotonicity() {
 
-    let i = 0;
-    const l = this.data.length;
-    let dir = this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ];
+    let i = 1,
+      dataX = this.getDataX();
+
+    const l = dataX.length;
+    let dir = dataX[ 1 ] > dataX[ 0 ];
 
     for ( ; i < l; i++ ) {
-      if ( dir !== ( this.data[ 1 ][ 0 ] > this.data[ 0 ][ 0 ] ) ) {
+      if ( dir !== ( dataX[ i ] > dataX[ i - 1 ] ) ) {
         return this._monotoneous = false;
       }
     }
+
+    this._monotoneousAscending = dataX[ 1 ] > dataX[ 0 ];
 
     return this._monotoneous = true;
   }
@@ -319,8 +304,16 @@ class Waveform {
   }
 
   invert( data ) {
+
     let d = data || this.data;
-    d.reverse();
+
+    d.x.reverse();
+    d.y.reverse();
+
+    if( this.isMonotoneous() ) {
+      this.monotoneousDirection = !this.monotoneousDirection;
+    }
+
     return d;
   }
 
@@ -330,23 +323,22 @@ class Waveform {
 
     this.requireMonotonicity();
 
-    let inverting = false;
+    let inverting = false,
+        dataX = this.getDataX(),
+        dataY = this.getDataY()
+        data = { x: [], y: [] },
+        dataMinMax = [],
+        resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start,
+        x_px,
+        doing_mean = false,
+        firstPointIndex = 0;
 
-    if ( this.data[ 1 ][ 0 ] < this.data[ 0 ][ 0 ] ) {
+    if ( dataX[ 1 ] < dataX[ 0 ] ) {
       this.invert();
       inverting = true;
     }
 
     const l = this.getLength();
-
-    let data = [],
-      dataMinMax = [],
-      resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start,
-      x_px,
-      dataY = this.getDataY(),
-      dataX = this.getDataX(),
-      doing_mean = false,
-      firstPointIndex = 0;
 
     if ( !options.xPosition ) {
       throw "No position calculation method provided";
@@ -392,11 +384,9 @@ class Waveform {
 
         let xpos = ( resample_x_start + dataX[ i ] ) / 2;
 
-        data.push( [
-          xpos,
-          resampleSum / resampleNum
-        ] );
-
+        data.x.push( xpos );
+        data.y.push( resampleSum / resampleNum );
+        
         dataMinMax.push( xpos, resampleMin, resampleMax );
 
         if ( options.maxX !== undefined && dataX > options.maxX ) {
@@ -417,8 +407,9 @@ class Waveform {
 
     if ( inverting ) {
       this.dataInUse = this.invert( data );
+      this.invert();
       inverting = true;
-      return this.invert( dataMinMax );
+      return dataMinMax;
     }
 
     this.dataInUse = data;
