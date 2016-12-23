@@ -15,20 +15,85 @@ function pow2ceil( v ) {
   return p;
 }
 
+function binarySearch( target, haystack, reverse ) {
+
+  let seedA = 0,
+    length = haystack.length,
+    seedB = ( length - 1 ),
+    seedInt,
+    i = 0,
+    nanDirection = 1;
+
+  if ( haystack[ seedA ] == target ) {
+    return seedA;
+  }
+
+  if ( haystack[ seedB ] == target ) {
+    return seedB;
+  }
+
+  while ( true ) {
+    i++;
+    if ( i > 100 ) {
+      throw "Error loop";
+    }
+
+    seedInt = Math.floor( ( seedA + seedB ) / 2 );
+    //  seedInt -= seedInt % 2; // Always looks for an x.
+
+    while ( isNaN( haystack[ seedInt ] ) ) {
+      seedInt += nanDirection;
+    }
+
+    if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
+      return seedInt;
+    }
+
+    //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+    if ( haystack[ seedInt ] <= target ) {
+      if ( reverse ) {
+        seedB = seedInt;
+      } else {
+        seedA = seedInt;
+      }
+    } else if ( haystack[ seedInt ] > target ) {
+      if ( reverse ) {
+        seedA = seedInt;
+      } else {
+        seedB = seedInt;
+      }
+    }
+
+    nanDirection *= -1;
+  }
+}
+
 class Waveform {
 
   constructor() {}
 
-  /** [ [   x1, y1 ], [ x2, y2 ] ] */
+  /** [ [ x1, y1 ], [ x2, y2 ] ] */
   setDataXY( data ) {
-    this.data = data;
-    this.dataUpdated();
+
+    let newData = [ [], [] ];
+    data.map( ( el, index ) => { 
+      newData[ 0 ][ index ] = el[ 0 ];
+      newData[ 1 ][ index ] = el[ 1 ];
+    } );
+
+    this._dataUpdated( data );
     return this;
   }
 
   setDataY( data ) {
-    this.data = data.map( ( el, index ) => [ index, el ] );
-    this.dataUpdated();
+    
+    let newData = [ [], [] ];
+    data.map( ( el, index ) => {
+      newData[ index ][ 1 ] = el;
+      newData[ index ][ 0 ] = index; 
+    } );
+    
+    this._dataUpdated( newData );
     return this;
   }
 
@@ -394,6 +459,15 @@ class Waveform {
     return this;
   }
 
+  interpolate( x ) {
+
+    let xData = this.getDataX(),
+      yData = this.getDataY(),
+      xIndex = binarySearch( x, xData, !this.getMonotoneousDirection() );
+
+    return ( x - xData[ xIndex ] ) / ( xData[ xIndex + 1 ] - xData[ xIndex ] ) * ( yData[ xIndex + 1 ] - yData[ xIndex ] ) + yData[ xIndex ];
+  }
+
   divide( numberOrWave ) {
 
     if ( numberOrWave instanceof Waveform ) {
@@ -416,13 +490,17 @@ class Waveform {
 
   _divideByWave( wave ) {
 
-    let y = wave.getDataY();
-    let i = 0,
-      l = this.getLength();
+    let yDataThis = this.getDataY(),
+      xDataThis = this.getDataX(),
+      i = 0;
+
+    const l = this.getLength();
 
     for ( ; i < l; i++ ) {
-      this.data[ i ][ 0 ] /= y[ i ];
+
+      yDataThis[ i ] /= wave.interpolate( xDataThis[ x ] );
     }
+
     return this;
   }
 
