@@ -4946,88 +4946,89 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    constructor() {}
 
-	    /** [ [   x1, y1 ], [ x2, y2 ] ] */
+	    /** [ [ x1, y1 ], [ x2, y2 ] ] */
 	    setDataXY(data) {
-	      this.data = data;
-	      this.dataUpdated();
+
+	      let newData = [this._makeArray(data[0].length), this._makeArray(data[0].length)];
+	      data.map((el, index) => {
+	        newData[0][index] = el[0];
+	        newData[1][index] = el[1];
+	      });
+
+	      this._dataUpdated(...newData);
 	      return this;
 	    }
 
 	    setDataY(data) {
-	      this.data = data.map((el, index) => [index, el]);
-	      this.dataUpdated();
+
+	      let newData = [this._makeArray(data.length), this._makeArray(data.length)];
+	      data.map((el, index) => {
+	        newData[index][1] = el;
+	        newData[index][0] = index;
+	      });
+
+	      this._dataUpdated(...newData);
 	      return this;
 	    }
 
 	    flipXY() {
 	      let temp;
-	      this.data = data.map(el => {
-	        temp = el[0];
-	        el[0] = el[1];
-	        el[1] = temp;
-	        return el;
-	      });
-	      this.dataUpdated();
+	      temp = this.data.x;
+	      this.data.x = this.data.y;
+	      this.data.y = temp;
+
+	      this._dataUpdated(this.data.x, this.data.y);
 	    }
 
-	    dataUpdated() {
-	      const l = this.data.length;
-	      let i = 0,
-	          monoDir = this.data[1][0] > this.data[0][0],
-	          minX = this.data[0][0],
-	          maxX = this.data[0][0],
-	          minY = this.data[0][1],
-	          maxY = this.data[0][1];
+	    getTypedArrayClass() {
+	      return false;
+	    }
+
+	    _makeArray(length) {
+
+	      let constructor;
+	      if (constructor = this.getTypedArrayClass()) {
+	        return new constructor(length * constructor.BYTES_PER_ELEMENT);
+	      }
+	      return new Array(length);
+	    }
+
+	    _dataUpdated(dataX, dataY) {
+	      const l = dataX.length;
+	      let i = 1,
+	          monoDir = dataX[1] > dataX[0],
+	          minX = dataX[0],
+	          maxX = dataX[0],
+	          minY = dataY[0],
+	          maxY = dataY[0];
 
 	      this._monotoneous = true;
 
 	      for (; i < l; i++) {
-	        if (monoDir !== this.data[1][0] > this.data[0][0]) {
+	        if (dataX[i] !== dataX[i - 1] && monoDir !== dataX[i] > dataX[i - 1]) {
 	          this._monotoneous = false;
 	        }
 
-	        minX = Math.min(this.data[i][0], minX);
-	        maxX = Math.max(this.data[i][0], maxX);
-	        minY = Math.min(this.data[i][1], minY);
-	        maxY = Math.max(this.data[i][1], maxY);
+	        minX = Math.min(dataX[i], minX);
+	        maxX = Math.max(dataX[i], maxX);
+	        minY = Math.min(dataY[i], minY);
+	        maxY = Math.max(dataY[i], maxY);
+	      }
+
+	      if (this._monotoneous) {
+	        this._monotoneousAscending = dataX[1] > dataX[0];
 	      }
 
 	      this.minX = minX;
 	      this.maxX = maxX;
 	      this.minY = minY;
 	      this.maxY = maxY;
-	    }
 
-	    _getMin(dim, from, to) {
-
-	      let min = this.data[from][dim];
-	      for (var i = from + 1; i <= to; i++) {
-	        min = this.data[i][dim] < min ? this.data[i][dim] : min;
-	      }
-	      return min;
+	      this.data = {
+	        x: dataX,
+	        y: dataY
+	      };
 	    }
-
-	    _getMax(dim, from, to) {
-	      let max = this.data[from][dim];
-	      for (var i = from + 1; i <= to; i++) {
-	        max = this.data[i][dim] > max ? this.data[i][dim] : max;
-	      }
-	      return max;
-	    }
-	    /*
-	      getXMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-	        return this._getMin( 0, subsetFromIndex, subsetToIndex );
-	      }
-	       getXMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-	        return this._getMax( 0, subsetFromIndex, subsetToIndex );
-	      }
-	       getMin( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-	        return this._getMin( 1, subsetFromIndex, subsetToIndex );
-	      }
-	       getMax( subsetFromIndex = 0, subsetToIndex = this.data.length - 1 ) {
-	        return this._getMax( 1, subsetFromIndex, subsetToIndex );
-	      }
-	      */
 
 	    getXMin() {
 	      return this.minX;
@@ -5070,27 +5071,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getLength() {
-	      return this.data.length;
+	      return this.data.x.length;
 	    }
 
 	    getDataY() {
-
-	      return this.data.map(el => el[1]);
+	      return this.data.y;
 	    }
 
 	    getDataX() {
-	      return this.data.map(el => el[0]);
+	      return this.data.x;
 	    }
 
 	    getDataToUseFlat() {
 
 	      let dataToUse = this.dataInUse ? this.dataInUse : this.data;
 
-	      let arr = new Array(dataToUse.length * 2).fill(0);
+	      let arr = new Array(this.getLength() * 2).fill(0);
 	      let j = 0;
-	      for (var i = 0, l = dataToUse.length; i < l; i += 1) {
-	        arr[j] = dataToUse[i][0];
-	        arr[j + 1] = dataToUse[i][1];
+	      for (var i = 0, l = this.getLength(); i < l; i += 1) {
+	        arr[j] = dataToUse.x[i];
+	        arr[j + 1] = dataToUse.y[i];
 	        j += 2;
 	      }
 
@@ -5156,15 +5156,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    checkMonotonicity() {
 
-	      let i = 0;
-	      const l = this.data.length;
-	      let dir = this.data[1][0] > this.data[0][0];
+	      let i = 1,
+	          dataX = this.getDataX();
+
+	      const l = dataX.length;
+	      let dir = dataX[1] > dataX[0];
 
 	      for (; i < l; i++) {
-	        if (dir !== this.data[1][0] > this.data[0][0]) {
+	        if (dataX[i] !== dataX[i - 1] && dir !== dataX[i] > dataX[i - 1]) {
 	          return this._monotoneous = false;
 	        }
 	      }
+
+	      this._monotoneousAscending = dataX[1] > dataX[0];
 
 	      return this._monotoneous = true;
 	    }
@@ -5180,8 +5184,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    invert(data) {
+
 	      let d = data || this.data;
-	      d.reverse();
+
+	      d.x.reverse();
+	      d.y.reverse();
+
+	      if (this.isMonotoneous()) {
+	        this.monotoneousDirection = !this.monotoneousDirection;
+	      }
+
 	      return d;
 	    }
 
@@ -5192,28 +5204,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.requireMonotonicity();
 
-	      let inverting = false;
+	      let inverting = false,
+	          dataX = this.getDataX(),
+	          dataY = this.getDataY();
+	      data = {
+	        x: [],
+	        y: []
+	      }, dataMinMax = [], resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start, x_px, doing_mean = false, firstPointIndex = 0;
 
-	      if (this.data[1][0] < this.data[0][0]) {
+	      if (dataX[1] < dataX[0]) {
 	        this.invert();
 	        inverting = true;
 	      }
 
 	      const l = this.getLength();
-
-	      let data = [],
-	          dataMinMax = [],
-	          resampleSum,
-	          resampleMin,
-	          resampleMax,
-	          resampleNum,
-	          resample_x_start,
-	          resample_x_px_start,
-	          x_px,
-	          dataY = this.getDataY(),
-	          dataX = this.getDataX(),
-	          doing_mean = false,
-	          firstPointIndex = 0;
 
 	      if (!options.xPosition) {
 	        throw "No position calculation method provided";
@@ -5259,7 +5263,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          let xpos = (resample_x_start + dataX[i]) / 2;
 
-	          data.push([xpos, resampleSum / resampleNum]);
+	          data.x.push(xpos);
+	          data.y.push(resampleSum / resampleNum);
 
 	          dataMinMax.push(xpos, resampleMin, resampleMax);
 
@@ -5281,8 +5286,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (inverting) {
 	        this.dataInUse = this.invert(data);
+	        this.invert();
 	        inverting = true;
-	        return this.invert(dataMinMax);
+	        return dataMinMax;
 	      }
 
 	      this.dataInUse = data;
@@ -5327,16 +5333,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	          yData = this.getDataY(),
 	          xIndex = binarySearch(x, xData, !this.getMonotoneousDirection());
 
+	      if (xData[xIndex] == x) {
+	        return yData[xIndex];
+	      }
+
 	      return (x - xData[xIndex]) / (xData[xIndex + 1] - xData[xIndex]) * (yData[xIndex + 1] - yData[xIndex]) + yData[xIndex];
+	    }
+
+	    getMonotoneousDirection() {
+	      return this.monotoneousDirection;
 	    }
 
 	    divide(numberOrWave) {
 
 	      if (numberOrWave instanceof Waveform) {
-	        return this._multiplyByWave(numberOrWave);
+	        return this._divideByWave(numberOrWave);
 	      } else if (typeof numberOrWave == 'number') {
-	        return this._multiplyByNumber(numberOrWave);
+	        return this._divideByNumber(numberOrWave);
 	      }
+	    }
+
+	    divideBy() {
+	      return this.divide(...arguments);
 	    }
 
 	    _divideByNumber(num) {
@@ -5358,11 +5376,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      const l = this.getLength();
 
+	      this.requireMonotonicity();
+	      wave.requireMonotonicity();
+
 	      for (; i < l; i++) {
-
-	        yDataThis[i] /= wave.interpolate(xDataThis[x]);
+	        yDataThis[i] /= wave.interpolate(xDataThis[i]);
 	      }
-
+	      console.log(xDataThis, yDataThis);
 	      return this;
 	    }
 
@@ -5414,6 +5434,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.dataInUse = this.data;
+	    }
+
+	    duplicate() {
+	      var newWaveform = new Waveform();
+	      newWaveform._dataUpdated(this.getDataX().slice(), this.getDataY().slice());
+	      return newWaveform;
 	    }
 
 	  };
