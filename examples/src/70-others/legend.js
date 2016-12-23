@@ -2,7 +2,29 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph );
+		var graphinstance = new Graph( domGraph, {
+
+
+			dblclick: {
+				type: 'plugin',
+				plugin: 'zoom',
+				options: {
+					mode: 'total'
+				}
+			},
+
+			plugins: {
+				'zoom': { zoomMode: 'xy' },
+				'drag': {}
+			},
+
+			pluginAction: {
+				'drag': { shift: true, ctrl: false },
+				'zoom': { shift: false, ctrl: false }
+			}
+
+
+		} );
 
  		var series = [ [], [], [] ];
 
@@ -31,7 +53,7 @@ define( function() {
 			frameWidth: '1',
 			frameColor: 'rgba( 100, 100, 100, 0.5 )',
 
-			movable: true,
+			movable: false,
 			isSerieHideable: true
 
 		}).autoPosition('bottom');
