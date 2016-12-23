@@ -92,20 +92,18 @@ class Waveform {
       newData[ index ][ 1 ] = el;
       newData[ index ][ 0 ] = index; 
     } );
-    
+
     this._dataUpdated( newData );
     return this;
   }
 
   flipXY() {
     let temp;
-    this.data = data.map( ( el ) => {
-      temp = el[ 0 ];
-      el[ 0 ] = el[ 1 ];
-      el[ 1 ] = temp;
-      return el;
-    } );
-    this.dataUpdated();
+    temp = this.data.x;
+    this.data.x = this.data.y;
+    this.data.y = temp;
+    
+    this.dataUpdated( [ this.data.x, this.data.y ] );
   }
 
   dataUpdated() {
