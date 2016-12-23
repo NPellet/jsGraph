@@ -59,13 +59,18 @@ define( function() {
 		}).autoPosition('bottom');
 
 
+
 		graphinstance.newSerie( "sin" )
 			.setLabel( "f(x) = sin(x)" )
 			.autoAxis()
 			.setData( series[ 0 ] )	
 			.setLineColor( '#bd1a1a' )
 			.setMarkers()
-			
+		
+
+		graphinstance.draw();
+
+/*
 		graphinstance.newSerie( "cos" )
 			.setLabel( "f(x) = sin(x)" )
 			.autoAxis()
@@ -79,8 +84,13 @@ define( function() {
 			.setData( series[ 2 ] )
 			.setLineColor('#891abd');
 
-		graphinstance.getXAxis().setLabel( 'x' );
+		graphinstance.draw();
+
+		*/
+
+/*		graphinstance.getXAxis().setLabel( 'x' );
 			graphinstance.getYAxis().setLabel( 'y' );
+			*/
 		//graphinstance.getYAxis().setLineAt0( true );
 
 		//graphinstance.redraw( );
@@ -102,7 +112,6 @@ define( function() {
 		//legend.update();
 
 
-		graphinstance.draw();
 
 
 	}, "Legend", [ 
