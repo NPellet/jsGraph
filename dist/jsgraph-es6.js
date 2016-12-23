@@ -5480,7 +5480,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var mousedown = function (e) {
 
 	        e.stopPropagation();
-
+	        console.log("down");
 	        if (self.options.movable) {
 	          pos.x = e.clientX;
 	          pos.y = e.clientY;
@@ -22398,7 +22398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    onMouseDown(graph, x, y, e, mute) {
-
+	      console.log('zoomdown');
 	      var zoomMode = this.options.zoomMode;
 
 	      if (!zoomMode) {

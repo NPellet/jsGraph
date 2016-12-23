@@ -523,7 +523,7 @@ class Legend {
     var mousedown = function( e ) {
 
       e.stopPropagation();
-
+      console.log( "down" );
       if ( self.options.movable ) {
         pos.x = e.clientX;
         pos.y = e.clientY;

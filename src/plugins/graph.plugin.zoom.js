@@ -48,7 +48,7 @@ class PluginZoom extends Plugin {
    * @private
    */
   onMouseDown( graph, x, y, e, mute ) {
-
+    console.log( 'zoomdown' );
     var zoomMode = this.options.zoomMode;
 
     if ( !zoomMode ) {
