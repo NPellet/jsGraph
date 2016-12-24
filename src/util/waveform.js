@@ -75,9 +75,15 @@ function binarySearch( target, haystack, reverse ) {
 
 class Waveform {
 
-  constructor() {}
+  constructor() {
+
+    this.xOffset = 0;
+    this.xScale = 1;
+  }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
+
+  /*
   setDataXY( data ) {
 
     let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
@@ -101,39 +107,55 @@ class Waveform {
     this._dataUpdated( ...newData );
     return this;
   }
+*/
+  setData( data ) {
 
-  setDataY( data ) {
+      let newData = this._makeArray( data.length ),
+        warnNaN = false;
 
-    let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
-      warnNaN = false;
+      const nanable = this.isNaNAllowed();
 
-    const nanable = this.isNaNAllowed();
+      data.map( ( el, index ) => {
 
-    data.map( ( el, index ) => {
+        if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+          warnNaN = true;
+        }
 
-      if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
-        warnNaN = true;
+        newData[ index ] = el;
+      } );
+
+      if ( warnNaN ) {
+        this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
       }
 
-      newData[ index ][ 1 ] = el;
-      newData[ index ][ 0 ] = index;
-    } );
+      this._dataUpdated( newData );
+      return this;
+    }
+    /*
+      flipXY() {
+        let temp;
+        temp = this.data.x;
+        this.data.x = this.data.y;
+        this.data.y = temp;
 
-    if ( warnNaN ) {
-      this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
+        this._dataUpdated( this.data.x, this.data.y );
+      }*/
+
+  setXWaveform( waveform ) {
+
+    if ( !( waveform instanceof Waveform ) ) {
+      return;
     }
 
-    this._dataUpdated( ...newData );
+    this.xdata = waveform;
+    this.computeXMinMax();
     return this;
   }
 
-  flipXY() {
-    let temp;
-    temp = this.data.x;
-    this.data.x = this.data.y;
-    this.data.y = temp;
-
-    this._dataUpdated( this.data.x, this.data.y );
+  rescaleX( offset, scale ) {
+    this.xScale = scale;
+    this.xOffset = offset;
+    this.computeXMinMax();
   }
 
   getTypedArrayClass() {
@@ -183,25 +205,18 @@ class Waveform {
     return new Array( length );
   }
 
-  _dataUpdated( dataX, dataY ) {
-    const l = dataX.length;
+  _dataUpdated( dataY ) {
+    const l = dataY.length;
     let i = 1,
-      monoDir = dataX[ 1 ] > dataX[ 0 ],
-      minX = dataX[ 0 ],
-      maxX = dataX[ 0 ],
+      monoDir = dataY[ 1 ] > dataY[ 0 ],
       minY = dataY[ 0 ],
       maxY = dataY[ 0 ];
 
     this._monotoneous = true;
 
     for ( ; i < l; i++ ) {
-      if ( dataX[ i ] !== dataX[ i - 1 ] && monoDir !== ( dataX[ i ] > dataX[ i - 1 ] ) ) {
+      if ( dataY[ i ] !== dataY[ i - 1 ] && monoDir !== ( dataY[ i ] > dataY[ i - 1 ] ) ) {
         this._monotoneous = false;
-      }
-
-      if ( dataX[ i ] === dataX[ i ] ) { // NaN support
-        minX = Math.min( dataX[ i ], minX );
-        maxX = Math.max( dataX[ i ], maxX );
       }
 
       if ( dataY[ i ] === dataY[ i ] ) { // NaN support
@@ -211,18 +226,29 @@ class Waveform {
     }
 
     if ( this._monotoneous ) {
-      this._monotoneousAscending = dataX[ 1 ] > dataX[ 0 ];
+      this._monotoneousAscending = dataY[ 1 ] > dataY[ 0 ];
     }
 
-    this.minX = minX;
-    this.maxX = maxX;
     this.minY = minY;
     this.maxY = maxY;
 
-    this.data = {
-      x: dataX,
-      y: dataY
-    };
+    this.data = dataY;
+
+    this.computeXMinMax();
+
+  }
+
+  computeXMinMax() {
+
+    if ( this.xdata ) {
+
+      this.minX = this.xdata.getMin();
+      this.maxX = this.xdata.getMax();
+
+    } else {
+      this.minX = this.xOffset;
+      this.maxX = this.xOffset + this.xScale * this.getLength();
+    }
   }
 
   getXMin() {
@@ -265,28 +291,44 @@ class Waveform {
     return this.maxY;
   }
 
-  getLength() {
-    return this.data.x.length;
-  }
-
   getDataY() {
-    return this.data.y;
+    return this.data;
   }
 
-  getDataX() {
-    return this.data.x;
+  getData() {
+    return this.data;
+  }
+
+  getLength() {
+    return this.data.length;
   }
 
   getDataToUseFlat() {
 
-    let dataToUse = this.dataInUse ? this.dataInUse : this.data;
-
-    let arr = new Array( this.getLength() * 2 ).fill( 0 );
+    let l;
     let j = 0;
-    for ( var i = 0, l = this.getLength(); i < l; i += 1 ) {
-      arr[ j ] = dataToUse.x[ i ];
-      arr[ j + 1 ] = dataToUse.y[ i ];
-      j += 2;
+    let arr;
+
+    if ( this.dataInUse ) {
+
+      l = this.dataInUse.x.length;
+      arr = new Array( l * 2 ).fill( 0 );
+
+      for ( var i = 0; i < l; i += 1 ) {
+        arr[ j ] = this.dataInUse.x[ i ];
+        arr[ j + 1 ] = this.dataInUse.y[ i ];
+        j += 2;
+      }
+
+    } else {
+
+      l = this.getLength();
+      arr = new Array( l * 2 ).fill( 0 );
+      for ( var i = 0; i < l; i += 1 ) {
+        arr[ j + 1 ] = this.data[ i ];
+        arr[ j ] = this.getX( i );
+        j += 2;
+      }
     }
 
     return arr;
@@ -302,6 +344,15 @@ class Waveform {
     return this;
   }
 
+  getX( index ) {
+
+    if ( this.xdata ) {
+      return this.xdata.data[ index ];
+    } else {
+      return this.xOffset + index * this.xScale;
+    }
+  }
+
   _integrateP( from = 0, to = this.getLength() - 1 ) {
 
     from = Math.round( from );
@@ -312,15 +363,15 @@ class Waveform {
       delta;
 
     let deltaTot = 0;
-    var arrX = this.getDataX();
-    var arrY = this.getDataY();
+    let diff;
+    var arrY = this.getData();
 
     for ( ; from <= to; from++ ) {
 
       if ( arrX.length - 1 > from ) {
-
-        deltaTot += arrX[ from + 1 ] - arrX[ from ]
-        sum += arrY[ from ] * ( arrX[ from + 1 ] - arrX[ from ] );
+        diff = this.getX( from + 1 ) - this.getX( from );
+        deltaTot += diff;
+        sum += arrY[ from ] * diff;
       }
     }
     return [ sum, l, deltaTot ];
@@ -352,25 +403,29 @@ class Waveform {
   checkMonotonicity() {
 
     let i = 1,
-      dataX = this.getDataX();
-
-    const l = dataX.length;
-    let dir = dataX[ 1 ] > dataX[ 0 ];
+      data = this.getData();
+    const l = this.data.length;
+    let dir = data[ 1 ] > data[ 0 ];
 
     for ( ; i < l; i++ ) {
-      if ( dataX[ i ] !== dataX[ i - 1 ] && dir !== ( dataX[ i ] > dataX[ i - 1 ] ) ) {
+      if ( data[ i ] !== data[ i - 1 ] && dir !== ( data[ i ] > data[ i - 1 ] ) ) {
         return this._monotoneous = false;
       }
     }
 
-    this._monotoneousAscending = dataX[ 1 ] > dataX[ 0 ];
-
+    this._monotoneousAscending = data[ 1 ] > data[ 0 ];
     return this._monotoneous = true;
+  }
+
+  requireXMonotonicity() {
+    if ( this.xdata ) {
+      this.xdata.requireMonotonicity();
+    }
   }
 
   requireMonotonicity() {
     if ( !this.isMonotoneous() ) {
-      throw "The x wave must be monotonic";
+      throw "The wave must be monotonic";
     }
   }
 
@@ -378,12 +433,18 @@ class Waveform {
     return !!this._monotoneous;
   }
 
+  isXMonotoneous() {
+    if ( this.xdata ) {
+      return this.xdata.isMonotoneous();
+    }
+    // Offset and scale is always monotoneous
+    return true;
+  }
+
   invert( data ) {
 
-    let d = data || this.data;
-
-    d.x.reverse();
-    d.y.reverse();
+    let d = dataY || this.data;
+    d.reverse();
 
     if ( this.isMonotoneous() ) {
       this.monotoneousDirection = !this.monotoneousDirection;
@@ -396,10 +457,9 @@ class Waveform {
 
     let i = 0;
 
-    this.requireMonotonicity();
+    this.requireXMonotonicity();
 
     let inverting = false,
-      dataX = this.getDataX(),
       dataY = this.getDataY(),
       data = { 
         x: [],
@@ -409,12 +469,15 @@ class Waveform {
       resampleSum, resampleMin, resampleMax, resampleNum, resample_x_start, resample_x_px_start,
       x_px,
       doing_mean = false,
-      firstPointIndex = 0;
+      firstPointIndex = 0,
+      xval;
 
+    /*
+    dataX = this.getDataX(),
     if ( dataX[ 1 ] < dataX[ 0 ] ) {
       this.invert();
       inverting = true;
-    }
+    }*/
 
     const l = this.getLength();
 
@@ -428,13 +491,14 @@ class Waveform {
 
     for ( ; i < l; i++ ) {
 
-      if ( options.minX > dataX[ i ] ) {
+      xval = this.getX( i );
+      if ( options.minX > xval ) {
 
         firstPointIndex = i;
         continue;
       }
 
-      x_px = options.xPosition( dataX[ i ] );
+      x_px = options.xPosition( xval );
 
       if ( !doing_mean ) {
 
@@ -450,7 +514,7 @@ class Waveform {
         resampleSum = resampleMin = resampleMax = dataY[ firstPointIndex ];
         resampleNum = 1;
         resample_x_px_start = x_px;
-        resample_x_start = dataX[ i ];
+        resample_x_start = xval;
         firstPointIndex = 0;
 
         doing_mean = true;
@@ -460,14 +524,14 @@ class Waveform {
 
       if ( Math.abs( x_px - resample_x_px_start ) > options.resampleToPx || i == l || isNaN( dataY[ i ] ) ) {
 
-        let xpos = ( resample_x_start + dataX[ i ] ) / 2;
+        let xpos = ( resample_x_start + xval ) / 2;
 
         data.x.push( xpos );
         data.y.push( resampleSum / resampleNum );
 
         dataMinMax.push( xpos, resampleMin, resampleMax );
 
-        if ( options.maxX !== undefined && dataX > options.maxX ) {
+        if ( options.maxX !== undefined && xval > options.maxX ) {
           return;
         }
 
@@ -482,29 +546,38 @@ class Waveform {
       resampleMin = Math.min( resampleMin, dataY[ i ] );
       resampleMax = Math.max( resampleMax, dataY[ i ] );
     }
-
-    if ( inverting ) {
-      this.dataInUse = this.invert( data );
-      this.invert();
-      inverting = true;
-      return dataMinMax;
-    }
-
+    /*
+        if ( inverting ) {
+          this.dataInUse = this.invert( data );
+          this.invert();
+          inverting = true;
+          return dataMinMax;
+        }
+    */
     this.dataInUse = data;
     return dataMinMax;
   }
 
   interpolate( x ) {
 
-    let xData = this.getDataX(),
-      yData = this.getDataY(),
-      xIndex = binarySearch( x, xData, !this.getMonotoneousDirection() );
+    let xIndex;
+    let yData = this.getDataY();
 
-    if ( xData[ xIndex ] == x ) {
-      return yData[ xIndex ];
+    if ( this.xdata ) {
+      let xData = this.xdata.getData(),
+        xIndex = binarySearch( x, xData, !this.getMonotoneousDirection() );
+
+      if ( xData[ xIndex ] == x ) {
+        return yData[ xIndex ];
+      }
+      return ( x - xData[ xIndex ] ) / ( xData[ xIndex + 1 ] - xData[ xIndex ] ) * ( yData[ xIndex + 1 ] - yData[ xIndex ] ) + yData[ xIndex ];
+
+    } else {
+      xIndex = ( x - this.xOffset ) / ( this.xScale );
+      let xIndexF = Math.floor( xIndex );
+      return ( xIndex - xIndexF ) * ( yData[ xIndexF + 1 ] - yData[ xIndexF ] ) + yData[ xIndexF ];
     }
 
-    return ( x - xData[ xIndex ] ) / ( xData[ xIndex + 1 ] - xData[ xIndex ] ) * ( yData[ xIndex + 1 ] - yData[ xIndex ] ) + yData[ xIndex ];
   }
 
   getMonotoneousDirection() {
@@ -546,14 +619,14 @@ class Waveform {
   _arithmetic( numberOrWave, operator ) {
 
     if ( numberOrWave instanceof Waveform ) {
-      return this._waveArithmetic( numberOrWave, DIVIDE );
+      return this._waveArithmetic( numberOrWave, operator );
     } else if ( typeof numberOrWave == 'number' ) {
 
-      return this._numberArithmetic( numberOrWave );
+      return this._numberArithmetic( numberOrWave, operator );
     }
   }
 
-  _numberArithmetic( num ) {
+  _numberArithmetic( num, operation ) {
 
     let i = 0,
       l = this.getLength();
@@ -561,23 +634,35 @@ class Waveform {
     if ( operation == MULTIPLY ) {
 
       for ( ; i < l; i++ ) {
-        this.data.y[ i ] *= num;
+        this.data[ i ] *= num;
       }
+
+      this.minY *= num;
+      this.maxY *= num;
     } else if ( operation == DIVIDE ) {
 
       for ( ; i < l; i++ ) {
-        this.data.y[ i ] /= num;
+        this.data[ i ] /= num;
       }
+
+      this.minY /= num;
+      this.maxY /= num;
     } else if ( operation == ADD ) {
 
       for ( ; i < l; i++ ) {
-        this.data.y[ i ] += num;
+        this.data[ i ] += num;
       }
+
+      this.minY += num;
+      this.maxY += num;
     } else if ( operation == SUBTRACT ) {
 
       for ( ; i < l; i++ ) {
-        this.data.y[ i ] -= num;
+        this.data[ i ] -= num;
       }
+
+      this.minY -= num;
+      this.maxY -= num;
     }
 
     return this;
@@ -586,34 +671,35 @@ class Waveform {
   _waveArithmetic( wave, operation ) {
 
     let yDataThis = this.getDataY(),
-      xDataThis = this.getDataX(),
+
       i = 0;
     const l = this.getLength();
-    this.requireMonotonicity();
-    wave.requireMonotonicity();
+    this.requireXMonotonicity();
+    wave.requireXMonotonicity();
 
     if ( operation == MULTIPLY ) {
 
       for ( ; i < l; i++ ) {
-        yDataThis[ i ] *= wave.interpolate( xDataThis[ i ] );
+        yDataThis[ i ] *= wave.interpolate( this.getX( i ) );
       }
     } else if ( operation == DIVIDE ) {
 
       for ( ; i < l; i++ ) {
-        yDataThis[ i ] /= wave.interpolate( xDataThis[ i ] );
+        yDataThis[ i ] /= wave.interpolate( this.getX( i ) );
       }
     } else if ( operation == ADD ) {
 
       for ( ; i < l; i++ ) {
-        yDataThis[ i ] += wave.interpolate( xDataThis[ i ] );
+        yDataThis[ i ] += wave.interpolate( this.getX( i ) );
       }
     } else if ( operation == SUBTRACT ) {
 
       for ( ; i < l; i++ ) {
-        yDataThis[ i ] -= wave.interpolate( xDataThis[ i ] );
+        yDataThis[ i ] -= wave.interpolate( this.getX( i ) );
       }
     }
 
+    this._dataUpdated( yDataThis );
     return this;
   }
 
@@ -635,6 +721,9 @@ class Waveform {
         min: this.getMinX(),
         max: this.getMaxX(),
         data: this.data,
+        xdata: this.xdata ? this.xdata.getData() : undefined,
+        xScale: this.xScale,
+        xOffset: this.xOffset,
         numPoints: level
 
       } ).then( ( data ) => {
@@ -667,9 +756,21 @@ class Waveform {
     this.dataInUse = this.data;
   }
 
-  duplicate() {
+  duplicate( alsoDuplicateXWave ) {
     var newWaveform = new Waveform();
-    newWaveform._dataUpdated( this.getDataX().slice(), this.getDataY().slice() );
+    newWaveform._dataUpdated( this.getDataY().slice() );
+
+    if ( this.xdata ) {
+      if ( alsoDuplicateXWave ) {
+        newWaveform.setXWaveform( this.xdata.duplicate() );
+      } else {
+        newWaveform.setXWaveform( this.xdata.duplicate() );
+      }
+    } else {
+      newWaveform.xOffset = this.xOffset;
+      newWaveform.xScale = this.xScale;
+    }
+
     return newWaveform;
   }
 

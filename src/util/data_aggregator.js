@@ -18,12 +18,26 @@ var workerUrl = URL.createObjectURL( new Blob(
         let i = 0;
         let k = -4;
         let slots = [];
-        let dataAggregated = [];
+        let dataAggregatedX = [];
+        let dataAggregatedY = [];
+        let getX;
+
+        if ( e.data.xscale ) {
+
+          getX = function getX( index ) {
+            return e.data.xscale[  index ];
+          }
+        } else {
+          getX = function getX( index ) {
+            return index * e.data.xScale + e.data.xOffset;
+          }
+
+        }
 
         for ( ; i < l; i++ ) {
 
           // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-          slotNumber = Math.floor( ( data[ i ][ 0 ] - min ) * dataPerSlot );
+          slotNumber = Math.floor( ( getX( i ) - min ) * dataPerSlot );
 
           if ( slots[ k ] !== slotNumber ) {
             k += 4;
@@ -31,20 +45,28 @@ var workerUrl = URL.createObjectURL( new Blob(
 
             let slotX = ( slotNumber + 0.5 ) / dataPerSlot;
 
-            dataAggregated[ k ] = [ slotX, data[ i ][ 1 ] ];
-            dataAggregated[ k + 1 ] = [ slotX, data[ i ][ 1 ] ];
-            dataAggregated[ k + 2 ] = [ slotX, data[ i ][ 1 ] ];
-            dataAggregated[ k + 3 ] = [ slotX, data[ i ][ 1 ] ];
+            dataAggregatedX[ k ] = slotX;
+            dataAggregatedX[ k + 1 ] = slotX;
+            dataAggregatedX[ k + 2 ] = slotX;
+            dataAggregatedX[ k + 3 ] = slotX;
+
+            dataAggregatedY[ k ] = data[ i ];
+            dataAggregatedY[ k + 1 ] = data[ i ];
+            dataAggregatedY[ k + 2 ] = data[ i ];
+            dataAggregatedY[ k + 3 ] = data[ i ];
           }
-          dataAggregated[ k + 1 ][ 1 ] = Math.min( data[ i ][ 1 ], dataAggregated[ k + 1 ][ 1 ] );
-          dataAggregated[ k + 2 ][ 1 ] = Math.max( data[ i ][ 1 ], dataAggregated[ k + 2 ][ 1 ] );
-          dataAggregated[ k + 3 ][ 1 ] = data[ i ][ 1 ];
+          dataAggregatedY[ k + 1 ] = Math.min( data[ i ], dataAggregatedY[ k + 1 ] );
+          dataAggregatedY[ k + 2 ] = Math.max( data[ i ], dataAggregatedY[ k + 2 ] );
+          dataAggregatedY[ k + 3 ] = data[ i ];
 
         }
 
         postMessage( {
           numPoints: numPoints,
-          data: dataAggregated,
+          data: {
+            x: dataAggregatedX,
+            y: dataAggregatedY
+          },
           _queueId: e.data._queueId
         } );
       };
