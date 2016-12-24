@@ -4954,11 +4954,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /** [ [ x1, y1 ], [ x2, y2 ] ] */
 	    setDataXY(data) {
 
-	      let newData = [this._makeArray(data.length), this._makeArray(data.length)];
+	      let newData = [this._makeArray(data.length), this._makeArray(data.length)],
+	          warnNaN = false;
+	      const nanable = this.isNaNAllowed();
+
 	      data.map((el, index) => {
+
+	        if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+	          warnNaN = true;
+	        }
+
 	        newData[0][index] = el[0];
 	        newData[1][index] = el[1];
 	      });
+
+	      if (warnNaN) {
+	        this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
+	      }
 
 	      this._dataUpdated(...newData);
 	      return this;
@@ -4966,11 +4978,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    setDataY(data) {
 
-	      let newData = [this._makeArray(data.length), this._makeArray(data.length)];
+	      let newData = [this._makeArray(data.length), this._makeArray(data.length)],
+	          warnNaN = false;
+
+	      const nanable = this.isNaNAllowed();
+
 	      data.map((el, index) => {
+
+	        if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+	          warnNaN = true;
+	        }
+
 	        newData[index][1] = el;
 	        newData[index][0] = index;
 	      });
+
+	      if (warnNaN) {
+	        this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
+	      }
 
 	      this._dataUpdated(...newData);
 	      return this;
@@ -5009,15 +5034,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isNaNAllowed(constructor = this._typedArrayClass) {
 
 	      // The following types accept NaNs
-	      return;
-	      constructor == Array || constructor == Float32Array || constructor == Float64Array;
+	      return constructor == Array || constructor == Float32Array || constructor == Float64Array;
 	    }
 
 	    isUnsigned(constructor = this._typedArrayClass) {
 
 	      // The following types accept NaNs
-	      return;
-	      constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
+	      return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
 	    }
 
 	    _makeArray(length) {
@@ -5045,10 +5068,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this._monotoneous = false;
 	        }
 
-	        minX = Math.min(dataX[i], minX);
-	        maxX = Math.max(dataX[i], maxX);
-	        minY = Math.min(dataY[i], minY);
-	        maxY = Math.max(dataY[i], maxY);
+	        if (dataX[i] === dataX[i]) {
+	          // NaN support
+	          minX = Math.min(dataX[i], minX);
+	          maxX = Math.max(dataX[i], maxX);
+	        }
+
+	        if (dataY[i] === dataY[i]) {
+	          // NaN support
+	          minY = Math.min(dataY[i], minY);
+	          maxY = Math.max(dataY[i], maxY);
+	        }
 	      }
 
 	      if (this._monotoneous) {
@@ -5518,6 +5548,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var newWaveform = new Waveform();
 	      newWaveform._dataUpdated(this.getDataX().slice(), this.getDataY().slice());
 	      return newWaveform;
+	    }
+
+	    warn(text) {
+	      if (console) {
+	        console.warn(text);
+	      }
 	    }
 
 	  };
