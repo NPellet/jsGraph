@@ -5213,7 +5213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.xdata) {
 	        let xData = this.xdata.getData();
-	        return binarySearch(x, xData, !this.xdata.getMonotoneousDirection());
+	        return binarySearch(xval, xData, !this.xdata.getMonotoneousDirection());
 	      } else {
 	        return Math.max(0, Math.min(this.getLength() - 1, Math.floor((xval - this.xOffset) / this.xScale)));
 	      }
@@ -5262,8 +5262,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.data;
 	    }
 
-	    getData() {
-	      return this.data;
+	    getData(optimized) {
+	      if (!optimized || !this.dataInUse) {
+	        return this.data;
+	      }
+	      return this.dataInUse.y;
 	    }
 
 	    getLength() {
@@ -5310,7 +5313,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    getX(index) {
+	    getX(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.x[index];
+	      }
 
 	      if (this.xdata) {
 	        return this.xdata.data[index];
@@ -7370,7 +7377,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
 	   * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
 	   * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
-	   * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
 	   * @prop {Boolean} logScale - Display the axis in log scale (base 10)
 	   * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
 	   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
@@ -12051,7 +12057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      let self = this,
 	          waveform = this._waveform,
-	          data = waveform.getData(),
+	          data = waveform.getData(true),
 	          x,
 	          y,
 	          lastX = false,
@@ -12109,7 +12115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (; i < l; i += 1) {
 
-	        x = waveform.getX(i);
+	        x = waveform.getX(i, true);
 	        y = data[i];
 
 	        if (x != x || y != y) {
@@ -12519,7 +12525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (this.markersShown() && allowMarker !== false && this.markerFamily) {
-	        drawMarkerXY(this, this.markerFamily[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(family[this.markerCurrentFamily]));
+	        drawMarkerXY(this, this.markerFamily[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(this.markerFamily[this.markerCurrentFamily]));
 	      }
 
 	      this.counter++;
@@ -23734,8 +23740,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            axis._pluginZoomMin = axis.getCurrentMin();
 	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	            axis._pluginZoomMinFinal = axis.getMinValue();
-	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	            axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
 	          }, false, true, false);
 
 	          modeX = true;
@@ -23748,8 +23754,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            axis._pluginZoomMin = axis.getCurrentMin();
 	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	            axis._pluginZoomMinFinal = axis.getMinValue();
-	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	            axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
 	          }, false, false, true);
 
 	          modeY = true;

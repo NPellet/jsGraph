@@ -261,7 +261,7 @@ class Waveform {
 
     if ( this.xdata ) {
       let xData = this.xdata.getData();
-      return binarySearch( x, xData, !this.xdata.getMonotoneousDirection() );
+      return binarySearch( xval, xData, !this.xdata.getMonotoneousDirection() );
     } else {
       return Math.max( 0, Math.min( this.getLength() - 1, Math.floor( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
     }
@@ -310,8 +310,11 @@ class Waveform {
     return this.data;
   }
 
-  getData() {
-    return this.data;
+  getData( optimized ) {
+    if ( !optimized ||  !this.dataInUse ) {
+      return this.data;
+    }
+    return this.dataInUse.y;
   }
 
   getLength() {
@@ -359,7 +362,11 @@ class Waveform {
     return this;
   }
 
-  getX( index ) {
+  getX( index, optimized ) {
+
+    if ( optimized && this.dataInUse ) {
+      return this.dataInUse.x[ index ];
+    }
 
     if ( this.xdata ) {
       return this.xdata.data[ index ];

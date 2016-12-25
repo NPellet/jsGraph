@@ -21,7 +21,6 @@ import * as util from './graph.util'
  * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
  * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
  * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
- * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
  * @prop {Boolean} logScale - Display the axis in log scale (base 10)
  * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)

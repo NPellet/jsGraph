@@ -6,30 +6,21 @@ define( function() {
 
 		var graphinstance = new Graph( domGraph, {
 
-			wheel: {
-				type: 'plugin',
-				plugin: 'zoom',
-				options: {
-					direction: 'y'
-				}
-			},
-
-			dblclick: {
-				type: 'plugin',
-				plugin: 'zoom',
-				options: {
-					mode: 'total'
-				}
-			},
-
 			plugins: {
-				'zoom': { zoomMode: 'xy' },
+				'zoom': { zoomMode: 'xy', transition: true },
 				'drag': {}
 			},
 
 			mouseActions: [
 				{ plugin: 'zoom', shift: true, ctrl: false },
-				{ plugin: 'drag', shift: false, ctrl: false }
+				{ plugin: 'drag', shift: false, ctrl: false },
+				{
+					type: 'dblclick',
+					plugin: 'zoom',
+					options: {
+						mode: 'total'
+					}
+				}
 			],
 
 			keyActions: [

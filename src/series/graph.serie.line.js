@@ -692,7 +692,7 @@ class SerieLine extends Serie {
 
     let self = this,
       waveform = this._waveform,
-      data = waveform.getData(),
+      data = waveform.getData( true ),
       x,
       y,
       lastX = false,
@@ -759,7 +759,7 @@ class SerieLine extends Serie {
 
     for ( ; i < l; i += 1 ) {
 
-      x = waveform.getX( i );
+      x = waveform.getX( i, true );
       y = data[ i ];
 
       if ( x != x || y != y ) { // NaN checks
@@ -1177,7 +1177,7 @@ class SerieLine extends Serie {
         this.markerFamily[ this.markerCurrentFamily ],
         xpx,
         ypx,
-        this.markersDom.get( family[  this.markerCurrentFamily ] )
+        this.markersDom.get( this.markerFamily[  this.markerCurrentFamily ] )
       );
     }
 

@@ -332,8 +332,8 @@ class PluginZoom extends Plugin {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
 
-          axis._pluginZoomMinFinal = axis.getMinValue();
-          axis._pluginZoomMaxFinal = axis.getMaxValue();
+          axis._pluginZoomMinFinal = axis.getMinValue() - ( axis.options.axisDataSpacing.min * axis.getInterval() );
+          axis._pluginZoomMaxFinal = axis.getMaxValue() + ( axis.options.axisDataSpacing.max * axis.getInterval() );
 
         }, false, true, false );
 
@@ -348,8 +348,8 @@ class PluginZoom extends Plugin {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
 
-          axis._pluginZoomMinFinal = axis.getMinValue();
-          axis._pluginZoomMaxFinal = axis.getMaxValue();
+          axis._pluginZoomMinFinal = axis.getMinValue() - ( axis.options.axisDataSpacing.min * axis.getInterval() );
+          axis._pluginZoomMaxFinal = axis.getMaxValue() + ( axis.options.axisDataSpacing.max * axis.getInterval() );
 
         }, false, false, true );
 
