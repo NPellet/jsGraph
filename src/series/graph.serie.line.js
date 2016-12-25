@@ -540,7 +540,7 @@ class SerieLine extends Serie {
 
       }
 
-      this._dataToUse = this._waveform.getDataToUseFlat();
+      //    this._dataToUse = this._waveform.getDataToUseFlat();
 
     } else {
 
@@ -649,6 +649,10 @@ class SerieLine extends Serie {
       this.lookForMaxima = true;
       this.lookForMinima = false;
 
+      this.markerFamily = this.markerFamilies[ this.selectionType || "unselected" ];
+
+      this.pos0 = this.getYAxis().getPos( 0 );
+
       if ( this.error ) {
         this.errorDrawInit();
       }
@@ -699,9 +703,10 @@ class SerieLine extends Serie {
   }
 
   _draw_standard() {
-
+    
     let self = this,
-      data = this._dataToUse,
+      waveform = this._waveform,
+      data = waveform.getData(),
       x,
       y,
       lastX = false,
@@ -735,36 +740,15 @@ class SerieLine extends Serie {
       _markersShown = this.markersShown();
 
     let i = 0,
-      l = data.length;
-
-    if ( _monotoneous ) {
-
-      let min = this.searchClosestValue( xMin, data ),
-        max = this.searchClosestValue( xMax, data );
-
-      if ( min && max ) {
-        if ( min.xBeforeIndexArr > max.xBeforeIndexArr ) { // Data is flipped
-          let temp = max;
-          max = min.xBeforeIndexArr + 2;
-          min = temp.xBeforeIndexArr;
-        } else {
-
-          min = min.xBeforeIndexArr;
-          max = max.xBeforeIndexArr + 2;
-        }
-
-        i = min;
-        l = max + 2; // Condition is <, not <=, hence the +2
-      }
-    }
+      l = waveform.getLength();
 
     this.counter1 = 0;
     this.currentLine = "";
 
-    for ( ; i < l; i += 2 ) {
+    for ( ; i < l; i += 1 ) {
 
-      x = data[ i ];
-      y = data[ i + 1 ];
+      x = waveform.getX( i );
+      y = data[ i ];
 
       if ( x != x || y != y ) { // NaN checks
         this._createLine();
@@ -1245,14 +1229,13 @@ class SerieLine extends Serie {
   }
 
   _addPoint( xpx, ypx, x, y, j, move, allowMarker ) {
-    var pos;
 
     /*if( ! this.currentLineId ) {
         throw "No current line"
       }* @memberof SerieLine
 */
 
-    if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+    if ( xpx !== xpx || ypx !== ypx ) {
       return;
     }
 
@@ -1260,10 +1243,11 @@ class SerieLine extends Serie {
       this.currentLine = 'M ';
     } else {
 
-      if ( this.options.lineToZero || move )
+      if ( this.options.lineToZero || move ) {
         this.currentLine += 'M ';
-      else
+      } else {
         this.currentLine += "L ";
+      }
     }
 
     this.currentLine += xpx;
@@ -1271,7 +1255,7 @@ class SerieLine extends Serie {
     this.currentLine += ypx;
     this.currentLine += " ";
 
-    if ( this.options.lineToZero && ( pos = this.getYAxis().getPos( 0 ) ) !== undefined ) {
+    if ( this.options.lineToZero && this.pos0 !== undefined ) {
 
       this.currentLine += "L ";
       this.currentLine += xpx;
@@ -1291,11 +1275,10 @@ class SerieLine extends Serie {
       return;
     }
 
-    let family;
-    if ( this.markersShown() && allowMarker !== false && ( family = this.markerFamilies[ this.selectionType || "unselected" ] ) ) {
+    if ( this.markersShown() && allowMarker !== false && this.markerFamily ) {
       drawMarkerXY(
         this,
-        family[ this.markerCurrentFamily ],
+        this.markerFamily[ this.markerCurrentFamily ],
         xpx,
         ypx,
         this.markersDom.get( family[  this.markerCurrentFamily ] )

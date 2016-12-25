@@ -104,7 +104,7 @@ class Waveform {
       this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
     }
 
-    this._dataUpdated( ...newData );
+    this._setData( ...newData );
     return this;
   }
 */
@@ -128,7 +128,7 @@ class Waveform {
         this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
       }
 
-      this._dataUpdated( newData );
+      this._setData( newData );
       return this;
     }
     /*
@@ -138,7 +138,7 @@ class Waveform {
         this.data.x = this.data.y;
         this.data.y = temp;
 
-        this._dataUpdated( this.data.x, this.data.y );
+        this._setData( this.data.x, this.data.y );
       }*/
 
   setXWaveform( waveform ) {
@@ -175,7 +175,7 @@ class Waveform {
     this._typedArrayClass = constructor;
 
     if ( this.data ) {
-      this._dataUpdated( ( constructor ).from( this.data.x ), ( constructor ).from( this.data.y ) );
+      this._setData( ( constructor ).from( this.data.x ), ( constructor ).from( this.data.y ) );
     }
   }
 
@@ -205,7 +205,7 @@ class Waveform {
     return new Array( length );
   }
 
-  _dataUpdated( dataY ) {
+  _setData( dataY ) {
     const l = dataY.length;
     let i = 1,
       monoDir = dataY[ 1 ] > dataY[ 0 ],
@@ -239,6 +239,10 @@ class Waveform {
   }
 
   computeXMinMax() {
+
+    if ( !this.data ) {
+      return;
+    }
 
     if ( this.xdata ) {
 
@@ -708,7 +712,7 @@ class Waveform {
       }
     }
 
-    this._dataUpdated( yDataThis );
+    this._setData( yDataThis );
     return this;
   }
 
@@ -767,7 +771,7 @@ class Waveform {
 
   duplicate( alsoDuplicateXWave ) {
     var newWaveform = new Waveform();
-    newWaveform._dataUpdated( this.getDataY().slice() );
+    newWaveform._setData( this.getDataY().slice() );
 
     if ( this.xdata ) {
       if ( alsoDuplicateXWave ) {

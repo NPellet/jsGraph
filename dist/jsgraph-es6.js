@@ -5063,7 +5063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       if ( warnNaN ) {
 	        this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
 	      }
-	       this._dataUpdated( ...newData );
+	       this._setData( ...newData );
 	      return this;
 	    }
 	    */
@@ -5087,7 +5087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
 	      }
 
-	      this._dataUpdated(newData);
+	      this._setData(newData);
 	      return this;
 	    }
 	    /*
@@ -5096,7 +5096,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        temp = this.data.x;
 	        this.data.x = this.data.y;
 	        this.data.y = temp;
-	         this._dataUpdated( this.data.x, this.data.y );
+	         this._setData( this.data.x, this.data.y );
 	      }*/
 
 	    setXWaveform(waveform) {
@@ -5133,7 +5133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._typedArrayClass = constructor;
 
 	      if (this.data) {
-	        this._dataUpdated(constructor.from(this.data.x), constructor.from(this.data.y));
+	        this._setData(constructor.from(this.data.x), constructor.from(this.data.y));
 	      }
 	    }
 
@@ -5158,7 +5158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return new Array(length);
 	    }
 
-	    _dataUpdated(dataY) {
+	    _setData(dataY) {
 	      const l = dataY.length;
 	      let i = 1,
 	          monoDir = dataY[1] > dataY[0],
@@ -5192,6 +5192,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    computeXMinMax() {
+
+	      if (!this.data) {
+	        return;
+	      }
 
 	      if (this.xdata) {
 
@@ -5661,7 +5665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
-	      this._dataUpdated(yDataThis);
+	      this._setData(yDataThis);
 	      return this;
 	    }
 
@@ -5720,7 +5724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
-	      newWaveform._dataUpdated(this.getDataY().slice());
+	      newWaveform._setData(this.getDataY().slice());
 
 	      if (this.xdata) {
 	        if (alsoDuplicateXWave) {
@@ -11881,7 +11885,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 
-	        this._dataToUse = this._waveform.getDataToUseFlat();
+	        //    this._dataToUse = this._waveform.getDataToUseFlat();
 	      } else {
 
 	        this._dataToUse = this.data;
@@ -11985,6 +11989,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.lookForMaxima = true;
 	        this.lookForMinima = false;
 
+	        this.markerFamily = this.markerFamilies[this.selectionType || "unselected"];
+
+	        this.pos0 = this.getYAxis().getPos(0);
+
 	        if (this.error) {
 	          this.errorDrawInit();
 	        }
@@ -12032,9 +12040,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _draw_standard() {
-
+	      console.log('once');
 	      let self = this,
-	          data = this._dataToUse,
+	          waveform = this._waveform,
+	          data = waveform.getData(),
 	          x,
 	          y,
 	          lastX = false,
@@ -12061,37 +12070,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          _markersShown = this.markersShown();
 
 	      let i = 0,
-	          l = data.length;
-
-	      if (_monotoneous) {
-
-	        let min = this.searchClosestValue(xMin, data),
-	            max = this.searchClosestValue(xMax, data);
-
-	        if (min && max) {
-	          if (min.xBeforeIndexArr > max.xBeforeIndexArr) {
-	            // Data is flipped
-	            let temp = max;
-	            max = min.xBeforeIndexArr + 2;
-	            min = temp.xBeforeIndexArr;
-	          } else {
-
-	            min = min.xBeforeIndexArr;
-	            max = max.xBeforeIndexArr + 2;
-	          }
-
-	          i = min;
-	          l = max + 2; // Condition is <, not <=, hence the +2
-	        }
-	      }
+	          l = waveform.getLength();
 
 	      this.counter1 = 0;
 	      this.currentLine = "";
 
-	      for (; i < l; i += 2) {
+	      for (; i < l; i += 1) {
 
-	        x = data[i];
-	        y = data[i + 1];
+	        x = waveform.getX(i);
+	        y = data[i];
 
 	        if (x != x || y != y) {
 	          // NaN checks
@@ -12565,14 +12552,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
-	      var pos;
 
 	      /*if( ! this.currentLineId ) {
 	          throw "No current line"
 	        }* @memberof SerieLine
 	      */
 
-	      if (isNaN(xpx) || isNaN(ypx)) {
+	      if (xpx !== xpx || ypx !== ypx) {
 	        return;
 	      }
 
@@ -12580,7 +12566,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.currentLine = 'M ';
 	      } else {
 
-	        if (this.options.lineToZero || move) this.currentLine += 'M ';else this.currentLine += "L ";
+	        if (this.options.lineToZero || move) {
+	          this.currentLine += 'M ';
+	        } else {
+	          this.currentLine += "L ";
+	        }
 	      }
 
 	      this.currentLine += xpx;
@@ -12588,7 +12578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.currentLine += ypx;
 	      this.currentLine += " ";
 
-	      if (this.options.lineToZero && (pos = this.getYAxis().getPos(0)) !== undefined) {
+	      if (this.options.lineToZero && this.pos0 !== undefined) {
 
 	        this.currentLine += "L ";
 	        this.currentLine += xpx;
@@ -12607,9 +12597,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      let family;
-	      if (this.markersShown() && allowMarker !== false && (family = this.markerFamilies[this.selectionType || "unselected"])) {
-	        drawMarkerXY(this, family[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(family[this.markerCurrentFamily]));
+	      if (this.markersShown() && allowMarker !== false && this.markerFamily) {
+	        drawMarkerXY(this, this.markerFamily[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(family[this.markerCurrentFamily]));
 	      }
 
 	      this.counter++;
