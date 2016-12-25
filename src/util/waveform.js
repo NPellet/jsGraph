@@ -472,13 +472,6 @@ class Waveform {
       firstPointIndex = 0,
       xval;
 
-    /*
-    dataX = this.getDataX(),
-    if ( dataX[ 1 ] < dataX[ 0 ] ) {
-      this.invert();
-      inverting = true;
-    }*/
-
     const l = this.getLength();
 
     if ( !options.xPosition ) {
@@ -489,9 +482,21 @@ class Waveform {
       throw "No \"resampleToPx\" method was provided. Unit: px per point";
     }
 
-    for ( ; i < l; i++ ) {
+    if ( options.minX > options.maxX ) {
+      let temp = options.minX;
+      options.minX = options.maxX;
+      options.maxX = temp;
+    }
+
+    if ( ( this.xdata && !this.xdata.getMonotoneousDirection ) || ( !this.xdata && this.xScale < -0 ) ) {
+      inverting = true;
+      i = l;
+    }
+    
+    for ( ; inverting ? i > 0 : i < l; inverting ? i-- : i++ ) {
 
       xval = this.getX( i );
+
       if ( options.minX > xval ) {
 
         firstPointIndex = i;
@@ -505,10 +510,20 @@ class Waveform {
         if ( !firstPointIndex ) {
 
           firstPointIndex = i;
+        } else {
+
+          data.x.push( xval );
+          data.y.push( dataY[ firstPointIndex ] );
+
         }
 
         while ( isNaN( dataY[ i ] ) ) {
-          i++;
+
+          if ( inverting ) {
+            i--;
+          } else {
+            i++;
+          }
         }
 
         resampleSum = resampleMin = resampleMax = dataY[ firstPointIndex ];
@@ -522,7 +537,7 @@ class Waveform {
         continue;
       }
 
-      if ( Math.abs( x_px - resample_x_px_start ) > options.resampleToPx || i == l || isNaN( dataY[ i ] ) ) {
+      if ( Math.abs( x_px - resample_x_px_start ) > options.resampleToPx || i == l || i == 0 || isNaN( dataY[ i ] ) ) {
 
         let xpos = ( resample_x_start + xval ) / 2;
 
@@ -532,7 +547,8 @@ class Waveform {
         dataMinMax.push( xpos, resampleMin, resampleMax );
 
         if ( options.maxX !== undefined && xval > options.maxX ) {
-          return;
+
+          break;
         }
 
         doing_mean = false;
@@ -546,14 +562,8 @@ class Waveform {
       resampleMin = Math.min( resampleMin, dataY[ i ] );
       resampleMax = Math.max( resampleMax, dataY[ i ] );
     }
-    /*
-        if ( inverting ) {
-          this.dataInUse = this.invert( data );
-          this.invert();
-          inverting = true;
-          return dataMinMax;
-        }
-    */
+
+    
     this.dataInUse = data;
     return dataMinMax;
   }

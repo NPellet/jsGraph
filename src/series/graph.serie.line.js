@@ -515,7 +515,9 @@ class SerieLine extends Serie {
         this._waveform.resampleForDisplay( {
 
           resampleToPx: this.degradationPx,
-          xPosition: this.getXAxis().getPx.bind( this.getXAxis() )
+          xPosition: this.getXAxis().getPx.bind( this.getXAxis() ),
+          minX: this.getXAxis().getCurrentMin(),
+          maxX: this.getXAxis().getCurrentMax()
 
         } );
 
