@@ -246,8 +246,8 @@ class Waveform {
       this.maxX = this.xdata.getMax();
 
     } else {
-      this.minX = this.xOffset;
-      this.maxX = this.xOffset + this.xScale * this.getLength();
+      this.minX = Math.min( this.xScale * this.getLength(), 0 ) + this.xOffset;
+      this.maxX = Math.max( this.xScale * this.getLength(), 0 ) + this.xOffset;
     }
   }
 
