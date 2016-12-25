@@ -67,6 +67,8 @@ function binarySearch( target, haystack, reverse ) {
       } else {
         seedB = seedInt;
       }
+    } else {
+      return false;
     }
 
     nanDirection *= -1;
@@ -255,6 +257,15 @@ class Waveform {
     }
   }
 
+  getIndexFromX( xval ) {
+
+    if ( this.xdata ) {
+      let xData = this.xdata.getData();
+      return binarySearch( x, xData, !this.xdata.getMonotoneousDirection() );
+    } else {
+      return Math.max( 0, Math.min( this.getLength() - 1, Math.floor( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
+    }
+  }
   getXMin() {
     return this.minX;
   }
@@ -492,7 +503,7 @@ class Waveform {
       options.maxX = temp;
     }
 
-    if ( ( this.xdata && !this.xdata.getMonotoneousDirection ) || ( !this.xdata && this.xScale < -0 ) ) {
+    if ( ( this.xdata && !this.xdata.getMonotoneousDirection() ) || ( !this.xdata && this.xScale < -0 ) ) {
       inverting = true;
       i = l;
     }
@@ -578,7 +589,7 @@ class Waveform {
 
     if ( this.xdata ) {
       let xData = this.xdata.getData(),
-        xIndex = binarySearch( x, xData, !this.getMonotoneousDirection() );
+        xIndex = binarySearch( x, xData, !this.xdata.getMonotoneousDirection() );
 
       if ( xData[ xIndex ] == x ) {
         return yData[ xIndex ];
@@ -595,6 +606,14 @@ class Waveform {
 
   getMonotoneousDirection() {
     return this.monotoneousDirection;
+  }
+
+  getXMonotoneousDirection() {
+    if ( this.xdata ) {
+      return this.xdata.getMonotoneousDirection();
+    }
+
+    return this.xScale > 0;
   }
 
   divide( numberOrWave ) {

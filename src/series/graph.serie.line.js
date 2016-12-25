@@ -657,22 +657,8 @@ class SerieLine extends Serie {
         this.errorDrawInit();
       }
 
-      //    if ( ! this.hasAggregatedData() ) {
+      this._draw_standard();
 
-      if ( this.mode == 'x_equally_separated' ) {
-
-        this._draw_equally_separated();
-
-      } else {
-
-        this._draw_standard();
-
-      }
-      /*   } else {
-
-        this.drawAggregated();
-      }
-*/
       if ( this.error ) {
         this.errorDraw();
       }
@@ -703,7 +689,7 @@ class SerieLine extends Serie {
   }
 
   _draw_standard() {
-    
+
     let self = this,
       waveform = this._waveform,
       data = waveform.getData(),
@@ -744,6 +730,32 @@ class SerieLine extends Serie {
 
     this.counter1 = 0;
     this.currentLine = "";
+
+    if ( waveform.isXMonotoneous() ) {
+
+      if ( waveform.getXMonotoneousDirection() ) {
+        i = waveform.getIndexFromX( xMin ) || 0;
+        l = waveform.getIndexFromX( xMax );
+
+        if ( l === false ) {
+          l = waveform.getLength();
+        }
+
+      } else {
+        i = waveform.getIndexFromX( xMax ) || 0;
+        l = waveform.getIndexFromX( xMin );
+
+        if ( l === false ) {
+          l = waveform.getLength();
+        }
+      }
+
+      l += 2;
+      if ( l > waveform.getLength() ) {
+        l = waveform.getLength();
+      }
+
+    }
 
     for ( ; i < l; i += 1 ) {
 
@@ -950,122 +962,6 @@ class SerieLine extends Serie {
 
     return this;
 
-  }
-
-  _draw_equally_separated() {
-
-    var i = 0,
-      data = this._dataToUse,
-      xData = this._xDataToUse,
-      l = data.length,
-      j,
-      k,
-      m,
-      x,
-      y,
-      xpx,
-      ypx,
-      toBreak,
-      currentLine;
-
-    for ( ; i < l; i++ ) {
-
-      currentLine = "M ";
-      j = 0;
-      k = 0;
-      m = data[ i ].length;
-
-      this.counter1 = i;
-
-      for ( ; j < m; j += 1 ) {
-
-        this.counter2 = j;
-
-        if ( this.markersShown() ) {
-
-          this.getMarkerCurrentFamily( k );
-        }
-
-        if ( !this.isFlipped() ) {
-
-          x = xData[ i ].x + j * xData[ i ].dx;
-          y = data[ i ][ j ];
-
-          xpx = this.getX( x );
-          ypx = this.getY( y );
-
-        } else {
-
-          y = xData[ i ].x + j * xData[ i ].dx;
-          x = data[ i ][ j ];
-
-          ypx = this.getX( y );
-          xpx = this.getY( x );
-
-        }
-
-        // OPTIMIZATION START
-        if ( !this._optimize_before( xpx, ypx ) ) {
-          continue;
-        }
-        // OPTIMIZATION END
-
-        this._addPoint( xpx, ypx, x, y, j, false, false );
-
-        // OPTIMIZATION START
-        if ( !this._optimize_after( xpx, ypx ) ) {
-          toBreak = true;
-          break;
-        }
-        // OPTIMIZATION END
-
-      }
-
-      this._createLine();
-
-      if ( toBreak ) {
-        break;
-      }
-    }
-
-  }
-
-  _optimize_before( xpx, ypx ) {
-
-    if ( !this._optimizeMonotoneous ) {
-      return true;
-    }
-
-    if ( ( this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) || ( !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) ) {
-
-      //      if ( xpx < this._optimizeMinPxX ) {
-
-      this._optimizeBuffer = [ xpx, ypx ];
-      return false;
-    }
-
-    if ( this._optimizeBuffer ) {
-
-      this._addPoint( this._optimizeBuffer[ 0 ], this._optimizeBuffer[ 1 ], false, false, false, false, false );
-      this._optimizeBuffer = false;
-
-    }
-
-    return true;
-  }
-
-  _optimize_after( xpx, ypx ) {
-
-    if ( !this._optimizeMonotoneous ) {
-      return true;
-    }
-
-    if ( ( this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() ) || ( !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() ) ) {
-
-      return false;
-    }
-
-    return true;
   }
 
   /**
