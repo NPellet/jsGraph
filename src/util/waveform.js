@@ -492,7 +492,7 @@ class Waveform {
       inverting = true;
       i = l;
     }
-    
+
     for ( ; inverting ? i > 0 : i < l; inverting ? i-- : i++ ) {
 
       xval = this.getX( i );
@@ -563,7 +563,6 @@ class Waveform {
       resampleMax = Math.max( resampleMax, dataY[ i ] );
     }
 
-    
     this.dataInUse = data;
     return dataMinMax;
   }

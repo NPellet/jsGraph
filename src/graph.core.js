@@ -21,6 +21,7 @@ import Waveform from './util/waveform'
  * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
  * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
  * @prop {Object.<String,Object>} mouseActions - Alias of pluginActions
+ * @prop {Object.<String,Object>} keyActions - Defines what happens when keys are pressed
  * @prop {Object} wheel - Define the mouse wheel action
  * @prop {Object} dblclick - Define the double click action
  * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
@@ -48,6 +49,7 @@ const GraphOptionsDefault = {
   plugins: {},
   pluginAction: {},
   mouseActions: [],
+  keyActions: [],
   wheel: {},
   dblclick: {},
 
@@ -1548,10 +1550,35 @@ class Graph extends EventEmitter {
       this.graphingZone.appendChild( line );
     }
   }
-  isMouseActionAllowed( e, action ) {
+  isActionAllowed( e, action ) {
 
     if ( action.type !== e.type &&  ( action.type !== undefined || e.type !== "mousedown" ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
+    }
+
+    if ( action.key ) {
+
+      if ( action.key !== e.keyCode ) {
+
+        let keyCheck = {
+          'backspace': 8,
+          'enter': 13,
+          'tab': 9,
+          'shift': 16,
+          'ctrl': 17,
+          'alt': 18,
+          'pause': 19,
+          'escape': 27,
+          'up': 33,
+          'down': 34,
+          'left': 37,
+          'right': 39
+        }
+
+        if ( keyCheck[ action.key ] !== e.keyCode ) {
+          return;
+        }
+      }
     }
 
     if ( action.shift === undefined ) {
@@ -1572,6 +1599,7 @@ class Graph extends EventEmitter {
 
     return ( e.shiftKey == action.shift && e.ctrlKey == action.ctrl && e.metaKey == action.meta && e.altKey == action.alt );
   }
+
   forcePlugin( plugin ) {
     this.forcedPlugin = plugin;
   }
@@ -2827,77 +2855,156 @@ function refreshDrawingZone( graph ) {
   graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
 }
 
-function _registerEvents( graph ) {
+function _handleKey( graph, event, type ) {
+
   var self = graph;
 
-  graph._dom.addEventListener( 'keydown', function( e ) {
+  if ( graph.forcedPlugin ) {
 
-    // Not sure this has to be prevented
+    graph.activePlugin = graph.forcedPlugin;
+    graph._pluginExecute( graph.activePlugin, type, [ graph, e ] );
+    return;
+  }
 
-    if ( ( e.keyCode == 8 || e.keyCode == 127 ) && self.selectedShapes ) {
+  checkKeyActions( graph, event, [ graph, event ], type );
+}
+
+// Similar to checkMouseActions
+function checkKeyActions( graph, e, parameters, methodName ) {
+
+  var keyComb = graph.options.keyActions,
+    i, l;
+
+  for ( i = 0, l = keyComb.length; i < l; i++ ) {
+
+    if ( keyComb[ i ].plugin ) { // Is it a plugin ?
+
+      if ( graph.forcedPlugin == keyComb[ i ].plugin || graph.isActionAllowed( e, keyComb[ i ] ) ) {
+
+        if ( keyComb[ i ].options ) {
+          parameters.push( keyComb[ i ].options );
+        }
+
+        graph.activePlugin = keyComb[ i ].plugin; // Lease the mouse action to the current action
+        graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        return true;
+      }
+
+    } else if ( keyComb[ i ].callback && graph.isActionAllowed( e, keyComb[ i ] ) ) {
+
+      if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
+      }
 
       e.preventDefault();
       e.stopPropagation();
 
-      self.selectedShapes.map( function( shape ) {
+      keyComb[ i ].callback.apply( graph, parameters );
+      return true;
+
+    }
+
+    if ( keyComb[ i ].removeSelectedShape && graph.isActionAllowed( e, keyComb[ i ] ) ) {
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      graph.selectedShapes.map( ( shape ) => {
         shape.kill();
       } );
     }
 
+    /* else if ( keyComb[ i ].series ) {
+
+      var series;
+      if ( keyComb[ i ].series === 'all' ) {
+        series = graph.series;
+      }
+
+      if ( !Array.isArray( keyComb[ i ].series ) ) {
+        series = [  series ];
+      }
+
+      if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
+      }
+
+      for ( var j = 0; j < series.length; i++ ) {
+        graph._serieExecute( series[  i ], methodName, parameters );
+      }
+      return true;
+    }*/
+
+  }
+
+  return false;
+
+};
+
+function _registerEvents( graph ) {
+  var self = graph;
+
+  graph._dom.addEventListener( 'keydown', e => {
+
+    _handleKey( graph, e, 'keydown' );
   } );
+
+  graph._dom.addEventListener( 'keypress', e => {
+
+    _handleKey( graph, e, 'keypress' );
+  } );
+
+  graph._dom.addEventListener( 'keyup', e => {
+
+    _handleKey( graph, e, 'keyup' );
+  } );
+  // Not sure this has to be prevented
 
   graph.groupEvent.addEventListener( 'mousemove', function( e ) {
     //e.preventDefault();
-    var coords = self._getXY( e );
-    _handleMouseMove( self, coords.x, coords.y, e );
+    var coords = graph._getXY( e );
+    _handleMouseMove( graph, coords.x, coords.y, e );
   } );
 
   graph.dom.addEventListener( 'mouseleave', function( e ) {
 
-    _handleMouseLeave( self );
+    _handleMouseLeave( graph );
   } );
 
   graph.groupEvent.addEventListener( 'mousedown', function( e ) {
 
-    self.focus();
+    graph.focus();
 
     //   e.preventDefault();
     if ( e.which == 3 || e.ctrlKey ) {
       return;
     }
 
-    var coords = self._getXY( e );
-    _handleMouseDown( self, coords.x, coords.y, e );
+    var coords = graph._getXY( e );
+    _handleMouseDown( graph, coords.x, coords.y, e );
 
   } );
 
   graph.dom.addEventListener( 'mouseup', function( e ) {
 
     graph.emit( "mouseUp", e );
-    //   e.preventDefault();
-    var coords = self._getXY( e );
+    var coords = graph._getXY( e );
 
-    _handleMouseUp( self, coords.x, coords.y, e );
+    _handleMouseUp( graph, coords.x, coords.y, e );
 
   } );
 
   graph.dom.addEventListener( 'dblclick', function( e ) {
 
     graph.emit( "dblClick", e );
+    var coords = graph._getXY( e );
 
-    //      e.preventDefault();
-
-    //      if ( self.clickTimeout ) {
-    //       window.clearTimeout( self.clickTimeout );
-    //    }
-
-    var coords = self._getXY( e );
-    //    self.cancelClick = true;
-
-    _handleDblClick( self, coords.x, coords.y, e );
+    _handleDblClick( graph, coords.x, coords.y, e );
   } );
-
-  // Norman 26 june 2015: Do we really need the click timeout ?
 
   graph.groupEvent.addEventListener( 'click', function( e ) {
 
@@ -2907,21 +3014,10 @@ function _registerEvents( graph ) {
     }
 
     //   e.preventDefault();
-    var coords = self._getXY( e );
-    //    if ( self.clickTimeout ) {
-    //     window.clearTimeout( self.clickTimeout );
-    //  }
+    var coords = graph._getXY( e );
 
-    // Only execute the action after 100ms
-    // self.clickTimeout = window.setTimeout( function() {
-
-    //  if ( self.cancelClick ) {
-    //   self.cancelClick = false;
-    //   return;
-    // }
-
-    if ( !self.prevent( false ) ) {
-      _handleClick( self, coords.x, coords.y, e );
+    if ( !graph.prevent( false ) ) {
+      _handleClick( graph, coords.x, coords.y, e );
     }
 
     //}, 200 );
@@ -2930,7 +3026,7 @@ function _registerEvents( graph ) {
   graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
 
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-    _handleMouseWheel( self, deltaY, e );
+    _handleMouseWheel( graph, deltaY, e );
 
     return false;
   } );
@@ -2938,7 +3034,7 @@ function _registerEvents( graph ) {
   graph.groupEvent.addEventListener( 'wheel', function( e ) {
 
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-    _handleMouseWheel( self, deltaY, e );
+    _handleMouseWheel( graph, deltaY, e );
 
     return false;
   } );
@@ -3045,7 +3141,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
 
     if ( keyComb[ i ].plugin ) { // Is it a plugin ?
 
-      if ( graph.forcedPlugin == keyComb[ i ].plugin || graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+      if ( graph.forcedPlugin == keyComb[ i ].plugin || graph.isActionAllowed( e, keyComb[ i ] ) ) {
 
         if ( keyComb[ i ].options ) {
           parameters.push( keyComb[ i ].options );
@@ -3056,7 +3152,7 @@ function checkMouseActions( graph, e, parameters, methodName ) {
         return true;
       }
 
-    } else if ( keyComb[ i ].callback && graph.isMouseActionAllowed( e, keyComb[ i ] ) ) {
+    } else if ( keyComb[ i ].callback && graph.isActionAllowed( e, keyComb[ i ] ) ) {
 
       if ( keyComb[ i ].options ) {
         parameters.push( keyComb[ i ].options );

@@ -28,6 +28,11 @@ class ShapeEllipse extends Shape {
     return true;
   }
 
+  setR( rx, ry ) {
+    this.setProp( 'rx', rx );
+    this.setProp( 'ry', ry );
+  }
+
   handleMouseUpImpl() {
     this.triggerChange();
   }
