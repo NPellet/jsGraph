@@ -2925,10 +2925,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    graph._painted = true;
-
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
-
 	      if (axis.disabled || axis.floating) {
 	        return;
 	      }
@@ -6115,6 +6113,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
 	      this.clip.appendChild(this.clipRect);
 	      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+	      this.graph._axisHasChanged(this);
 	    }
 
 	    handleMouseMoveLocal() {}
@@ -7505,7 +7505,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
 	     */
 	    getRelVal(px) {
-
 	      return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
 	    }
 
@@ -17064,6 +17063,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
 	      //console.log( this.densityMapCalculation );
+
 	      (weighing ? this.calculateDensityWeighted : this.calculateDensity).call(this, results.x.from, results.x.delta, results.x.num, results.y.from, results.y.delta, results.y.num);
 	    }
 
@@ -17278,6 +17278,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (!this.paths[colorIndex]) {
 	            this.paths[colorIndex] = "";
 	          }
+
 	          this.paths[colorIndex] += " M " + this.getXAxis().getPx(i * this.deltaX + this.fromX) + " " + this.getYAxis().getPx(j * this.deltaY + this.fromY) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
 	          ;

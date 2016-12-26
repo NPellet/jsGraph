@@ -908,7 +908,6 @@ class Graph extends EventEmitter {
       serieValue = serie[ func2use ]();
 
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
-
     }
 
     return val;
@@ -2701,10 +2700,8 @@ function refreshDrawingZone( graph ) {
   };
 
   graph._painted = true;
-
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
-
     if ( axis.disabled ||  axis.floating ) {
       return;
     }

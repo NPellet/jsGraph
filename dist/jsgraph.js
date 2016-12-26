@@ -11459,10 +11459,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 
 	  graph._painted = true;
-
 	  // Apply to top and bottom
 	  graph._applyToAxes(function (axis, position) {
-
 	    if (axis.disabled || axis.floating) {
 	      return;
 	    }
@@ -14002,7 +14000,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var mousedown = function mousedown(e) {
 
 	        e.stopPropagation();
-
+	        console.log("down");
 	        if (self.options.movable) {
 	          pos.x = e.clientX;
 	          pos.y = e.clientY;
@@ -14685,6 +14683,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
 	      this.clip.appendChild(this.clipRect);
 	      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+	      this.graph._axisHasChanged(this);
 	    }
 	  }, {
 	    key: 'handleMouseMoveLocal',
@@ -16238,7 +16238,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getRelVal',
 	    value: function getRelVal(px) {
-
 	      return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
 	    }
 	  }, {
@@ -26661,6 +26660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
 	      //console.log( this.densityMapCalculation );
+
 	      (weighing ? this.calculateDensityWeighted : this.calculateDensity).call(this, results.x.from, results.x.delta, results.x.num, results.y.from, results.y.delta, results.y.num);
 	    }
 	  }, {
@@ -26896,6 +26896,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (!this.paths[colorIndex]) {
 	            this.paths[colorIndex] = "";
 	          }
+
 	          this.paths[colorIndex] += " M " + this.getXAxis().getPx(i * this.deltaX + this.fromX) + " " + this.getYAxis().getPx(j * this.deltaY + this.fromY) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
 	          ;
@@ -32534,7 +32535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'onMouseDown',
 	    value: function onMouseDown(graph, x, y, e, mute) {
-
+	      console.log('zoomdown');
 	      var zoomMode = this.options.zoomMode;
 
 	      if (!zoomMode) {

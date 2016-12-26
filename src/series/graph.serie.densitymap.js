@@ -381,6 +381,7 @@ class SerieDensityMap extends Serie {
     //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
     //console.log( this.densityMapCalculation );
+
     ( weighing ? this.calculateDensityWeighted : this.calculateDensity ).call( this,
       results.x.from, results.x.delta, results.x.num,
       results.y.from, results.y.delta, results.y.num
@@ -597,6 +598,7 @@ class SerieDensityMap extends Serie {
         if ( !this.paths[ colorIndex ] ) {
           this.paths[ colorIndex ] = "";
         }
+
         this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
         ;
