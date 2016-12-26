@@ -1,87 +1,39 @@
 
-define( function() {
+define( ['jquery'], function( $ ) {
 
 	return [ function( domGraph ) {
 
-	var graph = new Graph( domGraph, { 
-			
-		plugins: {
-			 'zoom': { zoomMode: 'xy', transition: true },
-			 'drag': {
-		          persistanceX: true,
-		          dragY: false
-		        },
 
-		},
+$.get( '../web/sources/datasets/density.txt', {}, function( txt ) {
 
-		pluginAction: {
-			'zoom': { shift: true, ctrl: false },
-			'drag': { shift: false, ctrl: false }
-		},
 
-		dblclick: {
-			type: 'plugin',
-			plugin: 'zoom',
-			options: {
-				mode: 'gradual'
-			}
-		}
-	}, { });
+	var data = txt
+		.split( "\n" )
+		.map( function( el ) { 
+			return el.split("\t" ).map( parseFloat ) 
+		} );
 
-	var data = [];
-	var colors = [];
-//	http://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
-	/* accepts parameters
-	 * h  Object = {h:x, s:y, v:z}
-	 * OR 
-	 * h, s, v
-	*/
+	var graph = new Graph( domGraph );
+	graph.resize( 400, 300 );
+		graph.resize( 400, 600 );
+			graph.resize( 400, 100 );
 
-	var hexChar = ["0", "1", "2", "3", "4", "5", "6", "7","8", "9", "A", "B", "C", "D", "E", "F"];
+	graph.getXAxis().turnGridsOff();
+	graph.getYAxis().turnGridsOff();
+	
+	var s = graph.newSerie("s1", {}, "densitymap");
+	s.autoAxis().setData( data );
+	s.setPxPerBin( 5, 5, false );
 
-	function byteToHex(b) {
-	  return hexChar[(b >> 4) & 0x0f] + hexChar[b & 0x0f];
-	}
+	s.colorMapHSL( [
+		{ h: 270, s: 1, l: 0.5 }, // Black
+		{ h: 0, s: 1, l: 0.5 }, // Red
+	], 300 ); // Use 300 colors
 
-	function HSVtoRGB(h, s, v) {
-	    var r, g, b, i, f, p, q, t;
-	    if (arguments.length === 1) {
-	        s = h.s, v = h.v, h = h.h;
-	    }
-	    i = Math.floor(h * 6);
-	    f = h * 6 - i;
-	    p = v * (1 - s);
-	    q = v * (1 - f * s);
-	    t = v * (1 - (1 - f) * s);
-	    switch (i % 6) {
-	        case 0: r = v, g = t, b = p; break;
-	        case 1: r = q, g = v, b = p; break;
-	        case 2: r = p, g = v, b = t; break;
-	        case 3: r = p, g = q, b = v; break;
-	        case 4: r = t, g = p, b = v; break;
-	        case 5: r = v, g = p, b = q; break;
-	    }
-	    return "#" + byteToHex( Math.floor(r * 255) ) + byteToHex( Math.floor(g * 255) ) + byteToHex( Math.floor(b * 255) );
-	}
+	graph.draw();
 
-	for( var i = 0; i < Math.PI * 10; i += 0.001 ) {
-		data.push( i );
-		data.push( Math.sin( i ) );
-		colors.push( HSVtoRGB( Math.pow(Math.sin( i ), 2), 0.8, 0.8 ) );
-	}
+} );
 
-		
-		var s = graph.newSerie("a", {}, "line.color").autoAxis().setData(data);
-		s.setColors([ colors ]);
-		graph.draw();
-		var date = Date.now();
-		graph.drawSeries( true );
-
-var j = 0;
-		for( var i in s.lines ) {
-			j++;
-		}
-		console.log( j );
 
 	}, 
 

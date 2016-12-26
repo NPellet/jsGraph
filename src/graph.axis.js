@@ -203,6 +203,8 @@ class Axis extends EventEmitter {
     this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
     this.clip.appendChild( this.clipRect );
     this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+
+    this.graph._axisHasChanged( this );
   }
 
   handleMouseMoveLocal() {}
@@ -1623,7 +1625,6 @@ class Axis extends EventEmitter {
    * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
    */
   getRelVal( px ) {
-
     return px / ( this.getMaxPx() - this.getMinPx() ) * this.getCurrentInterval();
   }
 
