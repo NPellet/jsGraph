@@ -24,12 +24,6 @@ const defaults = {
   trackMouseLabelRouding: 1,
   lineToZero: false,
 
-  autoPeakPicking: false,
-  autoPeakPickingNb: 4,
-  autoPeakPickingMinDistance: 10,
-  autoPeakPickingFormat: false,
-  autoPeakPickingAllowAllY: false,
-
   selectableOnClick: true,
 
   markersIndependant: false
@@ -140,40 +134,6 @@ class SerieLine extends Serie {
 
     if ( this.initExtended1 ) {
       this.initExtended1();
-    }
-
-    if ( this.options.autoPeakPicking ) {
-
-      this.picks = this.picks || [];
-
-      for ( var n = 0, m = this.options.autoPeakPickingNb; n < m; n++ ) {
-
-        var shape = this.graph.newShape( {
-
-          type: 'label',
-          label: {
-            text: "",
-            position: {
-              x: 0
-            },
-            anchor: 'middle',
-
-          },
-
-          selectable: true,
-
-          shapeOptions: {
-            minPosY: 15
-          }
-
-        } );
-
-        shape.draw();
-        shape.setSerie( self );
-        self.picks.push( shape );
-
-      }
-
     }
 
     this.groupLines.addEventListener( 'click', function( e ) {
@@ -552,8 +512,7 @@ class SerieLine extends Serie {
     this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
     this._optimizeBreak;
     this._optimizeBuffer;
-    this.detectedPeaks = [];
-    this.lastYPeakPicking = false;
+
     return true;
   }
 
@@ -583,49 +542,6 @@ class SerieLine extends Serie {
 
     this.lines.splice( this.currentLineId, l - ( this.currentLineId ) );
     this.currentLineId = 0;
-  }
-
-  detectPeaks( x, y ) {
-
-    if ( !this.options.autoPeakPicking ) {
-      return;
-    }
-
-    if ( !this.options.lineToZero ) {
-
-      if ( !this.lastYPeakPicking ) {
-
-        this.lastYPeakPicking = [ y, x ];
-
-      } else {
-
-        if ( ( y >= this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y <= this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-          this.lastYPeakPicking = [ y, x ]
-
-        } else if ( ( y < this.lastYPeakPicking[ 0 ] && this.lookForMaxima ) ||  ( y > this.lastYPeakPicking[ 0 ] && this.lookForMinima ) ) {
-
-          if ( this.lookForMinima ) {
-            this.lookForMinima = false;
-            this.lookForMaxima = true;
-
-          } else {
-
-            this.lookForMinima = true;
-            this.lookForMaxima = false;
-
-            this.detectedPeaks.push( this.lastYPeakPicking );
-            this.lastYPeakPicking = false;
-          }
-
-          this.lastYPeakPicking = [ y, x ];
-
-        }
-      }
-
-    } else {
-      this.detectedPeaks.push( [ y, x ] );
-    }
   }
 
   /**
@@ -663,7 +579,6 @@ class SerieLine extends Serie {
         this.errorDraw();
       }
 
-      this.makePeakPicking();
       this.removeExtraLines();
       this.insertMarkers();
       this.insertLinesGroup();
@@ -964,44 +879,8 @@ class SerieLine extends Serie {
 
   }
 
-  /**
-   * Hides the automatic peak picking (see the autoPeakPicking option)
-   * @memberof SerieLine
-   */
-  hidePeakPicking( lock ) {
-
-    if ( !this._hidePeakPickingLocked ) {
-      this._hidePeakPickingLocked = lock;
-    }
-
-    hidePeakPicking( this );
-  }
-
-  /**
-   * Shows the automatic peak picking (see the autoPeakPicking option)
-   * @memberof SerieLine
-   */
-  showPeakPicking( unlock ) {
-
-    if ( this._hidePeakPickingLocked && !unlock ) {
-      return;
-    }
-
-    showPeakPicking( this );
-  }
-
-  killPeakPicking() {
-
-    if ( this.picks ) {
-      for ( var i = 0, l = this.picks.length; i < l; i++ ) {
-        this.picks[ i ].kill();
-      }
-    }
-  }
-
   kill() {
     super.kill();
-    this.killPeakPicking();
   }
 
   /**
@@ -1082,10 +961,6 @@ class SerieLine extends Serie {
 
         xpx = Math.floor( this.getX( slotToUse[ j ].x ) );
         max = this.getY( slotToUse[ j ].max );
-
-        if ( this.options.autoPeakPicking ) {
-          allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-        }
 
         this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false, false, false, false );
         this._addPoint( xpx, max, false, false, false, true, false );
@@ -2090,14 +1965,6 @@ class SerieLine extends Serie {
 
   }
 
-  showImpl() {
-    this.showPeakPicking();
-  }
-
-  hideImpl() {
-    this.hidePeakPicking();
-  }
-
   isMonotoneous() {
     if ( this._waveform ) {
       return this._waveform.isMonotoneous();
@@ -2120,157 +1987,6 @@ class SerieLine extends Serie {
     return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
   }
 
-  makePeakPicking() {
+  util.mix( SerieLine, ErrorBarMixin );
 
-    var self = this;
-    var ys = this.detectedPeaks;
-
-    var x,
-      px,
-      passed = [],
-      px,
-      i = 0,
-      l = ys.length,
-      k, m, y,
-      index;
-
-    var selected = self.graph.selectedShapes.map( function( shape ) {
-      return shape.getProp( 'xval' );
-    } );
-
-    ys.sort( function( a, b ) {
-      return b[ 0 ] - a[ 0 ];
-    } );
-
-    m = 0;
-
-    for ( ; i < l; i++ ) {
-
-      x = ys[ i ][ 1 ];
-      px = self.getX( x );
-      k = 0;
-      y = self.getY( ys[ i ][ 0 ] );
-
-      if ( px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx() ) {
-        continue;
-      }
-
-      if ( !self.options.autoPeakPickingAllowAllY && ( y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx() ) ) {
-
-        continue;
-      }
-
-      // Distance check
-      for ( ; k < passed.length; k++ ) {
-        if ( Math.abs( passed[ k ] - px ) < self.options.autoPeakPickingMinDistance )  {
-          break;
-        }
-      }
-      if ( k < passed.length ) {
-        continue;
-      }
-
-      // Distance check end
-
-      // If the retained one has already been selected somewhere, continue;
-      if ( ( index = selected.indexOf( x ) ) > -1 ) {
-        passed.push( px );
-        continue;
-      }
-
-      if ( !self.picks[ m ] ) {
-        return;
-      }
-
-      //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
-      //    self.picks[ m ].show();
-
-      if ( this.getYAxis().getPx( ys[ i ][ 0 ] ) - 20 < 0 ) {
-
-        self.picks[ m ].setLabelPosition( {
-          x: x,
-          y: "5px",
-        } );
-
-        self.picks[ m ].setLabelBaseline( 'hanging' );
-
-      } else {
-
-        self.picks[ m ].setLabelBaseline( 'no-change' );
-
-        self.picks[ m ].setLabelPosition( {
-          x: x,
-          y: ys[ i ][ 0 ],
-          dy: "-15px"
-        } );
-
-      }
-
-      self.picks[ m ].setProp( 'xval', x );
-
-      if ( self.options.autoPeakPickingFormat ) {
-
-        self.picks[ m ].setLabelText( self.options.autoPeakPickingFormat.call( self.picks[ m ], x, m ) );
-      } else {
-        self.picks[ m ].setLabelText( String( Math.round( x * 1000 ) / 1000 ) );
-      }
-
-      self.picks[ m ].makeLabels();
-
-      m++;
-      while ( self.picks[ m ] && self.picks[ m ].isSelected() ) {
-        m++;
-      }
-
-      if ( passed.length == self.options.autoPeakPickingNb ) {
-        break;
-      }
-    }
-
-  }
-}
-
-function drawMarkerXY( graph, family, x, y, markerDom ) {
-
-  if ( !family ) {
-    return;
-  }
-
-  if ( graph.options.markersIndependant ) {
-    var dom = graph.getMarkerDomIndependant( graph.counter1, graph.counter2, family );
-    var p = 'M ' + x + ' ' + y + ' ';
-    p += family.markerPath + ' ';
-
-    dom.setAttribute( 'd', p );
-  }
-
-  markerDom.path = markerDom.path ||  "";
-  markerDom.path += 'M ' + x + ' ' + y + ' ';
-  markerDom.path += family.markerPath + ' ';
-}
-
-function hidePeakPicking( graph ) {
-
-  if ( !graph.picks ) {
-    return;
-  }
-  for ( var i = 0; i < graph.picks.length; i++ ) {
-    graph.picks[ i ].hide();
-  }
-
-}
-
-function showPeakPicking( graph ) {
-
-  if ( !graph.picks ) {
-    return;
-  }
-
-  for ( var i = 0; i < graph.picks.length; i++ ) {
-    graph.picks[ i ].show();
-  }
-}
-
-util.mix( SerieLine, ErrorBarMixin );
-
-export default SerieLine
+  export default SerieLine

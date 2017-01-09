@@ -8198,35 +8198,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph4 = _interopRequireDefault(_graph3);
 
-	var _graph5 = __webpack_require__(305);
+	var _graph5 = __webpack_require__(306);
 
 	var _graph6 = _interopRequireDefault(_graph5);
 
-	var _graphAxis = __webpack_require__(306);
+	var _graphAxis = __webpack_require__(307);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-	var _graphAxis3 = __webpack_require__(308);
+	var _graphAxis3 = __webpack_require__(309);
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
-	var _graphAxisX = __webpack_require__(309);
+	var _graphAxisX = __webpack_require__(310);
 
 	var _graphAxisX2 = _interopRequireDefault(_graphAxisX);
 
-	var _graphAxisX3 = __webpack_require__(310);
+	var _graphAxisX3 = __webpack_require__(311);
 
 	var _graphAxisX4 = _interopRequireDefault(_graphAxisX3);
 
-	var _graphSerie = __webpack_require__(311);
+	var _graphSerie = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./series/graph.serie.line\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-	var _graphSerie3 = __webpack_require__(315);
+	var _graphSerie3 = __webpack_require__(313);
 
 	var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
-	var _graphSerie5 = __webpack_require__(316);
+	var _graphSerie5 = __webpack_require__(315);
 
 	var _graphSerie6 = _interopRequireDefault(_graphSerie5);
 
@@ -8460,6 +8460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @prop {Object.<String,Object>} plugins - A list of plugins to import with their options
 	 * @prop {Object.<String,Object>} pluginAction - The default key combination to access those actions
 	 * @prop {Object.<String,Object>} mouseActions - Alias of pluginActions
+	 * @prop {Object.<String,Object>} keyActions - Defines what happens when keys are pressed
 	 * @prop {Object} wheel - Define the mouse wheel action
 	 * @prop {Object} dblclick - Define the double click action
 	 * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
@@ -8487,6 +8488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  plugins: {},
 	  pluginAction: {},
 	  mouseActions: [],
+	  keyActions: [],
 	  wheel: {},
 	  dblclick: {},
 
@@ -10229,11 +10231,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
-	    key: 'isMouseActionAllowed',
-	    value: function isMouseActionAllowed(e, action) {
+	    key: 'isActionAllowed',
+	    value: function isActionAllowed(e, action) {
 
 	      if (action.type !== e.type && (action.type !== undefined || e.type !== "mousedown") && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
 	        return;
+	      }
+
+	      if (action.key) {
+
+	        if (action.key !== e.keyCode) {
+
+	          var keyCheck = {
+	            'backspace': 8,
+	            'enter': 13,
+	            'tab': 9,
+	            'shift': 16,
+	            'ctrl': 17,
+	            'alt': 18,
+	            'pause': 19,
+	            'escape': 27,
+	            'up': 33,
+	            'down': 34,
+	            'left': 37,
+	            'right': 39
+	          };
+
+	          if (keyCheck[action.key] !== e.keyCode) {
+	            return;
+	          }
+	        }
 	      }
 
 	      if (action.shift === undefined) {
@@ -11579,74 +11606,148 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
 	}
 
+	function _handleKey(graph, event, type) {
+
+	  var self = graph;
+
+	  if (graph.forcedPlugin) {
+
+	    graph.activePlugin = graph.forcedPlugin;
+	    graph._pluginExecute(graph.activePlugin, type, [graph, e]);
+	    return;
+	  }
+
+	  checkKeyActions(graph, event, [graph, event], type);
+	}
+
+	// Similar to checkMouseActions
+	function checkKeyActions(graph, e, parameters, methodName) {
+
+	  var keyComb = graph.options.keyActions,
+	      i,
+	      l;
+
+	  for (i = 0, l = keyComb.length; i < l; i++) {
+
+	    if (keyComb[i].plugin) {
+	      // Is it a plugin ?
+
+	      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
+
+	        if (keyComb[i].options) {
+	          parameters.push(keyComb[i].options);
+	        }
+
+	        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+	        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+
+	        e.preventDefault();
+	        e.stopPropagation();
+
+	        return true;
+	      }
+	    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
+
+	      if (keyComb[i].options) {
+	        parameters.push(keyComb[i].options);
+	      }
+
+	      e.preventDefault();
+	      e.stopPropagation();
+
+	      keyComb[i].callback.apply(graph, parameters);
+	      return true;
+	    }
+
+	    if (keyComb[i].removeSelectedShape && graph.isActionAllowed(e, keyComb[i])) {
+
+	      e.preventDefault();
+	      e.stopPropagation();
+
+	      graph.selectedShapes.map(function (shape) {
+	        shape.kill();
+	      });
+	    }
+
+	    /* else if ( keyComb[ i ].series ) {
+	       var series;
+	      if ( keyComb[ i ].series === 'all' ) {
+	        series = graph.series;
+	      }
+	       if ( !Array.isArray( keyComb[ i ].series ) ) {
+	        series = [  series ];
+	      }
+	       if ( keyComb[ i ].options ) {
+	        parameters.push( keyComb[ i ].options );
+	      }
+	       for ( var j = 0; j < series.length; i++ ) {
+	        graph._serieExecute( series[  i ], methodName, parameters );
+	      }
+	      return true;
+	    }*/
+	  }
+
+	  return false;
+	};
+
 	function _registerEvents(graph) {
 	  var self = graph;
 
 	  graph._dom.addEventListener('keydown', function (e) {
 
-	    // Not sure this has to be prevented
-
-	    if ((e.keyCode == 8 || e.keyCode == 127) && self.selectedShapes) {
-
-	      e.preventDefault();
-	      e.stopPropagation();
-
-	      self.selectedShapes.map(function (shape) {
-	        shape.kill();
-	      });
-	    }
+	    _handleKey(graph, e, 'keydown');
 	  });
+
+	  graph._dom.addEventListener('keypress', function (e) {
+
+	    _handleKey(graph, e, 'keypress');
+	  });
+
+	  graph._dom.addEventListener('keyup', function (e) {
+
+	    _handleKey(graph, e, 'keyup');
+	  });
+	  // Not sure this has to be prevented
 
 	  graph.groupEvent.addEventListener('mousemove', function (e) {
 	    //e.preventDefault();
-	    var coords = self._getXY(e);
-	    _handleMouseMove(self, coords.x, coords.y, e);
+	    var coords = graph._getXY(e);
+	    _handleMouseMove(graph, coords.x, coords.y, e);
 	  });
 
 	  graph.dom.addEventListener('mouseleave', function (e) {
 
-	    _handleMouseLeave(self);
+	    _handleMouseLeave(graph);
 	  });
 
 	  graph.groupEvent.addEventListener('mousedown', function (e) {
 
-	    self.focus();
+	    graph.focus();
 
 	    //   e.preventDefault();
 	    if (e.which == 3 || e.ctrlKey) {
 	      return;
 	    }
 
-	    var coords = self._getXY(e);
-	    _handleMouseDown(self, coords.x, coords.y, e);
+	    var coords = graph._getXY(e);
+	    _handleMouseDown(graph, coords.x, coords.y, e);
 	  });
 
 	  graph.dom.addEventListener('mouseup', function (e) {
 
 	    graph.emit("mouseUp", e);
-	    //   e.preventDefault();
-	    var coords = self._getXY(e);
+	    var coords = graph._getXY(e);
 
-	    _handleMouseUp(self, coords.x, coords.y, e);
+	    _handleMouseUp(graph, coords.x, coords.y, e);
 	  });
 
 	  graph.dom.addEventListener('dblclick', function (e) {
 
 	    graph.emit("dblClick", e);
+	    var coords = graph._getXY(e);
 
-	    //      e.preventDefault();
-
-	    //      if ( self.clickTimeout ) {
-	    //       window.clearTimeout( self.clickTimeout );
-	    //    }
-
-	    var coords = self._getXY(e);
-	    //    self.cancelClick = true;
-
-	    _handleDblClick(self, coords.x, coords.y, e);
+	    _handleDblClick(graph, coords.x, coords.y, e);
 	  });
-
-	  // Norman 26 june 2015: Do we really need the click timeout ?
 
 	  graph.groupEvent.addEventListener('click', function (e) {
 
@@ -11656,21 +11757,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    //   e.preventDefault();
-	    var coords = self._getXY(e);
-	    //    if ( self.clickTimeout ) {
-	    //     window.clearTimeout( self.clickTimeout );
-	    //  }
+	    var coords = graph._getXY(e);
 
-	    // Only execute the action after 100ms
-	    // self.clickTimeout = window.setTimeout( function() {
-
-	    //  if ( self.cancelClick ) {
-	    //   self.cancelClick = false;
-	    //   return;
-	    // }
-
-	    if (!self.prevent(false)) {
-	      _handleClick(self, coords.x, coords.y, e);
+	    if (!graph.prevent(false)) {
+	      _handleClick(graph, coords.x, coords.y, e);
 	    }
 
 	    //}, 200 );
@@ -11679,7 +11769,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph.groupEvent.addEventListener('mousewheel', function (e) {
 
 	    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-	    _handleMouseWheel(self, deltaY, e);
+	    _handleMouseWheel(graph, deltaY, e);
 
 	    return false;
 	  });
@@ -11687,7 +11777,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  graph.groupEvent.addEventListener('wheel', function (e) {
 
 	    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-	    _handleMouseWheel(self, deltaY, e);
+	    _handleMouseWheel(graph, deltaY, e);
 
 	    return false;
 	  });
@@ -11792,7 +11882,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (keyComb[i].plugin) {
 	      // Is it a plugin ?
 
-	      if (graph.forcedPlugin == keyComb[i].plugin || graph.isMouseActionAllowed(e, keyComb[i])) {
+	      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
 
 	        if (keyComb[i].options) {
 	          parameters.push(keyComb[i].options);
@@ -11802,7 +11892,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
 	        return true;
 	      }
-	    } else if (keyComb[i].callback && graph.isMouseActionAllowed(e, keyComb[i])) {
+	    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
 
 	      if (keyComb[i].options) {
 	        parameters.push(keyComb[i].options);
@@ -13388,82 +13478,343 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph = __webpack_require__(301);
 
+	var _data_aggregator = __webpack_require__(305);
+
+	var _data_aggregator2 = _interopRequireDefault(_data_aggregator);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+	var MULTIPLY = Symbol();
+	var ADD = Symbol();
+	var SUBTRACT = Symbol();
+	var DIVIDE = Symbol();
+
+	// http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
+	function pow2ceil(v) {
+	  v--;
+	  var p = 2;
+	  while (v >>= 1) {
+	    p <<= 1;
+	  }
+	  return p;
+	}
+
+	function binarySearch(target, haystack, reverse) {
+
+	  var seedA = 0,
+	      length = haystack.length,
+	      seedB = length - 1,
+	      seedInt = void 0,
+	      i = 0,
+	      nanDirection = 1;
+
+	  if (haystack[seedA] == target) {
+	    return seedA;
+	  }
+
+	  if (haystack[seedB] == target) {
+	    return seedB;
+	  }
+
+	  while (true) {
+	    i++;
+	    if (i > 100) {
+	      throw "Error loop";
+	    }
+
+	    seedInt = Math.floor((seedA + seedB) / 2);
+	    //  seedInt -= seedInt % 2; // Always looks for an x.
+
+	    while (isNaN(haystack[seedInt])) {
+	      seedInt += nanDirection;
+	    }
+
+	    if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+	      return seedInt;
+	    }
+
+	    //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+	    if (haystack[seedInt] <= target) {
+	      if (reverse) {
+	        seedB = seedInt;
+	      } else {
+	        seedA = seedInt;
+	      }
+	    } else if (haystack[seedInt] > target) {
+	      if (reverse) {
+	        seedA = seedInt;
+	      } else {
+	        seedB = seedInt;
+	      }
+	    } else {
+	      return false;
+	    }
+
+	    nanDirection *= -1;
+	  }
+	}
+
 	var Waveform = function () {
 	  function Waveform() {
 	    _classCallCheck(this, Waveform);
+
+	    this.xOffset = 0;
+	    this.xScale = 1;
 	  }
 
-	  /** [ [   x1, y1 ], [ x2, y2 ] ] */
+	  /** [ [ x1, y1 ], [ x2, y2 ] ] */
+
+	  /*
+	  setDataXY( data ) {
+	     let newData = [ this._makeArray( data.length ), this._makeArray( data.length ) ],
+	      warnNaN = false;
+	    const nanable = this.isNaNAllowed();
+	     data.map( ( el, index ) => {
+	       if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+	        warnNaN = true;
+	      }
+	       newData[ 0 ][ index ] = el[ 0 ];
+	      newData[ 1 ][ index ] = el[ 1 ];
+	    } );
+	     if ( warnNaN ) {
+	      this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
+	    }
+	     this._setData( ...newData );
+	    return this;
+	  }
+	  */
 
 
 	  _createClass(Waveform, [{
-	    key: 'setDataXY',
-	    value: function setDataXY(data) {
-	      this.data = data;
-	      return this;
-	    }
-	  }, {
-	    key: 'setDataY',
-	    value: function setDataY(data) {
-	      this.data = data.map(function (el, index) {
-	        return [index, el];
-	      });
-	      return this;
-	    }
-	  }, {
-	    key: '_getMin',
-	    value: function _getMin(dim, from, to) {
+	    key: 'setData',
+	    value: function setData(data) {
 
-	      var min = this.data[from][dim];
-	      for (var i = from + 1; i <= to; i++) {
-	        min = this.data[i][dim] < min ? this.data[i][dim] : min;
+	      var newData = this._makeArray(data.length),
+	          warnNaN = false;
+
+	      var nanable = this.isNaNAllowed();
+
+	      data.map(function (el, index) {
+
+	        if (!nanable && (el[0] !== el[0] || el[1] !== el[1])) {
+	          warnNaN = true;
+	        }
+
+	        newData[index] = el;
+	      });
+
+	      if (warnNaN) {
+	        this.warn("Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead");
 	      }
-	      return min;
+
+	      this._setData(newData);
+	      return this;
+	    }
+	    /*
+	      flipXY() {
+	        let temp;
+	        temp = this.data.x;
+	        this.data.x = this.data.y;
+	        this.data.y = temp;
+	         this._setData( this.data.x, this.data.y );
+	      }*/
+
+	  }, {
+	    key: 'setXWaveform',
+	    value: function setXWaveform(waveform) {
+
+	      if (!(waveform instanceof Waveform)) {
+	        return;
+	      }
+
+	      this.xdata = waveform;
+	      this.computeXMinMax();
+	      return this;
 	    }
 	  }, {
-	    key: '_getMax',
-	    value: function _getMax(dim, from, to) {
-	      var max = this.data[from][dim];
-	      for (var i = from + 1; i <= to; i++) {
-	        max = this.data[i][dim] > max ? this.data[i][dim] : max;
+	    key: 'rescaleX',
+	    value: function rescaleX(offset, scale) {
+	      this.xScale = scale;
+	      this.xOffset = offset;
+	      this.computeXMinMax();
+	    }
+	  }, {
+	    key: 'getTypedArrayClass',
+	    value: function getTypedArrayClass() {
+	      return this._typedArrayClass || false;
+	    }
+	  }, {
+	    key: 'setTypedArrayClass',
+	    value: function setTypedArrayClass(constructor) {
+
+	      if (this.getTypedArrayClass() && this.isNaNAllowed() && !this.isNaNAllowed(constructor)) {
+	        this.warn("NaN values are not allowed by the new constructor (" + constructor.name + ") while it was allowed by the previous one (" + this._typedArrayClass.name + ")");
 	      }
-	      return max;
+
+	      if (this.getTypedArrayClass() && this.isUnsigned() && !this.isUnsigned(constructor)) {
+	        this.warn("You are switching from signed values to unsigned values. You may experience data corruption if there were some negative values.");
+	      }
+
+	      this._typedArrayClass = constructor;
+
+	      if (this.data) {
+	        this._setData(constructor.from(this.data.x), constructor.from(this.data.y));
+	      }
+	    }
+	  }, {
+	    key: 'isNaNAllowed',
+	    value: function isNaNAllowed() {
+	      var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
+
+
+	      // The following types accept NaNs
+	      return constructor == Array || constructor == Float32Array || constructor == Float64Array;
+	    }
+	  }, {
+	    key: 'isUnsigned',
+	    value: function isUnsigned() {
+	      var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
+
+
+	      // The following types accept NaNs
+	      return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
+	    }
+	  }, {
+	    key: '_makeArray',
+	    value: function _makeArray(length) {
+
+	      var constructor = void 0;
+	      if (constructor = this.getTypedArrayClass()) {
+	        return new constructor(length);
+	      }
+	      return new Array(length);
+	    }
+	  }, {
+	    key: '_setData',
+	    value: function _setData(dataY) {
+	      var l = dataY.length;
+	      var i = 1,
+	          monoDir = dataY[1] > dataY[0],
+	          minY = dataY[0],
+	          maxY = dataY[0];
+
+	      this._monotoneous = true;
+
+	      for (; i < l; i++) {
+	        if (dataY[i] !== dataY[i - 1] && monoDir !== dataY[i] > dataY[i - 1]) {
+	          this._monotoneous = false;
+	        }
+
+	        if (dataY[i] === dataY[i]) {
+	          // NaN support
+	          minY = Math.min(dataY[i], minY);
+	          maxY = Math.max(dataY[i], maxY);
+	        }
+	      }
+
+	      if (this._monotoneous) {
+	        this._monotoneousAscending = dataY[1] > dataY[0];
+	      }
+
+	      this.minY = minY;
+	      this.maxY = maxY;
+
+	      this.data = dataY;
+
+	      this.computeXMinMax();
+	    }
+	  }, {
+	    key: 'computeXMinMax',
+	    value: function computeXMinMax() {
+
+	      if (!this.data) {
+	        return;
+	      }
+
+	      if (this.xdata) {
+
+	        this.minX = this.xdata.getMin();
+	        this.maxX = this.xdata.getMax();
+	      } else {
+	        this.minX = Math.min(this.xScale * this.getLength(), 0) + this.xOffset;
+	        this.maxX = Math.max(this.xScale * this.getLength(), 0) + this.xOffset;
+	      }
+	    }
+	  }, {
+	    key: 'getIndexFromX',
+	    value: function getIndexFromX(xval) {
+
+	      if (this.xdata) {
+	        var xData = this.xdata.getData();
+	        return binarySearch(xval, xData, !this.xdata.getMonotoneousDirection());
+	      } else {
+	        return Math.max(0, Math.min(this.getLength() - 1, Math.floor((xval - this.xOffset) / this.xScale)));
+	      }
 	    }
 	  }, {
 	    key: 'getXMin',
 	    value: function getXMin() {
-	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
-
-	      return this._getMin(0, subsetFromIndex, subsetToIndex);
+	      return this.minX;
 	    }
 	  }, {
 	    key: 'getXMax',
 	    value: function getXMax() {
-	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
-
-	      return this._getMax(0, subsetFromIndex, subsetToIndex);
+	      return this.maxX;
+	    }
+	  }, {
+	    key: 'getYMin',
+	    value: function getYMin() {
+	      return this.minY;
+	    }
+	  }, {
+	    key: 'getYMax',
+	    value: function getYMax() {
+	      return this.maxY;
 	    }
 	  }, {
 	    key: 'getMin',
 	    value: function getMin() {
-	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
-
-	      return this._getMin(1, subsetFromIndex, subsetToIndex);
+	      return this.minY;
 	    }
 	  }, {
 	    key: 'getMax',
 	    value: function getMax() {
-	      var subsetFromIndex = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-	      var subsetToIndex = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.data.length - 1;
-
-	      return this._getMax(1, subsetFromIndex, subsetToIndex);
+	      return this.maxY;
+	    }
+	  }, {
+	    key: 'getMinX',
+	    value: function getMinX() {
+	      return this.minX;
+	    }
+	  }, {
+	    key: 'getMaxX',
+	    value: function getMaxX() {
+	      return this.maxX;
+	    }
+	  }, {
+	    key: 'getMinY',
+	    value: function getMinY() {
+	      return this.minY;
+	    }
+	  }, {
+	    key: 'getMaxY',
+	    value: function getMaxY() {
+	      return this.maxY;
+	    }
+	  }, {
+	    key: 'getDataY',
+	    value: function getDataY() {
+	      return this.data;
+	    }
+	  }, {
+	    key: 'getData',
+	    value: function getData(optimized) {
+	      if (!optimized || !this.dataInUse) {
+	        return this.data;
+	      }
+	      return this.dataInUse.y;
 	    }
 	  }, {
 	    key: 'getLength',
@@ -13471,32 +13822,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.data.length;
 	    }
 	  }, {
-	    key: 'getDataY',
-	    value: function getDataY() {
-
-	      return this.data.map(function (el) {
-	        return el[1];
-	      });
-	    }
-	  }, {
-	    key: 'getDataX',
-	    value: function getDataX() {
-	      return this.data.map(function (el) {
-	        return el[0];
-	      });
-	    }
-	  }, {
 	    key: 'getDataToUseFlat',
 	    value: function getDataToUseFlat() {
 
-	      var dataToUse = this.dataInUse ? this.dataInUse : this.data;
-
-	      var arr = new Array(dataToUse.length * 2).fill(0);
+	      var l = void 0;
 	      var j = 0;
-	      for (var i = 0, l = dataToUse.length; i < l; i += 1) {
-	        arr[j] = dataToUse[i][0];
-	        arr[j + 1] = dataToUse[i][1];
-	        j += 2;
+	      var arr = void 0;
+
+	      if (this.dataInUse) {
+
+	        l = this.dataInUse.x.length;
+	        arr = new Array(l * 2).fill(0);
+
+	        for (var i = 0; i < l; i += 1) {
+	          arr[j] = this.dataInUse.x[i];
+	          arr[j + 1] = this.dataInUse.y[i];
+	          j += 2;
+	        }
+	      } else {
+
+	        l = this.getLength();
+	        arr = new Array(l * 2).fill(0);
+	        for (var i = 0; i < l; i += 1) {
+	          arr[j + 1] = this.data[i];
+	          arr[j] = this.getX(i);
+	          j += 2;
+	        }
 	      }
 
 	      return arr;
@@ -13513,6 +13864,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 	  }, {
+	    key: 'getX',
+	    value: function getX(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.x[index];
+	      }
+
+	      if (this.xdata) {
+	        return this.xdata.data[index];
+	      } else {
+	        return this.xOffset + index * this.xScale;
+	      }
+	    }
+	  }, {
 	    key: '_integrateP',
 	    value: function _integrateP() {
 	      var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -13527,15 +13892,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          delta;
 
 	      var deltaTot = 0;
-	      var arrX = this.getDataX();
-	      var arrY = this.getDataY();
+	      var diff = void 0;
+	      var arrY = this.getData();
 
 	      for (; from <= to; from++) {
 
 	        if (arrX.length - 1 > from) {
-
-	          deltaTot += arrX[from + 1] - arrX[from];
-	          sum += arrY[from] * (arrX[from + 1] - arrX[from]);
+	          diff = this.getX(from + 1) - this.getX(from);
+	          deltaTot += diff;
+	          sum += arrY[from] * diff;
 	        }
 	      }
 	      return [sum, l, deltaTot];
@@ -13572,30 +13937,92 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return sum[0] / sum[2];
 	    }
 	  }, {
+	    key: 'checkMonotonicity',
+	    value: function checkMonotonicity() {
+
+	      var i = 1,
+	          data = this.getData();
+	      var l = this.data.length;
+	      var dir = data[1] > data[0];
+
+	      for (; i < l; i++) {
+	        if (data[i] !== data[i - 1] && dir !== data[i] > data[i - 1]) {
+	          return this._monotoneous = false;
+	        }
+	      }
+
+	      this._monotoneousAscending = data[1] > data[0];
+	      return this._monotoneous = true;
+	    }
+	  }, {
+	    key: 'requireXMonotonicity',
+	    value: function requireXMonotonicity() {
+	      if (this.xdata) {
+	        this.xdata.requireMonotonicity();
+	      }
+	    }
+	  }, {
+	    key: 'requireMonotonicity',
+	    value: function requireMonotonicity() {
+	      if (!this.isMonotoneous()) {
+	        throw "The wave must be monotonic";
+	      }
+	    }
+	  }, {
+	    key: 'isMonotoneous',
+	    value: function isMonotoneous() {
+	      return !!this._monotoneous;
+	    }
+	  }, {
+	    key: 'isXMonotoneous',
+	    value: function isXMonotoneous() {
+	      if (this.xdata) {
+	        return this.xdata.isMonotoneous();
+	      }
+	      // Offset and scale is always monotoneous
+	      return true;
+	    }
+	  }, {
+	    key: 'invert',
+	    value: function invert(data) {
+
+	      var d = dataY || this.data;
+	      d.reverse();
+
+	      if (this.isMonotoneous()) {
+	        this.monotoneousDirection = !this.monotoneousDirection;
+	      }
+
+	      return d;
+	    }
+	  }, {
 	    key: 'resampleForDisplay',
 	    value: function resampleForDisplay(options) {
 	      // Serie redrawing
 
 	      var i = 0;
 
-	      var l = this.getLength();
+	      this.requireXMonotonicity();
 
-	      var data = [],
+	      var inverting = false,
+	          dataY = this.getDataY(),
+	          data = {
+	        x: [],
+	        y: []
+	      },
 	          dataMinMax = [],
 	          resampleSum = void 0,
 	          resampleMin = void 0,
 	          resampleMax = void 0,
 	          resampleNum = void 0,
 	          resample_x_start = void 0,
-	          resample_x_px_start = void 0;
+	          resample_x_px_start = void 0,
+	          x_px = void 0,
+	          doing_mean = false,
+	          firstPointIndex = 0,
+	          xval = void 0;
 
-	      var x_px = void 0;
-
-	      var dataY = this.getDataY();
-	      var dataX = this.getDataX();
-
-	      var doing_mean = false;
-	      var firstPointIndex = 0;
+	      var l = this.getLength();
 
 	      if (!options.xPosition) {
 	        throw "No position calculation method provided";
@@ -13605,31 +14032,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw "No \"resampleToPx\" method was provided. Unit: px per point";
 	      }
 
-	      for (; i < l; i++) {
+	      if (options.minX > options.maxX) {
+	        var temp = options.minX;
+	        options.minX = options.maxX;
+	        options.maxX = temp;
+	      }
 
-	        if (options.minX > dataX[i]) {
+	      if (this.xdata && !this.xdata.getMonotoneousDirection() || !this.xdata && this.xScale < -0) {
+	        inverting = true;
+	        i = l;
+	      }
+
+	      for (; inverting ? i > 0 : i < l; inverting ? i-- : i++) {
+
+	        xval = this.getX(i);
+
+	        if (options.minX > xval) {
 
 	          firstPointIndex = i;
 	          continue;
 	        }
 
-	        x_px = options.xPosition(dataX[i]);
+	        x_px = options.xPosition(xval);
 
 	        if (!doing_mean) {
 
 	          if (!firstPointIndex) {
 
 	            firstPointIndex = i;
+	          } else {
+
+	            data.x.push(xval);
+	            data.y.push(dataY[firstPointIndex]);
 	          }
 
 	          while (isNaN(dataY[i])) {
-	            i++;
+
+	            if (inverting) {
+	              i--;
+	            } else {
+	              i++;
+	            }
 	          }
 
 	          resampleSum = resampleMin = resampleMax = dataY[firstPointIndex];
 	          resampleNum = 1;
 	          resample_x_px_start = x_px;
-	          resample_x_start = dataX[i];
+	          resample_x_start = xval;
 	          firstPointIndex = 0;
 
 	          doing_mean = true;
@@ -13637,16 +14086,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	          continue;
 	        }
 
-	        if (Math.abs(x_px - resample_x_px_start) > options.resampleToPx || i == l || isNaN(dataY[i])) {
+	        if (Math.abs(x_px - resample_x_px_start) > options.resampleToPx || i == l || i == 0 || isNaN(dataY[i])) {
 
-	          var xpos = (resample_x_start + dataX[i]) / 2;
+	          var xpos = (resample_x_start + xval) / 2;
 
-	          data.push([xpos, resampleSum / resampleNum]);
+	          data.x.push(xpos);
+	          data.y.push(resampleSum / resampleNum);
 
 	          dataMinMax.push(xpos, resampleMin, resampleMax);
 
-	          if (options.maxX !== undefined && dataX > options.maxX) {
-	            return;
+	          if (options.maxX !== undefined && xval > options.maxX) {
+
+	            break;
 	          }
 
 	          doing_mean = false;
@@ -13662,8 +14113,254 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.dataInUse = data;
-
 	      return dataMinMax;
+	    }
+	  }, {
+	    key: 'interpolate',
+	    value: function interpolate(x) {
+
+	      var xIndex = void 0;
+	      var yData = this.getDataY();
+
+	      if (this.xdata) {
+	        var xData = this.xdata.getData(),
+	            _xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousDirection());
+
+	        if (xData[_xIndex] == x) {
+	          return yData[_xIndex];
+	        }
+	        return (x - xData[_xIndex]) / (xData[_xIndex + 1] - xData[_xIndex]) * (yData[_xIndex + 1] - yData[_xIndex]) + yData[_xIndex];
+	      } else {
+	        xIndex = (x - this.xOffset) / this.xScale;
+	        var xIndexF = Math.floor(xIndex);
+	        return (xIndex - xIndexF) * (yData[xIndexF + 1] - yData[xIndexF]) + yData[xIndexF];
+	      }
+	    }
+	  }, {
+	    key: 'getMonotoneousDirection',
+	    value: function getMonotoneousDirection() {
+	      return this.monotoneousDirection;
+	    }
+	  }, {
+	    key: 'getXMonotoneousDirection',
+	    value: function getXMonotoneousDirection() {
+	      if (this.xdata) {
+	        return this.xdata.getMonotoneousDirection();
+	      }
+
+	      return this.xScale > 0;
+	    }
+	  }, {
+	    key: 'divide',
+	    value: function divide(numberOrWave) {
+	      return this._arithmetic(numberOrWave, DIVIDE);
+	    }
+	  }, {
+	    key: 'divideBy',
+	    value: function divideBy() {
+	      return this.divide.apply(this, arguments);
+	    }
+	  }, {
+	    key: 'multiply',
+	    value: function multiply(numberOrWave) {
+	      return this._arithmetic(numberOrWave, MULTIPLY);
+	    }
+	  }, {
+	    key: 'multiplyBy',
+	    value: function multiplyBy() {
+	      return this.multiply.apply(this, arguments);
+	    }
+	  }, {
+	    key: 'add',
+	    value: function add(numberOrWave) {
+	      return this._arithmetic(numberOrWave, ADD);
+	    }
+	  }, {
+	    key: 'addBy',
+	    value: function addBy() {
+	      return this.add.apply(this, arguments);
+	    }
+	  }, {
+	    key: 'subtract',
+	    value: function subtract(numberOrWave) {
+	      return this._arithmetic(numberOrWave, SUBTRACT);
+	    }
+	  }, {
+	    key: 'subtractBy',
+	    value: function subtractBy() {
+	      return this.subtract.apply(this, arguments);
+	    }
+	  }, {
+	    key: '_arithmetic',
+	    value: function _arithmetic(numberOrWave, operator) {
+
+	      if (numberOrWave instanceof Waveform) {
+	        return this._waveArithmetic(numberOrWave, operator);
+	      } else if (typeof numberOrWave == 'number') {
+
+	        return this._numberArithmetic(numberOrWave, operator);
+	      }
+	    }
+	  }, {
+	    key: '_numberArithmetic',
+	    value: function _numberArithmetic(num, operation) {
+
+	      var i = 0,
+	          l = this.getLength();
+
+	      if (operation == MULTIPLY) {
+
+	        for (; i < l; i++) {
+	          this.data[i] *= num;
+	        }
+
+	        this.minY *= num;
+	        this.maxY *= num;
+	      } else if (operation == DIVIDE) {
+
+	        for (; i < l; i++) {
+	          this.data[i] /= num;
+	        }
+
+	        this.minY /= num;
+	        this.maxY /= num;
+	      } else if (operation == ADD) {
+
+	        for (; i < l; i++) {
+	          this.data[i] += num;
+	        }
+
+	        this.minY += num;
+	        this.maxY += num;
+	      } else if (operation == SUBTRACT) {
+
+	        for (; i < l; i++) {
+	          this.data[i] -= num;
+	        }
+
+	        this.minY -= num;
+	        this.maxY -= num;
+	      }
+
+	      return this;
+	    }
+	  }, {
+	    key: '_waveArithmetic',
+	    value: function _waveArithmetic(wave, operation) {
+
+	      var yDataThis = this.getDataY(),
+	          i = 0;
+	      var l = this.getLength();
+	      this.requireXMonotonicity();
+	      wave.requireXMonotonicity();
+
+	      if (operation == MULTIPLY) {
+
+	        for (; i < l; i++) {
+	          yDataThis[i] *= wave.interpolate(this.getX(i));
+	        }
+	      } else if (operation == DIVIDE) {
+
+	        for (; i < l; i++) {
+	          yDataThis[i] /= wave.interpolate(this.getX(i));
+	        }
+	      } else if (operation == ADD) {
+
+	        for (; i < l; i++) {
+	          yDataThis[i] += wave.interpolate(this.getX(i));
+	        }
+	      } else if (operation == SUBTRACT) {
+
+	        for (; i < l; i++) {
+	          yDataThis[i] -= wave.interpolate(this.getX(i));
+	        }
+	      }
+
+	      this._setData(yDataThis);
+	      return this;
+	    }
+	  }, {
+	    key: 'aggregate',
+	    value: function aggregate() {
+	      var _this = this;
+
+	      var levels = 10;
+
+	      var level = 128; // 128 points
+
+	      var i = 0;
+
+	      this._dataAggregating = {};
+	      this._dataAggregated = {};
+
+	      for (; i < levels; i++) {
+
+	        this._dataAggregating[level] = (0, _data_aggregator2.default)({
+
+	          min: this.getMinX(),
+	          max: this.getMaxX(),
+	          data: this.data,
+	          xdata: this.xdata ? this.xdata.getData() : undefined,
+	          xScale: this.xScale,
+	          xOffset: this.xOffset,
+	          numPoints: level
+
+	        }).then(function (data) {
+
+	          _this._dataAggregated[data.numPoints] = data.data;
+	        });
+
+	        if (level > this.getLength()) {
+	          break;
+	        }
+
+	        level *= 2;
+	      }
+	    }
+	  }, {
+	    key: 'hasAggregation',
+	    value: function hasAggregation() {
+	      return !!this._dataAggregated;
+	    }
+	  }, {
+	    key: 'getAggregatedData',
+	    value: function getAggregatedData(pxWidth) {
+
+	      var level = pow2ceil(pxWidth);
+	      if (this._dataAggregated[level]) {
+	        this.dataInUse = this._dataAggregated[level];
+	        return;
+	      } else if (this._dataAggregating[level]) {
+	        return this._dataAggregating[level];
+	      }
+
+	      this.dataInUse = this.data;
+	    }
+	  }, {
+	    key: 'duplicate',
+	    value: function duplicate(alsoDuplicateXWave) {
+	      var newWaveform = new Waveform();
+	      newWaveform._setData(this.getDataY().slice());
+
+	      if (this.xdata) {
+	        if (alsoDuplicateXWave) {
+	          newWaveform.setXWaveform(this.xdata.duplicate());
+	        } else {
+	          newWaveform.setXWaveform(this.xdata.duplicate());
+	        }
+	      } else {
+	        newWaveform.xOffset = this.xOffset;
+	        newWaveform.xScale = this.xScale;
+	      }
+
+	      return newWaveform;
+	    }
+	  }, {
+	    key: 'warn',
+	    value: function warn(text) {
+	      if (console) {
+	        console.warn(text);
+	      }
 	    }
 	  }]);
 
@@ -14186,6 +14883,115 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	exports.default = function (toOptimize) {
+
+	  var requestId = util.guid();
+	  toOptimize._queueId = requestId;
+
+	  var prom = new Promise(function (resolver) {
+	    queue[requestId] = resolver;
+	  });
+
+	  aggregatorWorker.postMessage(toOptimize);
+	  return prom;
+	};
+
+	var _graph = __webpack_require__(301);
+
+	var util = _interopRequireWildcard(_graph);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	var aggregatorWorker;
+	var queue = {};
+
+	var workerUrl = URL.createObjectURL(new Blob([" ( " + function () {
+	  onmessage = function onmessage(e) {
+
+	    var data = e.data.data,
+	        numPoints = e.data.numPoints,
+	        max = e.data.max,
+	        min = e.data.min,
+	        dataPerSlot = numPoints / (max - min),
+	        l = data.length;
+
+	    var i = 0;
+	    var k = -4;
+	    var slots = [];
+	    var dataAggregatedX = [];
+	    var dataAggregatedY = [];
+	    var getX = void 0;
+
+	    if (e.data.xscale) {
+
+	      getX = function getX(index) {
+	        return e.data.xscale[index];
+	      };
+	    } else {
+	      getX = function getX(index) {
+	        return index * e.data.xScale + e.data.xOffset;
+	      };
+	    }
+
+	    for (; i < l; i++) {
+
+	      // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+	      slotNumber = Math.floor((getX(i) - min) * dataPerSlot);
+
+	      if (slots[k] !== slotNumber) {
+	        k += 4;
+	        slots[k] = slotNumber;
+
+	        var slotX = (slotNumber + 0.5) / dataPerSlot;
+
+	        dataAggregatedX[k] = slotX;
+	        dataAggregatedX[k + 1] = slotX;
+	        dataAggregatedX[k + 2] = slotX;
+	        dataAggregatedX[k + 3] = slotX;
+
+	        dataAggregatedY[k] = data[i];
+	        dataAggregatedY[k + 1] = data[i];
+	        dataAggregatedY[k + 2] = data[i];
+	        dataAggregatedY[k + 3] = data[i];
+	      }
+	      dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
+	      dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
+	      dataAggregatedY[k + 3] = data[i];
+	    }
+
+	    postMessage({
+	      numPoints: numPoints,
+	      data: {
+	        x: dataAggregatedX,
+	        y: dataAggregatedY
+	      },
+	      _queueId: e.data._queueId
+	    });
+	  };
+	}.toString() + ")()"], {
+	  type: 'application/javascript'
+	}));
+
+	aggregatorWorker = new Worker(workerUrl);
+
+	aggregatorWorker.onmessage = function (e) {
+	  var id = e.data._queueId;
+	  delete e.data._queueId;
+
+	  queue[id](e.data);
+	  delete queue[id];
+	};
+
+/***/ },
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14890,7 +15696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Legend;
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -14903,7 +15709,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(307);
+	var _graph = __webpack_require__(308);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -15174,7 +15980,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisX;
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -15226,7 +16032,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
 	 * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
 	 * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
-	 * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
 	 * @prop {Boolean} logScale - Display the axis in log scale (base 10)
 	 * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
 	 * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
@@ -17954,7 +18759,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Axis;
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17967,7 +18772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(307);
+	var _graph = __webpack_require__(308);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -18400,7 +19205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisY;
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18413,7 +19218,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphAxis = __webpack_require__(306);
+	var _graphAxis = __webpack_require__(307);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
@@ -18655,7 +19460,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = AxisXBar;
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -18668,7 +19473,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	var _graph = __webpack_require__(307);
+	var _graph = __webpack_require__(308);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -19636,7 +20441,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = GraphXAxis;
 
 /***/ },
-/* 311 */
+/* 312 */,
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19645,39 +20451,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	var _graph = __webpack_require__(301);
 
-	var _graph = __webpack_require__(299);
+	var util = _interopRequireWildcard(_graph);
 
-	var _graph2 = _interopRequireDefault(_graph);
+	var _graphSerie = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./graph.serie.line\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
-	var _graph3 = __webpack_require__(312);
-
-	var _graph4 = _interopRequireDefault(_graph3);
-
-	var _slotoptimizer = __webpack_require__(313);
-
-	var _slotoptimizer2 = _interopRequireDefault(_slotoptimizer);
-
-	var _graph5 = __webpack_require__(301);
-
-	var util = _interopRequireWildcard(_graph5);
+	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
 	var _graphMixin = __webpack_require__(314);
 
 	var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
-	var _waveform = __webpack_require__(303);
-
-	var _waveform2 = _interopRequireDefault(_waveform);
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -19685,73 +20475,33 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	/**
-	 * @name SerieLineDefaultOptions
-	 * @object
-	 * @static
-	 * @memberof SerieLine
-	 */
-	var defaults = {
-
-	  lineColor: 'black',
-	  lineStyle: 1,
-	  flip: false,
-	  label: "",
-	  lineWidth: 1,
-
-	  markers: false,
-	  trackMouse: false,
-	  trackMouseLabel: false,
-	  trackMouseLabelRouding: 1,
-	  lineToZero: false,
-
-	  autoPeakPicking: false,
-	  autoPeakPickingNb: 4,
-	  autoPeakPickingMinDistance: 10,
-	  autoPeakPickingFormat: false,
-	  autoPeakPickingAllowAllY: false,
-
-	  selectableOnClick: true,
-
-	  markersIndependant: false
-	};
-
 	/** 
-	 * Serie line
-	 * @example graph.newSerie( name, options, "line" );
-	 * @see Graph#newSerie
+	 * Represents a bar serie.  
+	   Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
+	   Supports error bars, line color, line width, fill color, fill opacity.
+	 * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
 	 * @extends Serie
 	 */
+	var SerieBar = function (_Serie) {
+	  _inherits(SerieBar, _Serie);
 
-	var SerieLine = function (_Serie) {
-	  _inherits(SerieLine, _Serie);
+	  function SerieBar() {
+	    _classCallCheck(this, SerieBar);
 
-	  function SerieLine() {
-	    _classCallCheck(this, SerieLine);
-
-	    return _possibleConstructorReturn(this, (SerieLine.__proto__ || Object.getPrototypeOf(SerieLine)).apply(this, arguments));
+	    return _possibleConstructorReturn(this, (SerieBar.__proto__ || Object.getPrototypeOf(SerieBar)).call(this));
 	  }
 
-	  /**
-	   * Initializes the serie
-	   * @memberof SerieLine
-	   */
-
-
-	  _createClass(SerieLine, [{
+	  _createClass(SerieBar, [{
 	    key: 'init',
 	    value: function init(graph, name, options) {
-
-	      var self = this;
-
-	      this.selectionType = "unselected";
-	      this.markerFamilies = {};
-
 	      this.graph = graph;
 	      this.name = name;
+	      this.options = options || {};
 
-	      this.options = util.extend(true, {}, defaults, options || {}); // Creates options
-	      util.mapEventEmission(this.options, this); // Register events
+	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
+
+	      this.pathDom = document.createElementNS(this.graph.ns, 'path');
+	      this.groupMain.appendChild(this.pathDom);
 
 	      // Creates an empty style variable
 	      this.styles = {};
@@ -19761,1335 +20511,105 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lineColor: this.options.lineColor,
 	        lineStyle: this.options.lineStyle,
 	        lineWidth: this.options.lineWidth,
+	        fillColor: this.options.fillColor,
+	        fillOpacity: this.options.fillOpacity,
 	        markers: this.options.markers
 	      };
-
-	      this.styles.selected = {
-	        lineWidth: 3
-	      };
-
-	      this.extendStyles();
-	      this.markersDom = new Map();
-
-	      this.shown = true;
-
-	      this.data = [];
-	      this._isMinOrMax = {
-	        x: {
-	          min: false,
-	          max: false
-	        },
-	        y: {
-	          min: false,
-	          max: false
-	        }
-	      };
-
-	      // Optimize is no markerPoints => save loops
-	      //      this.markerPoints = {};
-
-	      this.groupLines = document.createElementNS(this.graph.ns, 'g');
-	      this.domMarker = document.createElementNS(this.graph.ns, 'path');
-	      this.domMarker.style.cursor = 'pointer';
-
-	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
-	      this.additionalData = {};
-
-	      this.marker = document.createElementNS(this.graph.ns, 'circle');
-	      this.marker.setAttribute('fill', 'black');
-	      this.marker.setAttribute('r', 3);
-	      this.marker.setAttribute('display', 'none');
-
-	      this.markerLabel = document.createElementNS(this.graph.ns, 'text');
-	      this.markerLabelSquare = document.createElementNS(this.graph.ns, 'rect');
-	      this.markerLabelSquare.setAttribute('fill', 'white');
-	      this.domMarkerHover = {};
-	      this.domMarkerSelect = {};
-	      this.markerHovered = 0;
-	      this.groupMarkerSelected = document.createElementNS(this.graph.ns, 'g');
-
-	      this.markerPoints = {};
-
-	      //this.scale = 1;
-	      //this.shift = 0;
-	      this.lines = [];
-
-	      this.groupMain.appendChild(this.groupLines);
-
-	      this.groupMain.appendChild(this.marker);
-
-	      this.groupMain.appendChild(this.groupMarkerSelected);
-	      this.groupMain.appendChild(this.markerLabelSquare);
-	      this.groupMain.appendChild(this.markerLabel);
-
-	      this.groupMarkers = document.createElementNS(this.graph.ns, 'g');
-	      this.groupMain.appendChild(this.groupMarkers);
-
-	      this.independantMarkers = [];
-
-	      if (this.initExtended1) {
-	        this.initExtended1();
-	      }
-
-	      if (this.options.autoPeakPicking) {
-
-	        this.picks = this.picks || [];
-
-	        for (var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
-
-	          var shape = this.graph.newShape({
-
-	            type: 'label',
-	            label: {
-	              text: "",
-	              position: {
-	                x: 0
-	              },
-	              anchor: 'middle'
-
-	            },
-
-	            selectable: true,
-
-	            shapeOptions: {
-	              minPosY: 15
-	            }
-
-	          });
-
-	          shape.draw();
-	          shape.setSerie(self);
-	          self.picks.push(shape);
-	        }
-	      }
-
-	      this.groupLines.addEventListener('click', function (e) {
-
-	        if (self.options.selectableOnClick) {
-
-	          if (self.isSelected()) {
-
-	            self.graph.unselectSerie(self);
-	          } else {
-	            self.graph.selectSerie(self);
-	          }
-	        }
-	      });
-
-	      if (this.options.markers) {
-	        this.setMarkers(this.options.markers, "unselected");
-	      }
 	    }
+
+	    /** 
+	     *  Sets the data of the bar serie
+	     *  @param {Object} data
+	     *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
+	     *  @return {SerieBar} The current serie instance
+	     */
+
 	  }, {
-	    key: 'setWaveform',
-	    value: function setWaveform(waveform) {
+	    key: 'setData',
+	    value: function setData(data) {
 
-	      if (!(waveform instanceof _waveform2.default)) {
-	        throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+	      this.data = data;
+	      this.minY = Number.MAX_SAFE_INTEGER;
+	      this.maxY = Number.MIN_SAFE_INTEGER;
+
+	      for (var i in this.data) {
+	        this._checkY(this.data[i]);
 	      }
-
-	      this._waveform = waveform;
-
-	      this.minX = this._waveform.getXMin();
-	      this.maxX = this._waveform.getXMax();
-	      this.minY = this._waveform.getMin();
-	      this.maxY = this._waveform.getMax();
-
-	      this.graph.updateDataMinMaxAxes();
-	      this.dataHasChanged();
 
 	      return this;
 	    }
 
-	    /**
-	       * Sets the options of the serie
-	       * @see SerieLineDefaultOptions
-	       * @param {Object} options - A object containing the options to set
-	       * @return {SerieLine} The current serie
-	       * @memberof SerieLine
-	       
-	    */
-
-	  }, {
-	    key: 'setOptions',
-	    value: function setOptions(options) {
-	      this.options = util.extend(true, {}, SerieLine.prototype.defaults, options || {});
-	      // Unselected style
-	      this.styles.unselected = {
-	        lineColor: this.options.lineColor,
-	        lineStyle: this.options.lineStyle,
-	        markers: this.options.markers
-	      };
-
-	      this.applyLineStyles();
-	      return this;
-	    }
-	  }, {
-	    key: 'calculateSlots',
-	    value: function calculateSlots() {
-
-	      var self = this;
-	      this.slotsData = {};
-	      for (var i = 0, l = this.slots.length; i < l; i++) {
-	        this.calculateSlot(this.slots[i], i);
-	      }
-	    }
-	  }, {
-	    key: 'slotCalculator',
-	    value: function slotCalculator(slot, slotNumber) {
-
-	      return (0, _slotoptimizer2.default)({
-
-	        min: this.minX,
-	        max: this.maxX,
-	        data: this.data,
-	        slot: slot,
-	        slotNumber: slotNumber,
-	        flip: this.getFlip()
-
-	      });
-	    }
-	  }, {
-	    key: 'calculateSlot',
-	    value: function calculateSlot(slot, slotNumber) {
-	      var self = this;
-	      this.slotsData[slot] = this.slotCalculator(slot, slotNumber);
-	      this.slotsData[slot].then(function (data) {
-
-	        self.slotsData[slot] = data;
-	        return data;
-	      });
-	    }
-	  }, {
-	    key: 'onMouseOverMarker',
-	    value: function onMouseOverMarker(e, index) {
-
-	      var toggledOn = this.toggleMarker(index, true, true);
-	      if (this.options.onMouseOverMarker) {
-
-	        this.options.onMouseOverMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
-	      }
-	    }
-	  }, {
-	    key: 'onMouseOutMarker',
-	    value: function onMouseOutMarker(e, index) {
-	      this.markersOffHover();
-	      if (this.options.onMouseOutMarker) {
-	        this.options.onMouseOutMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
-	      }
-	    }
-
-	    /**
-	     * Selects one of the markers of the serie
-	     * @param {Number} index - The point index to select (starting at 0)
-	     * @param {Boolean} [force = undefined] - Forces state of the marker. <code>true</code> forces selection, <code>false</code> forces deselection. <code>undefined</code> toggles the state of the marker
-	     * @param {Boolean} [hover = false] - <code>true</code> to set the selection in mode "hover" (will disappear on mouse out of the marker). <code>false</code> to set the selection in mode "select" (will disappear when another marker is selected)
-	     * @returns {Boolean} The new state of the marker
-	     * @memberof SerieLine
+	    /** 
+	     *  Sets the fill color
 	     */
 
 	  }, {
-	    key: 'toggleMarker',
-	    value: function toggleMarker(index, force, hover) {
+	    key: 'setFillColor',
+	    value: function setFillColor(fillColor, selectionType, applyToSelected) {
 
-	      var i = index[0],
-	          k = index[1] || 0;
+	      selectionType = selectionType || "unselected";
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType].fillColor = fillColor;
 
-	      index = index.join();
-
-	      var _on;
-	      if (typeof force === 'undefined') {
-	        _on = !hover ? !this.domMarkerSelect[index] : !this.domMarkerHover[index];
-	      }
-	      var el = this['domMarker' + (hover ? 'Hover' : 'Select')];
-
-	      if (_on || force === true) {
-
-	        if (!el[index]) {
-
-	          var dom = document.createElementNS(this.graph.ns, 'path');
-
-	          this.setMarkerStyleTo(dom, this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)]);
-	          this['domMarker' + (hover ? 'Hover' : 'Select')][index] = dom;
-	          this.groupMarkerSelected.appendChild(dom);
-	        } else {
-	          dom = el[index];
-	        }
-
-	        var x, y;
-
-	        if (this.mode == 'x_equally_separated') {
-	          x = this._xDataToUse[k].x + i * this._xDataToUse[k].dx;
-	          y = this.data[k][i];
-	        } else {
-	          x = this.data[k][i * 2];
-	          y = this.data[k][i * 2 + 1];
-	        }
-
-	        x = this.getX(x);
-	        y = this.getY(y);
-
-	        dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
-
-	        if (hover) {
-	          this.markerHovered++;
-	        }
-	      } else if (!_on || force === false) {
-
-	        if (hover && this.domMarkerHover[index] && !this.domMarkerSelect[index] || this.domMarkerSelect[index]) {
-
-	          if (!el[index]) {
-	            return;
-	          }
-
-	          this.groupMarkerSelected.removeChild(el[index]);
-
-	          delete el[index];
-
-	          if (hover) this.markerHovered--;
-	        }
+	      if (applyToSelected) {
+	        this.setFillColor(fillColor, "selected");
 	      }
 
-	      return _on;
-	    }
-
-	    /**
-	     * Toggles off markers that have the hover mode "on"
-	     * @returns {SerieLine} The current serie
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'markersOffHover',
-	    value: function markersOffHover() {
-
-	      for (var i in this.domMarkerHover) {
-	        this.toggleMarker(i.split(','), false, true);
-	      }
-	      return this;
-	    }
-
-	    /**
-	     * Toggles off markers that have the select mode "on"
-	     * @returns {SerieLine} The current serie
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'markersOffSelect',
-	    value: function markersOffSelect() {
-
-	      for (var i in this.domMarkerSelect) {
-	        this.toggleMarker(i.split(','), false, false);
-	      }
-	      return this;
-	    }
-	  }, {
-	    key: 'onClickOnMarker',
-	    value: function onClickOnMarker(e, index) {
-
-	      var toggledOn = this.toggleMarker(index);
-
-	      if (toggledOn && this.options.onSelectMarker) {
-	        this.options.onSelectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-	      }
-
-	      if (!toggledOn && this.options.onUnselectMarker) {
-	        this.options.onUnselectMarker(index, this.infos ? this.infos[index[0]] || false : false);
-	      }
-
-	      if (this.options.onToggleMarker) {
-	        this.options.onToggleMarker(index, this.infos ? this.infos[index[0]] || false : false, toggledOn);
-	      }
-	    }
-	  }, {
-	    key: '_getMarkerIndexFromEvent',
-	    value: function _getMarkerIndexFromEvent(e) {
-	      var px = this.graph._getXY(e);
-
-	      //  return this.searchIndexByPxXY( ( px.x ), ( px.y ) );
-	      return this.searchIndexByPxXY(px.x - this.graph.getPaddingLeft(), px.y - this.graph.getPaddingTop());
-	    }
-	  }, {
-	    key: 'onMouseWheel',
-	    value: function onMouseWheel() {}
-
-	    /**
-	     * Cleans the DOM from the serie internal object (serie and markers). Mostly used internally when a new {@link Serie#setData} is called
-	     * @returns {SerieLine} The current serie
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'empty',
-	    value: function empty() {
-
-	      for (var i = 0, l = this.lines.length; i < l; i++) {
-	        this.groupLines.removeChild(this.lines[i]);
-	      }
-	      this.lines = [];
+	      this.styleHasChanged(selectionType);
 
 	      return this;
 	    }
 
-	    /**
-	     * Applies a selection to the serie
-	     * @param {String} [ selectionType = "selected" ] - The selection name
-	     * @returns {SerieLine} The current serie
-	     * @see SerieLine#unselect
-	     * @memberof SerieLine
+	    /** 
+	     *  Returns the fill color
 	     */
 
 	  }, {
-	    key: 'select',
-	    value: function select(selectionType) {
-
-	      selectionType = selectionType || "selected";
-
-	      this.selected = selectionType !== "unselected";
-
-	      if (this.areMarkersShown() || this.areMarkersShown(selectionType)) {
-	        this.selectionType = selectionType;
-
-	        this.draw(true); // Drawing is absolutely required here
-	        this.applyLineStyles();
-	      } else {
-	        this.selectionType = selectionType;
-	        this.applyLineStyles();
-	      }
-
-	      this.applyLineStyle(this.getSymbolForLegend());
-	      return this;
+	    key: 'getFillColor',
+	    value: function getFillColor(selectionType) {
+	      return this.getStyle(selectionType).fillColor;
 	    }
 
-	    /**
-	     * Removes the selection to the serie. Effectively, calls {@link SerieLine#select}("unselected").
-	     * @returns {SerieLine} The current serie
-	     * @see SerieLine#select
-	     * @memberof SerieLine
+	    /*  
+	     * @memberof SerieBar
 	     */
 
 	  }, {
-	    key: 'unselect',
-	    value: function unselect() {
+	    key: 'setFillOpacity',
+	    value: function setFillOpacity(opacity, selectionType, applyToSelected) {
 
-	      this.selected = false;
-	      return this.select("unselected");
-	    }
+	      selectionType = selectionType || "unselected";
+	      this.styles[selectionType] = this.styles[selectionType] || {};
+	      this.styles[selectionType].fillOpacity = opacity;
 
-	    /**
-	     * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
-	     * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-	     * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-	     * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
-	     * @param {Object} options - A object containing the options to set
-	     * @return {SerieLine} The newly created zone serie
-	     * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
-	     * zone.setLineColor('red');
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'degrade',
-	    value: function degrade(pxPerP, options) {
-
-	      var serie = this.graph.newSerie(this.name + "_degraded", options, _graph2.default.SERIE_ZONE);
-
-	      this.degradationPx = pxPerP;
-
-	      if (!serie) {
-	        return;
+	      if (applyToSelected) {
+	        this.setLineWidth(opacity, "selected");
 	      }
 
-	      serie.setData([]);
+	      this.styleHasChanged(selectionType);
 
-	      serie.setXAxis(this.getXAxis());
-	      serie.setYAxis(this.getYAxis());
-
-	      this.degradationSerie = serie;
-
-	      return serie;
-	    }
-	  }, {
-	    key: 'drawInit',
-	    value: function drawInit() {
-
-	      var data, xData;
-
-	      this.currentLineId = 0;
-	      this.counter = 0;
-	      this._drawn = true;
-	      this.currentLine = "";
-
-	      // Degradation
-	      if (this.degradationPx) {
-
-	        if (this._waveform) {
-
-	          this._waveform.resampleForDisplay({
-
-	            resampleToPx: this.degradationPx,
-	            xPosition: this.getXAxis().getPx.bind(this.getXAxis())
-
-	          });
-
-	          this._dataToUse = [this._waveform.getDataToUseFlat()];
-	        } else {
-	          data = getDegradedData(this);
-	          xData = data[1];
-	          data = data[0];
-	          this._dataToUse = data;
-	          this._xDataToUse = xData;
-	        }
-	      } else if (this._waveform) {
-
-	        this._dataToUse = [this._waveform.getDataToUseFlat()];
-	      } else {
-
-	        this._dataToUse = this.data;
-	        this._xDataToUse = this.xData;
-	      }
-
-	      this._optimizeMonotoneous = this.isXMonotoneous();
-
-	      this.optimizeMonotoneousDirection = this.XMonotoneousDirection() && !this.getXAxis().isFlipped() || !this.XMonotoneousDirection() && this.getXAxis().isFlipped();
-
-	      this._optimizeBreak;
-	      this._optimizeBuffer;
-
-	      // Slots
-	      this._slotToUse = false;
-	      if (this.options.useSlots && this.slots && this.slots.length > 0) {
-	        if (this.isFlipped()) {
-	          var slot = this.graph.getDrawingHeight() * (this.maxY - this.minY) / (this.getYAxis().getCurrentMax() - this.getYAxis().getCurrentMin());
-	        } else {
-	          var slot = this.graph.getDrawingWidth() * (this.maxX - this.minX) / (this.getXAxis().getCurrentMax() - this.getXAxis().getCurrentMin());
-	        }
-
-	        for (var y = 0, z = this.slots.length; y < z; y++) {
-	          if (slot < this.slots[y]) {
-	            this._slotToUse = this.slotsData[this.slots[y]];
-	            this._slotId = y;
-	            break;
-	          }
-	        }
-	      }
-
-	      this.detectedPeaks = [];
-	      this.lastYPeakPicking = false;
-	    }
-	  }, {
-	    key: 'removeLinesGroup',
-	    value: function removeLinesGroup() {
-	      this._afterLinesGroup = this.groupLines.nextSibling;
-	      this.groupMain.removeChild(this.groupLines);
-	    }
-	  }, {
-	    key: 'insertLinesGroup',
-	    value: function insertLinesGroup() {
-
-	      if (!this._afterLinesGroup) {
-	        throw "Could not find group after lines to insertion.";
-	      }
-
-	      this.groupMain.insertBefore(this.groupLines, this._afterLinesGroup);
-	      this._afterLinesGroup = false;
-	    }
-	  }, {
-	    key: 'removeExtraLines',
-	    value: function removeExtraLines() {
-
-	      var i = this.currentLineId,
-	          l = this.lines.length;
-
-	      for (; i < l; i++) {
-	        this.groupLines.removeChild(this.lines[i]);
-	      }
-
-	      this.lines.splice(this.currentLineId, l - this.currentLineId);
-	      this.currentLineId = 0;
-	    }
-	  }, {
-	    key: 'detectPeaks',
-	    value: function detectPeaks(x, y) {
-
-	      if (!this.options.autoPeakPicking) {
-	        return;
-	      }
-
-	      if (!this.options.lineToZero) {
-
-	        if (!this.lastYPeakPicking) {
-
-	          this.lastYPeakPicking = [y, x];
-	        } else {
-
-	          if (y >= this.lastYPeakPicking[0] && this.lookForMaxima || y <= this.lastYPeakPicking[0] && this.lookForMinima) {
-
-	            this.lastYPeakPicking = [y, x];
-	          } else if (y < this.lastYPeakPicking[0] && this.lookForMaxima || y > this.lastYPeakPicking[0] && this.lookForMinima) {
-
-	            if (this.lookForMinima) {
-	              this.lookForMinima = false;
-	              this.lookForMaxima = true;
-	            } else {
-
-	              this.lookForMinima = true;
-	              this.lookForMaxima = false;
-
-	              this.detectedPeaks.push(this.lastYPeakPicking);
-	              this.lastYPeakPicking = false;
-	            }
-
-	            this.lastYPeakPicking = [y, x];
-	          }
-	        }
-	      } else {
-	        this.detectedPeaks.push([y, x]);
-	      }
-	    }
-
-	    /**
-	     * Draws the serie
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'draw',
-	    value: function draw(force) {
-	      // Serie redrawing
-
-	      if (force || this.hasDataChanged()) {
-	        this.drawInit();
-
-	        var data = this._dataToUse,
-	            xData = this._xDataToUse,
-	            slotToUse = this._slotToUse;
-
-	        this.removeLinesGroup();
-	        this.eraseMarkers();
-
-	        this.lookForMaxima = true;
-	        this.lookForMinima = false;
-
-	        if (this.error) {
-	          this.errorDrawInit();
-	        }
-
-	        if (!this._draw_slot()) {
-
-	          if (this.mode == 'x_equally_separated') {
-
-	            this._draw_equally_separated();
-	          } else {
-
-	            this._draw_standard();
-	          }
-	        }
-
-	        if (this.error) {
-	          this.errorDraw();
-	        }
-
-	        this.makePeakPicking();
-	        this.removeExtraLines();
-	        this.insertMarkers();
-	        this.insertLinesGroup();
-	      }
-
-	      // Unhovers everything
-	      for (var i in this.domMarkerHover) {
-	        this.toggleMarker(i.split(','), false, true);
-	      }
-
-	      // Deselects everything
-	      for (var i in this.domMarkerSelect) {
-	        this.toggleMarker(i.split(','), false, false);
-	      }
-
-	      this.applyLineStyle(this.getSymbolForLegend());
-
-	      if (this.hasStyleChanged(this.selectionType)) {
-	        this.updateStyle();
-	      }
-
-	      this.dataHasChanged(false);
-	    }
-	  }, {
-	    key: '_draw_standard',
-	    value: function _draw_standard() {
-
-	      var self = this,
-	          data = this._dataToUse,
-	          toBreak,
-	          i = 0,
-	          l = data.length,
-	          j,
-	          k,
-	          m,
-	          x,
-	          y,
-	          k,
-	          o,
-	          lastX = false,
-	          lastY = false,
-	          xpx,
-	          ypx,
-	          xpx2,
-	          ypx2,
-	          xAxis = this.getXAxis(),
-	          yAxis = this.getYAxis(),
-	          xMin = xAxis.getCurrentMin(),
-	          yMin = yAxis.getCurrentMin(),
-	          xMax = xAxis.getCurrentMax(),
-	          yMax = yAxis.getCurrentMax();
-
-	      // Y crossing
-	      var yLeftCrossingRatio, yLeftCrossing, yRightCrossingRatio, yRightCrossing, xTopCrossingRatio, xTopCrossing, xBottomCrossingRatio, xBottomCrossing;
-
-	      var incrXFlip = 0;
-	      var incrYFlip = 1;
-
-	      var pointOutside = false;
-	      var lastPointOutside = false;
-	      var pointOnAxis;
-
-	      if (this.isFlipped()) {
-	        incrXFlip = 1;
-	        incrYFlip = 0;
-	      }
-
-	      for (i = 0; i < l; i++) {
-
-	        toBreak = false;
-	        this.counter1 = i;
-
-	        this.currentLine = "";
-	        j = 0;
-	        k = 0;
-	        m = data[i].length;
-
-	        for (j = 0; j < m; j += 2) {
-
-	          x = data[i][j + incrXFlip];
-	          y = data[i][j + incrYFlip];
-
-	          if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
-	            lastX = x;
-	            lastY = y;
-	            lastPointOutside = true;
-	            continue;
-	          }
-
-	          this.counter2 = j / 2;
-
-	          if (this.markersShown()) {
-	            this.getMarkerCurrentFamily(this.counter2);
-	          }
-
-	          xpx2 = this.getX(x);
-	          ypx2 = this.getY(y);
-
-	          if (xpx2 == xpx && ypx2 == ypx) {
-	            continue;
-	          }
-
-	          pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
-
-	          if (this.options.lineToZero) {
-	            pointOutside = x < xMin || x > xMax;
-
-	            if (pointOutside) {
-	              continue;
-	            }
-	          } else {
-
-	            if (pointOutside || lastPointOutside) {
-
-	              if ((lastX === false || lastY === false) && !lastPointOutside) {
-
-	                xpx = xpx2;
-	                ypx = ypx2;
-	                lastX = x;
-	                lastY = y;
-	              } else {
-
-	                pointOnAxis = [];
-	                // Y crossing
-	                yLeftCrossingRatio = (x - xMin) / (x - lastX);
-	                yLeftCrossing = y - yLeftCrossingRatio * (y - lastY);
-	                yRightCrossingRatio = (x - xMax) / (x - lastX);
-	                yRightCrossing = y - yRightCrossingRatio * (y - lastY);
-
-	                // X crossing
-	                xTopCrossingRatio = (y - yMin) / (y - lastY);
-	                xTopCrossing = x - xTopCrossingRatio * (x - lastX);
-	                xBottomCrossingRatio = (y - yMax) / (y - lastY);
-	                xBottomCrossing = x - xBottomCrossingRatio * (x - lastX);
-
-	                if (yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin) {
-	                  pointOnAxis.push([xMin, yLeftCrossing]);
-	                }
-
-	                if (yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin) {
-	                  pointOnAxis.push([xMax, yRightCrossing]);
-	                }
-
-	                if (xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin) {
-	                  pointOnAxis.push([xTopCrossing, yMin]);
-	                }
-
-	                if (xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin) {
-	                  pointOnAxis.push([xBottomCrossing, yMax]);
-	                }
-
-	                if (pointOnAxis.length > 0) {
-
-	                  if (!pointOutside) {
-	                    // We were outside and now go inside
-
-	                    if (pointOnAxis.length > 1) {
-	                      console.error("Programmation error. Please e-mail me.");
-	                      console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-	                    }
-
-	                    this._createLine();
-	                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-	                    this._addPoint(xpx2, ypx2, lastX, lastY, false, false, true);
-	                  } else if (!lastPointOutside) {
-	                    // We were inside and now go outside
-
-	                    if (pointOnAxis.length > 1) {
-	                      console.error("Programmation error. Please e-mail me.");
-	                      console.log(pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY);
-	                    }
-
-	                    this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-	                  } else {
-
-	                    // No crossing: do nothing
-	                    if (pointOnAxis.length == 2) {
-	                      this._createLine();
-
-	                      this._addPoint(this.getX(pointOnAxis[0][0]), this.getY(pointOnAxis[0][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-	                      this._addPoint(this.getX(pointOnAxis[1][0]), this.getY(pointOnAxis[1][1]), pointOnAxis[0][0], pointOnAxis[0][1], false, false, false);
-	                    }
-	                  }
-	                } else if (!pointOutside) {
-	                  this._addPoint(xpx2, ypx2, lastX, lastY, j, false, false);
-	                } // else {
-	                // Norman:
-	                // This else case is not the sign of a bug. If yLeftCrossing == 0 or 1 for instance, pointOutside or lastPointOutside will be true
-	                // However, there's no need to draw anything because the point is on the axis and will already be covered.
-	                // 28 Aug 2015
-
-	                /*
-	                  if ( lastPointOutside !== pointOutside ) {
-	                    console.error( "Programmation error. A crossing should have been found" );
-	                    console.log( yLeftCrossing, yLeftCrossingRatio, yMax, yMin );
-	                    console.log( yRightCrossing, yRightCrossingRatio, yMax, yMin );
-	                    console.log( xTopCrossing, xTopCrossingRatio, xMax, xMin );
-	                    console.log( xBottomCrossing, xBottomCrossingRatio, xMax, xMin );
-	                    console.log( pointOutside, lastPointOutside )
-	                   }
-	                  */
-	                // }
-	              }
-
-	              xpx = xpx2;
-	              ypx = ypx2;
-	              lastX = x;
-	              lastY = y;
-
-	              lastPointOutside = pointOutside;
-
-	              continue;
-	            }
-	          }
-
-	          if (isNaN(xpx2) || isNaN(ypx2)) {
-	            if (this.counter > 0) {
-
-	              this._createLine();
-	            }
-	            continue;
-	          }
-
-	          // OPTIMIZATION START
-	          if (!this._optimize_before(xpx2, ypx2)) {
-	            continue;
-	          }
-	          // OPTIMIZATION END
-
-	          this._addPoint(xpx2, ypx2, x, y, j, false, true);
-
-	          this.detectPeaks(x, y);
-
-	          // OPTIMIZATION START
-	          if (!this._optimize_after(xpx2, ypx2)) {
-	            toBreak = true;
-	            break;
-	          }
-	          // OPTIMIZATION END
-
-	          xpx = xpx2;
-	          ypx = ypx2;
-
-	          lastX = x;
-	          lastY = y;
-	        }
-
-	        this._createLine();
-
-	        if (toBreak) {
-	          break;
-	        }
-	      }
-
-	      if (this._tracker) {
-
-	        if (this._trackerDom) {
-	          this._trackerDom.remove();
-	        }
-
-	        var cloned = this.groupLines.cloneNode(true);
-	        this.groupMain.appendChild(cloned);
-
-	        for (var i = 0, l = cloned.children.length; i < l; i++) {
-
-	          cloned.children[i].setAttribute('stroke', 'transparent');
-	          cloned.children[i].setAttribute('stroke-width', '25px');
-	          cloned.children[i].setAttribute('pointer-events', 'stroke');
-	        }
-
-	        self._trackerDom = cloned;
-
-	        self.groupMain.addEventListener("mousemove", function (e) {
-	          var coords = self.graph._getXY(e),
-	              ret = self.handleMouseMove(false, false);
-	          self._trackingCallback(self, ret, coords.x, coords.y);
-	        });
-
-	        self.groupMain.addEventListener("mouseleave", function (e) {
-	          self._trackingOutCallback(self);
-	        });
-	      }
 	      return this;
 	    }
 	  }, {
-	    key: '_draw_slot',
-	    value: function _draw_slot() {
+	    key: 'getFillOpacity',
+	    value: function getFillOpacity(selectionType) {
 
-	      var self = this;
-	      if (this._slotToUse) {
-
-	        if (this._slotToUse.done) {
-
-	          this._slotToUse.done(function (data) {
-	            self.drawSlot(data, self._slotId);
-	          });
-	        } else {
-
-	          this.drawSlot(this._slotToUse, self._slotId);
-	        }
-	        return true;
-	      }
-
-	      return false;
-	    }
-	  }, {
-	    key: '_draw_equally_separated',
-	    value: function _draw_equally_separated() {
-
-	      var i = 0,
-	          data = this._dataToUse,
-	          xData = this._xDataToUse,
-	          l = data.length,
-	          j,
-	          k,
-	          m,
-	          x,
-	          y,
-	          xpx,
-	          ypx,
-	          toBreak,
-	          currentLine;
-
-	      for (; i < l; i++) {
-
-	        currentLine = "M ";
-	        j = 0;
-	        k = 0;
-	        m = data[i].length;
-
-	        this.counter1 = i;
-
-	        for (; j < m; j += 1) {
-
-	          this.counter2 = j;
-
-	          if (this.markersShown()) {
-
-	            this.getMarkerCurrentFamily(k);
-	          }
-
-	          if (!this.isFlipped()) {
-
-	            x = xData[i].x + j * xData[i].dx;
-	            y = data[i][j];
-
-	            xpx = this.getX(x);
-	            ypx = this.getY(y);
-	          } else {
-
-	            y = xData[i].x + j * xData[i].dx;
-	            x = data[i][j];
-
-	            ypx = this.getX(y);
-	            xpx = this.getY(x);
-	          }
-
-	          // OPTIMIZATION START
-	          if (!this._optimize_before(xpx, ypx)) {
-	            continue;
-	          }
-	          // OPTIMIZATION END
-
-	          this._addPoint(xpx, ypx, x, y, j, false, false);
-
-	          // OPTIMIZATION START
-	          if (!this._optimize_after(xpx, ypx)) {
-	            toBreak = true;
-	            break;
-	          }
-	          // OPTIMIZATION END
-	        }
-
-	        this._createLine();
-
-	        if (toBreak) {
-	          break;
-	        }
-	      }
-	    }
-	  }, {
-	    key: '_optimize_before',
-	    value: function _optimize_before(xpx, ypx) {
-
-	      if (!this._optimizeMonotoneous) {
-	        return true;
-	      }
-
-	      if (this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx() || !this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx()) {
-
-	        //      if ( xpx < this._optimizeMinPxX ) {
-
-	        this._optimizeBuffer = [xpx, ypx];
-	        return false;
-	      }
-
-	      if (this._optimizeBuffer) {
-
-	        this._addPoint(this._optimizeBuffer[0], this._optimizeBuffer[1], false, false, false, false, false);
-	        this._optimizeBuffer = false;
-	      }
-
-	      return true;
-	    }
-	  }, {
-	    key: '_optimize_after',
-	    value: function _optimize_after(xpx, ypx) {
-
-	      if (!this._optimizeMonotoneous) {
-	        return true;
-	      }
-
-	      if (this.optimizeMonotoneousDirection && xpx > this.getXAxis().getMathMaxPx() || !this.optimizeMonotoneousDirection && xpx < this.getXAxis().getMathMinPx()) {
-
-	        return false;
-	      }
-
-	      return true;
-	    }
-
-	    /**
-	     * Hides the automatic peak picking (see the autoPeakPicking option)
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'hidePeakPicking',
-	    value: function hidePeakPicking(lock) {
-
-	      if (!this._hidePeakPickingLocked) {
-	        this._hidePeakPickingLocked = lock;
-	      }
-
-	      _hidePeakPicking(this);
-	    }
-
-	    /**
-	     * Shows the automatic peak picking (see the autoPeakPicking option)
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'showPeakPicking',
-	    value: function showPeakPicking(unlock) {
-
-	      if (this._hidePeakPickingLocked && !unlock) {
-	        return;
-	      }
-
-	      _showPeakPicking(this);
-	    }
-	  }, {
-	    key: 'killPeakPicking',
-	    value: function killPeakPicking() {
-
-	      if (this.picks) {
-	        for (var i = 0, l = this.picks.length; i < l; i++) {
-	          this.picks[i].kill();
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'kill',
-	    value: function kill() {
-	      _get(SerieLine.prototype.__proto__ || Object.getPrototypeOf(SerieLine.prototype), 'kill', this).call(this);
-	      this.killPeakPicking();
-	    }
-
-	    /**
-	     * @param {Number} k - Index of the point for which we should get the family
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'getMarkerCurrentFamily',
-	    value: function getMarkerCurrentFamily(k) {
-
-	      if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-	        return;
-	      }
-
-	      var family;
-
-	      for (var z = 0; z < this.markerPoints[this.selectionType].length; z++) {
-	        if (this.markerPoints[this.selectionType][z][0] <= k) {
-	          // This one is a possibility !
-	          if (this.markerPoints[this.selectionType][z][1] >= k) {
-	            // Verify that it's in the boundary
-	            this.markerCurrentFamily = this.markerPoints[this.selectionType][z][2];
-	            family = this.markerFamilies[this.selectionType][this.markerCurrentFamily];
-	          }
-	        } else {
-	          break;
-	        }
-	      }
-
-	      if (!family) {
-	        return false;
-	      }
-	      this.getMarkerDom(family);
-	      return this.markerCurrentFamily;
-	    }
-	  }, {
-	    key: 'drawSlot',
-	    value: function drawSlot(slotToUse, y) {
-
-	      var k = 0;
-	      var i = 0,
-	          xpx,
-	          ypx,
-	          max;
-	      var j;
-
-	      if (this.isFlipped()) {
-
-	        var dataPerSlot = this.slots[y] / (this.maxY - this.minY);
-
-	        var slotInit = Math.floor((this.getYAxis().getCurrentMin() - this.minY) * dataPerSlot);
-	        var slotFinal = Math.ceil((this.getYAxis().getCurrentMax() - this.minY) * dataPerSlot);
-	      } else {
-
-	        var dataPerSlot = this.slots[y] / (this.maxX - this.minX);
-
-	        var slotInit = Math.floor((this.getXAxis().getCurrentMin() - this.minX) * dataPerSlot);
-	        var slotFinal = Math.ceil((this.getXAxis().getCurrentMax() - this.minX) * dataPerSlot);
-	      }
-
-	      for (j = slotInit; j <= slotFinal; j++) {
-
-	        if (!slotToUse[j]) {
-	          continue;
-	        }
-
-	        if (this.isFlipped()) {
-
-	          ypx = Math.floor(this.getY(slotToUse[j].x));
-	          max = this.getX(slotToUse[j].max);
-
-	          /*if ( this.options.autoPeakPicking ) {
-	              allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-	            }
-	          * @memberof SerieLine
-	          */
-	          this._addPoint(this.getX(slotToUse[j].start), ypx, false, false, false, false, false);
-	          this._addPoint(max, ypx, false, false, false, true, false);
-	          this._addPoint(this.getX(slotToUse[j].min), ypx, false, false, false, false, false);
-	          this._addPoint(this.getX(slotToUse[j].stop), ypx, false, false, false, true, false);
-
-	          //    k++;
-	        } else {
-
-	          xpx = Math.floor(this.getX(slotToUse[j].x));
-	          max = this.getY(slotToUse[j].max);
-
-	          if (this.options.autoPeakPicking) {
-	            allY.push([slotToUse[j].max, slotToUse[j].x]);
-	          }
-
-	          this._addPoint(xpx, this.getY(slotToUse[j].start), false, false, false, false, false);
-	          this._addPoint(xpx, max, false, false, false, true, false);
-	          this._addPoint(xpx, this.getY(slotToUse[j].min), false, false, false, false, false);
-	          this._addPoint(xpx, this.getY(slotToUse[j].stop), false, false, false, true, false);
-
-	          //this.counter ++;
-	        }
-	      }
-
-	      this._createLine();
-	      i++;
-	    }
-	  }, {
-	    key: 'setMarkerStyleTo',
-	    value: function setMarkerStyleTo(dom, family) {
-
-	      if (!dom || !family) {
-	        console.trace();
-	        throw "Cannot set marker style. DOM does not exist.";
-	      }
-
-	      dom.setAttribute('fill', family.fillColor || 'transparent');
-	      dom.setAttribute('stroke', family.strokeColor || this.getLineColor());
-	      dom.setAttribute('stroke-width', family.strokeWidth || 1);
-	    }
-
-	    /**
-	     * Hides the tracking marker (see the trackMouse option)
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'hideTrackingMarker',
-	    value: function hideTrackingMarker() {
-	      this.marker.setAttribute('display', 'none');
-	      this.markerLabel.setAttribute('display', 'none');
-	      this.markerLabelSquare.setAttribute('display', 'none');
-	    }
-	  }, {
-	    key: '_addPoint',
-	    value: function _addPoint(xpx, ypx, x, y, j, move, allowMarker) {
-	      var pos;
-
-	      /*if( ! this.currentLineId ) {
-	          throw "No current line"
-	        }* @memberof SerieLine
-	      */
-
-	      if (isNaN(xpx) || isNaN(ypx)) {
-	        return;
-	      }
-
-	      if (this.counter == 0) {
-	        this.currentLine = 'M ';
-	      } else {
-
-	        if (this.options.lineToZero || move) this.currentLine += 'M ';else this.currentLine += "L ";
-	      }
-
-	      this.currentLine += xpx;
-	      this.currentLine += " ";
-	      this.currentLine += ypx;
-	      this.currentLine += " ";
-
-	      if (this.options.lineToZero && (pos = this.getYAxis().getPos(0)) !== undefined) {
-
-	        this.currentLine += "L ";
-	        this.currentLine += xpx;
-	        this.currentLine += " ";
-	        this.currentLine += pos;
-	        this.currentLine += " ";
-	      }
-
-	      if (this.error) {
-	        this.errorAddPoint(j, x, y, xpx, ypx);
-	      }
-
-	      if (!this.markerPoints) {
-	        this.counter++;
-
-	        return;
-	      }
-
-	      var family = void 0;
-	      if (this.markersShown() && allowMarker !== false && (family = this.markerFamilies[this.selectionType || "unselected"])) {
-	        drawMarkerXY(this, family[this.markerCurrentFamily], xpx, ypx, this.markersDom.get(family[this.markerCurrentFamily]));
-	      }
-
-	      this.counter++;
-	    }
-
-	    // Returns the DOM
-
-	  }, {
-	    key: '_createLine',
-	    value: function _createLine() {
-
-	      var i = this.currentLineId++,
-	          line;
-
-	      // Creates a line if needed
-	      if (this.lines[i]) {
-	        line = this.lines[i];
-	      } else {
-
-	        line = document.createElementNS(this.graph.ns, 'path');
-	        this.applyLineStyle(line);
-	        this.groupLines.appendChild(line);
-	        this.lines[i] = line;
-	      }
-
-	      if (this.counter == 0) {
-	        line.setAttribute('d', '');
-	      } else {
-	        line.setAttribute('d', this.currentLine);
-	      }
-
-	      this.currentLine = "M ";
-	      this.counter = 0;
-
-	      return line;
+	      return this.getStyle(selectionType).fillOpacity || 1;
 	    }
 
 	    /**
 	     * Reapply the current style to the serie lines elements. Mostly used internally
-	     * @memberof SerieLine
 	     */
 
 	  }, {
 	    key: 'applyLineStyles',
 	    value: function applyLineStyles() {
-
-	      for (var i = 0; i < this.lines.length; i++) {
-	        this.applyLineStyle(this.lines[i]);
-	      }
+	      this.applyLineStyle(this.pathDom);
 	    }
 
 	    /**
 	     * Applies the current style to a line element. Mostly used internally
-	     * @memberof SerieLine
+	     * @memberof SerieBar
 	     */
 
 	  }, {
@@ -21103,2512 +20623,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        line.removeAttribute('stroke-dasharray');
 	      }
-	      line.setAttribute('fill', 'none');
-	      //	line.setAttribute('shape-rendering', 'optimizeSpeed');
+	      line.setAttribute('fill', this.getFillColor());
+	      line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
 	    }
-
-	    /**
-	     * Updates the current style (lines + legend) of the serie. Use this method if you have explicitely changed the options of the serie
-	     * @example var opts = { lineColor: 'red' };
-	     * var s = graph.newSerie( "name", opts ).setData( someData );
-	     * opts.lineColor = 'green';
-	     * s.updateStyle(); // Sets the lineColor to green
-	     * s.draw(); // Would also do the same thing, but recalculates the whole serie display (including (x,y) point pairs)
-	     * @memberof SerieLine
-	     */
-
 	  }, {
-	    key: 'updateStyle',
-	    value: function updateStyle() {
-	      this.applyLineStyles();
-	      this.setLegendSymbolStyle();
+	    key: 'draw',
+	    value: function draw() {
 
-	      this.styleHasChanged(false);
-	    }
+	      var path = "";
+	      var categoryNumber, position;
 
-	    // Revised August 2014. Ok
-
-	  }, {
-	    key: 'getMarkerPath',
-	    value: function getMarkerPath(family, add) {
-
-	      var z = family.zoom || 1,
-	          add = add || 0,
-	          el = [];
-
-	      switch (family.type) {
-
-	        case 2:
-	          el = ['m', -2, -2, 'l', 4, 4, 'm', -4, 0, 'l', 4, -4];
-	          break;
-
-	        case 3:
-	          el = ['m', -2, 0, 'l', 4, 0, 'm', -2, -2, 'l', 0, 4];
-	          break;
-
-	        case 4:
-	          el = ['m', -1, -1, 'l', 2, 0, 'l', -1, 2, 'z'];
-	          break;
-
-	        default:
-	        case 1:
-	          el = ['m', -2, -2, 'l', 4, 0, 'l', 0, 4, 'l', -4, 0, 'z'];
-	          break;
-
+	      if (this.error) {
+	        this.errorDrawInit();
 	      }
 
-	      if ((z == 1 || !z) && !add) {
-	        return el.join(" ");
-	      }
+	      for (var i in this.data) {
 
-	      var num = "number";
-
-	      if (!el) {
-	        return;
-	      }
-
-	      for (var i = 0, l = el.length; i < l; i++) {
-
-	        if (_typeof(el[i]) == num) {
-
-	          el[i] *= z + add;
-	        }
-	      }
-
-	      return el.join(" ");
-	    }
-
-	    // Revised August 2014. Ok
-
-	  }, {
-	    key: 'getMarkerDom',
-	    value: function getMarkerDom(family) {
-
-	      var self = this;
-
-	      if (!this.markersDom.has(family)) {
-
-	        var dom = document.createElementNS(this.graph.ns, 'path');
-	        this.setMarkerStyleTo(dom, family);
-	        this.markersDom.set(family, {
-	          dom: dom,
-	          path: ""
-	        });
-
-	        dom.addEventListener('mouseover', function (e) {
-	          var closest = self._getMarkerIndexFromEvent(e);
-	          self.onMouseOverMarker(e, closest);
-	        });
-
-	        dom.addEventListener('mouseout', function (e) {
-	          var closest = self._getMarkerIndexFromEvent(e);
-	          self.onMouseOutMarker(e, closest);
-	        });
-
-	        dom.addEventListener('click', function (e) {
-	          var closest = self._getMarkerIndexFromEvent(e);
-	          self.onClickOnMarker(e, closest);
-	        });
-	      }
-
-	      return family.dom;
-	    }
-
-	    // In case markers are not grouped in families but independant
-
-	  }, {
-	    key: 'getMarkerDomIndependant',
-	    value: function getMarkerDomIndependant(index1, index2, family) {
-
-	      var self = this;
-	      var index = index1 + "," + index2;
-
-	      if (!this.independantMarkers[index]) {
-
-	        var dom = document.createElementNS(this.graph.ns, 'path');
-	        this.setMarkerStyleTo(dom, family);
-
-	        dom.addEventListener('mouseover', function (e) {
-
-	          self.onMouseOverMarker(e, [index2, index1]);
-	        });
-
-	        dom.addEventListener('mouseout', function (e) {
-
-	          self.onMouseOutMarker(e, [index2, index1]);
-	        });
-
-	        dom.addEventListener('click', function (e) {
-	          self.onClickOnMarker(e, [index2, index1]);
-	        });
-
-	        this.independantMarkers[index] = dom;
-	      }
-
-	      this.groupMarkers.appendChild(this.independantMarkers[index]);
-
-	      return this.independantMarkers[index];
-	    }
-
-	    /**
-	     * Searches the closest point pair (x,y) to the a pair of pixel position
-	     * @param {Number} x - The x position in pixels (from the left)
-	     * @param {Number} y - The y position in pixels (from the left)
-	     * @returns {Number} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'searchIndexByPxXY',
-	    value: function searchIndexByPxXY(x, y) {
-
-	      var oldDist = false,
-	          xyindex = false,
-	          dist;
-
-	      var xData = this._xDataToUse,
-	          p_x,
-	          p_y;
-
-	      if (this.mode == "x_equally_separated") {
-
-	        for (var i = 0, l = this.data.length; i < l; i++) {
-	          for (var k = 0, m = this.data[i].length; k < m; k += 1) {
-
-	            p_x = xData[i].x + k * xData[i].dx;
-	            p_y = this.data[i][k];
-	            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-	            //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
-
-	            if (!oldDist || dist < oldDist) {
-	              oldDist = dist;
-	              xyindex = [k, i];
-	            }
-	          }
-	        }
-	      } else {
-
-	        for (var i = 0, l = this.data.length; i < l; i++) {
-	          for (var k = 0, m = this.data[i].length; k < m; k += 2) {
-
-	            p_x = this.data[i][k];
-	            p_y = this.data[i][k + 1];
-	            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-	            if (!oldDist || dist < oldDist) {
-	              oldDist = dist;
-	              xyindex = [k / 2, i];
-	            }
-	          }
-	        }
-	      }
-
-	      return xyindex;
-	    }
-
-	    /**
-	     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-	     * @param {Number} valX - The x value to search for
-	     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'searchClosestValue',
-	    value: function searchClosestValue(valX) {
-
-	      var xMinIndex;
-
-	      for (var i = 0; i < this.data.length; i++) {
-
-	        if (valX <= this.data[i][this.data[i].length - 2] && valX >= this.data[i][0]) {
-	          xMinIndex = this._searchBinary(valX, this.data[i], false);
-	        } else if (valX >= this.data[i][this.data[i].length - 2] && valX <= this.data[i][0]) {
-	          xMinIndex = this._searchBinary(valX, this.data[i], true);
-	        } else {
+	        if (!this.categoryIndices[i]) {
 	          continue;
 	        }
 
-	        return {
-	          dataIndex: i,
-	          xMin: this.data[i][xMinIndex],
-	          xMax: this.data[i][xMinIndex + 2],
-	          yMin: this.data[i][xMinIndex + 1],
-	          yMax: this.data[i][xMinIndex + 3],
-	          xBeforeIndex: xMinIndex / 2,
-	          xAfterIndex: xMinIndex / 2 + 1,
-	          xBeforeIndexArr: xMinIndex,
-	          xClosest: (Math.abs(this.data[i][xMinIndex + 2] - valX) < Math.abs(this.data[i][xMinIndex] - valX) ? xMinIndex + 2 : xMinIndex) / 2
-	        };
-	      }
-	    }
-	  }, {
-	    key: 'handleMouseMove',
-	    value: function handleMouseMove(xValue, doMarker) {
+	        path += "M " + this.getXAxis().getPos(this.categoryIndices[i]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(1 / this.nbCategories) + " V " + this.getYAxis().getPos(0);
 
-	      var valX = xValue || this.getXAxis().getMouseVal(),
-	          xMinIndex,
-	          xMin,
-	          yMin,
-	          xMax,
-	          yMax;
-
-	      var value = this.searchClosestValue(valX);
-
-	      if (!value) return;
-
-	      var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-	      var intY = (1 - ratio) * value.yMin + ratio * value.yMax;
-
-	      if (doMarker && this.options.trackMouse) {
-
-	        if (value.xMin == undefined) {
-
-	          return false;
-	        } else {
-
-	          var x = this.getX(this.getFlip() ? intY : valX);
-	          var y = this.getY(this.getFlip() ? valX : intY);
-
-	          this.marker.setAttribute('display', 'block');
-	          this.marker.setAttribute('cx', x);
-	          this.marker.setAttribute('cy', y);
-
-	          this.markerLabel.setAttribute('display', 'block');
-	          this.markerLabelSquare.setAttribute('display', 'block');
-	          switch (this.options.trackMouseLabel) {
-	            case false:
-	              break;
-
-	            default:
-	              this.markerLabel.textContent = this.options.trackMouseLabel.replace('<x>', valX.toFixed(this.options.trackMouseLabelRouding)).replace('<y>', intY.toFixed(this.options.trackMouseLabelRouding));
-	              break;
-	          }
-
-	          this.markerLabel.setAttribute('x', x + 5);
-	          this.markerLabel.setAttribute('y', y - 5);
-
-	          this.markerLabelSquare.setAttribute('x', x + 5);
-	          this.markerLabelSquare.setAttribute('y', y - 5 - this.graph.options.fontSize);
-	          this.markerLabelSquare.setAttribute('width', this.markerLabel.getComputedTextLength() + 2);
-	          this.markerLabelSquare.setAttribute('height', this.graph.options.fontSize + 2);
+	        if (this.error) {
+	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
 	        }
 	      }
 
-	      return {
-	        xBefore: value.xMin,
-	        xAfter: value.xMax,
-	        yBefore: value.yMin,
-	        yAfter: value.yMax,
-	        trueX: valX,
-	        interpolatedY: intY,
-	        xBeforeIndex: value.xBeforeIndex,
-	        xIndexClosest: value.xClosest
-	      };
-	    }
-	  }, {
-	    key: '_searchBinary',
-	    value: function _searchBinary(target, haystack, reverse) {
-	      var seedA = 0,
-	          length = haystack.length,
-	          seedB = length - 2;
-
-	      if (haystack[seedA] == target) return seedA;
-
-	      if (haystack[seedB] == target) return seedB;
-
-	      var seedInt;
-	      var i = 0;
-
-	      while (true) {
-	        i++;
-	        if (i > 100) {
-	          throw "Error loop";
-	        }
-
-	        seedInt = (seedA + seedB) / 2;
-	        seedInt -= seedInt % 2; // Always looks for an x.
-
-	        if (seedInt == seedA || haystack[seedInt] == target) return seedInt;
-
-	        //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-	        if (haystack[seedInt] <= target) {
-	          if (reverse) seedB = seedInt;else seedA = seedInt;
-	        } else if (haystack[seedInt] > target) {
-	          if (reverse) seedA = seedInt;else seedB = seedInt;
-	        }
-	      }
-	    }
-
-	    /**
-	     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-	     * @param {Number} startX - The start of the x values
-	     * @param {Number} endX - The end of the x values
-	     * @returns {Number} Maximal y value in between startX and endX
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'getMax',
-	    value: function getMax(start, end) {
-
-	      var start2 = Math.min(start, end),
-	          end2 = Math.max(start, end),
-	          v1 = this.searchClosestValue(start2),
-	          v2 = this.searchClosestValue(end2),
-	          i,
-	          j,
-	          max = -Infinity,
-	          initJ,
-	          maxJ;
-
-	      //      console.log( start2, end2, v1, v2 );
-
-	      if (!v1) {
-	        start2 = this.minX;
-	        v1 = this.searchClosestValue(start2);
+	      if (this.error) {
+	        this.errorDraw();
 	      }
 
-	      if (!v2) {
-	        end2 = this.maxX;
-	        v2 = this.searchClosestValue(end2);
-	      }
-
-	      if (!v1 || !v2) {
-	        return -Infinity;
-	      }
-
-	      for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-	        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-	        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-	        for (j = initJ; j <= maxJ; j += 2) {
-	          max = Math.max(max, this.data[i][j + 1]);
-	        }
-	      }
-
-	      return max;
+	      this.pathDom.setAttribute('d', path);
+	      this.applyLineStyles();
 	    }
 
-	    /**
-	     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-	     * @param {Number} startX - The start of the x values
-	     * @param {Number} endX - The end of the x values
-	     * @returns {Number} Maximal y value in between startX and endX
-	     * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'getMin',
-	    value: function getMin(start, end) {
-
-	      var start2 = Math.min(start, end),
-	          end2 = Math.max(start, end),
-	          v1 = this.searchClosestValue(start2),
-	          v2 = this.searchClosestValue(end2),
-	          i,
-	          j,
-	          min = Infinity,
-	          initJ,
-	          maxJ;
-
-	      if (!v1) {
-	        start2 = this.minX;
-	        v1 = this.searchClosestValue(start2);
-	      }
-
-	      if (!v2) {
-	        end2 = this.maxX;
-	        v2 = this.searchClosestValue(end2);
-	      }
-
-	      if (!v1 || !v2) {
-	        return Infinity;
-	      }
-
-	      for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-	        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-	        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-	        for (j = initJ; j <= maxJ; j += 2) {
-	          min = Math.min(min, this.data[i][j + 1]);
-	        }
-	      }
-
-	      return min;
-	    }
-
-	    /* LINE STYLE * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'setStyle',
-	    value: function setStyle(style) {
-	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
-
-	      //console.log( style, selectionType );
-	      this.styles[selectionType] = style;
-	      this.styleHasChanged(selectionType);
-	    }
-	  }, {
-	    key: 'setLineStyle',
-	    value: function setLineStyle(number) {
-	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
-	      var applyToSelected = arguments[2];
-
-
-	      selectionType = selectionType;
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].lineStyle = number;
-
-	      if (applyToSelected) {
-	        this.setLineStyle(number, "selected");
-	      }
-
-	      this.styleHasChanged(selectionType);
-
-	      return this;
-	    }
-	  }, {
-	    key: 'getLineStyle',
-	    value: function getLineStyle(selectionType) {
-	      return this.getStyle(selectionType).lineStyle;
-	    }
-	  }, {
-	    key: 'getLineDashArray',
-	    value: function getLineDashArray() {
-	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.selectionType || "unselected";
-
-
-	      switch (this.getStyle(selectionType).lineStyle) {
-
-	        case 2:
-	          return "1, 1";
-	          break;
-	        case 3:
-	          return "2, 2";
-	          break;
-	        case 3:
-	          return "3, 3";
-	          break;
-	        case 4:
-	          return "4, 4";
-	          break;
-	        case 5:
-	          return "5, 5";
-	          break;
-
-	        case 6:
-	          return "5 2";
-	          break;
-	        case 7:
-	          return "2 5";
-	          break;
-
-	        case 8:
-	          return "4 2 4 4";
-	          break;
-	        case 9:
-	          return "1,3,1";
-	          break;
-	        case 10:
-	          return "9 2";
-	          break;
-	        case 11:
-	          return "2 9";
-	          break;
-
-	        case false:
-	        case 1:
-	          return false;
-	          break;
-
-	        default:
-	          return this.styles[selectionType].lineStyle;
-	          break;
-	      }
-
-	      this.styleHasChanged(selectionType);
-	    }
-	  }, {
-	    key: 'getStyle',
-	    value: function getStyle() {
-	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.selectionType || "unselected";
-
-	      return this.styles[selectionType];
-	    }
-	  }, {
-	    key: 'extendStyles',
-	    value: function extendStyles() {
-	      for (var i in this.styles) {
-
-	        var s = this.styles[i];
-	        if (s) {
-	          this.styles[i] = util.extend(true, {}, this.styles.unselected, s);
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'extendStyle',
-	    value: function extendStyle(styleTarget, styleOrigin) {
-	      var s = this.styles[styleTarget];
-
-	      this.styles[styleTarget] = util.extend(true, {}, this.styles[styleOrigin || "unselected"], s || {});
-
-	      this.styles[styleTarget].markers.map(function (marker) {
-	        if (marker.dom) {
-	          marker.dom = "";
-	        }
-	      });
-
-	      this._recalculateMarkerPoints(styleTarget, this.styles[styleTarget].markers);
-	      this.styleHasChanged(styleTarget);
-	    }
-
-	    /*  * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'setLineWidth',
-	    value: function setLineWidth(width, selectionType, applyToSelected) {
-
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].lineWidth = width;
-
-	      if (applyToSelected) {
-	        this.setLineWidth(width, "selected");
-	      }
-
-	      this.styleHasChanged(selectionType);
-
-	      return this;
-	    }
-	  }, {
-	    key: 'getLineWidth',
-	    value: function getLineWidth(selectionType) {
-
-	      return this.getStyle(selectionType).lineWidth || 1;
-	    }
-
-	    /* LINE COLOR * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'setLineColor',
-	    value: function setLineColor(color, selectionType, applyToSelected) {
-
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].lineColor = color;
-
-	      if (applyToSelected) {
-	        this.setLineColor(color, "selected");
-	      }
-
-	      this.styleHasChanged(selectionType);
-
-	      return this;
-	    }
-	  }, {
-	    key: 'getLineColor',
-	    value: function getLineColor(selectionType) {
-
-	      return this.getStyle(selectionType).lineColor || "black";
-	    }
-
-	    /* * @memberof SerieLine
-	     */
-
-	    /* MARKERS * @memberof SerieLine
-	     */
-
-	  }, {
-	    key: 'showMarkers',
-	    value: function showMarkers(selectionType, redraw) {
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].showMarkers = true;
-
-	      if (redraw && this._drawn) {
-	        this.draw(true);
-	      } else {
-	        this.styleHasChanged(selectionType);
-	      }
-
-	      return this;
-	    }
-	  }, {
-	    key: 'hideMarkers',
-	    value: function hideMarkers(selectionType, redraw) {
-
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType].showMarkers = false;
-
-	      if (redraw && this._drawn) {
-	        this.draw(true);
-	      } else {
-	        this.styleHasChanged(selectionType);
-	      }
-	      return this;
-	    }
-	  }, {
-	    key: 'markersShown',
-	    value: function markersShown(selectionType) {
-	      return this.getStyle(selectionType).showMarkers !== false;
-	    }
-	  }, {
-	    key: 'areMarkersShown',
-	    value: function areMarkersShown() {
-	      return this.markersShown.apply(this, arguments);
-	    }
-	  }, {
-	    key: 'isMarkersShown',
-	    value: function isMarkersShown() {
-	      return this.markersShown.apply(this, arguments);
-	    }
-
-	    // Multiple markers
+	    // Markers now allowed
 
 	  }, {
 	    key: 'setMarkers',
-	    value: function setMarkers(families, selectionType, applyToSelected) {
-	      // Family has to be an object
-	      // Family looks like
-	      /*
-	      {
-	      	type: 1,
-	      	zoom: 1,
-	      	strokeWidth: 1,
-	      	strokeColor: '',
-	      	fillColor: '',
-	            points: []
-	      }
-	      * @memberof SerieLine
-	      */
-
-	      this.styles[selectionType || "unselected"] = this.styles[selectionType || "unselected"] || {};
-
-	      this.showMarkers(selectionType, false);
-
-	      if (!Array.isArray(families) && (typeof families === 'undefined' ? 'undefined' : _typeof(families)) == 'object') {
-	        families = [families];
-	      } else if (!families) {
-
-	        families = [{
-	          type: 1,
-	          zoom: 1,
-	          points: 'all'
-	        }];
-	      }
-
-	      this.styles[selectionType || "unselected"].markers = families;
-
-	      if (applyToSelected) {
-	        this.styles["selected"].markers = util.extend(true, {}, families);
-	      }
-
-	      this._recalculateMarkerPoints(selectionType, families);
-	      this.styleHasChanged(selectionType);
-	      this.dataHasChanged(true); // Data has not really changed, but marker placing is performed during the draw method
-	      return this;
-	    }
+	    value: function setMarkers() {}
 	  }, {
-	    key: 'setMarkersPoints',
-	    value: function setMarkersPoints(points, family, selectionType) {
-	      this._extendMarkers("points", points, family, selectionType, true);
-	    }
-	  }, {
-	    key: 'setMarkersColor',
-	    value: function setMarkersColor(color, family, selectionType) {
-	      this._extendMarkers("color", color, family, selectionType);
-	    }
-	  }, {
-	    key: 'setMarkersType',
-	    value: function setMarkersType(type, family, selectionType) {
-	      this._extendMarkers("type", type, family, selectionType);
-	    }
-	  }, {
-	    key: 'setMarkersZoom',
-	    value: function setMarkersZoom(zoom, family, selectionType) {
-	      this._extendMarkers("zoom", zoom, family, selectionType);
-	    }
-	  }, {
-	    key: 'setMarkersStrokeColor',
-	    value: function setMarkersStrokeColor(strokeColor, family, selectionType) {
-	      this._extendMarkers("strokeColor", strokeColor, family, selectionType);
-	    }
-	  }, {
-	    key: 'setMarkersStrokeWidth',
-	    value: function setMarkersStrokeWidth(strokeWidth, family, selectionType) {
-	      this._extendMarkers("strokeWidth", strokeWidth, family, selectionType);
-	    }
-	  }, {
-	    key: 'setMarkersFillColor',
-	    value: function setMarkersFillColor(fillColor, family, selectionType) {
-	      this._extendMarkers("fillColor", fillColor, family, selectionType);
-	    }
-	  }, {
-	    key: '_extendMarkers',
-	    value: function _extendMarkers(type, value, family, selectionType, recalculatePoints) {
-
-	      family = family || 0;
-	      selectionType = selectionType || "unselected";
-
-	      if (!this.styles[selectionType] || !this.styles[selectionType].markers) {
-	        return;
-	      }
-
-	      this.styles[selectionType].markers[family][type] = value;
-
-	      if (recalculatePoints) {
-	        this._recalculateMarkerPoints(selectionType, this.styles[selectionType].markers);
-	      }
-
-	      if (!this.markersDom[this.styles[selectionType].markers[family]]) {
-	        // DOM doesn't exist yet.
-	        return;
-	      }
-
-	      this.setMarkerStyleTo(this.markersDom[this.styles[selectionType].markers[family]].dom, this.styles[selectionType].markers[family]);
-	    }
-	  }, {
-	    key: '_recalculateMarkerPoints',
-	    value: function _recalculateMarkerPoints(selectionType, families) {
-
-	      var markerPoints = [];
-	      // Overwriting any other undefined families
-	      markerPoints.push([0, Infinity, null]);
-
-	      for (var i = 0, k = families.length; i < k; i++) {
-
-	        families[i].markerPath = this.getMarkerPath(families[i]);
-
-	        if (!families[i].points) {
-	          families[i].points = 'all';
-	        }
-
-	        if (!Array.isArray(families[i].points)) {
-	          families[i].points = [families[i].points];
-	        }
-
-	        for (var j = 0, l = families[i].points.length; j < l; j++) {
-
-	          if (families[i].points[j] == 'all') {
-
-	            markerPoints.push([0, Infinity, i]);
-	          } else if (!Array.isArray(families[i].points[j])) {
-
-	            markerPoints.push([families[i].points[j], families[i].points[j], i]);
-	            //markerPoints.push( [ family[ i ].points[ j ] + 1, null ] );
-	          } else {
-
-	            markerPoints.push([families[i].points[j][0], families[i].points[j][1], i]);
-	          }
-	        }
-	      }
-
-	      this.markerFamilies[selectionType || "unselected"] = families;
-
-	      // Let's sort if by the first index.
-	      markerPoints.sort(function (a, b) {
-	        return a[0] - b[0] || (a[2] == null ? -1 : 1);
-	      });
-
-	      this.markerPoints[selectionType || "unselected"] = markerPoints;
-	    }
-	  }, {
-	    key: 'insertMarkers',
-	    value: function insertMarkers(selectionType) {
-
-	      if (!this.markerFamilies || !this.markerFamilies[selectionType || this.selectionType] || this.options.markersIndependant) {
-	        return;
-	      }
-
-	      for (var i = 0, l = this.markerFamilies[selectionType || this.selectionType].length; i < l; i++) {
-
-	        if (!this.markersDom.has(this.markerFamilies[selectionType || this.selectionType][i])) {
-	          continue;
-	        }
-
-	        var dom = this.markersDom.get(this.markerFamilies[selectionType || this.selectionType][i]);
-
-	        dom.dom.setAttribute('d', dom.path);
-
-	        this.groupMarkers.appendChild(dom.dom);
-	        this.currentMarkersSelectionType = this.selectionType;
-	      }
-	    }
-	  }, {
-	    key: 'getMarkerForLegend',
-	    value: function getMarkerForLegend() {
-
-	      if (!this.markerPoints || !this.markerPoints[this.selectionType]) {
-	        return;
-	      }
-
-	      if (!this.markerForLegend) {
-
-	        var marker = document.createElementNS(this.graph.ns, 'path');
-	        this.setMarkerStyleTo(marker, this.markerFamilies[this.selectionType][0]);
-
-	        marker.setAttribute('d', "M 14 0 " + this.getMarkerPath(this.markerFamilies[this.selectionType][0]));
-
-	        this.markerForLegend = marker;
-	      }
-
-	      return this.markerForLegend;
-	    }
-	  }, {
-	    key: 'eraseMarkers',
-	    value: function eraseMarkers() {
-
-	      var self = this;
-
-	      if (this.options.markersIndependant) {
-
-	        for (var i in this.independantMarkers) {
-	          self.groupMarkers.removeChild(this.independantMarkers[i]);
-	        }
-
-	        this.independantMarkers = {};
-	      } else if (this.currentMarkersSelectionType) {
-
-	        this.markersDom.forEach(function (el) {
-
-	          if (!el.dom) {
-	            return;
-	          }
-
-	          if (el.dom.parentNode !== self.groupMarkers) {
-	            return;
-	          }
-
-	          self.groupMarkers.removeChild(el.dom);
-	          el.path = "";
-	        });
-
-	        this.currentMarkersSelectionType = false;
-	      }
-	    }
-	  }, {
-	    key: 'showImpl',
-	    value: function showImpl() {
-	      this.showPeakPicking();
-	    }
-	  }, {
-	    key: 'hideImpl',
-	    value: function hideImpl() {
-	      this.hidePeakPicking();
-	    }
-	  }, {
-	    key: 'XIsMonotoneous',
-	    value: function XIsMonotoneous() {
-	      this.xmonotoneous = true;
-	      return this;
-	    }
-	  }, {
-	    key: 'isXMonotoneous',
-	    value: function isXMonotoneous() {
-	      return this.xmonotoneous || false;
-	    }
-	  }, {
-	    key: 'XMonotoneousDirection',
-	    value: function XMonotoneousDirection() {
-
-	      return this.data && this.data[0] && this.data[0][2] - this.data[0][0] > 0;
-	    }
-	  }, {
-	    key: 'makePeakPicking',
-	    value: function makePeakPicking() {
-
-	      var self = this;
-	      var ys = this.detectedPeaks;
-
-	      var x,
-	          px,
-	          passed = [],
-	          px,
-	          i = 0,
-	          l = ys.length,
-	          k,
-	          m,
-	          y,
-	          index;
-
-	      var selected = self.graph.selectedShapes.map(function (shape) {
-	        return shape.getProp('xval');
-	      });
-
-	      ys.sort(function (a, b) {
-	        return b[0] - a[0];
-	      });
-
-	      m = 0;
-
-	      for (; i < l; i++) {
-
-	        x = ys[i][1];
-	        px = self.getX(x);
-	        k = 0;
-	        y = self.getY(ys[i][0]);
-
-	        if (px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx()) {
-	          continue;
-	        }
-
-	        if (!self.options.autoPeakPickingAllowAllY && (y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx())) {
-
-	          continue;
-	        }
-
-	        // Distance check
-	        for (; k < passed.length; k++) {
-	          if (Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
-	            break;
-	          }
-	        }
-	        if (k < passed.length) {
-	          continue;
-	        }
-
-	        // Distance check end
-
-	        // If the retained one has already been selected somewhere, continue;
-	        if ((index = selected.indexOf(x)) > -1) {
-	          passed.push(px);
-	          continue;
-	        }
-
-	        if (!self.picks[m]) {
-	          return;
-	        }
-
-	        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
-	        //    self.picks[ m ].show();
-
-	        if (this.getYAxis().getPx(ys[i][0]) - 20 < 0) {
-
-	          self.picks[m].setLabelPosition({
-	            x: x,
-	            y: "5px"
-	          });
-
-	          self.picks[m].setLabelBaseline('hanging');
-	        } else {
-
-	          self.picks[m].setLabelBaseline('no-change');
-
-	          self.picks[m].setLabelPosition({
-	            x: x,
-	            y: ys[i][0],
-	            dy: "-15px"
-	          });
-	        }
-
-	        self.picks[m].setProp('xval', x);
-
-	        if (self.options.autoPeakPickingFormat) {
-
-	          self.picks[m].setLabelText(self.options.autoPeakPickingFormat.call(self.picks[m], x, m));
-	        } else {
-	          self.picks[m].setLabelText(String(Math.round(x * 1000) / 1000));
-	        }
-
-	        self.picks[m].makeLabels();
-
-	        m++;
-	        while (self.picks[m] && self.picks[m].isSelected()) {
-	          m++;
-	        }
-
-	        if (passed.length == self.options.autoPeakPickingNb) {
-	          break;
-	        }
-	      }
+	    key: 'getUsedCategories',
+	    value: function getUsedCategories() {
+	      return Object.keys(this.data);
 	    }
 	  }]);
 
-	  return SerieLine;
-	}(_graph4.default);
+	  return SerieBar;
+	}(_graphSerie2.default);
 
-	function drawMarkerXY(graph, family, x, y, markerDom) {
-
-	  if (!family) {
-	    return;
-	  }
-
-	  if (graph.options.markersIndependant) {
-	    var dom = graph.getMarkerDomIndependant(graph.counter1, graph.counter2, family);
-	    var p = 'M ' + x + ' ' + y + ' ';
-	    p += family.markerPath + ' ';
-
-	    dom.setAttribute('d', p);
-	  }
-
-	  markerDom.path = markerDom.path || "";
-	  markerDom.path += 'M ' + x + ' ' + y + ' ';
-	  markerDom.path += family.markerPath + ' ';
-	}
-
-	function getDegradedData(graph) {
-	  // Serie redrawing
-
-	  var self = graph,
-	      xpx,
-	      ypx,
-	      xpx2,
-	      ypx2,
-	      i = 0,
-	      l = graph.data.length,
-	      j = 0,
-	      k,
-	      m,
-	      degradationMin,
-	      degradationMax,
-	      degradationNb,
-	      degradationValue,
-	      degradation,
-	      degradationMinMax = [],
-	      incrXFlip = 0,
-	      incrYFlip = 1,
-	      degradeFirstX,
-	      degradeFirstXPx,
-	      optimizeMonotoneous = graph.isXMonotoneous(),
-	      optimizeMaxPxX = graph.getXAxis().getMathMaxPx(),
-	      optimizeBreak,
-	      buffer;
-
-	  if (graph.isFlipped()) {
-	    incrXFlip = 1;
-	    incrYFlip = 0;
-	  }
-
-	  var datas = [];
-	  var xData = [],
-	      dataY = [],
-	      sum = 0;
-
-	  if (graph.mode == 'x_equally_separated') {
-
-	    if (graph.isFlipped()) {
-	      return [graph.data, graph.xData];
-	    }
-
-	    dataY = [];
-
-	    for (; i < l; i++) {
-
-	      j = 0;
-	      k = 0;
-	      m = graph.data[i].length;
-
-	      var delta = Math.round(graph.degradationPx / graph.getXAxis().getRelPx(graph.xData[i].dx));
-
-	      if (delta == 1) {
-	        xData.push(graph.xData[i]);
-	        datas.push(graph.data[i]);
-	      }
-
-	      degradationMin = Infinity;
-	      degradationMax = -Infinity;
-
-	      for (; j < m; j += 1) {
-
-	        xpx = graph.xData[i].x + j * graph.xData[i].dx;
-
-	        if (optimizeMonotoneous && xpx < 0) {
-	          buffer = [xpx, ypx, graph.data[i][j]];
-	          continue;
-	        }
-
-	        if (optimizeMonotoneous && buffer) {
-
-	          sum += buffer[2];
-	          degradationMin = Math.min(degradationMin, buffer[2]);
-	          degradationMax = Math.max(degradationMax, buffer[2]);
-
-	          buffer = false;
-	          k++;
-	        }
-
-	        sum += graph.data[i][j];
-	        degradationMin = Math.min(degradationMin, graph.data[i][j]);
-	        degradationMax = Math.max(degradationMax, graph.data[i][j]);
-
-	        if (j % delta == 0 && j > 0 || optimizeBreak) {
-
-	          dataY.push(sum / delta);
-
-	          degradationMinMax.push(graph.xData[i].x + j * graph.xData[i].dx - delta / 2 * graph.xData[i].dx, degradationMin, degradationMax);
-
-	          degradationMin = Infinity;
-	          degradationMax = -Infinity;
-
-	          sum = 0;
-	        }
-
-	        if (optimizeMonotoneous && xpx > optimizeMaxPxX) {
-
-	          optimizeBreak = true;
-
-	          break;
-	        }
-
-	        k++;
-	      }
-
-	      datas.push(dataY);
-	      xData.push({
-	        dx: delta * graph.xData[i].dx,
-	        x: graph.xData[i].x + delta * graph.xData[i].dx / 2
-	      });
-	    }
-
-	    if (graph.degradationSerie) {
-	      graph.degradationSerie.setData(degradationMinMax);
-	      graph.degradationSerie.draw();
-	    }
-
-	    return [datas, xData];
-	  }
-
-	  for (; i < l; i++) {
-
-	    j = 0;
-	    k = 0;
-	    m = graph.data[i].length;
-
-	    degradationNb = 0;
-	    degradationValue = 0;
-
-	    degradationMin = Infinity;
-	    degradationMax = -Infinity;
-
-	    var data = [];
-	    for (; j < m; j += 2) {
-
-	      xpx2 = graph.getX(graph.data[i][j + incrXFlip]);
-
-	      if (optimizeMonotoneous && xpx2 < 0) {
-
-	        buffer = [xpx2, graph.getY(graph.data[i][j + incrYFlip]), graph.data[i][j + incrXFlip], graph.data[i][j + incrYFlip]];
-
-	        continue;
-	      }
-
-	      if (optimizeMonotoneous && buffer) {
-
-	        degradationValue += buffer[3];
-	        degradationNb++;
-
-	        degradationMin = Math.min(degradationMin, buffer[3]);
-	        degradationMax = Math.max(degradationMax, buffer[3]);
-
-	        degradeFirstX = buffer[2];
-	        degradeFirstXPx = buffer[0];
-
-	        buffer = false;
-	        k++;
-	      } else if (degradeFirstX === undefined) {
-
-	        degradeFirstX = graph.data[i][j + incrXFlip];
-	        degradeFirstXPx = xpx2;
-	      }
-
-	      if (Math.abs(xpx2 - degradeFirstXPx) > graph.degradationPx && j < m) {
-
-	        data.push((degradeFirstX + graph.data[i][j + incrXFlip]) / 2, degradationValue / degradationNb);
-
-	        degradationMinMax.push((graph.data[i][j + incrXFlip] + degradeFirstX) / 2, degradationMin, degradationMax);
-
-	        if (degradeFirstXPx > optimizeMaxPxX) {
-
-	          break;
-	        }
-
-	        degradeFirstX = undefined;
-	        degradationNb = 0;
-	        degradationValue = 0;
-	        degradationMin = Infinity;
-	        degradationMax = -Infinity;
-
-	        k++;
-	      }
-
-	      degradationValue += graph.data[i][j + incrYFlip];
-	      degradationNb++;
-
-	      degradationMin = Math.min(degradationMin, graph.data[i][j + incrYFlip]);
-	      degradationMax = Math.max(degradationMax, graph.data[i][j + incrYFlip]);
-
-	      if (optimizeMonotoneous && xpx2 > optimizeMaxPxX) {
-
-	        optimizeBreak = true;
-	      }
-
-	      xpx = xpx2;
-	      ypx = ypx2;
-	    }
-
-	    datas.push(data);
-
-	    if (optimizeBreak) {
-
-	      break;
-	    }
-	  }
-
-	  if (graph.degradationSerie) {
-	    graph.degradationSerie.setData(degradationMinMax);
-	    graph.degradationSerie.draw();
-	  }
-
-	  return [datas];
-	}
-
-	function _hidePeakPicking(graph) {
-
-	  if (!graph.picks) {
-	    return;
-	  }
-	  for (var i = 0; i < graph.picks.length; i++) {
-	    graph.picks[i].hide();
-	  }
-	}
-
-	function _showPeakPicking(graph) {
-
-	  if (!graph.picks) {
-	    return;
-	  }
-
-	  for (var i = 0; i < graph.picks.length; i++) {
-	    graph.picks[i].show();
-	  }
-	}
-
-	util.mix(SerieLine, _graphMixin2.default);
-
-	exports.default = SerieLine;
-
-/***/ },
-/* 312 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _EventEmitter2 = __webpack_require__(302);
-
-	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
-
-	var _graph = __webpack_require__(301);
-
-	var util = _interopRequireWildcard(_graph);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/**
-	 * Serie class to be extended
-	 * @static
-	 */
-	var Serie = function (_EventEmitter) {
-	  _inherits(Serie, _EventEmitter);
-
-	  function Serie() {
-	    _classCallCheck(this, Serie);
-
-	    return _possibleConstructorReturn(this, (Serie.__proto__ || Object.getPrototypeOf(Serie)).apply(this, arguments));
-	  }
-
-	  /** 
-	   * Sets data to the serie
-	   * @memberof Serie
-	   * @param {(Object|Array|Array[])} data - The data of the serie
-	   * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
-	   * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
-	   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
-	   * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
-	   * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
-	   * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
-	   */
-
-
-	  _createClass(Serie, [{
-	    key: 'setData',
-	    value: function setData(data, oneDimensional, type) {
-
-	      function isArray(arr) {
-	        var stringed = Object.prototype.toString.call(arr);
-	        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' || stringed === '[object Float64Array]' || stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
-	      }
-
-	      var z = 0,
-	          x,
-	          dx,
-	          oneDimensional = oneDimensional || false,
-	          type = type || 'float',
-	          arr,
-	          total = 0,
-	          continuous;
-
-	      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
-	      // We shouldn't need that for the lines
-	      //this.empty();
-
-	      this.minX = Number.MAX_SAFE_INTEGER;
-	      this.maxX = Number.MIN_SAFE_INTEGER;
-	      this.minY = Number.MAX_SAFE_INTEGER;
-	      this.maxY = Number.MIN_SAFE_INTEGER;
-
-	      var isDataArray = isArray(data);
-
-	      // Single object
-	      var datas = [];
-
-	      if (!isDataArray && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) == 'object') {
-	        data = [data];
-	      } else if (isDataArray && !isArray(data[0]) && _typeof(data[0]) !== 'object') {
-	        // [100, 103, 102, 2143, ...]
-	        data = [data];
-	        oneDimensional = true;
-	      } else if (isDataArray && isArray(data[0]) && data[0].length > 2) {
-	        oneDimensional = true;
-	      } else if (!isDataArray) {
-	        util.throwError("Data is not an array");
-	        return;
-	      }
-
-	      // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-	      var isData0Array = isArray(data[0]);
-
-	      var isData00Array = isArray(data[0][0]);
-
-	      if (isData0Array && !oneDimensional && !isData00Array) {
-	        data = [data];
-	      }
-	      if (isData0Array) {
-
-	        for (var i = 0, k = data.length; i < k; i++) {
-
-	          arr = this._addData(type, !oneDimensional ? data[i].length * 2 : data[i].length);
-	          datas.push(arr);
-	          z = 0;
-
-	          for (var j = 0, l = data[i].length; j < l; j++) {
-
-	            if (!oneDimensional) {
-	              arr[z] = data[i][j][0];
-
-	              this._checkX(arr[z]);
-	              z++;
-	              arr[z] = data[i][j][1];
-	              this._checkY(arr[z]);
-	              z++;
-	              total++;
-	            } else {
-	              // 1D Array
-	              arr[z] = data[i][j];
-	              this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-
-	              z++;
-	              total += j % 2 ? 1 : 0;
-	            }
-	          }
-	        }
-	      } else if (_typeof(data[0]) == 'object') {
-
-	        if (data[0].x) {
-
-	          for (var i = 0, l = data.length; i < l; i++) {
-
-	            var arr = this._addData(type, data[i].x.length * 2);
-	            datas.push(arr);
-
-	            z = 0;
-	            for (var j = 0, m = data[0].x.length; j < m; j++) {
-	              // Several piece of data together
-	              arr[z] = data[i].x[j];
-	              z++;
-	              arr[z] = data[i].y[j];
-	              z++;
-	              this._checkX(data[i].x[j]);
-	              this._checkY(data[i].y[j]);
-	              total++;
-	            }
-	          }
-	        } else {
-
-	          this.mode = 'x_equally_separated';
-
-	          var number = 0,
-	              numbers = [],
-	              datas = [],
-	              k = 0,
-	              o;
-
-	          if (!data[0].y) {
-	            console.log(data);
-	            util.throwError("No y data");
-	            return;
-	          }
-
-	          for (var i = 0, l = data.length; i < l; i++) {
-	            // Several piece of data together
-	            number += data[i].y.length;
-	            continuous = i != 0 && (!data[i + 1] || data[i].x + data[i].dx * data[i].y.length == data[i + 1].x);
-	            if (!continuous) {
-	              datas.push(this._addData(type, number));
-	              numbers.push(number);
-	              number = 0;
-	            }
-	          }
-
-	          this.xData = [];
-
-	          number = 0;
-	          k = 0;
-	          z = 0;
-
-	          for (var i = 0, l = data.length; i < l; i++) {
-	            x = data[i].x;
-	            dx = data[i].dx;
-
-	            this.xData.push({
-	              x: x,
-	              dx: dx
-	            });
-
-	            o = data[i].y.length;
-	            this._checkX(x);
-	            this._checkX(x + dx * o);
-
-	            for (var j = 0; j < o; j++) {
-	              /*datas[k][z] = (x + j * dx);
-	              this._checkX(datas[k][z]);
-	              z++;*/
-	              // 30 june 2014. To save memory I suggest that we do not add this stupid data.
-
-	              datas[k][z] = data[i].y[j];
-	              this._checkY(datas[k][z]);
-	              z++;
-	              total++;
-	            }
-	            number += data[i].y.length;
-
-	            if (numbers[k] == number) {
-	              k++;
-	              number = 0;
-	              z = 0;
-	            }
-	          }
-	        }
-	      }
-
-	      // Determination of slots for low res spectrum
-	      var w = (this.maxX - this.minX) / this.graph.getDrawingWidth(),
-	          ws = [];
-
-	      var min = this.graph.getDrawingWidth() * 4;
-	      var max = total / 4;
-
-	      var min = this.graph.getDrawingWidth();
-	      var max = total;
-
-	      this.data = datas;
-
-	      if (min > 0) {
-
-	        while (min < max) {
-	          ws.push(min);
-	          min *= 4;
-	        }
-
-	        this.slots = ws;
-
-	        if (this.options.useSlots) {
-
-	          this.calculateSlots();
-	        }
-	      }
-
-	      if (this.isFlipped()) {
-
-	        var maxX = this.maxX;
-	        var maxY = this.maxY;
-	        var minX = this.minX;
-	        var minY = this.minY;
-
-	        this.maxX = maxY;
-	        this.maxY = maxX;
-
-	        this.minX = minY;
-	        this.minY = minX;
-	      }
-
-	      this.dataHasChanged();
-	      this.graph.updateDataMinMaxAxes();
-	      return this;
-	    }
-	  }, {
-	    key: '_addData',
-	    value: function _addData(type, howmany) {
-
-	      switch (type) {
-	        case 'int':
-	          var size = howmany * 4; // 4 byte per number (32 bits)
-	          break;
-	        case 'float':
-	          var size = howmany * 8; // 4 byte per number (64 bits)
-	          break;
-	      }
-
-	      var arr = new ArrayBuffer(size);
-
-	      switch (type) {
-	        case 'int':
-	          return new Int32Array(arr);
-	          break;
-
-	        default:
-	        case 'float':
-	          return new Float64Array(arr);
-	          break;
-	      }
-	    }
-
-	    /**
-	     * Removes all the data from the serie, without redrawing
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'clearData',
-	    value: function clearData() {
-	      this.setData([]);
-	      return this;
-	    }
-
-	    /**
-	     * Returns the data in its current form
-	     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getData',
-	    value: function getData() {
-	      return this.data;
-	    }
-
-	    /**
-	     * Sets the options of the serie (no extension of default options)
-	     * @param {Object} options - The options of the serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setOptions',
-	    value: function setOptions(options) {
-	      this.options = options || {};
-	    }
-
-	    /**
-	     * Sets the options of the serie (no extension of default options)
-	     * @param {String} name - The option name
-	     * @param value - The option value
-	     * @memberof Serie
-	     * @example serie.setOption('selectableOnClick', true );
-	     */
-
-	  }, {
-	    key: 'setOption',
-	    value: function setOption(name, value) {
-	      this.options[name] = value;
-	    }
-
-	    /**
-	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'kill',
-	    value: function kill() {
-
-	      this.graph.removeSerieFromDom(this);
-	      this.graph._removeSerie(this);
-
-	      if (this.graph.legend) {
-
-	        this.graph.legend.update();
-	      }
-
-	      this.graph = undefined;
-	    }
-
-	    /**
-	     * Hides the serie
-	     * @memberof Serie
-	     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'hide',
-	    value: function hide(hideShapes) {
-	      this.hidden = true;
-	      this.groupMain.setAttribute('display', 'none');
-
-	      this.getSymbolForLegend().setAttribute('opacity', 0.5);
-	      this.getTextForLegend().setAttribute('opacity', 0.5);
-
-	      this.hideImpl();
-
-	      if (hideShapes) {
-	        var shapes = this.graph.getShapesOfSerie(this);
-	        for (var i = 0, l = shapes.length; i < l; i++) {
-	          shapes[i].hide();
-	        }
-	      }
-
-	      this.emit("hide");
-
-	      return this;
-	    }
-
-	    /**
-	     * Shows the serie
-	     * @memberof Serie
-	     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'show',
-	    value: function show(showShapes) {
-	      this.hidden = false;
-	      this.groupMain.setAttribute('display', 'block');
-
-	      this.getSymbolForLegend().setAttribute('opacity', 1);
-	      this.getTextForLegend().setAttribute('opacity', 1);
-
-	      this.showImpl();
-
-	      this.draw(true);
-
-	      if (showShapes) {
-	        var shapes = this.graph.getShapesOfSerie(this);
-	        for (var i = 0, l = shapes.length; i < l; i++) {
-	          shapes[i].show();
-	        }
-	      }
-
-	      this.emit("show");
-
-	      return this;
-	    }
-	  }, {
-	    key: 'hideImpl',
-	    value: function hideImpl() {}
-	  }, {
-	    key: 'showImpl',
-	    value: function showImpl() {}
-
-	    /**
-	     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
-	     * @memberof Serie
-	     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'toggleDisplay',
-	    value: function toggleDisplay() {
-
-	      if (!this.isShown()) {
-	        this.show();
-	      } else {
-	        this.hide();
-	      }
-
-	      return this;
-	    }
-
-	    /**
-	     * Determines if the serie is currently visible
-	     * @memberof Serie
-	     * @returns {Boolean} The current visibility status of the serie
-	     */
-
-	  }, {
-	    key: 'isShown',
-	    value: function isShown() {
-	      return !this.hidden;
-	    }
-
-	    /**
-	     * Returns the x position of a certain value in pixels position, based on the serie's axis
-	     * @memberof Serie
-	     * @param {Number} val - Value to convert to pixels position
-	     * @returns {Number} The x position in px corresponding to the x value
-	     */
-
-	  }, {
-	    key: 'getX',
-	    value: function getX(val) {
-	      return (val = this.getXAxis().getPx(val)) - val % 0.2;
-	    }
-
-	    /**
-	     * Returns the y position of a certain value in pixels position, based on the serie's axis
-	     * @memberof Serie
-	     * @param {Number} val - Value to convert to pixels position
-	     * @returns {Number} The y position in px corresponding to the y value
-	     */
-
-	  }, {
-	    key: 'getY',
-	    value: function getY(val) {
-	      return (val = this.getYAxis().getPx(val)) - val % 0.2;
-	    }
-
-	    /**
-	     * Returns the selection state of the serie. Generic for most serie types
-	     * @memberof Serie
-	     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
-	     */
-
-	  }, {
-	    key: 'isSelected',
-	    value: function isSelected() {
-	      return this.selected || this.selectionType !== "unselected";
-	    }
-	  }, {
-	    key: '_checkX',
-	    value: function _checkX(val) {
-	      this.minX = Math.min(this.minX, val);
-	      this.maxX = Math.max(this.maxX, val);
-	    }
-	  }, {
-	    key: '_checkY',
-	    value: function _checkY(val) {
-	      this.minY = Math.min(this.minY, val);
-	      this.maxY = Math.max(this.maxY, val);
-	    }
-
-	    /**
-	     * Getter for the serie name
-	     * @memberof Serie
-	     * @returns {String} The serie name
-	     */
-
-	  }, {
-	    key: 'getName',
-	    value: function getName() {
-	      return this.name;
-	    }
-
-	    /* AXIS */
-
-	    /**
-	     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
-	     * @memberof Serie
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'autoAxis',
-	    value: function autoAxis() {
-
-	      if (this.isFlipped()) {
-	        this.setXAxis(this.graph.getYAxis());
-	        this.setYAxis(this.graph.getXAxis());
-	      } else {
-	        this.setXAxis(this.graph.getXAxis());
-	        this.setYAxis(this.graph.getYAxis());
-	      }
-
-	      // After axes have been assigned, the graph axes should update their min/max
-	      this.graph.updateDataMinMaxAxes();
-	      return this;
-	    }
-
-	    /**
-	     * Assigns an x axis to the serie
-	     * @memberof Serie
-	     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-	     * @returns {Serie} The current serie
-	     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
-	     */
-
-	  }, {
-	    key: 'setXAxis',
-	    value: function setXAxis(axis) {
-
-	      if (typeof axis == "number") {
-	        this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
-	      } else {
-	        this.xaxis = axis;
-	      }
-
-	      this.graph.updateDataMinMaxAxes();
-
-	      return this;
-	    }
-
-	    /**
-	     * Assigns an y axis to the serie
-	     * @memberof Serie
-	     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
-	     * @returns {Serie} The current serie
-	     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
-	     */
-
-	  }, {
-	    key: 'setYAxis',
-	    value: function setYAxis(axis) {
-	      if (typeof axis == "number") {
-	        this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
-	      } else {
-	        this.yaxis = axis;
-	      }
-
-	      this.graph.updateDataMinMaxAxes();
-
-	      return this;
-	    }
-
-	    /**
-	     * Assigns two axes to the serie
-	     * @param {GraphAxis} axis1 - First axis to assign to the serie (x or y)
-	     * @param {GraphAxis} axis2 - Second axis to assign to the serie (y or x)
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setAxes',
-	    value: function setAxes() {
-
-	      for (var i = 0; i < 2; i++) {
-
-	        if (arguments[i]) {
-	          this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
-	        }
-	      }
-
-	      return this;
-	    }
-
-	    /**
-	     * @returns {GraphAxis} The x axis assigned to the serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getXAxis',
-	    value: function getXAxis() {
-	      return this.xaxis;
-	    }
-
-	    /**
-	     * @returns {GraphAxis} The y axis assigned to the serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getYAxis',
-	    value: function getYAxis() {
-	      return this.yaxis;
-	    }
-
-	    /* */
-
-	    /* DATA MIN MAX */
-
-	    /**
-	     * @returns {Number} Lowest x value of the serie's data
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getMinX',
-	    value: function getMinX() {
-	      return this.minX;
-	    }
-
-	    /**
-	     * @returns {Number} Highest x value of the serie's data
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getMaxX',
-	    value: function getMaxX() {
-	      return this.maxX;
-	    }
-
-	    /**
-	     * @returns {Number} Lowest y value of the serie's data
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getMinY',
-	    value: function getMinY() {
-	      return this.minY;
-	    }
-
-	    /**
-	     * @returns {Number} Highest y value of the serie's data
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getMaxY',
-	    value: function getMaxY() {
-	      return this.maxY;
-	    }
-
-	    /**
-	     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
-	     * @returns {SVGElement}
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getSymbolForLegend',
-	    value: function getSymbolForLegend() {
-
-	      if (!this.lineForLegend) {
-
-	        var line = document.createElementNS(this.graph.ns, 'line');
-	        this.applyLineStyle(line);
-
-	        line.setAttribute('x1', 5);
-	        line.setAttribute('x2', 25);
-	        line.setAttribute('y1', 0);
-	        line.setAttribute('y2', 0);
-
-	        line.setAttribute('cursor', 'pointer');
-
-	        this.lineForLegend = line;
-	      }
-
-	      return this.lineForLegend;
-	    }
-
-	    /**
-	     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
-	     * @see Serie#getSymbolForLegend
-	     * @returns {SVGElement}
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setLegendSymbolStyle',
-	    value: function setLegendSymbolStyle() {
-	      this.applyLineStyle(this.getSymbolForLegend());
-	    }
-
-	    /**
-	     * @alias Serie#setLegendSymbolStyle
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'updateStyle',
-	    value: function updateStyle() {
-	      this.setLegendSymbolStyle();
-	      this.graph.updateLegend();
-	    }
-
-	    /**
-	     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
-	     * @returns {SVGElement}
-	     * @memberof Serie
-	     * @see Serie#getLabel
-	     */
-
-	  }, {
-	    key: 'getTextForLegend',
-	    value: function getTextForLegend() {
-
-	      if (!this.textForLegend) {
-
-	        var text = document.createElementNS(this.graph.ns, 'text');
-	        text.setAttribute('cursor', 'pointer');
-	        text.textContent = this.getLabel();
-
-	        this.textForLegend = text;
-	      }
-
-	      return this.textForLegend;
-	    }
-
-	    /**
-	     * @returns {Number} The current index of the serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getIndex',
-	    value: function getIndex() {
-	      return this.graph.series.indexOf(this);
-	    }
-
-	    /**
-	     * @returns {String} The label or, alternatively - the name of the serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getLabel',
-	    value: function getLabel() {
-	      return this.options.label || this.name;
-	    }
-
-	    /**
-	     * Sets the label of the serie. Note that this does not automatically updates the legend
-	     * @param {String} label - The new label of the serie
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setLabel',
-	    value: function setLabel(label) {
-	      this.options.label = label;
-
-	      if (this.textForLegend) {
-	        this.textForLegend.textContent = label;
-	      }
-	      return this;
-	    }
-
-	    /* FLIP */
-
-	    /**
-	     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
-	     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setFlip',
-	    value: function setFlip(flipped) {
-	      this.options.flip = flipped;
-	      return this;
-	    }
-
-	    /**
-	     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getFlip',
-	    value: function getFlip() {
-	      return this.options.flip;
-	    }
-
-	    /**
-	     * @alias Serie#getFlip
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'isFlipped',
-	    value: function isFlipped() {
-	      return this.options.flip;
-	    }
-
-	    /**
-	     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-	     * @memberof Serie
-	     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
-	     * @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'setLayer',
-	    value: function setLayer(layerIndex) {
-	      this.options.layer = parseInt(layerIndex) || 1;
-	      return this;
-	    }
-
-	    /**
-	     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
-	     * @memberof Serie
-	     * @returns {Nunber} The index of the layer into which the serie will be drawn
-	     */
-
-	  }, {
-	    key: 'getLayer',
-	    value: function getLayer() {
-	      return this.options.layer || 1;
-	    }
-	  }, {
-	    key: 'setStyle',
-	    value: function setStyle(style) {
-	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
-
-	      //console.log( style, selectionType );
-	      this.styles[selectionType] = style;
-	      this.styleHasChanged(selectionType);
-	    }
-
-	    /**
-	     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
-	     * @param {String} selectionType - The selection for which the style may have changed
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'styleHasChanged',
-	    value: function styleHasChanged() {
-	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "unselected";
-
-	      this._changedStyles = this._changedStyles || {};
-
-	      if (selectionType === false) {
-	        for (var i in this._changedStyles) {
-	          this._changedStyles[i] = false;
-	        }
-	      } else {
-	        this._changedStyles[selectionType || "unselected"] = true;
-	      }
-
-	      return this;
-	    }
-
-	    /**
-	     * Checks if the style has changed for a selection type
-	     * @param {String} selectionType - The selection for which the style may have changed
-	     * @returns {Boolean} <code>true</code> if the style has changed
-	     * @private
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'hasStyleChanged',
-	    value: function hasStyleChanged(selectionType) {
-	      this._changedStyles = this._changedStyles || {};
-	      return this._changedStyles[selectionType || "unselected"];
-	    }
-
-	    /**
-	     * Notifies jsGraph that the data of the serie has changed
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'dataHasChanged',
-	    value: function dataHasChanged(arg) {
-	      this._dataHasChanged = arg === undefined || arg;
-	      return this;
-	    }
-
-	    /**
-	     * Checks if the data has changed
-	     * @returns {Boolean} <code>true</code> if the data has changed
-	     * @private
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'hasDataChanged',
-	    value: function hasDataChanged() {
-	      return this._dataHasChanged;
-	    }
-
-	    /**
-	     * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
-	     * @param {String} prop - The property
-	     * @param value - The value
-	     * @returns {Serie} The current serie
-	     * @see Serie#getInfo
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setInfo',
-	    value: function setInfo(prop, value) {
-	      this.infos = this.infos || {};
-	      this.infos[prop] = value;
-	      return this;
-	    }
-
-	    /**
-	     * Retrives an information value from its key
-	     * @param {String} prop - The property
-	     * @returns The value associated to the prop parameter
-	     * @see Serie#setInfo
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getInfo',
-	    value: function getInfo(prop, value) {
-	      return (this.infos || {})[prop];
-	    }
-
-	    /**
-	     * @deprecated
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'setAdditionalData',
-	    value: function setAdditionalData(data) {
-	      this.additionalData = data;
-	      return this;
-	    }
-
-	    /**
-	     * @deprecated
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'getAdditionalData',
-	    value: function getAdditionalData() {
-	      return this.additionalData;
-	    }
-
-	    /**
-	     * Flags the serie as selected
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'select',
-	    value: function select() {
-	      this.selected = true;
-	      return this;
-	    }
-
-	    /**
-	     * Flags the serie as unselected
-	     * @returns {Serie} The current serie
-	     * @memberof Serie
-	     */
-
-	  }, {
-	    key: 'unselect',
-	    value: function unselect() {
-	      this.selected = false;
-	      return this;
-	    }
-
-	    /**
-	     * Allows mouse tracking of the serie
-	     * @memberof Serie
-	     * @returns {Serie} The current serie
-	     * @param {Function} hoverCallback - Function to be called when the mouse enters the serie area
-	     * @param {Function} outCallback - Function to be called when the mouse exits the serie area
-	     * @private
-	     */
-
-	  }, {
-	    key: 'enableTracking',
-	    value: function enableTracking(hoverCallback, outCallback) {
-	      this._tracker = true;
-	      this._trackingCallback = hoverCallback;
-	      this._trackingOutCallback = outCallback;
-
-	      return this;
-	    }
-
-	    /**
-	     * Disables mouse tracking of the serie
-	     * @memberof Serie
-	     * @returns {Serie} The current serie
-	     * @private
-	     */
-
-	  }, {
-	    key: 'disableTracking',
-	    value: function disableTracking() {
-
-	      if (this._trackerDom) {
-	        this._trackerDom.remove();
-	        this._trackerDom = null;
-	      }
-
-	      this._tracker = false;
-	      this._trackingCallback = null;
-	      return this;
-	    }
-
-	    /**
-	     *  Allows mouse tracking of the serie
-	     *  @memberof Serie
-	     *  @param {Object} options - The tracking line options
-	     *  @returns {Serie} The current serie
-	     */
-
-	  }, {
-	    key: 'allowTrackingLine',
-	    value: function allowTrackingLine(options) {
-
-	      options = options || {};
-	      this.graph.addSerieToTrackingLine(this, options);
-	    }
-	  }, {
-	    key: 'getMarkerForLegend',
-	    value: function getMarkerForLegend() {
-	      return false;
-	    }
-	  }, {
-	    key: 'getType',
-	    value: function getType() {
-	      return this._type;
-	    }
-	  }, {
-	    key: 'setDataIndices',
-	    value: function setDataIndices(categories, nb) {
-	      this.categoryIndices = categories;
-	      this.nbCategories = nb;
-	    }
-	  }, {
-	    key: 'type',
-	    get: function get() {
-	      return this._type;
-	    }
-	  }, {
-	    key: 'excludedFromLegend',
-	    set: function set() {
-	      var bln = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
-	      this._excludedFromLegend = bln;
-	    },
-	    get: function get() {
-	      return !!this._excludedFromLegend;
-	    }
-	  }]);
-
-	  return Serie;
-	}(_EventEmitter3.default);
-
-	exports.default = Serie;
-
-/***/ },
-/* 313 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	exports.default = function (toOptimize) {
-
-	  if (!slotWorker) {
-	    createWorker();
-	  }
-
-	  var requestId = util.guid();
-	  toOptimize._queueId = requestId;
-	  var resolve;
-	  var prom = new Promise(function (_resolve) {
-	    resolve = _resolve;
-	  });
-	  queue[requestId] = {
-	    promise: prom,
-	    resolve: resolve
-	  };
-
-	  slotWorker.postMessage(toOptimize);
-	  return queue[requestId].promise;
-	};
-
-	var _graph = __webpack_require__(301);
-
-	var util = _interopRequireWildcard(_graph);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	var slotWorker;
-	var queue = {};
-
-	function createWorker() {
-
-	  var workerUrl = URL.createObjectURL(new Blob([" ( " + function () {
-	    onmessage = function onmessage(e) {
-
-	      var data = e.data.data,
-	          slotNb = e.data.slotNumber,
-	          slot = e.data.slot,
-	          flip = e.data.flip,
-	          max = e.data.max,
-	          min = e.data.min,
-	          slotNumber,
-	          dataPerSlot = slot / (max - min);
-
-	      var slotsData = [];
-
-	      for (var j = 0, k = data.length; j < k; j++) {
-
-	        for (var m = 0, n = data[j].length; m < n; m += 2) {
-
-	          slotNumber = Math.floor((data[j][m] - min) * dataPerSlot);
-
-	          slotsData[slotNumber] = slotsData[slotNumber] || {
-	            min: data[j][m + 1],
-	            max: data[j][m + 1],
-	            start: data[j][m + 1],
-	            stop: false,
-	            x: data[j][m]
-	          };
-
-	          slotsData[slotNumber].stop = data[j][m + 1];
-	          slotsData[slotNumber].min = Math.min(data[j][m + 1], slotsData[slotNumber].min);
-	          slotsData[slotNumber].max = Math.max(data[j][m + 1], slotsData[slotNumber].max);
-	        }
-	      }
-
-	      postMessage({
-	        slotNumber: slotNb,
-	        slot: slot,
-	        data: slotsData,
-	        _queueId: e.data._queueId
-	      });
-	    };
-	  }.toString() + ")()"], {
-	    type: 'application/javascript'
-	  }));
-
-	  slotWorker = new Worker(workerUrl);
-
-	  slotWorker.onmessage = function (e) {
-	    var id = e.data._queueId;
-	    delete e.data._queueId;
-	    queue[id].resolve(e.data.data);
-	    delete queue[id];
-	  };
-	}
+	exports.default = SerieBar;
 
 /***/ },
 /* 314 */
@@ -23957,241 +21022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(301);
-
-	var util = _interopRequireWildcard(_graph);
-
-	var _graphSerie = __webpack_require__(311);
-
-	var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
-	var _graphMixin = __webpack_require__(314);
-
-	var _graphMixin2 = _interopRequireDefault(_graphMixin);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	/** 
-	 * Represents a bar serie.  
-	   Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
-	   Supports error bars, line color, line width, fill color, fill opacity.
-	 * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
-	 * @extends Serie
-	 */
-	var SerieBar = function (_Serie) {
-	  _inherits(SerieBar, _Serie);
-
-	  function SerieBar() {
-	    _classCallCheck(this, SerieBar);
-
-	    return _possibleConstructorReturn(this, (SerieBar.__proto__ || Object.getPrototypeOf(SerieBar)).call(this));
-	  }
-
-	  _createClass(SerieBar, [{
-	    key: 'init',
-	    value: function init(graph, name, options) {
-	      this.graph = graph;
-	      this.name = name;
-	      this.options = options || {};
-
-	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
-
-	      this.pathDom = document.createElementNS(this.graph.ns, 'path');
-	      this.groupMain.appendChild(this.pathDom);
-
-	      // Creates an empty style variable
-	      this.styles = {};
-
-	      // Unselected style
-	      this.styles.unselected = {
-	        lineColor: this.options.lineColor,
-	        lineStyle: this.options.lineStyle,
-	        lineWidth: this.options.lineWidth,
-	        fillColor: this.options.fillColor,
-	        fillOpacity: this.options.fillOpacity,
-	        markers: this.options.markers
-	      };
-	    }
-
-	    /** 
-	     *  Sets the data of the bar serie
-	     *  @param {Object} data
-	     *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
-	     *  @return {SerieBar} The current serie instance
-	     */
-
-	  }, {
-	    key: 'setData',
-	    value: function setData(data) {
-
-	      this.data = data;
-	      this.minY = Number.MAX_SAFE_INTEGER;
-	      this.maxY = Number.MIN_SAFE_INTEGER;
-
-	      for (var i in this.data) {
-	        this._checkY(this.data[i]);
-	      }
-
-	      return this;
-	    }
-
-	    /** 
-	     *  Sets the fill color
-	     */
-
-	  }, {
-	    key: 'setFillColor',
-	    value: function setFillColor(fillColor, selectionType, applyToSelected) {
-
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].fillColor = fillColor;
-
-	      if (applyToSelected) {
-	        this.setFillColor(fillColor, "selected");
-	      }
-
-	      this.styleHasChanged(selectionType);
-
-	      return this;
-	    }
-
-	    /** 
-	     *  Returns the fill color
-	     */
-
-	  }, {
-	    key: 'getFillColor',
-	    value: function getFillColor(selectionType) {
-	      return this.getStyle(selectionType).fillColor;
-	    }
-
-	    /*  
-	     * @memberof SerieBar
-	     */
-
-	  }, {
-	    key: 'setFillOpacity',
-	    value: function setFillOpacity(opacity, selectionType, applyToSelected) {
-
-	      selectionType = selectionType || "unselected";
-	      this.styles[selectionType] = this.styles[selectionType] || {};
-	      this.styles[selectionType].fillOpacity = opacity;
-
-	      if (applyToSelected) {
-	        this.setLineWidth(opacity, "selected");
-	      }
-
-	      this.styleHasChanged(selectionType);
-
-	      return this;
-	    }
-	  }, {
-	    key: 'getFillOpacity',
-	    value: function getFillOpacity(selectionType) {
-
-	      return this.getStyle(selectionType).fillOpacity || 1;
-	    }
-
-	    /**
-	     * Reapply the current style to the serie lines elements. Mostly used internally
-	     */
-
-	  }, {
-	    key: 'applyLineStyles',
-	    value: function applyLineStyles() {
-	      this.applyLineStyle(this.pathDom);
-	    }
-
-	    /**
-	     * Applies the current style to a line element. Mostly used internally
-	     * @memberof SerieBar
-	     */
-
-	  }, {
-	    key: 'applyLineStyle',
-	    value: function applyLineStyle(line) {
-
-	      line.setAttribute('stroke', this.getLineColor());
-	      line.setAttribute('stroke-width', this.getLineWidth());
-	      if (this.getLineDashArray()) {
-	        line.setAttribute('stroke-dasharray', this.getLineDashArray());
-	      } else {
-	        line.removeAttribute('stroke-dasharray');
-	      }
-	      line.setAttribute('fill', this.getFillColor());
-	      line.setAttribute('fill-opacity', this.getFillOpacity() || 1);
-	    }
-	  }, {
-	    key: 'draw',
-	    value: function draw() {
-
-	      var path = "";
-	      var categoryNumber, position;
-
-	      if (this.error) {
-	        this.errorDrawInit();
-	      }
-
-	      for (var i in this.data) {
-
-	        if (!this.categoryIndices[i]) {
-	          continue;
-	        }
-
-	        path += "M " + this.getXAxis().getPos(this.categoryIndices[i]) + " " + this.getYAxis().getPos(0) + " V " + this.getYAxis().getPos(this.data[i]) + " h " + this.getXAxis().getDeltaPx(1 / this.nbCategories) + " V " + this.getYAxis().getPos(0);
-
-	        if (this.error) {
-	          this.errorAddPointBarChart(i, this.data[i], this.getXAxis().getPos(this.categoryIndices[i] + 0.5 / this.nbCategories), this.getYAxis().getPos(this.data[i]));
-	        }
-	      }
-
-	      if (this.error) {
-	        this.errorDraw();
-	      }
-
-	      this.pathDom.setAttribute('d', path);
-	      this.applyLineStyles();
-	    }
-
-	    // Markers now allowed
-
-	  }, {
-	    key: 'setMarkers',
-	    value: function setMarkers() {}
-	  }, {
-	    key: 'getUsedCategories',
-	    value: function getUsedCategories() {
-	      return Object.keys(this.data);
-	    }
-	  }]);
-
-	  return SerieBar;
-	}(_graphSerie2.default);
-
-	exports.default = SerieBar;
-
-/***/ },
-/* 316 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _graph = __webpack_require__(312);
+	var _graph = __webpack_require__(316);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -25238,6 +22069,1085 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SerieBox;
 
 /***/ },
+/* 316 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _EventEmitter2 = __webpack_require__(302);
+
+	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
+
+	var _graph = __webpack_require__(301);
+
+	var util = _interopRequireWildcard(_graph);
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * Serie class to be extended
+	 * @static
+	 */
+	var Serie = function (_EventEmitter) {
+	  _inherits(Serie, _EventEmitter);
+
+	  function Serie() {
+	    _classCallCheck(this, Serie);
+
+	    return _possibleConstructorReturn(this, (Serie.__proto__ || Object.getPrototypeOf(Serie)).apply(this, arguments));
+	  }
+
+	  /** 
+	   * Sets data to the serie
+	   * @memberof Serie
+	   * @param {(Object|Array|Array[])} data - The data of the serie
+	   * @param {Boolean} [ oneDimensional=false ] - In some cases you may need to force the 1D type. This is required when one uses an array or array to define the data (see examples)
+	   * @param {String} [ type=float ] - Specify the type of the data. Use <code>int</code> to save memory (half the amount of bytes allocated to the data).
+	   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ... ] );
+	   * @example serie.setData( [ x1, y1, x2, y2, ... ] ); // Faster
+	   * @example serie.setData( [ [ x1, y1, x2, y2, ..., xn, yn ] , [ xm, ym, x(m + 1), y(m + 1), ...] ], true ) // 1D array with a gap in the middle
+	   * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
+	   */
+
+
+	  _createClass(Serie, [{
+	    key: 'setData',
+	    value: function setData(data, oneDimensional, type) {
+
+	      function isArray(arr) {
+	        var stringed = Object.prototype.toString.call(arr);
+	        return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' || stringed === '[object Float64Array]' || stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
+	      }
+
+	      var z = 0,
+	          x,
+	          dx,
+	          oneDimensional = oneDimensional || false,
+	          type = type || 'float',
+	          arr,
+	          total = 0,
+	          continuous;
+
+	      // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
+	      // We shouldn't need that for the lines
+	      //this.empty();
+
+	      this.minX = Number.MAX_SAFE_INTEGER;
+	      this.maxX = Number.MIN_SAFE_INTEGER;
+	      this.minY = Number.MAX_SAFE_INTEGER;
+	      this.maxY = Number.MIN_SAFE_INTEGER;
+
+	      var datas = [];
+
+	      var isDataArray = isArray(data);
+
+	      if (!isDataArray && (typeof data === 'undefined' ? 'undefined' : _typeof(data)) == 'object') {
+	        data = [data];
+	      } else if (isDataArray && !isArray(data[0]) && _typeof(data[0]) !== 'object') {
+	        // [100, 103, 102, 2143, ...]
+	        data = [data];
+	        oneDimensional = true;
+	      } else if (isDataArray && isArray(data[0]) && data[0].length > 2) {
+	        oneDimensional = true;
+	      } else if (!isDataArray) {
+	        util.throwError("Data is not an array");
+	        return;
+	      }
+
+	      // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
+	      var isData0Array = isArray(data[0]);
+
+	      var isData00Array = isArray(data[0][0]);
+
+	      if (isData0Array && !oneDimensional && !isData00Array) {
+	        data = [data];
+	      }
+	      if (isData0Array) {
+
+	        for (var i = 0, k = data.length; i < k; i++) {
+
+	          arr = this._addData(type, !oneDimensional ? data.length * 2 : data.length);
+	          datas.push(arr);
+	          z = 0;
+
+	          for (var j = 0, l = data[i].length; j < l; j++) {
+
+	            if (!oneDimensional) {
+	              arr[z] = [data[i][j][0], data[i][j][1]];
+	              total++;
+	              z++;
+	            } else {
+	              // 1D Array
+	              arr[z] = [data[i][j], data[i][j + 1]];
+	              z++;
+	              total += j % 2 ? 1 : 0;
+	            }
+	          }
+	        }
+	      } else if (_typeof(data[0]) == 'object') {
+
+	        if (data[0].x) {
+
+	          for (var i = 0, l = data.length; i < l; i++) {
+
+	            var arr = this._addData(type, data[i].x.length * 2);
+	            datas.push(arr);
+
+	            z = 0;
+	            for (var j = 0, m = data[0].x.length; j < m; j++) {
+	              // Several piece of data together
+	              arr[z] = [data[i].x[j], data[i].y[j]];
+	              total++;
+	              z++;
+	            }
+	          }
+	        } else {
+
+	          this.mode = 'x_equally_separated';
+
+	          var number = 0,
+	              numbers = [],
+	              k = 0,
+	              o;
+
+	          if (!data[0].y) {
+	            console.log(data);
+	            util.throwError("No y data");
+	            return;
+	          }
+
+	          for (var i = 0, l = data.length; i < l; i++) {
+	            // Several piece of data together
+	            number += data[i].y.length;
+	            continuous = i != 0 && (!data[i + 1] || data[i].x + data[i].dx * data[i].y.length == data[i + 1].x);
+	            if (!continuous) {
+	              datas.push(this._addData(type, number));
+	              numbers.push(number);
+	              number = 0;
+	            }
+	          }
+
+	          this.xData = [];
+
+	          number = 0;
+	          k = 0;
+	          z = 0;
+
+	          for (var i = 0, l = data.length; i < l; i++) {
+	            x = data[i].x;
+	            dx = data[i].dx;
+
+	            for (var j = 0; j < o; j++) {
+
+	              datas[k][z] = [x + j * dx, data[i].y[j]];
+	              z++;
+	              total++;
+	            }
+
+	            number += data[i].y.length;
+
+	            if (numbers[k] == number) {
+	              k++;
+	              number = 0;
+	              z = 0;
+	            }
+	          }
+	        }
+	      }
+
+	      // Determination of slots for low res spectrum
+	      var w = (this.maxX - this.minX) / this.graph.getDrawingWidth(),
+	          ws = [];
+
+	      var min = this.graph.getDrawingWidth() * 4;
+	      var max = total / 4;
+
+	      var min = this.graph.getDrawingWidth();
+	      var max = total;
+	      console.log(datas);
+	      datas = datas.reduce(function (a, b, index) {
+	        if (index > 0) {
+	          a.push([NaN, NaN]);
+	        }
+	        //console.log( a, b );
+	        return a.concat(b);
+	      }, []);
+	      console.log(datas);
+	      var wave = new _waveform2.default();
+	      wave.setDataXY(datas);
+	      this.setWaveform(wave);
+
+	      return this;
+	    }
+	  }, {
+	    key: '_addData',
+	    value: function _addData(type, howmany) {
+
+	      return [];
+	      /*
+	      switch ( type ) {
+	        case 'int':
+	          var size = howmany * 4; // 4 byte per number (32 bits)
+	          break;
+	        case 'float':
+	          var size = howmany * 8; // 4 byte per number (64 bits)
+	          break;
+	      }
+	       var arr = new ArrayBuffer( size );
+	       switch ( type ) {
+	        case 'int':
+	          return new Int32Array( arr );
+	          break;
+	         default:
+	        case 'float':
+	          return new Float64Array( arr );
+	          break;
+	      }
+	      */
+	    }
+
+	    /**
+	     * Removes all the data from the serie, without redrawing
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'clearData',
+	    value: function clearData() {
+	      this.setData([]);
+	      return this;
+	    }
+
+	    /**
+	     * Returns the data in its current form
+	     * @returns {Array.<(Float64Array|Int32Array)>} An array containing the data chunks. Has only one member if the data has no gaps
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getData',
+	    value: function getData() {
+	      return this.data;
+	    }
+
+	    /**
+	     * Sets the options of the serie (no extension of default options)
+	     * @param {Object} options - The options of the serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setOptions',
+	    value: function setOptions(options) {
+	      this.options = options || {};
+	    }
+
+	    /**
+	     * Sets the options of the serie (no extension of default options)
+	     * @param {String} name - The option name
+	     * @param value - The option value
+	     * @memberof Serie
+	     * @example serie.setOption('selectableOnClick', true );
+	     */
+
+	  }, {
+	    key: 'setOption',
+	    value: function setOption(name, value) {
+	      this.options[name] = value;
+	    }
+
+	    /**
+	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'kill',
+	    value: function kill() {
+
+	      this.graph.removeSerieFromDom(this);
+	      this.graph._removeSerie(this);
+
+	      if (this.graph.legend) {
+
+	        this.graph.legend.update();
+	      }
+
+	      this.graph = undefined;
+	    }
+
+	    /**
+	     * Hides the serie
+	     * @memberof Serie
+	     * @param {Boolean} [ hideShapes = false ] - <code>true</code> to hide the shapes associated to the serie
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'hide',
+	    value: function hide(hideShapes) {
+	      this.hidden = true;
+	      this.groupMain.setAttribute('display', 'none');
+
+	      this.getSymbolForLegend().setAttribute('opacity', 0.5);
+	      this.getTextForLegend().setAttribute('opacity', 0.5);
+
+	      this.hideImpl();
+
+	      if (hideShapes) {
+	        var shapes = this.graph.getShapesOfSerie(this);
+	        for (var i = 0, l = shapes.length; i < l; i++) {
+	          shapes[i].hide();
+	        }
+	      }
+
+	      this.emit("hide");
+
+	      return this;
+	    }
+
+	    /**
+	     * Shows the serie
+	     * @memberof Serie
+	     * @param {Boolean} [showShapes=false] - <code>true</code> to show the shapes associated to the serie
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'show',
+	    value: function show(showShapes) {
+	      this.hidden = false;
+	      this.groupMain.setAttribute('display', 'block');
+
+	      this.getSymbolForLegend().setAttribute('opacity', 1);
+	      this.getTextForLegend().setAttribute('opacity', 1);
+
+	      this.showImpl();
+
+	      this.draw(true);
+
+	      if (showShapes) {
+	        var shapes = this.graph.getShapesOfSerie(this);
+	        for (var i = 0, l = shapes.length; i < l; i++) {
+	          shapes[i].show();
+	        }
+	      }
+
+	      this.emit("show");
+
+	      return this;
+	    }
+	  }, {
+	    key: 'hideImpl',
+	    value: function hideImpl() {}
+	  }, {
+	    key: 'showImpl',
+	    value: function showImpl() {}
+
+	    /**
+	     * Toggles the display of the serie (effectively, calls <code>.show()</code> and <code>.hide()</code> alternatively on each call)
+	     * @memberof Serie
+	     * @param {Boolean} [hideShapes=false] - <code>true</code> to hide the shapes associated to the serie
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'toggleDisplay',
+	    value: function toggleDisplay() {
+
+	      if (!this.isShown()) {
+	        this.show();
+	      } else {
+	        this.hide();
+	      }
+
+	      return this;
+	    }
+
+	    /**
+	     * Determines if the serie is currently visible
+	     * @memberof Serie
+	     * @returns {Boolean} The current visibility status of the serie
+	     */
+
+	  }, {
+	    key: 'isShown',
+	    value: function isShown() {
+	      return !this.hidden;
+	    }
+
+	    /**
+	     * Returns the x position of a certain value in pixels position, based on the serie's axis
+	     * @memberof Serie
+	     * @param {Number} val - Value to convert to pixels position
+	     * @returns {Number} The x position in px corresponding to the x value
+	     */
+
+	  }, {
+	    key: 'getX',
+	    value: function getX(val) {
+	      return (val = this.getXAxis().getPx(val)) - val % 0.2;
+	    }
+
+	    /**
+	     * Returns the y position of a certain value in pixels position, based on the serie's axis
+	     * @memberof Serie
+	     * @param {Number} val - Value to convert to pixels position
+	     * @returns {Number} The y position in px corresponding to the y value
+	     */
+
+	  }, {
+	    key: 'getY',
+	    value: function getY(val) {
+	      return (val = this.getYAxis().getPx(val)) - val % 0.2;
+	    }
+
+	    /**
+	     * Returns the selection state of the serie. Generic for most serie types
+	     * @memberof Serie
+	     * @returns {Boolean} <code>true</code> if the serie is selected, <code>false</code> otherwise
+	     */
+
+	  }, {
+	    key: 'isSelected',
+	    value: function isSelected() {
+	      return this.selected || this.selectionType !== "unselected";
+	    }
+	  }, {
+	    key: '_checkX',
+	    value: function _checkX(val) {
+	      this.minX = Math.min(this.minX, val);
+	      this.maxX = Math.max(this.maxX, val);
+	    }
+	  }, {
+	    key: '_checkY',
+	    value: function _checkY(val) {
+	      this.minY = Math.min(this.minY, val);
+	      this.maxY = Math.max(this.maxY, val);
+	    }
+
+	    /**
+	     * Getter for the serie name
+	     * @memberof Serie
+	     * @returns {String} The serie name
+	     */
+
+	  }, {
+	    key: 'getName',
+	    value: function getName() {
+	      return this.name;
+	    }
+
+	    /* AXIS */
+
+	    /**
+	     * Assigns axes automatically, based on {@link Graph#getXAxis} and {@link Graph#getYAxis}.
+	     * @memberof Serie
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'autoAxis',
+	    value: function autoAxis() {
+
+	      if (this.isFlipped()) {
+	        this.setXAxis(this.graph.getYAxis());
+	        this.setYAxis(this.graph.getXAxis());
+	      } else {
+	        this.setXAxis(this.graph.getXAxis());
+	        this.setYAxis(this.graph.getYAxis());
+	      }
+
+	      // After axes have been assigned, the graph axes should update their min/max
+	      this.graph.updateDataMinMaxAxes();
+	      return this;
+	    }
+
+	    /**
+	     * Assigns an x axis to the serie
+	     * @memberof Serie
+	     * @param {Axis|Number} axis - The axis to use as an x axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+	     * @returns {Serie} The current serie
+	     * @example serie.setXAxis( graph.getTopAxis( 1 ) ); // Assigns the second top axis to the serie
+	     */
+
+	  }, {
+	    key: 'setXAxis',
+	    value: function setXAxis(axis) {
+
+	      if (typeof axis == "number") {
+	        this.xaxis = this.isFlipped() ? this.graph.getYAxis(axis) : this.graph.getXAxis(axis);
+	      } else {
+	        this.xaxis = axis;
+	      }
+
+	      this.graph.updateDataMinMaxAxes();
+
+	      return this;
+	    }
+
+	    /**
+	     * Assigns an y axis to the serie
+	     * @memberof Serie
+	     * @param {Axis|Number} axis - The axis to use as an y axis. If an integer, {@link Graph#getXAxis} or {@link Graph#getYAxis} will be used
+	     * @returns {Serie} The current serie
+	     * @example serie.setYAxis( graph.getLeftAxis( 4 ) ); // Assigns the 5th left axis to the serie
+	     */
+
+	  }, {
+	    key: 'setYAxis',
+	    value: function setYAxis(axis) {
+	      if (typeof axis == "number") {
+	        this.xaxis = this.isFlipped() ? this.graph.getXAxis(axis) : this.graph.getYAxis(axis);
+	      } else {
+	        this.yaxis = axis;
+	      }
+
+	      this.graph.updateDataMinMaxAxes();
+
+	      return this;
+	    }
+
+	    /**
+	     * Assigns two axes to the serie
+	     * @param {GraphAxis} axis1 - First axis to assign to the serie (x or y)
+	     * @param {GraphAxis} axis2 - Second axis to assign to the serie (y or x)
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setAxes',
+	    value: function setAxes() {
+
+	      for (var i = 0; i < 2; i++) {
+
+	        if (arguments[i]) {
+	          this[arguments[i].isX() ? 'setXAxis' : 'setYAxis'](arguments[i]);
+	        }
+	      }
+
+	      return this;
+	    }
+
+	    /**
+	     * @returns {GraphAxis} The x axis assigned to the serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getXAxis',
+	    value: function getXAxis() {
+	      return this.xaxis;
+	    }
+
+	    /**
+	     * @returns {GraphAxis} The y axis assigned to the serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getYAxis',
+	    value: function getYAxis() {
+	      return this.yaxis;
+	    }
+
+	    /* */
+
+	    /* DATA MIN MAX */
+
+	    /**
+	     * @returns {Number} Lowest x value of the serie's data
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getMinX',
+	    value: function getMinX() {
+	      return this.minX;
+	    }
+
+	    /**
+	     * @returns {Number} Highest x value of the serie's data
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getMaxX',
+	    value: function getMaxX() {
+	      return this.maxX;
+	    }
+
+	    /**
+	     * @returns {Number} Lowest y value of the serie's data
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getMinY',
+	    value: function getMinY() {
+	      return this.minY;
+	    }
+
+	    /**
+	     * @returns {Number} Highest y value of the serie's data
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getMaxY',
+	    value: function getMaxY() {
+	      return this.maxY;
+	    }
+
+	    /**
+	     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
+	     * @returns {SVGElement}
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getSymbolForLegend',
+	    value: function getSymbolForLegend() {
+
+	      if (!this.lineForLegend) {
+
+	        var line = document.createElementNS(this.graph.ns, 'line');
+	        this.applyLineStyle(line);
+
+	        line.setAttribute('x1', 5);
+	        line.setAttribute('x2', 25);
+	        line.setAttribute('y1', 0);
+	        line.setAttribute('y2', 0);
+
+	        line.setAttribute('cursor', 'pointer');
+
+	        this.lineForLegend = line;
+	      }
+
+	      return this.lineForLegend;
+	    }
+
+	    /**
+	     * Explicitely applies the line style to the SVG element returned by {@link Serie#getSymbolForLegend}
+	     * @see Serie#getSymbolForLegend
+	     * @returns {SVGElement}
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setLegendSymbolStyle',
+	    value: function setLegendSymbolStyle() {
+	      this.applyLineStyle(this.getSymbolForLegend());
+	    }
+
+	    /**
+	     * @alias Serie#setLegendSymbolStyle
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'updateStyle',
+	    value: function updateStyle() {
+	      this.setLegendSymbolStyle();
+	      this.graph.updateLegend();
+	    }
+
+	    /**
+	     * Computes and returns a text SVG element with the label of the serie as a text, translated by 35px
+	     * @returns {SVGElement}
+	     * @memberof Serie
+	     * @see Serie#getLabel
+	     */
+
+	  }, {
+	    key: 'getTextForLegend',
+	    value: function getTextForLegend() {
+
+	      if (!this.textForLegend) {
+
+	        var text = document.createElementNS(this.graph.ns, 'text');
+	        text.setAttribute('cursor', 'pointer');
+	        text.textContent = this.getLabel();
+
+	        this.textForLegend = text;
+	      }
+
+	      return this.textForLegend;
+	    }
+
+	    /**
+	     * @returns {Number} The current index of the serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getIndex',
+	    value: function getIndex() {
+	      return this.graph.series.indexOf(this);
+	    }
+
+	    /**
+	     * @returns {String} The label or, alternatively - the name of the serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getLabel',
+	    value: function getLabel() {
+	      return this.options.label || this.name;
+	    }
+
+	    /**
+	     * Sets the label of the serie. Note that this does not automatically updates the legend
+	     * @param {String} label - The new label of the serie
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setLabel',
+	    value: function setLabel(label) {
+	      this.options.label = label;
+
+	      if (this.textForLegend) {
+	        this.textForLegend.textContent = label;
+	      }
+	      return this;
+	    }
+
+	    /* FLIP */
+
+	    /**
+	     * Assigns the flipping value of the serie. A flipped serie will have inverted axes. However this method does not automatically re-assigns the axes of the serie. Call {@link Serie#autoAxis} to re-assign the axes automatically, or any other axis setting method.
+	     * @param {Boolean} [flipped=false] - <code>true</code> to flip the serie
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setFlip',
+	    value: function setFlip(flipped) {
+	      this.options.flip = flipped;
+	      return this;
+	    }
+
+	    /**
+	     * @returns {Boolean} <code>true</code> if the serie is flipped, <code>false</code> otherwise
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getFlip',
+	    value: function getFlip() {
+	      return this.options.flip;
+	    }
+
+	    /**
+	     * @alias Serie#getFlip
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'isFlipped',
+	    value: function isFlipped() {
+	      return this.options.flip;
+	    }
+
+	    /**
+	     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+	     * @memberof Serie
+	     * @param {Number} layerIndex=1 - The index of the layer into which the serie will be drawn
+	     * @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'setLayer',
+	    value: function setLayer(layerIndex) {
+	      this.options.layer = parseInt(layerIndex) || 1;
+	      return this;
+	    }
+
+	    /**
+	     * Sets the layer onto which the serie should be displayed. This method does not trigger a graph redraw.
+	     * @memberof Serie
+	     * @returns {Nunber} The index of the layer into which the serie will be drawn
+	     */
+
+	  }, {
+	    key: 'getLayer',
+	    value: function getLayer() {
+	      return this.options.layer || 1;
+	    }
+	  }, {
+	    key: 'setStyle',
+	    value: function setStyle(style) {
+	      var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
+
+	      //console.log( style, selectionType );
+	      this.styles[selectionType] = style;
+	      this.styleHasChanged(selectionType);
+	    }
+
+	    /**
+	     * Notifies jsGraph that the style of the serie has changed and needs to be redrawn on the next repaint
+	     * @param {String} selectionType - The selection for which the style may have changed
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'styleHasChanged',
+	    value: function styleHasChanged() {
+	      var selectionType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "unselected";
+
+	      this._changedStyles = this._changedStyles || {};
+
+	      if (selectionType === false) {
+	        for (var i in this._changedStyles) {
+	          this._changedStyles[i] = false;
+	        }
+	      } else {
+	        this._changedStyles[selectionType || "unselected"] = true;
+	      }
+
+	      return this;
+	    }
+
+	    /**
+	     * Checks if the style has changed for a selection type
+	     * @param {String} selectionType - The selection for which the style may have changed
+	     * @returns {Boolean} <code>true</code> if the style has changed
+	     * @private
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'hasStyleChanged',
+	    value: function hasStyleChanged(selectionType) {
+	      this._changedStyles = this._changedStyles || {};
+	      return this._changedStyles[selectionType || "unselected"];
+	    }
+
+	    /**
+	     * Notifies jsGraph that the data of the serie has changed
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'dataHasChanged',
+	    value: function dataHasChanged(arg) {
+	      this._dataHasChanged = arg === undefined || arg;
+	      return this;
+	    }
+
+	    /**
+	     * Checks if the data has changed
+	     * @returns {Boolean} <code>true</code> if the data has changed
+	     * @private
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'hasDataChanged',
+	    value: function hasDataChanged() {
+	      return this._dataHasChanged;
+	    }
+
+	    /**
+	     * Set a key/value arbitrary information to the serie. It is particularly useful if you have this serie has a reference through an event for instance, and you want to retrieve data associated to it
+	     * @param {String} prop - The property
+	     * @param value - The value
+	     * @returns {Serie} The current serie
+	     * @see Serie#getInfo
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setInfo',
+	    value: function setInfo(prop, value) {
+	      this.infos = this.infos || {};
+	      this.infos[prop] = value;
+	      return this;
+	    }
+
+	    /**
+	     * Retrives an information value from its key
+	     * @param {String} prop - The property
+	     * @returns The value associated to the prop parameter
+	     * @see Serie#setInfo
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getInfo',
+	    value: function getInfo(prop, value) {
+	      return (this.infos || {})[prop];
+	    }
+
+	    /**
+	     * @deprecated
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'setAdditionalData',
+	    value: function setAdditionalData(data) {
+	      this.additionalData = data;
+	      return this;
+	    }
+
+	    /**
+	     * @deprecated
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'getAdditionalData',
+	    value: function getAdditionalData() {
+	      return this.additionalData;
+	    }
+
+	    /**
+	     * Flags the serie as selected
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'select',
+	    value: function select() {
+	      this.selected = true;
+	      return this;
+	    }
+
+	    /**
+	     * Flags the serie as unselected
+	     * @returns {Serie} The current serie
+	     * @memberof Serie
+	     */
+
+	  }, {
+	    key: 'unselect',
+	    value: function unselect() {
+	      this.selected = false;
+	      return this;
+	    }
+
+	    /**
+	     * Allows mouse tracking of the serie
+	     * @memberof Serie
+	     * @returns {Serie} The current serie
+	     * @param {Function} hoverCallback - Function to be called when the mouse enters the serie area
+	     * @param {Function} outCallback - Function to be called when the mouse exits the serie area
+	     * @private
+	     */
+
+	  }, {
+	    key: 'enableTracking',
+	    value: function enableTracking(hoverCallback, outCallback) {
+	      this._tracker = true;
+	      this._trackingCallback = hoverCallback;
+	      this._trackingOutCallback = outCallback;
+
+	      return this;
+	    }
+
+	    /**
+	     * Disables mouse tracking of the serie
+	     * @memberof Serie
+	     * @returns {Serie} The current serie
+	     * @private
+	     */
+
+	  }, {
+	    key: 'disableTracking',
+	    value: function disableTracking() {
+
+	      if (this._trackerDom) {
+	        this._trackerDom.remove();
+	        this._trackerDom = null;
+	      }
+
+	      this._tracker = false;
+	      this._trackingCallback = null;
+	      return this;
+	    }
+
+	    /**
+	     *  Allows mouse tracking of the serie
+	     *  @memberof Serie
+	     *  @param {Object} options - The tracking line options
+	     *  @returns {Serie} The current serie
+	     */
+
+	  }, {
+	    key: 'allowTrackingLine',
+	    value: function allowTrackingLine(options) {
+
+	      options = options || {};
+	      this.graph.addSerieToTrackingLine(this, options);
+	    }
+	  }, {
+	    key: 'getMarkerForLegend',
+	    value: function getMarkerForLegend() {
+	      return false;
+	    }
+	  }, {
+	    key: 'getType',
+	    value: function getType() {
+	      return this._type;
+	    }
+	  }, {
+	    key: 'setDataIndices',
+	    value: function setDataIndices(categories, nb) {
+	      this.categoryIndices = categories;
+	      this.nbCategories = nb;
+	    }
+	  }, {
+	    key: 'type',
+	    get: function get() {
+	      return this._type;
+	    }
+	  }, {
+	    key: 'excludedFromLegend',
+	    set: function set() {
+	      var bln = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+	      this._excludedFromLegend = bln;
+	    },
+	    get: function get() {
+	      return !!this._excludedFromLegend;
+	    }
+	  }]);
+
+	  return Serie;
+	}(_EventEmitter3.default);
+
+	exports.default = Serie;
+
+/***/ },
 /* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25249,7 +23159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphSerie = __webpack_require__(311);
+	var _graphSerie = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./graph.serie.line\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -25630,7 +23540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(312);
+	var _graph = __webpack_require__(316);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -26314,7 +24224,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(312);
+	var _graph = __webpack_require__(316);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -27021,7 +24931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graph = __webpack_require__(312);
+	var _graph = __webpack_require__(316);
 
 	var _graph2 = _interopRequireDefault(_graph);
 
@@ -27653,7 +25563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.method();
 	      }
 
-	      if (!this.callbackColorMapMinMax && (this.colorMapMin == undefined || this.colorMapMax == undefined) || this.callbackColorMapMinMax == 'auto') {
+	      if (!this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto') {
 	        this.autoColorMapBinBoundaries();
 	      } else {
 	        var val = this.callbackColorMapMinMax(this.binMin, this.binMax);
@@ -27755,7 +25665,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _graphSerie = __webpack_require__(311);
+	var _graphSerie = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./graph.serie.line\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -31051,6 +28961,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return true;
 	    }
 	  }, {
+	    key: 'setR',
+	    value: function setR(rx, ry) {
+	      this.setProp('rx', rx);
+	      this.setProp('ry', ry);
+	    }
+	  }, {
 	    key: 'handleMouseUpImpl',
 	    value: function handleMouseUpImpl() {
 	      this.triggerChange();
@@ -33578,8 +31494,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            axis._pluginZoomMin = axis.getCurrentMin();
 	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	            axis._pluginZoomMinFinal = axis.getMinValue();
-	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	            axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
 	          }, false, true, false);
 
 	          modeX = true;
@@ -33592,8 +31508,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            axis._pluginZoomMin = axis.getCurrentMin();
 	            axis._pluginZoomMax = axis.getCurrentMax();
 
-	            axis._pluginZoomMinFinal = axis.getMinValue();
-	            axis._pluginZoomMaxFinal = axis.getMaxValue();
+	            axis._pluginZoomMinFinal = axis.getMinValue() - axis.options.axisDataSpacing.min * axis.getInterval();
+	            axis._pluginZoomMaxFinal = axis.getMaxValue() + axis.options.axisDataSpacing.max * axis.getInterval();
 	          }, false, false, true);
 
 	          modeY = true;
@@ -35029,11 +32945,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph2 = _interopRequireDefault(_graph);
 
-	var _graphAxis = __webpack_require__(306);
+	var _graphAxis = __webpack_require__(307);
 
 	var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-	var _graphAxis3 = __webpack_require__(308);
+	var _graphAxis3 = __webpack_require__(309);
 
 	var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
@@ -35041,7 +32957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var util = _interopRequireWildcard(_graph3);
 
-	var _graphSerie = __webpack_require__(311);
+	var _graphSerie = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../series/graph.serie.line\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 
 	var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -35053,7 +32969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graph5 = _interopRequireDefault(_graph4);
 
-	var _graph6 = __webpack_require__(307);
+	var _graph6 = __webpack_require__(308);
 
 	var _graph7 = _interopRequireDefault(_graph6);
 
