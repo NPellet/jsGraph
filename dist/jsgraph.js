@@ -26869,7 +26869,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.method();
 	      }
 
-	      if (!this.callbackColorMapMinMax && (this.colorMapMin == undefined || this.colorMapMax == undefined) || this.callbackColorMapMinMax == 'auto') {
+	      if (!this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto') {
 	        this.autoColorMapBinBoundaries();
 	      } else {
 	        var val = this.callbackColorMapMinMax(this.binMin, this.binMax);
