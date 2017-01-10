@@ -540,15 +540,15 @@ class Legend {
       self.handleMouseMove( e );
     };
 
-    this.rectBottom.addEventListener( 'mousedown', mousedown );
+    this.svg.addEventListener( 'mousedown', mousedown );
     this.svg.addEventListener( 'click', function( e ) {
       e.stopPropagation();
     } );
     this.svg.addEventListener( 'dblclick', function( e ) {
       e.stopPropagation();
     } );
-    this.rectBottom.addEventListener( 'mousemove', mousemove );
-    this.rect.addEventListener( 'mousemove', mousemove );
+    this.svg.addEventListener( 'mousemove', mousemove );
+    //this.rect.addEventListener( 'mousemove', mousemove );
   }
 
   handleMouseUp( e ) {
