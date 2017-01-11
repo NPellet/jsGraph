@@ -24513,7 +24513,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setColors',
 	    value: function setColors(colors) {
-	      this.color = colors;
+	      this.colors = colors;
 	    }
 	  }, {
 	    key: '_draw_standard',
@@ -24774,9 +24774,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorAddPoint(j, x, y, xpx, ypx);
 	      }
 
-	      if (this.markersShown() && allowMarker !== false) {
-	        drawMarkerXY(this, this.markerFamilies[this.selectionType][this.markerCurrentFamily], xpx, ypx);
-	      }
+	      /*if ( this.markersShown() && allowMarker !== false ) {
+	        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+	      }*/
 	    }
 	  }, {
 	    key: 'removeExtraLines',

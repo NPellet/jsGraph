@@ -15057,7 +15057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    setColors(colors) {
-	      this.color = colors;
+	      this.colors = colors;
 	    }
 
 	    _draw_standard() {
@@ -15316,9 +15316,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorAddPoint(j, x, y, xpx, ypx);
 	      }
 
-	      if (this.markersShown() && allowMarker !== false) {
-	        drawMarkerXY(this, this.markerFamilies[this.selectionType][this.markerCurrentFamily], xpx, ypx);
-	      }
+	      /*if ( this.markersShown() && allowMarker !== false ) {
+	        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+	      }*/
 	    }
 
 	    removeExtraLines() {}
