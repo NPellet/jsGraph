@@ -22399,7 +22399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    onMouseDown(graph, x, y, e, mute) {
-	      console.log('zoomdown');
+
 	      var zoomMode = this.options.zoomMode;
 
 	      if (!zoomMode) {
@@ -22518,7 +22518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.options.transition || this.options.smooth) {
 
-	        var modeX = false,
+	        let modeX = false,
 	            modeY = false;
 
 	        if (this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2') {
@@ -22796,6 +22796,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          yAxis.cacheInterval();
 	        }
 	      }
+
+	      graph.pluginYieldActiveState();
 
 	      this.graph.draw();
 	      /*

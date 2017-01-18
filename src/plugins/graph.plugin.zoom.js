@@ -48,7 +48,7 @@ class PluginZoom extends Plugin {
    * @private
    */
   onMouseDown( graph, x, y, e, mute ) {
-    console.log( 'zoomdown' );
+
     var zoomMode = this.options.zoomMode;
 
     if ( !zoomMode ) {
@@ -168,7 +168,7 @@ class PluginZoom extends Plugin {
 
     if ( this.options.transition || this.options.smooth ) {
 
-      var modeX = false,
+      let modeX = false,
         modeY = false;
 
       if ( this._zoomingMode == 'x' ||  this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
@@ -469,6 +469,8 @@ class PluginZoom extends Plugin {
       }
 
     }
+
+    graph.pluginYieldActiveState();
 
     this.graph.draw();
     /*
