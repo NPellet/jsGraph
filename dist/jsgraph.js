@@ -8744,10 +8744,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'draw',
-	    value: function draw() {
+	    value: function draw(force) {
 
 	      this.updateLegend(true);
-	      this.drawSeries(this.redraw(true));
+	      this.drawSeries(this.redraw(true && !force));
 	    }
 
 	    /**
@@ -10569,7 +10569,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.domTitle.setAttribute('x', this.width / 2);
 
 	      this.requireLegendUpdate();
-	      this.draw();
+
+	      this.draw(true);
 	    }
 	  }, {
 	    key: '_doDom',
