@@ -289,10 +289,10 @@ class Graph extends EventEmitter {
   /**
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
    */
-  draw() {
+  draw( force ) {
 
     this.updateLegend( true );
-    this.drawSeries( this.redraw( true ) );
+    this.drawSeries( this.redraw( true && !force ) );
   }
 
   /**
@@ -1874,7 +1874,8 @@ class Graph extends EventEmitter {
     this.domTitle.setAttribute( 'x', this.width / 2 );
 
     this.requireLegendUpdate();
-    this.draw();
+
+    this.draw( true );
   }
   _doDom() {
 
