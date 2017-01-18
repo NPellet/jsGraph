@@ -5,24 +5,19 @@ define( function() {
 		var graphinstance = new Graph( domGraph, {
 
 
-			dblclick: {
-				type: 'plugin',
-				plugin: 'zoom',
-				options: {
-					mode: 'total'
-				}
-			},
+				plugins: {
+			 'zoom': { zoomMode: 'xy', transition: false },
+			 'drag': {
+		          persistanceX: true,
+		          dragY: false
+		        },
 
-			plugins: {
-				'zoom': { zoomMode: 'xy' },
-				'drag': {}
-			},
+		},
 
-			pluginAction: {
-				'drag': { shift: true, ctrl: false },
-				'zoom': { shift: false, ctrl: false }
-			}
-
+		mouseActions: [
+			{ plugin: 'zoom', shift: false, ctrl: false },
+			{ plugin: 'zoom', shift: false, type: 'dblclick', options: { mode: 'total' } }
+		]
 
 		} );
 
