@@ -18,7 +18,7 @@ const defaults = {
   lineColor: 'rgba( 0, 0, 0, 1 )',
   lineWidth: '1px',
 };
-/** 
+/**
  * @static
  * @extends Serie
  * @example graph.newSerie( name, options, "scatter" );

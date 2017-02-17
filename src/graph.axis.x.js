@@ -1,6 +1,6 @@
 import Axis from './graph.axis'
 
-/** 
+/**
  * Generic constructor of a y axis
  * @augments Axis
  */

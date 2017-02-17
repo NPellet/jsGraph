@@ -6,7 +6,7 @@ const defaults = {};
 
 var type = "scatter";
 
-/** 
+/**
  * @static
  * @augments Serie
  * @example graph.newSerie( name, options, "scatter" );
@@ -109,7 +109,7 @@ class SerieScatter extends Serie {
 
   }
 
-  /** 
+  /**
    * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
    * @see GraphSerie#setData
    */
@@ -169,7 +169,7 @@ class SerieScatter extends Serie {
     return this;
   }
 
-  /** 
+  /**
    * Applies for x as the category axis
    * @example serie.setData( { x: "someName", y: [ ...values ] } );
    */
@@ -393,7 +393,7 @@ class SerieScatter extends Serie {
       this.errorDraw();
     }
 
-    // This will automatically create the shapes      
+    // This will automatically create the shapes
     this.applyStyle( "unselected", keys );
 
     this.groupMain.appendChild( this.groupPoints );

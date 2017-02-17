@@ -1,6 +1,6 @@
 import GraphShape from './graph.shape'
 
-/** 
+/**
  * Represents a line
  * @extends Shape
  * @see Graph#newShape

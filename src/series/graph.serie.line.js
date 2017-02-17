@@ -35,7 +35,7 @@ const defaults = {
   markersIndependant: false
 }
 
-/** 
+/**
  * Serie line
  * @example graph.newSerie( name, options, "line" );
  * @see Graph#newSerie
@@ -221,7 +221,7 @@ class SerieLine extends Serie {
      * @param {Object} options - A object containing the options to set
      * @return {SerieLine} The current serie
      * @memberof SerieLine
-     
+
   */
   setOptions( options ) {
     this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
@@ -1317,7 +1317,7 @@ class SerieLine extends Serie {
 
       var dom = document.createElementNS( this.graph.ns, 'path' );
       this.setMarkerStyleTo( dom, family );
-      this.markersDom.set( family, { 
+      this.markersDom.set( family, {
         dom: dom,
         path: ""
       } );
@@ -1408,7 +1408,7 @@ class SerieLine extends Serie {
           }
         }
       }
-    } 
+    }
     else {
 
       for ( var i = 0, l = this.data.length; i < l; i++ ) {
@@ -2004,7 +2004,7 @@ class SerieLine extends Serie {
     this.markerFamilies[ selectionType || "unselected" ] = families;
 
     // Let's sort if by the first index.
-    markerPoints.sort( function( a, b ) { 
+    markerPoints.sort( function( a, b ) {
       return ( a[ 0 ] - b[ 0 ] ) ||  ( a[ 2 ] == null ? -1 : 1 );
     } );
 

@@ -2,7 +2,7 @@ import Graph from './graph.core'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import * as util from './graph.util'
 
-/** 
+/**
  * Default graph parameters
  * @name AxisOptionsDefault
  * @object
@@ -68,7 +68,7 @@ const defaults = {
   splitMarks: false
 };
 
-/** 
+/**
  * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
  * @class Axis
  * @static

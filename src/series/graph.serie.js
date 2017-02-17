@@ -13,7 +13,7 @@ class Serie extends EventEmitter {
     super( ...arguments );
   }
 
-  /** 
+  /**
    * Sets data to the serie
    * @memberof Serie
    * @param {(Object|Array|Array[])} data - The data of the serie
