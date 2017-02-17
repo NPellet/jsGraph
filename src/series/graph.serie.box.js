@@ -758,20 +758,20 @@ class SerieBox extends Serie {
 
   setOutlierStyle( outlier ) {
 
-      outlier.setAttribute( 'stroke', this.getOutlierLineColor() );
-      outlier.setAttribute( 'stroke-width', this.getOutlierLineWidth() );
+    outlier.setAttribute( 'stroke', this.getOutlierLineColor() );
+    outlier.setAttribute( 'stroke-width', this.getOutlierLineWidth() );
 
-      if ( this.getBoxBelowFillColor() !== undefined ) {
-        outlier.setAttribute( 'fill', this.getOutlierFillColor() );
-      }
-      if ( this.getBoxAboveFillOpacity() !== undefined ) {
-        outlier.setAttribute( 'fill-opacity', this.getOutlierFillOpacity() );
-      }
+    if ( this.getBoxBelowFillColor() !== undefined ) {
+      outlier.setAttribute( 'fill', this.getOutlierFillColor() );
     }
-    /**
-     * Returns the index of a category based on its name
-     * @param {String} name - The name of the category
-     */
+    if ( this.getBoxAboveFillOpacity() !== undefined ) {
+      outlier.setAttribute( 'fill-opacity', this.getOutlierFillOpacity() );
+    }
+  }
+  /**
+   * Returns the index of a category based on its name
+   * @param {String} name - The name of the category
+   */
   getCategoryIndex( name ) {
 
     if ( !this.categories ) {

@@ -23,50 +23,50 @@ class ShapeSurfaceUnderCurve extends Shape {
 
   handleMouseMoveImpl( e, deltaX, deltaY ) {
 
-      if ( this.isLocked() ) {
+    if ( this.isLocked() ) {
+      return;
+    }
+
+    if ( this.moving ) {
+
+      this.getPosition( 0 ).deltaPosition( 'x', deltaX, this.getXAxis() );
+      this.getPosition( 1 ).deltaPosition( 'x', deltaX, this.getXAxis() );
+
+    } else if ( this.serie && this.handleSelected ) {
+
+      this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
+
+      var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
+
+      if ( !value ) {
         return;
       }
 
-      if ( this.moving ) {
-
-        this.getPosition( 0 ).deltaPosition( 'x', deltaX, this.getXAxis() );
-        this.getPosition( 1 ).deltaPosition( 'x', deltaX, this.getXAxis() );
-
-      } else if ( this.serie && this.handleSelected ) {
-
-        this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
-
-        var value = this.serie.searchClosestValue( this.getXAxis().getVal( this.graph._getXY( e ).x - this.graph.getPaddingLeft() ) );
-
-        if ( !value ) {
-          return;
-        }
-
-        if ( this.resizingPosition.x != value.xMin ) {
-          this.preventUnselect = true;
-        }
-
-        this.resizingPosition.x = value.xMin;
-
-      } else if ( this.handleSelected ) {
-
-        this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
-        this.resizingPosition.deltaPosition( 'x', deltaX, this.getXAxis() );
+      if ( this.resizingPosition.x != value.xMin ) {
+        this.preventUnselect = true;
       }
 
-      this.applyPosition();
-    }
-    /*
-        redrawImpl: function() {
-          //var doDraw = this.setPosition();
-          //	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
+      this.resizingPosition.x = value.xMin;
 
-          if ( this.position != this.doDraw ) {
-            this.group.setAttribute( "visibility", this.position ? "visible" : 'hidden' );
-            this.doDraw = this.position;
-          }
-        },
-    */
+    } else if ( this.handleSelected ) {
+
+      this.resizingPosition = this.handleSelected == 1 ? this.getPosition( 0 ) : this.getPosition( 1 );
+      this.resizingPosition.deltaPosition( 'x', deltaX, this.getXAxis() );
+    }
+
+    this.applyPosition();
+  }
+  /*
+      redrawImpl: function() {
+        //var doDraw = this.setPosition();
+        //	this.setDom('fill', 'url(#' + 'patternFill' + this.graph._creation + ')')
+
+        if ( this.position != this.doDraw ) {
+          this.group.setAttribute( "visibility", this.position ? "visible" : 'hidden' );
+          this.doDraw = this.position;
+        }
+      },
+  */
   applyPosition() {
 
     if ( !this.serie ) {
