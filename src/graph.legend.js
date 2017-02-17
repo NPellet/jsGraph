@@ -1,7 +1,7 @@
 import GraphPosition from './graph.position'
 import * as util from "./graph.util"
 
-/** 
+/**
  * Default legend configuration
  * @name LegendOptionsDefault
  * @object
@@ -38,7 +38,7 @@ var legendDefaults = {
 
 };
 
-/** 
+/**
  * Legend constructor. You should not call this method directly, but rather use {@link graph.makeLegend}
  * @example var legend = graph.makeLegend( {  backgroundColor: 'rgba(255, 255, 255, 0.8)',
  * frame: true,
@@ -117,7 +117,7 @@ class Legend {
     this.applyStyle();
   }
 
-  /** 
+  /**
    * Sets the position of the legend
    * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
    * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
@@ -313,7 +313,7 @@ class Legend {
     this._setPosition();
   }
 
-  /** 
+  /**
    * Updates the legend position and content
    */
   update() {
@@ -456,7 +456,7 @@ class Legend {
     this.calculatePosition();
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be hidden or not
    */
   isHideable() {
@@ -484,21 +484,21 @@ class Legend {
     return this.options.isSerieHideable;
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be selected or not
    */
   isSelectable() {
     return this.options.isSerieSelectable;
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be t or not
    */
   isToggleShapes() {
     return this.options.shapesToggleable;
   }
 
-  /** 
+  /**
    * @return {SVGGroupElement} The SVG group element wrapping the legend
    */
   getDom() {
@@ -581,7 +581,7 @@ class Legend {
     }
   }
 
-  /** 
+  /**
    * Re-applies the legend style
    */
   applyStyle() {
@@ -597,7 +597,7 @@ class Legend {
 
   }
 
-  /** 
+  /**
    * Re-applies the legend style
    * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
    */

@@ -261,7 +261,7 @@ class Position {
    *  Computes a value in pixels
    *  @param {Number} value - The value in axis unit
    *  @param {Axis} axis - The x or y axis to consider (has to belong to the graph)
-   *  @param {Boolean} rel - Whether or not the value is a distance 
+   *  @param {Boolean} rel - Whether or not the value is a distance
    *  @return {(Number|String)} The computed value
    */
   getPx( value, axis, rel ) {

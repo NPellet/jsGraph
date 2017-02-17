@@ -3,7 +3,7 @@ import * as util from './graph.util'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import Waveform from './util/waveform'
 
-/** 
+/**
  * Default graph parameters
  * @name Graph~GraphOptionsDefault
  * @name GraphOptions
@@ -59,7 +59,7 @@ const GraphOptionsDefault = {
 
 var _constructors = new Map();
 
-/** 
+/**
  * Entry class of jsGraph that creates a new graph.
  * @extends EventEmitter
  * @tutorial basic
@@ -109,7 +109,7 @@ class Graph extends EventEmitter {
     wrapper.style[ '-ms-user-select' ] = 'none';
     wrapper.style[ 'user-select' ] = 'none';
 
-    /** 
+    /**
      * @object
      * @memberof Graph
      * @name Graph#options
@@ -191,7 +191,7 @@ class Graph extends EventEmitter {
 
   }
 
-  /** 
+  /**
    * Returns the graph SVG wrapper element
    * @public
    * @return {SVGElement} The DOM element wrapping the graph
@@ -209,7 +209,7 @@ class Graph extends EventEmitter {
     return this._creation;
   }
 
-  /** 
+  /**
    * Returns the graph wrapper element passed during the graph creation
    * @public
    * @return {HTMLElement} The DOM element wrapping the graph
@@ -733,7 +733,7 @@ class Graph extends EventEmitter {
     this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-    // X is not always ascending... 
+    // X is not always ascending...
   }
 
   /**
@@ -918,7 +918,7 @@ class Graph extends EventEmitter {
 
   }
 
-  /** 
+  /**
    * Function that is called from {@link Graph#_applyToAxes}
    * @function
    * @name AxisCallbackFunction
@@ -1011,7 +1011,7 @@ class Graph extends EventEmitter {
     return serie;
   }
 
-  /** 
+  /**
    * Looks for an existing serie by name or by index and returns it.
    * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
    * @param {(String|Number)} name - The name or the index of the serie
@@ -1821,7 +1821,7 @@ class Graph extends EventEmitter {
     // Create SVG element, set the NS
     this.dom = document.createElementNS( this.ns, 'svg' );
     this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);  
+    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
     util.setAttributeTo( this.dom, {
       'xmlns': this.ns,
       'font-family': this.options.fontFamily,
@@ -1921,7 +1921,7 @@ class Graph extends EventEmitter {
 
     this.defs.appendChild( this.markerArrow );
 
-    // Horionzal split marker for axis 
+    // Horionzal split marker for axis
     this.markerHorizontalSplit = document.createElementNS( this.ns, 'marker' );
     this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
     this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
@@ -1943,7 +1943,7 @@ class Graph extends EventEmitter {
 
     this.defs.appendChild( this.markerHorizontalSplit );
 
-    // Vertical split marker for axis 
+    // Vertical split marker for axis
     this.markerVerticalSplit = document.createElementNS( this.ns, 'marker' );
     this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
     this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
@@ -2050,7 +2050,7 @@ class Graph extends EventEmitter {
       } );
     }
 
-    this.trackingLine = this.newShape( 'line', util.extend( true, { 
+    this.trackingLine = this.newShape( 'line', util.extend( true, {
       position: [ {
         y: 'min'
       }, {

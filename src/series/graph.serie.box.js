@@ -46,7 +46,7 @@ const defaults = {
   }
 
 };
-/** 
+/**
  * @static
  * @extends Serie
  * @example graph.newSerie( name, options, "scatter" );
@@ -75,7 +75,7 @@ class SerieBox extends Serie {
     this.styles.unselected = this.options.defaultStyle;
   }
 
-  /** 
+  /**
    *  Sets the data of the bar serie
    *  @param {Object} data
    *  @example serie.setData( [ { x: 'cat', Q2: valMean, Q1: valBoxMin, Q3: valBoxMax, whiskers: [ val1, val2 ], outliers: [ ...yList ] } ] );
@@ -194,7 +194,7 @@ class SerieBox extends Serie {
     return this.getStyle( selectionType )[ type ];
   }
 
-  /** 
+  /**
    *  Retrives a selection object
    *  @param {String} [ selectionType = "unselected" ] - The selection type
    *  @returns {Object} The selection object
@@ -204,7 +204,7 @@ class SerieBox extends Serie {
     return this.styles[ selectionType ] || {};
   }
 
-  /** 
+  /**
    *  Sets the mean line color
    *  @param {String} color - The mean line color
    *  @returns {SerieBox} The current serie instance
@@ -213,7 +213,7 @@ class SerieBox extends Serie {
     return this._style( 'meanLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Returns the mean line color
    * @return {String} The mean line color
    */
@@ -227,7 +227,7 @@ class SerieBox extends Serie {
     this.styleHasChanged( selectionType );
   }
 
-  /** 
+  /**
    *  Sets the mean line width
    *  @param {Number} width - The line width
    *  @returns {SerieBox} The current serie instance
@@ -236,7 +236,7 @@ class SerieBox extends Serie {
     return this._style( 'meanLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Returns the mean line width
    * @return {Number} The mean line width
    */
@@ -244,7 +244,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'meanLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the box line color
    *  @param {Number} color - The color of the box above the median
    *  @returns {SerieBox} The current serie instance
@@ -253,7 +253,7 @@ class SerieBox extends Serie {
     return this._style( 'boxAboveLineColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the box line color
    * @return {String} The line color of the box above the median
    */
@@ -261,7 +261,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxAboveLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} color - The color of the box below the median
    *  @returns {SerieBox} The current serie instance
@@ -270,7 +270,7 @@ class SerieBox extends Serie {
     return this._style( 'boxBelowLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Returns the fill color
    * @return {String} The line color of the box below the median
    */
@@ -278,7 +278,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxBelowLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} width - The contour width of the box above the median
    *  @returns {SerieBox} The current serie instance
@@ -287,7 +287,7 @@ class SerieBox extends Serie {
     return this._style( 'boxAboveLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line width of the box above the median
    * @return {Number} The line width of the box above the median
    */
@@ -295,7 +295,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxAboveLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} width - The contour width of the box below the median
    *  @returns {SerieBox} The current serie instance
@@ -304,7 +304,7 @@ class SerieBox extends Serie {
     return this._style( 'boxBelowLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line width of the box below the median
    * @return {Number} The line width of the box below the median
    */
@@ -312,7 +312,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxBelowLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {String} color - The fill color of the box above the median
    *  @returns {SerieBox} The current serie instance
@@ -321,7 +321,7 @@ class SerieBox extends Serie {
     return this._style( 'boxAboveFillColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill color of the box above the median
    * @return {String} The fill color of the box above the median
    */
@@ -329,7 +329,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxAboveFillColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {String} color - The fill color of the box below the median
    *  @returns {SerieBox} The current serie instance
@@ -338,7 +338,7 @@ class SerieBox extends Serie {
     return this._style( 'boxBelowFillColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill color of the box below the median
    * @return {String} The fill color of the box below the median
    */
@@ -346,7 +346,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxBelowFillColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} opacity - The fill opacity of the box above the median
    *  @returns {SerieBox} The current serie instance
@@ -355,7 +355,7 @@ class SerieBox extends Serie {
     return this._style( 'boxAboveFillOpacity', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill opacity of the box above the median
    * @return {Number} The fill opacity of the box above the median
    */
@@ -363,7 +363,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxAboveFillOpacity', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} opacity - The fill opacity of the box below the median
    *  @returns {SerieBox} The current serie instance
@@ -372,7 +372,7 @@ class SerieBox extends Serie {
     return this._style( 'boxBelowFillOpacity', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill opacity of the box below the median
    * @return {Number} The fill opacity of the box below the median
    */
@@ -380,7 +380,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'boxBelowFillOpacity', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the whisker color
    *  @param {String} color - The line color of the whisker above the median
    *  @returns {SerieBox} The current serie instance
@@ -389,7 +389,7 @@ class SerieBox extends Serie {
     return this._style( 'barAboveLineColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line color of the whisker above the median
    * @return {String} The line color of the whisker above the median
    */
@@ -397,7 +397,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'barAboveLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {String} color - The line color of the whisker below the median
    *  @returns {SerieBox} The current serie instance
@@ -406,7 +406,7 @@ class SerieBox extends Serie {
     return this._style( 'barBelowLineColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line color of the whisker below the median
    * @return {String} The line color of the whisker below the median
    */
@@ -414,7 +414,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'barBelowLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} width - The line width of the whisker above the median
    *  @returns {SerieBox} The current serie instance
@@ -423,7 +423,7 @@ class SerieBox extends Serie {
     return this._style( 'barAboveLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line width of the whisker above the median
    * @return {Number} The line width of the whisker above the median
    */
@@ -431,7 +431,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'barAboveLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {Number} width - The line width of the whisker below the median
    *  @returns {SerieBox} The current serie instance
@@ -440,7 +440,7 @@ class SerieBox extends Serie {
     return this._style( 'barBelowLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line width of the whisker below the median
    * @return {Number} The line width of the whisker below the median
    */
@@ -448,7 +448,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'barBelowLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {String} color - The outlier stroke color
    *  @returns {SerieBox} The current serie instance
@@ -457,7 +457,7 @@ class SerieBox extends Serie {
     return this._style( 'outlierLineColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line color of the outliers
    * @return {String} The line color of the outliers
    */
@@ -465,7 +465,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'outlierLineColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the stroke width
    *  @param {Number} width - The outlier stroke width
    *  @returns {SerieBox} The current serie instance
@@ -474,7 +474,7 @@ class SerieBox extends Serie {
     return this._style( 'outlierLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the line width of the outliers
    * @return {Number} The line width of the outliers
    */
@@ -482,7 +482,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'outlierLineWidth', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the fill color
    *  @param {String} color - The outlier fill color
    *  @returns {SerieBox} The current serie instance
@@ -491,7 +491,7 @@ class SerieBox extends Serie {
     return this._style( 'outlierFillColor', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill color of the outliers
    * @return {String} The fill color of the outliers
    */
@@ -499,7 +499,7 @@ class SerieBox extends Serie {
     return this._gstyle( 'outlierFillColor', ...arguments );
   }
 
-  /** 
+  /**
    *  Sets the outlier fill opacity
    *  @param {Number} opacity - The outlier fill opacity
    *  @returns {SerieBox} The current serie instance
@@ -508,7 +508,7 @@ class SerieBox extends Serie {
     return this._style( 'outlierFillOpacity', ...arguments );
   }
 
-  /** 
+  /**
    * Returns the fill opacity of the outliers
    * @return {Number} The fill opacity of the outliers
    */

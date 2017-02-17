@@ -2,9 +2,9 @@ import * as util from '../graph.util'
 import Serie from './graph.serie.line'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
-/** 
- * Represents a bar serie.  
-   Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
+/**
+ * Represents a bar serie.
+   Needs to be used exclusively with a bar axis ({@link AxisXBar}).
    Supports error bars, line color, line width, fill color, fill opacity.
  * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
  * @extends Serie
@@ -40,7 +40,7 @@ class SerieBar extends Serie {
 
   }
 
-  /** 
+  /**
    *  Sets the data of the bar serie
    *  @param {Object} data
    *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
@@ -59,7 +59,7 @@ class SerieBar extends Serie {
     return this;
   }
 
-  /** 
+  /**
    *  Sets the fill color
    */
   setFillColor( fillColor, selectionType, applyToSelected ) {
@@ -77,14 +77,14 @@ class SerieBar extends Serie {
     return this;
   }
 
-  /** 
+  /**
    *  Returns the fill color
    */
   getFillColor( selectionType ) {
     return this.getStyle( selectionType ).fillColor;
   }
 
-  /*  
+  /*
    * @memberof SerieBar
    */
   setFillOpacity( opacity, selectionType, applyToSelected ) {

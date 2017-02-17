@@ -1,6 +1,6 @@
 import AxisX from './graph.axis.x'
 
-/** 
+/**
  * Generic constructor of a y axis
  * @class AxisXBar
  * @augments Axis

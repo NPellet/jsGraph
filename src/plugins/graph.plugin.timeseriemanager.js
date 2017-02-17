@@ -70,7 +70,7 @@ class PluginTimeSerieManager extends Plugin {
   newSerie( serieName, serieOptions, serieType, dbElements, noZoneSerie ) {
     var s = this.graph.newSerie( serieName, serieOptions, serieType );
 
-    this.currentSlots[ serieName ] = { 
+    this.currentSlots[ serieName ] = {
       min: 0,
       max: 0,
       interval: 0

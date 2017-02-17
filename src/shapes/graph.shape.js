@@ -2,7 +2,7 @@ import GraphPosition from '../graph.position'
 import * as util from '../graph.util'
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
 
-/** 
+/**
  * Shape class that should be extended
  * @class Shape
  * @static
@@ -308,7 +308,7 @@ class Shape extends EventEmitter {
 
   /**
    * Returns the x axis associated to the shape. If non-existent, assigns it automatically
-   * @return {XAxis} The x axis associated to the shape. 
+   * @return {XAxis} The x axis associated to the shape.
    */
   getXAxis() {
 
@@ -321,7 +321,7 @@ class Shape extends EventEmitter {
 
   /**
    * Returns the y axis associated to the shape. If non-existent, assigns it automatically
-   * @return {YAxis} The y axis associated to the shape. 
+   * @return {YAxis} The y axis associated to the shape.
    */
   getYAxis() {
 
@@ -751,7 +751,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the anchoring of the label. 
+   * Sets the anchoring of the label.
    * @param {String} anchor - The anchor of the label. Values can be ```start```, ```middle```, ```end``` or ```inherit```.
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -762,7 +762,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the anchoring of the label. 
+   * Sets the anchoring of the label.
    * @param {String} size - The font size in px
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -773,7 +773,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the color of the stroke of the label. 
+   * Sets the color of the stroke of the label.
    * @param {String} color - The color of the stroke
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -784,7 +784,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the width of the stroke of the label. 
+   * Sets the width of the stroke of the label.
    * @param {Number} width - The width of the stroke
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -1132,8 +1132,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Adds shape handles 
-   * @private 
+   * Adds shape handles
+   * @private
    * @return {Shape} The current shape
    */
   addHandles() {
@@ -1158,8 +1158,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Remove shape handles 
-   * @private 
+   * Remove shape handles
+   * @private
    * @return {Shape} The current shape
    */
   removeHandles() {
@@ -1169,8 +1169,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Hide shape handles 
-   * @private 
+   * Hide shape handles
+   * @private
    * @return {Shape} The current shape
    */
   hideHandles() {
@@ -1686,7 +1686,7 @@ class Shape extends EventEmitter {
 
   /**
    * Removes the highlight properties from the same
-   * @returns {Shape} The current shape 
+   * @returns {Shape} The current shape
    * @param {String} [ saveDomName=highlight ] - The name to which the current shape attributes will be saved to be recovered later with the {@link Shape#unHighlight} method
    * @see Shape#highlight
    */
