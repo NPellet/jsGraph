@@ -1100,6 +1100,10 @@ class Graph extends EventEmitter {
       this.series[ 0 ].kill( true );
     }
     this.series = [];
+
+    if ( this.legend ) {
+      this.legend.update();
+    }
   }
 
   /**
