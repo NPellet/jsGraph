@@ -7,6 +7,9 @@ parserOptions:
   sourceType: module
 
 rules:
+  # http://eslint.org/docs/rules/#possible-errors
+  no-cond-assign: error
+
   func-call-spacing: error
   no-trailing-spaces: error
   space-before-blocks: error

@@ -14,7 +14,7 @@ const DIVIDE = Symbol();
 function pow2ceil( v ) {
   v--;
   var p = 2;
-  while ( v >>= 1 ) {
+  while ( ( v >>= 1 ) ) {
     p <<= 1;
   }
   return p;
@@ -200,8 +200,8 @@ class Waveform {
 
   _makeArray( length ) {
 
-    let constructor;
-    if ( constructor = this.getTypedArrayClass() ) {
+    const constructor = this.getTypedArrayClass();
+    if ( constructor ) {
       return new( constructor )( length );
     }
     return new Array( length );

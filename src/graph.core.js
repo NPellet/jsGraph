@@ -995,14 +995,14 @@ class Graph extends EventEmitter {
       type = Graph.SERIE_LINE;
     }
 
-    var serie;
-    if ( serie = this.getSerie( name ) ) {
+    let serie;
+    if ( ( serie = this.getSerie( name ) ) ) {
       return serie;
     }
 
     if ( !( serie = makeSerie( this, name, options, type ) ) ) {
       return;
-    };
+    }
 
     this.series.push( serie );
     this.updateLegend();

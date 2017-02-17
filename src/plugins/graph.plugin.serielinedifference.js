@@ -286,7 +286,8 @@ class PluginSerieLineDifference extends Plugin {
       }
       // End of X
 
-      if ( y = this.interpolate( this.serie2, top[ top.length - 2 ] ) ) {
+      y = this.interpolate( this.serie2, top[ top.length - 2 ] );
+      if ( y ) {
         bottom.push( top[ top.length - 2 ] );
         bottom.push( y );
       }

@@ -1738,9 +1738,9 @@ class Shape extends EventEmitter {
    */
   maskWith( maskingShape ) {
 
-    var maskingId;
+    const maskingId = maskingShape.getMaskingID();
 
-    if ( maskingId = maskingShape.getMaskingID() ) {
+    if ( maskingId ) {
 
       this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
 
