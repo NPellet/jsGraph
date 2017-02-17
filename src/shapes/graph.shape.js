@@ -1451,8 +1451,6 @@ class Shape extends EventEmitter {
 
           this.moving = true;
         }
-      } else {
-
       }
     }
 

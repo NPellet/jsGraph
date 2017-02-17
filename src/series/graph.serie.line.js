@@ -1674,7 +1674,7 @@ class SerieLine extends Serie {
    */
 
   setStyle( style, selectionType = "unselected" ) {
-    //console.log( style, selectionType );
+
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 
@@ -1682,7 +1682,6 @@ class SerieLine extends Serie {
 
   setLineStyle( number, selectionType = "unselected", applyToSelected ) {
 
-    selectionType = selectionType;
     this.styles[ selectionType ] = this.styles[ selectionType ] || {};
     this.styles[ selectionType ].lineStyle = number;
 
@@ -1709,38 +1708,38 @@ class SerieLine extends Serie {
       case 3:
         return "2, 2";
         break;
-      case 3:
+      case 4:
         return "3, 3";
         break;
-      case 4:
+      case 5:
         return "4, 4";
         break;
-      case 5:
+      case 6:
         return "5, 5";
         break;
 
-      case 6:
+      case 7:
         return "5 2";
         break;
-      case 7:
+      case 8:
         return "2 5";
         break;
 
-      case 8:
+      case 9:
         return "4 2 4 4";
         break;
-      case 9:
+      case 10:
         return "1,3,1";
         break;
-      case 10:
+      case 11:
         return "9 2";
         break;
-      case 11:
+      case 12:
         return "2 9";
         break;
 
-      case false:
       case 1:
+      case false:
         return false;
         break;
 

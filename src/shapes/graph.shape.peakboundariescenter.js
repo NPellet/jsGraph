@@ -200,8 +200,6 @@ class ShapePeakBoundaries extends ShapeLine {
 
         if ( Math.abs( posCenter.x - posRight.x ) > Math.abs( posRight.x - posLeft.x ) || Math.abs( posCenter.x - posLeft.x ) > Math.abs( posRight.x - posLeft.x ) ) {
           return;
-        } else {
-
         }
 
         break;
