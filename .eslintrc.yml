@@ -9,6 +9,13 @@ parserOptions:
 rules:
   # http://eslint.org/docs/rules/#possible-errors
   no-cond-assign: error
+  no-control-regex: error
+  no-debugger: error
+  no-dupe-args: error
+  no-dupe-keys: error
+  no-duplicate-case: error
+  no-empty-character-class: error
+  no-empty: error
 
   func-call-spacing: error
   no-trailing-spaces: error
