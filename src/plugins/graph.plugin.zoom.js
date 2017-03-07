@@ -171,8 +171,6 @@ class PluginZoom extends Plugin {
       return;
     }
 
-    graph.cancelClick = true;
-
     if ( this.options.transition || this.options.smooth ) {
 
       let modeX = false,
