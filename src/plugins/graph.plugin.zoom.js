@@ -161,8 +161,8 @@ class PluginZoom extends Plugin {
     var _x = x - graph.options.paddingLeft;
     var _y = y - graph.options.paddingTop;
 
-    this.emit("beforeZoom");
-    
+    this.emit( "beforeZoom" );
+
     if ( graph.prevent( false ) ) {
       return;
     }

@@ -1245,9 +1245,8 @@ class Graph extends EventEmitter {
     var self = this,
       response;
 
-	  
     this.prevent( false );
-	  
+
     if ( !mute ) {
 
       this.emit( 'beforeNewShape', shapeData );
