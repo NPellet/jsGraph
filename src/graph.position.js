@@ -137,7 +137,7 @@ class Position {
 
           pos[ i ] = def + parsed; // return integer (will be interpreted as px)
 
-        } else if ( parsed = this._parsePercent( dval ) ) {
+        } else if ( ( parsed = this._parsePercent( dval ) ) !== false ) {
 
           pos[ i ] = def + this._getPositionPx( parsed, true, axis, graph ); // returns xx%
 
@@ -261,7 +261,7 @@ class Position {
    *  Computes a value in pixels
    *  @param {Number} value - The value in axis unit
    *  @param {Axis} axis - The x or y axis to consider (has to belong to the graph)
-   *  @param {Boolean} rel - Whether or not the value is a distance 
+   *  @param {Boolean} rel - Whether or not the value is a distance
    *  @return {(Number|String)} The computed value
    */
   getPx( value, axis, rel ) {
@@ -276,7 +276,7 @@ class Position {
 
       return parsed; // return integer (will be interpreted as px)
 
-    } else if ( parsed = this._parsePercent( value ) ) {
+    } else if ( ( parsed = this._parsePercent( value ) ) !== false ) {
 
       return parsed; // returns xx%
 
@@ -330,8 +330,8 @@ class Position {
     var posObject = new Position( pos );
 
     if ( pos && pos.relativeTo ) {
-      var position;
-      if ( position = callback( pos.relativeTo ) ) {
+      const position = callback( pos.relativeTo );
+      if ( position ) {
         posObject.relativeTo( position );
       }
     }

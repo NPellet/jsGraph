@@ -36,7 +36,8 @@ class PluginZoom extends Plugin {
       'x': 0,
       'y': 0,
       'height': 0,
-      'width': 0
+      'width': 0,
+      'pointer-events': 'none'
     } );
 
     this.graph = graph;
@@ -168,7 +169,7 @@ class PluginZoom extends Plugin {
 
     if ( this.options.transition || this.options.smooth ) {
 
-      var modeX = false,
+      let modeX = false,
         modeY = false;
 
       if ( this._zoomingMode == 'x' ||  this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2' ) {
@@ -469,6 +470,8 @@ class PluginZoom extends Plugin {
       }
 
     }
+
+    graph.pluginYieldActiveState();
 
     this.graph.draw();
     /*

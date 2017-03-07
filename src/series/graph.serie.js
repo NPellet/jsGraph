@@ -13,7 +13,7 @@ class Serie extends EventEmitter {
     super( ...arguments );
   }
 
-  /** 
+  /**
    * Sets data to the serie
    * @memberof Serie
    * @param {(Object|Array|Array[])} data - The data of the serie
@@ -258,20 +258,22 @@ class Serie extends EventEmitter {
   }
 
   /**
-   * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+   * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+   * @return {Serie} The current serie instance
    * @memberof Serie
    */
-  kill() {
+  kill( noLegendUpdate ) {
 
     this.graph.removeSerieFromDom( this );
     this.graph._removeSerie( this );
 
-    if ( this.graph.legend ) {
+    if ( this.graph.legend && !noLegendUpdate ) {
 
       this.graph.legend.update();
     }
 
     this.graph = undefined;
+    return this;
   }
 
   /**
@@ -632,6 +634,8 @@ class Serie extends EventEmitter {
     if ( this.textForLegend ) {
       this.textForLegend.textContent = label;
     }
+
+    this.graph.requireLegendUpdate();
     return this;
   }
 
@@ -688,6 +692,7 @@ class Serie extends EventEmitter {
     //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
+
   }
 
   /**
@@ -708,6 +713,7 @@ class Serie extends EventEmitter {
       this._changedStyles[ selectionType ||  "unselected" ] = true;
     }
 
+    this.graph.requireLegendUpdate();
     return this;
   }
 

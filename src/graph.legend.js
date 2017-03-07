@@ -1,7 +1,7 @@
 import GraphPosition from './graph.position'
 import * as util from "./graph.util"
 
-/** 
+/**
  * Default legend configuration
  * @name LegendOptionsDefault
  * @object
@@ -38,7 +38,7 @@ var legendDefaults = {
 
 };
 
-/** 
+/**
  * Legend constructor. You should not call this method directly, but rather use {@link graph.makeLegend}
  * @example var legend = graph.makeLegend( {  backgroundColor: 'rgba(255, 255, 255, 0.8)',
  * frame: true,
@@ -117,7 +117,7 @@ class Legend {
     this.applyStyle();
   }
 
-  /** 
+  /**
    * Sets the position of the legend
    * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
    * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
@@ -148,6 +148,7 @@ class Legend {
       return this;
     }
 
+    this.requireDelayedUpdate();
     this.autoPosition = false;
   }
 
@@ -160,6 +161,12 @@ class Legend {
     var series = this.series || this.graph.getSeries(),
       posX = 0,
       posY = this.options.paddingTop;
+
+    if ( !this.autoPosition ) {
+      this.graph.graphingZone.appendChild( this.getDom() );
+    } else {
+      this.graph.getDom().appendChild( this.getDom() );
+    }
 
     for ( var i = 0, l = series.length; i < l; i++ ) {
 
@@ -211,8 +218,8 @@ class Legend {
     this.rectBottom.setAttribute( 'width', this.width );
     this.rectBottom.setAttribute( 'height', this.height );
 
-    this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingTop );
-    this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingLeft );
+    this.rectBottom.setAttribute( 'x', bbox.x - this.options.paddingLeft );
+    this.rectBottom.setAttribute( 'y', bbox.y - this.options.paddingTop );
     /* End independant on box position */
 
     this.position = this.position || {};
@@ -271,7 +278,7 @@ class Legend {
       this.graph.updateGraphingZone();
       this.graph.getDrawingHeight();
       this.graph.getDrawingWidth();
-      this.graph.redraw( false );
+      // this.graph.redraw( false );
 
     }
 
@@ -279,12 +286,6 @@ class Legend {
   }
 
   calculatePosition() {
-
-    if ( !this.autoPosition ) {
-      this.graph.graphingZone.appendChild( this.getDom() );
-    } else {
-      this.graph.getDom().appendChild( this.getDom() );
-    }
 
     var pos = GraphPosition.check( this.position );
     let poscoords = pos.compute( this.graph, this.graph.getXAxis(), this.graph.getYAxis() );
@@ -310,13 +311,21 @@ class Legend {
 
     this.pos.transformX = poscoords.x;
     this.pos.transformY = poscoords.y;
+
     this._setPosition();
+
   }
 
-  /** 
+  /**
    * Updates the legend position and content
    */
-  update() {
+  update( onlyIfRequired ) {
+
+    if ( this.graph.isDelayedUpdate() ||  ( !this._requiredUpdate && onlyIfRequired ) ) {
+      return;
+    }
+
+    this._requiredUpdate = false;
 
     var self = this;
 
@@ -454,9 +463,10 @@ class Legend {
     this.svg.appendChild( this.rect );
     this.buildLegendBox();
     this.calculatePosition();
+
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be hidden or not
    */
   isHideable() {
@@ -484,21 +494,21 @@ class Legend {
     return this.options.isSerieHideable;
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be selected or not
    */
   isSelectable() {
     return this.options.isSerieSelectable;
   }
 
-  /** 
+  /**
    * @return {Boolean} true or false depending if the series can be t or not
    */
   isToggleShapes() {
     return this.options.shapesToggleable;
   }
 
-  /** 
+  /**
    * @return {SVGGroupElement} The SVG group element wrapping the legend
    */
   getDom() {
@@ -513,7 +523,7 @@ class Legend {
     var mousedown = function( e ) {
 
       e.stopPropagation();
-
+      console.log( "down" );
       if ( self.options.movable ) {
         pos.x = e.clientX;
         pos.y = e.clientY;
@@ -530,15 +540,15 @@ class Legend {
       self.handleMouseMove( e );
     };
 
-    this.rectBottom.addEventListener( 'mousedown', mousedown );
+    this.svg.addEventListener( 'mousedown', mousedown );
     this.svg.addEventListener( 'click', function( e ) {
       e.stopPropagation();
     } );
     this.svg.addEventListener( 'dblclick', function( e ) {
       e.stopPropagation();
     } );
-    this.rectBottom.addEventListener( 'mousemove', mousemove );
-    this.rect.addEventListener( 'mousemove', mousemove );
+    this.svg.addEventListener( 'mousemove', mousemove );
+    //this.rect.addEventListener( 'mousemove', mousemove );
   }
 
   handleMouseUp( e ) {
@@ -581,7 +591,7 @@ class Legend {
     }
   }
 
-  /** 
+  /**
    * Re-applies the legend style
    */
   applyStyle() {
@@ -597,7 +607,7 @@ class Legend {
 
   }
 
-  /** 
+  /**
    * Re-applies the legend style
    * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
    */
@@ -625,6 +635,10 @@ class Legend {
   fixSeriesAdd( serie ) {
     this.series = this.series || [];
     this.series.push( serie );
+  }
+
+  requireDelayedUpdate() {
+    this._requiredUpdate = true;
   }
 
 }

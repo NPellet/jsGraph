@@ -11,7 +11,7 @@ const defaults = {
 
 }
 
-/** 
+/**
  * Density map serie
  * @example graph.newSerie( name, options, "densitymap" );
  * @see Graph#newSerie
@@ -248,7 +248,7 @@ class SerieDensityMap extends Serie {
   }
 
   /**
-   * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+   * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into
    * the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using {@link SerieDensityMap#setColorMapBinBoundaries}).
    * @memberof SerieDensityMap
    * @param {Number} pxPerBinX - The number of x bins per pixels. Should be an integer, but technically it doesn't have to
@@ -381,6 +381,7 @@ class SerieDensityMap extends Serie {
     //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
     //console.log( this.densityMapCalculation );
+
     ( weighing ? this.calculateDensityWeighted : this.calculateDensity ).call( this,
       results.x.from, results.x.delta, results.x.num,
       results.y.from, results.y.delta, results.y.num
@@ -394,7 +395,7 @@ class SerieDensityMap extends Serie {
    * @param {Number} binMax - The maximum bin value
    * @return {SerieDensityMap} The current instance
    * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
-   * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); 
+   * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );
    */
   setColorMapBinBoundaries( min, max ) {
     this.colorMapMin = min;
@@ -427,7 +428,7 @@ class SerieDensityMap extends Serie {
   };
 
   /**
-   * Generates a color map based on a serie of HSL(A) values. 
+   * Generates a color map based on a serie of HSL(A) values.
    * @summary Colors can scale linearly, logarithmically (enhances short range differences) or exponentially (enhances long range differences).
    * One word of advice though. SVG being not canvas, jsGraph has to create a path for each color value of the color map. In other words, if you're asking for 16-bit coloring (65536 values), 65536 SVG paths will be created and your browser will start to suffer from it.
    * As of now, all the colors in colorStops will be places at equal distances from each other between <code>colorMapMin</code> and <code>colorMapMax</code> set by {@link autoColorMapBinBoundaries} or {@link setColorMapBinBoundaries}
@@ -570,7 +571,8 @@ class SerieDensityMap extends Serie {
       this.method();
     }
 
-    if ( !this.callbackColorMapMinMax || ( ( this.colorMapMin == undefined || this.colorMapMax == undefined ) || this.callbackColorMapMinMax == 'auto' ) ) {
+    if ( !this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto' ) {
+
       this.autoColorMapBinBoundaries();
     } else {
       var val = this.callbackColorMapMinMax( this.binMin, this.binMax );
@@ -597,6 +599,7 @@ class SerieDensityMap extends Serie {
         if ( !this.paths[ colorIndex ] ) {
           this.paths[ colorIndex ] = "";
         }
+
         this.paths[ colorIndex ] += " M " + this.getXAxis().getPx( i * this.deltaX + this.fromX ) + " " + this.getYAxis().getPx( j * this.deltaY + this.fromY ) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
         ;

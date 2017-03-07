@@ -2,7 +2,24 @@ define( function() {
 
 	return [ function( domGraph ) {
 
-		var graphinstance = new Graph( domGraph );
+		var graphinstance = new Graph( domGraph, {
+
+
+				plugins: {
+			 'zoom': { zoomMode: 'xy', transition: false },
+			 'drag': {
+		          persistanceX: true,
+		          dragY: false
+		        },
+
+		},
+
+		mouseActions: [
+			{ plugin: 'zoom', shift: false, ctrl: false },
+			{ plugin: 'zoom', shift: false, type: 'dblclick', options: { mode: 'total' } }
+		]
+
+		} );
 
  		var series = [ [], [], [] ];
 
@@ -31,10 +48,11 @@ define( function() {
 			frameWidth: '1',
 			frameColor: 'rgba( 100, 100, 100, 0.5 )',
 
-			movable: true,
+			movable: false,
 			isSerieHideable: true
 
-		});
+		}).autoPosition('bottom');
+
 
 
 		graphinstance.newSerie( "sin" )
@@ -43,7 +61,11 @@ define( function() {
 			.setData( series[ 0 ] )	
 			.setLineColor( '#bd1a1a' )
 			.setMarkers()
-			
+		
+
+		graphinstance.draw();
+
+/*
 		graphinstance.newSerie( "cos" )
 			.setLabel( "f(x) = sin(x)" )
 			.autoAxis()
@@ -57,13 +79,18 @@ define( function() {
 			.setData( series[ 2 ] )
 			.setLineColor('#891abd');
 
-		graphinstance.getXAxis().setLabel( 'x' );
-		graphinstance.getYAxis().setLabel( 'y' );
+		graphinstance.draw();
+
+		*/
+
+/*		graphinstance.getXAxis().setLabel( 'x' );
+			graphinstance.getYAxis().setLabel( 'y' );
+			*/
 		//graphinstance.getYAxis().setLineAt0( true );
 
-		graphinstance.redraw( );
-		graphinstance.drawSeries();	
+		//graphinstance.redraw( );
 		
+		/*
 		legend.setPosition(
 
 			{ dx: "-10px", dy: "10px", x: "max", y: "max" }, 
@@ -71,13 +98,16 @@ define( function() {
 			"top" // Reference point
 
 		);
-
-		var state = graphinstance.getAxisState();
+*/
+/*		var state = graphinstance.getAxisState();
 		state.left[ 0 ] = [ 10, 20 ];
 		state.bottom[ 0 ] = [ 10, 20 ];
 		graphinstance.setAxisState( state );
+*/
+		//legend.update();
 
-		legend.update();
+
+
 
 	}, "Legend", [ 
 

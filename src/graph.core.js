@@ -3,7 +3,7 @@ import * as util from './graph.util'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import Waveform from './util/waveform'
 
-/** 
+/**
  * Default graph parameters
  * @name Graph~GraphOptionsDefault
  * @name GraphOptions
@@ -59,7 +59,7 @@ const GraphOptionsDefault = {
 
 var _constructors = new Map();
 
-/** 
+/**
  * Entry class of jsGraph that creates a new graph.
  * @extends EventEmitter
  * @tutorial basic
@@ -109,7 +109,7 @@ class Graph extends EventEmitter {
     wrapper.style[ '-ms-user-select' ] = 'none';
     wrapper.style[ 'user-select' ] = 'none';
 
-    /** 
+    /**
      * @object
      * @memberof Graph
      * @name Graph#options
@@ -191,7 +191,7 @@ class Graph extends EventEmitter {
 
   }
 
-  /** 
+  /**
    * Returns the graph SVG wrapper element
    * @public
    * @return {SVGElement} The DOM element wrapping the graph
@@ -209,7 +209,7 @@ class Graph extends EventEmitter {
     return this._creation;
   }
 
-  /** 
+  /**
    * Returns the graph wrapper element passed during the graph creation
    * @public
    * @return {HTMLElement} The DOM element wrapping the graph
@@ -270,7 +270,7 @@ class Graph extends EventEmitter {
 
     } else {
 
-      if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) ) {
+      if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) || hasSizeChanged( this ) ) {
         this.executeRedrawSlaves();
         refreshDrawingZone( this );
         return true;
@@ -289,9 +289,59 @@ class Graph extends EventEmitter {
   /**
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
    */
-  draw() {
+  draw( force ) {
 
-    this.drawSeries( this.redraw( true ) );
+    this.updateLegend( true );
+    this.drawSeries( this.redraw( true && !force ) );
+  }
+
+  /**
+   *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#resumeUpdate}
+   *  @see {@link Graph#doUpdate}
+   *  @since 1.16.19
+   */
+  delayUpdate() {
+    this._lockUpdate = true;
+    return this;
+  }
+
+  /**
+   *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#delayUpdate}
+   *  @see {@link Graph#resumeUpdate}
+   *  @since 1.16.19
+   */
+  doUpdate() {
+    if ( this.legend ) {
+      this.legend.update();
+    }
+    this.draw();
+    if ( this.legend ) {
+      this.legend.update();
+    }
+    return this;
+  }
+
+  /**
+   *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+   *  @memberof Graph
+   *  @return {Graph} The current graph instance
+   *  @see {@link Graph#delayUpdate}
+   *  @see {@link Graph#doUpdate}
+   *  @since 1.16.19
+   */
+  resumeUpdate() {
+    this._lockUpdate = false;
+    return this;
+  }
+
+  isDelayedUpdate() {
+    return this._lockUpdate;
   }
 
   /**
@@ -733,7 +783,7 @@ class Graph extends EventEmitter {
     this._applyToAxes( "setMinMaxToFitSeries", null, true, true );
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-    // X is not always ascending... 
+    // X is not always ascending...
   }
 
   /**
@@ -861,7 +911,6 @@ class Graph extends EventEmitter {
       serieValue = serie[ func2use ]();
 
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
-
     }
 
     return val;
@@ -918,7 +967,7 @@ class Graph extends EventEmitter {
 
   }
 
-  /** 
+  /**
    * Function that is called from {@link Graph#_applyToAxes}
    * @function
    * @name AxisCallbackFunction
@@ -995,23 +1044,23 @@ class Graph extends EventEmitter {
       type = Graph.SERIE_LINE;
     }
 
-    var serie;
-    if ( serie = this.getSerie( name ) ) {
+    let serie;
+    if ( ( serie = this.getSerie( name ) ) ) {
       return serie;
     }
 
     if ( !( serie = makeSerie( this, name, options, type ) ) ) {
       return;
-    };
+    }
 
     this.series.push( serie );
-    this.updateLegend();
+    //    this.updateLegend();
 
     this.emit( "newSerie", serie );
     return serie;
   }
 
-  /** 
+  /**
    * Looks for an existing serie by name or by index and returns it.
    * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
    * @param {(String|Number)} name - The name or the index of the serie
@@ -1100,6 +1149,10 @@ class Graph extends EventEmitter {
       this.series[ 0 ].kill( true );
     }
     this.series = [];
+
+    if ( this.legend ) {
+      this.legend.update();
+    }
   }
 
   /**
@@ -1194,6 +1247,9 @@ class Graph extends EventEmitter {
 
     var self = this,
       response;
+
+
+    this.prevent( false );
 
     if ( !mute ) {
 
@@ -1713,21 +1769,24 @@ class Graph extends EventEmitter {
       return util.throwError( "Graph legend is not available as it has not been registered" );
     }
 
-    this.legend.update();
+    //    this.legend.update();
 
     return this.legend;
   }
 
   /**
-   * Redraw the legend
+   * Redraws the legend if it exists
+   * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+   * @return {Graph} The graph instance
    */
-  updateLegend() {
+  updateLegend( onlyIfRequired = false ) {
 
     if ( !this.legend ) {
       return;
     }
 
-    this.legend.update();
+    this.legend.update( onlyIfRequired );
+    return this;
   }
 
   /**
@@ -1740,6 +1799,15 @@ class Graph extends EventEmitter {
 
     return this.legend;
 
+  }
+
+  requireLegendUpdate() {
+
+    if ( !this.legend ) {
+      return;
+    }
+
+    this.legend.requireDelayedUpdate();
   }
 
   /**
@@ -1808,20 +1876,16 @@ class Graph extends EventEmitter {
     this.dom.setAttribute( 'height', this.height );
     this.domTitle.setAttribute( 'x', this.width / 2 );
 
-    this.redraw();
-    this.drawSeries( true );
-    //refreshDrawingZone( this );
+    this.requireLegendUpdate();
 
-    if ( this.legend ) {
-      this.legend.update();
-    }
+    this.draw( true );
   }
   _doDom() {
 
     // Create SVG element, set the NS
     this.dom = document.createElementNS( this.ns, 'svg' );
     this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);  
+    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
     util.setAttributeTo( this.dom, {
       'xmlns': this.ns,
       'font-family': this.options.fontFamily,
@@ -1921,7 +1985,7 @@ class Graph extends EventEmitter {
 
     this.defs.appendChild( this.markerArrow );
 
-    // Horionzal split marker for axis 
+    // Horionzal split marker for axis
     this.markerHorizontalSplit = document.createElementNS( this.ns, 'marker' );
     this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
     this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
@@ -1943,7 +2007,7 @@ class Graph extends EventEmitter {
 
     this.defs.appendChild( this.markerHorizontalSplit );
 
-    // Vertical split marker for axis 
+    // Vertical split marker for axis
     this.markerVerticalSplit = document.createElementNS( this.ns, 'marker' );
     this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
     this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
@@ -1995,6 +2059,8 @@ class Graph extends EventEmitter {
     util.setAttributeTo( this.graphingZone, {
       'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
     } );
+
+    this._sizeChanged = true;
   }
 
   // We have to proxy the methods in case they are called anonymously
@@ -2050,7 +2116,7 @@ class Graph extends EventEmitter {
       } );
     }
 
-    this.trackingLine = this.newShape( 'line', util.extend( true, { 
+    this.trackingLine = this.newShape( 'line', util.extend( true, {
       position: [ {
         y: 'min'
       }, {
@@ -2670,10 +2736,8 @@ function refreshDrawingZone( graph ) {
   };
 
   graph._painted = true;
-
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
-
     if ( axis.disabled ||  axis.floating ) {
       return;
     }
@@ -3510,6 +3574,12 @@ function _handleMouseLeave( graph ) {
 function haveAxesChanged( graph ) {
   var temp = graph._axesHaveChanged;
   graph._axesHaveChanged = false;
+  return temp;
+}
+
+function hasSizeChanged( graph ) {
+  var temp = graph._sizeChanged;
+  graph._sizeChanged = false;
   return temp;
 }
 

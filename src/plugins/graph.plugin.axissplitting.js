@@ -120,7 +120,7 @@ Object.getOwnPropertyNames( SerieLine.prototype ).concat( addMethods ).map( func
   } )( i );
 } );
 
-/** 
+/**
  * Axis splitting plugin
  * @augments Plugin
  */
@@ -218,7 +218,7 @@ class PluginAxisSplitting extends Plugin {
     var xAxis, yAxis;
 
     //    for ( let { serie } of this.series.values() ) {
-    this.series.forEach( ( { 
+    this.series.forEach( ( {
       serie
     } ) => {
 
@@ -413,7 +413,7 @@ var SplitAxis = function( mixin ) {
     'setDisplay'
   ];
 
-  /** 
+  /**
    * Split axis
    * @mixes AxisX
    * @mixes AxisY
@@ -688,7 +688,7 @@ var SplitAxis = function( mixin ) {
     getAxisPosition() {
       var max = 0;
 
-      this.axes.map( ( axis ) => { 
+      this.axes.map( ( axis ) => {
         max = Math.max( max, axis.getAxisPosition() );
       } );
 
@@ -772,20 +772,20 @@ class SplitYAxis extends SplitAxis( AxisY ) {
   }
 
   getConstructor() {
-      return AxisY;
-    }
-    /*
-      draw() {
+    return AxisY;
+  }
+  /*
+    draw() {
 
-        if ( this.getLabel() ) {
-          this.axes.map( ( axis ) => {
-            axis.setAxisPosition( this.graph.options.fontSize );
-          } ); // Extra shift allowed for the label
-          //this.setShift( this.graph.options.fontSize );
-        }
-        return super.draw( ...arguments );
+      if ( this.getLabel() ) {
+        this.axes.map( ( axis ) => {
+          axis.setAxisPosition( this.graph.options.fontSize );
+        } ); // Extra shift allowed for the label
+        //this.setShift( this.graph.options.fontSize );
       }
-    */
+      return super.draw( ...arguments );
+    }
+  */
   drawLabel() {
     super.drawLabel();
   }

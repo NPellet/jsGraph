@@ -14,7 +14,7 @@ const DIVIDE = Symbol();
 function pow2ceil( v ) {
   v--;
   var p = 2;
-  while ( v >>= 1 ) {
+  while ( ( v >>= 1 ) ) {
     p <<= 1;
   }
   return p;
@@ -184,24 +184,24 @@ class Waveform {
   isNaNAllowed( constructor = this._typedArrayClass ) {
 
     // The following types accept NaNs
-    return constructor == Array ||  
-      constructor == Float32Array ||  
+    return constructor == Array ||
+      constructor == Float32Array ||
       constructor == Float64Array;
   }
 
   isUnsigned( constructor = this._typedArrayClass ) {
 
     // The following types accept NaNs
-    return constructor == Uint8Array ||  
-      constructor == Uint8ClampedArray ||  
+    return constructor == Uint8Array ||
+      constructor == Uint8ClampedArray ||
       constructor == Uint16Array ||
       constructor == Uint32Array;
   }
 
   _makeArray( length ) {
 
-    let constructor;
-    if ( constructor = this.getTypedArrayClass() ) {
+    const constructor = this.getTypedArrayClass();
+    if ( constructor ) {
       return new( constructor )( length );
     }
     return new Array( length );
@@ -483,7 +483,7 @@ class Waveform {
 
     let inverting = false,
       dataY = this.getDataY(),
-      data = { 
+      data = {
         x: [],
         y: []
       },

@@ -2,7 +2,7 @@ import GraphPosition from '../graph.position'
 import * as util from '../graph.util'
 import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
 
-/** 
+/**
  * Shape class that should be extended
  * @class Shape
  * @static
@@ -308,7 +308,7 @@ class Shape extends EventEmitter {
 
   /**
    * Returns the x axis associated to the shape. If non-existent, assigns it automatically
-   * @return {XAxis} The x axis associated to the shape. 
+   * @return {XAxis} The x axis associated to the shape.
    */
   getXAxis() {
 
@@ -321,7 +321,7 @@ class Shape extends EventEmitter {
 
   /**
    * Returns the y axis associated to the shape. If non-existent, assigns it automatically
-   * @return {YAxis} The y axis associated to the shape. 
+   * @return {YAxis} The y axis associated to the shape.
    */
   getYAxis() {
 
@@ -501,9 +501,12 @@ class Shape extends EventEmitter {
   /**
    * Sets a DOM property to the shape
    */
-  setDom( prop, val ) {
+  setDom( prop, val, noForce ) {
     if ( this._dom ) {
-      this._dom.setAttribute( prop, val );
+
+      if ( !noForce || !util.hasSavedAttribute( this._dom, prop ) ) {
+        this._dom.setAttribute( prop, val );
+      }
     }
   }
 
@@ -522,6 +525,8 @@ class Shape extends EventEmitter {
    */
   setStrokeColor( color ) {
     this.setProp( 'strokeColor', color );
+    this.overwriteSavedProp( 'stroke', color );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -540,6 +545,8 @@ class Shape extends EventEmitter {
    */
   setFillColor( color ) {
     this.setProp( 'fillColor', color );
+    this.overwriteSavedProp( 'fill', color );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -556,8 +563,10 @@ class Shape extends EventEmitter {
    * @param {Number} opacity - The filling opacity (0 to 1)
    * @return {Shape} The current shape
    */
-  setFillOpacity( color ) {
-    this.setProp( 'fillOpacity', color );
+  setFillOpacity( opacity ) {
+    this.setProp( 'fillOpacity', opacity );
+    this.overwriteSavedProp( 'fill-opacity', opacity );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -568,6 +577,8 @@ class Shape extends EventEmitter {
    */
   setStrokeWidth( width ) {
     this.setProp( 'strokeWidth', width );
+    this.overwriteSavedProp( 'stroke-width', width );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -588,6 +599,8 @@ class Shape extends EventEmitter {
    */
   setStrokeDasharray( dasharray ) {
     this.setProp( 'strokeDasharray', dasharray );
+    this.overwriteSavedProp( 'stroke-dasharray', dasharray );
+    this.applySelectedStyle();
     return this;
   }
 
@@ -601,6 +614,10 @@ class Shape extends EventEmitter {
   setAttributes( attributes ) {
     this.setProp( "attributes", attributes );
     return this;
+  }
+
+  overwriteSavedProp( prop, newValue ) {
+    util.overwriteDomAttribute( this._dom, prop, newValue );
   }
 
   /**
@@ -751,7 +768,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the anchoring of the label. 
+   * Sets the anchoring of the label.
    * @param {String} anchor - The anchor of the label. Values can be ```start```, ```middle```, ```end``` or ```inherit```.
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -762,7 +779,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the anchoring of the label. 
+   * Sets the anchoring of the label.
    * @param {String} size - The font size in px
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -773,7 +790,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the color of the stroke of the label. 
+   * Sets the color of the stroke of the label.
    * @param {String} color - The color of the stroke
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -784,7 +801,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Sets the width of the stroke of the label. 
+   * Sets the width of the stroke of the label.
    * @param {Number} width - The width of the stroke
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {Shape} The current shape
@@ -800,17 +817,17 @@ class Shape extends EventEmitter {
    */
   applyGenericStyle() {
 
-    this.setDom( "fill", this.getProp( "fillColor" ) );
-    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ) );
-    this.setDom( "stroke", this.getProp( "strokeColor" ) );
-    this.setDom( "stroke-width", this.getProp( "strokeWidth" ) );
-    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ) );
+    this.setDom( "fill", this.getProp( "fillColor" ), true );
+    this.setDom( "fill-opacity", this.getProp( "fillOpacity" ), true );
+    this.setDom( "stroke", this.getProp( "strokeColor" ), true );
+    this.setDom( "stroke-width", this.getProp( "strokeWidth" ), true );
+    this.setDom( "stroke-dasharray", this.getProp( "strokeDasharray" ), true );
 
     var attributes = this.getProps( "attributes" );
     for ( var j = 0, l = attributes.length; j < l; j++ ) {
 
       for ( var i in attributes[ j ] ) {
-        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ] );
+        this.setDom( i, typeof attributes[ j ][ i ] == "function" ? attributes[ j ][ i ].call( this, i ) : attributes[ j ][ i ], true );
       }
 
     }
@@ -1132,8 +1149,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Adds shape handles 
-   * @private 
+   * Adds shape handles
+   * @private
    * @return {Shape} The current shape
    */
   addHandles() {
@@ -1158,8 +1175,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Remove shape handles 
-   * @private 
+   * Remove shape handles
+   * @private
    * @return {Shape} The current shape
    */
   removeHandles() {
@@ -1169,8 +1186,8 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Hide shape handles 
-   * @private 
+   * Hide shape handles
+   * @private
    * @return {Shape} The current shape
    */
   hideHandles() {
@@ -1213,6 +1230,25 @@ class Shape extends EventEmitter {
     //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
     this._selectStatus = true;
+
+    this.applySelectedStyle();
+
+    if ( this.hasHandles() && !this.hasStaticHandles() ) {
+      this.addHandles();
+      this.setHandles();
+    }
+
+    if ( !mute ) {
+      this.graph.emit( "shapeSelected", this );
+    }
+  }
+
+  applySelectedStyle() {
+
+    if ( !this._selectStatus ) {
+      return;
+    }
+
     var style = this.getSelectStyle();
     var style2 = {};
     for ( var i in style ) {
@@ -1224,15 +1260,6 @@ class Shape extends EventEmitter {
     }
 
     util.saveDomAttributes( this._dom, style2, 'select' );
-
-    if ( this.hasHandles() && !this.hasStaticHandles() ) {
-      this.addHandles();
-      this.setHandles();
-    }
-
-    if ( !mute ) {
-      this.graph.emit( "shapeSelected", this );
-    }
   }
 
   /**
@@ -1273,6 +1300,7 @@ class Shape extends EventEmitter {
    */
   setSelectStyle( attr ) {
     this.selectStyle = attr;
+    this.applySelectedStyle(); // Maybe the shape is already selected
     return this;
   }
 
@@ -1423,8 +1451,6 @@ class Shape extends EventEmitter {
 
           this.moving = true;
         }
-      } else {
-
       }
     }
 
@@ -1686,7 +1712,7 @@ class Shape extends EventEmitter {
 
   /**
    * Removes the highlight properties from the same
-   * @returns {Shape} The current shape 
+   * @returns {Shape} The current shape
    * @param {String} [ saveDomName=highlight ] - The name to which the current shape attributes will be saved to be recovered later with the {@link Shape#unHighlight} method
    * @see Shape#highlight
    */
@@ -1738,9 +1764,9 @@ class Shape extends EventEmitter {
    */
   maskWith( maskingShape ) {
 
-    var maskingId;
+    const maskingId = maskingShape.getMaskingID();
 
-    if ( maskingId = maskingShape.getMaskingID() ) {
+    if ( maskingId ) {
 
       this._dom.setAttribute( 'mask', 'url(#' + maskingId + ')' );
 

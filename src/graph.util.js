@@ -60,7 +60,7 @@ export function mapEventEmission( options, source ) {
  * @return {String} a random id
  */
 export function guid() {
-  // 
+  //
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace( /[xy]/g, function( c ) {
     var r = Math.random() * 16 | 0,
       v = c == 'x' ? r : ( r & 0x3 | 0x8 );
@@ -115,9 +115,9 @@ export function hslToRgb( h, s, l ) {
 
     var q = l < 0.5 ? l * ( 1 + s ) : l + s - l * s;
     var p = 2 * l - q;
-    r = util.hue2rgb( p, q, h + 1 / 3 );
-    g = util.hue2rgb( p, q, h );
-    b = util.hue2rgb( p, q, h - 1 / 3 );
+    r = hue2rgb( p, q, h + 1 / 3 );
+    g = hue2rgb( p, q, h );
+    b = hue2rgb( p, q, h - 1 / 3 );
   }
 
   return [ Math.round( r * 255 ), Math.round( g * 255 ), Math.round( b * 255 ) ];
@@ -130,7 +130,7 @@ export function saveDomAttributes( to, attributes, identification ) {
   to._savedAttributesIds = to._savedAttributesIds || [];
 
   if ( to._savedAttributesIds.indexOf( identification ) > -1 ) {
-    util.restoreDomAttributes( to, identification );
+    restoreDomAttributes( to, identification );
   }
 
   to._savedAttributes = to._savedAttributes || {};
@@ -149,6 +149,16 @@ export function saveDomAttributes( to, attributes, identification ) {
   }
 
 };
+
+export function hasSavedAttribute( dom, attr ) {
+  return dom._savedAttributes && dom._savedAttributes[ attr ] !== undefined;
+}
+
+export function overwriteDomAttribute( dom, attribute, newValue ) {
+  if ( hasSavedAttribute( dom, attribute ) ) {
+    dom._savedAttributes[ attribute ] = newValue;
+  }
+}
 
 export function restoreDomAttributes( to, identification ) {
 

@@ -1,6 +1,6 @@
 import Shape from './graph.shape'
 
-/** 
+/**
  * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
  * @extends Shape
  * @see Graph#newShape

@@ -1,7 +1,7 @@
 import GraphShape from './graph.shape'
 import * as util from '../graph.util'
 
-/** 
+/**
  * Represents a rectangle that extends the Shape class
  * @class ShapeRectangle
  * @augments Shape

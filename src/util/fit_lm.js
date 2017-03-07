@@ -41,7 +41,7 @@ class FitHost {
     this.parms = params;
 
     this.parms = this.parms.map( ( el ) => {
-      if ( typeof el == 'function' ) { 
+      if ( typeof el == 'function' ) {
         return el( this.data, this.dataX )
       } else {
         return el;
@@ -145,7 +145,6 @@ class FitHost {
   }
 
   //------the four mandated interface methods------------
-
   nudge( dp ) {
 
     for ( var j = 0; j < this.NPARMS; j++ ) {
@@ -157,7 +156,7 @@ class FitHost {
   buildJacobian() {
     // Allows LM to compute a new Jacobian.
     // Uses current parms[] and two-sided finite difference.
-    // If current parms[] is bad, returns false.  
+    // If current parms[] is bad, returns false.
     var delta = new Array( this.NPARMS );
     var FACTOR = 0.5 / this.DELTAP;
     var d = 0;
@@ -202,12 +201,12 @@ class FitHost {
   }
 
   getResidualElement( i ) {
-    // Allows LM to see one element of the resid[] vector. 
+    // Allows LM to see one element of the resid[] vector.
     return this.resid[ i ];
   }
 
   getJacobianElement( i, j ) {
-    // Allows LM to see one element of the Jacobian matrix. 
+    // Allows LM to see one element of the Jacobian matrix.
     return this.jac[ i ][ j ];
   }
 
@@ -245,7 +244,7 @@ class LM {
     this.LAMBDAZERO = 0.001; // initial damping
     this.LAMBDAMAX = 1E9; // max damping
     this.LMTOL = 1E-12; // exit tolerance
-    this.BIGVAL = 9e99; // trouble flag 
+    this.BIGVAL = 9e99; // trouble flag
 
     this.sos;
     this.sosprev;
@@ -260,7 +259,7 @@ class LM {
     this.alpha;
     this.amatrix;
 
-    // Constructor sets up fields and drives iterations. 
+    // Constructor sets up fields and drives iterations.
     this.myH = gH;
     this.nadj = gnadj;
     this.npts = gnpnts;
@@ -291,9 +290,9 @@ class LM {
   }
 
   bLMiter() {
-    // Each call performs one LM iteration. 
-    // Returns true if done with iterations; false=wants more. 
-    // Global nadj, npts; needs nadj, myH to be preset. 
+    // Each call performs one LM iteration.
+    // Returns true if done with iterations; false=wants more.
+    // Global nadj, npts; needs nadj, myH to be preset.
     // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
     for ( var k = 0; k < this.nadj; k++ )
       this.delta[ k ] = 0.0;
