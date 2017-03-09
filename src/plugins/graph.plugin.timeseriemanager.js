@@ -17,7 +17,7 @@ class PluginTimeSerieManager extends Plugin {
     this.plugins = [];
     this.currentSlots = {};
 
-    this.requestLevels = {};
+    this.requestLevels = new Map();
     this.update = ( noRecalculate, force ) => {
 
       this.series.forEach( function( serie ) {
@@ -127,7 +127,9 @@ class PluginTimeSerieManager extends Plugin {
     var optimalIntervalIndex = this.options.intervals.indexOf( optimalInterval );
     var interval;
 
-    for ( var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++ ) {
+    this.cleanRegister( optimalIntervalIndex );
+
+    for ( var i = optimalIntervalIndex; i <= optimalIntervalIndex + 1; i++ ) {
 
       interval = this.options.intervals[ i ];
       var startSlotId = self.computeSlotID( from, interval );
@@ -162,6 +164,25 @@ class PluginTimeSerieManager extends Plugin {
 
     this.processRequests();
   }
+
+  cleanRegister( interval ) {
+     
+     if( ! this.requestLevels ) {
+       return;
+     }
+
+     this.requestLevels.forEach( ( levelArray ) => {
+
+       levelArray.forEach( ( levelElement, levelIndex ) => {
+
+         if( levelElement[ 4 ] < interval ) {
+           levelArray.splice( levelIndex, 1 );
+         }
+       } );
+
+     } );  
+   }
+
 
   register( serie, slotId, interval, priority, noProcess, noRecalculate ) {
 
@@ -442,10 +463,9 @@ class PluginTimeSerieManager extends Plugin {
       clearInterval( this.interval )
     }
 
-    var self = this;
-
-    this.interval = setInterval( function() {
-      self.update( true, false );
+    this.update( true, true );
+    this.interval = setInterval( () => {
+      this.update( true, false );
     }, interval );
   }
 
