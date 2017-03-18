@@ -1040,11 +1040,17 @@ class Graph extends EventEmitter {
    */
   newSerie( name, options, type ) {
 
+    let serie;
+
+    if ( typeof options !== "object" && !type ) {
+      type = options;
+      options = {};
+    }
+
     if ( !type ) {
       type = Graph.SERIE_LINE;
     }
 
-    let serie;
     if ( ( serie = this.getSerie( name ) ) ) {
       return serie;
     }
@@ -1054,8 +1060,6 @@ class Graph extends EventEmitter {
     }
 
     this.series.push( serie );
-    //    this.updateLegend();
-
     this.emit( "newSerie", serie );
     return serie;
   }
@@ -1247,7 +1251,6 @@ class Graph extends EventEmitter {
 
     var self = this,
       response;
-
 
     this.prevent( false );
 
@@ -2667,7 +2670,11 @@ class Graph extends EventEmitter {
   }
 
   static newWaveform() {
-    return new Waveform();
+    return new Waveform( ...arguments );
+  }
+
+  static waveform() {
+    return new Waveform( ...arguments );
   }
 }
 
@@ -2680,6 +2687,7 @@ function makeSerie( graph, name, options, type ) {
   if ( !constructor && typeof type == "string" ) {
     constructor = graph.getConstructor( "graph.serie." + type, true );
   }
+
   if ( constructor ) {
 
     var serie = new constructor();
@@ -2688,7 +2696,7 @@ function makeSerie( graph, name, options, type ) {
 
   } else {
 
-    return util.throwError( "No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series" );
+    return util.throwError( "No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series" );
 
   }
 
@@ -3549,26 +3557,20 @@ function _closeLine( graph, mode, x1, x2, y1, y2 ) {
   } else {
 
     graph.closingLines[ mode ].setAttribute( 'display', 'none' );
-
   }
 }
 
 function _handleMouseWheel( graph, delta, e ) {
-
   if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
     e.preventDefault();
     e.stopPropagation();
   }
-
 }
 
 function _handleMouseLeave( graph ) {
-
   if ( graph.options.handleMouseLeave ) {
     graph.options.handleMouseLeave.call( graph );
-
   }
-
 }
 
 function haveAxesChanged( graph ) {
@@ -3593,6 +3595,8 @@ Graph.SERIE_ZONE = Symbol();
 Graph.SERIE_LINE_COLORED = Symbol();
 Graph.SERIE_ZONE = Symbol();
 Graph.SERIE_DENSITYMAP = Symbol();
+Graph.SERIE_LINE_3D = Symbol();
+Graph.SERIE_ZONE_3D = Symbol();
 
 Graph.TICKS_OUTSIDE = Symbol();
 Graph.TICKS_INSIDE = Symbol();

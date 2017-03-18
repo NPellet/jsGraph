@@ -772,20 +772,20 @@ class SplitYAxis extends SplitAxis( AxisY ) {
   }
 
   getConstructor() {
-    return AxisY;
-  }
-  /*
-    draw() {
-
-      if ( this.getLabel() ) {
-        this.axes.map( ( axis ) => {
-          axis.setAxisPosition( this.graph.options.fontSize );
-        } ); // Extra shift allowed for the label
-        //this.setShift( this.graph.options.fontSize );
-      }
-      return super.draw( ...arguments );
+      return AxisY;
     }
-  */
+    /*
+      draw() {
+
+        if ( this.getLabel() ) {
+          this.axes.map( ( axis ) => {
+            axis.setAxisPosition( this.graph.options.fontSize );
+          } ); // Extra shift allowed for the label
+          //this.setShift( this.graph.options.fontSize );
+        }
+        return super.draw( ...arguments );
+      }
+    */
   drawLabel() {
     super.drawLabel();
   }

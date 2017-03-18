@@ -47,8 +47,6 @@ class SerieLine extends Serie {
    */
   init( graph, name, options ) {
 
-    var self = this;
-
     this.selectionType = "unselected";
     this.markerFamilies = {};
 
@@ -136,16 +134,16 @@ class SerieLine extends Serie {
       this.initExtended1();
     }
 
-    this.groupLines.addEventListener( 'click', function( e ) {
+    this.groupLines.addEventListener( 'click', ( e ) => {
 
-      if ( self.options.selectableOnClick ) {
+      if ( this.options.selectableOnClick ) {
 
-        if ( self.isSelected() ) {
+        if ( this.isSelected() ) {
 
-          self.graph.unselectSerie( self );
+          this.graph.unselectSerie( this );
 
         } else {
-          self.graph.selectSerie( self );
+          this.graph.selectSerie( this );
         }
       }
     } );
@@ -176,13 +174,12 @@ class SerieLine extends Serie {
   }
 
   /**
-     * Sets the options of the serie
-     * @see SerieLineDefaultOptions
-     * @param {Object} options - A object containing the options to set
-     * @return {SerieLine} The current serie
-     * @memberof SerieLine
-
-  */
+   * Sets the options of the serie
+   * @see SerieLineDefaultOptions
+   * @param {Object} options - A object containing the options to set
+   * @return {SerieLine} The current serie
+   * @memberof SerieLine
+   */
   setOptions( options ) {
     this.options = util.extend( true, {}, SerieLine.prototype.defaults, ( options || {} ) );
     // Unselected style
@@ -1283,8 +1280,7 @@ class SerieLine extends Serie {
           }
         }
       }
-    }
-    else {
+    } else {
 
       for ( var i = 0, l = this.data.length; i < l; i++ ) {
         for ( var k = 0, m = this.data[ i ].length; k < m; k += 2 ) {
@@ -1985,7 +1981,8 @@ class SerieLine extends Serie {
 
     return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
   }
+}
 
-  util.mix( SerieLine, ErrorBarMixin );
+util.mix( SerieLine, ErrorBarMixin );
 
 export default SerieLine

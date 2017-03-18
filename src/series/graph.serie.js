@@ -26,6 +26,10 @@ class Serie extends EventEmitter {
    */
   setData( data, oneDimensional, type ) {
 
+    if ( data instanceof Waveform ) {
+      return this.setWaveform( data );
+    }
+
     function isArray( arr ) {
       var stringed = Object.prototype.toString.call( arr );
       return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
@@ -175,7 +179,8 @@ class Serie extends EventEmitter {
 
     var min = this.graph.getDrawingWidth();
     var max = total;
-    console.log( datas );
+
+    // Temporary reduction
     datas = datas.reduce( function( a, b, index ) {
       if ( index > 0 ) {
         a.push( [ NaN, NaN ] );
@@ -183,9 +188,9 @@ class Serie extends EventEmitter {
       //console.log( a, b );
       return a.concat( b );
     }, [] );
-    console.log( datas );
+
     var wave = new Waveform();
-    wave.setDataXY( datas );
+    wave.setData( datas );
     this.setWaveform( wave );
 
     return this;

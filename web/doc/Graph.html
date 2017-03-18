@@ -1746,6 +1746,129 @@ If performance becomes a critical issue in your application, <code>cacheOffset()
 
     
 
+    <h4 class="doc-code" id="delayUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">delayUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Prevents the graph, the series and the legend from redrawing automatically. Valid until <a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a> is called
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a></li>
+        
+            <li><a href="Graph.html#doUpdate">Graph#doUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
     <h4 class="doc-code" id="displayTitle"><span class="type-signature"></span><span></span><span class="doc-name">displayTitle</span><span class="doc-signature">( )</span></h4>
 
 
@@ -1784,6 +1907,129 @@ If performance becomes a critical issue in your application, <code>cacheOffset()
     
 
     
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="doUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">doUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Forces legend and graph update, even is <a href="Graph.html#delayUpdate">Graph#delayUpdate</a> has been called before.
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#delayUpdate">Graph#delayUpdate</a></li>
+        
+            <li><a href="Graph.html#resumeUpdate">Graph#resumeUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
 
     
 
@@ -6543,105 +6789,105 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
 
 
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
+
+
+
+
 <div class="description">
     Removes all series from the graph
 </div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="removeSeries"><span class="type-signature"></span><span></span><span class="doc-name">removeSeries</span><span class="doc-signature">( )</span></h4>
-
-
-
 
 
 <div class="doc-details">
@@ -6935,6 +7181,129 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 	
 
     The current graph
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="resumeUpdate"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">resumeUpdate</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Cancels the effect of <a href="Graph.html#delayUpdate">Graph#delayUpdate</a>, but does not redraw the graph automatically
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>1.16.19</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Graph.html#delayUpdate">Graph#delayUpdate</a></li>
+        
+            <li><a href="Graph.html#doUpdate">Graph#doUpdate</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
 </div>
 
         
@@ -9754,13 +10123,13 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
 
     
 
-    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span></span><span class="doc-name">updateLegend</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="updateLegend"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">updateLegend</span><span class="doc-signature">( [ , <span class="doc-type">Boolean</span> onlyIfRequired ] )</span></h4>
 
 
 
 
 <div class="description">
-    Redraw the legend
+    Redraws the legend if it exists
 </div>
 
 
@@ -9775,6 +10144,75 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyIfRequired</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">```true``` to redraw the legend only when it actually needs to be updated</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
 
     
 
@@ -9792,6 +10230,30 @@ To be called after axes min/max are expected to have changed (e.g. after an <cod
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The graph instance
+</div>
+
+        
 
     
 

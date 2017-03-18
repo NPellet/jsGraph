@@ -2158,7 +2158,7 @@ As of now, all the colors in colorStops will be places at equal distances from e
         
 
     {% highlight JavaScript %}// In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
-serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); {% endhighlight %}
+serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );{% endhighlight %}
 
     
 
@@ -2522,7 +2522,7 @@ serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); {% endhighligh
 
 
 <div class="description">
-    Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+    Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into
 the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using <a href="SerieDensityMap.html#setColorMapBinBoundaries">SerieDensityMap#setColorMapBinBoundaries</a>).
 </div>
 
@@ -5827,13 +5827,13 @@ the calculation of the density map. In this method, the color map spans on the f
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -5905,6 +5905,30 @@ the calculation of the density map. In this method, the color map spans on the f
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Serie.html">Serie</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current serie instance
+</div>
+
+        
 
     
 

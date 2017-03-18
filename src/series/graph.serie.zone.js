@@ -1,9 +1,9 @@
 import Serie from './graph.serie'
+import Waveform from '../util/waveform'
 import {
   extend,
   guid
-}
-from '../graph.util'
+} from '../graph.util'
 
 /**
  * @name SerieZoneDefaultOptions
@@ -38,32 +38,17 @@ class SerieZone extends Serie {
     this.name = name;
 
     this.selectionType = "unselected";
+    this.id = guid();
 
-    this.id = Math.random() + Date.now();
-
-    this.shown = true;
     this.options = extend( true, {}, defaults, options );
-    this.data = [];
-
     this.groupZones = document.createElementNS( this.graph.ns, 'g' );
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
-
     this.lineZone = document.createElementNS( this.graph.ns, 'path' );
     this.lineZone.setAttribute( 'stroke', 'black' );
     this.lineZone.setAttribute( 'stroke-width', '1px' );
 
-    this.additionalData = {};
-
-    this.minX = Number.MAX_VALUE;
-    this.minY = Number.MAX_VALUE;
-    this.maxX = Number.MIN_VALUE;
-    this.maxY = Number.MIN_VALUE;
-
     this.groupMain.appendChild( this.groupZones );
-
     this.groupZones.appendChild( this.lineZone );
-
-    this.currentAction = false;
 
     this.applyLineStyle( this.lineZone );
     this.styleHasChanged();
@@ -82,153 +67,49 @@ class SerieZone extends Serie {
   }
 
   /**
-   * Sets the data
+   * Assigns a collection of waveforms that make up the zone
+   * The waveforms will appended one after the other, without break
+   * @param {...Waveform} waveforms - The collection of waveforms
+   * @return {SerieZone} - The current serie zone instance
+   * @memberof SerieZone
    */
-  setData( data, arg, type ) {
+  setWaveform( ...waveforms ) {
+    this.waveforms = waveforms;
 
-    var z = 0,
-      x,
-      dx,
-      arg = arg || "2D",
-      type = type || 'float',
-      arr,
-      total = 0,
-      continuous;
+    this.waveforms = this.waveforms.map( ( wave ) => {
 
-    this.data = [];
-    this.dataHasChanged();
-
-    if ( !data instanceof Array ) {
-      return;
-    }
-
-    var length;
-
-    if ( data instanceof Array && !( data[ 0 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
-      arg = "1D";
-      length = data.length * 1.5;
-
-      if ( !( data[ 1 ] instanceof Array ) ) {
-        arg = "1D_flat";
-        length = data.length * 1;
-      }
-
-    } else {
-
-      if ( data instanceof Array && !( data[ 0 ][ 1 ] instanceof Array ) ) { // [100, 103, 102, 2143, ...]
-        arg = "2D_flat";
-        length = data.length * 3;
+      if ( !( wave instanceof Waveform ) ) {
+        return new Waveform( wave );
       } else {
-        arg = "2D";
-        length = data.length * 3;
+        return wave;
       }
-    }
+    } );
 
-    arr = this._addData( type, length );
+    this.minX = this.waveforms[ 0 ].getXMin();
+    this.maxX = this.waveforms[ 0 ].getXMax();
+    this.minY = this.waveforms[ 0 ].getMin();
+    this.maxY = this.waveforms[ 0 ].getMax();
 
-    z = 0;
+    this.waveforms.map( ( wave ) => {
 
-    for ( var j = 0, l = data.length; j < l; j++ ) {
-
-      if ( arg == "2D" || arg == "2D_flat" ) {
-
-        arr[ z ] = ( data[ j ][ 0 ] );
-        this._checkX( arr[ z ] );
-        z++;
-
-        if ( arg == "2D" ) {
-
-          arr[ z ] = ( data[ j ][ 1 ][ 0 ] );
-          this._checkY( arr[ z ] );
-          z++;
-          total++;
-
-          arr[ z ] = ( data[ j ][ 1 ][ 1 ] );
-          this._checkY( arr[ z ] );
-          z++;
-          total++;
-
-        } else {
-
-          arr[ z ] = ( data[ j ][ 1 ] );
-          this._checkY( arr[ z ] );
-          z++;
-          total++;
-
-          arr[ z ] = ( data[ j ][ 2 ] );
-          this._checkY( arr[ z ] );
-          z++;
-          total++;
-        }
-
-      } else if ( arg == "1D_flat" ) { // 1D Array
-
-        if ( j % 3 == 0 ) {
-          arr[ z ] = data[ j ];
-          this._checkX( arr[ z ] );
-          z++;
-          total++;
-
-          continue;
-        }
-
-        arr[ z ] = data[ j ];
-        this._checkY( arr[ z ] );
-        z++;
-        total++;
-
-      } else {
-
-        if ( j % 2 == 0 ) {
-          arr[ z ] = data[ j ];
-          this._checkX( arr[ z ] );
-          z++;
-          total++;
-          continue;
-        }
-
-        arr[ z ] = data[ j ][ 0 ];
-        this_checkY( arr[ z ] );
-        z++;
-        total++;
-
-        arr[ z ] = data[ j ][ 1 ];
-        this_checkY( arr[ z ] );
-        z++;
-        total++;
-      }
-    }
+      this.minX = Math.min( wave.getXMin(), this.minX );
+      this.maxX = Math.min( wave.getXMin(), this.maxX );
+      this.minY = Math.min( wave.getMin(), this.minY );
+      this.maxY = Math.min( wave.getMax(), this.maxY );
+    } );
 
     this.graph.updateDataMinMaxAxes();
-    this.data = arr;
     this.dataHasChanged();
-
     return this;
   }
 
-  _addData( type, howmany ) {
+  setWaveforms() {
+    return this.setWaveform( ...arguments );
+  }
 
-    switch ( type ) {
-      case 'int':
-        var size = howmany * 4; // 4 byte per number (32 bits)
-        break;
-      case 'float':
-        var size = howmany * 8; // 4 byte per number (64 bits)
-        break;
-    }
-
-    var arr = new ArrayBuffer( size );
-
-    switch ( type ) {
-      case 'int':
-        return new Int32Array( arr );
-        break;
-
-      default:
-      case 'float':
-        return new Float64Array( arr );
-        break;
-    }
+  setMinMaxWaveforms( min, max ) {
+    this.waveforms = [ min, max.reverse() ];
+    return this;
   }
 
   /**
@@ -251,19 +132,16 @@ class SerieZone extends Serie {
 
     if ( force || this.hasDataChanged() ) {
 
-      var x,
-        y,
-        xpx,
-        ypx1,
-        ypx2,
+      let
+        dataX = 0,
+        dataY = 0,
+        xpx = 0,
+        ypx = 0,
         j = 0,
-        k,
-        m,
-        currentLine,
-        max,
-        self = this;
+        line = "",
+        buffer;
 
-      var xmin = this.getXAxis().getMinPx(),
+      const xmin = this.getXAxis().getMinPx(),
         xmax = this.getXAxis().getMaxPx(),
         ymin = this.getYAxis().getMinPx(),
         ymax = this.getYAxis().getMaxPx();
@@ -273,70 +151,43 @@ class SerieZone extends Serie {
       this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
       this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
 
-      this._drawn = true;
-
       this.groupMain.removeChild( this.groupZones );
 
-      var totalLength = this.data.length / 2;
+      for ( let waveform of this.waveforms ) {
 
-      j = 0;
-      k = 0;
-      m = this.data.length;
+        dataY = waveform.getData( true );
+        for ( j = 0; j < dataY.length; j += 1 ) {
+          dataX = waveform.getX( j, true );
 
-      var error;
+          ypx = this.getY( dataY[ j ] );
+          xpx = this.getX( dataX );
 
-      var lineTop = "";
-      var lineBottom = "";
-
-      var buffer;
-
-      for ( ; j < m; j += 3 ) {
-
-        xpx = this.getX( this.data[ j ] );
-        ypx1 = this.getY( this.data[ j + 1 ] );
-        ypx2 = this.getY( this.data[ j + 2 ] );
-
-        if ( xpx < 0 ) {
-          buffer = [ xpx, ypx1, ypx2 ];
-          continue;
-        }
-
-        if ( buffer ) {
-
-          if ( lineBottom !== "" ) {
-            lineBottom = " L " + lineBottom;
+          if ( xpx < xmin || xpx > xmax ) {
+            buffer = [ xpx, ypx ];
+            continue;
           }
 
-          lineTop += buffer[ 0 ] + "," + Math.max( buffer[ 1 ], buffer[ 2 ] ) + " L ";
-          lineBottom = xpx + "," + Math.min( buffer[ 1 ], buffer[ 2 ] ) + lineBottom;
+          // The y axis in screen coordinate is inverted vs cartesians
+          if ( ypx < ymax ) {
+            ypx = ymax;
+          } else if ( ypx > ymin ) {
+            ypx = ymin;
+          }
 
-          buffer = false;
-          k++;
-        }
+          if ( line.length > 0 ) {
+            line += " L ";
+          }
 
-        if ( lineBottom !== "" ) {
-          lineBottom = " L " + lineBottom;
-        }
-
-        if ( ypx2 > ypx1 ) {
-          lineTop += xpx + "," + ypx1 + " L ";
-          lineBottom = xpx + "," + ypx2 + lineBottom;
-        } else {
-          lineTop += xpx + "," + ypx2 + " L ";
-          lineBottom = xpx + "," + ypx1 + lineBottom;
-        }
-
-        if ( xpx > this.getXAxis().getMaxPx() ) {
-          break;
+          if ( buffer ) {
+            line += buffer[ 0 ] + "," + buffer[ 1 ] + " ";
+            buffer = false;
+          } else {
+            line += xpx + "," + ypx + " ";
+          }
         }
       }
 
-      if ( lineTop.length > 0 && lineBottom.length > 0 ) {
-        this.lineZone.setAttribute( 'd', "M " + lineTop + lineBottom + " z" );
-      } else {
-        this.lineZone.setAttribute( 'd', "" );
-      }
-
+      this.lineZone.setAttribute( 'd', "M " + line + " z" );
       this.groupMain.appendChild( this.groupZones );
     }
 
@@ -465,164 +316,6 @@ class SerieZone extends Serie {
    */
   getFillColor() {
     return this.options.fillColor;
-  }
-
-  /**
-   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-   * @param {Number} startX - The start of the x values
-   * @param {Number} endX - The end of the x values
-   * @returns {Number} Maximal y value in between startX and endX
-   */
-  getMax( start, end ) {
-
-    var start2 = Math.min( start, end ),
-      end2 = Math.max( start, end ),
-      v1 = this.searchClosestValue( start2 ),
-      v2 = this.searchClosestValue( end2 ),
-      i, j, max = -Infinity,
-      initJ, maxJ;
-
-    //      console.log( start2, end2, v1, v2 );
-
-    if ( !v1 ) {
-      start2 = this.minX;
-      v1 = this.searchClosestValue( start2 );
-    }
-
-    if ( !v2 ) {
-      end2 = this.maxX;
-      v2 = this.searchClosestValue( end2 );
-    }
-
-    if ( !v1 || !v2 ) {
-      return -Infinity;
-    }
-
-    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
-
-      for ( j = initJ; j <= maxJ; j += 3 ) {
-        max = Math.max( max, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
-      }
-    }
-
-    return max;
-  }
-
-  /**
-   * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-   * @param {Number} startX - The start of the x values
-   * @param {Number} endX - The end of the x values
-   * @returns {Number} Maximal y value in between startX and endX
-   */
-  getMin( start, end ) {
-
-    var start2 = Math.min( start, end ),
-      end2 = Math.max( start, end ),
-      v1 = this.searchClosestValue( start2 ),
-      v2 = this.searchClosestValue( end2 ),
-      i, j, min = Infinity,
-      initJ, maxJ;
-
-    if ( !v1 ) {
-      start2 = this.minX;
-      v1 = this.searchClosestValue( start2 );
-    }
-
-    if ( !v2 ) {
-      end2 = this.maxX;
-      v2 = this.searchClosestValue( end2 );
-    }
-
-    if ( !v1 || !v2 ) {
-      return Infinity;
-    }
-
-    for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-      initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-      maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[ i ].length;
-
-      for ( j = initJ; j <= maxJ; j += 3 ) {
-        min = Math.min( min, this.data[ i ][ j + 1 ], this.data[ i ][ j + 2 ] );
-      }
-    }
-
-    return min;
-  }
-
-  /**
-   * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-   * @param {Number} valX - The x value to search for
-   * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-   */
-  searchClosestValue( valX ) {
-
-    var xMinIndex;
-
-    for ( var i = 0; i < this.data.length; i++ ) {
-
-      if ( ( valX <= this.data[ i ][ this.data[ i ].length - 3 ] && valX >= this.data[ i ][ 0 ] ) ) {
-        xMinIndex = this._searchBinary( valX, this.data[ i ], false );
-      } else if ( ( valX >= this.data[ i ][ this.data[ i ].length - 3 ] && valX <= this.data[ i ][ 0 ] ) ) {
-        xMinIndex = this._searchBinary( valX, this.data[ i ], true );
-      } else {
-        continue;
-      }
-
-      return {
-        dataIndex: i,
-        xMin: this.data[ i ][ xMinIndex ],
-        xMax: this.data[ i ][ xMinIndex + 3 ],
-        yMin: this.data[ i ][ xMinIndex + 1 ],
-        yMax: this.data[ i ][ xMinIndex + 4 ],
-        xBeforeIndex: xMinIndex / 3,
-        xAfterIndex: xMinIndex / 3 + 1,
-        xBeforeIndexArr: xMinIndex,
-        xClosest: ( Math.abs( this.data[ i ][ xMinIndex + 3 ] - valX ) < Math.abs( this.data[ i ][ xMinIndex ] - valX ) ? xMinIndex + 3 : xMinIndex ) / 2
-      }
-    }
-  }
-
-  _searchBinary( target, haystack, reverse ) {
-    var seedA = 0,
-      length = haystack.length,
-      seedB = ( length - 3 );
-
-    if ( haystack[ seedA ] == target )
-      return seedA;
-
-    if ( haystack[ seedB ] == target )
-      return seedB;
-
-    var seedInt;
-    var i = 0;
-
-    while ( true ) {
-      i++;
-      if ( i > 100 ) {
-        throw "Error loop";
-      }
-
-      seedInt = ( seedA + seedB ) / 3;
-      seedInt -= seedInt % 3; // Always looks for an x.
-
-      if ( seedInt == seedA || haystack[ seedInt ] == target )
-        return seedInt;
-
-      //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-      if ( haystack[ seedInt ] <= target ) {
-        if ( reverse )
-          seedB = seedInt;
-        else
-          seedA = seedInt;
-      } else if ( haystack[ seedInt ] > target ) {
-        if ( reverse )
-          seedA = seedInt;
-        else
-          seedB = seedInt;
-      }
-    }
   }
 
 }

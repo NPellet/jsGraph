@@ -253,14 +253,14 @@ class Axis extends EventEmitter {
   }
 
   kill( noRedraw, noSerieKill ) {
-    this.graph.killAxis( this, noRedraw, noSerieKill );
-  }
-  /**
-   * Forces the appearence of a straight perpendicular line at value 0
-   * @param {Boolean} lineAt0 - true to display the line, false not to.
-   * @memberof Axis
-   * @return {Axis} The current axis
-   */
+      this.graph.killAxis( this, noRedraw, noSerieKill );
+    }
+    /**
+     * Forces the appearence of a straight perpendicular line at value 0
+     * @param {Boolean} lineAt0 - true to display the line, false not to.
+     * @memberof Axis
+     * @return {Axis} The current axis
+     */
   setLineAt0( bool ) {
     this.options.lineAt0 = !!bool;
   }
@@ -932,28 +932,28 @@ class Axis extends EventEmitter {
    * @return {Axis} The current axis
    */
   flip( flip ) {
-    this.options.flipped = flip;
-    this.setMinMaxFlipped();
-    return this;
-  }
-  /*
-    setMinMaxFlipped() {
-
-      var interval = this.maxPx - this.minPx;
-      var maxPx = this.maxPx - interval * this.options.span[ 0 ];
-      var minPx = this.maxPx - interval * this.options.span[ 1 ];
-
-      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
-      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
-
-      // this.minPx = minPx;
-      //this.maxPx = maxPx;
+      this.options.flipped = flip;
+      this.setMinMaxFlipped();
+      return this;
     }
-  */
-  /**
-   * @memberof Axis
-   * @return {Boolean} The current flipping state of the axis
-   */
+    /*
+      setMinMaxFlipped() {
+
+        var interval = this.maxPx - this.minPx;
+        var maxPx = this.maxPx - interval * this.options.span[ 0 ];
+        var minPx = this.maxPx - interval * this.options.span[ 1 ];
+
+        this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
+        this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
+
+        // this.minPx = minPx;
+        //this.maxPx = maxPx;
+      }
+    */
+    /**
+     * @memberof Axis
+     * @return {Boolean} The current flipping state of the axis
+     */
   isFlipped() {
     return this.options.flipped;
   }
@@ -1355,20 +1355,20 @@ class Axis extends EventEmitter {
 
   removeUselessTickLabels() {
 
-    for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
-      this.ticksLabels[ i ].setAttribute( 'display', 'none' );
+      for ( var i = this.currentTickLabel; i < this.ticksLabels.length; i++ ) {
+        this.ticksLabels[ i ].setAttribute( 'display', 'none' );
+      }
+
+      this.lastCurrentTickLabel = this.currentTickLabel;
+      this.currentTickLabel = 0;
+
     }
-
-    this.lastCurrentTickLabel = this.currentTickLabel;
-    this.currentTickLabel = 0;
-
-  }
-  /*
-    doGridLine() {
-      var gridLine = document.createElementNS( this.graph.ns, 'line' );
-      this.groupGrids.appendChild( gridLine );
-      return gridLine;
-    };*/
+    /*
+      doGridLine() {
+        var gridLine = document.createElementNS( this.graph.ns, 'line' );
+        this.groupGrids.appendChild( gridLine );
+        return gridLine;
+      };*/
 
   nextGridLine( primary, x1, x2, y1, y2 ) {
 

@@ -24,19 +24,22 @@
 			"./src/series/graph.serie.js",
 			"./src/series/slotoptimizer.js",
 			"./src/mixins/graph.mixin.errorbars.js",
+			"./src/series/graph.serie.line.3d.js",
+			"./src/mixins/graph.mixin.serie3d.js",
 			"./src/series/graph.serie.bar.js",
 			"./src/series/graph.serie.box.js",
 			"./src/series/graph.serie.line.colored.js",
 			"./src/series/graph.serie.scatter.js",
 			"./src/series/graph.serie.zone.js",
+			"./src/series/graph.serie.zone.3d.js",
 			"./src/series/graph.serie.densitymap.js",
 			"./src/series/graph.serie.contour.js",
 			"./src/shapes/graph.shape.js",
 			"./src/shapes/graph.shape.areaundercurve.js",
-			"./src/shapes/graph.shape.arrow.js",
-			"./src/shapes/graph.shape.line.js",
+			"./src/shapes/graph.shape.ellipse.js",
 			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
+			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.rect.js",
@@ -51,7 +54,7 @@
 			"./src/graph.lru.js",
 			"./src/plugins/graph.plugin.serielinedifference.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
-			"./src/shapes/graph.shape.ellipse.js"
+			"./src/shapes/graph.shape.arrow.js"
 		]
 	}
 }

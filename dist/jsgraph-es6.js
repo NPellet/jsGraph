@@ -56,17 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(18), __webpack_require__(19), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(45), __webpack_require__(29), __webpack_require__(30), __webpack_require__(28), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(43), __webpack_require__(44), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(18), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(48), __webpack_require__(30), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(46), __webpack_require__(47), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'), require('./util/waveform'), require('./util/fit_lm'));
+	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.line.3d'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.zone.3d'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'), require('./util/waveform'), require('./util/fit_lm'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.waveform, global.fit_lm);
+	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieZone, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.waveform, global.fit_lm);
 	    global.graph = mod.exports;
 	  }
-	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerie3, _graphSerie5, _graphSerieLine, _graphSerie7, _graphSerie9, _graphSerie11, _graphSerie13, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13, _waveform, _fit_lm) {
+	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerieLine, _graphSerie3, _graphSerie5, _graphSerieLine3, _graphSerie7, _graphSerie9, _graphSerieZone, _graphSerie11, _graphSerie13, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13, _waveform, _fit_lm) {
 	  'use strict';
 
 	  var _graph2 = _interopRequireDefault(_graph);
@@ -85,15 +85,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
+	  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
+
 	  var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
 	  var _graphSerie6 = _interopRequireDefault(_graphSerie5);
 
-	  var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
+	  var _graphSerieLine4 = _interopRequireDefault(_graphSerieLine3);
 
 	  var _graphSerie8 = _interopRequireDefault(_graphSerie7);
 
 	  var _graphSerie10 = _interopRequireDefault(_graphSerie9);
+
+	  var _graphSerieZone2 = _interopRequireDefault(_graphSerieZone);
 
 	  var _graphSerie12 = _interopRequireDefault(_graphSerie11);
 
@@ -159,21 +163,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
 
 	  _graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
-	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine2.default);
+	  _graph2.default.registerConstructor("graph.serie.line.3d", _graphSerieLine2.default);
+	  _graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine4.default);
 	  _graph2.default.registerConstructor("graph.serie.contour", _graphSerie14.default);
 	  _graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
 	  _graph2.default.registerConstructor("graph.serie.box", _graphSerie6.default);
 	  _graph2.default.registerConstructor("graph.serie.scatter", _graphSerie8.default);
 	  _graph2.default.registerConstructor("graph.serie.zone", _graphSerie10.default);
+	  _graph2.default.registerConstructor("graph.serie.zone.3d", _graphSerieZone2.default);
 	  _graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie12.default);
 
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
-	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_3D, _graphSerieLine2.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine4.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie14.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_BOX, _graphSerie6.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie8.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie10.default);
+	  _graph2.default.registerConstructor(_graph2.default.SERIE_ZONE_3D, _graphSerieZone2.default);
 	  _graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie12.default);
 
 	  //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
@@ -266,7 +274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Default graph parameters
 	   * @name Graph~GraphOptionsDefault
 	   * @name GraphOptions
@@ -322,7 +330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _constructors = new Map();
 
-	  /** 
+	  /**
 	   * Entry class of jsGraph that creates a new graph.
 	   * @extends EventEmitter
 	   * @tutorial basic
@@ -372,7 +380,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrapper.style['-ms-user-select'] = 'none';
 	      wrapper.style['user-select'] = 'none';
 
-	      /** 
+	      /**
 	       * @object
 	       * @memberof Graph
 	       * @name Graph#options
@@ -453,7 +461,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._pluginsInit();
 	    }
 
-	    /** 
+	    /**
 	     * Returns the graph SVG wrapper element
 	     * @public
 	     * @return {SVGElement} The DOM element wrapping the graph
@@ -471,7 +479,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._creation;
 	    }
 
-	    /** 
+	    /**
 	     * Returns the graph wrapper element passed during the graph creation
 	     * @public
 	     * @return {HTMLElement} The DOM element wrapping the graph
@@ -531,7 +539,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	      } else {
 
-	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this)) {
+	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
 	          this.executeRedrawSlaves();
 	          refreshDrawingZone(this);
 	          return true;
@@ -549,9 +557,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
 	     */
-	    draw() {
+	    draw(force) {
 
-	      this.drawSeries(this.redraw(true));
+	      this.updateLegend(true);
+	      this.drawSeries(this.redraw(true && !force));
+	    }
+
+	    /**
+	     *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+	    delayUpdate() {
+	      this._lockUpdate = true;
+	      return this;
+	    }
+
+	    /**
+	     *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @since 1.16.19
+	     */
+	    doUpdate() {
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      this.draw();
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      return this;
+	    }
+
+	    /**
+	     *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+	    resumeUpdate() {
+	      this._lockUpdate = false;
+	      return this;
+	    }
+
+	    isDelayedUpdate() {
+	      return this._lockUpdate;
 	    }
 
 	    /**
@@ -993,7 +1051,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._applyToAxes("setMinMaxToFitSeries", null, true, true);
 
 	      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-	      // X is not always ascending... 
+	      // X is not always ascending...
 	    }
 
 	    /**
@@ -1174,7 +1232,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    /** 
+	    /**
 	     * Function that is called from {@link Graph#_applyToAxes}
 	     * @function
 	     * @name AxisCallbackFunction
@@ -1247,27 +1305,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    newSerie(name, options, type) {
 
+	      let serie;
+
+	      if (typeof options !== "object" && !type) {
+	        type = options;
+	        options = {};
+	      }
+
 	      if (!type) {
 	        type = Graph.SERIE_LINE;
 	      }
 
-	      var serie;
 	      if (serie = this.getSerie(name)) {
 	        return serie;
 	      }
 
 	      if (!(serie = makeSerie(this, name, options, type))) {
 	        return;
-	      };
+	      }
 
 	      this.series.push(serie);
-	      this.updateLegend();
-
 	      this.emit("newSerie", serie);
 	      return serie;
 	    }
 
-	    /** 
+	    /**
 	     * Looks for an existing serie by name or by index and returns it.
 	     * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
 	     * @param {(String|Number)} name - The name or the index of the serie
@@ -1355,6 +1417,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.series[0].kill(true);
 	      }
 	      this.series = [];
+
+	      if (this.legend) {
+	        this.legend.update();
+	      }
 	    }
 
 	    /**
@@ -1449,6 +1515,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var self = this,
 	          response;
+
+	      this.prevent(false);
 
 	      if (!mute) {
 
@@ -1962,21 +2030,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return util.throwError("Graph legend is not available as it has not been registered");
 	      }
 
-	      this.legend.update();
+	      //    this.legend.update();
 
 	      return this.legend;
 	    }
 
 	    /**
-	     * Redraw the legend
+	     * Redraws the legend if it exists
+	     * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+	     * @return {Graph} The graph instance
 	     */
-	    updateLegend() {
+	    updateLegend(onlyIfRequired = false) {
 
 	      if (!this.legend) {
 	        return;
 	      }
 
-	      this.legend.update();
+	      this.legend.update(onlyIfRequired);
+	      return this;
 	    }
 
 	    /**
@@ -1988,6 +2059,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return this.legend;
+	    }
+
+	    requireLegendUpdate() {
+
+	      if (!this.legend) {
+	        return;
+	      }
+
+	      this.legend.requireDelayedUpdate();
 	    }
 
 	    /**
@@ -2056,20 +2136,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.dom.setAttribute('height', this.height);
 	      this.domTitle.setAttribute('x', this.width / 2);
 
-	      this.redraw();
-	      this.drawSeries(true);
-	      //refreshDrawingZone( this );
+	      this.requireLegendUpdate();
 
-	      if (this.legend) {
-	        this.legend.update();
-	      }
+	      this.draw(true);
 	    }
 	    _doDom() {
 
 	      // Create SVG element, set the NS
 	      this.dom = document.createElementNS(this.ns, 'svg');
 	      this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-	      //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);  
+	      //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
 	      util.setAttributeTo(this.dom, {
 	        'xmlns': this.ns,
 	        'font-family': this.options.fontFamily,
@@ -2169,7 +2245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.defs.appendChild(this.markerArrow);
 
-	      // Horionzal split marker for axis 
+	      // Horionzal split marker for axis
 	      this.markerHorizontalSplit = document.createElementNS(this.ns, 'marker');
 	      this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
 	      this.markerHorizontalSplit.setAttribute('id', 'horionzalsplit_' + this.getId());
@@ -2191,7 +2267,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.defs.appendChild(this.markerHorizontalSplit);
 
-	      // Vertical split marker for axis 
+	      // Vertical split marker for axis
 	      this.markerVerticalSplit = document.createElementNS(this.ns, 'marker');
 	      this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
 	      this.markerVerticalSplit.setAttribute('id', 'verticalsplit_' + this.getId());
@@ -2243,6 +2319,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      util.setAttributeTo(this.graphingZone, {
 	        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
 	      });
+
+	      this._sizeChanged = true;
 	    }
 
 	    // We have to proxy the methods in case they are called anonymously
@@ -2833,7 +2911,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    static newWaveform() {
-	      return new _waveform2.default();
+	      return new _waveform2.default(...arguments);
+	    }
+
+	    static waveform() {
+	      return new _waveform2.default(...arguments);
 	    }
 	  }
 
@@ -2846,6 +2928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (!constructor && typeof type == "string") {
 	      constructor = graph.getConstructor("graph.serie." + type, true);
 	    }
+
 	    if (constructor) {
 
 	      var serie = new constructor();
@@ -2853,7 +2936,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      graph.appendSerieToDom(serie);
 	    } else {
 
-	      return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ); first is you use your own series");
+	      return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");
 	    }
 
 	    return serie;
@@ -2900,10 +2983,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    graph._painted = true;
-
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
-
 	      if (axis.disabled || axis.floating) {
 	        return;
 	      }
@@ -3699,6 +3780,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return temp;
 	  }
 
+	  function hasSizeChanged(graph) {
+	    var temp = graph._sizeChanged;
+	    graph._sizeChanged = false;
+	    return temp;
+	  }
+
 	  // Constants
 	  Graph.SERIE_LINE = Symbol();
 	  Graph.SERIE_SCATTER = Symbol();
@@ -3709,6 +3796,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  Graph.SERIE_LINE_COLORED = Symbol();
 	  Graph.SERIE_ZONE = Symbol();
 	  Graph.SERIE_DENSITYMAP = Symbol();
+	  Graph.SERIE_LINE_3D = Symbol();
+	  Graph.SERIE_ZONE_3D = Symbol();
 
 	  Graph.TICKS_OUTSIDE = Symbol();
 	  Graph.TICKS_INSIDE = Symbol();
@@ -3876,7 +3965,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // dx in px => val + 10px
 
 	            pos[i] = def + parsed; // return integer (will be interpreted as px)
-	          } else if (parsed = this._parsePercent(dval)) {
+	          } else if ((parsed = this._parsePercent(dval)) !== false) {
 
 	            pos[i] = def + this._getPositionPx(parsed, true, axis, graph); // returns xx%
 	          } else if (axis) {
@@ -3998,7 +4087,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  Computes a value in pixels
 	     *  @param {Number} value - The value in axis unit
 	     *  @param {Axis} axis - The x or y axis to consider (has to belong to the graph)
-	     *  @param {Boolean} rel - Whether or not the value is a distance 
+	     *  @param {Boolean} rel - Whether or not the value is a distance
 	     *  @return {(Number|String)} The computed value
 	     */
 	    getPx(value, axis, rel) {
@@ -4011,7 +4100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else if ((parsed = _parsePx(value)) !== false) {
 
 	        return parsed; // return integer (will be interpreted as px)
-	      } else if (parsed = this._parsePercent(value)) {
+	      } else if ((parsed = this._parsePercent(value)) !== false) {
 
 	        return parsed; // returns xx%
 	      } else if (axis) {
@@ -4061,8 +4150,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var posObject = new Position(pos);
 
 	      if (pos && pos.relativeTo) {
-	        var position;
-	        if (position = callback(pos.relativeTo)) {
+	        const position = callback(pos.relativeTo);
+	        if (position) {
 	          posObject.relativeTo(position);
 	        }
 	      }
@@ -4105,6 +4194,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  exports.hue2rgb = hue2rgb;
 	  exports.hslToRgb = hslToRgb;
 	  exports.saveDomAttributes = saveDomAttributes;
+	  exports.hasSavedAttribute = hasSavedAttribute;
+	  exports.overwriteDomAttribute = overwriteDomAttribute;
 	  exports.restoreDomAttributes = restoreDomAttributes;
 	  exports.debounce = debounce;
 	  exports.SVGParser = SVGParser;
@@ -4175,7 +4266,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {String} a random id
 	   */
 	  function guid() {
-	    // 
+	    //
 	    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 	      var r = Math.random() * 16 | 0,
 	          v = c == 'x' ? r : r & 0x3 | 0x8;
@@ -4229,9 +4320,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 	      var p = 2 * l - q;
-	      r = util.hue2rgb(p, q, h + 1 / 3);
-	      g = util.hue2rgb(p, q, h);
-	      b = util.hue2rgb(p, q, h - 1 / 3);
+	      r = hue2rgb(p, q, h + 1 / 3);
+	      g = hue2rgb(p, q, h);
+	      b = hue2rgb(p, q, h - 1 / 3);
 	    }
 
 	    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -4244,7 +4335,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    to._savedAttributesIds = to._savedAttributesIds || [];
 
 	    if (to._savedAttributesIds.indexOf(identification) > -1) {
-	      util.restoreDomAttributes(to, identification);
+	      restoreDomAttributes(to, identification);
 	    }
 
 	    to._savedAttributes = to._savedAttributes || {};
@@ -4262,6 +4353,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      to.setAttribute(i, attributes[i]);
 	    }
 	  };
+
+	  function hasSavedAttribute(dom, attr) {
+	    return dom._savedAttributes && dom._savedAttributes[attr] !== undefined;
+	  }
+
+	  function overwriteDomAttribute(dom, attribute, newValue) {
+	    if (hasSavedAttribute(dom, attribute)) {
+	      dom._savedAttributes[attribute] = newValue;
+	    }
+	  }
 
 	  function restoreDomAttributes(to, identification) {
 
@@ -4970,82 +5071,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  const MULTIPLY = Symbol();
-	  const ADD = Symbol();
-	  const SUBTRACT = Symbol();
-	  const DIVIDE = Symbol();
-
-	  // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
-	  function pow2ceil(v) {
-	    v--;
-	    var p = 2;
-	    while (v >>= 1) {
-	      p <<= 1;
-	    }
-	    return p;
-	  }
-
-	  function binarySearch(target, haystack, reverse) {
-
-	    let seedA = 0,
-	        length = haystack.length,
-	        seedB = length - 1,
-	        seedInt,
-	        i = 0,
-	        nanDirection = 1;
-
-	    if (haystack[seedA] == target) {
-	      return seedA;
-	    }
-
-	    if (haystack[seedB] == target) {
-	      return seedB;
-	    }
-
-	    while (true) {
-	      i++;
-	      if (i > 100) {
-	        throw "Error loop";
-	      }
-
-	      seedInt = Math.floor((seedA + seedB) / 2);
-	      //  seedInt -= seedInt % 2; // Always looks for an x.
-
-	      while (isNaN(haystack[seedInt])) {
-	        seedInt += nanDirection;
-	      }
-
-	      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
-	        return seedInt;
-	      }
-
-	      //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-	      if (haystack[seedInt] <= target) {
-	        if (reverse) {
-	          seedB = seedInt;
-	        } else {
-	          seedA = seedInt;
-	        }
-	      } else if (haystack[seedInt] > target) {
-	        if (reverse) {
-	          seedA = seedInt;
-	        } else {
-	          seedB = seedInt;
-	        }
-	      } else {
-	        return false;
-	      }
-
-	      nanDirection *= -1;
-	    }
-	  }
-
 	  class Waveform {
 
-	    constructor() {
+	    constructor(data = [], xOffset = 0, xScale = 1) {
 
-	      this.xOffset = 0;
-	      this.xScale = 1;
+	      this.xOffset = xOffset;
+	      this.xScale = xScale;
+	      this.setData(data);
 	    }
 
 	    /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -5070,6 +5102,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    */
 	    setData(data) {
+
+	      /* First, we must treat the case of the array of array for backward compatibility */
+	      if (Array.isArray(data[0])) {
+	        let x = [];
+	        let y = [];
+	        data.forEach(el => {
+	          x.push(el[0]);
+	          y.push(el[1]);
+	        });
+
+	        this.setXWaveform(x);
+	        data = y;
+	      }
 
 	      let newData = this._makeArray(data.length),
 	          warnNaN = false;
@@ -5104,7 +5149,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setXWaveform(waveform) {
 
 	      if (!(waveform instanceof Waveform)) {
-	        return;
+
+	        if (Array.isArray(waveform)) {
+	          waveform = new Waveform(waveform);
+	        } else {
+	          throw "Cannot set X waveform. Data is not a valid array.";
+	        }
 	      }
 
 	      this.xdata = waveform;
@@ -5151,10 +5201,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
 	    }
 
+	    recalculateMinMaxNewPoint(x, y) {
+	      if (x < this.minX) {
+	        this.minX = x;
+	      } else if (x > this.maxX) {
+	        this.maxX = x;
+	      }
+
+	      if (y < this.minY) {
+	        this.minY = y;
+	      } else if (y > this.maxY) {
+	        this.maxY = y;
+	      }
+	    }
+
+	    prepend(x, y) {
+
+	      if (this.xdata) {
+	        this.xdata.prepend(null, x);
+	      } else {
+	        this.xOffset -= this.xScale;
+	      }
+
+	      this.data.unshift(y);
+	      this.recalculateMinMaxNewPoint(x, y);
+	      return this;
+	    }
+
+	    append(x, y) {
+
+	      if (this.xdata) {
+	        this.xdata.append(null, x);
+	      }
+
+	      this.data.push(y);
+	      this.recalculateMinMaxNewPoint(x, y);
+
+	      return this;
+	    }
+
 	    _makeArray(length) {
 
-	      let constructor;
-	      if (constructor = this.getTypedArrayClass()) {
+	      const constructor = this.getTypedArrayClass();
+	      if (constructor) {
 	        return new constructor(length);
 	      }
 	      return new Array(length);
@@ -5204,8 +5293,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.minX = this.xdata.getMin();
 	        this.maxX = this.xdata.getMax();
 	      } else {
-	        this.minX = Math.min(this.xScale * this.getLength(), 0) + this.xOffset;
-	        this.maxX = Math.max(this.xScale * this.getLength(), 0) + this.xOffset;
+
+	        const b1 = this.xOffset + this.xScale * this.getLength(),
+	              b2 = this.xOffset;
+
+	        this.minX = Math.min(b1, b2);
+	        this.maxX = Math.max(b1, b2);
 	      }
 	    }
 
@@ -5774,6 +5867,76 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  };
 
+	  const MULTIPLY = Symbol();
+	  const ADD = Symbol();
+	  const SUBTRACT = Symbol();
+	  const DIVIDE = Symbol();
+
+	  // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
+	  function pow2ceil(v) {
+	    v--;
+	    var p = 2;
+	    while (v >>= 1) {
+	      p <<= 1;
+	    }
+	    return p;
+	  }
+
+	  function binarySearch(target, haystack, reverse) {
+
+	    let seedA = 0,
+	        length = haystack.length,
+	        seedB = length - 1,
+	        seedInt,
+	        i = 0,
+	        nanDirection = 1;
+
+	    if (haystack[seedA] == target) {
+	      return seedA;
+	    }
+
+	    if (haystack[seedB] == target) {
+	      return seedB;
+	    }
+
+	    while (true) {
+	      i++;
+	      if (i > 100) {
+	        throw "Error loop";
+	      }
+
+	      seedInt = Math.floor((seedA + seedB) / 2);
+	      //  seedInt -= seedInt % 2; // Always looks for an x.
+
+	      while (isNaN(haystack[seedInt])) {
+	        seedInt += nanDirection;
+	      }
+
+	      if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
+	        return seedInt;
+	      }
+
+	      //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+	      if (haystack[seedInt] <= target) {
+	        if (reverse) {
+	          seedB = seedInt;
+	        } else {
+	          seedA = seedInt;
+	        }
+	      } else if (haystack[seedInt] > target) {
+	        if (reverse) {
+	          seedA = seedInt;
+	        } else {
+	          seedB = seedInt;
+	        }
+	      } else {
+	        return false;
+	      }
+
+	      nanDirection *= -1;
+	    }
+	  }
+
 	  exports.default = Waveform;
 	});
 
@@ -5955,7 +6118,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    //------the four mandated interface methods------------
-
 	    nudge(dp) {
 
 	      for (var j = 0; j < this.NPARMS; j++) {
@@ -5967,7 +6129,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    buildJacobian() {
 	      // Allows LM to compute a new Jacobian.
 	      // Uses current parms[] and two-sided finite difference.
-	      // If current parms[] is bad, returns false.  
+	      // If current parms[] is bad, returns false.
 	      var delta = new Array(this.NPARMS);
 	      var FACTOR = 0.5 / this.DELTAP;
 	      var d = 0;
@@ -6008,12 +6170,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getResidualElement(i) {
-	      // Allows LM to see one element of the resid[] vector. 
+	      // Allows LM to see one element of the resid[] vector.
 	      return this.resid[i];
 	    }
 
 	    getJacobianElement(i, j) {
-	      // Allows LM to see one element of the Jacobian matrix. 
+	      // Allows LM to see one element of the Jacobian matrix.
 	      return this.jac[i][j];
 	    }
 
@@ -6051,7 +6213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.LAMBDAZERO = 0.001; // initial damping
 	      this.LAMBDAMAX = 1E9; // max damping
 	      this.LMTOL = 1E-12; // exit tolerance
-	      this.BIGVAL = 9e99; // trouble flag 
+	      this.BIGVAL = 9e99; // trouble flag
 
 	      this.sos;
 	      this.sosprev;
@@ -6066,7 +6228,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.alpha;
 	      this.amatrix;
 
-	      // Constructor sets up fields and drives iterations. 
+	      // Constructor sets up fields and drives iterations.
 	      this.myH = gH;
 	      this.nadj = gnadj;
 	      this.npts = gnpnts;
@@ -6096,9 +6258,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    bLMiter() {
-	      // Each call performs one LM iteration. 
-	      // Returns true if done with iterations; false=wants more. 
-	      // Global nadj, npts; needs nadj, myH to be preset. 
+	      // Each call performs one LM iteration.
+	      // Returns true if done with iterations; false=wants more.
+	      // Global nadj, npts; needs nadj, myH to be preset.
 	      // Ref: M.Lampton, Computers in Physics v.11 pp.110-115 1997.
 	      for (var k = 0; k < this.nadj; k++) this.delta[k] = 0.0;
 	      this.sos = this.myH.nudge(this.delta);
@@ -6419,7 +6581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Default legend configuration
 	   * @name LegendOptionsDefault
 	   * @object
@@ -6456,7 +6618,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  };
 
-	  /** 
+	  /**
 	   * Legend constructor. You should not call this method directly, but rather use {@link graph.makeLegend}
 	   * @example var legend = graph.makeLegend( {  backgroundColor: 'rgba(255, 255, 255, 0.8)',
 	   * frame: true,
@@ -6534,7 +6696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.applyStyle();
 	    }
 
-	    /** 
+	    /**
 	     * Sets the position of the legend
 	     * @param {Position} position - the position to set the legend to versus the graph main axes ({@link Graph#getXAxis} and {@link Graph#getYAxis})
 	     * @param {String} alignToX - "right" or "left". References the legend right or left boundary using the position parameter
@@ -6563,6 +6725,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	      }
 
+	      this.requireDelayedUpdate();
 	      this.autoPosition = false;
 	    }
 
@@ -6575,6 +6738,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var series = this.series || this.graph.getSeries(),
 	          posX = 0,
 	          posY = this.options.paddingTop;
+
+	      if (!this.autoPosition) {
+	        this.graph.graphingZone.appendChild(this.getDom());
+	      } else {
+	        this.graph.getDom().appendChild(this.getDom());
+	      }
 
 	      for (var i = 0, l = series.length; i < l; i++) {
 
@@ -6625,8 +6794,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.rectBottom.setAttribute('width', this.width);
 	      this.rectBottom.setAttribute('height', this.height);
 
-	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingTop);
-	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingLeft);
+	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingLeft);
+	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingTop);
 	      /* End independant on box position */
 
 	      this.position = this.position || {};
@@ -6685,19 +6854,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.updateGraphingZone();
 	        this.graph.getDrawingHeight();
 	        this.graph.getDrawingWidth();
-	        this.graph.redraw(false);
+	        // this.graph.redraw( false );
 	      }
 
 	      this.bbox = bbox;
 	    }
 
 	    calculatePosition() {
-
-	      if (!this.autoPosition) {
-	        this.graph.graphingZone.appendChild(this.getDom());
-	      } else {
-	        this.graph.getDom().appendChild(this.getDom());
-	      }
 
 	      var pos = _graph2.default.check(this.position);
 	      let poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
@@ -6722,13 +6885,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.pos.transformX = poscoords.x;
 	      this.pos.transformY = poscoords.y;
+
 	      this._setPosition();
 	    }
 
-	    /** 
+	    /**
 	     * Updates the legend position and content
 	     */
-	    update() {
+	    update(onlyIfRequired) {
+
+	      if (this.graph.isDelayedUpdate() || !this._requiredUpdate && onlyIfRequired) {
+	        return;
+	      }
+
+	      this._requiredUpdate = false;
 
 	      var self = this;
 
@@ -6867,7 +7037,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.calculatePosition();
 	    }
 
-	    /** 
+	    /**
 	     * @return {Boolean} true or false depending if the series can be hidden or not
 	     */
 	    isHideable() {
@@ -6895,21 +7065,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.isSerieHideable;
 	    }
 
-	    /** 
+	    /**
 	     * @return {Boolean} true or false depending if the series can be selected or not
 	     */
 	    isSelectable() {
 	      return this.options.isSerieSelectable;
 	    }
 
-	    /** 
+	    /**
 	     * @return {Boolean} true or false depending if the series can be t or not
 	     */
 	    isToggleShapes() {
 	      return this.options.shapesToggleable;
 	    }
 
-	    /** 
+	    /**
 	     * @return {SVGGroupElement} The SVG group element wrapping the legend
 	     */
 	    getDom() {
@@ -6941,15 +7111,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        self.handleMouseMove(e);
 	      };
 
-	      this.rectBottom.addEventListener('mousedown', mousedown);
+	      this.svg.addEventListener('mousedown', mousedown);
 	      this.svg.addEventListener('click', function (e) {
 	        e.stopPropagation();
 	      });
 	      this.svg.addEventListener('dblclick', function (e) {
 	        e.stopPropagation();
 	      });
-	      this.rectBottom.addEventListener('mousemove', mousemove);
-	      this.rect.addEventListener('mousemove', mousemove);
+	      this.svg.addEventListener('mousemove', mousemove);
+	      //this.rect.addEventListener( 'mousemove', mousemove );
 	    }
 
 	    handleMouseUp(e) {
@@ -6992,7 +7162,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    /** 
+	    /**
 	     * Re-applies the legend style
 	     */
 	    applyStyle() {
@@ -7007,7 +7177,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.rectBottom.setAttribute('fill', this.options.backgroundColor);
 	    }
 
-	    /** 
+	    /**
 	     * Re-applies the legend style
 	     * @param {...(GraphSerie|GraphSerie[])} a serie or an array of series
 	     */
@@ -7035,6 +7205,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    fixSeriesAdd(serie) {
 	      this.series = this.series || [];
 	      this.series.push(serie);
+	    }
+
+	    requireDelayedUpdate() {
+	      this._requiredUpdate = true;
 	    }
 
 	  }
@@ -7088,7 +7262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Generic constructor of a y axis
 	   * @augments Axis
 	   */
@@ -7358,7 +7532,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Default graph parameters
 	   * @name AxisOptionsDefault
 	   * @object
@@ -7424,7 +7598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    splitMarks: false
 	  };
 
-	  /** 
+	  /**
 	   * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
 	   * @class Axis
 	   * @static
@@ -7554,6 +7728,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
 	      this.clip.appendChild(this.clipRect);
 	      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+	      this.graph._axisHasChanged(this);
 	    }
 
 	    handleMouseMoveLocal() {}
@@ -8944,7 +9120,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
 	     */
 	    getRelVal(px) {
-
 	      return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
 	    }
 
@@ -9783,7 +9958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Generic constructor of a y axis
 	   * @extends Axis
 	   */
@@ -9951,7 +10126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    drawSpecifics() {
 	      // Place label correctly
 	      //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-	      /* 
+	      /*
 	      if ( !this.left ) {
 	         this.labelTspan.style.dominantBaseline = 'hanging';
 	        this.expTspan.style.dominantBaseline = 'hanging';
@@ -10174,7 +10349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Generic constructor of a y axis
 	   * @class AxisXBar
 	   * @augments Axis
@@ -11406,18 +11581,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    trackMouseLabelRouding: 1,
 	    lineToZero: false,
 
-	    autoPeakPicking: false,
-	    autoPeakPickingNb: 4,
-	    autoPeakPickingMinDistance: 10,
-	    autoPeakPickingFormat: false,
-	    autoPeakPickingAllowAllY: false,
-
 	    selectableOnClick: true,
 
 	    markersIndependant: false
 	  };
 
-	  /** 
+	  /**
 	   * Serie line
 	   * @example graph.newSerie( name, options, "line" );
 	   * @see Graph#newSerie
@@ -11434,8 +11603,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @memberof SerieLine
 	     */
 	    init(graph, name, options) {
-
-	      var self = this;
 
 	      this.selectionType = "unselected";
 	      this.markerFamilies = {};
@@ -11524,47 +11691,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.initExtended1();
 	      }
 
-	      if (this.options.autoPeakPicking) {
+	      this.groupLines.addEventListener('click', e => {
 
-	        this.picks = this.picks || [];
+	        if (this.options.selectableOnClick) {
 
-	        for (var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+	          if (this.isSelected()) {
 
-	          var shape = this.graph.newShape({
-
-	            type: 'label',
-	            label: {
-	              text: "",
-	              position: {
-	                x: 0
-	              },
-	              anchor: 'middle'
-
-	            },
-
-	            selectable: true,
-
-	            shapeOptions: {
-	              minPosY: 15
-	            }
-
-	          });
-
-	          shape.draw();
-	          shape.setSerie(self);
-	          self.picks.push(shape);
-	        }
-	      }
-
-	      this.groupLines.addEventListener('click', function (e) {
-
-	        if (self.options.selectableOnClick) {
-
-	          if (self.isSelected()) {
-
-	            self.graph.unselectSerie(self);
+	            this.graph.unselectSerie(this);
 	          } else {
-	            self.graph.selectSerie(self);
+	            this.graph.selectSerie(this);
 	          }
 	        }
 	      });
@@ -11594,13 +11729,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	       * Sets the options of the serie
-	       * @see SerieLineDefaultOptions
-	       * @param {Object} options - A object containing the options to set
-	       * @return {SerieLine} The current serie
-	       * @memberof SerieLine
-	       
-	    */
+	     * Sets the options of the serie
+	     * @see SerieLineDefaultOptions
+	     * @param {Object} options - A object containing the options to set
+	     * @return {SerieLine} The current serie
+	     * @memberof SerieLine
+	     */
 	    setOptions(options) {
 	      this.options = util.extend(true, {}, SerieLine.prototype.defaults, options || {});
 	      // Unselected style
@@ -11921,8 +12055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.optimizeMonotoneousDirection = this.XMonotoneousDirection() && !this.getXAxis().isFlipped() || !this.XMonotoneousDirection() && this.getXAxis().isFlipped();
 	      this._optimizeBreak;
 	      this._optimizeBuffer;
-	      this.detectedPeaks = [];
-	      this.lastYPeakPicking = false;
+
 	      return true;
 	    }
 
@@ -11952,44 +12085,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.lines.splice(this.currentLineId, l - this.currentLineId);
 	      this.currentLineId = 0;
-	    }
-
-	    detectPeaks(x, y) {
-
-	      if (!this.options.autoPeakPicking) {
-	        return;
-	      }
-
-	      if (!this.options.lineToZero) {
-
-	        if (!this.lastYPeakPicking) {
-
-	          this.lastYPeakPicking = [y, x];
-	        } else {
-
-	          if (y >= this.lastYPeakPicking[0] && this.lookForMaxima || y <= this.lastYPeakPicking[0] && this.lookForMinima) {
-
-	            this.lastYPeakPicking = [y, x];
-	          } else if (y < this.lastYPeakPicking[0] && this.lookForMaxima || y > this.lastYPeakPicking[0] && this.lookForMinima) {
-
-	            if (this.lookForMinima) {
-	              this.lookForMinima = false;
-	              this.lookForMaxima = true;
-	            } else {
-
-	              this.lookForMinima = true;
-	              this.lookForMaxima = false;
-
-	              this.detectedPeaks.push(this.lastYPeakPicking);
-	              this.lastYPeakPicking = false;
-	            }
-
-	            this.lastYPeakPicking = [y, x];
-	          }
-	        }
-	      } else {
-	        this.detectedPeaks.push([y, x]);
-	      }
 	    }
 
 	    /**
@@ -12028,7 +12123,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.errorDraw();
 	        }
 
-	        this.makePeakPicking();
 	        this.removeExtraLines();
 	        this.insertMarkers();
 	        this.insertLinesGroup();
@@ -12317,44 +12411,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    /**
-	     * Hides the automatic peak picking (see the autoPeakPicking option)
-	     * @memberof SerieLine
-	     */
-	    hidePeakPicking(lock) {
-
-	      if (!this._hidePeakPickingLocked) {
-	        this._hidePeakPickingLocked = lock;
-	      }
-
-	      hidePeakPicking(this);
-	    }
-
-	    /**
-	     * Shows the automatic peak picking (see the autoPeakPicking option)
-	     * @memberof SerieLine
-	     */
-	    showPeakPicking(unlock) {
-
-	      if (this._hidePeakPickingLocked && !unlock) {
-	        return;
-	      }
-
-	      showPeakPicking(this);
-	    }
-
-	    killPeakPicking() {
-
-	      if (this.picks) {
-	        for (var i = 0, l = this.picks.length; i < l; i++) {
-	          this.picks[i].kill();
-	        }
-	      }
-	    }
-
 	    kill() {
 	      super.kill();
-	      this.killPeakPicking();
 	    }
 
 	    /**
@@ -12438,10 +12496,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          xpx = Math.floor(this.getX(slotToUse[j].x));
 	          max = this.getY(slotToUse[j].max);
-
-	          if (this.options.autoPeakPicking) {
-	            allY.push([slotToUse[j].max, slotToUse[j].x]);
-	          }
 
 	          this._addPoint(xpx, this.getY(slotToUse[j].start), false, false, false, false, false);
 	          this._addPoint(xpx, max, false, false, false, true, false);
@@ -13016,14 +13070,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 
 	    setStyle(style, selectionType = "unselected") {
-	      //console.log( style, selectionType );
+
 	      this.styles[selectionType] = style;
 	      this.styleHasChanged(selectionType);
 	    }
 
 	    setLineStyle(number, selectionType = "unselected", applyToSelected) {
 
-	      selectionType = selectionType;
 	      this.styles[selectionType] = this.styles[selectionType] || {};
 	      this.styles[selectionType].lineStyle = number;
 
@@ -13050,38 +13103,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case 3:
 	          return "2, 2";
 	          break;
-	        case 3:
+	        case 4:
 	          return "3, 3";
 	          break;
-	        case 4:
+	        case 5:
 	          return "4, 4";
 	          break;
-	        case 5:
+	        case 6:
 	          return "5, 5";
 	          break;
 
-	        case 6:
+	        case 7:
 	          return "5 2";
 	          break;
-	        case 7:
+	        case 8:
 	          return "2 5";
 	          break;
 
-	        case 8:
+	        case 9:
 	          return "4 2 4 4";
 	          break;
-	        case 9:
+	        case 10:
 	          return "1,3,1";
 	          break;
-	        case 10:
+	        case 11:
 	          return "9 2";
 	          break;
-	        case 11:
+	        case 12:
 	          return "2 9";
 	          break;
 
-	        case false:
 	        case 1:
+	        case false:
 	          return false;
 	          break;
 
@@ -13420,14 +13473,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    showImpl() {
-	      this.showPeakPicking();
-	    }
-
-	    hideImpl() {
-	      this.hidePeakPicking();
-	    }
-
 	    isMonotoneous() {
 	      if (this._waveform) {
 	        return this._waveform.isMonotoneous();
@@ -13448,154 +13493,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    XMonotoneousDirection() {
 
 	      return this.data && this.data[0] && this.data[0][2] - this.data[0][0] > 0;
-	    }
-
-	    makePeakPicking() {
-
-	      var self = this;
-	      var ys = this.detectedPeaks;
-
-	      var x,
-	          px,
-	          passed = [],
-	          px,
-	          i = 0,
-	          l = ys.length,
-	          k,
-	          m,
-	          y,
-	          index;
-
-	      var selected = self.graph.selectedShapes.map(function (shape) {
-	        return shape.getProp('xval');
-	      });
-
-	      ys.sort(function (a, b) {
-	        return b[0] - a[0];
-	      });
-
-	      m = 0;
-
-	      for (; i < l; i++) {
-
-	        x = ys[i][1];
-	        px = self.getX(x);
-	        k = 0;
-	        y = self.getY(ys[i][0]);
-
-	        if (px < self.getXAxis().getMinPx() || px > self.getXAxis().getMaxPx()) {
-	          continue;
-	        }
-
-	        if (!self.options.autoPeakPickingAllowAllY && (y > self.getYAxis().getMinPx() || y < self.getYAxis().getMaxPx())) {
-
-	          continue;
-	        }
-
-	        // Distance check
-	        for (; k < passed.length; k++) {
-	          if (Math.abs(passed[k] - px) < self.options.autoPeakPickingMinDistance) {
-	            break;
-	          }
-	        }
-	        if (k < passed.length) {
-	          continue;
-	        }
-
-	        // Distance check end
-
-	        // If the retained one has already been selected somewhere, continue;
-	        if ((index = selected.indexOf(x)) > -1) {
-	          passed.push(px);
-	          continue;
-	        }
-
-	        if (!self.picks[m]) {
-	          return;
-	        }
-
-	        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
-	        //    self.picks[ m ].show();
-
-	        if (this.getYAxis().getPx(ys[i][0]) - 20 < 0) {
-
-	          self.picks[m].setLabelPosition({
-	            x: x,
-	            y: "5px"
-	          });
-
-	          self.picks[m].setLabelBaseline('hanging');
-	        } else {
-
-	          self.picks[m].setLabelBaseline('no-change');
-
-	          self.picks[m].setLabelPosition({
-	            x: x,
-	            y: ys[i][0],
-	            dy: "-15px"
-	          });
-	        }
-
-	        self.picks[m].setProp('xval', x);
-
-	        if (self.options.autoPeakPickingFormat) {
-
-	          self.picks[m].setLabelText(self.options.autoPeakPickingFormat.call(self.picks[m], x, m));
-	        } else {
-	          self.picks[m].setLabelText(String(Math.round(x * 1000) / 1000));
-	        }
-
-	        self.picks[m].makeLabels();
-
-	        m++;
-	        while (self.picks[m] && self.picks[m].isSelected()) {
-	          m++;
-	        }
-
-	        if (passed.length == self.options.autoPeakPickingNb) {
-	          break;
-	        }
-	      }
-	    }
-	  }
-
-	  function drawMarkerXY(graph, family, x, y, markerDom) {
-
-	    if (!family) {
-	      return;
-	    }
-
-	    if (graph.options.markersIndependant) {
-	      var dom = graph.getMarkerDomIndependant(graph.counter1, graph.counter2, family);
-	      var p = 'M ' + x + ' ' + y + ' ';
-	      p += family.markerPath + ' ';
-
-	      dom.setAttribute('d', p);
-	    }
-
-	    markerDom.path = markerDom.path || "";
-	    markerDom.path += 'M ' + x + ' ' + y + ' ';
-	    markerDom.path += family.markerPath + ' ';
-	  }
-
-	  function hidePeakPicking(graph) {
-
-	    if (!graph.picks) {
-	      return;
-	    }
-	    for (var i = 0; i < graph.picks.length; i++) {
-	      graph.picks[i].hide();
-	    }
-	  }
-
-	  function showPeakPicking(graph) {
-
-	    if (!graph.picks) {
-	      return;
-	    }
-
-	    for (var i = 0; i < graph.picks.length; i++) {
-	      graph.picks[i].show();
 	    }
 	  }
 
@@ -13666,7 +13563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      super(...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Sets data to the serie
 	     * @memberof Serie
 	     * @param {(Object|Array|Array[])} data - The data of the serie
@@ -13678,6 +13575,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example serie.setData( { x: x0, dx: spacing, y: [ y1, y2, y3, y4 ] } ); // Data with equal x separation. Fastest way
 	     */
 	    setData(data, oneDimensional, type) {
+
+	      if (data instanceof _waveform2.default) {
+	        return this.setWaveform(data);
+	      }
 
 	      function isArray(arr) {
 	        var stringed = Object.prototype.toString.call(arr);
@@ -13829,7 +13730,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var min = this.graph.getDrawingWidth();
 	      var max = total;
-	      console.log(datas);
+
+	      // Temporary reduction
 	      datas = datas.reduce(function (a, b, index) {
 	        if (index > 0) {
 	          a.push([NaN, NaN]);
@@ -13837,9 +13739,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        //console.log( a, b );
 	        return a.concat(b);
 	      }, []);
-	      console.log(datas);
+
 	      var wave = new _waveform2.default();
-	      wave.setDataXY(datas);
+	      wave.setData(datas);
 	      this.setWaveform(wave);
 
 	      return this;
@@ -13909,20 +13811,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+	     * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+	     * @return {Serie} The current serie instance
 	     * @memberof Serie
 	     */
-	    kill() {
+	    kill(noLegendUpdate) {
 
 	      this.graph.removeSerieFromDom(this);
 	      this.graph._removeSerie(this);
 
-	      if (this.graph.legend) {
+	      if (this.graph.legend && !noLegendUpdate) {
 
 	        this.graph.legend.update();
 	      }
 
 	      this.graph = undefined;
+	      return this;
 	    }
 
 	    /**
@@ -14282,6 +14186,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.textForLegend) {
 	        this.textForLegend.textContent = label;
 	      }
+
+	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 
@@ -14357,6 +14263,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._changedStyles[selectionType || "unselected"] = true;
 	      }
 
+	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 
@@ -15021,6 +14928,158 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(14), __webpack_require__(5), __webpack_require__(19), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('../graph.core'), require('./graph.serie.line'), require('../util/waveform'), require('../mixins/graph.mixin.serie3d'), require('../graph.util'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph, global.graphSerie, global.waveform, global.graphMixin, global.graph);
+	    global.graphSerieLine3d = mod.exports;
+	  }
+	})(this, function (exports, _graph, _graphSerie, _waveform, _graphMixin, _graph3) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+	  var _waveform2 = _interopRequireDefault(_waveform);
+
+	  var _graphMixin2 = _interopRequireDefault(_graphMixin);
+
+	  var util = _interopRequireWildcard(_graph3);
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
+	  }
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * @name SerieLineDefaultOptions
+	   * @object
+	   * @static
+	   * @memberof SerieLine
+	   */
+	  const defaults = {
+	    zpos: 0
+	  };
+
+	  /**
+	   * Serie line with 3D projection
+	   * @example graph.newSerie( name, options, "line" );
+	   * @see Graph#newSerie
+	   * @extends SerieLine
+	   */
+	  class SerieLine3D extends _graphSerie2.default {
+
+	    constructor() {
+	      super(...arguments);
+	    }
+
+	    init(graph, name, options) {
+	      super.init(graph, name, options);
+	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
+	      return this;
+	    }
+
+	    /**
+	     * Sets the z-position
+	     * @memberof SerieLine3D
+	     * @param {Number} zPos - The position in the z axis
+	     */
+	    setZPos(zPos) {
+	      this.options.zpos = zPos;
+	      return this;
+	    }
+
+	    setz() {
+	      return this.setZPos(...arguments);
+	    }
+	  }
+
+	  util.mix(SerieLine3D, _graphMixin2.default);
+	  exports.default = SerieLine3D;
+	});
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports);
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports);
+	    global.graphMixinSerie3d = mod.exports;
+	  }
+	})(this, function (exports) {
+	  "use strict";
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+	  var Serie3DMixin = {
+
+	    /**
+	     * Returns the x position of a certain value in pixels position, based on the serie's axis
+	     * @memberof Serie
+	     * @param {Number} val - Value to convert to pixels position
+	     * @returns {Number} The x position in px corresponding to the x value
+	     */
+	    getX(val) {
+	      return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.options.zpos * 1;
+	    },
+
+	    /**
+	     * Returns the y position of a certain value in pixels position, based on the serie's axis
+	     * @memberof Serie3DMixin
+	     * @param {Number} val - Value to convert to pixels position
+	     * @returns {Number} The y position in px corresponding to the y value
+	     */
+	    getY(val) {
+	      return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.options.zpos * 1.2;
+	    }
+
+	  };
+
+	  exports.default = Serie3DMixin;
+	});
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(14), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.serie.line'), require('../mixins/graph.mixin.errorbars'));
@@ -15067,9 +15126,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  /** 
-	   * Represents a bar serie.  
-	     Needs to be used exclusively with a bar axis ({@link AxisXBar}).  
+	  /**
+	   * Represents a bar serie.
+	     Needs to be used exclusively with a bar axis ({@link AxisXBar}).
 	     Supports error bars, line color, line width, fill color, fill opacity.
 	   * @example graph.newSerie("serieName", { fillColor: 'red', fillOpacity: 0.2 }, "bar" );
 	   * @extends Serie
@@ -15104,7 +15163,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the data of the bar serie
 	     *  @param {Object} data
 	     *  @example serie.setData( { "cat1": val1, "cat2": val2, "cat4": val4 } );
@@ -15123,7 +15182,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     */
 	    setFillColor(fillColor, selectionType, applyToSelected) {
@@ -15141,14 +15200,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    /** 
+	    /**
 	     *  Returns the fill color
 	     */
 	    getFillColor(selectionType) {
 	      return this.getStyle(selectionType).fillColor;
 	    }
 
-	    /*  
+	    /*
 	     * @memberof SerieBar
 	     */
 	    setFillOpacity(opacity, selectionType, applyToSelected) {
@@ -15238,7 +15297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 19 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -15307,7 +15366,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	  };
-	  /** 
+	  /**
 	   * @static
 	   * @extends Serie
 	   * @example graph.newSerie( name, options, "scatter" );
@@ -15336,7 +15395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.styles.unselected = this.options.defaultStyle;
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the data of the bar serie
 	     *  @param {Object} data
 	     *  @example serie.setData( [ { x: 'cat', Q2: valMean, Q1: valBoxMin, Q3: valBoxMax, whiskers: [ val1, val2 ], outliers: [ ...yList ] } ] );
@@ -15451,7 +15510,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getStyle(selectionType)[type];
 	    }
 
-	    /** 
+	    /**
 	     *  Retrives a selection object
 	     *  @param {String} [ selectionType = "unselected" ] - The selection type
 	     *  @returns {Object} The selection object
@@ -15461,7 +15520,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.styles[selectionType] || {};
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the mean line color
 	     *  @param {String} color - The mean line color
 	     *  @returns {SerieBox} The current serie instance
@@ -15470,7 +15529,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('meanLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Returns the mean line color
 	     * @return {String} The mean line color
 	     */
@@ -15484,7 +15543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.styleHasChanged(selectionType);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the mean line width
 	     *  @param {Number} width - The line width
 	     *  @returns {SerieBox} The current serie instance
@@ -15493,7 +15552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('meanLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Returns the mean line width
 	     * @return {Number} The mean line width
 	     */
@@ -15501,7 +15560,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('meanLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the box line color
 	     *  @param {Number} color - The color of the box above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15510,7 +15569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxAboveLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the box line color
 	     * @return {String} The line color of the box above the median
 	     */
@@ -15518,7 +15577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxAboveLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} color - The color of the box below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15527,7 +15586,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxBelowLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Returns the fill color
 	     * @return {String} The line color of the box below the median
 	     */
@@ -15535,7 +15594,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxBelowLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} width - The contour width of the box above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15544,7 +15603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxAboveLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line width of the box above the median
 	     * @return {Number} The line width of the box above the median
 	     */
@@ -15552,7 +15611,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxAboveLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} width - The contour width of the box below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15561,7 +15620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxBelowLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line width of the box below the median
 	     * @return {Number} The line width of the box below the median
 	     */
@@ -15569,7 +15628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxBelowLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {String} color - The fill color of the box above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15578,7 +15637,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxAboveFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill color of the box above the median
 	     * @return {String} The fill color of the box above the median
 	     */
@@ -15586,7 +15645,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxAboveFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {String} color - The fill color of the box below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15595,7 +15654,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxBelowFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill color of the box below the median
 	     * @return {String} The fill color of the box below the median
 	     */
@@ -15603,7 +15662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxBelowFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} opacity - The fill opacity of the box above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15612,7 +15671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxAboveFillOpacity', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill opacity of the box above the median
 	     * @return {Number} The fill opacity of the box above the median
 	     */
@@ -15620,7 +15679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxAboveFillOpacity', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} opacity - The fill opacity of the box below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15629,7 +15688,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('boxBelowFillOpacity', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill opacity of the box below the median
 	     * @return {Number} The fill opacity of the box below the median
 	     */
@@ -15637,7 +15696,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('boxBelowFillOpacity', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the whisker color
 	     *  @param {String} color - The line color of the whisker above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15646,7 +15705,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('barAboveLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line color of the whisker above the median
 	     * @return {String} The line color of the whisker above the median
 	     */
@@ -15654,7 +15713,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('barAboveLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {String} color - The line color of the whisker below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15663,7 +15722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('barBelowLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line color of the whisker below the median
 	     * @return {String} The line color of the whisker below the median
 	     */
@@ -15671,7 +15730,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('barBelowLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} width - The line width of the whisker above the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15680,7 +15739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('barAboveLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line width of the whisker above the median
 	     * @return {Number} The line width of the whisker above the median
 	     */
@@ -15688,7 +15747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('barAboveLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {Number} width - The line width of the whisker below the median
 	     *  @returns {SerieBox} The current serie instance
@@ -15697,7 +15756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('barBelowLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line width of the whisker below the median
 	     * @return {Number} The line width of the whisker below the median
 	     */
@@ -15705,7 +15764,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('barBelowLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {String} color - The outlier stroke color
 	     *  @returns {SerieBox} The current serie instance
@@ -15714,7 +15773,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('outlierLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line color of the outliers
 	     * @return {String} The line color of the outliers
 	     */
@@ -15722,7 +15781,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('outlierLineColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the stroke width
 	     *  @param {Number} width - The outlier stroke width
 	     *  @returns {SerieBox} The current serie instance
@@ -15731,7 +15790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('outlierLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the line width of the outliers
 	     * @return {Number} The line width of the outliers
 	     */
@@ -15739,7 +15798,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('outlierLineWidth', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the fill color
 	     *  @param {String} color - The outlier fill color
 	     *  @returns {SerieBox} The current serie instance
@@ -15748,7 +15807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('outlierFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill color of the outliers
 	     * @return {String} The fill color of the outliers
 	     */
@@ -15756,7 +15815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._gstyle('outlierFillColor', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     *  Sets the outlier fill opacity
 	     *  @param {Number} opacity - The outlier fill opacity
 	     *  @returns {SerieBox} The current serie instance
@@ -15765,7 +15824,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._style('outlierFillOpacity', ...arguments);
 	    }
 
-	    /** 
+	    /**
 	     * Returns the fill opacity of the outliers
 	     * @return {Number} The fill opacity of the outliers
 	     */
@@ -16106,7 +16165,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16157,7 +16216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Colored serie line
 	   * @example graph.newSerie( name, options, "color" );
 	   * @see Graph#newSerie
@@ -16178,7 +16237,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    setColors(colors) {
-	      this.color = colors;
+	      this.colors = colors;
 	    }
 
 	    _draw_standard() {
@@ -16437,9 +16496,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorAddPoint(j, x, y, xpx, ypx);
 	      }
 
-	      if (this.markersShown() && allowMarker !== false) {
-	        drawMarkerXY(this, this.markerFamilies[this.selectionType][this.markerCurrentFamily], xpx, ypx);
-	      }
+	      /*if ( this.markersShown() && allowMarker !== false ) {
+	        drawMarkerXY( this, this.markerFamilies[ this.selectionType ][ this.markerCurrentFamily ], xpx, ypx );
+	      }*/
 	    }
 
 	    removeExtraLines() {}
@@ -16483,7 +16542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16538,7 +16597,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var type = "scatter";
 
-	  /** 
+	  /**
 	   * @static
 	   * @augments Serie
 	   * @example graph.newSerie( name, options, "scatter" );
@@ -16640,7 +16699,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	    }
 
-	    /** 
+	    /**
 	     * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
 	     * @see GraphSerie#setData
 	     */
@@ -16701,7 +16760,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    /** 
+	    /**
 	     * Applies for x as the category axis
 	     * @example serie.setData( { x: "someName", y: [ ...values ] } );
 	     */
@@ -16917,7 +16976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.errorDraw();
 	      }
 
-	      // This will automatically create the shapes      
+	      // This will automatically create the shapes
 	      this.applyStyle("unselected", keys);
 
 	      this.groupMain.appendChild(this.groupPoints);
@@ -17109,22 +17168,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(5), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.serie'), require('../graph.util'));
+	    factory(exports, require('./graph.serie'), require('../util/waveform'), require('../graph.util'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graph, global.graph);
+	    factory(mod.exports, global.graph, global.waveform, global.graph);
 	    global.graphSerieZone = mod.exports;
 	  }
-	})(this, function (exports, _graph, _graph3) {
+	})(this, function (exports, _graph, _waveform, _graph3) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
@@ -17132,6 +17191,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 
 	  var _graph2 = _interopRequireDefault(_graph);
+
+	  var _waveform2 = _interopRequireDefault(_waveform);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -17152,7 +17213,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    lineColor: 'rgba( 0, 0, 0, 1 )',
 	    lineWidth: '1px'
 	  };
-	  /** 
+	  /**
 	   * @static
 	   * @extends Serie
 	   * @example graph.newSerie( name, options, "scatter" );
@@ -17172,32 +17233,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.name = name;
 
 	      this.selectionType = "unselected";
+	      this.id = (0, _graph3.guid)();
 
-	      this.id = Math.random() + Date.now();
-
-	      this.shown = true;
 	      this.options = (0, _graph3.extend)(true, {}, defaults, options);
-	      this.data = [];
-
 	      this.groupZones = document.createElementNS(this.graph.ns, 'g');
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
-
 	      this.lineZone = document.createElementNS(this.graph.ns, 'path');
 	      this.lineZone.setAttribute('stroke', 'black');
 	      this.lineZone.setAttribute('stroke-width', '1px');
 
-	      this.additionalData = {};
-
-	      this.minX = Number.MAX_VALUE;
-	      this.minY = Number.MAX_VALUE;
-	      this.maxX = Number.MIN_VALUE;
-	      this.maxY = Number.MIN_VALUE;
-
 	      this.groupMain.appendChild(this.groupZones);
-
 	      this.groupZones.appendChild(this.lineZone);
-
-	      this.currentAction = false;
 
 	      this.applyLineStyle(this.lineZone);
 	      this.styleHasChanged();
@@ -17216,152 +17262,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Sets the data
+	     * Assigns a collection of waveforms that make up the zone
+	     * The waveforms will appended one after the other, without break
+	     * @param {...Waveform} waveforms - The collection of waveforms
+	     * @return {SerieZone} - The current serie zone instance
+	     * @memberof SerieZone
 	     */
-	    setData(data, arg, type) {
+	    setWaveform(...waveforms) {
+	      this.waveforms = waveforms;
 
-	      var z = 0,
-	          x,
-	          dx,
-	          arg = arg || "2D",
-	          type = type || 'float',
-	          arr,
-	          total = 0,
-	          continuous;
+	      this.waveforms = this.waveforms.map(wave => {
 
-	      this.data = [];
-	      this.dataHasChanged();
-
-	      if (!data instanceof Array) {
-	        return;
-	      }
-
-	      var length;
-
-	      if (data instanceof Array && !(data[0] instanceof Array)) {
-	        // [100, 103, 102, 2143, ...]
-	        arg = "1D";
-	        length = data.length * 1.5;
-
-	        if (!(data[1] instanceof Array)) {
-	          arg = "1D_flat";
-	          length = data.length * 1;
-	        }
-	      } else {
-
-	        if (data instanceof Array && !(data[0][1] instanceof Array)) {
-	          // [100, 103, 102, 2143, ...]
-	          arg = "2D_flat";
-	          length = data.length * 3;
+	        if (!(wave instanceof _waveform2.default)) {
+	          return new _waveform2.default(wave);
 	        } else {
-	          arg = "2D";
-	          length = data.length * 3;
+	          return wave;
 	        }
-	      }
+	      });
 
-	      arr = this._addData(type, length);
+	      this.minX = this.waveforms[0].getXMin();
+	      this.maxX = this.waveforms[0].getXMax();
+	      this.minY = this.waveforms[0].getMin();
+	      this.maxY = this.waveforms[0].getMax();
 
-	      z = 0;
+	      this.waveforms.map(wave => {
 
-	      for (var j = 0, l = data.length; j < l; j++) {
-
-	        if (arg == "2D" || arg == "2D_flat") {
-
-	          arr[z] = data[j][0];
-	          this._checkX(arr[z]);
-	          z++;
-
-	          if (arg == "2D") {
-
-	            arr[z] = data[j][1][0];
-	            this._checkY(arr[z]);
-	            z++;
-	            total++;
-
-	            arr[z] = data[j][1][1];
-	            this._checkY(arr[z]);
-	            z++;
-	            total++;
-	          } else {
-
-	            arr[z] = data[j][1];
-	            this._checkY(arr[z]);
-	            z++;
-	            total++;
-
-	            arr[z] = data[j][2];
-	            this._checkY(arr[z]);
-	            z++;
-	            total++;
-	          }
-	        } else if (arg == "1D_flat") {
-	          // 1D Array
-
-	          if (j % 3 == 0) {
-	            arr[z] = data[j];
-	            this._checkX(arr[z]);
-	            z++;
-	            total++;
-
-	            continue;
-	          }
-
-	          arr[z] = data[j];
-	          this._checkY(arr[z]);
-	          z++;
-	          total++;
-	        } else {
-
-	          if (j % 2 == 0) {
-	            arr[z] = data[j];
-	            this._checkX(arr[z]);
-	            z++;
-	            total++;
-	            continue;
-	          }
-
-	          arr[z] = data[j][0];
-	          this_checkY(arr[z]);
-	          z++;
-	          total++;
-
-	          arr[z] = data[j][1];
-	          this_checkY(arr[z]);
-	          z++;
-	          total++;
-	        }
-	      }
+	        this.minX = Math.min(wave.getXMin(), this.minX);
+	        this.maxX = Math.min(wave.getXMin(), this.maxX);
+	        this.minY = Math.min(wave.getMin(), this.minY);
+	        this.maxY = Math.min(wave.getMax(), this.maxY);
+	      });
 
 	      this.graph.updateDataMinMaxAxes();
-	      this.data = arr;
 	      this.dataHasChanged();
-
 	      return this;
 	    }
 
-	    _addData(type, howmany) {
+	    setWaveforms() {
+	      return this.setWaveform(...arguments);
+	    }
 
-	      switch (type) {
-	        case 'int':
-	          var size = howmany * 4; // 4 byte per number (32 bits)
-	          break;
-	        case 'float':
-	          var size = howmany * 8; // 4 byte per number (64 bits)
-	          break;
-	      }
-
-	      var arr = new ArrayBuffer(size);
-
-	      switch (type) {
-	        case 'int':
-	          return new Int32Array(arr);
-	          break;
-
-	        default:
-	        case 'float':
-	          return new Float64Array(arr);
-	          break;
-	      }
+	    setMinMaxWaveforms(min, max) {
+	      this.waveforms = [min, max.reverse()];
+	      return this;
 	    }
 
 	    /**
@@ -17385,92 +17328,61 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (force || this.hasDataChanged()) {
 
-	        var x,
-	            y,
-	            xpx,
-	            ypx1,
-	            ypx2,
+	        let dataX = 0,
+	            dataY = 0,
+	            xpx = 0,
+	            ypx = 0,
 	            j = 0,
-	            k,
-	            m,
-	            currentLine,
-	            max,
-	            self = this;
+	            line = "",
+	            buffer;
 
-	        var xmin = this.getXAxis().getMinPx(),
-	            xmax = this.getXAxis().getMaxPx(),
-	            ymin = this.getYAxis().getMinPx(),
-	            ymax = this.getYAxis().getMaxPx();
+	        const xmin = this.getXAxis().getMinPx(),
+	              xmax = this.getXAxis().getMaxPx(),
+	              ymin = this.getYAxis().getMinPx(),
+	              ymax = this.getYAxis().getMaxPx();
 
 	        this.clipRect.setAttribute("x", Math.min(xmin, xmax));
 	        this.clipRect.setAttribute("y", Math.min(ymin, ymax));
 	        this.clipRect.setAttribute("width", Math.abs(xmax - xmin));
 	        this.clipRect.setAttribute("height", Math.abs(ymax - ymin));
 
-	        this._drawn = true;
-
 	        this.groupMain.removeChild(this.groupZones);
 
-	        var totalLength = this.data.length / 2;
+	        for (let waveform of this.waveforms) {
 
-	        j = 0;
-	        k = 0;
-	        m = this.data.length;
+	          dataY = waveform.getData(true);
+	          for (j = 0; j < dataY.length; j += 1) {
+	            dataX = waveform.getX(j, true);
 
-	        var error;
+	            ypx = this.getY(dataY[j]);
+	            xpx = this.getX(dataX);
 
-	        var lineTop = "";
-	        var lineBottom = "";
-
-	        var buffer;
-
-	        for (; j < m; j += 3) {
-
-	          xpx = this.getX(this.data[j]);
-	          ypx1 = this.getY(this.data[j + 1]);
-	          ypx2 = this.getY(this.data[j + 2]);
-
-	          if (xpx < 0) {
-	            buffer = [xpx, ypx1, ypx2];
-	            continue;
-	          }
-
-	          if (buffer) {
-
-	            if (lineBottom !== "") {
-	              lineBottom = " L " + lineBottom;
+	            if (xpx < xmin || xpx > xmax) {
+	              buffer = [xpx, ypx];
+	              continue;
 	            }
 
-	            lineTop += buffer[0] + "," + Math.max(buffer[1], buffer[2]) + " L ";
-	            lineBottom = xpx + "," + Math.min(buffer[1], buffer[2]) + lineBottom;
+	            // The y axis in screen coordinate is inverted vs cartesians
+	            if (ypx < ymax) {
+	              ypx = ymax;
+	            } else if (ypx > ymin) {
+	              ypx = ymin;
+	            }
 
-	            buffer = false;
-	            k++;
-	          }
+	            if (line.length > 0) {
+	              line += " L ";
+	            }
 
-	          if (lineBottom !== "") {
-	            lineBottom = " L " + lineBottom;
-	          }
-
-	          if (ypx2 > ypx1) {
-	            lineTop += xpx + "," + ypx1 + " L ";
-	            lineBottom = xpx + "," + ypx2 + lineBottom;
-	          } else {
-	            lineTop += xpx + "," + ypx2 + " L ";
-	            lineBottom = xpx + "," + ypx1 + lineBottom;
-	          }
-
-	          if (xpx > this.getXAxis().getMaxPx()) {
-	            break;
+	            if (buffer) {
+	              line += buffer[0] + "," + buffer[1] + " ";
+	              buffer = false;
+	            } else {
+	              line += xpx + "," + ypx + " ";
+	            }
 	          }
 	        }
 
-	        if (lineTop.length > 0 && lineBottom.length > 0) {
-	          this.lineZone.setAttribute('d', "M " + lineTop + lineBottom + " z");
-	        } else {
-	          this.lineZone.setAttribute('d', "");
-	        }
-
+	        this.lineZone.setAttribute('d', "M " + line + " z");
 	        this.groupMain.appendChild(this.groupZones);
 	      }
 
@@ -17600,168 +17512,116 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.fillColor;
 	    }
 
-	    /**
-	     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-	     * @param {Number} startX - The start of the x values
-	     * @param {Number} endX - The end of the x values
-	     * @returns {Number} Maximal y value in between startX and endX
-	     */
-	    getMax(start, end) {
-
-	      var start2 = Math.min(start, end),
-	          end2 = Math.max(start, end),
-	          v1 = this.searchClosestValue(start2),
-	          v2 = this.searchClosestValue(end2),
-	          i,
-	          j,
-	          max = -Infinity,
-	          initJ,
-	          maxJ;
-
-	      //      console.log( start2, end2, v1, v2 );
-
-	      if (!v1) {
-	        start2 = this.minX;
-	        v1 = this.searchClosestValue(start2);
-	      }
-
-	      if (!v2) {
-	        end2 = this.maxX;
-	        v2 = this.searchClosestValue(end2);
-	      }
-
-	      if (!v1 || !v2) {
-	        return -Infinity;
-	      }
-
-	      for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-	        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-	        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-	        for (j = initJ; j <= maxJ; j += 3) {
-	          max = Math.max(max, this.data[i][j + 1], this.data[i][j + 2]);
-	        }
-	      }
-
-	      return max;
-	    }
-
-	    /**
-	     * Gets the minimum value of the y values between two x values. The x values must be monotoneously increasing
-	     * @param {Number} startX - The start of the x values
-	     * @param {Number} endX - The end of the x values
-	     * @returns {Number} Maximal y value in between startX and endX
-	     */
-	    getMin(start, end) {
-
-	      var start2 = Math.min(start, end),
-	          end2 = Math.max(start, end),
-	          v1 = this.searchClosestValue(start2),
-	          v2 = this.searchClosestValue(end2),
-	          i,
-	          j,
-	          min = Infinity,
-	          initJ,
-	          maxJ;
-
-	      if (!v1) {
-	        start2 = this.minX;
-	        v1 = this.searchClosestValue(start2);
-	      }
-
-	      if (!v2) {
-	        end2 = this.maxX;
-	        v2 = this.searchClosestValue(end2);
-	      }
-
-	      if (!v1 || !v2) {
-	        return Infinity;
-	      }
-
-	      for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
-	        initJ = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-	        maxJ = i == v2.dataIndex ? v2.xBeforeIndexArr : this.data[i].length;
-
-	        for (j = initJ; j <= maxJ; j += 3) {
-	          min = Math.min(min, this.data[i][j + 1], this.data[i][j + 2]);
-	        }
-	      }
-
-	      return min;
-	    }
-
-	    /**
-	     * Performs a binary search to find the closest point index to an x value. For the binary search to work, it is important that the x values are monotoneous.
-	     * @param {Number} valX - The x value to search for
-	     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
-	     */
-	    searchClosestValue(valX) {
-
-	      var xMinIndex;
-
-	      for (var i = 0; i < this.data.length; i++) {
-
-	        if (valX <= this.data[i][this.data[i].length - 3] && valX >= this.data[i][0]) {
-	          xMinIndex = this._searchBinary(valX, this.data[i], false);
-	        } else if (valX >= this.data[i][this.data[i].length - 3] && valX <= this.data[i][0]) {
-	          xMinIndex = this._searchBinary(valX, this.data[i], true);
-	        } else {
-	          continue;
-	        }
-
-	        return {
-	          dataIndex: i,
-	          xMin: this.data[i][xMinIndex],
-	          xMax: this.data[i][xMinIndex + 3],
-	          yMin: this.data[i][xMinIndex + 1],
-	          yMax: this.data[i][xMinIndex + 4],
-	          xBeforeIndex: xMinIndex / 3,
-	          xAfterIndex: xMinIndex / 3 + 1,
-	          xBeforeIndexArr: xMinIndex,
-	          xClosest: (Math.abs(this.data[i][xMinIndex + 3] - valX) < Math.abs(this.data[i][xMinIndex] - valX) ? xMinIndex + 3 : xMinIndex) / 2
-	        };
-	      }
-	    }
-
-	    _searchBinary(target, haystack, reverse) {
-	      var seedA = 0,
-	          length = haystack.length,
-	          seedB = length - 3;
-
-	      if (haystack[seedA] == target) return seedA;
-
-	      if (haystack[seedB] == target) return seedB;
-
-	      var seedInt;
-	      var i = 0;
-
-	      while (true) {
-	        i++;
-	        if (i > 100) {
-	          throw "Error loop";
-	        }
-
-	        seedInt = (seedA + seedB) / 3;
-	        seedInt -= seedInt % 3; // Always looks for an x.
-
-	        if (seedInt == seedA || haystack[seedInt] == target) return seedInt;
-
-	        //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-	        if (haystack[seedInt] <= target) {
-	          if (reverse) seedB = seedInt;else seedA = seedInt;
-	        } else if (haystack[seedInt] > target) {
-	          if (reverse) seedA = seedInt;else seedB = seedInt;
-	        }
-	      }
-	    }
-
 	  }
 
 	  exports.default = SerieZone;
 	});
 
 /***/ },
-/* 23 */
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(24), __webpack_require__(5), __webpack_require__(19), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('../graph.core'), require('./graph.serie.zone'), require('../util/waveform'), require('../mixins/graph.mixin.serie3d'), require('../graph.util'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph, global.graphSerie, global.waveform, global.graphMixin, global.graph);
+	    global.graphSerieZone3d = mod.exports;
+	  }
+	})(this, function (exports, _graph, _graphSerie, _waveform, _graphMixin, _graph3) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  var _graphSerie2 = _interopRequireDefault(_graphSerie);
+
+	  var _waveform2 = _interopRequireDefault(_waveform);
+
+	  var _graphMixin2 = _interopRequireDefault(_graphMixin);
+
+	  var util = _interopRequireWildcard(_graph3);
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
+	  }
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * @name SerieLineDefaultOptions
+	   * @object
+	   * @static
+	   * @memberof SerieLine
+	   */
+	  const defaults = {
+	    zpos: 0
+	  };
+
+	  /**
+	   * Serie line with 3D projection
+	   * @example graph.newSerie( name, options, "line" );
+	   * @see Graph#newSerie
+	   * @extends SerieLine
+	   */
+	  class SerieZone3D extends _graphSerie2.default {
+
+	    constructor() {
+	      super(...arguments);
+	    }
+
+	    init(graph, name, options) {
+	      super.init(graph, name, options);
+	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
+	      return this;
+	    }
+
+	    /**
+	     * Sets the z-position
+	     * @memberof SerieZone3D
+	     * @param {Number} zPos - The position in the z axis
+	     */
+	    setZPos(zPos) {
+	      this.options.zpos = zPos;
+	      return this;
+	    }
+
+	    setz() {
+	      return this.setZPos(...arguments);
+	    }
+	  }
+
+	  util.mix(SerieZone3D, _graphMixin2.default);
+	  exports.default = SerieZone3D;
+	});
+
+/***/ },
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -17818,7 +17678,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  const defaults = {};
 
-	  /** 
+	  /**
 	   * Density map serie
 	   * @example graph.newSerie( name, options, "densitymap" );
 	   * @see Graph#newSerie
@@ -18053,7 +17913,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+	     * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into
 	     * the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using {@link SerieDensityMap#setColorMapBinBoundaries}).
 	     * @memberof SerieDensityMap
 	     * @param {Number} pxPerBinX - The number of x bins per pixels. Should be an integer, but technically it doesn't have to
@@ -18184,6 +18044,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
 	      //console.log( this.densityMapCalculation );
+
 	      (weighing ? this.calculateDensityWeighted : this.calculateDensity).call(this, results.x.from, results.x.delta, results.x.num, results.y.from, results.y.delta, results.y.num);
 	    }
 
@@ -18194,7 +18055,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Number} binMax - The maximum bin value
 	     * @return {SerieDensityMap} The current instance
 	     * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
-	     * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); 
+	     * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );
 	     */
 	    setColorMapBinBoundaries(min, max) {
 	      this.colorMapMin = min;
@@ -18227,7 +18088,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Generates a color map based on a serie of HSL(A) values. 
+	     * Generates a color map based on a serie of HSL(A) values.
 	     * @summary Colors can scale linearly, logarithmically (enhances short range differences) or exponentially (enhances long range differences).
 	     * One word of advice though. SVG being not canvas, jsGraph has to create a path for each color value of the color map. In other words, if you're asking for 16-bit coloring (65536 values), 65536 SVG paths will be created and your browser will start to suffer from it.
 	     * As of now, all the colors in colorStops will be places at equal distances from each other between <code>colorMapMin</code> and <code>colorMapMax</code> set by {@link autoColorMapBinBoundaries} or {@link setColorMapBinBoundaries}
@@ -18371,7 +18232,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.method();
 	      }
 
-	      if (!this.callbackColorMapMinMax && (this.colorMapMin == undefined || this.colorMapMax == undefined) || this.callbackColorMapMinMax == 'auto') {
+	      if (!this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto') {
+
 	        this.autoColorMapBinBoundaries();
 	      } else {
 	        var val = this.callbackColorMapMinMax(this.binMin, this.binMax);
@@ -18398,6 +18260,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (!this.paths[colorIndex]) {
 	            this.paths[colorIndex] = "";
 	          }
+
 	          this.paths[colorIndex] += " M " + this.getXAxis().getPx(i * this.deltaX + this.fromX) + " " + this.getYAxis().getPx(j * this.deltaY + this.fromY) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
 	          ;
@@ -18452,7 +18315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 24 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -18501,7 +18364,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
 	   * @private
 	   * @extends Serie
@@ -18660,7 +18523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
 	            currentLine += "L";
 	            } else {
-	            currentLine += "M";	
+	            currentLine += "M";
 	            }
 	            */
 
@@ -18783,18 +18646,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Number} colors.fromPositive.h
 	     * @param {Number} colors.fromPositive.s
 	     * @param {Number} colors.fromPositive.l
-	     
-	     * @param {Object} colors.toPositive
+	      * @param {Object} colors.toPositive
 	     * @param {Number} colors.toPositive.h
 	     * @param {Number} colors.toPositive.s
 	     * @param {Number} colors.toPositive.l
-	     
-	      * @param {Object} colors.fromNegative
+	       * @param {Object} colors.fromNegative
 	     * @param {Number} colors.fromNegative.h
 	     * @param {Number} colors.fromNegative.s
 	     * @param {Number} colors.fromNegative.l
-	     
-	      * @param {Object} colors.toNegative
+	       * @param {Object} colors.toNegative
 	     * @param {Number} colors.toNegative.h
 	     * @param {Number} colors.toNegative.s
 	     * @param {Number} colors.toNegative.l
@@ -18886,7 +18746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 25 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -18937,7 +18797,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Shape class that should be extended
 	   * @class Shape
 	   * @static
@@ -19239,7 +19099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Returns the x axis associated to the shape. If non-existent, assigns it automatically
-	     * @return {XAxis} The x axis associated to the shape. 
+	     * @return {XAxis} The x axis associated to the shape.
 	     */
 	    getXAxis() {
 
@@ -19252,7 +19112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Returns the y axis associated to the shape. If non-existent, assigns it automatically
-	     * @return {YAxis} The y axis associated to the shape. 
+	     * @return {YAxis} The y axis associated to the shape.
 	     */
 	    getYAxis() {
 
@@ -19431,9 +19291,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Sets a DOM property to the shape
 	     */
-	    setDom(prop, val) {
+	    setDom(prop, val, noForce) {
 	      if (this._dom) {
-	        this._dom.setAttribute(prop, val);
+
+	        if (!noForce || !util.hasSavedAttribute(this._dom, prop)) {
+	          this._dom.setAttribute(prop, val);
+	        }
 	      }
 	    }
 
@@ -19452,6 +19315,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeColor(color) {
 	      this.setProp('strokeColor', color);
+	      this.overwriteSavedProp('stroke', color);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -19470,6 +19335,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setFillColor(color) {
 	      this.setProp('fillColor', color);
+	      this.overwriteSavedProp('fill', color);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -19486,8 +19353,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Number} opacity - The filling opacity (0 to 1)
 	     * @return {Shape} The current shape
 	     */
-	    setFillOpacity(color) {
-	      this.setProp('fillOpacity', color);
+	    setFillOpacity(opacity) {
+	      this.setProp('fillOpacity', opacity);
+	      this.overwriteSavedProp('fill-opacity', opacity);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -19498,6 +19367,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeWidth(width) {
 	      this.setProp('strokeWidth', width);
+	      this.overwriteSavedProp('stroke-width', width);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -19518,6 +19389,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeDasharray(dasharray) {
 	      this.setProp('strokeDasharray', dasharray);
+	      this.overwriteSavedProp('stroke-dasharray', dasharray);
+	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -19531,6 +19404,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setAttributes(attributes) {
 	      this.setProp("attributes", attributes);
 	      return this;
+	    }
+
+	    overwriteSavedProp(prop, newValue) {
+	      util.overwriteDomAttribute(this._dom, prop, newValue);
 	    }
 
 	    /**
@@ -19681,7 +19558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Sets the anchoring of the label. 
+	     * Sets the anchoring of the label.
 	     * @param {String} anchor - The anchor of the label. Values can be ```start```, ```middle```, ```end``` or ```inherit```.
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {Shape} The current shape
@@ -19692,7 +19569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Sets the anchoring of the label. 
+	     * Sets the anchoring of the label.
 	     * @param {String} size - The font size in px
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {Shape} The current shape
@@ -19703,7 +19580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Sets the color of the stroke of the label. 
+	     * Sets the color of the stroke of the label.
 	     * @param {String} color - The color of the stroke
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {Shape} The current shape
@@ -19714,7 +19591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Sets the width of the stroke of the label. 
+	     * Sets the width of the stroke of the label.
 	     * @param {Number} width - The width of the stroke
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {Shape} The current shape
@@ -19730,17 +19607,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    applyGenericStyle() {
 
-	      this.setDom("fill", this.getProp("fillColor"));
-	      this.setDom("fill-opacity", this.getProp("fillOpacity"));
-	      this.setDom("stroke", this.getProp("strokeColor"));
-	      this.setDom("stroke-width", this.getProp("strokeWidth"));
-	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"));
+	      this.setDom("fill", this.getProp("fillColor"), true);
+	      this.setDom("fill-opacity", this.getProp("fillOpacity"), true);
+	      this.setDom("stroke", this.getProp("strokeColor"), true);
+	      this.setDom("stroke-width", this.getProp("strokeWidth"), true);
+	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"), true);
 
 	      var attributes = this.getProps("attributes");
 	      for (var j = 0, l = attributes.length; j < l; j++) {
 
 	        for (var i in attributes[j]) {
-	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i]);
+	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i], true);
 	        }
 	      }
 
@@ -20056,8 +19933,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Adds shape handles 
-	     * @private 
+	     * Adds shape handles
+	     * @private
 	     * @return {Shape} The current shape
 	     */
 	    addHandles() {
@@ -20082,8 +19959,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Remove shape handles 
-	     * @private 
+	     * Remove shape handles
+	     * @private
 	     * @return {Shape} The current shape
 	     */
 	    removeHandles() {
@@ -20093,8 +19970,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Hide shape handles 
-	     * @private 
+	     * Hide shape handles
+	     * @private
 	     * @return {Shape} The current shape
 	     */
 	    hideHandles() {
@@ -20137,6 +20014,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
 	      this._selectStatus = true;
+
+	      this.applySelectedStyle();
+
+	      if (this.hasHandles() && !this.hasStaticHandles()) {
+	        this.addHandles();
+	        this.setHandles();
+	      }
+
+	      if (!mute) {
+	        this.graph.emit("shapeSelected", this);
+	      }
+	    }
+
+	    applySelectedStyle() {
+
+	      if (!this._selectStatus) {
+	        return;
+	      }
+
 	      var style = this.getSelectStyle();
 	      var style2 = {};
 	      for (var i in style) {
@@ -20148,15 +20044,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      util.saveDomAttributes(this._dom, style2, 'select');
-
-	      if (this.hasHandles() && !this.hasStaticHandles()) {
-	        this.addHandles();
-	        this.setHandles();
-	      }
-
-	      if (!mute) {
-	        this.graph.emit("shapeSelected", this);
-	      }
 	    }
 
 	    /**
@@ -20197,6 +20084,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setSelectStyle(attr) {
 	      this.selectStyle = attr;
+	      this.applySelectedStyle(); // Maybe the shape is already selected
 	      return this;
 	    }
 
@@ -20341,7 +20229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            this.moving = true;
 	          }
-	        } else {}
+	        }
 	      }
 
 	      this._mouseCoords = this.graph._getXY(e);
@@ -20596,7 +20484,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /**
 	     * Removes the highlight properties from the same
-	     * @returns {Shape} The current shape 
+	     * @returns {Shape} The current shape
 	     * @param {String} [ saveDomName=highlight ] - The name to which the current shape attributes will be saved to be recovered later with the {@link Shape#unHighlight} method
 	     * @see Shape#highlight
 	     */
@@ -20648,9 +20536,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    maskWith(maskingShape) {
 
-	      var maskingId;
+	      const maskingId = maskingShape.getMaskingID();
 
-	      if (maskingId = maskingShape.getMaskingID()) {
+	      if (maskingId) {
 
 	        this._dom.setAttribute('mask', 'url(#' + maskingId + ')');
 	      } else {
@@ -20795,12 +20683,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 26 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -21024,29 +20912,123 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 27 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape.line'));
+	    factory(exports, require('../graph.util'), require('./graph.shape'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graphShape);
-	    global.graphShapeArrow = mod.exports;
+	    factory(mod.exports, global.graph, global.graph);
+	    global.graphShapeEllipse = mod.exports;
 	  }
-	})(this, function (exports, _graphShape) {
+	})(this, function (exports, _graph, _graph2) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
+	  var util = _interopRequireWildcard(_graph);
+
+	  var _graph3 = _interopRequireDefault(_graph2);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
+	  }
+
+	  /**
+	   * Displays an ellipse
+	   * @extends Shape
+	   */
+	  class ShapeEllipse extends _graph3.default {
+
+	    constructor(graph, options) {
+	      super(graph, options);
+	    }
+
+	    createDom() {
+	      this._dom = document.createElementNS(this.graph.ns, 'ellipse');
+	    }
+
+	    applyPosition() {
+
+	      var pos = this.computePosition(0);
+
+	      this.setDom('cx', pos.x || 0);
+	      this.setDom('cy', pos.y || 0);
+
+	      this.setDom('rx', this.getProp('rx') || 0);
+	      this.setDom('ry', this.getProp('ry') || 0);
+
+	      return true;
+	    }
+
+	    setR(rx, ry) {
+	      this.setProp('rx', rx);
+	      this.setProp('ry', ry);
+	    }
+
+	    handleMouseUpImpl() {
+	      this.triggerChange();
+	    }
+
+	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+	      return;
+	    }
+	  }
+
+	  exports.default = ShapeEllipse;
+	});
+
+/***/ },
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('./graph.shape'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph);
+	    global.graphShapeLabel = mod.exports;
+	  }
+	})(this, function (exports, _graph) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -21055,45 +21037,142 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   *  Displays an arrow
-	   *  @extends GraphShapeLine
+	   * Blank shape used to display label
+	   * Use myShapelabel.setLabelText(); and associated methods
+	   * @extend GraphShape
 	   */
-	  class ShapeArrow extends _graphShape2.default {
+	  class ShapeLabel extends _graph2.default {
 
-	    constructor(graph) {
+	    constructor(graph, options) {
 
-	      super(graph);
+	      super(graph, options);
 	    }
 
 	    createDom() {
+	      return false;
+	    }
 
-	      this._dom = document.createElementNS(this.graph.ns, 'line');
-	      this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
-
-	      this.createHandles(this.nbHandles, 'rect', {
-	        transform: "translate(-3 -3)",
-	        width: 6,
-	        height: 6,
-	        stroke: "black",
-	        fill: "white",
-	        cursor: 'nwse-resize'
-	      });
-
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
+	    applyPosition() {
+	      return true;
 	    }
 	  }
 
-	  exports.default = ShapeArrow;
+	  exports.default = ShapeLabel;
 	});
 
 /***/ },
-/* 28 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('./graph.shape'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph);
+	    global.graphShapePolyline = mod.exports;
+	  }
+	})(this, function (exports, _graph) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
+	   * @extends Shape
+	   * @see Graph#newShape
+	   */
+	  class ShapePolyline extends _graph2.default {
+
+	    constructor(graph, options) {
+	      super(graph, options);
+	    }
+
+	    /**
+	     * Creates the DOM
+	     * @private
+	     * @return {Shape} The current shape
+	     */
+	    createDom() {
+
+	      this._dom = document.createElementNS(this.graph.ns, 'path');
+	      this.setStrokeColor('black');
+	      this.setStrokeWidth(1);
+	    }
+
+	    /**
+	     * No handles for the polyline
+	     * @private
+	     * @return {Shape} The current shape
+	     */
+	    createHandles() {}
+
+	    /**
+	     *  Force the points of the polyline already computed in pixels
+	     *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
+	     *  @return {ShapePolyline} The current polyline instance
+	     */
+	    setPointsPx(points) {
+	      this.pxPoints = points;
+	      return this;
+	    }
+
+	    /**
+	     * Recalculates the positions and applies them
+	     * @private
+	     * @return {Boolean} Whether the shape should be redrawn
+	     */
+	    applyPosition() {
+
+	      if (this.pxPoints) {
+	        this.setDom('d', this.pxPoints);
+	      } else if (this.points) {
+
+	        var xAxis, yAxis;
+
+	        if (this.serie) {
+
+	          xAxis = this.serie.getXAxis();
+	          yAxis = this.serie.getYAxis();
+	        } else if (this.xAxis && this.yAxis) {
+
+	          xAxis = this.xAxis;
+	          yAxis = this.yAxis;
+	        }
+
+	        this.setDom('d', 'M ' + this.points.map(function (p) {
+	          return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
+	        }).join(" L "));
+	      }
+
+	      return true;
+	    }
+	  }
+
+	  exports.default = ShapePolyline;
+	});
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -21118,7 +21197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Represents a line
 	   * @extends Shape
 	   * @see Graph#newShape
@@ -21327,173 +21406,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 29 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, global.graph);
-	    global.graphShapeLabel = mod.exports;
-	  }
-	})(this, function (exports, _graph) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graph2 = _interopRequireDefault(_graph);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  /**
-	   * Blank shape used to display label
-	   * Use myShapelabel.setLabelText(); and associated methods
-	   * @extend GraphShape
-	   */
-	  class ShapeLabel extends _graph2.default {
-
-	    constructor(graph, options) {
-
-	      super(graph, options);
-	    }
-
-	    createDom() {
-	      return false;
-	    }
-
-	    applyPosition() {
-	      return true;
-	    }
-	  }
-
-	  exports.default = ShapeLabel;
-	});
-
-/***/ },
-/* 30 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, global.graph);
-	    global.graphShapePolyline = mod.exports;
-	  }
-	})(this, function (exports, _graph) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graph2 = _interopRequireDefault(_graph);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  /** 
-	   * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
-	   * @extends Shape
-	   * @see Graph#newShape
-	   */
-	  class ShapePolyline extends _graph2.default {
-
-	    constructor(graph, options) {
-	      super(graph, options);
-	    }
-
-	    /**
-	     * Creates the DOM
-	     * @private
-	     * @return {Shape} The current shape
-	     */
-	    createDom() {
-
-	      this._dom = document.createElementNS(this.graph.ns, 'path');
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
-	    }
-
-	    /**
-	     * No handles for the polyline
-	     * @private
-	     * @return {Shape} The current shape
-	     */
-	    createHandles() {}
-
-	    /**
-	     *  Force the points of the polyline already computed in pixels
-	     *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
-	     *  @return {ShapePolyline} The current polyline instance
-	     */
-	    setPointsPx(points) {
-	      this.pxPoints = points;
-	      return this;
-	    }
-
-	    /**
-	     * Recalculates the positions and applies them
-	     * @private
-	     * @return {Boolean} Whether the shape should be redrawn
-	     */
-	    applyPosition() {
-
-	      if (this.pxPoints) {
-	        this.setDom('d', this.pxPoints);
-	      } else if (this.points) {
-
-	        var xAxis, yAxis;
-
-	        if (this.serie) {
-
-	          xAxis = this.serie.getXAxis();
-	          yAxis = this.serie.getYAxis();
-	        } else if (this.xAxis && this.yAxis) {
-
-	          xAxis = this.xAxis;
-	          yAxis = this.yAxis;
-	        }
-
-	        this.setDom('d', 'M ' + this.points.map(function (p) {
-	          return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
-	        }).join(" L "));
-	      }
-
-	      return true;
-	    }
-	  }
-
-	  exports.default = ShapePolyline;
-	});
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(26), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.areaundercurve'), require('../graph.position'));
 	  } else {
@@ -21822,12 +21740,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 32 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.rect'));
 	  } else {
@@ -21888,12 +21806,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 33 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'), require('../graph.util'));
 	  } else {
@@ -21937,7 +21855,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Represents a rectangle that extends the Shape class
 	   * @class ShapeRectangle
 	   * @augments Shape
@@ -22271,12 +22189,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 34 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -22434,12 +22352,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 35 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {
@@ -22667,7 +22585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (Math.abs(posCenter.x - posRight.x) > Math.abs(posRight.x - posLeft.x) || Math.abs(posCenter.x - posLeft.x) > Math.abs(posRight.x - posLeft.x)) {
 	            return;
-	          } else {}
+	          }
 
 	          break;
 
@@ -22695,7 +22613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 36 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -22780,12 +22698,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 37 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("./graph.plugin"));
 	  } else {
@@ -22810,7 +22728,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /** 
+	  /**
 	   * Constructor for the drag plugin. Do not use this constructor directly.
 	   * @class PluginDrag
 	   * @implements Plugin
@@ -22990,12 +22908,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 38 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(36), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -23184,12 +23102,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 39 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -23369,12 +23287,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 40 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -23453,7 +23371,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'x': 0,
 	        'y': 0,
 	        'height': 0,
-	        'width': 0
+	        'width': 0,
+	        'pointer-events': 'none'
 	      });
 
 	      this.graph = graph;
@@ -23465,7 +23384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    onMouseDown(graph, x, y, e, mute) {
-	      console.log('zoomdown');
+
 	      var zoomMode = this.options.zoomMode;
 
 	      if (!zoomMode) {
@@ -23584,7 +23503,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.options.transition || this.options.smooth) {
 
-	        var modeX = false,
+	        let modeX = false,
 	            modeY = false;
 
 	        if (this._zoomingMode == 'x' || this._zoomingMode == 'xy' || this._zoomingMode == 'forceY2') {
@@ -23863,6 +23782,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
+	      graph.pluginYieldActiveState();
+
 	      this.graph.draw();
 	      /*
 	          this.emit( "dblClick", {
@@ -24009,12 +23930,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 41 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(42), __webpack_require__(36), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(45), __webpack_require__(39), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.core'), require('../graph.lru'), require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -24076,7 +23997,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.plugins = [];
 	      this.currentSlots = {};
 
-	      this.requestLevels = {};
+	      this.requestLevels = new Map();
 	      this.update = (noRecalculate, force) => {
 
 	        this.series.forEach(function (serie) {
@@ -24183,7 +24104,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var optimalIntervalIndex = this.options.intervals.indexOf(optimalInterval);
 	      var interval;
 
-	      for (var i = optimalIntervalIndex - 1; i <= optimalIntervalIndex + 1; i++) {
+	      this.cleanRegister(optimalIntervalIndex);
+
+	      for (var i = optimalIntervalIndex; i <= optimalIntervalIndex + 1; i++) {
 
 	        interval = this.options.intervals[i];
 	        var startSlotId = self.computeSlotID(from, interval);
@@ -24211,6 +24134,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.processRequests();
+	    }
+
+	    cleanRegister(interval) {
+
+	      if (!this.requestLevels) {
+	        return;
+	      }
+
+	      this.requestLevels.forEach(levelArray => {
+
+	        levelArray.forEach((levelElement, levelIndex) => {
+
+	          if (levelElement[4] < interval) {
+	            levelArray.splice(levelIndex, 1);
+	          }
+	        });
+	      });
 	    }
 
 	    register(serie, slotId, interval, priority, noProcess, noRecalculate) {
@@ -24442,7 +24382,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var data = [];
 	      var dataMinMax = [];
-	      var lruData;
 
 	      if (!force && interval == this.currentSlots[serie.getName()].interval && this.currentSlots[serie.getName()].min <= startSlotId && this.currentSlots[serie.getName()].max >= endSlotId) {
 	        return;
@@ -24459,7 +24398,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      while (slotId <= endSlotId) {
 
-	        if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval))) {
+	        const lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval));
+	        if (lruData) {
 
 	          data = data.concat(lruData.data.mean);
 	          dataMinMax = dataMinMax.concat(lruData.data.minmax);
@@ -24486,10 +24426,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        clearInterval(this.interval);
 	      }
 
-	      var self = this;
-
-	      this.interval = setInterval(function () {
-	        self.update(true, false);
+	      this.update(true, true);
+	      this.interval = setInterval(() => {
+	        this.update(true, false);
 	      }, interval);
 	    }
 
@@ -24499,7 +24438,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      intervals.sort();
 
 	      var nextInterval = intervals[intervals.indexOf(downInterval) + 1] || -1;
-	      var lruData;
 	      if (nextInterval < 0) {
 	        return [];
 	      }
@@ -24509,7 +24447,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var newSlotId = this.computeSlotID(newSlotTime, nextInterval),
 	          start = false;
 
-	      if (lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval))) {
+	      const lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval));
+	      if (lruData) {
 
 	        for (var i = 0, l = lruData.data.mean.length; i < l; i += 2) {
 
@@ -24549,7 +24488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 42 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -24683,12 +24622,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 43 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'));
 	  } else {
@@ -24820,11 +24759,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      y = this.interpolate(this.serie1, this.getFrom());
-	      top.push(this.getFrom()); // x 
+	      top.push(this.getFrom()); // x
 	      top.push(y); // y
 
 	      y = this.interpolate(this.serie2, this.getFrom());
-	      bottom.push(this.getFrom()); // x 
+	      bottom.push(this.getFrom()); // x
 	      bottom.push(y); // y
 
 	      var s2;
@@ -24871,10 +24810,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	              order = this.serie1.data[i1][j1 + 1] > this.serie2.data[i2][j2 + 1];
 	            }
 
-	            top.push(this.getTo()); // x 
+	            top.push(this.getTo()); // x
 	            top.push(y); // y
 
-	            bottom.push(this.getTo()); // x 
+	            bottom.push(this.getTo()); // x
 	            bottom.push(y2); // y
 
 	            ended = true;
@@ -24892,10 +24831,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              y = this.interpolate(this.serie2, this.serie1.data[i1][j1]);
 
-	              top.push(this.serie1.data[i1][j1]); // x 
+	              top.push(this.serie1.data[i1][j1]); // x
 	              top.push(this.serie1.data[i1][j1 + 1]); // y
 
-	              bottom.push(this.serie1.data[i1][j1]); // x 
+	              bottom.push(this.serie1.data[i1][j1]); // x
 	              bottom.push(y); // y
 
 	              order = this.serie1.data[i1][j1 + 1] > y;
@@ -24974,7 +24913,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        // End of X
 
-	        if (y = this.interpolate(this.serie2, top[top.length - 2])) {
+	        y = this.interpolate(this.serie2, top[top.length - 2]);
+	        if (y) {
 	          bottom.push(top[top.length - 2]);
 	          bottom.push(y);
 	        }
@@ -25105,12 +25045,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 44 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(9), __webpack_require__(11), __webpack_require__(3), __webpack_require__(14), __webpack_require__(21), __webpack_require__(36), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(9), __webpack_require__(11), __webpack_require__(3), __webpack_require__(14), __webpack_require__(23), __webpack_require__(39), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("../graph.core"), require("../graph.axis.x"), require("../graph.axis.y"), require("../graph.util"), require("../series/graph.serie.line"), require("../series/graph.serie.scatter"), require("./graph.plugin"), require("../graph.axis"));
 	  } else {
@@ -25260,7 +25200,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }(i);
 	  });
 
-	  /** 
+	  /**
 	   * Axis splitting plugin
 	   * @augments Plugin
 	   */
@@ -25510,7 +25450,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var delegateMethods = ['turnGridsOff', 'turnGridsOn', 'gridsOff', 'gridsOn', 'setEngineering', 'setScientificScaleExponent', 'setScientific', 'setLabelColor', 'setSecondaryGridDasharray', 'setPrimaryGridDasharray', 'setSecondaryGridsOpacity', 'setPrimaryGridOpacity', 'setSecondaryGridWidth', 'setPrimaryGridWidth', 'setSecondaryGridColor', 'setPrimaryGridColor', 'setTicksLabelColor', 'setSecondaryTicksColor', 'setPrimaryTicksColor', 'setAxisColor', 'secondaryGridOn', 'secondaryGridOff', 'primaryGridOff', 'primaryGridOn', 'setSecondaryGrid', 'setPrimaryGrid', 'setGrids', 'setTickPosition', 'setExponentialFactor', 'setExponentialLabelFactor', 'setGridLinesStyle', 'forcePrimaryTickUnitMin', 'forcePrimaryTickUnitMax', 'forcePrimaryTickUnit', 'flip', 'show', 'hide', 'setDisplay'];
 
-	    /** 
+	    /**
 	     * Split axis
 	     * @mixes AxisX
 	     * @mixes AxisY
@@ -25908,31 +25848,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 45 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(25)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('../graph.util'), require('./graph.shape'));
+	    factory(exports, require('./graph.shape.line'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graph, global.graph);
-	    global.graphShapeEllipse = mod.exports;
+	    factory(mod.exports, global.graphShape);
+	    global.graphShapeArrow = mod.exports;
 	  }
-	})(this, function (exports, _graph, _graph2) {
+	})(this, function (exports, _graphShape) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var util = _interopRequireWildcard(_graph);
-
-	  var _graph3 = _interopRequireDefault(_graph2);
+	  var _graphShape2 = _interopRequireDefault(_graphShape);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -25940,65 +25878,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  function _interopRequireWildcard(obj) {
-	    if (obj && obj.__esModule) {
-	      return obj;
-	    } else {
-	      var newObj = {};
-
-	      if (obj != null) {
-	        for (var key in obj) {
-	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	        }
-	      }
-
-	      newObj.default = obj;
-	      return newObj;
-	    }
-	  }
-
 	  /**
-	   * Displays an ellipse
-	   * @extends Shape
+	   *  Displays an arrow
+	   *  @extends GraphShapeLine
 	   */
-	  class ShapeEllipse extends _graph3.default {
+	  class ShapeArrow extends _graphShape2.default {
 
-	    constructor(graph, options) {
-	      super(graph, options);
+	    constructor(graph) {
+
+	      super(graph);
 	    }
 
 	    createDom() {
-	      this._dom = document.createElementNS(this.graph.ns, 'ellipse');
-	    }
 
-	    applyPosition() {
+	      this._dom = document.createElementNS(this.graph.ns, 'line');
+	      this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
 
-	      var pos = this.computePosition(0);
+	      this.createHandles(this.nbHandles, 'rect', {
+	        transform: "translate(-3 -3)",
+	        width: 6,
+	        height: 6,
+	        stroke: "black",
+	        fill: "white",
+	        cursor: 'nwse-resize'
+	      });
 
-	      this.setDom('cx', pos.x || 0);
-	      this.setDom('cy', pos.y || 0);
-
-	      this.setDom('rx', this.getProp('rx') || 0);
-	      this.setDom('ry', this.getProp('ry') || 0);
-
-	      return true;
-	    }
-
-	    setR(rx, ry) {
-	      this.setProp('rx', rx);
-	      this.setProp('ry', ry);
-	    }
-
-	    handleMouseUpImpl() {
-	      this.triggerChange();
-	    }
-
-	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-	      return;
+	      this.setStrokeColor('black');
+	      this.setStrokeWidth(1);
 	    }
 	  }
 
-	  exports.default = ShapeEllipse;
+	  exports.default = ShapeArrow;
 	});
 
 /***/ }

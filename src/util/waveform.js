@@ -5,82 +5,13 @@ import {
 
 import aggregator from './data_aggregator'
 
-const MULTIPLY = Symbol();
-const ADD = Symbol();
-const SUBTRACT = Symbol();
-const DIVIDE = Symbol();
-
-// http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
-function pow2ceil( v ) {
-  v--;
-  var p = 2;
-  while ( ( v >>= 1 ) ) {
-    p <<= 1;
-  }
-  return p;
-}
-
-function binarySearch( target, haystack, reverse ) {
-
-  let seedA = 0,
-    length = haystack.length,
-    seedB = ( length - 1 ),
-    seedInt,
-    i = 0,
-    nanDirection = 1;
-
-  if ( haystack[ seedA ] == target ) {
-    return seedA;
-  }
-
-  if ( haystack[ seedB ] == target ) {
-    return seedB;
-  }
-
-  while ( true ) {
-    i++;
-    if ( i > 100 ) {
-      throw "Error loop";
-    }
-
-    seedInt = Math.floor( ( seedA + seedB ) / 2 );
-    //  seedInt -= seedInt % 2; // Always looks for an x.
-
-    while ( isNaN( haystack[ seedInt ] ) ) {
-      seedInt += nanDirection;
-    }
-
-    if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
-      return seedInt;
-    }
-
-    //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
-    if ( haystack[ seedInt ] <= target ) {
-      if ( reverse ) {
-        seedB = seedInt;
-      } else {
-        seedA = seedInt;
-      }
-    } else if ( haystack[ seedInt ] > target ) {
-      if ( reverse ) {
-        seedA = seedInt;
-      } else {
-        seedB = seedInt;
-      }
-    } else {
-      return false;
-    }
-
-    nanDirection *= -1;
-  }
-}
-
 class Waveform {
 
-  constructor() {
+  constructor( data = [], xOffset = 0, xScale = 1 ) {
 
-    this.xOffset = 0;
-    this.xScale = 1;
+    this.xOffset = xOffset;
+    this.xScale = xScale;
+    this.setData( data );
   }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -111,6 +42,19 @@ class Waveform {
   }
 */
   setData( data ) {
+
+      /* First, we must treat the case of the array of array for backward compatibility */
+      if ( Array.isArray( data[ 0 ] ) ) {
+        let x = [];
+        let y = [];
+        data.forEach( ( el ) => {
+          x.push( el[ 0 ] );
+          y.push( el[ 1 ] );
+        } );
+
+        this.setXWaveform( x );
+        data = y;
+      }
 
       let newData = this._makeArray( data.length ),
         warnNaN = false;
@@ -146,7 +90,12 @@ class Waveform {
   setXWaveform( waveform ) {
 
     if ( !( waveform instanceof Waveform ) ) {
-      return;
+
+      if ( Array.isArray( waveform ) ) {
+        waveform = new Waveform( waveform );
+      } else {
+        throw "Cannot set X waveform. Data is not a valid array."
+      }
     }
 
     this.xdata = waveform;
@@ -196,6 +145,45 @@ class Waveform {
       constructor == Uint8ClampedArray ||
       constructor == Uint16Array ||
       constructor == Uint32Array;
+  }
+
+  recalculateMinMaxNewPoint( x, y ) {
+    if ( x < this.minX ) {
+      this.minX = x;
+    } else if ( x > this.maxX ) {
+      this.maxX = x;
+    }
+
+    if ( y < this.minY ) {
+      this.minY = y;
+    } else if ( y > this.maxY ) {
+      this.maxY = y;
+    }
+  }
+
+  prepend( x, y ) {
+
+    if ( this.xdata ) {
+      this.xdata.prepend( null, x );
+    } else {
+      this.xOffset -= this.xScale;
+    }
+
+    this.data.unshift( y );
+    this.recalculateMinMaxNewPoint( x, y );
+    return this;
+  }
+
+  append( x, y ) {
+
+    if ( this.xdata ) {
+      this.xdata.append( null, x );
+    }
+
+    this.data.push( y );
+    this.recalculateMinMaxNewPoint( x, y );
+
+    return this;
   }
 
   _makeArray( length ) {
@@ -252,8 +240,12 @@ class Waveform {
       this.maxX = this.xdata.getMax();
 
     } else {
-      this.minX = Math.min( this.xScale * this.getLength(), 0 ) + this.xOffset;
-      this.maxX = Math.max( this.xScale * this.getLength(), 0 ) + this.xOffset;
+
+      const b1 = this.xOffset + this.xScale * this.getLength(),
+        b2 = this.xOffset;
+
+      this.minX = Math.min( b1, b2 );
+      this.maxX = Math.max( b1, b2 );
     }
   }
 
@@ -820,5 +812,75 @@ class Waveform {
   }
 
 };
+
+const MULTIPLY = Symbol();
+const ADD = Symbol();
+const SUBTRACT = Symbol();
+const DIVIDE = Symbol();
+
+// http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
+function pow2ceil( v ) {
+  v--;
+  var p = 2;
+  while ( ( v >>= 1 ) ) {
+    p <<= 1;
+  }
+  return p;
+}
+
+function binarySearch( target, haystack, reverse ) {
+
+  let seedA = 0,
+    length = haystack.length,
+    seedB = ( length - 1 ),
+    seedInt,
+    i = 0,
+    nanDirection = 1;
+
+  if ( haystack[ seedA ] == target ) {
+    return seedA;
+  }
+
+  if ( haystack[ seedB ] == target ) {
+    return seedB;
+  }
+
+  while ( true ) {
+    i++;
+    if ( i > 100 ) {
+      throw "Error loop";
+    }
+
+    seedInt = Math.floor( ( seedA + seedB ) / 2 );
+    //  seedInt -= seedInt % 2; // Always looks for an x.
+
+    while ( isNaN( haystack[ seedInt ] ) ) {
+      seedInt += nanDirection;
+    }
+
+    if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
+      return seedInt;
+    }
+
+    //    console.log(seedA, seedB, seedInt, haystack[seedInt]);
+    if ( haystack[ seedInt ] <= target ) {
+      if ( reverse ) {
+        seedB = seedInt;
+      } else {
+        seedA = seedInt;
+      }
+    } else if ( haystack[ seedInt ] > target ) {
+      if ( reverse ) {
+        seedA = seedInt;
+      } else {
+        seedB = seedInt;
+      }
+    } else {
+      return false;
+    }
+
+    nanDirection *= -1;
+  }
+}
 
 export default Waveform

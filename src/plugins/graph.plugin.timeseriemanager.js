@@ -166,23 +166,22 @@ class PluginTimeSerieManager extends Plugin {
   }
 
   cleanRegister( interval ) {
-     
-     if( ! this.requestLevels ) {
-       return;
-     }
 
-     this.requestLevels.forEach( ( levelArray ) => {
+    if ( !this.requestLevels ) {
+      return;
+    }
 
-       levelArray.forEach( ( levelElement, levelIndex ) => {
+    this.requestLevels.forEach( ( levelArray ) => {
 
-         if( levelElement[ 4 ] < interval ) {
-           levelArray.splice( levelIndex, 1 );
-         }
-       } );
+      levelArray.forEach( ( levelElement, levelIndex ) => {
 
-     } );  
-   }
+        if ( levelElement[ 4 ] < interval ) {
+          levelArray.splice( levelIndex, 1 );
+        }
+      } );
 
+    } );
+  }
 
   register( serie, slotId, interval, priority, noProcess, noRecalculate ) {
 
