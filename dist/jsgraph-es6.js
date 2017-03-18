@@ -3760,7 +3760,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _handleMouseWheel(graph, delta, e) {
-
 	    if (checkMouseActions(graph, e, [delta, e], 'onMouseWheel')) {
 	      e.preventDefault();
 	      e.stopPropagation();
@@ -3768,7 +3767,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function _handleMouseLeave(graph) {
-
 	    if (graph.options.handleMouseLeave) {
 	      graph.options.handleMouseLeave.call(graph);
 	    }
