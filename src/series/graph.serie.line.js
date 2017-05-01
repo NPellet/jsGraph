@@ -551,7 +551,7 @@ class SerieLine extends Serie {
       if ( !this.drawInit( force ) ) {
         return;
       }
-
+      console.log( this.getName(), this.getYAxis().getCurrentMax() );
       var data = this._dataToUse,
         xData = this._xDataToUse,
         slotToUse = this._slotToUse;
@@ -604,7 +604,7 @@ class SerieLine extends Serie {
 
     let self = this,
       waveform = this._waveform,
-      data = waveform.getData( true ),
+      data,
       x,
       y,
       lastX = false,
@@ -619,6 +619,11 @@ class SerieLine extends Serie {
       yMin = yAxis.getCurrentMin(),
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
+
+    if ( !waveform ) {
+      return;
+    }
+    data = waveform.getData( true );
 
     // Y crossing
     let yLeftCrossingRatio,

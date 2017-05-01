@@ -546,6 +546,14 @@ class Serie extends EventEmitter {
     return this.maxY;
   }
 
+  getWaveform() {
+    return this._waveform;
+  }
+
+  getWaveforms() {
+    return [ this._waveform ];
+  }
+
   /**
    * Computes and returns a line SVG element with the same line style as the serie, or width 20px
    * @returns {SVGElement}

@@ -362,6 +362,10 @@ class AxisY extends Axis {
 
   }
 
+  getZProj( zValue ) {
+    return zValue * this.graph.options.zAxis.shiftY;
+  }
+
 }
 
 export default AxisY;

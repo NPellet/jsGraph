@@ -218,6 +218,10 @@ class AxisX extends Axis {
 
   }
 
+  getZProj( zValue ) {
+    return zValue * this.graph.options.zAxis.shiftX;
+  }
+
 }
 
 export default AxisX;

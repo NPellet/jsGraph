@@ -9480,9 +9480,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'getBoundaryAxis',
-	    value: function getBoundaryAxis(axis, minmax) {
+	    value: function getBoundaryAxis(axis, minmax, usingZValues) {
 
-	      var valSeries = this.getBoundaryAxisFromSeries(axis, minmax);
+	      var valSeries = this.getBoundaryAxisFromSeries(axis, minmax, usingZValues);
 	      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
 	      return valSeries;
 	      //return Math[ minmax ]( valSeries, valShapes );
@@ -9498,7 +9498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'getBoundaryAxisFromSeries',
-	    value: function getBoundaryAxisFromSeries(axis, minmax) {
+	    value: function getBoundaryAxisFromSeries(axis, minmax, usingZValues) {
 
 	      var min = minmax == 'min',
 	          val,
@@ -9523,8 +9523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          continue;
 	        }
 
-	        serieValue = serie[func2use]();
-
+	        serieValue = serie[func2use](usingZValues);
 	        val = Math[minmax](isNaN(val) ? infinity2use : val, isNaN(serieValue) ? infinity2use : serieValue);
 	      }
 
@@ -9558,7 +9557,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }, {
 	    key: 'updateDataMinMaxAxes',
-	    value: function updateDataMinMaxAxes() {
+	    value: function updateDataMinMaxAxes(usingZValues) {
 
 	      var axisvars = ['bottom', 'top', 'left', 'right'],
 	          axis,
@@ -9580,8 +9579,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
-	          axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min'));
-	          axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max'));
+	          axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues));
+	          axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues));
 	        }
 	      }
 	    }
@@ -10542,6 +10541,68 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.legend.requireDelayedUpdate();
 	    }
+	  }, {
+	    key: 'orthogonalProjectionSetup',
+	    value: function orthogonalProjectionSetup(options) {
+
+	      this.options.zAxis = util.extend(true, {
+	        maxZ: 10,
+	        minZ: 0,
+	        shiftX: -25,
+	        shiftY: -15,
+	        xAxis: this.getXAxis(),
+	        yAxis: this.getYAxis()
+	      });
+	    }
+	  }, {
+	    key: 'orthogonalProjectionUpdate',
+	    value: function orthogonalProjectionUpdate() {
+	      var _this2 = this;
+
+	      if (!this.zAxis) {
+	        this.zAxis = {
+	          g: document.createElementNS(this.ns, "g"),
+	          l: document.createElementNS(this.ns, "line")
+	        };
+
+	        this.zAxis.g.appendChild(this.zAxis.l);
+	        this.groupGrids.appendChild(this.zAxis.g);
+	      }
+
+	      var refAxisX = this.options.zAxis.xAxis;
+	      var refAxisY = this.options.zAxis.yAxis;
+
+	      var x0 = refAxisX.getMinPx();
+	      var y0 = refAxisY.getMinPx();
+
+	      var dx = refAxisX.getZProj(this.options.zAxis.maxZ);
+	      var dy = refAxisY.getZProj(this.options.zAxis.maxZ);
+
+	      this.zAxis.l.setAttribute('stroke', 'black');
+	      this.zAxis.l.setAttribute('x1', x0);
+	      this.zAxis.l.setAttribute('x2', x0 + dx);
+	      this.zAxis.l.setAttribute('y1', y0);
+	      this.zAxis.l.setAttribute('y2', y0 + dy);
+
+	      this.updateDataMinMaxAxes(true);
+
+	      var sort = this.series.map(function (serie) {
+	        return [serie.getZPos(), serie];
+	      });
+
+	      sort.sort(function (sa, sb) {
+	        return sb[0] - sa[0];
+	      });
+
+	      var i = 0;
+	      sort.forEach(function (s) {
+	        s[1].setLayer(i);
+	        _this2.appendSerieToDom(s[1]);
+	        i++;
+	      });
+
+	      this.drawSeries(true);
+	    }
 
 	    /**
 	     * Kills the graph
@@ -10688,7 +10749,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.graphingZone.appendChild(this.axisGroup);
 
 	      this.groupGrids = document.createElementNS(this.ns, 'g');
-	      this.groupGrids.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
+
+	      // With the z stacking, this should probably be removed
+	      //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
 	      this.groupPrimaryGrids = document.createElementNS(this.ns, 'g');
 	      this.groupSecondaryGrids = document.createElementNS(this.ns, 'g');
@@ -10802,7 +10865,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.defs.appendChild(this.vertLineArrow);
 
-	      this.plotGroup.setAttribute('clip-path', 'url(#_clipplot' + this._creation + ')');
+	      // Removed with z stacking ?
+	      //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
 	      this.bypassHandleMouse = false;
 	    }
@@ -10821,55 +10885,55 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getDrawingSpaceWidth',
 	    value: function getDrawingSpaceWidth() {
-	      var _this2 = this;
+	      var _this3 = this;
 
 	      return function () {
-	        return _this2.drawingSpaceWidth;
+	        return _this3.drawingSpaceWidth;
 	      };
 	    }
 	  }, {
 	    key: 'getDrawingSpaceHeight',
 	    value: function getDrawingSpaceHeight() {
-	      var _this3 = this;
+	      var _this4 = this;
 
 	      return function () {
-	        return _this3.drawingSpaceHeight;
+	        return _this4.drawingSpaceHeight;
 	      };
 	    }
 	  }, {
 	    key: 'getDrawingSpaceMinX',
 	    value: function getDrawingSpaceMinX() {
-	      var _this4 = this;
+	      var _this5 = this;
 
 	      return function () {
-	        return _this4.drawingSpaceMinX;
+	        return _this5.drawingSpaceMinX;
 	      };
 	    }
 	  }, {
 	    key: 'getDrawingSpaceMinY',
 	    value: function getDrawingSpaceMinY() {
-	      var _this5 = this;
+	      var _this6 = this;
 
 	      return function () {
-	        return _this5.drawingSpaceMinY;
+	        return _this6.drawingSpaceMinY;
 	      };
 	    }
 	  }, {
 	    key: 'getDrawingSpaceMaxX',
 	    value: function getDrawingSpaceMaxX() {
-	      var _this6 = this;
+	      var _this7 = this;
 
 	      return function () {
-	        return _this6.drawingSpaceMaxX;
+	        return _this7.drawingSpaceMaxX;
 	      };
 	    }
 	  }, {
 	    key: 'getDrawingSpaceMaxY',
 	    value: function getDrawingSpaceMaxY() {
-	      var _this7 = this;
+	      var _this8 = this;
 
 	      return function () {
-	        return _this7.drawingSpaceMaxY;
+	        return _this8.drawingSpaceMaxY;
 	      };
 	    }
 	  }, {
@@ -10976,7 +11040,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'exportToSchema',
 	    value: function exportToSchema() {
-	      var _this8 = this;
+	      var _this9 = this;
 
 	      var schema = {};
 
@@ -10994,11 +11058,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      axesPositions.map(function (axisPosition) {
 
-	        if (!_this8.axis[axisPosition]) {
+	        if (!_this9.axis[axisPosition]) {
 	          return;
 	        }
 
-	        axesExport = axesExport.concat(_this8.axis[axisPosition].map(function (axis) {
+	        axesExport = axesExport.concat(_this9.axis[axisPosition].map(function (axis) {
 	          return {
 
 	            type: axisPosition,
@@ -11012,9 +11076,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }));
 
 	        if (axisPosition == 'top' || axisPosition == 'bottom') {
-	          allaxes.x = allaxes.x.concat(_this8.axis[axisPosition]);
+	          allaxes.x = allaxes.x.concat(_this9.axis[axisPosition]);
 	        } else {
-	          allaxes.y = allaxes.y.concat(_this8.axis[axisPosition]);
+	          allaxes.y = allaxes.y.concat(_this9.axis[axisPosition]);
 	        }
 	      });
 
@@ -16174,6 +16238,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
 	      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
 	    }
+	  }, {
+	    key: 'getZProj',
+	    value: function getZProj(zValue) {
+	      return zValue * this.graph.options.zAxis.shiftX;
+	    }
 	  }]);
 
 	  return AxisX;
@@ -19400,6 +19469,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
 	      this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
 	    }
+	  }, {
+	    key: 'getZProj',
+	    value: function getZProj(zValue) {
+	      return zValue * this.graph.options.zAxis.shiftY;
+	    }
 	  }]);
 
 	  return AxisY;
@@ -21280,7 +21354,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!this.drawInit(force)) {
 	          return;
 	        }
-
+	        console.log(this.getName(), this.getYAxis().getCurrentMax());
 	        var data = this._dataToUse,
 	            xData = this._xDataToUse,
 	            slotToUse = this._slotToUse;
@@ -21334,7 +21408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var self = this,
 	          waveform = this._waveform,
-	          data = waveform.getData(true),
+	          data = void 0,
 	          x = void 0,
 	          y = void 0,
 	          lastX = false,
@@ -21349,6 +21423,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          yMin = yAxis.getCurrentMin(),
 	          xMax = xAxis.getCurrentMax(),
 	          yMax = yAxis.getCurrentMax();
+
+	      if (!waveform) {
+	        return;
+	      }
+	      data = waveform.getData(true);
 
 	      // Y crossing
 	      var yLeftCrossingRatio = void 0,
@@ -23446,6 +23525,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getMaxY() {
 	      return this.maxY;
 	    }
+	  }, {
+	    key: 'getWaveform',
+	    value: function getWaveform() {
+	      return this._waveform;
+	    }
+	  }, {
+	    key: 'getWaveforms',
+	    value: function getWaveforms() {
+	      return [this._waveform];
+	    }
 
 	    /**
 	     * Computes and returns a line SVG element with the same line style as the serie, or width 20px
@@ -24430,9 +24519,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @returns {Number} The x position in px corresponding to the x value
 	   */
 	  getX: function getX(val) {
-	    return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.options.zpos * 1;
+	    return (val = this.getXAxis().getPx(val)) - val % 0.2 + this.getXAxis().getZProj(this.options.zpos);
 	  },
-
 
 	  /**
 	   * Returns the y position of a certain value in pixels position, based on the serie's axis
@@ -24441,9 +24529,122 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @returns {Number} The y position in px corresponding to the y value
 	   */
 	  getY: function getY(val) {
-	    return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.options.zpos * 1.2;
+	    return (val = this.getYAxis().getPx(val)) - val % 0.2 + this.getYAxis().getZProj(this.options.zpos);
+	  },
+
+	  getZPos: function getZPos() {
+	    return this.options.zpos;
+	  },
+
+	  /**
+	   * @returns {Number} Lowest x value of the serie's data
+	   * @memberof Serie
+	   */
+	  getMinX: function getMinX(useZValues) {
+	    if (!useZValues) {
+	      return this.minX;
+	    }
+
+	    return getZCorrectedValue(this, true, true);
+	  },
+
+	  /**
+	   * @returns {Number} Highest x value of the serie's data
+	   * @memberof Serie
+	   */
+	  getMaxX: function getMaxX(useZValues) {
+
+	    if (!useZValues) {
+	      return this.maxX;
+	    }
+	    return getZCorrectedValue(this, true, false);
+	  },
+
+	  /**
+	   * @returns {Number} Lowest y value of the serie's data
+	   * @memberof Serie
+	   */
+	  getMinY: function getMinY(useZValues) {
+
+	    if (!useZValues) {
+	      return this.minY;
+	    }
+	    return getZCorrectedValue(this, false, true);
+	  },
+
+	  /**
+	   * @returns {Number} Highest y value of the serie's data
+	   * @memberof Serie
+	   */
+	  getMaxY: function getMaxY(useZValues) {
+
+	    if (!useZValues) {
+	      return this.maxY;
+	    }
+	    return getZCorrectedValue(this, false, false);
 	  }
+
 	};
+
+	function getZCorrectedValue(serie, x, min) {
+
+	  var i = void 0,
+	      l = void 0,
+	      data = void 0,
+	      val = void 0,
+	      valFinal = void 0;
+	  var wf = serie.getWaveforms();
+
+	  var _iteratorNormalCompletion = true;
+	  var _didIteratorError = false;
+	  var _iteratorError = undefined;
+
+	  try {
+	    for (var _iterator = wf[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	      var wave = _step.value;
+
+
+	      i = 0;
+	      l = wave.getLength();
+	      data = wave.getData();
+
+	      for (; i < l; i += 1) {
+
+	        if (x) {
+	          val = serie.getXAxis().getVal(serie.getX(wave.getX(i, true)));
+	        } else {
+	          val = serie.getYAxis().getVal(serie.getY(data[i]));
+	        }
+
+	        if (i == 0) {
+	          valFinal = val;
+	        } else {
+
+	          if (min) {
+	            valFinal = Math.min(valFinal, val);
+	          } else {
+	            valFinal = Math.max(valFinal, val);
+	          }
+	        }
+	      }
+	    }
+	  } catch (err) {
+	    _didIteratorError = true;
+	    _iteratorError = err;
+	  } finally {
+	    try {
+	      if (!_iteratorNormalCompletion && _iterator.return) {
+	        _iterator.return();
+	      }
+	    } finally {
+	      if (_didIteratorError) {
+	        throw _iteratorError;
+	      }
+	    }
+	  }
+
+	  return valFinal;
+	}
 
 	exports.default = Serie3DMixin;
 
@@ -26894,11 +27095,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.graph.defs.appendChild(this.clip);
 
-	      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
-	      this.clip.appendChild(this.clipRect);
-	      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+	      //   this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+	      //   this.clip.appendChild( this.clipRect );
+	      //    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
 
-	      this.groupMain.setAttribute('clip-path', 'url(#' + this.clipId + ')');
+	      //  this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
 	    }
 
 	    /**
@@ -26937,9 +27138,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.waveforms.map(function (wave) {
 
 	        _this2.minX = Math.min(wave.getXMin(), _this2.minX);
-	        _this2.maxX = Math.min(wave.getXMin(), _this2.maxX);
+	        _this2.maxX = Math.max(wave.getXMin(), _this2.maxX);
 	        _this2.minY = Math.min(wave.getMin(), _this2.minY);
-	        _this2.maxY = Math.min(wave.getMax(), _this2.maxY);
+	        _this2.maxY = Math.max(wave.getMax(), _this2.maxY);
 	      });
 
 	      this.graph.updateDataMinMaxAxes();
@@ -26950,6 +27151,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setWaveforms',
 	    value: function setWaveforms() {
 	      return this.setWaveform.apply(this, arguments);
+	    }
+	  }, {
+	    key: 'getWaveforms',
+	    value: function getWaveforms() {
+	      return this.waveforms;
 	    }
 	  }, {
 	    key: 'setMinMaxWaveforms',
@@ -26993,15 +27199,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            line = "",
 	            buffer = void 0;
 
-	        var xmin = this.getXAxis().getMinPx(),
-	            xmax = this.getXAxis().getMaxPx(),
-	            ymin = this.getYAxis().getMinPx(),
-	            ymax = this.getYAxis().getMaxPx();
+	        var xminpx = this.getXAxis().getMinPx(),
+	            xmaxpx = this.getXAxis().getMaxPx(),
+	            yminpx = this.getYAxis().getMinPx(),
+	            ymaxpx = this.getYAxis().getMaxPx();
 
-	        this.clipRect.setAttribute("x", Math.min(xmin, xmax));
-	        this.clipRect.setAttribute("y", Math.min(ymin, ymax));
-	        this.clipRect.setAttribute("width", Math.abs(xmax - xmin));
-	        this.clipRect.setAttribute("height", Math.abs(ymax - ymin));
+	        var xmin = this.getXAxis().getCurrentMin(),
+	            xmax = this.getXAxis().getCurrentMax(),
+	            ymin = this.getYAxis().getCurrentMin(),
+	            ymax = this.getYAxis().getCurrentMax();
+
+	        //this.clipRect.setAttribute( "x", Math.min( xmin, xmax ) );
+	        //this.clipRect.setAttribute( "y", Math.min( ymin, ymax ) );
+	        //this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
+	        //this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
 
 	        this.groupMain.removeChild(this.groupZones);
 
@@ -27021,16 +27232,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	              ypx = this.getY(dataY[j]);
 	              xpx = this.getX(dataX);
 
-	              if (xpx < xmin || xpx > xmax) {
-	                buffer = [xpx, ypx];
+	              if (dataX < xmin || dataX > xmax) {
+	                buffer = [dataX, dataY[j], xpx, ypx];
 	                continue;
 	              }
 
 	              // The y axis in screen coordinate is inverted vs cartesians
-	              if (ypx < ymax) {
-	                ypx = ymax;
-	              } else if (ypx > ymin) {
-	                ypx = ymin;
+	              if (dataY[j] < ymin) {
+	                ypx = this.getY(ymin);
+	              } else if (dataY[j] > ymax) {
+	                ypx = this.getY(ymax);
 	              }
 
 	              if (line.length > 0) {
@@ -27038,7 +27249,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 
 	              if (buffer) {
-	                line += buffer[0] + "," + buffer[1] + " ";
+	                line += buffer[2] + "," + buffer[3] + " ";
 	                buffer = false;
 	              } else {
 	                line += xpx + "," + ypx + " ";

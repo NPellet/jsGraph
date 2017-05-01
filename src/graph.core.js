@@ -867,9 +867,9 @@ class Graph extends EventEmitter {
   /**
    * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
    */
-  getBoundaryAxis( axis, minmax ) {
+  getBoundaryAxis( axis, minmax, usingZValues ) {
 
-    var valSeries = this.getBoundaryAxisFromSeries( axis, minmax );
+    var valSeries = this.getBoundaryAxisFromSeries( axis, minmax, usingZValues );
     //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
     return valSeries;
     //return Math[ minmax ]( valSeries, valShapes );
@@ -883,7 +883,7 @@ class Graph extends EventEmitter {
    * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
    * @returns {Number} The minimimum or maximum of the axis based on its series
    */
-  getBoundaryAxisFromSeries( axis, minmax ) {
+  getBoundaryAxisFromSeries( axis, minmax, usingZValues ) {
 
     var min = minmax == 'min',
       val,
@@ -908,8 +908,7 @@ class Graph extends EventEmitter {
         continue;
       }
 
-      serieValue = serie[ func2use ]();
-
+      serieValue = serie[ func2use ]( usingZValues );
       val = Math[ minmax ]( isNaN( val ) ? infinity2use : val, isNaN( serieValue ) ? infinity2use : serieValue );
     }
 
@@ -937,7 +936,7 @@ class Graph extends EventEmitter {
    * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
    * @see Graph#getBoundaryAxis
    */
-  updateDataMinMaxAxes() {
+  updateDataMinMaxAxes( usingZValues ) {
 
     var axisvars = [ 'bottom', 'top', 'left', 'right' ],
       axis,
@@ -959,8 +958,8 @@ class Graph extends EventEmitter {
 
         //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
-        axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min' ) );
-        axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max' ) );
+        axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues ) );
+        axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues ) );
 
       }
     }
@@ -1813,6 +1812,65 @@ class Graph extends EventEmitter {
     this.legend.requireDelayedUpdate();
   }
 
+  orthogonalProjectionSetup( options ) {
+
+    this.options.zAxis = util.extend( true, {
+      maxZ: 10,
+      minZ: 0,
+      shiftX: -25,
+      shiftY: -15,
+      xAxis: this.getXAxis(),
+      yAxis: this.getYAxis()
+    } );
+  }
+
+  orthogonalProjectionUpdate() {
+
+    if ( !this.zAxis ) {
+      this.zAxis = {
+        g: document.createElementNS( this.ns, "g" ),
+        l: document.createElementNS( this.ns, "line" )
+      }
+
+      this.zAxis.g.appendChild( this.zAxis.l );
+      this.groupGrids.appendChild( this.zAxis.g );
+    }
+
+    let refAxisX = this.options.zAxis.xAxis;
+    let refAxisY = this.options.zAxis.yAxis;
+
+    var x0 = refAxisX.getMinPx();
+    var y0 = refAxisY.getMinPx();
+
+    var dx = refAxisX.getZProj( this.options.zAxis.maxZ );
+    var dy = refAxisY.getZProj( this.options.zAxis.maxZ );
+
+    this.zAxis.l.setAttribute( 'stroke', 'black' );
+    this.zAxis.l.setAttribute( 'x1', x0 );
+    this.zAxis.l.setAttribute( 'x2', x0 + dx );
+    this.zAxis.l.setAttribute( 'y1', y0 );
+    this.zAxis.l.setAttribute( 'y2', y0 + dy );
+
+    this.updateDataMinMaxAxes( true );
+
+    var sort = this.series.map( ( serie ) => {
+      return [ serie.getZPos(), serie ]
+    } );
+
+    sort.sort( ( sa, sb ) => {
+      return sb[ 0 ] - sa[ 0 ];
+    } );
+
+    let i = 0;
+    sort.forEach( s => {
+      s[ 1 ].setLayer( i );
+      this.appendSerieToDom( s[ 1 ] );
+      i++;
+    } );
+
+    this.drawSeries( true );
+  }
+
   /**
    * Kills the graph
    **/
@@ -1939,7 +1997,9 @@ class Graph extends EventEmitter {
     this.graphingZone.appendChild( this.axisGroup );
 
     this.groupGrids = document.createElementNS( this.ns, 'g' );
-    this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+    // With the z stacking, this should probably be removed
+    //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
     this.groupPrimaryGrids = document.createElementNS( this.ns, 'g' );
     this.groupSecondaryGrids = document.createElementNS( this.ns, 'g' );
@@ -2053,7 +2113,8 @@ class Graph extends EventEmitter {
 
     this.defs.appendChild( this.vertLineArrow );
 
-    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+    // Removed with z stacking ?
+    //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 
     this.bypassHandleMouse = false;
   }

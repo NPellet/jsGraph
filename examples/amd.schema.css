@@ -5,14 +5,3 @@ body, html {
 body {
   font-family: "Myriad Pro", "Helvetica Neue", Arial, "Sans Serif";
   font-size: 15px; }
-
-#graph {
-  height: 500px;
-  width: 400px;
-  margin: 20px; 
-}
-
-#schema {
-  height: 400px;
-  width: 1000px;
-}

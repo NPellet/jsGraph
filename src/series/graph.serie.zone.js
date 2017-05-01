@@ -59,11 +59,11 @@ class SerieZone extends Serie {
 
     this.graph.defs.appendChild( this.clip );
 
-    this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
-    this.clip.appendChild( this.clipRect );
-    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+    //   this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+    //   this.clip.appendChild( this.clipRect );
+    //    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
 
-    this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
+    //  this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
   }
 
   /**
@@ -93,9 +93,9 @@ class SerieZone extends Serie {
     this.waveforms.map( ( wave ) => {
 
       this.minX = Math.min( wave.getXMin(), this.minX );
-      this.maxX = Math.min( wave.getXMin(), this.maxX );
+      this.maxX = Math.max( wave.getXMin(), this.maxX );
       this.minY = Math.min( wave.getMin(), this.minY );
-      this.maxY = Math.min( wave.getMax(), this.maxY );
+      this.maxY = Math.max( wave.getMax(), this.maxY );
     } );
 
     this.graph.updateDataMinMaxAxes();
@@ -105,6 +105,10 @@ class SerieZone extends Serie {
 
   setWaveforms() {
     return this.setWaveform( ...arguments );
+  }
+
+  getWaveforms() {
+    return this.waveforms;
   }
 
   setMinMaxWaveforms( min, max ) {
@@ -141,15 +145,20 @@ class SerieZone extends Serie {
         line = "",
         buffer;
 
-      const xmin = this.getXAxis().getMinPx(),
-        xmax = this.getXAxis().getMaxPx(),
-        ymin = this.getYAxis().getMinPx(),
-        ymax = this.getYAxis().getMaxPx();
+      const xminpx = this.getXAxis().getMinPx(),
+        xmaxpx = this.getXAxis().getMaxPx(),
+        yminpx = this.getYAxis().getMinPx(),
+        ymaxpx = this.getYAxis().getMaxPx();
 
-      this.clipRect.setAttribute( "x", Math.min( xmin, xmax ) );
-      this.clipRect.setAttribute( "y", Math.min( ymin, ymax ) );
-      this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
-      this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
+      const xmin = this.getXAxis().getCurrentMin(),
+        xmax = this.getXAxis().getCurrentMax(),
+        ymin = this.getYAxis().getCurrentMin(),
+        ymax = this.getYAxis().getCurrentMax();
+
+      //this.clipRect.setAttribute( "x", Math.min( xmin, xmax ) );
+      //this.clipRect.setAttribute( "y", Math.min( ymin, ymax ) );
+      //this.clipRect.setAttribute( "width", Math.abs( xmax - xmin ) );
+      //this.clipRect.setAttribute( "height", Math.abs( ymax - ymin ) );
 
       this.groupMain.removeChild( this.groupZones );
 
@@ -162,16 +171,16 @@ class SerieZone extends Serie {
           ypx = this.getY( dataY[ j ] );
           xpx = this.getX( dataX );
 
-          if ( xpx < xmin || xpx > xmax ) {
-            buffer = [ xpx, ypx ];
+          if ( dataX < xmin || dataX > xmax ) {
+            buffer = [ dataX, dataY[ j ], xpx, ypx ];
             continue;
           }
 
           // The y axis in screen coordinate is inverted vs cartesians
-          if ( ypx < ymax ) {
-            ypx = ymax;
-          } else if ( ypx > ymin ) {
-            ypx = ymin;
+          if ( dataY[ j ] < ymin ) {
+            ypx = this.getY( ymin );
+          } else if ( dataY[ j ] > ymax ) {
+            ypx = this.getY( ymax );
           }
 
           if ( line.length > 0 ) {
@@ -179,7 +188,7 @@ class SerieZone extends Serie {
           }
 
           if ( buffer ) {
-            line += buffer[ 0 ] + "," + buffer[ 1 ] + " ";
+            line += buffer[ 2 ] + "," + buffer[ 3 ] + " ";
             buffer = false;
           } else {
             line += xpx + "," + ypx + " ";
