@@ -1,8 +1,9 @@
-import Waveform from './waveform'
+'use strict'
 
 class FitHost {
 
   constructor( options ) {
+
     this.DELTAP = 1e-6;
     this.BIGVAL = 9e99;
     this.WEIGHT = 1.0;
@@ -15,6 +16,7 @@ class FitHost {
     if ( options.subsetIndex ) {
       this.setSubset( ...options.subsetIndex );
     }
+
     this.setFunction( options.function );
 
     if ( options.progress ) {
@@ -58,7 +60,7 @@ class FitHost {
   }
 
   hookIteration( f ) {
-    this.hookIteration = ( params ) => {
+    this._hookIteration = ( params ) => {
       let data = this.buildFit( params, 200 );
       f( data );
     }
@@ -114,13 +116,13 @@ class FitHost {
   fit() {
 
     this.log( "Starting the fit with initial parameter list {" + this.parms.join() + "};" );
-    new LM( this, this.NPARMS, this.NPTS, this.hookIteration );
+    new LM( this, this.NPARMS, this.NPTS, this._hookIteration );
     this.log( "Fit successful. Output parameters {" + this.parms.join() + "};" );
 
     this._result = this.buildFit( this.parms, 200 );
 
     if ( this.options.done ) {
-      this.options.done( this._result );
+      this.options.done( this.parms, this._result );
     }
 
     return this._result;
@@ -141,7 +143,7 @@ class FitHost {
   }
 
   log( message ) {
-    console.info( message );
+    console.log( message );
   }
 
   //------the four mandated interface methods------------
@@ -227,9 +229,9 @@ class FitHost {
     for ( var i = 0, l = x.length; i < l; i++ ) {
       fit[ i ] = [ x[ i ], this.func( x[ i ], this.parms ) ];
     }
-    let waveformResult = new Waveform.default();
 
-    waveformResult.setDataXY( fit );
+    let waveformResult = this.options.waveform;
+    waveformResult.setData( fit );
     return waveformResult;
   }
 }

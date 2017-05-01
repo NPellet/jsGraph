@@ -103,6 +103,18 @@ class Waveform {
     return this;
   }
 
+  getXWaveform() {
+    if ( this.xdata ) {
+      return this.xdata;
+    }
+
+    var wave = new Waveform();
+    for ( var i = 0; i < this.getLength(); i += 1 ) {
+      wave.append( this.getX( i ) );
+    }
+    return wave;
+  }
+
   rescaleX( offset, scale ) {
     this.xScale = scale;
     this.xOffset = offset;
@@ -165,6 +177,9 @@ class Waveform {
 
     if ( this.xdata ) {
       this.xdata.prepend( null, x );
+    } else if ( x !== null ) {
+      this.xdata = this.getXWaveform();
+      this.xdata.prepend( null, x );
     } else {
       this.xOffset -= this.xScale;
     }
@@ -177,6 +192,9 @@ class Waveform {
   append( x, y ) {
 
     if ( this.xdata ) {
+      this.xdata.append( null, x );
+    } else if ( x !== null ) {
+      this.xdata = this.getXWaveform();
       this.xdata.append( null, x );
     }
 
@@ -346,12 +364,23 @@ class Waveform {
 
   fit( options ) {
 
-    var fit = new FitLM( extend( {}, {
-      dataY: this
-    }, options ) );
-    fit.init();
-    fit.fit();
-    return this;
+    var self = this;
+
+    return new Promise( function( resolver, rejector ) {
+
+      var fit = new FitLM( extend( {}, {
+        dataY: self,
+        dataX: self.getXWaveform(),
+        done: function( results ) {
+          resolver( results );
+        },
+
+        waveform: new Waveform()
+      }, options ) );
+
+      fit.init();
+      fit.fit();
+    } );
   }
 
   getX( index, optimized ) {

@@ -5221,6 +5221,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
+	    getXWaveform() {
+	      if (this.xdata) {
+	        return this.xdata;
+	      }
+
+	      var wave = new Waveform();
+	      for (var i = 0; i < this.getLength(); i += 1) {
+	        wave.append(this.getX(i));
+	      }
+	      return wave;
+	    }
+
 	    rescaleX(offset, scale) {
 	      this.xScale = scale;
 	      this.xOffset = offset;
@@ -5278,6 +5290,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.xdata) {
 	        this.xdata.prepend(null, x);
+	      } else if (x !== null) {
+	        this.xdata = this.getXWaveform();
+	        this.xdata.prepend(null, x);
 	      } else {
 	        this.xOffset -= this.xScale;
 	      }
@@ -5290,6 +5305,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    append(x, y) {
 
 	      if (this.xdata) {
+	        this.xdata.append(null, x);
+	      } else if (x !== null) {
+	        this.xdata = this.getXWaveform();
 	        this.xdata.append(null, x);
 	      }
 
@@ -5457,12 +5475,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    fit(options) {
 
-	      var fit = new _fit_lm2.default((0, _graph.extend)({}, {
-	        dataY: this
-	      }, options));
-	      fit.init();
-	      fit.fit();
-	      return this;
+	      var self = this;
+
+	      return new Promise(function (resolver, rejector) {
+
+	        var fit = new _fit_lm2.default((0, _graph.extend)({}, {
+	          dataY: self,
+	          dataX: self.getXWaveform(),
+	          done: function (results) {
+	            resolver(results);
+	          },
+
+	          waveform: new Waveform()
+	        }, options));
+
+	        fit.init();
+	        fit.fit();
+	      });
 	    }
 
 	    getX(index, optimized) {
@@ -6005,34 +6034,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./waveform'));
+	    factory(exports);
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.waveform);
+	    factory(mod.exports);
 	    global.fit_lm = mod.exports;
 	  }
-	})(this, function (exports, _waveform) {
+	})(this, function (exports) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
-
-	  var _waveform2 = _interopRequireDefault(_waveform);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
 	  class FitHost {
 
 	    constructor(options) {
+
 	      this.DELTAP = 1e-6;
 	      this.BIGVAL = 9e99;
 	      this.WEIGHT = 1.0;
@@ -6045,6 +6066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (options.subsetIndex) {
 	        this.setSubset(...options.subsetIndex);
 	      }
+
 	      this.setFunction(options.function);
 
 	      if (options.progress) {
@@ -6091,7 +6113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    hookIteration(f) {
-	      this.hookIteration = params => {
+	      this._hookIteration = params => {
 	        let data = this.buildFit(params, 200);
 	        f(data);
 	      };
@@ -6146,13 +6168,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    fit() {
 
 	      this.log("Starting the fit with initial parameter list {" + this.parms.join() + "};");
-	      new LM(this, this.NPARMS, this.NPTS, this.hookIteration);
+	      new LM(this, this.NPARMS, this.NPTS, this._hookIteration);
 	      this.log("Fit successful. Output parameters {" + this.parms.join() + "};");
 
 	      this._result = this.buildFit(this.parms, 200);
 
 	      if (this.options.done) {
-	        this.options.done(this._result);
+	        this.options.done(this.parms, this._result);
 	      }
 
 	      return this._result;
@@ -6173,7 +6195,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    log(message) {
-	      console.info(message);
+	      console.log(message);
 	    }
 
 	    //------the four mandated interface methods------------
@@ -6255,9 +6277,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      for (var i = 0, l = x.length; i < l; i++) {
 	        fit[i] = [x[i], this.func(x[i], this.parms)];
 	      }
-	      let waveformResult = new _waveform2.default.default();
 
-	      waveformResult.setDataXY(fit);
+	      let waveformResult = this.options.waveform;
+	      waveformResult.setData(fit);
 	      return waveformResult;
 	    }
 	  }
