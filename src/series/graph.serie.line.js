@@ -466,7 +466,9 @@ class SerieLine extends Serie {
 
       } else if ( this._waveform.hasAggregation() ) {
 
-        let promise = this._waveform.selectAggregatedData( this.graph.getDrawingWidth() );
+        let xaxis = this.getXAxis(),
+          numberOfPointsInTotal = this.graph.getDrawingWidth() * ( xaxis.getDataMax() - xaxis.getDataMin() ) / ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
+          promise = this._waveform.selectAggregatedData( numberOfPointsInTotal, this.getXAxis().getCurrentMin(), this.getXAxis().getCurrentMax() );
 
         if ( promise instanceof Promise ) {
 
@@ -491,11 +493,6 @@ class SerieLine extends Serie {
       this._dataToUse = this.data;
       this._xDataToUse = this.xData;
     }
-
-    this._optimizeMonotoneous = this.isXMonotoneous();
-    this.optimizeMonotoneousDirection = ( this.XMonotoneousDirection() && !this.getXAxis().isFlipped() ) ||  ( !this.XMonotoneousDirection() && this.getXAxis().isFlipped() );
-    this._optimizeBreak;
-    this._optimizeBuffer;
 
     return true;
   }
@@ -547,7 +544,7 @@ class SerieLine extends Serie {
       var data = this._dataToUse,
         xData = this._xDataToUse,
         slotToUse = this._slotToUse;
-      console.trace();
+
       this.removeLinesGroup();
       this.eraseMarkers();
 
@@ -562,7 +559,7 @@ class SerieLine extends Serie {
         this.errorDrawInit();
       }
 
-      this._draw_standard();
+      this._draw();
 
       if ( this.error ) {
         this.errorDraw();
@@ -592,7 +589,7 @@ class SerieLine extends Serie {
     this.dataHasChanged( false );
   }
 
-  _draw_standard() {
+  _draw() {
 
     let self = this,
       waveform = this._waveform,
@@ -642,26 +639,28 @@ class SerieLine extends Serie {
 
     if ( waveform.isXMonotoneous() ) {
 
-      if ( waveform.getXMonotoneousDirection() ) {
-        i = waveform.getIndexFromX( xMin ) || 0;
-        l = waveform.getIndexFromX( xMax );
+      if ( waveform.isXMonotoneousAscending() ) {
+
+        i = waveform.getIndexFromX( xMin, true ) || 0;
+        l = waveform.getIndexFromX( xMax, true );
 
         if ( l === false ) {
           l = waveform.getLength();
         }
 
       } else {
-        i = waveform.getIndexFromX( xMax ) || 0;
-        l = waveform.getIndexFromX( xMin );
+
+        i = waveform.getIndexFromX( xMax, true ) || 0;
+        l = waveform.getIndexFromX( xMin, true );
 
         if ( l === false ) {
-          l = waveform.getLength();
+          l = data.length;
         }
       }
 
       l += 2;
-      if ( l > waveform.getLength() ) {
-        l = waveform.getLength();
+      if ( l > data.length ) {
+        l = data.length;
       }
 
     }
@@ -1319,160 +1318,81 @@ class SerieLine extends Serie {
 
     return;
 
-    var xMinIndex;
-    data = data || this.data;
-
-    if ( ( valX <= data[ data.length - 2 ] && valX >= data[ 0 ] ) ) {
-
-      xMinIndex = this._searchBinary( valX, data, false );
-
-    } else if ( ( valX >= data[ data.length - 2 ] && valX <= data[ 0 ] ) ) {
-
-      xMinIndex = this._searchBinary( valX, data, true );
-
-    } else {
-
-      return;
-    }
-
-    return {
-      xMin: data[ xMinIndex ],
-      xMax: data[ xMinIndex + 2 ],
-      yMin: data[ xMinIndex + 1 ],
-      yMax: data[ xMinIndex + 3 ],
-      xBeforeIndex: xMinIndex / 2,
-      xAfterIndex: xMinIndex / 2 + 1,
-      xBeforeIndexArr: xMinIndex,
-      xClosest: ( Math.abs( data[ xMinIndex + 2 ] - valX ) < Math.abs( data[ xMinIndex ] - valX ) ? xMinIndex + 2 : xMinIndex ) / 2
-    }
   }
 
   handleMouseMove( xValue, doMarker ) {
 
-    var valX = xValue || this.getXAxis().getMouseVal(),
-      xMinIndex,
-      xMin,
-      yMin,
-      xMax,
-      yMax;
+      var valX = xValue || this.getXAxis().getMouseVal(),
+        xMinIndex,
+        xMin,
+        yMin,
+        xMax,
+        yMax;
 
-    var value = this.searchClosestValue( valX );
+      var value = this.searchClosestValue( valX );
 
-    if ( !value )
-      return;
+      if ( !value )
+        return;
 
-    var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-    var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+      var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+      var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
 
-    if ( doMarker && this.options.trackMouse ) {
+      if ( doMarker && this.options.trackMouse ) {
 
-      if ( value.xMin == undefined ) {
+        if ( value.xMin == undefined ) {
 
-        return false;
+          return false;
 
-      } else {
-
-        var x = this.getX( this.getFlip() ? intY : valX );
-        var y = this.getY( this.getFlip() ? valX : intY );
-
-        this.marker.setAttribute( 'display', 'block' );
-        this.marker.setAttribute( 'cx', x );
-        this.marker.setAttribute( 'cy', y );
-
-        this.markerLabel.setAttribute( 'display', 'block' );
-        this.markerLabelSquare.setAttribute( 'display', 'block' );
-        switch ( this.options.trackMouseLabel ) {
-          case false:
-            break;
-
-          default:
-            this.markerLabel.textContent = this.options.trackMouseLabel
-              .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
-              .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
-            break;
-        }
-
-        this.markerLabel.setAttribute( 'x', x + 5 );
-        this.markerLabel.setAttribute( 'y', y - 5 );
-
-        this.markerLabelSquare.setAttribute( 'x', x + 5 );
-        this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
-        this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
-        this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
-      }
-    }
-
-    return {
-      xBefore: value.xMin,
-      xAfter: value.xMax,
-      yBefore: value.yMin,
-      yAfter: value.yMax,
-      trueX: valX,
-      interpolatedY: intY,
-      xBeforeIndex: value.xBeforeIndex,
-      xIndexClosest: value.xClosest
-    };
-  }
-
-  _searchBinary( target, haystack, reverse ) {
-    let seedA = 0,
-      length = haystack.length,
-      seedB = ( length - 2 ),
-      seedInt,
-      i = 0,
-      nanDirection = 2;
-
-    if ( haystack[ seedA ] == target ) {
-      return seedA;
-    }
-
-    if ( haystack[ seedB ] == target ) {
-      return seedB;
-    }
-
-    while ( true ) {
-      i++;
-      if ( i > 100 ) {
-        throw "Error loop";
-      }
-
-      seedInt = ( seedA + seedB ) / 2;
-      seedInt -= seedInt % 2; // Always looks for an x.
-
-      while ( isNaN( haystack[ seedInt ] ) ) {
-        seedInt += nanDirection;
-      }
-
-      if ( seedInt == seedA || haystack[ seedInt ] == target || seedInt == seedB ) {
-        return seedInt;
-      }
-
-      //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-      if ( haystack[ seedInt ] <= target ) {
-        if ( reverse ) {
-          seedB = seedInt;
         } else {
-          seedA = seedInt;
-        }
-      } else if ( haystack[ seedInt ] > target ) {
-        if ( reverse ) {
-          seedA = seedInt;
-        } else {
-          seedB = seedInt;
+
+          var x = this.getX( this.getFlip() ? intY : valX );
+          var y = this.getY( this.getFlip() ? valX : intY );
+
+          this.marker.setAttribute( 'display', 'block' );
+          this.marker.setAttribute( 'cx', x );
+          this.marker.setAttribute( 'cy', y );
+
+          this.markerLabel.setAttribute( 'display', 'block' );
+          this.markerLabelSquare.setAttribute( 'display', 'block' );
+          switch ( this.options.trackMouseLabel ) {
+            case false:
+              break;
+
+            default:
+              this.markerLabel.textContent = this.options.trackMouseLabel
+                .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
+                .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
+              break;
+          }
+
+          this.markerLabel.setAttribute( 'x', x + 5 );
+          this.markerLabel.setAttribute( 'y', y - 5 );
+
+          this.markerLabelSquare.setAttribute( 'x', x + 5 );
+          this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
+          this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
+          this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
         }
       }
 
-      nanDirection *= -1;
+      return {
+        xBefore: value.xMin,
+        xAfter: value.xMax,
+        yBefore: value.yMin,
+        yAfter: value.yMax,
+        trueX: valX,
+        interpolatedY: intY,
+        xBeforeIndex: value.xBeforeIndex,
+        xIndexClosest: value.xClosest
+      };
     }
-  }
-
-  /**
-   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-   * @param {Number} startX - The start of the x values
-   * @param {Number} endX - The end of the x values
-   * @returns {Number} Maximal y value in between startX and endX
-   * @memberof SerieLine
-   */
+    /**
+     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+     * @param {Number} startX - The start of the x values
+     * @param {Number} endX - The end of the x values
+     * @returns {Number} Maximal y value in between startX and endX
+     * @memberof SerieLine
+     */
   getMax( start, end ) {
 
     var start2 = Math.min( start, end ),
@@ -1979,19 +1899,6 @@ class SerieLine extends Serie {
     return !!this.xmonotoneous;
   }
 
-  XIsMonotoneous() {
-    this.xmonotoneous = true;
-    return this;
-  }
-
-  isXMonotoneous() {
-    return this.xmonotoneous ||  false;
-  }
-
-  XMonotoneousDirection() {
-
-    return this.data && this.data[ 0 ] && ( this.data[ 0 ][ 2 ] - this.data[ 0 ][ 0 ] ) > 0;
-  }
 }
 
 util.mix( SerieLine, ErrorBarMixin );

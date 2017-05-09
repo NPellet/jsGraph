@@ -5477,11 +5477,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    getIndexFromX(xval) {
+	    getIndexFromX(xval, useDataToUse = false) {
 
-	      if (this.xdata) {
-	        let xData = this.xdata.getData();
-	        return binarySearch(xval, xData, !this.xdata.getMonotoneousDirection());
+	      if (!this.isXMonotoneous()) {
+	        throw "Impossible to get the index from the x value for a non-monotoneous wave !";
+	      }
+
+	      let data, xdata;
+
+	      if (useDataToUse && this.dataInUse) {
+	        xdata = this.dataInUse.x;
+	      } else {
+	        xdata = this.xdata.getData();
+	      }
+
+	      if (xdata) {
+	        return binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
 	      } else {
 	        return Math.max(0, Math.min(this.getLength() - 1, Math.floor((xval - this.xOffset) / this.xScale)));
 	      }
@@ -5699,7 +5710,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      d.reverse();
 
 	      if (this.isMonotoneous()) {
-	        this.monotoneousDirection = !this.monotoneousDirection;
+	        this._monotoneousAscending = !this._monotoneousAscending;
 	      }
 
 	      return d;
@@ -5746,7 +5757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        options.maxX = temp;
 	      }
 
-	      if (this.xdata && !this.xdata.getMonotoneousDirection() || !this.xdata && this.xScale < -0) {
+	      if (this.xdata && !this.xdata.getMonotoneousAscending() || !this.xdata && this.xScale < -0) {
 	        inverting = true;
 	        i = l;
 	      }
@@ -5831,7 +5842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.xdata) {
 	        let xData = this.xdata.getData(),
-	            xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousDirection());
+	            xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
 
 	        if (xData[xIndex] == x) {
 	          return yData[xIndex];
@@ -5844,16 +5855,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    getMonotoneousDirection() {
-	      return this.monotoneousDirection;
+	    getMonotoneousAscending() {
+	      return this._monotoneousAscending;
 	    }
 
-	    getXMonotoneousDirection() {
+	    getXMonotoneousAscending() {
 	      if (this.xdata) {
-	        return this.xdata.getMonotoneousDirection();
+	        return this.xdata.getMonotoneousAscending();
 	      }
 
 	      return this.xScale > 0;
+	    }
+
+	    isXMonotoneousAscending() {
+	      return this.getXMonotoneousAscending(...arguments);
 	    }
 
 	    divide(numberOrWave) {
@@ -6031,7 +6046,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !!this._dataAggregated;
 	    }
 
-	    selectAggregatedData(pxWidth) {
+	    selectAggregatedData(pxWidth, minX, maxX) {
 
 	      var level = pow2ceil(pxWidth);
 
@@ -6044,7 +6059,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this._dataAggregating[level];
 	      }
 
-	      this.dataInUse = this.data;
+	      this.dataInUse = {
+	        y: this.data,
+	        x: this.getXWaveform().data
+	      };
 	    }
 
 	    duplicate(alsoDuplicateXWave) {
@@ -6088,6 +6106,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return p;
 	  }
 
+	  function pow2floor(v) {
+
+	    var p = 1;
+
+	    while (v >>= 1) {
+	      p <<= 1;
+	    }
+	    return p;
+	  }
+
 	  function binarySearch(target, haystack, reverse) {
 
 	    let seedA = 0,
@@ -6112,6 +6140,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      seedInt = Math.floor((seedA + seedB) / 2);
+
 	      //  seedInt -= seedInt % 2; // Always looks for an x.
 
 	      while (isNaN(haystack[seedInt])) {
@@ -8225,6 +8254,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    setMaxValueData(max) {
 	      this.dataMax = max;
+	    }
+
+	    /**
+	     * Retrieves the maximum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+	     * @memberof Axis
+	     * @return {Number} The maximum possible value of the axis
+	     */
+	    getDataMax() {
+	      return this.dataMax;
+	    }
+
+	    /**
+	     * Retrieves the minimum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+	     * @memberof Axis
+	     * @return {Number} The minimum possible value of the axis
+	     */
+	    getDataMin() {
+	      return this.dataMin;
 	    }
 
 	    /**
@@ -12230,7 +12277,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this._dataToUse = [this._waveform.getDataToUseFlat()];
 	        } else if (this._waveform.hasAggregation()) {
 
-	          let promise = this._waveform.selectAggregatedData(this.graph.getDrawingWidth());
+	          let xaxis = this.getXAxis(),
+	              numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
+	              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal, this.getXAxis().getCurrentMin(), this.getXAxis().getCurrentMax());
 
 	          if (promise instanceof Promise) {
 
@@ -12252,11 +12301,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._dataToUse = this.data;
 	        this._xDataToUse = this.xData;
 	      }
-
-	      this._optimizeMonotoneous = this.isXMonotoneous();
-	      this.optimizeMonotoneousDirection = this.XMonotoneousDirection() && !this.getXAxis().isFlipped() || !this.XMonotoneousDirection() && this.getXAxis().isFlipped();
-	      this._optimizeBreak;
-	      this._optimizeBuffer;
 
 	      return true;
 	    }
@@ -12309,7 +12353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var data = this._dataToUse,
 	            xData = this._xDataToUse,
 	            slotToUse = this._slotToUse;
-	        console.trace();
+
 	        this.removeLinesGroup();
 	        this.eraseMarkers();
 
@@ -12324,7 +12368,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.errorDrawInit();
 	        }
 
-	        this._draw_standard();
+	        this._draw();
 
 	        if (this.error) {
 	          this.errorDraw();
@@ -12354,7 +12398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.dataHasChanged(false);
 	    }
 
-	    _draw_standard() {
+	    _draw() {
 
 	      let self = this,
 	          waveform = this._waveform,
@@ -12397,25 +12441,27 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (waveform.isXMonotoneous()) {
 
-	        if (waveform.getXMonotoneousDirection()) {
-	          i = waveform.getIndexFromX(xMin) || 0;
-	          l = waveform.getIndexFromX(xMax);
+	        if (waveform.isXMonotoneousAscending()) {
+
+	          i = waveform.getIndexFromX(xMin, true) || 0;
+	          l = waveform.getIndexFromX(xMax, true);
 
 	          if (l === false) {
 	            l = waveform.getLength();
 	          }
 	        } else {
-	          i = waveform.getIndexFromX(xMax) || 0;
-	          l = waveform.getIndexFromX(xMin);
+
+	          i = waveform.getIndexFromX(xMax, true) || 0;
+	          l = waveform.getIndexFromX(xMin, true);
 
 	          if (l === false) {
-	            l = waveform.getLength();
+	            l = data.length;
 	          }
 	        }
 
 	        l += 2;
-	        if (l > waveform.getLength()) {
-	          l = waveform.getLength();
+	        if (l > data.length) {
+	          l = data.length;
 	        }
 	      }
 
@@ -13057,31 +13103,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return;
-
-	      var xMinIndex;
-	      data = data || this.data;
-
-	      if (valX <= data[data.length - 2] && valX >= data[0]) {
-
-	        xMinIndex = this._searchBinary(valX, data, false);
-	      } else if (valX >= data[data.length - 2] && valX <= data[0]) {
-
-	        xMinIndex = this._searchBinary(valX, data, true);
-	      } else {
-
-	        return;
-	      }
-
-	      return {
-	        xMin: data[xMinIndex],
-	        xMax: data[xMinIndex + 2],
-	        yMin: data[xMinIndex + 1],
-	        yMax: data[xMinIndex + 3],
-	        xBeforeIndex: xMinIndex / 2,
-	        xAfterIndex: xMinIndex / 2 + 1,
-	        xBeforeIndexArr: xMinIndex,
-	        xClosest: (Math.abs(data[xMinIndex + 2] - valX) < Math.abs(data[xMinIndex] - valX) ? xMinIndex + 2 : xMinIndex) / 2
-	      };
 	    }
 
 	    handleMouseMove(xValue, doMarker) {
@@ -13146,59 +13167,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        xIndexClosest: value.xClosest
 	      };
 	    }
-
-	    _searchBinary(target, haystack, reverse) {
-	      let seedA = 0,
-	          length = haystack.length,
-	          seedB = length - 2,
-	          seedInt,
-	          i = 0,
-	          nanDirection = 2;
-
-	      if (haystack[seedA] == target) {
-	        return seedA;
-	      }
-
-	      if (haystack[seedB] == target) {
-	        return seedB;
-	      }
-
-	      while (true) {
-	        i++;
-	        if (i > 100) {
-	          throw "Error loop";
-	        }
-
-	        seedInt = (seedA + seedB) / 2;
-	        seedInt -= seedInt % 2; // Always looks for an x.
-
-	        while (isNaN(haystack[seedInt])) {
-	          seedInt += nanDirection;
-	        }
-
-	        if (seedInt == seedA || haystack[seedInt] == target || seedInt == seedB) {
-	          return seedInt;
-	        }
-
-	        //		console.log(seedA, seedB, seedInt, haystack[seedInt]);
-	        if (haystack[seedInt] <= target) {
-	          if (reverse) {
-	            seedB = seedInt;
-	          } else {
-	            seedA = seedInt;
-	          }
-	        } else if (haystack[seedInt] > target) {
-	          if (reverse) {
-	            seedA = seedInt;
-	          } else {
-	            seedB = seedInt;
-	          }
-	        }
-
-	        nanDirection *= -1;
-	      }
-	    }
-
 	    /**
 	     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
 	     * @param {Number} startX - The start of the x values
@@ -13706,19 +13674,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !!this.xmonotoneous;
 	    }
 
-	    XIsMonotoneous() {
-	      this.xmonotoneous = true;
-	      return this;
-	    }
-
-	    isXMonotoneous() {
-	      return this.xmonotoneous || false;
-	    }
-
-	    XMonotoneousDirection() {
-
-	      return this.data && this.data[0] && this.data[0][2] - this.data[0][0] > 0;
-	    }
 	  }
 
 	  util.mix(SerieLine, _graphMixin2.default);

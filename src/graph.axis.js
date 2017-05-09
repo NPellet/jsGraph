@@ -494,6 +494,24 @@ class Axis extends EventEmitter {
   }
 
   /**
+   * Retrieves the maximum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+   * @memberof Axis
+   * @return {Number} The maximum possible value of the axis
+   */
+  getDataMax() {
+    return this.dataMax;
+  }
+
+  /**
+   * Retrieves the minimum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+   * @memberof Axis
+   * @return {Number} The minimum possible value of the axis
+   */
+  getDataMin() {
+    return this.dataMin;
+  }
+
+  /**
    * Forces the minimum value of the axis (no more dependant on the serie values)
    * @memberof Axis
    * @param {Number} min - The minimum value of the axis
