@@ -426,32 +426,16 @@ class SerieLine extends Serie {
   /**
    * Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
    * For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-   * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-   * It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
-   * @param {Object} options - A object containing the options to set
-   * @return {SerieLine} The newly created zone serie
-   * @example var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
-   * zone.setLineColor('red');
+   * <code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range
+   * Starting from jsGraph 2.0, it does not calculate the minimum and maximum and creates the zone serie anymore
+   * @return {SerieLine} The current serie instance
+   * @example serie.degrade( 0.5 ); // Will display 2 points per pixels
    * @memberof SerieLine
    */
-  degrade( pxPerP, options ) {
-
-    var serie = this.graph.newSerie( this.name + "_degraded", options, Graph.SERIE_ZONE );
+  degrade( pxPerP ) {
 
     this.degradationPx = pxPerP;
-
-    if ( !serie ) {
-      return;
-    }
-
-    serie.setData( [] );
-
-    serie.setXAxis( this.getXAxis() );
-    serie.setYAxis( this.getYAxis() );
-
-    this.degradationSerie = serie;
-
-    return serie;
+    return this;
   }
 
   drawInit( force ) {
@@ -1312,6 +1296,20 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   searchClosestValue( valX, data ) {
+
+    if ( this._waveform ) {
+      var indexX = this._waveform.getIndexFromX( valX );
+
+      return {
+        xMin: this._waveform.getX( indexX ),
+        xMax: this._waveform.getX( indexX + 1 ),
+        yMin: this._waveform.getY( indexX ),
+        yMax: this._waveform.getY( indexX + 1 )
+      };
+
+    }
+
+    return;
 
     var xMinIndex;
     data = data || this.data;

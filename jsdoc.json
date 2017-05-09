@@ -45,6 +45,7 @@
 			"./src/shapes/graph.shape.rect.js",
 			"./src/shapes/graph.shape.cross.js",
 			"./src/shapes/graph.shape.peakboundariescenter.js",
+			"./src/shapes/graph.shape.html.js",
 			"./src/plugins/graph.plugin.js",
 			"./src/plugins/graph.plugin.drag.js",
 			"./src/plugins/graph.plugin.shape.js",

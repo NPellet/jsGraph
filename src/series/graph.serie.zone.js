@@ -136,6 +136,10 @@ class SerieZone extends Serie {
 
     if ( force || this.hasDataChanged() ) {
 
+      if ( !this.waveforms ) {
+        return;
+      }
+
       let
         dataX = 0,
         dataY = 0,

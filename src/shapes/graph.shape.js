@@ -923,9 +923,11 @@ class Shape extends EventEmitter {
 
         case 'translate':
 
-          transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 0 ], this.getXAxis() ).replace( 'px', '' );
+          let transform = transforms[ i ].arguments[ 0 ].compute( this.graph, this.getXAxis(), this.getYAxis(), this.getSerie() );
+
+          transformString += transform.x;
           transformString += ", ";
-          transformString += GraphPosition.getDeltaPx( transforms[ i ].arguments[ 1 ], this.getYAxis() ).replace( 'px', '' );
+          transformString += transform.y;
           break;
 
         case 'rotate':

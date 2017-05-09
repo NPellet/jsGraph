@@ -41,51 +41,60 @@ class Waveform {
     return this;
   }
 */
-  setData( data ) {
+  setData( data, dataX = null ) {
 
-      /* First, we must treat the case of the array of array for backward compatibility */
-      if ( Array.isArray( data[ 0 ] ) ) {
-        let x = [];
-        let y = [];
-        data.forEach( ( el ) => {
-          x.push( el[ 0 ] );
-          y.push( el[ 1 ] );
-        } );
-
-        this.setXWaveform( x );
-        data = y;
-      }
-
-      let newData = this._makeArray( data.length ),
-        warnNaN = false;
-
-      const nanable = this.isNaNAllowed();
-
-      data.map( ( el, index ) => {
-
-        if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
-          warnNaN = true;
-        }
-
-        newData[ index ] = el;
+    /* First, we must treat the case of the array of array for backward compatibility */
+    if ( Array.isArray( data[ 0 ] ) ) {
+      let x = [];
+      let y = [];
+      data.forEach( ( el ) => {
+        x.push( el[ 0 ] );
+        y.push( el[ 1 ] );
       } );
 
-      if ( warnNaN ) {
-        this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
+      this.setXWaveform( x );
+      data = y;
+    }
+
+    let newData = this._makeArray( data.length ),
+      warnNaN = false;
+
+    const nanable = this.isNaNAllowed();
+
+    data.map( ( el, index ) => {
+
+      if ( !nanable && ( el[ 0 ] !== el[ 0 ] || el[ 1 ] !== el[ 1 ] ) ) {
+        warnNaN = true;
       }
 
-      this._setData( newData );
-      return this;
-    }
-    /*
-      flipXY() {
-        let temp;
-        temp = this.data.x;
-        this.data.x = this.data.y;
-        this.data.y = temp;
+      newData[ index ] = el;
+    } );
 
-        this._setData( this.data.x, this.data.y );
-      }*/
+    if ( warnNaN ) {
+      this.warn( "Trying to assign NaN values to a typed array that does not support NaNs. 0's will be used instead" );
+    }
+
+    this._setData( newData );
+
+    if ( dataX ) {
+      this.setXWaveform( dataX );
+    }
+    return this;
+  }
+
+  getY( index ) {
+    return this.data[ index ];
+  }
+
+  /*
+    flipXY() {
+      let temp;
+      temp = this.data.x;
+      this.data.x = this.data.y;
+      this.data.y = temp;
+
+      this._setData( this.data.x, this.data.y );
+    }*/
 
   setXWaveform( waveform ) {
 
@@ -101,6 +110,10 @@ class Waveform {
     this.xdata = waveform;
     this.computeXMinMax();
     return this;
+  }
+
+  hasXWaveform() {
+    return !!this.xdata;
   }
 
   getXWaveform() {
@@ -138,8 +151,13 @@ class Waveform {
     this._typedArrayClass = constructor;
 
     if ( this.data ) {
-      this._setData( ( constructor ).from( this.data.x ), ( constructor ).from( this.data.y ) );
+      this._setData( ( constructor ).from( this.data ) );
     }
+
+    if ( this.hasXWaveform() ) {
+      this.getXWaveform().setTypedArrayClass( constructor );
+    }
+
   }
 
   isNaNAllowed( constructor = this._typedArrayClass ) {
@@ -160,20 +178,33 @@ class Waveform {
   }
 
   recalculateMinMaxNewPoint( x, y ) {
-    if ( x < this.minX ) {
+    if ( x < this.minX || this.minX === undefined ) {
       this.minX = x;
-    } else if ( x > this.maxX ) {
+    }
+
+    if ( x > this.maxX || this.maxX === undefined ) {
       this.maxX = x;
     }
 
-    if ( y < this.minY ) {
+    if ( y < this.minY || this.minY === undefined ) {
       this.minY = y;
-    } else if ( y > this.maxY ) {
+    }
+
+    if ( y > this.maxY || this.maxY === undefined ) {
       this.maxY = y;
     }
+
   }
 
   prepend( x, y ) {
+
+    if ( typeof x == "function" ) {
+      x = x( this );
+    }
+
+    if ( typeof y == "function" ) {
+      y = y( this );
+    }
 
     if ( this.xdata ) {
       this.xdata.prepend( null, x );
@@ -191,6 +222,14 @@ class Waveform {
 
   append( x, y ) {
 
+    if ( typeof x == "function" ) {
+      x = x( this );
+    }
+
+    if ( typeof y == "function" ) {
+      y = y( this );
+    }
+
     if ( this.xdata ) {
       this.xdata.append( null, x );
     } else if ( x !== null ) {
@@ -199,6 +238,7 @@ class Waveform {
     }
 
     this.data.push( y );
+
     this.recalculateMinMaxNewPoint( x, y );
 
     return this;
@@ -411,7 +451,7 @@ class Waveform {
 
     for ( ; from <= to; from++ ) {
 
-      if ( arrX.length - 1 > from ) {
+      if ( arrY.length - 1 > from ) {
         diff = this.getX( from + 1 ) - this.getX( from );
         deltaTot += diff;
         sum += arrY[ from ] * diff;
@@ -660,6 +700,23 @@ class Waveform {
     return this.multiply( ...arguments );
   }
 
+  log() {
+    return this.logBase( 10 );
+  }
+
+  ln() {
+    return this.logBase( Math.E )
+  }
+
+  logBase( base ) {
+
+    let logBase = Math.log( base );
+    this.data.map( ( valY ) => {
+
+      return Math.log( valY ) / logBase;
+    } )
+  }
+
   add( numberOrWave ) {
     return this._arithmetic( numberOrWave, ADD );
   }
@@ -824,7 +881,7 @@ class Waveform {
       if ( alsoDuplicateXWave ) {
         newWaveform.setXWaveform( this.xdata.duplicate() );
       } else {
-        newWaveform.setXWaveform( this.xdata.duplicate() );
+        newWaveform.setXWaveform( this.xdata );
       }
     } else {
       newWaveform.xOffset = this.xOffset;

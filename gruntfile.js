@@ -247,7 +247,7 @@ module.exports = function(grunt) {
 
 
 
-    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'uglify:dist' ] );
+    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6' ] );
 
 
     function WebpackBeautifier(options) {

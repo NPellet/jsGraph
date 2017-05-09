@@ -7,7 +7,7 @@ class FitHost {
     this.DELTAP = 1e-6;
     this.BIGVAL = 9e99;
     this.WEIGHT = 1.0;
-
+    console.log( options );
     this.setYData( options.dataY );
     this.setXData( options.dataX );
     this.setWeight( options.weight );
@@ -219,19 +219,21 @@ class FitHost {
       x = this.arrX;
     } else {
 
-      const xmin = ( this.dataX ||  this.data ).getXMin( this._from, this._to );
-      const xmax = ( this.dataX ||  this.data ).getXMax( this._from, this._to );
+      const xmin = ( this.dataX ).getMin( this._from, this._to );
+      const xmax = ( this.dataX ).getMax( this._from, this._to );
 
       x = new Array( length ).fill( 0 ).map( ( el, index ) => index * ( xmax - xmin ) / ( length - 1 ) + xmin );
     }
 
     var fit = new Array( x.length );
     for ( var i = 0, l = x.length; i < l; i++ ) {
-      fit[ i ] = [ x[ i ], this.func( x[ i ], this.parms ) ];
+      fit[ i ] = this.func( x[ i ], this.parms );
     }
 
     let waveformResult = this.options.waveform;
-    waveformResult.setData( fit );
+    waveformResult.setData( fit, x );
+    //waveformResult.setXWaveform( x );
+
     return waveformResult;
   }
 }

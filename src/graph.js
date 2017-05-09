@@ -30,6 +30,7 @@ import ShapePeakIntegration2D from './shapes/graph.shape.peakintegration2d'
 import ShapeRect from './shapes/graph.shape.rect'
 import ShapeCross from './shapes/graph.shape.cross'
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter'
+import ShapeHTML from './shapes/graph.shape.html'
 
 import GraphPlugin from './plugins/graph.plugin'
 import GraphPluginDrag from './plugins/graph.plugin.drag'
@@ -93,6 +94,7 @@ Graph.registerConstructor( "graph.shape.label", ShapeLabel );
 Graph.registerConstructor( "graph.shape.polyline", ShapePolyline );
 Graph.registerConstructor( "graph.shape.line", ShapeLine );
 Graph.registerConstructor( "graph.shape.nmrintegral", ShapeNMRIntegral );
+Graph.registerConstructor( "graph.shape.html", ShapeHTML );
 Graph.registerConstructor( "graph.shape.peakintegration2d", ShapePeakIntegration2D );
 //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
 //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );

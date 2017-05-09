@@ -960,7 +960,6 @@ class Graph extends EventEmitter {
 
         axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues ) );
         axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues ) );
-
       }
     }
 

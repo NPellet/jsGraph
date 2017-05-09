@@ -92,7 +92,7 @@ class Position {
 
           pos[ i ] = relativeTo ? relativeTo[ i ] : axis.getPos( 0 );
 
-        } else if ( this.x && serie ) {
+        } else if ( this.x !== undefined && serie ) {
 
           if ( _parsePx( this.x ) !== false ) {
             console.warn( "You have defined x in px and not y. Makes no sense. Returning 0 for y" );
