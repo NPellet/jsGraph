@@ -56,17 +56,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(18), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(49), __webpack_require__(30), __webpack_require__(31), __webpack_require__(32), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(45), __webpack_require__(47), __webpack_require__(48), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(18), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(50), __webpack_require__(32), __webpack_require__(33), __webpack_require__(31), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(45), __webpack_require__(47), __webpack_require__(48), __webpack_require__(49), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.line.3d'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.zone.3d'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./shapes/graph.shape.html'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'), require('./util/waveform'), require('./util/fit_lm'));
+	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.line.3d'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.zone.3d'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./shapes/graph.shape.html'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'), require('./plugins/graph.plugin.makeTracesDifferent'), require('./util/waveform'), require('./util/fit_lm'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieZone, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.waveform, global.fit_lm);
+	    factory(mod, global.graph, global.graph, global.graph, global.graphAxis, global.graphAxis, global.graphAxisX, global.graphAxisX, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieLine, global.graphSerie, global.graphSerie, global.graphSerieZone, global.graphSerie, global.graphSerie, global.graph, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graphShape, global.graph, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.graphPlugin, global.waveform, global.fit_lm);
 	    global.graph = mod.exports;
 	  }
-	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerieLine, _graphSerie3, _graphSerie5, _graphSerieLine3, _graphSerie7, _graphSerie9, _graphSerieZone, _graphSerie11, _graphSerie13, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graphShape23, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13, _waveform, _fit_lm) {
+	})(this, function (module, _graph, _graph3, _graph5, _graphAxis, _graphAxis3, _graphAxisX, _graphAxisX3, _graphSerie, _graphSerieLine, _graphSerie3, _graphSerie5, _graphSerieLine3, _graphSerie7, _graphSerie9, _graphSerieZone, _graphSerie11, _graphSerie13, _graph7, _graphShape, _graphShape3, _graphShape5, _graphShape7, _graphShape9, _graphShape11, _graphShape13, _graphShape15, _graphShape17, _graphShape19, _graphShape21, _graphShape23, _graph9, _graphPlugin, _graphPlugin3, _graphPlugin5, _graphPlugin7, _graphPlugin9, _graphPlugin11, _graphPlugin13, _graphPlugin15, _waveform, _fit_lm) {
 	  'use strict';
 
 	  var _graph2 = _interopRequireDefault(_graph);
@@ -145,6 +145,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
 
+	  var _graphPlugin16 = _interopRequireDefault(_graphPlugin15);
+
 	  var _waveform2 = _interopRequireDefault(_waveform);
 
 	  var _fit_lm2 = _interopRequireDefault(_fit_lm);
@@ -196,6 +198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graph2.default.registerConstructor("graph.plugin.serielinedifference", _graphPlugin12.default);
 	  _graph2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPlugin12.default);
 	  _graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin14.default);
+	  _graph2.default.registerConstructor("graph.plugin.makeTracesDifferent", _graphPlugin16.default);
 
 	  _graph2.default.registerConstructor("graph.shape", _graph8.default);
 	  _graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
@@ -1046,8 +1049,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Autoscales the x and y axes of the graph<br />
-	     * Repains the canvas
+	     * Autoscales the x and y axes of the graph.
+	     * Does not repaint the canvas
+	     * @return {Graph} The current graph instance
 	     */
 	    autoscaleAxes() {
 
@@ -1055,6 +1059,46 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
 	      // X is not always ascending...
+	      return this;
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+	    autoscale() {
+	      return this.autoscaleAxes(...arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+	    autoScale() {
+	      return this.autoscaleAxes(...arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+	    autoScaleAxes() {
+	      return this.autoscaleAxes(...arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  Autoscales a particular axis
+	     *  @param {Axis} The axis to rescale
+	     *  @return {Graph} The current graph instance
+	     */
+	    autoScaleAxis(axis) {
+	      if (!axis) {
+	        return this;
+	      }
+
+	      axis.setMinMaxToFitSeries();
+	      return this;
 	    }
 
 	    /**
@@ -1362,6 +1406,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    getSeries() {
 	      return this.series;
+	    }
+
+	    /**
+	     * Returns all the series that correspond to one or multiple types
+	     * @param {...Symbol} type - The serie types to select
+	     * @returns {Serie[]} An array of all the series
+	     * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
+	     */
+	    allSeries(...types) {
+
+	      return this.series.filter(serie => {
+	        return types.include(serie.getType());
+	      });
 	    }
 
 	    /**
@@ -12227,11 +12284,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    draw(force) {
 	      // Serie redrawing
 
+	      if (!this.getXAxis() || !this.getYAxis()) {
+	        throw "No axes were defined for this serie";
+	      }
+
 	      if (force || this.hasDataChanged()) {
+
 	        if (!this.drawInit(force)) {
 	          return;
 	        }
-	        console.log(this.getName(), this.getYAxis().getCurrentMax());
+
 	        var data = this._dataToUse,
 	            xData = this._xDataToUse,
 	            slotToUse = this._slotToUse;
@@ -14133,6 +14195,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // After axes have been assigned, the graph axes should update their min/max
 	      this.graph.updateDataMinMaxAxes();
 	      return this;
+	    }
+
+	    autoAxes() {
+	      return this.autoAxis(...arguments);
 	    }
 
 	    /**
@@ -21177,26 +21243,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('../graph.util'), require('./graph.shape'));
+	    factory(exports, require('./graph.shape.line'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graph, global.graph);
-	    global.graphShapeEllipse = mod.exports;
+	    factory(mod.exports, global.graphShape);
+	    global.graphShapeArrow = mod.exports;
 	  }
-	})(this, function (exports, _graph, _graph2) {
+	})(this, function (exports, _graphShape) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var util = _interopRequireWildcard(_graph);
-
-	  var _graph3 = _interopRequireDefault(_graph2);
+	  var _graphShape2 = _interopRequireDefault(_graphShape);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -21204,230 +21268,41 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  function _interopRequireWildcard(obj) {
-	    if (obj && obj.__esModule) {
-	      return obj;
-	    } else {
-	      var newObj = {};
-
-	      if (obj != null) {
-	        for (var key in obj) {
-	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	        }
-	      }
-
-	      newObj.default = obj;
-	      return newObj;
-	    }
-	  }
-
 	  /**
-	   * Displays an ellipse
-	   * @extends Shape
+	   *  Displays an arrow
+	   *  @extends GraphShapeLine
 	   */
-	  class ShapeEllipse extends _graph3.default {
+	  class ShapeArrow extends _graphShape2.default {
 
-	    constructor(graph, options) {
-	      super(graph, options);
+	    constructor(graph) {
+
+	      super(graph);
 	    }
 
 	    createDom() {
-	      this._dom = document.createElementNS(this.graph.ns, 'ellipse');
-	    }
 
-	    applyPosition() {
+	      this._dom = document.createElementNS(this.graph.ns, 'line');
+	      this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
 
-	      var pos = this.computePosition(0);
+	      this.createHandles(this.nbHandles, 'rect', {
+	        transform: "translate(-3 -3)",
+	        width: 6,
+	        height: 6,
+	        stroke: "black",
+	        fill: "white",
+	        cursor: 'nwse-resize'
+	      });
 
-	      this.setDom('cx', pos.x || 0);
-	      this.setDom('cy', pos.y || 0);
-
-	      this.setDom('rx', this.getProp('rx') || 0);
-	      this.setDom('ry', this.getProp('ry') || 0);
-
-	      return true;
-	    }
-
-	    setR(rx, ry) {
-	      this.setProp('rx', rx);
-	      this.setProp('ry', ry);
-	    }
-
-	    handleMouseUpImpl() {
-	      this.triggerChange();
-	    }
-
-	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-	      return;
+	      this.setStrokeColor('black');
+	      this.setStrokeWidth(1);
 	    }
 	  }
 
-	  exports.default = ShapeEllipse;
+	  exports.default = ShapeArrow;
 	});
 
 /***/ },
 /* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, global.graph);
-	    global.graphShapeLabel = mod.exports;
-	  }
-	})(this, function (exports, _graph) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graph2 = _interopRequireDefault(_graph);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  /**
-	   * Blank shape used to display label
-	   * Use myShapelabel.setLabelText(); and associated methods
-	   * @extend GraphShape
-	   */
-	  class ShapeLabel extends _graph2.default {
-
-	    constructor(graph, options) {
-
-	      super(graph, options);
-	    }
-
-	    createDom() {
-	      return false;
-	    }
-
-	    applyPosition() {
-	      return true;
-	    }
-	  }
-
-	  exports.default = ShapeLabel;
-	});
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, global.graph);
-	    global.graphShapePolyline = mod.exports;
-	  }
-	})(this, function (exports, _graph) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graph2 = _interopRequireDefault(_graph);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  /**
-	   * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
-	   * @extends Shape
-	   * @see Graph#newShape
-	   */
-	  class ShapePolyline extends _graph2.default {
-
-	    constructor(graph, options) {
-	      super(graph, options);
-	    }
-
-	    /**
-	     * Creates the DOM
-	     * @private
-	     * @return {Shape} The current shape
-	     */
-	    createDom() {
-
-	      this._dom = document.createElementNS(this.graph.ns, 'path');
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
-	    }
-
-	    /**
-	     * No handles for the polyline
-	     * @private
-	     * @return {Shape} The current shape
-	     */
-	    createHandles() {}
-
-	    /**
-	     *  Force the points of the polyline already computed in pixels
-	     *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
-	     *  @return {ShapePolyline} The current polyline instance
-	     */
-	    setPointsPx(points) {
-	      this.pxPoints = points;
-	      return this;
-	    }
-
-	    /**
-	     * Recalculates the positions and applies them
-	     * @private
-	     * @return {Boolean} Whether the shape should be redrawn
-	     */
-	    applyPosition() {
-
-	      if (this.pxPoints) {
-	        this.setDom('d', this.pxPoints);
-	      } else if (this.points) {
-
-	        var xAxis, yAxis;
-
-	        if (this.serie) {
-
-	          xAxis = this.serie.getXAxis();
-	          yAxis = this.serie.getYAxis();
-	        } else if (this.xAxis && this.yAxis) {
-
-	          xAxis = this.xAxis;
-	          yAxis = this.yAxis;
-	        }
-
-	        this.setDom('d', 'M ' + this.points.map(function (p) {
-	          return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
-	        }).join(" L "));
-	      }
-
-	      return true;
-	    }
-	  }
-
-	  exports.default = ShapePolyline;
-	});
-
-/***/ },
-/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -21663,6 +21538,167 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  exports.default = ShapeLine;
+	});
+
+/***/ },
+/* 32 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('./graph.shape'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph);
+	    global.graphShapeLabel = mod.exports;
+	  }
+	})(this, function (exports, _graph) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * Blank shape used to display label
+	   * Use myShapelabel.setLabelText(); and associated methods
+	   * @extend GraphShape
+	   */
+	  class ShapeLabel extends _graph2.default {
+
+	    constructor(graph, options) {
+
+	      super(graph, options);
+	    }
+
+	    createDom() {
+	      return false;
+	    }
+
+	    applyPosition() {
+	      return true;
+	    }
+	  }
+
+	  exports.default = ShapeLabel;
+	});
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('./graph.shape'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph);
+	    global.graphShapePolyline = mod.exports;
+	  }
+	})(this, function (exports, _graph) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graph2 = _interopRequireDefault(_graph);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  /**
+	   * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
+	   * @extends Shape
+	   * @see Graph#newShape
+	   */
+	  class ShapePolyline extends _graph2.default {
+
+	    constructor(graph, options) {
+	      super(graph, options);
+	    }
+
+	    /**
+	     * Creates the DOM
+	     * @private
+	     * @return {Shape} The current shape
+	     */
+	    createDom() {
+
+	      this._dom = document.createElementNS(this.graph.ns, 'path');
+	      this.setStrokeColor('black');
+	      this.setStrokeWidth(1);
+	    }
+
+	    /**
+	     * No handles for the polyline
+	     * @private
+	     * @return {Shape} The current shape
+	     */
+	    createHandles() {}
+
+	    /**
+	     *  Force the points of the polyline already computed in pixels
+	     *  @param {String} a SVG string to be used in the ```d``` attribute of the path.
+	     *  @return {ShapePolyline} The current polyline instance
+	     */
+	    setPointsPx(points) {
+	      this.pxPoints = points;
+	      return this;
+	    }
+
+	    /**
+	     * Recalculates the positions and applies them
+	     * @private
+	     * @return {Boolean} Whether the shape should be redrawn
+	     */
+	    applyPosition() {
+
+	      if (this.pxPoints) {
+	        this.setDom('d', this.pxPoints);
+	      } else if (this.points) {
+
+	        var xAxis, yAxis;
+
+	        if (this.serie) {
+
+	          xAxis = this.serie.getXAxis();
+	          yAxis = this.serie.getYAxis();
+	        } else if (this.xAxis && this.yAxis) {
+
+	          xAxis = this.xAxis;
+	          yAxis = this.yAxis;
+	        }
+
+	        this.setDom('d', 'M ' + this.points.map(function (p) {
+	          return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
+	        }).join(" L "));
+	      }
+
+	      return true;
+	    }
+	  }
+
+	  exports.default = ShapePolyline;
 	});
 
 /***/ },
@@ -22617,7 +22653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {
@@ -23104,7 +23140,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Init function called by jsGraph on load
 	     */
-	    init() {}
+	    init(graph) {
+	      this.graph = graph;
+	    }
 
 	    /**
 	     * Handles the mousedown event from jsGraph
@@ -23416,7 +23454,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    init(graph, options) {
 
-	      this.graph = graph;
+	      super.init(graph, options);
 	      this.shapeType = options.type;
 	    }
 
@@ -26296,24 +26334,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(33)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape.line'));
+	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graphShape);
-	    global.graphShapeArrow = mod.exports;
+	    factory(mod.exports, global.graph, global.graph);
+	    global.graphPluginMakeTracesDifferent = mod.exports;
 	  }
-	})(this, function (exports, _graphShape) {
+	})(this, function (exports, _graph, _graph2) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
+	  var util = _interopRequireWildcard(_graph);
+
+	  var _graph3 = _interopRequireDefault(_graph2);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -26321,37 +26361,281 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  /**
-	   *  Displays an arrow
-	   *  @extends GraphShapeLine
-	   */
-	  class ShapeArrow extends _graphShape2.default {
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
 
-	    constructor(graph) {
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
 
-	      super(graph);
-	    }
-
-	    createDom() {
-
-	      this._dom = document.createElementNS(this.graph.ns, 'line');
-	      this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
-
-	      this.createHandles(this.nbHandles, 'rect', {
-	        transform: "translate(-3 -3)",
-	        width: 6,
-	        height: 6,
-	        stroke: "black",
-	        fill: "white",
-	        cursor: 'nwse-resize'
-	      });
-
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
+	      newObj.default = obj;
+	      return newObj;
 	    }
 	  }
 
-	  exports.default = ShapeArrow;
+	  /**
+	   * The intent of this plugin is to provide methods for the user to make the traces on the graph automatically different
+	   * Options to provide colorization, markers and line styles should be provided
+	   * @extends Plugin
+	   */
+	  class PluginMakeTracesDifferent extends _graph3.default {
+
+	    constructor() {
+	      super(...arguments);
+	    }
+
+	    init(graph, options) {
+	      super.init(graph, options);
+	    }
+	    // Load this with defaults
+	    static defaults() {
+
+	      return {};
+	    }
+
+	    checkHSL(color) {
+
+	      let result = {},
+	          hue,
+	          saturation,
+	          lightness;
+
+	      if (hue = color.h || color.hue) {
+
+	        if (hue < 1) {
+	          hue = Math.round(hue * 360);
+	        }
+
+	        result.hue = hue;
+	      } else {
+	        result.h = 0;
+	      }
+
+	      if (saturation = color.s || color.saturation) {
+
+	        if (saturation > 1) {
+	          saturation /= 100;
+	        }
+
+	        result.saturation = saturation;
+	      } else {
+	        result.saturation = .75;
+	      }
+
+	      if (lightness = color.lightness || color.l) {
+
+	        if (lightness > 1) {
+	          lightness /= 100;
+	        }
+
+	        result.lightness = lightness;
+	      } else {
+	        result.lightness = 0.5;
+	      }
+
+	      return result;
+	    }
+
+	    buildHSLString(hsl) {
+	      return "hsl( " + Math.round(hsl.h) + ", " + Math.round(hsl.s * 100) + "%, " + Math.round(hsl.l * 100) + "%)";
+	    }
+
+	    colorizeAll(options) {
+
+	      let series, seriesLength;
+
+	      if (options.serieTypes) {
+
+	        if (!Array.isArray(options.serieTypes)) {
+	          options.serieTypes = [options.serieTypes];
+	        }
+
+	        series = this.graph.allSeries(...options.serieTypes);
+	      } else {
+	        series = this.graph.getSeries();
+	      }
+
+	      seriesLength = series.length;
+
+	      if (!options.startingColorHSL) {
+
+	        if (options.colorHSL) {
+	          options.startingColorHSL = this.checkHSL(options.colorHSL);
+	        } else {
+	          throw "No starting color was provided. There must exist either options.colorHSL or options.startingColorHSL";
+	        }
+	      }
+
+	      if (!options.endingColorHSL) {
+
+	        if (!options.affect || !["h", "s", "l", "hue", "saturation", "lightness"].include(options.affect)) {
+	          options.affect = "h";
+	        }
+
+	        switch (options.affect) {
+
+	          case 'h':
+	          case 'hue':
+	            options.endingColorHSL = {
+	              h: options.startingColorHSL.h + 300,
+	              s: options.startingColorHSL.s,
+	              l: options.startingColorHSL.l
+	            };
+	            break;
+
+	          case 'saturation':
+	          case 's':
+	            let endS;
+
+	            if (options.startingColorHSL.s > 0.5) {
+	              endS = 0;
+	            } else {
+	              endS = 1;
+	            }
+
+	            options.endingColorHSL = {
+	              h: options.startingColorHSL.h,
+	              s: endS,
+	              l: options.startingColorHSL.l
+	            };
+	            break;
+
+	          case 'lightness':
+	          case 'l':
+	            let endL;
+
+	            if (options.startingColorHSL.l > 0.5) {
+	              endL = 0;
+	            } else {
+	              endL = 0.75;
+	            }
+
+	            options.endingColorHSL = {
+	              h: options.startingColorHSL.h,
+	              s: options.startingColorHSL.s,
+	              l: endL
+	            };
+	            break;
+	        }
+	      } else {
+	        options.endingColorHSL = Object.assign({}, options.startingColorHSL, options.endingColorHSL);
+	      }
+
+	      series.map((serie, index) => {
+
+	        if (!serie.setLineColor) {
+	          throw "The serie " + serie.getName() + " does not implement the method `startingColor`";
+	        }
+
+	        serie.setLineColor(this.buildHSLString({
+	          h: options.startingColorHSL.h + index / (seriesLength - 1) * (options.endingColorHSL.h - options.startingColorHSL.h),
+	          s: options.startingColorHSL.s + index / (seriesLength - 1) * (options.endingColorHSL.s - options.startingColorHSL.s),
+	          l: options.startingColorHSL.l + index / (seriesLength - 1) * (options.endingColorHSL.l - options.startingColorHSL.l)
+	        }));
+	      });
+	    }
+	  }
+
+	  exports.default = PluginMakeTracesDifferent;
+	});
+
+/***/ },
+/* 50 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(exports, require('../graph.util'), require('./graph.shape'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, global.graph, global.graph);
+	    global.graphShapeEllipse = mod.exports;
+	  }
+	})(this, function (exports, _graph, _graph2) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var util = _interopRequireWildcard(_graph);
+
+	  var _graph3 = _interopRequireDefault(_graph2);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
+	  }
+
+	  /**
+	   * Displays an ellipse
+	   * @extends Shape
+	   */
+	  class ShapeEllipse extends _graph3.default {
+
+	    constructor(graph, options) {
+	      super(graph, options);
+	    }
+
+	    createDom() {
+	      this._dom = document.createElementNS(this.graph.ns, 'ellipse');
+	    }
+
+	    applyPosition() {
+
+	      var pos = this.computePosition(0);
+
+	      this.setDom('cx', pos.x || 0);
+	      this.setDom('cy', pos.y || 0);
+
+	      this.setDom('rx', this.getProp('rx') || 0);
+	      this.setDom('ry', this.getProp('ry') || 0);
+
+	      return true;
+	    }
+
+	    setR(rx, ry) {
+	      this.setProp('rx', rx);
+	      this.setProp('ry', ry);
+	    }
+
+	    handleMouseUpImpl() {
+	      this.triggerChange();
+	    }
+
+	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+	      return;
+	    }
+	  }
+
+	  exports.default = ShapeEllipse;
 	});
 
 /***/ }

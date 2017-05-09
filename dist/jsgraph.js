@@ -8342,6 +8342,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
 
+	var _graphPlugin15 = __webpack_require__(348);
+
+	var _graphPlugin16 = _interopRequireDefault(_graphPlugin15);
+
 	var _waveform = __webpack_require__(303);
 
 	var _waveform2 = _interopRequireDefault(_waveform);
@@ -8393,6 +8397,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	_graph2.default.registerConstructor("graph.plugin.serielinedifference", _graphPlugin12.default);
 	_graph2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPlugin12.default);
 	_graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin14.default);
+	_graph2.default.registerConstructor("graph.plugin.makeTracesDifferent", _graphPlugin16.default);
 
 	_graph2.default.registerConstructor("graph.shape", _graph8.default);
 	_graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
@@ -9375,8 +9380,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Autoscales the x and y axes of the graph<br />
-	     * Repains the canvas
+	     * Autoscales the x and y axes of the graph.
+	     * Does not repaint the canvas
+	     * @return {Graph} The current graph instance
 	     */
 
 	  }, {
@@ -9387,6 +9393,58 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
 	      // X is not always ascending...
+	      return this;
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoscale',
+	    value: function autoscale() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoScale',
+	    value: function autoScale() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoScaleAxes',
+	    value: function autoScaleAxes() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  Autoscales a particular axis
+	     *  @param {Axis} The axis to rescale
+	     *  @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'autoScaleAxis',
+	    value: function autoScaleAxis(axis) {
+	      if (!axis) {
+	        return this;
+	      }
+
+	      axis.setMinMaxToFitSeries();
+	      return this;
 	    }
 
 	    /**
@@ -9735,6 +9793,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'getSeries',
 	    value: function getSeries() {
 	      return this.series;
+	    }
+
+	    /**
+	     * Returns all the series that correspond to one or multiple types
+	     * @param {...Symbol} type - The serie types to select
+	     * @returns {Serie[]} An array of all the series
+	     * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
+	     */
+
+	  }, {
+	    key: 'allSeries',
+	    value: function allSeries() {
+	      for (var _len = arguments.length, types = Array(_len), _key = 0; _key < _len; _key++) {
+	        types[_key] = arguments[_key];
+	      }
+
+	      return this.series.filter(function (serie) {
+	        return types.include(serie.getType());
+	      });
 	    }
 
 	    /**
@@ -21429,11 +21506,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function draw(force) {
 	      // Serie redrawing
 
+	      if (!this.getXAxis() || !this.getYAxis()) {
+	        throw "No axes were defined for this serie";
+	      }
+
 	      if (force || this.hasDataChanged()) {
+
 	        if (!this.drawInit(force)) {
 	          return;
 	        }
-	        console.log(this.getName(), this.getYAxis().getCurrentMax());
+
 	        var data = this._dataToUse,
 	            xData = this._xDataToUse,
 	            slotToUse = this._slotToUse;
@@ -23479,6 +23561,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // After axes have been assigned, the graph axes should update their min/max
 	      this.graph.updateDataMinMaxAxes();
 	      return this;
+	    }
+	  }, {
+	    key: 'autoAxes',
+	    value: function autoAxes() {
+	      return this.autoAxis.apply(this, arguments);
 	    }
 
 	    /**
@@ -36991,6 +37078,196 @@ return /******/ (function(modules) { // webpackBootstrap
 	util.mix(SplitYAxis, new _graphAxis4.default());
 
 	exports.default = PluginAxisSplitting;
+
+/***/ },
+/* 348 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _graph2 = __webpack_require__(301);
+
+	var util = _interopRequireWildcard(_graph2);
+
+	var _graph3 = __webpack_require__(339);
+
+	var _graph4 = _interopRequireDefault(_graph3);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
+	 * The intent of this plugin is to provide methods for the user to make the traces on the graph automatically different
+	 * Options to provide colorization, markers and line styles should be provided
+	 * @extends Plugin
+	 */
+	var PluginMakeTracesDifferent = function (_Plugin) {
+	  _inherits(PluginMakeTracesDifferent, _Plugin);
+
+	  function PluginMakeTracesDifferent() {
+	    _classCallCheck(this, PluginMakeTracesDifferent);
+
+	    return _possibleConstructorReturn(this, (PluginMakeTracesDifferent.__proto__ || Object.getPrototypeOf(PluginMakeTracesDifferent)).apply(this, arguments));
+	  }
+
+	  // Load this with defaults
+
+
+	  _createClass(PluginMakeTracesDifferent, [{
+	    key: 'checkHSL',
+	    value: function checkHSL(color) {
+
+	      var result = {},
+	          hue = void 0,
+	          saturation = void 0,
+	          lightness = void 0;
+
+	      if (hue = color.h || color.hue) {
+
+	        if (hue < 1) {
+	          hue = Math.round(hue * 360);
+	        }
+
+	        result.hue = hue;
+	      } else {
+	        result.h = 0;
+	      }
+
+	      if (saturation = color.s || color.saturation) {
+
+	        if (saturation > 1) {
+	          saturation /= 100;
+	        }
+
+	        result.saturation = saturation;
+	      } else {
+	        result.saturation = .75;
+	      }
+
+	      if (lightness = color.lightness || color.l) {
+
+	        if (lightness > 1) {
+	          lightness /= 100;
+	        }
+
+	        result.lightness = lightness;
+	      } else {
+	        result.lightness = 0.5;
+	      }
+
+	      return result;
+	    }
+	  }, {
+	    key: 'buildHSLString',
+	    value: function buildHSLString(hsl) {
+	      return "hsl( " + hsl.h + ", " + Math.round(hsl.s * 100) + ", " + Math.round(hsl.l * 100) + ")";
+	    }
+	  }, {
+	    key: 'colorizeAll',
+	    value: function colorizeAll(options) {
+	      var _this2 = this;
+
+	      var series = void 0,
+	          seriesLength = void 0;
+
+	      if (options.serieTypes) {
+	        var _graph;
+
+	        if (!Array.isArray(options.serieTypes)) {
+	          options.serieTypes = [options.serieTypes];
+	        }
+
+	        series = (_graph = this.graph).allSeries.apply(_graph, _toConsumableArray(options.serieTypes));
+	      } else {
+	        series = this.graph.getSeries();
+	      }
+
+	      seriesLength = series.length;
+
+	      if (!options.startingColorHSL) {
+
+	        if (options.colorHSL) {
+	          options.startingColorHSL = this.checkHSL(options.colorHSL);
+	        } else {
+	          throw "No starting color was provided. There must exist either options.colorHSL or options.startingColorHSL";
+	        }
+	      }
+
+	      if (!options.endingColorHSL) {
+
+	        if (!options.affect || !["h", "s", "l", "hue", "saturation", "lightness"].include(options.affect)) {
+	          options.affect = "h";
+	        }
+
+	        switch (options.affect) {
+
+	          case 'h':
+	          case 'hue':
+	            options.endingColorHSL = [options.startingColorHSL.h + 300, options.startingColorHSL.s, options.startingColorHSL.l];
+	            break;
+
+	          case 'saturation':
+	          case 's':
+	            var endS = void 0;
+
+	            if (options.startingColorHSL.s > 0.5) {
+	              endS = 0;
+	            } else {
+	              endS = 1;
+	            }
+
+	            options.endingColorHSL = [options.startingColorHSL.h, endS, options.startingColorHSL.l];
+	            break;
+
+	          case 'lightness':
+	          case 'l':
+	            var endL = void 0;
+
+	            if (options.startingColorHSL.l > 0.5) {
+	              endL = 0;
+	            } else {
+	              endL = 0.75;
+	            }
+
+	            options.endingColorHSL = [options.startingColorHSL.h, options.startingColorHSL.s, endL];
+	            break;
+	        }
+	      }
+
+	      series.map(function (serie, index) {
+
+	        if (!serie.setLineColor) {
+	          throw "The serie " + serie.getName() + " does not implement the method `startingColor`";
+	        }
+
+	        serie.setLineColor(_this2.buildHSLString({
+	          h: options.startingColorHSL.h + index / (seriesLength - 1) * options.endingColorHSL.h,
+	          s: options.startingColorHSL.s + index / (seriesLength - 1) * options.endingColorHSL.s,
+	          l: options.startingColorHSL.l + index / (seriesLength - 1) * options.endingColorHSL.l
+	        }));
+	      });
+	    }
+	  }], [{
+	    key: 'defaults',
+	    value: function defaults() {
+
+	      return {};
+	    }
+	  }]);
+
+	  return PluginMakeTracesDifferent;
+	}(_graph4.default);
 
 /***/ }
 /******/ ])

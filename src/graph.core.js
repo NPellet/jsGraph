@@ -819,7 +819,7 @@ class Graph extends EventEmitter {
    *  @return {Graph} The current graph instance
    */
   autoScaleAxis( axis ) {
-    if( ! axis ) {
+    if ( !axis ) {
       return this;
     }
 
@@ -1135,6 +1135,19 @@ class Graph extends EventEmitter {
    */
   getSeries() {
     return this.series;
+  }
+
+  /**
+   * Returns all the series that correspond to one or multiple types
+   * @param {...Symbol} type - The serie types to select
+   * @returns {Serie[]} An array of all the series
+   * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
+   */
+  allSeries( ...types ) {
+
+    return this.series.filter( ( serie ) => {
+      return types.include( serie.getType() );
+    } );
   }
 
   /**

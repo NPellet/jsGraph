@@ -531,12 +531,12 @@ class SerieLine extends Serie {
    */
   draw( force ) { // Serie redrawing
 
-    if( ! this.getXAxis() || ! this.getYAxis() ) {
+    if ( !this.getXAxis() ||  !this.getYAxis() ) {
       throw "No axes were defined for this serie";
     }
-    
+
     if ( force || this.hasDataChanged() ) {
-      
+
       if ( !this.drawInit( force ) ) {
         return;
       }

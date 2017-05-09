@@ -1597,14 +1597,205 @@ If func is a function, the function will be called with the axis, its type and p
 
     
 
-    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="allSeries"><span class="type-signature"></span><span>{<span class="doc-return">Array.&lt;<a href="Serie.html">Serie</a>></span>} </span><span class="doc-name">allSeries</span><span class="doc-signature">( <span class="doc-type">Symbol</span> &hellip;type )</span></h4>
 
 
 
 
 <div class="description">
-    Autoscales the x and y axes of the graph<br />
-Repains the canvas
+    Returns all the series that correspond to one or multiple types
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Symbol</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">The serie types to select</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type">Array.&lt;<a href="Serie.html">Serie</a>></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    An array of all the series
+</div>
+
+        
+
+    
+        <h5>Example</h5>
+        
+
+    {% highlight JavaScript %}graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );{% endhighlight %}
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+<div class="description">
+    Autoscales the x and y axes of the graph.
+Does not repaint the canvas
 </div>
 
 
@@ -1636,6 +1827,251 @@ Repains the canvas
     
 
     
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoscaleAxes"><span class="type-signature"></span><span></span><span class="doc-name">autoscaleAxes</span><span class="doc-signature">( )</span></h4>
+
+
+
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="autoScaleAxis"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Graph.html">Graph</a></span>} </span><span class="doc-name">autoScaleAxis</span><span class="doc-signature">( <span class="doc-type">Axis</span> The )</span></h4>
+
+
+
+
+<div class="description">
+    Autoscales a particular axis
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>The</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Axis.html">Axis</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">axis to rescale</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Graph.html">Graph</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current graph instance
+</div>
+
+        
 
     
 

@@ -40,6 +40,7 @@ import GraphPluginZoom from './plugins/graph.plugin.zoom'
 import GraphPluginTimeSerieManager from './plugins/graph.plugin.timeseriemanager'
 import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinedifference'
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting'
+import GraphPluginMakeTracesDifferent from './plugins/graph.plugin.makeTracesDifferent'
 
 import Waveform from './util/waveform'
 import FitLM from './util/fit_lm'
@@ -85,6 +86,7 @@ Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerie
 Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
 Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
 Graph.registerConstructor( "graph.plugin.axissplitting", GraphPluginAxisSplitting );
+Graph.registerConstructor( "graph.plugin.makeTracesDifferent", GraphPluginMakeTracesDifferent );
 
 Graph.registerConstructor( "graph.shape", Shape );
 Graph.registerConstructor( "graph.shape.areaundercurve", ShapeAreaUnderCurve );

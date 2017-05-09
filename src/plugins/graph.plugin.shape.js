@@ -17,9 +17,8 @@ class PluginShape extends Plugin {
    */
   init( graph, options ) {
 
-    this.graph = graph;
+    super.init( graph, options );
     this.shapeType = options.type;
-
   }
 
   /**
