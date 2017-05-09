@@ -531,11 +531,16 @@ class SerieLine extends Serie {
    */
   draw( force ) { // Serie redrawing
 
+    if( ! this.getXAxis() || ! this.getYAxis() ) {
+      throw "No axes were defined for this serie";
+    }
+    
     if ( force || this.hasDataChanged() ) {
+      
       if ( !this.drawInit( force ) ) {
         return;
       }
-      console.log( this.getName(), this.getYAxis().getCurrentMax() );
+
       var data = this._dataToUse,
         xData = this._xDataToUse,
         slotToUse = this._slotToUse;
