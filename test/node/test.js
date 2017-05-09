@@ -4,7 +4,7 @@ var jsdom = require('mocha-jsdom');
 var path = require('path');
 var assert = require("assert")
 
-var jsgraph = path.resolve(__dirname + '/../../dist/jsgraph.js');
+var jsgraph = path.resolve(__dirname + '/../../dist/jsgraph_es6.js');
 
 describe('Simple graph creation tests', function () {
 

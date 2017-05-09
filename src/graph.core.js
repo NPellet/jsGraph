@@ -775,8 +775,9 @@ class Graph extends EventEmitter {
   }
 
   /**
-   * Autoscales the x and y axes of the graph<br />
-   * Repains the canvas
+   * Autoscales the x and y axes of the graph.
+   * Does not repaint the canvas
+   * @return {Graph} The current graph instance
    */
   autoscaleAxes() {
 
@@ -784,6 +785,46 @@ class Graph extends EventEmitter {
 
     //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
     // X is not always ascending...
+    return this;
+  }
+
+  // See #138
+  /**
+   *  @alias Graph#autoscaleAxes
+   */
+  autoscale() {
+    return this.autoscaleAxes( ...arguments );
+  }
+
+  // See #138
+  /**
+   *  @alias Graph#autoscaleAxes
+   */
+  autoScale() {
+    return this.autoscaleAxes( ...arguments );
+  }
+
+  // See #138
+  /**
+   *  @alias Graph#autoscaleAxes
+   */
+  autoScaleAxes() {
+    return this.autoscaleAxes( ...arguments );
+  }
+
+  // See #138
+  /**
+   *  Autoscales a particular axis
+   *  @param {Axis} The axis to rescale
+   *  @return {Graph} The current graph instance
+   */
+  autoScaleAxis( axis ) {
+    if( ! axis ) {
+      return this;
+    }
+
+    axis.setMinMaxToFitSeries();
+    return this;
   }
 
   /**

@@ -436,6 +436,11 @@ class Serie extends EventEmitter {
     return this;
   }
 
+  autoAxes() {
+    return this.autoAxis( ... arguments );
+  }
+
+
   /**
    * Assigns an x axis to the serie
    * @memberof Serie
