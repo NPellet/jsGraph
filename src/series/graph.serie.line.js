@@ -466,7 +466,7 @@ class SerieLine extends Serie {
 
       } else if ( this._waveform.hasAggregation() ) {
 
-        let promise = this._waveform.getAggregatedData( this.graph.getDrawingWidth() );
+        let promise = this._waveform.selectAggregatedData( this.graph.getDrawingWidth() );
 
         if ( promise instanceof Promise ) {
 
@@ -477,6 +477,9 @@ class SerieLine extends Serie {
           } );
 
           return false;
+        } else {
+
+          this._dataToUse = this._waveform.getDataToUseFlat();
         }
 
       }
@@ -544,7 +547,7 @@ class SerieLine extends Serie {
       var data = this._dataToUse,
         xData = this._xDataToUse,
         slotToUse = this._slotToUse;
-
+      console.trace();
       this.removeLinesGroup();
       this.eraseMarkers();
 

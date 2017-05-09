@@ -5995,7 +5995,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      const levels = 10;
 
-	      let level = 128; // 128 points
+	      let level = 128; // Starting with a 128 points spectrum
 
 	      let i = 0;
 
@@ -6031,13 +6031,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !!this._dataAggregated;
 	    }
 
-	    getAggregatedData(pxWidth) {
+	    selectAggregatedData(pxWidth) {
 
 	      var level = pow2ceil(pxWidth);
+
 	      if (this._dataAggregated[level]) {
+
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
 	      } else if (this._dataAggregating[level]) {
+
 	        return this._dataAggregating[level];
 	      }
 
@@ -6655,11 +6658,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onmessage = function (e) {
 
 	      const data = e.data.data,
-	            numPoints = e.data.numPoints,
-	            max = e.data.max,
-	            min = e.data.min,
-	            dataPerSlot = numPoints / (max - min),
-	            l = data.length;
+	            // The initial data
+	      numPoints = e.data.numPoints,
+	            // Total number of points in the slot
+	      max = e.data.max,
+	            // Max X
+	      min = e.data.min,
+	            // Min Y
+	      dataPerSlot = numPoints / (max - min),
+	            // Computer number of aggregation per slot
+	      l = data.length; // Number of data in the original buffer
 
 	      let i = 0;
 	      let k = -4;
@@ -6668,10 +6676,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let dataAggregatedY = [];
 	      let getX;
 
-	      if (e.data.xscale) {
+	      if (e.data.xdata) {
 
 	        getX = function getX(index) {
-	          return e.data.xscale[index];
+	          return e.data.xdata[index];
 	        };
 	      } else {
 	        getX = function getX(index) {
@@ -6682,6 +6690,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      for (; i < l; i++) {
 
 	        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+	        //console.log( dataPerSlot, getX( i ) );
 	        slotNumber = Math.floor((getX(i) - min) * dataPerSlot);
 
 	        if (slots[k] !== slotNumber) {
@@ -12221,7 +12230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this._dataToUse = [this._waveform.getDataToUseFlat()];
 	        } else if (this._waveform.hasAggregation()) {
 
-	          let promise = this._waveform.getAggregatedData(this.graph.getDrawingWidth());
+	          let promise = this._waveform.selectAggregatedData(this.graph.getDrawingWidth());
 
 	          if (promise instanceof Promise) {
 
@@ -12231,6 +12240,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 
 	            return false;
+	          } else {
+
+	            this._dataToUse = this._waveform.getDataToUseFlat();
 	          }
 	        }
 
@@ -12297,7 +12309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var data = this._dataToUse,
 	            xData = this._xDataToUse,
 	            slotToUse = this._slotToUse;
-
+	        console.trace();
 	        this.removeLinesGroup();
 	        this.eraseMarkers();
 

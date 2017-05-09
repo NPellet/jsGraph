@@ -824,7 +824,7 @@ class Waveform {
 
     const levels = 10;
 
-    let level = 128; // 128 points
+    let level = 128; // Starting with a 128 points spectrum
 
     let i = 0;
 
@@ -846,6 +846,7 @@ class Waveform {
       } ).then( ( data ) => {
 
         this._dataAggregated[ data.numPoints ] = data.data;
+
       } );
 
       if ( level > this.getLength() ) {
@@ -860,14 +861,18 @@ class Waveform {
     return !!this._dataAggregated;
   }
 
-  getAggregatedData( pxWidth ) {
+  selectAggregatedData( pxWidth ) {
 
     var level = pow2ceil( pxWidth );
+
     if ( this._dataAggregated[ level ] ) {
+
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating[ level ] ) {
-      return this._dataAggregating[ level ];
+
+      return this._dataAggregating[ level ]
+
     }
 
     this.dataInUse = this.data;

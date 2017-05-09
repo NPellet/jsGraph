@@ -8,12 +8,12 @@ var workerUrl = URL.createObjectURL( new Blob(
     function() {
       onmessage = function( e ) {
 
-        const data = e.data.data,
-          numPoints = e.data.numPoints,
-          max = e.data.max,
-          min = e.data.min,
-          dataPerSlot = numPoints / ( max - min ),
-          l = data.length;
+        const data = e.data.data, // The initial data
+          numPoints = e.data.numPoints, // Total number of points in the slot
+          max = e.data.max, // Max X
+          min = e.data.min, // Min Y
+          dataPerSlot = numPoints / ( max - min ), // Computer number of aggregation per slot
+          l = data.length; // Number of data in the original buffer
 
         let i = 0;
         let k = -4;
@@ -22,10 +22,10 @@ var workerUrl = URL.createObjectURL( new Blob(
         let dataAggregatedY = [];
         let getX;
 
-        if ( e.data.xscale ) {
+        if ( e.data.xdata ) {
 
           getX = function getX( index ) {
-            return e.data.xscale[  index ];
+            return e.data.xdata[  index ];
           }
         } else {
           getX = function getX( index ) {
@@ -37,6 +37,7 @@ var workerUrl = URL.createObjectURL( new Blob(
         for ( ; i < l; i++ ) {
 
           // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+          //console.log( dataPerSlot, getX( i ) );
           slotNumber = Math.floor( ( getX( i ) - min ) * dataPerSlot );
 
           if ( slots[ k ] !== slotNumber ) {
