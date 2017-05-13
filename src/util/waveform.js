@@ -82,7 +82,12 @@ class Waveform {
     return this;
   }
 
-  getY( index ) {
+  getY( index, optimized ) {
+
+    if( optimized && this.dataInUse ) {
+      return this.dataInUse.y[ index ];
+    }
+
     return this.data[ index ];
   }
 
@@ -307,6 +312,10 @@ class Waveform {
     }
   }
 
+  getDataInUse() {
+    return this.dataInUse;
+  }
+
   getIndexFromX( xval, useDataToUse = false ) {
 
     if ( !this.isXMonotoneous() ) {
@@ -317,7 +326,7 @@ class Waveform {
 
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
-    } else {
+    } else if ( this.xdata ) {
       xdata = this.xdata.getData();
     }
 
@@ -837,39 +846,27 @@ class Waveform {
 
   aggregate() {
 
-    const levels = 10;
-
-    let level = 128; // Starting with a 128 points spectrum
-
-    let i = 0;
-
     this._dataAggregating = {};
     this._dataAggregated = {};
 
-    for ( ; i < levels; i++ ) {
+    var pow2 = pow2floor( this.getLength() );
 
-      this._dataAggregating[ level ] = aggregator( {
+    this._dataAggregating = aggregator( {
 
-        min: this.getMinX(),
-        max: this.getMaxX(),
-        data: this.data,
-        xdata: this.xdata ? this.xdata.getData() : undefined,
-        xScale: this.xScale,
-        xOffset: this.xOffset,
-        numPoints: level
+      min: this.getMinX(),
+      max: this.getMaxX(),
+      data: this.data,
+      xdata: this.xdata ? this.xdata.getData() : undefined,
+      xScale: this.xScale,
+      xOffset: this.xOffset,
+      numPoints: pow2
 
-      } ).then( ( data ) => {
+    } ).then( ( event ) => {
+            console.log( event );
+      this._dataAggregated = event.data.aggregates;
 
-        this._dataAggregated[ data.numPoints ] = data.data;
+    } );
 
-      } );
-
-      if ( level > this.getLength() ) {
-        break;
-      }
-
-      level *= 2;
-    }
   }
 
   hasAggregation() {
@@ -878,15 +875,18 @@ class Waveform {
 
   selectAggregatedData( pxWidth, minX, maxX ) {
 
-    var level = pow2ceil( pxWidth );
+    if( pxWidth < 2 ) {
+      return false;
+    }
 
+    var level = pow2ceil( pxWidth );
     if ( this._dataAggregated[ level ] ) {
 
       this.dataInUse = this._dataAggregated[ level ];
       return;
-    } else if ( this._dataAggregating[ level ] ) {
+    } else if ( this._dataAggregating ) {
 
-      return this._dataAggregating[ level ]
+      return this._dataAggregating;
 
     }
 

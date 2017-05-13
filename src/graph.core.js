@@ -2301,6 +2301,40 @@ class Graph extends EventEmitter {
   }
 
   /**
+   *  Pass here the katex.render method to be used later
+   *   @param {Function} renderer -  katexRendered - renderer
+   *   @return {Graph} The current graph instance
+   */
+  setKatexRenderer( renderer ) {
+    this._katexRenderer = renderer;
+  }
+
+  hasKatexRenderer() {
+    return !!this._katexRenderer;
+  }
+
+  renderWithKatex( katexValue, katexElement ) {
+
+    if ( this._katexRenderer ) {
+
+      if ( katexElement ) {
+        katexElement.removeChild( katexElement.firstChild );
+      } else {
+        katexElement = document.createElementNS( this.ns, 'foreignObject' );
+      }
+
+      let div = document.createElement( "div" );
+
+      katexElement.appendChild( div );
+      this._katexRenderer( katexValue, div );
+
+      return katexElement;
+    }
+
+    return false;
+  }
+
+  /**
    * Returns a graph created from a schema
    * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
    * @param {HTMLElement} wrapper - The wrapping element
@@ -2804,8 +2838,8 @@ function makeSerie( graph, name, options, type ) {
 
   if ( constructor ) {
 
-    var serie = new constructor();
-    serie.init( graph, name, options );
+    var serie = new constructor( graph, name, options );
+    //serie.init( graph, name, options );
     graph.appendSerieToDom( serie );
 
   } else {

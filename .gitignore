@@ -1,5 +1,6 @@
 node_modules
 lib
+nmr
 .idea
 examples/node_modules
 examples/requirejs

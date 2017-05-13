@@ -14,17 +14,9 @@ var type = "scatter";
  */
 class SerieScatter extends Serie {
 
-  constructor() {
+  constructor( graph, name, options ) {
+
     super( ...arguments );
-  }
-
-  /**
-   * Initializes the series
-   * @private
-   */
-  init( graph, name, options ) {
-
-    var self = this;
 
     this.graph = graph;
     this.name = name;
@@ -63,14 +55,14 @@ class SerieScatter extends Serie {
     this.selectedStyleGeneral = {};
     this.selectedStyleModifiers = {};
 
-    this.groupPoints.addEventListener( 'mouseover', function( e ) {
+    this.groupPoints.addEventListener( 'mouseover', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      this.emit( "mouseover", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
     } );
 
-    this.groupPoints.addEventListener( 'mouseout', function( e ) {
+    this.groupPoints.addEventListener( 'mouseout', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      this.emit( "mouseout", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
     } );
 
     this.minX = Number.MAX_VALUE;
@@ -106,6 +98,7 @@ class SerieScatter extends Serie {
       stroke: 'transparent',
       fill: "black"
     };
+
 
   }
 
@@ -291,8 +284,7 @@ class SerieScatter extends Serie {
       k,
       m,
       currentLine,
-      max,
-      self = this;
+      max;
 
     var isCategory = this.getXAxis().getType() == 'category';
 

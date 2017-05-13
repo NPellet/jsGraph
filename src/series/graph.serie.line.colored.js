@@ -10,16 +10,10 @@ import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
  */
 class SerieLineColor extends SerieLine {
 
-  constructor() {
+  constructor( graph, name, options ) {
+
     super( ...arguments );
-  }
-
-  initExtended1() {
-
     this.lines = this.lines ||  {};
-    if ( this.initExtended2 ) {
-      this.initExtended2();
-    }
   }
 
   setColors( colors ) {

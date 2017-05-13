@@ -8,45 +8,6 @@ import {
 from '../graph.util'
 
 /**
- * @name SerieZoneDefaultOptions
- * @object
- * @static
- * @param {String} fillColor - The color to fill the zone with
- * @param {String} lineColor - The line color
- * @param {String} lineWidth - The line width (in px)
- */
-const defaults = {
-
-  orientation: 'y',
-  maxBoxWidth: 20,
-
-  defaultStyle: {
-
-    meanLineColor: 'rgb( 100, 0, 0 )',
-    meanLineWidth: 2,
-
-    boxAboveLineWidth: 1,
-    boxAboveLineColor: 'rgb( 0, 0, 0 )',
-    boxAboveFillColor: 'transparent',
-    boxAboveFillOpacity: 1,
-    boxBelowLineWidth: 1,
-    boxBelowLineColor: 'rgb( 0, 0, 0 )',
-    boxBelowFillColor: 'transparent',
-    boxBelowFillOpacity: 1,
-
-    barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-    barAboveLineWidth: 1,
-    barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-    barBelowLineWidth: 1,
-
-    outlierLineWidth: 1,
-    outlierLineColor: 'rgb( 255, 255, 255 )',
-    outlierFillColor: 'rgb( 0, 0, 0 )',
-    outlierFillOpacity: 1
-  }
-
-};
-/**
  * @static
  * @extends Serie
  * @example graph.newSerie( name, options, "scatter" );
@@ -54,13 +15,42 @@ const defaults = {
  */
 class SerieBox extends Serie {
 
-  constructor() {
-    super();
-  }
+  static default() {
+    return {
+    orientation: 'y',
+    maxBoxWidth: 20,
 
-  init( graph, name, options ) {
-    this.graph = graph;
-    this.name = name;
+    defaultStyle: {
+
+      meanLineColor: 'rgb( 100, 0, 0 )',
+      meanLineWidth: 2,
+
+      boxAboveLineWidth: 1,
+      boxAboveLineColor: 'rgb( 0, 0, 0 )',
+      boxAboveFillColor: 'transparent',
+      boxAboveFillOpacity: 1,
+      boxBelowLineWidth: 1,
+      boxBelowLineColor: 'rgb( 0, 0, 0 )',
+      boxBelowFillColor: 'transparent',
+      boxBelowFillOpacity: 1,
+
+      barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+      barAboveLineWidth: 1,
+      barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+      barBelowLineWidth: 1,
+
+      outlierLineWidth: 1,
+      outlierLineColor: 'rgb( 255, 255, 255 )',
+      outlierFillColor: 'rgb( 0, 0, 0 )',
+      outlierFillOpacity: 1
+    }
+  }
+}
+
+  constructor( graph, name, options ) {
+    
+    super( ...arguments );
+    
     this.options = extend( true, {}, defaults, ( options || {} ) ); // Creates options
 
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
@@ -73,6 +63,7 @@ class SerieBox extends Serie {
 
     // Unselected style
     this.styles.unselected = this.options.defaultStyle;
+
   }
 
   /**

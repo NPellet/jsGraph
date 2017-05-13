@@ -47,7 +47,9 @@
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "katex": "^0.7.1"
+  },
   "repository": "NPellet/jsGraph",
   "license": "MIT"
 }

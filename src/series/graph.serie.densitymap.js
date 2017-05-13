@@ -1,15 +1,6 @@
 import Serie from './graph.serie'
 import * as util from '../graph.util'
 
-/**
- * @name SerieDensityMapDefaultOptions
- * @object
- * @static
- * @memberof SerieDensityMap
- */
-const defaults = {
-
-}
 
 /**
  * Density map serie
@@ -19,17 +10,13 @@ const defaults = {
  */
 class SerieDensityMap extends Serie {
 
-  /**
-   * Initializes the serie
-   * @private
-   * @memberof SerieDensityMap
-   */
-  init( graph, name, options ) {
+  constructor( graph, name, options ) {
+
+    super( ...arguments );
 
     this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
     util.mapEventEmission( this.options, this ); // Register events
 
-    this.graph = graph;
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
     this.rects = [];
@@ -37,7 +24,6 @@ class SerieDensityMap extends Serie {
 
     this.recalculateBinsOnDraw = false;
   }
-
   /**
    * Sets the data of the serie. Careful, only one format allowed for now.
    * @memberof SerieDensityMap

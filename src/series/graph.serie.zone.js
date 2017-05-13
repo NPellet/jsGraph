@@ -6,19 +6,6 @@ import {
 } from '../graph.util'
 
 /**
- * @name SerieZoneDefaultOptions
- * @object
- * @static
- * @param {String} fillColor - The color to fill the zone with
- * @param {String} lineColor - The line color
- * @param {String} lineWidth - The line width (in px)
- */
-const defaults = {
-  fillColor: 'rgba( 0, 0, 0, 0.1 )',
-  lineColor: 'rgba( 0, 0, 0, 1 )',
-  lineWidth: '1px',
-};
-/**
  * @static
  * @extends Serie
  * @example graph.newSerie( name, options, "scatter" );
@@ -26,15 +13,17 @@ const defaults = {
  */
 class SerieZone extends Serie {
 
-  constructor() {
-    super( ...arguments );
+  static default() {
+    return {
+      fillColor: 'rgba( 0, 0, 0, 0.1 )',
+      lineColor: 'rgba( 0, 0, 0, 1 )',
+      lineWidth: '1px'
+    };
   }
+  constructor( graph, name, options ) {
+    super( ...arguments );
 
-  init( graph, name, options ) {
-
-    var self = this;
-
-    this.graph = graph;
+     this.graph = graph;
     this.name = name;
 
     this.selectionType = "unselected";
@@ -59,11 +48,7 @@ class SerieZone extends Serie {
 
     this.graph.defs.appendChild( this.clip );
 
-    //   this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
-    //   this.clip.appendChild( this.clipRect );
-    //    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
 
-    //  this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
   }
 
   /**

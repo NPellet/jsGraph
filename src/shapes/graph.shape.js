@@ -360,9 +360,10 @@ class Shape extends EventEmitter {
   /**
    * Initial drawing of the shape. Adds it to the DOM and creates the labels. If the shape was already in the DOM, the method simply recreates the labels and reapplies the shape style, unless ```force``` is set to ```true```
    * @param {Boolean} force - Forces adding the shape to the DOM (useful if the shape has changed layer)
+   * @param {Boolean} preventRedraw - Prevents the redraw method
    * @return {Shape} The current shape
    */
-  draw( force ) {
+  draw( force, preventRedraw ) {
 
     if ( !this._inDom || force ) {
 
@@ -371,7 +372,11 @@ class Shape extends EventEmitter {
     }
 
     this.makeLabels();
-    this.redraw();
+
+    if( ! preventRedraw ) {
+      this.redraw();
+    }
+        
     this.applyStyle();
 
     return this;

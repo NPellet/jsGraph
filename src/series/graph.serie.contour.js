@@ -10,7 +10,7 @@ import * as util from '../graph.util'
  */
 class SerieContour extends SerieLine {
 
-  constructor() {
+  constructor( graph, name, options ) {
     super( ...arguments );
 
     this.negativeDelta = 0;

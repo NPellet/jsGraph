@@ -9,8 +9,36 @@ import Waveform from '../util/waveform'
  */
 class Serie extends EventEmitter {
 
-  constructor() {
+  static default() {
+
+    return {
+      redrawShapesAfterDraw: false
+    };
+  }
+
+  constructor( graph, name, options ) {
     super( ...arguments );
+    this.graph = graph;
+    this.name = name;
+    this.options = Object.assign( {}, Serie.default(), this.constructor.default(), options );
+
+//if( new.target.default ) {
+ //console.log( new.target.default() );
+//}
+
+  }
+
+  draw() {}
+
+  beforeDraw() {}
+
+  afterDraw() {
+
+    if( this.options.redrawShapesAfterDraw ) {
+      this.graph.getShapesOfSerie( this ).forEach( ( shape ) => {
+          shape.redraw();
+      } );
+    }
   }
 
   /**

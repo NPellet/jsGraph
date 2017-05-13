@@ -22,15 +22,10 @@ const defaults = {
  */
 class SerieLine3D extends Serie {
 
-  constructor() {
+  constructor( graph, name, options ) {
     super( ...arguments );
-  }
-
-  init( graph, name, options ) {
-    super.init( graph, name, options );
     this.options = util.extend( true, this.options, defaults, ( options || {} ) ); // Creates options
-    return this;
-
+    
   }
 
   /**

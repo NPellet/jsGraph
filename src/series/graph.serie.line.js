@@ -1,33 +1,10 @@
 import Graph from '../graph.core'
 import Serie from './graph.serie'
-import SlotOptimizer from './slotoptimizer'
+
 import * as util from '../graph.util'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 import Waveform from '../util/waveform'
-/**
- * @name SerieLineDefaultOptions
- * @object
- * @static
- * @memberof SerieLine
- */
-const defaults = {
 
-  lineColor: 'black',
-  lineStyle: 1,
-  flip: false,
-  label: "",
-  lineWidth: 1,
-
-  markers: false,
-  trackMouse: false,
-  trackMouseLabel: false,
-  trackMouseLabelRouding: 1,
-  lineToZero: false,
-
-  selectableOnClick: true,
-
-  markersIndependant: false
-}
 
 /**
  * Serie line
@@ -37,23 +14,38 @@ const defaults = {
  */
 class SerieLine extends Serie {
 
-  constructor() {
-    super( ...arguments );
+  static default() {
+    /**
+     * @name SerieLineDefaultOptions
+     * @object
+     * @static
+     * @memberof SerieLine
+     */
+    return {
+
+      lineColor: 'black',
+      lineStyle: 1,
+      flip: false,
+      label: "",
+      lineWidth: 1,
+      markers: false,
+      trackMouse: false,
+      trackMouseLabel: false,
+      trackMouseLabelRouding: 1,
+      lineToZero: false,
+      selectableOnClick: true,
+      markersIndependant: false
+    };
   }
 
-  /**
-   * Initializes the serie
-   * @memberof SerieLine
-   */
-  init( graph, name, options ) {
+
+  constructor( graph, name, options ) {
+      
+    super( ...arguments );
 
     this.selectionType = "unselected";
     this.markerFamilies = {};
 
-    this.graph = graph;
-    this.name = name;
-
-    this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
     util.mapEventEmission( this.options, this ); // Register events
 
     // Creates an empty style variable
@@ -152,7 +144,9 @@ class SerieLine extends Serie {
       this.setMarkers( this.options.markers, "unselected" );
     }
 
+
   }
+
 
   setWaveform( waveform ) {
 
@@ -193,39 +187,6 @@ class SerieLine extends Serie {
     return this;
   }
 
-  calculateSlots() {
-
-    var self = this;
-    this.slotsData = {};
-    for ( var i = 0, l = this.slots.length; i < l; i++ ) {
-      this.calculateSlot( this.slots[ i ], i );
-    }
-  }
-
-  slotCalculator( slot, slotNumber ) {
-
-    return SlotOptimizer( {
-
-      min: this.minX,
-      max: this.maxX,
-      data: this.data,
-      slot: slot,
-      slotNumber: slotNumber,
-      flip: this.getFlip()
-
-    } );
-
-  }
-
-  calculateSlot( slot, slotNumber ) {
-    var self = this;
-    this.slotsData[ slot ] = this.slotCalculator( slot, slotNumber );
-    this.slotsData[ slot ].then( function( data ) {
-
-      self.slotsData[ slot ] = data;
-      return data;
-    } );
-  }
 
   onMouseOverMarker( e, index ) {
 
@@ -479,6 +440,11 @@ class SerieLine extends Serie {
           } );
 
           return false;
+
+        } else if( promise === false ) {
+          
+          return false ;
+
         } else {
 
           this._dataToUse = this._waveform.getDataToUseFlat();
@@ -530,6 +496,8 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   draw( force ) { // Serie redrawing
+    
+    super.draw( ...arguments );
 
     if ( !this.getXAxis() ||  !this.getYAxis() ) {
       throw "No axes were defined for this serie";
@@ -587,10 +555,11 @@ class SerieLine extends Serie {
     }
 
     this.dataHasChanged( false );
+    this.afterDraw();
   }
 
   _draw() {
-
+    
     let self = this,
       waveform = this._waveform,
       data,
@@ -662,7 +631,6 @@ class SerieLine extends Serie {
       if ( l > data.length ) {
         l = data.length;
       }
-
     }
 
     for ( ; i < l; i += 1 ) {
@@ -967,8 +935,8 @@ class SerieLine extends Serie {
 
     this._createLine();
     i++;
-
   }
+
 
   setMarkerStyleTo( dom, family ) {
 
