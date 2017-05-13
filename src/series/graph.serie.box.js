@@ -15,42 +15,43 @@ from '../graph.util'
  */
 class SerieBox extends Serie {
 
-  static default() {
+  static
+  default () {
     return {
-    orientation: 'y',
-    maxBoxWidth: 20,
+      orientation: 'y',
+      maxBoxWidth: 20,
 
-    defaultStyle: {
+      defaultStyle: {
 
-      meanLineColor: 'rgb( 100, 0, 0 )',
-      meanLineWidth: 2,
+        meanLineColor: 'rgb( 100, 0, 0 )',
+        meanLineWidth: 2,
 
-      boxAboveLineWidth: 1,
-      boxAboveLineColor: 'rgb( 0, 0, 0 )',
-      boxAboveFillColor: 'transparent',
-      boxAboveFillOpacity: 1,
-      boxBelowLineWidth: 1,
-      boxBelowLineColor: 'rgb( 0, 0, 0 )',
-      boxBelowFillColor: 'transparent',
-      boxBelowFillOpacity: 1,
+        boxAboveLineWidth: 1,
+        boxAboveLineColor: 'rgb( 0, 0, 0 )',
+        boxAboveFillColor: 'transparent',
+        boxAboveFillOpacity: 1,
+        boxBelowLineWidth: 1,
+        boxBelowLineColor: 'rgb( 0, 0, 0 )',
+        boxBelowFillColor: 'transparent',
+        boxBelowFillOpacity: 1,
 
-      barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-      barAboveLineWidth: 1,
-      barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-      barBelowLineWidth: 1,
+        barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+        barAboveLineWidth: 1,
+        barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+        barBelowLineWidth: 1,
 
-      outlierLineWidth: 1,
-      outlierLineColor: 'rgb( 255, 255, 255 )',
-      outlierFillColor: 'rgb( 0, 0, 0 )',
-      outlierFillOpacity: 1
+        outlierLineWidth: 1,
+        outlierLineColor: 'rgb( 255, 255, 255 )',
+        outlierFillColor: 'rgb( 0, 0, 0 )',
+        outlierFillOpacity: 1
+      }
     }
   }
-}
 
   constructor( graph, name, options ) {
-    
+
     super( ...arguments );
-    
+
     this.options = extend( true, {}, defaults, ( options || {} ) ); // Creates options
 
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );

@@ -4,7 +4,6 @@ import Waveform from '../util/waveform'
 import Serie3DMixin from '../mixins/graph.mixin.serie3d'
 import * as util from '../graph.util'
 
-
 /**
  * Serie line with 3D projection
  * @example graph.newSerie( name, options, "line" );
@@ -13,10 +12,11 @@ import * as util from '../graph.util'
  */
 class SerieZone3D extends Serie {
 
-  static default() {
+  static
+  default () {
     return {
-        zpos: 0
-      };
+      zpos: 0
+    };
   }
   constructor( graph, name, options ) {
     super( ...arguments );

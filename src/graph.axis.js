@@ -123,7 +123,7 @@ class Axis extends EventEmitter {
     this.label = document.createElementNS( this.graph.ns, 'text' );
 
     this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
-    this.preunit = "";//document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
+    this.preunit = ""; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
     this.unitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the unit
     this.expTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent (x10)
     this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent value
@@ -134,7 +134,6 @@ class Axis extends EventEmitter {
     this.label.appendChild( this.expTspan );
     this.label.appendChild( this.expTspanExp );
 
-    
     this.expTspan.setAttribute( 'dx', 6 );
     this.expTspanExp.setAttribute( 'dy', -5 );
     this.expTspanExp.setAttribute( 'font-size', "0.8em" );
@@ -1056,7 +1055,6 @@ class Axis extends EventEmitter {
         }
 
         this.preunit = "";
-        
 
         this.expTspan.setAttribute( 'display', 'visible' );
         this.expTspanExp.setAttribute( 'display', 'visible' );
@@ -1083,7 +1081,7 @@ class Axis extends EventEmitter {
         domEl;
 
       if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
-        
+
         string += letter;
         this.preunitTspan.innerHTML = letter;
         this.preunitTspan.setAttribute( 'display', 'visible' );

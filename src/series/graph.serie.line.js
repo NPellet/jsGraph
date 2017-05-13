@@ -5,7 +5,6 @@ import * as util from '../graph.util'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 import Waveform from '../util/waveform'
 
-
 /**
  * Serie line
  * @example graph.newSerie( name, options, "line" );
@@ -14,7 +13,8 @@ import Waveform from '../util/waveform'
  */
 class SerieLine extends Serie {
 
-  static default() {
+  static
+  default () {
     /**
      * @name SerieLineDefaultOptions
      * @object
@@ -38,9 +38,8 @@ class SerieLine extends Serie {
     };
   }
 
-
   constructor( graph, name, options ) {
-      
+
     super( ...arguments );
 
     this.selectionType = "unselected";
@@ -144,9 +143,7 @@ class SerieLine extends Serie {
       this.setMarkers( this.options.markers, "unselected" );
     }
 
-
   }
-
 
   setWaveform( waveform ) {
 
@@ -186,7 +183,6 @@ class SerieLine extends Serie {
     this.applyLineStyles();
     return this;
   }
-
 
   onMouseOverMarker( e, index ) {
 
@@ -441,9 +437,9 @@ class SerieLine extends Serie {
 
           return false;
 
-        } else if( promise === false ) {
-          
-          return false ;
+        } else if ( promise === false ) {
+
+          return false;
 
         } else {
 
@@ -496,7 +492,7 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   draw( force ) { // Serie redrawing
-    
+
     super.draw( ...arguments );
 
     if ( !this.getXAxis() ||  !this.getYAxis() ) {
@@ -559,7 +555,7 @@ class SerieLine extends Serie {
   }
 
   _draw() {
-    
+
     let self = this,
       waveform = this._waveform,
       data,
@@ -936,7 +932,6 @@ class SerieLine extends Serie {
     this._createLine();
     i++;
   }
-
 
   setMarkerStyleTo( dom, family ) {
 

@@ -84,7 +84,7 @@ class Waveform {
 
   getY( index, optimized ) {
 
-    if( optimized && this.dataInUse ) {
+    if ( optimized && this.dataInUse ) {
       return this.dataInUse.y[ index ];
     }
 
@@ -862,7 +862,7 @@ class Waveform {
       numPoints: pow2
 
     } ).then( ( event ) => {
-            console.log( event );
+      console.log( event );
       this._dataAggregated = event.data.aggregates;
 
     } );
@@ -875,7 +875,7 @@ class Waveform {
 
   selectAggregatedData( pxWidth, minX, maxX ) {
 
-    if( pxWidth < 2 ) {
+    if ( pxWidth < 2 ) {
       return false;
     }
 

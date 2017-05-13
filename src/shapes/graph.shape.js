@@ -373,10 +373,10 @@ class Shape extends EventEmitter {
 
     this.makeLabels();
 
-    if( ! preventRedraw ) {
+    if ( !preventRedraw ) {
       this.redraw();
     }
-        
+
     this.applyStyle();
 
     return this;

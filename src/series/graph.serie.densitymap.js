@@ -1,7 +1,6 @@
 import Serie from './graph.serie'
 import * as util from '../graph.util'
 
-
 /**
  * Density map serie
  * @example graph.newSerie( name, options, "densitymap" );
@@ -12,25 +11,25 @@ class SerieDensityMap extends Serie {
 
   constructor( graph, name, options ) {
 
-    super( ...arguments );
+      super( ...arguments );
 
-    this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
-    util.mapEventEmission( this.options, this ); // Register events
+      this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
+      util.mapEventEmission( this.options, this ); // Register events
 
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
-    this.rects = [];
-    this.paths = [];
+      this.rects = [];
+      this.paths = [];
 
-    this.recalculateBinsOnDraw = false;
-  }
-  /**
-   * Sets the data of the serie. Careful, only one format allowed for now.
-   * @memberof SerieDensityMap
-   * @param {Array} data - A vector containing 2-elements arrays
-   * @return {SerieDensityMap} The current instance
-   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
-   */
+      this.recalculateBinsOnDraw = false;
+    }
+    /**
+     * Sets the data of the serie. Careful, only one format allowed for now.
+     * @memberof SerieDensityMap
+     * @param {Array} data - A vector containing 2-elements arrays
+     * @return {SerieDensityMap} The current instance
+     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
+     */
   setData( data ) {
 
     this.minX = this.maxX = this.minY = this.maxY = 0;

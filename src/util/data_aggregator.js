@@ -52,7 +52,7 @@ let string = function() {
         dataAggregatedX[ k + 1 ] = slotX;
         dataAggregatedX[ k + 2 ] = slotX;
         dataAggregatedX[ k + 3 ] = slotX;
-        
+
         dataAggregatedY[ k ] = data[ i ];
         dataAggregatedY[ k + 1 ] = data[ i ];
         dataAggregatedY[ k + 2 ] = data[ i ];
@@ -66,19 +66,17 @@ let string = function() {
       aggregationSum[ k ] += data[ i ];
     }
 
-
     aggregations[ numPoints ] = {
-        x: dataAggregatedX,
-        y: dataAggregatedY,
-        sums: aggregationSum
-      };
-      
+      x: dataAggregatedX,
+      y: dataAggregatedY,
+      sums: aggregationSum
+    };
 
     lastAggregation = dataAggregatedY;
     lastAggregationX = dataAggregatedX;
     lastAggregationSum = aggregationSum;
 
-    while( numPoints > 256 ) {
+    while ( numPoints > 256 ) {
 
       numPoints /= 2;
 
@@ -86,19 +84,19 @@ let string = function() {
       newAggregationX = [];
 
       k = 0;
-      for( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
+      for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
 
         newAggregationX[ k ] = ( lastAggregationX[ i ] + lastAggregationX[ i + 4 ] ) / 2;
         newAggregationX[ k + 1 ] = newAggregationX[ k ];
         newAggregationX[ k + 2 ] = newAggregationX[ k ];
         newAggregationX[ k + 3 ] = newAggregationX[ k ];
-        
+
         newAggregation[ k ] = lastAggregation[ i ]
         newAggregation[ k + 1 ] = Math.min( lastAggregation[ i + 1 ], lastAggregation[ i + 5 ] );
         newAggregation[ k + 2 ] = Math.max( lastAggregation[ i + 2 ], lastAggregation[ i + 6 ] );
         newAggregation[ k + 3 ] = lastAggregation[ i + 7 ];
 
-        aggregationSum[ k ] =  lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ];
+        aggregationSum[ k ] = lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ];
 
         k += 4;
       }
@@ -108,13 +106,11 @@ let string = function() {
         y: newAggregation,
         sums: aggregationSum
       };
-      
 
       lastAggregation = newAggregation;
       lastAggregationX = newAggregationX;
       aggregationSum = [];
     }
-
 
     postMessage( {
       aggregates: aggregations,
@@ -124,12 +120,12 @@ let string = function() {
 
 }.toString();
 
-string = string.split("\n");
+string = string.split( "\n" );
 string.pop();
 string.shift();
 
 var workerUrl = URL.createObjectURL( new Blob(
-  [ string.join("\n") ], {
+  [ string.join( "\n" ) ], {
     type: 'application/javascript'
   } ) );
 

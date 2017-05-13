@@ -22,7 +22,6 @@
 			"./src/graph.axis.x.time.js",
 			"./src/series/graph.serie.line.js",
 			"./src/series/graph.serie.js",
-			"./src/series/slotoptimizer.js",
 			"./src/mixins/graph.mixin.errorbars.js",
 			"./src/series/graph.serie.line.3d.js",
 			"./src/mixins/graph.mixin.serie3d.js",

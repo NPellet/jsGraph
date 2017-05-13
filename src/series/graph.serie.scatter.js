@@ -99,7 +99,6 @@ class SerieScatter extends Serie {
       fill: "black"
     };
 
-
   }
 
   /**

@@ -13,7 +13,8 @@ import {
  */
 class SerieZone extends Serie {
 
-  static default() {
+  static
+  default () {
     return {
       fillColor: 'rgba( 0, 0, 0, 0.1 )',
       lineColor: 'rgba( 0, 0, 0, 1 )',
@@ -23,7 +24,7 @@ class SerieZone extends Serie {
   constructor( graph, name, options ) {
     super( ...arguments );
 
-     this.graph = graph;
+    this.graph = graph;
     this.name = name;
 
     this.selectionType = "unselected";
@@ -47,7 +48,6 @@ class SerieZone extends Serie {
     this.clip.setAttribute( 'id', this.clipId );
 
     this.graph.defs.appendChild( this.clip );
-
 
   }
 

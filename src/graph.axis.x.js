@@ -138,10 +138,10 @@ class AxisX extends Axis {
 
     } else {
 
-      if( this.options.labelFont ) {
+      if ( this.options.labelFont ) {
         this.label.setAttribute( 'font-family', this.options.labelFont );
       }
-      
+
       this.label.setAttribute( 'text-anchor', 'middle' );
       this.label.setAttribute( 'style', 'display: initial;' );
       this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );

@@ -25,7 +25,7 @@ class SerieLine3D extends Serie {
   constructor( graph, name, options ) {
     super( ...arguments );
     this.options = util.extend( true, this.options, defaults, ( options || {} ) ); // Creates options
-    
+
   }
 
   /**

@@ -12,7 +12,7 @@ import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 class SerieBar extends Serie {
 
   constructor( graph, name, options ) {
-    
+
     super( ...arguments );
 
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
@@ -32,7 +32,6 @@ class SerieBar extends Serie {
       fillOpacity: this.options.fillOpacity,
       markers: this.options.markers
     };
-
 
   }
 

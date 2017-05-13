@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(18), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(30), __webpack_require__(50), __webpack_require__(32), __webpack_require__(33), __webpack_require__(31), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(45), __webpack_require__(47), __webpack_require__(48), __webpack_require__(49), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(1), __webpack_require__(2), __webpack_require__(8), __webpack_require__(9), __webpack_require__(11), __webpack_require__(12), __webpack_require__(13), __webpack_require__(14), __webpack_require__(17), __webpack_require__(19), __webpack_require__(20), __webpack_require__(21), __webpack_require__(22), __webpack_require__(23), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27), __webpack_require__(28), __webpack_require__(29), __webpack_require__(49), __webpack_require__(31), __webpack_require__(32), __webpack_require__(30), __webpack_require__(33), __webpack_require__(34), __webpack_require__(35), __webpack_require__(36), __webpack_require__(37), __webpack_require__(38), __webpack_require__(39), __webpack_require__(40), __webpack_require__(41), __webpack_require__(42), __webpack_require__(43), __webpack_require__(44), __webpack_require__(46), __webpack_require__(47), __webpack_require__(48), __webpack_require__(5), __webpack_require__(6)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(module, require('./graph.core'), require('./graph.position'), require('./graph.legend'), require('./graph.axis.x'), require('./graph.axis.y'), require('./graph.axis.x.bar'), require('./graph.axis.x.time'), require('./series/graph.serie.line'), require('./series/graph.serie.line.3d'), require('./series/graph.serie.bar'), require('./series/graph.serie.box'), require('./series/graph.serie.line.colored'), require('./series/graph.serie.scatter'), require('./series/graph.serie.zone'), require('./series/graph.serie.zone.3d'), require('./series/graph.serie.densitymap'), require('./series/graph.serie.contour'), require('./shapes/graph.shape'), require('./shapes/graph.shape.areaundercurve'), require('./shapes/graph.shape.arrow'), require('./shapes/graph.shape.ellipse'), require('./shapes/graph.shape.label'), require('./shapes/graph.shape.polyline'), require('./shapes/graph.shape.line'), require('./shapes/graph.shape.nmrintegral'), require('./shapes/graph.shape.peakintegration2d'), require('./shapes/graph.shape.rect'), require('./shapes/graph.shape.cross'), require('./shapes/graph.shape.peakboundariescenter'), require('./shapes/graph.shape.html'), require('./plugins/graph.plugin'), require('./plugins/graph.plugin.drag'), require('./plugins/graph.plugin.shape'), require('./plugins/graph.plugin.selectScatter'), require('./plugins/graph.plugin.zoom'), require('./plugins/graph.plugin.timeseriemanager'), require('./plugins/graph.plugin.serielinedifference'), require('./plugins/graph.plugin.axissplitting'), require('./plugins/graph.plugin.makeTracesDifferent'), require('./util/waveform'), require('./util/fit_lm'));
 	  } else {
@@ -684,7 +684,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *  Pass here the katex.render method to be used later
 	   *   @param {Function} renderer -  katexRendered - renderer
 	   *   @return {Graph} The current graph instance
-	   */setKatexRenderer(renderer){this._katexRenderer=renderer;}hasKatexRenderer(){return!!this._katexRenderer;}renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(this.ns,'foreignObject');}let div=document.createElement("div");katexElement.appendChild(div);console.log(katexValue);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
+	   */setKatexRenderer(renderer){this._katexRenderer=renderer;}hasKatexRenderer(){return!!this._katexRenderer;}renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(this.ns,'foreignObject');}let div=document.createElement("div");katexElement.appendChild(div);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
 	   * Returns a graph created from a schema
 	   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
 	   * @param {HTMLElement} wrapper - The wrapping element
@@ -705,7 +705,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @see Graph.registerConstructor
 	   * @static
 	   */static getConstructor(constructorName,softFail){if(!_constructors.has(constructorName)){if(softFail){return false;}return util.throwError("Constructor \""+constructorName+"\" doesn't exist");}return _constructors.get(constructorName);}static newWaveform(){return new _waveform2.default(...arguments);}static waveform(){return new _waveform2.default(...arguments);}}// Adds getConstructor to the prototype. Cannot do that in ES6 classes
-	Graph.prototype.getConstructor=Graph.getConstructor;function makeSerie(graph,name,options,type){var constructor=graph.getConstructor(type,true);if(!constructor&&typeof type=="string"){constructor=graph.getConstructor("graph.serie."+type,true);}if(constructor){var serie=new constructor();serie.init(graph,name,options);graph.appendSerieToDom(serie);}else{return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");}return serie;};function getAxisLevelFromSpan(span,level){for(var i=0,l=level.length;i<l;i++){var possible=true;for(var k=0,m=level[i].length;k<m;k++){if(!(span[0]<level[i][k][0]&&span[1]<level[i][k][0]||span[0]>level[i][k][1]&&span[1]>level[i][k][1])){possible=false;}}if(possible){level[i].push(span);return i;}}level.push([span]);return level.length-1;}function refreshDrawingZone(graph){var i,j,l,xy,min,max,axis;var shift={top:[],bottom:[],left:[],right:[]};var levels={top:[],bottom:[],left:[],right:[]};graph._painted=true;// Apply to top and bottom
+	Graph.prototype.getConstructor=Graph.getConstructor;function makeSerie(graph,name,options,type){var constructor=graph.getConstructor(type,true);if(!constructor&&typeof type=="string"){constructor=graph.getConstructor("graph.serie."+type,true);}if(constructor){var serie=new constructor(graph,name,options);//serie.init( graph, name, options );
+	graph.appendSerieToDom(serie);}else{return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");}return serie;};function getAxisLevelFromSpan(span,level){for(var i=0,l=level.length;i<l;i++){var possible=true;for(var k=0,m=level[i].length;k<m;k++){if(!(span[0]<level[i][k][0]&&span[1]<level[i][k][0]||span[0]>level[i][k][1]&&span[1]>level[i][k][1])){possible=false;}}if(possible){level[i].push(span);return i;}}level.push([span]);return level.length-1;}function refreshDrawingZone(graph){var i,j,l,xy,min,max,axis;var shift={top:[],bottom:[],left:[],right:[]};var levels={top:[],bottom:[],left:[],right:[]};graph._painted=true;// Apply to top and bottom
 	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(axis.getAxisPosition(),shift[position][level]||0);},false,true,false);var shiftTop=shift.top.reduce(function(prev,curr){return prev+curr;},0);var shiftBottom=shift.bottom.reduce(function(prev,curr){return prev+curr;},0);[shift.top,shift.bottom].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to top and bottom
 	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}axis.setShift(shift[position][axis.getLevel()]);},false,true,false);// Applied to left and right
 	graph._applyToAxes(function(axis,position){if(axis.disabled){return;}axis.setMinPx(shiftTop);axis.setMaxPx(graph.getDrawingHeight(true)-shiftBottom);if(axis.floating){return;}// First we need to draw it in order to determine the width to allocate
@@ -2119,7 +2120,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    getY(index) {
+	    getY(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.y[index];
+	      }
+
 	      return this.data[index];
 	    }
 
@@ -2333,6 +2339,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.minX = Math.min(b1, b2);
 	        this.maxX = Math.max(b1, b2);
 	      }
+	    }
+
+	    getDataInUse() {
+	      return this.dataInUse;
 	    }
 
 	    getIndexFromX(xval, useDataToUse = false) {
@@ -2866,38 +2876,25 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    aggregate() {
 
-	      const levels = 10;
-
-	      let level = 128; // Starting with a 128 points spectrum
-
-	      let i = 0;
-
 	      this._dataAggregating = {};
 	      this._dataAggregated = {};
 
-	      for (; i < levels; i++) {
+	      var pow2 = pow2floor(this.getLength());
 
-	        this._dataAggregating[level] = (0, _data_aggregator2.default)({
+	      this._dataAggregating = (0, _data_aggregator2.default)({
 
-	          min: this.getMinX(),
-	          max: this.getMaxX(),
-	          data: this.data,
-	          xdata: this.xdata ? this.xdata.getData() : undefined,
-	          xScale: this.xScale,
-	          xOffset: this.xOffset,
-	          numPoints: level
+	        min: this.getMinX(),
+	        max: this.getMaxX(),
+	        data: this.data,
+	        xdata: this.xdata ? this.xdata.getData() : undefined,
+	        xScale: this.xScale,
+	        xOffset: this.xOffset,
+	        numPoints: pow2
 
-	        }).then(data => {
-
-	          this._dataAggregated[data.numPoints] = data.data;
-	        });
-
-	        if (level > this.getLength()) {
-	          break;
-	        }
-
-	        level *= 2;
-	      }
+	      }).then(event => {
+	        console.log(event);
+	        this._dataAggregated = event.data.aggregates;
+	      });
 	    }
 
 	    hasAggregation() {
@@ -2906,15 +2903,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    selectAggregatedData(pxWidth, minX, maxX) {
 
-	      var level = pow2ceil(pxWidth);
+	      if (pxWidth < 2) {
+	        return false;
+	      }
 
+	      var level = pow2ceil(pxWidth);
 	      if (this._dataAggregated[level]) {
 
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
-	      } else if (this._dataAggregating[level]) {
+	      } else if (this._dataAggregating) {
 
-	        return this._dataAggregating[level];
+	        return this._dataAggregating;
 	      }
 
 	      this.dataInUse = {
@@ -3541,28 +3541,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var aggregatorWorker;
 	  var queue = {};
 
-	  var workerUrl = URL.createObjectURL(new Blob([" ( " + function () {
+	  let string = function () {
+
 	    onmessage = function (e) {
 
 	      const data = e.data.data,
 	            // The initial data
-	      numPoints = e.data.numPoints,
-	            // Total number of points in the slot
 	      max = e.data.max,
 	            // Max X
-	      min = e.data.min,
-	            // Min Y
-	      dataPerSlot = numPoints / (max - min),
-	            // Computer number of aggregation per slot
-	      l = data.length; // Number of data in the original buffer
+	      min = e.data.min; // Min Y
 
+	      let numPoints = e.data.numPoints; // Total number of points in the slot
+	      let l = data.length; // Number of data in the original buffer
 	      let i = 0;
 	      let k = -4;
 	      let slots = [];
 	      let dataAggregatedX = [];
 	      let dataAggregatedY = [];
+	      let aggregationSum = [];
 	      let getX;
 
+	      const dataPerSlot = numPoints / (max - min); // Computed number of aggregation per slot
 	      if (e.data.xdata) {
 
 	        getX = function getX(index) {
@@ -3573,6 +3572,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return index * e.data.xScale + e.data.xOffset;
 	        };
 	      }
+
+	      let aggregations = {};
 
 	      for (; i < l; i++) {
 
@@ -3595,22 +3596,72 @@ return /******/ (function(modules) { // webpackBootstrap
 	          dataAggregatedY[k + 1] = data[i];
 	          dataAggregatedY[k + 2] = data[i];
 	          dataAggregatedY[k + 3] = data[i];
+	          aggregationSum[k] = 0;
 	        }
 	        dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
 	        dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
 	        dataAggregatedY[k + 3] = data[i];
+	        aggregationSum[k] += data[i];
+	      }
+
+	      aggregations[numPoints] = {
+	        x: dataAggregatedX,
+	        y: dataAggregatedY,
+	        sums: aggregationSum
+	      };
+
+	      lastAggregation = dataAggregatedY;
+	      lastAggregationX = dataAggregatedX;
+	      lastAggregationSum = aggregationSum;
+
+	      while (numPoints > 256) {
+
+	        numPoints /= 2;
+
+	        newAggregation = [];
+	        newAggregationX = [];
+
+	        k = 0;
+	        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+
+	          newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
+	          newAggregationX[k + 1] = newAggregationX[k];
+	          newAggregationX[k + 2] = newAggregationX[k];
+	          newAggregationX[k + 3] = newAggregationX[k];
+
+	          newAggregation[k] = lastAggregation[i];
+	          newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
+	          newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
+	          newAggregation[k + 3] = lastAggregation[i + 7];
+
+	          aggregationSum[k] = lastAggregationSum[i] + lastAggregationSum[i + 4];
+
+	          k += 4;
+	        }
+
+	        aggregations[numPoints] = {
+	          x: newAggregationX,
+	          y: newAggregation,
+	          sums: aggregationSum
+	        };
+
+	        lastAggregation = newAggregation;
+	        lastAggregationX = newAggregationX;
+	        aggregationSum = [];
 	      }
 
 	      postMessage({
-	        numPoints: numPoints,
-	        data: {
-	          x: dataAggregatedX,
-	          y: dataAggregatedY
-	        },
+	        aggregates: aggregations,
 	        _queueId: e.data._queueId
 	      });
 	    };
-	  }.toString() + ")()"], {
+	  }.toString();
+
+	  string = string.split("\n");
+	  string.pop();
+	  string.shift();
+
+	  var workerUrl = URL.createObjectURL(new Blob([string.join("\n")], {
 	    type: 'application/javascript'
 	  }));
 
@@ -3619,7 +3670,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  aggregatorWorker.onmessage = function (e) {
 	    var id = e.data._queueId;
 	    delete e.data._queueId;
-
 	    queue[id](e.data);
 	    delete queue[id];
 	  };
@@ -4491,6 +4541,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.group.appendChild(this.katexElement);
 	      } else {
 
+	        if (this.options.labelFont) {
+	          this.label.setAttribute('font-family', this.options.labelFont);
+	        }
+
 	        this.label.setAttribute('text-anchor', 'middle');
 	        this.label.setAttribute('style', 'display: initial;');
 	        this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
@@ -4758,7 +4812,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.label = document.createElementNS(this.graph.ns, 'text');
 
 	      this.labelTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the main label
-	      this.preunitTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the scaling unit
+	      this.preunit = ""; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
 	      this.unitTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the unit
 	      this.expTspan = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent (x10)
 	      this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent value
@@ -4769,7 +4823,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.label.appendChild(this.expTspan);
 	      this.label.appendChild(this.expTspanExp);
 
-	      this.preunitTspan.setAttribute('dx', 6);
 	      this.expTspan.setAttribute('dx', 6);
 	      this.expTspanExp.setAttribute('dy', -5);
 	      this.expTspanExp.setAttribute('font-size', "0.8em");
@@ -5664,16 +5717,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.labelTspan.textContent = label;
 	      }
 	      */
-
 	      let letter;
 	      if (!this.options.useKatexForLabel || !this.graph.hasKatexRenderer()) {
 
-	        this.writeUnit();
-
 	        if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
 
-	          this.preunitTspan.innerHTML = letter;
-	          this.preunitTspan.setAttribute('display', 'visible');
+	          this.preunit = letter;
 	          this.unitTspan.setAttribute('dx', 0);
 	        } else if (this.scientificExponent !== 0 && !isNaN(this.scientificExponent)) {
 
@@ -5681,8 +5730,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.scientificExponent = this.getEngineeringExponent(this.scientificExponent);
 	          }
 
-	          this.preunitTspan.textContent = "";
-	          this.preunitTspan.setAttribute('display', 'none');
+	          this.preunit = "";
 
 	          this.expTspan.setAttribute('display', 'visible');
 	          this.expTspanExp.setAttribute('display', 'visible');
@@ -5695,17 +5743,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.unitTspan.setAttribute('display', 'none');
 	          }
 
-	          this.preunitTspan.setAttribute('display', 'none');
+	          this.preunit = "";
 	          this.expTspan.setAttribute('display', 'none');
 	          this.expTspanExp.setAttribute('display', 'none');
 	        }
+
+	        this.writeUnit();
 	      } else {
 
 	        let string = this.getLabel(),
 	            domEl;
 
 	        if (this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && (this.scientificExponent = this.getEngineeringExponent(this.scientificExponent)) && (letter = this.getExponentGreekLetter(this.scientificExponent))) {
-	          console.log(letter);
+
 	          string += letter;
 	          this.preunitTspan.innerHTML = letter;
 	          this.preunitTspan.setAttribute('display', 'visible');
@@ -5783,7 +5833,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.expTspan.setAttribute('display', 'none');
 	        this.expTspanExp.setAttribute('display', 'none');
-	        this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace(/\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>") + this.options.unitWrapperAfter;
+	        this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.preunit + this.options.unit.replace(/\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>") + this.options.unitWrapperAfter;
 	      } else {
 	        this.unitTspan.setAttribute('display', 'none');
 	      }
@@ -6435,6 +6485,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
+	    setLabelFont(font) {
+	      this.options.labelFont = font;
+	      return this;
+	    }
+
 	    /**
 	     * @memberof Axis
 	     * @return {String} The label value
@@ -6892,6 +6947,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setLabelColor(color) {
 	      this.options.labelColor = color;
+	      return this;
 	    }
 
 	    /**
@@ -8671,17 +8727,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(15), __webpack_require__(16), __webpack_require__(3), __webpack_require__(17), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(15), __webpack_require__(3), __webpack_require__(16), __webpack_require__(5)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('../graph.core'), require('./graph.serie'), require('./slotoptimizer'), require('../graph.util'), require('../mixins/graph.mixin.errorbars'), require('../util/waveform'));
+	    factory(exports, require('../graph.core'), require('./graph.serie'), require('../graph.util'), require('../mixins/graph.mixin.errorbars'), require('../util/waveform'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graph, global.graph, global.slotoptimizer, global.graph, global.graphMixin, global.waveform);
+	    factory(mod.exports, global.graph, global.graph, global.graph, global.graphMixin, global.waveform);
 	    global.graphSerieLine = mod.exports;
 	  }
-	})(this, function (exports, _graph, _graph3, _slotoptimizer, _graph5, _graphMixin, _waveform) {
+	})(this, function (exports, _graph, _graph3, _graph5, _graphMixin, _waveform) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
@@ -8691,8 +8747,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _graph2 = _interopRequireDefault(_graph);
 
 	  var _graph4 = _interopRequireDefault(_graph3);
-
-	  var _slotoptimizer2 = _interopRequireDefault(_slotoptimizer);
 
 	  var util = _interopRequireWildcard(_graph5);
 
@@ -8724,31 +8778,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieLineDefaultOptions
-	   * @object
-	   * @static
-	   * @memberof SerieLine
-	   */
-	  const defaults = {
-
-	    lineColor: 'black',
-	    lineStyle: 1,
-	    flip: false,
-	    label: "",
-	    lineWidth: 1,
-
-	    markers: false,
-	    trackMouse: false,
-	    trackMouseLabel: false,
-	    trackMouseLabelRouding: 1,
-	    lineToZero: false,
-
-	    selectableOnClick: true,
-
-	    markersIndependant: false
-	  };
-
-	  /**
 	   * Serie line
 	   * @example graph.newSerie( name, options, "line" );
 	   * @see Graph#newSerie
@@ -8756,23 +8785,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieLine extends _graph4.default {
 
-	    constructor() {
-	      super(...arguments);
+	    static default() {
+	      /**
+	       * @name SerieLineDefaultOptions
+	       * @object
+	       * @static
+	       * @memberof SerieLine
+	       */
+	      return {
+
+	        lineColor: 'black',
+	        lineStyle: 1,
+	        flip: false,
+	        label: "",
+	        lineWidth: 1,
+	        markers: false,
+	        trackMouse: false,
+	        trackMouseLabel: false,
+	        trackMouseLabelRouding: 1,
+	        lineToZero: false,
+	        selectableOnClick: true,
+	        markersIndependant: false
+	      };
 	    }
 
-	    /**
-	     * Initializes the serie
-	     * @memberof SerieLine
-	     */
-	    init(graph, name, options) {
+	    constructor(graph, name, options) {
+
+	      super(...arguments);
 
 	      this.selectionType = "unselected";
 	      this.markerFamilies = {};
 
-	      this.graph = graph;
-	      this.name = name;
-
-	      this.options = util.extend(true, {}, defaults, options || {}); // Creates options
 	      util.mapEventEmission(this.options, this); // Register events
 
 	      // Creates an empty style variable
@@ -8908,39 +8951,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.applyLineStyles();
 	      return this;
-	    }
-
-	    calculateSlots() {
-
-	      var self = this;
-	      this.slotsData = {};
-	      for (var i = 0, l = this.slots.length; i < l; i++) {
-	        this.calculateSlot(this.slots[i], i);
-	      }
-	    }
-
-	    slotCalculator(slot, slotNumber) {
-
-	      return (0, _slotoptimizer2.default)({
-
-	        min: this.minX,
-	        max: this.maxX,
-	        data: this.data,
-	        slot: slot,
-	        slotNumber: slotNumber,
-	        flip: this.getFlip()
-
-	      });
-	    }
-
-	    calculateSlot(slot, slotNumber) {
-	      var self = this;
-	      this.slotsData[slot] = this.slotCalculator(slot, slotNumber);
-	      this.slotsData[slot].then(function (data) {
-
-	        self.slotsData[slot] = data;
-	        return data;
-	      });
 	    }
 
 	    onMouseOverMarker(e, index) {
@@ -9189,6 +9199,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            });
 
 	            return false;
+	          } else if (promise === false) {
+
+	            return false;
 	          } else {
 
 	            this._dataToUse = this._waveform.getDataToUseFlat();
@@ -9239,6 +9252,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    draw(force) {
 	      // Serie redrawing
+
+	      super.draw(...arguments);
 
 	      if (!this.getXAxis() || !this.getYAxis()) {
 	        throw "No axes were defined for this serie";
@@ -9296,10 +9311,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.dataHasChanged(false);
+	      this.afterDraw();
 	    }
 
 	    _draw() {
-	      console.trace();
+
 	      let self = this,
 	          waveform = this._waveform,
 	          data,
@@ -10639,8 +10655,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class Serie extends _EventEmitter2.default {
 
-	    constructor() {
+	    static default() {
+
+	      return {
+	        redrawShapesAfterDraw: false
+	      };
+	    }
+
+	    constructor(graph, name, options) {
 	      super(...arguments);
+	      this.graph = graph;
+	      this.name = name;
+	      this.options = Object.assign({}, Serie.default(), this.constructor.default(), options);
+
+	      //if( new.target.default ) {
+	      //console.log( new.target.default() );
+	      //}
+	    }
+
+	    draw() {}
+
+	    beforeDraw() {}
+
+	    afterDraw() {
+
+	      if (this.options.redrawShapesAfterDraw) {
+	        this.graph.getShapesOfSerie(this).forEach(shape => {
+	          shape.redraw();
+	        });
+	      }
 	    }
 
 	    /**
@@ -11536,130 +11579,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (true) {
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require("../graph.util"));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, global.graph);
-	    global.slotoptimizer = mod.exports;
-	  }
-	})(this, function (exports, _graph) {
-	  "use strict";
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  exports.default = function (toOptimize) {
-
-	    if (!slotWorker) {
-	      createWorker();
-	    }
-
-	    var requestId = util.guid();
-	    toOptimize._queueId = requestId;
-	    var resolve;
-	    var prom = new Promise(function (_resolve) {
-	      resolve = _resolve;
-	    });
-	    queue[requestId] = {
-	      promise: prom,
-	      resolve: resolve
-	    };
-
-	    slotWorker.postMessage(toOptimize);
-	    return queue[requestId].promise;
-	  };
-
-	  var util = _interopRequireWildcard(_graph);
-
-	  function _interopRequireWildcard(obj) {
-	    if (obj && obj.__esModule) {
-	      return obj;
-	    } else {
-	      var newObj = {};
-
-	      if (obj != null) {
-	        for (var key in obj) {
-	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	        }
-	      }
-
-	      newObj.default = obj;
-	      return newObj;
-	    }
-	  }
-
-	  var slotWorker;
-	  var queue = {};
-
-	  function createWorker() {
-
-	    var workerUrl = URL.createObjectURL(new Blob([" ( " + function () {
-	      onmessage = function (e) {
-
-	        var data = e.data.data,
-	            slotNb = e.data.slotNumber,
-	            slot = e.data.slot,
-	            flip = e.data.flip,
-	            max = e.data.max,
-	            min = e.data.min,
-	            slotNumber,
-	            dataPerSlot = slot / (max - min);
-
-	        var slotsData = [];
-
-	        for (var j = 0, k = data.length; j < k; j++) {
-
-	          for (var m = 0, n = data[j].length; m < n; m += 2) {
-
-	            slotNumber = Math.floor((data[j][m] - min) * dataPerSlot);
-
-	            slotsData[slotNumber] = slotsData[slotNumber] || {
-	              min: data[j][m + 1],
-	              max: data[j][m + 1],
-	              start: data[j][m + 1],
-	              stop: false,
-	              x: data[j][m]
-	            };
-
-	            slotsData[slotNumber].stop = data[j][m + 1];
-	            slotsData[slotNumber].min = Math.min(data[j][m + 1], slotsData[slotNumber].min);
-	            slotsData[slotNumber].max = Math.max(data[j][m + 1], slotsData[slotNumber].max);
-	          }
-	        }
-
-	        postMessage({
-	          slotNumber: slotNb,
-	          slot: slot,
-	          data: slotsData,
-	          _queueId: e.data._queueId
-	        });
-	      };
-	    }.toString() + ")()"], {
-	      type: 'application/javascript'
-	    }));
-
-	    slotWorker = new Worker(workerUrl);
-
-	    slotWorker.onmessage = function (e) {
-	      var id = e.data._queueId;
-	      delete e.data._queueId;
-	      queue[id].resolve(e.data.data);
-	      delete queue[id];
-	    };
-	  }
-	});
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'));
 	  } else {
 	    var mod = {
@@ -12015,12 +11934,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 18 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(14), __webpack_require__(5), __webpack_require__(19), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(14), __webpack_require__(5), __webpack_require__(18), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.core'), require('./graph.serie.line'), require('../util/waveform'), require('../mixins/graph.mixin.serie3d'), require('../graph.util'));
 	  } else {
@@ -12088,14 +12007,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieLine3D extends _graphSerie2.default {
 
-	    constructor() {
+	    constructor(graph, name, options) {
 	      super(...arguments);
-	    }
-
-	    init(graph, name, options) {
-	      super.init(graph, name, options);
 	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
-	      return this;
 	    }
 
 	    /**
@@ -12118,7 +12032,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 19 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -12253,12 +12167,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 20 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(14), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(14), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.serie.line'), require('../mixins/graph.mixin.errorbars'));
 	  } else {
@@ -12313,14 +12227,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieBar extends _graphSerie2.default {
 
-	    constructor() {
-	      super();
-	    }
+	    constructor(graph, name, options) {
 
-	    init(graph, name, options) {
-	      this.graph = graph;
-	      this.name = name;
-	      this.options = options || {};
+	      super(...arguments);
 
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
@@ -12475,7 +12384,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 21 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -12506,45 +12415,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieZoneDefaultOptions
-	   * @object
-	   * @static
-	   * @param {String} fillColor - The color to fill the zone with
-	   * @param {String} lineColor - The line color
-	   * @param {String} lineWidth - The line width (in px)
-	   */
-	  const defaults = {
-
-	    orientation: 'y',
-	    maxBoxWidth: 20,
-
-	    defaultStyle: {
-
-	      meanLineColor: 'rgb( 100, 0, 0 )',
-	      meanLineWidth: 2,
-
-	      boxAboveLineWidth: 1,
-	      boxAboveLineColor: 'rgb( 0, 0, 0 )',
-	      boxAboveFillColor: 'transparent',
-	      boxAboveFillOpacity: 1,
-	      boxBelowLineWidth: 1,
-	      boxBelowLineColor: 'rgb( 0, 0, 0 )',
-	      boxBelowFillColor: 'transparent',
-	      boxBelowFillOpacity: 1,
-
-	      barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
-	      barAboveLineWidth: 1,
-	      barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
-	      barBelowLineWidth: 1,
-
-	      outlierLineWidth: 1,
-	      outlierLineColor: 'rgb( 255, 255, 255 )',
-	      outlierFillColor: 'rgb( 0, 0, 0 )',
-	      outlierFillOpacity: 1
-	    }
-
-	  };
-	  /**
 	   * @static
 	   * @extends Serie
 	   * @example graph.newSerie( name, options, "scatter" );
@@ -12552,13 +12422,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieBox extends _graph2.default {
 
-	    constructor() {
-	      super();
+	    static default() {
+	      return {
+	        orientation: 'y',
+	        maxBoxWidth: 20,
+
+	        defaultStyle: {
+
+	          meanLineColor: 'rgb( 100, 0, 0 )',
+	          meanLineWidth: 2,
+
+	          boxAboveLineWidth: 1,
+	          boxAboveLineColor: 'rgb( 0, 0, 0 )',
+	          boxAboveFillColor: 'transparent',
+	          boxAboveFillOpacity: 1,
+	          boxBelowLineWidth: 1,
+	          boxBelowLineColor: 'rgb( 0, 0, 0 )',
+	          boxBelowFillColor: 'transparent',
+	          boxBelowFillOpacity: 1,
+
+	          barAboveLineColor: 'rgba( 0, 0, 0, 1 )',
+	          barAboveLineWidth: 1,
+	          barBelowLineColor: 'rgba( 0, 0, 0, 1 )',
+	          barBelowLineWidth: 1,
+
+	          outlierLineWidth: 1,
+	          outlierLineColor: 'rgb( 255, 255, 255 )',
+	          outlierFillColor: 'rgb( 0, 0, 0 )',
+	          outlierFillOpacity: 1
+	        }
+	      };
 	    }
 
-	    init(graph, name, options) {
-	      this.graph = graph;
-	      this.name = name;
+	    constructor(graph, name, options) {
+
+	      super(...arguments);
+
 	      this.options = (0, _graph3.extend)(true, {}, defaults, options || {}); // Creates options
 
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
@@ -13343,12 +13242,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 22 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14), __webpack_require__(3), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(14), __webpack_require__(3), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.serie.line'), require('../graph.util'), require('../mixins/graph.mixin.errorbars'));
 	  } else {
@@ -13402,16 +13301,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieLineColor extends _graphSerie2.default {
 
-	    constructor() {
+	    constructor(graph, name, options) {
+
 	      super(...arguments);
-	    }
-
-	    initExtended1() {
-
 	      this.lines = this.lines || {};
-	      if (this.initExtended2) {
-	        this.initExtended2();
-	      }
 	    }
 
 	    setColors(colors) {
@@ -13720,12 +13613,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 23 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(3), __webpack_require__(17)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(15), __webpack_require__(3), __webpack_require__(16)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.serie'), require('../graph.util'), require('../mixins/graph.mixin.errorbars'));
 	  } else {
@@ -13783,17 +13676,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieScatter extends _graph2.default {
 
-	    constructor() {
+	    constructor(graph, name, options) {
+
 	      super(...arguments);
-	    }
-
-	    /**
-	     * Initializes the series
-	     * @private
-	     */
-	    init(graph, name, options) {
-
-	      var self = this;
 
 	      this.graph = graph;
 	      this.name = name;
@@ -13832,14 +13717,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.selectedStyleGeneral = {};
 	      this.selectedStyleModifiers = {};
 
-	      this.groupPoints.addEventListener('mouseover', function (e) {
+	      this.groupPoints.addEventListener('mouseover', e => {
 	        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-	        self.emit("mouseover", id, self.data[id * 2], self.data[id * 2 + 1]);
+	        this.emit("mouseover", id, this.data[id * 2], this.data[id * 2 + 1]);
 	      });
 
-	      this.groupPoints.addEventListener('mouseout', function (e) {
+	      this.groupPoints.addEventListener('mouseout', e => {
 	        var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-	        self.emit("mouseout", id, self.data[id * 2], self.data[id * 2 + 1]);
+	        this.emit("mouseout", id, this.data[id * 2], this.data[id * 2 + 1]);
 	      });
 
 	      this.minX = Number.MAX_VALUE;
@@ -14058,8 +13943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          k,
 	          m,
 	          currentLine,
-	          max,
-	          self = this;
+	          max;
 
 	      var isCategory = this.getXAxis().getType() == 'category';
 
@@ -14346,7 +14230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 24 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -14379,19 +14263,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieZoneDefaultOptions
-	   * @object
-	   * @static
-	   * @param {String} fillColor - The color to fill the zone with
-	   * @param {String} lineColor - The line color
-	   * @param {String} lineWidth - The line width (in px)
-	   */
-	  const defaults = {
-	    fillColor: 'rgba( 0, 0, 0, 0.1 )',
-	    lineColor: 'rgba( 0, 0, 0, 1 )',
-	    lineWidth: '1px'
-	  };
-	  /**
 	   * @static
 	   * @extends Serie
 	   * @example graph.newSerie( name, options, "scatter" );
@@ -14399,13 +14270,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieZone extends _graph2.default {
 
-	    constructor() {
-	      super(...arguments);
+	    static default() {
+	      return {
+	        fillColor: 'rgba( 0, 0, 0, 0.1 )',
+	        lineColor: 'rgba( 0, 0, 0, 1 )',
+	        lineWidth: '1px'
+	      };
 	    }
-
-	    init(graph, name, options) {
-
-	      var self = this;
+	    constructor(graph, name, options) {
+	      super(...arguments);
 
 	      this.graph = graph;
 	      this.name = name;
@@ -14431,12 +14304,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.clip.setAttribute('id', this.clipId);
 
 	      this.graph.defs.appendChild(this.clip);
-
-	      //   this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
-	      //   this.clip.appendChild( this.clipRect );
-	      //    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-
-	      //  this.groupMain.setAttribute( 'clip-path', 'url(#' + this.clipId + ')' );
 	    }
 
 	    /**
@@ -14709,12 +14576,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 25 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(24), __webpack_require__(5), __webpack_require__(19), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(23), __webpack_require__(5), __webpack_require__(18), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.core'), require('./graph.serie.zone'), require('../util/waveform'), require('../mixins/graph.mixin.serie3d'), require('../graph.util'));
 	  } else {
@@ -14765,16 +14632,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieLineDefaultOptions
-	   * @object
-	   * @static
-	   * @memberof SerieLine
-	   */
-	  const defaults = {
-	    zpos: 0
-	  };
-
-	  /**
 	   * Serie line with 3D projection
 	   * @example graph.newSerie( name, options, "line" );
 	   * @see Graph#newSerie
@@ -14782,14 +14639,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieZone3D extends _graphSerie2.default {
 
-	    constructor() {
-	      super(...arguments);
+	    static default() {
+	      return {
+	        zpos: 0
+	      };
 	    }
-
-	    init(graph, name, options) {
-	      super.init(graph, name, options);
+	    constructor(graph, name, options) {
+	      super(...arguments);
 	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
-	      return this;
 	    }
 
 	    /**
@@ -14812,7 +14669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 26 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -14862,14 +14719,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieDensityMapDefaultOptions
-	   * @object
-	   * @static
-	   * @memberof SerieDensityMap
-	   */
-	  const defaults = {};
-
-	  /**
 	   * Density map serie
 	   * @example graph.newSerie( name, options, "densitymap" );
 	   * @see Graph#newSerie
@@ -14877,17 +14726,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieDensityMap extends _graph2.default {
 
-	    /**
-	     * Initializes the serie
-	     * @private
-	     * @memberof SerieDensityMap
-	     */
-	    init(graph, name, options) {
+	    constructor(graph, name, options) {
+
+	      super(...arguments);
 
 	      this.options = util.extend(true, {}, defaults, options || {}); // Creates options
 	      util.mapEventEmission(this.options, this); // Register events
 
-	      this.graph = graph;
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
 	      this.rects = [];
@@ -14895,7 +14740,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.recalculateBinsOnDraw = false;
 	    }
-
 	    /**
 	     * Sets the data of the serie. Careful, only one format allowed for now.
 	     * @memberof SerieDensityMap
@@ -15506,7 +15350,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 27 */
+/* 26 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -15564,7 +15408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieContour extends _graphSerie2.default {
 
-	    constructor() {
+	    constructor(graph, name, options) {
 	      super(...arguments);
 
 	      this.negativeDelta = 0;
@@ -15937,7 +15781,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 28 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -16342,9 +16186,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Initial drawing of the shape. Adds it to the DOM and creates the labels. If the shape was already in the DOM, the method simply recreates the labels and reapplies the shape style, unless ```force``` is set to ```true```
 	     * @param {Boolean} force - Forces adding the shape to the DOM (useful if the shape has changed layer)
+	     * @param {Boolean} preventRedraw - Prevents the redraw method
 	     * @return {Shape} The current shape
 	     */
-	    draw(force) {
+	    draw(force, preventRedraw) {
 
 	      if (!this._inDom || force) {
 
@@ -16353,7 +16198,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.makeLabels();
-	      this.redraw();
+
+	      if (!preventRedraw) {
+	        this.redraw();
+	      }
+
 	      this.applyStyle();
 
 	      return this;
@@ -17876,12 +17725,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 29 */
+/* 28 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18105,12 +17954,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 30 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {
@@ -18169,12 +18018,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 31 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18408,12 +18257,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 32 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18463,12 +18312,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -18569,12 +18418,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(29), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.areaundercurve'), require('../graph.position'));
 	  } else {
@@ -18608,8 +18457,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  class ShapeNMRIntegral extends _graphShape2.default {
 
 	    constructor(graph, options) {
+
 	      super(graph, options);
+
 	      this.nbHandles = 2;
+	    }
+
+	    initImpl() {
+	      this.setFillColor('transparent');
+	      this.setStrokeColor('black');
 	    }
 
 	    createHandles() {
@@ -18625,207 +18481,172 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    applyPosition() {
 
-	      var posXY = this.calculatePosition(0),
-	          posXY2 = this.calculatePosition(1),
-	          w,
-	          x,
+	      let x,
+	          y,
+	          xVal,
+	          yVal,
 	          axis = this.getAxis(),
 	          points = [];
 
-	      let baseLine = this.yBaseline;
+	      let currentLine = "";
 
-	      if (!posXY || !posXY2) {
-	        return;
-	      }
+	      let baseLine = 300;
+	      let ratio;
 
-	      if (!this.serie.isFlipped()) {
-
-	        baseLine = this.getYAxis().getPx(0) - baseLine;
-
-	        w = Math.abs(posXY.x - posXY2.x);
-	        x = Math.min(posXY.x, posXY2.x);
-	      } else {
-
-	        baseLine = this.getXAxis().getPx(0) - baseLine;
-
-	        w = Math.abs(posXY.y - posXY2.y);
-	        x = Math.min(posXY.y, posXY2.y);
-	      }
-
-	      this.computedBaseline = baseLine;
-	      this.reversed = x == posXY2.x;
+	      if (!this.serie) {
+	        throw "No serie exists for this shape";
+	      };
+	      //    this.reversed = x == posXY2.x;
 
 	      var pos1 = this.getPosition(0);
 	      var pos2 = this.getPosition(1);
+	      /*
+	          if (
+	            ( axis == 'x' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) ) ||
+	            ( axis == 'y' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) )
+	          ) {
+	             points = [
+	              [ 0, 0 ]
+	            ];
+	            this.hideLabel( 0 );
+	            this.setDom( "d", "" );
+	            this.hideHandles();
+	           } else {
+	      */
+	      this.showLabel(0);
 
-	      if (axis == 'x' && (w < 2 || x + w < 0 || x > this.graph.getDrawingWidth()) || axis == 'y' && (w < 2 || x + w < 0 || x > this.graph.getDrawingHeight())) {
+	      let sum = 0;
 
-	        points = [[0, 0]];
-	        this.hideLabel(0);
-	        this.setDom("d", "");
-	        this.hideHandles();
-	      } else {
+	      let j;
+	      let waveform = this.serie.getWaveform();
+	      let index1 = waveform.getIndexFromX(pos1[axis], true);
+	      let index2 = waveform.getIndexFromX(pos2[axis], true);
+	      let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
+	      let sum2 = 0;
 
-	        this.showLabel(0);
+	      for (j = index1; j <= index2; j++) {
 
-	        var v1 = this.serie.searchClosestValue(pos1[axis]),
-	            v2 = this.serie.searchClosestValue(pos2[axis]),
-	            v3,
-	            i,
-	            j,
-	            init,
-	            max,
-	            k,
-	            x,
-	            y,
-	            firstX,
-	            firstY,
-	            currentLine = "",
-	            maxY = 0,
-	            incrYFlip = 1,
-	            incrXFlip = 0,
-	            minY = Number.MAX_VALUE;
+	        xVal = waveform.getX(j, true);
+	        yVal = waveform.getY(j, true);
 
-	        if (!v1 || !v2) {
-	          return false;
+	        x = this.serie.getX(xVal);
+	        y = this.serie.getY(yVal);
+
+	        if (!firstX) {
+
+	          firstX = x;
+	          firstY = y;
+	          firstXVal = waveform.getX(j);
+	          firstYVal = waveform.getY(j);
 	        }
 
-	        posXY.y = v1.yMin;
-	        posXY2.y = v2.yMin;
+	        if (lastX == undefined) {
 
-	        if (v1.xBeforeIndex > v2.xBeforeIndex) {
-	          v3 = v1;
-	          v1 = v2;
-	          v2 = v3;
+	          lastX = x;
+	          lastY = y;
+	          lastXVal = waveform.getX(j);
+	          lastYVal = waveform.getY(j);
+	          continue;
 	        }
 
-	        var firstX,
-	            firstY,
-	            lastX,
-	            lastY,
-	            firstXVal,
-	            firstYVal,
-	            lastXVal,
-	            lastYVal,
-	            sum = 0,
-	            diff;
-	        var ratio = this.scaling;
-
-	        if (this.serie.isFlipped()) {
-	          incrYFlip = 0;
-	          incrXFlip = 1;
+	        if (x == lastX && y == lastY) {
+	          continue;
 	        }
 
-	        for (i = v1.dataIndex; i <= v2.dataIndex; i++) {
+	        lastX = x;
+	        lastY = y;
 
-	          init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-	          max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[i].length;
-	          k = 0;
+	        sum2 += (xVal - lastXVal) * yVal * 0.5;
 
-	          for (j = init; j <= max; j += 2) {
-
-	            x = this.serie.getX(this.serie.data[i][j + incrXFlip]);
-	            y = this.serie.getY(this.serie.data[i][j + incrYFlip]);
-
-	            if (this.serie.isFlipped()) {
-	              var x2 = x;
-	              x = y;
-	              y = x2;
-	            }
-
-	            if (!firstX) {
-	              firstX = x;
-	              firstY = y;
-	              firstXVal = this.serie.data[i][j + incrXFlip];
-	              firstYVal = this.serie.data[i][j + incrYFlip];
-	            }
-
-	            if (lastX == undefined) {
-	              lastX = x;
-	              lastY = y;
-
-	              lastXVal = this.serie.data[i][j + incrXFlip];
-	              lastYVal = this.serie.data[i][j + incrYFlip];
-
-	              continue;
-	            }
-
-	            sum += (this.serie.data[i][j + incrXFlip] - lastXVal) * this.serie.data[i][j + incrYFlip] * 0.5;
-
-	            lastXVal = this.serie.data[i][j + incrXFlip];
-
-	            if (x == lastX && y == lastY) {
-	              continue;
-	            }
-
-	            lastX = x;
-	            lastY = y;
-
-	            points.push([x, sum]);
-	            k++;
-	          }
-
-	          this.lastX = x;
-	          this.lastY = y;
-
-	          if (!firstX || !firstY || !this.lastX || !this.lastY) {
-	            return;
-	          }
-	        }
-
-	        if (sum == 0) {
-	          sum = 1; // Will look line a line anyway
-	        }
-
-	        var ratio;
-
-	        if (!this._ratio) {
-	          ratio = 150 / sum;
-	        } else {
-	          ratio = this._ratio;
-	        }
-
-	        for (var i = 0, l = points.length; i < l; i++) {
-	          //   console.log( points[ i ][ 1 ] / sum );
-	          points[i][1] = baseLine - points[i][1] * ratio;
-
-	          if (i == 0) {
-	            this.firstPointX = points[i][0];
-	            this.firstPointY = points[i][1];
-	          }
-	          currentLine += " L " + points[i][incrXFlip] + ", " + points[i][incrYFlip] + " ";
-
-	          this.lastPointX = points[i][0];
-	          this.lastPointY = points[i][1];
-	        }
-
-	        this.points = points;
-	        this.sum = sum;
-
-	        var lastY = firstY,
-	            lastX = this.lastX;
-
-	        var interX = firstX;
-	        diff = Math.min(20, lastX - firstX);
-
-	        if (this.serie.isFlipped()) {
-	          currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
-	        } else {
-	          currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
-	        }
-
-	        this.setDom('d', currentLine);
-
-	        this.firstX = firstX;
-	        this.firstY = firstY;
-
-	        this.maxY = this.serie.getY(maxY);
-	        if (this._selected) {
-	          this.select();
-	        }
-
-	        this.setHandles();
+	        points.push([x, y, sum2]);
+	        lastXVal = xVal;
 	      }
+
+	      waveform = this.serie.getWaveform();
+	      index1 = waveform.getIndexFromX(pos1[axis]);
+	      index2 = waveform.getIndexFromX(pos2[axis]);
+
+	      lastXVal = false;
+	      lastYVal = false;
+	      lastX = false;
+	      lastY = false;
+
+	      for (j = index1; j <= index2; j++) {
+
+	        xVal = waveform.getX(j);
+	        yVal = waveform.getY(j);
+	        x = this.serie.getX(xVal);
+	        y = this.serie.getY(yVal);
+
+	        if (!firstX) {
+
+	          firstX = x;
+	          firstY = y;
+	          firstXVal = xVal;
+	          firstYVal = yVal;
+	        }
+
+	        if (!lastX) {
+	          lastX = x;
+	          lastY = y;
+	          lastXVal = xVal;
+	          lastYVal = yVal;
+	          continue;
+	        }
+
+	        if (x == lastX && y == lastY) {
+	          continue;
+	        }
+
+	        lastX = x;
+	        lastY = y;
+
+	        sum += (xVal - lastXVal) * yVal * 0.5;
+
+	        lastXVal = xVal;
+	      }
+
+	      if (!this.ratio) {
+	        // 150px / unit
+	        ratio = 300 / sum;
+	      } else {
+	        // Already existing
+	        ratio = this.ratio;
+	      }
+
+	      for (var i = 0, l = points.length; i < l; i++) {
+
+	        points[i][2] = baseLine - points[i][2] * sum / sum2 * ratio;
+
+	        if (i == 0) {
+	          this.firstPointX = points[i][0];
+	          this.firstPointY = points[i][1];
+	        }
+
+	        currentLine += " L " + points[i][0] + ", " + points[i][2] + " ";
+
+	        this.lastPointX = points[i][0];
+	        this.lastPointY = points[i][1];
+	      }
+
+	      this.points = points;
+	      this.sum = sum;
+
+	      if (this.serie.isFlipped()) {
+	        currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
+	      } else {
+	        currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
+	      }
+
+	      this.setDom('d', currentLine);
+
+	      this.firstX = firstX;
+	      this.firstY = firstY;
+	      /*
+	            if ( this._selected ) {
+	              this.select();
+	            }
+	             this.setHandles();*/
 
 	      this.setLabelPosition(new _graph2.default({
 	        x: (pos1.x + pos2.x) / 2,
@@ -18852,14 +18673,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    get ratio() {
 	      return this._ratio;
-	    }
-
-	    set yBaseline(y = 30) {
-	      this._yBaseline = y;
-	    }
-
-	    get yBaseline() {
-	      return this._yBaseline || 30;
 	    }
 
 	    selectStyle() {
@@ -18903,12 +18716,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(36)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(35)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.rect'));
 	  } else {
@@ -18969,12 +18782,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'), require('../graph.util'));
 	  } else {
@@ -19352,12 +19165,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape'));
 	  } else {
@@ -19515,12 +19328,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(31)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(30)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.shape.line'));
 	  } else {
@@ -19776,12 +19589,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.shape'));
 	  } else {
@@ -19959,7 +19772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -20046,12 +19859,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("./graph.plugin"));
 	  } else {
@@ -20256,12 +20069,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -20450,12 +20263,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -20635,12 +20448,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 44 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -21278,12 +21091,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 45 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(46), __webpack_require__(40), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(45), __webpack_require__(39), __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.core'), require('../graph.lru'), require('./graph.plugin'), require('../graph.util'));
 	  } else {
@@ -21836,7 +21649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 46 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -21967,15 +21780,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function exist(store) {
 	    return memory[store];
 	  }
+
+	  exports.default = get;
 	});
 
 /***/ },
-/* 47 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('./graph.plugin'));
 	  } else {
@@ -22393,12 +22208,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 48 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(9), __webpack_require__(11), __webpack_require__(3), __webpack_require__(14), __webpack_require__(23), __webpack_require__(40), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(1), __webpack_require__(9), __webpack_require__(11), __webpack_require__(3), __webpack_require__(14), __webpack_require__(22), __webpack_require__(39), __webpack_require__(10)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require("../graph.core"), require("../graph.axis.x"), require("../graph.axis.y"), require("../graph.util"), require("../series/graph.serie.line"), require("../series/graph.serie.scatter"), require("./graph.plugin"), require("../graph.axis"));
 	  } else {
@@ -23196,12 +23011,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 49 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(40)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(39)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.plugin'));
 	  } else {
@@ -23412,12 +23227,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 50 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(28)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3), __webpack_require__(27)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(exports, require('../graph.util'), require('./graph.shape'));
 	  } else {
