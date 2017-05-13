@@ -13180,7 +13180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent value
 
 	      this.label.appendChild(this.labelTspan);
-	      this.label.appendChild(this.preunitTspan);
+	      //this.label.appendChild( this.preunitTspan );
 	      this.label.appendChild(this.unitTspan);
 	      this.label.appendChild(this.expTspan);
 	      this.label.appendChild(this.expTspanExp);
@@ -28456,8 +28456,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (!this.serie) {
 	        throw "No serie exists for this shape";
-	      }
-	      ;
+	      };
 	      //    this.reversed = x == posXY2.x;
 
 	      var pos1 = this.getPosition(0);
@@ -28467,15 +28466,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ( axis == 'x' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) ) ||
 	            ( axis == 'y' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) )
 	          ) {
-	      
-	            points = [
+	             points = [
 	              [ 0, 0 ]
 	            ];
 	            this.hideLabel( 0 );
 	            this.setDom( "d", "" );
 	            this.hideHandles();
-	      
-	          } else {
+	           } else {
 	      */
 	      this.showLabel(0);
 
@@ -28617,8 +28614,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if ( this._selected ) {
 	              this.select();
 	            }
-	      
-	            this.setHandles();*/
+	             this.setHandles();*/
 
 	      this.setLabelPosition(new _graph2.default({
 	        x: (pos1.x + pos2.x) / 2,

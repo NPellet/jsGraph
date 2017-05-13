@@ -4818,7 +4818,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.expTspanExp = document.createElementNS(this.graph.ns, 'tspan'); // Contains the exponent value
 
 	      this.label.appendChild(this.labelTspan);
-	      this.label.appendChild(this.preunitTspan);
+	      //this.label.appendChild( this.preunitTspan );
 	      this.label.appendChild(this.unitTspan);
 	      this.label.appendChild(this.expTspan);
 	      this.label.appendChild(this.expTspanExp);
