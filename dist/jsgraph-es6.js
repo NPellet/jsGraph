@@ -6749,6 +6749,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setTicksLabelColor(color) {
 	      this.options.ticksLabelColor = color;
+	      if (Array.isArray(this.ticksLabels)) {
+	        this.ticksLabels.forEach(tick => {
+	          tick.setAttribute("fill", color);
+	        });
+	      }
 	      return this;
 	    }
 

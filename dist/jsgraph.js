@@ -15360,6 +15360,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'setTicksLabelColor',
 	    value: function setTicksLabelColor(color) {
 	      this.options.ticksLabelColor = color;
+	      if (Array.isArray(this.ticksLabels)) {
+	        this.ticksLabels.forEach(function (tick) {
+	          tick.setAttribute("fill", color);
+	        });
+	      }
 	      return this;
 	    }
 
