@@ -12,7 +12,6 @@ import * as util from '../graph.util'
  */
 class SerieLine3D extends Serie {
 
-
   static defaults() {
     return {
       zpos: 0
@@ -20,7 +19,6 @@ class SerieLine3D extends Serie {
   }
   constructor( graph, name, options ) {
     super( ...arguments );
-  
 
   }
 

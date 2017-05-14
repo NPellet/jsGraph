@@ -11990,16 +11990,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * @name SerieLineDefaultOptions
-	   * @object
-	   * @static
-	   * @memberof SerieLine
-	   */
-	  const defaults = {
-	    zpos: 0
-	  };
-
-	  /**
 	   * Serie line with 3D projection
 	   * @example graph.newSerie( name, options, "line" );
 	   * @see Graph#newSerie
@@ -12007,9 +11997,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	  class SerieLine3D extends _graphSerie2.default {
 
+	    static defaults() {
+	      return {
+	        zpos: 0
+	      };
+	    }
 	    constructor(graph, name, options) {
 	      super(...arguments);
-	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
 	    }
 
 	    /**
@@ -12457,8 +12451,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(graph, name, options) {
 
 	      super(...arguments);
-
-	      this.options = (0, _graph3.extend)(true, {}, defaults, options || {}); // Creates options
 
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 
@@ -13679,16 +13671,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(graph, name, options) {
 
 	      super(...arguments);
-
-	      this.graph = graph;
-	      this.name = name;
-
 	      this.id = Math.random() + Date.now();
-
 	      this.shapes = []; // Stores all shapes
-
 	      this.shown = true;
-	      this.options = util.extend(true, {}, defaults, options);
 	      this.data = [];
 
 	      this.shapesDetails = [];
@@ -14280,13 +14265,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(graph, name, options) {
 	      super(...arguments);
 
-	      this.graph = graph;
-	      this.name = name;
-
 	      this.selectionType = "unselected";
 	      this.id = (0, _graph3.guid)();
 
-	      this.options = (0, _graph3.extend)(true, {}, defaults, options);
 	      this.groupZones = document.createElementNS(this.graph.ns, 'g');
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');
 	      this.lineZone = document.createElementNS(this.graph.ns, 'path');
@@ -14646,7 +14627,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    constructor(graph, name, options) {
 	      super(...arguments);
-	      this.options = util.extend(true, this.options, defaults, options || {}); // Creates options
 	    }
 
 	    /**
@@ -14729,8 +14709,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(graph, name, options) {
 
 	      super(...arguments);
-
-	      this.options = util.extend(true, {}, defaults, options || {}); // Creates options
 	      util.mapEventEmission(this.options, this); // Register events
 
 	      this.groupMain = document.createElementNS(this.graph.ns, 'g');

@@ -21074,33 +21074,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	/**
-	 * @name SerieLineDefaultOptions
-	 * @object
-	 * @static
-	 * @memberof SerieLine
-	 */
-	var defaults = {
-	  zpos: 0
-	};
-
-	/**
 	 * Serie line with 3D projection
 	 * @example graph.newSerie( name, options, "line" );
 	 * @see Graph#newSerie
 	 * @extends SerieLine
 	 */
-
 	var SerieLine3D = function (_Serie) {
 	  _inherits(SerieLine3D, _Serie);
+
+	  _createClass(SerieLine3D, null, [{
+	    key: 'defaults',
+	    value: function defaults() {
+	      return {
+	        zpos: 0
+	      };
+	    }
+	  }]);
 
 	  function SerieLine3D(graph, name, options) {
 	    _classCallCheck(this, SerieLine3D);
 
-	    var _this = _possibleConstructorReturn(this, (SerieLine3D.__proto__ || Object.getPrototypeOf(SerieLine3D)).apply(this, arguments));
-
-	    _this.options = util.extend(true, _this.options, defaults, options || {}); // Creates options
-
-	    return _this;
+	    return _possibleConstructorReturn(this, (SerieLine3D.__proto__ || Object.getPrototypeOf(SerieLine3D)).apply(this, arguments));
 	  }
 
 	  /**
@@ -21579,8 +21573,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _classCallCheck(this, SerieBox);
 
 	    var _this = _possibleConstructorReturn(this, (SerieBox.__proto__ || Object.getPrototypeOf(SerieBox)).apply(this, arguments));
-
-	    _this.options = (0, _graph3.extend)(true, {}, defaults, options || {}); // Creates options
 
 	    _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
 
@@ -22983,15 +22975,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, (SerieScatter.__proto__ || Object.getPrototypeOf(SerieScatter)).apply(this, arguments));
 
-	    _this.graph = graph;
-	    _this.name = name;
-
 	    _this.id = Math.random() + Date.now();
-
 	    _this.shapes = []; // Stores all shapes
-
 	    _this.shown = true;
-	    _this.options = util.extend(true, {}, defaults, options);
 	    _this.data = [];
 
 	    _this.shapesDetails = [];
@@ -23658,13 +23644,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, (SerieZone.__proto__ || Object.getPrototypeOf(SerieZone)).apply(this, arguments));
 
-	    _this.graph = graph;
-	    _this.name = name;
-
 	    _this.selectionType = "unselected";
 	    _this.id = (0, _graph3.guid)();
 
-	    _this.options = (0, _graph3.extend)(true, {}, defaults, options);
 	    _this.groupZones = document.createElementNS(_this.graph.ns, 'g');
 	    _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
 	    _this.lineZone = document.createElementNS(_this.graph.ns, 'path');
@@ -24092,10 +24074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function SerieZone3D(graph, name, options) {
 	    _classCallCheck(this, SerieZone3D);
 
-	    var _this = _possibleConstructorReturn(this, (SerieZone3D.__proto__ || Object.getPrototypeOf(SerieZone3D)).apply(this, arguments));
-
-	    _this.options = util.extend(true, _this.options, defaults, options || {}); // Creates options
-	    return _this;
+	    return _possibleConstructorReturn(this, (SerieZone3D.__proto__ || Object.getPrototypeOf(SerieZone3D)).apply(this, arguments));
 	  }
 
 	  /**
@@ -24168,7 +24147,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, (SerieDensityMap.__proto__ || Object.getPrototypeOf(SerieDensityMap)).apply(this, arguments));
 
-	    _this.options = util.extend(true, {}, defaults, options || {}); // Creates options
 	    util.mapEventEmission(_this.options, _this); // Register events
 
 	    _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
