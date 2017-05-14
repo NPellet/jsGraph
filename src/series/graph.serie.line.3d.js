@@ -5,16 +5,6 @@ import Serie3DMixin from '../mixins/graph.mixin.serie3d'
 import * as util from '../graph.util'
 
 /**
- * @name SerieLineDefaultOptions
- * @object
- * @static
- * @memberof SerieLine
- */
-const defaults = {
-  zpos: 0
-};
-
-/**
  * Serie line with 3D projection
  * @example graph.newSerie( name, options, "line" );
  * @see Graph#newSerie
@@ -22,9 +12,15 @@ const defaults = {
  */
 class SerieLine3D extends Serie {
 
+
+  static defaults() {
+    return {
+      zpos: 0
+    };
+  }
   constructor( graph, name, options ) {
     super( ...arguments );
-    this.options = util.extend( true, this.options, defaults, ( options || {} ) ); // Creates options
+  
 
   }
 

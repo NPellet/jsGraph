@@ -12,8 +12,6 @@ class SerieDensityMap extends Serie {
   constructor( graph, name, options ) {
 
       super( ...arguments );
-
-      this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
       util.mapEventEmission( this.options, this ); // Register events
 
       this.groupMain = document.createElementNS( this.graph.ns, 'g' );

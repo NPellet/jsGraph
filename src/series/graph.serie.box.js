@@ -52,8 +52,6 @@ class SerieBox extends Serie {
 
     super( ...arguments );
 
-    this.options = extend( true, {}, defaults, ( options || {} ) ); // Creates options
-
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
     this.pathDom = document.createElementNS( this.graph.ns, 'path' );

@@ -13,8 +13,7 @@ import {
  */
 class SerieZone extends Serie {
 
-  static
-  default () {
+  static default () {
     return {
       fillColor: 'rgba( 0, 0, 0, 0.1 )',
       lineColor: 'rgba( 0, 0, 0, 1 )',
@@ -24,13 +23,9 @@ class SerieZone extends Serie {
   constructor( graph, name, options ) {
     super( ...arguments );
 
-    this.graph = graph;
-    this.name = name;
-
     this.selectionType = "unselected";
     this.id = guid();
 
-    this.options = extend( true, {}, defaults, options );
     this.groupZones = document.createElementNS( this.graph.ns, 'g' );
     this.groupMain = document.createElementNS( this.graph.ns, 'g' );
     this.lineZone = document.createElementNS( this.graph.ns, 'path' );

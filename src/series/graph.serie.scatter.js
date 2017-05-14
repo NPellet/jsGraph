@@ -17,16 +17,9 @@ class SerieScatter extends Serie {
   constructor( graph, name, options ) {
 
     super( ...arguments );
-
-    this.graph = graph;
-    this.name = name;
-
     this.id = Math.random() + Date.now();
-
     this.shapes = []; // Stores all shapes
-
     this.shown = true;
-    this.options = util.extend( true, {}, defaults, options );
     this.data = [];
 
     this.shapesDetails = [];
