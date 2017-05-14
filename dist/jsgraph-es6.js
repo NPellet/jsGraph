@@ -636,7 +636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Unselects all shapes
 	   * @param {Boolean} [ mute = false ] - Mutes all unselection events
 	   * @return {Graph} The current graph instance
-	   */unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}_removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}appendShapeToDom(shape){this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}removeShapeFromDom(shape){this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(this.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(this.ns,'g');this.layers[layer][2]=document.createElementNS(this.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}focus(){this._dom.focus();}elementMoving(movingElement){this.bypassHandleMouse=movingElement;}stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}_makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(this.ns,'line');line.setAttribute('stroke','black');line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.key){if(action.key!==e.keyCode){let keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}forcePlugin(plugin){this.forcedPlugin=plugin;}unforcePlugin(){this.forcedPlugin=false;}_pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
+	   */unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}_removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}appendShapeToDom(shape){if(shape.isHTML()=="html"){this._dom.appendChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}removeShapeFromDom(shape){if(shape.isHTML()=="html"){this._dom.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(this.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(this.ns,'g');this.layers[layer][2]=document.createElementNS(this.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}focus(){this._dom.focus();}elementMoving(movingElement){this.bypassHandleMouse=movingElement;}stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}_makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(this.ns,'line');line.setAttribute('stroke','black');line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.key){if(action.key!==e.keyCode){let keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}forcePlugin(plugin){this.forcedPlugin=plugin;}unforcePlugin(){this.forcedPlugin=false;}_pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
 	for(var i in this.plugins){if(this.plugins[i]&&this.plugins[i][funcName]){this.plugins[i][funcName].apply(this.plugins[i],args);}}}_pluginExecute(which,func,args){//Array.prototype.splice.apply( args, [ 0, 0, this ] );
 	if(!which){return;}if(this.plugins[which]&&this.plugins[which][func]){this.plugins[which][func].apply(this.plugins[which],args);}}pluginYieldActiveState(){this.activePlugin=false;}_serieExecute(which,func,args){if(typeof serie!=='object'){serie=this.getSerie(serie);}if(typeof serie[func]=='function'){serie.apply(serie,args);}}_pluginsInit(){var constructor,pluginName,pluginOptions;for(var i in this.options.plugins){pluginName=i;pluginOptions=this.options.plugins[i];constructor=this.getConstructor("graph.plugin."+pluginName);if(constructor){var options=util.extend(true,{},constructor.defaults(),pluginOptions);this.plugins[pluginName]=new constructor(options);util.mapEventEmission(this.plugins[pluginName].options,this.plugins[pluginName]);this.plugins[pluginName].init(this,pluginOptions);}else{util.throwError("Plugin \""+pluginName+"\" has not been registered");}}}/**
 	   * Returns an initialized plugin
@@ -15879,7 +15879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.group) {
 
-	        if (this._dom) {
+	        if (this._dom && !this.isHTML()) {
 	          this.group.appendChild(this._dom);
 	        }
 
@@ -17690,6 +17690,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._forcedParentDom = dom;
 
 	      return this;
+	    }
+
+	    isHTML() {
+	      return false;
 	    }
 	  }
 
@@ -19624,9 +19628,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    createDom() {
 
-	      this._dom = document.createElementNS(this.graph.ns, 'foreignObject');
+	      this._dom = document.createElement("div");
 	      //  this._dom.setAttribute( "requiredExtensions", "http://www.w3.org/1999/xhtml" );
 
+	      this._dom.setAttribute('style', 'position: absolute');
 	      let div = document.createElement("div");
 	      this._dom.appendChild(div);
 	      this.div = div;
@@ -19673,16 +19678,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    applyPosition() {
 
-	      this.setDom("width", this.getProp("width"));
-	      this.setDom("height", this.getProp("height"));
 	      var position = this.calculatePosition(0);
 
 	      if (!position || !(0, _graph.isNumeric)(position.x) || !(0, _graph.isNumeric)(position.y)) {
 	        return;
 	      }
-
-	      this.setDom('x', position.x);
-	      this.setDom('y', position.y);
+	      this._dom.style.left = position.x;
+	      this._dom.style.top = position.y;
 
 	      this.currentPosX = position.x;
 	      this.currentPosY = position.y;
@@ -19695,46 +19697,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-
-	      if (this.isLocked()) {
-	        return;
-	      }
-
-	      var posToChange = this.getPosition(0);
-
-	      if (posToChange) {
-
-	        if (!this._data.vertical) {
-	          posToChange.deltaPosition('x', deltaX, this.getXAxis());
-	        }
-
-	        if (!this._data.horizontal) {
-	          posToChange.deltaPosition('y', deltaY, this.getYAxis());
-	        }
-	      }
-
-	      if (this.moving) {
-
-	        // If the pos2 is defined by a delta, no need to move them
-	        if (pos.x) {
-	          pos.deltaPosition('x', deltaX, this.getXAxis());
-	        }
-	        if (pos.y) {
-	          pos.deltaPosition('y', deltaY, this.getYAxis());
-	        }
-
-	        // If the pos2 is defined by a delta, no need to move them
-	        if (pos2.x) {
-	          pos2.deltaPosition('x', deltaX, this.getXAxis());
-	        }
-	        if (pos2.y) {
-	          pos2.deltaPosition('y', deltaY, this.getYAxis());
-	        }
-	      }
-
-	      this.redraw();
-	      this.changed();
-	      this.setHandles();
 
 	      return true;
 	    }
@@ -19752,6 +19714,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (isNaN(this.currentPos1x)) {
 	        return;
 	      }
+	    }
+
+	    isHTML() {
+	      return true;
 	    }
 	  }
 

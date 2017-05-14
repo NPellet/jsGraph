@@ -1581,9 +1581,19 @@ class Graph extends EventEmitter {
     this.shapes.splice( this.shapes.indexOf( shape ), 1 );
   }
   appendShapeToDom( shape ) {
+
+    if ( shape.isHTML() == "html" ) {
+      this._dom.appendChild( shape._dom );
+    }
+
     this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
   }
   removeShapeFromDom( shape ) {
+
+    if ( shape.isHTML() == "html" ) {
+      this._dom.removeChild( shape._dom );
+    }
+
     this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
   }
   appendSerieToDom( serie ) {

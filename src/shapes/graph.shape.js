@@ -62,7 +62,7 @@ class Shape extends EventEmitter {
 
     if ( this.group ) {
 
-      if ( this._dom ) {
+      if ( this._dom && !this.isHTML() ) {
         this.group.appendChild( this._dom );
       }
 
@@ -1899,6 +1899,10 @@ class Shape extends EventEmitter {
     this._forcedParentDom = dom;
 
     return this;
+  }
+
+  isHTML() {
+    return false;
   }
 }
 

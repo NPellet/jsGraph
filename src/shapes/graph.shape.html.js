@@ -21,9 +21,10 @@ class ShapeHTML extends GraphShape {
    */
   createDom() {
 
-    this._dom = document.createElementNS( this.graph.ns, 'foreignObject' );
+    this._dom = document.createElement( "div" );
     //  this._dom.setAttribute( "requiredExtensions", "http://www.w3.org/1999/xhtml" );
 
+    this._dom.setAttribute( 'style', 'position: absolute' );
     let div = document.createElement( "div" );
     this._dom.appendChild( div );
     this.div = div;
@@ -72,16 +73,13 @@ class ShapeHTML extends GraphShape {
    */
   applyPosition() {
 
-    this.setDom( "width", this.getProp( "width" ) );
-    this.setDom( "height", this.getProp( "height" ) );
     var position = this.calculatePosition( 0 );
 
     if ( !position || !isNumeric( position.x ) || !isNumeric( position.y ) ) {
       return;
     }
-
-    this.setDom( 'x', position.x );
-    this.setDom( 'y', position.y );
+    this._dom.style.left = position.x;
+    this._dom.style.top = position.y;
 
     this.currentPosX = position.x;
     this.currentPosY = position.y;
@@ -94,47 +92,6 @@ class ShapeHTML extends GraphShape {
    * @private
    */
   handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
-
-    if ( this.isLocked() ) {
-      return;
-    }
-
-    var posToChange = this.getPosition( 0 );
-
-    if ( posToChange ) {
-
-      if ( !this._data.vertical ) {
-        posToChange.deltaPosition( 'x', deltaX, this.getXAxis() );
-      }
-
-      if ( !this._data.horizontal ) {
-        posToChange.deltaPosition( 'y', deltaY, this.getYAxis() );
-      }
-    }
-
-    if ( this.moving ) {
-
-      // If the pos2 is defined by a delta, no need to move them
-      if ( pos.x ) {
-        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
-      }
-      if ( pos.y ) {
-        pos.deltaPosition( 'y', deltaY, this.getYAxis() );
-      }
-
-      // If the pos2 is defined by a delta, no need to move them
-      if ( pos2.x ) {
-        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
-      }
-      if ( pos2.y ) {
-        pos2.deltaPosition( 'y', deltaY, this.getYAxis() );
-      }
-
-    }
-
-    this.redraw();
-    this.changed();
-    this.setHandles();
 
     return true;
   }
@@ -152,6 +109,10 @@ class ShapeHTML extends GraphShape {
     if ( isNaN( this.currentPos1x ) ) {
       return;
     }
+  }
+
+  isHTML() {
+    return true;
   }
 }
 
