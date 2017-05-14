@@ -242,8 +242,26 @@ class Waveform {
       this.xdata.append( null, x );
     }
 
-    this.data.push( y );
+    if ( this.monotoneous ) {
+      if ( y > this.data[ this.data.y ] && this.getMonotoneousAscending() === false ) {
+        this.monotoneous = false;
+      } else if ( y < this.data[ this.data.y ] && this.getMonotoneousAscending() === true ) {
+        this.monotoneous = false;
+      }
+    }
 
+    if ( this.data.length == 1 || this._monotoneousAscending === undefined ) {
+
+      this.monotoneous = true;
+
+      if ( y == this.data[ 0 ] ) {
+        this._monotoneousAscending = undefined;
+      } else {
+        this._monotoneousAscending = y > this.data[ 0 ];
+      }
+    }
+
+    this.data.push( y );
     this.recalculateMinMaxNewPoint( x, y );
 
     return this;
@@ -949,7 +967,7 @@ function pow2floor( v ) {
 }
 
 function binarySearch( target, haystack, reverse ) {
-
+  console.log( target );
   let seedA = 0,
     length = haystack.length,
     seedB = ( length - 1 ),
