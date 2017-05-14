@@ -181,7 +181,7 @@ class AxisX extends Axis {
       this.expTspanExp.style.dominantBaseline = 'hanging';
 
       this.unitTspan.style.dominantBaseline = 'hanging';
-      this.preunitTspan.style.dominantBaseline = 'hanging';
+      //  this.preunitTspan.style.dominantBaseline = 'hanging';
 
     }
 

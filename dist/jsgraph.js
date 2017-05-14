@@ -12945,7 +12945,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.expTspanExp.style.dominantBaseline = 'hanging';
 
 	        this.unitTspan.style.dominantBaseline = 'hanging';
-	        this.preunitTspan.style.dominantBaseline = 'hanging';
+	        //  this.preunitTspan.style.dominantBaseline = 'hanging';
 	      }
 
 	      var span = this.getSpan();
