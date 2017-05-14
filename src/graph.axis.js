@@ -1164,7 +1164,7 @@ class Axis extends EventEmitter {
 
       this.expTspan.setAttribute( 'display', 'none' );
       this.expTspanExp.setAttribute( 'display', 'none' );
-      this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.preunit + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
+      this.unitTspan.innerHTML = ( this.options.unitWrapperBefore + this.preunit + this.options.unit + this.options.unitWrapperAfter ).replace( /\^([-+0-9]*)(.*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>" );
 
     } else {
       this.unitTspan.setAttribute( 'display', 'none' );

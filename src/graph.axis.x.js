@@ -128,6 +128,10 @@ class AxisX extends Axis {
   drawLabel() {
     // Place label correctly
 
+    if ( this.getLabelColor() !== 'black' ) {
+      this.label.setAttribute( 'fill', this.getLabelColor() );
+    }
+
     if ( this.katexElement ) {
 
       this.label.setAttribute( 'style', 'display: none;' );
