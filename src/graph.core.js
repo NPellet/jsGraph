@@ -1584,8 +1584,8 @@ class Graph extends EventEmitter {
   }
   appendShapeToDom( shape ) {
 
-    if ( shape.isHTML() == "html" ) {
-      this._dom.appendChild( shape._dom );
+    if ( shape.isHTML() ) {
+      this._dom.insertBefore( shape._dom, this.dom );
     }
 
     this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
