@@ -78,8 +78,8 @@ class ShapeHTML extends GraphShape {
     if ( !position || !isNumeric( position.x ) || !isNumeric( position.y ) ) {
       return;
     }
-    this._dom.style.left = position.x;
-    this._dom.style.top = position.y;
+    this._dom.style.left = position.x + "px";
+    this._dom.style.top = position.y + "px";
 
     this.currentPosX = position.x;
     this.currentPosY = position.y;

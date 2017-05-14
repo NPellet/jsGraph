@@ -109,6 +109,8 @@ class Graph extends EventEmitter {
     wrapper.style[ '-ms-user-select' ] = 'none';
     wrapper.style[ 'user-select' ] = 'none';
 
+    wrapper.style.position = 'relative';
+
     /**
      * @object
      * @memberof Graph
@@ -1590,7 +1592,7 @@ class Graph extends EventEmitter {
   }
   removeShapeFromDom( shape ) {
 
-    if ( shape.isHTML() == "html" ) {
+    if ( shape.isHTML() ) {
       this._dom.removeChild( shape._dom );
     }
 
