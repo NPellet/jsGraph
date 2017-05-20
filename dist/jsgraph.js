@@ -25483,7 +25483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'hide',
 	    value: function hide() {
-
+	      console.log('hiding', this.hidden, this.group, this._dom);
 	      if (this.hidden) {
 	        return;
 	      }
@@ -25505,14 +25505,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'show',
 	    value: function show() {
-
+	      console.log('showing', this.hidden, this.group, this._dom);
 	      if (!this.hidden) {
 	        return;
 	      }
 
 	      this.hidden = false;
 	      if (this.group) {
-	        this._dom.style.display = 'initial';
+	        this.group.style.display = 'initial';
 	      } else {
 	        this._dom.style.display = 'initial';
 	      }
