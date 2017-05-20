@@ -43,6 +43,8 @@ const GraphOptionsDefault = {
     bottom: true
   },
 
+  closeColor: 'black',
+
   fontSize: 12,
   fontFamily: 'Myriad Pro, Helvetica, Arial',
 
@@ -1701,7 +1703,7 @@ class Graph extends EventEmitter {
       l = 4;
     for ( ; i < l; i++ ) {
       var line = document.createElementNS( Graph.ns, 'line' );
-      line.setAttribute( 'stroke', 'black' );
+      line.setAttribute( 'stroke', this.options.closeColor );
       line.setAttribute( 'shape-rendering', 'crispEdges' );
       line.setAttribute( 'stroke-linecap', 'square' );
       line.setAttribute( 'display', 'none' );
