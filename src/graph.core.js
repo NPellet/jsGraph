@@ -89,7 +89,7 @@ class Graph extends EventEmitter {
     */
     this._creation = util.guid();
 
-    if ( wrapper === Object( wrapper ) ) { // Wrapper is options
+    if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) { // Wrapper is options
       axis = options;
       options = wrapper;
       wrapper = null;
@@ -1621,7 +1621,7 @@ class Graph extends EventEmitter {
   appendShapeToDom( shape ) {
 
     if ( shape.isHTML() ) {
-      this.wrapper.insertBefore( shape.wrapper, this.dom );
+      this.wrapper.insertBefore( shape._dom, this.dom );
     }
 
     this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
@@ -1629,7 +1629,7 @@ class Graph extends EventEmitter {
   removeShapeFromDom( shape ) {
 
     if ( shape.isHTML() ) {
-      this.wrapper.removeChild( shape.wrapper );
+      this.wrapper.removeChild( shape._dom );
     }
 
     this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
