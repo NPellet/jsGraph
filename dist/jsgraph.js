@@ -8457,7 +8457,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @tutorial basic
 	 */var Graph=function(_EventEmitter){_inherits(Graph,_EventEmitter);/**
 	   * Graph constructor
-	   * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+	   * @param {(HTMLElement|String)} [ wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
 	   * @param {GraphOptions} [ options ] - The options of the graph
 	   * @param {Object} [ axis ] - The list of axes
 	   * @param {Array} axis.left - The list of left axes
@@ -8470,7 +8470,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      The unique ID of the graph
 	      @name Graph#uniqueid
 	      @type String
-	    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';/**
+	    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();if((typeof wrapper==='undefined'?'undefined':_typeof(wrapper))=="object"){// Wrapper is options
+	axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}/**
 	     * @object
 	     * @memberof Graph
 	     * @name Graph#options
@@ -8478,13 +8479,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @default {@link GraphOptionsDefault}
 	     * Access directly the options of the graph using this public object.
 	     * @example graph.options.mouseActions.push( {  } );
-	     */_this.options=util.extend({},GraphOptionsDefault,options);_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.ns='http://www.w3.org/2000/svg';_this.nsxlink="http://www.w3.org/1999/xlink";_this.series=[];_this._dom=wrapper;_this._axesHaveChanged=true;if(_this.options.hasOwnProperty('padding')&&util.isNumeric(_this.options.padding)){_this.options.paddingTop=_this.options.paddingBottom=_this.options.paddingLeft=_this.options.paddingRight=_this.options.padding;}// DOM
-	var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);_this._doDom();_this.setSize(w,h);_this._resize();_registerEvents(_this);_this.currentAction=false;// Load all axes
-	if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':_this.getTopAxis(j,axis[i][j]);break;case'bottom':_this.getBottomAxis(j,axis[i][j]);break;case'left':_this.getLeftAxis(j,axis[i][j]);break;case'right':_this.getRightAxis(j,axis[i][j]);break;}}}}_this._pluginsInit();return _this;}/**
+	     */_this.options=util.extend({},GraphOptionsDefault,options);// Options declaration must be placed before the doDom operation
+	// doDom is a private method. We bind it to this thanks to ES6 features
+	doDom.bind(_this)();if(wrapper){_this.setWrapper(wrapper);}console.log(options);_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.series=[];//this._dom = wrapper;
+	_this._axesHaveChanged=true;if(_this.options.hasOwnProperty('padding')&&util.isNumeric(_this.options.padding)){_this.options.paddingTop=_this.options.paddingBottom=_this.options.paddingLeft=_this.options.paddingRight=_this.options.padding;}_this.currentAction=false;_this.ns=Graph.ns;_this.nsxlink=Graph.nsxlink;// Load all axes
+	if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':_this.getTopAxis(j,axis[i][j]);break;case'bottom':_this.getBottomAxis(j,axis[i][j]);break;case'left':_this.getLeftAxis(j,axis[i][j]);break;case'right':_this.getRightAxis(j,axis[i][j]);break;}}}}_this._pluginsInit();return _this;}_createClass(Graph,[{key:'setWrapper',value:function setWrapper(wrapper){if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';wrapper.style.outline="none";wrapper.setAttribute('tabindex',1);this.wrapper=wrapper;// DOM
+	if(!this.height||!this.width){var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);this.setSize(w,h);this._resize();}wrapper.appendChild(this.dom);_registerEvents(this);}/**
 	   * Returns the graph SVG wrapper element
 	   * @public
 	   * @return {SVGElement} The DOM element wrapping the graph
-	   */_createClass(Graph,[{key:'getDom',value:function getDom(){return this.dom;}/**
+	   */},{key:'getDom',value:function getDom(){return this.dom;}/**
 	   * Returns the unique id representing the graph
 	   * @public
 	   * @return {String} The unique ID of the graph
@@ -8492,7 +8496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Returns the graph wrapper element passed during the graph creation
 	   * @public
 	   * @return {HTMLElement} The DOM element wrapping the graph
-	   */},{key:'getWrapper',value:function getWrapper(){return this._dom;}/**
+	   */},{key:'getWrapper',value:function getWrapper(){return this.wrapper;}/**
 	   * Sets an option of the graph
 	   * @param {String} name - Option name
 	   * @param value - New option value
@@ -8503,7 +8507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   *  Shows the title of the graph
 	   */},{key:'displayTitle',value:function displayTitle(){this.domTitle.setAttribute('display','inline');}/**
 	   *  Hides the title of the graph
-	   */},{key:'hideTitle',value:function hideTitle(){this.domTitle.setAttribute('display','none');}/**
+	   */},{key:'hideTitle',value:function hideTitle(){this.domTitle.setAttribute('display','none');}},{key:'hide',value:function hide(){if(this.dom.style.display!=="none"){this.dom.style.display="none";}}},{key:'show',value:function show(){if(this.dom.style.display=="none"){this.dom.style.display="initial";}}/**
 	   * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
 	   * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
 	   * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
@@ -8588,7 +8592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
 	   * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
 	   * @see Graph#uncacheOffset
-	   */},{key:'cacheOffset',value:function cacheOffset(){this.offsetCached=util.getOffset(this._dom);}/**
+	   */},{key:'cacheOffset',value:function cacheOffset(){this.offsetCached=util.getOffset(this.wrapper);}/**
 	   * Un-caches the wrapper offset value
 	   * @see Graph#cacheOffset
 	   */},{key:'uncacheOffset',value:function uncacheOffset(){this.offsetCached=false;}/**
@@ -8834,7 +8838,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Unselects all shapes
 	   * @param {Boolean} [ mute = false ] - Mutes all unselection events
 	   * @return {Graph} The current graph instance
-	   */},{key:'unselectShapes',value:function unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}},{key:'_removeShape',value:function _removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}},{key:'appendShapeToDom',value:function appendShapeToDom(shape){if(shape.isHTML()){this._dom.insertBefore(shape._dom,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}},{key:'removeShapeFromDom',value:function removeShapeFromDom(shape){if(shape.isHTML()){this._dom.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}},{key:'appendSerieToDom',value:function appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}},{key:'removeSerieFromDom',value:function removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}},{key:'getLayer',value:function getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(this.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(this.ns,'g');this.layers[layer][2]=document.createElementNS(this.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}},{key:'focus',value:function focus(){this._dom.focus();}},{key:'elementMoving',value:function elementMoving(movingElement){this.bypassHandleMouse=movingElement;}},{key:'stopElementMoving',value:function stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}},{key:'_makeClosingLines',value:function _makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(this.ns,'line');line.setAttribute('stroke','black');line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}},{key:'isActionAllowed',value:function isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.key){if(action.key!==e.keyCode){var keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}},{key:'forcePlugin',value:function forcePlugin(plugin){this.forcedPlugin=plugin;}},{key:'unforcePlugin',value:function unforcePlugin(){this.forcedPlugin=false;}},{key:'_pluginsExecute',value:function _pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
+	   */},{key:'unselectShapes',value:function unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}},{key:'_removeShape',value:function _removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}},{key:'appendShapeToDom',value:function appendShapeToDom(shape){if(shape.isHTML()){this.wrapper.insertBefore(shape.wrapper,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}},{key:'removeShapeFromDom',value:function removeShapeFromDom(shape){if(shape.isHTML()){this.wrapper.removeChild(shape.wrapper);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}},{key:'appendSerieToDom',value:function appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}},{key:'removeSerieFromDom',value:function removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}},{key:'getLayer',value:function getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(Graph.ns,'g');this.layers[layer][2]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}},{key:'focus',value:function focus(){this.wrapper.focus();}},{key:'elementMoving',value:function elementMoving(movingElement){this.bypassHandleMouse=movingElement;}},{key:'stopElementMoving',value:function stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}},{key:'_makeClosingLines',value:function _makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(Graph.ns,'line');line.setAttribute('stroke','black');line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}},{key:'isActionAllowed',value:function isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.key){if(action.key!==e.keyCode){var keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}},{key:'forcePlugin',value:function forcePlugin(plugin){this.forcedPlugin=plugin;}},{key:'unforcePlugin',value:function unforcePlugin(){this.forcedPlugin=false;}},{key:'_pluginsExecute',value:function _pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
 	for(var i in this.plugins){if(this.plugins[i]&&this.plugins[i][funcName]){this.plugins[i][funcName].apply(this.plugins[i],args);}}}},{key:'_pluginExecute',value:function _pluginExecute(which,func,args){//Array.prototype.splice.apply( args, [ 0, 0, this ] );
 	if(!which){return;}if(this.plugins[which]&&this.plugins[which][func]){this.plugins[which][func].apply(this.plugins[which],args);}}},{key:'pluginYieldActiveState',value:function pluginYieldActiveState(){this.activePlugin=false;}},{key:'_serieExecute',value:function _serieExecute(which,func,args){if((typeof serie==='undefined'?'undefined':_typeof(serie))!=='object'){serie=this.getSerie(serie);}if(typeof serie[func]=='function'){serie.apply(serie,args);}}},{key:'_pluginsInit',value:function _pluginsInit(){var constructor,pluginName,pluginOptions;for(var i in this.options.plugins){pluginName=i;pluginOptions=this.options.plugins[i];constructor=this.getConstructor("graph.plugin."+pluginName);if(constructor){var options=util.extend(true,{},constructor.defaults(),pluginOptions);this.plugins[pluginName]=new constructor(options);util.mapEventEmission(this.plugins[pluginName].options,this.plugins[pluginName]);this.plugins[pluginName].init(this,pluginOptions);}else{util.throwError("Plugin \""+pluginName+"\" has not been registered");}}}/**
 	   * Returns an initialized plugin
@@ -8850,39 +8854,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {Graph} The graph instance
 	   */},{key:'updateLegend',value:function updateLegend(){var onlyIfRequired=arguments.length>0&&arguments[0]!==undefined?arguments[0]:false;if(!this.legend){return;}this.legend.update(onlyIfRequired);return this;}/**
 	   * @returns {Legend} The legend item
-	   */},{key:'getLegend',value:function getLegend(){if(!this.legend){return;}return this.legend;}},{key:'requireLegendUpdate',value:function requireLegendUpdate(){if(!this.legend){return;}this.legend.requireDelayedUpdate();}},{key:'orthogonalProjectionSetup',value:function orthogonalProjectionSetup(options){this.options.zAxis=util.extend(true,{maxZ:10,minZ:0,shiftX:-25,shiftY:-15,xAxis:this.getXAxis(),yAxis:this.getYAxis()});}},{key:'orthogonalProjectionUpdate',value:function orthogonalProjectionUpdate(){var _this2=this;if(!this.zAxis){this.zAxis={g:document.createElementNS(this.ns,"g"),l:document.createElementNS(this.ns,"line")};this.zAxis.g.appendChild(this.zAxis.l);this.groupGrids.appendChild(this.zAxis.g);}var refAxisX=this.options.zAxis.xAxis;var refAxisY=this.options.zAxis.yAxis;var x0=refAxisX.getMinPx();var y0=refAxisY.getMinPx();var dx=refAxisX.getZProj(this.options.zAxis.maxZ);var dy=refAxisY.getZProj(this.options.zAxis.maxZ);this.zAxis.l.setAttribute('stroke','black');this.zAxis.l.setAttribute('x1',x0);this.zAxis.l.setAttribute('x2',x0+dx);this.zAxis.l.setAttribute('y1',y0);this.zAxis.l.setAttribute('y2',y0+dy);this.updateDataMinMaxAxes(true);var sort=this.series.map(function(serie){return[serie.getZPos(),serie];});sort.sort(function(sa,sb){return sb[0]-sa[0];});var i=0;sort.forEach(function(s){s[1].setLayer(i);_this2.appendSerieToDom(s[1]);i++;});this.drawSeries(true);}/**
+	   */},{key:'getLegend',value:function getLegend(){if(!this.legend){return;}return this.legend;}},{key:'requireLegendUpdate',value:function requireLegendUpdate(){if(!this.legend){return;}this.legend.requireDelayedUpdate();}},{key:'orthogonalProjectionSetup',value:function orthogonalProjectionSetup(options){this.options.zAxis=util.extend(true,{maxZ:10,minZ:0,shiftX:-25,shiftY:-15,xAxis:this.getXAxis(),yAxis:this.getYAxis()});}},{key:'orthogonalProjectionUpdate',value:function orthogonalProjectionUpdate(){var _this2=this;if(!this.zAxis){this.zAxis={g:document.createElementNS(Graph.ns,"g"),l:document.createElementNS(Graph.ns,"line")};this.zAxis.g.appendChild(this.zAxis.l);this.groupGrids.appendChild(this.zAxis.g);}var refAxisX=this.options.zAxis.xAxis;var refAxisY=this.options.zAxis.yAxis;var x0=refAxisX.getMinPx();var y0=refAxisY.getMinPx();var dx=refAxisX.getZProj(this.options.zAxis.maxZ);var dy=refAxisY.getZProj(this.options.zAxis.maxZ);this.zAxis.l.setAttribute('stroke','black');this.zAxis.l.setAttribute('x1',x0);this.zAxis.l.setAttribute('x2',x0+dx);this.zAxis.l.setAttribute('y1',y0);this.zAxis.l.setAttribute('y2',y0+dy);this.updateDataMinMaxAxes(true);var sort=this.series.map(function(serie){return[serie.getZPos(),serie];});sort.sort(function(sa,sb){return sb[0]-sa[0];});var i=0;sort.forEach(function(s){s[1].setLayer(i);_this2.appendSerieToDom(s[1]);i++;});this.drawSeries(true);}/**
 	   * Kills the graph
-	   **/},{key:'kill',value:function kill(){this._dom.removeChild(this.dom);}},{key:'_removeSerie',value:function _removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}},{key:'contextListen',value:function contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}},{key:'lockShapes',value:function lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
+	   **/},{key:'kill',value:function kill(){this.wrapper.removeChild(this.dom);}},{key:'_removeSerie',value:function _removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}},{key:'contextListen',value:function contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}},{key:'lockShapes',value:function lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
 	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
-	this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this._dom);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this.requireLegendUpdate();this.draw(true);}},{key:'_doDom',value:function _doDom(){// Create SVG element, set the NS
-	this.dom=document.createElementNS(this.ns,'svg');this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
-	util.setAttributeTo(this.dom,{'xmlns':this.ns,'font-family':this.options.fontFamily,'font-size':this.options.fontSize});this._dom.appendChild(this.dom);this._dom.setAttribute('tabindex',1);this._dom.style.outline="none";this.defs=document.createElementNS(this.ns,'defs');this.dom.appendChild(this.defs);this.groupEvent=document.createElementNS(this.ns,'g');this.rectEvent=document.createElementNS(this.ns,'rect');util.setAttributeTo(this.rectEvent,{'pointer-events':'fill','fill':'transparent'});this.groupEvent.appendChild(this.rectEvent);this.dom.appendChild(this.groupEvent);// Handling graph title
-	this.domTitle=document.createElementNS(this.ns,'text');this.setTitle(this.options.title);util.setAttributeTo(this.domTitle,{'text-anchor':'middle','y':20});this.groupEvent.appendChild(this.domTitle);//
-	this.graphingZone=document.createElementNS(this.ns,'g');this.updateGraphingZone();this.groupEvent.appendChild(this.graphingZone);/*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-	    //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-	    this.shapeZoneRect.setAttribute('fill', 'transparent');
-	    this.shapeZone.appendChild(this.shapeZoneRect);
-	  */this.axisGroup=document.createElementNS(this.ns,'g');this.graphingZone.appendChild(this.axisGroup);this.groupGrids=document.createElementNS(this.ns,'g');// With the z stacking, this should probably be removed
-	//this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-	this.groupPrimaryGrids=document.createElementNS(this.ns,'g');this.groupSecondaryGrids=document.createElementNS(this.ns,'g');this.axisGroup.appendChild(this.groupGrids);this.groupGrids.appendChild(this.groupSecondaryGrids);this.groupGrids.appendChild(this.groupPrimaryGrids);this.plotGroup=document.createElementNS(this.ns,'g');this.graphingZone.appendChild(this.plotGroup);// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-	/*this.shapeZone = document.createElementNS( this.ns, 'g' );
-	    this.graphingZone.appendChild( this.shapeZone );
-	*/this.layers=[];this._makeClosingLines();this.clip=document.createElementNS(this.ns,'clipPath');this.clip.setAttribute('id','_clipplot'+this._creation);this.defs.appendChild(this.clip);this.clipRect=document.createElementNS(this.ns,'rect');this.clip.appendChild(this.clipRect);this.clip.setAttribute('clipPathUnits','userSpaceOnUse');this.markerArrow=document.createElementNS(this.ns,'marker');this.markerArrow.setAttribute('viewBox','0 0 10 10');this.markerArrow.setAttribute('id','arrow'+this._creation);this.markerArrow.setAttribute('refX','6');this.markerArrow.setAttribute('refY','5');this.markerArrow.setAttribute('markerUnits','strokeWidth');this.markerArrow.setAttribute('markerWidth','8');this.markerArrow.setAttribute('markerHeight','6');this.markerArrow.setAttribute('orient','auto');//this.markerArrow.setAttribute('fill', 'context-stroke');
-	//this.markerArrow.setAttribute('stroke', 'context-stroke');
-	var pathArrow=document.createElementNS(this.ns,'path');pathArrow.setAttribute('d','M 0 0 L 10 5 L 0 10 z');//pathArrow.setAttribute( 'fill', 'context-stroke' );
-	this.markerArrow.appendChild(pathArrow);this.defs.appendChild(this.markerArrow);// Horionzal split marker for axis
-	this.markerHorizontalSplit=document.createElementNS(this.ns,'marker');this.markerHorizontalSplit.setAttribute('viewBox','0 0 6 8');this.markerHorizontalSplit.setAttribute('id','horionzalsplit_'+this.getId());this.markerHorizontalSplit.setAttribute('refX','3');this.markerHorizontalSplit.setAttribute('refY','4');this.markerHorizontalSplit.setAttribute('markerUnits','strokeWidth');this.markerHorizontalSplit.setAttribute('markerWidth','6');this.markerHorizontalSplit.setAttribute('markerHeight','8');var path=document.createElementNS(this.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','8');path.setAttribute('x2','6');path.setAttribute('y2','0');path.setAttribute('stroke','black');this.markerHorizontalSplit.appendChild(path);this.defs.appendChild(this.markerHorizontalSplit);// Vertical split marker for axis
-	this.markerVerticalSplit=document.createElementNS(this.ns,'marker');this.markerVerticalSplit.setAttribute('viewBox','0 0 8 6');this.markerVerticalSplit.setAttribute('id','verticalsplit_'+this.getId());this.markerVerticalSplit.setAttribute('refX','4');this.markerVerticalSplit.setAttribute('refY','3');this.markerVerticalSplit.setAttribute('markerUnits','strokeWidth');this.markerVerticalSplit.setAttribute('markerWidth','8');this.markerVerticalSplit.setAttribute('markerHeight','6');var path=document.createElementNS(this.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','0');path.setAttribute('x2','8');path.setAttribute('y2','6');path.setAttribute('stroke','black');this.markerVerticalSplit.appendChild(path);this.defs.appendChild(this.markerVerticalSplit);this.vertLineArrow=document.createElementNS(this.ns,'marker');this.vertLineArrow.setAttribute('viewBox','0 0 10 10');this.vertLineArrow.setAttribute('id','verticalline'+this._creation);this.vertLineArrow.setAttribute('refX','0');this.vertLineArrow.setAttribute('refY','5');this.vertLineArrow.setAttribute('markerUnits','strokeWidth');this.vertLineArrow.setAttribute('markerWidth','20');this.vertLineArrow.setAttribute('markerHeight','10');this.vertLineArrow.setAttribute('orient','auto');//this.vertLineArrow.setAttribute('fill', 'context-stroke');
-	//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-	this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.createElementNS(this.ns,'path');pathVertLine.setAttribute('d','M 0 -10 L 0 10');pathVertLine.setAttribute('stroke','black');this.vertLineArrow.appendChild(pathVertLine);this.defs.appendChild(this.vertLineArrow);// Removed with z stacking ?
-	//    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-	this.bypassHandleMouse=false;}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
+	this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this.requireLegendUpdate();this.draw(true);}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 	},{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}},{key:'trackingLine',value:function trackingLine(options){var self=this;if(options){this.options.trackingLine=options;}// Individual tracking
 	if(options.mode=="individual"){if(options.series){options.series.map(function(sOptions){if(_typeof(sOptions.serie)!=="object"){sOptions.serie=this.getSerie(sOptions.serie);}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}this.trackingLine=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));this.trackingLine.draw();return this.trackingLine;}},{key:'addSerieToTrackingLine',value:function addSerieToTrackingLine(serie,options){var self=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}serie.enableTracking(function(serie,index,x,y){if(index){self.trackingLine.show();var closestIndex=index.xIndexClosest;self.trackingLine.getPosition(0).x=serie.getData()[0][index.closestIndex*2];self.trackingLine.getPosition(1).x=serie.getData()[0][index.closestIndex*2];self.trackingLine.redraw();serie._trackingLegend=_trackingLegendSerie(self,{serie:serie},x,y,serie._trackingLegend,options.textMethod?options.textMethod:function(output){for(var i in output){return output[i].serie.serie.getName()+": "+output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);break;}},self.trackingLine.getPosition(0).x);serie._trackingLegend.style.display="block";}},function(serie){self.trackingLine.hide();if(serie.trackingShape){serie.trackingShape.hide();}if(serie._trackingLegend){serie._trackingLegend.style.display="none";}serie._trackingLegend=_trackingLegendSerie(self,{serie:serie},false,false,serie._trackingLegend,false,false);});}/**
 	   *  Pass here the katex.render method to be used later
 	   *   @param {Function} renderer -  katexRendered - renderer
 	   *   @return {Graph} The current graph instance
-	   */},{key:'setKatexRenderer',value:function setKatexRenderer(renderer){this._katexRenderer=renderer;}},{key:'hasKatexRenderer',value:function hasKatexRenderer(){return!!this._katexRenderer;}},{key:'renderWithKatex',value:function renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(this.ns,'foreignObject');}var div=document.createElement("div");katexElement.appendChild(div);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
+	   */},{key:'setKatexRenderer',value:function setKatexRenderer(renderer){this._katexRenderer=renderer;}},{key:'hasKatexRenderer',value:function hasKatexRenderer(){return!!this._katexRenderer;}},{key:'renderWithKatex',value:function renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(Graph.ns,'foreignObject');}var div=document.createElement("div");katexElement.appendChild(div);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
 	   * Returns a graph created from a schema
 	   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
 	   * @param {HTMLElement} wrapper - The wrapping element
@@ -8898,11 +8880,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}if(schema.axis){serieAxis=schema.axis[schemaSerie.xAxis];if(!serieAxis||serieAxis.type!=='top'&&serieAxis.type!=='bottom'){util.warn("No x axis found. Setting automatically");serie.setXAxis(graph.getXAxis(0));}else{if(serieAxis.type=='top'){serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='bottom'){serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));}}serieAxis=schema.axis[schemaSerie.yAxis];if(!serieAxis||serieAxis.type!=='left'&&serieAxis.type!=='right'){util.warn("No y axis found. Setting automatically");serie.setYAxis(graph.getYAxis(0));}else{if(serieAxis.type=='left'){serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='right'){serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));}}}else{util.warn("No axes found. Setting automatically");serie.autoAxis();}switch(serieType){case Graph.SERIE_BOX:serie.setData(schemaSerie.boxes);break;default:case Graph.SERIE_SCATTER:case Graph.SERIE_LINE:serie.setData([{x:schemaSerie.x,y:schemaSerie.y}]);break;}});}graph.autoscaleAxes();graph.draw();return graph;}},{key:'registerConstructor',value:function registerConstructor(constructorName,constructor){if(_constructors.has(constructorName)){return util.throwError("Constructor "+constructor+" already exists.");}_constructors.set(constructorName,constructor);}/**
 	   * Returns a registered constructor
 	   * @param {String} constructorName - The constructor name to look for
+	   * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
 	   * @returns {Function} The registered constructor
 	   * @throws Error
 	   * @see Graph.registerConstructor
 	   * @static
-	   */},{key:'getConstructor',value:function getConstructor(constructorName,softFail){if(!_constructors.has(constructorName)){if(softFail){return false;}return util.throwError("Constructor \""+constructorName+"\" doesn't exist");}return _constructors.get(constructorName);}},{key:'newWaveform',value:function newWaveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}},{key:'waveform',value:function waveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}}]);return Graph;}(_EventEmitter3.default);// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+	   */},{key:'getConstructor',value:function getConstructor(constructorName){var softFail=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;if(!_constructors.has(constructorName)){if(softFail){return false;}return util.throwError("Constructor \""+constructorName+"\" doesn't exist");}return _constructors.get(constructorName);}},{key:'newWaveform',value:function newWaveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}},{key:'waveform',value:function waveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}}]);return Graph;}(_EventEmitter3.default);// Adds getConstructor to the prototype. Cannot do that in ES6 classes
 	Graph.prototype.getConstructor=Graph.getConstructor;function makeSerie(graph,name,options,type){var constructor=graph.getConstructor(type,true);if(!constructor&&typeof type=="string"){constructor=graph.getConstructor("graph.serie."+type,true);}if(constructor){var serie=new constructor(graph,name,options);//serie.init( graph, name, options );
 	graph.appendSerieToDom(serie);}else{return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");}return serie;};function getAxisLevelFromSpan(span,level){for(var i=0,l=level.length;i<l;i++){var possible=true;for(var k=0,m=level[i].length;k<m;k++){if(!(span[0]<level[i][k][0]&&span[1]<level[i][k][0]||span[0]>level[i][k][1]&&span[1]>level[i][k][1])){possible=false;}}if(possible){level[i].push(span);return i;}}level.push([span]);return level.length-1;}function refreshDrawingZone(graph){var i,j,l,xy,min,max,axis;var shift={top:[],bottom:[],left:[],right:[]};var levels={top:[],bottom:[],left:[],right:[]};graph._painted=true;// Apply to top and bottom
 	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(axis.getAxisPosition(),shift[position][level]||0);},false,true,false);var shiftTop=shift.top.reduce(function(prev,curr){return prev+curr;},0);var shiftBottom=shift.bottom.reduce(function(prev,curr){return prev+curr;},0);[shift.top,shift.bottom].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to top and bottom
@@ -8947,7 +8930,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	        graph._serieExecute( series[  i ], methodName, parameters );
 	      }
 	      return true;
-	    }*/}return false;};function _registerEvents(graph){var self=graph;graph._dom.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph._dom.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph._dom.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
+	    }*/}return false;};function doDom(){// Create SVG element, set the NS
+	this.dom=document.createElementNS(Graph.ns,'svg');this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
+	util.setAttributeTo(this.dom,{'xmlns':Graph.ns,'font-family':this.options.fontFamily,'font-size':this.options.fontSize});this.defs=document.createElementNS(Graph.ns,'defs');this.dom.appendChild(this.defs);this.groupEvent=document.createElementNS(Graph.ns,'g');this.rectEvent=document.createElementNS(Graph.ns,'rect');util.setAttributeTo(this.rectEvent,{'pointer-events':'fill','fill':'transparent'});this.groupEvent.appendChild(this.rectEvent);this.dom.appendChild(this.groupEvent);// Handling graph title
+	this.domTitle=document.createElementNS(Graph.ns,'text');this.setTitle(this.options.title);util.setAttributeTo(this.domTitle,{'text-anchor':'middle','y':20});this.groupEvent.appendChild(this.domTitle);//
+	this.graphingZone=document.createElementNS(Graph.ns,'g');this.updateGraphingZone();this.groupEvent.appendChild(this.graphingZone);/*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+	  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+	  this.shapeZoneRect.setAttribute('fill', 'transparent');
+	  this.shapeZone.appendChild(this.shapeZoneRect);
+	*/this.axisGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.axisGroup);this.groupGrids=document.createElementNS(Graph.ns,'g');// With the z stacking, this should probably be removed
+	//this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+	this.groupPrimaryGrids=document.createElementNS(Graph.ns,'g');this.groupSecondaryGrids=document.createElementNS(Graph.ns,'g');this.axisGroup.appendChild(this.groupGrids);this.groupGrids.appendChild(this.groupSecondaryGrids);this.groupGrids.appendChild(this.groupPrimaryGrids);this.plotGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.plotGroup);// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+	/*this.shapeZone = document.createElementNS( this.ns, 'g' );
+	  this.graphingZone.appendChild( this.shapeZone );
+	*/this.layers=[];this._makeClosingLines();this.clip=document.createElementNS(Graph.ns,'clipPath');this.clip.setAttribute('id','_clipplot'+this._creation);this.defs.appendChild(this.clip);this.clipRect=document.createElementNS(Graph.ns,'rect');this.clip.appendChild(this.clipRect);this.clip.setAttribute('clipPathUnits','userSpaceOnUse');this.markerArrow=document.createElementNS(this.ns,'marker');this.markerArrow.setAttribute('viewBox','0 0 10 10');this.markerArrow.setAttribute('id','arrow'+this._creation);this.markerArrow.setAttribute('refX','6');this.markerArrow.setAttribute('refY','5');this.markerArrow.setAttribute('markerUnits','strokeWidth');this.markerArrow.setAttribute('markerWidth','8');this.markerArrow.setAttribute('markerHeight','6');this.markerArrow.setAttribute('orient','auto');//this.markerArrow.setAttribute('fill', 'context-stroke');
+	//this.markerArrow.setAttribute('stroke', 'context-stroke');
+	var pathArrow=document.createElementNS(Graph.ns,'path');pathArrow.setAttribute('d','M 0 0 L 10 5 L 0 10 z');//pathArrow.setAttribute( 'fill', 'context-stroke' );
+	this.markerArrow.appendChild(pathArrow);this.defs.appendChild(this.markerArrow);// Horionzal split marker for axis
+	this.markerHorizontalSplit=document.createElementNS(Graph.ns,'marker');this.markerHorizontalSplit.setAttribute('viewBox','0 0 6 8');this.markerHorizontalSplit.setAttribute('id','horionzalsplit_'+this.getId());this.markerHorizontalSplit.setAttribute('refX','3');this.markerHorizontalSplit.setAttribute('refY','4');this.markerHorizontalSplit.setAttribute('markerUnits','strokeWidth');this.markerHorizontalSplit.setAttribute('markerWidth','6');this.markerHorizontalSplit.setAttribute('markerHeight','8');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','8');path.setAttribute('x2','6');path.setAttribute('y2','0');path.setAttribute('stroke','black');this.markerHorizontalSplit.appendChild(path);this.defs.appendChild(this.markerHorizontalSplit);// Vertical split marker for axis
+	this.markerVerticalSplit=document.createElementNS(Graph.ns,'marker');this.markerVerticalSplit.setAttribute('viewBox','0 0 8 6');this.markerVerticalSplit.setAttribute('id','verticalsplit_'+this.getId());this.markerVerticalSplit.setAttribute('refX','4');this.markerVerticalSplit.setAttribute('refY','3');this.markerVerticalSplit.setAttribute('markerUnits','strokeWidth');this.markerVerticalSplit.setAttribute('markerWidth','8');this.markerVerticalSplit.setAttribute('markerHeight','6');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','0');path.setAttribute('x2','8');path.setAttribute('y2','6');path.setAttribute('stroke','black');this.markerVerticalSplit.appendChild(path);this.defs.appendChild(this.markerVerticalSplit);this.vertLineArrow=document.createElementNS(Graph.ns,'marker');this.vertLineArrow.setAttribute('viewBox','0 0 10 10');this.vertLineArrow.setAttribute('id','verticalline'+this._creation);this.vertLineArrow.setAttribute('refX','0');this.vertLineArrow.setAttribute('refY','5');this.vertLineArrow.setAttribute('markerUnits','strokeWidth');this.vertLineArrow.setAttribute('markerWidth','20');this.vertLineArrow.setAttribute('markerHeight','10');this.vertLineArrow.setAttribute('orient','auto');//this.vertLineArrow.setAttribute('fill', 'context-stroke');
+	//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+	this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.createElementNS(Graph.ns,'path');pathVertLine.setAttribute('d','M 0 -10 L 0 10');pathVertLine.setAttribute('stroke','black');this.vertLineArrow.appendChild(pathVertLine);this.defs.appendChild(this.vertLineArrow);// Removed with z stacking ?
+	//    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+	this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 	graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
 	var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
 	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
@@ -8980,7 +8985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 	      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
 	if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if((typeof num==='undefined'?'undefined':_typeof(num))=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
-	Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();exports.default=Graph;
+	Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();Graph.ns='http://www.w3.org/2000/svg';Graph.nsxlink="http://www.w3.org/1999/xlink";exports.default=Graph;
 
 /***/ },
 /* 300 */
@@ -10582,7 +10587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getDataInUse',
 	    value: function getDataInUse() {
-	      return this.dataInUse;
+	      return this.dataInUse || this.data;
 	    }
 	  }, {
 	    key: 'getIndexFromX',
@@ -11193,7 +11198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      }).then(function (event) {
 	        console.log(event);
-	        _this2._dataAggregated = event.data.aggregates;
+	        _this2._dataAggregated = event.aggregates;
 	      });
 	    }
 	  }, {
@@ -11283,7 +11288,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function binarySearch(target, haystack, reverse) {
-	  console.log(target);
+
 	  var seedA = 0,
 	      length = haystack.length,
 	      seedB = length - 1,
@@ -11972,7 +11977,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
 	        newAggregation[k + 3] = lastAggregation[i + 7];
 
-	        aggregationSum[k] = lastAggregationSum[i] + lastAggregationSum[i + 4];
+	        aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
 
 	        k += 4;
 	      }
@@ -11985,6 +11990,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      lastAggregation = newAggregation;
 	      lastAggregationX = newAggregationX;
+	      lastAggregationSum = aggregationSum;
+
 	      aggregationSum = [];
 	    }
 
@@ -25566,6 +25573,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.emit(event, this);
 	      }
 
+	      this.emit("shapeChanged", this);
 	      this.graph.emit('shapeChanged', this);
 	      return this;
 	    }
@@ -26774,8 +26782,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._selectStatus = true;
 
 	      this.applySelectedStyle();
-
+	      console.log('ds');
 	      if (this.hasHandles() && !this.hasStaticHandles()) {
+	        console.log('ds');
 	        this.addHandles();
 	        this.setHandles();
 	      }
@@ -27042,10 +27051,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'handleClick',
 	    value: function handleClick(e) {
 
-	      if (this.getProp('selectOnClick')) {
-	        this.graph.selectShape(this);
-	      }
-
 	      if (!this.isSelectable()) {
 	        return false;
 	      }
@@ -27054,7 +27059,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.unselectShapes();
 	      }
 
-	      this.graph.selectShape(this);
+	      if (this.getProp('selectOnClick')) {
+
+	        this.graph.selectShape(this);
+	      }
 	    }
 
 	    /**
@@ -28490,6 +28498,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var j = void 0;
 	      var waveform = this.serie.getWaveform();
+	      console.trace();
+	      if (!waveform) {
+	        return;
+	      }
 	      var index1 = waveform.getIndexFromX(pos1[axis], true);
 	      var index2 = waveform.getIndexFromX(pos2[axis], true);
 	      var firstX = void 0,
@@ -28500,7 +28512,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	          lastXVal = void 0,
 	          lastY = void 0,
 	          lastYVal = void 0;
-	      var sum2 = 0;
+	      var data = waveform.getDataInUse();
+
+	      index1 -= index1 % 4;
+	      index2 -= index2 % 4;
 
 	      for (j = index1; j <= index2; j++) {
 
@@ -28533,82 +28548,53 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        lastX = x;
 	        lastY = y;
+	        //console.log( data, data[ j ] );
 
-	        sum2 += (xVal - lastXVal) * yVal * 0.5;
+	        if (j % 4 == 0 && j > index1 && data.sums) {
+	          // Sums are located every 4 element
+	          sum += data.sums[j] * (data.x[j] - data.x[j - 3]); // y * (out-in)
+	        }
 
-	        points.push([x, y, sum2]);
+	        points.push([x, y, sum]);
 	        lastXVal = xVal;
 	      }
 
 	      waveform = this.serie.getWaveform();
-	      index1 = waveform.getIndexFromX(pos1[axis]);
-	      index2 = waveform.getIndexFromX(pos2[axis]);
 
 	      lastXVal = false;
 	      lastYVal = false;
 	      lastX = false;
 	      lastY = false;
 
-	      for (j = index1; j <= index2; j++) {
-
-	        xVal = waveform.getX(j);
-	        yVal = waveform.getY(j);
-	        x = this.serie.getX(xVal);
-	        y = this.serie.getY(yVal);
-
-	        if (!firstX) {
-
-	          firstX = x;
-	          firstY = y;
-	          firstXVal = xVal;
-	          firstYVal = yVal;
-	        }
-
-	        if (!lastX) {
-	          lastX = x;
-	          lastY = y;
-	          lastXVal = xVal;
-	          lastYVal = yVal;
-	          continue;
-	        }
-
-	        if (x == lastX && y == lastY) {
-	          continue;
-	        }
-
-	        lastX = x;
-	        lastY = y;
-
-	        sum += (xVal - lastXVal) * yVal * 0.5;
-
-	        lastXVal = xVal;
+	      if (sum == 0) {
+	        sum = 1;
 	      }
-
+	      console.log(this.ratio);
 	      if (!this.ratio) {
 	        // 150px / unit
-	        ratio = 300 / sum;
+	        this.ratio = 300 / sum;
 	      } else {
 	        // Already existing
-	        ratio = this.ratio;
+	        this.ratio = this.ratio;
 	      }
 
 	      for (var i = 0, l = points.length; i < l; i++) {
 
-	        points[i][2] = baseLine - points[i][2] * sum / sum2 * ratio;
+	        points[i][2] = baseLine - points[i][2] * this.ratio;
 
 	        if (i == 0) {
 	          this.firstPointX = points[i][0];
-	          this.firstPointY = points[i][1];
+	          this.firstPointY = points[i][2];
 	        }
 
 	        currentLine += " L " + points[i][0] + ", " + points[i][2] + " ";
 
 	        this.lastPointX = points[i][0];
-	        this.lastPointY = points[i][1];
+	        this.lastPointY = points[i][2];
 	      }
 
 	      this.points = points;
-	      this.sum = sum;
+	      this._sum = sum;
 
 	      if (this.serie.isFlipped()) {
 	        currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
@@ -28627,7 +28613,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	             this.setHandles();*/
 
 	      this.setLabelPosition(new _graph2.default({
-	        x: (pos1.x + pos2.x) / 2,
+	        x: (this.firstPointX + this.lastPointX) / 2,
 	        y: (this.firstPointY + this.lastPointY) / 2 + "px"
 	      }));
 
@@ -28659,21 +28645,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setHandles',
 	    value: function setHandles() {
-
+	      console.log('a');
 	      if (this.points == undefined) {
 	        return;
 	      }
-
+	      console.log('b');
 	      if (!this.isSelected()) {
 	        return;
 	      }
-
+	      console.log('c');
 	      this.addHandles();
 
-	      var posXY = this.computePosition(0),
-	          posXY2 = this.computePosition(1);
-
-	      if (posXY.x < posXY2.x) {
+	      if (this.firstPointX < this.lastPointX) {
 
 	        this.handles[1].setAttribute('x', this.firstPointX);
 	        this.handles[1].setAttribute('y', this.firstPointY);
@@ -28689,13 +28672,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }, {
 	    key: 'ratio',
-	    set: function set() {
-	      var r = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
-
+	    set: function set(r) {
 	      this._ratio = r;
 	    },
 	    get: function get() {
 	      return this._ratio;
+	    }
+	  }, {
+	    key: 'sum',
+	    get: function get() {
+	      return this._sum;
 	    }
 	  }]);
 

@@ -331,7 +331,7 @@ class Waveform {
   }
 
   getDataInUse() {
-    return this.dataInUse;
+    return this.dataInUse ||  this.data;
   }
 
   getIndexFromX( xval, useDataToUse = false ) {
@@ -881,7 +881,7 @@ class Waveform {
 
     } ).then( ( event ) => {
       console.log( event );
-      this._dataAggregated = event.data.aggregates;
+      this._dataAggregated = event.aggregates;
 
     } );
 
@@ -967,7 +967,7 @@ function pow2floor( v ) {
 }
 
 function binarySearch( target, haystack, reverse ) {
-  console.log( target );
+
   let seedA = 0,
     length = haystack.length,
     seedB = ( length - 1 ),

@@ -68,7 +68,7 @@ class Graph extends EventEmitter {
 
   /**
    * Graph constructor
-   * @param {(HTMLElement|String)} wrapper - The DOM Wrapper element or the element ```id``` where it can be found
+   * @param {(HTMLElement|String)} [ wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
    * @param {GraphOptions} [ options ] - The options of the graph
    * @param {Object} [ axis ] - The list of axes
    * @param {Array} axis.left - The list of left axes
@@ -89,27 +89,15 @@ class Graph extends EventEmitter {
     */
     this._creation = util.guid();
 
-    if ( typeof wrapper == "string" ) {
+    if ( typeof wrapper == "object" ) { // Wrapper is options
+      axis = options;
+      options = wrapper;
+      wrapper = null;
+    } else if ( typeof wrapper == "string" ) {
       wrapper = document.getElementById( wrapper );
     } else if ( typeof wrapper.length == "number" ) {
       wrapper = wrapper[ 0 ];
     }
-
-    if ( !wrapper ) {
-      throw "The wrapper DOM element was not found.";
-    }
-
-    if ( !wrapper.appendChild ) {
-      throw "The wrapper appears to be an invalid HTMLElement";
-    }
-
-    wrapper.style[ '-webkit-user-select' ] = 'none';
-    wrapper.style[ '-moz-user-select' ] = 'none';
-    wrapper.style[ '-o-user-select' ] = 'none';
-    wrapper.style[ '-ms-user-select' ] = 'none';
-    wrapper.style[ 'user-select' ] = 'none';
-
-    wrapper.style.position = 'relative';
 
     /**
      * @object
@@ -121,6 +109,16 @@ class Graph extends EventEmitter {
      * @example graph.options.mouseActions.push( {  } );
      */
     this.options = util.extend( {}, GraphOptionsDefault, options );
+    // Options declaration must be placed before the doDom operation
+
+    // doDom is a private method. We bind it to this thanks to ES6 features
+    ( doDom.bind( this ) )();
+
+    if ( wrapper ) {
+      this.setWrapper( wrapper );
+    }
+
+    console.log( options );
 
     this.prevented = false;
 
@@ -142,28 +140,18 @@ class Graph extends EventEmitter {
 
     this.selectedShapes = [];
 
-    this.ns = 'http://www.w3.org/2000/svg';
-    this.nsxlink = "http://www.w3.org/1999/xlink";
     this.series = [];
-    this._dom = wrapper;
+    //this._dom = wrapper;
     this._axesHaveChanged = true;
 
     if ( this.options.hasOwnProperty( 'padding' ) && util.isNumeric( this.options.padding ) ) {
       this.options.paddingTop = this.options.paddingBottom = this.options.paddingLeft = this.options.paddingRight = this.options.padding;
     }
 
-    // DOM
-    var wrapperStyle = getComputedStyle( wrapper );
-    var w = parseInt( wrapperStyle.width );
-    var h = parseInt( wrapperStyle.height );
-
-    this._doDom();
-
-    this.setSize( w, h );
-    this._resize();
-    _registerEvents( this );
-
     this.currentAction = false;
+
+    this.ns = Graph.ns;
+    this.nsxlink = Graph.nsxlink;
 
     // Load all axes
     if ( axis ) {
@@ -193,11 +181,49 @@ class Graph extends EventEmitter {
 
   }
 
-  /**
-   * Returns the graph SVG wrapper element
-   * @public
-   * @return {SVGElement} The DOM element wrapping the graph
-   */
+  setWrapper( wrapper ) {
+
+      if ( !wrapper ) {
+        throw "The wrapper DOM element was not found.";
+      }
+
+      if ( !wrapper.appendChild ) {
+        throw "The wrapper appears to be an invalid HTMLElement";
+      }
+
+      wrapper.style[ '-webkit-user-select' ] = 'none';
+      wrapper.style[ '-moz-user-select' ] = 'none';
+      wrapper.style[ '-o-user-select' ] = 'none';
+      wrapper.style[ '-ms-user-select' ] = 'none';
+      wrapper.style[ 'user-select' ] = 'none';
+
+      wrapper.style.position = 'relative';
+      wrapper.style.outline = "none";
+
+      wrapper.setAttribute( 'tabindex', 1 );
+
+      this.wrapper = wrapper;
+
+      // DOM
+
+      if ( !this.height ||  !this.width ) {
+        var wrapperStyle = getComputedStyle( wrapper );
+        var w = parseInt( wrapperStyle.width );
+        var h = parseInt( wrapperStyle.height );
+        this.setSize( w, h );
+        this._resize();
+      }
+
+      wrapper.appendChild( this.dom );
+
+      _registerEvents( this );
+
+    }
+    /**
+     * Returns the graph SVG wrapper element
+     * @public
+     * @return {SVGElement} The DOM element wrapping the graph
+     */
   getDom() {
     return this.dom;
   }
@@ -217,7 +243,7 @@ class Graph extends EventEmitter {
    * @return {HTMLElement} The DOM element wrapping the graph
    */
   getWrapper() {
-    return this._dom;
+    return this.wrapper;
   }
 
   /**
@@ -251,6 +277,18 @@ class Graph extends EventEmitter {
    */
   hideTitle() {
     this.domTitle.setAttribute( 'display', 'none' );
+  }
+
+  hide() {
+    if ( this.dom.style.display !== "none" ) {
+      this.dom.style.display = "none";
+    }
+  }
+
+  show() {
+    if ( this.dom.style.display == "none" ) {
+      this.dom.style.display = "initial";
+    }
   }
 
   /**
@@ -485,7 +523,7 @@ class Graph extends EventEmitter {
    * @see Graph#uncacheOffset
    */
   cacheOffset() {
-    this.offsetCached = util.getOffset( this._dom );
+    this.offsetCached = util.getOffset( this.wrapper );
   }
 
   /**
@@ -1585,7 +1623,7 @@ class Graph extends EventEmitter {
   appendShapeToDom( shape ) {
 
     if ( shape.isHTML() ) {
-      this._dom.insertBefore( shape._dom, this.dom );
+      this.wrapper.insertBefore( shape.wrapper, this.dom );
     }
 
     this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
@@ -1593,7 +1631,7 @@ class Graph extends EventEmitter {
   removeShapeFromDom( shape ) {
 
     if ( shape.isHTML() ) {
-      this._dom.removeChild( shape._dom );
+      this.wrapper.removeChild( shape.wrapper );
     }
 
     this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
@@ -1610,10 +1648,10 @@ class Graph extends EventEmitter {
 
       this.layers[ layer ] = [];
 
-      this.layers[ layer ][ 0 ] = document.createElementNS( this.ns, 'g' );
+      this.layers[ layer ][ 0 ] = document.createElementNS( Graph.ns, 'g' );
       this.layers[ layer ][ 0 ].setAttribute( 'data-layer', layer );
-      this.layers[ layer ][ 1 ] = document.createElementNS( this.ns, 'g' );
-      this.layers[ layer ][ 2 ] = document.createElementNS( this.ns, 'g' );
+      this.layers[ layer ][ 1 ] = document.createElementNS( Graph.ns, 'g' );
+      this.layers[ layer ][ 2 ] = document.createElementNS( Graph.ns, 'g' );
 
       this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 1 ] );
       this.layers[ layer ][ 0 ].appendChild( this.layers[ layer ][ 2 ] );
@@ -1644,7 +1682,7 @@ class Graph extends EventEmitter {
 
   }
   focus()  {
-    this._dom.focus();
+    this.wrapper.focus();
   }
   elementMoving( movingElement ) {
     this.bypassHandleMouse = movingElement;
@@ -1664,7 +1702,7 @@ class Graph extends EventEmitter {
       i = 0,
       l = 4;
     for ( ; i < l; i++ ) {
-      var line = document.createElementNS( this.ns, 'line' );
+      var line = document.createElementNS( Graph.ns, 'line' );
       line.setAttribute( 'stroke', 'black' );
       line.setAttribute( 'shape-rendering', 'crispEdges' );
       line.setAttribute( 'stroke-linecap', 'square' );
@@ -1893,8 +1931,8 @@ class Graph extends EventEmitter {
 
     if ( !this.zAxis ) {
       this.zAxis = {
-        g: document.createElementNS( this.ns, "g" ),
-        l: document.createElementNS( this.ns, "line" )
+        g: document.createElementNS( Graph.ns, "g" ),
+        l: document.createElementNS( Graph.ns, "line" )
       }
 
       this.zAxis.g.appendChild( this.zAxis.l );
@@ -1940,7 +1978,7 @@ class Graph extends EventEmitter {
    * Kills the graph
    **/
   kill() {
-    this._dom.removeChild( this.dom );
+    this.wrapper.removeChild( this.dom );
   }
   _removeSerie( serie ) {
     this.series.splice( this.series.indexOf( serie ), 1 );
@@ -1978,7 +2016,7 @@ class Graph extends EventEmitter {
     var x = e.pageX,
       y = e.pageY;
 
-    var pos = this.offsetCached || util.getOffset( this._dom );
+    var pos = this.offsetCached || util.getOffset( this.wrapper );
 
     x -= pos.left /* - window.scrollX*/ ;
     y -= pos.top /* - window.scrollY*/ ;
@@ -2005,183 +2043,6 @@ class Graph extends EventEmitter {
     this.requireLegendUpdate();
 
     this.draw( true );
-  }
-  _doDom() {
-
-    // Create SVG element, set the NS
-    this.dom = document.createElementNS( this.ns, 'svg' );
-    this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-    //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
-    util.setAttributeTo( this.dom, {
-      'xmlns': this.ns,
-      'font-family': this.options.fontFamily,
-      'font-size': this.options.fontSize
-    } );
-
-    this._dom.appendChild( this.dom );
-
-    this._dom.setAttribute( 'tabindex', 1 );
-
-    this._dom.style.outline = "none";
-
-    this.defs = document.createElementNS( this.ns, 'defs' );
-    this.dom.appendChild( this.defs );
-
-    this.groupEvent = document.createElementNS( this.ns, 'g' );
-
-    this.rectEvent = document.createElementNS( this.ns, 'rect' );
-    util.setAttributeTo( this.rectEvent, {
-      'pointer-events': 'fill',
-      'fill': 'transparent'
-    } );
-    this.groupEvent.appendChild( this.rectEvent );
-
-    this.dom.appendChild( this.groupEvent );
-
-    // Handling graph title
-    this.domTitle = document.createElementNS( this.ns, 'text' );
-    this.setTitle( this.options.title );
-    util.setAttributeTo( this.domTitle, {
-      'text-anchor': 'middle',
-      'y': 20
-    } );
-    this.groupEvent.appendChild( this.domTitle );
-    //
-
-    this.graphingZone = document.createElementNS( this.ns, 'g' );
-    this.updateGraphingZone();
-
-    this.groupEvent.appendChild( this.graphingZone );
-
-    /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-    //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-    this.shapeZoneRect.setAttribute('fill', 'transparent');
-    this.shapeZone.appendChild(this.shapeZoneRect);
-  */
-    this.axisGroup = document.createElementNS( this.ns, 'g' );
-    this.graphingZone.appendChild( this.axisGroup );
-
-    this.groupGrids = document.createElementNS( this.ns, 'g' );
-
-    // With the z stacking, this should probably be removed
-    //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-
-    this.groupPrimaryGrids = document.createElementNS( this.ns, 'g' );
-    this.groupSecondaryGrids = document.createElementNS( this.ns, 'g' );
-
-    this.axisGroup.appendChild( this.groupGrids );
-
-    this.groupGrids.appendChild( this.groupSecondaryGrids );
-    this.groupGrids.appendChild( this.groupPrimaryGrids );
-
-    this.plotGroup = document.createElementNS( this.ns, 'g' );
-    this.graphingZone.appendChild( this.plotGroup );
-
-    // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-    /*this.shapeZone = document.createElementNS( this.ns, 'g' );
-    this.graphingZone.appendChild( this.shapeZone );
-*/
-
-    this.layers = [];
-
-    this._makeClosingLines();
-
-    this.clip = document.createElementNS( this.ns, 'clipPath' );
-    this.clip.setAttribute( 'id', '_clipplot' + this._creation );
-    this.defs.appendChild( this.clip );
-
-    this.clipRect = document.createElementNS( this.ns, 'rect' );
-    this.clip.appendChild( this.clipRect );
-    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-
-    this.markerArrow = document.createElementNS( this.ns, 'marker' );
-    this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
-    this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
-    this.markerArrow.setAttribute( 'refX', '6' );
-    this.markerArrow.setAttribute( 'refY', '5' );
-    this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
-    this.markerArrow.setAttribute( 'markerWidth', '8' );
-    this.markerArrow.setAttribute( 'markerHeight', '6' );
-    this.markerArrow.setAttribute( 'orient', 'auto' );
-    //this.markerArrow.setAttribute('fill', 'context-stroke');
-    //this.markerArrow.setAttribute('stroke', 'context-stroke');
-
-    var pathArrow = document.createElementNS( this.ns, 'path' );
-    pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
-    //pathArrow.setAttribute( 'fill', 'context-stroke' );
-    this.markerArrow.appendChild( pathArrow );
-
-    this.defs.appendChild( this.markerArrow );
-
-    // Horionzal split marker for axis
-    this.markerHorizontalSplit = document.createElementNS( this.ns, 'marker' );
-    this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
-    this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
-    this.markerHorizontalSplit.setAttribute( 'refX', '3' );
-    this.markerHorizontalSplit.setAttribute( 'refY', '4' );
-    this.markerHorizontalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
-    this.markerHorizontalSplit.setAttribute( 'markerWidth', '6' );
-    this.markerHorizontalSplit.setAttribute( 'markerHeight', '8' );
-
-    var path = document.createElementNS( this.ns, 'line' );
-    path.setAttribute( 'x1', '0' );
-    path.setAttribute( 'y1', '8' );
-
-    path.setAttribute( 'x2', '6' );
-    path.setAttribute( 'y2', '0' );
-
-    path.setAttribute( 'stroke', 'black' );
-    this.markerHorizontalSplit.appendChild( path );
-
-    this.defs.appendChild( this.markerHorizontalSplit );
-
-    // Vertical split marker for axis
-    this.markerVerticalSplit = document.createElementNS( this.ns, 'marker' );
-    this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
-    this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
-    this.markerVerticalSplit.setAttribute( 'refX', '4' );
-    this.markerVerticalSplit.setAttribute( 'refY', '3' );
-    this.markerVerticalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
-    this.markerVerticalSplit.setAttribute( 'markerWidth', '8' );
-    this.markerVerticalSplit.setAttribute( 'markerHeight', '6' );
-
-    var path = document.createElementNS( this.ns, 'line' );
-
-    path.setAttribute( 'x1', '0' );
-    path.setAttribute( 'y1', '0' );
-
-    path.setAttribute( 'x2', '8' );
-    path.setAttribute( 'y2', '6' );
-
-    path.setAttribute( 'stroke', 'black' );
-    this.markerVerticalSplit.appendChild( path );
-    this.defs.appendChild( this.markerVerticalSplit );
-
-    this.vertLineArrow = document.createElementNS( this.ns, 'marker' );
-    this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
-    this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
-    this.vertLineArrow.setAttribute( 'refX', '0' );
-    this.vertLineArrow.setAttribute( 'refY', '5' );
-    this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
-    this.vertLineArrow.setAttribute( 'markerWidth', '20' );
-    this.vertLineArrow.setAttribute( 'markerHeight', '10' );
-    this.vertLineArrow.setAttribute( 'orient', 'auto' );
-    //this.vertLineArrow.setAttribute('fill', 'context-stroke');
-    //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-    this.vertLineArrow.setAttribute( 'stroke-width', '1px' );
-
-    var pathVertLine = document.createElementNS( this.ns, 'path' );
-    pathVertLine.setAttribute( 'd', 'M 0 -10 L 0 10' );
-    pathVertLine.setAttribute( 'stroke', 'black' );
-
-    this.vertLineArrow.appendChild( pathVertLine );
-
-    this.defs.appendChild( this.vertLineArrow );
-
-    // Removed with z stacking ?
-    //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-
-    this.bypassHandleMouse = false;
   }
 
   updateGraphingZone() {
@@ -2332,7 +2193,7 @@ class Graph extends EventEmitter {
       if ( katexElement ) {
         katexElement.removeChild( katexElement.firstChild );
       } else {
-        katexElement = document.createElementNS( this.ns, 'foreignObject' );
+        katexElement = document.createElementNS( Graph.ns, 'foreignObject' );
       }
 
       let div = document.createElement( "div" );
@@ -2810,12 +2671,13 @@ class Graph extends EventEmitter {
   /**
    * Returns a registered constructor
    * @param {String} constructorName - The constructor name to look for
+   * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
    * @returns {Function} The registered constructor
    * @throws Error
    * @see Graph.registerConstructor
    * @static
    */
-  static getConstructor( constructorName, softFail ) {
+  static getConstructor( constructorName, softFail = false ) {
 
     if ( !_constructors.has( constructorName ) ) {
 
@@ -3177,20 +3039,196 @@ function checkKeyActions( graph, e, parameters, methodName ) {
 
 };
 
+function doDom() {
+
+  // Create SVG element, set the NS
+  this.dom = document.createElementNS( Graph.ns, 'svg' );
+  this.dom.setAttributeNS( "http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
+  util.setAttributeTo( this.dom, {
+    'xmlns': Graph.ns,
+    'font-family': this.options.fontFamily,
+    'font-size': this.options.fontSize
+  } );
+
+  this.defs = document.createElementNS( Graph.ns, 'defs' );
+  this.dom.appendChild( this.defs );
+
+  this.groupEvent = document.createElementNS( Graph.ns, 'g' );
+
+  this.rectEvent = document.createElementNS( Graph.ns, 'rect' );
+  util.setAttributeTo( this.rectEvent, {
+    'pointer-events': 'fill',
+    'fill': 'transparent'
+  } );
+  this.groupEvent.appendChild( this.rectEvent );
+
+  this.dom.appendChild( this.groupEvent );
+
+  // Handling graph title
+  this.domTitle = document.createElementNS( Graph.ns, 'text' );
+  this.setTitle( this.options.title );
+  util.setAttributeTo( this.domTitle, {
+    'text-anchor': 'middle',
+    'y': 20
+  } );
+  this.groupEvent.appendChild( this.domTitle );
+  //
+
+  this.graphingZone = document.createElementNS( Graph.ns, 'g' );
+  this.updateGraphingZone();
+
+  this.groupEvent.appendChild( this.graphingZone );
+
+  /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+  this.shapeZoneRect.setAttribute('fill', 'transparent');
+  this.shapeZone.appendChild(this.shapeZoneRect);
+*/
+  this.axisGroup = document.createElementNS( Graph.ns, 'g' );
+  this.graphingZone.appendChild( this.axisGroup );
+
+  this.groupGrids = document.createElementNS( Graph.ns, 'g' );
+
+  // With the z stacking, this should probably be removed
+  //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+  this.groupPrimaryGrids = document.createElementNS( Graph.ns, 'g' );
+  this.groupSecondaryGrids = document.createElementNS( Graph.ns, 'g' );
+
+  this.axisGroup.appendChild( this.groupGrids );
+
+  this.groupGrids.appendChild( this.groupSecondaryGrids );
+  this.groupGrids.appendChild( this.groupPrimaryGrids );
+
+  this.plotGroup = document.createElementNS( Graph.ns, 'g' );
+  this.graphingZone.appendChild( this.plotGroup );
+
+  // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+  /*this.shapeZone = document.createElementNS( this.ns, 'g' );
+  this.graphingZone.appendChild( this.shapeZone );
+*/
+
+  this.layers = [];
+
+  this._makeClosingLines();
+
+  this.clip = document.createElementNS( Graph.ns, 'clipPath' );
+  this.clip.setAttribute( 'id', '_clipplot' + this._creation );
+  this.defs.appendChild( this.clip );
+
+  this.clipRect = document.createElementNS( Graph.ns, 'rect' );
+  this.clip.appendChild( this.clipRect );
+  this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+
+  this.markerArrow = document.createElementNS( this.ns, 'marker' );
+  this.markerArrow.setAttribute( 'viewBox', '0 0 10 10' );
+  this.markerArrow.setAttribute( 'id', 'arrow' + this._creation );
+  this.markerArrow.setAttribute( 'refX', '6' );
+  this.markerArrow.setAttribute( 'refY', '5' );
+  this.markerArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+  this.markerArrow.setAttribute( 'markerWidth', '8' );
+  this.markerArrow.setAttribute( 'markerHeight', '6' );
+  this.markerArrow.setAttribute( 'orient', 'auto' );
+  //this.markerArrow.setAttribute('fill', 'context-stroke');
+  //this.markerArrow.setAttribute('stroke', 'context-stroke');
+
+  var pathArrow = document.createElementNS( Graph.ns, 'path' );
+  pathArrow.setAttribute( 'd', 'M 0 0 L 10 5 L 0 10 z' );
+  //pathArrow.setAttribute( 'fill', 'context-stroke' );
+  this.markerArrow.appendChild( pathArrow );
+
+  this.defs.appendChild( this.markerArrow );
+
+  // Horionzal split marker for axis
+  this.markerHorizontalSplit = document.createElementNS( Graph.ns, 'marker' );
+  this.markerHorizontalSplit.setAttribute( 'viewBox', '0 0 6 8' );
+  this.markerHorizontalSplit.setAttribute( 'id', 'horionzalsplit_' + this.getId() );
+  this.markerHorizontalSplit.setAttribute( 'refX', '3' );
+  this.markerHorizontalSplit.setAttribute( 'refY', '4' );
+  this.markerHorizontalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
+  this.markerHorizontalSplit.setAttribute( 'markerWidth', '6' );
+  this.markerHorizontalSplit.setAttribute( 'markerHeight', '8' );
+
+  var path = document.createElementNS( Graph.ns, 'line' );
+  path.setAttribute( 'x1', '0' );
+  path.setAttribute( 'y1', '8' );
+
+  path.setAttribute( 'x2', '6' );
+  path.setAttribute( 'y2', '0' );
+
+  path.setAttribute( 'stroke', 'black' );
+  this.markerHorizontalSplit.appendChild( path );
+
+  this.defs.appendChild( this.markerHorizontalSplit );
+
+  // Vertical split marker for axis
+  this.markerVerticalSplit = document.createElementNS( Graph.ns, 'marker' );
+  this.markerVerticalSplit.setAttribute( 'viewBox', '0 0 8 6' );
+  this.markerVerticalSplit.setAttribute( 'id', 'verticalsplit_' + this.getId() );
+  this.markerVerticalSplit.setAttribute( 'refX', '4' );
+  this.markerVerticalSplit.setAttribute( 'refY', '3' );
+  this.markerVerticalSplit.setAttribute( 'markerUnits', 'strokeWidth' );
+  this.markerVerticalSplit.setAttribute( 'markerWidth', '8' );
+  this.markerVerticalSplit.setAttribute( 'markerHeight', '6' );
+
+  var path = document.createElementNS( Graph.ns, 'line' );
+
+  path.setAttribute( 'x1', '0' );
+  path.setAttribute( 'y1', '0' );
+
+  path.setAttribute( 'x2', '8' );
+  path.setAttribute( 'y2', '6' );
+
+  path.setAttribute( 'stroke', 'black' );
+  this.markerVerticalSplit.appendChild( path );
+  this.defs.appendChild( this.markerVerticalSplit );
+
+  this.vertLineArrow = document.createElementNS( Graph.ns, 'marker' );
+  this.vertLineArrow.setAttribute( 'viewBox', '0 0 10 10' );
+  this.vertLineArrow.setAttribute( 'id', 'verticalline' + this._creation );
+  this.vertLineArrow.setAttribute( 'refX', '0' );
+  this.vertLineArrow.setAttribute( 'refY', '5' );
+  this.vertLineArrow.setAttribute( 'markerUnits', 'strokeWidth' );
+  this.vertLineArrow.setAttribute( 'markerWidth', '20' );
+  this.vertLineArrow.setAttribute( 'markerHeight', '10' );
+  this.vertLineArrow.setAttribute( 'orient', 'auto' );
+  //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+  //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+  this.vertLineArrow.setAttribute( 'stroke-width', '1px' );
+
+  var pathVertLine = document.createElementNS( Graph.ns, 'path' );
+  pathVertLine.setAttribute( 'd', 'M 0 -10 L 0 10' );
+  pathVertLine.setAttribute( 'stroke', 'black' );
+
+  this.vertLineArrow.appendChild( pathVertLine );
+
+  this.defs.appendChild( this.vertLineArrow );
+
+  // Removed with z stacking ?
+  //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+  this.bypassHandleMouse = false;
+}
+
 function _registerEvents( graph ) {
   var self = graph;
 
-  graph._dom.addEventListener( 'keydown', e => {
+  if ( !graph.wrapper ) {
+    throw "No wrapper exists. Cannot register the events."
+  }
+
+  graph.wrapper.addEventListener( 'keydown', e => {
 
     _handleKey( graph, e, 'keydown' );
   } );
 
-  graph._dom.addEventListener( 'keypress', e => {
+  graph.wrapper.addEventListener( 'keypress', e => {
 
     _handleKey( graph, e, 'keypress' );
   } );
 
-  graph._dom.addEventListener( 'keyup', e => {
+  graph.wrapper.addEventListener( 'keyup', e => {
 
     _handleKey( graph, e, 'keyup' );
   } );
@@ -3761,5 +3799,8 @@ Graph.SERIE_ZONE_3D = Symbol();
 Graph.TICKS_OUTSIDE = Symbol();
 Graph.TICKS_INSIDE = Symbol();
 Graph.TICKS_CENTERED = Symbol();
+
+Graph.ns = 'http://www.w3.org/2000/svg';
+Graph.nsxlink = "http://www.w3.org/1999/xlink";
 
 export default Graph;

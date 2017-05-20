@@ -73,10 +73,17 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
 
     let j;
     let waveform = this.serie.getWaveform();
+    console.trace();
+    if ( !waveform ) {
+      return;
+    }
     let index1 = waveform.getIndexFromX( pos1[ axis ], true );
     let index2 = waveform.getIndexFromX( pos2[ axis ], true );
     let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
-    let sum2 = 0;
+    let data = waveform.getDataInUse();
+
+    index1 -= index1 % 4;
+    index2 -= index2 % 4;
 
     for ( j = index1; j <= index2; j++ ) {
 
@@ -109,84 +116,53 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
 
       lastX = x;
       lastY = y;
+      //console.log( data, data[ j ] );
 
-      sum2 += ( xVal - lastXVal ) * ( yVal ) * 0.5;
+      if ( j % 4 == 0 && j > index1 && data.sums ) { // Sums are located every 4 element
+        sum += data.sums[ j ] * ( data.x[ j ] - data.x[ j - 3 ] ); // y * (out-in)
+      }
 
-      points.push( [ x, y, sum2 ] );
+      points.push( [ x, y, sum ] );
       lastXVal = xVal;
     }
 
     waveform = this.serie.getWaveform();
-    index1 = waveform.getIndexFromX( pos1[ axis ] );
-    index2 = waveform.getIndexFromX( pos2[ axis ] );
 
     lastXVal = false;
     lastYVal = false;
     lastX = false;
     lastY = false;
 
-    for ( j = index1; j <= index2; j++ ) {
-
-      xVal = waveform.getX( j );
-      yVal = waveform.getY( j );
-      x = this.serie.getX( xVal );
-      y = this.serie.getY( yVal );
-
-      if ( !firstX ) {
-
-        firstX = x;
-        firstY = y;
-        firstXVal = xVal;
-        firstYVal = yVal;
-      }
-
-      if ( !lastX ) {
-        lastX = x;
-        lastY = y;
-        lastXVal = xVal;
-        lastYVal = yVal;
-        continue;
-      }
-
-      if ( x == lastX && y == lastY ) {
-        continue;
-      }
-
-      lastX = x;
-      lastY = y;
-
-      sum += ( xVal - lastXVal ) * ( yVal ) * 0.5;
-
-      lastXVal = xVal;
-
+    if ( sum == 0 ) {
+      sum = 1;
     }
-
+    console.log( this.ratio );
     if ( !this.ratio ) {
       // 150px / unit
-      ratio = 300 / sum;
+      this.ratio = 300 / sum;
 
     } else {
       // Already existing
-      ratio = this.ratio;
+      this.ratio = this.ratio;
     }
 
     for ( var i = 0, l = points.length; i < l; i++ ) {
 
-      points[ i ][ 2 ] = baseLine - ( points[ i ][ 2 ] ) * sum / sum2 * ratio;
+      points[ i ][ 2 ] = baseLine - ( points[ i ][ 2 ] ) * this.ratio;
 
       if ( i == 0 ) {
         this.firstPointX = points[ i ][ 0 ];
-        this.firstPointY = points[ i ][ 1 ];
+        this.firstPointY = points[ i ][ 2 ];
       }
 
       currentLine += " L " + points[ i ][ 0 ] + ", " + points[ i ][ 2 ] + " ";
 
       this.lastPointX = points[ i ][ 0 ];
-      this.lastPointY = points[ i ][ 1 ];
+      this.lastPointY = points[ i ][ 2 ];
     }
 
     this.points = points;
-    this.sum = sum;
+    this._sum = sum;
 
     if ( this.serie.isFlipped() ) {
       currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
@@ -206,7 +182,7 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
           this.setHandles();*/
 
     this.setLabelPosition( new GraphPosition( {
-      x: ( pos1.x + pos2.x ) / 2,
+      x: ( this.firstPointX + this.lastPointX ) / 2,
       y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
     } ) );
 
@@ -224,12 +200,16 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
    * User to screen coordinate transform. In (unit)/(px), (unit) being the unit of the integral (x * y)
    * @type {Number}
    */
-  set ratio( r = 1 ) {
+  set ratio( r ) {
     this._ratio = r;
   }
 
   get ratio() {
     return this._ratio;
+  }
+
+  get sum() {
+    return this._sum;
   }
 
   selectStyle() {
@@ -239,21 +219,18 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
   selectHandles() {} // Cancel areaundercurve
 
   setHandles() {
-
+    console.log( 'a' );
     if ( this.points == undefined ) {
       return;
     }
-
+    console.log( 'b' );
     if ( !this.isSelected() ) {
       return;
     }
-
+    console.log( 'c' );
     this.addHandles();
 
-    var posXY = this.computePosition( 0 ),
-      posXY2 = this.computePosition( 1 );
-
-    if ( posXY.x < posXY2.x ) {
+    if ( this.firstPointX < this.lastPointX ) {
 
       this.handles[ 1 ].setAttribute( 'x', this.firstPointX );
       this.handles[ 1 ].setAttribute( 'y', this.firstPointY );

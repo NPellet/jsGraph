@@ -96,7 +96,7 @@ let string = function() {
         newAggregation[ k + 2 ] = Math.max( lastAggregation[ i + 2 ], lastAggregation[ i + 6 ] );
         newAggregation[ k + 3 ] = lastAggregation[ i + 7 ];
 
-        aggregationSum[ k ] = lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ];
+        aggregationSum[ k ] = ( lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ] ) / 2;
 
         k += 4;
       }
@@ -109,6 +109,8 @@ let string = function() {
 
       lastAggregation = newAggregation;
       lastAggregationX = newAggregationX;
+      lastAggregationSum = aggregationSum;
+
       aggregationSum = [];
     }
 

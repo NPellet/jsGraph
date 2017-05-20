@@ -223,6 +223,7 @@ class Shape extends EventEmitter {
       this.graph.emit( event, this );
     }
 
+    this.emit( "shapeChanged", this );
     this.graph.emit( 'shapeChanged', this );
     return this;
   }
@@ -1239,8 +1240,9 @@ class Shape extends EventEmitter {
     this._selectStatus = true;
 
     this.applySelectedStyle();
-
+    console.log( 'ds' );
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
+      console.log( 'ds' );
       this.addHandles();
       this.setHandles();
     }
@@ -1473,10 +1475,6 @@ class Shape extends EventEmitter {
    */
   handleClick( e ) {
 
-    if ( this.getProp( 'selectOnClick' ) ) {
-      this.graph.selectShape( this );
-    }
-
     if ( !this.isSelectable() ) {
       return false;
     }
@@ -1485,7 +1483,10 @@ class Shape extends EventEmitter {
       this.graph.unselectShapes();
     }
 
-    this.graph.selectShape( this );
+    if ( this.getProp( 'selectOnClick' ) ) {
+
+      this.graph.selectShape( this );
+    }
   }
 
   /**
