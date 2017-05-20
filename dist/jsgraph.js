@@ -8470,7 +8470,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      The unique ID of the graph
 	      @name Graph#uniqueid
 	      @type String
-	    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();if((typeof wrapper==='undefined'?'undefined':_typeof(wrapper))=="object"){// Wrapper is options
+	    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();if(wrapper===Object(wrapper)){// Wrapper is options
 	axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}/**
 	     * @object
 	     * @memberof Graph
@@ -8481,14 +8481,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example graph.options.mouseActions.push( {  } );
 	     */_this.options=util.extend({},GraphOptionsDefault,options);// Options declaration must be placed before the doDom operation
 	// doDom is a private method. We bind it to this thanks to ES6 features
-	doDom.bind(_this)();if(wrapper){_this.setWrapper(wrapper);}console.log(options);_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.series=[];//this._dom = wrapper;
+	doDom.bind(_this)();if(wrapper){_this.setWrapper(wrapper);}_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.series=[];//this._dom = wrapper;
 	_this._axesHaveChanged=true;if(_this.options.hasOwnProperty('padding')&&util.isNumeric(_this.options.padding)){_this.options.paddingTop=_this.options.paddingBottom=_this.options.paddingLeft=_this.options.paddingRight=_this.options.padding;}_this.currentAction=false;_this.ns=Graph.ns;_this.nsxlink=Graph.nsxlink;// Load all axes
 	if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':_this.getTopAxis(j,axis[i][j]);break;case'bottom':_this.getBottomAxis(j,axis[i][j]);break;case'left':_this.getLeftAxis(j,axis[i][j]);break;case'right':_this.getRightAxis(j,axis[i][j]);break;}}}}_this._pluginsInit();return _this;}_createClass(Graph,[{key:'setWrapper',value:function setWrapper(wrapper){if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';wrapper.style.outline="none";wrapper.setAttribute('tabindex',1);this.wrapper=wrapper;// DOM
 	if(!this.height||!this.width){var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);this.setSize(w,h);this._resize();}wrapper.appendChild(this.dom);_registerEvents(this);}/**
-	   * Returns the graph SVG wrapper element
-	   * @public
-	   * @return {SVGElement} The DOM element wrapping the graph
-	   */},{key:'getDom',value:function getDom(){return this.dom;}/**
+	     * Returns the graph SVG wrapper element
+	     * @public
+	     * @return {SVGElement} The DOM element wrapping the graph
+	     */},{key:'getDom',value:function getDom(){return this.dom;}/**
 	   * Returns the unique id representing the graph
 	   * @public
 	   * @return {String} The unique ID of the graph
@@ -25489,7 +25489,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.hidden = true;
-	      this.group.style.display = 'none';
+	      if (this.group) {
+	        this.group.style.display = 'none';
+	      } else {
+	        this._dom.style.display = 'none';
+	      }
 	      return this;
 	    }
 
@@ -25507,7 +25511,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.hidden = false;
-	      this.group.style.display = 'block';
+	      if (this.group) {
+	        this._dom.style.display = 'initial';
+	      } else {
+	        this._dom.style.display = 'initial';
+	      }
+
 	      this.redraw();
 	      return this;
 	    }

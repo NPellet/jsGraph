@@ -89,7 +89,7 @@ class Graph extends EventEmitter {
     */
     this._creation = util.guid();
 
-    if ( typeof wrapper == "object" ) { // Wrapper is options
+    if ( wrapper === Object( wrapper ) ) { // Wrapper is options
       axis = options;
       options = wrapper;
       wrapper = null;
@@ -117,8 +117,6 @@ class Graph extends EventEmitter {
     if ( wrapper ) {
       this.setWrapper( wrapper );
     }
-
-    console.log( options );
 
     this.prevented = false;
 

@@ -153,7 +153,11 @@ class Shape extends EventEmitter {
     }
 
     this.hidden = true;
-    this.group.style.display = 'none';
+    if ( this.group ) {
+      this.group.style.display = 'none';
+    } else {
+      this._dom.style.display = 'none';
+    }
     return this;
   }
 
@@ -168,7 +172,12 @@ class Shape extends EventEmitter {
     }
 
     this.hidden = false;
-    this.group.style.display = 'block';
+    if ( this.group ) {
+      this._dom.style.display = 'initial';
+    } else {
+      this._dom.style.display = 'initial';
+    }
+
     this.redraw();
     return this;
 

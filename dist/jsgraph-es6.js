@@ -272,7 +272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      The unique ID of the graph
 	      @name Graph#uniqueid
 	      @type String
-	    */this._creation=util.guid();if(typeof wrapper=="object"){// Wrapper is options
+	    */this._creation=util.guid();if(wrapper===Object(wrapper)){// Wrapper is options
 	axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}/**
 	     * @object
 	     * @memberof Graph
@@ -283,7 +283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example graph.options.mouseActions.push( {  } );
 	     */this.options=util.extend({},GraphOptionsDefault,options);// Options declaration must be placed before the doDom operation
 	// doDom is a private method. We bind it to this thanks to ES6 features
-	doDom.bind(this)();if(wrapper){this.setWrapper(wrapper);}console.log(options);this.prevented=false;this.axis={left:[],top:[],bottom:[],right:[]};this.shapes=[];this.shapesLocked=false;this.plugins={};for(var i in this.options.pluginAction){this.options.pluginAction.plugin=i;this.options.mouseActions.push(this.options.pluginAction);}this.selectedShapes=[];this.series=[];//this._dom = wrapper;
+	doDom.bind(this)();if(wrapper){this.setWrapper(wrapper);}this.prevented=false;this.axis={left:[],top:[],bottom:[],right:[]};this.shapes=[];this.shapesLocked=false;this.plugins={};for(var i in this.options.pluginAction){this.options.pluginAction.plugin=i;this.options.mouseActions.push(this.options.pluginAction);}this.selectedShapes=[];this.series=[];//this._dom = wrapper;
 	this._axesHaveChanged=true;if(this.options.hasOwnProperty('padding')&&util.isNumeric(this.options.padding)){this.options.paddingTop=this.options.paddingBottom=this.options.paddingLeft=this.options.paddingRight=this.options.padding;}this.currentAction=false;this.ns=Graph.ns;this.nsxlink=Graph.nsxlink;// Load all axes
 	if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':this.getTopAxis(j,axis[i][j]);break;case'bottom':this.getBottomAxis(j,axis[i][j]);break;case'left':this.getLeftAxis(j,axis[i][j]);break;case'right':this.getRightAxis(j,axis[i][j]);break;}}}}this._pluginsInit();}setWrapper(wrapper){if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';wrapper.style.outline="none";wrapper.setAttribute('tabindex',1);this.wrapper=wrapper;// DOM
 	if(!this.height||!this.width){var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);this.setSize(w,h);this._resize();}wrapper.appendChild(this.dom);_registerEvents(this);}/**
@@ -15993,7 +15993,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.hidden = true;
-	      this.group.style.display = 'none';
+	      if (this.group) {
+	        this.group.style.display = 'none';
+	      } else {
+	        this._dom.style.display = 'none';
+	      }
 	      return this;
 	    }
 
@@ -16008,7 +16012,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.hidden = false;
-	      this.group.style.display = 'block';
+	      if (this.group) {
+	        this._dom.style.display = 'initial';
+	      } else {
+	        this._dom.style.display = 'initial';
+	      }
+
 	      this.redraw();
 	      return this;
 	    }
