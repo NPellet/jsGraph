@@ -1,17 +1,22 @@
-import ShapeSurfaceUnderCurve from './graph.shape.areaundercurve'
+import Shape from './graph.shape'
 import GraphPosition from '../graph.position'
 
 /**
  * Displays an integral with NMR style
  * @extends ShapeSurfaceUnderCurve
  */
-class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
+class ShapeNMRIntegral extends Shape {
 
   constructor( graph, options ) {
 
     super( graph, options );
 
     this.nbHandles = 2;
+  }
+
+
+  createDom() {
+    this._dom = document.createElementNS( this.graph.ns, 'path' );
   }
 
   initImpl() {
@@ -28,6 +33,12 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       stroke: "black",
       fill: "white"
     } );
+
+    this.handles[ 1 ].setAttribute('fill', 'red');
+  }
+
+  xor( a, b ) {
+    return (a && !b) || (!a && b);
   }
 
   applyPosition() {
@@ -40,53 +51,75 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       axis = this.getAxis(),
       points = [];
 
-    let currentLine = "";
-
-    let baseLine = 300;
-    let ratio;
+    let currentLine = "",
+      baseLine = 300,
+      ratio;
 
     if ( !this.serie ) {
       throw "No serie exists for this shape";
     };
-    //    this.reversed = x == posXY2.x;
+/*
+    this.sortPositions( ( a, b ) => {
+      return a.x - b.x;
+    } );
 
-    var pos1 = this.getPosition( 0 );
-    var pos2 = this.getPosition( 1 );
-    /*
-        if (
-          ( axis == 'x' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) ) ||
-          ( axis == 'y' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) )
-        ) {
-
-          points = [
-            [ 0, 0 ]
-          ];
-          this.hideLabel( 0 );
-          this.setDom( "d", "" );
-          this.hideHandles();
-
-        } else {
     */
+    let pos1 = this.getPosition( 0 );
+    let pos2 = this.getPosition( 1 );
+    
     this.showLabel( 0 );
 
     let sum = 0;
 
     let j;
     let waveform = this.serie.getWaveform();
-    console.trace();
+      
     if ( !waveform ) {
       return;
     }
-    let index1 = waveform.getIndexFromX( pos1[ axis ], true );
-    let index2 = waveform.getIndexFromX( pos2[ axis ], true );
+
+    let index1 = waveform.getIndexFromX( pos1[ axis ], true ),
+      index2 = waveform.getIndexFromX( pos2[ axis ], true ),
+      index3,
+      flipped = false;
+
+    if( index2 < index1 ) {
+      index3 = index1;
+      index1 = index2;
+      index2 = index3;
+      flipped = true;
+    }
+
     let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
     let data = waveform.getDataInUse();
 
     index1 -= index1 % 4;
     index2 -= index2 % 4;
 
-    for ( j = index1; j <= index2; j++ ) {
+    let condition, incrementation;
 
+    if( 
+      ( waveform.getXMonotoneousAscending() && // Ascending
+      1 == 1 )
+      || 
+      ( ! waveform.getXMonotoneousAscending() && // Ascending
+      1 == 2 )
+      ) {
+
+      j = index2;
+      condition = true;
+      incrementation = -1;
+
+    } else {
+
+      j = index1;
+      condition = false
+      incrementation = 1;
+    }
+
+
+    for( ; condition ? j > index1 : j < index2; j += incrementation ) {
+      
       xVal = waveform.getX( j, true );
       yVal = waveform.getY( j, true );
 
@@ -111,22 +144,21 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       }
 
       if ( x == lastX && y == lastY ) {
-        continue;
+        //continue;
       }
 
       lastX = x;
       lastY = y;
       //console.log( data, data[ j ] );
 
-      if ( j % 4 == 0 && j > index1 && data.sums ) { // Sums are located every 4 element
+      if ( j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
+        
         sum += data.sums[ j ] * ( data.x[ j ] - data.x[ j - 3 ] ); // y * (out-in)
       }
 
       points.push( [ x, y, sum ] );
       lastXVal = xVal;
     }
-
-    waveform = this.serie.getWaveform();
 
     lastXVal = false;
     lastYVal = false;
@@ -136,19 +168,20 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
     if ( sum == 0 ) {
       sum = 1;
     }
-    console.log( this.ratio );
+      
+
     if ( !this.ratio ) {
       // 150px / unit
-      this.ratio = 300 / sum;
+      ratio = 200 / sum;
 
     } else {
       // Already existing
-      this.ratio = this.ratio;
+      ratio = this.ratio;
     }
 
     for ( var i = 0, l = points.length; i < l; i++ ) {
 
-      points[ i ][ 2 ] = baseLine - ( points[ i ][ 2 ] ) * this.ratio;
+      points[ i ][ 2 ] = baseLine - ( points[ i ][ 2 ] ) * ratio;
 
       if ( i == 0 ) {
         this.firstPointX = points[ i ][ 0 ];
@@ -182,14 +215,29 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
           this.setHandles();*/
 
     this.setLabelPosition( new GraphPosition( {
-      x: ( this.firstPointX + this.lastPointX ) / 2,
+      x: ( this.firstPointX + this.lastPointX ) / 2 + "px",
       y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
     } ) );
-
-    this.updateLabels();
+    
+    this.setLabelPosition( { x: 0.5 * ( this.firstPointX + this.lastPointX ) + "px", y: 0.5 * ( this.firstPointY + this.lastPointY ) + "px" }, 0 );  
+    ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
+    
     this.changed();
+    this.handleCondition = ! this.xor( incrementation == -1, flipped )
+    this.setHandles(  );
+
+    this.updateIntegralValue();
 
     return true;
+  }
+
+  updateIntegralValue( ratioLabel = this.ratioLabel ) {
+
+    if( ratioLabel ) {
+      this.ratioLabel = ratioLabel;
+    }
+    this.setLabelText( ratioLabel ? Math.round( 100 * this.sum * ratioLabel ) / 100 : "N/A", 0 );      
+    this.updateLabels();
   }
 
   getAxis() {
@@ -218,19 +266,19 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
 
   selectHandles() {} // Cancel areaundercurve
 
-  setHandles() {
-    console.log( 'a' );
+  setHandles( ) {
+    
     if ( this.points == undefined ) {
       return;
     }
-    console.log( 'b' );
+    
     if ( !this.isSelected() ) {
       return;
     }
-    console.log( 'c' );
+    
     this.addHandles();
 
-    if ( this.firstPointX < this.lastPointX ) {
+    if ( this.handleCondition ) {
 
       this.handles[ 1 ].setAttribute( 'x', this.firstPointX );
       this.handles[ 1 ].setAttribute( 'y', this.firstPointY );
@@ -245,6 +293,63 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       this.handles[ 1 ].setAttribute( 'y', this.lastPointY );
 
     }
+  }
+
+
+  /**
+   * Handles mouse move events
+   * @private
+   */
+  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+
+    if ( this.isLocked() ) {
+      return;
+    }
+
+    var pos = this.getPosition( 0 );
+    var pos2 = this.getPosition( 1 );
+
+    var posToChange;
+
+
+    if ( this.handleSelected == 1 ) {
+
+      posToChange = pos;
+
+    } else if ( this.handleSelected == 2 ) {
+
+      posToChange = pos2;
+    }
+
+    if ( posToChange ) {
+
+      if ( !this._data.vertical ) {
+        posToChange.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+    }
+
+    if ( this.moving ) {
+
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos.x ) {
+        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+      
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos2.x ) {
+        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+    }
+
+    if ( this.rectEvent ) {
+      this.setEventReceptacle();
+    }
+
+    this.redraw();
+    this.changed();
+    
+
+    return true;
   }
 }
 

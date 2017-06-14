@@ -551,7 +551,7 @@ class SerieLine extends Serie {
     }
 
     this.dataHasChanged( false );
-    this.afterDraw();
+    super.afterDraw();
   }
 
   _draw() {
@@ -574,9 +574,11 @@ class SerieLine extends Serie {
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
 
+
     if ( !waveform ) {
       return;
     }
+
     data = waveform.getData( true );
 
     // Y crossing
@@ -587,7 +589,11 @@ class SerieLine extends Serie {
       xTopCrossingRatio,
       xTopCrossing,
       xBottomCrossingRatio,
-      xBottomCrossing;
+      xBottomCrossing,
+
+      xshift = waveform.getXShift(),
+      yshift = waveform.getShift()
+      ;
 
     let pointOutside = false;
     let lastPointOutside = false;
@@ -629,10 +635,11 @@ class SerieLine extends Serie {
       }
     }
 
+
     for ( ; i < l; i += 1 ) {
 
-      x = waveform.getX( i, true );
-      y = data[ i ];
+      x = waveform.getX( i, true ) + xshift;
+      y = data[ i ] + yshift;
 
       if ( x != x || y != y ) { // NaN checks
         this._createLine();

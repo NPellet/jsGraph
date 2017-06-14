@@ -886,7 +886,7 @@ class Shape extends EventEmitter {
   /**
    * Returns a stored position object
    * @param {Number} [ index = 0 ] - The index of the position to compute
-   * @return {Position} The current shape
+   * @return {Position} The position at the proper index, or undefined
    */
   getPosition( index ) {
 
@@ -899,7 +899,7 @@ class Shape extends EventEmitter {
    * Sets a position object
    * @param {Position} position - The position object to store
    * @param {Number} [ index = 0 ] - The index of the position to store
-   * @return {Position} The current shape
+   * @return {Shape} The current shape
    */
   setPosition( position, index ) {
 
@@ -909,6 +909,17 @@ class Shape extends EventEmitter {
     } );
 
     return this.setProp( 'position', pos, ( index || 0 ) );
+  }
+
+
+  /**
+   * Sorts the positions
+   * @param {Function} sortFunction - Function passed into the ```Array.sort``` method
+   * @return {Position} The current shape
+   */
+  sortPositions( sortFunction ) {
+    this.getProps( 'position' ).sort( sortFunction );
+    return this;
   }
 
   /**
@@ -989,7 +1000,7 @@ class Shape extends EventEmitter {
 
     var i = 0;
 
-    while ( this.getProp( "labelText", i ) ) {
+    while ( this.getProp( "labelText", i ) !== undefined ) {
 
       if ( !self._labels[ i ] ) {
         self._labels[ i ] = document.createElementNS( self.graph.ns, 'text' );
@@ -1249,9 +1260,9 @@ class Shape extends EventEmitter {
     this._selectStatus = true;
 
     this.applySelectedStyle();
-    console.log( 'ds' );
+    
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
-      console.log( 'ds' );
+    
       this.addHandles();
       this.setHandles();
     }
@@ -1357,7 +1368,7 @@ class Shape extends EventEmitter {
 
     for ( var i = 1, l = nb; i <= l; i++ ) {
 
-      ( function( j ) {
+      ( ( j ) => {
 
         var self = this;
 
@@ -1371,7 +1382,7 @@ class Shape extends EventEmitter {
         }
 
         handle
-          .addEventListener( 'mousedown', function( e ) {
+          .addEventListener( 'mousedown', ( e ) => {
 
             if ( self.isResizable() ) {
 
@@ -1379,6 +1390,7 @@ class Shape extends EventEmitter {
               e.stopPropagation();
 
               self.graph.emit( "beforeShapeResize", self );
+              this.emit( "beforeShapeResize" );
 
               if ( !self.graph.prevent( false ) ) {
 
@@ -1511,6 +1523,7 @@ class Shape extends EventEmitter {
     }
 
     this.graph.emit( "beforeShapeMouseMove", this );
+    this.emit( "beforeShapeMouseMove" );
 
     if ( this.graph.prevent( false ) || !this._mouseCoords ) {
       return false;
@@ -1544,12 +1557,14 @@ class Shape extends EventEmitter {
     if ( this.moving ) {
 
       this.graph.emit( "shapeMoved", this );
+      this.emit( "shapeMoved" );
 
     }
 
     if ( this.handleSelected || this.resize ) {
 
       this.graph.emit( "shapeResized", this );
+      this.emit( "shapeResized" );
 
     }
 

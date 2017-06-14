@@ -46,7 +46,7 @@ let string = function() {
         k += 4;
         slots[ k ] = slotNumber;
 
-        let slotX = ( slotNumber + 0.5 ) / dataPerSlot;
+        let slotX = ( slotNumber + 0.5 ) / dataPerSlot + min;
 
         dataAggregatedX[ k ] = slotX;
         dataAggregatedX[ k + 1 ] = slotX;
@@ -134,6 +134,7 @@ var workerUrl = URL.createObjectURL( new Blob(
 aggregatorWorker = new Worker( workerUrl );
 
 aggregatorWorker.onmessage = function( e ) {
+  
   var id = e.data._queueId;
   delete e.data._queueId;
   queue[ id ]( e.data );

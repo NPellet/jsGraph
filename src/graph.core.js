@@ -1154,12 +1154,17 @@ class Graph extends EventEmitter {
     if ( typeof name == 'number' ) {
       return this.series[ name ] ||  false;
     }
+
+    if( typeof name == 'function' ) {
+      name = name();
+    }
+
     var i = 0,
       l = this.series.length;
 
     for ( ; i < l; i++ ) {
 
-      if ( this.series[ i ].getName() == name ) {
+      if ( this.series[ i ].getName() == name || this.series[ i ] == name ) {
 
         return this.series[ i ];
 
@@ -1483,6 +1488,9 @@ class Graph extends EventEmitter {
       }
     }
 
+    if( shapeData.serie ) {
+      shape.setSerie( this.getSerie( shapeData.serie ) );
+    }
     shape.createHandles();
 
     this.shapes.push( shape );

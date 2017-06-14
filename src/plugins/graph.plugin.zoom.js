@@ -158,6 +158,7 @@ class PluginZoom extends Plugin {
 
     var self = this;
     this.removeZone();
+
     var _x = x - graph.options.paddingLeft;
     var _y = y - graph.options.paddingTop;
 
@@ -270,6 +271,7 @@ class PluginZoom extends Plugin {
    * @private
    */
   removeZone() {
+
     this._zoomingSquare.setAttribute( 'display', 'none' );
   }
 

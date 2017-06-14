@@ -40,6 +40,8 @@ class Serie extends EventEmitter {
         shape.redraw();
       } );
     }
+
+    this.emit("draw");
   }
 
   /**

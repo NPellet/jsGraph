@@ -342,6 +342,8 @@ class Waveform {
 
     let data, xdata;
 
+    xval -= this.getXShift();
+
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
     } else if ( this.xdata ) {
@@ -355,43 +357,43 @@ class Waveform {
     }
   }
   getXMin() {
-    return this.minX;
+    return this.minX + this.getXShift();
   }
 
   getXMax() {
-    return this.maxX;
+    return this.maxX + this.getXShift();
   }
 
   getYMin() {
-    return this.minY;
+    return this.minY + this.getShift();
   }
 
   getYMax() {
-    return this.maxY;
+    return this.maxY + this.getShift();
   }
 
   getMin() {
-    return this.minY;
+    return this.minY + this.getShift();
   }
 
   getMax() {
-    return this.maxY;
+    return this.maxY + this.getShift();
   }
 
   getMinX() {
-    return this.minX;
+    return this.minX + this.getXShift();
   }
 
   getMaxX() {
-    return this.maxX;
+    return this.maxX + this.getXShift();
   }
 
   getMinY() {
-    return this.minY;
+    return this.minY + this.getShift();
   }
 
   getMaxY() {
-    return this.maxY;
+    return this.maxY + this.getShift();
   }
 
   getDataY() {
@@ -403,6 +405,35 @@ class Waveform {
       return this.data;
     }
     return this.dataInUse.y;
+  }
+
+  setShift( shift = 0 ) {
+    this.shift = shift;
+    return this;
+  }
+
+  getShift() {
+    return this.shift || 0;
+  }
+
+  setXShift( shift = 0 ) {
+console.log('shiftin request');
+    if( ! this.hasXWaveform ) {
+      return this;
+    }
+
+    console.log('shifting', shift );
+    this.getXWaveform().setShift( shift );
+    return this;
+  }
+
+  getXShift( shift = 0 ) {
+
+    if( ! this.hasXWaveform ) {
+      return 0;
+    }
+    
+    return this.getXWaveform().getShift( );
   }
 
   getLength() {
@@ -711,6 +742,11 @@ class Waveform {
   }
 
   getMonotoneousAscending() {
+
+    if( ! this.isMonotoneous() ) {
+      return "The waveform is not monotoneous";
+    }
+
     return this._monotoneousAscending;
   }
 
@@ -880,9 +916,9 @@ class Waveform {
       numPoints: pow2
 
     } ).then( ( event ) => {
-      console.log( event );
+      
       this._dataAggregated = event.aggregates;
-
+      this._dataAggregating = false;
     } );
 
   }
@@ -898,16 +934,16 @@ class Waveform {
     }
 
     var level = pow2ceil( pxWidth );
-    if ( this._dataAggregated[ level ] ) {
 
+    if ( this._dataAggregated[ level ] ) {
+console.log('agg');
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {
 
       return this._dataAggregating;
-
     }
-
+console.log('orig');
     this.dataInUse = {
       y: this.data,
       x: this.getXWaveform().data
