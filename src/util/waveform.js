@@ -85,7 +85,7 @@ class Waveform {
   getY( index, optimized ) {
 
     if ( optimized && this.dataInUse ) {
-      return this.dataInUse.y[ index ];
+      return this.dataInUse.y[ index ] + this.getShift();
     }
 
     return this.data[ index ];
@@ -499,7 +499,7 @@ console.log('shiftin request');
     }
 
     if ( this.xdata ) {
-      return this.xdata.data[ index ];
+      return this.xdata.data[ index ] + this.getXShift();
     } else {
       return this.xOffset + index * this.xScale;
     }
