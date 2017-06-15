@@ -2094,14 +2094,30 @@ class Graph extends EventEmitter {
       this.options.trackingLine = options;
     }
 
+    options.series = options.series || [];
+
     // Individual tracking
     if ( options.mode == "individual" ) {
 
       if ( options.series ) {
-        options.series.map( function( sOptions ) {
+
+        if( ! Array.isArray( options.series ) ) {
+          options.series = [ options.series ];
+        }
+
+        options.series.forEach( ( sOptions ) => {
 
           if ( typeof sOptions.serie !== "object" ) {
+
+            if( typeof sOptions !== "object" ) {
+              throw "Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";
+            }
+
             sOptions.serie = this.getSerie( sOptions.serie );
+          }
+
+          if( ! sOptions.serie ) {
+            return;
           }
 
           self.addSerieToTrackingLine( sOptions.serie, sOptions );
@@ -2109,48 +2125,61 @@ class Graph extends EventEmitter {
         } );
       }
     } else {
-      options.series.map( function( serie ) {
+
+      options.series.map( ( serie ) => {
         serie.serie.disableTracking();
       } );
     }
 
-    this.trackingLine = this.newShape( 'line', util.extend( true, {
-      position: [ {
-        y: 'min'
-      }, {
-        y: 'max'
-      } ],
-      stroke: 'black',
-      layer: -1
-    }, options.trackingLineShapeOptions ) );
-    this.trackingLine.draw();
+    if( ! this.trackingObject ) { // Avoid multiple creation of tracking lines
 
-    return this.trackingLine;
+      // Creates a new shape called trackingLine, in the first layer (below everything)
+      this.trackingObject = this.newShape( 'line', util.extend( true, {
+        position: [ {
+          y: 'min'
+        }, {
+          y: 'max'
+        } ],
+        stroke: 'black',
+        layer: -1
+      }, options.trackingLineShapeOptions ) );
+    }
 
+
+    this.trackingObject.draw();
+
+    return this.trackingObject;
   }
+
+
   addSerieToTrackingLine( serie, options ) {
 
-    var self = this;
+    if ( ! this.options.trackingLine ) {
 
-    if ( !this.options.trackingLine ) {
-      this.trackingLine( {
+      this.trackingObject( {
         mode: 'individual'
       } );
     }
 
-    serie.enableTracking( function( serie, index, x, y ) {
+    // TODO: Check if not already existing
+    this.options.trackingLine.series.push( Object.assign( {
+      serie: serie
+    }, options ) );
+
+
+    serie.enableTracking( ( serie, index, x, y ) => {
 
       if ( index ) {
 
-        self.trackingLine.show();
-        var closestIndex = index.xIndexClosest;
-        self.trackingLine.getPosition( 0 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
-        self.trackingLine.getPosition( 1 ).x = serie.getData()[ 0 ][ index.closestIndex * 2 ];
-        self.trackingLine.redraw();
+        this.trackingObject.show();
+        
+        this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+        this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+        this.trackingObject.redraw();
 
-        serie._trackingLegend = _trackingLegendSerie( self, {
+        serie._trackingLegend = _trackingLegendSerie( this, {
           serie: serie
-        }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function( output ) {
+        }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
 
           for ( var i in output ) {
 
@@ -2158,12 +2187,13 @@ class Graph extends EventEmitter {
             break;
           }
 
-        }, self.trackingLine.getPosition( 0 ).x );
+        }, index.trueX );
 
         serie._trackingLegend.style.display = "block";
       }
-    }, function( serie ) {
-      self.trackingLine.hide();
+    }, ( serie ) => {
+
+      this.trackingObject.hide();
 
       if ( serie.trackingShape ) {
         serie.trackingShape.hide();
@@ -2173,8 +2203,10 @@ class Graph extends EventEmitter {
         serie._trackingLegend.style.display = "none";
       }
 
-      serie._trackingLegend = _trackingLegendSerie( self, {
+      serie._trackingLegend = _trackingLegendSerie( this, {
+
         serie: serie
+
       }, false, false, serie._trackingLegend, false, false );
 
     } );
@@ -3351,6 +3383,7 @@ function _handleMouseMove( graph, x, y, e ) {
   if ( !graph.activePlugin ) {
     var index;
 
+    // Takes care of the tracking line
     if ( graph.options.trackingLine && graph.options.trackingLine.snapToSerie ) {
 
       if ( graph.options.trackingLine.mode == "common" ) {
@@ -3360,22 +3393,23 @@ function _handleMouseMove( graph, x, y, e ) {
 
         if ( !index ) {
 
-          graph.trackingLine.hide();
+          graph.trackingObject.hide();
 
         } else {
 
-          graph.trackingLine.show();
-          var closestIndex = index.xIndexClosest;
-          graph.trackingLine.getPosition( 0 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
-          graph.trackingLine.getPosition( 1 ).x = snapToSerie.getData()[ 0 ][ closestIndex * 2 ];
-          graph.trackingLine.redraw();
+          graph.trackingObject.show();
+          
+          graph.trackingObject.getPosition( 0 ).x = index.xClosest;
+          graph.trackingObject.getPosition( 1 ).x = index.xClosest;
+          graph.trackingObject.redraw();
 
-          var x = snapToSerie.getXAxis().getPx( graph.trackingLine.getPosition( 0 ).x ) + graph.options.paddingLeft;
+          var x = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
 
         }
 
         var series = graph.options.trackingLine.series;
 
+        // Gets a default value
         if ( !series ) {
 
           series = graph.getSeries().map( function( serie ) {
@@ -3387,10 +3421,11 @@ function _handleMouseMove( graph, x, y, e ) {
           } );
         }
 
-        graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, graph.trackingLine.getPosition( 1 ).x );
+        graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, graph.trackingObject.getPosition( 1 ).x );
       }
     }
   }
+  // End takes care of the tracking line
 
   if ( graph.options.onMouseMoveData ) {
     var results = {};
@@ -3480,7 +3515,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
     legend = _makeTrackingLegend( graph );
   }
 
-  serie.map( function( serie ) {
+  serie.map( ( serie ) => {
 
     var index = serie.serie.handleMouseMove( xValue, false );
 
@@ -3495,8 +3530,8 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
     // Should we display the dot ?
     if (
-      ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) ) - serie.withinPx > 1e-14 ) ||
-      ( serie.withinVal > 0 && Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ] ) - serie.withinVal > serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) / 100000 )
+      ( serie.withinPx > 0 && Math.abs( x - graph.options.paddingLeft - serie.serie.getXAxis().getPx( index.xClosest ) ) - serie.withinPx > 1e-14 ) ||
+      ( serie.withinVal > 0 && Math.abs( serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) - index.xClosest ) - serie.withinVal > serie.serie.getXAxis().getVal( x - graph.options.paddingLeft ) / 100000 )
     ) {
 
       if ( serie.serie.trackingShape ) {
@@ -3507,9 +3542,9 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       output[ serie.serie.getName() ] = {
 
-        xIndex: index.xIndexClosest,
-        yValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 + 1 ],
-        xValue: serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ],
+        
+        yValue: index.xClosest,
+        xValue: index.yClosest,
         serie: serie,
         index: index
 
@@ -3532,7 +3567,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
       }
 
       serie.serie.trackingShape.show();
-      serie.serie.trackingShape.getPosition( 0 ).x = serie.serie.getData()[ 0 ][ index.xIndexClosest * 2 ];
+      serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
       serie.serie.trackingShape.redraw();
     }
 

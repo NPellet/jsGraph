@@ -826,16 +826,17 @@ class SerieLine extends Serie {
         cloned.children[ i ].setAttribute( 'pointer-events', 'stroke' );
       }
 
-      self._trackerDom = cloned;
+      this._trackerDom = cloned;
 
-      self.groupMain.addEventListener( "mousemove", function( e ) {
-        var coords = self.graph._getXY( e ),
-          ret = self.handleMouseMove( false, false );
-        self._trackingCallback( self, ret, coords.x, coords.y );
+      this.groupMain.addEventListener( "mousemove", ( e ) => {
+        var coords = this.graph._getXY( e ),
+          ret = this.handleMouseMove( false, false );
+          
+        this._trackingCallback( this, ret, coords.x, coords.y );
       } );
 
-      self.groupMain.addEventListener( "mouseleave", function( e ) {
-        self._trackingOutCallback( self );
+      this.groupMain.addEventListener( "mouseleave", ( e ) => {
+        this._trackingOutCallback( this );
       } );
     }
 
@@ -1275,15 +1276,23 @@ class SerieLine extends Serie {
   searchClosestValue( valX, data ) {
 
     if ( this._waveform ) {
-      var indexX = this._waveform.getIndexFromX( valX );
-
-      return {
+      const indexX = this._waveform.getIndexFromX( valX );
+      let returnObj = {
         xMin: this._waveform.getX( indexX ),
         xMax: this._waveform.getX( indexX + 1 ),
         yMin: this._waveform.getY( indexX ),
-        yMax: this._waveform.getY( indexX + 1 )
+        yMax: this._waveform.getY( indexX + 1 ),
       };
 
+      if( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
+        returnObj.xClosest = returnObj.xMin;
+        returnObj.yClosest = returnObj.yMin;
+      } else {
+        returnObj.xClosest = returnObj.xMax;
+        returnObj.yClosest = returnObj.yMax;
+      }
+
+      return returnObj;
     }
 
     return;
@@ -1352,8 +1361,9 @@ class SerieLine extends Serie {
         yAfter: value.yMax,
         trueX: valX,
         interpolatedY: intY,
-        xBeforeIndex: value.xBeforeIndex,
-        xIndexClosest: value.xClosest
+
+        xClosest: value.xClosest,
+        yClosest: value.yClosest
       };
     }
     /**
