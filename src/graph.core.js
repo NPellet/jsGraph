@@ -2131,6 +2131,10 @@ class Graph extends EventEmitter {
       } );
     }
 
+    if( options.noLine ) {
+      return;
+    }
+
     if( ! this.trackingObject ) { // Avoid multiple creation of tracking lines
 
       // Creates a new shape called trackingLine, in the first layer (below everything)
@@ -2156,7 +2160,7 @@ class Graph extends EventEmitter {
 
     if ( ! this.options.trackingLine ) {
 
-      this.trackingObject( {
+      this.trackingLine( {
         mode: 'individual'
       } );
     }
@@ -2169,13 +2173,14 @@ class Graph extends EventEmitter {
 
     serie.enableTracking( ( serie, index, x, y ) => {
 
-      if ( index ) {
+      if ( index ) { 
 
-        this.trackingObject.show();
-        
-        this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-        this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-        this.trackingObject.redraw();
+        if( this.trackingObject ) {
+          this.trackingObject.show();
+          this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+          this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+          this.trackingObject.redraw();
+        }
 
         serie._trackingLegend = _trackingLegendSerie( this, {
           serie: serie
@@ -2189,11 +2194,15 @@ class Graph extends EventEmitter {
 
         }, index.trueX );
 
-        serie._trackingLegend.style.display = "block";
+        if( serie._trackingLegend ) {
+          serie._trackingLegend.style.display = "block";
+        }
       }
     }, ( serie ) => {
 
-      this.trackingObject.hide();
+      if( this.trackingObject ) {
+        this.trackingObject.hide();
+      }
 
       if ( serie.trackingShape ) {
         serie.trackingShape.hide();
@@ -3391,20 +3400,23 @@ function _handleMouseMove( graph, x, y, e ) {
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove( false, true );
 
-        if ( !index ) {
+        if( this.trackingObject ) {
 
-          graph.trackingObject.hide();
+          if ( !index ) {
 
-        } else {
+            graph.trackingObject.hide();
 
-          graph.trackingObject.show();
-          
-          graph.trackingObject.getPosition( 0 ).x = index.xClosest;
-          graph.trackingObject.getPosition( 1 ).x = index.xClosest;
-          graph.trackingObject.redraw();
+          } else {
 
-          var x = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
+            graph.trackingObject.show();
+            
+            graph.trackingObject.getPosition( 0 ).x = index.xClosest;
+            graph.trackingObject.getPosition( 1 ).x = index.xClosest;
+            graph.trackingObject.redraw();
 
+            var x = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
+
+          }
         }
 
         var series = graph.options.trackingLine.series;
@@ -3421,7 +3433,7 @@ function _handleMouseMove( graph, x, y, e ) {
           } );
         }
 
-        graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, graph.trackingObject.getPosition( 1 ).x );
+        graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest );
       }
     }
   }
@@ -3510,7 +3522,8 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
   var output = [];
 
-  if ( !legend ) {
+
+  if ( !legend && graph.options.trackingLine.legend ) {
     justCreated = true;
     legend = _makeTrackingLegend( graph );
   }
@@ -3572,6 +3585,11 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
     }
 
   } ); // End map
+
+
+  if( ! graph.options.trackingLine.legend ) {
+    return;
+  }
 
   if ( Object.keys( output ).length == 0 ||  !textMethod ) {
     legend.style.display = "none";
