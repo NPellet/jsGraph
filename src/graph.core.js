@@ -3565,18 +3565,28 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       if ( !serie.serie.trackingShape ) {
 
-        serie.serie.trackingShape = graph.newShape( "ellipse", {
+        serie.serie.trackingShape = graph.newShape( 
 
-            fillColor: serie.serie.getLineColor(),
-            strokeColor: "White",
-            strokeWidth: serie.serie.getLineWidth()
-
-          } )
+            graph.options.trackingLine.serieShape.shape || 'ellipse',
+            {
+              fillColor: serie.serie.getLineColor(),
+              strokeColor: "White",
+              strokeWidth: serie.serie.getLineWidth()
+            },
+            true,
+            graph.options.trackingLine.serieShape.properties || { rx: [ serie.serie.getLineWidth() * 3 ], ry: [ serie.serie.getLineWidth() * 3 ] }
+          )
           .setSerie( serie.serie )
-          .setProp( 'rx', serie.serie.getLineWidth() * 3 )
-          .setProp( 'ry', serie.serie.getLineWidth() * 3 )
           .forceParentDom( serie.serie.groupMain )
           .draw();
+
+          ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
+
+          serie.serie.trackingShape.on("changed", () => {
+            console.log('changed1');
+            ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
+
+          })
       }
 
       serie.serie.trackingShape.show();
@@ -3714,6 +3724,8 @@ function _handleClick( graph, x, y, e ) {
   graph.emit( 'click', [ graph, x, y, e ] );
 
   // Not on a shape
+console.log('here');
+  checkMouseActions( graph, e, [ x, y, e ], 'onClick' );
 
   if ( !e.target.jsGraphIsShape && !graph.prevent( false ) && graph.options.shapesUnselectOnClick ) {
 

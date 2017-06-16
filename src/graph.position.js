@@ -30,6 +30,10 @@ class Position {
     }
   }
 
+  duplicate() {
+    return new Position( this.x, this.y, this.dx, this.dy );
+  }
+
   /**
    *  Computes the position of the position
    *  @param {Graph} graph - The graph for which the position has to be computed

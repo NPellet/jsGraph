@@ -223,7 +223,7 @@ class Shape extends EventEmitter {
   }
 
   /**
-   * Triggers a ```shapeChanged``` event on the graph
+   * Triggers a ```shapeChanged``` event on the graph and a ```changed``` event on the shape
    * @return {Shape} The current shape
    */
   changed( event ) {
@@ -232,7 +232,7 @@ class Shape extends EventEmitter {
       this.graph.emit( event, this );
     }
 
-    this.emit( "shapeChanged", this );
+    this.emit( "changed", this );
     this.graph.emit( 'shapeChanged', this );
     return this;
   }
