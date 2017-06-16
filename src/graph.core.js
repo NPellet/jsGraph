@@ -3583,7 +3583,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
           ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
 
           serie.serie.trackingShape.on("changed", () => {
-            console.log('changed1');
+            
             ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
 
           })
@@ -3724,7 +3724,7 @@ function _handleClick( graph, x, y, e ) {
   graph.emit( 'click', [ graph, x, y, e ] );
 
   // Not on a shape
-console.log('here');
+
   checkMouseActions( graph, e, [ x, y, e ], 'onClick' );
 
   if ( !e.target.jsGraphIsShape && !graph.prevent( false ) && graph.options.shapesUnselectOnClick ) {

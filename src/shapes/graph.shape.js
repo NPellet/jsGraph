@@ -138,6 +138,7 @@ class Shape extends EventEmitter {
 
     this.graph.stopElementMoving( this );
     this.graph.emit( "shapeRemoved", this );
+    this.emit("removed", this );
 
     this._inDom = false;
   }
@@ -230,6 +231,7 @@ class Shape extends EventEmitter {
 
     if ( event ) {
       this.graph.emit( event, this );
+      this.emit( event, this );
     }
 
     this.emit( "changed", this );
@@ -1505,7 +1507,7 @@ class Shape extends EventEmitter {
     }
 
     if ( this.getProp( 'selectOnClick' ) ) {
-
+console.log('sel');
       this.graph.selectShape( this );
     }
   }
@@ -1867,7 +1869,9 @@ class Shape extends EventEmitter {
     var shapeLabel = document.createElement( 'input' );
     shapeLabel.setAttribute( 'type', 'text' );
     shapeLabel.setAttribute( 'value', self.getProp( 'labelText', i ) );
-    self.graph._dom.prepend( shapeLabel );
+    
+    self.graph.wrapper.prepend( shapeLabel );
+
     util.setCSS( shapeLabel, {
       position: 'absolute',
       marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + 'px',
@@ -1875,18 +1879,27 @@ class Shape extends EventEmitter {
       textAlign: 'center',
       width: '100px'
     } );
-    shapeLabel.addEventListener( 'blur', function() {
-      self.setLabelText( shapeLabel.getAttribute( 'value' ), i );
-      self._labels[ i ].textContent = shapeLabel.getAttribute( 'value' );
-      shapeLabel.remove();
-      self.changed( "shapeLabelChanged" );
 
-    } );
+    const blurEvent = function() {
+
+      self.setLabelText( shapeLabel.value, i );
+      self._labels[ i ].textContent = shapeLabel.value;
+      console.log( shapeLabel.getAttribute( 'value' ) );
+
+      shapeLabel.remove();
+      shapeLabel.removeEventListener('blur', blurEvent );
+      shapeLabel = false;
+
+      self.changed( "shapeLabelChanged" );
+    };
+
+    shapeLabel.addEventListener( 'blur', blurEvent );
+
     shapeLabel.addEventListener( 'keyup', function( e ) {
       e.stopPropagation();
       e.preventDefault();
       if ( e.keyCode === 13 ) {
-        shapeLabel.dispatchEvent( new Event( 'blur' ) );
+        blurEvent();
       }
     } );
     shapeLabel.addEventListener( 'keypress', function( e ) {
