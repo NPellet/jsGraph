@@ -227,15 +227,15 @@ class Shape extends EventEmitter {
    * Triggers a ```shapeChanged``` event on the graph and a ```changed``` event on the shape
    * @return {Shape} The current shape
    */
-  changed( event ) {
+  changed( event, parameters ) {
 
     if ( event ) {
-      this.graph.emit( event, this );
-      this.emit( event, this );
+      this.graph.emit( event, this, parameters );
+      this.emit( event, this, parameters );
     }
 
-    this.emit( "changed", this );
-    this.graph.emit( 'shapeChanged', this );
+    this.emit( "changed", this, parameters );
+    this.graph.emit( 'shapeChanged', this, parameters );
     return this;
   }
 
@@ -1874,23 +1874,26 @@ console.log('sel');
 
     util.setCSS( shapeLabel, {
       position: 'absolute',
-      marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) - 10 ) + 'px',
-      marginLeft: ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) - 50 ) + 'px',
+      marginTop: ( parseInt( e.target.getAttribute( 'y' ).replace( 'px', '' ) ) + this.graph.getPaddingTop() - 10 ) + 'px',
+      marginLeft: ( parseInt( e.target.getAttribute( 'x' ).replace( 'px', '' ) ) + this.graph.getPaddingLeft() - 50 ) + 'px',
       textAlign: 'center',
       width: '100px'
     } );
+
+    const previousValue = self.getLabelText( i );
 
     const blurEvent = function() {
 
       self.setLabelText( shapeLabel.value, i );
       self._labels[ i ].textContent = shapeLabel.value;
-      console.log( shapeLabel.getAttribute( 'value' ) );
+
+      const nextValue = shapeLabel.value;
 
       shapeLabel.remove();
       shapeLabel.removeEventListener('blur', blurEvent );
       shapeLabel = false;
 
-      self.changed( "shapeLabelChanged" );
+      self.changed( "shapeLabelChanged", { previousValue: previousValue, nextValue: nextValue } );
     };
 
     shapeLabel.addEventListener( 'blur', blurEvent );

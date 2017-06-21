@@ -88,7 +88,7 @@ class Waveform {
       return this.dataInUse.y[ index ] + this.getShift();
     }
 
-    return this.data[ index ];
+    return this.data[ index ] + this.getShift();
   }
 
   /*
@@ -408,6 +408,10 @@ class Waveform {
   }
 
   setShift( shift = 0 ) {
+
+    // We must update the min and the max of the y data
+    this.minY += ( shift - this.getShift() );
+    this.maxY += ( shift - this.getShift() );
     this.shift = shift;
     return this;
   }
@@ -417,12 +421,16 @@ class Waveform {
   }
 
   setXShift( shift = 0 ) {
-console.log('shiftin request');
+
     if( ! this.hasXWaveform ) {
       return this;
     }
+console.log( shift );
 
-    console.log('shifting', shift );
+    // We must update the min and the max of the x data
+    // That's important for when the data has already been set
+    this.minX += ( shift - this.getXShift() );
+    this.maxX += ( shift - this.getXShift() );
     this.getXWaveform().setShift( shift );
     return this;
   }
@@ -495,7 +503,7 @@ console.log('shiftin request');
   getX( index, optimized ) {
 
     if ( optimized && this.dataInUse ) {
-      return this.dataInUse.x[ index ];
+      return this.dataInUse.x[ index ] + this.getXShift();
     }
 
     if ( this.xdata ) {

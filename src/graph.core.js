@@ -2090,11 +2090,21 @@ class Graph extends EventEmitter {
 
     var self = this;
 
+    if( typeof options === 'boolean' ) {
+
+      if( this.options.trackingLine ) {
+        this.options.trackingLine.enable = options;
+      }
+      return;
+    }
+
+
     if ( options ) {
       this.options.trackingLine = options;
     }
 
     options.series = options.series || [];
+    options.enable = options.enable === undefined ? true : !!options.enable;
 
     // Individual tracking
     if ( options.mode == "individual" ) {
@@ -2173,29 +2183,31 @@ class Graph extends EventEmitter {
 
     serie.enableTracking( ( serie, index, x, y ) => {
 
-      if ( index ) { 
+      if( this.options.trackingLine.enable ) {
+        if ( index ) { 
 
-        if( this.trackingObject ) {
-          this.trackingObject.show();
-          this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-          this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-          this.trackingObject.redraw();
-        }
-
-        serie._trackingLegend = _trackingLegendSerie( this, {
-          serie: serie
-        }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
-
-          for ( var i in output ) {
-
-            return output[ i ].serie.serie.getName() + ": " + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )
-            break;
+          if( this.trackingObject ) {
+            this.trackingObject.show();
+            this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+            this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+            this.trackingObject.redraw();
           }
 
-        }, index.trueX );
+          serie._trackingLegend = _trackingLegendSerie( this, {
+            serie: serie
+          }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : ( output ) => {
 
-        if( serie._trackingLegend ) {
-          serie._trackingLegend.style.display = "block";
+            for ( var i in output ) {
+
+              return output[ i ].serie.serie.getName() + ": " + output[ i ].serie.serie.getYAxis().valueToHtml( output[ i ].yValue )
+              break;
+            }
+
+          }, index.trueX );
+
+          if( serie._trackingLegend ) {
+            serie._trackingLegend.style.display = "block";
+          }
         }
       }
     }, ( serie ) => {
@@ -3393,7 +3405,7 @@ function _handleMouseMove( graph, x, y, e ) {
     var index;
 
     // Takes care of the tracking line
-    if ( graph.options.trackingLine && graph.options.trackingLine.snapToSerie ) {
+    if ( graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie ) {
 
       if ( graph.options.trackingLine.mode == "common" ) {
 

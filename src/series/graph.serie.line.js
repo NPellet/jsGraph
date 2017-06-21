@@ -635,10 +635,10 @@ class SerieLine extends Serie {
       }
     }
 
-
+console.log( i, l );
     for ( ; i < l; i += 1 ) {
 
-      x = waveform.getX( i, true ) + xshift;
+      x = waveform.getX( i, true );
       y = data[ i ] + yshift;
 
       if ( x != x || y != y ) { // NaN checks
