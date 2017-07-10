@@ -2191,6 +2191,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.xScale = scale;
 	      this.xOffset = offset;
 	      this.computeXMinMax();
+	      return this;
 	    }
 
 	    getTypedArrayClass() {
@@ -2471,7 +2472,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this.hasXWaveform) {
 	        return this;
 	      }
-	      console.log(shift);
 
 	      // We must update the min and the max of the x data
 	      // That's important for when the data has already been set
@@ -2990,14 +2990,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var level = pow2ceil(pxWidth);
 
 	      if (this._dataAggregated[level]) {
-	        console.log('agg');
+
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
 	      } else if (this._dataAggregating) {
 
 	        return this._dataAggregating;
 	      }
-	      console.log('orig');
+
 	      this.dataInUse = {
 	        y: this.data,
 	        x: this.getXWaveform().data
