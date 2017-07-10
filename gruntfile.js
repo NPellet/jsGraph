@@ -60,7 +60,7 @@ module.exports = function(grunt) {
                     './web/site/js/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph-es6.js',
                     './web/site/js/node-jsgraph/dist/jsgraph.min.js': 'dist/jsgraph.min.js'
                 }
-            },
+            }
 
         },
 

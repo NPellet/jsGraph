@@ -90,6 +90,7 @@ class Graph extends EventEmitter {
       @type String
     */
     this._creation = util.guid();
+    this._drawn = false;
 
     if ( wrapper === Object( wrapper ) && !( wrapper instanceof HTMLElement ) ) { // Wrapper is options
       axis = options;
@@ -331,6 +332,7 @@ class Graph extends EventEmitter {
    */
   draw( force ) {
 
+    this.drawn = true;
     this.updateLegend( true );
     this.drawSeries( this.redraw( true && !force ) );
   }
@@ -2048,9 +2050,10 @@ class Graph extends EventEmitter {
     this.dom.setAttribute( 'height', this.height );
     this.domTitle.setAttribute( 'x', this.width / 2 );
 
-    this.requireLegendUpdate();
-
-    this.draw( true );
+    if ( this.drawn ) {
+      this.requireLegendUpdate();
+      this.draw( true );
+    }
   }
 
   updateGraphingZone() {
