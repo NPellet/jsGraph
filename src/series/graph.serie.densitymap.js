@@ -2,16 +2,6 @@ import Serie from './graph.serie'
 import * as util from '../graph.util'
 
 /**
- * @name SerieDensityMapDefaultOptions
- * @object
- * @static
- * @memberof SerieDensityMap
- */
-const defaults = {
-
-}
-
-/** 
  * Density map serie
  * @example graph.newSerie( name, options, "densitymap" );
  * @see Graph#newSerie
@@ -19,32 +9,25 @@ const defaults = {
  */
 class SerieDensityMap extends Serie {
 
-  /**
-   * Initializes the serie
-   * @private
-   * @memberof SerieDensityMap
-   */
-  init( graph, name, options ) {
+  constructor( graph, name, options ) {
 
-    this.options = util.extend( true, {}, defaults, ( options || {} ) ); // Creates options
-    util.mapEventEmission( this.options, this ); // Register events
+      super( ...arguments );
+      util.mapEventEmission( this.options, this ); // Register events
 
-    this.graph = graph;
-    this.groupMain = document.createElementNS( this.graph.ns, 'g' );
+      this.groupMain = document.createElementNS( this.graph.ns, 'g' );
 
-    this.rects = [];
-    this.paths = [];
+      this.rects = [];
+      this.paths = [];
 
-    this.recalculateBinsOnDraw = false;
-  }
-
-  /**
-   * Sets the data of the serie. Careful, only one format allowed for now.
-   * @memberof SerieDensityMap
-   * @param {Array} data - A vector containing 2-elements arrays
-   * @return {SerieDensityMap} The current instance
-   * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
-   */
+      this.recalculateBinsOnDraw = false;
+    }
+    /**
+     * Sets the data of the serie. Careful, only one format allowed for now.
+     * @memberof SerieDensityMap
+     * @param {Array} data - A vector containing 2-elements arrays
+     * @return {SerieDensityMap} The current instance
+     * @example serie.setData( [ [ x1, y1 ], [ x2, y2 ], ..., [ xn, yn ] ] );
+     */
   setData( data ) {
 
     this.minX = this.maxX = this.minY = this.maxY = 0;
@@ -248,7 +231,7 @@ class SerieDensityMap extends Serie {
   }
 
   /**
-   * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into 
+   * Only calculates the density map upon redraw based on the current state of the graph. In this mode, a fixed number of pixels per bin is used to calculate the number of bins and fed into
    * the calculation of the density map. In this method, the color map spans on the full scale of the density map values (i.e. a subrange cannot be defined, like you would do using {@link SerieDensityMap#setColorMapBinBoundaries}).
    * @memberof SerieDensityMap
    * @param {Number} pxPerBinX - The number of x bins per pixels. Should be an integer, but technically it doesn't have to
@@ -395,7 +378,7 @@ class SerieDensityMap extends Serie {
    * @param {Number} binMax - The maximum bin value
    * @return {SerieDensityMap} The current instance
    * @example // In this case, all bins with values below binMin * 2 (the middle scale) will be rendered with the first color of the color map
-   * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax ); 
+   * serie.setColorMapBinBoundaries( serie.binMin * 2, serie.binMax );
    */
   setColorMapBinBoundaries( min, max ) {
     this.colorMapMin = min;
@@ -428,7 +411,7 @@ class SerieDensityMap extends Serie {
   };
 
   /**
-   * Generates a color map based on a serie of HSL(A) values. 
+   * Generates a color map based on a serie of HSL(A) values.
    * @summary Colors can scale linearly, logarithmically (enhances short range differences) or exponentially (enhances long range differences).
    * One word of advice though. SVG being not canvas, jsGraph has to create a path for each color value of the color map. In other words, if you're asking for 16-bit coloring (65536 values), 65536 SVG paths will be created and your browser will start to suffer from it.
    * As of now, all the colors in colorStops will be places at equal distances from each other between <code>colorMapMin</code> and <code>colorMapMax</code> set by {@link autoColorMapBinBoundaries} or {@link setColorMapBinBoundaries}
@@ -572,6 +555,7 @@ class SerieDensityMap extends Serie {
     }
 
     if ( !this.callbackColorMapMinMax || this.colorMapMin == undefined || this.colorMapMax == undefined || this.callbackColorMapMinMax == 'auto' ) {
+
       this.autoColorMapBinBoundaries();
     } else {
       var val = this.callbackColorMapMinMax( this.binMin, this.binMax );

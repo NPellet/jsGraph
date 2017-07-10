@@ -49,7 +49,8 @@ module.exports = function(grunt) {
 
             examples: {
                 files: {
-                    './examples/node_modules/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js'
+                    './examples/node_modules/node-jsgraph/dist/jsgraph.js': 'dist/jsgraph.js',
+                    './examples/node_modules/node-jsgraph/dist/jsgraph-es6.js': 'dist/jsgraph-es6.js',
                 }
             },
 
@@ -246,7 +247,7 @@ module.exports = function(grunt) {
 
 
 
-    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6', 'uglify:dist' ] );
+    grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6' ] );
 
 
     function WebpackBeautifier(options) {

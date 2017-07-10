@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="./amd.schema.css" rel="stylesheet" />
+	</head>
+
+	<body>
+
+    <h1>Fitting using jsGraph and Levenberg-Marquardt algorithm</h1>
+
+    <p>Enter the guess parameter below and press fit</p>
+    <p>Fitting sine wave is a bit tricky with the x scaling. You need to be about right for convergence to occur (+/- 2 or so)</p>
+
+    <label>X scale</label><input id="p1" /><br />
+    <label>Phase</label><input id="p2" /><br />
+    <label>Amplitude</label><input id="p3" /><br />
+    <label>Offset</label><input id="p4" /><br />
+
+    <button id="fit">Fit me</button><br />
+    <button id="new">New data</button>
+
+		<div id="graph"></div>
+
+	</body>
+
+    <script data-main="./init.LM" src="./requirejs/require.js" type="text/javascript"></script>
+</html>

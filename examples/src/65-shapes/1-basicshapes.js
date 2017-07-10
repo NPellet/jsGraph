@@ -22,10 +22,9 @@ define( function() {
             selectable: true,
             selectOnClick: true
         }).draw();
-    s.setSelectStyle( { 'fill': 'blue' });
+      s.setSelectStyle( { 'fill': 'blue' });
 
-     graphinstance.draw();
-     
+      graphinstance.draw();
    //
 //        s.applyStyle();
      

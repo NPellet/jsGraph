@@ -1,7 +1,7 @@
 import SerieLine from './graph.serie.line'
 import * as util from '../graph.util'
 
-/** 
+/**
  * Constructor for the contour serie. Do not use this constructor directly, but use the {@link Graph#newSerie} method
  * @private
  * @extends Serie
@@ -10,7 +10,7 @@ import * as util from '../graph.util'
  */
 class SerieContour extends SerieLine {
 
-  constructor() {
+  constructor( graph, name, options ) {
     super( ...arguments );
 
     this.negativeDelta = 0;
@@ -145,7 +145,7 @@ class SerieContour extends SerieLine {
           /*	if( j > 0 && ( lastxpx !== undefined && lastypx !== undefined && Math.abs( xpx2 - lastxpx ) <= 30 && Math.abs( ypx2 - lastypx ) <= 30 ) ) {
   						currentLine += "L";
   					} else {
-  						currentLine += "M";	
+  						currentLine += "M";
   					}
   */
 
@@ -276,18 +276,18 @@ class SerieContour extends SerieLine {
    * @param {Number} colors.fromPositive.h
    * @param {Number} colors.fromPositive.s
    * @param {Number} colors.fromPositive.l
-   
+
    * @param {Object} colors.toPositive
    * @param {Number} colors.toPositive.h
    * @param {Number} colors.toPositive.s
    * @param {Number} colors.toPositive.l
-   
+
 
    * @param {Object} colors.fromNegative
    * @param {Number} colors.fromNegative.h
    * @param {Number} colors.fromNegative.s
    * @param {Number} colors.fromNegative.l
-   
+
 
    * @param {Object} colors.toNegative
    * @param {Number} colors.toNegative.h

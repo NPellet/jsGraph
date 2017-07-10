@@ -2,7 +2,7 @@ import Graph from './graph.core'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter'
 import * as util from './graph.util'
 
-/** 
+/**
  * Default graph parameters
  * @name AxisOptionsDefault
  * @object
@@ -21,7 +21,6 @@ import * as util from './graph.util'
  * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
  * @prop {Number} exponentialFactor - Scales the labels under each primary ticks by 10^(exponentialFactor)
  * @prop {Number} exponentialLabelFactor - Scales the axis label by 10^(exponentialFactor)
- * @prop {Number} ticklabelratio - Scaling factor on the labels under each primary ticks
  * @prop {Boolean} logScale - Display the axis in log scale (base 10)
  * @prop {(Number|Boolean)} forcedMin - Use a number to force the minimum value of the axis (becomes independant of its series)
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
@@ -66,10 +65,12 @@ const defaults = {
   unitWrapperBefore: '',
   unitWrapperAfter: '',
 
-  splitMarks: false
+  splitMarks: false,
+
+  useKatexForLabel: false
 };
 
-/** 
+/**
  * Axis constructor. Usually not instanced directly, but for custom made axes, that's possible
  * @class Axis
  * @static
@@ -93,7 +94,6 @@ class Axis extends EventEmitter {
       [ 3600 * 24, [ 1, 2, 3, 4, 5, 10, 20, 40 ] ]
     ];
 
-    var self = this;
     this.graph = graph;
     this.options = util.extend( true, {}, defaults, overwriteoptions, options );
 
@@ -123,18 +123,17 @@ class Axis extends EventEmitter {
     this.label = document.createElementNS( this.graph.ns, 'text' );
 
     this.labelTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the main label
-    this.preunitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
+    this.preunit = ""; //document.createElementNS( this.graph.ns, 'tspan' ); // Contains the scaling unit
     this.unitTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the unit
     this.expTspan = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent (x10)
     this.expTspanExp = document.createElementNS( this.graph.ns, 'tspan' ); // Contains the exponent value
 
     this.label.appendChild( this.labelTspan );
-    this.label.appendChild( this.preunitTspan );
+    //this.label.appendChild( this.preunitTspan );
     this.label.appendChild( this.unitTspan );
     this.label.appendChild( this.expTspan );
     this.label.appendChild( this.expTspanExp );
 
-    this.preunitTspan.setAttribute( 'dx', 6 );
     this.expTspan.setAttribute( 'dx', 6 );
     this.expTspanExp.setAttribute( 'dy', -5 );
     this.expTspanExp.setAttribute( 'font-size', "0.8em" );
@@ -179,21 +178,21 @@ class Axis extends EventEmitter {
     this.totalDelta = 0;
     this.currentAction = false;
 
-    this.group.addEventListener( 'mousemove', function( e ) {
+    this.group.addEventListener( 'mousemove', ( e ) => {
       e.preventDefault();
-      var coords = self.graph._getXY( e );
-      self.handleMouseMoveLocal( coords.x, coords.y, e );
+      var coords = this.graph._getXY( e );
+      this.handleMouseMoveLocal( coords.x, coords.y, e );
 
-      for ( var i = 0, l = self.series.length; i < l; i++ ) {
-        self.series[ i ].handleMouseMove( false, true );
+      for ( var i = 0, l = this.series.length; i < l; i++ ) {
+        this.series[ i ].handleMouseMove( false, true );
       }
     } );
 
     this.labels = [];
-    this.group.addEventListener( 'click', function( e ) {
+    this.group.addEventListener( 'click', ( e ) => {
       e.preventDefault();
-      var coords = self.graph._getXY( e );
-      self.addLabel( self.getVal( coords.x - self.graph.getPaddingLeft() ) );
+      var coords = this.graph._getXY( e );
+      this.addLabel( this.getVal( coords.x - this.graph.getPaddingLeft() ) );
     } );
 
     this.axisRand = Math.random();
@@ -492,6 +491,24 @@ class Axis extends EventEmitter {
 
   setMaxValueData( max ) {
     this.dataMax = max;
+  }
+
+  /**
+   * Retrieves the maximum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+   * @memberof Axis
+   * @return {Number} The maximum possible value of the axis
+   */
+  getDataMax() {
+    return this.dataMax;
+  }
+
+  /**
+   * Retrieves the minimum possible value of the axis based only on the data. Does not take into account the possible axis forcing
+   * @memberof Axis
+   * @return {Number} The minimum possible value of the axis
+   */
+  getDataMin() {
+    return this.dataMin;
   }
 
   /**
@@ -1023,41 +1040,65 @@ class Axis extends EventEmitter {
       this.labelTspan.textContent = label;
     }
 */
+    let letter;
+    if ( !this.options.useKatexForLabel ||  !this.graph.hasKatexRenderer() ) {
 
-    this.writeUnit();
+      if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
 
-    var letter;
+        this.preunit = letter;
+        this.unitTspan.setAttribute( 'dx', 0 );
 
-    if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
+      } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
 
-      this.preunitTspan.innerHTML = letter;
-      this.preunitTspan.setAttribute( 'display', 'visible' );
-      this.unitTspan.setAttribute( 'dx', 0 );
+        if ( this.options.engineeringScale ) {
+          this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+        }
 
-    } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
+        this.preunit = "";
 
-      if ( this.options.engineeringScale ) {
-        this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+        this.expTspan.setAttribute( 'display', 'visible' );
+        this.expTspanExp.setAttribute( 'display', 'visible' );
+
+        this.expTspan.textContent = "x10";
+        this.expTspanExp.textContent = this.scientificExponent;
+
+      } else {
+
+        if ( !this.options.unit ) {
+          this.unitTspan.setAttribute( 'display', 'none' );
+        }
+
+        this.preunit = "";
+        this.expTspan.setAttribute( 'display', 'none' );
+        this.expTspanExp.setAttribute( 'display', 'none' );
       }
 
-      this.preunitTspan.textContent = "";
-      this.preunitTspan.setAttribute( 'display', 'none' );
-
-      this.expTspan.setAttribute( 'display', 'visible' );
-      this.expTspanExp.setAttribute( 'display', 'visible' );
-
-      this.expTspan.textContent = "x10";
-      this.expTspanExp.textContent = this.scientificExponent;
+      this.writeUnit();
 
     } else {
 
-      if ( !this.options.unit ) {
-        this.unitTspan.setAttribute( 'display', 'none' );
+      let string = this.getLabel(),
+        domEl;
+
+      if ( this.options.unitDecade && this.options.unit && this.scientificExponent !== 0 && ( this.scientificExponent = this.getEngineeringExponent( this.scientificExponent ) ) && ( letter = this.getExponentGreekLetter( this.scientificExponent ) ) ) {
+
+        string += letter;
+        this.preunitTspan.innerHTML = letter;
+        this.preunitTspan.setAttribute( 'display', 'visible' );
+        this.unitTspan.setAttribute( 'dx', 0 );
+
+        string += " " + letter + " " + this.options.unit;
+
+      } else if ( this.scientificExponent !== 0 && !isNaN( this.scientificExponent ) ) {
+
+        if ( this.options.engineeringScale ) {
+          this.scientificExponent = this.getEngineeringExponent( this.scientificExponent );
+        }
+        string += " \\cdot 10^" + this.scientificExponent + " " + this.options.unit;
+
       }
 
-      this.preunitTspan.setAttribute( 'display', 'none' );
-      this.expTspan.setAttribute( 'display', 'none' );
-      this.expTspanExp.setAttribute( 'display', 'none' );
+      this.katexElement = this.graph.renderWithKatex( string, this.katexElement );
     }
 
     if ( !this.options.hideTicks ) {
@@ -1123,7 +1164,7 @@ class Axis extends EventEmitter {
 
       this.expTspan.setAttribute( 'display', 'none' );
       this.expTspanExp.setAttribute( 'display', 'none' );
-      this.unitTspan.innerHTML = this.options.unitWrapperBefore + this.options.unit.replace( /\^([-+0-9]*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan>" ) + this.options.unitWrapperAfter;
+      this.unitTspan.innerHTML = ( this.options.unitWrapperBefore + this.preunit + this.options.unit + this.options.unitWrapperAfter ).replace( /\^([-+0-9]*)(.*)/g, "<tspan dy='-5' font-size='0.7em'>$1</tspan><tspan dy='5' font-size='1em'>$2</tspan>" );
 
     } else {
       this.unitTspan.setAttribute( 'display', 'none' );
@@ -1519,8 +1560,7 @@ class Axis extends EventEmitter {
 
       if ( !t ) {
         console.log( val, px, this.getMinPx() );
-        console.error( "Problem here" );
-        break;
+        throw "Unable to draw tick. Please report the test-case";
       }
 
       l = String( t[ 1 ].textContent ).length * 8;
@@ -1793,6 +1833,11 @@ class Axis extends EventEmitter {
     return this;
   }
 
+  setLabelFont( font ) {
+    this.options.labelFont = font;
+    return this;
+  }
+
   /**
    * @memberof Axis
    * @return {String} The label value
@@ -2052,6 +2097,11 @@ class Axis extends EventEmitter {
    */
   setTicksLabelColor( color ) {
     this.options.ticksLabelColor = color;
+    if ( Array.isArray( this.ticksLabels ) ) {
+      this.ticksLabels.forEach( ( tick ) => {
+        tick.setAttribute( "fill", color )
+      } );
+    }
     return this;
   }
 
@@ -2250,6 +2300,7 @@ class Axis extends EventEmitter {
    */
   setLabelColor( color ) {
     this.options.labelColor = color;
+    return this;
   }
 
   /**
@@ -2422,6 +2473,12 @@ class Axis extends EventEmitter {
   getType() {
     return null;
   }
+
+  useKatexForLabel( use = true ) {
+    this.options.useKatexForLabel = use;
+    return this;
+  }
+
 }
 
 /**

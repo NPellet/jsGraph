@@ -854,7 +854,7 @@ subtitle: 'SerieLineColor'
 
     
 
-    <h4 class="doc-code" id="degrade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">degrade</span><span class="doc-signature">( <span class="doc-type">Object</span> options )</span></h4>
+    <h4 class="doc-code" id="degrade"><span class="type-signature"></span><span>{<span class="doc-return"><a href="SerieLine.html">SerieLine</a></span>} </span><span class="doc-name">degrade</span><span class="doc-signature">( )</span></h4>
 
 
 
@@ -862,8 +862,8 @@ subtitle: 'SerieLineColor'
 <div class="description">
     Degrades the data of the serie. This option is used for big data sets that have monotoneously increasing (or decreasing) x values.
 For example, a serie containing 1'000'000 points, displayed over 1'000px, will have 1'000 points per pixel. Often it does not make sense to display more than 2-3 points per pixel.
-<code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range, as well as the minimum value and maximum value of the serie.
-It then creates a zone serie that will be show the minimum and maximum values over each pixel ranges, and the averaged data will be used in the current serie.
+<code>degrade( pxPerPoint )</code> allows a degradation of the serie, based on a a number of pixel per point. It computes the average of the data that would be displayed over each pixel range
+Starting from jsGraph 2.0, it does not calculate the minimum and maximum and creates the zone serie anymore
 </div>
 
 
@@ -876,55 +876,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
 
     
-
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">A object containing the options to set</td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
     
 
@@ -1004,7 +955,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 		</span>
 	
 
-    The newly created zone serie
+    The current serie instance
 </div>
 
         
@@ -1013,8 +964,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
         <h5>Example</h5>
         
 
-    {% highlight JavaScript %}var zone = serie.degrade( 0.5, { fillColor: 'rgba(100, 100, 100, 0.2' } ); // Will display 2 points per pixels
-zone.setLineColor('red');{% endhighlight %}
+    {% highlight JavaScript %}serie.degrade( 0.5 ); // Will display 2 points per pixels{% endhighlight %}
 
     
 
@@ -4095,98 +4045,6 @@ zone.setLineColor('red');{% endhighlight %}
 
     
 
-    <h4 class="doc-code" id="hidePeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">hidePeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Hides the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#hidePeakPicking">SerieLine#hidePeakPicking</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
     <h4 class="doc-code" id="hideTrackingMarker"><span class="type-signature"></span><span></span><span class="doc-name">hideTrackingMarker</span><span class="doc-signature">( )</span></h4>
 
 
@@ -4223,98 +4081,6 @@ zone.setLineColor('red');{% endhighlight %}
     <dt class="inherited-from">Inherited From:</dt>
     <dd class="inherited-from"><ul class="dummy"><li>
         <a href="SerieLine.html#hideTrackingMarker">SerieLine#hideTrackingMarker</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="init"><span class="type-signature"></span><span></span><span class="doc-name">init</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Initializes the serie
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#init">SerieLine#init</a>
     </li></ul></dd>
     
 
@@ -7714,98 +7480,6 @@ zone.setLineColor('red');{% endhighlight %}
 </div>
 
         
-
-    
-
-    </div>
-</div>
-        
-            
-
-<div class="doc-method">
-
-
-
-    
-
-    <h4 class="doc-code" id="showPeakPicking"><span class="type-signature"></span><span></span><span class="doc-name">showPeakPicking</span><span class="doc-signature">( )</span></h4>
-
-
-
-
-<div class="description">
-    Shows the automatic peak picking (see the autoPeakPicking option)
-</div>
-
-
-<div class="doc-details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-    <dt class="inherited-from">Inherited From:</dt>
-    <dd class="inherited-from"><ul class="dummy"><li>
-        <a href="SerieLine.html#showPeakPicking">SerieLine#showPeakPicking</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
 
     
 

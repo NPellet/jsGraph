@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="google-site-verification" content="GUF8cGrTCaQ32gdlgpBodMhEosvQA8wp8_h_IRGyLS0" />
 
     <title>Documentation</title>
     <meta name="description" content="jsGraph allows you to display your scientific data in any modern browser.  Generated in SVG, the graphs can be exported for publication in high resolution. jsGraph proposes tons of nice features to make your graph interactive, through a full-featured javascript API.
@@ -4803,13 +4802,13 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
     
 
-    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Serie.html">Serie</a></span>} </span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
+    <h4 class="doc-code" id="kill"><span class="type-signature"></span><span></span><span class="doc-name">kill</span><span class="doc-signature">( )</span></h4>
 
 
 
 
 <div class="description">
-    Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
+    Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 </div>
 
 
@@ -4881,30 +4880,6 @@ It then creates a zone serie that will be show the minimum and maximum values ov
     
 
     
-    <h5>Returns:</h5>
-    
-            
-
-<div class="param-desc">
-
-
-	
-		<span class="doc-code">
-			{ 
-			<span class="doc-return">
-		        
-<span class="param-type"><a href="Serie.html">Serie</a></span>
-
-
-		    </span>
-		    }
-		</span>
-	
-
-    The current serie instance
-</div>
-
-        
 
     
 
@@ -8871,15 +8846,16 @@ It then creates a zone serie that will be show the minimum and maximum values ov
 
   <script src="/js/requirejs/require.js" data-main="/js/main.js"></script>
 
-  <script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-	ga('create', 'UA-54296694-1', 'auto');
-	ga('send', 'pageview');
-  </script>
+	  ga('create', 'UA-54296694-1', 'auto');
+	  ga('send', 'pageview');
+
+	</script>
 
   <div class="col-sm-3">
   	<a href="http://github.com/NPellet/jsGraph">View on Github</a> &nbsp;&nbsp;
@@ -8888,7 +8864,7 @@ It then creates a zone serie that will be show the minimum and maximum values ov
   <div class="col-sm-9 text-right">
   	jsGraph is licensed under the <a href="https://github.com/NPellet/jsGraph/blob/master/LICENSE">MIT</a> license
   </div>
-  
+
 </footer>
 
 

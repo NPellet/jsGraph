@@ -8,11 +8,13 @@ import AxisXBar from './graph.axis.x.bar'
 import AxisXTime from './graph.axis.x.time'
 
 import SerieLine from './series/graph.serie.line'
+import SerieLine3D from './series/graph.serie.line.3d'
 import SerieBar from './series/graph.serie.bar'
 import SerieBox from './series/graph.serie.box'
 import SerieLineColor from './series/graph.serie.line.colored'
 import SerieScatter from './series/graph.serie.scatter'
 import SerieZone from './series/graph.serie.zone'
+import SerieZone3D from './series/graph.serie.zone.3d'
 import SerieDensityMap from './series/graph.serie.densitymap'
 import SerieContour from './series/graph.serie.contour'
 
@@ -28,6 +30,7 @@ import ShapePeakIntegration2D from './shapes/graph.shape.peakintegration2d'
 import ShapeRect from './shapes/graph.shape.rect'
 import ShapeCross from './shapes/graph.shape.cross'
 import ShapePeakBoundariesCenter from './shapes/graph.shape.peakboundariescenter'
+import ShapeHTML from './shapes/graph.shape.html'
 
 import GraphPlugin from './plugins/graph.plugin'
 import GraphPluginDrag from './plugins/graph.plugin.drag'
@@ -37,6 +40,10 @@ import GraphPluginZoom from './plugins/graph.plugin.zoom'
 import GraphPluginTimeSerieManager from './plugins/graph.plugin.timeseriemanager'
 import GraphPluginSerieLineDifference from './plugins/graph.plugin.serielinedifference'
 import GraphPluginAxisSplitting from './plugins/graph.plugin.axissplitting'
+import GraphPluginMakeTracesDifferent from './plugins/graph.plugin.makeTracesDifferent'
+
+import Waveform from './util/waveform'
+import FitLM from './util/fit_lm'
 
 // Corrent naming is important here !
 
@@ -48,21 +55,25 @@ Graph.registerConstructor( "graph.axis.x.bar", AxisXBar );
 Graph.registerConstructor( "graph.axis.x.time", AxisXTime );
 
 Graph.registerConstructor( "graph.serie.line", SerieLine );
+Graph.registerConstructor( "graph.serie.line.3d", SerieLine3D );
 Graph.registerConstructor( "graph.serie.line.color", SerieLineColor );
 Graph.registerConstructor( "graph.serie.contour", SerieContour );
 Graph.registerConstructor( "graph.serie.bar", SerieBar );
 Graph.registerConstructor( "graph.serie.box", SerieBox );
 Graph.registerConstructor( "graph.serie.scatter", SerieScatter );
 Graph.registerConstructor( "graph.serie.zone", SerieZone );
+Graph.registerConstructor( "graph.serie.zone.3d", SerieZone3D );
 Graph.registerConstructor( "graph.serie.densitymap", SerieDensityMap );
 
 Graph.registerConstructor( Graph.SERIE_LINE, SerieLine );
+Graph.registerConstructor( Graph.SERIE_LINE_3D, SerieLine3D );
 Graph.registerConstructor( Graph.SERIE_LINE_COLORED, SerieLineColor );
 Graph.registerConstructor( Graph.SERIE_CONTOUR, SerieContour );
 Graph.registerConstructor( Graph.SERIE_BAR, SerieBar );
 Graph.registerConstructor( Graph.SERIE_BOX, SerieBox );
 Graph.registerConstructor( Graph.SERIE_SCATTER, SerieScatter );
 Graph.registerConstructor( Graph.SERIE_ZONE, SerieZone );
+Graph.registerConstructor( Graph.SERIE_ZONE_3D, SerieZone3D );
 Graph.registerConstructor( Graph.SERIE_DENSITYMAP, SerieDensityMap );
 
 //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
@@ -75,6 +86,7 @@ Graph.registerConstructor( "graph.plugin.timeSerieManager", GraphPluginTimeSerie
 Graph.registerConstructor( "graph.plugin.serielinedifference", GraphPluginSerieLineDifference );
 Graph.registerConstructor( "graph.plugin.serieLineDifference", GraphPluginSerieLineDifference );
 Graph.registerConstructor( "graph.plugin.axissplitting", GraphPluginAxisSplitting );
+Graph.registerConstructor( "graph.plugin.makeTracesDifferent", GraphPluginMakeTracesDifferent );
 
 Graph.registerConstructor( "graph.shape", Shape );
 Graph.registerConstructor( "graph.shape.areaundercurve", ShapeAreaUnderCurve );
@@ -84,6 +96,7 @@ Graph.registerConstructor( "graph.shape.label", ShapeLabel );
 Graph.registerConstructor( "graph.shape.polyline", ShapePolyline );
 Graph.registerConstructor( "graph.shape.line", ShapeLine );
 Graph.registerConstructor( "graph.shape.nmrintegral", ShapeNMRIntegral );
+Graph.registerConstructor( "graph.shape.html", ShapeHTML );
 Graph.registerConstructor( "graph.shape.peakintegration2d", ShapePeakIntegration2D );
 //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
 //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
@@ -96,5 +109,6 @@ Graph.registerConstructor( "graph.shape.peakboundariescenter", ShapePeakBoundari
 
 //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
 Graph.registerConstructor( "graph.legend", GraphLegend );
+Graph.registerConstructor( "graph.waveform", Waveform );
 
 module.exports = Graph;

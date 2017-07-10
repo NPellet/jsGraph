@@ -522,7 +522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	      } else {
 
-	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
+	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this)) {
 	          this.executeRedrawSlaves();
 	          refreshDrawingZone(this);
 	          return true;
@@ -542,57 +542,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    draw() {
 
-	      this.updateLegend(true);
 	      this.drawSeries(this.redraw(true));
-	    }
-
-	    /**
-	     *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
-	     *  @memberof Graph
-	     *  @return {Graph} The current graph instance
-	     *  @see {@link Graph#resumeUpdate}
-	     *  @see {@link Graph#doUpdate}
-	     *  @since 1.16.19
-	     */
-	    delayUpdate() {
-	      this._lockUpdate = true;
-	      return this;
-	    }
-
-	    /**
-	     *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
-	     *  @memberof Graph
-	     *  @return {Graph} The current graph instance
-	     *  @see {@link Graph#delayUpdate}
-	     *  @see {@link Graph#resumeUpdate}
-	     *  @since 1.16.19
-	     */
-	    doUpdate() {
-	      if (this.legend) {
-	        this.legend.update();
-	      }
-	      this.draw();
-	      if (this.legend) {
-	        this.legend.update();
-	      }
-	      return this;
-	    }
-
-	    /**
-	     *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
-	     *  @memberof Graph
-	     *  @return {Graph} The current graph instance
-	     *  @see {@link Graph#delayUpdate}
-	     *  @see {@link Graph#doUpdate}
-	     *  @since 1.16.19
-	     */
-	    resumeUpdate() {
-	      this._lockUpdate = false;
-	      return this;
-	    }
-
-	    isDelayedUpdate() {
-	      return this._lockUpdate;
 	    }
 
 	    /**
@@ -1302,7 +1252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 
 	      this.series.push(serie);
-	      //    this.updateLegend();
+	      this.updateLegend();
 
 	      this.emit("newSerie", serie);
 	      return serie;
@@ -1396,10 +1346,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.series[0].kill(true);
 	      }
 	      this.series = [];
-
-	      if (this.legend) {
-	        this.legend.update();
-	      }
 	    }
 
 	    /**
@@ -1981,24 +1927,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return util.throwError("Graph legend is not available as it has not been registered");
 	      }
 
-	      //    this.legend.update();
+	      this.legend.update();
 
 	      return this.legend;
 	    }
 
 	    /**
-	     * Redraws the legend if it exists
-	     * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
-	     * @return {Graph} The graph instance
+	     * Redraw the legend
 	     */
-	    updateLegend(onlyIfRequired = false) {
+	    updateLegend() {
 
 	      if (!this.legend) {
 	        return;
 	      }
 
-	      this.legend.update(onlyIfRequired);
-	      return this;
+	      this.legend.update();
 	    }
 
 	    /**
@@ -2010,15 +1953,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return this.legend;
-	    }
-
-	    requireLegendUpdate() {
-
-	      if (!this.legend) {
-	        return;
-	      }
-
-	      this.legend.requireDelayedUpdate();
 	    }
 
 	    /**
@@ -2087,8 +2021,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.dom.setAttribute('height', this.height);
 	      this.domTitle.setAttribute('x', this.width / 2);
 
-	      this.requireLegendUpdate();
-	      this.draw();
+	      this.redraw();
+	      this.drawSeries(true);
+	      //refreshDrawingZone( this );
+
+	      if (this.legend) {
+	        this.legend.update();
+	      }
 	    }
 	    _doDom() {
 
@@ -2269,8 +2208,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      util.setAttributeTo(this.graphingZone, {
 	        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
 	      });
-
-	      this._sizeChanged = true;
 	    }
 
 	    // We have to proxy the methods in case they are called anonymously
@@ -2925,8 +2862,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    graph._painted = true;
+
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
+
 	      if (axis.disabled || axis.floating) {
 	        return;
 	      }
@@ -3659,12 +3598,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return temp;
 	  }
 
-	  function hasSizeChanged(graph) {
-	    var temp = graph._sizeChanged;
-	    graph._sizeChanged = false;
-	    return temp;
-	  }
-
 	  // Constants
 	  Graph.SERIE_LINE = Symbol();
 	  Graph.SERIE_SCATTER = Symbol();
@@ -4071,8 +4004,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  exports.hue2rgb = hue2rgb;
 	  exports.hslToRgb = hslToRgb;
 	  exports.saveDomAttributes = saveDomAttributes;
-	  exports.hasSavedAttribute = hasSavedAttribute;
-	  exports.overwriteDomAttribute = overwriteDomAttribute;
 	  exports.restoreDomAttributes = restoreDomAttributes;
 	  exports.debounce = debounce;
 	  exports.SVGParser = SVGParser;
@@ -4197,9 +4128,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
 	      var p = 2 * l - q;
-	      r = hue2rgb(p, q, h + 1 / 3);
-	      g = hue2rgb(p, q, h);
-	      b = hue2rgb(p, q, h - 1 / 3);
+	      r = util.hue2rgb(p, q, h + 1 / 3);
+	      g = util.hue2rgb(p, q, h);
+	      b = util.hue2rgb(p, q, h - 1 / 3);
 	    }
 
 	    return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
@@ -4212,7 +4143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    to._savedAttributesIds = to._savedAttributesIds || [];
 
 	    if (to._savedAttributesIds.indexOf(identification) > -1) {
-	      restoreDomAttributes(to, identification);
+	      util.restoreDomAttributes(to, identification);
 	    }
 
 	    to._savedAttributes = to._savedAttributes || {};
@@ -4230,16 +4161,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      to.setAttribute(i, attributes[i]);
 	    }
 	  };
-
-	  function hasSavedAttribute(dom, attr) {
-	    return dom._savedAttributes && dom._savedAttributes[attr] !== undefined;
-	  }
-
-	  function overwriteDomAttribute(dom, attribute, newValue) {
-	    if (hasSavedAttribute(dom, attribute)) {
-	      dom._savedAttributes[attribute] = newValue;
-	    }
-	  }
 
 	  function restoreDomAttributes(to, identification) {
 
@@ -5109,7 +5030,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this;
 	      }
 
-	      this.requireDelayedUpdate();
 	      this.autoPosition = false;
 	    }
 
@@ -5122,12 +5042,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var series = this.series || this.graph.getSeries(),
 	          posX = 0,
 	          posY = this.options.paddingTop;
-
-	      if (!this.autoPosition) {
-	        this.graph.graphingZone.appendChild(this.getDom());
-	      } else {
-	        this.graph.getDom().appendChild(this.getDom());
-	      }
 
 	      for (var i = 0, l = series.length; i < l; i++) {
 
@@ -5178,8 +5092,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.rectBottom.setAttribute('width', this.width);
 	      this.rectBottom.setAttribute('height', this.height);
 
-	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingLeft);
-	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingTop);
+	      this.rectBottom.setAttribute('x', bbox.x - this.options.paddingTop);
+	      this.rectBottom.setAttribute('y', bbox.y - this.options.paddingLeft);
 	      /* End independant on box position */
 
 	      this.position = this.position || {};
@@ -5238,13 +5152,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.updateGraphingZone();
 	        this.graph.getDrawingHeight();
 	        this.graph.getDrawingWidth();
-	        // this.graph.redraw( false );
+	        this.graph.redraw(false);
 	      }
 
 	      this.bbox = bbox;
 	    }
 
 	    calculatePosition() {
+
+	      if (!this.autoPosition) {
+	        this.graph.graphingZone.appendChild(this.getDom());
+	      } else {
+	        this.graph.getDom().appendChild(this.getDom());
+	      }
 
 	      var pos = _graph2.default.check(this.position);
 	      let poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
@@ -5269,20 +5189,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.pos.transformX = poscoords.x;
 	      this.pos.transformY = poscoords.y;
-
 	      this._setPosition();
 	    }
 
 	    /** 
 	     * Updates the legend position and content
 	     */
-	    update(onlyIfRequired) {
-
-	      if (this.graph.isDelayedUpdate() || !this._requiredUpdate && onlyIfRequired) {
-	        return;
-	      }
-
-	      this._requiredUpdate = false;
+	    update() {
 
 	      var self = this;
 
@@ -5478,7 +5391,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var mousedown = function (e) {
 
 	        e.stopPropagation();
-	        console.log("down");
+
 	        if (self.options.movable) {
 	          pos.x = e.clientX;
 	          pos.y = e.clientY;
@@ -5589,10 +5502,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    fixSeriesAdd(serie) {
 	      this.series = this.series || [];
 	      this.series.push(serie);
-	    }
-
-	    requireDelayedUpdate() {
-	      this._requiredUpdate = true;
 	    }
 
 	  }
@@ -6113,8 +6022,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
 	      this.clip.appendChild(this.clipRect);
 	      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
-
-	      this.graph._axisHasChanged(this);
 	    }
 
 	    handleMouseMoveLocal() {}
@@ -7505,6 +7412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @example graph.getBottomAxis().forceMin( 20 ).forceMax( 50 ).getRelVal( 40 ); // Returns 2 (for 600px width)
 	     */
 	    getRelVal(px) {
+
 	      return px / (this.getMaxPx() - this.getMinPx()) * this.getCurrentInterval();
 	    }
 
@@ -12806,22 +12714,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Removes the serie from the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
-	     * @return {Serie} The current serie instance
+	     * Removes the serie from the graph and optionnally repaints the graph. The method doesn't perform any axis autoscaling or repaint of the graph. This should be done manually.
 	     * @memberof Serie
 	     */
-	    kill(noLegendUpdate) {
+	    kill() {
 
 	      this.graph.removeSerieFromDom(this);
 	      this.graph._removeSerie(this);
 
-	      if (this.graph.legend && !noLegendUpdate) {
+	      if (this.graph.legend) {
 
 	        this.graph.legend.update();
 	      }
 
 	      this.graph = undefined;
-	      return this;
 	    }
 
 	    /**
@@ -13181,8 +13087,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.textForLegend) {
 	        this.textForLegend.textContent = label;
 	      }
-
-	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 
@@ -13258,7 +13162,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this._changedStyles[selectionType || "unselected"] = true;
 	      }
 
-	      this.graph.requireLegendUpdate();
 	      return this;
 	    }
 
@@ -14353,6 +14256,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getStyle(selectionType)[type];
 	    }
 
+	    /** 
+	     *  Retrives a selection object
+	     *  @param {String} [ selectionType = "unselected" ] - The selection type
+	     *  @returns {Object} The selection object
+	     */
 	    getStyle(selectionType = "unselected") {
 
 	      return this.styles[selectionType] || {};
@@ -14369,6 +14277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line color
+	     * @return {String} The mean line color
 	     */
 	    getMeanLineColor() {
 	      return this._gstyle('meanLineColor', ...arguments);
@@ -14391,6 +14300,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the mean line width
+	     * @return {Number} The mean line width
 	     */
 	    getMeanLineWidth() {
 	      return this._gstyle('meanLineWidth', ...arguments);
@@ -14406,7 +14316,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the box line color
+	     * @return {String} The line color of the box above the median
 	     */
 	    getBoxAboveLineColor() {
 	      return this._gstyle('boxAboveLineColor', ...arguments);
@@ -14423,6 +14334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    /** 
 	     *  Returns the fill color
+	     * @return {String} The line color of the box below the median
 	     */
 	    getBoxBelowLineColor() {
 	      return this._gstyle('boxBelowLineColor', ...arguments);
@@ -14438,7 +14350,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box above the median
+	     * @return {Number} The line width of the box above the median
 	     */
 	    getBoxAboveLineWidth() {
 	      return this._gstyle('boxAboveLineWidth', ...arguments);
@@ -14454,7 +14367,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the box below the median
+	     * @return {Number} The line width of the box below the median
 	     */
 	    getBoxBelowLineWidth() {
 	      return this._gstyle('boxBelowLineWidth', ...arguments);
@@ -14470,7 +14384,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box above the median
+	     * @return {String} The fill color of the box above the median
 	     */
 	    getBoxAboveFillColor() {
 	      return this._gstyle('boxAboveFillColor', ...arguments);
@@ -14486,7 +14401,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the box below the median
+	     * @return {String} The fill color of the box below the median
 	     */
 	    getBoxBelowFillColor() {
 	      return this._gstyle('boxBelowFillColor', ...arguments);
@@ -14502,7 +14418,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box above the median
+	     * @return {Number} The fill opacity of the box above the median
 	     */
 	    getBoxAboveFillOpacity() {
 	      return this._gstyle('boxAboveFillOpacity', ...arguments);
@@ -14518,7 +14435,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill opacity of the box below the median
+	     * @return {Number} The fill opacity of the box below the median
 	     */
 	    getBoxBelowFillOpacity() {
 	      return this._gstyle('boxBelowFillOpacity', ...arguments);
@@ -14534,7 +14452,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker above the median
+	     * @return {String} The line color of the whisker above the median
 	     */
 	    getBarAboveLineColor() {
 	      return this._gstyle('barAboveLineColor', ...arguments);
@@ -14550,7 +14469,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line color of the whisker below the median
+	     * @return {String} The line color of the whisker below the median
 	     */
 	    getBarBelowLineColor() {
 	      return this._gstyle('barBelowLineColor', ...arguments);
@@ -14566,7 +14486,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker above the median
+	     * @return {Number} The line width of the whisker above the median
 	     */
 	    getBarAboveLineWidth() {
 	      return this._gstyle('barAboveLineWidth', ...arguments);
@@ -14582,7 +14503,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the whisker below the median
+	     * @return {Number} The line width of the whisker below the median
 	     */
 	    getBarBelowLineWidth() {
 	      return this._gstyle('barBelowLineWidth', ...arguments);
@@ -14598,7 +14520,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the box line color
+	     * Returns the line color of the outliers
+	     * @return {String} The line color of the outliers
 	     */
 	    getOutlierLineColor() {
 	      return this._gstyle('outlierLineColor', ...arguments);
@@ -14614,7 +14537,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the line width of the outliers
+	     * @return {Number} The line width of the outliers
 	     */
 	    getOutlierLineWidth() {
 	      return this._gstyle('outlierLineWidth', ...arguments);
@@ -14630,7 +14554,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the fill color
+	     * Returns the fill color of the outliers
+	     * @return {String} The fill color of the outliers
 	     */
 	    getOutlierFillColor() {
 	      return this._gstyle('outlierFillColor', ...arguments);
@@ -14646,7 +14571,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /** 
-	     *  Returns the outlier fill opacity
+	     * Returns the fill opacity of the outliers
+	     * @return {Number} The fill opacity of the outliers
 	     */
 	    getOutlierFillOpacity() {
 	      return this._gstyle('outlierFillOpacity', ...arguments);
@@ -17063,7 +16989,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //console.log( this.getYAxis().getCurrentMin(), this.getYAxis().getCurrentMax(), this.graph.drawingSpaceHeight );
 
 	      //console.log( this.densityMapCalculation );
-
 	      (weighing ? this.calculateDensityWeighted : this.calculateDensity).call(this, results.x.from, results.x.delta, results.x.num, results.y.from, results.y.delta, results.y.num);
 	    }
 
@@ -17278,7 +17203,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (!this.paths[colorIndex]) {
 	            this.paths[colorIndex] = "";
 	          }
-
 	          this.paths[colorIndex] += " M " + this.getXAxis().getPx(i * this.deltaX + this.fromX) + " " + this.getYAxis().getPx(j * this.deltaY + this.fromY) + " h " + deltaXPx + " v " + deltaYPx + " h -" + deltaXPx + " z";
 
 	          ;
@@ -18312,12 +18236,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Sets a DOM property to the shape
 	     */
-	    setDom(prop, val, noForce) {
+	    setDom(prop, val) {
 	      if (this._dom) {
-
-	        if (!noForce || !util.hasSavedAttribute(this._dom, prop)) {
-	          this._dom.setAttribute(prop, val);
-	        }
+	        this._dom.setAttribute(prop, val);
 	      }
 	    }
 
@@ -18336,8 +18257,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeColor(color) {
 	      this.setProp('strokeColor', color);
-	      this.overwriteSavedProp('stroke', color);
-	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18356,8 +18275,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setFillColor(color) {
 	      this.setProp('fillColor', color);
-	      this.overwriteSavedProp('fill', color);
-	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18374,10 +18291,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Number} opacity - The filling opacity (0 to 1)
 	     * @return {Shape} The current shape
 	     */
-	    setFillOpacity(opacity) {
-	      this.setProp('fillOpacity', opacity);
-	      this.overwriteSavedProp('fill-opacity', opacity);
-	      this.applySelectedStyle();
+	    setFillOpacity(color) {
+	      this.setProp('fillOpacity', color);
 	      return this;
 	    }
 
@@ -18388,8 +18303,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeWidth(width) {
 	      this.setProp('strokeWidth', width);
-	      this.overwriteSavedProp('stroke-width', width);
-	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18410,8 +18323,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setStrokeDasharray(dasharray) {
 	      this.setProp('strokeDasharray', dasharray);
-	      this.overwriteSavedProp('stroke-dasharray', dasharray);
-	      this.applySelectedStyle();
 	      return this;
 	    }
 
@@ -18425,10 +18336,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setAttributes(attributes) {
 	      this.setProp("attributes", attributes);
 	      return this;
-	    }
-
-	    overwriteSavedProp(prop, newValue) {
-	      util.overwriteDomAttribute(this._dom, prop, newValue);
 	    }
 
 	    /**
@@ -18628,17 +18535,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    applyGenericStyle() {
 
-	      this.setDom("fill", this.getProp("fillColor"), true);
-	      this.setDom("fill-opacity", this.getProp("fillOpacity"), true);
-	      this.setDom("stroke", this.getProp("strokeColor"), true);
-	      this.setDom("stroke-width", this.getProp("strokeWidth"), true);
-	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"), true);
+	      this.setDom("fill", this.getProp("fillColor"));
+	      this.setDom("fill-opacity", this.getProp("fillOpacity"));
+	      this.setDom("stroke", this.getProp("strokeColor"));
+	      this.setDom("stroke-width", this.getProp("strokeWidth"));
+	      this.setDom("stroke-dasharray", this.getProp("strokeDasharray"));
 
 	      var attributes = this.getProps("attributes");
 	      for (var j = 0, l = attributes.length; j < l; j++) {
 
 	        for (var i in attributes[j]) {
-	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i], true);
+	          this.setDom(i, typeof attributes[j][i] == "function" ? attributes[j][i].call(this, i) : attributes[j][i]);
 	        }
 	      }
 
@@ -19035,25 +18942,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      //this.graph.appendShapeToDom( this ); // Put the shape on top of the stack !
 
 	      this._selectStatus = true;
-
-	      this.applySelectedStyle();
-
-	      if (this.hasHandles() && !this.hasStaticHandles()) {
-	        this.addHandles();
-	        this.setHandles();
-	      }
-
-	      if (!mute) {
-	        this.graph.emit("shapeSelected", this);
-	      }
-	    }
-
-	    applySelectedStyle() {
-
-	      if (!this._selectStatus) {
-	        return;
-	      }
-
 	      var style = this.getSelectStyle();
 	      var style2 = {};
 	      for (var i in style) {
@@ -19065,6 +18953,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      util.saveDomAttributes(this._dom, style2, 'select');
+
+	      if (this.hasHandles() && !this.hasStaticHandles()) {
+	        this.addHandles();
+	        this.setHandles();
+	      }
+
+	      if (!mute) {
+	        this.graph.emit("shapeSelected", this);
+	      }
 	    }
 
 	    /**
@@ -19105,7 +19002,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setSelectStyle(attr) {
 	      this.selectStyle = attr;
-	      this.applySelectedStyle(); // Maybe the shape is already selected
 	      return this;
 	    }
 
@@ -22399,7 +22295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    onMouseDown(graph, x, y, e, mute) {
-	      console.log('zoomdown');
+
 	      var zoomMode = this.options.zoomMode;
 
 	      if (!zoomMode) {

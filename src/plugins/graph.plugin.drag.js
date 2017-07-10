@@ -1,6 +1,6 @@
 import Plugin from './graph.plugin'
 
-/** 
+/**
  * Constructor for the drag plugin. Do not use this constructor directly.
  * @class PluginDrag
  * @implements Plugin

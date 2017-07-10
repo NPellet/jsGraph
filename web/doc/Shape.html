@@ -1245,7 +1245,7 @@ subtitle: 'Shape'
 
 
 <div class="description">
-    Triggers a ```shapeChanged``` event on the graph
+    Triggers a ```shapeChanged``` event on the graph and a ```changed``` event on the shape
 </div>
 
 
@@ -1512,7 +1512,7 @@ subtitle: 'Shape'
 
     
 
-    <h4 class="doc-code" id="draw"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Shape.html">Shape</a></span>} </span><span class="doc-name">draw</span><span class="doc-signature">( <span class="doc-type">Boolean</span> force )</span></h4>
+    <h4 class="doc-code" id="draw"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Shape.html">Shape</a></span>} </span><span class="doc-name">draw</span><span class="doc-signature">( <span class="doc-type">Boolean</span> force , <span class="doc-type">Boolean</span> preventRedraw )</span></h4>
 
 
 
@@ -1575,6 +1575,29 @@ subtitle: 'Shape'
             
 
             <td class="description last">Forces adding the shape to the DOM (useful if the shape has changed layer)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>preventRedraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Prevents the redraw method</td>
         </tr>
 
     
@@ -2544,7 +2567,7 @@ subtitle: 'Shape'
 		</span>
 	
 
-    The current shape
+    The position at the proper index, or undefined
 </div>
 
         
@@ -8605,7 +8628,7 @@ shape.applyStyle();{% endhighlight %}
 
     
 
-    <h4 class="doc-code" id="setPosition"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Position.html">Position</a></span>} </span><span class="doc-name">setPosition</span><span class="doc-signature">( <span class="doc-type">Position</span> position [ , <span class="doc-type">Number</span> index ] )</span></h4>
+    <h4 class="doc-code" id="setPosition"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Shape.html">Shape</a></span>} </span><span class="doc-name">setPosition</span><span class="doc-signature">( <span class="doc-type">Position</span> position [ , <span class="doc-type">Number</span> index ] )</span></h4>
 
 
 
@@ -8759,7 +8782,7 @@ shape.applyStyle();{% endhighlight %}
 			{ 
 			<span class="doc-return">
 		        
-<span class="param-type"><a href="Position.html">Position</a></span>
+<span class="param-type"><a href="Shape.html">Shape</a></span>
 
 
 		    </span>
@@ -10150,6 +10173,131 @@ shape.applyStyle();{% endhighlight %}
 			<span class="doc-return">
 		        
 <span class="param-type"><a href="Shape.html">Shape</a></span>
+
+
+		    </span>
+		    }
+		</span>
+	
+
+    The current shape
+</div>
+
+        
+
+    
+
+    </div>
+</div>
+        
+            
+
+<div class="doc-method">
+
+
+
+    
+
+    <h4 class="doc-code" id="sortPositions"><span class="type-signature"></span><span>{<span class="doc-return"><a href="Position.html">Position</a></span>} </span><span class="doc-name">sortPositions</span><span class="doc-signature">( <span class="doc-type">function</span> sortFunction )</span></h4>
+
+
+
+
+<div class="description">
+    Sorts the positions
+</div>
+
+
+<div class="doc-details">
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sortFunction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Function passed into the ```Array.sort``` method</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+
+<div class="param-desc">
+
+
+	
+		<span class="doc-code">
+			{ 
+			<span class="doc-return">
+		        
+<span class="param-type"><a href="Position.html">Position</a></span>
 
 
 		    </span>

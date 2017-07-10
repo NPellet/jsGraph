@@ -18,7 +18,9 @@ class Plugin extends EventEmitter {
   /**
    * Init function called by jsGraph on load
    */
-  init() {};
+  init( graph ) {
+    this.graph = graph;
+  };
 
   /**
    * Handles the mousedown event from jsGraph

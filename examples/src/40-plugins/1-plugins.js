@@ -6,43 +6,71 @@ define( function() {
 
 		var graphinstance = new Graph( domGraph, {
 
-			wheel: {
-				type: 'plugin',
-				plugin: 'zoom',
-				options: {
-					direction: 'y'
-				}
-			},
-
-			dblclick: {
-				type: 'plugin',
-				plugin: 'zoom',
-				options: {
-					mode: 'total'
-				}
-			},
-
 			plugins: {
-				'zoom': { zoomMode: 'xy' },
+				'zoom': { zoomMode: 'xy', transition: true },
 				'drag': {}
 			},
 
-			pluginAction: {
-				'drag': { shift: true, ctrl: false },
-				'zoom': { shift: false, ctrl: false }
-			}
+			mouseActions: [
+				{ plugin: 'zoom', shift: true, ctrl: false },
+				{ plugin: 'drag', shift: false, ctrl: false },
+				{
+					type: 'dblclick',
+					plugin: 'zoom',
+					options: {
+						mode: 'total'
+					}
+				}
+			],
+
+			keyActions: [
+				{
+					type: 'keydown',
+					key: 'backspace', removeSelectedShape: true
+				}
+			]
+
 			
 		} );
-			
+		
+
+  var d1 = [ 0,1,8,3,5 ];
+
+  
+
+  var d2 = [ 0,0.1,0.2,0.3,0.5 ];
+  
+  
+  let x = Graph.newWaveform().setData( d2 );
+  var v1 = Graph.newWaveform().setData( d1 ).setXWaveform( x );
+
+
 		graphinstance.newSerie("temp_nh")
 			.autoAxis()
-			.setData( series[ 3 ] )
+			.setWaveform( v1 )
 			.setMarkers({ 
 				type: 1,
 				points: [ 'all' ],
 				fill: true,
 				fillColor: 'red'
 			});
+
+  		var shape = graphinstance.newShape({ 
+            type: 'ellipse', 
+            position:[ { x: "10px", y: "10px" } ],
+            fillColor: 'rgba(200, 100, 100, 0.5)',
+
+            locked: true,
+            selectable: true,
+            selectOnClick: true
+
+        }).draw();
+
+  		shape.setProp( 'selectOnClick', true );
+        shape.setR( '50px', '20px') ;
+        shape.redraw();
+        //shape.addTransform('translate', [ 20, 0 ])
+     //   shape.addTransform('rotate', [ 20 ])
 
 		graphinstance.draw( );
 		

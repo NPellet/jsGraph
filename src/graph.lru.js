@@ -81,9 +81,7 @@ function storeInMemory( store, index, data ) {
   }
 }
 
-export
-
-function create( store, limitMemory ) {
+export function create( store, limitMemory ) {
   createStoreMemory( store, limitMemory );
 };
 
@@ -94,21 +92,17 @@ export function get( store, index ) {
   }
 }
 
-export
-
-function store( store, index, value ) {
+export function store( store, index, value ) {
   storeInMemory( store, index, value );
   return value;
 };
 
-export
-
-function empty( store ) {
+export function empty( store ) {
   emptyMemory( store );
 };
 
-export
-
-function exist( store ) {
+export function exist( store ) {
   return ( memory[ store ] );
 }
+
+export default get

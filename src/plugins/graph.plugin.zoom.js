@@ -158,6 +158,7 @@ class PluginZoom extends Plugin {
 
     var self = this;
     this.removeZone();
+
     var _x = x - graph.options.paddingLeft;
     var _y = y - graph.options.paddingTop;
 
@@ -281,6 +282,7 @@ class PluginZoom extends Plugin {
    * @private
    */
   removeZone() {
+
     this._zoomingSquare.setAttribute( 'display', 'none' );
   }
 
@@ -344,8 +346,8 @@ class PluginZoom extends Plugin {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
 
-          axis._pluginZoomMinFinal = axis.getMinValue();
-          axis._pluginZoomMaxFinal = axis.getMaxValue();
+          axis._pluginZoomMinFinal = axis.getMinValue() - ( axis.options.axisDataSpacing.min * axis.getInterval() );
+          axis._pluginZoomMaxFinal = axis.getMaxValue() + ( axis.options.axisDataSpacing.max * axis.getInterval() );
 
         }, false, true, false );
 
@@ -360,8 +362,8 @@ class PluginZoom extends Plugin {
           axis._pluginZoomMin = axis.getCurrentMin();
           axis._pluginZoomMax = axis.getCurrentMax();
 
-          axis._pluginZoomMinFinal = axis.getMinValue();
-          axis._pluginZoomMaxFinal = axis.getMaxValue();
+          axis._pluginZoomMinFinal = axis.getMinValue() - ( axis.options.axisDataSpacing.min * axis.getInterval() );
+          axis._pluginZoomMaxFinal = axis.getMaxValue() + ( axis.options.axisDataSpacing.max * axis.getInterval() );
 
         }, false, false, true );
 

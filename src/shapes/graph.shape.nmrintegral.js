@@ -1,15 +1,26 @@
-import ShapeSurfaceUnderCurve from './graph.shape.areaundercurve'
+import Shape from './graph.shape'
 import GraphPosition from '../graph.position'
 
 /**
  * Displays an integral with NMR style
  * @extends ShapeSurfaceUnderCurve
  */
-class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
+class ShapeNMRIntegral extends Shape {
 
   constructor( graph, options ) {
+
     super( graph, options );
+
     this.nbHandles = 2;
+  }
+
+  createDom() {
+    this._dom = document.createElementNS( this.graph.ns, 'path' );
+  }
+
+  initImpl() {
+    this.setFillColor( 'transparent' );
+    this.setStrokeColor( 'black' );
   }
 
   createHandles() {
@@ -21,222 +32,211 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       stroke: "black",
       fill: "white"
     } );
+
+    this.handles[ 1 ].setAttribute( 'fill', 'red' );
+  }
+
+  xor( a, b ) {
+    return ( a && !b ) || ( !a && b );
   }
 
   applyPosition() {
 
-    var posXY = this.calculatePosition( 0 ),
-      posXY2 = this.calculatePosition( 1 ),
-      w,
+    let
       x,
+      y,
+      xVal,
+      yVal,
       axis = this.getAxis(),
       points = [];
 
-    let baseLine = this.yBaseline;
+    let currentLine = "",
+      baseLine = 300,
+      ratio;
 
-    if ( !posXY ||  !posXY2 ) {
+    if ( !this.serie ) {
+      throw "No serie exists for this shape";
+    };
+    /*
+        this.sortPositions( ( a, b ) => {
+          return a.x - b.x;
+        } );
+
+        */
+    let pos1 = this.getPosition( 0 );
+    let pos2 = this.getPosition( 1 );
+
+    this.showLabel( 0 );
+
+    let sum = 0;
+
+    let j;
+    let waveform = this.serie.getWaveform();
+
+    if ( !waveform ) {
       return;
     }
 
-    if ( !this.serie.isFlipped() ) {
+    let index1 = waveform.getIndexFromX( pos1[ axis ], true ),
+      index2 = waveform.getIndexFromX( pos2[ axis ], true ),
+      index3,
+      flipped = false;
 
-      baseLine = this.getYAxis().getPx( 0 ) - baseLine;
-
-      w = Math.abs( posXY.x - posXY2.x );
-      x = Math.min( posXY.x, posXY2.x );
-
-    } else {
-
-      baseLine = this.getXAxis().getPx( 0 ) - baseLine;
-
-      w = Math.abs( posXY.y - posXY2.y );
-      x = Math.min( posXY.y, posXY2.y );
+    if ( index2 < index1 ) {
+      index3 = index1;
+      index1 = index2;
+      index2 = index3;
+      flipped = true;
     }
 
-    this.computedBaseline = baseLine;
-    this.reversed = x == posXY2.x;
+    let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
+    let data = waveform.getDataInUse();
 
-    var pos1 = this.getPosition( 0 );
-    var pos2 = this.getPosition( 1 );
+    index1 -= index1 % 4;
+    index2 -= index2 % 4;
+
+    let condition, incrementation;
 
     if (
-      ( axis == 'x' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) ) ||
-      ( axis == 'y' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) )
+      ( waveform.getXMonotoneousAscending() && // Ascending
+        1 == 1 ) ||
+      ( !waveform.getXMonotoneousAscending() && // Ascending
+        1 == 2 )
     ) {
 
-      points = [
-        [ 0, 0 ]
-      ];
-      this.hideLabel( 0 );
-      this.setDom( "d", "" );
-      this.hideHandles();
+      j = index2;
+      condition = true;
+      incrementation = -1;
 
     } else {
 
-      this.showLabel( 0 );
-
-      var v1 = this.serie.searchClosestValue( pos1[ axis ] ),
-        v2 = this.serie.searchClosestValue( pos2[ axis ] ),
-        v3,
-        i,
-        j,
-        init,
-        max,
-        k,
-        x,
-        y,
-        firstX,
-        firstY,
-        currentLine = "",
-        maxY = 0,
-        incrYFlip = 1,
-        incrXFlip = 0,
-        minY = Number.MAX_VALUE;
-
-      if ( !v1 || !v2 ) {
-        return false;
-      }
-
-      posXY.y = v1.yMin;
-      posXY2.y = v2.yMin;
-
-      if ( v1.xBeforeIndex > v2.xBeforeIndex ) {
-        v3 = v1;
-        v1 = v2;
-        v2 = v3;
-      }
-
-      var firstX, firstY, lastX, lastY, firstXVal, firstYVal, lastXVal, lastYVal, sum = 0,
-        diff;
-      var ratio = this.scaling;
-
-      if ( this.serie.isFlipped() ) {
-        incrYFlip = 0;
-        incrXFlip = 1;
-      }
-
-      for ( i = v1.dataIndex; i <= v2.dataIndex; i++ ) {
-
-        init = i == v1.dataIndex ? v1.xBeforeIndexArr : 0;
-        max = i == v2.dataIndex ? v2.xBeforeIndexArr : this.serie.data[ i ].length;
-        k = 0;
-
-        for ( j = init; j <= max; j += 2 ) {
-
-          x = this.serie.getX( this.serie.data[ i ][ j + incrXFlip ] );
-          y = this.serie.getY( this.serie.data[ i ][ j + incrYFlip ] );
-
-          if ( this.serie.isFlipped() ) {
-            var x2 = x;
-            x = y;
-            y = x2;
-          }
-
-          if ( !firstX ) {
-            firstX = x;
-            firstY = y;
-            firstXVal = this.serie.data[ i ][ j + incrXFlip ];
-            firstYVal = this.serie.data[ i ][ j + incrYFlip ];
-          }
-
-          if ( lastX == undefined ) {
-            lastX = x;
-            lastY = y;
-
-            lastXVal = this.serie.data[ i ][ j + incrXFlip ];
-            lastYVal = this.serie.data[ i ][ j + incrYFlip ];
-
-            continue;
-          }
-
-          sum += ( this.serie.data[ i ][ j + incrXFlip ] - lastXVal ) * ( this.serie.data[ i ][ j + incrYFlip ] ) * 0.5;
-
-          lastXVal = this.serie.data[ i ][ j + incrXFlip ];
-
-          if ( x == lastX && y == lastY ) {
-            continue;
-          }
-
-          lastX = x;
-          lastY = y;
-
-          points.push( [ x, sum ] );
-          k++;
-        }
-
-        this.lastX = x;
-        this.lastY = y;
-
-        if ( !firstX || !firstY || !this.lastX || !this.lastY ) {
-          return;
-        }
-
-      }
-
-      if ( sum == 0 )  {
-        sum = 1; // Will look line a line anyway
-      }
-
-      var ratio;
-
-      if ( !this._ratio ) {
-        ratio = 150 / sum;
-      } else {
-        ratio = this._ratio;
-      }
-
-      for ( var i = 0, l = points.length; i < l; i++ ) {
-        //   console.log( points[ i ][ 1 ] / sum );
-        points[ i ][ 1 ] = baseLine - ( points[ i ][ 1 ] ) * ratio;
-
-        if ( i == 0 ) {
-          this.firstPointX = points[ i ][ 0 ];
-          this.firstPointY = points[ i ][ 1 ];
-        }
-        currentLine += " L " + points[ i ][ incrXFlip ] + ", " + points[ i ][ incrYFlip ] + " ";
-
-        this.lastPointX = points[ i ][ 0 ];
-        this.lastPointY = points[ i ][ 1 ];
-      }
-
-      this.points = points;
-      this.sum = sum;
-
-      var lastY = firstY,
-        lastX = this.lastX;
-
-      var interX = firstX;
-      diff = Math.min( 20, lastX - firstX );
-
-      if ( this.serie.isFlipped() ) {
-        currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
-      } else {
-        currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
-      }
-
-      this.setDom( 'd', currentLine );
-
-      this.firstX = firstX;
-      this.firstY = firstY;
-
-      this.maxY = this.serie.getY( maxY );
-      if ( this._selected ) {
-        this.select();
-      }
-
-      this.setHandles();
-
+      j = index1;
+      condition = false
+      incrementation = 1;
     }
 
+    for ( ; condition ? j > index1 : j < index2; j += incrementation ) {
+
+      xVal = waveform.getX( j, true );
+      yVal = waveform.getY( j, true );
+
+      x = this.serie.getX( xVal );
+      y = this.serie.getY( yVal );
+
+      if ( !firstX ) {
+
+        firstX = x;
+        firstY = y;
+        firstXVal = waveform.getX( j );
+        firstYVal = waveform.getY( j );
+      }
+
+      if ( lastX == undefined ) {
+
+        lastX = x;
+        lastY = y;
+        lastXVal = waveform.getX( j );
+        lastYVal = waveform.getY( j );
+        continue;
+      }
+
+      if ( x == lastX && y == lastY ) {
+        //continue;
+      }
+
+      lastX = x;
+      lastY = y;
+      //console.log( data, data[ j ] );
+
+      if ( j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
+
+        sum += data.sums[ j ] * ( data.x[ j ] - data.x[ j - 3 ] ); // y * (out-in)
+      }
+
+      points.push( [ x, y, sum ] );
+      lastXVal = xVal;
+    }
+
+    lastXVal = false;
+    lastYVal = false;
+    lastX = false;
+    lastY = false;
+
+    if ( sum == 0 ) {
+      sum = 1;
+    }
+
+    if ( !this.ratio ) {
+      // 150px / unit
+      ratio = 200 / sum;
+
+    } else {
+      // Already existing
+      ratio = this.ratio;
+    }
+
+    for ( var i = 0, l = points.length; i < l; i++ ) {
+
+      points[ i ][ 2 ] = baseLine - ( points[ i ][ 2 ] ) * ratio;
+
+      if ( i == 0 ) {
+        this.firstPointX = points[ i ][ 0 ];
+        this.firstPointY = points[ i ][ 2 ];
+      }
+
+      currentLine += " L " + points[ i ][ 0 ] + ", " + points[ i ][ 2 ] + " ";
+
+      this.lastPointX = points[ i ][ 0 ];
+      this.lastPointY = points[ i ][ 2 ];
+    }
+
+    this.points = points;
+    this._sum = sum;
+
+    if ( this.serie.isFlipped() ) {
+      currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
+    } else {
+      currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
+    }
+
+    this.setDom( 'd', currentLine );
+
+    this.firstX = firstX;
+    this.firstY = firstY;
+    /*
+          if ( this._selected ) {
+            this.select();
+          }
+
+          this.setHandles();*/
+
     this.setLabelPosition( new GraphPosition( {
-      x: ( pos1.x + pos2.x ) / 2,
+      x: ( this.firstPointX + this.lastPointX ) / 2 + "px",
       y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
     } ) );
 
-    this.updateLabels();
+    this.setLabelPosition( {
+      x: 0.5 * ( this.firstPointX + this.lastPointX ) + "px",
+      y: 0.5 * ( this.firstPointY + this.lastPointY ) + "px"
+    }, 0 );
+    ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
+
     this.changed();
+    this.handleCondition = !this.xor( incrementation == -1, flipped )
+    this.setHandles();
+
+    this.updateIntegralValue();
 
     return true;
+  }
+
+  updateIntegralValue( ratioLabel = this.ratioLabel ) {
+
+    if ( ratioLabel ) {
+      this.ratioLabel = ratioLabel;
+    }
+    this.setLabelText( ratioLabel ? Math.round( 100 * this.sum * ratioLabel ) / 100 : "N/A", 0 );
+    this.updateLabels();
   }
 
   getAxis() {
@@ -247,7 +247,7 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
    * User to screen coordinate transform. In (unit)/(px), (unit) being the unit of the integral (x * y)
    * @type {Number}
    */
-  set ratio( r = 1 ) {
+  set ratio( r ) {
     this._ratio = r;
   }
 
@@ -255,12 +255,8 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
     return this._ratio;
   }
 
-  set yBaseline( y = 30 ) {
-    this._yBaseline = y;
-  }
-
-  get yBaseline() {
-    return this._yBaseline || 30;
+  get sum() {
+    return this._sum;
   }
 
   selectStyle() {
@@ -281,10 +277,7 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
 
     this.addHandles();
 
-    var posXY = this.computePosition( 0 ),
-      posXY2 = this.computePosition( 1 );
-
-    if ( posXY.x < posXY2.x ) {
+    if ( this.handleCondition ) {
 
       this.handles[ 1 ].setAttribute( 'x', this.firstPointX );
       this.handles[ 1 ].setAttribute( 'y', this.firstPointY );
@@ -299,6 +292,60 @@ class ShapeNMRIntegral extends ShapeSurfaceUnderCurve {
       this.handles[ 1 ].setAttribute( 'y', this.lastPointY );
 
     }
+  }
+
+  /**
+   * Handles mouse move events
+   * @private
+   */
+  handleMouseMoveImpl( e, deltaX, deltaY, deltaXPx, deltaYPx ) {
+
+    if ( this.isLocked() ) {
+      return;
+    }
+
+    var pos = this.getPosition( 0 );
+    var pos2 = this.getPosition( 1 );
+
+    var posToChange;
+
+    if ( this.handleSelected == 1 ) {
+
+      posToChange = pos;
+
+    } else if ( this.handleSelected == 2 ) {
+
+      posToChange = pos2;
+    }
+
+    if ( posToChange ) {
+
+      if ( !this._data.vertical ) {
+        posToChange.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+    }
+
+    if ( this.moving ) {
+
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos.x ) {
+        pos.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+
+      // If the pos2 is defined by a delta, no need to move them
+      if ( pos2.x ) {
+        pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
+      }
+    }
+
+    if ( this.rectEvent ) {
+      this.setEventReceptacle();
+    }
+
+    this.redraw();
+    this.changed();
+
+    return true;
   }
 }
 

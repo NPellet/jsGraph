@@ -115,11 +115,11 @@ class PluginSerieLineDifference extends Plugin {
     }
 
     y = this.interpolate( this.serie1, this.getFrom() );
-    top.push( this.getFrom() ); // x 
+    top.push( this.getFrom() ); // x
     top.push( y ); // y
 
     y = this.interpolate( this.serie2, this.getFrom() );
-    bottom.push( this.getFrom() ); // x 
+    bottom.push( this.getFrom() ); // x
     bottom.push( y ); // y
 
     var s2;
@@ -170,10 +170,10 @@ class PluginSerieLineDifference extends Plugin {
             order = this.serie1.data[ i1 ][ j1 + 1 ] > this.serie2.data[ i2 ][ j2 + 1 ];
           }
 
-          top.push( this.getTo() ); // x 
+          top.push( this.getTo() ); // x
           top.push( y ); // y
 
-          bottom.push( this.getTo() ); // x 
+          bottom.push( this.getTo() ); // x
           bottom.push( y2 ); // y
 
           ended = true;
@@ -191,10 +191,10 @@ class PluginSerieLineDifference extends Plugin {
 
             y = this.interpolate( this.serie2, this.serie1.data[ i1 ][ j1 ] );
 
-            top.push( this.serie1.data[ i1 ][ j1 ] ); // x 
+            top.push( this.serie1.data[ i1 ][ j1 ] ); // x
             top.push( this.serie1.data[ i1 ][ j1 + 1 ] ); // y
 
-            bottom.push( this.serie1.data[ i1 ][ j1 ] ); // x 
+            bottom.push( this.serie1.data[ i1 ][ j1 ] ); // x
             bottom.push( y ); // y
 
             order = this.serie1.data[ i1 ][ j1 + 1 ] > y;
@@ -286,7 +286,8 @@ class PluginSerieLineDifference extends Plugin {
       }
       // End of X
 
-      if ( y = this.interpolate( this.serie2, top[ top.length - 2 ] ) ) {
+      y = this.interpolate( this.serie2, top[ top.length - 2 ] );
+      if ( y ) {
         bottom.push( top[ top.length - 2 ] );
         bottom.push( y );
       }

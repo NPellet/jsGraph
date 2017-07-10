@@ -2,7 +2,7 @@ import SerieLine from './graph.serie.line'
 import * as util from '../graph.util'
 import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
 
-/** 
+/**
  * Colored serie line
  * @example graph.newSerie( name, options, "color" );
  * @see Graph#newSerie
@@ -10,16 +10,10 @@ import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
  */
 class SerieLineColor extends SerieLine {
 
-  constructor() {
+  constructor( graph, name, options ) {
+
     super( ...arguments );
-  }
-
-  initExtended1() {
-
     this.lines = this.lines ||  {};
-    if ( this.initExtended2 ) {
-      this.initExtended2();
-    }
   }
 
   setColors( colors ) {
@@ -300,7 +294,7 @@ class SerieLineColor extends SerieLine {
 
     var line = this.lines[ color ];
     if ( !line ) {
-      line = this.lines[ color ] = { 
+      line = this.lines[ color ] = {
         object: document.createElementNS( this.graph.ns, 'path' ),
         path: "",
         color: color

@@ -17,9 +17,8 @@ class PluginShape extends Plugin {
    */
   init( graph, options ) {
 
-    this.graph = graph;
+    super.init( graph, options );
     this.shapeType = options.type;
-
   }
 
   /**
@@ -74,7 +73,7 @@ class PluginShape extends Plugin {
 
     util.extend( true, shapeInfo, this.options );
 
-    this.emit( "beforeNewShape", shapeInfo, e );
+    this.emit( "beforeNewShape", e, shapeInfo );
 
     if ( this.graph.prevent( false ) ) {
       return;
@@ -82,7 +81,7 @@ class PluginShape extends Plugin {
 
     var shape = graph.newShape( shapeInfo.type, shapeInfo );
 
-    this.emit( "createdShape", shape, e );
+    this.emit( "createdShape", e, shape );
 
     if ( shape ) {
       self.currentShape = shape;
@@ -90,7 +89,7 @@ class PluginShape extends Plugin {
     }
 
     graph.once( "mouseUp", function() {
-      self.emit( "newShape", shape );
+      self.emit( "newShape", e, shape );
     } )
   }
 
@@ -123,7 +122,7 @@ class PluginShape extends Plugin {
       graph.selectShape( shape );
 
       shape.handleMouseDown( self.currentShapeEvent, true );
-      shape.handleSelected = 1;
+      shape.handleSelected = this.options.handleSelected || 1;
       shape.handleMouseMove( e, true );
     }
   }

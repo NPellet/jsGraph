@@ -1,6 +1,6 @@
 import Shape from './graph.shape'
 
-/** 
+/**
  * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}
  * @extends Shape
  * @see Graph#newShape
@@ -36,7 +36,7 @@ class ShapePolyline extends Shape {
    *  @return {ShapePolyline} The current polyline instance
    */
   setPointsPx( points ) {
-    this.pxPoints = points;
+    this.setProp( 'pxPoints', points );
     return this;
   }
 
@@ -47,8 +47,13 @@ class ShapePolyline extends Shape {
    */
   applyPosition() {
 
-    if ( this.pxPoints ) {
-      this.setDom( 'd', this.pxPoints );
+    let pxPoints;
+    let pos = this.computePosition( 0 );
+
+    if ( pxPoints = this.getProp( 'pxPoints' ) ) {
+
+      pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
+      this.setDom( 'd', pxPoints );
 
     } else if ( this.points ) {
 
@@ -70,6 +75,7 @@ class ShapePolyline extends Shape {
       } ).join( " L " ) );
     }
 
+    this.changed();
     return true;
   }
 }

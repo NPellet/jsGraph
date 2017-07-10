@@ -1,6 +1,6 @@
 import Axis from './graph.axis'
 
-/** 
+/**
  * Generic constructor of a y axis
  * @extends Axis
  */
@@ -171,7 +171,7 @@ class AxisY extends Axis {
   drawSpecifics() {
     // Place label correctly
     //this.label.setAttribute('x', (this.getMaxPx() - this.getMinPx()) / 2);
-    /* 
+    /*
     if ( !this.left ) {
 
       this.labelTspan.style.dominantBaseline = 'hanging';
@@ -360,6 +360,10 @@ class AxisY extends Axis {
     this.minPxFlipped = this.isFlipped() ? maxPx : minPx;
     this.maxPxFlipped = this.isFlipped() ? minPx : maxPx;
 
+  }
+
+  getZProj( zValue ) {
+    return zValue * this.graph.options.zAxis.shiftY;
   }
 
 }

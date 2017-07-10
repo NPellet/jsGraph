@@ -1,8 +1,10 @@
 node_modules
 lib
+nmr
 .idea
 examples/node_modules
 examples/requirejs
 examples/src
 examples/workingplace
 examples/DD/
+.eslintcache

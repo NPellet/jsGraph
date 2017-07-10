@@ -135,7 +135,7 @@ define( [ '../graph.util', './graph.shape' ], function( util, GraphShape ) {
           cY = 45;
         }
 
-        // this.handlePos.setAttribute('y', cY);  
+        // this.handlePos.setAttribute('y', cY);
         cY = ( 45 - cY ) / 45;
 
         this.series.map( function( s ) {

@@ -6,7 +6,7 @@ const defaults = {};
 
 var type = "scatter";
 
-/** 
+/**
  * @static
  * @augments Serie
  * @example graph.newSerie( name, options, "scatter" );
@@ -14,27 +14,12 @@ var type = "scatter";
  */
 class SerieScatter extends Serie {
 
-  constructor() {
+  constructor( graph, name, options ) {
+
     super( ...arguments );
-  }
-
-  /**
-   * Initializes the series
-   * @private
-   */
-  init( graph, name, options ) {
-
-    var self = this;
-
-    this.graph = graph;
-    this.name = name;
-
     this.id = Math.random() + Date.now();
-
     this.shapes = []; // Stores all shapes
-
     this.shown = true;
-    this.options = util.extend( true, {}, defaults, options );
     this.data = [];
 
     this.shapesDetails = [];
@@ -63,14 +48,14 @@ class SerieScatter extends Serie {
     this.selectedStyleGeneral = {};
     this.selectedStyleModifiers = {};
 
-    this.groupPoints.addEventListener( 'mouseover', function( e ) {
+    this.groupPoints.addEventListener( 'mouseover', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      self.emit( "mouseover", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      this.emit( "mouseover", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
     } );
 
-    this.groupPoints.addEventListener( 'mouseout', function( e ) {
+    this.groupPoints.addEventListener( 'mouseout', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      self.emit( "mouseout", id, self.data[ id * 2 ], self.data[ id * 2 + 1 ] );
+      this.emit( "mouseout", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
     } );
 
     this.minX = Number.MAX_VALUE;
@@ -109,7 +94,7 @@ class SerieScatter extends Serie {
 
   }
 
-  /** 
+  /**
    * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
    * @see GraphSerie#setData
    */
@@ -169,7 +154,7 @@ class SerieScatter extends Serie {
     return this;
   }
 
-  /** 
+  /**
    * Applies for x as the category axis
    * @example serie.setData( { x: "someName", y: [ ...values ] } );
    */
@@ -291,8 +276,7 @@ class SerieScatter extends Serie {
       k,
       m,
       currentLine,
-      max,
-      self = this;
+      max;
 
     var isCategory = this.getXAxis().getType() == 'category';
 
@@ -393,7 +377,7 @@ class SerieScatter extends Serie {
       this.errorDraw();
     }
 
-    // This will automatically create the shapes      
+    // This will automatically create the shapes
     this.applyStyle( "unselected", keys );
 
     this.groupMain.appendChild( this.groupPoints );
