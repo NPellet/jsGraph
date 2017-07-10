@@ -27629,7 +27629,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        shapeLabel.removeEventListener('blur', blurEvent);
 	        shapeLabel = false;
 
-	        self.changed("shapeLabelChanged", { previousValue: previousValue, nextValue: nextValue });
+	        self.changed("shapeLabelChanged", {
+	          previousValue: previousValue,
+	          nextValue: nextValue
+	        });
 	      };
 
 	      shapeLabel.addEventListener('blur', blurEvent);
@@ -28628,8 +28631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.sortPositions( ( a, b ) => {
 	            return a.x - b.x;
 	          } );
-	      
-	          */
+	           */
 	      var pos1 = this.getPosition(0);
 	      var pos2 = this.getPosition(1);
 
@@ -28785,7 +28787,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        y: (this.firstPointY + this.lastPointY) / 2 + "px"
 	      }));
 
-	      this.setLabelPosition({ x: 0.5 * (this.firstPointX + this.lastPointX) + "px", y: 0.5 * (this.firstPointY + this.lastPointY) + "px" }, 0);
+	      this.setLabelPosition({
+	        x: 0.5 * (this.firstPointX + this.lastPointX) + "px",
+	        y: 0.5 * (this.firstPointY + this.lastPointY) + "px"
+	      }, 0);
 	      this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
 
 	      this.changed();
