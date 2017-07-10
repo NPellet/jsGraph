@@ -41,7 +41,7 @@ class Serie extends EventEmitter {
       } );
     }
 
-    this.emit("draw");
+    this.emit( "draw" );
   }
 
   /**

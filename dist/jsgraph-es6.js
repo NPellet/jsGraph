@@ -569,7 +569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
 	   * @param {(String|Number)} name - The name or the index of the serie
 	   * @returns {Serie}
-	   */getSerie(name){if(typeof name=='number'){return this.series[name]||false;}var i=0,l=this.series.length;for(;i<l;i++){if(this.series[i].getName()==name){return this.series[i];}}return false;}/**
+	   */getSerie(name){if(typeof name=='number'){return this.series[name]||false;}if(typeof name=='function'){name=name();}var i=0,l=this.series.length;for(;i<l;i++){if(this.series[i].getName()==name||this.series[i]==name){return this.series[i];}}return false;}/**
 	   * Returns all the series
 	   * @returns {Serie[]} An array of all the series
 	   */getSeries(){return this.series;}/**
@@ -615,7 +615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @returns {Shape} The created shape
 	   * @see Graph#getConstructor
 	   */newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-	if(typeof shapeType=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);}}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
+	if(typeof shapeType=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
 	   * Creates a new position. Arguments are passed to the position constructor
 	   * @param {...*} var_args
 	   * @see Position
@@ -661,8 +661,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   **/kill(){this.wrapper.removeChild(this.dom);}_removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
 	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}unlockShapes(){//		console.log('unlock');
 	this.shapesLocked=false;}prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}_getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}_resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this.requireLegendUpdate();this.draw(true);}updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
-	getDrawingSpaceWidth(){return()=>this.drawingSpaceWidth;}getDrawingSpaceHeight(){return()=>this.drawingSpaceHeight;}getDrawingSpaceMinX(){return()=>this.drawingSpaceMinX;}getDrawingSpaceMinY(){return()=>this.drawingSpaceMinY;}getDrawingSpaceMaxX(){return()=>this.drawingSpaceMaxX;}getDrawingSpaceMaxY(){return()=>this.drawingSpaceMaxY;}trackingLine(options){var self=this;if(options){this.options.trackingLine=options;}// Individual tracking
-	if(options.mode=="individual"){if(options.series){options.series.map(function(sOptions){if(typeof sOptions.serie!=="object"){sOptions.serie=this.getSerie(sOptions.serie);}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}this.trackingLine=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));this.trackingLine.draw();return this.trackingLine;}addSerieToTrackingLine(serie,options){var self=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}serie.enableTracking(function(serie,index,x,y){if(index){self.trackingLine.show();var closestIndex=index.xIndexClosest;self.trackingLine.getPosition(0).x=serie.getData()[0][index.closestIndex*2];self.trackingLine.getPosition(1).x=serie.getData()[0][index.closestIndex*2];self.trackingLine.redraw();serie._trackingLegend=_trackingLegendSerie(self,{serie:serie},x,y,serie._trackingLegend,options.textMethod?options.textMethod:function(output){for(var i in output){return output[i].serie.serie.getName()+": "+output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);break;}},self.trackingLine.getPosition(0).x);serie._trackingLegend.style.display="block";}},function(serie){self.trackingLine.hide();if(serie.trackingShape){serie.trackingShape.hide();}if(serie._trackingLegend){serie._trackingLegend.style.display="none";}serie._trackingLegend=_trackingLegendSerie(self,{serie:serie},false,false,serie._trackingLegend,false,false);});}/**
+	getDrawingSpaceWidth(){return()=>this.drawingSpaceWidth;}getDrawingSpaceHeight(){return()=>this.drawingSpaceHeight;}getDrawingSpaceMinX(){return()=>this.drawingSpaceMinX;}getDrawingSpaceMinY(){return()=>this.drawingSpaceMinY;}getDrawingSpaceMaxX(){return()=>this.drawingSpaceMaxX;}getDrawingSpaceMaxY(){return()=>this.drawingSpaceMaxY;}trackingLine(options){var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
+	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){options.series=[options.series];}options.series.forEach(sOptions=>{if(typeof sOptions.serie!=="object"){if(typeof sOptions!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=this.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(serie=>{serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
+	// Creates a new shape called trackingLine, in the first layer (below everything)
+	this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}addSerieToTrackingLine(serie,options){if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
+	this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking((serie,index,x,y)=>{if(this.options.trackingLine.enable){if(index){if(this.trackingObject){this.trackingObject.show();this.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+	this.trackingObject.getPosition(1).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+	this.trackingObject.redraw();}serie._trackingLegend=_trackingLegendSerie(this,{serie:serie},x,y,serie._trackingLegend,options.textMethod?options.textMethod:output=>{for(var i in output){return output[i].serie.serie.getName()+": "+output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);break;}},index.trueX);if(serie._trackingLegend){serie._trackingLegend.style.display="block";}}}},serie=>{if(this.trackingObject){this.trackingObject.hide();}if(serie.trackingShape){serie.trackingShape.hide();}if(serie._trackingLegend){serie._trackingLegend.style.display="none";}serie._trackingLegend=_trackingLegendSerie(this,{serie:serie},false,false,serie._trackingLegend,false,false);});}/**
 	   *  Pass here the katex.render method to be used later
 	   *   @param {Function} renderer -  katexRendered - renderer
 	   *   @return {Graph} The current graph instance
@@ -761,11 +766,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 	var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
 	});graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
-	graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;if(graph.options.trackingLine&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(!index){graph.trackingLine.hide();}else{graph.trackingLine.show();var closestIndex=index.xIndexClosest;graph.trackingLine.getPosition(0).x=snapToSerie.getData()[0][closestIndex*2];graph.trackingLine.getPosition(1).x=snapToSerie.getData()[0][closestIndex*2];graph.trackingLine.redraw();var x=snapToSerie.getXAxis().getPx(graph.trackingLine.getPosition(0).x)+graph.options.paddingLeft;}var series=graph.options.trackingLine.series;if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,graph.trackingLine.getPosition(1).x);}}}if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
+	graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;// Takes care of the tracking line
+	if(graph.options.trackingLine&&graph.options.trackingLine.enable&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(this.trackingObject){if(!index){graph.trackingObject.hide();}else{graph.trackingObject.show();graph.trackingObject.getPosition(0).x=index.xClosest;graph.trackingObject.getPosition(1).x=index.xClosest;graph.trackingObject.redraw();var x=snapToSerie.getXAxis().getPx(index.xClosest)+graph.options.paddingLeft;}}var series=graph.options.trackingLine.series;// Gets a default value
+	if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,index.xClosest);}}}// End takes care of the tracking line
+	if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
 	if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);return true;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}return true;}}return false;};var _trackingLegendSerie=function(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(function(serie){var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
-	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(serie.serie.getData()[0][index.xIndexClosest*2]))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-serie.serie.getData()[0][index.xIndexClosest*2])-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={xIndex:index.xIndexClosest,yValue:serie.serie.getData()[0][index.xIndexClosest*2+1],xValue:serie.serie.getData()[0][index.xIndexClosest*2],serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape("ellipse",{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()}).setSerie(serie.serie).setProp('rx',serie.serie.getLineWidth()*3).setProp('ry',serie.serie.getLineWidth()*3).forceParentDom(serie.serie.groupMain).draw();}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=serie.serie.getData()[0][index.xIndexClosest*2];serie.serie.trackingShape.redraw();}});// End map
-	if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
+	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);return true;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}return true;}}return false;};var _trackingLegendSerie=function(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(serie=>{var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
+	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",()=>{graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;serie.serie.trackingShape.redraw();}});// End map
+	if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
 	}return legend;};var forceTrackingLegendMode=function(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
 	//	var _y = y - graph.options.paddingTop;
 	var pref=graph.options.dblclick;checkMouseActions(graph,e,[x,y,e],'onDblClick');/*
@@ -786,7 +794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          break;
 	      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
-	if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if(typeof num=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
+	checkMouseActions(graph,e,[x,y,e],'onClick');if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if(typeof num=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
 	Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();Graph.ns='http://www.w3.org/2000/svg';Graph.nsxlink="http://www.w3.org/1999/xlink";exports.default=Graph;});
 
 /***/ },
@@ -841,6 +849,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.dx = dx;
 	        this.dy = dy;
 	      }
+	    }
+
+	    duplicate() {
+	      return new Position(this.x, this.y, this.dx, this.dy);
 	    }
 
 	    /**
@@ -2128,10 +2140,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getY(index, optimized) {
 
 	      if (optimized && this.dataInUse) {
-	        return this.dataInUse.y[index];
+	        return this.dataInUse.y[index] + this.getShift();
 	      }
 
-	      return this.data[index];
+	      return this.data[index] + this.getShift();
 	    }
 
 	    /*
@@ -2376,6 +2388,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      let data, xdata;
 
+	      xval -= this.getXShift();
+
 	      if (useDataToUse && this.dataInUse) {
 	        xdata = this.dataInUse.x;
 	      } else if (this.xdata) {
@@ -2389,43 +2403,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    getXMin() {
-	      return this.minX;
+	      return this.minX + this.getXShift();
 	    }
 
 	    getXMax() {
-	      return this.maxX;
+	      return this.maxX + this.getXShift();
 	    }
 
 	    getYMin() {
-	      return this.minY;
+	      return this.minY + this.getShift();
 	    }
 
 	    getYMax() {
-	      return this.maxY;
+	      return this.maxY + this.getShift();
 	    }
 
 	    getMin() {
-	      return this.minY;
+	      return this.minY + this.getShift();
 	    }
 
 	    getMax() {
-	      return this.maxY;
+	      return this.maxY + this.getShift();
 	    }
 
 	    getMinX() {
-	      return this.minX;
+	      return this.minX + this.getXShift();
 	    }
 
 	    getMaxX() {
-	      return this.maxX;
+	      return this.maxX + this.getXShift();
 	    }
 
 	    getMinY() {
-	      return this.minY;
+	      return this.minY + this.getShift();
 	    }
 
 	    getMaxY() {
-	      return this.maxY;
+	      return this.maxY + this.getShift();
 	    }
 
 	    getDataY() {
@@ -2437,6 +2451,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.data;
 	      }
 	      return this.dataInUse.y;
+	    }
+
+	    setShift(shift = 0) {
+
+	      // We must update the min and the max of the y data
+	      this.minY += shift - this.getShift();
+	      this.maxY += shift - this.getShift();
+	      this.shift = shift;
+	      return this;
+	    }
+
+	    getShift() {
+	      return this.shift || 0;
+	    }
+
+	    setXShift(shift = 0) {
+
+	      if (!this.hasXWaveform) {
+	        return this;
+	      }
+	      console.log(shift);
+
+	      // We must update the min and the max of the x data
+	      // That's important for when the data has already been set
+	      this.minX += shift - this.getXShift();
+	      this.maxX += shift - this.getXShift();
+	      this.getXWaveform().setShift(shift);
+	      return this;
+	    }
+
+	    getXShift(shift = 0) {
+
+	      if (!this.hasXWaveform) {
+	        return 0;
+	      }
+
+	      return this.getXWaveform().getShift();
 	    }
 
 	    getLength() {
@@ -2497,11 +2548,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getX(index, optimized) {
 
 	      if (optimized && this.dataInUse) {
-	        return this.dataInUse.x[index];
+	        return this.dataInUse.x[index] + this.getXShift();
 	      }
 
 	      if (this.xdata) {
-	        return this.xdata.data[index];
+	        return this.xdata.data[index] + this.getXShift();
 	      } else {
 	        return this.xOffset + index * this.xScale;
 	      }
@@ -2747,6 +2798,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getMonotoneousAscending() {
+
+	      if (!this.isMonotoneous()) {
+	        return "The waveform is not monotoneous";
+	      }
+
 	      return this._monotoneousAscending;
 	    }
 
@@ -2915,8 +2971,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        numPoints: pow2
 
 	      }).then(event => {
-	        console.log(event);
+
 	        this._dataAggregated = event.aggregates;
+	        this._dataAggregating = false;
 	      });
 	    }
 
@@ -2931,15 +2988,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var level = pow2ceil(pxWidth);
-	      if (this._dataAggregated[level]) {
 
+	      if (this._dataAggregated[level]) {
+	        console.log('agg');
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
 	      } else if (this._dataAggregating) {
 
 	        return this._dataAggregating;
 	      }
-
+	      console.log('orig');
 	      this.dataInUse = {
 	        y: this.data,
 	        x: this.getXWaveform().data
@@ -3608,7 +3666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          k += 4;
 	          slots[k] = slotNumber;
 
-	          let slotX = (slotNumber + 0.5) / dataPerSlot;
+	          let slotX = (slotNumber + 0.5) / dataPerSlot + min;
 
 	          dataAggregatedX[k] = slotX;
 	          dataAggregatedX[k + 1] = slotX;
@@ -3693,6 +3751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  aggregatorWorker = new Worker(workerUrl);
 
 	  aggregatorWorker.onmessage = function (e) {
+
 	    var id = e.data._queueId;
 	    delete e.data._queueId;
 	    queue[id](e.data);
@@ -9345,7 +9404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.dataHasChanged(false);
-	      this.afterDraw();
+	      super.afterDraw();
 	    }
 
 	    _draw() {
@@ -9371,10 +9430,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!waveform) {
 	        return;
 	      }
+
 	      data = waveform.getData(true);
 
 	      // Y crossing
-	      let yLeftCrossingRatio, yLeftCrossing, yRightCrossingRatio, yRightCrossing, xTopCrossingRatio, xTopCrossing, xBottomCrossingRatio, xBottomCrossing;
+	      let yLeftCrossingRatio,
+	          yLeftCrossing,
+	          yRightCrossingRatio,
+	          yRightCrossing,
+	          xTopCrossingRatio,
+	          xTopCrossing,
+	          xBottomCrossingRatio,
+	          xBottomCrossing,
+	          xshift = waveform.getXShift(),
+	          yshift = waveform.getShift();
 
 	      let pointOutside = false;
 	      let lastPointOutside = false;
@@ -9415,10 +9484,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
+	      console.log(i, l);
 	      for (; i < l; i += 1) {
 
 	        x = waveform.getX(i, true);
-	        y = data[i];
+	        y = data[i] + yshift;
 
 	        if (x != x || y != y) {
 	          // NaN checks
@@ -9603,16 +9673,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          cloned.children[i].setAttribute('pointer-events', 'stroke');
 	        }
 
-	        self._trackerDom = cloned;
+	        this._trackerDom = cloned;
 
-	        self.groupMain.addEventListener("mousemove", function (e) {
-	          var coords = self.graph._getXY(e),
-	              ret = self.handleMouseMove(false, false);
-	          self._trackingCallback(self, ret, coords.x, coords.y);
+	        this.groupMain.addEventListener("mousemove", e => {
+	          var coords = this.graph._getXY(e),
+	              ret = this.handleMouseMove(false, false);
+
+	          this._trackingCallback(this, ret, coords.x, coords.y);
 	        });
 
-	        self.groupMain.addEventListener("mouseleave", function (e) {
-	          self._trackingOutCallback(self);
+	        this.groupMain.addEventListener("mouseleave", e => {
+	          this._trackingOutCallback(this);
 	        });
 	      }
 
@@ -10042,14 +10113,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    searchClosestValue(valX, data) {
 
 	      if (this._waveform) {
-	        var indexX = this._waveform.getIndexFromX(valX);
-
-	        return {
+	        const indexX = this._waveform.getIndexFromX(valX);
+	        let returnObj = {
 	          xMin: this._waveform.getX(indexX),
 	          xMax: this._waveform.getX(indexX + 1),
 	          yMin: this._waveform.getY(indexX),
 	          yMax: this._waveform.getY(indexX + 1)
 	        };
+
+	        if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
+	          returnObj.xClosest = returnObj.xMin;
+	          returnObj.yClosest = returnObj.yMin;
+	        } else {
+	          returnObj.xClosest = returnObj.xMax;
+	          returnObj.yClosest = returnObj.yMax;
+	        }
+
+	        return returnObj;
 	      }
 
 	      return;
@@ -10113,8 +10193,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        yAfter: value.yMax,
 	        trueX: valX,
 	        interpolatedY: intY,
-	        xBeforeIndex: value.xBeforeIndex,
-	        xIndexClosest: value.xClosest
+
+	        xClosest: value.xClosest,
+	        yClosest: value.yClosest
 	      };
 	    }
 	    /**
@@ -10718,6 +10799,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          shape.redraw();
 	        });
 	      }
+
+	      this.emit("draw");
 	    }
 
 	    /**
@@ -15978,6 +16061,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.graph.stopElementMoving(this);
 	      this.graph.emit("shapeRemoved", this);
+	      this.emit("removed", this);
 
 	      this._inDom = false;
 	    }
@@ -16062,17 +16146,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
-	     * Triggers a ```shapeChanged``` event on the graph
+	     * Triggers a ```shapeChanged``` event on the graph and a ```changed``` event on the shape
 	     * @return {Shape} The current shape
 	     */
-	    changed(event) {
+	    changed(event, parameters) {
 
 	      if (event) {
-	        this.graph.emit(event, this);
+	        this.graph.emit(event, this, parameters);
+	        this.emit(event, this, parameters);
 	      }
 
-	      this.emit("shapeChanged", this);
-	      this.graph.emit('shapeChanged', this);
+	      this.emit("changed", this, parameters);
+	      this.graph.emit('shapeChanged', this, parameters);
 	      return this;
 	    }
 
@@ -16722,7 +16807,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * Returns a stored position object
 	     * @param {Number} [ index = 0 ] - The index of the position to compute
-	     * @return {Position} The current shape
+	     * @return {Position} The position at the proper index, or undefined
 	     */
 	    getPosition(index) {
 
@@ -16735,7 +16820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Sets a position object
 	     * @param {Position} position - The position object to store
 	     * @param {Number} [ index = 0 ] - The index of the position to store
-	     * @return {Position} The current shape
+	     * @return {Shape} The current shape
 	     */
 	    setPosition(position, index) {
 
@@ -16745,6 +16830,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 
 	      return this.setProp('position', pos, index || 0);
+	    }
+
+	    /**
+	     * Sorts the positions
+	     * @param {Function} sortFunction - Function passed into the ```Array.sort``` method
+	     * @return {Position} The current shape
+	     */
+	    sortPositions(sortFunction) {
+	      this.getProps('position').sort(sortFunction);
+	      return this;
 	    }
 
 	    /**
@@ -16824,7 +16919,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var i = 0;
 
-	      while (this.getProp("labelText", i)) {
+	      while (this.getProp("labelText", i) !== undefined) {
 
 	        if (!self._labels[i]) {
 	          self._labels[i] = document.createElementNS(self.graph.ns, 'text');
@@ -17080,9 +17175,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._selectStatus = true;
 
 	      this.applySelectedStyle();
-	      console.log('ds');
+
 	      if (this.hasHandles() && !this.hasStaticHandles()) {
-	        console.log('ds');
+
 	        this.addHandles();
 	        this.setHandles();
 	      }
@@ -17188,7 +17283,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (var i = 1, l = nb; i <= l; i++) {
 
-	        (function (j) {
+	        (j => {
 
 	          var self = this;
 
@@ -17201,7 +17296,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 
-	          handle.addEventListener('mousedown', function (e) {
+	          handle.addEventListener('mousedown', e => {
 
 	            if (self.isResizable()) {
 
@@ -17209,6 +17304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              e.stopPropagation();
 
 	              self.graph.emit("beforeShapeResize", self);
+	              this.emit("beforeShapeResize");
 
 	              if (!self.graph.prevent(false)) {
 
@@ -17318,7 +17414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (this.getProp('selectOnClick')) {
-
+	        console.log('sel');
 	        this.graph.selectShape(this);
 	      }
 	    }
@@ -17336,6 +17432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      this.graph.emit("beforeShapeMouseMove", this);
+	      this.emit("beforeShapeMouseMove");
 
 	      if (this.graph.prevent(false) || !this._mouseCoords) {
 	        return false;
@@ -17367,11 +17464,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.moving) {
 
 	        this.graph.emit("shapeMoved", this);
+	        this.emit("shapeMoved");
 	      }
 
 	      if (this.handleSelected || this.resize) {
 
 	        this.graph.emit("shapeResized", this);
+	        this.emit("shapeResized");
 	      }
 
 	      this.moving = false;
@@ -17670,25 +17769,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var shapeLabel = document.createElement('input');
 	      shapeLabel.setAttribute('type', 'text');
 	      shapeLabel.setAttribute('value', self.getProp('labelText', i));
-	      self.graph._dom.prepend(shapeLabel);
+
+	      self.graph.wrapper.prepend(shapeLabel);
+
 	      util.setCSS(shapeLabel, {
 	        position: 'absolute',
-	        marginTop: parseInt(e.target.getAttribute('y').replace('px', '')) - 10 + 'px',
-	        marginLeft: parseInt(e.target.getAttribute('x').replace('px', '')) - 50 + 'px',
+	        marginTop: parseInt(e.target.getAttribute('y').replace('px', '')) + this.graph.getPaddingTop() - 10 + 'px',
+	        marginLeft: parseInt(e.target.getAttribute('x').replace('px', '')) + this.graph.getPaddingLeft() - 50 + 'px',
 	        textAlign: 'center',
 	        width: '100px'
 	      });
-	      shapeLabel.addEventListener('blur', function () {
-	        self.setLabelText(shapeLabel.getAttribute('value'), i);
-	        self._labels[i].textContent = shapeLabel.getAttribute('value');
+
+	      const previousValue = self.getLabelText(i);
+
+	      const blurEvent = function () {
+
+	        self.setLabelText(shapeLabel.value, i);
+	        self._labels[i].textContent = shapeLabel.value;
+
+	        const nextValue = shapeLabel.value;
+
 	        shapeLabel.remove();
-	        self.changed("shapeLabelChanged");
-	      });
+	        shapeLabel.removeEventListener('blur', blurEvent);
+	        shapeLabel = false;
+
+	        self.changed("shapeLabelChanged", {
+	          previousValue: previousValue,
+	          nextValue: nextValue
+	        });
+	      };
+
+	      shapeLabel.addEventListener('blur', blurEvent);
+
 	      shapeLabel.addEventListener('keyup', function (e) {
 	        e.stopPropagation();
 	        e.preventDefault();
 	        if (e.keyCode === 13) {
-	          shapeLabel.dispatchEvent(new Event('blur'));
+	          blurEvent();
 	        }
 	      });
 	      shapeLabel.addEventListener('keypress', function (e) {
@@ -18404,7 +18521,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *  @return {ShapePolyline} The current polyline instance
 	     */
 	    setPointsPx(points) {
-	      this.pxPoints = points;
+	      this.setProp('pxPoints', points);
 	      return this;
 	    }
 
@@ -18415,8 +18532,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    applyPosition() {
 
-	      if (this.pxPoints) {
-	        this.setDom('d', this.pxPoints);
+	      let pxPoints;
+	      let pos = this.computePosition(0);
+
+	      if (pxPoints = this.getProp('pxPoints')) {
+
+	        pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
+	        this.setDom('d', pxPoints);
 	      } else if (this.points) {
 
 	        var xAxis, yAxis;
@@ -18436,6 +18558,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }).join(" L "));
 	      }
 
+	      this.changed();
 	      return true;
 	    }
 	  }
@@ -18449,26 +18572,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(28), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(27), __webpack_require__(2)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require('./graph.shape.areaundercurve'), require('../graph.position'));
+	    factory(exports, require('./graph.shape'), require('../graph.position'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod.exports, global.graphShape, global.graph);
+	    factory(mod.exports, global.graph, global.graph);
 	    global.graphShapeNmrintegral = mod.exports;
 	  }
-	})(this, function (exports, _graphShape, _graph) {
+	})(this, function (exports, _graph, _graph3) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
-
 	  var _graph2 = _interopRequireDefault(_graph);
+
+	  var _graph4 = _interopRequireDefault(_graph3);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
@@ -18480,13 +18603,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Displays an integral with NMR style
 	   * @extends ShapeSurfaceUnderCurve
 	   */
-	  class ShapeNMRIntegral extends _graphShape2.default {
+	  class ShapeNMRIntegral extends _graph2.default {
 
 	    constructor(graph, options) {
 
 	      super(graph, options);
 
 	      this.nbHandles = 2;
+	    }
+
+	    createDom() {
+	      this._dom = document.createElementNS(this.graph.ns, 'path');
 	    }
 
 	    initImpl() {
@@ -18503,6 +18630,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        stroke: "black",
 	        fill: "white"
 	      });
+
+	      this.handles[1].setAttribute('fill', 'red');
+	    }
+
+	    xor(a, b) {
+	      return a && !b || !a && b;
 	    }
 
 	    applyPosition() {
@@ -18514,50 +18647,67 @@ return /******/ (function(modules) { // webpackBootstrap
 	          axis = this.getAxis(),
 	          points = [];
 
-	      let currentLine = "";
-
-	      let baseLine = 300;
-	      let ratio;
+	      let currentLine = "",
+	          baseLine = 300,
+	          ratio;
 
 	      if (!this.serie) {
 	        throw "No serie exists for this shape";
 	      };
-	      //    this.reversed = x == posXY2.x;
-
-	      var pos1 = this.getPosition(0);
-	      var pos2 = this.getPosition(1);
 	      /*
-	          if (
-	            ( axis == 'x' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingWidth() ) ) ||
-	            ( axis == 'y' && ( w < 2 || x + w < 0 || x > this.graph.getDrawingHeight() ) )
-	          ) {
-	             points = [
-	              [ 0, 0 ]
-	            ];
-	            this.hideLabel( 0 );
-	            this.setDom( "d", "" );
-	            this.hideHandles();
-	           } else {
-	      */
+	          this.sortPositions( ( a, b ) => {
+	            return a.x - b.x;
+	          } );
+	           */
+	      let pos1 = this.getPosition(0);
+	      let pos2 = this.getPosition(1);
+
 	      this.showLabel(0);
 
 	      let sum = 0;
 
 	      let j;
 	      let waveform = this.serie.getWaveform();
-	      console.trace();
+
 	      if (!waveform) {
 	        return;
 	      }
-	      let index1 = waveform.getIndexFromX(pos1[axis], true);
-	      let index2 = waveform.getIndexFromX(pos2[axis], true);
+
+	      let index1 = waveform.getIndexFromX(pos1[axis], true),
+	          index2 = waveform.getIndexFromX(pos2[axis], true),
+	          index3,
+	          flipped = false;
+
+	      if (index2 < index1) {
+	        index3 = index1;
+	        index1 = index2;
+	        index2 = index3;
+	        flipped = true;
+	      }
+
 	      let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
 	      let data = waveform.getDataInUse();
 
 	      index1 -= index1 % 4;
 	      index2 -= index2 % 4;
 
-	      for (j = index1; j <= index2; j++) {
+	      let condition, incrementation;
+
+	      if (waveform.getXMonotoneousAscending() && // Ascending
+	      1 == 1 || !waveform.getXMonotoneousAscending() && // Ascending
+	      1 == 2) {
+
+	        j = index2;
+	        condition = true;
+	        incrementation = -1;
+	      } else {
+
+	        j = index1;
+	        condition = false;
+	        incrementation = 1;
+	      }
+
+	      for (; condition ? j > index1 : j < index2; j += incrementation) {
 
 	        xVal = waveform.getX(j, true);
 	        yVal = waveform.getY(j, true);
@@ -18583,23 +18733,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (x == lastX && y == lastY) {
-	          continue;
+	          //continue;
 	        }
 
 	        lastX = x;
 	        lastY = y;
 	        //console.log( data, data[ j ] );
 
-	        if (j % 4 == 0 && j > index1 && data.sums) {
+	        if (j % 4 == 0 && j >= index1 && data.sums) {
 	          // Sums are located every 4 element
+
 	          sum += data.sums[j] * (data.x[j] - data.x[j - 3]); // y * (out-in)
 	        }
 
 	        points.push([x, y, sum]);
 	        lastXVal = xVal;
 	      }
-
-	      waveform = this.serie.getWaveform();
 
 	      lastXVal = false;
 	      lastYVal = false;
@@ -18609,18 +18758,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (sum == 0) {
 	        sum = 1;
 	      }
-	      console.log(this.ratio);
+
 	      if (!this.ratio) {
 	        // 150px / unit
-	        this.ratio = 300 / sum;
+	        ratio = 200 / sum;
 	      } else {
 	        // Already existing
-	        this.ratio = this.ratio;
+	        ratio = this.ratio;
 	      }
 
 	      for (var i = 0, l = points.length; i < l; i++) {
 
-	        points[i][2] = baseLine - points[i][2] * this.ratio;
+	        points[i][2] = baseLine - points[i][2] * ratio;
 
 	        if (i == 0) {
 	          this.firstPointX = points[i][0];
@@ -18652,15 +18801,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	             this.setHandles();*/
 
-	      this.setLabelPosition(new _graph2.default({
-	        x: (this.firstPointX + this.lastPointX) / 2,
+	      this.setLabelPosition(new _graph4.default({
+	        x: (this.firstPointX + this.lastPointX) / 2 + "px",
 	        y: (this.firstPointY + this.lastPointY) / 2 + "px"
 	      }));
 
-	      this.updateLabels();
+	      this.setLabelPosition({
+	        x: 0.5 * (this.firstPointX + this.lastPointX) + "px",
+	        y: 0.5 * (this.firstPointY + this.lastPointY) + "px"
+	      }, 0);
+	      this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
+
 	      this.changed();
+	      this.handleCondition = !this.xor(incrementation == -1, flipped);
+	      this.setHandles();
+
+	      this.updateIntegralValue();
 
 	      return true;
+	    }
+
+	    updateIntegralValue(ratioLabel = this.ratioLabel) {
+
+	      if (ratioLabel) {
+	        this.ratioLabel = ratioLabel;
+	      }
+	      this.setLabelText(ratioLabel ? Math.round(100 * this.sum * ratioLabel) / 100 : "N/A", 0);
+	      this.updateLabels();
 	    }
 
 	    getAxis() {
@@ -18690,18 +18857,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    selectHandles() {} // Cancel areaundercurve
 
 	    setHandles() {
-	      console.log('a');
+
 	      if (this.points == undefined) {
 	        return;
 	      }
-	      console.log('b');
+
 	      if (!this.isSelected()) {
 	        return;
 	      }
-	      console.log('c');
+
 	      this.addHandles();
 
-	      if (this.firstPointX < this.lastPointX) {
+	      if (this.handleCondition) {
 
 	        this.handles[1].setAttribute('x', this.firstPointX);
 	        this.handles[1].setAttribute('y', this.firstPointY);
@@ -18714,6 +18881,59 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.handles[1].setAttribute('x', this.lastPointX);
 	        this.handles[1].setAttribute('y', this.lastPointY);
 	      }
+	    }
+
+	    /**
+	     * Handles mouse move events
+	     * @private
+	     */
+	    handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+
+	      if (this.isLocked()) {
+	        return;
+	      }
+
+	      var pos = this.getPosition(0);
+	      var pos2 = this.getPosition(1);
+
+	      var posToChange;
+
+	      if (this.handleSelected == 1) {
+
+	        posToChange = pos;
+	      } else if (this.handleSelected == 2) {
+
+	        posToChange = pos2;
+	      }
+
+	      if (posToChange) {
+
+	        if (!this._data.vertical) {
+	          posToChange.deltaPosition('x', deltaX, this.getXAxis());
+	        }
+	      }
+
+	      if (this.moving) {
+
+	        // If the pos2 is defined by a delta, no need to move them
+	        if (pos.x) {
+	          pos.deltaPosition('x', deltaX, this.getXAxis());
+	        }
+
+	        // If the pos2 is defined by a delta, no need to move them
+	        if (pos2.x) {
+	          pos2.deltaPosition('x', deltaX, this.getXAxis());
+	        }
+	      }
+
+	      if (this.rectEvent) {
+	        this.setEventReceptacle();
+	      }
+
+	      this.redraw();
+	      this.changed();
+
+	      return true;
 	    }
 	  }
 
@@ -20157,7 +20377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      util.extend(true, shapeInfo, this.options);
 
-	      this.emit("beforeNewShape", shapeInfo, e);
+	      this.emit("beforeNewShape", e, shapeInfo);
 
 	      if (this.graph.prevent(false)) {
 	        return;
@@ -20165,7 +20385,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var shape = graph.newShape(shapeInfo.type, shapeInfo);
 
-	      this.emit("createdShape", shape, e);
+	      this.emit("createdShape", e, shape);
 
 	      if (shape) {
 	        self.currentShape = shape;
@@ -20173,7 +20393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      graph.once("mouseUp", function () {
-	        self.emit("newShape", shape);
+	        self.emit("newShape", e, shape);
 	      });
 	    }
 
@@ -20206,7 +20426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        graph.selectShape(shape);
 
 	        shape.handleMouseDown(self.currentShapeEvent, true);
-	        shape.handleSelected = 1;
+	        shape.handleSelected = this.options.handleSelected || 1;
 	        shape.handleMouseMove(e, true);
 	      }
 	    }
@@ -20620,14 +20840,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var self = this;
 	      this.removeZone();
+
 	      var _x = x - graph.options.paddingLeft;
 	      var _y = y - graph.options.paddingTop;
+
+	      this.emit("beforeZoom", {
+	        graph: graph,
+	        x: x,
+	        y: y,
+	        e: e,
+	        mute: mute
+	      });
+
+	      if (graph.prevent(false)) {
+	        graph.prevent(true); // Cancel future click event
+	        return;
+	      }
 
 	      if (x - this._zoomingXStart == 0 && this._zoomingMode != 'y' || y - this._zoomingYStart == 0 && this._zoomingMode != 'x') {
 	        return;
 	      }
-
-	      graph.cancelClick = true;
 
 	      if (this.options.transition || this.options.smooth) {
 
@@ -20726,6 +20958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    removeZone() {
+
 	      this._zoomingSquare.setAttribute('display', 'none');
 	    }
 

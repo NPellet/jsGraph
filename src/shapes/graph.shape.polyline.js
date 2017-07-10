@@ -36,7 +36,7 @@ class ShapePolyline extends Shape {
    *  @return {ShapePolyline} The current polyline instance
    */
   setPointsPx( points ) {
-    this.setProp('pxPoints', points );
+    this.setProp( 'pxPoints', points );
     return this;
   }
 
@@ -49,7 +49,6 @@ class ShapePolyline extends Shape {
 
     let pxPoints;
     let pos = this.computePosition( 0 );
-
 
     if ( pxPoints = this.getProp( 'pxPoints' ) ) {
 

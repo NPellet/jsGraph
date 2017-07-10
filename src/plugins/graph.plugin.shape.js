@@ -122,7 +122,7 @@ class PluginShape extends Plugin {
       graph.selectShape( shape );
 
       shape.handleMouseDown( self.currentShapeEvent, true );
-      shape.handleSelected = this.options.handleSelected || 1 ;
+      shape.handleSelected = this.options.handleSelected || 1;
       shape.handleMouseMove( e, true );
     }
   }

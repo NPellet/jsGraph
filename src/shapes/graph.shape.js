@@ -138,7 +138,7 @@ class Shape extends EventEmitter {
 
     this.graph.stopElementMoving( this );
     this.graph.emit( "shapeRemoved", this );
-    this.emit("removed", this );
+    this.emit( "removed", this );
 
     this._inDom = false;
   }
@@ -913,7 +913,6 @@ class Shape extends EventEmitter {
     return this.setProp( 'position', pos, ( index || 0 ) );
   }
 
-
   /**
    * Sorts the positions
    * @param {Function} sortFunction - Function passed into the ```Array.sort``` method
@@ -1262,9 +1261,9 @@ class Shape extends EventEmitter {
     this._selectStatus = true;
 
     this.applySelectedStyle();
-    
+
     if ( this.hasHandles() && !this.hasStaticHandles() ) {
-    
+
       this.addHandles();
       this.setHandles();
     }
@@ -1507,7 +1506,7 @@ class Shape extends EventEmitter {
     }
 
     if ( this.getProp( 'selectOnClick' ) ) {
-console.log('sel');
+      console.log( 'sel' );
       this.graph.selectShape( this );
     }
   }
@@ -1869,7 +1868,7 @@ console.log('sel');
     var shapeLabel = document.createElement( 'input' );
     shapeLabel.setAttribute( 'type', 'text' );
     shapeLabel.setAttribute( 'value', self.getProp( 'labelText', i ) );
-    
+
     self.graph.wrapper.prepend( shapeLabel );
 
     util.setCSS( shapeLabel, {
@@ -1890,10 +1889,13 @@ console.log('sel');
       const nextValue = shapeLabel.value;
 
       shapeLabel.remove();
-      shapeLabel.removeEventListener('blur', blurEvent );
+      shapeLabel.removeEventListener( 'blur', blurEvent );
       shapeLabel = false;
 
-      self.changed( "shapeLabelChanged", { previousValue: previousValue, nextValue: nextValue } );
+      self.changed( "shapeLabelChanged", {
+        previousValue: previousValue,
+        nextValue: nextValue
+      } );
     };
 
     shapeLabel.addEventListener( 'blur', blurEvent );

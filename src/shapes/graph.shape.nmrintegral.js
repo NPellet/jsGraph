@@ -14,7 +14,6 @@ class ShapeNMRIntegral extends Shape {
     this.nbHandles = 2;
   }
 
-
   createDom() {
     this._dom = document.createElementNS( this.graph.ns, 'path' );
   }
@@ -34,11 +33,11 @@ class ShapeNMRIntegral extends Shape {
       fill: "white"
     } );
 
-    this.handles[ 1 ].setAttribute('fill', 'red');
+    this.handles[ 1 ].setAttribute( 'fill', 'red' );
   }
 
   xor( a, b ) {
-    return (a && !b) || (!a && b);
+    return ( a && !b ) || ( !a && b );
   }
 
   applyPosition() {
@@ -58,22 +57,22 @@ class ShapeNMRIntegral extends Shape {
     if ( !this.serie ) {
       throw "No serie exists for this shape";
     };
-/*
-    this.sortPositions( ( a, b ) => {
-      return a.x - b.x;
-    } );
+    /*
+        this.sortPositions( ( a, b ) => {
+          return a.x - b.x;
+        } );
 
-    */
+        */
     let pos1 = this.getPosition( 0 );
     let pos2 = this.getPosition( 1 );
-    
+
     this.showLabel( 0 );
 
     let sum = 0;
 
     let j;
     let waveform = this.serie.getWaveform();
-      
+
     if ( !waveform ) {
       return;
     }
@@ -83,7 +82,7 @@ class ShapeNMRIntegral extends Shape {
       index3,
       flipped = false;
 
-    if( index2 < index1 ) {
+    if ( index2 < index1 ) {
       index3 = index1;
       index1 = index2;
       index2 = index3;
@@ -98,13 +97,12 @@ class ShapeNMRIntegral extends Shape {
 
     let condition, incrementation;
 
-    if( 
+    if (
       ( waveform.getXMonotoneousAscending() && // Ascending
-      1 == 1 )
-      || 
-      ( ! waveform.getXMonotoneousAscending() && // Ascending
-      1 == 2 )
-      ) {
+        1 == 1 ) ||
+      ( !waveform.getXMonotoneousAscending() && // Ascending
+        1 == 2 )
+    ) {
 
       j = index2;
       condition = true;
@@ -117,9 +115,8 @@ class ShapeNMRIntegral extends Shape {
       incrementation = 1;
     }
 
+    for ( ; condition ? j > index1 : j < index2; j += incrementation ) {
 
-    for( ; condition ? j > index1 : j < index2; j += incrementation ) {
-      
       xVal = waveform.getX( j, true );
       yVal = waveform.getY( j, true );
 
@@ -152,7 +149,7 @@ class ShapeNMRIntegral extends Shape {
       //console.log( data, data[ j ] );
 
       if ( j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
-        
+
         sum += data.sums[ j ] * ( data.x[ j ] - data.x[ j - 3 ] ); // y * (out-in)
       }
 
@@ -168,7 +165,6 @@ class ShapeNMRIntegral extends Shape {
     if ( sum == 0 ) {
       sum = 1;
     }
-      
 
     if ( !this.ratio ) {
       // 150px / unit
@@ -218,13 +214,16 @@ class ShapeNMRIntegral extends Shape {
       x: ( this.firstPointX + this.lastPointX ) / 2 + "px",
       y: ( this.firstPointY + this.lastPointY ) / 2 + "px"
     } ) );
-    
-    this.setLabelPosition( { x: 0.5 * ( this.firstPointX + this.lastPointX ) + "px", y: 0.5 * ( this.firstPointY + this.lastPointY ) + "px" }, 0 );  
+
+    this.setLabelPosition( {
+      x: 0.5 * ( this.firstPointX + this.lastPointX ) + "px",
+      y: 0.5 * ( this.firstPointY + this.lastPointY ) + "px"
+    }, 0 );
     ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
-    
+
     this.changed();
-    this.handleCondition = ! this.xor( incrementation == -1, flipped )
-    this.setHandles(  );
+    this.handleCondition = !this.xor( incrementation == -1, flipped )
+    this.setHandles();
 
     this.updateIntegralValue();
 
@@ -233,10 +232,10 @@ class ShapeNMRIntegral extends Shape {
 
   updateIntegralValue( ratioLabel = this.ratioLabel ) {
 
-    if( ratioLabel ) {
+    if ( ratioLabel ) {
       this.ratioLabel = ratioLabel;
     }
-    this.setLabelText( ratioLabel ? Math.round( 100 * this.sum * ratioLabel ) / 100 : "N/A", 0 );      
+    this.setLabelText( ratioLabel ? Math.round( 100 * this.sum * ratioLabel ) / 100 : "N/A", 0 );
     this.updateLabels();
   }
 
@@ -266,16 +265,16 @@ class ShapeNMRIntegral extends Shape {
 
   selectHandles() {} // Cancel areaundercurve
 
-  setHandles( ) {
-    
+  setHandles() {
+
     if ( this.points == undefined ) {
       return;
     }
-    
+
     if ( !this.isSelected() ) {
       return;
     }
-    
+
     this.addHandles();
 
     if ( this.handleCondition ) {
@@ -295,7 +294,6 @@ class ShapeNMRIntegral extends Shape {
     }
   }
 
-
   /**
    * Handles mouse move events
    * @private
@@ -310,7 +308,6 @@ class ShapeNMRIntegral extends Shape {
     var pos2 = this.getPosition( 1 );
 
     var posToChange;
-
 
     if ( this.handleSelected == 1 ) {
 
@@ -334,7 +331,7 @@ class ShapeNMRIntegral extends Shape {
       if ( pos.x ) {
         pos.deltaPosition( 'x', deltaX, this.getXAxis() );
       }
-      
+
       // If the pos2 is defined by a delta, no need to move them
       if ( pos2.x ) {
         pos2.deltaPosition( 'x', deltaX, this.getXAxis() );
@@ -347,7 +344,6 @@ class ShapeNMRIntegral extends Shape {
 
     this.redraw();
     this.changed();
-    
 
     return true;
   }

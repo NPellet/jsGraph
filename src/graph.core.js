@@ -1155,7 +1155,7 @@ class Graph extends EventEmitter {
       return this.series[ name ] ||  false;
     }
 
-    if( typeof name == 'function' ) {
+    if ( typeof name == 'function' ) {
       name = name();
     }
 
@@ -1488,7 +1488,7 @@ class Graph extends EventEmitter {
       }
     }
 
-    if( shapeData.serie ) {
+    if ( shapeData.serie ) {
       shape.setSerie( this.getSerie( shapeData.serie ) );
     }
     shape.createHandles();
@@ -2090,14 +2090,13 @@ class Graph extends EventEmitter {
 
     var self = this;
 
-    if( typeof options === 'boolean' ) {
+    if ( typeof options === 'boolean' ) {
 
-      if( this.options.trackingLine ) {
+      if ( this.options.trackingLine ) {
         this.options.trackingLine.enable = options;
       }
       return;
     }
-
 
     if ( options ) {
       this.options.trackingLine = options;
@@ -2111,22 +2110,22 @@ class Graph extends EventEmitter {
 
       if ( options.series ) {
 
-        if( ! Array.isArray( options.series ) ) {
-          options.series = [ options.series ];
+        if ( !Array.isArray( options.series ) ) {
+          options.series = [  options.series ];
         }
 
         options.series.forEach( ( sOptions ) => {
 
           if ( typeof sOptions.serie !== "object" ) {
 
-            if( typeof sOptions !== "object" ) {
+            if ( typeof sOptions !== "object" ) {
               throw "Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";
             }
 
             sOptions.serie = this.getSerie( sOptions.serie );
           }
 
-          if( ! sOptions.serie ) {
+          if ( !sOptions.serie ) {
             return;
           }
 
@@ -2141,11 +2140,11 @@ class Graph extends EventEmitter {
       } );
     }
 
-    if( options.noLine ) {
+    if ( options.noLine ) {
       return;
     }
 
-    if( ! this.trackingObject ) { // Avoid multiple creation of tracking lines
+    if ( !this.trackingObject ) { // Avoid multiple creation of tracking lines
 
       // Creates a new shape called trackingLine, in the first layer (below everything)
       this.trackingObject = this.newShape( 'line', util.extend( true, {
@@ -2159,16 +2158,14 @@ class Graph extends EventEmitter {
       }, options.trackingLineShapeOptions ) );
     }
 
-
     this.trackingObject.draw();
 
     return this.trackingObject;
   }
 
-
   addSerieToTrackingLine( serie, options ) {
 
-    if ( ! this.options.trackingLine ) {
+    if ( !this.options.trackingLine ) {
 
       this.trackingLine( {
         mode: 'individual'
@@ -2180,16 +2177,15 @@ class Graph extends EventEmitter {
       serie: serie
     }, options ) );
 
-
     serie.enableTracking( ( serie, index, x, y ) => {
 
-      if( this.options.trackingLine.enable ) {
-        if ( index ) { 
+      if ( this.options.trackingLine.enable ) {
+        if ( index ) {
 
-          if( this.trackingObject ) {
+          if ( this.trackingObject ) {
             this.trackingObject.show();
-            this.trackingObject.getPosition( 0 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-            this.trackingObject.getPosition( 1 ).x = index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
+            this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+            this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
             this.trackingObject.redraw();
           }
 
@@ -2205,14 +2201,14 @@ class Graph extends EventEmitter {
 
           }, index.trueX );
 
-          if( serie._trackingLegend ) {
+          if ( serie._trackingLegend ) {
             serie._trackingLegend.style.display = "block";
           }
         }
       }
     }, ( serie ) => {
 
-      if( this.trackingObject ) {
+      if ( this.trackingObject ) {
         this.trackingObject.hide();
       }
 
@@ -3412,7 +3408,7 @@ function _handleMouseMove( graph, x, y, e ) {
         var snapToSerie = graph.options.trackingLine.snapToSerie;
         index = snapToSerie.handleMouseMove( false, true );
 
-        if( this.trackingObject ) {
+        if ( this.trackingObject ) {
 
           if ( !index ) {
 
@@ -3421,7 +3417,7 @@ function _handleMouseMove( graph, x, y, e ) {
           } else {
 
             graph.trackingObject.show();
-            
+
             graph.trackingObject.getPosition( 0 ).x = index.xClosest;
             graph.trackingObject.getPosition( 1 ).x = index.xClosest;
             graph.trackingObject.redraw();
@@ -3534,7 +3530,6 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
   var output = [];
 
-
   if ( !legend && graph.options.trackingLine.legend ) {
     justCreated = true;
     legend = _makeTrackingLegend( graph );
@@ -3567,7 +3562,6 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       output[ serie.serie.getName() ] = {
 
-        
         yValue: index.xClosest,
         xValue: index.yClosest,
         serie: serie,
@@ -3577,28 +3571,30 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       if ( !serie.serie.trackingShape ) {
 
-        serie.serie.trackingShape = graph.newShape( 
+        serie.serie.trackingShape = graph.newShape(
 
-            graph.options.trackingLine.serieShape.shape || 'ellipse',
-            {
+            graph.options.trackingLine.serieShape.shape ||  'ellipse', {
               fillColor: serie.serie.getLineColor(),
               strokeColor: "White",
               strokeWidth: serie.serie.getLineWidth()
             },
             true,
-            graph.options.trackingLine.serieShape.properties || { rx: [ serie.serie.getLineWidth() * 3 ], ry: [ serie.serie.getLineWidth() * 3 ] }
+            graph.options.trackingLine.serieShape.properties || {
+              rx: [ serie.serie.getLineWidth() * 3 ],
+              ry: [ serie.serie.getLineWidth() * 3 ]
+            }
           )
           .setSerie( serie.serie )
           .forceParentDom( serie.serie.groupMain )
           .draw();
 
-          ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
+        ( graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated( serie.serie.trackingShape ) );
 
-          serie.serie.trackingShape.on("changed", () => {
-            
-            ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
+        serie.serie.trackingShape.on( "changed", () => {
 
-          })
+          ( graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged( serie.serie.trackingShape ) );
+
+        } )
       }
 
       serie.serie.trackingShape.show();
@@ -3608,8 +3604,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
   } ); // End map
 
-
-  if( ! graph.options.trackingLine.legend ) {
+  if ( !graph.options.trackingLine.legend ) {
     return;
   }
 

@@ -162,11 +162,22 @@ class PluginZoom extends Plugin {
     var _x = x - graph.options.paddingLeft;
     var _y = y - graph.options.paddingTop;
 
-    if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
+    this.emit( "beforeZoom", {
+      graph: graph,
+      x: x,
+      y: y,
+      e: e,
+      mute: mute
+    } );
+
+    if ( graph.prevent( false ) ) {
+      graph.prevent( true ); // Cancel future click event
       return;
     }
 
-    graph.cancelClick = true;
+    if ( ( x - this._zoomingXStart == 0 && this._zoomingMode != 'y' ) || ( y - this._zoomingYStart == 0 && this._zoomingMode != 'x' ) ) {
+      return;
+    }
 
     if ( this.options.transition || this.options.smooth ) {
 

@@ -134,7 +134,7 @@ var workerUrl = URL.createObjectURL( new Blob(
 aggregatorWorker = new Worker( workerUrl );
 
 aggregatorWorker.onmessage = function( e ) {
-  
+
   var id = e.data._queueId;
   delete e.data._queueId;
   queue[ id ]( e.data );

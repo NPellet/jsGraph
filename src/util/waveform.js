@@ -417,15 +417,15 @@ class Waveform {
   }
 
   getShift() {
-    return this.shift || 0;
+    return this.shift ||  0;
   }
 
   setXShift( shift = 0 ) {
 
-    if( ! this.hasXWaveform ) {
+    if ( !this.hasXWaveform ) {
       return this;
     }
-console.log( shift );
+    console.log( shift );
 
     // We must update the min and the max of the x data
     // That's important for when the data has already been set
@@ -437,11 +437,11 @@ console.log( shift );
 
   getXShift( shift = 0 ) {
 
-    if( ! this.hasXWaveform ) {
+    if ( !this.hasXWaveform ) {
       return 0;
     }
-    
-    return this.getXWaveform().getShift( );
+
+    return this.getXWaveform().getShift();
   }
 
   getLength() {
@@ -751,7 +751,7 @@ console.log( shift );
 
   getMonotoneousAscending() {
 
-    if( ! this.isMonotoneous() ) {
+    if ( !this.isMonotoneous() ) {
       return "The waveform is not monotoneous";
     }
 
@@ -924,7 +924,7 @@ console.log( shift );
       numPoints: pow2
 
     } ).then( ( event ) => {
-      
+
       this._dataAggregated = event.aggregates;
       this._dataAggregating = false;
     } );
@@ -944,14 +944,14 @@ console.log( shift );
     var level = pow2ceil( pxWidth );
 
     if ( this._dataAggregated[ level ] ) {
-console.log('agg');
+      console.log( 'agg' );
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {
 
       return this._dataAggregating;
     }
-console.log('orig');
+    console.log( 'orig' );
     this.dataInUse = {
       y: this.data,
       x: this.getXWaveform().data

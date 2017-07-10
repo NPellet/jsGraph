@@ -574,7 +574,6 @@ class SerieLine extends Serie {
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
 
-
     if ( !waveform ) {
       return;
     }
@@ -592,8 +591,7 @@ class SerieLine extends Serie {
       xBottomCrossing,
 
       xshift = waveform.getXShift(),
-      yshift = waveform.getShift()
-      ;
+      yshift = waveform.getShift();
 
     let pointOutside = false;
     let lastPointOutside = false;
@@ -635,7 +633,7 @@ class SerieLine extends Serie {
       }
     }
 
-console.log( i, l );
+    console.log( i, l );
     for ( ; i < l; i += 1 ) {
 
       x = waveform.getX( i, true );
@@ -831,7 +829,7 @@ console.log( i, l );
       this.groupMain.addEventListener( "mousemove", ( e ) => {
         var coords = this.graph._getXY( e ),
           ret = this.handleMouseMove( false, false );
-          
+
         this._trackingCallback( this, ret, coords.x, coords.y );
       } );
 
@@ -1284,7 +1282,7 @@ console.log( i, l );
         yMax: this._waveform.getY( indexX + 1 ),
       };
 
-      if( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
+      if ( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
         returnObj.xClosest = returnObj.xMin;
         returnObj.yClosest = returnObj.yMin;
       } else {
