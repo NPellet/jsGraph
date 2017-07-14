@@ -104,6 +104,7 @@ class NMRSerie extends React.Component {
 		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 	}
 
+	// Occurs after the rescaling of the integral
 	scaleIntegralText( whichIntegral, whichValue ) {
 
 		const sum = this.sums[ whichIntegral ];
@@ -111,10 +112,10 @@ class NMRSerie extends React.Component {
 			return;
 		}
 		this.setState( {
-			labelRatio: sum / whichValue
+			labelRatio: whichValue / sum
 		});
 
-		this._jsGraphSerie._nmrIntegralLabelRatio = sum / whichValue;
+		this._jsGraphSerie._nmrIntegralLabelRatio = whichValue / sum;
 	}
 
 	componentWillReceiveProps( nextProps, props ) {

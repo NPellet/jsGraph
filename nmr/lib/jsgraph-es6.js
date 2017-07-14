@@ -594,13 +594,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Selects a serie. Only one serie per graph can be selected.
 	   * @param {Serie} serie - The serie to select
 	   * @param {String} selectName="selected" - The name of the selection
-	   */selectSerie(serie,selectName){if(!(typeof serie=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie){this.unselectSerie(serie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
+	   */selectSerie(serie,selectName){if(!(typeof serie=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie&&this.selectedSerie){this.unselectSerie(this.selectedSerie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
 	   * Returns the selected serie
 	   * @returns {(Serie|undefined)} The selected serie
 	   */getSelectedSerie(){return this.selectedSerie;}/**
 	   * Unselects a serie
 	   * @param {Serie} serie - The serie to unselect
-	   */unselectSerie(serie){serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
+	   */unselectSerie(serie){if(!serie.unselect){return;}serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
 	   * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
 	   * @param {Serie} serie - The serie containing the shapes
 	   * @returns {Shape[]} An array containing a list of shapes associated to the serie
@@ -762,7 +762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',e=>{_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',e=>{_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',e=>{_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 	graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
 	var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
-	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);console.log('up');_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
+	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
 	if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 	var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
 	});graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
@@ -9293,6 +9293,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    unselect() {
 
 	      this.selected = false;
+
 	      return this.select("unselected");
 	    }
 

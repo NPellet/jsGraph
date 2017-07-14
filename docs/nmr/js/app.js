@@ -5355,7 +5355,7 @@ this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.
 this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
 var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
-if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);console.log('up');_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
+if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
 if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
 });graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
@@ -7597,8 +7597,7 @@ var SerieLine = function (_Serie) {
     value: function unselect() {
 
       this.selected = false;
-      console.trace();
-      console.log('unselect', this);
+
       return this.select("unselected");
     }
 
@@ -37110,7 +37109,7 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 			movable: true,
 			handles: true,
 			labels: [{ text: "" }]
-		});
+		}, false, { 'labelEditable': [true] });
 
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', context.integralBaseline);
@@ -37135,6 +37134,14 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 
 			this.props.onChanged(this.props.id, this.annotation.getPosition(0).x, this.annotation.getPosition(1).x);
 		});
+
+		this.annotation.on("shapeLabelChanged", (shape, parameters) => {
+
+			//const rescale = parseFloat( parameters.nextValue ) / parameters.previousValue;
+			this.props.onValueChanged(parseFloat(parameters.nextValue));
+		});
+
+		// Determine the shift
 	}
 
 	componentDidMount() {
@@ -37290,19 +37297,20 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
 	}
 
-	/*	scaleIntegralText( whichIntegral, whichValue ) {
- 
- 		const sum = this.sums[ whichIntegral ];
- 		if( ! sum ) {
- 			return;
- 		}
- 		this.setState( {
- 			labelRatio: sum / whichValue
- 		});
- 
- 		this._jsGraphSerie._nmrIntegralLabelRatio = sum / whichValue;
- 	}
- */
+	// Occurs after the rescaling of the integral
+	scaleIntegralText(whichIntegral, whichValue) {
+
+		const sum = this.sums[whichIntegral];
+		if (!sum) {
+			return;
+		}
+		this.setState({
+			labelRatio: whichValue / sum
+		});
+
+		this._jsGraphSerie._nmrIntegralLabelRatio = whichValue / sum;
+	}
+
 	componentWillReceiveProps(nextProps, props) {
 
 		let redraw = false;
@@ -37357,7 +37365,9 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"span",
 			null,
-			(this.props.integrals || []).map(el => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], { id: el.id, key: el.id, labelRatio: this.state.labelRatio, ratio: this.state.ratio, from: el.from, to: el.to, onSumChanged: this.sumChanged, onChanged: this.integralChanged }))
+			(this.props.integrals || []).map(el => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], { id: el.id, key: el.id, labelRatio: this.state.labelRatio, ratio: this.state.ratio, from: el.from, to: el.to, onSumChanged: this.sumChanged, onChanged: this.integralChanged, onValueChanged: value => {
+					this.scaleIntegralText(el.id, value);
+				} }))
 		);
 	}
 }
