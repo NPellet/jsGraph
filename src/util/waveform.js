@@ -85,10 +85,10 @@ class Waveform {
   getY( index, optimized ) {
 
     if ( optimized && this.dataInUse ) {
-      return this.dataInUse.y[ index ] + this.getShift();
+      return this.dataInUse.y[ index ] * this.getScale() + this.getShift();
     }
 
-    return this.data[ index ] + this.getShift();
+    return this.data[ index ] * this.getScale() + this.getShift();
   }
 
   /*
@@ -366,19 +366,19 @@ class Waveform {
   }
 
   getYMin() {
-    return this.minY + this.getShift();
+    return this.minY * this.getScale() + this.getShift();
   }
 
   getYMax() {
-    return this.maxY + this.getShift();
+    return this.maxY * this.getScale() + this.getShift();
   }
 
   getMin() {
-    return this.minY + this.getShift();
+    return this.minY * this.getScale() + this.getShift();
   }
 
   getMax() {
-    return this.maxY + this.getShift();
+    return this.maxY * this.getScale() + this.getShift();
   }
 
   getMinX() {
@@ -390,11 +390,11 @@ class Waveform {
   }
 
   getMinY() {
-    return this.minY + this.getShift();
+    return this.minY * this.getScale() + this.getShift();
   }
 
   getMaxY() {
-    return this.maxY + this.getShift();
+    return this.maxY * this.getScale() + this.getShift();
   }
 
   getDataY() {
@@ -411,14 +411,25 @@ class Waveform {
   setShift( shift = 0 ) {
 
     // We must update the min and the max of the y data
-    this.minY += ( shift - this.getShift() );
-    this.maxY += ( shift - this.getShift() );
+    //this.minY += ( shift - this.getShift() );
+    //this.maxY += ( shift - this.getShift() );
     this.shift = shift;
     return this;
   }
 
   getShift() {
     return this.shift ||  0;
+  }
+
+  getScale() {
+    return this.scale || 1;
+  }
+
+  setScale( scale = 1 ) {
+
+   // this.minY = ( this.minY - this.getShift() ) * scale;
+   // this.maxY = ( this.maxY - this.getShift() ) * scale;
+    this.scale = scale;
   }
 
   setXShift( shift = 0 ) {

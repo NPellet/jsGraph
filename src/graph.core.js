@@ -1393,6 +1393,11 @@ class Graph extends EventEmitter {
     shape.graph = this;
     shape._data = shapeData;
 
+
+    if ( shapeData.properties !== undefined ) {
+      shape.setProperties( shapeData.properties );
+    }
+    
     shape.init( this, shapeProperties );
 
     if ( shapeData.position ) {
@@ -1402,9 +1407,6 @@ class Graph extends EventEmitter {
       }
     }
 
-    if ( shapeData.properties !== undefined ) {
-      shape.setProperties( shapeData.properties );
-    }
 
     /* Setting shape properties */
     if ( shapeData.fillColor !== undefined ) {
@@ -1721,11 +1723,17 @@ class Graph extends EventEmitter {
       this.graphingZone.appendChild( line );
     }
   }
+
+
   isActionAllowed( e, action ) {
 
     if ( action.type !== e.type &&  ( action.type !== undefined || e.type !== "mousedown" ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }
+
+    if( action.enabled && ( typeof action.enabled == "function" ? ! action.enabled( this ) : ! actions.enabled ) ) {
+      return;
+    } 
 
     if ( action.key ) {
 

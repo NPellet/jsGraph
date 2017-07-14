@@ -33,7 +33,7 @@ class SerieLine extends Serie {
       trackMouseLabel: false,
       trackMouseLabelRouding: 1,
       lineToZero: false,
-      selectableOnClick: true,
+      selectableOnClick: false,
       markersIndependant: false
     };
   }
@@ -591,7 +591,8 @@ class SerieLine extends Serie {
       xBottomCrossing,
 
       xshift = waveform.getXShift(),
-      yshift = waveform.getShift();
+      yshift = waveform.getShift(),
+      yscale = waveform.getScale();
 
     let pointOutside = false;
     let lastPointOutside = false;
@@ -633,11 +634,10 @@ class SerieLine extends Serie {
       }
     }
 
-    console.log( i, l );
     for ( ; i < l; i += 1 ) {
 
       x = waveform.getX( i, true );
-      y = data[ i ] + yshift;
+      y = data[ i ] * yscale + yshift;
 
       if ( x != x || y != y ) { // NaN checks
         this._createLine();

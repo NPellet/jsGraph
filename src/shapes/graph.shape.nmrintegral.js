@@ -51,7 +51,7 @@ class ShapeNMRIntegral extends Shape {
       points = [];
 
     let currentLine = "",
-      baseLine = 300,
+      baseLine = this.getProp('baseLine', 0) || 300,
       ratio;
 
     if ( !this.serie ) {

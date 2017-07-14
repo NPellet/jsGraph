@@ -71,6 +71,9 @@ class PluginShape extends Plugin {
       movable: true
     };
 
+
+    let shapeProperties = this.options.properties;
+
     util.extend( true, shapeInfo, this.options );
 
     this.emit( "beforeNewShape", e, shapeInfo );
@@ -79,7 +82,7 @@ class PluginShape extends Plugin {
       return;
     }
 
-    var shape = graph.newShape( shapeInfo.type, shapeInfo );
+    var shape = graph.newShape( shapeInfo.type, shapeInfo, false, shapeProperties );
 
     this.emit( "createdShape", e, shape );
 
@@ -107,7 +110,7 @@ class PluginShape extends Plugin {
 
       self.currentShape = false;
 
-      if ( graph.selectedSerie ) {
+      if ( graph.selectedSerie && ! shape.serie ) {
         shape.setSerie( graph.selectedSerie );
       }
 
@@ -118,9 +121,7 @@ class PluginShape extends Plugin {
       }
 
       shape.draw();
-
       graph.selectShape( shape );
-
       shape.handleMouseDown( self.currentShapeEvent, true );
       shape.handleSelected = this.options.handleSelected || 1;
       shape.handleMouseMove( e, true );
