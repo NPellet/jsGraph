@@ -976,6 +976,54 @@ class Waveform {
     return newWaveform;
   }
 
+  findLocalMinMax( xRef, xWithin, type ) {
+
+    let index = this.getIndexFromX( xRef ),
+        indexPlus = this.getIndexFromX( xRef + xWithin ),
+        indexMinus = this.getIndexFromX( xRef - xWithin ),
+        yVal = this.getY( index ),
+        tmp;
+
+    if( indexPlus < indexMinus ) {
+      tmp = indexPlus;
+      indexPlus = indexMinus;
+      indexMinus = tmp;
+    }
+
+    
+    let curr, currI;
+
+    if( type == 'max') {
+      
+      curr = Number.NEGATIVE_INFINITY;
+
+      for( var i = indexMinus; i <= indexPlus; i ++ ) {
+
+        if( this.getY( i ) > curr ) {
+          curr = this.getY( i );
+          currI = i;
+        } 
+      }
+    } else {
+
+      curr = Number.POSITIVE_INFINITY;
+
+      for( var i = indexMinus; i <= indexPlus; i ++ ) {
+
+        if( this.getY( i ) < curr ) {
+          curr = this.getY( i );
+          currI = i;
+        } 
+      }
+    }
+
+    if( currI == indexMinus || currI == indexPlus ) {
+      return false;
+    }
+
+    return this.getX( currI );
+  }
+
   warn( text ) {
     if ( console ) {
       console.warn( text );

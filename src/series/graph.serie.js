@@ -929,6 +929,9 @@ class Serie extends EventEmitter {
     this.categoryIndices = categories;
     this.nbCategories = nb;
   }
+
+  
+
 }
 
 export default Serie;

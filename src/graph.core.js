@@ -3542,7 +3542,7 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
     var index = serie.serie.handleMouseMove( xValue, false );
 
-    if ( !index ||  !textMethod ) {
+    if ( !index || !textMethod ) {
 
       if ( serie.serie.trackingShape ) {
         serie.serie.trackingShape.hide();
@@ -3602,6 +3602,23 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
 
       serie.serie.trackingShape.show();
       serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
+
+      if( graph.options.trackingLine.serieShape.magnet ) {
+        
+        let magnetOptions = graph.options.trackingLine.serieShape.magnet,
+            val = magnetOptions.within,
+            minmaxpos;
+
+        if( magnetOptions.withinPx ) {
+          val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
+        }
+
+        if( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) {
+
+          serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;          
+        }
+      }
+
       serie.serie.trackingShape.redraw();
     }
 
