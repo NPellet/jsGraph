@@ -377,6 +377,7 @@ class SerieLine extends Serie {
   unselect() {
 
     this.selected = false;
+
     return this.select( "unselected" );
   }
 

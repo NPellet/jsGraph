@@ -1273,8 +1273,8 @@ class Graph extends EventEmitter {
       return;
     }
 
-    if ( this.selectedSerie !== serie ) {
-      this.unselectSerie( serie );
+    if ( this.selectedSerie !== serie && this.selectedSerie ) {
+      this.unselectSerie( this.selectedSerie );
     }
 
     this.selectedSerie = serie;
@@ -1296,6 +1296,11 @@ class Graph extends EventEmitter {
    * @param {Serie} serie - The serie to unselect
    */
   unselectSerie( serie ) {
+
+    if ( !serie.unselect ) {
+      return;
+    }
+
     serie.unselect();
     this.selectedSerie = false;
     this.triggerEvent( 'onUnselectSerie', serie );
@@ -3328,7 +3333,7 @@ function _registerEvents( graph ) {
 
     graph.emit( "mouseUp", e );
     var coords = graph._getXY( e );
-    console.log( 'up' );
+
     _handleMouseUp( graph, coords.x, coords.y, e );
 
   } );
@@ -3754,9 +3759,7 @@ function _handleMouseUp( graph, x, y, e ) {
 function _handleClick( graph, x, y, e ) {
 
   graph.emit( 'click', [ graph, x, y, e ] );
-
   // Not on a shape
-
   checkMouseActions( graph, e, [ x, y, e ], 'onClick' );
 
   if ( !e.target.jsGraphIsShape && !graph.prevent( false ) && graph.options.shapesUnselectOnClick ) {

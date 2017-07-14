@@ -5187,13 +5187,13 @@ axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'min',usingZ
    * Selects a serie. Only one serie per graph can be selected.
    * @param {Serie} serie - The serie to select
    * @param {String} selectName="selected" - The name of the selection
-   */},{key:'selectSerie',value:function selectSerie(serie,selectName){if(!((typeof serie==='undefined'?'undefined':_typeof(serie))=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie){this.unselectSerie(serie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
+   */},{key:'selectSerie',value:function selectSerie(serie,selectName){if(!((typeof serie==='undefined'?'undefined':_typeof(serie))=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie&&this.selectedSerie){this.unselectSerie(this.selectedSerie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
    * Returns the selected serie
    * @returns {(Serie|undefined)} The selected serie
    */},{key:'getSelectedSerie',value:function getSelectedSerie(){return this.selectedSerie;}/**
    * Unselects a serie
    * @param {Serie} serie - The serie to unselect
-   */},{key:'unselectSerie',value:function unselectSerie(serie){serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
+   */},{key:'unselectSerie',value:function unselectSerie(serie){if(!serie.unselect){return;}serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
    * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
    * @param {Serie} serie - The serie containing the shapes
    * @returns {Shape[]} An array containing a list of shapes associated to the serie
@@ -5386,7 +5386,7 @@ var pref=graph.options.dblclick;checkMouseActions(graph,e,[x,y,e],'onDblClick');
           }
 
           break;
-      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}console.log(graph.activePlugin);graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
+      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
 checkMouseActions(graph,e,[x,y,e],'onClick');if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if((typeof num==='undefined'?'undefined':_typeof(num))=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
 Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();Graph.ns='http://www.w3.org/2000/svg';Graph.nsxlink="http://www.w3.org/1999/xlink";exports.default=Graph;
 
@@ -7597,6 +7597,8 @@ var SerieLine = function (_Serie) {
     value: function unselect() {
 
       this.selected = false;
+      console.trace();
+      console.log('unselect', this);
       return this.select("unselected");
     }
 
@@ -31317,7 +31319,7 @@ var PluginZoom = function (_Plugin) {
 
       var self = this;
       this.removeZone();
-      console.log('here');
+
       var _x = x - graph.options.paddingLeft;
       var _y = y - graph.options.paddingTop;
 
@@ -31330,12 +31332,12 @@ var PluginZoom = function (_Plugin) {
       });
 
       if (graph.prevent(false)) {
-        console.log('here3');
+
         // This doesn't work !
         //graph.prevent( true ); // Cancel future click event
         return;
       }
-      console.log('here2');
+
       if (x - this._zoomingXStart == 0 && this._zoomingMode != 'y' || y - this._zoomingYStart == 0 && this._zoomingMode != 'x') {
         return;
       }
@@ -37350,7 +37352,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		this.loadedState = false;
 
-		this._jsGraphSerie.setLineColor(this.props.color);
+		this._jsGraphSerie.setLineColor(this.props.color, "unselected", true);
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"span",
