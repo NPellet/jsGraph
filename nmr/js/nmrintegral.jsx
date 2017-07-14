@@ -10,14 +10,17 @@ class NMRIntegral extends React.Component {
 
 		this.state = {};
 		this.annotation = context.graph.newShape("nmrintegral", {
-			editable: true,
-			selectable: true,
-			selectOnClick: true,
-			resizable: true,
-			movable: true,
-			handles: true,
-			labels: [ { text: "" } ],
-		});
+				editable: true,
+				selectable: true,
+				selectOnClick: true,
+				resizable: true,
+				movable: true,
+				handles: true,
+				labels: [ { text: "" } ],
+			}, 
+			false,
+			'labelEditable': [ true ]
+		);
 
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', context.integralBaseline );
@@ -43,6 +46,16 @@ class NMRIntegral extends React.Component {
 
 			this.props.onChanged( this.props.id, this.annotation.getPosition( 0 ).x, this.annotation.getPosition( 1 ).x );
 		});
+
+		this.annotation.on("shapeLabelChanged", ( shape, parameters ) => {
+
+			//const rescale = parseFloat( parameters.nextValue ) / parameters.previousValue;
+			this.props.onValueChanged( parseFloat( parameters.nextValue ) );
+			 
+		});
+
+			 // Determine the shift
+		
 	}
 
 	componentDidMount() {

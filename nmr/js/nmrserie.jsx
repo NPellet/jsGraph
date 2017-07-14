@@ -104,7 +104,7 @@ class NMRSerie extends React.Component {
 		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 	}
 
-/*	scaleIntegralText( whichIntegral, whichValue ) {
+	scaleIntegralText( whichIntegral, whichValue ) {
 
 		const sum = this.sums[ whichIntegral ];
 		if( ! sum ) {
@@ -116,7 +116,7 @@ class NMRSerie extends React.Component {
 
 		this._jsGraphSerie._nmrIntegralLabelRatio = sum / whichValue;
 	}
-*/
+
 	componentWillReceiveProps( nextProps, props ) {
 
 		let redraw = false;
@@ -174,7 +174,7 @@ class NMRSerie extends React.Component {
 			<span>
 				{ 
 					( this.props.integrals || [] ).map( 
-						( el ) => <NMRIntegral id={ el.id } key={ el.id } labelRatio={ this.state.labelRatio } ratio={ this.state.ratio } from={ el.from } to={ el.to } onSumChanged={ this.sumChanged } onChanged={ this.integralChanged } /> 
+						( el ) => <NMRIntegral id={ el.id } key={ el.id } labelRatio={ this.state.labelRatio } ratio={ this.state.ratio } from={ el.from } to={ el.to } onSumChanged={ this.sumChanged } onChanged={ this.integralChanged } onValueChanged={ ( value ) => { this.scaleIntegralText( el.id, value ); } } /> 
 					) 
 				}
 			</span> 
