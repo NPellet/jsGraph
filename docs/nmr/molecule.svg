@@ -1,0 +1,71 @@
+<svg id="ocl" xmlns="http://www.w3.org/2000/svg" version="1.1" width="300px" height="200px" viewBox="0 0 300 200">
+	<style> #ocl {pointer-events:none; }  #ocl .event  { pointer-events:all;}  </style>
+	<text x="163" y="161" font-family=" Helvetica" font-size="14" fill="rgb(255,13,13)">O</text>
+	<text x="88" y="89" font-family=" Helvetica" font-size="14" fill="rgb(255,13,13)">O</text>
+	<text x="183" y="181" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="200" y="125" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="200" y="82" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="163" y="60" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="113" y="26" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="134" y="46" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="93" y="46" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<text x="126" y="125" font-family=" Helvetica" font-size="14" fill="rgb(178,178,178)">H</text>
+	<line x1="193" y1="114" x2="168" y2="128" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="189" y1="112" x2="168" y2="124" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="168" y1="71" x2="193" y2="85" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="168" y1="75" x2="189" y2="87" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="69" x2="99" y2="80" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="120" y1="72" x2="101" y2="83" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="143" y1="114" x2="143" y2="85" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="147" y1="111" x2="147" y2="88" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="168" y1="128" x2="168" y2="150" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="193" y1="85" x2="193" y2="114" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="143" y1="85" x2="168" y2="71" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="71" x2="143" y2="85" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="42" x2="119" y2="71" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="143" y1="114" x2="168" y2="128" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="175" y1="163" x2="182" y2="171" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="193" y1="114" x2="199" y2="117" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="193" y1="85" x2="199" y2="81" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="168" y1="71" x2="168" y2="63" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="42" x2="119" y2="29" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="42" x2="133" y2="42" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="119" y1="42" x2="105" y2="42" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line x1="143" y1="114" x2="137" y2="117" style="stroke:rgb(0,0,0);stroke-width:1"/>
+	<line id="ocl:Bond:2-1" class="event" x1="193" y1="114" x2="168" y2="128" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:4-3" class="event" x1="168" y1="71" x2="193" y2="85" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:8-6" class="event" x1="94" y1="85" x2="119" y2="71" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:9-5" class="event" x1="143" y1="114" x2="143" y2="85" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:1-0" class="event" x1="168" y1="128" x2="168" y2="157" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:3-2" class="event" x1="193" y1="85" x2="193" y2="114" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:5-4" class="event" x1="143" y1="85" x2="168" y2="71" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:6-5" class="event" x1="119" y1="71" x2="143" y2="85" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:7-6" class="event" x1="119" y1="42" x2="119" y2="71" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:9-1" class="event" x1="143" y1="114" x2="168" y2="128" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:0-10" class="event" x1="168" y1="157" x2="188" y2="177" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:2-11" class="event" x1="193" y1="114" x2="205" y2="121" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:3-12" class="event" x1="193" y1="85" x2="205" y2="78" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:4-13" class="event" x1="168" y1="71" x2="168" y2="56" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:7-14" class="event" x1="119" y1="42" x2="119" y2="22" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:7-15" class="event" x1="119" y1="42" x2="139" y2="42" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:7-16" class="event" x1="119" y1="42" x2="99" y2="42" stroke-width="8" stroke-opacity="0"/>
+	<line id="ocl:Bond:9-17" class="event" x1="143" y1="114" x2="131" y2="121" stroke-width="8" stroke-opacity="0"/>
+	<circle id="ocl:Atom:0" data-atomid="deTH`ABYRYVzn`BF@AD@eHPGrj@" class="event" cx="168" cy="157" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:1" data-atomid="deTD`HDIeJm[jz@HX@GzP`NET" class="event" cx="168" cy="128" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:2" data-atomid="deTD`LDIeJY}jXHBX@G|PATa@\Jh" class="event" cx="193" cy="114" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:3" data-atomid="deTD`JDIgIDeDXS@DS@@b@JdHCaU@" class="event" cx="193" cy="85" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:4" data-atomid="deTD`FdIgIEDhkPa@q@@b@JdHCaU@" class="event" cx="168" cy="71" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:5" data-atomid="deTD`BDIgIHhdYtpLD@@RDApj`" class="event" cx="143" cy="85" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:6" data-atomid="deTD`HDIeJnuneh@`@GzP`NET" class="event" cx="119" cy="71" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:7" data-atomid="deTD`DDIeInUnfX@`@G|PATa@\Jh" class="event" cx="119" cy="42" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:8" data-atomid="deTH`ABYRYm[iZ@H@A~dHCyU@" class="event" cx="94" cy="85" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:9" data-atomid="deTD`LDIeJYmfxH`X@G|PATa@\Jh" class="event" cx="143" cy="114" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:10" data-atomid="dmtD`HdIeIYVyah@a`@_iB@bUP" class="event" cx="188" cy="177" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:11" data-atomid="dmtD`BdIeIf_Yn``I`@_iB@bUP" class="event" cx="205" cy="121" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:12" data-atomid="dmtD`FdIgHhdhcJz@Hf@A~dHBIU@" class="event" cx="205" cy="78" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:13" data-atomid="dmtD`NTIgHhheEVfBAb@A~dHBIU@" class="event" cx="168" cy="56" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:14" data-atomid="dmtD`LdIeI[eXUi`B@@_iB@bUP" class="event" cx="119" cy="22" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:15" data-atomid="dmtD`LdIeI[eXUi`B@@_iB@bUP" class="event" cx="139" cy="42" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:16" data-atomid="dmtD`LdIeI[eXUi`B@@_iB@bUP" class="event" cx="99" cy="42" r="8" fill-opacity="0"/>
+	<circle id="ocl:Atom:17" data-atomid="dmtD`BdIeIf[[a`bA`@_iB@bUP" class="event" cx="131" cy="121" r="8" fill-opacity="0"/>
+</svg>
