@@ -36770,7 +36770,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor) => {
 
 			if (this.checkboxAssignment.checked) {
-				console.log('prevented');
+
 				return this.graph.prevent(true);
 			}
 		}).on("createdShape", (event, shape) => {
@@ -36800,6 +36800,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		});
 
 		this.onIntegralChanged = this.onIntegralChanged.bind(this);
+		this.onIntegralLabelRatioChanged = this.onIntegralLabelRatioChanged.bind(this);
 		this.pickPeak = this.pickPeak.bind(this);
 		this.triangleMoved = this.triangleMoved.bind(this);
 		this.triangleCreated = this.triangleCreated.bind(this);
@@ -37000,6 +37001,28 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.graph.draw();
 	}
 
+	onIntegralLabelRatioChanged(seriename, integralId, newRatio) {
+
+		let update = false;
+		for (let serie of this.state.series) {
+			console.log(seriename, serie, newRatio);
+			if (serie.name == seriename) {
+
+				serie.integralLabelRatio = newRatio;
+				update = true;
+			}
+
+			if (update) {
+				break;
+			}
+		}
+
+		if (update) {
+			this.setState({ series: this.state.series });
+			this.updateOutput();
+		}
+	}
+
 	onIntegralChanged(seriename, integralId, integralFrom, integralTo) {
 
 		let update = false;
@@ -37066,7 +37089,17 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"span",
 				null,
-				(this.state.series || []).map(serie => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__["a" /* default */], { color: serie.color, onChanged: this.serieChanged, onIntegralChanged: this.onIntegralChanged, name: serie.name, data: serie.data, shift: serie.shift, integrals: serie.integrals }))
+				(this.state.series || []).map(serie => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__["a" /* default */], {
+					color: serie.color,
+					onChanged: this.serieChanged,
+					onIntegralChanged: this.onIntegralChanged,
+					onIntegralLabelRatioChanged: this.onIntegralLabelRatioChanged,
+					name: serie.name,
+					data: serie.data,
+					shift: serie.shift,
+					integrals: serie.integrals,
+					integralLabelRatio: serie.integralLabelRatio
+				}))
 			)
 		);
 	}
@@ -37297,20 +37330,6 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
 	}
 
-	// Occurs after the rescaling of the integral
-	scaleIntegralText(whichIntegral, whichValue) {
-
-		const sum = this.sums[whichIntegral];
-		if (!sum) {
-			return;
-		}
-		this.setState({
-			labelRatio: whichValue / sum
-		});
-
-		this._jsGraphSerie._nmrIntegralLabelRatio = whichValue / sum;
-	}
-
 	componentWillReceiveProps(nextProps, props) {
 
 		let redraw = false;
@@ -37328,8 +37347,8 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		if (redraw) {
 			this.assignWaveform();
 		}
-
-		//		this.setState( { labelRatio: this.props.labelRatio } );
+		console.log(nextProps);
+		this.setState({ labelRatio: nextProps.integralLabelRatio });
 	}
 
 	componentDidUpdate() {
@@ -37343,15 +37362,24 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	setData() {
-
 		this._jsGraphWaveform.setData(this.props.data[1], this.props.data[0]);
 		this._jsGraphWaveform.aggregate();
 		this.setShift(this.props.shift);
 	}
 
 	integralChanged(integralId, from, to) {
-
 		this.props.onIntegralChanged(this.props.name, integralId, from, to);
+	}
+
+	// Occurs after the rescaling of the integral
+	scaleIntegralText(whichIntegral, whichValue) {
+
+		const sum = this.sums[whichIntegral];
+		if (!sum) {
+			return;
+		}
+
+		this.props.onIntegralLabelRatioChanged(this.props.name, whichIntegral, whichValue / sum);
 	}
 
 	render() {
@@ -37365,9 +37393,19 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"span",
 			null,
-			(this.props.integrals || []).map(el => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], { id: el.id, key: el.id, labelRatio: this.state.labelRatio, ratio: this.state.ratio, from: el.from, to: el.to, onSumChanged: this.sumChanged, onChanged: this.integralChanged, onValueChanged: value => {
+			(this.props.integrals || []).map(el => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], {
+				id: el.id,
+				key: el.id,
+				labelRatio: this.state.labelRatio,
+				ratio: this.state.ratio,
+				from: el.from,
+				to: el.to,
+				onSumChanged: this.sumChanged,
+				onChanged: this.integralChanged,
+				onValueChanged: value => {
 					this.scaleIntegralText(el.id, value);
-				} }))
+				}
+			}))
 		);
 	}
 }

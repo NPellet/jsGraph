@@ -104,20 +104,6 @@ class NMRSerie extends React.Component {
 		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 	}
 
-	// Occurs after the rescaling of the integral
-	scaleIntegralText( whichIntegral, whichValue ) {
-
-		const sum = this.sums[ whichIntegral ];
-		if( ! sum ) {
-			return;
-		}
-		this.setState( {
-			labelRatio: whichValue / sum
-		});
-
-		this._jsGraphSerie._nmrIntegralLabelRatio = whichValue / sum;
-	}
-
 	componentWillReceiveProps( nextProps, props ) {
 
 		let redraw = false;
@@ -135,8 +121,8 @@ class NMRSerie extends React.Component {
 		if( redraw ) {
 			this.assignWaveform();
 		}
-
-//		this.setState( { labelRatio: this.props.labelRatio } );
+console.log( nextProps );
+		this.setState( { labelRatio: nextProps.integralLabelRatio } );
 	}
 
 	componentDidUpdate() {
@@ -150,17 +136,26 @@ class NMRSerie extends React.Component {
 	}
 
 	setData() {
-		
 		this._jsGraphWaveform.setData( this.props.data[ 1 ], this.props.data[ 0 ] );
 		this._jsGraphWaveform.aggregate();
-		this.setShift( this.props.shift );
-		
+		this.setShift( this.props.shift );		
 	}
 
 	integralChanged( integralId, from, to ) {
-
 		this.props.onIntegralChanged( this.props.name, integralId, from, to );
 	}
+
+	// Occurs after the rescaling of the integral
+	scaleIntegralText( whichIntegral, whichValue ) {
+
+		const sum = this.sums[ whichIntegral ];
+		if( ! sum ) {
+			return;
+		}
+
+		this.props.onIntegralLabelRatioChanged( this.props.name, whichIntegral, whichValue / sum );
+	}
+
 
 
 	render() {
@@ -175,7 +170,17 @@ class NMRSerie extends React.Component {
 			<span>
 				{ 
 					( this.props.integrals || [] ).map( 
-						( el ) => <NMRIntegral id={ el.id } key={ el.id } labelRatio={ this.state.labelRatio } ratio={ this.state.ratio } from={ el.from } to={ el.to } onSumChanged={ this.sumChanged } onChanged={ this.integralChanged } onValueChanged={ ( value ) => { this.scaleIntegralText( el.id, value ); } } /> 
+						( el ) => <NMRIntegral 
+							id 		= { el.id } 
+							key 	= { el.id } 
+							labelRatio 	= { this.state.labelRatio } 
+							ratio 	= { this.state.ratio } 
+							from 	= { el.from } 
+							to 		= { el.to } 
+							onSumChanged 	= { this.sumChanged } 
+							onChanged 		= { this.integralChanged } 
+							onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+						/> 
 					) 
 				}
 			</span> 

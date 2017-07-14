@@ -126,7 +126,7 @@ class NMR1D extends React.Component {
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor ) => {
 
 			if( this.checkboxAssignment.checked ) {
-				console.log('prevented');
+				
 				return this.graph.prevent( true );
 			}
 
@@ -159,6 +159,7 @@ class NMR1D extends React.Component {
 
 
 		this.onIntegralChanged = this.onIntegralChanged.bind( this );
+		this.onIntegralLabelRatioChanged = this.onIntegralLabelRatioChanged.bind( this );
 		this.pickPeak = this.pickPeak.bind( this );
 		this.triangleMoved = this.triangleMoved.bind( this );
 		this.triangleCreated = this.triangleCreated.bind( this );
@@ -365,6 +366,28 @@ class NMR1D extends React.Component {
 
 	}
 
+	onIntegralLabelRatioChanged( seriename, integralId, newRatio ) {
+
+		let update = false;
+		for( let serie of this.state.series ) {
+console.log( seriename, serie, newRatio );
+			if( serie.name == seriename ) {
+
+				serie.integralLabelRatio = newRatio;
+				update = true;
+			}
+
+			if( update ) {
+				break;
+			}
+		}
+
+		if( update ) {
+			this.setState( { series: this.state.series } );	
+			this.updateOutput();
+		}		
+	}
+
 	onIntegralChanged( seriename, integralId, integralFrom, integralTo ) {
 
 		let update = false;
@@ -412,7 +435,19 @@ class NMR1D extends React.Component {
 				<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Assignment</p>
 			</div>
 			<span>
-				{ ( this.state.series || [] ).map( ( serie ) => <NMRSerie color={serie.color} onChanged={ this.serieChanged } onIntegralChanged={ this.onIntegralChanged } name={ serie.name } data={ serie.data } shift={ serie.shift } integrals={ serie.integrals } /> ) }
+				{ ( this.state.series || [] ).map( ( serie ) => 
+					<NMRSerie 
+						color 		= {serie.color} 
+						onChanged 	= { this.serieChanged } 
+						onIntegralChanged 	= { this.onIntegralChanged } 
+						onIntegralLabelRatioChanged = { this.onIntegralLabelRatioChanged }
+						name 		= { serie.name } 
+						data 		= { serie.data } 
+						shift 		= { serie.shift } 
+						integrals 	= { serie.integrals } 
+						integralLabelRatio = { serie.integralLabelRatio }
+					/> 
+				) }
 			</span>
 		</div>
 		);
