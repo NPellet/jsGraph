@@ -422,13 +422,13 @@ class Waveform {
   }
 
   getScale() {
-    return this.scale || 1;
+    return this.scale ||  1;
   }
 
   setScale( scale = 1 ) {
 
-   // this.minY = ( this.minY - this.getShift() ) * scale;
-   // this.maxY = ( this.maxY - this.getShift() ) * scale;
+    // this.minY = ( this.minY - this.getShift() ) * scale;
+    // this.maxY = ( this.maxY - this.getShift() ) * scale;
     this.scale = scale;
   }
 
@@ -990,45 +990,44 @@ class Waveform {
   findLocalMinMax( xRef, xWithin, type ) {
 
     let index = this.getIndexFromX( xRef ),
-        indexPlus = this.getIndexFromX( xRef + xWithin ),
-        indexMinus = this.getIndexFromX( xRef - xWithin ),
-        yVal = this.getY( index ),
-        tmp;
+      indexPlus = this.getIndexFromX( xRef + xWithin ),
+      indexMinus = this.getIndexFromX( xRef - xWithin ),
+      yVal = this.getY( index ),
+      tmp;
 
-    if( indexPlus < indexMinus ) {
+    if ( indexPlus < indexMinus ) {
       tmp = indexPlus;
       indexPlus = indexMinus;
       indexMinus = tmp;
     }
 
-    
     let curr, currI;
 
-    if( type == 'max') {
-      
+    if ( type == 'max' ) {
+
       curr = Number.NEGATIVE_INFINITY;
 
-      for( var i = indexMinus; i <= indexPlus; i ++ ) {
+      for ( var i = indexMinus; i <= indexPlus; i++ ) {
 
-        if( this.getY( i ) > curr ) {
+        if ( this.getY( i ) > curr ) {
           curr = this.getY( i );
           currI = i;
-        } 
+        }
       }
     } else {
 
       curr = Number.POSITIVE_INFINITY;
 
-      for( var i = indexMinus; i <= indexPlus; i ++ ) {
+      for ( var i = indexMinus; i <= indexPlus; i++ ) {
 
-        if( this.getY( i ) < curr ) {
+        if ( this.getY( i ) < curr ) {
           curr = this.getY( i );
           currI = i;
-        } 
+        }
       }
     }
 
-    if( currI == indexMinus || currI == indexPlus ) {
+    if ( currI == indexMinus || currI == indexPlus ) {
       return false;
     }
 

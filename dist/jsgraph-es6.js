@@ -615,7 +615,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @returns {Shape} The created shape
 	   * @see Graph#getConstructor
 	   */newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-	if(typeof shapeType=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
+	if(typeof shapeType=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
 	   * Creates a new position. Arguments are passed to the position constructor
 	   * @param {...*} var_args
 	   * @see Position
@@ -640,7 +640,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Unselects all shapes
 	   * @param {Boolean} [ mute = false ] - Mutes all unselection events
 	   * @return {Graph} The current graph instance
-	   */unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}_removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}appendShapeToDom(shape){if(shape.isHTML()){this.wrapper.insertBefore(shape._dom,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}removeShapeFromDom(shape){if(shape.isHTML()){this.wrapper.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(Graph.ns,'g');this.layers[layer][2]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}focus(){this.wrapper.focus();}elementMoving(movingElement){this.bypassHandleMouse=movingElement;}stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}_makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(Graph.ns,'line');line.setAttribute('stroke',this.options.closeColor);line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.key){if(action.key!==e.keyCode){let keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}forcePlugin(plugin){this.forcedPlugin=plugin;}unforcePlugin(){this.forcedPlugin=false;}_pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
+	   */unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}_removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}appendShapeToDom(shape){if(shape.isHTML()){this.wrapper.insertBefore(shape._dom,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}removeShapeFromDom(shape){if(shape.isHTML()){this.wrapper.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(Graph.ns,'g');this.layers[layer][2]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}focus(){this.wrapper.focus();}elementMoving(movingElement){this.bypassHandleMouse=movingElement;}stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}_makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(Graph.ns,'line');line.setAttribute('stroke',this.options.closeColor);line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.enabled&&(typeof action.enabled=="function"?!action.enabled(this):!actions.enabled)){return;}if(action.key){if(action.key!==e.keyCode){let keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}forcePlugin(plugin){this.forcedPlugin=plugin;}unforcePlugin(){this.forcedPlugin=false;}_pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
 	for(var i in this.plugins){if(this.plugins[i]&&this.plugins[i][funcName]){this.plugins[i][funcName].apply(this.plugins[i],args);}}}_pluginExecute(which,func,args){//Array.prototype.splice.apply( args, [ 0, 0, this ] );
 	if(!which){return;}if(this.plugins[which]&&this.plugins[which][func]){this.plugins[which][func].apply(this.plugins[which],args);}}pluginYieldActiveState(){this.activePlugin=false;}_serieExecute(which,func,args){if(typeof serie!=='object'){serie=this.getSerie(serie);}if(typeof serie[func]=='function'){serie.apply(serie,args);}}_pluginsInit(){var constructor,pluginName,pluginOptions;for(var i in this.options.plugins){pluginName=i;pluginOptions=this.options.plugins[i];constructor=this.getConstructor("graph.plugin."+pluginName);if(constructor){var options=util.extend(true,{},constructor.defaults(),pluginOptions);this.plugins[pluginName]=new constructor(options);util.mapEventEmission(this.plugins[pluginName].options,this.plugins[pluginName]);this.plugins[pluginName].init(this,pluginOptions);}else{util.throwError("Plugin \""+pluginName+"\" has not been registered");}}}/**
 	   * Returns an initialized plugin
@@ -762,7 +762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',e=>{_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',e=>{_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',e=>{_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 	graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
 	var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
-	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
+	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);console.log('up');_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
 	if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 	var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
 	});graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
@@ -772,7 +772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
 	if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
 	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);return true;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}return true;}}return false;};var _trackingLegendSerie=function(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(serie=>{var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
-	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",()=>{graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;serie.serie.trackingShape.redraw();}});// End map
+	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",()=>{graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;if(graph.options.trackingLine.serieShape.magnet){let magnetOptions=graph.options.trackingLine.serieShape.magnet,val=magnetOptions.within,minmaxpos;if(magnetOptions.withinPx){val=serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);}if(minmaxpos=serie.serie.findLocalMinMax(index.xClosest,val,magnetOptions.mode)){serie.serie.trackingShape.getPosition(0).x=minmaxpos;}}serie.serie.trackingShape.redraw();}});// End map
 	if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
 	}return legend;};var forceTrackingLegendMode=function(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
 	//	var _y = y - graph.options.paddingTop;
@@ -2140,10 +2140,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getY(index, optimized) {
 
 	      if (optimized && this.dataInUse) {
-	        return this.dataInUse.y[index] + this.getShift();
+	        return this.dataInUse.y[index] * this.getScale() + this.getShift();
 	      }
 
-	      return this.data[index] + this.getShift();
+	      return this.data[index] * this.getScale() + this.getShift();
 	    }
 
 	    /*
@@ -2412,19 +2412,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getYMin() {
-	      return this.minY + this.getShift();
+	      return this.minY * this.getScale() + this.getShift();
 	    }
 
 	    getYMax() {
-	      return this.maxY + this.getShift();
+	      return this.maxY * this.getScale() + this.getShift();
 	    }
 
 	    getMin() {
-	      return this.minY + this.getShift();
+	      return this.minY * this.getScale() + this.getShift();
 	    }
 
 	    getMax() {
-	      return this.maxY + this.getShift();
+	      return this.maxY * this.getScale() + this.getShift();
 	    }
 
 	    getMinX() {
@@ -2436,11 +2436,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getMinY() {
-	      return this.minY + this.getShift();
+	      return this.minY * this.getScale() + this.getShift();
 	    }
 
 	    getMaxY() {
-	      return this.maxY + this.getShift();
+	      return this.maxY * this.getScale() + this.getShift();
 	    }
 
 	    getDataY() {
@@ -2457,14 +2457,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setShift(shift = 0) {
 
 	      // We must update the min and the max of the y data
-	      this.minY += shift - this.getShift();
-	      this.maxY += shift - this.getShift();
+	      //this.minY += ( shift - this.getShift() );
+	      //this.maxY += ( shift - this.getShift() );
 	      this.shift = shift;
 	      return this;
 	    }
 
 	    getShift() {
 	      return this.shift || 0;
+	    }
+
+	    getScale() {
+	      return this.scale || 1;
+	    }
+
+	    setScale(scale = 1) {
+
+	      // this.minY = ( this.minY - this.getShift() ) * scale;
+	      // this.maxY = ( this.maxY - this.getShift() ) * scale;
+	      this.scale = scale;
 	    }
 
 	    setXShift(shift = 0) {
@@ -3020,6 +3031,53 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return newWaveform;
+	    }
+
+	    findLocalMinMax(xRef, xWithin, type) {
+
+	      let index = this.getIndexFromX(xRef),
+	          indexPlus = this.getIndexFromX(xRef + xWithin),
+	          indexMinus = this.getIndexFromX(xRef - xWithin),
+	          yVal = this.getY(index),
+	          tmp;
+
+	      if (indexPlus < indexMinus) {
+	        tmp = indexPlus;
+	        indexPlus = indexMinus;
+	        indexMinus = tmp;
+	      }
+
+	      let curr, currI;
+
+	      if (type == 'max') {
+
+	        curr = Number.NEGATIVE_INFINITY;
+
+	        for (var i = indexMinus; i <= indexPlus; i++) {
+
+	          if (this.getY(i) > curr) {
+	            curr = this.getY(i);
+	            currI = i;
+	          }
+	        }
+	      } else {
+
+	        curr = Number.POSITIVE_INFINITY;
+
+	        for (var i = indexMinus; i <= indexPlus; i++) {
+
+	          if (this.getY(i) < curr) {
+	            curr = this.getY(i);
+	            currI = i;
+	          }
+	        }
+	      }
+
+	      if (currI == indexMinus || currI == indexPlus) {
+	        return false;
+	      }
+
+	      return this.getX(currI);
 	    }
 
 	    warn(text) {
@@ -8897,7 +8955,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        trackMouseLabel: false,
 	        trackMouseLabelRouding: 1,
 	        lineToZero: false,
-	        selectableOnClick: true,
+	        selectableOnClick: false,
 	        markersIndependant: false
 	      };
 	    }
@@ -9443,7 +9501,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xBottomCrossingRatio,
 	          xBottomCrossing,
 	          xshift = waveform.getXShift(),
-	          yshift = waveform.getShift();
+	          yshift = waveform.getShift(),
+	          yscale = waveform.getScale();
 
 	      let pointOutside = false;
 	      let lastPointOutside = false;
@@ -9484,11 +9543,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 
-	      console.log(i, l);
 	      for (; i < l; i += 1) {
 
 	        x = waveform.getX(i, true);
-	        y = data[i] + yshift;
+	        y = data[i] * yscale + yshift;
 
 	        if (x != x || y != y) {
 	          // NaN checks
@@ -10705,6 +10763,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !!this.xmonotoneous;
 	    }
 
+	    findLocalMinMax(xRef, xWithin, type) {
+
+	      if (!this._waveform) {
+	        return false;
+	      }
+
+	      return this._waveform.findLocalMinMax(xRef, xWithin, type);
+	    }
+
 	  }
 
 	  util.mix(SerieLine, _graphMixin2.default);
@@ -11683,6 +11750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.categoryIndices = categories;
 	      this.nbCategories = nb;
 	    }
+
 	  }
 
 	  exports.default = Serie;
@@ -18648,7 +18716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          points = [];
 
 	      let currentLine = "",
-	          baseLine = 300,
+	          baseLine = this.getProp('baseLine', 0) || 300,
 	          ratio;
 
 	      if (!this.serie) {
@@ -20375,6 +20443,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        movable: true
 	      };
 
+	      let shapeProperties = this.options.properties;
+
 	      util.extend(true, shapeInfo, this.options);
 
 	      this.emit("beforeNewShape", e, shapeInfo);
@@ -20383,7 +20453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      var shape = graph.newShape(shapeInfo.type, shapeInfo);
+	      var shape = graph.newShape(shapeInfo.type, shapeInfo, false, shapeProperties);
 
 	      this.emit("createdShape", e, shape);
 
@@ -20411,7 +20481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        self.currentShape = false;
 
-	        if (graph.selectedSerie) {
+	        if (graph.selectedSerie && !shape.serie) {
 	          shape.setSerie(graph.selectedSerie);
 	        }
 
@@ -20422,9 +20492,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        shape.draw();
-
 	        graph.selectShape(shape);
-
 	        shape.handleMouseDown(self.currentShapeEvent, true);
 	        shape.handleSelected = this.options.handleSelected || 1;
 	        shape.handleMouseMove(e, true);
@@ -20853,7 +20921,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 
 	      if (graph.prevent(false)) {
-	        graph.prevent(true); // Cancel future click event
+
+	        // This doesn't work !
+	        //graph.prevent( true ); // Cancel future click event
 	        return;
 	      }
 
@@ -20941,7 +21011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            break;
 	        }
 
-	        graph.prevent(true);
+	        //  graph.prevent( true ); // WHat are you doing ??
 	        graph.draw();
 
 	        if (this._backedUpZoomMode) {

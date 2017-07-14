@@ -265,7 +265,7 @@ class PluginZoom extends Plugin {
           break;
       }
 
-    //  graph.prevent( true ); // WHat are you doing ??
+      //  graph.prevent( true ); // WHat are you doing ??
       graph.draw();
 
       if ( this._backedUpZoomMode ) {

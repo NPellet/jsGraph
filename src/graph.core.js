@@ -1393,7 +1393,6 @@ class Graph extends EventEmitter {
     shape.graph = this;
     shape._data = shapeData;
 
-
     if ( shapeData.properties !== undefined ) {
       shape.setProperties( shapeData.properties );
     }
@@ -1406,7 +1405,6 @@ class Graph extends EventEmitter {
         shape.setPosition( new GraphPosition( shapeData.position[ i ] ), i );
       }
     }
-
 
     /* Setting shape properties */
     if ( shapeData.fillColor !== undefined ) {
@@ -1724,16 +1722,15 @@ class Graph extends EventEmitter {
     }
   }
 
-
   isActionAllowed( e, action ) {
 
     if ( action.type !== e.type &&  ( action.type !== undefined || e.type !== "mousedown" ) && !( ( e.type === 'wheel' || e.type === 'mousewheel' ) && action.type == 'mousewheel' ) ) {
       return;
     }
 
-    if( action.enabled && ( typeof action.enabled == "function" ? ! action.enabled( this ) : ! actions.enabled ) ) {
+    if ( action.enabled && ( typeof action.enabled == "function" ? !action.enabled( this ) : !actions.enabled ) ) {
       return;
-    } 
+    }
 
     if ( action.key ) {
 
@@ -3331,7 +3328,7 @@ function _registerEvents( graph ) {
 
     graph.emit( "mouseUp", e );
     var coords = graph._getXY( e );
-console.log('up');
+    console.log( 'up' );
     _handleMouseUp( graph, coords.x, coords.y, e );
 
   } );
@@ -3611,19 +3608,19 @@ var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xVa
       serie.serie.trackingShape.show();
       serie.serie.trackingShape.getPosition( 0 ).x = index.xClosest;
 
-      if( graph.options.trackingLine.serieShape.magnet ) {
-        
-        let magnetOptions = graph.options.trackingLine.serieShape.magnet,
-            val = magnetOptions.within,
-            minmaxpos;
+      if ( graph.options.trackingLine.serieShape.magnet ) {
 
-        if( magnetOptions.withinPx ) {
+        let magnetOptions = graph.options.trackingLine.serieShape.magnet,
+          val = magnetOptions.within,
+          minmaxpos;
+
+        if ( magnetOptions.withinPx ) {
           val = serie.serie.getXAxis().getRelVal( magnetOptions.withinPx );
         }
 
-        if( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) {
+        if ( minmaxpos = serie.serie.findLocalMinMax( index.xClosest, val, magnetOptions.mode ) ) {
 
-          serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;          
+          serie.serie.trackingShape.getPosition( 0 ).x = minmaxpos;
         }
       }
 

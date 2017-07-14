@@ -1877,16 +1877,14 @@ class SerieLine extends Serie {
     return !!this.xmonotoneous;
   }
 
-
   findLocalMinMax( xRef, xWithin, type ) {
 
-    if( ! this._waveform ) {
+    if ( !this._waveform ) {
       return false;
     }
 
     return this._waveform.findLocalMinMax( xRef, xWithin, type );
   }
-
 
 }
 

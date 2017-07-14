@@ -71,7 +71,6 @@ class PluginShape extends Plugin {
       movable: true
     };
 
-
     let shapeProperties = this.options.properties;
 
     util.extend( true, shapeInfo, this.options );
@@ -110,7 +109,7 @@ class PluginShape extends Plugin {
 
       self.currentShape = false;
 
-      if ( graph.selectedSerie && ! shape.serie ) {
+      if ( graph.selectedSerie && !shape.serie ) {
         shape.setSerie( graph.selectedSerie );
       }
 
