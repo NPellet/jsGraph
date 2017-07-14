@@ -1397,7 +1397,7 @@ class Graph extends EventEmitter {
     if ( shapeData.properties !== undefined ) {
       shape.setProperties( shapeData.properties );
     }
-    
+
     shape.init( this, shapeProperties );
 
     if ( shapeData.position ) {
@@ -3331,7 +3331,7 @@ function _registerEvents( graph ) {
 
     graph.emit( "mouseUp", e );
     var coords = graph._getXY( e );
-
+console.log('up');
     _handleMouseUp( graph, coords.x, coords.y, e );
 
   } );

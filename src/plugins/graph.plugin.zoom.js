@@ -171,7 +171,9 @@ class PluginZoom extends Plugin {
     } );
 
     if ( graph.prevent( false ) ) {
-      graph.prevent( true ); // Cancel future click event
+
+      // This doesn't work !
+      //graph.prevent( true ); // Cancel future click event
       return;
     }
 
@@ -263,7 +265,7 @@ class PluginZoom extends Plugin {
           break;
       }
 
-      graph.prevent( true );
+    //  graph.prevent( true ); // WHat are you doing ??
       graph.draw();
 
       if ( this._backedUpZoomMode ) {
