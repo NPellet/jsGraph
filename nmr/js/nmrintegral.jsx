@@ -19,7 +19,7 @@ class NMRIntegral extends React.Component {
 				labels: [ { text: "" } ],
 			}, 
 			false,
-			{ 'labelEditable': [ true ] }
+			{ 'labelEditable': [ true ], layer: [ 3 ], strokeWidth: [ 2 ]  }
 		);
 
 		this.annotation.addClass('integral');

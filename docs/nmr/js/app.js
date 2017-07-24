@@ -35781,6 +35781,7 @@ var ShapeNMRIntegral = function (_Shape) {
     key: 'createDom',
     value: function createDom() {
       this._dom = document.createElementNS(this.graph.ns, 'path');
+      this._dom.setAttribute('pointer-events', 'stroke');
     }
   }, {
     key: 'initImpl',
@@ -36820,7 +36821,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					type: "nmrintegral",
 					serie: () => this.graph.getSerie("master"),
 					handleSelected: 2,
-					properties: { baseLine: [integralBaseline] }
+					properties: { baseLine: [integralBaseline], strokeWidth: [2] }
 				}
 			},
 
@@ -37334,7 +37335,7 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 			movable: true,
 			handles: true,
 			labels: [{ text: "" }]
-		}, false, { 'labelEditable': [true] });
+		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
 
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', context.integralBaseline);

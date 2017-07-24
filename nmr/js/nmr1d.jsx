@@ -25,7 +25,7 @@ class NMR1D extends React.Component {
 					type: "nmrintegral", 
 					serie: () => this.graph.getSerie("master"), 
 					handleSelected: 2,
-					properties: { baseLine: [ integralBaseline ] }
+					properties: { baseLine: [ integralBaseline ], strokeWidth: [ 2 ] }
 				}
 			},
 
