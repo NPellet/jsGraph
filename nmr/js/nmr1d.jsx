@@ -456,9 +456,13 @@ class NMR1D extends React.Component {
 		}		
 	}
 
+	// TODO: Make a general listener at the graph level
 	onIntegralRemoved( serieName, integralId ) {
 
 		let update = false;
+
+		this.assignment.removeGraphShape( integralId );
+
 		for( let serie of this.state.series ) {
 
 			if( serie.name == serieName ) {

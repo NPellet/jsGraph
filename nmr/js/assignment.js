@@ -226,7 +226,7 @@ var ns = 'http://www.w3.org/2000/svg';
 		enableRemove() {
 
 			this.allPairs( false, ( pair ) => {
-
+console.log( pair );
 				this.highlightPair( pair );
 			} );
 
@@ -564,7 +564,7 @@ var ns = 'http://www.w3.org/2000/svg';
 			var posMain = this.topSVG.getBoundingClientRect();
 
 			var line;
-
+console.log( this.stashedLines );
 			if( this.stashedLines.length > 0 ) {
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
@@ -600,8 +600,11 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 		unhighlightPair( pair, noHighlightTargets ) {
-			
-			this.removeLine( pair.line );
+
+			if( pair.line ) {
+				this.removeLine( pair.line );
+			}
+
 			pair.line = false;
 
 			// Highlight all equivalent elements from both pairs !
@@ -671,14 +674,9 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 		removePair( pair, line ) {
-
+			
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
-
-			if( line ) {
-
-				this.removeLine( line );
-			}
 		}
 
 		removeLine( line ) {
@@ -708,24 +706,11 @@ var ns = 'http://www.w3.org/2000/svg';
 			} );
 		}
 
-		removePairsWithShape( shape ) {
+		removeGraphShape( uniqueID ) {
 
-			var pairs = this.getPairsByGraphShape( shape ).map( ( pair ) => {
+			var pairs = this.allPairs( uniqueID, ( pair ) => {
 				this.removePair( pair );
 			});
-		}
-
-		getPairsByGraphShape( shape ) {
-
-			var pairs = [];
-			for( var i = 0; i < this.pairs.length; i++ ) {
-
-				if( this.pairs[ i ].graph == A ) {
-					pairs.push( this.pairs[ i ] );
-				}
-			}
-
-			return pairs;
 		}
 
 		findElement( type, selector ) {

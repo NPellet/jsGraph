@@ -25644,7 +25644,7 @@ var Assignment = function () {
 			var _this2 = this;
 
 			this.allPairs(false, function (pair) {
-
+				console.log(pair);
 				_this2.highlightPair(pair);
 			});
 
@@ -26030,7 +26030,7 @@ var Assignment = function () {
 			var posMain = this.topSVG.getBoundingClientRect();
 
 			var line;
-
+			console.log(this.stashedLines);
 			if (this.stashedLines.length > 0) {
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
@@ -26065,7 +26065,10 @@ var Assignment = function () {
 		key: 'unhighlightPair',
 		value: function unhighlightPair(pair, noHighlightTargets) {
 
-			this.removeLine(pair.line);
+			if (pair.line) {
+				this.removeLine(pair.line);
+			}
+
 			pair.line = false;
 
 			// Highlight all equivalent elements from both pairs !
@@ -26141,11 +26144,6 @@ var Assignment = function () {
 
 			this.pairs.splice(this.pairs.indexOf(pair), 1);
 			this.unhighlightPair(pair);
-
-			if (line) {
-
-				this.removeLine(line);
-			}
 		}
 	}, {
 		key: 'removeLine',
@@ -26177,27 +26175,13 @@ var Assignment = function () {
 			});
 		}
 	}, {
-		key: 'removePairsWithShape',
-		value: function removePairsWithShape(shape) {
+		key: 'removeGraphShape',
+		value: function removeGraphShape(uniqueID) {
 			var _this8 = this;
 
-			var pairs = this.getPairsByGraphShape(shape).map(function (pair) {
+			var pairs = this.allPairs(uniqueID, function (pair) {
 				_this8.removePair(pair);
 			});
-		}
-	}, {
-		key: 'getPairsByGraphShape',
-		value: function getPairsByGraphShape(shape) {
-
-			var pairs = [];
-			for (var i = 0; i < this.pairs.length; i++) {
-
-				if (this.pairs[i].graph == A) {
-					pairs.push(this.pairs[i]);
-				}
-			}
-
-			return pairs;
 		}
 	}, {
 		key: 'findElement',
@@ -37229,9 +37213,13 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		}
 	}
 
+	// TODO: Make a general listener at the graph level
 	onIntegralRemoved(serieName, integralId) {
 
 		let update = false;
+
+		this.assignment.removeGraphShape(integralId);
+
 		for (let serie of this.state.series) {
 
 			if (serie.name == serieName) {
