@@ -197,6 +197,19 @@ class NMR1D extends React.Component {
 				return;
 			}
 
+			let cancel = false;
+
+			serie._peaks && serie._peaks.forEach( ( existingPeak ) => {
+
+				if( Math.abs( existingPeak.getPosition( 0 ).x - serie.trackingShape.getPosition( 0 ).x ) < ( this.props.options.minThresholdPeakToPeak || 0.01 ) ) {
+					cancel = true;
+				}
+			} );
+
+			if( cancel ) {
+				return;
+			}
+
 			let newPeak = this.graph.newShape( "polyline", {
 
 				selectable: true,
@@ -224,7 +237,7 @@ class NMR1D extends React.Component {
 
 			newPeak.on("removed", () => {
 
-				serie._peaks.splice( serie._peaks.indexOf( newPeak, 1 ) );
+				serie._peaks.splice( serie._peaks.indexOf( newPeak ), 1 );
 				console.log('removed');
 			});
 

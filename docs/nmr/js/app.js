@@ -25386,6 +25386,10 @@ Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg")]).the
 		textarea.innerHTML = JSON.stringify(seriescopy, undefined, "\t");
 	}
 
+	const options = {
+		minThresholdPeakToPeak: 0.01
+	};
+
 	textarea.addEventListener("change", function () {
 
 		var json = JSON.parse(textarea.value);
@@ -25395,10 +25399,10 @@ Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg")]).the
 			return serie;
 		});
 
-		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', molecule: molecule, series: json, onChanged: serieChanged }), document.getElementById('root'));
+		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', options: options, molecule: molecule, series: json, onChanged: serieChanged }), document.getElementById('root'));
 	});
 
-	__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', series: series, molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
+	__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', options: options, series: series, molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
 });
 
 /***/ }),
@@ -36972,6 +36976,19 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				return;
 			}
 
+			let cancel = false;
+
+			serie._peaks && serie._peaks.forEach(existingPeak => {
+
+				if (Math.abs(existingPeak.getPosition(0).x - serie.trackingShape.getPosition(0).x) < (this.props.options.minThresholdPeakToPeak || 0.01)) {
+					cancel = true;
+				}
+			});
+
+			if (cancel) {
+				return;
+			}
+
 			let newPeak = this.graph.newShape("polyline", {
 
 				selectable: true,
@@ -36998,7 +37015,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 			newPeak.on("removed", () => {
 
-				serie._peaks.splice(serie._peaks.indexOf(newPeak, 1));
+				serie._peaks.splice(serie._peaks.indexOf(newPeak), 1);
 				console.log('removed');
 			});
 
