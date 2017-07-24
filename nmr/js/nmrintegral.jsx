@@ -54,6 +54,12 @@ class NMRIntegral extends React.Component {
 			 
 		});
 
+
+		this.annotation.on("removed", () => {
+			this.props.onRemoved( this.props.id );
+		});
+
+
 			 // Determine the shift
 		
 	}

@@ -159,6 +159,7 @@ class NMR1D extends React.Component {
 
 
 		this.onIntegralChanged = this.onIntegralChanged.bind( this );
+		this.onIntegralRemoved = this.onIntegralRemoved.bind( this );
 		this.onIntegralLabelRatioChanged = this.onIntegralLabelRatioChanged.bind( this );
 		this.pickPeak = this.pickPeak.bind( this );
 		this.triangleMoved = this.triangleMoved.bind( this );
@@ -455,6 +456,36 @@ class NMR1D extends React.Component {
 		}		
 	}
 
+	onIntegralRemoved( serieName, integralId ) {
+
+		let update = false;
+		for( let serie of this.state.series ) {
+
+			if( serie.name == serieName ) {
+
+				for( let i = 0; i < serie.integrals.length; i ++ ) {
+
+					if( serie.integrals[ i ].id == integralId ) {
+
+						serie.integrals.splice( i, 1 );
+						update = true;
+						break;
+					}
+				}
+			}
+
+			if( update ) {
+				break;
+			}
+		}
+
+		if( update ) {
+			this.setState( { series: this.state.series } );	
+			this.updateOutput();
+		}
+	}
+
+
 	serieChanged() {
 		this.updateOutput();
 	}
@@ -481,6 +512,7 @@ class NMR1D extends React.Component {
 						color 		= {serie.color} 
 						onChanged 	= { this.serieChanged } 
 						onIntegralChanged 	= { this.onIntegralChanged } 
+						onIntegralRemoved	= { this.onIntegralRemoved }
 						onIntegralLabelRatioChanged = { this.onIntegralLabelRatioChanged }
 						name 		= { serie.name } 
 						data 		= { serie.data } 

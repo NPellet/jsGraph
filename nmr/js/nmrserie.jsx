@@ -38,6 +38,7 @@ console.log( this.props.name == 'master' );
 		this._jsGraphWaveform = Graph.newWaveform();
 		//this.onChanged = this.onChanged.bind( this );
 		this.integralChanged = this.integralChanged.bind( this );
+		this.integralRemoved = this.integralRemoved.bind( this );
 	}
 
 	sumChanged( newSum, identifier ) {
@@ -146,6 +147,10 @@ console.log( nextProps );
 		this.props.onIntegralChanged( this.props.name, integralId, from, to );
 	}
 
+	integralRemoved( integralId ) {
+		this.props.onIntegralRemoved( this.props.name, integralId );
+	}
+
 	// Occurs after the rescaling of the integral
 	scaleIntegralText( whichIntegral, whichValue ) {
 
@@ -181,6 +186,7 @@ console.log( nextProps );
 							onSumChanged 	= { this.sumChanged } 
 							onChanged 		= { this.integralChanged } 
 							onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+							onRemoved 		= { this.integralRemoved } 
 						/> 
 					) 
 				}

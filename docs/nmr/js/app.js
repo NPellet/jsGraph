@@ -36940,6 +36940,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		});
 
 		this.onIntegralChanged = this.onIntegralChanged.bind(this);
+		this.onIntegralRemoved = this.onIntegralRemoved.bind(this);
 		this.onIntegralLabelRatioChanged = this.onIntegralLabelRatioChanged.bind(this);
 		this.pickPeak = this.pickPeak.bind(this);
 		this.triangleMoved = this.triangleMoved.bind(this);
@@ -37228,6 +37229,35 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		}
 	}
 
+	onIntegralRemoved(serieName, integralId) {
+
+		let update = false;
+		for (let serie of this.state.series) {
+
+			if (serie.name == serieName) {
+
+				for (let i = 0; i < serie.integrals.length; i++) {
+
+					if (serie.integrals[i].id == integralId) {
+
+						serie.integrals.splice(i, 1);
+						update = true;
+						break;
+					}
+				}
+			}
+
+			if (update) {
+				break;
+			}
+		}
+
+		if (update) {
+			this.setState({ series: this.state.series });
+			this.updateOutput();
+		}
+	}
+
 	serieChanged() {
 		this.updateOutput();
 	}
@@ -37286,6 +37316,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					color: serie.color,
 					onChanged: this.serieChanged,
 					onIntegralChanged: this.onIntegralChanged,
+					onIntegralRemoved: this.onIntegralRemoved,
 					onIntegralLabelRatioChanged: this.onIntegralLabelRatioChanged,
 					name: serie.name,
 					data: serie.data,
@@ -37365,6 +37396,10 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 
 			//const rescale = parseFloat( parameters.nextValue ) / parameters.previousValue;
 			this.props.onValueChanged(parseFloat(parameters.nextValue));
+		});
+
+		this.annotation.on("removed", () => {
+			this.props.onRemoved(this.props.id);
 		});
 
 		// Determine the shift
@@ -37458,6 +37493,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this._jsGraphWaveform = __WEBPACK_IMPORTED_MODULE_1__src_graph___default.a.newWaveform();
 		//this.onChanged = this.onChanged.bind( this );
 		this.integralChanged = this.integralChanged.bind(this);
+		this.integralRemoved = this.integralRemoved.bind(this);
 	}
 
 	sumChanged(newSum, identifier) {
@@ -37565,6 +37601,10 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.props.onIntegralChanged(this.props.name, integralId, from, to);
 	}
 
+	integralRemoved(integralId) {
+		this.props.onIntegralRemoved(this.props.name, integralId);
+	}
+
 	// Occurs after the rescaling of the integral
 	scaleIntegralText(whichIntegral, whichValue) {
 
@@ -37598,7 +37638,8 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				onChanged: this.integralChanged,
 				onValueChanged: value => {
 					this.scaleIntegralText(el.id, value);
-				}
+				},
+				onRemoved: this.integralRemoved
 			}))
 		);
 	}
