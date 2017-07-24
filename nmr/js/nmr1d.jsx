@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import NMRSerie from './nmrserie.jsx'
 import Assignment from './assignment.js'
 
-const trianglePath = 'm -6 -12 h 12 l -8 8 z';
+const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
 
@@ -89,7 +89,7 @@ class NMR1D extends React.Component {
 			noLine: true,
 			mode: "individual",
 			enable: false,
-			series: [ { serie: "master" } ],
+			series: "all",
 			serieShape: {
 
 				shape: 'polyline',
@@ -191,79 +191,84 @@ class NMR1D extends React.Component {
 	
 	pickPeak() {
 
-		var serie = this.graph.getSerie("master");
+		this.graph.series.map( ( serie ) => {
+			console.log( serie.trackingShape );
 
-		if( ! serie.trackingShape ) {
-			return;
-		}
+			if( ! serie.trackingShape || serie.trackingShape.isHidden() ) {
+				return;
+			}
 
-		var newPeak = this.graph.newShape( "polyline", {
+			let newPeak = this.graph.newShape( "polyline", {
 
-			selectable: true,
-			selectOnClick: true
+				selectable: true,
+				selectOnClick: true
 
-		}, false, {
-			'strokeWidth': [ 0 ],
-			'pxPoints': [ [ trianglePath ] ],
-			'labelText': [ '' ],
-			'position': [ { x: serie.trackingShape.getPosition( 0 ).x } ],
-			'labelEditable': [ true ]
-		});
-		
-		newPeak.setSerie( serie );
-		newPeak.draw();
-		newPeak.setSelectStyle( {
-			fill: 'red'
-		});
+			}, false, {
+				'strokeWidth': [ 1 ],
+				'strokeColor': [ 'white' ],
+				'pxPoints': [ [ trianglePath ] ],
+				'labelText': [ '' ],
+				'position': [ { x: serie.trackingShape.getPosition( 0 ).x } ],
+				'labelEditable': [ true ],
+				'fillColor': [ serie.getLineColor() ]
+			});
+			
+			newPeak.setSerie( serie );
+			newPeak.draw();
+			newPeak.setSelectStyle( {
+				fill: 'red'
+			});
 
-		this.triangleCreated( newPeak );
-		this.triangleMoved( newPeak );
-
-
-		newPeak.on("removed", () => {
-
-			serie._peaks.splice( serie._peaks.indexOf( newPeak, 1 ) );
-			console.log('removed');
-		});
-
-		newPeak.on("shapeLabelChanged", ( shape, parameters ) => {
-
-			 // Determine the shift
-			 const shift = parseFloat( parameters.nextValue ) - parameters.previousValue;
-			 let serieState;
-
-			 if( serieState = this.getSerieState('master') ) {
-			 		
-			 	// Let us shift the serie
-			 	serieState.shift += shift;
-			 	
-			 	serie._peaks.map( ( peak ) => { // Let us shift all peaks
-			 		peak.getPosition( 0 ).x += shift;
-
-			 		if( peak !== newPeak ) {
-			 			peak.setLabelText( Math.round( 1000 * ( parseFloat( peak.getLabelText( 0 ) ) + shift ) ) / 1000 );
-			 		}
-
-				 	peak.redraw();
-			 	});
-
-			 	for( let serie of this.state.series ) { // Let us shift the integrals of all the series
-			 		
-			 		for( let integral of serie.integrals ) {
-			 			integral.from += shift;
-			 			integral.to += shift;
-			 		}
-			 	}
-			 	
-			 	this.updateOutput(); // Shift and integrals have changed, we must notify the output
-			 	this.setState( { series: this.state.series } ); // Integrals have shifted, we must inform React
-			 }
+			this.triangleCreated( newPeak );
+			this.triangleMoved( newPeak );
 
 
-		});
+			newPeak.on("removed", () => {
 
-		serie._peaks = serie._peaks || [];
-		serie._peaks.push( newPeak );
+				serie._peaks.splice( serie._peaks.indexOf( newPeak, 1 ) );
+				console.log('removed');
+			});
+
+			newPeak.on("shapeLabelChanged", ( shape, parameters ) => {
+
+				 // Determine the shift
+				 const shift = parseFloat( parameters.nextValue ) - parameters.previousValue;
+				 let serieState;
+
+				 if( serieState = this.getSerieState('master') ) {
+				 		
+				 	// Let us shift the serie
+				 	serieState.shift += shift;
+				 	
+				 	serie._peaks.map( ( peak ) => { // Let us shift all peaks
+				 		peak.getPosition( 0 ).x += shift;
+
+				 		if( peak !== newPeak ) {
+				 			peak.setLabelText( Math.round( 1000 * ( parseFloat( peak.getLabelText( 0 ) ) + shift ) ) / 1000 );
+				 		}
+
+					 	peak.redraw();
+				 	});
+
+				 	for( let serie of this.state.series ) { // Let us shift the integrals of all the series
+				 		
+				 		for( let integral of serie.integrals ) {
+				 			integral.from += shift;
+				 			integral.to += shift;
+				 		}
+				 	}
+				 	
+				 	this.updateOutput(); // Shift and integrals have changed, we must notify the output
+				 	this.setState( { series: this.state.series } ); // Integrals have shifted, we must inform React
+				 }
+
+
+			});
+
+			serie._peaks = serie._peaks || [];
+			serie._peaks.push( newPeak );
+		})
+
 	}
 
 	getSerieState( serieName ) {

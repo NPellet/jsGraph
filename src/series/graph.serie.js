@@ -723,7 +723,13 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   setLayer( layerIndex ) {
-    this.options.layer = parseInt( layerIndex ) ||  1;
+    let newLayer = parseInt( layerIndex ) ||  1;
+
+    if( newLayer !== this.options.layer ) {
+      this.options.layer = newLayer;
+      this.graph.appendSerieToDom( this );  
+    }
+    
     return this;
   }
 

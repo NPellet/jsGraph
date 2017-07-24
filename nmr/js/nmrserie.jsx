@@ -16,7 +16,8 @@ class NMRSerie extends React.Component {
 		this._jsGraphSerie = this._jsGraphGraph.newSerie( this.props.name, {
 			redrawShapesAfterDraw: true
 		}, "line" ).autoAxes();
-
+console.log( this.props.name == 'master' );
+		this._jsGraphSerie.setLayer( this.props.name == 'master' ? 2 : 1 );
 		this._jsGraphSerie.on( "draw", () => {
 			this.loaded();
 		});

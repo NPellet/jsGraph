@@ -440,8 +440,8 @@ class Waveform {
 
     // We must update the min and the max of the x data
     // That's important for when the data has already been set
-    this.minX += ( shift - this.getXShift() );
-    this.maxX += ( shift - this.getXShift() );
+  //  this.minX += ( shift - this.getXShift() );
+//    this.maxX += ( shift - this.getXShift() );
     this.getXWaveform().setShift( shift );
     return this;
   }

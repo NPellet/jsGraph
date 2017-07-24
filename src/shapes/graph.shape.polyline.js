@@ -19,8 +19,15 @@ class ShapePolyline extends Shape {
   createDom() {
 
     this._dom = document.createElementNS( this.graph.ns, 'path' );
-    this.setStrokeColor( 'black' );
-    this.setStrokeWidth( 1 );
+
+
+    if( ! this.getStrokeColor() ) {
+      this.setStrokeColor( 'black' );
+    }
+
+    if( this.getStrokeWidth() == undefined ) {
+        this.setStrokeWidth( 1 );
+    }
   }
 
   /**

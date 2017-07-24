@@ -2124,7 +2124,15 @@ class Graph extends EventEmitter {
       if ( options.series ) {
 
         if ( !Array.isArray( options.series ) ) {
-          options.series = [  options.series ];
+
+          if( options.series == "all" ) {
+
+            options.series = this.series.map( ( serie ) => { serie: serie } );
+
+          } else {
+
+            options.series = [ options.series ];
+          }
         }
 
         options.series.forEach( ( sOptions ) => {
@@ -2193,7 +2201,9 @@ class Graph extends EventEmitter {
     serie.enableTracking( ( serie, index, x, y ) => {
 
       if ( this.options.trackingLine.enable ) {
+
         if ( index ) {
+
 
           if ( this.trackingObject ) {
             this.trackingObject.show();

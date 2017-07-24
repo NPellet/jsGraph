@@ -600,8 +600,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 		unhighlightPair( pair, noHighlightTargets ) {
-console.log( pair.line );
-console.trace();
+			
 			this.removeLine( pair.line );
 			pair.line = false;
 

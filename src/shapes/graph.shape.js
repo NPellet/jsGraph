@@ -163,6 +163,24 @@ class Shape extends EventEmitter {
   }
 
   /**
+   *  Returns whether the shape is hidden or not
+   *  @return {Boolean} true if the shape is hidden, false otherwise
+   */
+   isHidden() {
+    return this.hidden;
+   }
+
+
+  /**
+   *  Returns whether the shape is visible or not
+   *  @return {Boolean} true if the shape is visible, false if it is hidden
+   */
+   isVisible() {
+    return ! this.hidden;
+   }
+
+
+  /**
    * Shows the shape
    * @return {Shape} The current shape
    */

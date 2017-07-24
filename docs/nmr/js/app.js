@@ -1804,6 +1804,28 @@ var Shape = function (_EventEmitter) {
     }
 
     /**
+     *  Returns whether the shape is hidden or not
+     *  @return {Boolean} true if the shape is hidden, false otherwise
+     */
+
+  }, {
+    key: 'isHidden',
+    value: function isHidden() {
+      return this.hidden;
+    }
+
+    /**
+     *  Returns whether the shape is visible or not
+     *  @return {Boolean} true if the shape is visible, false if it is hidden
+     */
+
+  }, {
+    key: 'isVisible',
+    value: function isVisible() {
+      return !this.hidden;
+    }
+
+    /**
      * Shows the shape
      * @return {Shape} The current shape
      */
@@ -5255,7 +5277,7 @@ return this.legend;}/**
 for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
 this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 },{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}},{key:'trackingLine',value:function trackingLine(options){var _this9=this;var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
-if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){options.series=[options.series];}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
+if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){if(options.series=="all"){options.series=this.series.map(function(serie){serie:serie;});}else{options.series=[options.series];}}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
 // Creates a new shape called trackingLine, in the first layer (below everything)
 this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}},{key:'addSerieToTrackingLine',value:function addSerieToTrackingLine(serie,options){var _this10=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
 this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking(function(serie,index,x,y){if(_this10.options.trackingLine.enable){if(index){if(_this10.trackingObject){_this10.trackingObject.show();_this10.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -5900,8 +5922,8 @@ var Waveform = function () {
 
       // We must update the min and the max of the x data
       // That's important for when the data has already been set
-      this.minX += shift - this.getXShift();
-      this.maxX += shift - this.getXShift();
+      //  this.minX += ( shift - this.getXShift() );
+      //    this.maxX += ( shift - this.getXShift() );
       this.getXWaveform().setShift(shift);
       return this;
     }
@@ -7864,6 +7886,7 @@ var SerieLine = function (_Serie) {
       for (; i < l; i += 1) {
 
         x = waveform.getX(i, true);
+
         y = data[i] * yscale + yshift;
 
         if (x != x || y != y) {
@@ -11313,7 +11336,13 @@ var Serie = function (_EventEmitter) {
   }, {
     key: 'setLayer',
     value: function setLayer(layerIndex) {
-      this.options.layer = parseInt(layerIndex) || 1;
+      var newLayer = parseInt(layerIndex) || 1;
+
+      if (newLayer !== this.options.layer) {
+        this.options.layer = newLayer;
+        this.graph.appendSerieToDom(this);
+      }
+
       return this;
     }
 
@@ -26030,8 +26059,7 @@ var Assignment = function () {
 	}, {
 		key: 'unhighlightPair',
 		value: function unhighlightPair(pair, noHighlightTargets) {
-			console.log(pair.line);
-			console.trace();
+
 			this.removeLine(pair.line);
 			pair.line = false;
 
@@ -36501,8 +36529,14 @@ var ShapePolyline = function (_Shape) {
     value: function createDom() {
 
       this._dom = document.createElementNS(this.graph.ns, 'path');
-      this.setStrokeColor('black');
-      this.setStrokeWidth(1);
+
+      if (!this.getStrokeColor()) {
+        this.setStrokeColor('black');
+      }
+
+      if (this.getStrokeWidth() == undefined) {
+        this.setStrokeWidth(1);
+      }
     }
 
     /**
@@ -36763,7 +36797,7 @@ aggregatorWorker.onmessage = function (e) {
 
 
 
-const trianglePath = 'm -6 -12 h 12 l -8 8 z';
+const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
 class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
@@ -36838,7 +36872,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			noLine: true,
 			mode: "individual",
 			enable: false,
-			series: [{ serie: "master" }],
+			series: "all",
 			serieShape: {
 
 				shape: 'polyline',
@@ -36931,78 +36965,82 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	pickPeak() {
 
-		var serie = this.graph.getSerie("master");
+		this.graph.series.map(serie => {
+			console.log(serie.trackingShape);
 
-		if (!serie.trackingShape) {
-			return;
-		}
-
-		var newPeak = this.graph.newShape("polyline", {
-
-			selectable: true,
-			selectOnClick: true
-
-		}, false, {
-			'strokeWidth': [0],
-			'pxPoints': [[trianglePath]],
-			'labelText': [''],
-			'position': [{ x: serie.trackingShape.getPosition(0).x }],
-			'labelEditable': [true]
-		});
-
-		newPeak.setSerie(serie);
-		newPeak.draw();
-		newPeak.setSelectStyle({
-			fill: 'red'
-		});
-
-		this.triangleCreated(newPeak);
-		this.triangleMoved(newPeak);
-
-		newPeak.on("removed", () => {
-
-			serie._peaks.splice(serie._peaks.indexOf(newPeak, 1));
-			console.log('removed');
-		});
-
-		newPeak.on("shapeLabelChanged", (shape, parameters) => {
-
-			// Determine the shift
-			const shift = parseFloat(parameters.nextValue) - parameters.previousValue;
-			let serieState;
-
-			if (serieState = this.getSerieState('master')) {
-
-				// Let us shift the serie
-				serieState.shift += shift;
-
-				serie._peaks.map(peak => {
-					// Let us shift all peaks
-					peak.getPosition(0).x += shift;
-
-					if (peak !== newPeak) {
-						peak.setLabelText(Math.round(1000 * (parseFloat(peak.getLabelText(0)) + shift)) / 1000);
-					}
-
-					peak.redraw();
-				});
-
-				for (let serie of this.state.series) {
-					// Let us shift the integrals of all the series
-
-					for (let integral of serie.integrals) {
-						integral.from += shift;
-						integral.to += shift;
-					}
-				}
-
-				this.updateOutput(); // Shift and integrals have changed, we must notify the output
-				this.setState({ series: this.state.series }); // Integrals have shifted, we must inform React
+			if (!serie.trackingShape || serie.trackingShape.isHidden()) {
+				return;
 			}
-		});
 
-		serie._peaks = serie._peaks || [];
-		serie._peaks.push(newPeak);
+			let newPeak = this.graph.newShape("polyline", {
+
+				selectable: true,
+				selectOnClick: true
+
+			}, false, {
+				'strokeWidth': [1],
+				'strokeColor': ['white'],
+				'pxPoints': [[trianglePath]],
+				'labelText': [''],
+				'position': [{ x: serie.trackingShape.getPosition(0).x }],
+				'labelEditable': [true],
+				'fillColor': [serie.getLineColor()]
+			});
+
+			newPeak.setSerie(serie);
+			newPeak.draw();
+			newPeak.setSelectStyle({
+				fill: 'red'
+			});
+
+			this.triangleCreated(newPeak);
+			this.triangleMoved(newPeak);
+
+			newPeak.on("removed", () => {
+
+				serie._peaks.splice(serie._peaks.indexOf(newPeak, 1));
+				console.log('removed');
+			});
+
+			newPeak.on("shapeLabelChanged", (shape, parameters) => {
+
+				// Determine the shift
+				const shift = parseFloat(parameters.nextValue) - parameters.previousValue;
+				let serieState;
+
+				if (serieState = this.getSerieState('master')) {
+
+					// Let us shift the serie
+					serieState.shift += shift;
+
+					serie._peaks.map(peak => {
+						// Let us shift all peaks
+						peak.getPosition(0).x += shift;
+
+						if (peak !== newPeak) {
+							peak.setLabelText(Math.round(1000 * (parseFloat(peak.getLabelText(0)) + shift)) / 1000);
+						}
+
+						peak.redraw();
+					});
+
+					for (let serie of this.state.series) {
+						// Let us shift the integrals of all the series
+
+						for (let integral of serie.integrals) {
+							integral.from += shift;
+							integral.to += shift;
+						}
+					}
+
+					this.updateOutput(); // Shift and integrals have changed, we must notify the output
+					this.setState({ series: this.state.series }); // Integrals have shifted, we must inform React
+				}
+			});
+
+			serie._peaks = serie._peaks || [];
+			serie._peaks.push(newPeak);
+		});
 	}
 
 	getSerieState(serieName) {
@@ -37364,7 +37402,8 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this._jsGraphSerie = this._jsGraphGraph.newSerie(this.props.name, {
 			redrawShapesAfterDraw: true
 		}, "line").autoAxes();
-
+		console.log(this.props.name == 'master');
+		this._jsGraphSerie.setLayer(this.props.name == 'master' ? 2 : 1);
 		this._jsGraphSerie.on("draw", () => {
 			this.loaded();
 		});
