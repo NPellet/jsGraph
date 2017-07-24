@@ -36966,7 +36966,6 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	pickPeak() {
 
 		this.graph.series.map(serie => {
-			console.log(serie.trackingShape);
 
 			if (!serie.trackingShape || serie.trackingShape.isHidden()) {
 				return;
@@ -37008,7 +37007,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				const shift = parseFloat(parameters.nextValue) - parameters.previousValue;
 				let serieState;
 
-				if (serieState = this.getSerieState('master')) {
+				if (serieState = this.getSerieState(serie.getName())) {
 
 					// Let us shift the serie
 					serieState.shift += shift;

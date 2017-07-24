@@ -192,7 +192,6 @@ class NMR1D extends React.Component {
 	pickPeak() {
 
 		this.graph.series.map( ( serie ) => {
-			console.log( serie.trackingShape );
 
 			if( ! serie.trackingShape || serie.trackingShape.isHidden() ) {
 				return;
@@ -235,7 +234,7 @@ class NMR1D extends React.Component {
 				 const shift = parseFloat( parameters.nextValue ) - parameters.previousValue;
 				 let serieState;
 
-				 if( serieState = this.getSerieState('master') ) {
+				 if( serieState = this.getSerieState( serie.getName() ) ) {
 				 		
 				 	// Let us shift the serie
 				 	serieState.shift += shift;

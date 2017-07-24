@@ -1632,9 +1632,11 @@ class Graph extends EventEmitter {
 
     return this;
   }
+  
   _removeShape( shape ) {
     this.shapes.splice( this.shapes.indexOf( shape ), 1 );
   }
+
   appendShapeToDom( shape ) {
 
     if ( shape.isHTML() ) {
@@ -1643,6 +1645,7 @@ class Graph extends EventEmitter {
 
     this.getLayer( shape.getLayer(), 'shape' ).appendChild( shape.group );
   }
+
   removeShapeFromDom( shape ) {
 
     if ( shape.isHTML() ) {
@@ -1651,12 +1654,15 @@ class Graph extends EventEmitter {
 
     this.getLayer( shape.getLayer(), 'shape' ).removeChild( shape.group );
   }
+
   appendSerieToDom( serie ) {
     this.getLayer( serie.getLayer(), 'serie' ).appendChild( serie.groupMain );
   }
+
   removeSerieFromDom( serie ) {
     this.getLayer( serie.getLayer(), 'serie' ).removeChild( serie.groupMain );
   }
+
   getLayer( layer, mode ) {
 
     if ( !this.layers[ layer ] ) {
