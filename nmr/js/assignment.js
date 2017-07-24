@@ -1,3 +1,48 @@
+/**
+ *
+ *	Assignment code
+ *	Norman Pellet, 2017
+ *	Configuration example:
+ *
+
+graph: {
+	bindableFilter: "", // a querySelector element that defined which element is a target
+	equivalentAttribute: 'id',	// A unique filter
+	highlightStyle: {
+
+		'binding': {				// The style the object takes when it's a highlighted target
+			'stroke': 'red',		
+			'stroke-width': '2px'
+		},
+		equivalent: {				// The style the object takes when it's equivalent
+			'stroke': 'blue',
+			'stroke-width': '2px'
+		}
+	}
+},
+
+molecule: {
+	bindableFilter: '[data-atomid]',
+	bindableFilterClass: 'event',
+	equivalentAttribute: 'data-atomid',
+	highlightStyle: {
+
+		'binding': {
+			'fill': 'red',
+			'fill-opacity': '0.3'
+		},
+		'equivalent': {
+			'fill': 'yellow',
+			'fill-opacity': '0.3'
+		}
+	}
+},
+
+enabled: false
+
+ */
+
+
 
 var ns = 'http://www.w3.org/2000/svg';
 
@@ -15,7 +60,7 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.molecule = molecule;
 			this.topSVG = topSVG;
 
-			this.graph.getWrapper().addEventListener('mousedown', ( e ) => {
+			this.graph.getWrapper().addEventListener( 'mousedown', ( e ) => {
 
 				if( ! this.isEnabled() ) {
 					return;
@@ -24,17 +69,8 @@ var ns = 'http://www.w3.org/2000/svg';
 				if( e.target.matches( options.graph.bindableFilter ) ) {
 					this.mousedown( e, true );
 				}
-			});
+			} );
 
-			/*this.graph.getWrapper().on('mouseover', options.jsGraphShape.bindableFilter, function( e ) {
-				
-				//highlight( this,  );
-			});
-
-			this.graph.getWrapper().on('mouseout', options.jsGraphShape.bindableFilter, function( e ) {
-				//unhighlight( this, "jsGraphShape" );
-			});
-*/
 			this.graph.getWrapper().addEventListener('mouseover', ( e ) => {
 
 
@@ -345,65 +381,28 @@ var ns = 'http://www.w3.org/2000/svg';
 		mouseout( event, type ) {
 
 			var elements = this.getEquivalents( event.target, type );
-				
+		
+			// We must unhighlight the equivalent elements, even if they are not paired yet		
 			this.unHighlight( type, elements, "equivalent" );
 
-
-			this.allPairs( event.target, ( pair ) => {
+			this.allPairs( this.getUnique( event.target, type ), ( pair ) => {
 
 				this.unhighlightPair( pair );
 			} );
-
-/*
-			this.storeAttributes( )
-
-			var eqs = [];
-
-			for( var i = 0; i < elements.length; i ++ ) {
-
-				allPairs( self.unhighlightPair, elements[ i ], function( pair ) {
-					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
-				} );
-			}
-
-
-			highlighted.jsGraphShape.map( function( el ) {
-				this.jsGraphIsShape.unHighlight( "assignmentHighlighted");
-			} );
-
-			restoreAttributes( options.targetB.highlighted, highlighted.targetB );
-			*/
 		}
 
 		mouseenter( event, type ) {
 
 			var elements = this.getEquivalents( event.target, type );
+			
+			// We must highlight the equivalent elements, even if they are not paired yet
 			this.highlight( type, elements, "equivalent" );
 
-			this.allPairs( event.target, ( pair ) => {
+			this.allPairs( this.getUnique( event.target, type ), ( pair ) => {
 
 				this.highlightPair( pair );
 			} );
-/*
-			this.storeAttributes( )
 
-			var eqs = [];
-			
-
-			for( var i = 0; i < elements.length; i ++ ) {
-
-				allPairs( self.unhighlightPair, elements[ i ], function( pair ) {
-					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
-				} );
-			}
-
-
-			highlighted.jsGraphShape.map( function( el ) {
-				this.jsGraphIsShape.unHighlight( "assignmentHighlighted");
-			} );
-
-			restoreAttributes( options.targetB.highlighted, highlighted.targetB );
-			*/
 		}
 /*
 		highlightEquivalents = function( target, elementsToHighlight ) {
@@ -429,10 +428,21 @@ var ns = 'http://www.w3.org/2000/svg';
 		},
 */
 		getEquivalents( element, type ) {
+
 			let attribute = this.getOptions( type ).equivalentAttribute,
 			 	attributeValue = element.getAttribute( attribute );
-	
-			return this.getDom( type ).querySelectorAll( "[" + attribute + "=\"" + attributeValue + "\"]");
+
+			 return this.getEquivalentsFromUnique( attributeValue, type );
+			
+		}
+
+		getEquivalentsFromUnique( attributeValue, type ) {
+
+			return this
+					.getDom( type )
+					.querySelectorAll( 
+						"[" + this.getOptions( type ).equivalentAttribute + "=\"" + attributeValue + "\"]"
+					);
 		}
 
 		storeAttributes( attr, element, type ) {
@@ -489,11 +499,12 @@ var ns = 'http://www.w3.org/2000/svg';
 			return;
 		}
 
-		allPairs( element, callback ) {
+		allPairs( elementUnique, callback ) {
+
 
 			for( var i = 0, l = this.pairs.length ; i < l ; i ++ ) {
 
-				if( this.pairs[ i ].graph == element || this.pairs[ i ].molecule == element ) {
+				if( this.pairs[ i ].graphUnique == elementUnique || this.pairs[ i ].moleculeUnique == elementUnique ) {
 
 				//	fct.call( self, self.bindingPairs[ i ] );
 
@@ -536,6 +547,11 @@ var ns = 'http://www.w3.org/2000/svg';
 			pair.line = line;
 			this.currentLines.push( line );
 			this.topSVG.appendChild( line );
+
+
+			// Highlight all equivalent elements from both pairs !
+			this.highlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
+			this.highlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
 		}
 
 
@@ -549,16 +565,32 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			this.stashedLines = this.stashedLines.concat( this.currentLines );
 			this.currentLines = [];
+
+			// Highlight all equivalent elements from both pairs !
+			this.unHighlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
+			this.unHighlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
 		}
 
-
+		getUnique( dom, type ) {
+			return dom.getAttribute( this.getOptions( type ).equivalentAttribute );
+		}
 
 		bindSave() {
 
-			var pair;
+			if( ! this.currentTargetMolecule || ! this.currentTargetGraph ) {
+				return;
+			}
 
-			if( pair = this.lookForPair( this.currentTargetGraph, this.currentTargetMolecule ) ) {
-				this.removePair( pair );
+			let graphUnique = this.currentTargetGraph.getAttribute( this.getOptions( true ).equivalentAttribute ),
+				moleculeUnique = this.currentTargetMolecule.getAttribute( this.getOptions( false ).equivalentAttribute ),
+				pair;
+
+console.log( graphUnique, moleculeUnique, this.lookForPair( graphUnique, moleculeUnique ) );
+			if( pair = this.lookForPair( graphUnique, moleculeUnique ) ) {
+
+				// This pair has already been made. Let's just leave it at that
+				
+				//this.removePair( pair );
 				return false;
 			}
 
@@ -566,9 +598,9 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			this.pairs.push( { 
 				graph: this.currentTargetGraph, 
-				graphUnique: this.currentTargetGraph.getAttribute( this.getOptions( true ).equivalentAttribute ),
+				graphUnique: graphUnique,
 				molecule: this.currentTargetMolecule,
-				moleculeUnique: this.currentTargetMolecule.getAttribute( this.getOptions( false ).equivalentAttribute )
+				moleculeUnique: moleculeUnique
 			} );
 
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
@@ -576,18 +608,24 @@ var ns = 'http://www.w3.org/2000/svg';
 		
 			this.currentTargetGraph = null;
 			this.currentTargetMolecule = null;
-
 		}
 
 
-		lookForPair( graphShape, moleculeElement ) {
+		/**
+		 *	Looks for a pair based on BOTH the uniques of the graph and the molecule
+		 *	@param {String} graphUnique - The unique (equivalent) string belonging to the graph element
+		 *	@param {String} moleculeUnique - The unique (equivalent) string belonging to the molecule element
+		 *	@returns {Object} - The found pair (if one) or false
+		 */
+		lookForPair( graphUnique, moleculeUnique ) {
 
 			for( var i = 0; i < this.pairs.length; i++ ) {
 
-				if( this.pairs[ i ].graph == graphShape || this.pairs[ i ].molecule == moleculeElement ) {
+				if( this.pairs[ i ].graphUnique == graphUnique && this.pairs[ i ].moleculeUnique == moleculeUnique ) {
 					return this.pairs[ i ];
 				}
 			}
+
 			return false;
 		}
 
@@ -639,6 +677,7 @@ var ns = 'http://www.w3.org/2000/svg';
 			return this.getDom( type ).querySelectorAll( "[" + this.getOptions( type ).equivalentAttribute + "=\"" + selector + "\"]");	
 		}
 
+		// External setter
 		setAssignment( pairs ) {
 
 			this.pairs = [];

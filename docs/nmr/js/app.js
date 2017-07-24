@@ -25386,6 +25386,50 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ *
+ *	Assignment code
+ *	Norman Pellet, 2017
+ *	Configuration example:
+ *
+
+graph: {
+	bindableFilter: "", // a querySelector element that defined which element is a target
+	equivalentAttribute: 'id',	// A unique filter
+	highlightStyle: {
+
+		'binding': {				// The style the object takes when it's a highlighted target
+			'stroke': 'red',		
+			'stroke-width': '2px'
+		},
+		equivalent: {				// The style the object takes when it's equivalent
+			'stroke': 'blue',
+			'stroke-width': '2px'
+		}
+	}
+},
+
+molecule: {
+	bindableFilter: '[data-atomid]',
+	bindableFilterClass: 'event',
+	equivalentAttribute: 'data-atomid',
+	highlightStyle: {
+
+		'binding': {
+			'fill': 'red',
+			'fill-opacity': '0.3'
+		},
+		'equivalent': {
+			'fill': 'yellow',
+			'fill-opacity': '0.3'
+		}
+	}
+},
+
+enabled: false
+
+ */
+
 var ns = 'http://www.w3.org/2000/svg';
 
 var Assignment = function () {
@@ -25416,14 +25460,6 @@ var Assignment = function () {
 			}
 		});
 
-		/*this.graph.getWrapper().on('mouseover', options.jsGraphShape.bindableFilter, function( e ) {
-  	
-  	//highlight( this,  );
-  });
-  	this.graph.getWrapper().on('mouseout', options.jsGraphShape.bindableFilter, function( e ) {
-  	//unhighlight( this, "jsGraphShape" );
-  });
-  */
 		this.graph.getWrapper().addEventListener('mouseover', function (e) {
 
 			if (!_this.isEnabled()) {
@@ -25773,32 +25809,13 @@ var Assignment = function () {
 
 			var elements = this.getEquivalents(event.target, type);
 
+			// We must unhighlight the equivalent elements, even if they are not paired yet		
 			this.unHighlight(type, elements, "equivalent");
 
-			this.allPairs(event.target, function (pair) {
+			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
 				_this2.unhighlightPair(pair);
 			});
-
-			/*
-   			this.storeAttributes( )
-   
-   			var eqs = [];
-   
-   			for( var i = 0; i < elements.length; i ++ ) {
-   
-   				allPairs( self.unhighlightPair, elements[ i ], function( pair ) {
-   					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
-   				} );
-   			}
-   
-   
-   			highlighted.jsGraphShape.map( function( el ) {
-   				this.jsGraphIsShape.unHighlight( "assignmentHighlighted");
-   			} );
-   
-   			restoreAttributes( options.targetB.highlighted, highlighted.targetB );
-   			*/
 		}
 	}, {
 		key: 'mouseenter',
@@ -25806,32 +25823,14 @@ var Assignment = function () {
 			var _this3 = this;
 
 			var elements = this.getEquivalents(event.target, type);
+
+			// We must highlight the equivalent elements, even if they are not paired yet
 			this.highlight(type, elements, "equivalent");
 
-			this.allPairs(event.target, function (pair) {
+			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
 				_this3.highlightPair(pair);
 			});
-			/*
-   			this.storeAttributes( )
-   
-   			var eqs = [];
-   			
-   
-   			for( var i = 0; i < elements.length; i ++ ) {
-   
-   				allPairs( self.unhighlightPair, elements[ i ], function( pair ) {
-   					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
-   				} );
-   			}
-   
-   
-   			highlighted.jsGraphShape.map( function( el ) {
-   				this.jsGraphIsShape.unHighlight( "assignmentHighlighted");
-   			} );
-   
-   			restoreAttributes( options.targetB.highlighted, highlighted.targetB );
-   			*/
 		}
 		/*
   		highlightEquivalents = function( target, elementsToHighlight ) {
@@ -25860,10 +25859,17 @@ var Assignment = function () {
 	}, {
 		key: 'getEquivalents',
 		value: function getEquivalents(element, type) {
+
 			var attribute = this.getOptions(type).equivalentAttribute,
 			    attributeValue = element.getAttribute(attribute);
 
-			return this.getDom(type).querySelectorAll("[" + attribute + "=\"" + attributeValue + "\"]");
+			return this.getEquivalentsFromUnique(attributeValue, type);
+		}
+	}, {
+		key: 'getEquivalentsFromUnique',
+		value: function getEquivalentsFromUnique(attributeValue, type) {
+
+			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + attributeValue + "\"]");
 		}
 	}, {
 		key: 'storeAttributes',
@@ -25923,11 +25929,11 @@ var Assignment = function () {
 		}
 	}, {
 		key: 'allPairs',
-		value: function allPairs(element, callback) {
+		value: function allPairs(elementUnique, callback) {
 
 			for (var i = 0, l = this.pairs.length; i < l; i++) {
 
-				if (this.pairs[i].graph == element || this.pairs[i].molecule == element) {
+				if (this.pairs[i].graphUnique == elementUnique || this.pairs[i].moleculeUnique == elementUnique) {
 
 					//	fct.call( self, self.bindingPairs[ i ] );
 
@@ -25970,6 +25976,10 @@ var Assignment = function () {
 			pair.line = line;
 			this.currentLines.push(line);
 			this.topSVG.appendChild(line);
+
+			// Highlight all equivalent elements from both pairs !
+			this.highlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+			this.highlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
 		}
 	}, {
 		key: 'unhighlightPair',
@@ -25983,15 +25993,31 @@ var Assignment = function () {
 
 			this.stashedLines = this.stashedLines.concat(this.currentLines);
 			this.currentLines = [];
+
+			// Highlight all equivalent elements from both pairs !
+			this.unHighlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+			this.unHighlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+		}
+	}, {
+		key: 'getUnique',
+		value: function getUnique(dom, type) {
+			return dom.getAttribute(this.getOptions(type).equivalentAttribute);
 		}
 	}, {
 		key: 'bindSave',
 		value: function bindSave() {
 
-			var pair;
+			if (!this.currentTargetMolecule || !this.currentTargetGraph) {
+				return;
+			}
 
-			if (pair = this.lookForPair(this.currentTargetGraph, this.currentTargetMolecule)) {
-				this.removePair(pair);
+			var graphUnique = this.currentTargetGraph.getAttribute(this.getOptions(true).equivalentAttribute),
+			    moleculeUnique = this.currentTargetMolecule.getAttribute(this.getOptions(false).equivalentAttribute),
+			    pair = void 0;
+
+			console.log(graphUnique, moleculeUnique, this.lookForPair(graphUnique, moleculeUnique));
+			if (pair = this.lookForPair(graphUnique, moleculeUnique)) {
+				this.removePair(pair); // Remove display
 				return false;
 			}
 
@@ -25999,9 +26025,9 @@ var Assignment = function () {
 
 			this.pairs.push({
 				graph: this.currentTargetGraph,
-				graphUnique: this.currentTargetGraph.getAttribute(this.getOptions(true).equivalentAttribute),
+				graphUnique: graphUnique,
 				molecule: this.currentTargetMolecule,
-				moleculeUnique: this.currentTargetMolecule.getAttribute(this.getOptions(false).equivalentAttribute)
+				moleculeUnique: moleculeUnique
 			});
 
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
@@ -26010,16 +26036,25 @@ var Assignment = function () {
 			this.currentTargetGraph = null;
 			this.currentTargetMolecule = null;
 		}
+
+		/**
+   *	Looks for a pair based on BOTH the uniques of the graph and the molecule
+   *	@param {String} graphUnique - The unique (equivalent) string belonging to the graph element
+   *	@param {String} moleculeUnique - The unique (equivalent) string belonging to the molecule element
+   *	@returns {Object} - The found pair (if one) or false
+   */
+
 	}, {
 		key: 'lookForPair',
-		value: function lookForPair(graphShape, moleculeElement) {
+		value: function lookForPair(graphUnique, moleculeUnique) {
 
 			for (var i = 0; i < this.pairs.length; i++) {
 
-				if (this.pairs[i].graph == graphShape || this.pairs[i].molecule == moleculeElement) {
+				if (this.pairs[i].graphUnique == graphUnique && this.pairs[i].moleculeUnique == moleculeUnique) {
 					return this.pairs[i];
 				}
 			}
+
 			return false;
 		}
 	}, {
@@ -26075,6 +26110,9 @@ var Assignment = function () {
 
 			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + selector + "\"]");
 		}
+
+		// External setter
+
 	}, {
 		key: 'setAssignment',
 		value: function setAssignment(pairs) {
@@ -37005,7 +37043,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		let update = false;
 		for (let serie of this.state.series) {
-			console.log(seriename, serie, newRatio);
+
 			if (serie.name == seriename) {
 
 				serie.integralLabelRatio = newRatio;

@@ -370,7 +370,7 @@ class NMR1D extends React.Component {
 
 		let update = false;
 		for( let serie of this.state.series ) {
-console.log( seriename, serie, newRatio );
+
 			if( serie.name == seriename ) {
 
 				serie.integralLabelRatio = newRatio;
