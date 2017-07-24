@@ -167,6 +167,7 @@ class NMR1D extends React.Component {
 		this.toggleAssignment = this.toggleAssignment.bind( this );
 		this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind( this );
 		this.serieChanged = this.serieChanged.bind( this );
+		this.fullOut = this.fullOut.bind( this );
 	}
 
 	 getChildContext() {
@@ -177,6 +178,10 @@ class NMR1D extends React.Component {
 	    };
 	 }
 
+	 fullOut() {
+	 	this.graph.autoscaleAxes();
+	 	this.graph.draw();
+	 }
 
 	 triangleCreated( shape ) {
 		shape.makeLabels();
@@ -468,6 +473,7 @@ class NMR1D extends React.Component {
 				<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
 				<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
 				<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
+				<p><button ref={ el => { this.zoomOutButton = el } } onClick={ this.fullOut }>Zoom out</button></p>
 			</div>
 			<span>
 				{ ( this.state.series || [] ).map( ( serie ) => 

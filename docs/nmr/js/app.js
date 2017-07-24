@@ -36947,6 +36947,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.toggleAssignment = this.toggleAssignment.bind(this);
 		this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind(this);
 		this.serieChanged = this.serieChanged.bind(this);
+		this.fullOut = this.fullOut.bind(this);
 	}
 
 	getChildContext() {
@@ -36955,6 +36956,11 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			graph: this.graph,
 			integralBaseline: integralBaseline
 		};
+	}
+
+	fullOut() {
+		this.graph.autoscaleAxes();
+		this.graph.draw();
 	}
 
 	triangleCreated(shape) {
@@ -37259,6 +37265,17 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 							this.checkboxRemoveAssignment = el;
 						}, onClick: this.toggleRemoveAssignment, type: "checkbox", name: "assignment" }),
 					" Remove assignments"
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					"p",
+					null,
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+						"button",
+						{ ref: el => {
+								this.zoomOutButton = el;
+							}, onClick: this.fullOut },
+						"Zoom out"
+					)
 				)
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
