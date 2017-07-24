@@ -1888,6 +1888,7 @@ class Shape extends EventEmitter {
     shapeLabel.setAttribute( 'value', self.getProp( 'labelText', i ) );
 
     self.graph.wrapper.prepend( shapeLabel );
+    shapeLabel.select();
 
     util.setCSS( shapeLabel, {
       position: 'absolute',
