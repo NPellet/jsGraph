@@ -25572,6 +25572,12 @@ var Assignment = function () {
 	}
 	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
 
+
+	/*
+  *	ENABLE AND DISABLE ASSIGNMENT
+  *
+  */
+
 	_createClass(Assignment, [{
 		key: 'isEnabled',
 		value: function isEnabled() {
@@ -25591,6 +25597,36 @@ var Assignment = function () {
 		key: 'toggleEnable',
 		value: function toggleEnable() {
 			this.options.enabled = !this.options.enabled;
+		}
+
+		/*
+   *	ENABLE AND DISABLE ASSIGNMENT REMOVAL
+   *
+   */
+
+	}, {
+		key: 'enableRemove',
+		value: function enableRemove() {
+			var _this2 = this;
+
+			this.allPairs(false, function (pair) {
+
+				_this2.highlightPair(pair);
+			});
+
+			this.options.removeEnabled = true;
+		}
+	}, {
+		key: 'disableRemove',
+		value: function disableRemove() {
+			var _this3 = this;
+
+			this.allPairs(false, function (pair) {
+
+				_this3.unhighlightPair(pair);
+			});
+
+			this.options.removeEnabled = false;
 		}
 	}, {
 		key: 'mousedown',
@@ -25805,7 +25841,7 @@ var Assignment = function () {
 	}, {
 		key: 'mouseout',
 		value: function mouseout(event, type) {
-			var _this2 = this;
+			var _this4 = this;
 
 			var elements = this.getEquivalents(event.target, type);
 
@@ -25814,13 +25850,13 @@ var Assignment = function () {
 
 			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
-				_this2.unhighlightPair(pair);
+				_this4.unhighlightPair(pair);
 			});
 		}
 	}, {
 		key: 'mouseenter',
 		value: function mouseenter(event, type) {
-			var _this3 = this;
+			var _this5 = this;
 
 			var elements = this.getEquivalents(event.target, type);
 
@@ -25829,7 +25865,7 @@ var Assignment = function () {
 
 			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
-				_this3.highlightPair(pair);
+				_this5.highlightPair(pair);
 			});
 		}
 		/*
@@ -25933,7 +25969,7 @@ var Assignment = function () {
 
 			for (var i = 0, l = this.pairs.length; i < l; i++) {
 
-				if (this.pairs[i].graphUnique == elementUnique || this.pairs[i].moleculeUnique == elementUnique) {
+				if (!elementUnique || this.pairs[i].graphUnique == elementUnique || this.pairs[i].moleculeUnique == elementUnique) {
 
 					//	fct.call( self, self.bindingPairs[ i ] );
 
@@ -25945,7 +25981,8 @@ var Assignment = function () {
 		}
 	}, {
 		key: 'highlightPair',
-		value: function highlightPair(pair) {
+		value: function highlightPair(pair, noHighlightTargets) {
+			var _this6 = this;
 
 			var elA = this.getDom(true).querySelector("[" + this.getOptions(true).equivalentAttribute + "=\"" + pair.graphUnique + "\"]");
 			var elB = this.getDom(false).querySelector("[" + this.getOptions(false).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]");
@@ -25973,30 +26010,36 @@ var Assignment = function () {
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2);
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2);
 
+			line.addEventListener('click', function () {
+
+				if (_this6.options.removeEnabled) {
+					_this6.removePair(pair, line);
+				}
+			});
+
 			pair.line = line;
 			this.currentLines.push(line);
 			this.topSVG.appendChild(line);
 
 			// Highlight all equivalent elements from both pairs !
-			this.highlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
-			this.highlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			if (!noHighlightTargets) {
+				this.highlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+				this.highlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			}
 		}
 	}, {
 		key: 'unhighlightPair',
-		value: function unhighlightPair(pair) {
-
+		value: function unhighlightPair(pair, noHighlightTargets) {
+			console.log(pair.line);
+			console.trace();
+			this.removeLine(pair.line);
 			pair.line = false;
 
-			this.currentLines.map(function (line) {
-				line.setAttribute('display', 'none');
-			});
-
-			this.stashedLines = this.stashedLines.concat(this.currentLines);
-			this.currentLines = [];
-
 			// Highlight all equivalent elements from both pairs !
-			this.unHighlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
-			this.unHighlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			if (!noHighlightTargets) {
+				this.unHighlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+				this.unHighlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			}
 		}
 	}, {
 		key: 'getUnique',
@@ -26015,9 +26058,11 @@ var Assignment = function () {
 			    moleculeUnique = this.currentTargetMolecule.getAttribute(this.getOptions(false).equivalentAttribute),
 			    pair = void 0;
 
-			console.log(graphUnique, moleculeUnique, this.lookForPair(graphUnique, moleculeUnique));
 			if (pair = this.lookForPair(graphUnique, moleculeUnique)) {
-				this.removePair(pair); // Remove display
+
+				// This pair has already been made. Let's just leave it at that
+
+				//this.removePair( pair );
 				return false;
 			}
 
@@ -26059,15 +26104,32 @@ var Assignment = function () {
 		}
 	}, {
 		key: 'removePair',
-		value: function removePair(pair) {
+		value: function removePair(pair, line) {
 
 			this.pairs.splice(this.pairs.indexOf(pair), 1);
 			this.unhighlightPair(pair);
+
+			if (line) {
+
+				this.removeLine(line);
+			}
+		}
+	}, {
+		key: 'removeLine',
+		value: function removeLine(line) {
+
+			if (!line) {
+				return;
+			}
+
+			line.setAttribute('display', 'none');
+			this.stashedLines.push(line);
+			this.currentLines.splice(this.currentLines.indexOf(line), 1);
 		}
 	}, {
 		key: 'getAssignment',
 		value: function getAssignment() {
-			var _this4 = this;
+			var _this7 = this;
 
 			return this.pairs.map(function (pair) {
 
@@ -26075,7 +26137,7 @@ var Assignment = function () {
 					return undefined;
 				}
 
-				var attrA = pair.graph.getAttribute(_this4.getOptions(true).equivalentAttribute);
+				var attrA = pair.graph.getAttribute(_this7.getOptions(true).equivalentAttribute);
 				var attrB = pair.molecule.getAttribute(self.getOptions(true).equivalentAttribute);
 
 				return [attrA, attrB];
@@ -26084,10 +26146,10 @@ var Assignment = function () {
 	}, {
 		key: 'removePairsWithShape',
 		value: function removePairsWithShape(shape) {
-			var _this5 = this;
+			var _this8 = this;
 
 			var pairs = this.getPairsByGraphShape(shape).map(function (pair) {
-				_this5.removePair(pair);
+				_this8.removePair(pair);
 			});
 		}
 	}, {
@@ -36844,6 +36906,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.triangleCreated = this.triangleCreated.bind(this);
 		this.togglePeakPicking = this.togglePeakPicking.bind(this);
 		this.toggleAssignment = this.toggleAssignment.bind(this);
+		this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind(this);
 		this.serieChanged = this.serieChanged.bind(this);
 	}
 
@@ -36964,6 +37027,17 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		} else {
 
 			this.assignment.disable();
+		}
+	}
+
+	toggleRemoveAssignment() {
+
+		if (this.checkboxRemoveAssignment.checked) {
+			this.topSVG.style.zIndex = 1000;
+			this.assignment.enableRemove();
+		} else {
+			this.topSVG.style.zIndex = 0;
+			this.assignment.disableRemove();
 		}
 	}
 
@@ -37101,8 +37175,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
 			{ style: { position: 'relative' } },
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("svg", { ref: el => this.topSVG = el, width: this.props.width, height: this.props.height, style: { position: "absolute" }, pointerEvents: "none" }),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { ref: el => this.dom = el }),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("svg", { style: { position: "absolute" }, ref: el => this.topSVG = el, width: this.props.width, height: this.props.height }),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute" }, ref: el => this.dom = el }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { pointerEvents: 'none', position: "absolute", top: '0px' }, ref: el => this.domMolecule = el, dangerouslySetInnerHTML: { __html: this.state.molecule } }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"div",
@@ -37121,7 +37195,15 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { ref: el => {
 							this.checkboxAssignment = el;
 						}, onClick: this.toggleAssignment, type: "checkbox", name: "assignment" }),
-					" Assignment"
+					" Create assignment"
+				),
+				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+					"p",
+					null,
+					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { ref: el => {
+							this.checkboxRemoveAssignment = el;
+						}, onClick: this.toggleRemoveAssignment, type: "checkbox", name: "assignment" }),
+					" Remove assignments"
 				)
 			),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(

@@ -165,6 +165,7 @@ class NMR1D extends React.Component {
 		this.triangleCreated = this.triangleCreated.bind( this );
 		this.togglePeakPicking = this.togglePeakPicking.bind( this );
 		this.toggleAssignment = this.toggleAssignment.bind( this );
+		this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind( this );
 		this.serieChanged = this.serieChanged.bind( this );
 	}
 
@@ -287,6 +288,19 @@ class NMR1D extends React.Component {
 		} else {
 
 			this.assignment.disable();	
+		}
+	}
+
+
+	toggleRemoveAssignment() {
+
+
+		if( this.checkboxRemoveAssignment.checked ) {
+			this.topSVG.style.zIndex = 1000;
+			this.assignment.enableRemove();	
+		} else {
+			this.topSVG.style.zIndex = 0;
+			this.assignment.disableRemove();	
 		}
 	}
 
@@ -427,12 +441,16 @@ class NMR1D extends React.Component {
 
 		return ( 
 		<div style={ { position: 'relative' } }>
-			<svg ref={ el => this.topSVG = el } width={ this.props.width } height={ this.props.height } style={{ position: "absolute" } } pointerEvents="none"></svg>
-			<div ref={ el => this.dom = el } />
-			<div style={{ pointerEvents: 'none', position: "absolute", top: '0px' }} ref={ el => this.domMolecule = el } dangerouslySetInnerHTML={{ __html: this.state.molecule }}></div>
+			
+
+			<svg style={ { position: "absolute" } } ref={ el => this.topSVG = el } width={ this.props.width } height={ this.props.height }></svg>
+			<div style={ { position: "absolute" } } ref={ el => this.dom = el } />
+			<div style={ { pointerEvents: 'none', position: "absolute", top: '0px' }} ref={ el => this.domMolecule = el } dangerouslySetInnerHTML={{ __html: this.state.molecule }}></div>
+			
 			<div className="toolbar">
 				<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
-				<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Assignment</p>
+				<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
+				<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
 			</div>
 			<span>
 				{ ( this.state.series || [] ).map( ( serie ) => 

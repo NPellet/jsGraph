@@ -195,6 +195,12 @@ var ns = 'http://www.w3.org/2000/svg';
 		}
 	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
 
+
+		/*
+		 *	ENABLE AND DISABLE ASSIGNMENT
+		 *
+		 */
+		 
 		isEnabled() {
 			return this.options.enabled;
 		}
@@ -210,6 +216,36 @@ var ns = 'http://www.w3.org/2000/svg';
 		toggleEnable() {
 			this.options.enabled = ! this.options.enabled;
 		}
+
+
+
+		/*
+		 *	ENABLE AND DISABLE ASSIGNMENT REMOVAL
+		 *
+		 */
+		enableRemove() {
+
+			this.allPairs( false, ( pair ) => {
+
+				this.highlightPair( pair );
+			} );
+
+			this.options.removeEnabled = true;
+		}
+
+		disableRemove() {
+
+
+			this.allPairs( false, ( pair ) => {
+
+				this.unhighlightPair( pair );
+			} );
+
+			this.options.removeEnabled = false;
+		}
+
+
+
 
 
 
@@ -501,10 +537,9 @@ var ns = 'http://www.w3.org/2000/svg';
 
 		allPairs( elementUnique, callback ) {
 
-
 			for( var i = 0, l = this.pairs.length ; i < l ; i ++ ) {
 
-				if( this.pairs[ i ].graphUnique == elementUnique || this.pairs[ i ].moleculeUnique == elementUnique ) {
+				if( !elementUnique || this.pairs[ i ].graphUnique == elementUnique || this.pairs[ i ].moleculeUnique == elementUnique ) {
 
 				//	fct.call( self, self.bindingPairs[ i ] );
 
@@ -515,7 +550,7 @@ var ns = 'http://www.w3.org/2000/svg';
 			}
 		}
 
-		highlightPair( pair ) {
+		highlightPair( pair, noHighlightTargets ) {
 
 			var elA = this.getDom( true ).querySelector( "[" + this.getOptions( true ).equivalentAttribute + "=\"" + pair.graphUnique + "\"]" );
 			var elB = this.getDom( false ).querySelector( "[" + this.getOptions( false ).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]" );
@@ -544,31 +579,37 @@ var ns = 'http://www.w3.org/2000/svg';
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2 );
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2 );
 
+			line.addEventListener( 'click', () => {
+
+				if( this.options.removeEnabled ) {
+					this.removePair( pair, line );
+				}
+			});
+
 			pair.line = line;
 			this.currentLines.push( line );
 			this.topSVG.appendChild( line );
 
 
 			// Highlight all equivalent elements from both pairs !
-			this.highlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
-			this.highlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
+			if( ! noHighlightTargets ) {
+				this.highlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
+				this.highlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
+			}
 		}
 
 
-		unhighlightPair( pair ) {
-
+		unhighlightPair( pair, noHighlightTargets ) {
+console.log( pair.line );
+console.trace();
+			this.removeLine( pair.line );
 			pair.line = false;
 
-			this.currentLines.map( function( line ) {
-				line.setAttribute('display', 'none');
-			} );
-
-			this.stashedLines = this.stashedLines.concat( this.currentLines );
-			this.currentLines = [];
-
 			// Highlight all equivalent elements from both pairs !
-			this.unHighlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
-			this.unHighlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
+			if( ! noHighlightTargets ) {
+				this.unHighlight( true, this.getEquivalentsFromUnique( pair.graphUnique, true ), "equivalent" );
+				this.unHighlight( false, this.getEquivalentsFromUnique( pair.moleculeUnique, true ), "equivalent" );
+			}
 		}
 
 		getUnique( dom, type ) {
@@ -585,11 +626,11 @@ var ns = 'http://www.w3.org/2000/svg';
 				moleculeUnique = this.currentTargetMolecule.getAttribute( this.getOptions( false ).equivalentAttribute ),
 				pair;
 
-console.log( graphUnique, moleculeUnique, this.lookForPair( graphUnique, moleculeUnique ) );
+
 			if( pair = this.lookForPair( graphUnique, moleculeUnique ) ) {
 
 				// This pair has already been made. Let's just leave it at that
-				
+
 				//this.removePair( pair );
 				return false;
 			}
@@ -630,10 +671,26 @@ console.log( graphUnique, moleculeUnique, this.lookForPair( graphUnique, molecul
 		}
 
 
-		removePair( pair ) {
+		removePair( pair, line ) {
 
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
+
+			if( line ) {
+
+				this.removeLine( line );
+			}
+		}
+
+		removeLine( line ) {
+
+			if( ! line ) {
+				return;
+			}
+
+			line.setAttribute('display', 'none');
+			this.stashedLines.push( line );
+			this.currentLines.splice( this.currentLines.indexOf( line ), 1 );
 		}
 
 
