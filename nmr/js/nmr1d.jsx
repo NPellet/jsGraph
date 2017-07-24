@@ -31,12 +31,23 @@ class NMR1D extends React.Component {
 
 			mouseActions: [
 				{ plugin: 'zoom', shift: false, ctrl: false },
-				{ type: 'click', callback: () => {
+				{ type: 'click', callback: ( event ) => {
 					
 						if( this.checkboxPeakPicking.checked ) {
 							this.pickPeak( ...arguments )	
 						}
+
 					}, shift: false, ctrl: false },
+				{ type: 'mousedown', callback: ( graph, x, y, event ) => {
+						/*
+					if( event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral" ) {
+
+						this.assignment.enable();
+
+					}*/
+
+
+					}, shift: true, ctrl: false },
 
 				{ plugin: 'drag', alt: true, shift: false, ctrl: false },
 				{ plugin: 'shape', shift: true, ctrl: false },
@@ -336,12 +347,31 @@ class NMR1D extends React.Component {
 
 	componentDidMount() {
 			
+		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState( { series: this.props.series, molecule: this.props.molecule } );
 
+		// Binds the graph to the DOM element
 		this.graph.resize( this.props.width, this.props.height );
 		this.graph.setWrapper( this.dom );
 		this.updateMainData();
 
+
+		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
+		this.wrapper.addEventListener("keydown", ( e ) => {
+			
+			if( e.keyCode == 91 ) {
+
+				this.assignment.enableRemove();
+			}
+		});
+
+		this.wrapper.addEventListener("keyup", ( e ) => {
+			
+			if( e.keyCode == 91 ) {
+
+				this.assignment.disableRemove();
+			}
+		});
 
 		let assignmentOptions = {
 
@@ -378,7 +408,7 @@ class NMR1D extends React.Component {
 				}
 			},
 
-			enabled: false
+			enabled: true
 
 		};
 
@@ -497,7 +527,7 @@ class NMR1D extends React.Component {
 	render() {
 
 		return ( 
-		<div style={ { position: 'relative' } }>
+		<div ref={ el => this.wrapper = el } style={ { position: 'relative' } }>
 			
 
 			<svg style={ { position: "absolute" } } ref={ el => this.topSVG = el } width={ this.props.width } height={ this.props.height }></svg>

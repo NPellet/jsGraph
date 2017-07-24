@@ -74,10 +74,10 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.graph.getWrapper().addEventListener('mouseover', ( e ) => {
 
 
-				if( ! this.isEnabled() ) {
+				/*if( ! this.isEnabled() ) {
 					return;
 				}
-
+*/
 				if( e.target.matches( options.graph.bindableFilter ) ) {
 					this.mouseenter( e, true );
 				}
@@ -85,11 +85,11 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 			this.graph.getWrapper().addEventListener('mouseout', ( e ) => {
-
+/*
 				if( ! this.isEnabled() ) {
 					return;
 				}
-
+*/
 				if( e.target.matches( options.graph.bindableFilter ) ) {
 
 					this.mouseout( e, true );
@@ -123,10 +123,10 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.molecule.addEventListener('mouseover', ( e ) => {
 
 
-				if( ! this.isEnabled() ) {
+			/*	if( ! this.isEnabled() ) {
 					return;
 				}
-
+*/
 
 				if( e.target.matches( options.molecule.bindableFilter ) ) {
 					this.mouseenter( e, false );
@@ -135,11 +135,11 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			this.molecule.addEventListener('mouseout', ( e ) => {
 
-
+/*
 				if( ! this.isEnabled() ) {
 					return;
 				}
-
+*/
 				if( e.target.matches( options.molecule.bindableFilter ) ) {
 	
 					this.mouseout( e, false );
@@ -674,7 +674,7 @@ console.log( this.stashedLines );
 
 
 		removePair( pair, line ) {
-			
+
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
 		}

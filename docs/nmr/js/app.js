@@ -25496,21 +25496,21 @@ var Assignment = function () {
 
 		this.graph.getWrapper().addEventListener('mouseover', function (e) {
 
-			if (!_this.isEnabled()) {
-				return;
-			}
-
+			/*if( ! this.isEnabled() ) {
+   	return;
+   }
+   */
 			if (e.target.matches(options.graph.bindableFilter)) {
 				_this.mouseenter(e, true);
 			}
 		});
 
 		this.graph.getWrapper().addEventListener('mouseout', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
+			/*
+   				if( ! this.isEnabled() ) {
+   					return;
+   				}
+   */
 			if (e.target.matches(options.graph.bindableFilter)) {
 
 				_this.mouseout(e, true);
@@ -25539,9 +25539,10 @@ var Assignment = function () {
 
 		this.molecule.addEventListener('mouseover', function (e) {
 
-			if (!_this.isEnabled()) {
-				return;
-			}
+			/*	if( ! this.isEnabled() ) {
+   		return;
+   	}
+   */
 
 			if (e.target.matches(options.molecule.bindableFilter)) {
 				_this.mouseenter(e, false);
@@ -25550,10 +25551,11 @@ var Assignment = function () {
 
 		this.molecule.addEventListener('mouseout', function (e) {
 
-			if (!_this.isEnabled()) {
-				return;
-			}
-
+			/*
+   				if( ! this.isEnabled() ) {
+   					return;
+   				}
+   */
 			if (e.target.matches(options.molecule.bindableFilter)) {
 
 				_this.mouseout(e, false);
@@ -36809,12 +36811,18 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				}
 			},
 
-			mouseActions: [{ plugin: 'zoom', shift: false, ctrl: false }, { type: 'click', callback: () => {
+			mouseActions: [{ plugin: 'zoom', shift: false, ctrl: false }, { type: 'click', callback: event => {
 
 					if (this.checkboxPeakPicking.checked) {
 						this.pickPeak(...arguments);
 					}
-				}, shift: false, ctrl: false }, { plugin: 'drag', alt: true, shift: false, ctrl: false }, { plugin: 'shape', shift: true, ctrl: false }, {
+				}, shift: false, ctrl: false }, { type: 'mousedown', callback: (graph, x, y, event) => {
+					/*
+     if( event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral" ) {
+     	this.assignment.enable();
+     }*/
+
+				}, shift: true, ctrl: false }, { plugin: 'drag', alt: true, shift: false, ctrl: false }, { plugin: 'shape', shift: true, ctrl: false }, {
 				type: 'dblclick',
 				plugin: 'zoom',
 				options: {
@@ -37097,11 +37105,30 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	componentDidMount() {
 
+		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState({ series: this.props.series, molecule: this.props.molecule });
 
+		// Binds the graph to the DOM element
 		this.graph.resize(this.props.width, this.props.height);
 		this.graph.setWrapper(this.dom);
 		this.updateMainData();
+
+		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
+		this.wrapper.addEventListener("keydown", e => {
+
+			if (e.keyCode == 91) {
+
+				this.assignment.enableRemove();
+			}
+		});
+
+		this.wrapper.addEventListener("keyup", e => {
+
+			if (e.keyCode == 91) {
+
+				this.assignment.disableRemove();
+			}
+		});
 
 		let assignmentOptions = {
 
@@ -37138,7 +37165,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				}
 			},
 
-			enabled: false
+			enabled: true
 
 		};
 
@@ -37254,7 +37281,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
-			{ style: { position: 'relative' } },
+			{ ref: el => this.wrapper = el, style: { position: 'relative' } },
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("svg", { style: { position: "absolute" }, ref: el => this.topSVG = el, width: this.props.width, height: this.props.height }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute" }, ref: el => this.dom = el }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { pointerEvents: 'none', position: "absolute", top: '0px' }, ref: el => this.domMolecule = el, dangerouslySetInnerHTML: { __html: this.state.molecule } }),
