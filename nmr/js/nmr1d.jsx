@@ -544,10 +544,41 @@ class NMR1D extends React.Component {
 	render() {
 
 		return ( 
-		<div ref={ el => this.wrapper = el } style={ { outline: '2px solid blue', position: 'relative' } }>
+		<div 
+			ref={ el => this.wrapper = el } 
+			style={ { position: 'relative' } } 
+			onDragOver={ ( event ) => { event.preventDefault(); console.log('droppable') } } 
+			onDrop={ ( event ) => { 
+
+			 var offset = event.dataTransfer.getData("text/plain").split(',');
+		    var dm = this.domMolecule;
+		    dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
+		    dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
+		    event.preventDefault();
+		    return false;
+		     } } 
+		>
 			
 			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
-			<div style={ { pointerEvents: 'none', position: "absolute", top: '0px', userSelect: "none" }} ref={ el => this.domMolecule = el } dangerouslySetInnerHTML={{ __html: this.state.molecule }}></div>
+			<div 
+				style={ { 
+					pointerEvents: 'none', 
+					position: "absolute", 
+					top: '0px', 
+					userSelect: "none" 
+				} } 
+				ref={ el => this.domMolecule = el } 
+				draggable="true" 
+				onDragStart={ 
+					( event ) => { 
+
+ 						 var style = window.getComputedStyle(event.target, null);
+					    event.dataTransfer.setData("text/plain", (parseInt(style.getPropertyValue("left"),10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.clientY));
+
+					} 
+				} 
+				dangerouslySetInnerHTML={ { __html: this.state.molecule } }
+			></div>
 			
 			<div className="toolbar">
 				<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>

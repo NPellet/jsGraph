@@ -37363,9 +37363,39 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
-			{ ref: el => this.wrapper = el, style: { outline: '2px solid blue', position: 'relative' } },
+			{
+				ref: el => this.wrapper = el,
+				style: { position: 'relative' },
+				onDragOver: event => {
+					event.preventDefault();console.log('droppable');
+				},
+				onDrop: event => {
+
+					var offset = event.dataTransfer.getData("text/plain").split(',');
+					var dm = this.domMolecule;
+					dm.style.left = event.clientX + parseInt(offset[0], 10) + 'px';
+					dm.style.top = event.clientY + parseInt(offset[1], 10) + 'px';
+					event.preventDefault();
+					return false;
+				}
+			},
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { pointerEvents: 'none', position: "absolute", top: '0px', userSelect: "none" }, ref: el => this.domMolecule = el, dangerouslySetInnerHTML: { __html: this.state.molecule } }),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", {
+				style: {
+					pointerEvents: 'none',
+					position: "absolute",
+					top: '0px',
+					userSelect: "none"
+				},
+				ref: el => this.domMolecule = el,
+				draggable: "true",
+				onDragStart: event => {
+
+					var style = window.getComputedStyle(event.target, null);
+					event.dataTransfer.setData("text/plain", parseInt(style.getPropertyValue("left"), 10) - event.clientX + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
+				},
+				dangerouslySetInnerHTML: { __html: this.state.molecule }
+			}),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"div",
 				{ className: "toolbar" },
