@@ -420,6 +420,12 @@ class NMR1D extends React.Component {
 
 
 		this.assignment = new Assignment( this.graph, this.domMolecule, assignmentOptions );
+
+		this.assignment.onChange( ( pairs ) => {
+
+			this.getSerieState( 'master' ).assignment = pairs;
+			this.serieChanged();
+		});
 	}
 
 	updateOutput() {
@@ -521,7 +527,7 @@ class NMR1D extends React.Component {
 
 		if( update ) {
 			this.setState( { series: this.state.series } );	
-			this.updateOutput();
+			this.serieChanged();
 		}
 	}
 

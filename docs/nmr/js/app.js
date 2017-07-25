@@ -25481,6 +25481,8 @@ var Assignment = function () {
 		this.graph = graph;
 		this.molecule = molecule;
 
+		this.callbacksChanged = [];
+
 		this.graph.getWrapper().addEventListener('mousedown', function (e) {
 
 			if (!_this.isEnabled()) {
@@ -25616,12 +25618,18 @@ var Assignment = function () {
 	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
 
 
-	/*
-  *	ENABLE AND DISABLE ASSIGNMENT
-  *
-  */
-
 	_createClass(Assignment, [{
+		key: 'onChange',
+		value: function onChange(method) {
+			this.callbacksChanged.push(method);
+			return this;
+		}
+		/*
+   *	ENABLE AND DISABLE ASSIGNMENT
+   *
+   */
+
+	}, {
 		key: 'isEnabled',
 		value: function isEnabled() {
 			return this.options.enabled;
@@ -25730,7 +25738,7 @@ var Assignment = function () {
 
 					if (type && element.jsGraphIsShape) {
 						// It is a shape
-
+						console.log(style, highlightType);
 						element.jsGraphIsShape.highlight(style, highlightType);
 					} else {
 						// It is an atom
@@ -25773,7 +25781,7 @@ var Assignment = function () {
 					var style = this.getOptions(type).highlightStyle[highlightType];
 
 					if (type && element.jsGraphIsShape) {
-
+						console.warn(style, highlightType);
 						element.jsGraphIsShape.unHighlight(style, highlightType);
 					} else {
 
@@ -26107,6 +26115,7 @@ var Assignment = function () {
 	}, {
 		key: 'bindSave',
 		value: function bindSave() {
+			var _this7 = this;
 
 			if (!this.currentTargetMolecule || !this.currentTargetGraph) {
 				return;
@@ -26127,12 +26136,13 @@ var Assignment = function () {
 			//unhighlight( self.jsGraphShape, "jsGraphShape", true );
 
 			this.pairs.push({
-				graph: this.currentTargetGraph,
 				graphUnique: graphUnique,
-				molecule: this.currentTargetMolecule,
 				moleculeUnique: moleculeUnique
 			});
 
+			this.callbacksChanged.forEach(function (method) {
+				return method(_this7.pairs);
+			});
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
 			//self.jsGraphShape.jsGraphIsShape.applyStyle();
 
@@ -26163,9 +26173,14 @@ var Assignment = function () {
 	}, {
 		key: 'removePair',
 		value: function removePair(pair, line) {
+			var _this8 = this;
 
 			this.pairs.splice(this.pairs.indexOf(pair), 1);
 			this.unhighlightPair(pair);
+
+			this.callbacksChanged.forEach(function (method) {
+				return method(_this8.pairs);
+			});
 		}
 	}, {
 		key: 'removeLines',
@@ -26196,7 +26211,7 @@ var Assignment = function () {
 	}, {
 		key: 'getAssignment',
 		value: function getAssignment() {
-			var _this7 = this;
+			var _this9 = this;
 
 			return this.pairs.map(function (pair) {
 
@@ -26204,7 +26219,7 @@ var Assignment = function () {
 					return undefined;
 				}
 
-				var attrA = pair.graph.getAttribute(_this7.getOptions(true).equivalentAttribute);
+				var attrA = pair.graph.getAttribute(_this9.getOptions(true).equivalentAttribute);
 				var attrB = pair.molecule.getAttribute(self.getOptions(true).equivalentAttribute);
 
 				return [attrA, attrB];
@@ -26213,10 +26228,10 @@ var Assignment = function () {
 	}, {
 		key: 'removeGraphShape',
 		value: function removeGraphShape(uniqueID) {
-			var _this8 = this;
+			var _this10 = this;
 
 			var pairs = this.allPairs(uniqueID, function (pair) {
-				_this8.removePair(pair);
+				_this10.removePair(pair);
 			});
 		}
 	}, {
@@ -37207,6 +37222,12 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		};
 
 		this.assignment = new __WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a(this.graph, this.domMolecule, assignmentOptions);
+
+		this.assignment.onChange(pairs => {
+
+			this.getSerieState('master').assignment = pairs;
+			this.serieChanged();
+		});
 	}
 
 	updateOutput() {
@@ -37305,7 +37326,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		if (update) {
 			this.setState({ series: this.state.series });
-			this.updateOutput();
+			this.serieChanged();
 		}
 	}
 

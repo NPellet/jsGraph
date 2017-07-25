@@ -60,6 +60,8 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.molecule = molecule;
 			
 
+			this.callbacksChanged = [];
+
 			this.graph.getWrapper().addEventListener( 'mousedown', ( e ) => {
 
 				if( ! this.isEnabled() ) {
@@ -206,6 +208,10 @@ var ns = 'http://www.w3.org/2000/svg';
 	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
 
 
+		onChange( method ) { 
+			this.callbacksChanged.push( method );
+			return this;
+		}
 		/*
 		 *	ENABLE AND DISABLE ASSIGNMENT
 		 *
@@ -309,7 +315,7 @@ var ns = 'http://www.w3.org/2000/svg';
 				let style = this.getOptions( type ).highlightStyle[ highlightType ];
 
 				if( type && element.jsGraphIsShape ) { // It is a shape
-
+console.log( style, highlightType );
 					element.jsGraphIsShape.highlight( style, highlightType );
 
 				} else { // It is an atom
@@ -331,7 +337,7 @@ var ns = 'http://www.w3.org/2000/svg';
 				let style = this.getOptions( type ).highlightStyle[ highlightType ];
 
 				if( type && element.jsGraphIsShape ) {
-
+console.warn( style, highlightType );
 					element.jsGraphIsShape.unHighlight( style, highlightType );
 
 				} else {
@@ -663,12 +669,11 @@ console.log('out');
 			//unhighlight( self.jsGraphShape, "jsGraphShape", true );
 
 			this.pairs.push( { 
-				graph: this.currentTargetGraph, 
 				graphUnique: graphUnique,
-				molecule: this.currentTargetMolecule,
 				moleculeUnique: moleculeUnique
 			} );
 
+			this.callbacksChanged.forEach( ( method ) => method( this.pairs ) );
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
 			//self.jsGraphShape.jsGraphIsShape.applyStyle();
 		
@@ -700,6 +705,8 @@ console.log('out');
 
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
+
+			this.callbacksChanged.forEach( ( method ) => method( this.pairs ) );
 		}
 
 		removeLines() {
