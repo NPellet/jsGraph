@@ -36904,7 +36904,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						return;
 					}
 
-					waveform.setScale(waveform.getScale() * (dy > 0 ? 1.05 : 0.95));
+					waveform.setScale(waveform.getScale() * (dy < 0 ? 1.05 : 0.95));
 					serie.setWaveform(waveform);
 					this.graph.draw();
 				}

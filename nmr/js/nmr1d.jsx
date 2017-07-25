@@ -78,7 +78,7 @@ class NMR1D extends React.Component {
 							return;
 						}
 
-						waveform.setScale( waveform.getScale() * ( dy > 0 ? 1.05 : 0.95 ) );
+						waveform.setScale( waveform.getScale() * ( dy < 0 ? 1.05 : 0.95 ) );
 						serie.setWaveform( waveform );
 						this.graph.draw();
 					}
