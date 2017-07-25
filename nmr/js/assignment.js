@@ -587,7 +587,16 @@ console.log('out');
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
 			} else {
-				line = document.createElementNS( ns, 'line');	
+				line = document.createElementNS( ns, 'line');						
+				line.addEventListener( 'click', () => {
+
+					if( this.options.removeEnabled ) {
+
+						this.removePair( line.pair, line );
+
+						console.log( this.pairs );
+					}
+				});
 			}
 
 			
@@ -597,14 +606,10 @@ console.log('out');
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2 );
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2 );
 
-			line.addEventListener( 'click', () => {
-
-				if( this.options.removeEnabled ) {
-					this.removePair( pair, line );
-				}
-			});
 
 			pair.line = line;
+			line.pair = pair;
+
 			this.currentLines.push( line );
 			this.graph.getDom().appendChild( line );
 
@@ -698,6 +703,8 @@ console.log('out');
 		}
 
 		removeLines() {
+
+			this.pairs.forEach( ( pair ) => { pair.line = null } );
 
 			this.currentLines.forEach( ( line ) => line.setAttribute( 'display', 'none' ) );
 			this.stashedLines = this.stashedLines.concat( this.currentLines );

@@ -3333,7 +3333,7 @@ function _registerEvents( graph ) {
   } );
 
   graph.groupEvent.addEventListener( 'mousedown', function( e ) {
-console.log('groupEventCapture');
+
     graph.focus();
 
     //   e.preventDefault();

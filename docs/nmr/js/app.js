@@ -5376,7 +5376,7 @@ this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.
 //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
-var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){console.log('groupEventCapture');graph.focus();//   e.preventDefault();
+var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
 if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
 if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
@@ -26054,6 +26054,15 @@ var Assignment = function () {
 				line.setAttribute('display', 'block');
 			} else {
 				line = document.createElementNS(ns, 'line');
+				line.addEventListener('click', function () {
+
+					if (_this6.options.removeEnabled) {
+
+						_this6.removePair(line.pair, line);
+
+						console.log(_this6.pairs);
+					}
+				});
 			}
 
 			line.setAttribute('stroke', 'black');
@@ -26062,14 +26071,9 @@ var Assignment = function () {
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2);
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2);
 
-			line.addEventListener('click', function () {
-
-				if (_this6.options.removeEnabled) {
-					_this6.removePair(pair, line);
-				}
-			});
-
 			pair.line = line;
+			line.pair = pair;
+
 			this.currentLines.push(line);
 			this.graph.getDom().appendChild(line);
 
@@ -26166,6 +26170,10 @@ var Assignment = function () {
 	}, {
 		key: 'removeLines',
 		value: function removeLines() {
+
+			this.pairs.forEach(function (pair) {
+				pair.line = null;
+			});
 
 			this.currentLines.forEach(function (line) {
 				return line.setAttribute('display', 'none');
