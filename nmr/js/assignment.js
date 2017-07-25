@@ -435,12 +435,17 @@ console.warn( style, highlightType );
 		},*/
 
 		mouseout( event, type ) {
-console.log('out');
+
 			var elements = this.getEquivalents( event.target, type );
 		
 			// We must unhighlight the equivalent elements, even if they are not paired yet		
 			this.unHighlight( type, elements, "equivalent" );
 
+
+			if( this.binding ) {
+				return;
+			}
+			
 			this.allPairs( this.getUnique( event.target, type ), ( pair ) => {
 
 				this.unhighlightPair( pair );
@@ -454,6 +459,9 @@ console.log('out');
 			// We must highlight the equivalent elements, even if they are not paired yet
 			this.highlight( type, elements, "equivalent" );
 
+			if( this.binding ) {
+				return;
+			}
 			this.allPairs( this.getUnique( event.target, type ), ( pair ) => {
 
 				this.highlightPair( pair );
@@ -673,7 +681,8 @@ console.log('out');
 				moleculeUnique: moleculeUnique
 			} );
 
-			this.callbacksChanged.forEach( ( method ) => method( this.pairs ) );
+			this.outputChanged();
+			
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
 			//self.jsGraphShape.jsGraphIsShape.applyStyle();
 		
@@ -681,6 +690,15 @@ console.log('out');
 			this.currentTargetMolecule = null;
 		}
 
+		outputChanged() {
+			let pairing = this.pairs.map( ( pair ) => { return { moleculeUnique: pair.moleculeUnique, graphUnique: pair.graphUnique }; } ); // Remove line and potential other stuff
+			this.callbacksChanged.forEach( ( method ) => method( pairing ) );
+		}
+
+		setPairing( pairing ) {
+			this.removeLines();
+			this.pairs = pairing;
+		}
 
 		/**
 		 *	Looks for a pair based on BOTH the uniques of the graph and the molecule
@@ -700,20 +718,20 @@ console.log('out');
 			return false;
 		}
 
-
+		/**
+		 *	Removes one pair, including its line
+		 */
 		removePair( pair, line ) {
-
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
-
-			this.callbacksChanged.forEach( ( method ) => method( this.pairs ) );
+			this.outputChanged();
 		}
 
 		removeLines() {
 
 			this.pairs.forEach( ( pair ) => { pair.line = null } );
 
-			this.currentLines.forEach( ( line ) => line.setAttribute( 'display', 'none' ) );
+			this.currentLines.forEach( ( line ) => { line.pair = null; line.setAttribute( 'display', 'none' ) } );
 			this.stashedLines = this.stashedLines.concat( this.currentLines );
 			this.currentLines = [];
 		}

@@ -25898,11 +25898,14 @@ var Assignment = function () {
 		value: function mouseout(event, type) {
 			var _this4 = this;
 
-			console.log('out');
 			var elements = this.getEquivalents(event.target, type);
 
 			// We must unhighlight the equivalent elements, even if they are not paired yet		
 			this.unHighlight(type, elements, "equivalent");
+
+			if (this.binding) {
+				return;
+			}
 
 			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
@@ -25919,6 +25922,9 @@ var Assignment = function () {
 			// We must highlight the equivalent elements, even if they are not paired yet
 			this.highlight(type, elements, "equivalent");
 
+			if (this.binding) {
+				return;
+			}
 			this.allPairs(this.getUnique(event.target, type), function (pair) {
 
 				_this5.highlightPair(pair);
@@ -26115,7 +26121,6 @@ var Assignment = function () {
 	}, {
 		key: 'bindSave',
 		value: function bindSave() {
-			var _this7 = this;
 
 			if (!this.currentTargetMolecule || !this.currentTargetGraph) {
 				return;
@@ -26140,14 +26145,29 @@ var Assignment = function () {
 				moleculeUnique: moleculeUnique
 			});
 
-			this.callbacksChanged.forEach(function (method) {
-				return method(_this7.pairs);
-			});
+			this.outputChanged();
+
 			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
 			//self.jsGraphShape.jsGraphIsShape.applyStyle();
 
 			this.currentTargetGraph = null;
 			this.currentTargetMolecule = null;
+		}
+	}, {
+		key: 'outputChanged',
+		value: function outputChanged() {
+			var pairing = this.pairs.map(function (pair) {
+				return { moleculeUnique: pair.moleculeUnique, graphUnique: pair.graphUnique };
+			}); // Remove line and potential other stuff
+			this.callbacksChanged.forEach(function (method) {
+				return method(pairing);
+			});
+		}
+	}, {
+		key: 'setPairing',
+		value: function setPairing(pairing) {
+			this.removeLines();
+			this.pairs = pairing;
 		}
 
 		/**
@@ -26170,17 +26190,17 @@ var Assignment = function () {
 
 			return false;
 		}
+
+		/**
+   *	Removes one pair, including its line
+   */
+
 	}, {
 		key: 'removePair',
 		value: function removePair(pair, line) {
-			var _this8 = this;
-
 			this.pairs.splice(this.pairs.indexOf(pair), 1);
 			this.unhighlightPair(pair);
-
-			this.callbacksChanged.forEach(function (method) {
-				return method(_this8.pairs);
-			});
+			this.outputChanged();
 		}
 	}, {
 		key: 'removeLines',
@@ -26191,7 +26211,7 @@ var Assignment = function () {
 			});
 
 			this.currentLines.forEach(function (line) {
-				return line.setAttribute('display', 'none');
+				line.pair = null;line.setAttribute('display', 'none');
 			});
 			this.stashedLines = this.stashedLines.concat(this.currentLines);
 			this.currentLines = [];
@@ -26211,7 +26231,7 @@ var Assignment = function () {
 	}, {
 		key: 'getAssignment',
 		value: function getAssignment() {
-			var _this9 = this;
+			var _this7 = this;
 
 			return this.pairs.map(function (pair) {
 
@@ -26219,7 +26239,7 @@ var Assignment = function () {
 					return undefined;
 				}
 
-				var attrA = pair.graph.getAttribute(_this9.getOptions(true).equivalentAttribute);
+				var attrA = pair.graph.getAttribute(_this7.getOptions(true).equivalentAttribute);
 				var attrB = pair.molecule.getAttribute(self.getOptions(true).equivalentAttribute);
 
 				return [attrA, attrB];
@@ -26228,10 +26248,10 @@ var Assignment = function () {
 	}, {
 		key: 'removeGraphShape',
 		value: function removeGraphShape(uniqueID) {
-			var _this10 = this;
+			var _this8 = this;
 
 			var pairs = this.allPairs(uniqueID, function (pair) {
-				_this10.removePair(pair);
+				_this8.removePair(pair);
 			});
 		}
 	}, {
@@ -37236,6 +37256,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({ series: nextProps.series, molecule: nextProps.molecule });
+
 		this.graph.resize(nextProps.width, nextProps.height);
 		this.graph.draw();
 		this.updateMainData();

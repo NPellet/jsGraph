@@ -434,6 +434,8 @@ class NMR1D extends React.Component {
 
 	componentWillReceiveProps( nextProps ) {
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
+
+		
 		this.graph.resize( nextProps.width, nextProps.height );
 		this.graph.draw();
 		this.updateMainData();
@@ -441,8 +443,6 @@ class NMR1D extends React.Component {
 
 	componentDidUpdate() {
 		this.graph.draw();
-
-
 	}
 
 	onIntegralLabelRatioChanged( seriename, integralId, newRatio ) {
