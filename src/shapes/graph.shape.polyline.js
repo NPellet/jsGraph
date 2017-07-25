@@ -20,13 +20,12 @@ class ShapePolyline extends Shape {
 
     this._dom = document.createElementNS( this.graph.ns, 'path' );
 
-
-    if( ! this.getStrokeColor() ) {
+    if ( !this.getStrokeColor() ) {
       this.setStrokeColor( 'black' );
     }
 
-    if( this.getStrokeWidth() == undefined ) {
-        this.setStrokeWidth( 1 );
+    if ( this.getStrokeWidth() == undefined ) {
+      this.setStrokeWidth( 1 );
     }
   }
 

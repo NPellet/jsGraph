@@ -16,7 +16,7 @@ class ShapeNMRIntegral extends Shape {
 
   createDom() {
     this._dom = document.createElementNS( this.graph.ns, 'path' );
-    this._dom.setAttribute('pointer-events', 'stroke');
+    this._dom.setAttribute( 'pointer-events', 'stroke' );
   }
 
   initImpl() {

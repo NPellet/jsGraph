@@ -7,8 +7,6 @@ import Assignment from './assignment.js'
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
-
-
 class NMR1D extends React.Component {
 	
 
@@ -31,23 +29,21 @@ class NMR1D extends React.Component {
 
 			mouseActions: [
 				{ plugin: 'zoom', shift: false, ctrl: false },
-				{ type: 'click', callback: ( event ) => {
+				{ type: 'click', callback: ( ) => {
 					
 						if( this.checkboxPeakPicking.checked ) {
 							this.pickPeak( ...arguments )	
 						}
 
 					}, shift: false, ctrl: false },
-				{ type: 'mousedown', callback: ( graph, x, y, event ) => {
-						/*
+
+				{ type: 'click', callback: ( x, y, event ) => {
+				
 					if( event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral" ) {
+						event.target.jsGraphIsShape.kill();
+					}
 
-						this.assignment.enable();
-
-					}*/
-
-
-					}, shift: true, ctrl: false },
+				}, shift: false, ctrl: false, meta: true },
 
 				{ plugin: 'drag', alt: true, shift: false, ctrl: false },
 				{ plugin: 'shape', shift: true, ctrl: false },
@@ -330,10 +326,10 @@ class NMR1D extends React.Component {
 
 
 		if( this.checkboxRemoveAssignment.checked ) {
-			this.topSVG.style.zIndex = 1000;
 			this.assignment.enableRemove();	
+
 		} else {
-			this.topSVG.style.zIndex = 0;
+
 			this.assignment.disableRemove();	
 		}
 	}
@@ -359,19 +355,29 @@ class NMR1D extends React.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
 			
-			if( e.keyCode == 91 ) {
-
+			if( e.keyCode == 91 || e.keyCode == 93 ) {
+				
 				this.assignment.enableRemove();
+				this.removeEnabled = true;
 			}
-		});
 
-		this.wrapper.addEventListener("keyup", ( e ) => {
-			
-			if( e.keyCode == 91 ) {
-
+			document.addEventListener("keyup", ( e ) => {
+				
+				
 				this.assignment.disableRemove();
-			}
+				this.removeEnabled = false;
+			
+			}, { once: true } );
+
 		});
+
+			// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
+		this.wrapper.addEventListener("mousemove", ( e ) => {
+			this.wrapper.focus();
+		});
+
+
+		
 
 		let assignmentOptions = {
 
@@ -413,7 +419,7 @@ class NMR1D extends React.Component {
 		};
 
 
-		this.assignment = new Assignment( this.graph, this.domMolecule, this.topSVG, assignmentOptions );
+		this.assignment = new Assignment( this.graph, this.domMolecule, assignmentOptions );
 	}
 
 	updateOutput() {
@@ -491,7 +497,6 @@ class NMR1D extends React.Component {
 
 		let update = false;
 
-		this.assignment.removeGraphShape( integralId );
 
 		for( let serie of this.state.series ) {
 
@@ -501,6 +506,7 @@ class NMR1D extends React.Component {
 
 					if( serie.integrals[ i ].id == integralId ) {
 
+						this.assignment.removeGraphShape( integralId );
 						serie.integrals.splice( i, 1 );
 						update = true;
 						break;
@@ -527,12 +533,10 @@ class NMR1D extends React.Component {
 	render() {
 
 		return ( 
-		<div ref={ el => this.wrapper = el } style={ { position: 'relative' } }>
+		<div ref={ el => this.wrapper = el } style={ { outline: '2px solid blue', position: 'relative' } }>
 			
-
-			<svg style={ { position: "absolute" } } ref={ el => this.topSVG = el } width={ this.props.width } height={ this.props.height }></svg>
-			<div style={ { position: "absolute" } } ref={ el => this.dom = el } />
-			<div style={ { pointerEvents: 'none', position: "absolute", top: '0px' }} ref={ el => this.domMolecule = el } dangerouslySetInnerHTML={{ __html: this.state.molecule }}></div>
+			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
+			<div style={ { pointerEvents: 'none', position: "absolute", top: '0px', userSelect: "none" }} ref={ el => this.domMolecule = el } dangerouslySetInnerHTML={{ __html: this.state.molecule }}></div>
 			
 			<div className="toolbar">
 				<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>

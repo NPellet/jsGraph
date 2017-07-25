@@ -725,11 +725,11 @@ class Serie extends EventEmitter {
   setLayer( layerIndex ) {
     let newLayer = parseInt( layerIndex ) ||  1;
 
-    if( newLayer !== this.options.layer ) {
+    if ( newLayer !== this.options.layer ) {
       this.options.layer = newLayer;
-      this.graph.appendSerieToDom( this );  
+      this.graph.appendSerieToDom( this );
     }
-    
+
     return this;
   }
 

@@ -8860,7 +8860,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
 	this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 	},{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}},{key:'trackingLine',value:function trackingLine(options){var _this9=this;var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
-	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){options.series=[options.series];}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
+	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){if(options.series=="all"){options.series=this.series.map(function(serie){serie:serie;});}else{options.series=[options.series];}}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
 	// Creates a new shape called trackingLine, in the first layer (below everything)
 	this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}},{key:'addSerieToTrackingLine',value:function addSerieToTrackingLine(serie,options){var _this10=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
 	this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking(function(serie,index,x,y){if(_this10.options.trackingLine.enable){if(index){if(_this10.trackingObject){_this10.trackingObject.show();_this10.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -10737,8 +10737,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // We must update the min and the max of the x data
 	      // That's important for when the data has already been set
-	      this.minX += shift - this.getXShift();
-	      this.maxX += shift - this.getXShift();
+	      //  this.minX += ( shift - this.getXShift() );
+	      //    this.maxX += ( shift - this.getXShift() );
 	      this.getXWaveform().setShift(shift);
 	      return this;
 	    }
@@ -18425,6 +18425,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      for (; i < l; i += 1) {
 
 	        x = waveform.getX(i, true);
+
 	        y = data[i] * yscale + yshift;
 
 	        if (x != x || y != y) {
@@ -20629,7 +20630,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'setLayer',
 	    value: function setLayer(layerIndex) {
-	      this.options.layer = parseInt(layerIndex) || 1;
+	      var newLayer = parseInt(layerIndex) || 1;
+
+	      if (newLayer !== this.options.layer) {
+	        this.options.layer = newLayer;
+	        this.graph.appendSerieToDom(this);
+	      }
+
 	      return this;
 	    }
 
@@ -25662,6 +25669,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     *  Returns whether the shape is hidden or not
+	     *  @return {Boolean} true if the shape is hidden, false otherwise
+	     */
+
+	  }, {
+	    key: 'isHidden',
+	    value: function isHidden() {
+	      return this.hidden;
+	    }
+
+	    /**
+	     *  Returns whether the shape is visible or not
+	     *  @return {Boolean} true if the shape is visible, false if it is hidden
+	     */
+
+	  }, {
+	    key: 'isVisible',
+	    value: function isVisible() {
+	      return !this.hidden;
+	    }
+
+	    /**
 	     * Shows the shape
 	     * @return {Shape} The current shape
 	     */
@@ -27682,6 +27711,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      shapeLabel.setAttribute('value', self.getProp('labelText', i));
 
 	      self.graph.wrapper.prepend(shapeLabel);
+	      shapeLabel.select();
 
 	      util.setCSS(shapeLabel, {
 	        position: 'absolute',
@@ -28537,8 +28567,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function createDom() {
 
 	      this._dom = document.createElementNS(this.graph.ns, 'path');
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
+
+	      if (!this.getStrokeColor()) {
+	        this.setStrokeColor('black');
+	      }
+
+	      if (this.getStrokeWidth() == undefined) {
+	        this.setStrokeWidth(1);
+	      }
 	    }
 
 	    /**
@@ -28658,6 +28694,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'createDom',
 	    value: function createDom() {
 	      this._dom = document.createElementNS(this.graph.ns, 'path');
+	      this._dom.setAttribute('pointer-events', 'stroke');
 	    }
 	  }, {
 	    key: 'initImpl',

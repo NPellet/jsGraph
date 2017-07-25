@@ -1,7 +1,6 @@
 
 define( function() {
 
-
 	return [ function( domGraph ) {
 
 		var graphinstance = new Graph( domGraph, {

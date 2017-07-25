@@ -48,7 +48,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 	class Assignment {
 
-		constructor( graph, molecule, topSVG, options ) {
+		constructor( graph, molecule, options ) {
 			this.options = options;
 			this.pairs = [];
 			this.target = {};
@@ -58,7 +58,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			this.graph = graph;
 			this.molecule = molecule;
-			this.topSVG = topSVG;
+			
 
 			this.graph.getWrapper().addEventListener( 'mousedown', ( e ) => {
 
@@ -66,10 +66,14 @@ var ns = 'http://www.w3.org/2000/svg';
 					return;
 				}
 
+
 				if( e.target.matches( options.graph.bindableFilter ) ) {
+					console.log('stop');
+					console.log(e);
+					e.stopPropagation(); // This is critical. Otherwise the graph will start performing other actions
 					this.mousedown( e, true );
 				}
-			} );
+			}, true );
 
 			this.graph.getWrapper().addEventListener('mouseover', ( e ) => {
 
@@ -90,6 +94,11 @@ var ns = 'http://www.w3.org/2000/svg';
 					return;
 				}
 */
+
+				if( this.options.removeEnabled ) {
+					return;
+				}
+
 				if( e.target.matches( options.graph.bindableFilter ) ) {
 
 					this.mouseout( e, true );
@@ -140,6 +149,11 @@ var ns = 'http://www.w3.org/2000/svg';
 					return;
 				}
 */
+
+				if( this.options.removeEnabled ) {
+					return;
+				}
+
 				if( e.target.matches( options.molecule.bindableFilter ) ) {
 	
 					this.mouseout( e, false );
@@ -156,7 +170,7 @@ var ns = 'http://www.w3.org/2000/svg';
 				this.mouseup( e, false );
 			});
 
-			this.topSVG.addEventListener('mousemove', ( e ) => {
+			/*this.topSVG.addEventListener('mousemove', ( e ) => {
 				
 
 				if( ! this.isEnabled() ) {
@@ -165,7 +179,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 				this.mousemove( e );
 			});
-
+*/
 			this.molecule.addEventListener('mousemove', ( e ) => {
 
 				if( ! this.isEnabled() ) {
@@ -187,7 +201,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			let bindingLine = document.createElementNS( ns, 'line');
 			bindingLine.setAttribute('stroke', 'black');
-			topSVG.appendChild( bindingLine );
+			this.graph.getDom().appendChild( bindingLine );
 
 			this.bindingLine = bindingLine;
 			
@@ -225,8 +239,10 @@ var ns = 'http://www.w3.org/2000/svg';
 		 */
 		enableRemove() {
 
+			this.removeLines();
+
 			this.allPairs( false, ( pair ) => {
-console.log( pair );
+
 				this.highlightPair( pair );
 			} );
 
@@ -240,6 +256,8 @@ console.log( pair );
 
 				this.unhighlightPair( pair );
 			} );
+
+			this.removeLines();
 
 			this.options.removeEnabled = false;
 		}
@@ -415,7 +433,7 @@ console.log( pair );
 		},*/
 
 		mouseout( event, type ) {
-
+console.log('out');
 			var elements = this.getEquivalents( event.target, type );
 		
 			// We must unhighlight the equivalent elements, even if they are not paired yet		
@@ -552,6 +570,10 @@ console.log( pair );
 
 		highlightPair( pair, noHighlightTargets ) {
 
+			if( pair.line ) {
+				return;
+			}
+
 			var elA = this.getDom( true ).querySelector( "[" + this.getOptions( true ).equivalentAttribute + "=\"" + pair.graphUnique + "\"]" );
 			var elB = this.getDom( false ).querySelector( "[" + this.getOptions( false ).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]" );
 
@@ -561,10 +583,10 @@ console.log( pair );
 			var bbA = elA.getBBox();
 			var bbB = elB.getBBox();
 
-			var posMain = this.topSVG.getBoundingClientRect();
+			var posMain = this.graph.getWrapper().getBoundingClientRect();
 
 			var line;
-console.log( this.stashedLines );
+
 			if( this.stashedLines.length > 0 ) {
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
@@ -588,7 +610,7 @@ console.log( this.stashedLines );
 
 			pair.line = line;
 			this.currentLines.push( line );
-			this.topSVG.appendChild( line );
+			this.graph.getDom().appendChild( line );
 
 
 			// Highlight all equivalent elements from both pairs !
@@ -677,6 +699,13 @@ console.log( this.stashedLines );
 
 			this.pairs.splice( this.pairs.indexOf( pair ), 1 );
 			this.unhighlightPair( pair );
+		}
+
+		removeLines() {
+
+			this.currentLines.forEach( ( line ) => line.setAttribute( 'display', 'none' ) );
+			this.stashedLines = this.stashedLines.concat( this.currentLines );
+			this.currentLines = [];
 		}
 
 		removeLine( line ) {

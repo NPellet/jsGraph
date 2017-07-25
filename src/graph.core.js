@@ -1632,7 +1632,7 @@ class Graph extends EventEmitter {
 
     return this;
   }
-  
+
   _removeShape( shape ) {
     this.shapes.splice( this.shapes.indexOf( shape ), 1 );
   }
@@ -2131,9 +2131,11 @@ class Graph extends EventEmitter {
 
         if ( !Array.isArray( options.series ) ) {
 
-          if( options.series == "all" ) {
+          if ( options.series == "all" ) {
 
-            options.series = this.series.map( ( serie ) => { serie: serie } );
+            options.series = this.series.map( ( serie ) => {
+              serie: serie
+            } );
 
           } else {
 
@@ -2209,7 +2211,6 @@ class Graph extends EventEmitter {
       if ( this.options.trackingLine.enable ) {
 
         if ( index ) {
-
 
           if ( this.trackingObject ) {
             this.trackingObject.show();
@@ -3332,7 +3333,7 @@ function _registerEvents( graph ) {
   } );
 
   graph.groupEvent.addEventListener( 'mousedown', function( e ) {
-
+console.log('groupEventCapture');
     graph.focus();
 
     //   e.preventDefault();

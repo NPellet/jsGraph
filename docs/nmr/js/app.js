@@ -3878,8 +3878,7 @@ var Shape = function (_EventEmitter) {
       shapeLabel.addEventListener('blur', blurEvent);
 
       shapeLabel.addEventListener('keyup', function (e) {
-        e.stopPropagation();
-        e.preventDefault();
+
         if (e.keyCode === 13) {
           blurEvent();
         }
@@ -5377,7 +5376,7 @@ this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.
 //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
 this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
 graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
-var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
+var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){console.log('groupEventCapture');graph.focus();//   e.preventDefault();
 if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
 if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
 var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
@@ -25467,7 +25466,7 @@ enabled: false
 var ns = 'http://www.w3.org/2000/svg';
 
 var Assignment = function () {
-	function Assignment(graph, molecule, topSVG, options) {
+	function Assignment(graph, molecule, options) {
 		var _this = this;
 
 		_classCallCheck(this, Assignment);
@@ -25481,7 +25480,6 @@ var Assignment = function () {
 
 		this.graph = graph;
 		this.molecule = molecule;
-		this.topSVG = topSVG;
 
 		this.graph.getWrapper().addEventListener('mousedown', function (e) {
 
@@ -25490,9 +25488,12 @@ var Assignment = function () {
 			}
 
 			if (e.target.matches(options.graph.bindableFilter)) {
+				console.log('stop');
+				console.log(e);
+				e.stopPropagation(); // This is critical. Otherwise the graph will start performing other actions
 				_this.mousedown(e, true);
 			}
-		});
+		}, true);
 
 		this.graph.getWrapper().addEventListener('mouseover', function (e) {
 
@@ -25511,6 +25512,11 @@ var Assignment = function () {
    					return;
    				}
    */
+
+			if (_this.options.removeEnabled) {
+				return;
+			}
+
 			if (e.target.matches(options.graph.bindableFilter)) {
 
 				_this.mouseout(e, true);
@@ -25556,6 +25562,11 @@ var Assignment = function () {
    					return;
    				}
    */
+
+			if (_this.options.removeEnabled) {
+				return;
+			}
+
 			if (e.target.matches(options.molecule.bindableFilter)) {
 
 				_this.mouseout(e, false);
@@ -25571,15 +25582,14 @@ var Assignment = function () {
 			_this.mouseup(e, false);
 		});
 
-		this.topSVG.addEventListener('mousemove', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			_this.mousemove(e);
-		});
-
+		/*this.topSVG.addEventListener('mousemove', ( e ) => {
+  	
+  		if( ! this.isEnabled() ) {
+  		return;
+  	}
+  		this.mousemove( e );
+  });
+  */
 		this.molecule.addEventListener('mousemove', function (e) {
 
 			if (!_this.isEnabled()) {
@@ -25600,7 +25610,7 @@ var Assignment = function () {
 
 		var bindingLine = document.createElementNS(ns, 'line');
 		bindingLine.setAttribute('stroke', 'black');
-		topSVG.appendChild(bindingLine);
+		this.graph.getDom().appendChild(bindingLine);
 
 		this.bindingLine = bindingLine;
 
@@ -25645,8 +25655,10 @@ var Assignment = function () {
 		value: function enableRemove() {
 			var _this2 = this;
 
+			this.removeLines();
+
 			this.allPairs(false, function (pair) {
-				console.log(pair);
+
 				_this2.highlightPair(pair);
 			});
 
@@ -25661,6 +25673,8 @@ var Assignment = function () {
 
 				_this3.unhighlightPair(pair);
 			});
+
+			this.removeLines();
 
 			this.options.removeEnabled = false;
 		}
@@ -25879,6 +25893,7 @@ var Assignment = function () {
 		value: function mouseout(event, type) {
 			var _this4 = this;
 
+			console.log('out');
 			var elements = this.getEquivalents(event.target, type);
 
 			// We must unhighlight the equivalent elements, even if they are not paired yet		
@@ -26020,6 +26035,10 @@ var Assignment = function () {
 		value: function highlightPair(pair, noHighlightTargets) {
 			var _this6 = this;
 
+			if (pair.line) {
+				return;
+			}
+
 			var elA = this.getDom(true).querySelector("[" + this.getOptions(true).equivalentAttribute + "=\"" + pair.graphUnique + "\"]");
 			var elB = this.getDom(false).querySelector("[" + this.getOptions(false).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]");
 
@@ -26029,10 +26048,10 @@ var Assignment = function () {
 			var bbA = elA.getBBox();
 			var bbB = elB.getBBox();
 
-			var posMain = this.topSVG.getBoundingClientRect();
+			var posMain = this.graph.getWrapper().getBoundingClientRect();
 
 			var line;
-			console.log(this.stashedLines);
+
 			if (this.stashedLines.length > 0) {
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
@@ -26055,7 +26074,7 @@ var Assignment = function () {
 
 			pair.line = line;
 			this.currentLines.push(line);
-			this.topSVG.appendChild(line);
+			this.graph.getDom().appendChild(line);
 
 			// Highlight all equivalent elements from both pairs !
 			if (!noHighlightTargets) {
@@ -26146,6 +26165,16 @@ var Assignment = function () {
 
 			this.pairs.splice(this.pairs.indexOf(pair), 1);
 			this.unhighlightPair(pair);
+		}
+	}, {
+		key: 'removeLines',
+		value: function removeLines() {
+
+			this.currentLines.forEach(function (line) {
+				return line.setAttribute('display', 'none');
+			});
+			this.stashedLines = this.stashedLines.concat(this.currentLines);
+			this.currentLines = [];
 		}
 	}, {
 		key: 'removeLine',
@@ -30546,6 +30575,7 @@ var PluginShape = function (_Plugin) {
       if (!this.shapeType && !this.options.url) {
         return;
       }
+      console.log('down');
 
       var self = this,
           selfPlugin = this;
@@ -30614,7 +30644,7 @@ var PluginShape = function (_Plugin) {
 
       var self = this;
       if (self.currentShape) {
-
+        console.log('mv');
         self.count++;
 
         var shape = self.currentShape;
@@ -36811,18 +36841,17 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				}
 			},
 
-			mouseActions: [{ plugin: 'zoom', shift: false, ctrl: false }, { type: 'click', callback: event => {
+			mouseActions: [{ plugin: 'zoom', shift: false, ctrl: false }, { type: 'click', callback: () => {
 
 					if (this.checkboxPeakPicking.checked) {
 						this.pickPeak(...arguments);
 					}
-				}, shift: false, ctrl: false }, { type: 'mousedown', callback: (graph, x, y, event) => {
-					/*
-     if( event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral" ) {
-     	this.assignment.enable();
-     }*/
+				}, shift: false, ctrl: false }, { type: 'click', callback: (x, y, event) => {
 
-				}, shift: true, ctrl: false }, { plugin: 'drag', alt: true, shift: false, ctrl: false }, { plugin: 'shape', shift: true, ctrl: false }, {
+					if (event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral") {
+						event.target.jsGraphIsShape.kill();
+					}
+				}, shift: false, ctrl: false, meta: true }, { plugin: 'drag', alt: true, shift: false, ctrl: false }, { plugin: 'shape', shift: true, ctrl: false }, {
 				type: 'dblclick',
 				plugin: 'zoom',
 				options: {
@@ -37088,10 +37117,9 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	toggleRemoveAssignment() {
 
 		if (this.checkboxRemoveAssignment.checked) {
-			this.topSVG.style.zIndex = 1000;
 			this.assignment.enableRemove();
 		} else {
-			this.topSVG.style.zIndex = 0;
+
 			this.assignment.disableRemove();
 		}
 	}
@@ -37116,18 +37144,22 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", e => {
 
-			if (e.keyCode == 91) {
+			if (e.keyCode == 91 || e.keyCode == 93) {
 
 				this.assignment.enableRemove();
+				this.removeEnabled = true;
 			}
-		});
 
-		this.wrapper.addEventListener("keyup", e => {
-
-			if (e.keyCode == 91) {
+			document.addEventListener("keyup", e => {
 
 				this.assignment.disableRemove();
-			}
+				this.removeEnabled = false;
+			}, { once: true });
+		});
+
+		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
+		this.wrapper.addEventListener("mousemove", e => {
+			this.wrapper.focus();
 		});
 
 		let assignmentOptions = {
@@ -37169,7 +37201,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		};
 
-		this.assignment = new __WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a(this.graph, this.domMolecule, this.topSVG, assignmentOptions);
+		this.assignment = new __WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a(this.graph, this.domMolecule, assignmentOptions);
 	}
 
 	updateOutput() {
@@ -37245,8 +37277,6 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		let update = false;
 
-		this.assignment.removeGraphShape(integralId);
-
 		for (let serie of this.state.series) {
 
 			if (serie.name == serieName) {
@@ -37255,6 +37285,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 					if (serie.integrals[i].id == integralId) {
 
+						this.assignment.removeGraphShape(integralId);
 						serie.integrals.splice(i, 1);
 						update = true;
 						break;
@@ -37281,10 +37312,9 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
-			{ ref: el => this.wrapper = el, style: { position: 'relative' } },
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("svg", { style: { position: "absolute" }, ref: el => this.topSVG = el, width: this.props.width, height: this.props.height }),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute" }, ref: el => this.dom = el }),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { pointerEvents: 'none', position: "absolute", top: '0px' }, ref: el => this.domMolecule = el, dangerouslySetInnerHTML: { __html: this.state.molecule } }),
+			{ ref: el => this.wrapper = el, style: { outline: '2px solid blue', position: 'relative' } },
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { pointerEvents: 'none', position: "absolute", top: '0px', userSelect: "none" }, ref: el => this.domMolecule = el, dangerouslySetInnerHTML: { __html: this.state.molecule } }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"div",
 				{ className: "toolbar" },

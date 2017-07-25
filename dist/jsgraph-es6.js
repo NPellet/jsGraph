@@ -662,7 +662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}unlockShapes(){//		console.log('unlock');
 	this.shapesLocked=false;}prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}_getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}_resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);if(this.drawn){this.requireLegendUpdate();this.draw(true);}}updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 	getDrawingSpaceWidth(){return()=>this.drawingSpaceWidth;}getDrawingSpaceHeight(){return()=>this.drawingSpaceHeight;}getDrawingSpaceMinX(){return()=>this.drawingSpaceMinX;}getDrawingSpaceMinY(){return()=>this.drawingSpaceMinY;}getDrawingSpaceMaxX(){return()=>this.drawingSpaceMaxX;}getDrawingSpaceMaxY(){return()=>this.drawingSpaceMaxY;}trackingLine(options){var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
-	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){options.series=[options.series];}options.series.forEach(sOptions=>{if(typeof sOptions.serie!=="object"){if(typeof sOptions!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=this.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(serie=>{serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
+	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){if(options.series=="all"){options.series=this.series.map(serie=>{serie:serie;});}else{options.series=[options.series];}}options.series.forEach(sOptions=>{if(typeof sOptions.serie!=="object"){if(typeof sOptions!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=this.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(serie=>{serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
 	// Creates a new shape called trackingLine, in the first layer (below everything)
 	this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}addSerieToTrackingLine(serie,options){if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
 	this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking((serie,index,x,y)=>{if(this.options.trackingLine.enable){if(index){if(this.trackingObject){this.trackingObject.show();this.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -2486,8 +2486,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // We must update the min and the max of the x data
 	      // That's important for when the data has already been set
-	      this.minX += shift - this.getXShift();
-	      this.maxX += shift - this.getXShift();
+	      //  this.minX += ( shift - this.getXShift() );
+	      //    this.maxX += ( shift - this.getXShift() );
 	      this.getXWaveform().setShift(shift);
 	      return this;
 	    }
@@ -9547,6 +9547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      for (; i < l; i += 1) {
 
 	        x = waveform.getX(i, true);
+
 	        y = data[i] * yscale + yshift;
 
 	        if (x != x || y != y) {
@@ -11547,7 +11548,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {Serie} The current serie
 	     */
 	    setLayer(layerIndex) {
-	      this.options.layer = parseInt(layerIndex) || 1;
+	      let newLayer = parseInt(layerIndex) || 1;
+
+	      if (newLayer !== this.options.layer) {
+	        this.options.layer = newLayer;
+	        this.graph.appendSerieToDom(this);
+	      }
+
 	      return this;
 	    }
 
@@ -16155,6 +16162,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     *  Returns whether the shape is hidden or not
+	     *  @return {Boolean} true if the shape is hidden, false otherwise
+	     */
+	    isHidden() {
+	      return this.hidden;
+	    }
+
+	    /**
+	     *  Returns whether the shape is visible or not
+	     *  @return {Boolean} true if the shape is visible, false if it is hidden
+	     */
+	    isVisible() {
+	      return !this.hidden;
+	    }
+
+	    /**
 	     * Shows the shape
 	     * @return {Shape} The current shape
 	     */
@@ -17840,6 +17863,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      shapeLabel.setAttribute('value', self.getProp('labelText', i));
 
 	      self.graph.wrapper.prepend(shapeLabel);
+	      shapeLabel.select();
 
 	      util.setCSS(shapeLabel, {
 	        position: 'absolute',
@@ -17871,10 +17895,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      shapeLabel.addEventListener('blur', blurEvent);
 
 	      shapeLabel.addEventListener('keyup', function (e) {
-	        e.stopPropagation();
-	        e.preventDefault();
+	        
 	        if (e.keyCode === 13) {
 	          blurEvent();
+	          e.stopPropagation();
+	          e.preventDefault();
 	        }
 	      });
 	      shapeLabel.addEventListener('keypress', function (e) {
@@ -18573,8 +18598,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    createDom() {
 
 	      this._dom = document.createElementNS(this.graph.ns, 'path');
-	      this.setStrokeColor('black');
-	      this.setStrokeWidth(1);
+
+	      if (!this.getStrokeColor()) {
+	        this.setStrokeColor('black');
+	      }
+
+	      if (this.getStrokeWidth() == undefined) {
+	        this.setStrokeWidth(1);
+	      }
 	    }
 
 	    /**
@@ -18683,6 +18714,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    createDom() {
 	      this._dom = document.createElementNS(this.graph.ns, 'path');
+	      this._dom.setAttribute('pointer-events', 'stroke');
 	    }
 
 	    initImpl() {

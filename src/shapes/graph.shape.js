@@ -166,19 +166,17 @@ class Shape extends EventEmitter {
    *  Returns whether the shape is hidden or not
    *  @return {Boolean} true if the shape is hidden, false otherwise
    */
-   isHidden() {
+  isHidden() {
     return this.hidden;
-   }
-
+  }
 
   /**
    *  Returns whether the shape is visible or not
    *  @return {Boolean} true if the shape is visible, false if it is hidden
    */
-   isVisible() {
-    return ! this.hidden;
-   }
-
+  isVisible() {
+    return !this.hidden;
+  }
 
   /**
    * Shows the shape
@@ -1920,8 +1918,7 @@ class Shape extends EventEmitter {
     shapeLabel.addEventListener( 'blur', blurEvent );
 
     shapeLabel.addEventListener( 'keyup', function( e ) {
-      e.stopPropagation();
-      e.preventDefault();
+      
       if ( e.keyCode === 13 ) {
         blurEvent();
       }
