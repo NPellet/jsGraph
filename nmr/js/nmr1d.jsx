@@ -56,7 +56,12 @@ class NMR1D extends React.Component {
 				},
 				{	// Mousewheel action is only enabled when there is no selected serie
 					type: "mousewheel",
-					enabled: ( graph ) => { return ! graph.getSelectedSerie() },
+					enabled: ( graph ) => { return ! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
+								( acc, shape ) => { 
+									if( ! acc ) { 
+										return shape.getType() == 'nmrintegral'
+									} 
+								}, false )  },
 					plugin: 'zoom',
 					options: {
 						mode: 'y',
@@ -435,7 +440,7 @@ class NMR1D extends React.Component {
 	componentWillReceiveProps( nextProps ) {
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
 
-		
+
 		this.graph.resize( nextProps.width, nextProps.height );
 		this.graph.draw();
 		this.updateMainData();

@@ -5247,7 +5247,7 @@ for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].redraw();}//this.graphi
    * @param {Boolean} mute - Select the shape quietly
    */},{key:'selectShape',value:function selectShape(shape,mute){// Already selected. Returns false
 if(!shape){return;}if(this.selectedShapes.indexOf(shape)>-1){return false;}if(!shape.isSelectable()){return false;}if(!mute){this.emit("beforeShapeSelect",shape);}if(this.prevent(false)){return;}if(this.selectedShapes.length>0&&this.options.shapesUniqueSelection){// Only one selected shape at the time
-this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}/**
+this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}},{key:'getSelectedShapes',value:function getSelectedShapes(){return this.selectedShapes;}/**
    * Unselects a shape
    * @param {Shape} shape - The shape to unselect
    * @param {Boolean} mute - Unselect the shape quietly
@@ -5384,9 +5384,9 @@ var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x
 graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;// Takes care of the tracking line
 if(graph.options.trackingLine&&graph.options.trackingLine.enable&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(this.trackingObject){if(!index){graph.trackingObject.hide();}else{graph.trackingObject.show();graph.trackingObject.getPosition(0).x=index.xClosest;graph.trackingObject.getPosition(1).x=index.xClosest;graph.trackingObject.redraw();var x=snapToSerie.getXAxis().getPx(index.xClosest)+graph.options.paddingLeft;}}var series=graph.options.trackingLine.series;// Gets a default value
 if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,index.xClosest);}}}// End takes care of the tracking line
-if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
+if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l,executed=false;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
 if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-graph._pluginExecute(keyComb[i].plugin,methodName,parameters);return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);return true;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}return true;}}return false;};var _trackingLegendSerie=function _trackingLegendSerie(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(function(serie){var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
+graph._pluginExecute(keyComb[i].plugin,methodName,parameters);executed=true;continue;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);executed=true;continue;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}executed=true;continue;}}return executed;};var _trackingLegendSerie=function _trackingLegendSerie(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(function(serie){var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
 if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",function(){graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;if(graph.options.trackingLine.serieShape.magnet){var magnetOptions=graph.options.trackingLine.serieShape.magnet,val=magnetOptions.within,minmaxpos=void 0;if(magnetOptions.withinPx){val=serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);}if(minmaxpos=serie.serie.findLocalMinMax(index.xClosest,val,magnetOptions.mode)){serie.serie.trackingShape.getPosition(0).x=minmaxpos;}}serie.serie.trackingShape.redraw();}});// End map
 if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
 }return legend;};var forceTrackingLegendMode=function forceTrackingLegendMode(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
@@ -36900,7 +36900,11 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			}, { // Mousewheel action is only enabled when there is no selected serie
 				type: "mousewheel",
 				enabled: graph => {
-					return !graph.getSelectedSerie();
+					return !graph.getSelectedSerie() && !graph.getSelectedShapes().reduce((acc, shape) => {
+						if (!acc) {
+							return shape.getType() == 'nmrintegral';
+						}
+					}, false);
 				},
 				plugin: 'zoom',
 				options: {
@@ -37627,6 +37631,24 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.rescaleIntegrals();
 		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
 		this._jsGraphGraph.addSerieToTrackingLine(this._jsGraphSerie, {});
+
+		this._jsGraphGraph.options.mouseActions.push({
+			type: "mousewheel",
+			enabled: graph => {
+
+				return graph.getSelectedShapes().reduce((acc, shape) => {
+					if (!acc) {
+						return shape.getType() == 'nmrintegral';
+					}
+				}, false);
+			},
+			callback: dy => {
+
+				this.setState(state => {
+					return { ratio: state.ratio * (dy < 0 ? 1.05 : 0.95) };
+				});
+			}
+		});
 	}
 
 	rescaleIntegrals() {
@@ -37669,7 +37691,11 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		if (redraw) {
 			this.assignWaveform();
 		}
-		console.log(nextProps);
+
+		if (nextProps.assignment) {
+			this._assignment.setPairing(this.getSerieState());
+		}
+
 		this.setState({ labelRatio: nextProps.integralLabelRatio });
 	}
 

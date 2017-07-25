@@ -1589,6 +1589,10 @@ class Graph extends EventEmitter {
     }
   }
 
+  getSelectedShapes() {
+    return this.selectedShapes;
+  }
+
   /**
    * Unselects a shape
    * @param {Shape} shape - The shape to unselect
@@ -3498,7 +3502,7 @@ function _handleMouseMove( graph, x, y, e ) {
 function checkMouseActions( graph, e, parameters, methodName ) {
 
   var keyComb = graph.options.mouseActions,
-    i, l;
+    i, l, executed = false;
 
   for ( i = 0, l = keyComb.length; i < l; i++ ) {
 
@@ -3512,7 +3516,8 @@ function checkMouseActions( graph, e, parameters, methodName ) {
 
         graph.activePlugin = keyComb[ i ].plugin; // Lease the mouse action to the current action
         graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
-        return true;
+        executed = true;
+        continue;
       }
 
     } else if ( keyComb[ i ].callback && graph.isActionAllowed( e, keyComb[ i ] ) ) {
@@ -3522,7 +3527,8 @@ function checkMouseActions( graph, e, parameters, methodName ) {
       }
 
       keyComb[ i ].callback.apply( graph, parameters );
-      return true;
+      executed = true;
+      continue;
 
     } else if ( keyComb[ i ].series ) {
 
@@ -3542,12 +3548,12 @@ function checkMouseActions( graph, e, parameters, methodName ) {
       for ( var j = 0; j < series.length; i++ ) {
         graph._serieExecute( series[  i ], methodName, parameters );
       }
-      return true;
+      executed = true;
+      continue;
     }
   }
 
-  return false;
-
+  return executed;
 };
 
 var _trackingLegendSerie = function( graph, serie, x, y, legend, textMethod, xValue ) {

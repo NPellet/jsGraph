@@ -80,6 +80,25 @@ console.log( this.props.name == 'master' );
 		this.rescaleIntegrals();
 		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 		this._jsGraphGraph.addSerieToTrackingLine( this._jsGraphSerie, {} );
+
+		this._jsGraphGraph.options.mouseActions.push( 
+			{	
+				type: "mousewheel",
+				enabled: ( graph ) => { 
+
+
+					return graph.getSelectedShapes().reduce( 
+								( acc, shape ) => { 
+									if( ! acc ) { 
+										return shape.getType() == 'nmrintegral'
+									} 
+								}, false ) 
+				},
+				callback: ( dy ) => {
+					
+					this.setState( state => { return { ratio: state.ratio * ( dy < 0 ? 1.05 : 0.95 ) } } );
+				}
+			} );
 		
 	}
 
@@ -123,7 +142,11 @@ console.log( this.props.name == 'master' );
 		if( redraw ) {
 			this.assignWaveform();
 		}
-console.log( nextProps );
+
+		if( nextProps.assignment ) {
+			this._assignment.setPairing( this.getSerieState() );
+		}
+
 		this.setState( { labelRatio: nextProps.integralLabelRatio } );
 	}
 
