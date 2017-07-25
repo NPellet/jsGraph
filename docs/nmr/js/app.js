@@ -36002,20 +36002,31 @@ var ShapeNMRIntegral = function (_Shape) {
         // Already existing
         ratio = this.ratio;
       }
+      var py = void 0;
 
       for (var i = 0, l = points.length; i < l; i++) {
 
-        points[i][2] = baseLine - points[i][2] * ratio;
+        py = baseLine - points[i][2] * ratio;
+
+        if (i > 0 && (points[i - 1][2] > sum / 2 && points[i][2] <= sum / 2 || points[i - 1][2] < sum / 2 && points[i][2] >= sum / 2)) {
+
+          var pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
+          this.setLabelPosition({
+            x: points[i][0] + 10 + "px",
+            y: pos + "px"
+
+          }, 0);
+        }
 
         if (i == 0) {
           this.firstPointX = points[i][0];
-          this.firstPointY = points[i][2];
+          this.firstPointY = py;
         }
 
-        currentLine += " L " + points[i][0] + ", " + points[i][2] + " ";
+        currentLine += " L " + points[i][0] + ", " + py + " ";
 
         this.lastPointX = points[i][0];
-        this.lastPointY = points[i][2];
+        this.lastPointY = py;
       }
 
       this.points = points;
@@ -36037,15 +36048,6 @@ var ShapeNMRIntegral = function (_Shape) {
             }
              this.setHandles();*/
 
-      this.setLabelPosition(new _graph4.default({
-        x: (this.firstPointX + this.lastPointX) / 2 + "px",
-        y: (this.firstPointY + this.lastPointY) / 2 + "px"
-      }));
-
-      this.setLabelPosition({
-        x: 0.5 * (this.firstPointX + this.lastPointX) + "px",
-        y: 0.5 * (this.firstPointY + this.lastPointY) + "px"
-      }, 0);
       this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
 
       this.changed();
