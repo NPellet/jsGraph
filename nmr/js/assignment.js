@@ -66,14 +66,10 @@ var ns = 'http://www.w3.org/2000/svg';
 					return;
 				}
 
-
 				if( e.target.matches( options.graph.bindableFilter ) ) {
-					console.log('stop');
-					console.log(e);
-					e.stopPropagation(); // This is critical. Otherwise the graph will start performing other actions
 					this.mousedown( e, true );
 				}
-			}, true );
+			}, true ); // It is critical to capture the event, and not bubble it. graphWrapper is at an inferior level from groupEvent, where the graph events are usually attached. If we don't do this, the graph will start creating shapes
 
 			this.graph.getWrapper().addEventListener('mouseover', ( e ) => {
 
