@@ -184,6 +184,7 @@ class ShapeNMRIntegral extends Shape {
       if( i > 0 && ( ( points[ i - 1 ][ 2 ] > sum / 2 && points[ i ][ 2 ] <= sum / 2 ) || ( points[ i - 1 ][ 2 ] < sum / 2 && points[ i ][ 2 ] >= sum / 2  ) ) ) {
 
         let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2  * ratio; 
+        
         this.setLabelPosition( {
           x: ( points[ i ][ 0 ] + 10 ) + "px",
           y: pos + "px"

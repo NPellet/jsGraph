@@ -288,7 +288,6 @@ var ns = 'http://www.w3.org/2000/svg';
 
 				event.preventDefault();
 				event.stopPropagation();
-			
 
 				let bb = event.target.getBBox();
 				let pos = event.target.getBoundingClientRect();
@@ -301,6 +300,7 @@ var ns = 'http://www.w3.org/2000/svg';
 				this.bindingLine.setAttribute('x2', x );
 				this.bindingLine.setAttribute('y1', y );
 				this.bindingLine.setAttribute('y2', y );
+				this.bindingLine.setAttribute('pointer-events', 'none');
 
 
 				// Look for targettable (bindable) elements of the other type and highlight them
@@ -315,7 +315,7 @@ var ns = 'http://www.w3.org/2000/svg';
 				let style = this.getOptions( type ).highlightStyle[ highlightType ];
 
 				if( type && element.jsGraphIsShape ) { // It is a shape
-console.log( style, highlightType );
+
 					element.jsGraphIsShape.highlight( style, highlightType );
 
 				} else { // It is an atom
@@ -337,7 +337,7 @@ console.log( style, highlightType );
 				let style = this.getOptions( type ).highlightStyle[ highlightType ];
 
 				if( type && element.jsGraphIsShape ) {
-console.warn( style, highlightType );
+
 					element.jsGraphIsShape.unHighlight( style, highlightType );
 
 				} else {
@@ -400,8 +400,10 @@ console.warn( style, highlightType );
 				return;
 			}
 
-			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX );
-			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY );
+			let rect = this.graph.getWrapper().getBoundingClientRect();
+
+			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX - rect.left );
+			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY - rect.top );
 		}
 /*
 		highlightPairs( element, type ) {
@@ -445,7 +447,7 @@ console.warn( style, highlightType );
 			if( this.binding ) {
 				return;
 			}
-			
+
 			this.allPairs( this.getUnique( event.target, type ), ( pair ) => {
 
 				this.unhighlightPair( pair );

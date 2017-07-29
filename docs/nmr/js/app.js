@@ -952,7 +952,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 var _prodInvariant = __webpack_require__(3);
 
 var DOMProperty = __webpack_require__(16);
-var ReactDOMComponentFlags = __webpack_require__(81);
+var ReactDOMComponentFlags = __webpack_require__(82);
 
 var invariant = __webpack_require__(1);
 
@@ -3973,9 +3973,9 @@ exports.default = Shape;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var CallbackQueue = __webpack_require__(79);
+var CallbackQueue = __webpack_require__(80);
 var PooledClass = __webpack_require__(19);
-var ReactFeatureFlags = __webpack_require__(84);
+var ReactFeatureFlags = __webpack_require__(85);
 var ReactReconciler = __webpack_require__(24);
 var Transaction = __webpack_require__(39);
 
@@ -5425,7 +5425,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _fit_lm = __webpack_require__(71);
+var _fit_lm = __webpack_require__(72);
 
 var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
@@ -6806,7 +6806,7 @@ var warning = __webpack_require__(2);
 var canDefineProperty = __webpack_require__(42);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
-var REACT_ELEMENT_TYPE = __webpack_require__(99);
+var REACT_ELEMENT_TYPE = __webpack_require__(100);
 
 var RESERVED_PROPS = {
   key: true,
@@ -9234,7 +9234,7 @@ var DOMNamespaces = __webpack_require__(50);
 var setInnerHTML = __webpack_require__(41);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(57);
-var setTextContent = __webpack_require__(97);
+var setTextContent = __webpack_require__(98);
 
 var ELEMENT_NODE_TYPE = 1;
 var DOCUMENT_FRAGMENT_NODE_TYPE = 11;
@@ -9547,7 +9547,7 @@ var cloneElement = ReactElement.cloneElement;
 
 if (process.env.NODE_ENV !== 'production') {
   var canDefineProperty = __webpack_require__(42);
-  var ReactElementValidator = __webpack_require__(100);
+  var ReactElementValidator = __webpack_require__(101);
   var didWarnPropTypesDeprecated = false;
   createElement = ReactElementValidator.createElement;
   createFactory = ReactElementValidator.createFactory;
@@ -11655,8 +11655,8 @@ var EventPluginRegistry = __webpack_require__(36);
 var EventPluginUtils = __webpack_require__(51);
 var ReactErrorUtils = __webpack_require__(55);
 
-var accumulateInto = __webpack_require__(91);
-var forEachAccumulated = __webpack_require__(92);
+var accumulateInto = __webpack_require__(92);
+var forEachAccumulated = __webpack_require__(93);
 var invariant = __webpack_require__(1);
 
 /**
@@ -11936,8 +11936,8 @@ module.exports = EventPluginHub;
 var EventPluginHub = __webpack_require__(30);
 var EventPluginUtils = __webpack_require__(51);
 
-var accumulateInto = __webpack_require__(91);
-var forEachAccumulated = __webpack_require__(92);
+var accumulateInto = __webpack_require__(92);
+var forEachAccumulated = __webpack_require__(93);
 var warning = __webpack_require__(2);
 
 var getListener = EventPluginHub.getListener;
@@ -15637,7 +15637,7 @@ var _assign = __webpack_require__(5);
 
 var EventPluginRegistry = __webpack_require__(36);
 var ReactEventEmitterMixin = __webpack_require__(188);
-var ViewportMetrics = __webpack_require__(90);
+var ViewportMetrics = __webpack_require__(91);
 
 var getVendorPrefixedEventName = __webpack_require__(223);
 var isEventSupported = __webpack_require__(61);
@@ -15967,7 +15967,7 @@ module.exports = ReactBrowserEventEmitter;
 
 
 var SyntheticUIEvent = __webpack_require__(33);
-var ViewportMetrics = __webpack_require__(90);
+var ViewportMetrics = __webpack_require__(91);
 
 var getEventModifierState = __webpack_require__(59);
 
@@ -16863,7 +16863,7 @@ var _graphAxis = __webpack_require__(44);
 
 var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-var _graphAxis3 = __webpack_require__(66);
+var _graphAxis3 = __webpack_require__(67);
 
 var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
@@ -16895,11 +16895,11 @@ var _graphSerieLine3 = __webpack_require__(122);
 
 var _graphSerieLine4 = _interopRequireDefault(_graphSerieLine3);
 
-var _graphSerie7 = __webpack_require__(68);
+var _graphSerie7 = __webpack_require__(69);
 
 var _graphSerie8 = _interopRequireDefault(_graphSerie7);
 
-var _graphSerie9 = __webpack_require__(69);
+var _graphSerie9 = __webpack_require__(70);
 
 var _graphSerie10 = _interopRequireDefault(_graphSerie9);
 
@@ -16951,7 +16951,7 @@ var _graphShape15 = __webpack_require__(132);
 
 var _graphShape16 = _interopRequireDefault(_graphShape15);
 
-var _graphShape17 = __webpack_require__(70);
+var _graphShape17 = __webpack_require__(71);
 
 var _graphShape18 = _interopRequireDefault(_graphShape17);
 
@@ -17007,7 +17007,7 @@ var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _fit_lm = __webpack_require__(71);
+var _fit_lm = __webpack_require__(72);
 
 var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
@@ -17439,7 +17439,7 @@ if (process.env.NODE_ENV !== 'production') {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(76)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(77)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
@@ -17472,7 +17472,7 @@ var ReactInstrumentation = __webpack_require__(10);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(57);
 var setInnerHTML = __webpack_require__(41);
-var setTextContent = __webpack_require__(97);
+var setTextContent = __webpack_require__(98);
 
 function getNodeAfter(parentNode, node) {
   // Special case for text components, which return [open, close] comments
@@ -18019,8 +18019,8 @@ module.exports = KeyEscapeUtils;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactPropTypesSecret = __webpack_require__(89);
-var propTypesFactory = __webpack_require__(75);
+var ReactPropTypesSecret = __webpack_require__(90);
+var propTypesFactory = __webpack_require__(76);
 
 var React = __webpack_require__(25);
 var PropTypes = propTypesFactory(React.isValidElement);
@@ -19429,6 +19429,889 @@ module.exports = ReactNoopUpdateQueue;
 
 
 Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ *
+ *	Assignment code
+ *	Norman Pellet, 2017
+ *	Configuration example:
+ *
+
+graph: {
+	bindableFilter: "", // a querySelector element that defined which element is a target
+	equivalentAttribute: 'id',	// A unique filter
+	highlightStyle: {
+
+		'binding': {				// The style the object takes when it's a highlighted target
+			'stroke': 'red',		
+			'stroke-width': '2px'
+		},
+		equivalent: {				// The style the object takes when it's equivalent
+			'stroke': 'blue',
+			'stroke-width': '2px'
+		}
+	}
+},
+
+molecule: {
+	bindableFilter: '[data-atomid]',
+	bindableFilterClass: 'event',
+	equivalentAttribute: 'data-atomid',
+	highlightStyle: {
+
+		'binding': {
+			'fill': 'red',
+			'fill-opacity': '0.3'
+		},
+		'equivalent': {
+			'fill': 'yellow',
+			'fill-opacity': '0.3'
+		}
+	}
+},
+
+enabled: false
+
+ */
+
+var ns = 'http://www.w3.org/2000/svg';
+
+var Assignment = function () {
+	function Assignment(graph, molecule, options) {
+		var _this = this;
+
+		_classCallCheck(this, Assignment);
+
+		this.options = options;
+		this.pairs = [];
+		this.target = {};
+
+		this.stashedLines = [];
+		this.currentLines = [];
+
+		this.graph = graph;
+		this.molecule = molecule;
+
+		this.callbacksChanged = [];
+
+		this.graph.getWrapper().addEventListener('mousedown', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			if (e.target.matches(options.graph.bindableFilter)) {
+				_this.mousedown(e, true);
+			}
+		}, true); // It is critical to capture the event, and not bubble it. graphWrapper is at an inferior level from groupEvent, where the graph events are usually attached. If we don't do this, the graph will start creating shapes
+
+		this.graph.getWrapper().addEventListener('mouseover', function (e) {
+
+			/*if( ! this.isEnabled() ) {
+   	return;
+   }
+   */
+			if (e.target.matches(options.graph.bindableFilter)) {
+				_this.mouseenter(e, true);
+			}
+		});
+
+		this.graph.getWrapper().addEventListener('mouseout', function (e) {
+			/*
+   				if( ! this.isEnabled() ) {
+   					return;
+   				}
+   */
+
+			if (_this.options.removeEnabled) {
+				return;
+			}
+
+			if (e.target.matches(options.graph.bindableFilter)) {
+
+				_this.mouseout(e, true);
+			}
+		});
+
+		this.graph.getWrapper().addEventListener('mouseup', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			_this.mouseup(e, true);
+		});
+
+		this.molecule.addEventListener('mousedown', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			if (e.target.matches(options.molecule.bindableFilter)) {
+				_this.mousedown(e, false);
+			}
+		});
+
+		this.molecule.addEventListener('mouseover', function (e) {
+
+			/*	if( ! this.isEnabled() ) {
+   		return;
+   	}
+   */
+
+			if (e.target.matches(options.molecule.bindableFilter)) {
+				_this.mouseenter(e, false);
+			}
+		});
+
+		this.molecule.addEventListener('mouseout', function (e) {
+
+			/*
+   				if( ! this.isEnabled() ) {
+   					return;
+   				}
+   */
+
+			if (_this.options.removeEnabled) {
+				return;
+			}
+
+			if (e.target.matches(options.molecule.bindableFilter)) {
+
+				_this.mouseout(e, false);
+			}
+		});
+
+		this.molecule.addEventListener('mouseup', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			_this.mouseup(e, false);
+		});
+
+		/*this.topSVG.addEventListener('mousemove', ( e ) => {
+  	
+  		if( ! this.isEnabled() ) {
+  		return;
+  	}
+  		this.mousemove( e );
+  });
+  */
+		this.molecule.addEventListener('mousemove', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			_this.mousemove(e);
+		});
+
+		this.graph.getWrapper().addEventListener('mousemove', function (e) {
+
+			if (!_this.isEnabled()) {
+				return;
+			}
+
+			_this.mousemove(e);
+		});
+
+		var bindingLine = document.createElementNS(ns, 'line');
+		bindingLine.setAttribute('stroke', 'black');
+		this.graph.getDom().appendChild(bindingLine);
+
+		this.bindingLine = bindingLine;
+
+		this.options = options;
+	}
+	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
+
+
+	_createClass(Assignment, [{
+		key: 'onChange',
+		value: function onChange(method) {
+			this.callbacksChanged.push(method);
+			return this;
+		}
+		/*
+   *	ENABLE AND DISABLE ASSIGNMENT
+   *
+   */
+
+	}, {
+		key: 'isEnabled',
+		value: function isEnabled() {
+			return this.options.enabled;
+		}
+	}, {
+		key: 'enable',
+		value: function enable() {
+			this.options.enabled = true;
+		}
+	}, {
+		key: 'disable',
+		value: function disable() {
+			this.options.enabled = false;
+		}
+	}, {
+		key: 'toggleEnable',
+		value: function toggleEnable() {
+			this.options.enabled = !this.options.enabled;
+		}
+
+		/*
+   *	ENABLE AND DISABLE ASSIGNMENT REMOVAL
+   *
+   */
+
+	}, {
+		key: 'enableRemove',
+		value: function enableRemove() {
+			var _this2 = this;
+
+			this.removeLines();
+
+			this.allPairs(false, function (pair) {
+
+				_this2.highlightPair(pair);
+			});
+
+			this.options.removeEnabled = true;
+		}
+	}, {
+		key: 'disableRemove',
+		value: function disableRemove() {
+			var _this3 = this;
+
+			this.allPairs(false, function (pair) {
+
+				_this3.unhighlightPair(pair);
+			});
+
+			this.removeLines();
+
+			this.options.removeEnabled = false;
+		}
+	}, {
+		key: 'mousedown',
+		value: function mousedown(event, type) {
+
+			if (event.shiftKey) {
+
+				this.graph.lockShapes();
+
+				this.binding = true;
+
+				if (type) {
+					// Graph element
+
+					this.currentTargetGraph = event.target;
+				} else {
+
+					this.currentTargetMolecule = event.target;
+				}
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				var bb = event.target.getBBox();
+				var pos = event.target.getBoundingClientRect();
+
+				var x = pos.left + bb.width / 2,
+				    y = pos.top + bb.height / 2;
+
+				this.bindingLine.setAttribute('display', 'block');
+				this.bindingLine.setAttribute('x1', x);
+				this.bindingLine.setAttribute('x2', x);
+				this.bindingLine.setAttribute('y1', y);
+				this.bindingLine.setAttribute('y2', y);
+				this.bindingLine.setAttribute('pointer-events', 'none');
+
+				// Look for targettable (bindable) elements of the other type and highlight them
+				this.highlight(!type, this.findTargettableElements(!type), 'binding');
+			}
+		}
+	}, {
+		key: 'highlight',
+		value: function highlight(type, targetEls, highlightType) {
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+
+				for (var _iterator = targetEls[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var element = _step.value;
+
+
+					var style = this.getOptions(type).highlightStyle[highlightType];
+
+					if (type && element.jsGraphIsShape) {
+						// It is a shape
+
+						element.jsGraphIsShape.highlight(style, highlightType);
+					} else {
+						// It is an atom
+
+						this.storeAttributes(style, element, highlightType);
+
+						for (var i in style) {
+							element.setAttribute(i, style[i]);
+						}
+					}
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
+		}
+	}, {
+		key: 'unHighlight',
+		value: function unHighlight(type, targetEls, highlightType) {
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
+
+			try {
+
+				for (var _iterator2 = targetEls[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var element = _step2.value;
+
+
+					var style = this.getOptions(type).highlightStyle[highlightType];
+
+					if (type && element.jsGraphIsShape) {
+
+						element.jsGraphIsShape.unHighlight(style, highlightType);
+					} else {
+
+						this.restoreAttributes(style, element, highlightType);
+					}
+				}
+			} catch (err) {
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
+					}
+				} finally {
+					if (_didIteratorError2) {
+						throw _iteratorError2;
+					}
+				}
+			}
+		}
+	}, {
+		key: 'getOptions',
+		value: function getOptions(type) {
+			return this.options[type ? 'graph' : 'molecule'];
+		}
+	}, {
+		key: 'getDom',
+		value: function getDom(type) {
+			return type ? this.graph.getWrapper() : this.molecule;
+		}
+	}, {
+		key: 'findTargettableElements',
+		value: function findTargettableElements(type) {
+			return this.getDom(type).querySelectorAll(this.getOptions(type).bindableFilter);
+		}
+	}, {
+		key: 'mouseup',
+		value: function mouseup(event, type) {
+
+			if (!this.binding) {
+				return;
+			}
+			// Cancels the highlight of the for targettable (bindable) elements of the other type
+			this.unHighlight(!type, this.findTargettableElements(!type), "binding");
+			this.unHighlight(type, this.findTargettableElements(type), "binding");
+
+			this.bindingLine.setAttribute('display', 'none');
+			this.binding = false;
+
+			var target = event.target;
+
+			if (!target.matches(this.getOptions(type).bindableFilter) && (this.getOptions(type).bindableFilterClass && !target.classList.includes(this.getOptions(type).bindableFilterClass) || !this.getOptions(type).bindableFilterClass)) {
+
+				this.binding = false;
+			} else {
+
+				if (type) {
+					this.currentTargetGraph = event.target;
+				} else {
+					this.currentTargetMolecule = event.target;
+				}
+
+				this.binding = false;
+				this.bindSave();
+			}
+
+			this.graph.unlockShapes();
+		}
+	}, {
+		key: 'mousemove',
+		value: function mousemove(e) {
+
+			if (!this.binding) {
+				return;
+			}
+
+			var rect = this.graph.getWrapper().getBoundingClientRect();
+
+			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX - rect.left);
+			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY - rect.top);
+		}
+		/*
+  		highlightPairs( element, type ) {
+  			
+  			var elements = [ element ];
+  			if( this.getOptions( type ).highlighted ) {
+  				elements = getEquivalents( target, element );
+  				highlightEquivalents( target, elements );
+  			}
+  			
+  			//getEquivalents( target, selector );
+  
+  
+  			var eqs = [];
+  			
+  //				unhighlight( element, target );
+  			for( var i = 0, l = elements.length; i < l; i ++ ) {
+  		
+  				allPairs( highlightPair, elements[ i ], function( pair ) {
+  					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
+  				} );
+  			}
+  
+  			
+  			eqs = $( eqs );
+  			
+  			if( options[ otherTarget( target ) ].highlighted ) {
+  				highlightEquivalents( otherTarget( target ), eqs );
+  			}
+  			
+  		},*/
+
+	}, {
+		key: 'mouseout',
+		value: function mouseout(event, type) {
+			var _this4 = this;
+
+			var elements = this.getEquivalents(event.target, type);
+
+			// We must unhighlight the equivalent elements, even if they are not paired yet		
+			this.unHighlight(type, elements, "equivalent");
+
+			if (this.binding) {
+				return;
+			}
+
+			this.allPairs(this.getUnique(event.target, type), function (pair) {
+
+				_this4.unhighlightPair(pair);
+			});
+		}
+	}, {
+		key: 'mouseenter',
+		value: function mouseenter(event, type) {
+			var _this5 = this;
+
+			var elements = this.getEquivalents(event.target, type);
+
+			// We must highlight the equivalent elements, even if they are not paired yet
+			this.highlight(type, elements, "equivalent");
+
+			if (this.binding) {
+				return;
+			}
+			this.allPairs(this.getUnique(event.target, type), function (pair) {
+
+				_this5.highlightPair(pair);
+			});
+		}
+		/*
+  		highlightEquivalents = function( target, elementsToHighlight ) {
+  
+  			var highlightedAttributes = options[ target ].highlighted;
+  
+  			if( elementsToHighlight[ 0 ] && elementsToHighlight[ 0 ].jsGraphIsShape ) {
+  
+  				elementsToHighlight.map( function( el ) {
+  
+  					this.jsGraphIsShape.highlight( highlightedAttributes, "assignmentHighlighted");
+  				} );
+  
+  			} else {
+  
+  				storeAttributes( highlightedAttributes, elementsToHighlight );
+  				elementsToHighlight.attr( highlightedAttributes );
+  
+  			}
+  
+  			highlighted[ target ] = elementsToHighlight;
+  
+  		},
+  */
+
+	}, {
+		key: 'getEquivalents',
+		value: function getEquivalents(element, type) {
+
+			var attribute = this.getOptions(type).equivalentAttribute,
+			    attributeValue = element.getAttribute(attribute);
+
+			return this.getEquivalentsFromUnique(attributeValue, type);
+		}
+	}, {
+		key: 'getEquivalentsFromUnique',
+		value: function getEquivalentsFromUnique(attributeValue, type) {
+
+			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + attributeValue + "\"]");
+		}
+	}, {
+		key: 'storeAttributes',
+		value: function storeAttributes(attr, element, type) {
+
+			var highlightState = element.getAttribute('data-highlight');
+
+			if (!highlightState) {
+				highlightState = [];
+			} else {
+				highlightState = highlightState.split(',');
+			}
+
+			if (highlightState.indexOf(type) == -1) {
+				highlightState.push(type);
+			} else {
+				return;
+			}
+
+			for (var i in attr) {
+				element.setAttribute('data-backup-' + type + '-' + i, element.getAttribute(i));
+			}
+			element.setAttribute('data-highlight', highlightState.join(','));
+		}
+	}, {
+		key: 'restoreAttributes',
+		value: function restoreAttributes(attr, element, type) {
+
+			var highlightState = element.getAttribute('data-highlight');
+
+			if (highlightState == null) {
+				highlightState = [];
+			} else {
+				highlightState = highlightState.split(',');
+			}
+
+			var position = highlightState.indexOf(type);
+
+			if (position == -1) {
+				return;
+			}
+
+			if (position < highlightState.length - 1) {
+
+				this.restoreAttributes(attr, element, highlightState[position + 1]);
+			}
+
+			for (var i in attr) {
+
+				element.setAttribute(i, element.getAttribute('data-backup-' + type + '-' + i));
+			}
+
+			highlightState = highlightState.splice(0, position);
+
+			element.setAttribute('data-highlight', highlightState.join(','));
+			return;
+		}
+	}, {
+		key: 'allPairs',
+		value: function allPairs(elementUnique, callback) {
+
+			for (var i = 0, l = this.pairs.length; i < l; i++) {
+
+				if (!elementUnique || this.pairs[i].graphUnique == elementUnique || this.pairs[i].moleculeUnique == elementUnique) {
+
+					//	fct.call( self, self.bindingPairs[ i ] );
+
+					if (callback) {
+						callback.call(this, this.pairs[i]);
+					}
+				}
+			}
+		}
+	}, {
+		key: 'highlightPair',
+		value: function highlightPair(pair, noHighlightTargets) {
+			var _this6 = this;
+
+			if (pair.line) {
+				return;
+			}
+
+			var elA = this.getDom(true).querySelector("[" + this.getOptions(true).equivalentAttribute + "=\"" + pair.graphUnique + "\"]");
+			var elB = this.getDom(false).querySelector("[" + this.getOptions(false).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]");
+
+			var posA = elA.getBoundingClientRect();
+			var posB = elB.getBoundingClientRect();
+
+			var bbA = elA.getBBox();
+			var bbB = elB.getBBox();
+
+			var posMain = this.graph.getWrapper().getBoundingClientRect();
+
+			var line;
+
+			if (this.stashedLines.length > 0) {
+				line = this.stashedLines.pop();
+				line.setAttribute('display', 'block');
+			} else {
+				line = document.createElementNS(ns, 'line');
+				line.addEventListener('click', function () {
+
+					if (_this6.options.removeEnabled) {
+
+						_this6.removePair(line.pair, line);
+
+						console.log(_this6.pairs);
+					}
+				});
+			}
+
+			line.setAttribute('stroke', 'black');
+			line.setAttribute('x1', posA.left - posMain.left + bbA.width / 2);
+			line.setAttribute('y1', posA.top - posMain.top + bbA.height / 2);
+			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2);
+			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2);
+
+			pair.line = line;
+			line.pair = pair;
+
+			this.currentLines.push(line);
+			this.graph.getDom().appendChild(line);
+
+			// Highlight all equivalent elements from both pairs !
+			if (!noHighlightTargets) {
+				this.highlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+				this.highlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			}
+		}
+	}, {
+		key: 'unhighlightPair',
+		value: function unhighlightPair(pair, noHighlightTargets) {
+
+			if (pair.line) {
+				this.removeLine(pair.line);
+			}
+
+			pair.line = false;
+
+			// Highlight all equivalent elements from both pairs !
+			if (!noHighlightTargets) {
+				this.unHighlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
+				this.unHighlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
+			}
+		}
+	}, {
+		key: 'getUnique',
+		value: function getUnique(dom, type) {
+			return dom.getAttribute(this.getOptions(type).equivalentAttribute);
+		}
+	}, {
+		key: 'bindSave',
+		value: function bindSave() {
+
+			if (!this.currentTargetMolecule || !this.currentTargetGraph) {
+				return;
+			}
+
+			var graphUnique = this.currentTargetGraph.getAttribute(this.getOptions(true).equivalentAttribute),
+			    moleculeUnique = this.currentTargetMolecule.getAttribute(this.getOptions(false).equivalentAttribute),
+			    pair = void 0;
+
+			if (pair = this.lookForPair(graphUnique, moleculeUnique)) {
+
+				// This pair has already been made. Let's just leave it at that
+
+				//this.removePair( pair );
+				return false;
+			}
+
+			//unhighlight( self.jsGraphShape, "jsGraphShape", true );
+
+			this.pairs.push({
+				graphUnique: graphUnique,
+				moleculeUnique: moleculeUnique
+			});
+
+			this.outputChanged();
+
+			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
+			//self.jsGraphShape.jsGraphIsShape.applyStyle();
+
+			this.currentTargetGraph = null;
+			this.currentTargetMolecule = null;
+		}
+	}, {
+		key: 'outputChanged',
+		value: function outputChanged() {
+			var pairing = this.pairs.map(function (pair) {
+				return { moleculeUnique: pair.moleculeUnique, graphUnique: pair.graphUnique };
+			}); // Remove line and potential other stuff
+			this.callbacksChanged.forEach(function (method) {
+				return method(pairing);
+			});
+		}
+	}, {
+		key: 'setPairing',
+		value: function setPairing(pairing) {
+			this.removeLines();
+			this.pairs = pairing;
+		}
+
+		/**
+   *	Looks for a pair based on BOTH the uniques of the graph and the molecule
+   *	@param {String} graphUnique - The unique (equivalent) string belonging to the graph element
+   *	@param {String} moleculeUnique - The unique (equivalent) string belonging to the molecule element
+   *	@returns {Object} - The found pair (if one) or false
+   */
+
+	}, {
+		key: 'lookForPair',
+		value: function lookForPair(graphUnique, moleculeUnique) {
+
+			for (var i = 0; i < this.pairs.length; i++) {
+
+				if (this.pairs[i].graphUnique == graphUnique && this.pairs[i].moleculeUnique == moleculeUnique) {
+					return this.pairs[i];
+				}
+			}
+
+			return false;
+		}
+
+		/**
+   *	Removes one pair, including its line
+   */
+
+	}, {
+		key: 'removePair',
+		value: function removePair(pair, line) {
+			this.pairs.splice(this.pairs.indexOf(pair), 1);
+			this.unhighlightPair(pair);
+			this.outputChanged();
+		}
+	}, {
+		key: 'removeLines',
+		value: function removeLines() {
+
+			this.pairs.forEach(function (pair) {
+				pair.line = null;
+			});
+
+			this.currentLines.forEach(function (line) {
+				line.pair = null;line.setAttribute('display', 'none');
+			});
+			this.stashedLines = this.stashedLines.concat(this.currentLines);
+			this.currentLines = [];
+		}
+	}, {
+		key: 'removeLine',
+		value: function removeLine(line) {
+
+			if (!line) {
+				return;
+			}
+
+			line.setAttribute('display', 'none');
+			this.stashedLines.push(line);
+			this.currentLines.splice(this.currentLines.indexOf(line), 1);
+		}
+	}, {
+		key: 'getAssignment',
+		value: function getAssignment() {
+			var _this7 = this;
+
+			return this.pairs.map(function (pair) {
+
+				if (!pair) {
+					return undefined;
+				}
+
+				var attrA = pair.graph.getAttribute(_this7.getOptions(true).equivalentAttribute);
+				var attrB = pair.molecule.getAttribute(self.getOptions(true).equivalentAttribute);
+
+				return [attrA, attrB];
+			});
+		}
+	}, {
+		key: 'removeGraphShape',
+		value: function removeGraphShape(uniqueID) {
+			var _this8 = this;
+
+			var pairs = this.allPairs(uniqueID, function (pair) {
+				_this8.removePair(pair);
+			});
+		}
+	}, {
+		key: 'findElement',
+		value: function findElement(type, selector) {
+
+			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + selector + "\"]");
+		}
+
+		// External setter
+
+	}, {
+		key: 'setAssignment',
+		value: function setAssignment(pairs) {
+
+			this.pairs = [];
+			pairs.forEach(function (pair) {
+
+				this.pairs.push({
+					graph: this.findElement(true, pair[0]),
+					molecule: this.findElement(false, pair[1]) });
+			});
+		}
+	}]);
+
+	return Assignment;
+}();
+
+;
+
+exports.default = Assignment;
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
@@ -19874,7 +20757,7 @@ var AxisY = function (_Axis) {
 exports.default = AxisY;
 
 /***/ }),
-/* 67 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20022,7 +20905,7 @@ function getZCorrectedValue(serie, x, min) {
 exports.default = Serie3DMixin;
 
 /***/ }),
-/* 68 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20692,7 +21575,7 @@ util.mix(SerieScatter, _graphMixin2.default);
 exports.default = SerieScatter;
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21115,7 +21998,7 @@ var SerieZone = function (_Serie) {
 exports.default = SerieZone;
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21501,7 +22384,7 @@ var ShapeRectangle = function (_GraphShape) {
 exports.default = ShapeRectangle;
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22009,7 +22892,7 @@ var LM = function () {
 exports.default = FitHost;
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22099,7 +22982,7 @@ module.exports = EventListener;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22131,7 +23014,7 @@ function focusNode(node) {
 module.exports = focusNode;
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22175,7 +23058,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22194,7 +23077,7 @@ module.exports = getActiveElement;
 // Therefore we re-export development-only version with all the PropTypes checks here.
 // However if one is migrating to the `prop-types` npm library, they will go through the
 // `index.js` entry point, and it will branch depending on the environment.
-var factory = __webpack_require__(76);
+var factory = __webpack_require__(77);
 module.exports = function(isValidElement) {
   // It is still allowed in 15.5.
   var throwOnDirectAccess = false;
@@ -22203,7 +23086,7 @@ module.exports = function(isValidElement) {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22222,7 +23105,7 @@ var emptyFunction = __webpack_require__(9);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
-var ReactPropTypesSecret = __webpack_require__(77);
+var ReactPropTypesSecret = __webpack_require__(78);
 var checkPropTypes = __webpack_require__(153);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
@@ -22689,7 +23572,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22710,7 +23593,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22863,7 +23746,7 @@ var CSSProperty = {
 module.exports = CSSProperty;
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22988,7 +23871,7 @@ module.exports = PooledClass.addPoolingTo(CallbackQueue);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23231,7 +24114,7 @@ module.exports = DOMPropertyOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23254,7 +24137,7 @@ var ReactDOMComponentFlags = {
 module.exports = ReactDOMComponentFlags;
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23460,7 +24343,7 @@ module.exports = ReactDOMSelect;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23495,7 +24378,7 @@ ReactEmptyComponent.injection = ReactEmptyComponentInjection;
 module.exports = ReactEmptyComponent;
 
 /***/ }),
-/* 84 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23522,7 +24405,7 @@ var ReactFeatureFlags = {
 module.exports = ReactFeatureFlags;
 
 /***/ }),
-/* 85 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23596,7 +24479,7 @@ module.exports = ReactHostComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23615,8 +24498,8 @@ module.exports = ReactHostComponent;
 var ReactDOMSelection = __webpack_require__(179);
 
 var containsNode = __webpack_require__(141);
-var focusNode = __webpack_require__(73);
-var getActiveElement = __webpack_require__(74);
+var focusNode = __webpack_require__(74);
+var getActiveElement = __webpack_require__(75);
 
 function isInDocument(node) {
   return containsNode(document.documentElement, node);
@@ -23725,7 +24608,7 @@ var ReactInputSelection = {
 module.exports = ReactInputSelection;
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23751,7 +24634,7 @@ var ReactCurrentOwner = __webpack_require__(13);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMContainerInfo = __webpack_require__(171);
 var ReactDOMFeatureFlags = __webpack_require__(173);
-var ReactFeatureFlags = __webpack_require__(84);
+var ReactFeatureFlags = __webpack_require__(85);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
 var ReactMarkupChecksum = __webpack_require__(193);
@@ -23760,7 +24643,7 @@ var ReactUpdateQueue = __webpack_require__(56);
 var ReactUpdates = __webpack_require__(12);
 
 var emptyObject = __webpack_require__(29);
-var instantiateReactComponent = __webpack_require__(95);
+var instantiateReactComponent = __webpack_require__(96);
 var invariant = __webpack_require__(1);
 var setInnerHTML = __webpack_require__(41);
 var shouldUpdateReactComponent = __webpack_require__(62);
@@ -24269,7 +25152,7 @@ module.exports = ReactMount;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24315,7 +25198,7 @@ module.exports = ReactNodeTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24337,7 +25220,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24369,7 +25252,7 @@ var ViewportMetrics = {
 module.exports = ViewportMetrics;
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24433,7 +25316,7 @@ module.exports = accumulateInto;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24469,7 +25352,7 @@ function forEachAccumulated(arr, cb, scope) {
 module.exports = forEachAccumulated;
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24485,7 +25368,7 @@ module.exports = forEachAccumulated;
 
 
 
-var ReactNodeTypes = __webpack_require__(88);
+var ReactNodeTypes = __webpack_require__(89);
 
 function getHostComponentFromComposite(inst) {
   var type;
@@ -24504,7 +25387,7 @@ function getHostComponentFromComposite(inst) {
 module.exports = getHostComponentFromComposite;
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24542,7 +25425,7 @@ function getTextContentAccessor() {
 module.exports = getTextContentAccessor;
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24562,8 +25445,8 @@ var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
 var ReactCompositeComponent = __webpack_require__(168);
-var ReactEmptyComponent = __webpack_require__(83);
-var ReactHostComponent = __webpack_require__(85);
+var ReactEmptyComponent = __webpack_require__(84);
+var ReactHostComponent = __webpack_require__(86);
 
 var getNextDebugID = __webpack_require__(236);
 var invariant = __webpack_require__(1);
@@ -24677,7 +25560,7 @@ module.exports = instantiateReactComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24733,7 +25616,7 @@ function isTextInputElement(elem) {
 module.exports = isTextInputElement;
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24790,7 +25673,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setTextContent;
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24972,7 +25855,7 @@ module.exports = traverseAllChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24997,7 +25880,7 @@ var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol['for'] && Symbol
 module.exports = REACT_ELEMENT_TYPE;
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25027,7 +25910,7 @@ var ReactElement = __webpack_require__(20);
 var checkReactTypeSpec = __webpack_require__(235);
 
 var canDefineProperty = __webpack_require__(42);
-var getIteratorFn = __webpack_require__(102);
+var getIteratorFn = __webpack_require__(103);
 var warning = __webpack_require__(2);
 
 function getDeclarationErrorAddendum() {
@@ -25256,7 +26139,7 @@ module.exports = ReactElementValidator;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25287,7 +26170,7 @@ module.exports = ReactPropTypeLocationNames;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25333,7 +26216,7 @@ function getIteratorFn(maybeIterable) {
 module.exports = getIteratorFn;
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -25403,886 +26286,6 @@ Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg")]).the
 
 	__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', options: options, series: series, molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
 });
-
-/***/ }),
-/* 104 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- *
- *	Assignment code
- *	Norman Pellet, 2017
- *	Configuration example:
- *
-
-graph: {
-	bindableFilter: "", // a querySelector element that defined which element is a target
-	equivalentAttribute: 'id',	// A unique filter
-	highlightStyle: {
-
-		'binding': {				// The style the object takes when it's a highlighted target
-			'stroke': 'red',		
-			'stroke-width': '2px'
-		},
-		equivalent: {				// The style the object takes when it's equivalent
-			'stroke': 'blue',
-			'stroke-width': '2px'
-		}
-	}
-},
-
-molecule: {
-	bindableFilter: '[data-atomid]',
-	bindableFilterClass: 'event',
-	equivalentAttribute: 'data-atomid',
-	highlightStyle: {
-
-		'binding': {
-			'fill': 'red',
-			'fill-opacity': '0.3'
-		},
-		'equivalent': {
-			'fill': 'yellow',
-			'fill-opacity': '0.3'
-		}
-	}
-},
-
-enabled: false
-
- */
-
-var ns = 'http://www.w3.org/2000/svg';
-
-var Assignment = function () {
-	function Assignment(graph, molecule, options) {
-		var _this = this;
-
-		_classCallCheck(this, Assignment);
-
-		this.options = options;
-		this.pairs = [];
-		this.target = {};
-
-		this.stashedLines = [];
-		this.currentLines = [];
-
-		this.graph = graph;
-		this.molecule = molecule;
-
-		this.callbacksChanged = [];
-
-		this.graph.getWrapper().addEventListener('mousedown', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			if (e.target.matches(options.graph.bindableFilter)) {
-				_this.mousedown(e, true);
-			}
-		}, true); // It is critical to capture the event, and not bubble it. graphWrapper is at an inferior level from groupEvent, where the graph events are usually attached. If we don't do this, the graph will start creating shapes
-
-		this.graph.getWrapper().addEventListener('mouseover', function (e) {
-
-			/*if( ! this.isEnabled() ) {
-   	return;
-   }
-   */
-			if (e.target.matches(options.graph.bindableFilter)) {
-				_this.mouseenter(e, true);
-			}
-		});
-
-		this.graph.getWrapper().addEventListener('mouseout', function (e) {
-			/*
-   				if( ! this.isEnabled() ) {
-   					return;
-   				}
-   */
-
-			if (_this.options.removeEnabled) {
-				return;
-			}
-
-			if (e.target.matches(options.graph.bindableFilter)) {
-
-				_this.mouseout(e, true);
-			}
-		});
-
-		this.graph.getWrapper().addEventListener('mouseup', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			_this.mouseup(e, true);
-		});
-
-		this.molecule.addEventListener('mousedown', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			if (e.target.matches(options.molecule.bindableFilter)) {
-				_this.mousedown(e, false);
-			}
-		});
-
-		this.molecule.addEventListener('mouseover', function (e) {
-
-			/*	if( ! this.isEnabled() ) {
-   		return;
-   	}
-   */
-
-			if (e.target.matches(options.molecule.bindableFilter)) {
-				_this.mouseenter(e, false);
-			}
-		});
-
-		this.molecule.addEventListener('mouseout', function (e) {
-
-			/*
-   				if( ! this.isEnabled() ) {
-   					return;
-   				}
-   */
-
-			if (_this.options.removeEnabled) {
-				return;
-			}
-
-			if (e.target.matches(options.molecule.bindableFilter)) {
-
-				_this.mouseout(e, false);
-			}
-		});
-
-		this.molecule.addEventListener('mouseup', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			_this.mouseup(e, false);
-		});
-
-		/*this.topSVG.addEventListener('mousemove', ( e ) => {
-  	
-  		if( ! this.isEnabled() ) {
-  		return;
-  	}
-  		this.mousemove( e );
-  });
-  */
-		this.molecule.addEventListener('mousemove', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			_this.mousemove(e);
-		});
-
-		this.graph.getWrapper().addEventListener('mousemove', function (e) {
-
-			if (!_this.isEnabled()) {
-				return;
-			}
-
-			_this.mousemove(e);
-		});
-
-		var bindingLine = document.createElementNS(ns, 'line');
-		bindingLine.setAttribute('stroke', 'black');
-		this.graph.getDom().appendChild(bindingLine);
-
-		this.bindingLine = bindingLine;
-
-		this.options = options;
-	}
-	//	domMolecule, domGraphs, domGlobal, moleculeFilter, graphs
-
-
-	_createClass(Assignment, [{
-		key: 'onChange',
-		value: function onChange(method) {
-			this.callbacksChanged.push(method);
-			return this;
-		}
-		/*
-   *	ENABLE AND DISABLE ASSIGNMENT
-   *
-   */
-
-	}, {
-		key: 'isEnabled',
-		value: function isEnabled() {
-			return this.options.enabled;
-		}
-	}, {
-		key: 'enable',
-		value: function enable() {
-			this.options.enabled = true;
-		}
-	}, {
-		key: 'disable',
-		value: function disable() {
-			this.options.enabled = false;
-		}
-	}, {
-		key: 'toggleEnable',
-		value: function toggleEnable() {
-			this.options.enabled = !this.options.enabled;
-		}
-
-		/*
-   *	ENABLE AND DISABLE ASSIGNMENT REMOVAL
-   *
-   */
-
-	}, {
-		key: 'enableRemove',
-		value: function enableRemove() {
-			var _this2 = this;
-
-			this.removeLines();
-
-			this.allPairs(false, function (pair) {
-
-				_this2.highlightPair(pair);
-			});
-
-			this.options.removeEnabled = true;
-		}
-	}, {
-		key: 'disableRemove',
-		value: function disableRemove() {
-			var _this3 = this;
-
-			this.allPairs(false, function (pair) {
-
-				_this3.unhighlightPair(pair);
-			});
-
-			this.removeLines();
-
-			this.options.removeEnabled = false;
-		}
-	}, {
-		key: 'mousedown',
-		value: function mousedown(event, type) {
-
-			if (event.shiftKey) {
-
-				this.graph.lockShapes();
-
-				this.binding = true;
-
-				if (type) {
-					// Graph element
-
-					this.currentTargetGraph = event.target;
-				} else {
-
-					this.currentTargetMolecule = event.target;
-				}
-
-				event.preventDefault();
-				event.stopPropagation();
-
-				var bb = event.target.getBBox();
-				var pos = event.target.getBoundingClientRect();
-
-				var x = pos.left + bb.width / 2,
-				    y = pos.top + bb.height / 2;
-
-				this.bindingLine.setAttribute('display', 'block');
-				this.bindingLine.setAttribute('x1', x);
-				this.bindingLine.setAttribute('x2', x);
-				this.bindingLine.setAttribute('y1', y);
-				this.bindingLine.setAttribute('y2', y);
-
-				// Look for targettable (bindable) elements of the other type and highlight them
-				this.highlight(!type, this.findTargettableElements(!type), 'binding');
-			}
-		}
-	}, {
-		key: 'highlight',
-		value: function highlight(type, targetEls, highlightType) {
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
-
-			try {
-
-				for (var _iterator = targetEls[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var element = _step.value;
-
-
-					var style = this.getOptions(type).highlightStyle[highlightType];
-
-					if (type && element.jsGraphIsShape) {
-						// It is a shape
-						console.log(style, highlightType);
-						element.jsGraphIsShape.highlight(style, highlightType);
-					} else {
-						// It is an atom
-
-						this.storeAttributes(style, element, highlightType);
-
-						for (var i in style) {
-							element.setAttribute(i, style[i]);
-						}
-					}
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
-			}
-		}
-	}, {
-		key: 'unHighlight',
-		value: function unHighlight(type, targetEls, highlightType) {
-			var _iteratorNormalCompletion2 = true;
-			var _didIteratorError2 = false;
-			var _iteratorError2 = undefined;
-
-			try {
-
-				for (var _iterator2 = targetEls[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-					var element = _step2.value;
-
-
-					var style = this.getOptions(type).highlightStyle[highlightType];
-
-					if (type && element.jsGraphIsShape) {
-						console.warn(style, highlightType);
-						element.jsGraphIsShape.unHighlight(style, highlightType);
-					} else {
-
-						this.restoreAttributes(style, element, highlightType);
-					}
-				}
-			} catch (err) {
-				_didIteratorError2 = true;
-				_iteratorError2 = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion2 && _iterator2.return) {
-						_iterator2.return();
-					}
-				} finally {
-					if (_didIteratorError2) {
-						throw _iteratorError2;
-					}
-				}
-			}
-		}
-	}, {
-		key: 'getOptions',
-		value: function getOptions(type) {
-			return this.options[type ? 'graph' : 'molecule'];
-		}
-	}, {
-		key: 'getDom',
-		value: function getDom(type) {
-			return type ? this.graph.getWrapper() : this.molecule;
-		}
-	}, {
-		key: 'findTargettableElements',
-		value: function findTargettableElements(type) {
-			return this.getDom(type).querySelectorAll(this.getOptions(type).bindableFilter);
-		}
-	}, {
-		key: 'mouseup',
-		value: function mouseup(event, type) {
-
-			if (!this.binding) {
-				return;
-			}
-			// Cancels the highlight of the for targettable (bindable) elements of the other type
-			this.unHighlight(!type, this.findTargettableElements(!type), "binding");
-			this.unHighlight(type, this.findTargettableElements(type), "binding");
-
-			this.bindingLine.setAttribute('display', 'none');
-			this.binding = false;
-
-			var target = event.target;
-
-			if (!target.matches(this.getOptions(type).bindableFilter) && (this.getOptions(type).bindableFilterClass && !target.classList.includes(this.getOptions(type).bindableFilterClass) || !this.getOptions(type).bindableFilterClass)) {
-
-				this.binding = false;
-			} else {
-
-				if (type) {
-					this.currentTargetGraph = event.target;
-				} else {
-					this.currentTargetMolecule = event.target;
-				}
-
-				this.binding = false;
-				this.bindSave();
-			}
-
-			this.graph.unlockShapes();
-		}
-	}, {
-		key: 'mousemove',
-		value: function mousemove(e) {
-
-			if (!this.binding) {
-				return;
-			}
-
-			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX);
-			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY);
-		}
-		/*
-  		highlightPairs( element, type ) {
-  			
-  			var elements = [ element ];
-  			if( this.getOptions( type ).highlighted ) {
-  				elements = getEquivalents( target, element );
-  				highlightEquivalents( target, elements );
-  			}
-  			
-  			//getEquivalents( target, selector );
-  
-  
-  			var eqs = [];
-  			
-  //				unhighlight( element, target );
-  			for( var i = 0, l = elements.length; i < l; i ++ ) {
-  		
-  				allPairs( highlightPair, elements[ i ], function( pair ) {
-  					eqs = eqs.concat( $.makeArray( getEquivalents( otherTarget( target ), pair[ otherTarget( target ) ] ) ) );
-  				} );
-  			}
-  
-  			
-  			eqs = $( eqs );
-  			
-  			if( options[ otherTarget( target ) ].highlighted ) {
-  				highlightEquivalents( otherTarget( target ), eqs );
-  			}
-  			
-  		},*/
-
-	}, {
-		key: 'mouseout',
-		value: function mouseout(event, type) {
-			var _this4 = this;
-
-			var elements = this.getEquivalents(event.target, type);
-
-			// We must unhighlight the equivalent elements, even if they are not paired yet		
-			this.unHighlight(type, elements, "equivalent");
-
-			if (this.binding) {
-				return;
-			}
-
-			this.allPairs(this.getUnique(event.target, type), function (pair) {
-
-				_this4.unhighlightPair(pair);
-			});
-		}
-	}, {
-		key: 'mouseenter',
-		value: function mouseenter(event, type) {
-			var _this5 = this;
-
-			var elements = this.getEquivalents(event.target, type);
-
-			// We must highlight the equivalent elements, even if they are not paired yet
-			this.highlight(type, elements, "equivalent");
-
-			if (this.binding) {
-				return;
-			}
-			this.allPairs(this.getUnique(event.target, type), function (pair) {
-
-				_this5.highlightPair(pair);
-			});
-		}
-		/*
-  		highlightEquivalents = function( target, elementsToHighlight ) {
-  
-  			var highlightedAttributes = options[ target ].highlighted;
-  
-  			if( elementsToHighlight[ 0 ] && elementsToHighlight[ 0 ].jsGraphIsShape ) {
-  
-  				elementsToHighlight.map( function( el ) {
-  
-  					this.jsGraphIsShape.highlight( highlightedAttributes, "assignmentHighlighted");
-  				} );
-  
-  			} else {
-  
-  				storeAttributes( highlightedAttributes, elementsToHighlight );
-  				elementsToHighlight.attr( highlightedAttributes );
-  
-  			}
-  
-  			highlighted[ target ] = elementsToHighlight;
-  
-  		},
-  */
-
-	}, {
-		key: 'getEquivalents',
-		value: function getEquivalents(element, type) {
-
-			var attribute = this.getOptions(type).equivalentAttribute,
-			    attributeValue = element.getAttribute(attribute);
-
-			return this.getEquivalentsFromUnique(attributeValue, type);
-		}
-	}, {
-		key: 'getEquivalentsFromUnique',
-		value: function getEquivalentsFromUnique(attributeValue, type) {
-
-			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + attributeValue + "\"]");
-		}
-	}, {
-		key: 'storeAttributes',
-		value: function storeAttributes(attr, element, type) {
-
-			var highlightState = element.getAttribute('data-highlight');
-
-			if (!highlightState) {
-				highlightState = [];
-			} else {
-				highlightState = highlightState.split(',');
-			}
-
-			if (highlightState.indexOf(type) == -1) {
-				highlightState.push(type);
-			} else {
-				return;
-			}
-
-			for (var i in attr) {
-				element.setAttribute('data-backup-' + type + '-' + i, element.getAttribute(i));
-			}
-			element.setAttribute('data-highlight', highlightState.join(','));
-		}
-	}, {
-		key: 'restoreAttributes',
-		value: function restoreAttributes(attr, element, type) {
-
-			var highlightState = element.getAttribute('data-highlight');
-
-			if (highlightState == null) {
-				highlightState = [];
-			} else {
-				highlightState = highlightState.split(',');
-			}
-
-			var position = highlightState.indexOf(type);
-
-			if (position == -1) {
-				return;
-			}
-
-			if (position < highlightState.length - 1) {
-
-				this.restoreAttributes(attr, element, highlightState[position + 1]);
-			}
-
-			for (var i in attr) {
-
-				element.setAttribute(i, element.getAttribute('data-backup-' + type + '-' + i));
-			}
-
-			highlightState = highlightState.splice(0, position);
-
-			element.setAttribute('data-highlight', highlightState.join(','));
-			return;
-		}
-	}, {
-		key: 'allPairs',
-		value: function allPairs(elementUnique, callback) {
-
-			for (var i = 0, l = this.pairs.length; i < l; i++) {
-
-				if (!elementUnique || this.pairs[i].graphUnique == elementUnique || this.pairs[i].moleculeUnique == elementUnique) {
-
-					//	fct.call( self, self.bindingPairs[ i ] );
-
-					if (callback) {
-						callback.call(this, this.pairs[i]);
-					}
-				}
-			}
-		}
-	}, {
-		key: 'highlightPair',
-		value: function highlightPair(pair, noHighlightTargets) {
-			var _this6 = this;
-
-			if (pair.line) {
-				return;
-			}
-
-			var elA = this.getDom(true).querySelector("[" + this.getOptions(true).equivalentAttribute + "=\"" + pair.graphUnique + "\"]");
-			var elB = this.getDom(false).querySelector("[" + this.getOptions(false).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]");
-
-			var posA = elA.getBoundingClientRect();
-			var posB = elB.getBoundingClientRect();
-
-			var bbA = elA.getBBox();
-			var bbB = elB.getBBox();
-
-			var posMain = this.graph.getWrapper().getBoundingClientRect();
-
-			var line;
-
-			if (this.stashedLines.length > 0) {
-				line = this.stashedLines.pop();
-				line.setAttribute('display', 'block');
-			} else {
-				line = document.createElementNS(ns, 'line');
-				line.addEventListener('click', function () {
-
-					if (_this6.options.removeEnabled) {
-
-						_this6.removePair(line.pair, line);
-
-						console.log(_this6.pairs);
-					}
-				});
-			}
-
-			line.setAttribute('stroke', 'black');
-			line.setAttribute('x1', posA.left - posMain.left + bbA.width / 2);
-			line.setAttribute('y1', posA.top - posMain.top + bbA.height / 2);
-			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2);
-			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2);
-
-			pair.line = line;
-			line.pair = pair;
-
-			this.currentLines.push(line);
-			this.graph.getDom().appendChild(line);
-
-			// Highlight all equivalent elements from both pairs !
-			if (!noHighlightTargets) {
-				this.highlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
-				this.highlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
-			}
-		}
-	}, {
-		key: 'unhighlightPair',
-		value: function unhighlightPair(pair, noHighlightTargets) {
-
-			if (pair.line) {
-				this.removeLine(pair.line);
-			}
-
-			pair.line = false;
-
-			// Highlight all equivalent elements from both pairs !
-			if (!noHighlightTargets) {
-				this.unHighlight(true, this.getEquivalentsFromUnique(pair.graphUnique, true), "equivalent");
-				this.unHighlight(false, this.getEquivalentsFromUnique(pair.moleculeUnique, true), "equivalent");
-			}
-		}
-	}, {
-		key: 'getUnique',
-		value: function getUnique(dom, type) {
-			return dom.getAttribute(this.getOptions(type).equivalentAttribute);
-		}
-	}, {
-		key: 'bindSave',
-		value: function bindSave() {
-
-			if (!this.currentTargetMolecule || !this.currentTargetGraph) {
-				return;
-			}
-
-			var graphUnique = this.currentTargetGraph.getAttribute(this.getOptions(true).equivalentAttribute),
-			    moleculeUnique = this.currentTargetMolecule.getAttribute(this.getOptions(false).equivalentAttribute),
-			    pair = void 0;
-
-			if (pair = this.lookForPair(graphUnique, moleculeUnique)) {
-
-				// This pair has already been made. Let's just leave it at that
-
-				//this.removePair( pair );
-				return false;
-			}
-
-			//unhighlight( self.jsGraphShape, "jsGraphShape", true );
-
-			this.pairs.push({
-				graphUnique: graphUnique,
-				moleculeUnique: moleculeUnique
-			});
-
-			this.outputChanged();
-
-			//self.jsGraphShape.jsGraphIsShape.setStrokeDasharray("5,5");
-			//self.jsGraphShape.jsGraphIsShape.applyStyle();
-
-			this.currentTargetGraph = null;
-			this.currentTargetMolecule = null;
-		}
-	}, {
-		key: 'outputChanged',
-		value: function outputChanged() {
-			var pairing = this.pairs.map(function (pair) {
-				return { moleculeUnique: pair.moleculeUnique, graphUnique: pair.graphUnique };
-			}); // Remove line and potential other stuff
-			this.callbacksChanged.forEach(function (method) {
-				return method(pairing);
-			});
-		}
-	}, {
-		key: 'setPairing',
-		value: function setPairing(pairing) {
-			this.removeLines();
-			this.pairs = pairing;
-		}
-
-		/**
-   *	Looks for a pair based on BOTH the uniques of the graph and the molecule
-   *	@param {String} graphUnique - The unique (equivalent) string belonging to the graph element
-   *	@param {String} moleculeUnique - The unique (equivalent) string belonging to the molecule element
-   *	@returns {Object} - The found pair (if one) or false
-   */
-
-	}, {
-		key: 'lookForPair',
-		value: function lookForPair(graphUnique, moleculeUnique) {
-
-			for (var i = 0; i < this.pairs.length; i++) {
-
-				if (this.pairs[i].graphUnique == graphUnique && this.pairs[i].moleculeUnique == moleculeUnique) {
-					return this.pairs[i];
-				}
-			}
-
-			return false;
-		}
-
-		/**
-   *	Removes one pair, including its line
-   */
-
-	}, {
-		key: 'removePair',
-		value: function removePair(pair, line) {
-			this.pairs.splice(this.pairs.indexOf(pair), 1);
-			this.unhighlightPair(pair);
-			this.outputChanged();
-		}
-	}, {
-		key: 'removeLines',
-		value: function removeLines() {
-
-			this.pairs.forEach(function (pair) {
-				pair.line = null;
-			});
-
-			this.currentLines.forEach(function (line) {
-				line.pair = null;line.setAttribute('display', 'none');
-			});
-			this.stashedLines = this.stashedLines.concat(this.currentLines);
-			this.currentLines = [];
-		}
-	}, {
-		key: 'removeLine',
-		value: function removeLine(line) {
-
-			if (!line) {
-				return;
-			}
-
-			line.setAttribute('display', 'none');
-			this.stashedLines.push(line);
-			this.currentLines.splice(this.currentLines.indexOf(line), 1);
-		}
-	}, {
-		key: 'getAssignment',
-		value: function getAssignment() {
-			var _this7 = this;
-
-			return this.pairs.map(function (pair) {
-
-				if (!pair) {
-					return undefined;
-				}
-
-				var attrA = pair.graph.getAttribute(_this7.getOptions(true).equivalentAttribute);
-				var attrB = pair.molecule.getAttribute(self.getOptions(true).equivalentAttribute);
-
-				return [attrA, attrB];
-			});
-		}
-	}, {
-		key: 'removeGraphShape',
-		value: function removeGraphShape(uniqueID) {
-			var _this8 = this;
-
-			var pairs = this.allPairs(uniqueID, function (pair) {
-				_this8.removePair(pair);
-			});
-		}
-	}, {
-		key: 'findElement',
-		value: function findElement(type, selector) {
-
-			return this.getDom(type).querySelectorAll("[" + this.getOptions(type).equivalentAttribute + "=\"" + selector + "\"]");
-		}
-
-		// External setter
-
-	}, {
-		key: 'setAssignment',
-		value: function setAssignment(pairs) {
-
-			this.pairs = [];
-			pairs.forEach(function (pair) {
-
-				this.pairs.push({
-					graph: this.findElement(true, pair[0]),
-					molecule: this.findElement(false, pair[1]) });
-			});
-		}
-	}]);
-
-	return Assignment;
-}();
-
-;
-
-exports.default = Assignment;
 
 /***/ }),
 /* 105 */
@@ -28387,7 +28390,7 @@ var _graphAxis = __webpack_require__(44);
 
 var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-var _graphAxis3 = __webpack_require__(66);
+var _graphAxis3 = __webpack_require__(67);
 
 var _graphAxis4 = _interopRequireDefault(_graphAxis3);
 
@@ -28399,7 +28402,7 @@ var _graphSerie = __webpack_require__(22);
 
 var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-var _graphSerie3 = __webpack_require__(68);
+var _graphSerie3 = __webpack_require__(69);
 
 var _graphSerie4 = _interopRequireDefault(_graphSerie3);
 
@@ -34456,7 +34459,7 @@ var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _graphMixin = __webpack_require__(67);
+var _graphMixin = __webpack_require__(68);
 
 var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
@@ -34915,7 +34918,7 @@ var _graph = __webpack_require__(17);
 
 var _graph2 = _interopRequireDefault(_graph);
 
-var _graphSerie = __webpack_require__(69);
+var _graphSerie = __webpack_require__(70);
 
 var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
@@ -34923,7 +34926,7 @@ var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _graphMixin = __webpack_require__(67);
+var _graphMixin = __webpack_require__(68);
 
 var _graphMixin2 = _interopRequireDefault(_graphMixin);
 
@@ -36011,6 +36014,7 @@ var ShapeNMRIntegral = function (_Shape) {
         if (i > 0 && (points[i - 1][2] > sum / 2 && points[i][2] <= sum / 2 || points[i - 1][2] < sum / 2 && points[i][2] >= sum / 2)) {
 
           var pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
+
           this.setLabelPosition({
             x: points[i][0] + 10 + "px",
             y: pos + "px"
@@ -36487,7 +36491,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphShape = __webpack_require__(70);
+var _graphShape = __webpack_require__(71);
 
 var _graphShape2 = _interopRequireDefault(_graphShape);
 
@@ -36853,7 +36857,7 @@ aggregatorWorker.onmessage = function (e) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__ = __webpack_require__(137);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js__ = __webpack_require__(104);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assignment_js__);
 
 
@@ -37190,7 +37194,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", e => {
 
-			if (e.keyCode == 91 || e.keyCode == 93) {
+			if (window.navigator.platform == "MacIntel" && (e.keyCode == 91 || e.keyCode == 93) || window.navigator.platform !== "MacIntel" && e.keyCode == 17) {
 
 				this.assignment.enableRemove();
 				this.removeEnabled = true;
@@ -37450,7 +37454,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					data: serie.data,
 					shift: serie.shift,
 					integrals: serie.integrals,
-					integralLabelRatio: serie.integralLabelRatio
+					integralLabelRatio: serie.integralLabelRatio,
+					assignement: serie.assignment
 				}))
 			)
 		);
@@ -37458,6 +37463,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 }
 
 NMR1D.childContextTypes = {
+	assignement: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a),
 	graph: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_1__src_graph___default.a),
 	integralBaseline: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.number
 };
@@ -37582,6 +37588,9 @@ NMRIntegral.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assignment_js__);
+
 
 
 
@@ -37600,7 +37609,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this._jsGraphSerie = this._jsGraphGraph.newSerie(this.props.name, {
 			redrawShapesAfterDraw: true
 		}, "line").autoAxes();
-		console.log(this.props.name == 'master');
+
 		this._jsGraphSerie.setLayer(this.props.name == 'master' ? 2 : 1);
 		this._jsGraphSerie.on("draw", () => {
 			this.loaded();
@@ -37723,9 +37732,10 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		if (redraw) {
 			this.assignWaveform();
 		}
-
+		console.log(nextProps);
 		if (nextProps.assignment) {
-			this._assignment.setPairing(this.getSerieState());
+			console.log(arguments);
+			//	this._assignment.setPairing( this.getSerieState() );
 		}
 
 		this.setState({ labelRatio: nextProps.integralLabelRatio });
@@ -37796,6 +37806,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 }
 
 NMRSerie.contextTypes = {
+	assignement: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a),
 	graph: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_1__src_graph___default.a)
 };
 
@@ -38656,7 +38667,7 @@ module.exports = performanceNow;
 if (process.env.NODE_ENV !== 'production') {
   var invariant = __webpack_require__(1);
   var warning = __webpack_require__(2);
-  var ReactPropTypesSecret = __webpack_require__(77);
+  var ReactPropTypesSecret = __webpack_require__(78);
   var loggedTypeFailures = {};
 }
 
@@ -38875,7 +38886,7 @@ module.exports = ARIADOMPropertyConfig;
 
 var ReactDOMComponentTree = __webpack_require__(6);
 
-var focusNode = __webpack_require__(73);
+var focusNode = __webpack_require__(74);
 
 var AutoFocusUtils = {
   focusDOMComponent: function () {
@@ -39292,7 +39303,7 @@ module.exports = BeforeInputEventPlugin;
 
 
 
-var CSSProperty = __webpack_require__(78);
+var CSSProperty = __webpack_require__(79);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactInstrumentation = __webpack_require__(10);
 
@@ -39516,7 +39527,7 @@ var SyntheticEvent = __webpack_require__(15);
 
 var getEventTarget = __webpack_require__(60);
 var isEventSupported = __webpack_require__(61);
-var isTextInputElement = __webpack_require__(96);
+var isTextInputElement = __webpack_require__(97);
 
 var eventTypes = {
   change: {
@@ -40052,7 +40063,7 @@ var _assign = __webpack_require__(5);
 
 var PooledClass = __webpack_require__(19);
 
-var getTextContentAccessor = __webpack_require__(94);
+var getTextContentAccessor = __webpack_require__(95);
 
 /**
  * This helper class stores information about text content of a target node,
@@ -40391,10 +40402,10 @@ module.exports = HTMLDOMPropertyConfig;
 
 var ReactReconciler = __webpack_require__(24);
 
-var instantiateReactComponent = __webpack_require__(95);
+var instantiateReactComponent = __webpack_require__(96);
 var KeyEscapeUtils = __webpack_require__(52);
 var shouldUpdateReactComponent = __webpack_require__(62);
-var traverseAllChildren = __webpack_require__(98);
+var traverseAllChildren = __webpack_require__(99);
 var warning = __webpack_require__(2);
 
 var ReactComponentTreeHook;
@@ -40593,7 +40604,7 @@ var ReactCurrentOwner = __webpack_require__(13);
 var ReactErrorUtils = __webpack_require__(55);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactNodeTypes = __webpack_require__(88);
+var ReactNodeTypes = __webpack_require__(89);
 var ReactReconciler = __webpack_require__(24);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -41496,13 +41507,13 @@ module.exports = ReactCompositeComponent;
 
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDefaultInjection = __webpack_require__(186);
-var ReactMount = __webpack_require__(87);
+var ReactMount = __webpack_require__(88);
 var ReactReconciler = __webpack_require__(24);
 var ReactUpdates = __webpack_require__(12);
 var ReactVersion = __webpack_require__(201);
 
 var findDOMNode = __webpack_require__(218);
-var getHostComponentFromComposite = __webpack_require__(93);
+var getHostComponentFromComposite = __webpack_require__(94);
 var renderSubtreeIntoContainer = __webpack_require__(225);
 var warning = __webpack_require__(2);
 
@@ -41619,15 +41630,15 @@ var CSSPropertyOperations = __webpack_require__(159);
 var DOMLazyTree = __webpack_require__(23);
 var DOMNamespaces = __webpack_require__(50);
 var DOMProperty = __webpack_require__(16);
-var DOMPropertyOperations = __webpack_require__(80);
+var DOMPropertyOperations = __webpack_require__(81);
 var EventPluginHub = __webpack_require__(30);
 var EventPluginRegistry = __webpack_require__(36);
 var ReactBrowserEventEmitter = __webpack_require__(37);
-var ReactDOMComponentFlags = __webpack_require__(81);
+var ReactDOMComponentFlags = __webpack_require__(82);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMInput = __webpack_require__(175);
 var ReactDOMOption = __webpack_require__(178);
-var ReactDOMSelect = __webpack_require__(82);
+var ReactDOMSelect = __webpack_require__(83);
 var ReactDOMTextarea = __webpack_require__(181);
 var ReactInstrumentation = __webpack_require__(10);
 var ReactMultiChild = __webpack_require__(194);
@@ -42786,7 +42797,7 @@ module.exports = ReactDOMIDOperations;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var DOMPropertyOperations = __webpack_require__(80);
+var DOMPropertyOperations = __webpack_require__(81);
 var LinkedValueUtils = __webpack_require__(53);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(12);
@@ -43226,7 +43237,7 @@ var _assign = __webpack_require__(5);
 
 var React = __webpack_require__(25);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMSelect = __webpack_require__(82);
+var ReactDOMSelect = __webpack_require__(83);
 
 var warning = __webpack_require__(2);
 var didWarnInvalidOptionChildren = false;
@@ -43354,7 +43365,7 @@ module.exports = ReactDOMOption;
 var ExecutionEnvironment = __webpack_require__(7);
 
 var getNodeForCharacterOffset = __webpack_require__(222);
-var getTextContentAccessor = __webpack_require__(94);
+var getTextContentAccessor = __webpack_require__(95);
 
 /**
  * While `isCollapsed` is available on the Selection object and `collapsed`
@@ -44758,7 +44769,7 @@ module.exports = ReactEventEmitterMixin;
 
 var _assign = __webpack_require__(5);
 
-var EventListener = __webpack_require__(72);
+var EventListener = __webpack_require__(73);
 var ExecutionEnvironment = __webpack_require__(7);
 var PooledClass = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(6);
@@ -44959,9 +44970,9 @@ var DOMProperty = __webpack_require__(16);
 var EventPluginHub = __webpack_require__(30);
 var EventPluginUtils = __webpack_require__(51);
 var ReactComponentEnvironment = __webpack_require__(54);
-var ReactEmptyComponent = __webpack_require__(83);
+var ReactEmptyComponent = __webpack_require__(84);
 var ReactBrowserEventEmitter = __webpack_require__(37);
-var ReactHostComponent = __webpack_require__(85);
+var ReactHostComponent = __webpack_require__(86);
 var ReactUpdates = __webpack_require__(12);
 
 var ReactInjection = {
@@ -45681,10 +45692,10 @@ module.exports = ReactPropTypeLocationNames;
 
 var _assign = __webpack_require__(5);
 
-var CallbackQueue = __webpack_require__(79);
+var CallbackQueue = __webpack_require__(80);
 var PooledClass = __webpack_require__(19);
 var ReactBrowserEventEmitter = __webpack_require__(37);
-var ReactInputSelection = __webpack_require__(86);
+var ReactInputSelection = __webpack_require__(87);
 var ReactInstrumentation = __webpack_require__(10);
 var Transaction = __webpack_require__(39);
 var ReactUpdateQueue = __webpack_require__(56);
@@ -46527,11 +46538,11 @@ module.exports = SVGDOMPropertyConfig;
 var EventPropagators = __webpack_require__(31);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactInputSelection = __webpack_require__(86);
+var ReactInputSelection = __webpack_require__(87);
 var SyntheticEvent = __webpack_require__(15);
 
-var getActiveElement = __webpack_require__(74);
-var isTextInputElement = __webpack_require__(96);
+var getActiveElement = __webpack_require__(75);
+var isTextInputElement = __webpack_require__(97);
 var shallowEqual = __webpack_require__(47);
 
 var skipSelectionChangeEvent = ExecutionEnvironment.canUseDOM && 'documentMode' in document && document.documentMode <= 11;
@@ -46723,7 +46734,7 @@ module.exports = SelectEventPlugin;
 
 var _prodInvariant = __webpack_require__(3);
 
-var EventListener = __webpack_require__(72);
+var EventListener = __webpack_require__(73);
 var EventPropagators = __webpack_require__(31);
 var ReactDOMComponentTree = __webpack_require__(6);
 var SyntheticAnimationEvent = __webpack_require__(205);
@@ -47500,7 +47511,7 @@ module.exports = adler32;
 var _prodInvariant = __webpack_require__(3);
 
 var ReactPropTypeLocationNames = __webpack_require__(196);
-var ReactPropTypesSecret = __webpack_require__(89);
+var ReactPropTypesSecret = __webpack_require__(90);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -47590,7 +47601,7 @@ module.exports = checkReactTypeSpec;
 
 
 
-var CSSProperty = __webpack_require__(78);
+var CSSProperty = __webpack_require__(79);
 var warning = __webpack_require__(2);
 
 var isUnitlessNumber = CSSProperty.isUnitlessNumber;
@@ -47681,7 +47692,7 @@ var ReactCurrentOwner = __webpack_require__(13);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstanceMap = __webpack_require__(32);
 
-var getHostComponentFromComposite = __webpack_require__(93);
+var getHostComponentFromComposite = __webpack_require__(94);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -47743,7 +47754,7 @@ module.exports = findDOMNode;
 
 
 var KeyEscapeUtils = __webpack_require__(52);
-var traverseAllChildren = __webpack_require__(98);
+var traverseAllChildren = __webpack_require__(99);
 var warning = __webpack_require__(2);
 
 var ReactComponentTreeHook;
@@ -48192,7 +48203,7 @@ module.exports = quoteAttributeValueForBrowser;
 
 
 
-var ReactMount = __webpack_require__(87);
+var ReactMount = __webpack_require__(88);
 
 module.exports = ReactMount.renderSubtreeIntoContainer;
 
@@ -48596,7 +48607,7 @@ var _prodInvariant = __webpack_require__(21),
 
 var ReactComponent = __webpack_require__(64);
 var ReactElement = __webpack_require__(20);
-var ReactPropTypeLocationNames = __webpack_require__(101);
+var ReactPropTypeLocationNames = __webpack_require__(102);
 var ReactNoopUpdateQueue = __webpack_require__(65);
 
 var emptyObject = __webpack_require__(29);
@@ -49329,7 +49340,7 @@ var ReactElement = __webpack_require__(20);
  */
 var createDOMFactory = ReactElement.createFactory;
 if (process.env.NODE_ENV !== 'production') {
-  var ReactElementValidator = __webpack_require__(100);
+  var ReactElementValidator = __webpack_require__(101);
   createDOMFactory = ReactElementValidator.createFactory;
 }
 
@@ -49499,7 +49510,7 @@ module.exports = ReactDOMFactories;
 var _require = __webpack_require__(20),
     isValidElement = _require.isValidElement;
 
-var factory = __webpack_require__(75);
+var factory = __webpack_require__(76);
 
 module.exports = factory(isValidElement);
 
@@ -49610,7 +49621,7 @@ module.exports = '15.5.4';
 
 var _prodInvariant = __webpack_require__(21);
 
-var ReactPropTypeLocationNames = __webpack_require__(101);
+var ReactPropTypeLocationNames = __webpack_require__(102);
 var ReactPropTypesSecret = __webpack_require__(232);
 
 var invariant = __webpack_require__(1);
@@ -49774,9 +49785,9 @@ module.exports = onlyChild;
 var _prodInvariant = __webpack_require__(21);
 
 var ReactCurrentOwner = __webpack_require__(13);
-var REACT_ELEMENT_TYPE = __webpack_require__(99);
+var REACT_ELEMENT_TYPE = __webpack_require__(100);
 
-var getIteratorFn = __webpack_require__(102);
+var getIteratorFn = __webpack_require__(103);
 var invariant = __webpack_require__(1);
 var KeyEscapeUtils = __webpack_require__(226);
 var warning = __webpack_require__(2);
@@ -49940,7 +49951,7 @@ module.exports = traverseAllChildren;
 /* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(103);
+module.exports = __webpack_require__(104);
 
 
 /***/ })

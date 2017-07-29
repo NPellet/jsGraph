@@ -2,6 +2,8 @@ import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
 import NMRIntegral from './nmrintegral.jsx'
+import Assignment from './assignment.js'
+
 
 class NMRSerie extends React.Component {
 	
@@ -16,7 +18,7 @@ class NMRSerie extends React.Component {
 		this._jsGraphSerie = this._jsGraphGraph.newSerie( this.props.name, {
 			redrawShapesAfterDraw: true
 		}, "line" ).autoAxes();
-console.log( this.props.name == 'master' );
+
 		this._jsGraphSerie.setLayer( this.props.name == 'master' ? 2 : 1 );
 		this._jsGraphSerie.on( "draw", () => {
 			this.loaded();
@@ -142,9 +144,10 @@ console.log( this.props.name == 'master' );
 		if( redraw ) {
 			this.assignWaveform();
 		}
-
+console.log( nextProps );
 		if( nextProps.assignment ) {
-			this._assignment.setPairing( this.getSerieState() );
+			console.log( arguments );
+			//	this._assignment.setPairing( this.getSerieState() );
 		}
 
 		this.setState( { labelRatio: nextProps.integralLabelRatio } );
@@ -219,6 +222,7 @@ console.log( this.props.name == 'master' );
 }
 
 NMRSerie.contextTypes = {
+  assignement: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph )
 };
 

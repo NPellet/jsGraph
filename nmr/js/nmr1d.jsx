@@ -56,12 +56,13 @@ class NMR1D extends React.Component {
 				},
 				{	// Mousewheel action is only enabled when there is no selected serie
 					type: "mousewheel",
-					enabled: ( graph ) => { return ! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
-								( acc, shape ) => { 
-									if( ! acc ) { 
-										return shape.getType() == 'nmrintegral'
-									} 
-								}, false )  },
+					enabled: ( graph ) => { 
+						return ! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
+							( acc, shape ) => { 
+								if( ! acc ) { 
+									return shape.getType() == 'nmrintegral'
+								} 
+							}, false )  },
 					plugin: 'zoom',
 					options: {
 						mode: 'y',
@@ -360,7 +361,7 @@ class NMR1D extends React.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
 			
-			if( e.keyCode == 91 || e.keyCode == 93 ) {
+			if( ( window.navigator.platform == "MacIntel" && ( e.keyCode == 91 || e.keyCode == 93 ) ) || ( window.navigator.platform !== "MacIntel" && e.keyCode == 17 ) ) {
 				
 				this.assignment.enableRemove();
 				this.removeEnabled = true;
@@ -599,6 +600,7 @@ class NMR1D extends React.Component {
 						shift 		= { serie.shift } 
 						integrals 	= { serie.integrals } 
 						integralLabelRatio = { serie.integralLabelRatio }
+						assignement	= { serie.assignment }
 					/> 
 				) }
 			</span>
@@ -608,6 +610,7 @@ class NMR1D extends React.Component {
 }
 
 NMR1D.childContextTypes = {
+  assignement: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),
   integralBaseline: PropTypes.number
 };
