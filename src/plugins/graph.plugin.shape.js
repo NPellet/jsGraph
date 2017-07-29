@@ -37,7 +37,7 @@ class PluginShape extends Plugin {
     if ( !this.shapeType && !this.options.url ) {
       return;
     }
-    console.log('down');
+    console.log( 'down' );
 
     var self = this,
       selfPlugin = this;
@@ -103,7 +103,7 @@ class PluginShape extends Plugin {
 
     var self = this;
     if ( self.currentShape ) {
-console.log('mv');
+      console.log( 'mv' );
       self.count++;
 
       var shape = self.currentShape;

@@ -632,7 +632,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Boolean} mute - Select the shape quietly
 	   */selectShape(shape,mute){// Already selected. Returns false
 	if(!shape){return;}if(this.selectedShapes.indexOf(shape)>-1){return false;}if(!shape.isSelectable()){return false;}if(!mute){this.emit("beforeShapeSelect",shape);}if(this.prevent(false)){return;}if(this.selectedShapes.length>0&&this.options.shapesUniqueSelection){// Only one selected shape at the time
-	this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}/**
+	this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}getSelectedShapes(){return this.selectedShapes;}/**
 	   * Unselects a shape
 	   * @param {Shape} shape - The shape to unselect
 	   * @param {Boolean} mute - Unselect the shape quietly
@@ -769,9 +769,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;// Takes care of the tracking line
 	if(graph.options.trackingLine&&graph.options.trackingLine.enable&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(this.trackingObject){if(!index){graph.trackingObject.hide();}else{graph.trackingObject.show();graph.trackingObject.getPosition(0).x=index.xClosest;graph.trackingObject.getPosition(1).x=index.xClosest;graph.trackingObject.redraw();var x=snapToSerie.getXAxis().getPx(index.xClosest)+graph.options.paddingLeft;}}var series=graph.options.trackingLine.series;// Gets a default value
 	if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,index.xClosest);}}}// End takes care of the tracking line
-	if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
+	if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l,executed=false;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
 	if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);return true;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}return true;}}return false;};var _trackingLegendSerie=function(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(serie=>{var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
+	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);executed=true;continue;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);executed=true;continue;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}executed=true;continue;}}return executed;};var _trackingLegendSerie=function(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(serie=>{var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
 	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",()=>{graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;if(graph.options.trackingLine.serieShape.magnet){let magnetOptions=graph.options.trackingLine.serieShape.magnet,val=magnetOptions.within,minmaxpos;if(magnetOptions.withinPx){val=serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);}if(minmaxpos=serie.serie.findLocalMinMax(index.xClosest,val,magnetOptions.mode)){serie.serie.trackingShape.getPosition(0).x=minmaxpos;}}serie.serie.trackingShape.redraw();}});// End map
 	if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
 	}return legend;};var forceTrackingLegendMode=function(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
@@ -2381,13 +2381,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.dataInUse || this.data;
 	    }
 
-	    getIndexFromX(xval, useDataToUse = false) {
+	    getIndexFromX(xval, useDataToUse = false, roundingMethod = Math.round) {
 
 	      if (!this.isXMonotoneous()) {
 	        throw "Impossible to get the index from the x value for a non-monotoneous wave !";
 	      }
 
-	      let data, xdata;
+	      let data, xdata, position;
 
 	      xval -= this.getXShift();
 
@@ -2398,11 +2398,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (xdata) {
-	        return binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+	        position = binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+
+	        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregate") {
+	          // In case of aggregation, round to the closest element of 4.
+	          return position - position % 4;
+	        }
+
+	        return position;
 	      } else {
-	        return Math.max(0, Math.min(this.getLength() - 1, Math.floor((xval - this.xOffset) / this.xScale)));
+	        return Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
 	      }
 	    }
+
 	    getXMin() {
 	      return this.minX + this.getXShift();
 	    }
@@ -2784,6 +2792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resampleMax = Math.max(resampleMax, dataY[i]);
 	      }
 
+	      this.dataInUseType = "resampled";
 	      this.dataInUse = data;
 	      return dataMinMax;
 	    }
@@ -3002,6 +3011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this._dataAggregated[level]) {
 
+	        this.dataInUseType = "aggregate";
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
 	      } else if (this._dataAggregating) {
@@ -3009,6 +3019,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this._dataAggregating;
 	      }
 
+	      this.dataInUseType = "none";
 	      this.dataInUse = {
 	        y: this.data,
 	        x: this.getXWaveform().data
@@ -17106,7 +17117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      /** Sets the baseline */
 	      this._labels[labelIndex].setAttribute('dominant-baseline', this.getProp('labelBaseline', labelIndex) || 'no-change');
 
-	      /** Sets the baseline */
+	      /** Sets the text */
 	      this._labels[labelIndex].textContent = this.getProp('labelText', labelIndex);
 
 	      /** Sets the color */
@@ -17125,6 +17136,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) + "px");
 
 	      this._labels[labelIndex].setAttribute('stroke-location', 'outside');
+
+	      return this;
+	    }
+
+	    /**
+	     *  Temporarily empties the labels, until the next rendering.
+	     *  This is used when the shape should not be displayed
+	     *  @returns {Shape} The current shape instance
+	     */
+	    emptyLabels() {
+
+	      for (var i = 0, l = this._labels.length; i < l; i++) {
+	        /** Sets the baseline */
+	        this._labels[i].textContent = "";
+	      }
 
 	      return this;
 	    }
@@ -17895,11 +17921,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      shapeLabel.addEventListener('blur', blurEvent);
 
 	      shapeLabel.addEventListener('keyup', function (e) {
-	        
+
 	        if (e.keyCode === 13) {
 	          blurEvent();
-	          e.stopPropagation();
-	          e.preventDefault();
 	        }
 	      });
 	      shapeLabel.addEventListener('keypress', function (e) {
@@ -18763,6 +18787,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let pos1 = this.getPosition(0);
 	      let pos2 = this.getPosition(1);
 
+	      if (pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() || pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax()) {
+	        this.setDom('d', '');
+	        this.emptyLabels();
+	        return false;
+	      }
+
 	      this.showLabel(0);
 
 	      let sum = 0;
@@ -18774,11 +18804,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
-	      let index1 = waveform.getIndexFromX(pos1[axis], true),
-	          index2 = waveform.getIndexFromX(pos2[axis], true),
+	      let index1 = waveform.getIndexFromX(pos1[axis], true, Math.floor),
+	          index2 = waveform.getIndexFromX(pos2[axis], true, Math.ceil),
 	          index3,
 	          flipped = false;
 
+	      if (index1 == index2) {
+	        index2++;
+	      }
 	      if (index2 < index1) {
 	        index3 = index1;
 	        index1 = index2;
@@ -18789,11 +18822,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
 	      let data = waveform.getDataInUse();
 
+	      console.log(index1, index2);
 	      index1 -= index1 % 4;
 	      index2 -= index2 % 4;
 
 	      let condition, incrementation;
-
+	      console.log(index1, index2);
 	      if (waveform.getXMonotoneousAscending() && // Ascending
 	      1 == 1 || !waveform.getXMonotoneousAscending() && // Ascending
 	      1 == 2) {
@@ -18808,7 +18842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        incrementation = 1;
 	      }
 
-	      for (; condition ? j > index1 : j < index2; j += incrementation) {
+	      for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 
 	        xVal = waveform.getX(j, true);
 	        yVal = waveform.getY(j, true);
@@ -18867,20 +18901,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // Already existing
 	        ratio = this.ratio;
 	      }
+	      let py;
+
+	      if (points.length == 0) {
+	        return;
+	      }
 
 	      for (var i = 0, l = points.length; i < l; i++) {
 
-	        points[i][2] = baseLine - points[i][2] * ratio;
+	        py = baseLine - points[i][2] * ratio;
+
+	        if (i > 0 && (points[i - 1][2] > sum / 2 && points[i][2] <= sum / 2 || points[i - 1][2] < sum / 2 && points[i][2] >= sum / 2)) {
+
+	          let pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
+
+	          this.setLabelPosition({
+	            x: points[i][0] + 10 + "px",
+	            y: pos + "px"
+
+	          }, 0);
+	        }
 
 	        if (i == 0) {
 	          this.firstPointX = points[i][0];
-	          this.firstPointY = points[i][2];
+	          this.firstPointY = py;
 	        }
 
-	        currentLine += " L " + points[i][0] + ", " + points[i][2] + " ";
+	        currentLine += " L " + points[i][0] + ", " + py + " ";
 
 	        this.lastPointX = points[i][0];
-	        this.lastPointY = points[i][2];
+	        this.lastPointY = py;
 	      }
 
 	      this.points = points;
@@ -18902,15 +18952,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	             this.setHandles();*/
 
-	      this.setLabelPosition(new _graph4.default({
-	        x: (this.firstPointX + this.lastPointX) / 2 + "px",
-	        y: (this.firstPointY + this.lastPointY) / 2 + "px"
-	      }));
-
-	      this.setLabelPosition({
-	        x: 0.5 * (this.firstPointX + this.lastPointX) + "px",
-	        y: 0.5 * (this.firstPointY + this.lastPointY) + "px"
-	      }, 0);
 	      this.ratioLabel && this.updateIntegralValue(this.ratioLabel) || this.updateLabels();
 
 	      this.changed();
@@ -20442,6 +20483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this.shapeType && !this.options.url) {
 	        return;
 	      }
+	      console.log('down');
 
 	      var self = this,
 	          selfPlugin = this;
@@ -20507,7 +20549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var self = this;
 	      if (self.currentShape) {
-
+	        console.log('mv');
 	        self.count++;
 
 	        var shape = self.currentShape;

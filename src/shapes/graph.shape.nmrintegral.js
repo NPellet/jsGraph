@@ -67,12 +67,11 @@ class ShapeNMRIntegral extends Shape {
     let pos1 = this.getPosition( 0 );
     let pos2 = this.getPosition( 1 );
 
-    if( ( pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() ) || ( pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax() ) ) {
+    if ( ( pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() ) || ( pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax() ) ) {
       this.setDom( 'd', '' );
       this.emptyLabels();
       return false;
     }
-
 
     this.showLabel( 0 );
 
@@ -90,7 +89,7 @@ class ShapeNMRIntegral extends Shape {
       index3,
       flipped = false;
 
-    if( index1 == index2 ) {
+    if ( index1 == index2 ) {
       index2++;
     }
     if ( index2 < index1 ) {
@@ -100,16 +99,15 @@ class ShapeNMRIntegral extends Shape {
       flipped = true;
     }
 
-
     let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
     let data = waveform.getDataInUse();
 
-console.log( index1, index2 );
+    console.log( index1, index2 );
     index1 -= index1 % 4;
     index2 -= index2 % 4;
 
     let condition, incrementation;
-console.log( index1, index2 );
+    console.log( index1, index2 );
     if (
       ( waveform.getXMonotoneousAscending() && // Ascending
         1 == 1 ) ||
@@ -186,10 +184,10 @@ console.log( index1, index2 );
     } else {
       // Already existing
       ratio = this.ratio;
-    } 
+    }
     let py;
 
-    if( points.length == 0 ) {
+    if ( points.length == 0 ) {
       return;
     }
 
@@ -197,9 +195,9 @@ console.log( index1, index2 );
 
       py = baseLine - ( points[ i ][ 2 ] ) * ratio;
 
-      if( i > 0 && ( ( points[ i - 1 ][ 2 ] > sum / 2 && points[ i ][ 2 ] <= sum / 2 ) || ( points[ i - 1 ][ 2 ] < sum / 2 && points[ i ][ 2 ] >= sum / 2  ) ) ) {
+      if ( i > 0 && ( ( points[ i - 1 ][ 2 ] > sum / 2 && points[ i ][ 2 ] <= sum / 2 ) || ( points[ i - 1 ][ 2 ] < sum / 2 && points[ i ][ 2 ] >= sum / 2 ) ) ) {
 
-        let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2  * ratio; 
+        let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2 * ratio;
 
         this.setLabelPosition( {
           x: ( points[ i ][ 0 ] + 10 ) + "px",
@@ -238,9 +236,6 @@ console.log( index1, index2 );
           }
 
           this.setHandles();*/
-
-
-
 
     ( this.ratioLabel && this.updateIntegralValue( this.ratioLabel ) ) || this.updateLabels();
 

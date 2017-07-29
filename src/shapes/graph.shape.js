@@ -1146,8 +1146,8 @@ class Shape extends EventEmitter {
    */
   emptyLabels() {
 
-   for ( var i = 0, l = this._labels.length; i < l; i++ ) {
-          /** Sets the baseline */
+    for ( var i = 0, l = this._labels.length; i < l; i++ ) {
+      /** Sets the baseline */
       this._labels[ i ].textContent = "";
     }
 
@@ -1933,7 +1933,7 @@ class Shape extends EventEmitter {
     shapeLabel.addEventListener( 'blur', blurEvent );
 
     shapeLabel.addEventListener( 'keyup', function( e ) {
-      
+
       if ( e.keyCode === 13 ) {
         blurEvent();
       }

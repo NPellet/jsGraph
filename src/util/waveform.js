@@ -354,7 +354,7 @@ class Waveform {
     if ( xdata ) {
       position = binarySearch( xval, xdata, !( this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0 ) );
 
-      if( useDataToUse && this.dataInUse && this.dataInUseType == "aggregate" ) { // In case of aggregation, round to the closest element of 4.
+      if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregate" ) { // In case of aggregation, round to the closest element of 4.
         return position - ( position % 4 );
       }
 
@@ -364,7 +364,6 @@ class Waveform {
       return Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
     }
   }
-
 
   getXMin() {
     return this.minX + this.getXShift();
