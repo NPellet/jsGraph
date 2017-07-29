@@ -335,13 +335,13 @@ class Waveform {
     return this.dataInUse ||  this.data;
   }
 
-  getIndexFromX( xval, useDataToUse = false ) {
+  getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
 
     if ( !this.isXMonotoneous() ) {
       throw "Impossible to get the index from the x value for a non-monotoneous wave !"
     }
 
-    let data, xdata;
+    let data, xdata, position;
 
     xval -= this.getXShift();
 
@@ -352,11 +352,20 @@ class Waveform {
     }
 
     if ( xdata ) {
-      return binarySearch( xval, xdata, !( this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0 ) );
+      position = binarySearch( xval, xdata, !( this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0 ) );
+
+      if( useDataToUse && this.dataInUse && this.dataInUseType == "aggregate" ) { // In case of aggregation, round to the closest element of 4.
+        return position - ( position % 4 );
+      }
+
+      return position;
+
     } else {
-      return Math.max( 0, Math.min( this.getLength() - 1, Math.floor( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
+      return Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
     }
   }
+
+
   getXMin() {
     return this.minX + this.getXShift();
   }
@@ -734,6 +743,7 @@ class Waveform {
       resampleMax = Math.max( resampleMax, dataY[ i ] );
     }
 
+    this.dataInUseType = "resampled";
     this.dataInUse = data;
     return dataMinMax;
   }
@@ -956,6 +966,7 @@ class Waveform {
 
     if ( this._dataAggregated[ level ] ) {
 
+      this.dataInUseType = "aggregate";
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {
@@ -963,6 +974,7 @@ class Waveform {
       return this._dataAggregating;
     }
 
+    this.dataInUseType = "none";
     this.dataInUse = {
       y: this.data,
       x: this.getXWaveform().data

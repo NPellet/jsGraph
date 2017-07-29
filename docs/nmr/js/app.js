@@ -2948,7 +2948,7 @@ var Shape = function (_EventEmitter) {
       /** Sets the baseline */
       this._labels[labelIndex].setAttribute('dominant-baseline', this.getProp('labelBaseline', labelIndex) || 'no-change');
 
-      /** Sets the baseline */
+      /** Sets the text */
       this._labels[labelIndex].textContent = this.getProp('labelText', labelIndex);
 
       /** Sets the color */
@@ -2967,6 +2967,24 @@ var Shape = function (_EventEmitter) {
       this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) + "px");
 
       this._labels[labelIndex].setAttribute('stroke-location', 'outside');
+
+      return this;
+    }
+
+    /**
+     *  Temporarily empties the labels, until the next rendering.
+     *  This is used when the shape should not be displayed
+     *  @returns {Shape} The current shape instance
+     */
+
+  }, {
+    key: 'emptyLabels',
+    value: function emptyLabels() {
+
+      for (var i = 0, l = this._labels.length; i < l; i++) {
+        /** Sets the baseline */
+        this._labels[i].textContent = "";
+      }
 
       return this;
     }
@@ -5792,6 +5810,7 @@ var Waveform = function () {
     key: 'getIndexFromX',
     value: function getIndexFromX(xval) {
       var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
 
 
       if (!this.isXMonotoneous()) {
@@ -5799,7 +5818,8 @@ var Waveform = function () {
       }
 
       var data = void 0,
-          xdata = void 0;
+          xdata = void 0,
+          position = void 0;
 
       xval -= this.getXShift();
 
@@ -5810,9 +5830,16 @@ var Waveform = function () {
       }
 
       if (xdata) {
-        return binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+        position = binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+
+        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregate") {
+          // In case of aggregation, round to the closest element of 4.
+          return position - position % 4;
+        }
+
+        return position;
       } else {
-        return Math.max(0, Math.min(this.getLength() - 1, Math.floor((xval - this.xOffset) / this.xScale)));
+        return Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
       }
     }
   }, {
@@ -6246,6 +6273,7 @@ var Waveform = function () {
         resampleMax = Math.max(resampleMax, dataY[i]);
       }
 
+      this.dataInUseType = "resampled";
       this.dataInUse = data;
       return dataMinMax;
     }
@@ -6486,6 +6514,7 @@ var Waveform = function () {
 
       if (this._dataAggregated[level]) {
 
+        this.dataInUseType = "aggregate";
         this.dataInUse = this._dataAggregated[level];
         return;
       } else if (this._dataAggregating) {
@@ -6493,6 +6522,7 @@ var Waveform = function () {
         return this._dataAggregating;
       }
 
+      this.dataInUseType = "none";
       this.dataInUse = {
         y: this.data,
         x: this.getXWaveform().data
@@ -35893,6 +35923,12 @@ var ShapeNMRIntegral = function (_Shape) {
       var pos1 = this.getPosition(0);
       var pos2 = this.getPosition(1);
 
+      if (pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() || pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax()) {
+        this.setDom('d', '');
+        this.emptyLabels();
+        return false;
+      }
+
       this.showLabel(0);
 
       var sum = 0;
@@ -35904,11 +35940,14 @@ var ShapeNMRIntegral = function (_Shape) {
         return;
       }
 
-      var index1 = waveform.getIndexFromX(pos1[axis], true),
-          index2 = waveform.getIndexFromX(pos2[axis], true),
+      var index1 = waveform.getIndexFromX(pos1[axis], true, Math.floor),
+          index2 = waveform.getIndexFromX(pos2[axis], true, Math.ceil),
           index3 = void 0,
           flipped = false;
 
+      if (index1 == index2) {
+        index2++;
+      }
       if (index2 < index1) {
         index3 = index1;
         index1 = index2;
@@ -35926,12 +35965,13 @@ var ShapeNMRIntegral = function (_Shape) {
           lastYVal = void 0;
       var data = waveform.getDataInUse();
 
+      console.log(index1, index2);
       index1 -= index1 % 4;
       index2 -= index2 % 4;
 
       var condition = void 0,
           incrementation = void 0;
-
+      console.log(index1, index2);
       if (waveform.getXMonotoneousAscending() && // Ascending
       1 == 1 || !waveform.getXMonotoneousAscending() && // Ascending
       1 == 2) {
@@ -35946,7 +35986,7 @@ var ShapeNMRIntegral = function (_Shape) {
         incrementation = 1;
       }
 
-      for (; condition ? j > index1 : j < index2; j += incrementation) {
+      for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 
         xVal = waveform.getX(j, true);
         yVal = waveform.getY(j, true);
@@ -36006,6 +36046,10 @@ var ShapeNMRIntegral = function (_Shape) {
         ratio = this.ratio;
       }
       var py = void 0;
+
+      if (points.length == 0) {
+        return;
+      }
 
       for (var i = 0, l = points.length; i < l; i++) {
 

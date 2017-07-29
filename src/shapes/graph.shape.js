@@ -1116,7 +1116,7 @@ class Shape extends EventEmitter {
     /** Sets the baseline */
     this._labels[ labelIndex ].setAttribute( 'dominant-baseline', this.getProp( 'labelBaseline', labelIndex ) ||  'no-change' );
 
-    /** Sets the baseline */
+    /** Sets the text */
     this._labels[ labelIndex ].textContent = this.getProp( 'labelText', labelIndex );
 
     /** Sets the color */
@@ -1135,6 +1135,21 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) + "px" );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
+
+    return this;
+  }
+
+  /**
+   *  Temporarily empties the labels, until the next rendering.
+   *  This is used when the shape should not be displayed
+   *  @returns {Shape} The current shape instance
+   */
+  emptyLabels() {
+
+   for ( var i = 0, l = this._labels.length; i < l; i++ ) {
+          /** Sets the baseline */
+      this._labels[ i ].textContent = "";
+    }
 
     return this;
   }

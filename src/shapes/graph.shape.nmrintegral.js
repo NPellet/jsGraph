@@ -67,6 +67,13 @@ class ShapeNMRIntegral extends Shape {
     let pos1 = this.getPosition( 0 );
     let pos2 = this.getPosition( 1 );
 
+    if( ( pos1.x < this.serie.getXAxis().getCurrentMin() && pos2.x < this.serie.getXAxis().getCurrentMin() ) || ( pos1.x > this.serie.getXAxis().getCurrentMax() && pos2.x > this.serie.getXAxis().getCurrentMax() ) ) {
+      this.setDom( 'd', '' );
+      this.emptyLabels();
+      return false;
+    }
+
+
     this.showLabel( 0 );
 
     let sum = 0;
@@ -78,11 +85,14 @@ class ShapeNMRIntegral extends Shape {
       return;
     }
 
-    let index1 = waveform.getIndexFromX( pos1[ axis ], true ),
-      index2 = waveform.getIndexFromX( pos2[ axis ], true ),
+    let index1 = waveform.getIndexFromX( pos1[ axis ], true, Math.floor ),
+      index2 = waveform.getIndexFromX( pos2[ axis ], true, Math.ceil ),
       index3,
       flipped = false;
 
+    if( index1 == index2 ) {
+      index2++;
+    }
     if ( index2 < index1 ) {
       index3 = index1;
       index1 = index2;
@@ -90,14 +100,16 @@ class ShapeNMRIntegral extends Shape {
       flipped = true;
     }
 
+
     let firstX, firstY, firstXVal, firstYVal, lastX, lastXVal, lastY, lastYVal;
     let data = waveform.getDataInUse();
 
+console.log( index1, index2 );
     index1 -= index1 % 4;
     index2 -= index2 % 4;
 
     let condition, incrementation;
-
+console.log( index1, index2 );
     if (
       ( waveform.getXMonotoneousAscending() && // Ascending
         1 == 1 ) ||
@@ -116,7 +128,7 @@ class ShapeNMRIntegral extends Shape {
       incrementation = 1;
     }
 
-    for ( ; condition ? j > index1 : j < index2; j += incrementation ) {
+    for ( ; condition ? j >= index1 : j <= index2; j += incrementation ) {
 
       xVal = waveform.getX( j, true );
       yVal = waveform.getY( j, true );
@@ -177,6 +189,10 @@ class ShapeNMRIntegral extends Shape {
     } 
     let py;
 
+    if( points.length == 0 ) {
+      return;
+    }
+
     for ( var i = 0, l = points.length; i < l; i++ ) {
 
       py = baseLine - ( points[ i ][ 2 ] ) * ratio;
@@ -184,18 +200,13 @@ class ShapeNMRIntegral extends Shape {
       if( i > 0 && ( ( points[ i - 1 ][ 2 ] > sum / 2 && points[ i ][ 2 ] <= sum / 2 ) || ( points[ i - 1 ][ 2 ] < sum / 2 && points[ i ][ 2 ] >= sum / 2  ) ) ) {
 
         let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2  * ratio; 
-        
+
         this.setLabelPosition( {
           x: ( points[ i ][ 0 ] + 10 ) + "px",
           y: pos + "px"
 
         }, 0 );
-
-        
       }
-
-      
-
 
       if ( i == 0 ) {
         this.firstPointX = points[ i ][ 0 ];
