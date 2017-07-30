@@ -28084,7 +28084,7 @@ var Legend = function () {
             dx += 20;
 
             var eyeUse = document.createElementNS(self.graph.ns, "use");
-            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', "xlink:href", "#" + this.eyeId);
+            eyeUse.setAttributeNS('http://www.w3.org/1999/xlink', "xlink:href", "#" + (series[i].isShown() ? this.eyeId : this.eyeCrossedId));
             eyeUse.setAttribute("width", 15);
             eyeUse.setAttribute("height", 15);
             eyeUse.setAttribute("x", 35);
@@ -28140,6 +28140,10 @@ var Legend = function () {
           g.addEventListener('click', function (e) {
 
             var serie = series[j];
+
+            if (!serie.isShown()) {
+              return;
+            }
 
             if (self.isSelectable() && !serie.isSelected()) {
 
@@ -37102,7 +37106,11 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			}, { // Alternative wheel action
 				type: "mousewheel",
 				enabled: graph => {
-					return !!graph.getSelectedSerie();
+					return !!graph.getSelectedSerie() && !graph.getSelectedShapes().reduce((acc, shape) => {
+						if (!acc) {
+							return shape.getType() == 'nmrintegral';
+						}
+					}, false);
 				},
 				callback: dy => {
 

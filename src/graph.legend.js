@@ -385,7 +385,7 @@ class Legend {
           dx += 20;
 
           var eyeUse = document.createElementNS( self.graph.ns, "use" );
-          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + this.eyeId );
+          eyeUse.setAttributeNS( 'http://www.w3.org/1999/xlink', "xlink:href", "#" + ( series[ i ].isShown() ? this.eyeId : this.eyeCrossedId ) );
           eyeUse.setAttribute( "width", 15 );
           eyeUse.setAttribute( "height", 15 );
           eyeUse.setAttribute( "x", 35 );
@@ -443,6 +443,10 @@ class Legend {
         g.addEventListener( 'click', function( e ) {
 
           var serie = series[ j ];
+
+          if( ! serie.isShown() ) {
+            return;
+          }
 
           if ( self.isSelectable() && !serie.isSelected() ) {
 

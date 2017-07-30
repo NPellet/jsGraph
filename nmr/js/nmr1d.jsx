@@ -73,7 +73,12 @@ class NMR1D extends React.Component {
 				},
 				{	// Alternative wheel action
 					type: "mousewheel",
-					enabled: ( graph ) => { return !! graph.getSelectedSerie() },
+					enabled: ( graph ) => { return !! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
+							( acc, shape ) => { 
+								if( ! acc ) { 
+									return shape.getType() == 'nmrintegral'
+								} 
+							}, false ) },
 					callback: ( dy ) => {
 						
 						let serie = this.graph.getSelectedSerie();
