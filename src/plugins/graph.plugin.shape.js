@@ -91,8 +91,11 @@ class PluginShape extends Plugin {
       self.currentShapeEvent = e;
     }
 
-    graph.once( "mouseUp", function() {
-      self.emit( "newShape", e, shape );
+    graph.once( "mouseUp", () => {
+      console.log( this.currentShape );
+      if( ! this.currentShape ) { // The mouse has moved
+        self.emit( "newShape", e, shape );  
+      }
     } )
   }
 
@@ -101,14 +104,14 @@ class PluginShape extends Plugin {
    */
   onMouseMove( graph, x, y, e ) {
 
-    var self = this;
-    if ( self.currentShape ) {
+    
+    if ( this.currentShape ) {
       console.log( 'mv' );
-      self.count++;
+      this.count++;
 
-      var shape = self.currentShape;
+      var shape = this.currentShape;
 
-      self.currentShape = false;
+      this.currentShape = false;
 
       if ( graph.selectedSerie && !shape.serie ) {
         shape.setSerie( graph.selectedSerie );
@@ -122,7 +125,7 @@ class PluginShape extends Plugin {
 
       shape.draw();
       graph.selectShape( shape );
-      shape.handleMouseDown( self.currentShapeEvent, true );
+      shape.handleMouseDown( this.currentShapeEvent, true );
       shape.handleSelected = this.options.handleSelected || 1;
       shape.handleMouseMove( e, true );
     }
@@ -133,11 +136,13 @@ class PluginShape extends Plugin {
    */
   onMouseUp() {
 
-    var self = this;
-    if ( self.currentShape ) {
+    if ( this.currentShape ) {
       // No need to kill it as it hasn't been actually put in the dom right now
-      //self.currentShape.kill();
-      self.currentShape = false;
+
+      // Norman 30 July 2017: Yes but it's added in the jsGraph stack. We need to remove it. See #176
+      // From now on killing the shape will result in removing it from the stack as well.
+      this.currentShape.kill();
+      this.currentShape = false;
     }
   }
 

@@ -29,9 +29,9 @@ class NMRIntegral extends React.Component {
 		this.annotation.draw( false, true );
 		this.annotation.on("changed", () => {
 
-			if( this.annotation.sum !== this.sum ) {
+			if( this.annotation.sumVal !== this.sum ) {
 
-				this.sum = this.annotation.sum;
+				this.sum = this.annotation.sumVal;
 				this.props.onSumChanged && this.props.onSumChanged( this.sum, this.props.id );
 			}
 

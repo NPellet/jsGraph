@@ -130,7 +130,9 @@ class Shape extends EventEmitter {
    */
   kill( keepDom ) {
 
-    this.graph.removeShapeFromDom( this );
+    if( this._inDom ) {
+      this.graph.removeShapeFromDom( this );
+    }
 
     if ( !keepDom ) {
       this.graph._removeShape( this );

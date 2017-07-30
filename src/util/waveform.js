@@ -365,6 +365,10 @@ class Waveform {
     }
   }
 
+  getReductionType() {
+    return this.dataInUseType;
+  }
+
   getXMin() {
     return this.minX + this.getXShift();
   }
@@ -537,6 +541,12 @@ class Waveform {
     from = Math.round( from );
     to = Math.round( to );
 
+    if( from > to ) {
+      let temp = from;
+      from = to;
+      to = temp;
+    }
+    
     var l = to - from + 1;
     var sum = 0,
       delta;
@@ -556,10 +566,19 @@ class Waveform {
     return [ sum, l, deltaTot ];
   }
 
+
   integrateP( from, to ) {
     var val = this._integrateP( from, to );
     return val[ 0 ];
   }
+
+  integrate( fromX, toX ) {
+
+    console.log( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
+    return this.integrateP( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
+  }
+
+
 
   average( p0 = 0, p1 = this.getLength() - 1 ) {
     return this.getAverageP( p0, p1 );

@@ -1768,7 +1768,9 @@ var Shape = function (_EventEmitter) {
     key: 'kill',
     value: function kill(keepDom) {
 
-      this.graph.removeShapeFromDom(this);
+      if (this._inDom) {
+        this.graph.removeShapeFromDom(this);
+      }
 
       if (!keepDom) {
         this.graph._removeShape(this);
@@ -5843,6 +5845,11 @@ var Waveform = function () {
       }
     }
   }, {
+    key: 'getReductionType',
+    value: function getReductionType() {
+      return this.dataInUseType;
+    }
+  }, {
     key: 'getXMin',
     value: function getXMin() {
       return this.minX + this.getXShift();
@@ -6048,6 +6055,12 @@ var Waveform = function () {
       from = Math.round(from);
       to = Math.round(to);
 
+      if (from > to) {
+        var temp = from;
+        from = to;
+        to = temp;
+      }
+
       var l = to - from + 1;
       var sum = 0,
           delta;
@@ -6071,6 +6084,13 @@ var Waveform = function () {
     value: function integrateP(from, to) {
       var val = this._integrateP(from, to);
       return val[0];
+    }
+  }, {
+    key: 'integrate',
+    value: function integrate(fromX, toX) {
+
+      console.log(this.getIndexFromX(fromX), this.getIndexFromX(toX));
+      return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
     }
   }, {
     key: 'average',
@@ -30644,6 +30664,7 @@ var PluginShape = function (_Plugin) {
   }, {
     key: 'onMouseDown',
     value: function onMouseDown(graph, x, y, e, target) {
+      var _this2 = this;
 
       if (!this.shapeType && !this.options.url) {
         return;
@@ -30703,7 +30724,11 @@ var PluginShape = function (_Plugin) {
       }
 
       graph.once("mouseUp", function () {
-        self.emit("newShape", e, shape);
+        console.log(_this2.currentShape);
+        if (!_this2.currentShape) {
+          // The mouse has moved
+          self.emit("newShape", e, shape);
+        }
       });
     }
 
@@ -30715,14 +30740,13 @@ var PluginShape = function (_Plugin) {
     key: 'onMouseMove',
     value: function onMouseMove(graph, x, y, e) {
 
-      var self = this;
-      if (self.currentShape) {
+      if (this.currentShape) {
         console.log('mv');
-        self.count++;
+        this.count++;
 
-        var shape = self.currentShape;
+        var shape = this.currentShape;
 
-        self.currentShape = false;
+        this.currentShape = false;
 
         if (graph.selectedSerie && !shape.serie) {
           shape.setSerie(graph.selectedSerie);
@@ -30736,7 +30760,7 @@ var PluginShape = function (_Plugin) {
 
         shape.draw();
         graph.selectShape(shape);
-        shape.handleMouseDown(self.currentShapeEvent, true);
+        shape.handleMouseDown(this.currentShapeEvent, true);
         shape.handleSelected = this.options.handleSelected || 1;
         shape.handleMouseMove(e, true);
       }
@@ -30750,11 +30774,13 @@ var PluginShape = function (_Plugin) {
     key: 'onMouseUp',
     value: function onMouseUp() {
 
-      var self = this;
-      if (self.currentShape) {
+      if (this.currentShape) {
         // No need to kill it as it hasn't been actually put in the dom right now
-        //self.currentShape.kill();
-        self.currentShape = false;
+
+        // Norman 30 July 2017: Yes but it's added in the jsGraph stack. We need to remove it. See #176
+        // From now on killing the shape will result in removing it from the stack as well.
+        this.currentShape.kill();
+        this.currentShape = false;
       }
     }
   }]);
@@ -35946,8 +35972,14 @@ var ShapeNMRIntegral = function (_Shape) {
           flipped = false;
 
       if (index1 == index2) {
-        index2++;
+        // At least one px please !
+        if (waveform.getReductionType() == "aggregate") {
+          index2 += 4; // Aggregated state
+        } else {
+          index2++; // Non aggregated state
+        }
       }
+
       if (index2 < index1) {
         index3 = index1;
         index1 = index2;
@@ -35965,13 +35997,14 @@ var ShapeNMRIntegral = function (_Shape) {
           lastYVal = void 0;
       var data = waveform.getDataInUse();
 
-      console.log(index1, index2);
-      index1 -= index1 % 4;
-      index2 -= index2 % 4;
-
       var condition = void 0,
           incrementation = void 0;
-      console.log(index1, index2);
+
+      var normalSums = true;
+      if (waveform.getReductionType() == "aggregate") {
+        normalSums = false;
+      }
+
       if (waveform.getXMonotoneousAscending() && // Ascending
       1 == 1 || !waveform.getXMonotoneousAscending() && // Ascending
       1 == 2) {
@@ -35986,6 +36019,8 @@ var ShapeNMRIntegral = function (_Shape) {
         incrementation = 1;
       }
 
+      console.log(index1, index2);
+
       for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 
         xVal = waveform.getX(j, true);
@@ -35993,6 +36028,16 @@ var ShapeNMRIntegral = function (_Shape) {
 
         x = this.serie.getX(xVal);
         y = this.serie.getY(yVal);
+
+        /*
+              if ( ! normalSums && j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
+        
+                sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
+        
+              } else if( normalSums ) {
+        */
+        sum += waveform.getY(j, true); // * ( waveform.getX( j, true ) - waveform.getX( j - 1, true ) ); // y * (out-in)
+        //}
 
         if (!firstX) {
 
@@ -36019,11 +36064,6 @@ var ShapeNMRIntegral = function (_Shape) {
         lastY = y;
         //console.log( data, data[ j ] );
 
-        if (j % 4 == 0 && j >= index1 && data.sums) {
-          // Sums are located every 4 element
-
-          sum += data.sums[j] * (data.x[j] - data.x[j - 3]); // y * (out-in)
-        }
 
         points.push([x, y, sum]);
         lastXVal = xVal;
@@ -36038,12 +36078,14 @@ var ShapeNMRIntegral = function (_Shape) {
         sum = 1;
       }
 
+      this._sumVal = waveform.integrate(pos1.x, pos2.x);
+
       if (!this.ratio) {
         // 150px / unit
         ratio = 200 / sum;
       } else {
         // Already existing
-        ratio = this.ratio;
+        ratio = this.ratio * (this.sumVal / sum);
       }
       var py = void 0;
 
@@ -36066,11 +36108,6 @@ var ShapeNMRIntegral = function (_Shape) {
           }, 0);
         }
 
-        if (i == 0) {
-          this.firstPointX = points[i][0];
-          this.firstPointY = py;
-        }
-
         currentLine += " L " + points[i][0] + ", " + py + " ";
 
         this.lastPointX = points[i][0];
@@ -36085,6 +36122,9 @@ var ShapeNMRIntegral = function (_Shape) {
       } else {
         currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
       }
+
+      this.firstPointX = firstX;
+      this.firstPointY = baseLine;
 
       this.setDom('d', currentLine);
 
@@ -36115,7 +36155,7 @@ var ShapeNMRIntegral = function (_Shape) {
       if (ratioLabel) {
         this.ratioLabel = ratioLabel;
       }
-      this.setLabelText(ratioLabel ? Math.round(100 * this.sum * ratioLabel) / 100 : "N/A", 0);
+      this.setLabelText(ratioLabel ? Math.round(100 * this.sumVal * ratioLabel) / 100 : "N/A", 0);
       this.updateLabels();
     }
   }, {
@@ -36234,6 +36274,11 @@ var ShapeNMRIntegral = function (_Shape) {
     key: 'sum',
     get: function get() {
       return this._sum;
+    }
+  }, {
+    key: 'sumVal',
+    get: function get() {
+      return this._sumVal;
     }
   }]);
 
@@ -37041,7 +37086,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			    _to = shape.getPosition(1);
 
 			shape.kill();
-
+			console.log("newShape");
 			this.state.series.forEach(serie => {
 
 				if (serie.name == "master") {
@@ -37553,9 +37598,9 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 		this.annotation.draw(false, true);
 		this.annotation.on("changed", () => {
 
-			if (this.annotation.sum !== this.sum) {
+			if (this.annotation.sumVal !== this.sum) {
 
-				this.sum = this.annotation.sum;
+				this.sum = this.annotation.sumVal;
 				this.props.onSumChanged && this.props.onSumChanged(this.sum, this.props.id);
 			}
 		});

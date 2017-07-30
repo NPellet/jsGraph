@@ -157,7 +157,7 @@ class NMR1D extends React.Component {
 				_to = shape.getPosition( 1 );
 
 			shape.kill();
-
+console.log("newShape");
 			this.state.series.forEach( ( serie ) => {
 
 				if( serie.name == "master" ) {
