@@ -2109,6 +2109,10 @@ class Graph extends EventEmitter {
     return () => this.drawingSpaceMaxY;
   }
 
+  /**
+   *  Enables the line tracking
+   *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
+   */
   trackingLine( options ) {
 
     var self = this;

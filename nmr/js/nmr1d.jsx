@@ -31,11 +31,11 @@ class NMR1D extends React.Component {
 				{ plugin: 'zoom', shift: false, ctrl: false },
 				{ type: 'click', callback: ( ) => {
 					
-						if( this.checkboxPeakPicking.checked ) {
+					//	if( this.checkboxPeakPicking.checked ) {
 							this.pickPeak( ...arguments )	
-						}
+					//	}
 
-					}, shift: false, ctrl: false },
+					}, shift: true, ctrl: false },
 
 				{ type: 'click', callback: ( x, y, event ) => {
 				
@@ -101,7 +101,7 @@ class NMR1D extends React.Component {
 
 			noLine: true,
 			mode: "individual",
-			enable: false,
+			enable: true,
 			series: "all",
 			serieShape: {
 
@@ -157,7 +157,7 @@ class NMR1D extends React.Component {
 				_to = shape.getPosition( 1 );
 
 			shape.kill();
-console.log("newShape");
+
 			this.state.series.forEach( ( serie ) => {
 
 				if( serie.name == "master" ) {
@@ -313,7 +313,7 @@ console.log("newShape");
 	}
 
 	togglePeakPicking() {
-		this.graph.trackingLine( this.checkboxPeakPicking.checked );
+		//this.graph.trackingLine( this.checkboxPeakPicking.checked );
 	}
 
 	toggleAssignment() {
