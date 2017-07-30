@@ -216,11 +216,13 @@ class ShapeNMRIntegral extends Shape {
 
         let pos = baseLine - ( points[ i - 1 ][ 2 ] + points[ i ][ 2 ] ) / 2 * ratio;
 
-        this.setLabelPosition( {
-          x: ( points[ i ][ 0 ] + 10 ) + "px",
+        this.setPosition( {
+          x: points[ i ][ 0 ] + "px",
           y: pos + "px"
 
-        }, 0 );
+        }, 3 );
+
+        this.setLabelPosition( this.getPosition( 3 ), 0 );
       }
 
 

@@ -13,6 +13,8 @@ class NMR1D extends React.Component {
 	constructor( props ) {
 		super( props );
 		this.state = {};
+
+		this.unique = "NMRUnique";
 		
 		this.graph = new Graph( {
 			close: false,
@@ -361,15 +363,49 @@ class NMR1D extends React.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
 			
+
+			if( e.keyCode == 16 ) {
+				this.wrapper.classList.add( "linkable" );
+			}
+
 			if( ( window.navigator.platform == "MacIntel" && ( e.keyCode == 91 || e.keyCode == 93 ) ) || ( window.navigator.platform !== "MacIntel" && e.keyCode == 17 ) ) {
+				
+				this.wrapper.classList.add( "removable" );
 				
 				this.assignment.enableRemove();
 				this.removeEnabled = true;
 			}
 
+			var mdown = ( e ) => {
+							
+				this.wrapper.classList.add( "removing" );
+				this.assignment.enableRemoveMouseover();
+
+				this.wrapper.addEventListener("mouseup", ( e ) => {
+
+					this.wrapper.classList.remove( "removing" );
+					this.assignment.disableRemoveMouseover();
+
+					this.wrapper.removeEventListener("mousedown", mdown );
+
+
+				}, { once: true } );
+			}
+
+
+			this.wrapper.addEventListener("mousedown", mdown );
+		
 			document.addEventListener("keyup", ( e ) => {
 				
-				
+
+				if( e.keyCode == 16 ) {
+					this.wrapper.classList.remove( "linkable" );
+					return;
+				}
+
+				this.wrapper.removeEventListener("mousedown", mdown );
+
+				this.wrapper.classList.remove( "removable" );
 				this.assignment.disableRemove();
 				this.removeEnabled = false;
 			
@@ -546,6 +582,7 @@ class NMR1D extends React.Component {
 
 		return ( 
 		<div 
+			id={ this.unique }
 			ref={ el => this.wrapper = el } 
 			style={ { position: 'relative' } } 
 			onDragOver={ ( event ) => { event.preventDefault(); console.log('droppable') } } 
@@ -559,7 +596,19 @@ class NMR1D extends React.Component {
 		    return false;
 		     } } 
 		>
-			
+			<style dangerouslySetInnerHTML={{__html: `
+		      #${this.unique}.linkable circle[data-atomid] {
+					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
+				}
+
+				#${this.unique}.removable line.link, #${this.unique}.removing {
+					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
+				}
+
+
+
+		    `}}></style>
+
 			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
 			<div 
 				style={ { 

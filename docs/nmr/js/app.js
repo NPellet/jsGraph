@@ -2652,6 +2652,20 @@ var Shape = function (_EventEmitter) {
     }
 
     /**
+     * Sets the color of the background of the label.
+     * @param {String} color - The color of the background
+     * @param {Number} [ index = 0 ] - The index of the label
+     * @return {Shape} The current shape
+     */
+
+  }, {
+    key: 'setLabelBackgroundColor',
+    value: function setLabelBackgroundColor(color, index) {
+      this.setProp('labelBackgroundColor', color, index || 0);
+      return this;
+    }
+
+    /**
      * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
      * @return {Shape} The current shape
      */
@@ -2834,31 +2848,52 @@ var Shape = function (_EventEmitter) {
   }, {
     key: 'makeLabels',
     value: function makeLabels() {
+      var _this2 = this;
 
-      var self = this;
       this._labels = this._labels || [];
+      this._labelsBackground = this._labelsBackground || [];
 
       this._labels.map(function (label) {
-        self.group.removeChild(label);
+        _this2.group.removeChild(label);
+      });
+
+      this._labelsBackground.map(function (bg) {
+        _this2.group.removeChild(bg);
       });
 
       this._labels = [];
+      this._labelsBackground[i] = [];
 
       var i = 0;
 
       while (this.getProp("labelText", i) !== undefined) {
 
-        if (!self._labels[i]) {
-          self._labels[i] = document.createElementNS(self.graph.ns, 'text');
-          self._labels[i].setAttribute('data-label-i', i);
-          self._labels[i].jsGraphIsShape = self;
-          self.group.appendChild(this._labels[i]);
+        if (!this._labels[i]) {
 
-          self._labels[i].addEventListener('dblclick', function (e) {
+          this._labels[i] = document.createElementNS(this.graph.ns, 'text');
+          this._labels[i].setAttribute('data-label-i', i);
+          this._labels[i].jsGraphIsShape = this;
+
+          this._labelsBackground[i] = document.createElementNS(this.graph.ns, 'rect');
+          this._labelsBackground[i].setAttribute('data-label-i', i);
+          this._labelsBackground[i].jsGraphIsShape = this;
+
+          this.group.appendChild(this._labelsBackground[i]);
+          this.group.appendChild(this._labels[i]);
+
+          this._labels[i].addEventListener('dblclick', function (e) {
             e.stopPropagation();
-            self.labelDblClickListener(e);
+            console.log('dsfsdf');
+            _this2.labelDblClickListener(e);
+          });
+
+          this._labelsBackground[i].addEventListener('dblclick', function (e) {
+            e.stopPropagation();
+            console.log('dsfsdf');
+            _this2.labelDblClickListener(e);
           });
         }
+
         i++;
       }
 
@@ -2917,9 +2952,11 @@ var Shape = function (_EventEmitter) {
 
       if (visible === false) {
         this._labels[labelIndex].setAttribute('display', 'none');
+        this._labelsBackground[labelIndex].setAttribute('display', 'none');
         return;
       } else {
         this._labels[labelIndex].setAttribute('display', 'initial');
+        this._labelsBackground[labelIndex].setAttribute('display', 'initial');
       }
 
       var position = this.calculatePosition(_graph2.default.check(this.getProp("labelPosition", labelIndex)));
@@ -2945,6 +2982,7 @@ var Shape = function (_EventEmitter) {
             y = this._labels[labelIndex].getAttribute('y');
 
         this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
+        //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
       }
 
       /** Sets the baseline */
@@ -2969,6 +3007,15 @@ var Shape = function (_EventEmitter) {
       this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) + "px");
 
       this._labels[labelIndex].setAttribute('stroke-location', 'outside');
+
+      var rect = this._labels[labelIndex].getBBox();
+
+      this._labelsBackground[labelIndex].setAttribute('x', rect.x);
+      this._labelsBackground[labelIndex].setAttribute('y', rect.y);
+      this._labelsBackground[labelIndex].setAttribute('width', rect.width);
+      this._labelsBackground[labelIndex].setAttribute('height', rect.height);
+
+      this._labelsBackground[labelIndex].setAttribute('fill', this.getProp('labelBackgroundColor') || 'transparent');
 
       return this;
     }
@@ -3271,7 +3318,7 @@ var Shape = function (_EventEmitter) {
   }, {
     key: '_createHandles',
     value: function _createHandles(nb, type, attr, callbackEach) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.handles && this.handles.length > 0) {
         return;
@@ -3283,7 +3330,7 @@ var Shape = function (_EventEmitter) {
 
         (function (j) {
 
-          var self = _this2;
+          var self = _this3;
 
           var handle = document.createElementNS(self.graph.ns, type);
           handle.jsGraphIsShape = true;
@@ -3302,7 +3349,7 @@ var Shape = function (_EventEmitter) {
               e.stopPropagation();
 
               self.graph.emit("beforeShapeResize", self);
-              _this2.emit("beforeShapeResize");
+              _this3.emit("beforeShapeResize");
 
               if (!self.graph.prevent(false)) {
 
@@ -5250,7 +5297,7 @@ axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'min',usingZ
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */},{key:'newShape',value:function newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
+if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor||'transparent',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
    * Creates a new position. Arguments are passed to the position constructor
    * @param {...*} var_args
    * @see Position
@@ -19582,13 +19629,15 @@ var Assignment = function () {
    				}
    */
 
-			if (_this.options.removeEnabled) {
-				return;
-			}
-
+			// Why is this ?
+			/*
+   				if( this.options.removeEnabled ) {
+   					return;
+   				}
+   */
 			if (e.target.matches(options.graph.bindableFilter)) {
 
-				_this.mouseout(e, true);
+				_this.mouseout(e, true, _this.options.removeEnabled);
 			}
 		});
 
@@ -19632,13 +19681,9 @@ var Assignment = function () {
    				}
    */
 
-			if (_this.options.removeEnabled) {
-				return;
-			}
-
 			if (e.target.matches(options.molecule.bindableFilter)) {
 
-				_this.mouseout(e, false);
+				_this.mouseout(e, false, _this.options.removeEnabled);
 			}
 		});
 
@@ -19752,6 +19797,16 @@ var Assignment = function () {
 			this.removeLines();
 
 			this.options.removeEnabled = false;
+		}
+	}, {
+		key: 'enableRemoveMouseover',
+		value: function enableRemoveMouseover() {
+			this.options.removeEnableOver = true;
+		}
+	}, {
+		key: 'disableRemoveMouseover',
+		value: function disableRemoveMouseover() {
+			this.options.removeEnableOver = false;
 		}
 	}, {
 		key: 'mousedown',
@@ -19968,7 +20023,7 @@ var Assignment = function () {
 
 	}, {
 		key: 'mouseout',
-		value: function mouseout(event, type) {
+		value: function mouseout(event, type, noPairs) {
 			var _this4 = this;
 
 			var elements = this.getEquivalents(event.target, type);
@@ -19977,6 +20032,10 @@ var Assignment = function () {
 			this.unHighlight(type, elements, "equivalent");
 
 			if (this.binding) {
+				return;
+			}
+
+			if (noPairs) {
 				return;
 			}
 
@@ -20126,10 +20185,10 @@ var Assignment = function () {
 			var elA = this.getDom(true).querySelector("[" + this.getOptions(true).equivalentAttribute + "=\"" + pair.graphUnique + "\"]");
 			var elB = this.getDom(false).querySelector("[" + this.getOptions(false).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]");
 
-			var posA = elA.getBoundingClientRect();
+			var posA = elA.jsGraphIsShape.getPosition(3);
 			var posB = elB.getBoundingClientRect();
 
-			var bbA = elA.getBBox();
+			//var bbA = elA.jsGraphIsShape.getPosition( 3 );
 			var bbB = elB.getBBox();
 
 			var posMain = this.graph.getWrapper().getBoundingClientRect();
@@ -20141,20 +20200,27 @@ var Assignment = function () {
 				line.setAttribute('display', 'block');
 			} else {
 				line = document.createElementNS(ns, 'line');
+				line.classList.add("link");
+
 				line.addEventListener('click', function () {
 
 					if (_this6.options.removeEnabled) {
 
 						_this6.removePair(line.pair, line);
+					}
+				});
 
-						console.log(_this6.pairs);
+				line.addEventListener('mouseover', function () {
+
+					if (_this6.options.removeEnableOver) {
+						_this6.removePair(line.pair, line);
 					}
 				});
 			}
 
 			line.setAttribute('stroke', 'black');
-			line.setAttribute('x1', posA.left - posMain.left + bbA.width / 2);
-			line.setAttribute('y1', posA.top - posMain.top + bbA.height / 2);
+			line.setAttribute('x1', parseFloat(posA.x.replace('px', '')) + this.graph.getPaddingLeft() /*- posMain.left*/);
+			line.setAttribute('y1', parseFloat(posA.y.replace('px', '')) + this.graph.getPaddingTop() /*- posMain.top*/);
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2);
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2);
 
@@ -36104,11 +36170,13 @@ var ShapeNMRIntegral = function (_Shape) {
 
           var pos = baseLine - (points[i - 1][2] + points[i][2]) / 2 * ratio;
 
-          this.setLabelPosition({
-            x: points[i][0] + 10 + "px",
+          this.setPosition({
+            x: points[i][0] + "px",
             y: pos + "px"
 
-          }, 0);
+          }, 3);
+
+          this.setLabelPosition(this.getPosition(3), 0);
         }
 
         currentLine += " L " + points[i][0] + ", " + py + " ";
@@ -36966,6 +37034,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		super(props);
 		this.state = {};
 
+		this.unique = "NMRUnique";
+
 		this.graph = new __WEBPACK_IMPORTED_MODULE_1__src_graph___default.a({
 			close: false,
 			plugins: {
@@ -37286,14 +37356,44 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", e => {
 
+			if (e.keyCode == 16) {
+				this.wrapper.classList.add("linkable");
+			}
+
 			if (window.navigator.platform == "MacIntel" && (e.keyCode == 91 || e.keyCode == 93) || window.navigator.platform !== "MacIntel" && e.keyCode == 17) {
+
+				this.wrapper.classList.add("removable");
 
 				this.assignment.enableRemove();
 				this.removeEnabled = true;
 			}
 
+			var mdown = e => {
+
+				this.wrapper.classList.add("removing");
+				this.assignment.enableRemoveMouseover();
+
+				this.wrapper.addEventListener("mouseup", e => {
+
+					this.wrapper.classList.remove("removing");
+					this.assignment.disableRemoveMouseover();
+
+					this.wrapper.removeEventListener("mousedown", mdown);
+				}, { once: true });
+			};
+
+			this.wrapper.addEventListener("mousedown", mdown);
+
 			document.addEventListener("keyup", e => {
 
+				if (e.keyCode == 16) {
+					this.wrapper.classList.remove("linkable");
+					return;
+				}
+
+				this.wrapper.removeEventListener("mousedown", mdown);
+
+				this.wrapper.classList.remove("removable");
 				this.assignment.disableRemove();
 				this.removeEnabled = false;
 			}, { once: true });
@@ -37462,6 +37562,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
 			{
+				id: this.unique,
 				ref: el => this.wrapper = el,
 				style: { position: 'relative' },
 				onDragOver: event => {
@@ -37477,6 +37578,18 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					return false;
 				}
 			},
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("style", { dangerouslySetInnerHTML: { __html: `
+		      #${ this.unique }.linkable circle[data-atomid] {
+					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
+				}
+
+				#${ this.unique }.removable line.link, #${ this.unique }.removing {
+					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
+				}
+
+
+
+		    ` } }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", {
 				style: {
@@ -37591,7 +37704,8 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 			resizable: true,
 			movable: true,
 			handles: true,
-			labels: [{ text: "" }]
+			labels: [{ text: "", anchor: "middle", backgroundColor: 'white' }]
+
 		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
 
 		this.annotation.addClass('integral');

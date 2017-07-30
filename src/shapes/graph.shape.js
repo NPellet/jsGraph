@@ -846,6 +846,19 @@ class Shape extends EventEmitter {
     return this;
   }
 
+
+  /**
+   * Sets the color of the background of the label.
+   * @param {String} color - The color of the background
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  setLabelBackgroundColor( color, index ) {
+    this.setProp( 'labelBackgroundColor', color, index || 0 );
+    return this;
+  }
+
+
   /**
    * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
    * @return {Shape} The current shape
@@ -1008,31 +1021,54 @@ class Shape extends EventEmitter {
    */
   makeLabels() {
 
-    var self = this;
     this._labels = this._labels || [];
+    this._labelsBackground = this._labelsBackground || [];
 
-    this._labels.map( function( label ) {
-      self.group.removeChild( label );
+    this._labels.map( ( label ) => {
+      this.group.removeChild( label );
+    } );
+
+    this._labelsBackground.map( ( bg ) => {
+      this.group.removeChild( bg );
     } );
 
     this._labels = [];
+    this._labelsBackground[ i ] = [];
+    
 
     var i = 0;
 
     while ( this.getProp( "labelText", i ) !== undefined ) {
 
-      if ( !self._labels[ i ] ) {
-        self._labels[ i ] = document.createElementNS( self.graph.ns, 'text' );
-        self._labels[ i ].setAttribute( 'data-label-i', i );
-        self._labels[ i ].jsGraphIsShape = self;
-        self.group.appendChild( this._labels[ i ] );
+      if ( !this._labels[ i ] ) {
 
-        self._labels[ i ].addEventListener( 'dblclick', function( e ) {
+        this._labels[ i ] = document.createElementNS( this.graph.ns, 'text' );
+        this._labels[ i ].setAttribute( 'data-label-i', i );
+        this._labels[ i ].jsGraphIsShape = this;
+
+        this._labelsBackground[ i ] = document.createElementNS( this.graph.ns, 'rect' );
+        this._labelsBackground[ i ].setAttribute( 'data-label-i', i );
+        this._labelsBackground[ i ].jsGraphIsShape = this;
+
+        
+        this.group.appendChild( this._labelsBackground[ i ] );
+        this.group.appendChild( this._labels[ i ] );
+
+        this._labels[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
-          self.labelDblClickListener( e );
+          console.log('dsfsdf');
+          this.labelDblClickListener( e );
+        } );
+
+
+        this._labelsBackground[ i ].addEventListener( 'dblclick', ( e ) => {
+          e.stopPropagation();
+          console.log('dsfsdf');
+          this.labelDblClickListener( e );
         } );
 
       }
+
       i++;
     }
 
@@ -1063,7 +1099,6 @@ class Shape extends EventEmitter {
 
     for ( var i = 0, l = this._labels.length; i < l; i++ ) {
       this._applyLabelData( i );
-
     }
 
   }
@@ -1084,9 +1119,11 @@ class Shape extends EventEmitter {
 
     if ( visible === false ) {
       this._labels[  labelIndex ].setAttribute( 'display', 'none' );
+      this._labelsBackground[  labelIndex ].setAttribute( 'display', 'none' );
       return;
     } else {
       this._labels[  labelIndex ].setAttribute( 'display', 'initial' );
+      this._labelsBackground[  labelIndex ].setAttribute( 'display', 'initial' );
     }
 
     var position = this.calculatePosition( GraphPosition.check( this.getProp( "labelPosition", labelIndex ) ) );
@@ -1113,6 +1150,7 @@ class Shape extends EventEmitter {
         y = this._labels[ labelIndex ].getAttribute( 'y' );
 
       this._labels[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
     }
 
     /** Sets the baseline */
@@ -1137,6 +1175,16 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) + "px" );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
+
+
+    let rect = this._labels[ labelIndex ].getBBox();
+
+    this._labelsBackground[ labelIndex ].setAttribute( 'x', rect.x );
+    this._labelsBackground[ labelIndex ].setAttribute( 'y', rect.y );
+    this._labelsBackground[ labelIndex ].setAttribute( 'width', rect.width );
+    this._labelsBackground[ labelIndex ].setAttribute( 'height', rect.height );
+    
+    this._labelsBackground[ labelIndex ].setAttribute('fill', this.getProp( 'labelBackgroundColor' ) || 'transparent' ); 
 
     return this;
   }

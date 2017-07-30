@@ -16,7 +16,8 @@ class NMRIntegral extends React.Component {
 				resizable: true,
 				movable: true,
 				handles: true,
-				labels: [ { text: "" } ],
+				labels: [ { text: "", anchor: "middle", backgroundColor: 'white' } ],
+
 			}, 
 			false,
 			{ 'labelEditable': [ true ], layer: [ 3 ], strokeWidth: [ 2 ]  }

@@ -1492,6 +1492,7 @@ class Graph extends EventEmitter {
         shape.setLabelAngle( shapeData.label[ i ].angle || 0, i );
         shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
         shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
+        shape.setLabelBackgroundColor( shapeData.label[ i ].backgroundColor || 'transparent', i );
       }
     }
 

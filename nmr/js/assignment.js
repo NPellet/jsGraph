@@ -93,13 +93,15 @@ var ns = 'http://www.w3.org/2000/svg';
 				}
 */
 
+// Why is this ?
+/*
 				if( this.options.removeEnabled ) {
 					return;
 				}
-
+*/
 				if( e.target.matches( options.graph.bindableFilter ) ) {
 
-					this.mouseout( e, true );
+					this.mouseout( e, true, this.options.removeEnabled );
 				}
 
 			});
@@ -148,13 +150,10 @@ var ns = 'http://www.w3.org/2000/svg';
 				}
 */
 
-				if( this.options.removeEnabled ) {
-					return;
-				}
 
 				if( e.target.matches( options.molecule.bindableFilter ) ) {
 	
-					this.mouseout( e, false );
+					this.mouseout( e, false, this.options.removeEnabled );
 				}
 
 			});
@@ -264,10 +263,13 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.options.removeEnabled = false;
 		}
 
+		enableRemoveMouseover() {
+			this.options.removeEnableOver = true;
+		}
 
-
-
-
+		disableRemoveMouseover() {
+			this.options.removeEnableOver = false;
+		}
 
 		mousedown( event, type ) {
 
@@ -436,7 +438,7 @@ var ns = 'http://www.w3.org/2000/svg';
 			
 		},*/
 
-		mouseout( event, type ) {
+		mouseout( event, type, noPairs ) {
 
 			var elements = this.getEquivalents( event.target, type );
 		
@@ -445,6 +447,10 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 			if( this.binding ) {
+				return;
+			}
+
+			if( noPairs ) {
 				return;
 			}
 
@@ -589,10 +595,10 @@ var ns = 'http://www.w3.org/2000/svg';
 			var elA = this.getDom( true ).querySelector( "[" + this.getOptions( true ).equivalentAttribute + "=\"" + pair.graphUnique + "\"]" );
 			var elB = this.getDom( false ).querySelector( "[" + this.getOptions( false ).equivalentAttribute + "=\"" + pair.moleculeUnique + "\"]" );
 
-			var posA = elA.getBoundingClientRect();
+			var posA = elA.jsGraphIsShape.getPosition( 3 );
 			var posB = elB.getBoundingClientRect();
 
-			var bbA = elA.getBBox();
+			//var bbA = elA.jsGraphIsShape.getPosition( 3 );
 			var bbB = elB.getBBox();
 
 			var posMain = this.graph.getWrapper().getBoundingClientRect();
@@ -603,22 +609,29 @@ var ns = 'http://www.w3.org/2000/svg';
 				line = this.stashedLines.pop();
 				line.setAttribute('display', 'block');
 			} else {
-				line = document.createElementNS( ns, 'line');						
+				line = document.createElementNS( ns, 'line');		
+				line.classList.add("link");
+
 				line.addEventListener( 'click', () => {
 
 					if( this.options.removeEnabled ) {
 
 						this.removePair( line.pair, line );
+					}
+				});
 
-						console.log( this.pairs );
+				line.addEventListener( 'mouseover', () => {
+
+					if( this.options.removeEnableOver ) {
+						this.removePair( line.pair, line );
 					}
 				});
 			}
 
 			
 			line.setAttribute('stroke', 'black');
-			line.setAttribute('x1', posA.left - posMain.left + bbA.width / 2 );
-			line.setAttribute('y1', posA.top - posMain.top + bbA.height / 2  );
+			line.setAttribute('x1', parseFloat(posA.x.replace('px', '')) + this.graph.getPaddingLeft() /*- posMain.left*/ );
+			line.setAttribute('y1', parseFloat(posA.y.replace('px', '')) + this.graph.getPaddingTop() /*- posMain.top*/  );
 			line.setAttribute('x2', posB.left - posMain.left + bbB.width / 2 );
 			line.setAttribute('y2', posB.top - posMain.top + bbB.height / 2 );
 
