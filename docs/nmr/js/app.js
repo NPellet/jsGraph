@@ -2666,6 +2666,20 @@ var Shape = function (_EventEmitter) {
     }
 
     /**
+     * Sets the opacity of the background of the label.
+     * @param {Number} opacity - The opacity of the background, between 0 and 1
+     * @param {Number} [ index = 0 ] - The index of the label
+     * @return {Shape} The current shape
+     */
+
+  }, {
+    key: 'setLabelBackgroundOpacity',
+    value: function setLabelBackgroundOpacity(opacity, index) {
+      this.setProp('labelBackgroundOpacity', opacity, index || 0);
+      return this;
+    }
+
+    /**
      * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
      * @return {Shape} The current shape
      */
@@ -2883,13 +2897,13 @@ var Shape = function (_EventEmitter) {
 
           this._labels[i].addEventListener('dblclick', function (e) {
             e.stopPropagation();
-            console.log('dsfsdf');
+
             _this2.labelDblClickListener(e);
           });
 
           this._labelsBackground[i].addEventListener('dblclick', function (e) {
             e.stopPropagation();
-            console.log('dsfsdf');
+
             _this2.labelDblClickListener(e);
           });
         }
@@ -3001,10 +3015,10 @@ var Shape = function (_EventEmitter) {
       this._labels[labelIndex].setAttribute('text-anchor', this._getLabelAnchor(labelIndex));
 
       /** Sets the stroke */
-      this._labels[labelIndex].setAttribute('stroke', this.getProp('labelStrokeColor', labelIndex));
+      this._labels[labelIndex].setAttribute('stroke', this.getProp('labelStrokeColor', labelIndex) || "black");
 
       /** Sets the stroke */
-      this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) + "px");
+      this._labels[labelIndex].setAttribute('stroke-width', this.getProp('labelStrokeWidth', labelIndex) || 0 + "px");
 
       this._labels[labelIndex].setAttribute('stroke-location', 'outside');
 
@@ -3016,6 +3030,7 @@ var Shape = function (_EventEmitter) {
       this._labelsBackground[labelIndex].setAttribute('height', rect.height);
 
       this._labelsBackground[labelIndex].setAttribute('fill', this.getProp('labelBackgroundColor') || 'transparent');
+      this._labelsBackground[labelIndex].setAttribute('fill-opacity', this.getProp('labelBackgroundOpacity') || 1);
 
       return this;
     }
@@ -5297,7 +5312,7 @@ axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'min',usingZ
    * @returns {Shape} The created shape
    * @see Graph#getConstructor
    */},{key:'newShape',value:function newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor||'transparent',i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
+if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor||'transparent',i);shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity||1,i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
    * Creates a new position. Arguments are passed to the position constructor
    * @param {...*} var_args
    * @see Position
@@ -19833,14 +19848,19 @@ var Assignment = function () {
 				var bb = event.target.getBBox();
 				var pos = event.target.getBoundingClientRect();
 
-				var x = pos.left + bb.width / 2,
-				    y = pos.top + bb.height / 2;
+				var x = pos.left,
+				    y = pos.top;
+
+				if (!type) {
+					y += bb.height / 2;
+					x += bb.width / 2;
+				}
 
 				this.bindingLine.setAttribute('display', 'block');
-				this.bindingLine.setAttribute('x1', x);
-				this.bindingLine.setAttribute('x2', x);
-				this.bindingLine.setAttribute('y1', y);
-				this.bindingLine.setAttribute('y2', y);
+				this.bindingLine.setAttribute('x1', x + window.scrollX);
+				this.bindingLine.setAttribute('x2', x + window.scrollX);
+				this.bindingLine.setAttribute('y1', y + window.scrollY);
+				this.bindingLine.setAttribute('y2', y + window.scrollY);
 				this.bindingLine.setAttribute('pointer-events', 'none');
 
 				// Look for targettable (bindable) elements of the other type and highlight them
@@ -19987,8 +20007,8 @@ var Assignment = function () {
 
 			var rect = this.graph.getWrapper().getBoundingClientRect();
 
-			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX - rect.left);
-			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY - rect.top);
+			this.bindingLine.setAttribute('x2', e.clientX - rect.left);
+			this.bindingLine.setAttribute('y2', e.clientY - rect.top);
 		}
 		/*
   		highlightPairs( element, type ) {
@@ -37704,7 +37724,7 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 			resizable: true,
 			movable: true,
 			handles: true,
-			labels: [{ text: "", anchor: "middle", backgroundColor: 'white' }]
+			labels: [{ text: "", anchor: "middle", backgroundColor: 'white', backgroundOpacity: 0.8, baseline: 'middle' }]
 
 		}, false, { 'labelEditable': [true], layer: [3], strokeWidth: [2] });
 

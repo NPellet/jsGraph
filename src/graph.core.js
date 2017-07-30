@@ -1493,6 +1493,7 @@ class Graph extends EventEmitter {
         shape.setLabelBaseline( shapeData.label[ i ].baseline || 'no-change', i );
         shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
         shape.setLabelBackgroundColor( shapeData.label[ i ].backgroundColor || 'transparent', i );
+        shape.setLabelBackgroundOpacity( shapeData.label[ i ].backgroundOpacity || 1, i );
       }
     }
 

@@ -860,6 +860,18 @@ class Shape extends EventEmitter {
 
 
   /**
+   * Sets the opacity of the background of the label.
+   * @param {Number} opacity - The opacity of the background, between 0 and 1
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  setLabelBackgroundOpacity( opacity, index ) {
+    this.setProp( 'labelBackgroundOpacity', opacity, index || 0 );
+    return this;
+  }
+
+
+  /**
    * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
    * @return {Shape} The current shape
    */
@@ -1056,14 +1068,14 @@ class Shape extends EventEmitter {
 
         this._labels[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
-          console.log('dsfsdf');
+          
           this.labelDblClickListener( e );
         } );
 
 
         this._labelsBackground[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
-          console.log('dsfsdf');
+          
           this.labelDblClickListener( e );
         } );
 
@@ -1169,10 +1181,10 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) );
+    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) || "black" );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) + "px" );
+    this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || 0 + "px" );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
 
@@ -1185,6 +1197,7 @@ class Shape extends EventEmitter {
     this._labelsBackground[ labelIndex ].setAttribute( 'height', rect.height );
     
     this._labelsBackground[ labelIndex ].setAttribute('fill', this.getProp( 'labelBackgroundColor' ) || 'transparent' ); 
+    this._labelsBackground[ labelIndex ].setAttribute('fill-opacity', this.getProp( 'labelBackgroundOpacity' ) || 1 ); 
 
     return this;
   }

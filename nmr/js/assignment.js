@@ -294,14 +294,20 @@ var ns = 'http://www.w3.org/2000/svg';
 				let bb = event.target.getBBox();
 				let pos = event.target.getBoundingClientRect();
 
-				let x = pos.left + bb.width / 2,
-					y = pos.top + bb.height / 2;
+				
+				let x = pos.left,
+					y = pos.top;
+
+				if( ! type ) {
+					 y += bb.height / 2;
+					 x += bb.width / 2;
+				}
 
 				this.bindingLine.setAttribute('display', 'block');
-				this.bindingLine.setAttribute('x1', x );
-				this.bindingLine.setAttribute('x2', x );
-				this.bindingLine.setAttribute('y1', y );
-				this.bindingLine.setAttribute('y2', y );
+				this.bindingLine.setAttribute('x1', x + window.scrollX );
+				this.bindingLine.setAttribute('x2', x + window.scrollX );
+				this.bindingLine.setAttribute('y1', y + window.scrollY );
+				this.bindingLine.setAttribute('y2', y + window.scrollY );
 				this.bindingLine.setAttribute('pointer-events', 'none');
 
 
@@ -404,8 +410,8 @@ var ns = 'http://www.w3.org/2000/svg';
 
 			let rect = this.graph.getWrapper().getBoundingClientRect();
 
-			this.bindingLine.setAttribute('x2', e.clientX + window.scrollX - rect.left );
-			this.bindingLine.setAttribute('y2', e.clientY + window.scrollY - rect.top );
+			this.bindingLine.setAttribute('x2', e.clientX - rect.left );
+			this.bindingLine.setAttribute('y2', e.clientY - rect.top );
 		}
 /*
 		highlightPairs( element, type ) {
