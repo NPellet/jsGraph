@@ -2393,6 +2393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let data, xdata, position;
 
 	      xval -= this.getXShift();
+	      xval /= this.getXScale();
 
 	      if (useDataToUse && this.dataInUse) {
 	        xdata = this.dataInUse.x;
@@ -2419,11 +2420,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getXMin() {
-	      return this.minX + this.getXShift();
+	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 
 	    getXMax() {
-	      return this.maxX + this.getXShift();
+	      return this.maxX * this.getXScale() + this.getXShift();
 	    }
 
 	    getYMin() {
@@ -2443,11 +2444,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getMinX() {
-	      return this.minX + this.getXShift();
+	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 
 	    getMaxX() {
-	      return this.maxX + this.getXShift();
+	      return this.maxX * this.getXScale() + this.getXShift();
 	    }
 
 	    getMinY() {
@@ -2516,6 +2517,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getXWaveform().getShift();
 	    }
 
+	    setXScale(scale = 1) {
+
+	      if (!this.hasXWaveform) {
+	        return this;
+	      }
+
+	      this.getXWaveform().setScale(scale);
+	      return this;
+	    }
+
+	    getXScale() {
+
+	      if (!this.hasXWaveform) {
+	        return this;
+	      }
+
+	      return this.getXWaveform().getScale();
+	    }
+
 	    getLength() {
 	      return this.data.length;
 	    }
@@ -2575,11 +2595,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getX(index, optimized) {
 
 	      if (optimized && this.dataInUse) {
-	        return this.dataInUse.x[index] + this.getXShift();
+	        return this.dataInUse.x[index] * this.getXScale() + this.getXShift();
 	      }
 
 	      if (this.xdata) {
-	        return this.xdata.data[index] + this.getXShift();
+	        return this.xdata.data[index] * this.getXScale() + this.getXShift();
 	      } else {
 	        return this.xOffset + index * this.xScale;
 	      }
@@ -3050,6 +3070,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
 	      newWaveform._setData(this.getDataY().slice());
+	      newWaveform.setShfit(this.getShift());
+	      newWaveform.setScale(this.getScale());
 
 	      if (this.xdata) {
 	        if (alsoDuplicateXWave) {
@@ -3057,6 +3079,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 	          newWaveform.setXWaveform(this.xdata);
 	        }
+
+	        newWaveform.setXShift(this.getXShift());
+	        newWaveform.setXScale(this.getXScale());
 	      } else {
 	        newWaveform.xOffset = this.xOffset;
 	        newWaveform.xScale = this.xScale;
@@ -9563,8 +9588,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xTopCrossing,
 	          xBottomCrossingRatio,
 	          xBottomCrossing,
-	          xshift = waveform.getXShift(),
-	          yshift = waveform.getShift(),
+
+
+	      /*xshift = waveform.getXShift(),
+	      xscale = wave.getXScale(),*/
+	      yshift = waveform.getShift(),
 	          yscale = waveform.getScale();
 
 	      let pointOutside = false;

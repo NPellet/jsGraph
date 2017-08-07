@@ -591,7 +591,8 @@ class SerieLine extends Serie {
       xBottomCrossingRatio,
       xBottomCrossing,
 
-      xshift = waveform.getXShift(),
+      /*xshift = waveform.getXShift(),
+      xscale = wave.getXScale(),*/
       yshift = waveform.getShift(),
       yscale = waveform.getScale();
 

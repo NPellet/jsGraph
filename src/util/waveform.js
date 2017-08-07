@@ -344,6 +344,7 @@ class Waveform {
     let data, xdata, position;
 
     xval -= this.getXShift();
+    xval /= this.getXScale();
 
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
@@ -370,11 +371,11 @@ class Waveform {
   }
 
   getXMin() {
-    return this.minX + this.getXShift();
+    return this.minX * this.getXScale() + this.getXShift();
   }
 
   getXMax() {
-    return this.maxX + this.getXShift();
+    return this.maxX * this.getXScale() + this.getXShift();
   }
 
   getYMin() {
@@ -394,11 +395,11 @@ class Waveform {
   }
 
   getMinX() {
-    return this.minX + this.getXShift();
+    return this.minX * this.getXScale() + this.getXShift();
   }
 
   getMaxX() {
-    return this.maxX + this.getXShift();
+    return this.maxX * this.getXScale() + this.getXShift();
   }
 
   getMinY() {
@@ -467,6 +468,25 @@ class Waveform {
     return this.getXWaveform().getShift();
   }
 
+  setXScale( scale = 1 ) {
+
+    if ( !this.hasXWaveform ) {
+      return this;
+    }
+
+    this.getXWaveform().setScale( scale );
+    return this;
+  }
+
+  getXScale() {
+
+    if ( !this.hasXWaveform ) {
+      return this;
+    }
+
+    return this.getXWaveform().getScale();
+  }
+
   getLength() {
     return this.data.length;
   }
@@ -527,11 +547,11 @@ class Waveform {
   getX( index, optimized ) {
 
     if ( optimized && this.dataInUse ) {
-      return this.dataInUse.x[ index ] + this.getXShift();
+      return this.dataInUse.x[ index ] * this.getXScale() + this.getXShift();
     }
 
     if ( this.xdata ) {
-      return this.xdata.data[ index ] + this.getXShift();
+      return this.xdata.data[ index ] * this.getXScale() + this.getXShift();
     } else {
       return this.xOffset + index * this.xScale;
     }
@@ -1001,6 +1021,8 @@ class Waveform {
   duplicate( alsoDuplicateXWave ) {
     var newWaveform = new Waveform();
     newWaveform._setData( this.getDataY().slice() );
+    newWaveform.setShfit( this.getShift() );
+    newWaveform.setScale( this.getScale() );
 
     if ( this.xdata ) {
       if ( alsoDuplicateXWave ) {
@@ -1008,6 +1030,10 @@ class Waveform {
       } else {
         newWaveform.setXWaveform( this.xdata );
       }
+
+      newWaveform.setXShift( this.getXShift() );
+      newWaveform.setXScale( this.getXScale() );
+
     } else {
       newWaveform.xOffset = this.xOffset;
       newWaveform.xScale = this.xScale;

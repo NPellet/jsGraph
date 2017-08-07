@@ -10622,6 +10622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          position = void 0;
 
 	      xval -= this.getXShift();
+	      xval /= this.getXScale();
 
 	      if (useDataToUse && this.dataInUse) {
 	        xdata = this.dataInUse.x;
@@ -10650,12 +10651,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getXMin',
 	    value: function getXMin() {
-	      return this.minX + this.getXShift();
+	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 	  }, {
 	    key: 'getXMax',
 	    value: function getXMax() {
-	      return this.maxX + this.getXShift();
+	      return this.maxX * this.getXScale() + this.getXShift();
 	    }
 	  }, {
 	    key: 'getYMin',
@@ -10680,12 +10681,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getMinX',
 	    value: function getMinX() {
-	      return this.minX + this.getXShift();
+	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 	  }, {
 	    key: 'getMaxX',
 	    value: function getMaxX() {
-	      return this.maxX + this.getXShift();
+	      return this.maxX * this.getXScale() + this.getXShift();
 	    }
 	  }, {
 	    key: 'getMinY',
@@ -10772,6 +10773,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.getXWaveform().getShift();
 	    }
 	  }, {
+	    key: 'setXScale',
+	    value: function setXScale() {
+	      var scale = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
+
+
+	      if (!this.hasXWaveform) {
+	        return this;
+	      }
+
+	      this.getXWaveform().setScale(scale);
+	      return this;
+	    }
+	  }, {
+	    key: 'getXScale',
+	    value: function getXScale() {
+
+	      if (!this.hasXWaveform) {
+	        return this;
+	      }
+
+	      return this.getXWaveform().getScale();
+	    }
+	  }, {
 	    key: 'getLength',
 	    value: function getLength() {
 	      return this.data.length;
@@ -10835,11 +10859,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getX(index, optimized) {
 
 	      if (optimized && this.dataInUse) {
-	        return this.dataInUse.x[index] + this.getXShift();
+	        return this.dataInUse.x[index] * this.getXScale() + this.getXShift();
 	      }
 
 	      if (this.xdata) {
-	        return this.xdata.data[index] + this.getXShift();
+	        return this.xdata.data[index] * this.getXScale() + this.getXShift();
 	      } else {
 	        return this.xOffset + index * this.xScale;
 	      }
@@ -11353,6 +11377,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
 	      newWaveform._setData(this.getDataY().slice());
+	      newWaveform.setShfit(this.getShift());
+	      newWaveform.setScale(this.getScale());
 
 	      if (this.xdata) {
 	        if (alsoDuplicateXWave) {
@@ -11360,6 +11386,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        } else {
 	          newWaveform.setXWaveform(this.xdata);
 	        }
+
+	        newWaveform.setXShift(this.getXShift());
+	        newWaveform.setXScale(this.getXScale());
 	      } else {
 	        newWaveform.xOffset = this.xOffset;
 	        newWaveform.xScale = this.xScale;
@@ -18445,8 +18474,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xTopCrossing = void 0,
 	          xBottomCrossingRatio = void 0,
 	          xBottomCrossing = void 0,
-	          xshift = waveform.getXShift(),
-	          yshift = waveform.getShift(),
+
+
+	      /*xshift = waveform.getXShift(),
+	      xscale = wave.getXScale(),*/
+	      yshift = waveform.getShift(),
 	          yscale = waveform.getScale();
 
 	      var pointOutside = false;
@@ -28976,10 +29008,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        /*
 	              if ( ! normalSums && j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
-	        
-	                sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
-	        
-	              } else if( normalSums ) {
+	                 sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
+	               } else if( normalSums ) {
 	        */
 	        sum += waveform.getY(j, true); // * ( waveform.getX( j, true ) - waveform.getX( j - 1, true ) ); // y * (out-in)
 	        //}
@@ -29008,7 +29038,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        lastX = x;
 	        lastY = y;
 	        //console.log( data, data[ j ] );
-
 
 	        points.push([x, y, sum]);
 	        lastXVal = xVal;
