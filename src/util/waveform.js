@@ -509,13 +509,14 @@ class Waveform {
     return new Promise( function( resolver, rejector ) {
 
       var fit = new FitLM( extend( {}, {
+
         dataY: self,
         dataX: self.getXWaveform(),
         done: function( results ) {
           resolver( results );
         },
-
         waveform: new Waveform()
+
       }, options ) );
 
       fit.init();
@@ -541,12 +542,12 @@ class Waveform {
     from = Math.round( from );
     to = Math.round( to );
 
-    if( from > to ) {
+    if ( from > to ) {
       let temp = from;
       from = to;
       to = temp;
     }
-    
+
     var l = to - from + 1;
     var sum = 0,
       delta;
@@ -563,9 +564,9 @@ class Waveform {
         sum += arrY[ from ] * diff;
       }
     }
+
     return [ sum, l, deltaTot ];
   }
-
 
   integrateP( from, to ) {
     var val = this._integrateP( from, to );
@@ -577,8 +578,6 @@ class Waveform {
     console.log( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
     return this.integrateP( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
   }
-
-
 
   average( p0 = 0, p1 = this.getLength() - 1 ) {
     return this.getAverageP( p0, p1 );
@@ -1015,6 +1014,33 @@ class Waveform {
     }
 
     return newWaveform;
+  }
+
+  subrangeX( fromX, toX ) {
+
+    if ( !this.xdata ) { // We can select the new range from there
+
+      let fromP = this.getIndexFromX( fromX ),
+        toP = this.getIndexFromX( toP );
+
+      return new Waveform()
+        .setData( this.data.slice( fromP, toP ) )
+        .rescaleX( this.xOffset, this.xScale );
+
+    } else {
+
+      var waveform = new Waveform();
+
+      for ( var i = 0, l = this.data.length; i < l; i++ ) {
+
+        if ( this.data[ i ] >= fromX && this.data[ i ] < toX ) {
+
+          waveform.append( this.dataX[ i ], this.data[ i ] )
+        }
+      }
+
+      return waveform;
+    }
   }
 
   findLocalMinMax( xRef, xWithin, type ) {

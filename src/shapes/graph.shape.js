@@ -130,7 +130,7 @@ class Shape extends EventEmitter {
    */
   kill( keepDom ) {
 
-    if( this._inDom ) {
+    if ( this._inDom ) {
       this.graph.removeShapeFromDom( this );
     }
 
@@ -846,7 +846,6 @@ class Shape extends EventEmitter {
     return this;
   }
 
-
   /**
    * Sets the color of the background of the label.
    * @param {String} color - The color of the background
@@ -858,7 +857,6 @@ class Shape extends EventEmitter {
     return this;
   }
 
-
   /**
    * Sets the opacity of the background of the label.
    * @param {Number} opacity - The opacity of the background, between 0 and 1
@@ -869,7 +867,6 @@ class Shape extends EventEmitter {
     this.setProp( 'labelBackgroundOpacity', opacity, index || 0 );
     return this;
   }
-
 
   /**
    * Applies the generic style to the shape. This is a method that applies to most shapes, hence should not be overridden. However if you create a bundle of shapes that extend another one, you may use it to set common style properties to all your shapes.
@@ -1046,7 +1043,6 @@ class Shape extends EventEmitter {
 
     this._labels = [];
     this._labelsBackground[ i ] = [];
-    
 
     var i = 0;
 
@@ -1062,20 +1058,18 @@ class Shape extends EventEmitter {
         this._labelsBackground[ i ].setAttribute( 'data-label-i', i );
         this._labelsBackground[ i ].jsGraphIsShape = this;
 
-        
         this.group.appendChild( this._labelsBackground[ i ] );
         this.group.appendChild( this._labels[ i ] );
 
         this._labels[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
-          
+
           this.labelDblClickListener( e );
         } );
 
-
         this._labelsBackground[ i ].addEventListener( 'dblclick', ( e ) => {
           e.stopPropagation();
-          
+
           this.labelDblClickListener( e );
         } );
 
@@ -1162,7 +1156,7 @@ class Shape extends EventEmitter {
         y = this._labels[ labelIndex ].getAttribute( 'y' );
 
       this._labels[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
-    //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+      //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
     }
 
     /** Sets the baseline */
@@ -1181,13 +1175,12 @@ class Shape extends EventEmitter {
     this._labels[ labelIndex ].setAttribute( 'text-anchor', this._getLabelAnchor( labelIndex ) );
 
     /** Sets the stroke */
-    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) || "black" );
+    this._labels[ labelIndex ].setAttribute( 'stroke', this.getProp( 'labelStrokeColor', labelIndex ) ||  "black" );
 
     /** Sets the stroke */
     this._labels[ labelIndex ].setAttribute( 'stroke-width', this.getProp( 'labelStrokeWidth', labelIndex ) || 0 + "px" );
 
     this._labels[ labelIndex ].setAttribute( 'stroke-location', 'outside' );
-
 
     let rect = this._labels[ labelIndex ].getBBox();
 
@@ -1195,9 +1188,9 @@ class Shape extends EventEmitter {
     this._labelsBackground[ labelIndex ].setAttribute( 'y', rect.y );
     this._labelsBackground[ labelIndex ].setAttribute( 'width', rect.width );
     this._labelsBackground[ labelIndex ].setAttribute( 'height', rect.height );
-    
-    this._labelsBackground[ labelIndex ].setAttribute('fill', this.getProp( 'labelBackgroundColor' ) || 'transparent' ); 
-    this._labelsBackground[ labelIndex ].setAttribute('fill-opacity', this.getProp( 'labelBackgroundOpacity' ) || 1 ); 
+
+    this._labelsBackground[ labelIndex ].setAttribute( 'fill', this.getProp( 'labelBackgroundColor' ) || 'transparent' );
+    this._labelsBackground[ labelIndex ].setAttribute( 'fill-opacity', this.getProp( 'labelBackgroundOpacity' ) || 1 );
 
     return this;
   }

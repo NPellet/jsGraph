@@ -195,15 +195,16 @@ class Axis extends EventEmitter {
       this.addLabel( this.getVal( coords.x - this.graph.getPaddingLeft() ) );
     } );
 
-    this.axisRand = Math.random();
-    this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
-    this.clip.setAttribute( 'id', '_clip' + this.axisRand );
-    this.graph.defs.appendChild( this.clip );
-
-    this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
-    this.clip.appendChild( this.clipRect );
-    this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
-
+    //this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
+    //this.clip.setAttribute( 'id', '_clip' + this.axisRand );
+    //this.graph.defs.appendChild( this.clip );
+    /*
+        this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+        this.clip.appendChild( this.clipRect );
+        this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+    */
+    this.gridPrimary.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
+    this.gridSecondary.setAttribute( 'clip-path', 'url(#_clipplot' + this.graph._creation + ')' );
     this.graph._axisHasChanged( this );
   }
 

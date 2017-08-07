@@ -6083,13 +6083,14 @@ var Waveform = function () {
       return new Promise(function (resolver, rejector) {
 
         var fit = new _fit_lm2.default((0, _graph.extend)({}, {
+
           dataY: self,
           dataX: self.getXWaveform(),
           done: function done(results) {
             resolver(results);
           },
-
           waveform: new Waveform()
+
         }, options));
 
         fit.init();
@@ -6142,6 +6143,7 @@ var Waveform = function () {
           sum += arrY[from] * diff;
         }
       }
+
       return [sum, l, deltaTot];
     }
   }, {
@@ -6631,6 +6633,32 @@ var Waveform = function () {
       }
 
       return newWaveform;
+    }
+  }, {
+    key: 'subrangeX',
+    value: function subrangeX(fromX, toX) {
+
+      if (!this.xdata) {
+        // We can select the new range from there
+
+        var fromP = this.getIndexFromX(fromX),
+            toP = this.getIndexFromX(toP);
+
+        return new Waveform().setData(this.data.slice(fromP, toP)).rescaleX(this.xOffset, this.xScale);
+      } else {
+
+        var waveform = new Waveform();
+
+        for (var i = 0, l = this.data.length; i < l; i++) {
+
+          if (this.data[i] >= fromX && this.data[i] < toX) {
+
+            waveform.append(this.dataX[i], this.data[i]);
+          }
+        }
+
+        return waveform;
+      }
     }
   }, {
     key: 'findLocalMinMax',
@@ -12518,15 +12546,16 @@ var Axis = function (_EventEmitter) {
         _this2.addLabel(_this2.getVal(coords.x - _this2.graph.getPaddingLeft()));
       });
 
-      this.axisRand = Math.random();
-      this.clip = document.createElementNS(this.graph.ns, 'clipPath');
-      this.clip.setAttribute('id', '_clip' + this.axisRand);
-      this.graph.defs.appendChild(this.clip);
-
-      this.clipRect = document.createElementNS(this.graph.ns, 'rect');
-      this.clip.appendChild(this.clipRect);
-      this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
-
+      //this.clip = document.createElementNS( this.graph.ns, 'clipPath' );
+      //this.clip.setAttribute( 'id', '_clip' + this.axisRand );
+      //this.graph.defs.appendChild( this.clip );
+      /*
+          this.clipRect = document.createElementNS( this.graph.ns, 'rect' );
+          this.clip.appendChild( this.clipRect );
+          this.clip.setAttribute( 'clipPathUnits', 'userSpaceOnUse' );
+      */
+      this.gridPrimary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
+      this.gridSecondary.setAttribute('clip-path', 'url(#_clipplot' + this.graph._creation + ')');
       this.graph._axisHasChanged(this);
     }
   }, {
@@ -37164,9 +37193,9 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.legend.setAutoPosition('bottom');
 
 		this.graph.getLeftAxis().hide();
-		this.graph.getBottomAxis().gridsOff();
+		//	this.graph.getBottomAxis().gridsOff();
 
-		this.graph.getBottomAxis().flip(true).setLabel('\u03B4').setUnit('ppm');
+		this.graph.getBottomAxis().flip(true).setLabel('\u03B4').setUnit('ppm2');
 
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor) => {
 
@@ -37611,12 +37640,9 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
 				}
 
-				#${ this.unique }.removable line.link, #${ this.unique }.removing {
+				#${ this.unique }.removable line.link, #${ this.unique }.removable path.integral, #${ this.unique }.removing {
 					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
 				}
-
-
-
 		    ` } }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", {

@@ -89,8 +89,8 @@ class ShapeNMRIntegral extends Shape {
       index3,
       flipped = false;
 
-    if ( index1 == index2 ) {// At least one px please !
-      if( waveform.getReductionType() == "aggregate" ) {
+    if ( index1 == index2 ) { // At least one px please !
+      if ( waveform.getReductionType() == "aggregate" ) {
         index2 += 4; // Aggregated state
       } else {
         index2++; // Non aggregated state
@@ -108,9 +108,9 @@ class ShapeNMRIntegral extends Shape {
     let data = waveform.getDataInUse();
 
     let condition, incrementation;
-      
+
     let normalSums = true;
-    if( waveform.getReductionType() == "aggregate" ) {
+    if ( waveform.getReductionType() == "aggregate" ) {
       normalSums = false;
     }
 
@@ -142,14 +142,14 @@ class ShapeNMRIntegral extends Shape {
       x = this.serie.getX( xVal );
       y = this.serie.getY( yVal );
 
-/*
-      if ( ! normalSums && j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
+      /*
+            if ( ! normalSums && j % 4 == 0 && j >= index1 && data.sums ) { // Sums are located every 4 element
 
-        sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
+              sum += data.sums[ j ];// * ( waveform.getX( j, true ) - waveform.getX( j - 3, true ) ); // y * (out-in)
 
-      } else if( normalSums ) {
-*/
-        sum += waveform.getY( j, true );// * ( waveform.getX( j, true ) - waveform.getX( j - 1, true ) ); // y * (out-in)
+            } else if( normalSums ) {
+      */
+      sum += waveform.getY( j, true ); // * ( waveform.getX( j, true ) - waveform.getX( j - 1, true ) ); // y * (out-in)
       //}
 
       if ( !firstX ) {
@@ -177,7 +177,6 @@ class ShapeNMRIntegral extends Shape {
       lastY = y;
       //console.log( data, data[ j ] );
 
-
       points.push( [ x, y, sum ] );
       lastXVal = xVal;
     }
@@ -199,14 +198,13 @@ class ShapeNMRIntegral extends Shape {
 
     } else {
       // Already existing
-      ratio = this.ratio * (  this.sumVal / sum );
+      ratio = this.ratio * ( this.sumVal / sum );
     }
     let py;
 
     if ( points.length == 0 ) {
       return;
     }
-
 
     for ( var i = 0, l = points.length; i < l; i++ ) {
 
@@ -225,7 +223,6 @@ class ShapeNMRIntegral extends Shape {
         this.setLabelPosition( this.getPosition( 3 ), 0 );
       }
 
-
       currentLine += " L " + points[ i ][ 0 ] + ", " + py + " ";
 
       this.lastPointX = points[ i ][ 0 ];
@@ -234,7 +231,6 @@ class ShapeNMRIntegral extends Shape {
 
     this.points = points;
     this._sum = sum;
-    
 
     if ( this.serie.isFlipped() ) {
       currentLine = " M " + baseLine + ", " + firstX + " " + currentLine;
@@ -242,10 +238,8 @@ class ShapeNMRIntegral extends Shape {
       currentLine = " M " + firstX + ", " + baseLine + " " + currentLine;
     }
 
-        
     this.firstPointX = firstX;
     this.firstPointY = baseLine;
-    
 
     this.setDom( 'd', currentLine );
 

@@ -444,7 +444,7 @@ class Legend {
 
           var serie = series[ j ];
 
-          if( ! serie.isShown() ) {
+          if ( !serie.isShown() ) {
             return;
           }
 

@@ -135,13 +135,13 @@ class NMR1D extends React.Component {
 
 
 		this.graph.getLeftAxis().hide();
-		this.graph.getBottomAxis().gridsOff();
+	//	this.graph.getBottomAxis().gridsOff();
 
 		this.graph
 				.getBottomAxis()
 				.flip( true )
 				.setLabel( '\u03B4' )
-				.setUnit( 'ppm' );
+				.setUnit( 'ppm2' );
 
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor ) => {
 
@@ -424,8 +424,6 @@ class NMR1D extends React.Component {
 		});
 
 
-		
-
 		let assignmentOptions = {
 
 			graph: {
@@ -606,12 +604,9 @@ class NMR1D extends React.Component {
 					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
 				}
 
-				#${this.unique}.removable line.link, #${this.unique}.removing {
+				#${this.unique}.removable line.link, #${this.unique}.removable path.integral, #${this.unique}.removing {
 					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
 				}
-
-
-
 		    `}}></style>
 
 			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />

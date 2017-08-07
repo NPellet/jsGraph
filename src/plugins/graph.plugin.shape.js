@@ -93,8 +93,8 @@ class PluginShape extends Plugin {
 
     graph.once( "mouseUp", () => {
       console.log( this.currentShape );
-      if( ! this.currentShape ) { // The mouse has moved
-        self.emit( "newShape", e, shape );  
+      if ( !this.currentShape ) { // The mouse has moved
+        self.emit( "newShape", e, shape );
       }
     } )
   }
@@ -104,7 +104,6 @@ class PluginShape extends Plugin {
    */
   onMouseMove( graph, x, y, e ) {
 
-    
     if ( this.currentShape ) {
       console.log( 'mv' );
       this.count++;
