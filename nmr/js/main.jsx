@@ -35,6 +35,7 @@ Promise.all( [ fetch( "nmr1.json" ), fetch( "nmr2.json" ), fetch( "molecule.svg"
 
 		var seriescopy = extend( true, [], series );
 		seriescopy = seriescopy.map( ( serie ) => {
+			
 			serie.data = "[...]";
 			return serie;
 		});
@@ -43,7 +44,8 @@ Promise.all( [ fetch( "nmr1.json" ), fetch( "nmr2.json" ), fetch( "molecule.svg"
 	}
 
 	const options = {
-		minThresholdPeakToPeak: 0.01
+		minThresholdPeakToPeak: 0.01,
+		toolbar: true
 	};
 
 	textarea.addEventListener("change", function() {
