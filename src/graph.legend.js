@@ -396,10 +396,10 @@ class Legend {
 
             var id;
             if ( series[ j ].isShown() ) {
-              series[ j ].hide();
+              series[ j ].hide( self.options.hideShapesOnHideSerie );
               id = self.eyeCrossedId;
             } else {
-              series[ j ].show();
+              series[ j ].show( self.options.hideShapesOnHideSerie );
               id = self.eyeId;
             }
 

@@ -131,7 +131,10 @@ class NMR1D extends React.Component {
 		} );
 
 
-		this.legend = this.graph.makeLegend();
+		this.legend = this.graph.makeLegend( {
+			hideShapesOnHideSerie: true
+		});
+
 		this.legend.setAutoPosition('bottom');
 
 		if( ! this.props.slave ) {
@@ -272,7 +275,7 @@ class NMR1D extends React.Component {
 			newPeak.on("removed", () => {
 
 				serie._peaks.splice( serie._peaks.indexOf( newPeak ), 1 );
-				console.log('removed');
+				
 			});
 
 			newPeak.on("shapeLabelChanged", ( shape, parameters ) => {
@@ -294,15 +297,19 @@ class NMR1D extends React.Component {
 				 		}
 
 					 	peak.redraw();
-				 	});
 
-				 	for( let serie of this.state.series ) { // Let us shift the integrals of all the series
-				 		
-				 		for( let integral of serie.integrals ) {
+					 	for( let integral of serieState.integrals ) {
+
 				 			integral.from += shift;
 				 			integral.to += shift;
 				 		}
-				 	}
+				 	});
+
+				 	// No ! Of only the current serie
+				 	//for( let serie of this.state.series ) { // Let us shift the integrals of all the series
+
+				 		
+				 	//}
 				 	
 				 	this.updateOutput(); // Shift and integrals have changed, we must notify the output
 				 	this.setState( { series: this.state.series } ); // Integrals have shifted, we must inform React
@@ -380,7 +387,7 @@ class NMR1D extends React.Component {
 			if( e.keyCode == 16 ) {
 				this.wrapper.classList.add( "linkable" );
 			}
-
+console.log( e.keyCode, window.navigator.platform );
 			if( ( window.navigator.platform == "MacIntel" && ( e.keyCode == 91 || e.keyCode == 93 ) ) || ( window.navigator.platform !== "MacIntel" && e.keyCode == 17 ) ) {
 				
 				this.wrapper.classList.add( "removable" );
@@ -390,19 +397,23 @@ class NMR1D extends React.Component {
 			}
 
 			var mdown = ( e ) => {
-							
-				this.wrapper.classList.add( "removing" );
-				this.assignment.enableRemoveMouseover();
+				
+				if( this.wrapper.classList && this.wrapper.classList.has("removable") ) {	
 
-				this.wrapper.addEventListener("mouseup", ( e ) => {
+					this.wrapper.classList.add( "removing" );
+					this.assignment.enableRemoveMouseover();
+			
 
-					this.wrapper.classList.remove( "removing" );
-					this.assignment.disableRemoveMouseover();
+					this.wrapper.addEventListener("mouseup", ( e ) => {
 
-					this.wrapper.removeEventListener("mousedown", mdown );
+						this.wrapper.classList.remove( "removing" );
+						this.assignment.disableRemoveMouseover();
 
+						this.wrapper.removeEventListener("mousedown", mdown );
 
-				}, { once: true } );
+					}, { once: true } );
+
+				}
 			}
 
 

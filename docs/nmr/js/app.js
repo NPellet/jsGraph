@@ -28228,10 +28228,10 @@ var Legend = function () {
 
               var id;
               if (series[j].isShown()) {
-                series[j].hide();
+                series[j].hide(self.options.hideShapesOnHideSerie);
                 id = self.eyeCrossedId;
               } else {
-                series[j].show();
+                series[j].show(self.options.hideShapesOnHideSerie);
                 id = self.eyeId;
               }
 
@@ -36380,7 +36380,7 @@ var ShapeNMRIntegral = function (_Shape) {
       if (ratioLabel) {
         this.ratioLabel = ratioLabel;
       }
-      this.setLabelText(ratioLabel ? Math.round(100 * this.sumVal * ratioLabel) / 100 : "N/A", 0);
+      this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : "N/A", 0);
       this.updateLabels();
     }
   }, {
@@ -37290,7 +37290,10 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		});
 
-		this.legend = this.graph.makeLegend();
+		this.legend = this.graph.makeLegend({
+			hideShapesOnHideSerie: true
+		});
+
 		this.legend.setAutoPosition('bottom');
 
 		if (!this.props.slave) {
@@ -37422,7 +37425,6 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			newPeak.on("removed", () => {
 
 				serie._peaks.splice(serie._peaks.indexOf(newPeak), 1);
-				console.log('removed');
 			});
 
 			newPeak.on("shapeLabelChanged", (shape, parameters) => {
@@ -37445,16 +37447,19 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						}
 
 						peak.redraw();
-					});
 
-					for (let serie of this.state.series) {
-						// Let us shift the integrals of all the series
+						for (let integral of serieState.integrals) {
 
-						for (let integral of serie.integrals) {
 							integral.from += shift;
 							integral.to += shift;
 						}
-					}
+					});
+
+					// No ! Of only the current serie
+					//for( let serie of this.state.series ) { // Let us shift the integrals of all the series
+
+
+					//}
 
 					this.updateOutput(); // Shift and integrals have changed, we must notify the output
 					this.setState({ series: this.state.series }); // Integrals have shifted, we must inform React
@@ -37524,7 +37529,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			if (e.keyCode == 16) {
 				this.wrapper.classList.add("linkable");
 			}
-
+			console.log(e.keyCode, window.navigator.platform);
 			if (window.navigator.platform == "MacIntel" && (e.keyCode == 91 || e.keyCode == 93) || window.navigator.platform !== "MacIntel" && e.keyCode == 17) {
 
 				this.wrapper.classList.add("removable");
@@ -37535,16 +37540,19 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 			var mdown = e => {
 
-				this.wrapper.classList.add("removing");
-				this.assignment.enableRemoveMouseover();
+				if (this.wrapper.classList && this.wrapper.classList.has("removable")) {
 
-				this.wrapper.addEventListener("mouseup", e => {
+					this.wrapper.classList.add("removing");
+					this.assignment.enableRemoveMouseover();
 
-					this.wrapper.classList.remove("removing");
-					this.assignment.disableRemoveMouseover();
+					this.wrapper.addEventListener("mouseup", e => {
 
-					this.wrapper.removeEventListener("mousedown", mdown);
-				}, { once: true });
+						this.wrapper.classList.remove("removing");
+						this.assignment.disableRemoveMouseover();
+
+						this.wrapper.removeEventListener("mousedown", mdown);
+					}, { once: true });
+				}
 			};
 
 			this.wrapper.addEventListener("mousedown", mdown);
