@@ -2,12 +2,14 @@ import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
 import NMRSerie from './nmrserie.jsx'
+import NMRSerie2D from './nmrserie2d.jsx'
 import Assignment from './assignment.js'
+import NMR1D from "./nmr1d.jsx"
 
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
-class NMR1D extends React.Component {
+class NMR2D extends React.Component {
 	
 
 	constructor( props ) {
@@ -18,172 +20,26 @@ class NMR1D extends React.Component {
 		
 		this.graph = new Graph( {
 			close: false,
-			plugins: {
-				'zoom': { zoomMode: 'x', transition: false },
-				'drag': {},
-				'shape': { 
-					type: "nmrintegral", 
-					serie: () => this.graph.getSerie("master"), 
-					handleSelected: 2,
-					properties: { baseLine: [ integralBaseline ], strokeWidth: [ 2 ] }
-				}
-			},
-
-			mouseActions: [
-				{ plugin: 'zoom', shift: false, ctrl: false },
-				{ type: 'click', callback: ( ) => {
-					
-					//	if( this.checkboxPeakPicking.checked ) {
-							this.pickPeak( ...arguments )	
-					//	}
-
-					}, shift: true, ctrl: false },
-
-				{ type: 'click', callback: ( x, y, event ) => {
-				
-					if( event.target.jsGraphIsShape && event.target.jsGraphIsShape.getType() == "nmrintegral" ) {
-						event.target.jsGraphIsShape.kill();
-					}
-
-				}, shift: false, ctrl: false, meta: true },
-
-				{ plugin: 'drag', alt: true, shift: false, ctrl: false },
-				{ plugin: 'shape', shift: true, ctrl: false },
-				{
-					type: 'dblclick',
-					plugin: 'zoom',
-					options: {
-						mode: 'total'
-					}
-				},
-				{	// Mousewheel action is only enabled when there is no selected serie
-					type: "mousewheel",
-					enabled: ( graph ) => { 
-						return ! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
-							( acc, shape ) => { 
-								if( ! acc ) { 
-									return shape.getType() == 'nmrintegral'
-								} 
-							}, false )  },
-					plugin: 'zoom',
-					options: {
-						mode: 'y',
-						direction: 'y'
-					}
-				},
-				{	// Alternative wheel action
-					type: "mousewheel",
-					enabled: ( graph ) => { return !! graph.getSelectedSerie() && ! graph.getSelectedShapes().reduce( 
-							( acc, shape ) => { 
-								if( ! acc ) { 
-									return shape.getType() == 'nmrintegral'
-								} 
-							}, false ) },
-					callback: ( dy ) => {
-						
-						let serie = this.graph.getSelectedSerie();
-						if( ! serie ) {
-							return;
-						}
-
-						let waveform = serie.getWaveform();
-						if( ! waveform ) {
-							return;
-						}
-
-						waveform.setScale( waveform.getScale() * ( dy < 0 ? 1.05 : 0.95 ) );
-						serie.setWaveform( waveform );
-						this.graph.draw();
-					}
-				}
-			],
-
-			keyActions: [
-				{ type: 'keydown', key: 'backspace', removeSelectedShape: true }
-			]
 
 		} );
-
-		this.graph.trackingLine( {
-
-			noLine: true,
-			mode: "individual",
-			enable: true,
-			series: "all",
-			serieShape: {
-
-				shape: 'polyline',
-				properties: { 
-					'strokeWidth': [ 0 ],
-					'pxPoints': [ [ trianglePath ] ],
-					'labelText': [ '' ]
-				},
-
-				onCreated: this.triangleCreated.bind( this ),
-				onChanged: this.triangleMoved.bind( this ),
-
-				magnet: {
-					mode: 'max',
-					withinPx: 15
-				}
-			}
-
-		} );
-
 
 		this.legend = this.graph.makeLegend();
 		this.legend.setAutoPosition('bottom');
 
-		if( ! this.props.slave ) {
+		this.graph.getBottomAxis().gridsOff();
+		this.graph.getLeftAxis().gridsOff();
 
-			this.graph.getLeftAxis().hide();
-			this.graph.getBottomAxis().gridsOff();
-		
-			this.graph
+		this.graph
 				.getBottomAxis()
 				.flip( true )
 				.setLabel( '\u03B4' )
 				.setUnit( 'ppm' );
-		} else {
 
-			this.graph.getBottomAxis().hide();
-			this.graph.getLeftAxis().hide();
-		}
-		 
-	
-		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor ) => {
-
-			if( this.checkboxAssignment.checked ) {
-				
-				return this.graph.prevent( true );
-			}
-
-		} ).on( "createdShape", ( event, shape ) => {
-		
-			let masterSerie = this.graph.getSerie( "master" );
-			shape.setSerie( masterSerie );
-			shape.ratio = ( masterSerie._nmrIntegralRatio );
-		//	shape.updateIntegralValue( masterSerie._nmrIntegralLabelRatio );
-			shape.setLabelAnchor( 'center' );
-
-		} ).on( "newShape", ( event, shape ) => {
-
-			var _from = shape.getPosition( 0 ),
-				_to = shape.getPosition( 1 );
-
-			shape.kill();
-
-			this.state.series.forEach( ( serie ) => {
-
-				if( serie.name == "master" ) {
-					serie.integrals.push( { id: Math.random(), from: _from.x, to: _to.x } );
-				}
-			} );
-
-			// Update state
-			this.setState( { series: this.state.series } );
-			this.props.onChanged( this.state.series );
-		});
+		this.graph
+				.getLeftAxis()
+				.flip( true )
+				.setLabel( '\u03B4' )
+				.setUnit( 'ppm' );
 
 
 		this.onIntegralChanged = this.onIntegralChanged.bind( this );
@@ -193,8 +49,8 @@ class NMR1D extends React.Component {
 		this.triangleMoved = this.triangleMoved.bind( this );
 		this.triangleCreated = this.triangleCreated.bind( this );
 		this.togglePeakPicking = this.togglePeakPicking.bind( this );
-		this.toggleAssignment = this.toggleAssignment.bind( this );
-		this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind( this );
+		//this.toggleAssignment = this.toggleAssignment.bind( this );
+		//this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind( this );
 		this.serieChanged = this.serieChanged.bind( this );
 		this.fullOut = this.fullOut.bind( this );
 	}
@@ -331,29 +187,7 @@ class NMR1D extends React.Component {
 		//this.graph.trackingLine( this.checkboxPeakPicking.checked );
 	}
 
-	toggleAssignment() {
-
-		if( this.checkboxAssignment.checked ) {
-			
-			this.assignment.enable();	
-		} else {
-
-			this.assignment.disable();	
-		}
-	}
-
-
-	toggleRemoveAssignment() {
-
-
-		if( this.checkboxRemoveAssignment.checked ) {
-			this.assignment.enableRemove();	
-
-		} else {
-
-			this.assignment.disableRemove();	
-		}
-	}
+	
 
 	updateMainData() {
 
@@ -385,19 +219,19 @@ class NMR1D extends React.Component {
 				
 				this.wrapper.classList.add( "removable" );
 				
-				this.assignment.enableRemove();
+		//		this.assignment.enableRemove();
 				this.removeEnabled = true;
 			}
 
 			var mdown = ( e ) => {
 							
 				this.wrapper.classList.add( "removing" );
-				this.assignment.enableRemoveMouseover();
+		//		this.assignment.enableRemoveMouseover();
 
 				this.wrapper.addEventListener("mouseup", ( e ) => {
 
 					this.wrapper.classList.remove( "removing" );
-					this.assignment.disableRemoveMouseover();
+		//			this.assignment.disableRemoveMouseover();
 
 					this.wrapper.removeEventListener("mousedown", mdown );
 
@@ -472,13 +306,14 @@ class NMR1D extends React.Component {
 		};
 
 
-		this.assignment = new Assignment( this.graph, this.domMolecule, assignmentOptions );
-
+	//	this.assignment = new Assignment( this.graph, this.domMolecule, assignmentOptions );
+/*
 		this.assignment.onChange( ( pairs ) => {
 
 			this.getSerieState( 'master' ).assignment = pairs;
 			this.serieChanged();
 		});
+		*/
 	}
 
 	updateOutput() {
@@ -565,7 +400,7 @@ class NMR1D extends React.Component {
 
 					if( serie.integrals[ i ].id == integralId ) {
 
-						this.assignment.removeGraphShape( integralId );
+//						this.assignment.removeGraphShape( integralId );
 						serie.integrals.splice( i, 1 );
 						update = true;
 						break;
@@ -617,41 +452,29 @@ class NMR1D extends React.Component {
 				}
 		    `}}></style>
 
-			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
+		    <table>	
+		    	<tbody>
+		    	<tr>
+		    		<td></td>
+		    		<td>
+						<NMR1D width="600" height="400" options={ {} } series={ this.props.nmr_top } onChanged={ () => {} } />
+					</td>
+				</tr>
+				<tr>
+		    		<td>		
+		    			<NMR1D width="200" height="600" options={ {} } series={ this.props.nmr_left } onChanged={ () => {} } />
+		    		</td>
+		    		<td>
+						<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
+					</td>
+				</tr>
+				</tbody>
+			</table>
 
-
-			<div 
-				style={ { 
-					pointerEvents: 'none', 
-					position: "absolute", 
-					top: '0px', 
-					userSelect: "none" 
-				} } 
-				ref={ el => this.domMolecule = el } 
-				draggable="true" 
-				onDragStart={ 
-					( event ) => { 
-
- 						 var style = window.getComputedStyle(event.target, null);
-					    event.dataTransfer.setData("text/plain", (parseInt(style.getPropertyValue("left"),10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.clientY));
-
-					} 
-				} 
-				dangerouslySetInnerHTML={ { __html: this.state.molecule } }
-			></div>
-				
-			{ this.props.options.toolbar && 
-				<div className="toolbar">
-					<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
-					<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
-					<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
-					<p><button ref={ el => { this.zoomOutButton = el } } onClick={ this.fullOut }>Zoom out</button></p>
-				</div>
-			}
 
 			<span>
 				{ ( this.state.series || [] ).map( ( serie ) => 
-					<NMRSerie 
+					<NMRSerie2D
 						color 		= {serie.color} 
 						onChanged 	= { this.serieChanged } 
 						onIntegralChanged 	= { this.onIntegralChanged } 
@@ -671,10 +494,10 @@ class NMR1D extends React.Component {
 	}
 }
 
-NMR1D.childContextTypes = {
+NMR2D.childContextTypes = {
   assignement: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),
   integralBaseline: PropTypes.number
 };
 
-export default NMR1D;
+export default NMR2D;

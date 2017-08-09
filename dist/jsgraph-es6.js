@@ -2444,6 +2444,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getMinX() {
+
 	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 
@@ -2530,7 +2531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getXScale() {
 
 	      if (!this.hasXWaveform) {
-	        return this;
+	        return 1;
 	      }
 
 	      return this.getXWaveform().getScale();
@@ -2602,6 +2603,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.xdata.data[index] * this.getXScale() + this.getXShift();
 	      } else {
 	        return this.xOffset + index * this.xScale;
+	      }
+	    }
+
+	    getXRaw(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.x[index];
+	      }
+
+	      if (this.xdata) {
+	        return this.xdata.data[index];
+	      } else {
+	        return index;
 	      }
 	    }
 
@@ -2928,6 +2942,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.subtract(...arguments);
 	    }
 
+	    math(method) {
+
+	      for (var i = 0; i < this.getLength(); i++) {
+	        this.data[i] = method(this.getY(i), this.getX(i));
+	      }
+	      return this;
+	    }
+
 	    _arithmetic(numberOrWave, operator) {
 
 	      if (numberOrWave instanceof Waveform) {
@@ -3070,7 +3092,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
 	      newWaveform._setData(this.getDataY().slice());
-	      newWaveform.setShfit(this.getShift());
+	      newWaveform.setShift(this.getShift());
 	      newWaveform.setScale(this.getScale());
 
 	      if (this.xdata) {
@@ -3166,6 +3188,40 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (console) {
 	        console.warn(text);
 	      }
+	    }
+
+	    setUnit(unit) {
+	      this.unit = unit;
+	      return this;
+	    }
+
+	    setXUnit(unit) {
+	      if (this.hasXWaveform()) {
+	        this.xdata.setUnit(unit);
+	      }
+
+	      this.xunit = unit;
+	      return this;
+	    }
+
+	    getUnit() {
+	      return this.unit || "";
+	    }
+
+	    getXUnit() {
+	      if (this.hasXWaveform()) {
+	        return this.xdata.getUnit();
+	      }
+
+	      return this.xunit | "";
+	    }
+
+	    hasXUnit() {
+	      return this.getXUnit().length > 0;
+	    }
+
+	    hasUnit() {
+	      return this.getUnit().length > 0;
 	    }
 
 	  };

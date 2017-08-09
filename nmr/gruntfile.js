@@ -52,6 +52,39 @@ module.exports = function(grunt) {
                           }
                      }]
                  }
+             },
+
+             nmr2d: {
+
+                 entry: [ './js/main_2d.jsx' ],
+
+                 output: {
+                     filename: '../docs/nmr/js/app2d.js'
+                 },
+                
+                 module: {
+                     loaders: [{
+                         test: /\.js$/,
+                         exclude: /node_modules/,
+                         loader: 'babel-loader',
+                          query: {
+                            presets: [
+                              'babel-preset-es2015',
+                              'babel-preset-stage-1'
+                              ]
+                          }
+                     },
+                     {
+                         test: /\.jsx$/,
+                         exclude: /node_modules/,
+                         loader: 'babel-loader',
+                          query: {
+                            presets: [
+                              'react'
+                              ]
+                          }
+                     }]
+                 }
              }
         }
     });

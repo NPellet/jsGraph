@@ -49,6 +49,12 @@ var ns = 'http://www.w3.org/2000/svg';
 	class Assignment {
 
 		constructor( graph, molecule, options ) {
+
+			if( ! molecule || ! graph ) {
+				this.disabled = true;
+				return;
+			}
+
 			this.options = options;
 			this.pairs = [];
 			this.target = {};
@@ -208,6 +214,7 @@ var ns = 'http://www.w3.org/2000/svg';
 
 
 		onChange( method ) { 
+
 			this.callbacksChanged.push( method );
 			return this;
 		}
