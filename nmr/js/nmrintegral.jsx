@@ -77,7 +77,8 @@ class NMRIntegral extends React.Component {
 		this.annotation.setPosition( { x: this.props.from }, 0 );
 		this.annotation.setPosition( { x: this.props.to }, 1 );
 		this.annotation.setSerie( this.context.serie );
-		this.annotation.setDom( 'id', this.props.id );
+		this.annotation.setDom( 'data-integral-id', this.props.id );
+		this.annotation.setProp( 'labelHTMLData', { 'data-integral-id': this.props.id } );
 		this.annotation.updateIntegralValue( this.props.labelRatio );
 		this.annotation.redraw( );
 	}

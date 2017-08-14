@@ -31,6 +31,7 @@ class ShapeEllipse extends Shape {
   setR( rx, ry ) {
     this.setProp( 'rx', rx );
     this.setProp( 'ry', ry );
+    return this;
   }
 
   handleMouseUpImpl() {

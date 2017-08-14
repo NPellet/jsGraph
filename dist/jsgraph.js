@@ -10585,6 +10585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function computeXMinMax() {
 
 	      if (!this.data) {
+
 	        return;
 	      }
 
@@ -10681,6 +10682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'getMinX',
 	    value: function getMinX() {
+
 	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 	  }, {
@@ -10790,7 +10792,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function getXScale() {
 
 	      if (!this.hasXWaveform) {
-	        return this;
+	        return 1;
 	      }
 
 	      return this.getXWaveform().getScale();
@@ -10869,6 +10871,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	  }, {
+	    key: 'getXRaw',
+	    value: function getXRaw(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.x[index];
+	      }
+
+	      if (this.xdata) {
+	        return this.xdata.data[index];
+	      } else {
+	        return index;
+	      }
+	    }
+	  }, {
 	    key: '_integrateP',
 	    value: function _integrateP() {
 	      var from = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -10912,8 +10928,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'integrate',
 	    value: function integrate(fromX, toX) {
-
-	      console.log(this.getIndexFromX(fromX), this.getIndexFromX(toX));
 	      return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
 	    }
 	  }, {
@@ -11227,6 +11241,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.subtract.apply(this, arguments);
 	    }
 	  }, {
+	    key: 'math',
+	    value: function math(method) {
+
+	      for (var i = 0; i < this.getLength(); i++) {
+	        this.data[i] = method(this.getY(i), this.getX(i));
+	      }
+
+	      this._setData(this.data);
+	      return this;
+	    }
+	  }, {
 	    key: '_arithmetic',
 	    value: function _arithmetic(numberOrWave, operator) {
 
@@ -11377,7 +11402,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
 	      newWaveform._setData(this.getDataY().slice());
-	      newWaveform.setShfit(this.getShift());
+	      newWaveform.rescaleX(this.xOffset, this.xShift);
+	      newWaveform.setShift(this.getShift());
 	      newWaveform.setScale(this.getScale());
 
 	      if (this.xdata) {
@@ -11428,9 +11454,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var index = this.getIndexFromX(xRef),
 	          indexPlus = this.getIndexFromX(xRef + xWithin),
-	          indexMinus = this.getIndexFromX(xRef - xWithin),
-	          yVal = this.getY(index),
-	          tmp = void 0;
+	          indexMinus = this.getIndexFromX(xRef - xWithin);
+
+	      return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
+	    }
+	  }, {
+	    key: 'findLocalMinMaxIndex',
+	    value: function findLocalMinMaxIndex(indexMinus, indexPlus, type) {
+
+	      var tmp = void 0;
 
 	      if (indexPlus < indexMinus) {
 	        tmp = indexPlus;
@@ -11478,6 +11510,198 @@ return /******/ (function(modules) { // webpackBootstrap
 	        console.warn(text);
 	      }
 	    }
+	  }, {
+	    key: 'setUnit',
+	    value: function setUnit(unit) {
+	      this.unit = unit;
+	      return this;
+	    }
+	  }, {
+	    key: 'setXUnit',
+	    value: function setXUnit(unit) {
+	      if (this.hasXWaveform()) {
+	        this.xdata.setUnit(unit);
+	      }
+
+	      this.xunit = unit;
+	      return this;
+	    }
+	  }, {
+	    key: 'getUnit',
+	    value: function getUnit() {
+	      return this.unit || "";
+	    }
+	  }, {
+	    key: 'getXUnit',
+	    value: function getXUnit() {
+	      if (this.hasXWaveform()) {
+	        return this.xdata.getUnit();
+	      }
+
+	      return this.xunit | "";
+	    }
+	  }, {
+	    key: 'hasXUnit',
+	    value: function hasXUnit() {
+	      return this.getXUnit().length > 0;
+	    }
+	  }, {
+	    key: 'hasUnit',
+	    value: function hasUnit() {
+	      return this.getUnit().length > 0;
+	    }
+	  }, {
+	    key: 'findLevels',
+	    value: function findLevels(level, options) {
+
+	      options = (0, _graph.extend)({
+
+	        box: 1,
+	        edge: 'both',
+	        rounding: 'before',
+	        rangeP: [0, this.getLength()]
+
+	      }, options);
+
+	      var lastLvlIndex = options.rangeP[0];
+	      var lvlIndex;
+	      var indices = [];
+	      var i = 0;
+
+	      while (lvlIndex = this.findLevel(level, (0, _graph.extend)(true, {}, options, {
+	        rangeP: [lastLvlIndex, options.rangeP[1]]
+	      }))) {
+	        indices.push(lvlIndex);
+	        lastLvlIndex = Math.ceil(lvlIndex);
+
+	        i++;
+	        if (i > 1000) {
+	          return;
+	        }
+	      }
+
+	      return indices;
+	    }
+
+	    // Find the first level in the specified range
+
+	  }, {
+	    key: 'findLevel',
+	    value: function findLevel(level, options) {
+
+	      options = (0, _graph.extend)({
+
+	        box: 1,
+	        edge: 'both',
+	        direction: 'ascending',
+	        rounding: 'before',
+	        rangeP: [0, this.getLength()]
+
+	      }, options);
+
+	      if (options.rangeX) {
+	        options.rangeP = options.rangeX.map(this.getIndexFromX);
+	      }
+
+	      var value, below, i, j, l, increment;
+
+	      var box = options.box;
+
+	      if (box % 2 == 0) {
+	        box++;
+	      }
+
+	      if (options.direction == "descending") {
+	        i = options.rangeP[1], l = options.rangeP[0], increment = -1;
+	      } else {
+	        i = options.rangeP[0], l = options.rangeP[1], increment = +1;
+	      }
+
+	      for (;; i += increment) {
+
+	        if (options.direction == "descending") {
+	          if (i < l) {
+	            break;
+	          }
+	        } else {
+	          if (i > l) {
+	            break;
+	          }
+	        }
+
+	        if (i < options.rangeP[0] + (box - 1) / 2) {
+	          continue;
+	        }
+
+	        if (i > options.rangeP[1] - (box - 1) / 2) {
+	          break;
+	        }
+
+	        value = this.getAverageP(i - (box - 1) / 2, i + (box - 1) / 2);
+
+	        if (below === undefined) {
+	          below = value < level;
+	          continue;
+	        }
+	        // Crossing up
+	        if (value > level && below) {
+
+	          below = false;
+
+	          if (options.edge == 'ascending' || options.edge == 'both') {
+	            // Found something
+
+	            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+	              if (this.data[j] > level && this.data[j - 1] <= level) {
+	                // Find a crossing
+
+	                switch (options.rounding) {
+	                  case 'before':
+	                    return j - 1;
+	                    break;
+
+	                  case 'after':
+	                    return j;
+	                    break;
+
+	                  case 'interpolate':
+	                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+	                    break;
+	                }
+	              }
+	            }
+	          }
+	        } else if (value < level && !below) {
+
+	          below = true;
+
+	          if (options.edge == 'descending' || options.edge == 'both') {
+
+	            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+	              if (this.data[j] < level && this.data[j - 1] >= level) {
+	                // Find a crossing
+
+	                switch (options.rounding) {
+	                  case 'before':
+	                    return j - 1;
+	                    break;
+
+	                  case 'after':
+	                    return j;
+	                    break;
+
+	                  case 'interpolate':
+	                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+	                    break;
+	                }
+	              }
+	            }
+	          }
+	        }
+	      }
+	    }
 	  }]);
 
 	  return Waveform;
@@ -11508,6 +11732,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    p <<= 1;
 	  }
 	  return p;
+	}
+
+	function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
+	  return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
 	}
 
 	function binarySearch(target, haystack, reverse) {
@@ -12673,10 +12901,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              var id;
 	              if (series[j].isShown()) {
-	                series[j].hide();
+	                series[j].hide(self.options.hideShapesOnHideSerie);
 	                id = self.eyeCrossedId;
 	              } else {
-	                series[j].show();
+	                series[j].show(self.options.hideShapesOnHideSerie);
 	                id = self.eyeId;
 	              }
 
@@ -25756,7 +25984,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function hide() {
 
 	      if (this.hidden) {
-	        return;
+	        return this;
 	      }
 
 	      this.hidden = true;
@@ -25800,7 +26028,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function show() {
 
 	      if (!this.hidden) {
-	        return;
+	        return this;
 	      }
 
 	      this.hidden = false;
@@ -26433,6 +26661,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the text of the label
+	     * @param {String} data - Some additional HTML tags that will be set to the label
+	     * @param {Number} [ index = 0 ] - The index of the label
+	     * @return {Shape} The current shape
+	     */
+
+	  }, {
+	    key: 'setLabelData',
+	    value: function setLabelData(data, index) {
+	      this.setProp('labelData', text, index || 0);
+	      return this;
+	    }
+
+	    /**
 	     * Returns the text of the label
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {String} The text of the label
@@ -26960,6 +27202,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
 	        //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+	      }
+
+	      var labelData = this.getProp('labelHTMLData', labelIndex) || {};
+	      console.log(labelData);
+
+	      for (var i in labelData) {
+
+	        this._labels[labelIndex].setAttribute(i, labelData[i]);
+	        this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
 	      }
 
 	      /** Sets the baseline */
@@ -28623,6 +28874,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setR(rx, ry) {
 	      this.setProp('rx', rx);
 	      this.setProp('ry', ry);
+	      return this;
 	    }
 	  }, {
 	    key: 'handleMouseUpImpl',
@@ -29131,7 +29383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (ratioLabel) {
 	        this.ratioLabel = ratioLabel;
 	      }
-	      this.setLabelText(ratioLabel ? Math.round(100 * this.sumVal * ratioLabel) / 100 : "N/A", 0);
+	      this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : "N/A", 0);
 	      this.updateLabels();
 	    }
 	  }, {

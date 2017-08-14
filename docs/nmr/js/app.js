@@ -2470,6 +2470,20 @@ var Shape = function (_EventEmitter) {
     }
 
     /**
+     * Sets the text of the label
+     * @param {String} data - Some additional HTML tags that will be set to the label
+     * @param {Number} [ index = 0 ] - The index of the label
+     * @return {Shape} The current shape
+     */
+
+  }, {
+    key: 'setLabelData',
+    value: function setLabelData(data, index) {
+      this.setProp('labelData', text, index || 0);
+      return this;
+    }
+
+    /**
      * Returns the text of the label
      * @param {Number} [ index = 0 ] - The index of the label
      * @return {String} The text of the label
@@ -2997,6 +3011,15 @@ var Shape = function (_EventEmitter) {
 
         this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
         //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+      }
+
+      var labelData = this.getProp('labelHTMLData', labelIndex) || {};
+      console.log(labelData);
+
+      for (var i in labelData) {
+
+        this._labels[labelIndex].setAttribute(i, labelData[i]);
+        this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
       }
 
       /** Sets the baseline */
@@ -37529,7 +37552,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			if (e.keyCode == 16) {
 				this.wrapper.classList.add("linkable");
 			}
-			console.log(e.keyCode, window.navigator.platform);
+
 			if (window.navigator.platform == "MacIntel" && (e.keyCode == 91 || e.keyCode == 93) || window.navigator.platform !== "MacIntel" && e.keyCode == 17) {
 
 				this.wrapper.classList.add("removable");
@@ -37580,8 +37603,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		let assignmentOptions = {
 
 			graph: {
-				bindableFilter: '.integral',
-				equivalentAttribute: 'id',
+				bindableFilter: '[data-integral-id]',
+				equivalentAttribute: 'data-integral-id',
 				highlightStyle: {
 
 					'binding': {
@@ -37927,7 +37950,8 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 		this.annotation.setPosition({ x: this.props.from }, 0);
 		this.annotation.setPosition({ x: this.props.to }, 1);
 		this.annotation.setSerie(this.context.serie);
-		this.annotation.setDom('id', this.props.id);
+		this.annotation.setDom('data-integral-id', this.props.id);
+		this.annotation.setProp('labelHTMLData', { 'data-integral-id': this.props.id });
 		this.annotation.updateIntegralValue(this.props.labelRatio);
 		this.annotation.redraw();
 	}

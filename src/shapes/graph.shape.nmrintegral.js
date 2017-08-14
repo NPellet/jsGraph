@@ -268,7 +268,7 @@ class ShapeNMRIntegral extends Shape {
     if ( ratioLabel ) {
       this.ratioLabel = ratioLabel;
     }
-    this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100).toPrecision( 3 ) : "N/A", 0 );
+    this.setLabelText( ratioLabel ? ( Math.round( 100 * this.sumVal * ratioLabel ) / 100 ).toPrecision( 3 ) : "N/A", 0 );
     this.updateLabels();
   }
 

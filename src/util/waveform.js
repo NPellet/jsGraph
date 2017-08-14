@@ -313,6 +313,7 @@ class Waveform {
   computeXMinMax() {
 
     if ( !this.data ) {
+
       return;
     }
 
@@ -608,8 +609,6 @@ class Waveform {
   }
 
   integrate( fromX, toX ) {
-
-    console.log( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
     return this.integrateP( this.getIndexFromX( fromX ), this.getIndexFromX( toX ) );
   }
 
@@ -896,6 +895,8 @@ class Waveform {
     for ( var i = 0; i < this.getLength(); i++ ) {
       this.data[ i ] = method( this.getY( i ), this.getX( i ) );
     }
+
+    this._setData( this.data );
     return this;
   }
 
@@ -1043,6 +1044,7 @@ class Waveform {
   duplicate( alsoDuplicateXWave ) {
     var newWaveform = new Waveform();
     newWaveform._setData( this.getDataY().slice() );
+    newWaveform.rescaleX( this.xOffset, this.xShift );
     newWaveform.setShift( this.getShift() );
     newWaveform.setScale( this.getScale() );
 
@@ -1095,9 +1097,14 @@ class Waveform {
 
     let index = this.getIndexFromX( xRef ),
       indexPlus = this.getIndexFromX( xRef + xWithin ),
-      indexMinus = this.getIndexFromX( xRef - xWithin ),
-      yVal = this.getY( index ),
-      tmp;
+      indexMinus = this.getIndexFromX( xRef - xWithin );
+
+    return this.findLocalMinMaxIndex( indexMinus, indexPlus, type );
+  }
+
+  findLocalMinMaxIndex( indexMinus, indexPlus, type ) {
+
+    let tmp;
 
     if ( indexPlus < indexMinus ) {
       tmp = indexPlus;
@@ -1178,6 +1185,162 @@ class Waveform {
     return this.getUnit().length > 0;
   }
 
+  findLevels( level, options ) {
+
+    options = extend( {
+
+      box: 1,
+      edge: 'both',
+      rounding: 'before',
+      rangeP: [ 0, this.getLength() ],
+
+    }, options );
+
+    var lastLvlIndex = options.rangeP[ 0 ];
+    var lvlIndex;
+    var indices = [];
+    var i = 0;
+
+    while ( lvlIndex = this.findLevel( level, extend( true, {}, options, {
+        rangeP: [ lastLvlIndex, options.rangeP[ 1 ] ]
+      } ) ) ) {
+      indices.push( lvlIndex );
+      lastLvlIndex = Math.ceil( lvlIndex );
+
+      i++;
+      if ( i > 1000 ) {
+        return;
+      }
+    }
+
+    return indices;
+  }
+
+  // Find the first level in the specified range
+  findLevel( level, options ) {
+
+    options = extend( {
+
+      box: 1,
+      edge: 'both',
+      direction: 'ascending',
+      rounding: 'before',
+      rangeP: [ 0, this.getLength() ],
+
+    }, options );
+
+    if ( options.rangeX ) {
+      options.rangeP = options.rangeX.map( this.getIndexFromX );
+    }
+
+    var value,
+      below,
+      i,
+      j,
+      l,
+      increment;
+
+    var box = options.box;
+
+    if ( box % 2 == 0 ) {
+      box++;
+    }
+
+    if ( options.direction == "descending" ) {
+      i = options.rangeP[ 1 ],
+        l = options.rangeP[ 0 ],
+        increment = -1;
+    } else {
+      i = options.rangeP[ 0 ],
+        l = options.rangeP[ 1 ],
+        increment = +1;
+    }
+
+    for ( ;; i += increment ) {
+
+      if ( options.direction == "descending" ) {
+        if ( i < l ) {
+          break;
+        }
+      } else {
+        if ( i > l ) {
+          break;
+        }
+      }
+
+      if ( i < options.rangeP[ 0 ] + ( box - 1 ) / 2 ) {
+        continue;
+      }
+
+      if ( i > options.rangeP[ 1 ] - ( box - 1 ) / 2 ) {
+        break;
+      }
+
+      value = this.getAverageP( i - ( box - 1 ) / 2, i + ( box - 1 ) / 2 );
+
+      if ( below === undefined ) {
+        below = value < level;
+        continue;
+      }
+      // Crossing up
+      if ( value > level && below ) {
+
+        below = false;
+
+        if ( options.edge == 'ascending' || options.edge == 'both' ) {
+          // Found something
+
+          for ( j = i + ( box - 1 ) / 2; j >= i - ( box - 1 ) / 2; j-- ) {
+
+            if ( this.data[ j ] > level && this.data[ j - 1 ] <= level ) { // Find a crossing
+
+              switch ( options.rounding ) {
+                case 'before':
+                  return j - 1;
+                  break;
+
+                case 'after':
+                  return j;
+                  break;
+
+                case 'interpolate':
+                  return getIndexInterpolate( level, this.data[ j ], this.data[ j - 1 ], j, j - 1 );
+                  break;
+              }
+            }
+          }
+        }
+
+      } else if ( value < level && !below ) {
+
+        below = true;
+
+        if ( options.edge == 'descending' ||  options.edge == 'both' ) {
+
+          for ( j = i + ( box - 1 ) / 2; j >= i - ( box - 1 ) / 2; j-- ) {
+
+            if ( this.data[ j ] < level && this.data[ j - 1 ] >= level ) { // Find a crossing
+
+              switch ( options.rounding ) {
+                case 'before':
+                  return j - 1;
+                  break;
+
+                case 'after':
+                  return j;
+                  break;
+
+                case 'interpolate':
+                  return getIndexInterpolate( level, this.data[ j ], this.data[ j - 1 ], j, j - 1 );
+                  break;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
 };
 
 const MULTIPLY = Symbol();
@@ -1204,6 +1367,10 @@ function pow2floor( v ) {
 
   }
   return p;
+}
+
+function getIndexInterpolate( value, valueBefore, valueAfter, indexBefore, indexAfter ) {
+  return ( value - valueBefore ) / ( valueAfter - valueBefore ) * ( indexAfter - indexBefore ) + indexBefore;
 }
 
 function binarySearch( target, haystack, reverse ) {

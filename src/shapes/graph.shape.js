@@ -152,7 +152,7 @@ class Shape extends EventEmitter {
   hide() {
 
     if ( this.hidden ) {
-      return;
+      return this;
     }
 
     this.hidden = true;
@@ -187,7 +187,7 @@ class Shape extends EventEmitter {
   show() {
 
     if ( !this.hidden ) {
-      return;
+      return this;
     }
 
     this.hidden = false;
@@ -704,6 +704,17 @@ class Shape extends EventEmitter {
   }
 
   /**
+   * Sets the text of the label
+   * @param {String} data - Some additional HTML tags that will be set to the label
+   * @param {Number} [ index = 0 ] - The index of the label
+   * @return {Shape} The current shape
+   */
+  setLabelData( data, index ) {
+    this.setProp( 'labelData', text, index || 0 );
+    return this;
+  }
+
+  /**
    * Returns the text of the label
    * @param {Number} [ index = 0 ] - The index of the label
    * @return {String} The text of the label
@@ -1157,6 +1168,15 @@ class Shape extends EventEmitter {
 
       this._labels[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
       //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+    }
+
+    let labelData = this.getProp( 'labelHTMLData', labelIndex ) || {};
+    console.log( labelData );
+
+    for ( var i in labelData ) {
+
+      this._labels[ labelIndex ].setAttribute( i, labelData[ i ] );
+      this._labelsBackground[ labelIndex ].setAttribute( i, labelData[ i ] );
     }
 
     /** Sets the baseline */

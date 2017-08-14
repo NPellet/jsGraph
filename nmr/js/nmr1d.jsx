@@ -387,7 +387,7 @@ class NMR1D extends React.Component {
 			if( e.keyCode == 16 ) {
 				this.wrapper.classList.add( "linkable" );
 			}
-console.log( e.keyCode, window.navigator.platform );
+
 			if( ( window.navigator.platform == "MacIntel" && ( e.keyCode == 91 || e.keyCode == 93 ) ) || ( window.navigator.platform !== "MacIntel" && e.keyCode == 17 ) ) {
 				
 				this.wrapper.classList.add( "removable" );
@@ -446,8 +446,8 @@ console.log( e.keyCode, window.navigator.platform );
 		let assignmentOptions = {
 
 			graph: {
-				bindableFilter: '.integral',
-				equivalentAttribute: 'id',
+				bindableFilter: '[data-integral-id]',
+				equivalentAttribute: 'data-integral-id',
 				highlightStyle: {
 
 					'binding': {
