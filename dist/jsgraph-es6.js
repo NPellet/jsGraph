@@ -10459,9 +10459,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 
 	        dom.addEventListener('mouseover', function (e) {
-	          console.log('dsf');
 	          var closest = self._getMarkerIndexFromEvent(e);
-	          console.log('dsf', closest);
 	          self.onMouseOverMarker(e, closest);
 	        });
 
