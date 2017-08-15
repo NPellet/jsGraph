@@ -9477,12 +9477,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
 	      }
 
-	      this._waveform = waveform;
+	      this.waveform = waveform;
 
-	      this.minX = this._waveform.getXMin();
-	      this.maxX = this._waveform.getXMax();
-	      this.minY = this._waveform.getMin();
-	      this.maxY = this._waveform.getMax();
+	      this.minX = this.waveform.getXMin();
+	      this.maxX = this.waveform.getXMax();
+	      this.minY = this.waveform.getMin();
+	      this.maxY = this.waveform.getMax();
 
 	      this.graph.updateDataMinMaxAxes();
 	      this.dataHasChanged();
@@ -9513,16 +9513,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    onMouseOverMarker(e, index) {
 
 	      var toggledOn = this.toggleMarker(index, true, true);
+
 	      if (this.options.onMouseOverMarker) {
 
-	        this.options.onMouseOverMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+	        this.options.onMouseOverMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
 	      }
 	    }
 
 	    onMouseOutMarker(e, index) {
 	      this.markersOffHover();
+
 	      if (this.options.onMouseOutMarker) {
-	        this.options.onMouseOutMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+	        this.options.onMouseOutMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
 	      }
 	    }
 
@@ -9536,9 +9538,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    toggleMarker(index, force, hover) {
 
-	      let i = index[0];
-
-	      index = index.join();
+	      let i = index;
 
 	      var _on;
 	      if (typeof force === 'undefined') {
@@ -9559,18 +9559,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          dom = el[index];
 	        }
 
-	        var x, y;
-
-	        if (this.mode == 'x_equally_separated') {
-	          x = this._xDataToUse.x + i * this._xDataToUse.dx;
-	          y = this.data[i];
-	        } else {
-	          x = this.data[i * 2];
-	          y = this.data[i * 2 + 1];
-	        }
-
-	        x = this.getX(x);
-	        y = this.getY(y);
+	        let x = this.getX(this.waveform.getX(i)),
+	            y = this.getY(this.waveform.getY(i));
 
 	        dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
 
@@ -9729,11 +9719,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // Degradation
 
-	      if (this._waveform) {
+	      if (this.waveform) {
 
 	        if (this.degradationPx) {
 
-	          this._waveform.resampleForDisplay({
+	          this.waveform.resampleForDisplay({
 
 	            resampleToPx: this.degradationPx,
 	            xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
@@ -9742,12 +9732,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          });
 
-	          this._dataToUse = [this._waveform.getDataToUseFlat()];
-	        } else if (this._waveform.hasAggregation()) {
+	          this._dataToUse = [this.waveform.getDataToUseFlat()];
+	        } else if (this.waveform.hasAggregation()) {
 
 	          let xaxis = this.getXAxis(),
 	              numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-	              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal);
+	              promise = this.waveform.selectAggregatedData(numberOfPointsInTotal);
 
 	          if (promise instanceof Promise) {
 
@@ -9762,11 +9752,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return false;
 	          } else {
 
-	            this._dataToUse = this._waveform.getDataToUseFlat();
+	            this._dataToUse = this.waveform.getDataToUseFlat();
 	          }
 	        }
 
-	        //    this._dataToUse = this._waveform.getDataToUseFlat();
+	        //    this._dataToUse = this.waveform.getDataToUseFlat();
 	      } else {
 
 	        this._dataToUse = this.data;
@@ -9875,7 +9865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _draw() {
 
 	      let self = this,
-	          waveform = this._waveform,
+	          waveform = this.waveform,
 	          data,
 	          x,
 	          y,
@@ -9924,7 +9914,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let i = 0,
 	          l = waveform.getLength();
 
-	      this.counter1 = 0;
 	      this.currentLine = "";
 
 	      if (waveform.isXMonotoneous()) {
@@ -10470,7 +10459,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 
 	        dom.addEventListener('mouseover', function (e) {
+	          console.log('dsf');
 	          var closest = self._getMarkerIndexFromEvent(e);
+	          console.log('dsf', closest);
 	          self.onMouseOverMarker(e, closest);
 	        });
 
@@ -10489,28 +10480,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    // In case markers are not grouped in families but independant
-	    getMarkerDomIndependant(index1, index2, family) {
-
-	      var self = this;
-	      var index = index1 + "," + index2;
+	    getMarkerDomIndependent(index, family) {
 
 	      if (!this.independantMarkers[index]) {
 
 	        var dom = document.createElementNS(this.graph.ns, 'path');
 	        this.setMarkerStyleTo(dom, family);
 
-	        dom.addEventListener('mouseover', function (e) {
+	        dom.addEventListener('mouseover', e => {
 
-	          self.onMouseOverMarker(e, [index2, index1]);
+	          this.onMouseOverMarker(e, index);
 	        });
 
-	        dom.addEventListener('mouseout', function (e) {
+	        dom.addEventListener('mouseout', e => {
 
-	          self.onMouseOutMarker(e, [index2, index1]);
+	          this.onMouseOutMarker(e, index);
 	        });
 
-	        dom.addEventListener('click', function (e) {
-	          self.onClickOnMarker(e, [index2, index1]);
+	        dom.addEventListener('click', e => {
+
+	          this.onClickOnMarker(e, index);
 	        });
 
 	        this.independantMarkers[index] = dom;
@@ -10538,35 +10527,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          p_x,
 	          p_y;
 
-	      if (this.mode == "x_equally_separated") {
+	      for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
 
-	        for (var i = 0, l = this.data.length; i < l; i++) {
-	          for (var k = 0, m = this.data[i].length; k < m; k += 1) {
+	        p_x = this.waveform.getX(k);
+	        p_y = this.waveform.getY(k);
 
-	            p_x = xData[i].x + k * xData[i].dx;
-	            p_y = this.data[i][k];
-	            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-	            //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+	        dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
+	        //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
 
-	            if (!oldDist || dist < oldDist) {
-	              oldDist = dist;
-	              xyindex = [k, i];
-	            }
-	          }
-	        }
-	      } else {
-
-	        for (var i = 0, l = this.data.length; i < l; i++) {
-	          for (var k = 0, m = this.data[i].length; k < m; k += 2) {
-
-	            p_x = this.data[i][k];
-	            p_y = this.data[i][k + 1];
-	            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-	            if (!oldDist || dist < oldDist) {
-	              oldDist = dist;
-	              xyindex = [k / 2, i];
-	            }
-	          }
+	        if (!oldDist || dist < oldDist) {
+	          oldDist = dist;
+	          xyindex = k;
 	        }
 	      }
 
@@ -10581,13 +10552,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    searchClosestValue(valX, data) {
 
-	      if (this._waveform) {
-	        const indexX = this._waveform.getIndexFromX(valX);
+	      if (this.waveform) {
+	        const indexX = this.waveform.getIndexFromX(valX);
 	        let returnObj = {
-	          xMin: this._waveform.getX(indexX),
-	          xMax: this._waveform.getX(indexX + 1),
-	          yMin: this._waveform.getY(indexX),
-	          yMax: this._waveform.getY(indexX + 1)
+	          xMin: this.waveform.getX(indexX),
+	          xMax: this.waveform.getX(indexX + 1),
+	          yMin: this.waveform.getY(indexX),
+	          yMax: this.waveform.getY(indexX + 1)
 	        };
 
 	        if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
@@ -11167,8 +11138,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    isMonotoneous() {
-	      if (this._waveform) {
-	        return this._waveform.isMonotoneous();
+	      if (this.waveform) {
+	        return this.waveform.isMonotoneous();
 	      }
 
 	      return !!this.xmonotoneous;
@@ -11176,13 +11147,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    findLocalMinMax(xRef, xWithin, type) {
 
-	      if (!this._waveform) {
+	      if (!this.waveform) {
 	        return false;
 	      }
 
-	      return this._waveform.findLocalMinMax(xRef, xWithin, type);
+	      return this.waveform.findLocalMinMax(xRef, xWithin, type);
 	    }
 
+	  }
+
+	  function drawMarkerXY(graph, family, x, y, markerDom) {
+
+	    if (!family) {
+	      return;
+	    }
+
+	    if (graph.options.markersIndependant) {
+	      var dom = graph.getMarkerDomIndependent(graph.counter2, family);
+	      var p = 'M ' + x + ' ' + y + ' ';
+	      p += family.markerPath + ' ';
+
+	      dom.setAttribute('d', p);
+	    }
+
+	    markerDom.path = markerDom.path || "";
+	    markerDom.path += 'M ' + x + ' ' + y + ' ';
+	    markerDom.path += family.markerPath + ' ';
 	  }
 
 	  util.mix(SerieLine, _graphMixin2.default);
@@ -11817,11 +11807,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getWaveform() {
-	      return this._waveform;
+	      return this.waveform;
 	    }
 
 	    getWaveforms() {
-	      return [this._waveform];
+	      return [this.waveform];
 	    }
 
 	    /**

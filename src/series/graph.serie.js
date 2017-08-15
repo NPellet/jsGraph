@@ -582,11 +582,11 @@ class Serie extends EventEmitter {
   }
 
   getWaveform() {
-    return this._waveform;
+    return this.waveform;
   }
 
   getWaveforms() {
-    return [ this._waveform ];
+    return [ this.waveform ];
   }
 
   /**
