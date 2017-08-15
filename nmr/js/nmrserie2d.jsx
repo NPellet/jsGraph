@@ -5,7 +5,7 @@ import NMRIntegral from './nmrintegral.jsx'
 import Assignment from './assignment.js'
 
 
-class NMRSerie extends React.Component {
+class NMRSerie2D extends React.Component {
 	
 	constructor( props, context ) {
 		super( props );
@@ -37,7 +37,7 @@ class NMRSerie extends React.Component {
 		this.sumChanged = this.sumChanged.bind( this );
 		this.maxSum = 0;
 
-		this._jsGraphWaveform = Graph.newWaveform();
+	//	this._jsGraphWaveform = Graph.newWaveform();
 		//this.onChanged = this.onChanged.bind( this );
 		this.integralChanged = this.integralChanged.bind( this );
 		this.integralRemoved = this.integralRemoved.bind( this );
@@ -81,7 +81,7 @@ class NMRSerie extends React.Component {
 		this.assignWaveform();
 		this.rescaleIntegrals();
 		
-		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
+		
 		this._jsGraphGraph.addSerieToTrackingLine( this._jsGraphSerie, {} );
 
 		this._jsGraphGraph.options.mouseActions.push( 
@@ -125,7 +125,7 @@ class NMRSerie extends React.Component {
 	}
 
 	assignWaveform() {
-		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
+	//	this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 	}
 
 	componentWillReceiveProps( nextProps, props ) {
@@ -143,9 +143,9 @@ class NMRSerie extends React.Component {
 		}
 
 		if( redraw ) {
-			this.assignWaveform();
+//			this.assignWaveform();
 		}
-console.log( nextProps );
+
 		if( nextProps.assignment ) {
 			console.log( arguments );
 			//	this._assignment.setPairing( this.getSerieState() );
@@ -165,6 +165,9 @@ console.log( nextProps );
 	}
 
 	setData() {
+
+		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
+
 		this._jsGraphWaveform.setData( this.props.data[ 1 ], this.props.data[ 0 ] );
 		this._jsGraphWaveform.aggregate();
 		this.setShift( this.props.shift );		
@@ -198,7 +201,9 @@ console.log( nextProps );
 		this.loadedState = false;
 
 		this._jsGraphSerie.setLineColor( this.props.color, "unselected", true );
+		return <span />;
 
+		/*
 		return (
 			<span>
 				{ 
@@ -219,17 +224,18 @@ console.log( nextProps );
 				}
 			</span> 
 		);
+		*/
 	}
 }
 
-NMRSerie.contextTypes = {
+NMRSerie2D.contextTypes = {
   assignement: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph )
 };
 
-NMRSerie.childContextTypes = {
+NMRSerie2D.childContextTypes = {
   serie: PropTypes.instanceOf( Graph.getConstructor( Graph.SERIE_LINE ) )
 };
 
 
-export default NMRSerie
+export default NMRSerie2D

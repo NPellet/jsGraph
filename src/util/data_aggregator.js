@@ -8,8 +8,11 @@ let string = function() {
   onmessage = function( e ) {
 
     const data = e.data.data, // The initial data
-      max = e.data.max, // Max X
-      min = e.data.min; // Min Y
+      maxX = e.data.maxX,
+      minX = e.data.minX,
+      maxY = e.data.maxY,
+      minY = e.data.minY,
+      direction = e.data.direction;
 
     let numPoints = e.data.numPoints; // Total number of points in the slot
     let l = data.length; // Number of data in the original buffer
@@ -21,7 +24,6 @@ let string = function() {
     let aggregationSum = [];
     let getX;
 
-    const dataPerSlot = numPoints / ( max - min ); // Computed number of aggregation per slot
     if ( e.data.xdata ) {
 
       getX = function getX( index ) {
@@ -31,39 +33,80 @@ let string = function() {
       getX = function getX( index ) {
         return index * e.data.xScale + e.data.xOffset;
       }
-
     }
 
     let aggregations = {};
 
-    for ( ; i < l; i++ ) {
+    // Direction x
 
-      // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-      //console.log( dataPerSlot, getX( i ) );
-      slotNumber = Math.floor( ( getX( i ) - min ) * dataPerSlot );
+    if ( direction == 'x' ) {
 
-      if ( slots[ k ] !== slotNumber ) {
-        k += 4;
-        slots[ k ] = slotNumber;
+      const dataPerSlot = numPoints / ( maxX - minX ); // Computed number of aggregation per slot
 
-        let slotX = ( slotNumber + 0.5 ) / dataPerSlot + min;
+      for ( ; i < l; i++ ) {
 
-        dataAggregatedX[ k ] = slotX;
-        dataAggregatedX[ k + 1 ] = slotX;
-        dataAggregatedX[ k + 2 ] = slotX;
-        dataAggregatedX[ k + 3 ] = slotX;
+        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+        //console.log( dataPerSlot, getX( i ) );
+        slotNumber = Math.floor( ( getX( i ) - minX ) * dataPerSlot );
 
-        dataAggregatedY[ k ] = data[ i ];
-        dataAggregatedY[ k + 1 ] = data[ i ];
-        dataAggregatedY[ k + 2 ] = data[ i ];
+        if ( slots[ k ] !== slotNumber ) {
+          k += 4;
+          slots[ k ] = slotNumber;
+
+          let slotX = ( slotNumber + 0.5 ) / dataPerSlot + minX;
+
+          dataAggregatedX[ k ] = slotX;
+          dataAggregatedX[ k + 1 ] = slotX;
+          dataAggregatedX[ k + 2 ] = slotX;
+          dataAggregatedX[ k + 3 ] = slotX;
+
+          dataAggregatedY[ k ] = data[ i ];
+          dataAggregatedY[ k + 1 ] = data[ i ];
+          dataAggregatedY[ k + 2 ] = data[ i ];
+          dataAggregatedY[ k + 3 ] = data[ i ];
+          aggregationSum[ k ] = 0;
+        }
+
+        dataAggregatedY[ k + 1 ] = Math.min( data[ i ], dataAggregatedY[ k + 1 ] );
+        dataAggregatedY[ k + 2 ] = Math.max( data[ i ], dataAggregatedY[ k + 2 ] );
         dataAggregatedY[ k + 3 ] = data[ i ];
-        aggregationSum[ k ] = 0;
-
+        aggregationSum[ k ] += data[ i ];
       }
-      dataAggregatedY[ k + 1 ] = Math.min( data[ i ], dataAggregatedY[ k + 1 ] );
-      dataAggregatedY[ k + 2 ] = Math.max( data[ i ], dataAggregatedY[ k + 2 ] );
-      dataAggregatedY[ k + 3 ] = data[ i ];
-      aggregationSum[ k ] += data[ i ];
+
+    } else { // y
+
+      const dataPerSlot = numPoints / ( maxY - minY ); // Computed number of aggregation per slot
+
+      for ( ; i < l; i++ ) {
+
+        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+        //console.log( dataPerSlot, getX( i ) );
+        slotNumber = Math.floor( ( data[ i ] - minY ) * dataPerSlot );
+
+        if ( slots[ k ] !== slotNumber ) {
+          k += 4;
+          slots[ k ] = slotNumber;
+
+          let slotY = ( slotNumber + 0.5 ) / dataPerSlot + minY;
+
+          dataAggregatedY[ k ] = slotY;
+          dataAggregatedY[ k + 1 ] = slotY;
+          dataAggregatedY[ k + 2 ] = slotY;
+          dataAggregatedY[ k + 3 ] = slotY;
+
+          dataAggregatedX[ k ] = data[ i ];
+          dataAggregatedX[ k + 1 ] = data[ i ];
+          dataAggregatedX[ k + 2 ] = data[ i ];
+          dataAggregatedX[ k + 3 ] = data[ i ];
+          aggregationSum[ k ] = 0;
+
+        }
+        dataAggregatedX[ k + 1 ] = Math.min( getX( i ), dataAggregatedX[ k + 1 ] );
+        dataAggregatedX[ k + 2 ] = Math.max( getX( i ), dataAggregatedX[ k + 2 ] );
+        dataAggregatedX[ k + 3 ] = getX( i );
+        aggregationSum[ k ] += getX( i );
+      }
+
     }
 
     aggregations[ numPoints ] = {
@@ -84,21 +127,43 @@ let string = function() {
       newAggregationX = [];
 
       k = 0;
-      for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
 
-        newAggregationX[ k ] = ( lastAggregationX[ i ] + lastAggregationX[ i + 4 ] ) / 2;
-        newAggregationX[ k + 1 ] = newAggregationX[ k ];
-        newAggregationX[ k + 2 ] = newAggregationX[ k ];
-        newAggregationX[ k + 3 ] = newAggregationX[ k ];
+      if ( direction == 'x' ) {
 
-        newAggregation[ k ] = lastAggregation[ i ]
-        newAggregation[ k + 1 ] = Math.min( lastAggregation[ i + 1 ], lastAggregation[ i + 5 ] );
-        newAggregation[ k + 2 ] = Math.max( lastAggregation[ i + 2 ], lastAggregation[ i + 6 ] );
-        newAggregation[ k + 3 ] = lastAggregation[ i + 7 ];
+        for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
 
-        aggregationSum[ k ] = ( lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ] ) / 2;
+          newAggregationX[ k ] = ( lastAggregationX[ i ] + lastAggregationX[ i + 4 ] ) / 2;
+          newAggregationX[ k + 1 ] = newAggregationX[ k ];
+          newAggregationX[ k + 2 ] = newAggregationX[ k ];
+          newAggregationX[ k + 3 ] = newAggregationX[ k ];
 
-        k += 4;
+          newAggregation[ k ] = lastAggregation[ i ]
+          newAggregation[ k + 1 ] = Math.min( lastAggregation[ i + 1 ], lastAggregation[ i + 5 ] );
+          newAggregation[ k + 2 ] = Math.max( lastAggregation[ i + 2 ], lastAggregation[ i + 6 ] );
+          newAggregation[ k + 3 ] = lastAggregation[ i + 7 ];
+
+          aggregationSum[ k ] = ( lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ] ) / 2;
+
+          k += 4;
+        }
+      } else {
+
+        for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
+
+          newAggregation[ k ] = ( lastAggregation[ i ] + lastAggregation[ i + 4 ] ) / 2;
+          newAggregation[ k + 1 ] = newAggregation[ k ];
+          newAggregation[ k + 2 ] = newAggregation[ k ];
+          newAggregation[ k + 3 ] = newAggregation[ k ];
+
+          newAggregationX[ k ] = lastAggregationX[ i ]
+          newAggregationX[ k + 1 ] = Math.min( lastAggregationX[ i + 1 ], lastAggregationX[ i + 5 ] );
+          newAggregationX[ k + 2 ] = Math.max( lastAggregationX[ i + 2 ], lastAggregationX[ i + 6 ] );
+          newAggregationX[ k + 3 ] = lastAggregationX[ i + 7 ];
+
+          aggregationSum[ k ] = ( lastAggregationSum[ i ] + lastAggregationSum[ i + 4 ] ) / 2;
+
+          k += 4;
+        }
       }
 
       aggregations[ numPoints ] = {

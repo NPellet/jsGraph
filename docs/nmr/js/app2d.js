@@ -1793,7 +1793,7 @@ var Shape = function (_EventEmitter) {
     value: function hide() {
 
       if (this.hidden) {
-        return;
+        return this;
       }
 
       this.hidden = true;
@@ -1837,7 +1837,7 @@ var Shape = function (_EventEmitter) {
     value: function show() {
 
       if (!this.hidden) {
-        return;
+        return this;
       }
 
       this.hidden = false;
@@ -2470,6 +2470,20 @@ var Shape = function (_EventEmitter) {
     }
 
     /**
+     * Sets the text of the label
+     * @param {String} data - Some additional HTML tags that will be set to the label
+     * @param {Number} [ index = 0 ] - The index of the label
+     * @return {Shape} The current shape
+     */
+
+  }, {
+    key: 'setLabelData',
+    value: function setLabelData(data, index) {
+      this.setProp('labelData', text, index || 0);
+      return this;
+    }
+
+    /**
      * Returns the text of the label
      * @param {Number} [ index = 0 ] - The index of the label
      * @return {String} The text of the label
@@ -2997,6 +3011,15 @@ var Shape = function (_EventEmitter) {
 
         this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
         //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+      }
+
+      var labelData = this.getProp('labelHTMLData', labelIndex) || {};
+      console.log(labelData);
+
+      for (var i in labelData) {
+
+        this._labels[labelIndex].setAttribute(i, labelData[i]);
+        this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
       }
 
       /** Sets the baseline */
@@ -5357,7 +5380,7 @@ return this.legend;}/**
    * Kills the graph
    **/},{key:'kill',value:function kill(){this.wrapper.removeChild(this.dom);}},{key:'_removeSerie',value:function _removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}},{key:'contextListen',value:function contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}},{key:'lockShapes',value:function lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
 for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
-this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
+this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this._sizeChanged=true;if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 },{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}/**
    *  Enables the line tracking
    *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
@@ -5852,6 +5875,7 @@ var Waveform = function () {
     value: function computeXMinMax() {
 
       if (!this.data) {
+
         return;
       }
 
@@ -5874,22 +5898,38 @@ var Waveform = function () {
       return this.dataInUse || this.data;
     }
   }, {
+    key: 'getIndexFromVal',
+    value: function getIndexFromVal(val) {
+      var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
+
+
+      var data = void 0;
+
+      if (useDataToUse && this.dataInUse) {
+        data = this.dataInUse.y;
+      } else {
+        data = this.data;
+      }
+
+      var position = void 0;
+      position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
+
+      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
+        // In case of aggregation, round to the closest element of 4.
+        return position - position % 4;
+      }
+
+      return position;
+    }
+  }, {
     key: 'getIndexFromX',
     value: function getIndexFromX(xval) {
       var useDataToUse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var roundingMethod = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Math.round;
 
 
-      if (!this.isXMonotoneous()) {
-        throw "Impossible to get the index from the x value for a non-monotoneous wave !";
-      }
-
-      var data = void 0,
-          xdata = void 0,
-          position = void 0;
-
-      xval -= this.getXShift();
-      xval /= this.getXScale();
+      var xdata = void 0;
 
       if (useDataToUse && this.dataInUse) {
         xdata = this.dataInUse.x;
@@ -5897,18 +5937,37 @@ var Waveform = function () {
         xdata = this.xdata.getData();
       }
 
-      if (xdata) {
-        position = binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+      var position = void 0;
 
-        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregate") {
-          // In case of aggregation, round to the closest element of 4.
-          return position - position % 4;
-        }
-
-        return position;
+      if (this.hasXWaveform()) {
+        position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
       } else {
-        return Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
       }
+
+      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
+        // In case of aggregation, round to the closest element of 4.
+        return position - position % 4;
+      }
+
+      return position;
+    }
+  }, {
+    key: 'getIndexFromData',
+    value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+
+      if (!this.isMonotoneous()) {
+        console.trace();
+        throw "Impossible to get the index from a non-monotoneous wave !";
+      }
+
+      var data = void 0,
+          position = void 0;
+
+      val -= this.getShift();
+      val /= this.getScale();
+
+      return binarySearch(val, valCollection, !isAscending);
     }
   }, {
     key: 'getReductionType',
@@ -6194,8 +6253,6 @@ var Waveform = function () {
   }, {
     key: 'integrate',
     value: function integrate(fromX, toX) {
-
-      console.log(this.getIndexFromX(fromX), this.getIndexFromX(toX));
       return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
     }
   }, {
@@ -6515,6 +6572,8 @@ var Waveform = function () {
       for (var i = 0; i < this.getLength(); i++) {
         this.data[i] = method(this.getY(i), this.getX(i));
       }
+
+      this._setData(this.data);
       return this;
     }
   }, {
@@ -6611,20 +6670,27 @@ var Waveform = function () {
     value: function aggregate() {
       var _this2 = this;
 
+      var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'x';
+
+
       this._dataAggregating = {};
       this._dataAggregated = {};
+      this._dataAggregationDirection = direction.toUpperCase();
 
       var pow2 = pow2floor(this.getLength());
 
       this._dataAggregating = (0, _data_aggregator2.default)({
 
-        min: this.getMinX(),
-        max: this.getMaxX(),
+        minX: this.minX,
+        maxX: this.maxX,
+        minY: this.minY,
+        maxY: this.maxY,
         data: this.data,
         xdata: this.xdata ? this.xdata.getData() : undefined,
         xScale: this.xScale,
         xOffset: this.xOffset,
-        numPoints: pow2
+        numPoints: pow2,
+        direction: direction
 
       }).then(function (event) {
 
@@ -6639,17 +6705,24 @@ var Waveform = function () {
     }
   }, {
     key: 'selectAggregatedData',
-    value: function selectAggregatedData(pxWidth, minX, maxX) {
+    value: function selectAggregatedData(pxWidth) {
 
       if (pxWidth < 2) {
         return false;
       }
+      /*
+      console.log( direction, this._dataAggregationDirection );
+      
+          if( direction !== this._dataAggregationDirection ) {
+            throw "The data is not aggregated in that direction";
+          }
+      */
 
       var level = pow2ceil(pxWidth);
 
       if (this._dataAggregated[level]) {
 
-        this.dataInUseType = "aggregate";
+        this.dataInUseType = "aggregate" + this._dataAggregationDirection;
         this.dataInUse = this._dataAggregated[level];
         return;
       } else if (this._dataAggregating) {
@@ -6668,6 +6741,7 @@ var Waveform = function () {
     value: function duplicate(alsoDuplicateXWave) {
       var newWaveform = new Waveform();
       newWaveform._setData(this.getDataY().slice());
+      newWaveform.rescaleX(this.xOffset, this.xShift);
       newWaveform.setShift(this.getShift());
       newWaveform.setScale(this.getScale());
 
@@ -6719,9 +6793,15 @@ var Waveform = function () {
 
       var index = this.getIndexFromX(xRef),
           indexPlus = this.getIndexFromX(xRef + xWithin),
-          indexMinus = this.getIndexFromX(xRef - xWithin),
-          yVal = this.getY(index),
-          tmp = void 0;
+          indexMinus = this.getIndexFromX(xRef - xWithin);
+
+      return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
+    }
+  }, {
+    key: 'findLocalMinMaxIndex',
+    value: function findLocalMinMaxIndex(indexMinus, indexPlus, type) {
+
+      var tmp = void 0;
 
       if (indexPlus < indexMinus) {
         tmp = indexPlus;
@@ -6809,6 +6889,158 @@ var Waveform = function () {
     value: function hasUnit() {
       return this.getUnit().length > 0;
     }
+  }, {
+    key: 'findLevels',
+    value: function findLevels(level, options) {
+
+      options = (0, _graph.extend)({
+
+        box: 1,
+        edge: 'both',
+        rounding: 'before',
+        rangeP: [0, this.getLength()]
+
+      }, options);
+
+      var lastLvlIndex = options.rangeP[0];
+      var lvlIndex;
+      var indices = [];
+      var i = 0;
+
+      while (lvlIndex = this.findLevel(level, (0, _graph.extend)(true, {}, options, {
+        rangeP: [lastLvlIndex, options.rangeP[1]]
+      }))) {
+        indices.push(lvlIndex);
+        lastLvlIndex = Math.ceil(lvlIndex);
+
+        i++;
+        if (i > 1000) {
+          return;
+        }
+      }
+
+      return indices;
+    }
+
+    // Find the first level in the specified range
+
+  }, {
+    key: 'findLevel',
+    value: function findLevel(level, options) {
+
+      options = (0, _graph.extend)({
+
+        box: 1,
+        edge: 'both',
+        direction: 'ascending',
+        rounding: 'before',
+        rangeP: [0, this.getLength()]
+
+      }, options);
+
+      if (options.rangeX) {
+        options.rangeP = options.rangeX.map(this.getIndexFromX);
+      }
+
+      var value, below, i, j, l, increment;
+
+      var box = options.box;
+
+      if (box % 2 == 0) {
+        box++;
+      }
+
+      if (options.direction == "descending") {
+        i = options.rangeP[1], l = options.rangeP[0], increment = -1;
+      } else {
+        i = options.rangeP[0], l = options.rangeP[1], increment = +1;
+      }
+
+      for (;; i += increment) {
+
+        if (options.direction == "descending") {
+          if (i < l) {
+            break;
+          }
+        } else {
+          if (i > l) {
+            break;
+          }
+        }
+
+        if (i < options.rangeP[0] + (box - 1) / 2) {
+          continue;
+        }
+
+        if (i > options.rangeP[1] - (box - 1) / 2) {
+          break;
+        }
+
+        value = this.getAverageP(i - (box - 1) / 2, i + (box - 1) / 2);
+
+        if (below === undefined) {
+          below = value < level;
+          continue;
+        }
+        // Crossing up
+        if (value > level && below) {
+
+          below = false;
+
+          if (options.edge == 'ascending' || options.edge == 'both') {
+            // Found something
+
+            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+              if (this.data[j] > level && this.data[j - 1] <= level) {
+                // Find a crossing
+
+                switch (options.rounding) {
+                  case 'before':
+                    return j - 1;
+                    break;
+
+                  case 'after':
+                    return j;
+                    break;
+
+                  case 'interpolate':
+                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+                    break;
+                }
+              }
+            }
+          }
+        } else if (value < level && !below) {
+
+          below = true;
+
+          if (options.edge == 'descending' || options.edge == 'both') {
+
+            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+              if (this.data[j] < level && this.data[j - 1] >= level) {
+                // Find a crossing
+
+                switch (options.rounding) {
+                  case 'before':
+                    return j - 1;
+                    break;
+
+                  case 'after':
+                    return j;
+                    break;
+
+                  case 'interpolate':
+                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+                    break;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }]);
 
   return Waveform;
@@ -6839,6 +7071,10 @@ function pow2floor(v) {
     p <<= 1;
   }
   return p;
+}
+
+function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
+  return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
 }
 
 function binarySearch(target, haystack, reverse) {
@@ -7908,7 +8144,7 @@ var SerieLine = function (_Serie) {
 
           var xaxis = this.getXAxis(),
               numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal, this.getXAxis().getCurrentMin(), this.getXAxis().getCurrentMax());
+              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal);
 
           if (promise instanceof Promise) {
 
@@ -23243,7 +23479,8 @@ class NMRIntegral extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Componen
 		this.annotation.setPosition({ x: this.props.from }, 0);
 		this.annotation.setPosition({ x: this.props.to }, 1);
 		this.annotation.setSerie(this.context.serie);
-		this.annotation.setDom('id', this.props.id);
+		this.annotation.setDom('data-integral-id', this.props.id);
+		this.annotation.setProp('labelHTMLData', { 'data-integral-id': this.props.id });
 		this.annotation.updateIntegralValue(this.props.labelRatio);
 		this.annotation.redraw();
 	}
@@ -23425,7 +23662,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		if (redraw) {
 			this.assignWaveform();
 		}
-		console.log(nextProps);
+
 		if (nextProps.assignment) {
 			console.log(arguments);
 			//	this._assignment.setPairing( this.getSerieState() );
@@ -23445,8 +23682,14 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	setData() {
-		this._jsGraphWaveform.setData(this.props.data[1], this.props.data[0]);
-		this._jsGraphWaveform.aggregate();
+
+		if (this.props.direction == 'x') {
+			this._jsGraphWaveform.setData(this.props.data[1], this.props.data[0]);
+		} else {
+			this._jsGraphWaveform.setData(this.props.data[0], this.props.data[1]);
+		}
+
+		this._jsGraphWaveform.aggregate(this.props.direction);
 		this.setShift(this.props.shift);
 	}
 
@@ -26857,25 +27100,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg"), fetch("cosy.jdx")]).then(async data => {
 
-	var series = [];
+	var seriesTop = [];
+	var seriesLeft = [];
 
 	var cosy = data[3];
-	console.log(cosy);
+
 	cosy.text().then(cosy => {
 
-		cosy = __WEBPACK_IMPORTED_MODULE_4_jcampconverter___default.a.convert(cosy, { keepSpectra: true });
-		console.log(cosy);
+		//	cosy = JcampConverter.convert( cosy, {keepSpectra:true} );
+		//	console.log( cosy );
 
-		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr2d_jsx__["a" /* default */], { width: '600', height: '600', nmr_top: series, nrm_left: series, options: options, series: [{ name: 'cosy', data: cosy }], molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
+		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr2d_jsx__["a" /* default */], { width: '600', height: '600', nmr_top: seriesTop, nmr_left: seriesLeft, options: options, series: [{ name: 'cosy', data: cosy }], molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
 	});
 
 	for (var i = 0; i < 2; i++) {
 
 		await data[i].json().then(data => {
 
-			series.push({
+			seriesLeft.push({
 				shift: 2,
-				name: i == 0 ? "master" : "slave",
+				name: i == 0 ? "nmr1d_left_master" : "nmr1d_left_slave",
+				data: data,
+				color: i == 0 ? "green" : "orange",
+				integrals: i == 0 ? [{ from: 9, to: 10, id: "aaa" }] : []
+			});
+
+			seriesTop.push({
+				shift: 2,
+				name: i == 0 ? "nmr1d_top_master" : "nmr1d_top_slave",
 				data: data,
 				color: i == 0 ? "green" : "orange",
 				integrals: i == 0 ? [{ from: 9, to: 10, id: "aaa" }] : []
@@ -28564,10 +28816,10 @@ var Legend = function () {
 
               var id;
               if (series[j].isShown()) {
-                series[j].hide();
+                series[j].hide(self.options.hideShapesOnHideSerie);
                 id = self.eyeCrossedId;
               } else {
-                series[j].show();
+                series[j].show(self.options.hideShapesOnHideSerie);
                 id = self.eyeId;
               }
 
@@ -36165,6 +36417,7 @@ var ShapeEllipse = function (_Shape) {
     value: function setR(rx, ry) {
       this.setProp('rx', rx);
       this.setProp('ry', ry);
+      return this;
     }
   }, {
     key: 'handleMouseUpImpl',
@@ -36716,7 +36969,7 @@ var ShapeNMRIntegral = function (_Shape) {
       if (ratioLabel) {
         this.ratioLabel = ratioLabel;
       }
-      this.setLabelText(ratioLabel ? Math.round(100 * this.sumVal * ratioLabel) / 100 : "N/A", 0);
+      this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : "N/A", 0);
       this.updateLabels();
     }
   }, {
@@ -37365,9 +37618,11 @@ var string = function () {
 
     var data = e.data.data,
         // The initial data
-    max = e.data.max,
-        // Max X
-    min = e.data.min; // Min Y
+    maxX = e.data.maxX,
+        minX = e.data.minX,
+        maxY = e.data.maxY,
+        minY = e.data.minY,
+        direction = e.data.direction;
 
     var numPoints = e.data.numPoints; // Total number of points in the slot
     var l = data.length; // Number of data in the original buffer
@@ -37379,7 +37634,6 @@ var string = function () {
     var aggregationSum = [];
     var getX = void 0;
 
-    var dataPerSlot = numPoints / (max - min); // Computed number of aggregation per slot
     if (e.data.xdata) {
 
       getX = function getX(index) {
@@ -37393,33 +37647,74 @@ var string = function () {
 
     var aggregations = {};
 
-    for (; i < l; i++) {
+    // Direction x
 
-      // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-      //console.log( dataPerSlot, getX( i ) );
-      slotNumber = Math.floor((getX(i) - min) * dataPerSlot);
+    if (direction == 'x') {
 
-      if (slots[k] !== slotNumber) {
-        k += 4;
-        slots[k] = slotNumber;
+      var dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
-        var slotX = (slotNumber + 0.5) / dataPerSlot + min;
+      for (; i < l; i++) {
 
-        dataAggregatedX[k] = slotX;
-        dataAggregatedX[k + 1] = slotX;
-        dataAggregatedX[k + 2] = slotX;
-        dataAggregatedX[k + 3] = slotX;
+        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+        //console.log( dataPerSlot, getX( i ) );
+        slotNumber = Math.floor((getX(i) - minX) * dataPerSlot);
 
-        dataAggregatedY[k] = data[i];
-        dataAggregatedY[k + 1] = data[i];
-        dataAggregatedY[k + 2] = data[i];
+        if (slots[k] !== slotNumber) {
+          k += 4;
+          slots[k] = slotNumber;
+
+          var slotX = (slotNumber + 0.5) / dataPerSlot + minX;
+
+          dataAggregatedX[k] = slotX;
+          dataAggregatedX[k + 1] = slotX;
+          dataAggregatedX[k + 2] = slotX;
+          dataAggregatedX[k + 3] = slotX;
+
+          dataAggregatedY[k] = data[i];
+          dataAggregatedY[k + 1] = data[i];
+          dataAggregatedY[k + 2] = data[i];
+          dataAggregatedY[k + 3] = data[i];
+          aggregationSum[k] = 0;
+        }
+
+        dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
+        dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
         dataAggregatedY[k + 3] = data[i];
-        aggregationSum[k] = 0;
+        aggregationSum[k] += data[i];
       }
-      dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
-      dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
-      dataAggregatedY[k + 3] = data[i];
-      aggregationSum[k] += data[i];
+    } else {
+      // y
+
+      var _dataPerSlot = numPoints / (maxY - minY); // Computed number of aggregation per slot
+
+      for (; i < l; i++) {
+
+        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+        //console.log( dataPerSlot, getX( i ) );
+        slotNumber = Math.floor((data[i] - minY) * _dataPerSlot);
+
+        if (slots[k] !== slotNumber) {
+          k += 4;
+          slots[k] = slotNumber;
+
+          var slotY = (slotNumber + 0.5) / _dataPerSlot + minY;
+
+          dataAggregatedY[k] = slotY;
+          dataAggregatedY[k + 1] = slotY;
+          dataAggregatedY[k + 2] = slotY;
+          dataAggregatedY[k + 3] = slotY;
+
+          dataAggregatedX[k] = data[i];
+          dataAggregatedX[k + 1] = data[i];
+          dataAggregatedX[k + 2] = data[i];
+          dataAggregatedX[k + 3] = data[i];
+          aggregationSum[k] = 0;
+        }
+        dataAggregatedX[k + 1] = Math.min(getX(i), dataAggregatedX[k + 1]);
+        dataAggregatedX[k + 2] = Math.max(getX(i), dataAggregatedX[k + 2]);
+        dataAggregatedX[k + 3] = getX(i);
+        aggregationSum[k] += getX(i);
+      }
     }
 
     aggregations[numPoints] = {
@@ -37440,21 +37735,43 @@ var string = function () {
       newAggregationX = [];
 
       k = 0;
-      for (i = 0, l = lastAggregation.length; i < l; i += 8) {
 
-        newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
-        newAggregationX[k + 1] = newAggregationX[k];
-        newAggregationX[k + 2] = newAggregationX[k];
-        newAggregationX[k + 3] = newAggregationX[k];
+      if (direction == 'x') {
 
-        newAggregation[k] = lastAggregation[i];
-        newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
-        newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
-        newAggregation[k + 3] = lastAggregation[i + 7];
+        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
 
-        aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+          newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
+          newAggregationX[k + 1] = newAggregationX[k];
+          newAggregationX[k + 2] = newAggregationX[k];
+          newAggregationX[k + 3] = newAggregationX[k];
 
-        k += 4;
+          newAggregation[k] = lastAggregation[i];
+          newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
+          newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
+          newAggregation[k + 3] = lastAggregation[i + 7];
+
+          aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+
+          k += 4;
+        }
+      } else {
+
+        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+
+          newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
+          newAggregation[k + 1] = newAggregation[k];
+          newAggregation[k + 2] = newAggregation[k];
+          newAggregation[k + 3] = newAggregation[k];
+
+          newAggregationX[k] = lastAggregationX[i];
+          newAggregationX[k + 1] = Math.min(lastAggregationX[i + 1], lastAggregationX[i + 5]);
+          newAggregationX[k + 2] = Math.max(lastAggregationX[i + 2], lastAggregationX[i + 6]);
+          newAggregationX[k + 3] = lastAggregationX[i + 7];
+
+          aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+
+          k += 4;
+        }
       }
 
       aggregations[numPoints] = {
@@ -37515,12 +37832,16 @@ aggregatorWorker.onmessage = function (e) {
 
 
 
+
+
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
 class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	constructor(props) {
+
+		console.log("Making1D");
 		super(props);
 		this.state = {};
 
@@ -37626,10 +37947,12 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		});
 
-		this.legend = this.graph.makeLegend();
-		this.legend.setAutoPosition('bottom');
+		if (this.props.options.legend) {
 
-		if (!this.props.slave) {
+			this.makeLegend();
+		}
+
+		if (!this.props.options.slave) {
 
 			this.graph.getLeftAxis().hide();
 			this.graph.getBottomAxis().gridsOff();
@@ -37639,6 +37962,12 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 			this.graph.getBottomAxis().hide();
 			this.graph.getLeftAxis().hide();
+
+			if (this.props.options.slave == 'top') {
+				this.graph.getBottomAxis().flip(true);
+			} else {
+				this.graph.getLeftAxis().flip(true);
+			}
 		}
 
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor) => {
@@ -37758,7 +38087,6 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			newPeak.on("removed", () => {
 
 				serie._peaks.splice(serie._peaks.indexOf(newPeak), 1);
-				console.log('removed');
 			});
 
 			newPeak.on("shapeLabelChanged", (shape, parameters) => {
@@ -37781,16 +38109,19 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						}
 
 						peak.redraw();
-					});
 
-					for (let serie of this.state.series) {
-						// Let us shift the integrals of all the series
+						for (let integral of serieState.integrals) {
 
-						for (let integral of serie.integrals) {
 							integral.from += shift;
 							integral.to += shift;
 						}
-					}
+					});
+
+					// No ! Of only the current serie
+					//for( let serie of this.state.series ) { // Let us shift the integrals of all the series
+
+
+					//}
 
 					this.updateOutput(); // Shift and integrals have changed, we must notify the output
 					this.setState({ series: this.state.series }); // Integrals have shifted, we must inform React
@@ -37841,17 +38172,23 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		this.graph.autoscaleAxes();
 		this.graph.draw();
-		this.legend.update();
+
+		if (this.props.options.legend) {
+			this.legend.update();
+		}
 	}
 
 	componentDidMount() {
 
+		// Binds the graph to the DOM element
+		this.graph.setWrapper(this.dom);
+		this.graph.resize(this.props.width, this.props.height);
+
 		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState({ series: this.props.series, molecule: this.props.molecule });
 
-		// Binds the graph to the DOM element
-		this.graph.resize(this.props.width, this.props.height);
-		this.graph.setWrapper(this.dom);
+		console.log('Mounting 1D spectrum');
+
 		this.updateMainData();
 
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
@@ -37871,16 +38208,19 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 			var mdown = e => {
 
-				this.wrapper.classList.add("removing");
-				this.assignment.enableRemoveMouseover();
+				if (this.wrapper.classList && this.wrapper.classList.has("removable")) {
 
-				this.wrapper.addEventListener("mouseup", e => {
+					this.wrapper.classList.add("removing");
+					this.assignment.enableRemoveMouseover();
 
-					this.wrapper.classList.remove("removing");
-					this.assignment.disableRemoveMouseover();
+					this.wrapper.addEventListener("mouseup", e => {
 
-					this.wrapper.removeEventListener("mousedown", mdown);
-				}, { once: true });
+						this.wrapper.classList.remove("removing");
+						this.assignment.disableRemoveMouseover();
+
+						this.wrapper.removeEventListener("mousedown", mdown);
+					}, { once: true });
+				}
 			};
 
 			this.wrapper.addEventListener("mousedown", mdown);
@@ -37908,8 +38248,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		let assignmentOptions = {
 
 			graph: {
-				bindableFilter: '.integral',
-				equivalentAttribute: 'id',
+				bindableFilter: '[data-integral-id]',
+				equivalentAttribute: 'data-integral-id',
 				highlightStyle: {
 
 					'binding': {
@@ -37960,13 +38300,29 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	componentWillReceiveProps(nextProps) {
 		this.setState({ series: nextProps.series, molecule: nextProps.molecule });
 
-		this.graph.resize(nextProps.width, nextProps.height);
-		this.graph.draw();
+		if (nextProps.width !== this.props.width || nextProps.heigth !== this.props.height) {
+			this.graph.resize(nextProps.width, nextProps.height);
+		}
 		this.updateMainData();
+
+		if (nextProps.options.legend && !this.legend) {
+			this.makeLegend();
+		}
+
+		return;
 	}
 
 	componentDidUpdate() {
 		this.graph.draw();
+	}
+
+	makeLegend() {
+
+		this.legend = this.graph.makeLegend({
+			hideShapesOnHideSerie: true
+		});
+
+		this.legend.setAutoPosition('bottom');
 	}
 
 	onIntegralLabelRatioChanged(seriename, integralId, newRatio) {
@@ -38065,29 +38421,8 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			{
 				id: this.unique,
 				ref: el => this.wrapper = el,
-				style: { position: 'relative' },
-				onDragOver: event => {
-					event.preventDefault();console.log('droppable');
-				},
-				onDrop: event => {
-
-					var offset = event.dataTransfer.getData("text/plain").split(',');
-					var dm = this.domMolecule;
-					dm.style.left = event.clientX + parseInt(offset[0], 10) + 'px';
-					dm.style.top = event.clientY + parseInt(offset[1], 10) + 'px';
-					event.preventDefault();
-					return false;
-				}
+				style: { position: 'relative' }
 			},
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("style", { dangerouslySetInnerHTML: { __html: `
-		      #${ this.unique }.linkable circle[data-atomid] {
-					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
-				}
-
-				#${ this.unique }.removable line.link, #${ this.unique }.removable path.integral, #${ this.unique }.removing {
-					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
-				}
-		    ` } }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", { style: { position: "absolute", userSelect: "none" }, ref: el => this.dom = el }),
 			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", {
 				style: {
@@ -38097,12 +38432,6 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					userSelect: "none"
 				},
 				ref: el => this.domMolecule = el,
-				draggable: "true",
-				onDragStart: event => {
-
-					var style = window.getComputedStyle(event.target, null);
-					event.dataTransfer.setData("text/plain", parseInt(style.getPropertyValue("left"), 10) - event.clientX + ',' + (parseInt(style.getPropertyValue("top"), 10) - event.clientY));
-				},
 				dangerouslySetInnerHTML: { __html: this.state.molecule }
 			}),
 			this.props.options.toolbar && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -38148,6 +38477,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				"span",
 				null,
 				(this.state.series || []).map(serie => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__["a" /* default */], {
+					key: serie.name,
 					color: serie.color,
 					onChanged: this.serieChanged,
 					onIntegralChanged: this.onIntegralChanged,
@@ -38156,9 +38486,10 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					name: serie.name,
 					data: serie.data,
 					shift: serie.shift,
-					integrals: serie.integrals,
+
 					integralLabelRatio: serie.integralLabelRatio,
-					assignement: serie.assignment
+					assignement: serie.assignment,
+					direction: this.props.options.slave == "left" ? 'y' : 'x'
 				}))
 			)
 		);
@@ -38197,6 +38528,8 @@ NMR1D.childContextTypes = {
 
 
 
+
+
 const trianglePath = 'm -6 -12 h 12 l -6 9 z';
 const integralBaseline = 250;
 
@@ -38206,7 +38539,7 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		super(props);
 		this.state = {};
 
-		this.unique = "NMRUnique";
+		this.unique = "NMR2DUnique";
 
 		this.graph = new __WEBPACK_IMPORTED_MODULE_1__src_graph___default.a({
 			close: false
@@ -38375,64 +38708,79 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	componentDidMount() {
 
+		console.log('Mounting 2D spectrum');
+
+		this.setState({ molecule: this.props.molecule });
+		return;
 		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState({ series: this.props.series, molecule: this.props.molecule });
 
 		// Binds the graph to the DOM element
 		this.graph.resize(this.props.width, this.props.height);
+
 		this.graph.setWrapper(this.dom);
 		this.updateMainData();
 
+		/*
+  
+  		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
+  		this.wrapper.addEventListener("keydown", ( e ) => {
+  			
+  
+  			if( e.keyCode == 16 ) {
+  				this.wrapper.classList.add( "linkable" );
+  			}
+  
+  			if( ( window.navigator.platform == "MacIntel" && ( e.keyCode == 91 || e.keyCode == 93 ) ) || ( window.navigator.platform !== "MacIntel" && e.keyCode == 17 ) ) {
+  				
+  				this.wrapper.classList.add( "removable" );
+  				
+  		//		this.assignment.enableRemove();
+  				this.removeEnabled = true;
+  			}
+  
+  			var mdown = ( e ) => {
+  							
+  				this.wrapper.classList.add( "removing" );
+  		//		this.assignment.enableRemoveMouseover();
+  
+  				this.wrapper.addEventListener("mouseup", ( e ) => {
+  
+  					this.wrapper.classList.remove( "removing" );
+  		//			this.assignment.disableRemoveMouseover();
+  
+  					this.wrapper.removeEventListener("mousedown", mdown );
+  
+  
+  				}, { once: true } );
+  			}
+  
+  
+  			this.wrapper.addEventListener("mousedown", mdown );
+  		
+  			document.addEventListener("keyup", ( e ) => {
+  				
+  
+  				if( e.keyCode == 16 ) {
+  					this.wrapper.classList.remove( "linkable" );
+  					return;
+  				}
+  
+  				this.wrapper.removeEventListener("mousedown", mdown );
+  
+  				this.wrapper.classList.remove( "removable" );
+  				this.assignment.disableRemove();
+  				this.removeEnabled = false;
+  			
+  			}, { once: true } );
+  
+  		});
+  */
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
-		this.wrapper.addEventListener("keydown", e => {
-
-			if (e.keyCode == 16) {
-				this.wrapper.classList.add("linkable");
-			}
-
-			if (window.navigator.platform == "MacIntel" && (e.keyCode == 91 || e.keyCode == 93) || window.navigator.platform !== "MacIntel" && e.keyCode == 17) {
-
-				this.wrapper.classList.add("removable");
-
-				//		this.assignment.enableRemove();
-				this.removeEnabled = true;
-			}
-
-			var mdown = e => {
-
-				this.wrapper.classList.add("removing");
-				//		this.assignment.enableRemoveMouseover();
-
-				this.wrapper.addEventListener("mouseup", e => {
-
-					this.wrapper.classList.remove("removing");
-					//			this.assignment.disableRemoveMouseover();
-
-					this.wrapper.removeEventListener("mousedown", mdown);
-				}, { once: true });
-			};
-
-			this.wrapper.addEventListener("mousedown", mdown);
-
-			document.addEventListener("keyup", e => {
-
-				if (e.keyCode == 16) {
-					this.wrapper.classList.remove("linkable");
-					return;
-				}
-
-				this.wrapper.removeEventListener("mousedown", mdown);
-
-				this.wrapper.classList.remove("removable");
-				this.assignment.disableRemove();
-				this.removeEnabled = false;
-			}, { once: true });
-		});
-
-		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
-		this.wrapper.addEventListener("mousemove", e => {
-			this.wrapper.focus();
-		});
+		/*		this.wrapper.addEventListener("mousemove", ( e ) => {
+  			this.wrapper.focus();
+  		});
+  */
 
 		let assignmentOptions = {
 
@@ -38488,14 +38836,16 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
+
 		this.setState({ series: nextProps.series, molecule: nextProps.molecule });
 
 		this.graph.resize(nextProps.width, nextProps.height);
-		this.graph.draw();
+
 		this.updateMainData();
 	}
 
 	componentDidUpdate() {
+
 		this.graph.draw();
 	}
 
@@ -38589,7 +38939,7 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	render() {
-
+		console.log('Rendering');
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"div",
 			{
@@ -38631,7 +38981,7 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 							"td",
 							null,
-							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__nmr1d_jsx__["a" /* default */], { width: "600", height: "400", options: {}, series: this.props.nmr_top, onChanged: () => {} })
+							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__nmr1d_jsx__["a" /* default */], { key: "nmr_top", width: "600", height: "400", options: { slave: 'top' }, series: this.props.nmr_top, onChanged: () => {} })
 						)
 					),
 					__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -38640,7 +38990,7 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 							"td",
 							null,
-							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__nmr1d_jsx__["a" /* default */], { width: "200", height: "600", options: {}, series: this.props.nmr_left, onChanged: () => {} })
+							__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__nmr1d_jsx__["a" /* default */], { width: "200", height: "600", options: { slave: 'left' }, series: this.props.nmr_left, onChanged: () => {} })
 						),
 						__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 							"td",
@@ -38649,23 +38999,6 @@ class NMR2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 						)
 					)
 				)
-			),
-			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-				"span",
-				null,
-				(this.state.series || []).map(serie => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__nmrserie2d_jsx__["a" /* default */], {
-					color: serie.color,
-					onChanged: this.serieChanged,
-					onIntegralChanged: this.onIntegralChanged,
-					onIntegralRemoved: this.onIntegralRemoved,
-					onIntegralLabelRatioChanged: this.onIntegralLabelRatioChanged,
-					name: serie.name,
-					data: serie.data,
-					shift: serie.shift,
-					integrals: serie.integrals,
-					integralLabelRatio: serie.integralLabelRatio,
-					assignement: serie.assignment
-				}))
 			)
 		);
 	}
@@ -38699,7 +39032,7 @@ NMR2D.childContextTypes = {
 
 
 
-class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
+class NMRSerie2D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 	constructor(props, context) {
 		super(props);
@@ -38730,7 +39063,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.sumChanged = this.sumChanged.bind(this);
 		this.maxSum = 0;
 
-		this._jsGraphWaveform = __WEBPACK_IMPORTED_MODULE_1__src_graph___default.a.newWaveform();
+		//	this._jsGraphWaveform = Graph.newWaveform();
 		//this.onChanged = this.onChanged.bind( this );
 		this.integralChanged = this.integralChanged.bind(this);
 		this.integralRemoved = this.integralRemoved.bind(this);
@@ -38774,7 +39107,6 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.assignWaveform();
 		this.rescaleIntegrals();
 
-		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
 		this._jsGraphGraph.addSerieToTrackingLine(this._jsGraphSerie, {});
 
 		this._jsGraphGraph.options.mouseActions.push({
@@ -38816,7 +39148,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	assignWaveform() {
-		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
+		//	this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 	}
 
 	componentWillReceiveProps(nextProps, props) {
@@ -38834,9 +39166,9 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		}
 
 		if (redraw) {
-			this.assignWaveform();
+			//			this.assignWaveform();
 		}
-		console.log(nextProps);
+
 		if (nextProps.assignment) {
 			console.log(arguments);
 			//	this._assignment.setPairing( this.getSerieState() );
@@ -38856,6 +39188,9 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 	}
 
 	setData() {
+
+		this._jsGraphSerie.setWaveform(this._jsGraphWaveform);
+
 		this._jsGraphWaveform.setData(this.props.data[1], this.props.data[0]);
 		this._jsGraphWaveform.aggregate();
 		this.setShift(this.props.shift);
@@ -38887,38 +39222,43 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.loadedState = false;
 
 		this._jsGraphSerie.setLineColor(this.props.color, "unselected", true);
+		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("span", null);
 
-		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-			"span",
-			null,
-			(this.props.integrals || []).map(el => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__["a" /* default */], {
-				id: el.id,
-				key: el.id,
-				labelRatio: this.state.labelRatio,
-				ratio: this.state.ratio,
-				from: el.from,
-				to: el.to,
-				onSumChanged: this.sumChanged,
-				onChanged: this.integralChanged,
-				onValueChanged: value => {
-					this.scaleIntegralText(el.id, value);
-				},
-				onRemoved: this.integralRemoved
-			}))
-		);
+		/*
+  return (
+  	<span>
+  		{ 
+  			( this.props.integrals || [] ).map( 
+  				( el ) => <NMRIntegral 
+  					id 		= { el.id } 
+  					key 	= { el.id } 
+  					labelRatio 	= { this.state.labelRatio } 
+  					ratio 	= { this.state.ratio } 
+  					from 	= { el.from } 
+  					to 		= { el.to } 
+  					onSumChanged 	= { this.sumChanged } 
+  					onChanged 		= { this.integralChanged } 
+  					onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+  					onRemoved 		= { this.integralRemoved } 
+  				/> 
+  			) 
+  		}
+  	</span> 
+  );
+  */
 	}
 }
 
-NMRSerie.contextTypes = {
+NMRSerie2D.contextTypes = {
 	assignement: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_4__assignment_js___default.a),
 	graph: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_1__src_graph___default.a)
 };
 
-NMRSerie.childContextTypes = {
+NMRSerie2D.childContextTypes = {
 	serie: __WEBPACK_IMPORTED_MODULE_2_prop_types___default.a.instanceOf(__WEBPACK_IMPORTED_MODULE_1__src_graph___default.a.getConstructor(__WEBPACK_IMPORTED_MODULE_1__src_graph___default.a.SERIE_LINE))
 };
 
-/* harmony default export */ __webpack_exports__["a"] = (NMRSerie);
+/* unused harmony default export */ var _unused_webpack_default_export = (NMRSerie2D);
 
 /***/ }),
 /* 140 */

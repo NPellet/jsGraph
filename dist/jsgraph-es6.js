@@ -660,7 +660,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Kills the graph
 	   **/kill(){this.wrapper.removeChild(this.dom);}_removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
 	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}unlockShapes(){//		console.log('unlock');
-	this.shapesLocked=false;}prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}_getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}_resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);if(this.drawn){this.requireLegendUpdate();this.draw(true);}}updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
+	this.shapesLocked=false;}prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}_getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}_resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this._sizeChanged=true;if(this.drawn){this.requireLegendUpdate();this.draw(true);}}updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
 	getDrawingSpaceWidth(){return()=>this.drawingSpaceWidth;}getDrawingSpaceHeight(){return()=>this.drawingSpaceHeight;}getDrawingSpaceMinX(){return()=>this.drawingSpaceMinX;}getDrawingSpaceMinY(){return()=>this.drawingSpaceMinY;}getDrawingSpaceMaxX(){return()=>this.drawingSpaceMaxX;}getDrawingSpaceMaxY(){return()=>this.drawingSpaceMaxY;}/**
 	   *  Enables the line tracking
 	   *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
@@ -2385,16 +2385,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.dataInUse || this.data;
 	    }
 
-	    getIndexFromX(xval, useDataToUse = false, roundingMethod = Math.round) {
+	    getIndexFromVal(val, useDataToUse = false, roundingMethod = Math.round) {
 
-	      if (!this.isXMonotoneous()) {
-	        throw "Impossible to get the index from the x value for a non-monotoneous wave !";
+	      let data;
+
+	      if (useDataToUse && this.dataInUse) {
+	        data = this.dataInUse.y;
+	      } else {
+	        data = this.data;
 	      }
 
-	      let data, xdata, position;
+	      let position;
+	      position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
-	      xval -= this.getXShift();
-	      xval /= this.getXScale();
+	      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
+	        // In case of aggregation, round to the closest element of 4.
+	        return position - position % 4;
+	      }
+
+	      return position;
+	    }
+
+	    getIndexFromX(xval, useDataToUse = false, roundingMethod = Math.round) {
+
+	      let xdata;
 
 	      if (useDataToUse && this.dataInUse) {
 	        xdata = this.dataInUse.x;
@@ -2402,18 +2416,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	        xdata = this.xdata.getData();
 	      }
 
-	      if (xdata) {
-	        position = binarySearch(xval, xdata, !(this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0));
+	      let position;
 
-	        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregate") {
-	          // In case of aggregation, round to the closest element of 4.
-	          return position - position % 4;
-	        }
-
-	        return position;
+	      if (this.hasXWaveform()) {
+	        position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
 	      } else {
-	        return Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+	        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
 	      }
+
+	      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
+	        // In case of aggregation, round to the closest element of 4.
+	        return position - position % 4;
+	      }
+
+	      return position;
+	    }
+
+	    getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+
+	      if (!this.isMonotoneous()) {
+	        console.trace();
+	        throw "Impossible to get the index from a non-monotoneous wave !";
+	      }
+
+	      let data, position;
+
+	      val -= this.getShift();
+	      val /= this.getScale();
+
+	      return binarySearch(val, valCollection, !isAscending);
 	    }
 
 	    getReductionType() {
@@ -3037,22 +3068,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    aggregate() {
+	    aggregate(direction = 'x') {
 
 	      this._dataAggregating = {};
 	      this._dataAggregated = {};
+	      this._dataAggregationDirection = direction.toUpperCase();
 
 	      var pow2 = pow2floor(this.getLength());
 
 	      this._dataAggregating = (0, _data_aggregator2.default)({
 
-	        min: this.getMinX(),
-	        max: this.getMaxX(),
+	        minX: this.minX,
+	        maxX: this.maxX,
+	        minY: this.minY,
+	        maxY: this.maxY,
 	        data: this.data,
 	        xdata: this.xdata ? this.xdata.getData() : undefined,
 	        xScale: this.xScale,
 	        xOffset: this.xOffset,
-	        numPoints: pow2
+	        numPoints: pow2,
+	        direction: direction
 
 	      }).then(event => {
 
@@ -3065,17 +3100,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return !!this._dataAggregated;
 	    }
 
-	    selectAggregatedData(pxWidth, minX, maxX) {
+	    selectAggregatedData(pxWidth) {
 
 	      if (pxWidth < 2) {
 	        return false;
 	      }
+	      /*
+	      console.log( direction, this._dataAggregationDirection );
+	           if( direction !== this._dataAggregationDirection ) {
+	            throw "The data is not aggregated in that direction";
+	          }
+	      */
 
 	      var level = pow2ceil(pxWidth);
 
 	      if (this._dataAggregated[level]) {
 
-	        this.dataInUseType = "aggregate";
+	        this.dataInUseType = "aggregate" + this._dataAggregationDirection;
 	        this.dataInUse = this._dataAggregated[level];
 	        return;
 	      } else if (this._dataAggregating) {
@@ -3926,7 +3967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (true) {
 	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, __webpack_require__(3)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(exports, require("../graph.util"));
+	    factory(exports, require('../graph.util'));
 	  } else {
 	    var mod = {
 	      exports: {}
@@ -3935,7 +3976,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    global.data_aggregator = mod.exports;
 	  }
 	})(this, function (exports, _graph) {
-	  "use strict";
+	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
@@ -3982,9 +4023,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      const data = e.data.data,
 	            // The initial data
-	      max = e.data.max,
-	            // Max X
-	      min = e.data.min; // Min Y
+	      maxX = e.data.maxX,
+	            minX = e.data.minX,
+	            maxY = e.data.maxY,
+	            minY = e.data.minY,
+	            direction = e.data.direction;
 
 	      let numPoints = e.data.numPoints; // Total number of points in the slot
 	      let l = data.length; // Number of data in the original buffer
@@ -3996,7 +4039,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let aggregationSum = [];
 	      let getX;
 
-	      const dataPerSlot = numPoints / (max - min); // Computed number of aggregation per slot
 	      if (e.data.xdata) {
 
 	        getX = function getX(index) {
@@ -4010,33 +4052,74 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      let aggregations = {};
 
-	      for (; i < l; i++) {
+	      // Direction x
 
-	        // dataPerSlot: 1 / 1000 ( compression by 1'000 )
-	        //console.log( dataPerSlot, getX( i ) );
-	        slotNumber = Math.floor((getX(i) - min) * dataPerSlot);
+	      if (direction == 'x') {
 
-	        if (slots[k] !== slotNumber) {
-	          k += 4;
-	          slots[k] = slotNumber;
+	        const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
 
-	          let slotX = (slotNumber + 0.5) / dataPerSlot + min;
+	        for (; i < l; i++) {
 
-	          dataAggregatedX[k] = slotX;
-	          dataAggregatedX[k + 1] = slotX;
-	          dataAggregatedX[k + 2] = slotX;
-	          dataAggregatedX[k + 3] = slotX;
+	          // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+	          //console.log( dataPerSlot, getX( i ) );
+	          slotNumber = Math.floor((getX(i) - minX) * dataPerSlot);
 
-	          dataAggregatedY[k] = data[i];
-	          dataAggregatedY[k + 1] = data[i];
-	          dataAggregatedY[k + 2] = data[i];
+	          if (slots[k] !== slotNumber) {
+	            k += 4;
+	            slots[k] = slotNumber;
+
+	            let slotX = (slotNumber + 0.5) / dataPerSlot + minX;
+
+	            dataAggregatedX[k] = slotX;
+	            dataAggregatedX[k + 1] = slotX;
+	            dataAggregatedX[k + 2] = slotX;
+	            dataAggregatedX[k + 3] = slotX;
+
+	            dataAggregatedY[k] = data[i];
+	            dataAggregatedY[k + 1] = data[i];
+	            dataAggregatedY[k + 2] = data[i];
+	            dataAggregatedY[k + 3] = data[i];
+	            aggregationSum[k] = 0;
+	          }
+
+	          dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
+	          dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
 	          dataAggregatedY[k + 3] = data[i];
-	          aggregationSum[k] = 0;
+	          aggregationSum[k] += data[i];
 	        }
-	        dataAggregatedY[k + 1] = Math.min(data[i], dataAggregatedY[k + 1]);
-	        dataAggregatedY[k + 2] = Math.max(data[i], dataAggregatedY[k + 2]);
-	        dataAggregatedY[k + 3] = data[i];
-	        aggregationSum[k] += data[i];
+	      } else {
+	        // y
+
+	        const dataPerSlot = numPoints / (maxY - minY); // Computed number of aggregation per slot
+
+	        for (; i < l; i++) {
+
+	          // dataPerSlot: 1 / 1000 ( compression by 1'000 )
+	          //console.log( dataPerSlot, getX( i ) );
+	          slotNumber = Math.floor((data[i] - minY) * dataPerSlot);
+
+	          if (slots[k] !== slotNumber) {
+	            k += 4;
+	            slots[k] = slotNumber;
+
+	            let slotY = (slotNumber + 0.5) / dataPerSlot + minY;
+
+	            dataAggregatedY[k] = slotY;
+	            dataAggregatedY[k + 1] = slotY;
+	            dataAggregatedY[k + 2] = slotY;
+	            dataAggregatedY[k + 3] = slotY;
+
+	            dataAggregatedX[k] = data[i];
+	            dataAggregatedX[k + 1] = data[i];
+	            dataAggregatedX[k + 2] = data[i];
+	            dataAggregatedX[k + 3] = data[i];
+	            aggregationSum[k] = 0;
+	          }
+	          dataAggregatedX[k + 1] = Math.min(getX(i), dataAggregatedX[k + 1]);
+	          dataAggregatedX[k + 2] = Math.max(getX(i), dataAggregatedX[k + 2]);
+	          dataAggregatedX[k + 3] = getX(i);
+	          aggregationSum[k] += getX(i);
+	        }
 	      }
 
 	      aggregations[numPoints] = {
@@ -4057,21 +4140,43 @@ return /******/ (function(modules) { // webpackBootstrap
 	        newAggregationX = [];
 
 	        k = 0;
-	        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
 
-	          newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
-	          newAggregationX[k + 1] = newAggregationX[k];
-	          newAggregationX[k + 2] = newAggregationX[k];
-	          newAggregationX[k + 3] = newAggregationX[k];
+	        if (direction == 'x') {
 
-	          newAggregation[k] = lastAggregation[i];
-	          newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
-	          newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
-	          newAggregation[k + 3] = lastAggregation[i + 7];
+	          for (i = 0, l = lastAggregation.length; i < l; i += 8) {
 
-	          aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+	            newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
+	            newAggregationX[k + 1] = newAggregationX[k];
+	            newAggregationX[k + 2] = newAggregationX[k];
+	            newAggregationX[k + 3] = newAggregationX[k];
 
-	          k += 4;
+	            newAggregation[k] = lastAggregation[i];
+	            newAggregation[k + 1] = Math.min(lastAggregation[i + 1], lastAggregation[i + 5]);
+	            newAggregation[k + 2] = Math.max(lastAggregation[i + 2], lastAggregation[i + 6]);
+	            newAggregation[k + 3] = lastAggregation[i + 7];
+
+	            aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+
+	            k += 4;
+	          }
+	        } else {
+
+	          for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+
+	            newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
+	            newAggregation[k + 1] = newAggregation[k];
+	            newAggregation[k + 2] = newAggregation[k];
+	            newAggregation[k + 3] = newAggregation[k];
+
+	            newAggregationX[k] = lastAggregationX[i];
+	            newAggregationX[k + 1] = Math.min(lastAggregationX[i + 1], lastAggregationX[i + 5]);
+	            newAggregationX[k + 2] = Math.max(lastAggregationX[i + 2], lastAggregationX[i + 6]);
+	            newAggregationX[k + 3] = lastAggregationX[i + 7];
+
+	            aggregationSum[k] = (lastAggregationSum[i] + lastAggregationSum[i + 4]) / 2;
+
+	            k += 4;
+	          }
 	        }
 
 	        aggregations[numPoints] = {
@@ -9642,7 +9747,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          let xaxis = this.getXAxis(),
 	              numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-	              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal, this.getXAxis().getCurrentMin(), this.getXAxis().getCurrentMax());
+	              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal);
 
 	          if (promise instanceof Promise) {
 
@@ -10207,7 +10312,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.currentLine += "L ";
 	        this.currentLine += xpx;
 	        this.currentLine += " ";
-	        this.currentLine += pos;
+	        this.currentLine += this.pos0;
 	        this.currentLine += " ";
 	      }
 

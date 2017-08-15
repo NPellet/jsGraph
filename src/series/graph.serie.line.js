@@ -426,7 +426,7 @@ class SerieLine extends Serie {
 
         let xaxis = this.getXAxis(),
           numberOfPointsInTotal = this.graph.getDrawingWidth() * ( xaxis.getDataMax() - xaxis.getDataMin() ) / ( xaxis.getCurrentMax() - xaxis.getCurrentMin() ),
-          promise = this._waveform.selectAggregatedData( numberOfPointsInTotal, this.getXAxis().getCurrentMin(), this.getXAxis().getCurrentMax() );
+          promise = this._waveform.selectAggregatedData( numberOfPointsInTotal );
 
         if ( promise instanceof Promise ) {
 
@@ -996,7 +996,7 @@ class SerieLine extends Serie {
       this.currentLine += "L ";
       this.currentLine += xpx;
       this.currentLine += " ";
-      this.currentLine += pos;
+      this.currentLine += this.pos0;
       this.currentLine += " ";
 
     }

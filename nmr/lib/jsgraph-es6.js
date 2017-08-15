@@ -2363,6 +2363,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    computeXMinMax() {
 
 	      if (!this.data) {
+
 	        return;
 	      }
 
@@ -2444,7 +2445,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getMinX() {
-	      console.log(this.minX * this.getXScale() + this.getXShift(), this.minX);return this.minX * this.getXScale() + this.getXShift();
+
+	      return this.minX * this.getXScale() + this.getXShift();
 	    }
 
 	    getMaxX() {
@@ -2605,6 +2607,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
+	    getXRaw(index, optimized) {
+
+	      if (optimized && this.dataInUse) {
+	        return this.dataInUse.x[index];
+	      }
+
+	      if (this.xdata) {
+	        return this.xdata.data[index];
+	      } else {
+	        return index;
+	      }
+	    }
+
 	    _integrateP(from = 0, to = this.getLength() - 1) {
 
 	      from = Math.round(from);
@@ -2642,8 +2657,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    integrate(fromX, toX) {
-
-	      console.log(this.getIndexFromX(fromX), this.getIndexFromX(toX));
 	      return this.integrateP(this.getIndexFromX(fromX), this.getIndexFromX(toX));
 	    }
 
@@ -2928,6 +2941,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.subtract(...arguments);
 	    }
 
+	    math(method) {
+
+	      for (var i = 0; i < this.getLength(); i++) {
+	        this.data[i] = method(this.getY(i), this.getX(i));
+	      }
+
+	      this._setData(this.data);
+	      return this;
+	    }
+
 	    _arithmetic(numberOrWave, operator) {
 
 	      if (numberOrWave instanceof Waveform) {
@@ -3070,7 +3093,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    duplicate(alsoDuplicateXWave) {
 	      var newWaveform = new Waveform();
 	      newWaveform._setData(this.getDataY().slice());
-	      newWaveform.setShfit(this.getShift());
+	      newWaveform.rescaleX(this.xOffset, this.xShift);
+	      newWaveform.setShift(this.getShift());
 	      newWaveform.setScale(this.getScale());
 
 	      if (this.xdata) {
@@ -3119,9 +3143,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      let index = this.getIndexFromX(xRef),
 	          indexPlus = this.getIndexFromX(xRef + xWithin),
-	          indexMinus = this.getIndexFromX(xRef - xWithin),
-	          yVal = this.getY(index),
-	          tmp;
+	          indexMinus = this.getIndexFromX(xRef - xWithin);
+
+	      return this.findLocalMinMaxIndex(indexMinus, indexPlus, type);
+	    }
+
+	    findLocalMinMaxIndex(indexMinus, indexPlus, type) {
+
+	      let tmp;
 
 	      if (indexPlus < indexMinus) {
 	        tmp = indexPlus;
@@ -3168,6 +3197,187 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
+	    setUnit(unit) {
+	      this.unit = unit;
+	      return this;
+	    }
+
+	    setXUnit(unit) {
+	      if (this.hasXWaveform()) {
+	        this.xdata.setUnit(unit);
+	      }
+
+	      this.xunit = unit;
+	      return this;
+	    }
+
+	    getUnit() {
+	      return this.unit || "";
+	    }
+
+	    getXUnit() {
+	      if (this.hasXWaveform()) {
+	        return this.xdata.getUnit();
+	      }
+
+	      return this.xunit | "";
+	    }
+
+	    hasXUnit() {
+	      return this.getXUnit().length > 0;
+	    }
+
+	    hasUnit() {
+	      return this.getUnit().length > 0;
+	    }
+
+	    findLevels(level, options) {
+
+	      options = (0, _graph.extend)({
+
+	        box: 1,
+	        edge: 'both',
+	        rounding: 'before',
+	        rangeP: [0, this.getLength()]
+
+	      }, options);
+
+	      var lastLvlIndex = options.rangeP[0];
+	      var lvlIndex;
+	      var indices = [];
+	      var i = 0;
+
+	      while (lvlIndex = this.findLevel(level, (0, _graph.extend)(true, {}, options, {
+	        rangeP: [lastLvlIndex, options.rangeP[1]]
+	      }))) {
+	        indices.push(lvlIndex);
+	        lastLvlIndex = Math.ceil(lvlIndex);
+
+	        i++;
+	        if (i > 1000) {
+	          return;
+	        }
+	      }
+
+	      return indices;
+	    }
+
+	    // Find the first level in the specified range
+	    findLevel(level, options) {
+
+	      options = (0, _graph.extend)({
+
+	        box: 1,
+	        edge: 'both',
+	        direction: 'ascending',
+	        rounding: 'before',
+	        rangeP: [0, this.getLength()]
+
+	      }, options);
+
+	      if (options.rangeX) {
+	        options.rangeP = options.rangeX.map(this.getIndexFromX);
+	      }
+
+	      var value, below, i, j, l, increment;
+
+	      var box = options.box;
+
+	      if (box % 2 == 0) {
+	        box++;
+	      }
+
+	      if (options.direction == "descending") {
+	        i = options.rangeP[1], l = options.rangeP[0], increment = -1;
+	      } else {
+	        i = options.rangeP[0], l = options.rangeP[1], increment = +1;
+	      }
+
+	      for (;; i += increment) {
+
+	        if (options.direction == "descending") {
+	          if (i < l) {
+	            break;
+	          }
+	        } else {
+	          if (i > l) {
+	            break;
+	          }
+	        }
+
+	        if (i < options.rangeP[0] + (box - 1) / 2) {
+	          continue;
+	        }
+
+	        if (i > options.rangeP[1] - (box - 1) / 2) {
+	          break;
+	        }
+
+	        value = this.getAverageP(i - (box - 1) / 2, i + (box - 1) / 2);
+
+	        if (below === undefined) {
+	          below = value < level;
+	          continue;
+	        }
+	        // Crossing up
+	        if (value > level && below) {
+
+	          below = false;
+
+	          if (options.edge == 'ascending' || options.edge == 'both') {
+	            // Found something
+
+	            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+	              if (this.data[j] > level && this.data[j - 1] <= level) {
+	                // Find a crossing
+
+	                switch (options.rounding) {
+	                  case 'before':
+	                    return j - 1;
+	                    break;
+
+	                  case 'after':
+	                    return j;
+	                    break;
+
+	                  case 'interpolate':
+	                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+	                    break;
+	                }
+	              }
+	            }
+	          }
+	        } else if (value < level && !below) {
+
+	          below = true;
+
+	          if (options.edge == 'descending' || options.edge == 'both') {
+
+	            for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
+
+	              if (this.data[j] < level && this.data[j - 1] >= level) {
+	                // Find a crossing
+
+	                switch (options.rounding) {
+	                  case 'before':
+	                    return j - 1;
+	                    break;
+
+	                  case 'after':
+	                    return j;
+	                    break;
+
+	                  case 'interpolate':
+	                    return getIndexInterpolate(level, this.data[j], this.data[j - 1], j, j - 1);
+	                    break;
+	                }
+	              }
+	            }
+	          }
+	        }
+	      }
+	    }
 	  };
 
 	  const MULTIPLY = Symbol();
@@ -3193,6 +3403,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      p <<= 1;
 	    }
 	    return p;
+	  }
+
+	  function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
+	    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
 	  }
 
 	  function binarySearch(target, haystack, reverse) {
@@ -4340,10 +4554,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              var id;
 	              if (series[j].isShown()) {
-	                series[j].hide();
+	                series[j].hide(self.options.hideShapesOnHideSerie);
 	                id = self.eyeCrossedId;
 	              } else {
-	                series[j].show();
+	                series[j].show(self.options.hideShapesOnHideSerie);
 	                id = self.eyeId;
 	              }
 
@@ -16241,7 +16455,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    hide() {
 
 	      if (this.hidden) {
-	        return;
+	        return this;
 	      }
 
 	      this.hidden = true;
@@ -16276,7 +16490,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    show() {
 
 	      if (!this.hidden) {
-	        return;
+	        return this;
 	      }
 
 	      this.hidden = false;
@@ -16790,6 +17004,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    /**
+	     * Sets the text of the label
+	     * @param {String} data - Some additional HTML tags that will be set to the label
+	     * @param {Number} [ index = 0 ] - The index of the label
+	     * @return {Shape} The current shape
+	     */
+	    setLabelData(data, index) {
+	      this.setProp('labelData', text, index || 0);
+	      return this;
+	    }
+
+	    /**
 	     * Returns the text of the label
 	     * @param {Number} [ index = 0 ] - The index of the label
 	     * @return {String} The text of the label
@@ -17238,6 +17463,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this._labels[labelIndex].setAttribute('transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')');
 	        //  this._labelsBackground[ labelIndex ].setAttribute( 'transform', 'rotate(' + currAngle + ' ' + x + ' ' + y + ')' );
+	      }
+
+	      let labelData = this.getProp('labelHTMLData', labelIndex) || {};
+	      console.log(labelData);
+
+	      for (var i in labelData) {
+
+	        this._labels[labelIndex].setAttribute(i, labelData[i]);
+	        this._labelsBackground[labelIndex].setAttribute(i, labelData[i]);
 	      }
 
 	      /** Sets the baseline */
@@ -19117,7 +19351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (ratioLabel) {
 	        this.ratioLabel = ratioLabel;
 	      }
-	      this.setLabelText(ratioLabel ? Math.round(100 * this.sumVal * ratioLabel) / 100 : "N/A", 0);
+	      this.setLabelText(ratioLabel ? (Math.round(100 * this.sumVal * ratioLabel) / 100).toPrecision(3) : "N/A", 0);
 	      this.updateLabels();
 	    }
 
@@ -23809,6 +24043,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    setR(rx, ry) {
 	      this.setProp('rx', rx);
 	      this.setProp('ry', ry);
+	      return this;
 	    }
 
 	    handleMouseUpImpl() {

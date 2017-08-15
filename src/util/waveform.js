@@ -336,16 +336,29 @@ class Waveform {
     return this.dataInUse ||  this.data;
   }
 
-  getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
+  getIndexFromVal( val, useDataToUse = false, roundingMethod = Math.round ) {
 
-    if ( !this.isXMonotoneous() ) {
-      throw "Impossible to get the index from the x value for a non-monotoneous wave !"
+    let data;
+
+    if ( useDataToUse && this.dataInUse ) {
+      data = this.dataInUse.y;
+    } else {
+      data = this.data;
     }
 
-    let data, xdata, position;
+    let position;
+    position = this.getIndexFromData( val, data, this.data.getMonotoneousAscending(), roundingMethod );
 
-    xval -= this.getXShift();
-    xval /= this.getXScale();
+    if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY" ) { // In case of aggregation, round to the closest element of 4.
+      return position - ( position % 4 );
+    }
+
+    return position;
+  }
+
+  getIndexFromX( xval, useDataToUse = false, roundingMethod = Math.round ) {
+
+    let xdata;
 
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
@@ -353,18 +366,35 @@ class Waveform {
       xdata = this.xdata.getData();
     }
 
-    if ( xdata ) {
-      position = binarySearch( xval, xdata, !( this.xdata ? this.xdata.getMonotoneousAscending() : this.xScale > 0 ) );
+    let position;
 
-      if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregate" ) { // In case of aggregation, round to the closest element of 4.
-        return position - ( position % 4 );
-      }
-
-      return position;
-
+    if ( this.hasXWaveform() ) {
+      position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
     } else {
-      return Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
+      position = Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
     }
+
+    if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX" ) { // In case of aggregation, round to the closest element of 4.
+      return position - ( position % 4 );
+    }
+
+    return position;
+  }
+
+  getIndexFromData( val, valCollection, isAscending, roundingMethod ) {
+
+    if ( !this.isMonotoneous() ) {
+      console.trace();
+      throw "Impossible to get the index from a non-monotoneous wave !"
+    }
+
+    let data, position;
+
+    val -= this.getShift();
+    val /= this.getScale();
+
+    return binarySearch( val, valCollection, !isAscending );
+
   }
 
   getReductionType() {
@@ -987,22 +1017,26 @@ class Waveform {
     return this;
   }
 
-  aggregate() {
+  aggregate( direction = 'x' ) {
 
     this._dataAggregating = {};
     this._dataAggregated = {};
+    this._dataAggregationDirection = direction.toUpperCase();
 
     var pow2 = pow2floor( this.getLength() );
 
     this._dataAggregating = aggregator( {
 
-      min: this.getMinX(),
-      max: this.getMaxX(),
+      minX: this.minX,
+      maxX: this.maxX,
+      minY: this.minY,
+      maxY: this.maxY,
       data: this.data,
       xdata: this.xdata ? this.xdata.getData() : undefined,
       xScale: this.xScale,
       xOffset: this.xOffset,
-      numPoints: pow2
+      numPoints: pow2,
+      direction: direction
 
     } ).then( ( event ) => {
 
@@ -1016,17 +1050,24 @@ class Waveform {
     return !!this._dataAggregated;
   }
 
-  selectAggregatedData( pxWidth, minX, maxX ) {
+  selectAggregatedData( pxWidth ) {
 
     if ( pxWidth < 2 ) {
       return false;
     }
+    /*
+    console.log( direction, this._dataAggregationDirection );
+
+        if( direction !== this._dataAggregationDirection ) {
+          throw "The data is not aggregated in that direction";
+        }
+    */
 
     var level = pow2ceil( pxWidth );
 
     if ( this._dataAggregated[ level ] ) {
 
-      this.dataInUseType = "aggregate";
+      this.dataInUseType = "aggregate" + this._dataAggregationDirection;
       this.dataInUse = this._dataAggregated[ level ];
       return;
     } else if ( this._dataAggregating ) {

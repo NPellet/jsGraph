@@ -75,6 +75,7 @@ class NMRSerie extends React.Component {
 	    };
 	}
 
+
 	componentDidMount( parent ) {
 
 		this.setData();
@@ -102,7 +103,8 @@ class NMRSerie extends React.Component {
 					this.setState( state => { return { ratio: state.ratio * ( dy < 0 ? 1.05 : 0.95 ) } } );
 				}
 			} );
-		
+
+
 	}
 
 	rescaleIntegrals() {
@@ -145,11 +147,12 @@ class NMRSerie extends React.Component {
 		if( redraw ) {
 			this.assignWaveform();
 		}
-console.log( nextProps );
+
 		if( nextProps.assignment ) {
 			console.log( arguments );
 			//	this._assignment.setPairing( this.getSerieState() );
 		}
+
 
 		this.setState( { labelRatio: nextProps.integralLabelRatio } );
 	}
@@ -165,8 +168,14 @@ console.log( nextProps );
 	}
 
 	setData() {
-		this._jsGraphWaveform.setData( this.props.data[ 1 ], this.props.data[ 0 ] );
-		this._jsGraphWaveform.aggregate();
+
+		if( this.props.direction == 'x' ) {
+			this._jsGraphWaveform.setData( this.props.data[ 1 ], this.props.data[ 0 ] );	
+		} else {
+			this._jsGraphWaveform.setData( this.props.data[ 0 ], this.props.data[ 1 ] );
+		}
+		
+		this._jsGraphWaveform.aggregate( this.props.direction );
 		this.setShift( this.props.shift );		
 	}
 

@@ -1,3 +1,5 @@
+'use strict';
+
 import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
@@ -16,7 +18,7 @@ class NMR2D extends React.Component {
 		super( props );
 		this.state = {};
 
-		this.unique = "NMRUnique";
+		this.unique = "NMR2DUnique";
 		
 		this.graph = new Graph( {
 			close: false,
@@ -53,6 +55,7 @@ class NMR2D extends React.Component {
 		//this.toggleRemoveAssignment = this.toggleRemoveAssignment.bind( this );
 		this.serieChanged = this.serieChanged.bind( this );
 		this.fullOut = this.fullOut.bind( this );
+		
 	}
 
 	 getChildContext() {
@@ -197,15 +200,22 @@ class NMR2D extends React.Component {
 	}
 
 	componentDidMount() {
-			
+		
+			console.log('Mounting 2D spectrum');
+
+			this.setState( { molecule: this.props.molecule } );
+return;
 		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState( { series: this.props.series, molecule: this.props.molecule } );
 
 		// Binds the graph to the DOM element
 		this.graph.resize( this.props.width, this.props.height );
+
 		this.graph.setWrapper( this.dom );
 		this.updateMainData();
 
+
+/*
 
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
@@ -259,12 +269,12 @@ class NMR2D extends React.Component {
 			}, { once: true } );
 
 		});
-
+*/
 			// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
-		this.wrapper.addEventListener("mousemove", ( e ) => {
+/*		this.wrapper.addEventListener("mousemove", ( e ) => {
 			this.wrapper.focus();
 		});
-
+*/
 
 		let assignmentOptions = {
 
@@ -321,15 +331,17 @@ class NMR2D extends React.Component {
 	}
 
 	componentWillReceiveProps( nextProps ) {
+
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
 
 
 		this.graph.resize( nextProps.width, nextProps.height );
-		this.graph.draw();
+		
 		this.updateMainData();
 	}
 
 	componentDidUpdate() {
+
 		this.graph.draw();
 	}
 
@@ -425,7 +437,7 @@ class NMR2D extends React.Component {
 	}
 
 	render() {
-
+console.log('Rendering');
 		return ( 
 		<div 
 			id={ this.unique }
@@ -457,12 +469,12 @@ class NMR2D extends React.Component {
 		    	<tr>
 		    		<td></td>
 		    		<td>
-						<NMR1D width="600" height="400" options={ {} } series={ this.props.nmr_top } onChanged={ () => {} } />
+						<NMR1D key="nmr_top" width="600" height="400" options={ { slave: 'top' } } series={ this.props.nmr_top } onChanged={ () => {} } />
 					</td>
 				</tr>
 				<tr>
 		    		<td>		
-		    			<NMR1D width="200" height="600" options={ {} } series={ this.props.nmr_left } onChanged={ () => {} } />
+		    		<NMR1D width="200" height="600" options={ { slave: 'left' } } series={ this.props.nmr_left } onChanged={ () => {} } />
 		    		</td>
 		    		<td>
 						<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
@@ -471,7 +483,7 @@ class NMR2D extends React.Component {
 				</tbody>
 			</table>
 
-
+{/*
 			<span>
 				{ ( this.state.series || [] ).map( ( serie ) => 
 					<NMRSerie2D
@@ -488,7 +500,7 @@ class NMR2D extends React.Component {
 						assignement	= { serie.assignment }
 					/> 
 				) }
-			</span>
+			</span>*/ }
 		</div>
 		);
 	}

@@ -1,3 +1,5 @@
+'use strict';
+
 import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
@@ -11,6 +13,8 @@ class NMR1D extends React.Component {
 	
 
 	constructor( props ) {
+
+		console.log("Making1D");
 		super( props );
 		this.state = {};
 
@@ -130,27 +134,37 @@ class NMR1D extends React.Component {
 
 		} );
 
+		if( this.props.options.legend ) {
 
-		this.legend = this.graph.makeLegend( {
-			hideShapesOnHideSerie: true
-		});
+			this.makeLegend();
+		}
 
-		this.legend.setAutoPosition('bottom');
 
-		if( ! this.props.slave ) {
+		if( ! this.props.options.slave ) {
 
 			this.graph.getLeftAxis().hide();
 			this.graph.getBottomAxis().gridsOff();
-		
+			
 			this.graph
 				.getBottomAxis()
 				.flip( true )
 				.setLabel( '\u03B4' )
 				.setUnit( 'ppm' );
+
 		} else {
 
 			this.graph.getBottomAxis().hide();
 			this.graph.getLeftAxis().hide();
+
+			if( this.props.options.slave == 'top' ) {
+				this.graph
+					.getBottomAxis()
+					.flip( true );
+			} else {
+				this.graph
+					.getLeftAxis()
+					.flip( true );
+			}
 		}
 		 
 	
@@ -366,19 +380,25 @@ class NMR1D extends React.Component {
 
 		this.graph.autoscaleAxes();
 		this.graph.draw();
-		this.legend.update();
+
+		if( this.props.options.legend ) {
+			this.legend.update();	
+		}
+		
 	}
 
 	componentDidMount() {
+
+		// Binds the graph to the DOM element
+		this.graph.setWrapper( this.dom );
+		this.graph.resize( this.props.width, this.props.height );
 			
 		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState( { series: this.props.series, molecule: this.props.molecule } );
 
-		// Binds the graph to the DOM element
-		this.graph.resize( this.props.width, this.props.height );
-		this.graph.setWrapper( this.dom );
-		this.updateMainData();
+console.log( 'Mounting 1D spectrum' );
 
+		this.updateMainData();
 
 		// Listen for the CMD key to be pressed (allows to remove shapes and integrals)
 		this.wrapper.addEventListener("keydown", ( e ) => {
@@ -498,15 +518,33 @@ class NMR1D extends React.Component {
 
 	componentWillReceiveProps( nextProps ) {
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
-
-
-		this.graph.resize( nextProps.width, nextProps.height );
-		this.graph.draw();
+		
+		
+		if( nextProps.width !== this.props.width || nextProps.heigth !== this.props.height ) {
+			this.graph.resize( nextProps.width, nextProps.height );	
+		}
 		this.updateMainData();
+
+
+		if( nextProps.options.legend && ! this.legend ) {
+			this.makeLegend();
+		}
+
+		return;
 	}
 
 	componentDidUpdate() {
 		this.graph.draw();
+	}
+
+	makeLegend() {
+
+		this.legend = this.graph.makeLegend( {
+			hideShapesOnHideSerie: true
+		});
+
+		this.legend.setAutoPosition('bottom');
+
 	}
 
 	onIntegralLabelRatioChanged( seriename, integralId, newRatio ) {
@@ -607,30 +645,8 @@ class NMR1D extends React.Component {
 			id={ this.unique }
 			ref={ el => this.wrapper = el } 
 			style={ { position: 'relative' } } 
-			onDragOver={ ( event ) => { event.preventDefault(); console.log('droppable') } } 
-			onDrop={ ( event ) => { 
-
-			 var offset = event.dataTransfer.getData("text/plain").split(',');
-		    var dm = this.domMolecule;
-		    dm.style.left = (event.clientX + parseInt(offset[0],10)) + 'px';
-		    dm.style.top = (event.clientY + parseInt(offset[1],10)) + 'px';
-		    event.preventDefault();
-		    return false;
-		     } } 
 		>
-			<style dangerouslySetInnerHTML={{__html: `
-		      #${this.unique}.linkable circle[data-atomid] {
-					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9741;</text></svg>'), auto;
-				}
-
-				#${this.unique}.removable line.link, #${this.unique}.removable path.integral, #${this.unique}.removing {
-					cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" style="font-size: 16px;"><text y="15" fill="black">&#9986;</text></svg>'), auto;
-				}
-		    `}}></style>
-
 			<div style={ { position: "absolute", userSelect: "none" } } ref={ el => this.dom = el } />
-
-
 			<div 
 				style={ { 
 					pointerEvents: 'none', 
@@ -639,15 +655,6 @@ class NMR1D extends React.Component {
 					userSelect: "none" 
 				} } 
 				ref={ el => this.domMolecule = el } 
-				draggable="true" 
-				onDragStart={ 
-					( event ) => { 
-
- 						 var style = window.getComputedStyle(event.target, null);
-					    event.dataTransfer.setData("text/plain", (parseInt(style.getPropertyValue("left"),10) - event.clientX) + ',' + (parseInt(style.getPropertyValue("top"),10) - event.clientY));
-
-					} 
-				} 
 				dangerouslySetInnerHTML={ { __html: this.state.molecule } }
 			></div>
 				
@@ -663,6 +670,7 @@ class NMR1D extends React.Component {
 			<span>
 				{ ( this.state.series || [] ).map( ( serie ) => 
 					<NMRSerie 
+						key 		= { serie.name }
 						color 		= {serie.color} 
 						onChanged 	= { this.serieChanged } 
 						onIntegralChanged 	= { this.onIntegralChanged } 
@@ -671,9 +679,10 @@ class NMR1D extends React.Component {
 						name 		= { serie.name } 
 						data 		= { serie.data } 
 						shift 		= { serie.shift } 
-						integrals 	= { serie.integrals } 
+						integrals 	= {  this.props.options.slave == 'top' ? serie.integrals : [] } 
 						integralLabelRatio = { serie.integralLabelRatio }
 						assignement	= { serie.assignment }
+						direction = { this.props.options.slave == "left" ? 'y' : 'x' }
 					/> 
 				) }
 			</span>

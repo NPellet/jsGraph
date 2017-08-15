@@ -2072,10 +2072,13 @@ class Graph extends EventEmitter {
     this.dom.setAttribute( 'height', this.height );
     this.domTitle.setAttribute( 'x', this.width / 2 );
 
+    this._sizeChanged = true;
+
     if ( this.drawn ) {
       this.requireLegendUpdate();
       this.draw( true );
     }
+
   }
 
   updateGraphingZone() {
