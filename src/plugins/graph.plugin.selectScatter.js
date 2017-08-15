@@ -89,11 +89,11 @@ class PluginSelectScatter extends Plugin {
    */
   findPoints() {
 
-    var data = this.serie.data;
+    var data = this.serie.waveform;
     var selected = [];
     var counter = 0,
       j2;
-    for ( var i = 0, l = data.length; i < l; i += 2 ) {
+    for ( var i = 0, l = data.getLength(); i < l; i += 1 ) {
 
       counter = 0;
       for ( var j = 0, k = this.xs.length; j < k; j += 1 ) {
@@ -104,19 +104,19 @@ class PluginSelectScatter extends Plugin {
           j2 = j + 1;
         }
 
-        if ( ( ( this.ys[ j ] < data[ i + 1 ] && this.ys[ j2 ] > data[ i + 1 ] ) || ( this.ys[ j ] > data[ i + 1 ] && this.ys[ j2 ] < data[ i + 1 ] ) ) ) {
+        if ( ( ( this.ys[ j ] < data.getY( i ) && this.ys[ j2 ] > data.getY( i ) ) || ( this.ys[ j ] > data.getY( i ) && this.ys[ j2 ] < data.getY( i ) ) ) ) {
 
-          if ( data[ i ] > ( ( data[ i + 1 ] - this.ys[ j ] ) / ( this.ys[ j2 ] - this.ys[ j ] ) ) * ( this.xs[ j2 ] - this.xs[ j ] ) + this.xs[ j ] ) {
+          if ( data.getX( i ) > ( ( data.getY( i ) - this.ys[ j ] ) / ( this.ys[ j2 ] - this.ys[ j ] ) ) * ( this.xs[ j2 ] - this.xs[ j ] ) + this.xs[ j ] ) {
             counter++;
           }
         }
       }
 
       if ( counter % 2 == 1 ) {
-        selected.push( i / 2 );
-        this.serie.selectPoint( i / 2, true, "selected" );
+        selected.push( i );
+        this.serie.selectPoint( i, true, "selected" );
       } else {
-        this.serie.unselectPoint( i / 2 );
+        this.serie.unselectPoint( i );
       }
 
     }

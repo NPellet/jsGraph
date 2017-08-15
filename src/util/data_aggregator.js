@@ -130,7 +130,7 @@ let string = function() {
 
       if ( direction == 'x' ) {
 
-        for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
+        for ( i = 0, l = lastAggregation.length - 8; i < l; i += 8 ) {
 
           newAggregationX[ k ] = ( lastAggregationX[ i ] + lastAggregationX[ i + 4 ] ) / 2;
           newAggregationX[ k + 1 ] = newAggregationX[ k ];
@@ -148,7 +148,7 @@ let string = function() {
         }
       } else {
 
-        for ( i = 0, l = lastAggregation.length; i < l; i += 8 ) {
+        for ( i = 0, l = lastAggregation.length - 8; i < l; i += 8 ) {
 
           newAggregation[ k ] = ( lastAggregation[ i ] + lastAggregation[ i + 4 ] ) / 2;
           newAggregation[ k + 1 ] = newAggregation[ k ];

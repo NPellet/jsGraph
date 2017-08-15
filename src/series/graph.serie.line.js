@@ -620,7 +620,7 @@ class SerieLine extends Serie {
         l = waveform.getIndexFromX( xMin, true );
 
         if ( l === false ) {
-          l = data.length;
+          l = waveform.getLength();
         }
       }
 

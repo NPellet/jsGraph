@@ -10623,6 +10623,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var position = void 0;
+
 	      position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
 	      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
@@ -11750,6 +11751,72 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
+	  }, {
+	    key: 'normalize',
+	    value: function normalize(mode) {
+
+	      var factor = void 0,
+	          total = void 0,
+	          minValue = void 0,
+	          maxValue = void 0,
+	          ratio = void 0;
+
+	      if (mode == 'max1' || mode == 'max100') {
+
+	        factor = 1;
+
+	        if (mode == 'max100') {
+	          factor = 100;
+	        }
+
+	        maxValue = this.data[0];
+
+	        for (i = 1; i < this.getLength(); i++) {
+
+	          if (this.data[i] > maxValue) {
+
+	            maxValue = this.data[i];
+	          }
+	        }
+
+	        for (i = 0; i < this.getLength(); i++) {
+
+	          this.data[i] /= maxValue / factor;
+	        }
+	      } else if (mode == 'sum1') {
+
+	        total = 0;
+
+	        for (i = 0; i < this.getLength(); i++) {
+	          total += this.data[i];
+	        }
+
+	        for (i = 0; i < this.getLength(); i++) {
+
+	          this.data[i] /= total;
+	        }
+	      } else if (mode == 'max1min0') {
+
+	        maxValue = this.data[0], minValue = this.data[0];
+
+	        for (i = 1; i < this.getLength(); i++) {
+	          if (this.data[i] > maxValue) {
+
+	            maxValue = this.data[i];
+	          } else if (this.data[i] < minValue) {
+
+	            minValue = this.data[i];
+	          }
+	        }
+
+	        ratio = 1 / (maxValue - minValue);
+
+	        for (i = 0; i < this.getLength(); i++) {
+
+	          this.data[i] = (this.data[i] - minValue) * ratio;
+	        }
+	      }
+	    }
 	  }]);
 
 	  return Waveform;
@@ -11814,6 +11881,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    //  seedInt -= seedInt % 2; // Always looks for an x.
 
 	    while (isNaN(haystack[seedInt])) {
+
+	      if (seedInt >= haystack.length - 1) {
+
+	        return haystack.length - 1;
+	      } else if (seedInt <= 0) {
+
+	        return 0;
+	      }
+
 	      seedInt += nanDirection;
 	    }
 
@@ -12509,7 +12585,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (direction == 'x') {
 
-	        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+	        for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
 
 	          newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
 	          newAggregationX[k + 1] = newAggregationX[k];
@@ -12527,7 +12603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      } else {
 
-	        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+	        for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
 
 	          newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
 	          newAggregation[k + 1] = newAggregation[k];
@@ -18839,7 +18915,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          l = waveform.getIndexFromX(xMin, true);
 
 	          if (l === false) {
-	            l = data.length;
+	            l = waveform.getLength();
 	          }
 	        }
 
@@ -20889,6 +20965,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'getWaveforms',
 	    value: function getWaveforms() {
 	      return [this.waveform];
+	    }
+	  }, {
+	    key: 'setWaveform',
+	    value: function setWaveform(waveform) {
+
+	      if (!(waveform instanceof _waveform2.default)) {
+	        throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+	      }
+
+	      this.waveform = waveform;
+
+	      this.minX = this.waveform.getXMin();
+	      this.maxX = this.waveform.getXMax();
+	      this.minY = this.waveform.getMin();
+	      this.maxY = this.waveform.getMax();
+
+	      this.graph.updateDataMinMaxAxes();
+	      this.dataHasChanged();
+
+	      return this;
 	    }
 
 	    /**
@@ -23639,12 +23735,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _this.groupPoints.addEventListener('mouseover', function (e) {
 	      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-	      _this.emit("mouseover", id, _this.data[id * 2], _this.data[id * 2 + 1]);
+	      _this.emit("mouseover", id, _this.waveform.getX(id), _this.waveform.getY(id));
 	    });
 
 	    _this.groupPoints.addEventListener('mouseout', function (e) {
 	      var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-	      _this.emit("mouseout", id, _this.data[id * 2], _this.data[id * 2 + 1]);
+	      _this.emit("mouseout", id, _this.waveform.getX(id), _this.waveform.getY(id));
 	    });
 
 	    _this.minX = Number.MAX_VALUE;
@@ -23685,116 +23781,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  /**
-	   * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
-	   * @see GraphSerie#setData
+	   * Applies for x as the category axis
+	   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
 	   */
 
 
 	  _createClass(SerieScatter, [{
-	    key: 'setData',
-	    value: function setData(data, oneDimensional, type) {
-
-	      var z = 0,
-	          x,
-	          dx,
-	          oneDimensional = oneDimensional || "2D",
-	          type = type || 'float',
-	          arr,
-	          total = 0,
-	          continuous;
-
-	      this.empty();
-	      this.shapesDetails = [];
-	      this.shapes = [];
-
-	      if (!data instanceof Array) {
-	        return this;
-	      }
-
-	      if (data instanceof Array && !(data[0] instanceof Array) && _typeof(data[0]) !== "object") {
-	        // [100, 103, 102, 2143, ...]
-	        oneDimensional = "1D";
-	      }
-
-	      var _2d = oneDimensional == "2D";
-
-	      arr = this._addData(type, _2d ? data.length * 2 : data.length);
-
-	      z = 0;
-
-	      for (var j = 0, l = data.length; j < l; j++) {
-
-	        if (_2d) {
-	          arr[z] = data[j][0];
-	          this._checkX(arr[z]);
-	          z++;
-	          arr[z] = data[j][1];
-	          this._checkY(arr[z]);
-	          z++;
-	          total++;
-	        } else {
-	          // 1D Array
-	          arr[z] = data[j];
-	          this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-	          z++;
-	          total += j % 2 ? 1 : 0;
-	        }
-	      }
-
-	      this.dataHasChanged();
-	      this.graph.updateDataMinMaxAxes();
-
-	      this.data = arr;
-
-	      return this;
-	    }
-
-	    /**
-	     * Applies for x as the category axis
-	     * @example serie.setData( { x: "someName", y: [ ...values ] } );
-	     */
-
-	  }, {
 	    key: 'setDataCategory',
 	    value: function setDataCategory(data) {
 
-	      for (var i in data) {
+	      var minY = +Infinity;
+	      var maxY = -Infinity;
 
-	        if (Array.isArray(data[i].y)) {
-	          var _iteratorNormalCompletion = true;
-	          var _didIteratorError = false;
-	          var _iteratorError = undefined;
+	      var _iteratorNormalCompletion = true;
+	      var _didIteratorError = false;
+	      var _iteratorError = undefined;
 
-	          try {
-
-	            for (var _iterator = data[i].y[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	              var j = _step.value;
+	      try {
+	        for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	          var dataCategory = _step.value;
 
 
-	              this._checkY(j);
-	            }
-	          } catch (err) {
-	            _didIteratorError = true;
-	            _iteratorError = err;
-	          } finally {
-	            try {
-	              if (!_iteratorNormalCompletion && _iterator.return) {
-	                _iterator.return();
-	              }
-	            } finally {
-	              if (_didIteratorError) {
-	                throw _iteratorError;
-	              }
-	            }
+	          if (data.y.getMaxY() > maxY) {
+	            maxY = data.y.getMaxY();
+	          } else if (data.y.getMinY() < minY) {
+	            minY = data.y.getMinY();
+	          }
+	        }
+	      } catch (err) {
+	        _didIteratorError = true;
+	        _iteratorError = err;
+	      } finally {
+	        try {
+	          if (!_iteratorNormalCompletion && _iterator.return) {
+	            _iterator.return();
+	          }
+	        } finally {
+	          if (_didIteratorError) {
+	            throw _iteratorError;
 	          }
 	        }
 	      }
 
+	      this.data = data;
 	      this.dataHasChanged();
 	      this.graph.updateDataMinMaxAxes();
-
-	      this.data = data;
-
 	      return this;
 	    }
 
@@ -23911,23 +23942,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.dataHasChanged(false);
 	      this.styleHasChanged(false);
-
 	      this.groupMain.removeChild(this.groupPoints);
 
-	      var incrXFlip = 0;
-	      var incrYFlip = 1;
-
-	      if (this.getFlip()) {
-	        incrXFlip = 1;
-	        incrYFlip = 0;
-	      }
-
-	      var totalLength = this.data.length / 2;
 	      var keys = [];
 
 	      j = 0;
 	      k = 0;
-	      m = this.data.length;
 
 	      if (this.error) {
 	        this.errorDrawInit();
@@ -23937,79 +23957,50 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var _k = 0;
 
-	        for (; j < m; j += 1) {
+	        for (; j < this.data.length; j++) {
 
 	          if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
 	            continue;
 	          }
 
-	          //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
-
-	          //xpx = this.getX( categoryNumber );
-
-	          var ys = this.data[j].y,
-	              l = ys.length,
-	              i = 0;
-
 	          if (this.error) {
 	            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
 	          }
 
-	          var _iteratorNormalCompletion2 = true;
-	          var _didIteratorError2 = false;
-	          var _iteratorError2 = undefined;
+	          for (var n = 0, l = this.data[i].y.getLength(); n < l; n++) {
 
-	          try {
-	            for (var _iterator2 = this.data[j].y[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	              var _y = _step2.value;
+	            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
 
+	            ypx = this.getY(this.data[i].y.getY(n));
+	            xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
+	            n++;
 
-	              //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-	              var xpos = i / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories;
-
-	              ypx = this.getY(_y);
-	              xpx = this.getX(xpos);
-	              i++;
-
-	              this.shapesDetails[_k] = this.shapesDetails[_k] || [];
-	              this.shapesDetails[_k][0] = xpx;
-	              this.shapesDetails[_k][1] = ypx;
-	              keys.push(_k);
-	              _k++;
-	            }
-	          } catch (err) {
-	            _didIteratorError2 = true;
-	            _iteratorError2 = err;
-	          } finally {
-	            try {
-	              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                _iterator2.return();
-	              }
-	            } finally {
-	              if (_didIteratorError2) {
-	                throw _iteratorError2;
-	              }
-	            }
+	            this.shapesDetails[_k] = this.shapesDetails[_k] || [];
+	            this.shapesDetails[_k][0] = xpx;
+	            this.shapesDetails[_k][1] = ypx;
+	            keys.push(_k);
+	            _k++;
 	          }
 	        }
 	      } else {
-	        for (; j < m; j += 2) {
 
-	          if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
+	        for (; j < this.waveform.getLength(); j++) {
+
+	          if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
 	            continue;
 	          }
 
-	          xpx = this.getX(this.data[j + incrXFlip]);
-	          ypx = this.getY(this.data[j + incrYFlip]);
+	          xpx = this.getX(this.waveform.getX(j));
+	          ypx = this.getY(this.waveform.getY(j));
 
 	          if (this.error) {
-	            this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+	            this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
 	          }
 
-	          this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
-	          this.shapesDetails[j / 2][0] = xpx;
-	          this.shapesDetails[j / 2][1] = ypx;
-	          keys.push(j / 2);
+	          this.shapesDetails[j] = this.shapesDetails[j] || [];
+	          this.shapesDetails[j][0] = xpx;
+	          this.shapesDetails[j][1] = ypx;
+	          keys.push(j);
 
 	          //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
 	        }
@@ -31363,11 +31354,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'findPoints',
 	    value: function findPoints() {
 
-	      var data = this.serie.data;
+	      var data = this.serie.waveform;
 	      var selected = [];
 	      var counter = 0,
 	          j2;
-	      for (var i = 0, l = data.length; i < l; i += 2) {
+	      for (var i = 0, l = data.getLength(); i < l; i += 1) {
 
 	        counter = 0;
 	        for (var j = 0, k = this.xs.length; j < k; j += 1) {
@@ -31378,19 +31369,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	            j2 = j + 1;
 	          }
 
-	          if (this.ys[j] < data[i + 1] && this.ys[j2] > data[i + 1] || this.ys[j] > data[i + 1] && this.ys[j2] < data[i + 1]) {
+	          if (this.ys[j] < data.getY(i) && this.ys[j2] > data.getY(i) || this.ys[j] > data.getY(i) && this.ys[j2] < data.getY(i)) {
 
-	            if (data[i] > (data[i + 1] - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
+	            if (data.getX(i) > (data.getY(i) - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
 	              counter++;
 	            }
 	          }
 	        }
 
 	        if (counter % 2 == 1) {
-	          selected.push(i / 2);
-	          this.serie.selectPoint(i / 2, true, "selected");
+	          selected.push(i);
+	          this.serie.selectPoint(i, true, "selected");
 	        } else {
-	          this.serie.unselectPoint(i / 2);
+	          this.serie.unselectPoint(i);
 	        }
 	      }
 

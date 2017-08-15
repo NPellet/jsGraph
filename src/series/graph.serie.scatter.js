@@ -50,12 +50,12 @@ class SerieScatter extends Serie {
 
     this.groupPoints.addEventListener( 'mouseover', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      this.emit( "mouseover", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
+      this.emit( "mouseover", id, this.waveform.getX( id ), this.waveform.getY( id ) );
     } );
 
     this.groupPoints.addEventListener( 'mouseout', ( e ) => {
       var id = parseInt( e.target.parentElement.getAttribute( 'data-shapeid' ) );
-      this.emit( "mouseout", id, this.data[ id * 2 ], this.data[ id * 2 + 1 ] );
+      this.emit( "mouseout", id, this.waveform.getX( id ), this.waveform.getY( id ) );
     } );
 
     this.minX = Number.MAX_VALUE;
@@ -95,87 +95,26 @@ class SerieScatter extends Serie {
   }
 
   /**
-   * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
-   * @see GraphSerie#setData
-   */
-  setData( data, oneDimensional, type ) {
-
-    var z = 0,
-      x,
-      dx,
-      oneDimensional = oneDimensional || "2D",
-      type = type || 'float',
-      arr,
-      total = 0,
-      continuous;
-
-    this.empty();
-    this.shapesDetails = [];
-    this.shapes = [];
-
-    if ( !data instanceof Array ) {
-      return this;
-    }
-
-    if ( data instanceof Array && !( data[ 0 ] instanceof Array ) && typeof data[ 0 ] !== "object" ) { // [100, 103, 102, 2143, ...]
-      oneDimensional = "1D";
-    }
-
-    var _2d = ( oneDimensional == "2D" );
-
-    arr = this._addData( type, _2d ? data.length * 2 : data.length );
-
-    z = 0;
-
-    for ( var j = 0, l = data.length; j < l; j++ ) {
-
-      if ( _2d ) {
-        arr[ z ] = ( data[ j ][ 0 ] );
-        this._checkX( arr[ z ] );
-        z++;
-        arr[ z ] = ( data[ j ][ 1 ] );
-        this._checkY( arr[ z ] );
-        z++;
-        total++;
-      } else { // 1D Array
-        arr[ z ] = data[ j ];
-        this[ j % 2 == 0 ? '_checkX' : '_checkY' ]( arr[ z ] );
-        z++;
-        total += j % 2 ? 1 : 0;
-
-      }
-    }
-
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
-
-    this.data = arr;
-
-    return this;
-  }
-
-  /**
    * Applies for x as the category axis
-   * @example serie.setData( { x: "someName", y: [ ...values ] } );
+   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
    */
   setDataCategory( data ) {
 
-    for ( var i in data ) {
+    let minY = +Infinity;
+    let maxY = -Infinity;
 
-      if ( Array.isArray( data[ i ].y ) ) {
+    for ( let dataCategory of data ) {
 
-        for ( let j of data[ i ].y ) {
-
-          this._checkY( j );
-        }
+      if ( data.y.getMaxY() > maxY ) {
+        maxY = data.y.getMaxY();
+      } else if ( data.y.getMinY() < minY ) {
+        minY = data.y.getMinY();
       }
     }
 
+    this.data = data;
     this.dataHasChanged();
     this.graph.updateDataMinMaxAxes();
-
-    this.data = data;
-
     return this;
   }
 
@@ -284,23 +223,12 @@ class SerieScatter extends Serie {
 
     this.dataHasChanged( false );
     this.styleHasChanged( false );
-
     this.groupMain.removeChild( this.groupPoints );
 
-    var incrXFlip = 0;
-    var incrYFlip = 1;
-
-    if ( this.getFlip() ) {
-      incrXFlip = 1;
-      incrYFlip = 0;
-    }
-
-    var totalLength = this.data.length / 2;
     var keys = [];
 
     j = 0;
     k = 0;
-    m = this.data.length;
 
     if ( this.error ) {
       this.errorDrawInit();
@@ -310,32 +238,23 @@ class SerieScatter extends Serie {
 
       let k = 0;
 
-      for ( ; j < m; j += 1 ) {
+      for ( ; j < this.data.length; j++ ) {
 
         if ( !this.categoryIndices.hasOwnProperty( this.data[ j ].x ) ) {
           continue;
         }
 
-        //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
-
-        //xpx = this.getX( categoryNumber );
-
-        let ys = this.data[ j ].y,
-          l = ys.length,
-          i = 0;
-
         if ( this.error ) {
           //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
         }
 
-        for ( let y of this.data[ j ].y ) {
+        for ( var n = 0, l = this.data[ i ].y.getLength(); n < l; n++ ) {
 
           //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-          let xpos = i / ( l - 1 ) * ( 0.8 / this.nbCategories ) + this.categoryIndices[ this.data[ j ].x ] + 0.1 / this.nbCategories;
 
-          ypx = this.getY( y );
-          xpx = this.getX( xpos );
-          i++;
+          ypx = this.getY( this.data[ i ].y.getY( n ) );
+          xpx = this.getX( n / ( l - 1 ) * ( 0.8 / this.nbCategories ) + this.categoryIndices[ this.data[ j ].x ] + 0.1 / this.nbCategories );
+          n++;
 
           this.shapesDetails[ k ] = this.shapesDetails[ k ] || [];
           this.shapesDetails[ k ][ 0 ] = xpx;
@@ -345,29 +264,29 @@ class SerieScatter extends Serie {
         }
       }
     } else {
-      for ( ; j < m; j += 2 ) {
+
+      for ( ; j < this.waveform.getLength(); j++ ) {
 
         if (
-          this.data[ j + incrXFlip ] < this.getXAxis().getCurrentMin() ||
-          this.data[ j + incrXFlip ] > this.getXAxis().getCurrentMax() ||
-          this.data[ j + incrYFlip ] < this.getYAxis().getCurrentMin() ||
-          this.data[ j + incrYFlip ] > this.getYAxis().getCurrentMax()
-
+          this.waveform.getX( j ) < this.getXAxis().getCurrentMin() ||
+          this.waveform.getX( j ) > this.getXAxis().getCurrentMax() ||
+          this.waveform.getY( j ) < this.getYAxis().getCurrentMin() ||
+          this.waveform.getY( j ) > this.getYAxis().getCurrentMax()
         ) {
           continue;
         }
 
-        xpx = this.getX( this.data[ j + incrXFlip ] );
-        ypx = this.getY( this.data[ j + incrYFlip ] );
+        xpx = this.getX( this.waveform.getX( j ) );
+        ypx = this.getY( this.waveform.getY( j ) );
 
         if ( this.error ) {
-          this.errorAddPoint( j, this.data[ j + incrXFlip ], this.data[ j + incrYFlip ], xpx, ypx );
+          this.errorAddPoint( j, this.waveform.getX( j ), this.waveform.getY( j ), xpx, ypx );
         }
 
-        this.shapesDetails[ j / 2 ] = this.shapesDetails[ j / 2 ] || [];
-        this.shapesDetails[ j / 2 ][ 0 ] = xpx;
-        this.shapesDetails[ j / 2 ][ 1 ] = ypx;
-        keys.push( j / 2 );
+        this.shapesDetails[ j ] = this.shapesDetails[ j ] || [];
+        this.shapesDetails[ j ][ 0 ] = xpx;
+        this.shapesDetails[ j ][ 1 ] = ypx;
+        keys.push( j );
 
         //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
       }

@@ -347,6 +347,7 @@ class Waveform {
     }
 
     let position;
+
     position = this.getIndexFromData( val, data, this.data.getMonotoneousAscending(), roundingMethod );
 
     if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY" ) { // In case of aggregation, round to the closest element of 4.
@@ -1382,6 +1383,78 @@ class Waveform {
       }
     }
   }
+
+  normalize( mode ) {
+
+    let factor,
+      total,
+      minValue,
+      maxValue,
+      ratio;
+
+    if ( mode == 'max1' || mode == 'max100' ) {
+
+      factor = 1;
+
+      if ( mode == 'max100' ) {
+        factor = 100;
+      }
+
+      maxValue = this.data[ 0 ];
+
+      for ( i = 1; i < this.getLength(); i++ ) {
+
+        if ( this.data[ i ] > maxValue ) {
+
+          maxValue = this.data[ i ];
+        }
+      }
+
+      for ( i = 0; i < this.getLength(); i++ ) {
+
+        this.data[ i ] /= maxValue / factor;
+      }
+
+    } else if ( mode == 'sum1' ) {
+
+      total = 0;
+
+      for ( i = 0; i < this.getLength(); i++ ) {
+        total += this.data[ i ];
+      }
+
+      for ( i = 0; i < this.getLength(); i++ ) {
+
+        this.data[ i ] /= total;
+      }
+
+    } else if ( mode == 'max1min0' ) {
+
+      maxValue = this.data[ 0 ],
+        minValue = this.data[  0 ];
+
+      for ( i = 1; i < this.getLength(); i++ ) {
+        if ( this.data[ i ] > maxValue ) {
+
+          maxValue = this.data[ i ]
+
+        } else if ( this.data[ i ] < minValue ) {
+
+          minValue = this.data[ i ];
+
+        }
+      }
+
+      ratio = 1 / ( maxValue - minValue );
+
+      for ( i = 0; i < this.getLength(); i++ ) {
+
+        this.data[  i ] = ( this.data[ i ] - minValue ) * ratio;
+      }
+
+    }
+  }
+
 };
 
 const MULTIPLY = Symbol();
@@ -1442,6 +1515,16 @@ function binarySearch( target, haystack, reverse ) {
     //  seedInt -= seedInt % 2; // Always looks for an x.
 
     while ( isNaN( haystack[ seedInt ] ) ) {
+
+      if ( seedInt >= haystack.length - 1 ) {
+
+        return haystack.length - 1;
+
+      } else if ( seedInt <= 0 ) {
+
+        return 0;
+      }
+
       seedInt += nanDirection;
     }
 

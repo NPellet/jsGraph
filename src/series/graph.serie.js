@@ -589,6 +589,25 @@ class Serie extends EventEmitter {
     return [ this.waveform ];
   }
 
+  setWaveform( waveform ) {
+
+    if ( !( waveform instanceof Waveform ) ) {
+      throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+    }
+
+    this.waveform = waveform;
+
+    this.minX = this.waveform.getXMin();
+    this.maxX = this.waveform.getXMax();
+    this.minY = this.waveform.getMin();
+    this.maxY = this.waveform.getMax();
+
+    this.graph.updateDataMinMaxAxes();
+    this.dataHasChanged();
+
+    return this;
+  }
+
   /**
    * Computes and returns a line SVG element with the same line style as the serie, or width 20px
    * @returns {SVGElement}
