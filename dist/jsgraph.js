@@ -7308,7 +7308,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	!(function(global) {
 	  "use strict";
 
-	  var hasOwn = Object.prototype.hasOwnProperty;
+	  var Op = Object.prototype;
+	  var hasOwn = Op.hasOwnProperty;
 	  var undefined; // More compressible than void 0.
 	  var $Symbol = typeof Symbol === "function" ? Symbol : {};
 	  var iteratorSymbol = $Symbol.iterator || "@@iterator";
@@ -7380,10 +7381,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function GeneratorFunction() {}
 	  function GeneratorFunctionPrototype() {}
 
-	  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype;
+	  // This is a polyfill for %IteratorPrototype% for environments that
+	  // don't natively support it.
+	  var IteratorPrototype = {};
+	  IteratorPrototype[iteratorSymbol] = function () {
+	    return this;
+	  };
+
+	  var getProto = Object.getPrototypeOf;
+	  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+	  if (NativeIteratorPrototype &&
+	      NativeIteratorPrototype !== Op &&
+	      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+	    // This environment has a native %IteratorPrototype%; use it instead
+	    // of the polyfill.
+	    IteratorPrototype = NativeIteratorPrototype;
+	  }
+
+	  var Gp = GeneratorFunctionPrototype.prototype =
+	    Generator.prototype = Object.create(IteratorPrototype);
 	  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
 	  GeneratorFunctionPrototype.constructor = GeneratorFunction;
-	  GeneratorFunctionPrototype[toStringTagSymbol] = GeneratorFunction.displayName = "GeneratorFunction";
+	  GeneratorFunctionPrototype[toStringTagSymbol] =
+	    GeneratorFunction.displayName = "GeneratorFunction";
 
 	  // Helper for defining the .next, .throw, and .return methods of the
 	  // Iterator interface in terms of a single ._invoke method.
@@ -7420,16 +7440,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  // Within the body of any async function, `await x` is transformed to
 	  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
-	  // `value instanceof AwaitArgument` to determine if the yielded value is
-	  // meant to be awaited. Some may consider the name of this method too
-	  // cutesy, but they are curmudgeons.
+	  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+	  // meant to be awaited.
 	  runtime.awrap = function(arg) {
-	    return new AwaitArgument(arg);
+	    return { __await: arg };
 	  };
-
-	  function AwaitArgument(arg) {
-	    this.arg = arg;
-	  }
 
 	  function AsyncIterator(generator) {
 	    function invoke(method, arg, resolve, reject) {
@@ -7439,8 +7454,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      } else {
 	        var result = record.arg;
 	        var value = result.value;
-	        if (value instanceof AwaitArgument) {
-	          return Promise.resolve(value.arg).then(function(value) {
+	        if (value &&
+	            typeof value === "object" &&
+	            hasOwn.call(value, "__await")) {
+	          return Promise.resolve(value.__await).then(function(value) {
 	            invoke("next", value, resolve, reject);
 	          }, function(err) {
 	            invoke("throw", err, resolve, reject);
@@ -7509,6 +7526,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  defineIteratorMethods(AsyncIterator.prototype);
+	  runtime.AsyncIterator = AsyncIterator;
 
 	  // Note that simple async functions are implemented on top of
 	  // AsyncIterator objects; they just return a Promise for the value of
@@ -7543,90 +7561,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return doneResult();
 	      }
 
+	      context.method = method;
+	      context.arg = arg;
+
 	      while (true) {
 	        var delegate = context.delegate;
 	        if (delegate) {
-	          if (method === "return" ||
-	              (method === "throw" && delegate.iterator[method] === undefined)) {
-	            // A return or throw (when the delegate iterator has no throw
-	            // method) always terminates the yield* loop.
-	            context.delegate = null;
-
-	            // If the delegate iterator has a return method, give it a
-	            // chance to clean up.
-	            var returnMethod = delegate.iterator["return"];
-	            if (returnMethod) {
-	              var record = tryCatch(returnMethod, delegate.iterator, arg);
-	              if (record.type === "throw") {
-	                // If the return method threw an exception, let that
-	                // exception prevail over the original return or throw.
-	                method = "throw";
-	                arg = record.arg;
-	                continue;
-	              }
-	            }
-
-	            if (method === "return") {
-	              // Continue with the outer return, now that the delegate
-	              // iterator has been terminated.
-	              continue;
-	            }
+	          var delegateResult = maybeInvokeDelegate(delegate, context);
+	          if (delegateResult) {
+	            if (delegateResult === ContinueSentinel) continue;
+	            return delegateResult;
 	          }
-
-	          var record = tryCatch(
-	            delegate.iterator[method],
-	            delegate.iterator,
-	            arg
-	          );
-
-	          if (record.type === "throw") {
-	            context.delegate = null;
-
-	            // Like returning generator.throw(uncaught), but without the
-	            // overhead of an extra function call.
-	            method = "throw";
-	            arg = record.arg;
-	            continue;
-	          }
-
-	          // Delegate generator ran and handled its own exceptions so
-	          // regardless of what the method was, we continue as if it is
-	          // "next" with an undefined arg.
-	          method = "next";
-	          arg = undefined;
-
-	          var info = record.arg;
-	          if (info.done) {
-	            context[delegate.resultName] = info.value;
-	            context.next = delegate.nextLoc;
-	          } else {
-	            state = GenStateSuspendedYield;
-	            return info;
-	          }
-
-	          context.delegate = null;
 	        }
 
-	        if (method === "next") {
+	        if (context.method === "next") {
 	          // Setting context._sent for legacy support of Babel's
 	          // function.sent implementation.
-	          context.sent = context._sent = arg;
+	          context.sent = context._sent = context.arg;
 
-	        } else if (method === "throw") {
+	        } else if (context.method === "throw") {
 	          if (state === GenStateSuspendedStart) {
 	            state = GenStateCompleted;
-	            throw arg;
+	            throw context.arg;
 	          }
 
-	          if (context.dispatchException(arg)) {
-	            // If the dispatched exception was caught by a catch block,
-	            // then let that catch block handle the exception normally.
-	            method = "next";
-	            arg = undefined;
-	          }
+	          context.dispatchException(context.arg);
 
-	        } else if (method === "return") {
-	          context.abrupt("return", arg);
+	        } else if (context.method === "return") {
+	          context.abrupt("return", context.arg);
 	        }
 
 	        state = GenStateExecuting;
@@ -7639,39 +7601,111 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ? GenStateCompleted
 	            : GenStateSuspendedYield;
 
-	          var info = {
+	          if (record.arg === ContinueSentinel) {
+	            continue;
+	          }
+
+	          return {
 	            value: record.arg,
 	            done: context.done
 	          };
 
-	          if (record.arg === ContinueSentinel) {
-	            if (context.delegate && method === "next") {
-	              // Deliberately forget the last sent value so that we don't
-	              // accidentally pass it on to the delegate.
-	              arg = undefined;
-	            }
-	          } else {
-	            return info;
-	          }
-
 	        } else if (record.type === "throw") {
 	          state = GenStateCompleted;
 	          // Dispatch the exception by looping back around to the
-	          // context.dispatchException(arg) call above.
-	          method = "throw";
-	          arg = record.arg;
+	          // context.dispatchException(context.arg) call above.
+	          context.method = "throw";
+	          context.arg = record.arg;
 	        }
 	      }
 	    };
 	  }
 
+	  // Call delegate.iterator[context.method](context.arg) and handle the
+	  // result, either by returning a { value, done } result from the
+	  // delegate iterator, or by modifying context.method and context.arg,
+	  // setting context.delegate to null, and returning the ContinueSentinel.
+	  function maybeInvokeDelegate(delegate, context) {
+	    var method = delegate.iterator[context.method];
+	    if (method === undefined) {
+	      // A .throw or .return when the delegate iterator has no .throw
+	      // method always terminates the yield* loop.
+	      context.delegate = null;
+
+	      if (context.method === "throw") {
+	        if (delegate.iterator.return) {
+	          // If the delegate iterator has a return method, give it a
+	          // chance to clean up.
+	          context.method = "return";
+	          context.arg = undefined;
+	          maybeInvokeDelegate(delegate, context);
+
+	          if (context.method === "throw") {
+	            // If maybeInvokeDelegate(context) changed context.method from
+	            // "return" to "throw", let that override the TypeError below.
+	            return ContinueSentinel;
+	          }
+	        }
+
+	        context.method = "throw";
+	        context.arg = new TypeError(
+	          "The iterator does not provide a 'throw' method");
+	      }
+
+	      return ContinueSentinel;
+	    }
+
+	    var record = tryCatch(method, delegate.iterator, context.arg);
+
+	    if (record.type === "throw") {
+	      context.method = "throw";
+	      context.arg = record.arg;
+	      context.delegate = null;
+	      return ContinueSentinel;
+	    }
+
+	    var info = record.arg;
+
+	    if (! info) {
+	      context.method = "throw";
+	      context.arg = new TypeError("iterator result is not an object");
+	      context.delegate = null;
+	      return ContinueSentinel;
+	    }
+
+	    if (info.done) {
+	      // Assign the result of the finished delegate to the temporary
+	      // variable specified by delegate.resultName (see delegateYield).
+	      context[delegate.resultName] = info.value;
+
+	      // Resume execution at the desired location (see delegateYield).
+	      context.next = delegate.nextLoc;
+
+	      // If context.method was "throw" but the delegate handled the
+	      // exception, let the outer generator proceed normally. If
+	      // context.method was "next", forget context.arg since it has been
+	      // "consumed" by the delegate iterator. If context.method was
+	      // "return", allow the original .return call to continue in the
+	      // outer generator.
+	      if (context.method !== "return") {
+	        context.method = "next";
+	        context.arg = undefined;
+	      }
+
+	    } else {
+	      // Re-yield the result returned by the delegate method.
+	      return info;
+	    }
+
+	    // The delegate iterator is finished, so forget it and continue with
+	    // the outer generator.
+	    context.delegate = null;
+	    return ContinueSentinel;
+	  }
+
 	  // Define Generator.prototype.{next,throw,return} in terms of the
 	  // unified ._invoke helper method.
 	  defineIteratorMethods(Gp);
-
-	  Gp[iteratorSymbol] = function() {
-	    return this;
-	  };
 
 	  Gp[toStringTagSymbol] = "Generator";
 
@@ -7789,6 +7823,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.done = false;
 	      this.delegate = null;
 
+	      this.method = "next";
+	      this.arg = undefined;
+
 	      this.tryEntries.forEach(resetTryEntry);
 
 	      if (!skipTempReset) {
@@ -7825,7 +7862,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        record.type = "throw";
 	        record.arg = exception;
 	        context.next = loc;
-	        return !!caught;
+
+	        if (caught) {
+	          // If the dispatched exception was caught by a catch block,
+	          // then let that catch block handle the exception normally.
+	          context.method = "next";
+	          context.arg = undefined;
+	        }
+
+	        return !! caught;
 	      }
 
 	      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
@@ -7893,12 +7938,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      record.arg = arg;
 
 	      if (finallyEntry) {
+	        this.method = "next";
 	        this.next = finallyEntry.finallyLoc;
-	      } else {
-	        this.complete(record);
+	        return ContinueSentinel;
 	      }
 
-	      return ContinueSentinel;
+	      return this.complete(record);
 	    },
 
 	    complete: function(record, afterLoc) {
@@ -7910,11 +7955,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	          record.type === "continue") {
 	        this.next = record.arg;
 	      } else if (record.type === "return") {
-	        this.rval = record.arg;
+	        this.rval = this.arg = record.arg;
+	        this.method = "return";
 	        this.next = "end";
 	      } else if (record.type === "normal" && afterLoc) {
 	        this.next = afterLoc;
 	      }
+
+	      return ContinueSentinel;
 	    },
 
 	    finish: function(finallyLoc) {
@@ -7952,6 +8000,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resultName: resultName,
 	        nextLoc: nextLoc
 	      };
+
+	      if (this.method === "next") {
+	        // Deliberately forget the last sent value so that we don't
+	        // accidentally pass it on to the delegate.
+	        this.arg = undefined;
+	      }
 
 	      return ContinueSentinel;
 	    }
@@ -8428,7 +8482,43 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';Object.defineProperty(exports,"__esModule",{value:true});var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value"in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _graph=__webpack_require__(300);var _graph2=_interopRequireDefault(_graph);var _graph3=__webpack_require__(301);var util=_interopRequireWildcard(_graph3);var _EventEmitter2=__webpack_require__(302);var _EventEmitter3=_interopRequireDefault(_EventEmitter2);var _waveform=__webpack_require__(303);var _waveform2=_interopRequireDefault(_waveform);function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}else{var newObj={};if(obj!=null){for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key))newObj[key]=obj[key];}}newObj.default=obj;return newObj;}}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&(typeof call==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}/**
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _graph = __webpack_require__(300);
+
+	var _graph2 = _interopRequireDefault(_graph);
+
+	var _graph3 = __webpack_require__(301);
+
+	var util = _interopRequireWildcard(_graph3);
+
+	var _EventEmitter2 = __webpack_require__(302);
+
+	var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
+
+	var _waveform = __webpack_require__(303);
+
+	var _waveform2 = _interopRequireDefault(_waveform);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	/**
 	 * Default graph parameters
 	 * @name Graph~GraphOptionsDefault
 	 * @name GraphOptions
@@ -8451,11 +8541,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @prop {Object} dblclick - Define the double click action
 	 * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
 	 * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
-	 */var GraphOptionsDefault={title:'',paddingTop:30,paddingBottom:5,paddingLeft:20,paddingRight:20,close:{left:true,right:true,top:true,bottom:true},closeColor:'black',fontSize:12,fontFamily:'Myriad Pro, Helvetica, Arial',plugins:{},pluginAction:{},mouseActions:[],keyActions:[],wheel:{},dblclick:{},shapesUnselectOnClick:true,shapesUniqueSelection:true};var _constructors=new Map();/**
+	 */
+	var GraphOptionsDefault = {
+
+	  title: '',
+
+	  paddingTop: 30,
+	  paddingBottom: 5,
+	  paddingLeft: 20,
+	  paddingRight: 20,
+
+	  close: {
+	    left: true,
+	    right: true,
+	    top: true,
+	    bottom: true
+	  },
+
+	  closeColor: 'black',
+
+	  fontSize: 12,
+	  fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+	  plugins: {},
+	  pluginAction: {},
+	  mouseActions: [],
+	  keyActions: [],
+	  wheel: {},
+	  dblclick: {},
+
+	  shapesUnselectOnClick: true,
+	  shapesUniqueSelection: true
+	};
+
+	var _constructors = new Map();
+
+	/**
 	 * Entry class of jsGraph that creates a new graph.
 	 * @extends EventEmitter
 	 * @tutorial basic
-	 */var Graph=function(_EventEmitter){_inherits(Graph,_EventEmitter);/**
+	 */
+
+	var Graph = function (_EventEmitter) {
+	  _inherits(Graph, _EventEmitter);
+
+	  /**
 	   * Graph constructor
 	   * @param {(HTMLElement|String)} [ wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
 	   * @param {GraphOptions} [ options ] - The options of the graph
@@ -8466,12 +8596,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @param {Array} axis.right - The list of right axes
 	   * @example var graph = new Graph("someDomID");
 	   * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
-	   */function Graph(wrapper,options,axis){_classCallCheck(this,Graph);/*
+	   */
+	  function Graph(wrapper, options, axis) {
+	    _classCallCheck(this, Graph);
+
+	    /*
 	      The unique ID of the graph
 	      @name Graph#uniqueid
 	      @type String
-	    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();_this._drawn=false;if(wrapper===Object(wrapper)&&!(wrapper instanceof HTMLElement)){// Wrapper is options
-	axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}/**
+	    */
+	    var _this = _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).call(this));
+
+	    _this._creation = util.guid();
+	    _this._drawn = false;
+
+	    if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+	      // Wrapper is options
+	      axis = options;
+	      options = wrapper;
+	      wrapper = null;
+	    } else if (typeof wrapper == "string") {
+	      wrapper = document.getElementById(wrapper);
+	    } else if (typeof wrapper.length == "number") {
+	      wrapper = wrapper[0];
+	    }
+
+	    /**
 	     * @object
 	     * @memberof Graph
 	     * @name Graph#options
@@ -8479,524 +8629,4159 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @default {@link GraphOptionsDefault}
 	     * Access directly the options of the graph using this public object.
 	     * @example graph.options.mouseActions.push( {  } );
-	     */_this.options=util.extend({},GraphOptionsDefault,options);// Options declaration must be placed before the doDom operation
-	// doDom is a private method. We bind it to this thanks to ES6 features
-	doDom.bind(_this)();if(wrapper){_this.setWrapper(wrapper);}_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.series=[];//this._dom = wrapper;
-	_this._axesHaveChanged=true;if(_this.options.hasOwnProperty('padding')&&util.isNumeric(_this.options.padding)){_this.options.paddingTop=_this.options.paddingBottom=_this.options.paddingLeft=_this.options.paddingRight=_this.options.padding;}_this.currentAction=false;_this.ns=Graph.ns;_this.nsxlink=Graph.nsxlink;// Load all axes
-	if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':_this.getTopAxis(j,axis[i][j]);break;case'bottom':_this.getBottomAxis(j,axis[i][j]);break;case'left':_this.getLeftAxis(j,axis[i][j]);break;case'right':_this.getRightAxis(j,axis[i][j]);break;}}}}_this._pluginsInit();return _this;}_createClass(Graph,[{key:'setWrapper',value:function setWrapper(wrapper){if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';wrapper.style.outline="none";wrapper.setAttribute('tabindex',1);this.wrapper=wrapper;// DOM
-	if(!this.height||!this.width){var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);this.setSize(w,h);this._resize();}wrapper.appendChild(this.dom);_registerEvents(this);}/**
+	     */
+	    _this.options = util.extend({}, GraphOptionsDefault, options);
+	    // Options declaration must be placed before the doDom operation
+
+	    // doDom is a private method. We bind it to this thanks to ES6 features
+	    doDom.bind(_this)();
+
+	    if (wrapper) {
+	      _this.setWrapper(wrapper);
+	    }
+
+	    _this.prevented = false;
+
+	    _this.axis = {
+	      left: [],
+	      top: [],
+	      bottom: [],
+	      right: []
+	    };
+
+	    _this.shapes = [];
+	    _this.shapesLocked = false;
+	    _this.plugins = {};
+
+	    for (var i in _this.options.pluginAction) {
+	      _this.options.pluginAction.plugin = i;
+	      _this.options.mouseActions.push(_this.options.pluginAction);
+	    }
+
+	    _this.selectedShapes = [];
+
+	    _this.series = [];
+	    //this._dom = wrapper;
+	    _this._axesHaveChanged = true;
+
+	    if (_this.options.hasOwnProperty('padding') && util.isNumeric(_this.options.padding)) {
+	      _this.options.paddingTop = _this.options.paddingBottom = _this.options.paddingLeft = _this.options.paddingRight = _this.options.padding;
+	    }
+
+	    _this.currentAction = false;
+
+	    _this.ns = Graph.ns;
+	    _this.nsxlink = Graph.nsxlink;
+
+	    // Load all axes
+	    if (axis) {
+	      for (var i in axis) {
+	        for (var j = 0, l = axis[i].length; j < l; j++) {
+
+	          switch (i) {
+
+	            case 'top':
+	              _this.getTopAxis(j, axis[i][j]);
+	              break;
+	            case 'bottom':
+	              _this.getBottomAxis(j, axis[i][j]);
+	              break;
+	            case 'left':
+	              _this.getLeftAxis(j, axis[i][j]);
+	              break;
+	            case 'right':
+	              _this.getRightAxis(j, axis[i][j]);
+	              break;
+	          }
+	        }
+	      }
+	    }
+
+	    _this._pluginsInit();
+
+	    return _this;
+	  }
+
+	  _createClass(Graph, [{
+	    key: 'setWrapper',
+	    value: function setWrapper(wrapper) {
+
+	      if (!wrapper) {
+	        throw "The wrapper DOM element was not found.";
+	      }
+
+	      if (!wrapper.appendChild) {
+	        throw "The wrapper appears to be an invalid HTMLElement";
+	      }
+
+	      wrapper.style['-webkit-user-select'] = 'none';
+	      wrapper.style['-moz-user-select'] = 'none';
+	      wrapper.style['-o-user-select'] = 'none';
+	      wrapper.style['-ms-user-select'] = 'none';
+	      wrapper.style['user-select'] = 'none';
+
+	      wrapper.style.position = 'relative';
+	      wrapper.style.outline = "none";
+
+	      wrapper.setAttribute('tabindex', 1);
+
+	      this.wrapper = wrapper;
+
+	      // DOM
+
+	      if (!this.height || !this.width) {
+	        var wrapperStyle = getComputedStyle(wrapper);
+	        var w = parseInt(wrapperStyle.width);
+	        var h = parseInt(wrapperStyle.height);
+	        this.setSize(w, h);
+	        this._resize();
+	      }
+
+	      wrapper.appendChild(this.dom);
+
+	      _registerEvents(this);
+	    }
+	    /**
 	     * Returns the graph SVG wrapper element
 	     * @public
 	     * @return {SVGElement} The DOM element wrapping the graph
-	     */},{key:'getDom',value:function getDom(){return this.dom;}/**
-	   * Returns the unique id representing the graph
-	   * @public
-	   * @return {String} The unique ID of the graph
-	   */},{key:'getId',value:function getId(){return this._creation;}/**
-	   * Returns the graph wrapper element passed during the graph creation
-	   * @public
-	   * @return {HTMLElement} The DOM element wrapping the graph
-	   */},{key:'getWrapper',value:function getWrapper(){return this.wrapper;}/**
-	   * Sets an option of the graph
-	   * @param {String} name - Option name
-	   * @param value - New option value
-	   * @returns {Graph} - Graph instance
-	   */},{key:'setOption',value:function setOption(name,val){this.options[name]=val;return this;}/**
-	   *  Sets the title of the graph
-	   */},{key:'setTitle',value:function setTitle(title){this.options.title=title;this.domTitle.textContent=title;}/**
-	   *  Shows the title of the graph
-	   */},{key:'displayTitle',value:function displayTitle(){this.domTitle.setAttribute('display','inline');}/**
-	   *  Hides the title of the graph
-	   */},{key:'hideTitle',value:function hideTitle(){this.domTitle.setAttribute('display','none');}},{key:'hide',value:function hide(){if(this.dom.style.display!=="none"){this.dom.style.display="none";}}},{key:'show',value:function show(){if(this.dom.style.display=="none"){this.dom.style.display="initial";}}/**
-	   * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
-	   * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
-	   * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
-	   * @return {Boolean} if the redraw has been successful
-	   */},{key:'redraw',value:function redraw(onlyIfAxesHaveChanged){if(!this.width||!this.height){return;}if(!this.sizeSet){this._resize();this.executeRedrawSlaves();return true;}else{if(!onlyIfAxesHaveChanged||haveAxesChanged(this)||hasSizeChanged(this)){this.executeRedrawSlaves();refreshDrawingZone(this);return true;}}this.executeRedrawSlaves(true);return false;}},{key:'executeRedrawSlaves',value:function executeRedrawSlaves(noLegend){this._pluginsExecute("preDraw");}/**
-	   * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
-	   */},{key:'draw',value:function draw(force){this.drawn=true;this.updateLegend(true);this.drawSeries(this.redraw(true&&!force));}/**
-	   *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
-	   *  @memberof Graph
-	   *  @return {Graph} The current graph instance
-	   *  @see {@link Graph#resumeUpdate}
-	   *  @see {@link Graph#doUpdate}
-	   *  @since 1.16.19
-	   */},{key:'delayUpdate',value:function delayUpdate(){this._lockUpdate=true;return this;}/**
-	   *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
-	   *  @memberof Graph
-	   *  @return {Graph} The current graph instance
-	   *  @see {@link Graph#delayUpdate}
-	   *  @see {@link Graph#resumeUpdate}
-	   *  @since 1.16.19
-	   */},{key:'doUpdate',value:function doUpdate(){if(this.legend){this.legend.update();}this.draw();if(this.legend){this.legend.update();}return this;}/**
-	   *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
-	   *  @memberof Graph
-	   *  @return {Graph} The current graph instance
-	   *  @see {@link Graph#delayUpdate}
-	   *  @see {@link Graph#doUpdate}
-	   *  @since 1.16.19
-	   */},{key:'resumeUpdate',value:function resumeUpdate(){this._lockUpdate=false;return this;}},{key:'isDelayedUpdate',value:function isDelayedUpdate(){return this._lockUpdate;}/**
-	   * Sets the total width of the graph
-	   * @param {Number} width - The new width of the graph
-	   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-	   * @see Graph#setHeight
-	   * @see Graph#resize
-	   */},{key:'setWidth',value:function setWidth(width,skipResize){this.width=width;if(!skipResize){this._resize();}}/**
-	   * Sets the total height of the graph
-	   * @param {Number} height - The new height of the graph
-	   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-	   * @see Graph#setWidth
-	   * @see Graph#resize
-	   */},{key:'setHeight',value:function setHeight(height,skipResize){this.height=height;if(!skipResize){this._resize();}}/**
-	   * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
-	   * @param {Number} [ width ] - The new width of the graph
-	   * @param {Number} [ height ] - The new height of the graph
-	   * @see Graph#setWidth
-	   * @see Graph#setHeight
-	   * @return {Graph} The current graph
-	   */},{key:'resize',value:function resize(w,h){if(w&&h){this.setSize(w,h);}this._resize();return this;}/**
-	   * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
-	   * @param {Number} [ width ] - The new width of the graph
-	   * @param {Number} [ height ] - The new height of the graph
-	   * @see Graph#setWidth
-	   * @see Graph#setHeight
-	   * @see Graph#resize
-	   */},{key:'setSize',value:function setSize(w,h){this.setWidth(w,true);this.setHeight(h,true);this.getDrawingHeight();this.getDrawingWidth();}/**
-	   * Returns the width of the graph (set by setSize, setWidth or resize methods)
-	   * @return {Number} Width of the graph
-	   */},{key:'getWidth',value:function getWidth(){return this.width;}/**
-	   * Returns the height of the graph (set by setSize, setHeight or resize methods)
-	   * @return {Number} Height of the graph
-	   */},{key:'getHeight',value:function getHeight(){return this.height;}/**
-	   * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
-	   * @return {Number} paddingTop
-	   */},{key:'getPaddingTop',value:function getPaddingTop(){return this.options.paddingTop;}/**
-	   * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
-	   * @return {Number} paddingTop
-	   */},{key:'getPaddingLeft',value:function getPaddingLeft(){return this.options.paddingLeft;}/**
-	   * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
-	   * @return {Number} paddingTop
-	   */},{key:'getPaddingBottom',value:function getPaddingBottom(){return this.options.paddingBottom;}/**
-	   * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
-	   * @return {Number} paddingRight
-	   */},{key:'getPaddingRight',value:function getPaddingRight(){return this.options.paddingRight;}/**
-	   * Returns the height of the drawable zone, including the space used by the axes
-	   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-	   * @returns {Number} Height of the graph
-	   */},{key:'getDrawingHeight',value:function getDrawingHeight(useCache){if(useCache&&this.innerHeight){return this.innerHeight;}return this.innerHeight=this.height-this.options.paddingTop-this.options.paddingBottom;}/**
-	   * Returns the width of the drawable zone, including the space used by the axes
-	   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-	   * @returns {Number} Width of the graph
-	   */},{key:'getDrawingWidth',value:function getDrawingWidth(useCache){if(useCache&&this.innerWidth){return this.innerWidth;}return this.innerWidth=this.width-this.options.paddingLeft-this.options.paddingRight;}/**
-	   * Caches the wrapper offset in the page.<br />
-	   * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
-	   * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
-	   * @see Graph#uncacheOffset
-	   */},{key:'cacheOffset',value:function cacheOffset(){this.offsetCached=util.getOffset(this.wrapper);}/**
-	   * Un-caches the wrapper offset value
-	   * @see Graph#cacheOffset
-	   */},{key:'uncacheOffset',value:function uncacheOffset(){this.offsetCached=false;}/**
-	   * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
-	   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getXAxis',value:function getXAxis(index,options){if(this.axis.top.length>0&&this.axis.bottom.length==0){return this.getTopAxis(index,options);}return this.getBottomAxis(index,options);}/**
-	   * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
-	   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getYAxis',value:function getYAxis(index,options){if(this.axis.right.length>0&&this.axis.left.length==0){return this.getRightAxis(index,options);}return this.getLeftAxis(index,options);}/**
-	   * Returns the top axis at a certain index. Creates it if non-existant
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getTopAxis',value:function getTopAxis(index,options){return _getAxis(this,index,options,'top');}/**
-	   * Returns the bottom axis at a certain index. Creates it if non-existant
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getBottomAxis',value:function getBottomAxis(index,options){return _getAxis(this,index,options,'bottom');}/**
-	   * Returns the left axis at a certain index. Creates it if non-existant
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getLeftAxis',value:function getLeftAxis(index,options){return _getAxis(this,index,options,'left');}/**
-	   * Returns the right axis at a certain index. Creates it if non-existant
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-	   */},{key:'getRightAxis',value:function getRightAxis(index,options){return _getAxis(this,index,options,'right');}/**
-	   * Sets a bottom axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   */},{key:'setXAxis',value:function setXAxis(axis,index){this.setBottomAxis(axis,index);}/**
-	   * Sets a left axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   */},{key:'setYAxis',value:function setYAxis(axis,index){this.setLeftAxis(axis,index);}/**
-	   * Sets a left axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @see Graph#setBottomAxis
-	   * @see Graph#setTopAxis
-	   * @see Graph#setRightAxis
-	   * @see Graph#getLeftAxis
-	   * @see Graph#getYAxis
-	   */},{key:'setLeftAxis',value:function setLeftAxis(axis,index){index=index||0;if(this.axis.left[index]){this.axis.left[index].kill();}this.axis.left[index]=axis;}/**
-	   * Sets a right axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @see Graph#setBottomAxis
-	   * @see Graph#setLeftAxis
-	   * @see Graph#setTopAxis
-	   * @see Graph#getRightAxis
-	   * @see Graph#getYAxis
-	   */},{key:'setRightAxis',value:function setRightAxis(axis,index){index=index||0;if(this.axis.right[index]){this.axis.right[index].kill();}this.axis.right[index]=axis;}/**
-	   * Sets a top axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @see Graph#setBottomAxis
-	   * @see Graph#setLeftAxis
-	   * @see Graph#setRightAxis
-	   * @see Graph#getBottomAxis
-	   * @see Graph#getXAxis
-	   */},{key:'setTopAxis',value:function setTopAxis(axis,index){index=index||0;if(this.axis.top[index]){this.axis.top[index].kill();}this.axis.top[index]=axis;}/**
-	   * Sets a bottom axis
-	   * @param {Axis} axis - The axis instance to set
-	   * @param {Number} [ index=0 ] - The index of the axis
-	   * @see Graph#setTopAxis
-	   * @see Graph#setLeftAxis
-	   * @see Graph#setRightAxis
-	   * @see Graph#getTopAxis
-	   * @see Graph#getXAxis
-	   */},{key:'setBottomAxis',value:function setBottomAxis(axis,index){index=index||0;if(this.axis.bottom[index]){this.axis.bottom[index].kill();}this.axis.bottom[index]=axis;}},{key:'killAxis',value:function killAxis(axis){var noRedraw=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var noSerieKill=arguments.length>2&&arguments[2]!==undefined?arguments[2]:false;var index;if(axis.isX()){if((index=this.axis.bottom.indexOf(axis))>-1){this.axis.bottom.splice(index,1);}if((index=this.axis.top.indexOf(axis))>-1){this.axis.top.splice(index,1);}if(!noSerieKill){this.series.map(function(serie){if(serie.getXAxis()==axis){serie.kill();}});}}if(axis.isY()){if((index=this.axis.left.indexOf(axis))>-1){this.axis.left.splice(index,1);}if((index=this.axis.right.indexOf(axis))>-1){this.axis.right.splice(index,1);}if(!noSerieKill){this.series.map(function(serie){if(serie.getYAxis()==axis){serie.kill();}});}}this.axisGroup.removeChild(axis.group);// Removes all DOM
-	this.groupPrimaryGrids.removeChild(axis.gridPrimary);this.groupSecondaryGrids.removeChild(axis.gridSecondary);if(!noRedraw){this.draw(true);}}/**
-	   * Determines if an x axis belongs to the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasXAxis',value:function hasXAxis(axis){return this.hasTopAxis(axis)||this.hasBottomAxis(axis);}/**
-	   * Determines if an x axis belongs to the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasYAxis',value:function hasYAxis(axis){return this.hasLeftAxis(axis)||this.hasRightAxis(axis);}/**
-	   * Determines if an x axis belongs to top axes list of the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasTopAxis',value:function hasTopAxis(axis){return this.hasAxis(axis,this.axis.top);}/**
-	   * Determines if an x axis belongs to bottom axes list of the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasBottomAxis',value:function hasBottomAxis(axis){return this.hasAxis(axis,this.axis.bottom);}/**
-	   * Determines if a y axis belongs to left axes list of the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasLeftAxis',value:function hasLeftAxis(axis){return this.hasAxis(axis,this.axis.left);}/**
-	   * Determines if a y axis belongs to right axes list of the graph
-	   * @param {Axis} axis - The axis instance to check
-	   */},{key:'hasRightAxis',value:function hasRightAxis(axis){return this.hasAxis(axis,this.axis.right);}/**
-	   * Determines if an axis belongs to a list of axes
-	   * @param {Axis} axis - The axis instance to check
-	   * @param {Array} axisList - The list of axes to check
-	   * @private
-	   */},{key:'hasAxis',value:function hasAxis(axis,axisList){for(var i=0,l=axisList.length;i<l;i++){if(axisList[i]==axis){return true;}if(axisList[i].hasAxis(axis)){return true;}}return false;}/**
-	   * Autoscales the x and y axes of the graph.
-	   * Does not repaint the canvas
-	   * @return {Graph} The current graph instance
-	   */},{key:'autoscaleAxes',value:function autoscaleAxes(){this._applyToAxes("setMinMaxToFitSeries",null,true,true);//this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-	// X is not always ascending...
-	return this;}// See #138
-	/**
-	   *  @alias Graph#autoscaleAxes
-	   */},{key:'autoscale',value:function autoscale(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-	/**
-	   *  @alias Graph#autoscaleAxes
-	   */},{key:'autoScale',value:function autoScale(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-	/**
-	   *  @alias Graph#autoscaleAxes
-	   */},{key:'autoScaleAxes',value:function autoScaleAxes(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-	/**
-	   *  Autoscales a particular axis
-	   *  @param {Axis} The axis to rescale
-	   *  @return {Graph} The current graph instance
-	   */},{key:'autoScaleAxis',value:function autoScaleAxis(axis){if(!axis){return this;}axis.setMinMaxToFitSeries();return this;}/**
-	   * Sets the background color
-	   * @param {String} color - An SVG accepted color for the background
-	   * @return {Graph} The current graph instance
-	   */},{key:'setBackgroundColor',value:function setBackgroundColor(color){this.rectEvent.setAttribute('fill',color);return this;}},{key:'getAxisState',value:function getAxisState(){var state={};for(var i in this.axis){state[i]=this.axis[i].map(function(axis){return[axis.getCurrentMin(),axis.getCurrentMax()];});}return state;}},{key:'setAxisState',value:function setAxisState(state){var j,l;for(var i in state){if(!this.axis[i]){continue;}for(j=0,l=state[i].length;j<l;j++){if(!this.axis[i][j]){continue;}this.axis[i][j].setCurrentMin(state[i][j][0]);this.axis[i][j].setCurrentMax(state[i][j][1]);}}this.draw();}},{key:'saveAxisState',value:function saveAxisState(savedName){this.savedAxisState=this.savedAxisState||{};this.savedAxisState[savedName]=this.getAxisState();return this;}},{key:'recallAxisState',value:function recallAxisState(stateName){if(this.savedAxisState[savedName]){this.recallAxisState(this.savedAxisState[savedName]);}return this;}},{key:'_applyToAxis',value:function _applyToAxis(type){switch(type){case'string':return function(type,func,params){//    params.splice(1, 0, type);
-	for(var i=0;i<this.axis[type].length;i++){this.axis[type][i][func].apply(this.axis[type][i],params);}};break;case'function':return function(type,func,params){for(var i=0;i<this.axis[type].length;i++){func.call(this,this.axis[type][i],type,params);}};break;}}/**
-	   * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
-	   */},{key:'getBoundaryAxis',value:function getBoundaryAxis(axis,minmax,usingZValues){var valSeries=this.getBoundaryAxisFromSeries(axis,minmax,usingZValues);//  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-	return valSeries;//return Math[ minmax ]( valSeries, valShapes );
-	}/**
-	   * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
-	   * @memberof Graph.prototype
-	   * @param {Axis} axis - The axis for which the value should be computed
-	   * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
-	   * @returns {Number} The minimimum or maximum of the axis based on its series
-	   */},{key:'getBoundaryAxisFromSeries',value:function getBoundaryAxisFromSeries(axis,minmax,usingZValues){var min=minmax=='min',val,func=axis.isX()?['getMinX','getMaxX']:['getMinY','getMaxY'],func2use=func[min?0:1],infinity2use=min?+Infinity:-Infinity,currentSerie,serie,series,serieValue,i,l;val=min?Number.MAX_SAFE_INTEGER:Number.MIN_SAFE_INTEGER;series=this.getSeriesFromAxis(axis,true);for(i=0,l=series.length;i<l;i++){serie=series[i];if(!serie.isShown()){continue;}serieValue=serie[func2use](usingZValues);val=Math[minmax](isNaN(val)?infinity2use:val,isNaN(serieValue)?infinity2use:serieValue);}return val;}/**
-	   *  Returns all the series associated to an axis
-	   *  @param {Axis} axis - The axis to which the series belong
-	   *  @returns {Serie[]} An array containing the list of series that belong to the axis
-	   */},{key:'getSeriesFromAxis',value:function getSeriesFromAxis(axis){var series=[],i=this.series.length-1;for(;i>=0;i--){if(this.series[i].getXAxis()==axis||this.series[i].getYAxis()==axis){series.push(this.series[i]);}}return series;}/**
-	   * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
-	   * @see Graph#getBoundaryAxis
-	   */},{key:'updateDataMinMaxAxes',value:function updateDataMinMaxAxes(usingZValues){var axisvars=['bottom','top','left','right'],axis,j,l,i,xy;for(j=0,l=axisvars.length;j<l;j++){for(i=this.axis[axisvars[j]].length-1;i>=0;i--){axis=this.axis[axisvars[j]][i];xy=j<2?'x':'y';if(axis.disabled){continue;}//console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-	axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'min',usingZValues));axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'max',usingZValues));}}}/**
-	   * Function that is called from {@link Graph#_applyToAxes}
-	   * @function
-	   * @name AxisCallbackFunction
-	   * @param {Axis} axis - The axis of the function
-	   * @param {String} type - The type of the axis (left,right,top,bottom)
-	   * @param params - The params passed in the _applyToAxis function.
-	   * @see Graph#_applyToAxes
-	   *//**
-	   * Applies a function to axes. The function will be executed once for every axis.
-	   * If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
-	   * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
-	   * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
-	   * @param params - Extra parameters to pass to the function
-	   * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
-	   * @param {Boolean} leftright=false - True to apply to function to left and right axes
-	   */},{key:'_applyToAxes',value:function _applyToAxes(func,params,tb,lr){var ax=[],i=0,l;if(tb||tb==undefined){ax.push('top');ax.push('bottom');}if(lr||lr==undefined){ax.push('left');ax.push('right');}for(l=ax.length;i<l;i++){this._applyToAxis(typeof func==='undefined'?'undefined':_typeof(func)).call(this,ax[i],func,params);}}/**
-	   * Axes can be dependant of one another (for instance for unit conversions)
-	   * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
-	   * @param {Axis} axis - The axis that links one or multiple other dependant axes
-	   * @returns {Axis[]} The list of axes linked to the axis passed as parameter
-	   */},{key:'findAxesLinkedTo',value:function findAxesLinkedTo(axis){var axes=[];this._applyToAxes(function(a){if(a.linkedToAxis&&a.linkedToAxis.axis==axis){axes.push(a);}},{},axis instanceof this.getConstructor("graph.axis.x"),axis instanceof this.getConstructor("graph.axis.y"));return axes;}},{key:'_axisHasChanged',value:function _axisHasChanged(axis){this._axesHaveChanged=true;}/**
-	   * Creates a new serie.
-	   * If the a serie with the same name exists, returns this serie with update options.
-	   * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
-	   * Built-in series types are "line", "contour", "zone" and "scatter".
-	   * @param {String} name - The name of the serie (unique)
-	   * @param {Object} options - The serie options
-	   * @param {Type} type - The type of the serie.
-	   * @returns {Serie} The newly created serie
-	   */},{key:'newSerie',value:function newSerie(name,options,type){var serie=void 0;if((typeof options==='undefined'?'undefined':_typeof(options))!=="object"&&!type){type=options;options={};}if(!type){type=Graph.SERIE_LINE;}if(serie=this.getSerie(name)){return serie;}if(!(serie=makeSerie(this,name,options,type))){return;}this.series.push(serie);this.emit("newSerie",serie);return serie;}/**
-	   * Looks for an existing serie by name or by index and returns it.
-	   * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
-	   * @param {(String|Number)} name - The name or the index of the serie
-	   * @returns {Serie}
-	   */},{key:'getSerie',value:function getSerie(name){if(typeof name=='number'){return this.series[name]||false;}if(typeof name=='function'){name=name();}var i=0,l=this.series.length;for(;i<l;i++){if(this.series[i].getName()==name||this.series[i]==name){return this.series[i];}}return false;}/**
-	   * Returns all the series
-	   * @returns {Serie[]} An array of all the series
-	   */},{key:'getSeries',value:function getSeries(){return this.series;}/**
-	   * Returns all the series that correspond to one or multiple types
-	   * @param {...Symbol} type - The serie types to select
-	   * @returns {Serie[]} An array of all the series
-	   * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
-	   */},{key:'allSeries',value:function allSeries(){for(var _len=arguments.length,types=Array(_len),_key=0;_key<_len;_key++){types[_key]=arguments[_key];}return this.series.filter(function(serie){return types.include(serie.getType());});}/**
-	   * Draws a specific serie
-	   * @param {Serie} serie - The serie to redraw
-	   * @param {Boolean} force - Forces redraw even if no data has changed
-	   */},{key:'drawSerie',value:function drawSerie(serie,force){if(!serie.draw){throw"Serie has no method draw";}serie.draw(force);}/**
-	   * Redraws all visible series
-	   * @param {Boolean} force - Forces redraw even if no data has changed
-	   */},{key:'drawSeries',value:function drawSeries(force){if(!this.width||!this.height){return;}var i=this.series.length-1;for(;i>=0;i--){if(this.series[i].isShown()){this.drawSerie(this.series[i],force);}}}/**
-	   * @alias Graph#removeSeries
-	   */},{key:'resetSeries',value:function resetSeries(){this.removeSeries();}/**
-	   * @alias Graph#removeSeries
-	   */},{key:'killSeries',value:function killSeries(){this.resetSeries();}/**
-	   * Removes all series from the graph
-	   */},{key:'removeSeries',value:function removeSeries(){while(this.series[0]){this.series[0].kill(true);}this.series=[];if(this.legend){this.legend.update();}}/**
-	   * Selects a serie. Only one serie per graph can be selected.
-	   * @param {Serie} serie - The serie to select
-	   * @param {String} selectName="selected" - The name of the selection
-	   */},{key:'selectSerie',value:function selectSerie(serie,selectName){if(!((typeof serie==='undefined'?'undefined':_typeof(serie))=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie&&this.selectedSerie){this.unselectSerie(this.selectedSerie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
-	   * Returns the selected serie
-	   * @returns {(Serie|undefined)} The selected serie
-	   */},{key:'getSelectedSerie',value:function getSelectedSerie(){return this.selectedSerie;}/**
-	   * Unselects a serie
-	   * @param {Serie} serie - The serie to unselect
-	   */},{key:'unselectSerie',value:function unselectSerie(serie){if(!serie.unselect){return;}serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
-	   * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
-	   * @param {Serie} serie - The serie containing the shapes
-	   * @returns {Shape[]} An array containing a list of shapes associated to the serie
-	   */},{key:'getShapesOfSerie',value:function getShapesOfSerie(serie){var shapes=[];var i=this.shapes.length-1;for(;i>=0;i--){if(this.shapes[i].getSerie()==serie){shapes.push(this.shapes[i]);}}return shapes;}},{key:'makeToolbar',value:function makeToolbar(toolbarData){var constructor=this.getConstructor("graph.toolbar");if(constructor){return this.toolbar=new constructor(this,toolbarData);}else{return util.throwError("No constructor exists for toolbar");}}/**
-	   *  Returns all shapes from the graph
-	   */},{key:'getShapes',value:function getShapes(){return this.shapes||[];}/**
-	   * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
-	   * @param {String} shapeType - The type of the shape
-	   * @param {Object} [shapeData] - The options passed to the shape creator
-	   * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
-	   * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
-	   * @returns {Shape} The created shape
-	   * @see Graph#getConstructor
-	   */},{key:'newShape',value:function newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-	if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor||'transparent',i);shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity||1,i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
-	   * Creates a new position. Arguments are passed to the position constructor
-	   * @param {...*} var_args
-	   * @see Position
-	   */},{key:'newPosition',value:function newPosition(var_args){return new(Function.prototype.bind.apply(_graph2.default,[null].concat(Array.prototype.slice.call(arguments))))();// 18 September 2016 Norman: What is that ?
-	Array.prototype.unshift.call(arguments,null);return new(Function.prototype.bind.apply(_graph2.default,arguments))();}/**
-	   *  Redraws all shapes. To be called if their definitions have changed
-	   */},{key:'redrawShapes',value:function redrawShapes(){//this.graphingZone.removeChild(this.shapeZone);
-	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].redraw();}//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
-	}/**
-	   *  Removes all shapes from the graph
-	   */},{key:'removeShapes',value:function removeShapes(){for(var i=0,l=this.shapes.length;i<l;i++){if(this.shapes[i]&&this.shapes[i].kill){this.shapes[i].kill(true);}}this.shapes=[];}/**
-	   * Selects a shape
-	   * @param {Shape} shape - The shape to select
-	   * @param {Boolean} mute - Select the shape quietly
-	   */},{key:'selectShape',value:function selectShape(shape,mute){// Already selected. Returns false
-	if(!shape){return;}if(this.selectedShapes.indexOf(shape)>-1){return false;}if(!shape.isSelectable()){return false;}if(!mute){this.emit("beforeShapeSelect",shape);}if(this.prevent(false)){return;}if(this.selectedShapes.length>0&&this.options.shapesUniqueSelection){// Only one selected shape at the time
-	this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}},{key:'getSelectedShapes',value:function getSelectedShapes(){return this.selectedShapes;}/**
-	   * Unselects a shape
-	   * @param {Shape} shape - The shape to unselect
-	   * @param {Boolean} mute - Unselect the shape quietly
-	   */},{key:'unselectShape',value:function unselectShape(shape,mute){if(this.selectedShapes.indexOf(shape)==-1){return;}if(!mute){this.emit("beforeShapeUnselect",shape);}if(this.cancelUnselectShape){this.cancelUnselectShape=false;return;}shape._unselect();this.selectedShapes.splice(this.selectedShapes.indexOf(shape),1);if(!mute){this.emit("shapeUnselect",shape);}}/**
-	   * Unselects all shapes
-	   * @param {Boolean} [ mute = false ] - Mutes all unselection events
-	   * @return {Graph} The current graph instance
-	   */},{key:'unselectShapes',value:function unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}},{key:'_removeShape',value:function _removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}},{key:'appendShapeToDom',value:function appendShapeToDom(shape){if(shape.isHTML()){this.wrapper.insertBefore(shape._dom,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}},{key:'removeShapeFromDom',value:function removeShapeFromDom(shape){if(shape.isHTML()){this.wrapper.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}},{key:'appendSerieToDom',value:function appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}},{key:'removeSerieFromDom',value:function removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}},{key:'getLayer',value:function getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(Graph.ns,'g');this.layers[layer][2]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}},{key:'focus',value:function focus(){this.wrapper.focus();}},{key:'elementMoving',value:function elementMoving(movingElement){this.bypassHandleMouse=movingElement;}},{key:'stopElementMoving',value:function stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}},{key:'_makeClosingLines',value:function _makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(Graph.ns,'line');line.setAttribute('stroke',this.options.closeColor);line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}},{key:'isActionAllowed',value:function isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.enabled&&(typeof action.enabled=="function"?!action.enabled(this):!actions.enabled)){return;}if(action.key){if(action.key!==e.keyCode){var keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}},{key:'forcePlugin',value:function forcePlugin(plugin){this.forcedPlugin=plugin;}},{key:'unforcePlugin',value:function unforcePlugin(){this.forcedPlugin=false;}},{key:'_pluginsExecute',value:function _pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
-	for(var i in this.plugins){if(this.plugins[i]&&this.plugins[i][funcName]){this.plugins[i][funcName].apply(this.plugins[i],args);}}}},{key:'_pluginExecute',value:function _pluginExecute(which,func,args){//Array.prototype.splice.apply( args, [ 0, 0, this ] );
-	if(!which){return;}if(this.plugins[which]&&this.plugins[which][func]){this.plugins[which][func].apply(this.plugins[which],args);}}},{key:'pluginYieldActiveState',value:function pluginYieldActiveState(){this.activePlugin=false;}},{key:'_serieExecute',value:function _serieExecute(which,func,args){if((typeof serie==='undefined'?'undefined':_typeof(serie))!=='object'){serie=this.getSerie(serie);}if(typeof serie[func]=='function'){serie.apply(serie,args);}}},{key:'_pluginsInit',value:function _pluginsInit(){var constructor,pluginName,pluginOptions;for(var i in this.options.plugins){pluginName=i;pluginOptions=this.options.plugins[i];constructor=this.getConstructor("graph.plugin."+pluginName);if(constructor){var options=util.extend(true,{},constructor.defaults(),pluginOptions);this.plugins[pluginName]=new constructor(options);util.mapEventEmission(this.plugins[pluginName].options,this.plugins[pluginName]);this.plugins[pluginName].init(this,pluginOptions);}else{util.throwError("Plugin \""+pluginName+"\" has not been registered");}}}/**
-	   * Returns an initialized plugin
-	   * @param {String} pluginName
-	   * @returns {Plugin} The plugin which name is <pluginName>
-	   */},{key:'getPlugin',value:function getPlugin(pluginName){var plugin=this.plugins[pluginName];if(!plugin){return util.throwError("Plugin \""+pluginName+"\" has not been loaded or properly registered");}return plugin;}},{key:'triggerEvent',value:function triggerEvent(){var func=arguments[0],args=Array.prototype.splice.apply(arguments,[0,1]);if(typeof this.options[func]=="function"){return this.options[func].apply(this,arguments);}return;}/**
-	   * Creates a legend. Only one legend is allowed per graph
-	   * @param {Object} options - The legend options
-	   */},{key:'makeLegend',value:function makeLegend(options){if(this.legend){return this.legend;}var constructor=this.getConstructor("graph.legend");if(constructor){this.legend=new constructor(this,options);}else{return util.throwError("Graph legend is not available as it has not been registered");}//    this.legend.update();
-	return this.legend;}/**
-	   * Redraws the legend if it exists
-	   * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
-	   * @return {Graph} The graph instance
-	   */},{key:'updateLegend',value:function updateLegend(){var onlyIfRequired=arguments.length>0&&arguments[0]!==undefined?arguments[0]:false;if(!this.legend){return;}this.legend.update(onlyIfRequired);return this;}/**
-	   * @returns {Legend} The legend item
-	   */},{key:'getLegend',value:function getLegend(){if(!this.legend){return;}return this.legend;}},{key:'requireLegendUpdate',value:function requireLegendUpdate(){if(!this.legend){return;}this.legend.requireDelayedUpdate();}},{key:'orthogonalProjectionSetup',value:function orthogonalProjectionSetup(options){this.options.zAxis=util.extend(true,{maxZ:10,minZ:0,shiftX:-25,shiftY:-15,xAxis:this.getXAxis(),yAxis:this.getYAxis()});}},{key:'orthogonalProjectionUpdate',value:function orthogonalProjectionUpdate(){var _this2=this;if(!this.zAxis){this.zAxis={g:document.createElementNS(Graph.ns,"g"),l:document.createElementNS(Graph.ns,"line")};this.zAxis.g.appendChild(this.zAxis.l);this.groupGrids.appendChild(this.zAxis.g);}var refAxisX=this.options.zAxis.xAxis;var refAxisY=this.options.zAxis.yAxis;var x0=refAxisX.getMinPx();var y0=refAxisY.getMinPx();var dx=refAxisX.getZProj(this.options.zAxis.maxZ);var dy=refAxisY.getZProj(this.options.zAxis.maxZ);this.zAxis.l.setAttribute('stroke','black');this.zAxis.l.setAttribute('x1',x0);this.zAxis.l.setAttribute('x2',x0+dx);this.zAxis.l.setAttribute('y1',y0);this.zAxis.l.setAttribute('y2',y0+dy);this.updateDataMinMaxAxes(true);var sort=this.series.map(function(serie){return[serie.getZPos(),serie];});sort.sort(function(sa,sb){return sb[0]-sa[0];});var i=0;sort.forEach(function(s){s[1].setLayer(i);_this2.appendSerieToDom(s[1]);i++;});this.drawSeries(true);}/**
-	   * Kills the graph
-	   **/},{key:'kill',value:function kill(){this.wrapper.removeChild(this.dom);}},{key:'_removeSerie',value:function _removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}},{key:'contextListen',value:function contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}},{key:'lockShapes',value:function lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
-	for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
-	this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this._sizeChanged=true;if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
-	},{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}/**
-	   *  Enables the line tracking
-	   *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
-	   */},{key:'trackingLine',value:function trackingLine(options){var _this9=this;var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
-	if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){if(options.series=="all"){options.series=this.series.map(function(serie){serie:serie;});}else{options.series=[options.series];}}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
-	// Creates a new shape called trackingLine, in the first layer (below everything)
-	this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}},{key:'addSerieToTrackingLine',value:function addSerieToTrackingLine(serie,options){var _this10=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
-	this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking(function(serie,index,x,y){if(_this10.options.trackingLine.enable){if(index){if(_this10.trackingObject){_this10.trackingObject.show();_this10.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-	_this10.trackingObject.getPosition(1).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-	_this10.trackingObject.redraw();}serie._trackingLegend=_trackingLegendSerie(_this10,{serie:serie},x,y,serie._trackingLegend,options.textMethod?options.textMethod:function(output){for(var i in output){return output[i].serie.serie.getName()+": "+output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);break;}},index.trueX);if(serie._trackingLegend){serie._trackingLegend.style.display="block";}}}},function(serie){if(_this10.trackingObject){_this10.trackingObject.hide();}if(serie.trackingShape){serie.trackingShape.hide();}if(serie._trackingLegend){serie._trackingLegend.style.display="none";}serie._trackingLegend=_trackingLegendSerie(_this10,{serie:serie},false,false,serie._trackingLegend,false,false);});}/**
-	   *  Pass here the katex.render method to be used later
-	   *   @param {Function} renderer -  katexRendered - renderer
-	   *   @return {Graph} The current graph instance
-	   */},{key:'setKatexRenderer',value:function setKatexRenderer(renderer){this._katexRenderer=renderer;}},{key:'hasKatexRenderer',value:function hasKatexRenderer(){return!!this._katexRenderer;}},{key:'renderWithKatex',value:function renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(Graph.ns,'foreignObject');}var div=document.createElement("div");katexElement.appendChild(div);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
-	   * Returns a graph created from a schema
-	   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
-	   * @param {HTMLElement} wrapper - The wrapping element
-	   * @returns {Graph} Newly created graph
-	   */},{key:'exportToSchema',value:function exportToSchema(){var _this11=this;var schema={};schema.title=this.options.title;schema.width=this.getWidth();schema.height=this.getHeight();var axesPositions=['top','bottom','left','right'];var axesExport=[];var allaxes={x:[],y:[]};axesPositions.map(function(axisPosition){if(!_this11.axis[axisPosition]){return;}axesExport=axesExport.concat(_this11.axis[axisPosition].map(function(axis){return{type:axisPosition,label:axis.options.label,unit:axis.options.unit,min:axis.options.forcedMin,max:axis.options.forcedMax,flip:axis.options.flipped};}));if(axisPosition=='top'||axisPosition=='bottom'){allaxes.x=allaxes.x.concat(_this11.axis[axisPosition]);}else{allaxes.y=allaxes.y.concat(_this11.axis[axisPosition]);}});schema.axis=axesExport;var seriesExport=[];var toType=function toType(type){switch(type){case Graph.SERIE_LINE:return'line';break;case Graph.SERIE_BAR:return'bar';break;case Graph.SERIE_SCATTER:return'scatter';break;}};var exportData=function exportData(serie,x){var data=[];switch(serie.getType()){case Graph.SERIE_LINE:for(var i=0;i<serie.data.length;i++){for(var j=0;j<serie.data[i].length-1;j+=2){data.push(serie.data[i][j+(x&&serie.isFlipped()||!x&&!serie.isFlipped()?1:0)]);}}break;case Graph.SERIE_SCATTER:for(var j=0;j<serie.data.length-1;j+=2){data.push(serie.data[i+(x&&serie.isFlipped()||!x&&!serie.isFlipped()?1:0)]);}break;}return data;};schema.data=seriesExport.concat(this.series.map(function(serie){var style=[];var linestyle=[];if(serie.getType()==Graph.SERIE_LINE){for(var stylename in serie.styles){linestyle.push({styleName:stylename,color:serie.styles[stylename].lineColor,lineWidth:serie.styles[stylename].lineWidth,lineStyle:serie.styles[stylename].lineStyle});var styleObj={styleName:stylename,styles:[]};style.push(styleObj);styleObj.styles=styleObj.styles.concat((serie.styles[stylename].markers||[]).map(function(markers){return{shape:markers.type,zoom:markers.zoom,lineWidth:markers.strokeWidth,lineColor:markers.strokeColor,color:markers.fillColor,points:markers.points};}));}}return{label:serie.getLabel(),id:serie.getName(),type:toType(serie.getType()),x:exportData(serie,true),y:exportData(serie,false),xAxis:allaxes.x.indexOf(serie.getXAxis()),yAxis:allaxes.y.indexOf(serie.getYAxis()),style:style,lineStyle:linestyle};}));return schema;}/**
-	   * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-	   * @param {String} constructorName - The name of the constructor
-	   * @param {Function} constructor - The constructor method
-	   * @see Graph.getConstructor
-	   * @static
-	   */}],[{key:'fromSchema',value:function fromSchema(schema,wrapper){var graph;var options={};var axes={left:[],top:[],right:[],bottom:[]};var axesIndices=[];if(schema.title){options.title=schema.title;}if(schema.axis){schema.axis.map(function(schemaAxis){if(!schemaAxis.type){util.throwError("Axis type is required (top, bottom, left or right)");}var axisOptions={};if(schemaAxis.label){axisOptions.labelValue=schemaAxis.label;}if(schemaAxis.unit!==undefined){axisOptions.unit=schemaAxis.unit;}if(schemaAxis.unitWrapperAfter!==undefined){axisOptions.unitWrapperAfter=schemaAxis.unitWrapperAfter;}if(schemaAxis.unitWrapperBefore!==undefined){axisOptions.unitWrapperBefore=schemaAxis.unitWrapperBefore;}if(schemaAxis.min!==undefined){axisOptions.forcedMin=schemaAxis.min;}if(schemaAxis.max!==undefined){axisOptions.forcedMax=schemaAxis.max;}if(schemaAxis.flip!==undefined){axisOptions.flipped=schemaAxis.flip;}axes[schemaAxis.type].push(axisOptions);schemaAxis._jsGraphIndex=axes[schemaAxis.type].length-1;});}graph=new Graph(wrapper,options,axes);if(schema.width){graph.setWidth(schema.width);}if(schema.height){graph.setHeight(schema.width);}graph._resize();if(schema.data){schema.data.map(function(schemaSerie){var serieType=schemaSerie.type,serie,serieOptions={},serieAxis;switch(schemaSerie.type){case'bar':util.throwError("Bar charts not supported");serieType=false;break;case'scatter':serieType=Graph.SERIE_SCATTER;break;case'box':serieType=Graph.SERIE_BOX;if(schemaSerie.orientation=='x'||schemaSerie.orientation=='y'){serieOptions.orientation=schemaSerie.orientation;}break;default:serieType=Graph.SERIE_LINE;break;}if(!serieType){util.throwError("No valid serie type was found");return;}serie=graph.newSerie(schemaSerie.id||schemaSerie.label||util.guid(),serieOptions,serieType);if(schemaSerie.lineStyle){schemaSerie.lineStyle.map(function(style){var styleSerie={};style.styleName=style.styleName||"unselected";switch(serieType){case Graph.SERIE_LINE:if(style.lineWidth!==undefined){styleSerie.lineWidth=style.lineWidth;}if(style.color!==undefined){styleSerie.lineColor=style.color;}if(style.lineStyle){styleSerie.lineStyle=style.lineStyle;}serie.setStyle(styleSerie,style.styleName);break;}});}if(schemaSerie.style){schemaSerie.style.map(function(style){var styleSerie={};style.styleName=style.styleName||"unselected";if(!Array.isArray(style.styles)){style.styles=[style.styles];}var styles=style.styles.map(function(style){switch(serieType){case Graph.SERIE_LINE:return{type:style.shape,zoom:style.zoom,strokeWidth:style.lineWidth,strokeColor:style.lineColor,fillColor:style.color,points:style.points};break;case Graph.SERIE_BOX:return style;break;case Graph.SERIE_SCATTER:break;}});switch(serieType){case Graph.SERIE_LINE:serie.setMarkers(styles,style.styleName);break;case Graph.SERIE_SCATTER:serie.setStyle(styles,{},style.styleName);break;case Graph.SERIE_BOX:serie.setStyle(styles[0],style.stylename);break;}});}if(schemaSerie.errorX||schemaSerie.errorY){var errors=[];if(schemaSerie.errorX){for(var i=0,l=schemaSerie.errorX.length;i<l;i++){errors[i]=errors[i]||[[],[]];errors[i][0][0]=schemaSerie.errorX[i];}}if(schemaSerie.errorY){for(var i=0,l=schemaSerie.errorY.length;i<l;i++){errors[i]=errors[i]||[[]];errors[i][1][0]=schemaSerie.errorY[i];}}serie.setDataError(errors)// Adds the error data
-	.setErrorStyle([{type:'bar',x:{},y:{}}]);// Display bar errors
-	}if(schema.axis){serieAxis=schema.axis[schemaSerie.xAxis];if(!serieAxis||serieAxis.type!=='top'&&serieAxis.type!=='bottom'){util.warn("No x axis found. Setting automatically");serie.setXAxis(graph.getXAxis(0));}else{if(serieAxis.type=='top'){serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='bottom'){serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));}}serieAxis=schema.axis[schemaSerie.yAxis];if(!serieAxis||serieAxis.type!=='left'&&serieAxis.type!=='right'){util.warn("No y axis found. Setting automatically");serie.setYAxis(graph.getYAxis(0));}else{if(serieAxis.type=='left'){serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='right'){serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));}}}else{util.warn("No axes found. Setting automatically");serie.autoAxis();}switch(serieType){case Graph.SERIE_BOX:serie.setData(schemaSerie.boxes);break;default:case Graph.SERIE_SCATTER:case Graph.SERIE_LINE:serie.setData([{x:schemaSerie.x,y:schemaSerie.y}]);break;}});}graph.autoscaleAxes();graph.draw();return graph;}},{key:'registerConstructor',value:function registerConstructor(constructorName,constructor){if(_constructors.has(constructorName)){return util.throwError("Constructor "+constructor+" already exists.");}_constructors.set(constructorName,constructor);}/**
-	   * Returns a registered constructor
-	   * @param {String} constructorName - The constructor name to look for
-	   * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
-	   * @returns {Function} The registered constructor
-	   * @throws Error
-	   * @see Graph.registerConstructor
-	   * @static
-	   */},{key:'getConstructor',value:function getConstructor(constructorName){var softFail=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;if(!_constructors.has(constructorName)){if(softFail){return false;}return util.throwError("Constructor \""+constructorName+"\" doesn't exist");}return _constructors.get(constructorName);}},{key:'newWaveform',value:function newWaveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}},{key:'waveform',value:function waveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}}]);return Graph;}(_EventEmitter3.default);// Adds getConstructor to the prototype. Cannot do that in ES6 classes
-	Graph.prototype.getConstructor=Graph.getConstructor;function makeSerie(graph,name,options,type){var constructor=graph.getConstructor(type,true);if(!constructor&&typeof type=="string"){constructor=graph.getConstructor("graph.serie."+type,true);}if(constructor){var serie=new constructor(graph,name,options);//serie.init( graph, name, options );
-	graph.appendSerieToDom(serie);}else{return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");}return serie;};function getAxisLevelFromSpan(span,level){for(var i=0,l=level.length;i<l;i++){var possible=true;for(var k=0,m=level[i].length;k<m;k++){if(!(span[0]<level[i][k][0]&&span[1]<level[i][k][0]||span[0]>level[i][k][1]&&span[1]>level[i][k][1])){possible=false;}}if(possible){level[i].push(span);return i;}}level.push([span]);return level.length-1;}function refreshDrawingZone(graph){var i,j,l,xy,min,max,axis;var shift={top:[],bottom:[],left:[],right:[]};var levels={top:[],bottom:[],left:[],right:[]};graph._painted=true;// Apply to top and bottom
-	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(axis.getAxisPosition(),shift[position][level]||0);},false,true,false);var shiftTop=shift.top.reduce(function(prev,curr){return prev+curr;},0);var shiftBottom=shift.bottom.reduce(function(prev,curr){return prev+curr;},0);[shift.top,shift.bottom].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to top and bottom
-	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}axis.setShift(shift[position][axis.getLevel()]);},false,true,false);// Applied to left and right
-	graph._applyToAxes(function(axis,position){if(axis.disabled){return;}axis.setMinPx(shiftTop);axis.setMaxPx(graph.getDrawingHeight(true)-shiftBottom);if(axis.floating){return;}// First we need to draw it in order to determine the width to allocate
-	// graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
-	// Let's not draw dependant axes yet
-	var drawn=!axis.linkedToAxis?axis.draw():0;// Get axis position gives the extra shift that is common
-	var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(drawn,shift[position][level]||0);},false,false,true);var shift2=util.extend(true,{},shift);// Applied to left and right
-	graph._applyToAxes(function(axis,position){if(axis.disabled){return;}if(axis.floating){return;}shift2[position][axis.getLevel()]=Math.max(shift[position][axis.getLevel()],axis.equalizePosition(shift[position][axis.getLevel()]));},false,false,true);shift=shift2;var shiftLeft=shift.left.reduce(function(prev,curr){return prev+curr;},0);var shiftRight=shift.right.reduce(function(prev,curr){return prev+curr;},0);[shift.left,shift.right].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to left and right
-	graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}axis.setShift(shift[position][axis.getLevel()]);},false,false,true);// Apply to top and bottom
-	graph._applyToAxes(function(axis,position){if(axis.disabled){return;}axis.setMinPx(shiftLeft);axis.setMaxPx(graph.getDrawingWidth(true)-shiftRight);if(axis.floating){return;}if(!axis.linkedToAxis){axis.draw();}},false,true,false);// Floating axes
-	graph._applyToAxes(function(axis){if(!axis.floating){return;}var floatingAxis=axis.getFloatingAxis();var floatingValue=axis.getFloatingValue();var floatingPx=floatingAxis.getPx(floatingValue);axis.setShift(floatingPx);if(!axis.linkedToAxis){axis.draw();}},false,true,true);_closeLine(graph,'right',graph.getDrawingWidth(true),graph.getDrawingWidth(true),shiftTop,graph.getDrawingHeight(true)-shiftBottom);_closeLine(graph,'left',0,0,shiftTop,graph.getDrawingHeight(true)-shiftBottom);_closeLine(graph,'top',shiftLeft,graph.getDrawingWidth(true)-shiftRight,0,0);_closeLine(graph,'bottom',shiftLeft,graph.getDrawingWidth(true)-shiftRight,graph.getDrawingHeight(true)-shiftBottom,graph.getDrawingHeight(true)-shiftBottom);graph.clipRect.setAttribute('y',shiftTop);graph.clipRect.setAttribute('x',shiftLeft);graph.clipRect.setAttribute('width',graph.getDrawingWidth()-shiftLeft-shiftRight);graph.clipRect.setAttribute('height',graph.getDrawingHeight()-shiftTop-shiftBottom);graph.rectEvent.setAttribute('y',shiftTop+graph.getPaddingTop());graph.rectEvent.setAttribute('x',shiftLeft+graph.getPaddingLeft());graph.drawingSpaceWidth=graph.getDrawingWidth()-shiftLeft-shiftRight;graph.drawingSpaceHeight=graph.getDrawingHeight()-shiftTop-shiftBottom;graph.rectEvent.setAttribute('width',graph.drawingSpaceWidth);graph.rectEvent.setAttribute('height',graph.drawingSpaceHeight);graph.drawingSpaceMinX=shiftLeft+graph.getPaddingLeft();// + "px";
-	graph.drawingSpaceMinY=shiftTop+graph.getPaddingTop();// + "px";
-	graph.drawingSpaceMaxX=graph.getDrawingWidth()-shiftRight+graph.getPaddingLeft();// + "px";
-	graph.drawingSpaceMaxY=graph.getDrawingHeight()-shiftBottom+graph.getPaddingTop();//  + "px";
-	/*
-		graph.shapeZoneRect.setAttribute('x', shift[1]);
-		graph.shapeZoneRect.setAttribute('y', shift[2]);
-		graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-		graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
-	*/graph.shift=shift;graph.redrawShapes();// Not sure this should be automatic here. The user should be clever.
-	}function _handleKey(graph,event,type){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,type,[graph,e]);return;}checkKeyActions(graph,event,[graph,event],type);}// Similar to checkMouseActions
-	function checkKeyActions(graph,e,parameters,methodName){var keyComb=graph.options.keyActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
-	if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);e.preventDefault();e.stopPropagation();return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}e.preventDefault();e.stopPropagation();keyComb[i].callback.apply(graph,parameters);return true;}if(keyComb[i].removeSelectedShape&&graph.isActionAllowed(e,keyComb[i])){e.preventDefault();e.stopPropagation();graph.selectedShapes.map(function(shape){shape.kill();});}/* else if ( keyComb[ i ].series ) {
+	     */
 
-	      var series;
-	      if ( keyComb[ i ].series === 'all' ) {
-	        series = graph.series;
-	      }
+	  }, {
+	    key: 'getDom',
+	    value: function getDom() {
+	      return this.dom;
+	    }
 
-	      if ( !Array.isArray( keyComb[ i ].series ) ) {
-	        series = [  series ];
-	      }
+	    /**
+	     * Returns the unique id representing the graph
+	     * @public
+	     * @return {String} The unique ID of the graph
+	     */
 
-	      if ( keyComb[ i ].options ) {
-	        parameters.push( keyComb[ i ].options );
-	      }
+	  }, {
+	    key: 'getId',
+	    value: function getId() {
+	      return this._creation;
+	    }
 
-	      for ( var j = 0; j < series.length; i++ ) {
-	        graph._serieExecute( series[  i ], methodName, parameters );
+	    /**
+	     * Returns the graph wrapper element passed during the graph creation
+	     * @public
+	     * @return {HTMLElement} The DOM element wrapping the graph
+	     */
+
+	  }, {
+	    key: 'getWrapper',
+	    value: function getWrapper() {
+	      return this.wrapper;
+	    }
+
+	    /**
+	     * Sets an option of the graph
+	     * @param {String} name - Option name
+	     * @param value - New option value
+	     * @returns {Graph} - Graph instance
+	     */
+
+	  }, {
+	    key: 'setOption',
+	    value: function setOption(name, val) {
+	      this.options[name] = val;
+	      return this;
+	    }
+
+	    /**
+	     *  Sets the title of the graph
+	     */
+
+	  }, {
+	    key: 'setTitle',
+	    value: function setTitle(title) {
+	      this.options.title = title;
+	      this.domTitle.textContent = title;
+	    }
+
+	    /**
+	     *  Shows the title of the graph
+	     */
+
+	  }, {
+	    key: 'displayTitle',
+	    value: function displayTitle() {
+	      this.domTitle.setAttribute('display', 'inline');
+	    }
+
+	    /**
+	     *  Hides the title of the graph
+	     */
+
+	  }, {
+	    key: 'hideTitle',
+	    value: function hideTitle() {
+	      this.domTitle.setAttribute('display', 'none');
+	    }
+	  }, {
+	    key: 'hide',
+	    value: function hide() {
+	      if (this.dom.style.display !== "none") {
+	        this.dom.style.display = "none";
 	      }
-	      return true;
-	    }*/}return false;};function doDom(){// Create SVG element, set the NS
-	this.dom=document.createElementNS(Graph.ns,'svg');this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
-	util.setAttributeTo(this.dom,{'xmlns':Graph.ns,'font-family':this.options.fontFamily,'font-size':this.options.fontSize});this.defs=document.createElementNS(Graph.ns,'defs');this.dom.appendChild(this.defs);this.groupEvent=document.createElementNS(Graph.ns,'g');this.rectEvent=document.createElementNS(Graph.ns,'rect');util.setAttributeTo(this.rectEvent,{'pointer-events':'fill','fill':'transparent'});this.groupEvent.appendChild(this.rectEvent);this.dom.appendChild(this.groupEvent);// Handling graph title
-	this.domTitle=document.createElementNS(Graph.ns,'text');this.setTitle(this.options.title);util.setAttributeTo(this.domTitle,{'text-anchor':'middle','y':20});this.groupEvent.appendChild(this.domTitle);//
-	this.graphingZone=document.createElementNS(Graph.ns,'g');this.updateGraphingZone();this.groupEvent.appendChild(this.graphingZone);/*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-	  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-	  this.shapeZoneRect.setAttribute('fill', 'transparent');
-	  this.shapeZone.appendChild(this.shapeZoneRect);
-	*/this.axisGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.axisGroup);this.groupGrids=document.createElementNS(Graph.ns,'g');// With the z stacking, this should probably be removed
-	//this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-	this.groupPrimaryGrids=document.createElementNS(Graph.ns,'g');this.groupSecondaryGrids=document.createElementNS(Graph.ns,'g');this.axisGroup.appendChild(this.groupGrids);this.groupGrids.appendChild(this.groupSecondaryGrids);this.groupGrids.appendChild(this.groupPrimaryGrids);this.plotGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.plotGroup);// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-	/*this.shapeZone = document.createElementNS( this.ns, 'g' );
-	  this.graphingZone.appendChild( this.shapeZone );
-	*/this.layers=[];this._makeClosingLines();this.clip=document.createElementNS(Graph.ns,'clipPath');this.clip.setAttribute('id','_clipplot'+this._creation);this.defs.appendChild(this.clip);this.clipRect=document.createElementNS(Graph.ns,'rect');this.clip.appendChild(this.clipRect);this.clip.setAttribute('clipPathUnits','userSpaceOnUse');this.markerArrow=document.createElementNS(this.ns,'marker');this.markerArrow.setAttribute('viewBox','0 0 10 10');this.markerArrow.setAttribute('id','arrow'+this._creation);this.markerArrow.setAttribute('refX','6');this.markerArrow.setAttribute('refY','5');this.markerArrow.setAttribute('markerUnits','strokeWidth');this.markerArrow.setAttribute('markerWidth','8');this.markerArrow.setAttribute('markerHeight','6');this.markerArrow.setAttribute('orient','auto');//this.markerArrow.setAttribute('fill', 'context-stroke');
-	//this.markerArrow.setAttribute('stroke', 'context-stroke');
-	var pathArrow=document.createElementNS(Graph.ns,'path');pathArrow.setAttribute('d','M 0 0 L 10 5 L 0 10 z');//pathArrow.setAttribute( 'fill', 'context-stroke' );
-	this.markerArrow.appendChild(pathArrow);this.defs.appendChild(this.markerArrow);// Horionzal split marker for axis
-	this.markerHorizontalSplit=document.createElementNS(Graph.ns,'marker');this.markerHorizontalSplit.setAttribute('viewBox','0 0 6 8');this.markerHorizontalSplit.setAttribute('id','horionzalsplit_'+this.getId());this.markerHorizontalSplit.setAttribute('refX','3');this.markerHorizontalSplit.setAttribute('refY','4');this.markerHorizontalSplit.setAttribute('markerUnits','strokeWidth');this.markerHorizontalSplit.setAttribute('markerWidth','6');this.markerHorizontalSplit.setAttribute('markerHeight','8');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','8');path.setAttribute('x2','6');path.setAttribute('y2','0');path.setAttribute('stroke','black');this.markerHorizontalSplit.appendChild(path);this.defs.appendChild(this.markerHorizontalSplit);// Vertical split marker for axis
-	this.markerVerticalSplit=document.createElementNS(Graph.ns,'marker');this.markerVerticalSplit.setAttribute('viewBox','0 0 8 6');this.markerVerticalSplit.setAttribute('id','verticalsplit_'+this.getId());this.markerVerticalSplit.setAttribute('refX','4');this.markerVerticalSplit.setAttribute('refY','3');this.markerVerticalSplit.setAttribute('markerUnits','strokeWidth');this.markerVerticalSplit.setAttribute('markerWidth','8');this.markerVerticalSplit.setAttribute('markerHeight','6');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','0');path.setAttribute('x2','8');path.setAttribute('y2','6');path.setAttribute('stroke','black');this.markerVerticalSplit.appendChild(path);this.defs.appendChild(this.markerVerticalSplit);this.vertLineArrow=document.createElementNS(Graph.ns,'marker');this.vertLineArrow.setAttribute('viewBox','0 0 10 10');this.vertLineArrow.setAttribute('id','verticalline'+this._creation);this.vertLineArrow.setAttribute('refX','0');this.vertLineArrow.setAttribute('refY','5');this.vertLineArrow.setAttribute('markerUnits','strokeWidth');this.vertLineArrow.setAttribute('markerWidth','20');this.vertLineArrow.setAttribute('markerHeight','10');this.vertLineArrow.setAttribute('orient','auto');//this.vertLineArrow.setAttribute('fill', 'context-stroke');
-	//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-	this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.createElementNS(Graph.ns,'path');pathVertLine.setAttribute('d','M 0 -10 L 0 10');pathVertLine.setAttribute('stroke','black');this.vertLineArrow.appendChild(pathVertLine);this.defs.appendChild(this.vertLineArrow);// Removed with z stacking ?
-	//    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-	this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
-	graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
-	var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
-	if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
-	if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
-	var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
-	});graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
-	graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;// Takes care of the tracking line
-	if(graph.options.trackingLine&&graph.options.trackingLine.enable&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(this.trackingObject){if(!index){graph.trackingObject.hide();}else{graph.trackingObject.show();graph.trackingObject.getPosition(0).x=index.xClosest;graph.trackingObject.getPosition(1).x=index.xClosest;graph.trackingObject.redraw();var x=snapToSerie.getXAxis().getPx(index.xClosest)+graph.options.paddingLeft;}}var series=graph.options.trackingLine.series;// Gets a default value
-	if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,index.xClosest);}}}// End takes care of the tracking line
-	if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l,executed=false;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
-	if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-	graph._pluginExecute(keyComb[i].plugin,methodName,parameters);executed=true;continue;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);executed=true;continue;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}executed=true;continue;}}return executed;};var _trackingLegendSerie=function _trackingLegendSerie(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(function(serie){var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
-	if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",function(){graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;if(graph.options.trackingLine.serieShape.magnet){var magnetOptions=graph.options.trackingLine.serieShape.magnet,val=magnetOptions.within,minmaxpos=void 0;if(magnetOptions.withinPx){val=serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);}if(minmaxpos=serie.serie.findLocalMinMax(index.xClosest,val,magnetOptions.mode)){serie.serie.trackingShape.getPosition(0).x=minmaxpos;}}serie.serie.trackingShape.redraw();}});// End map
-	if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
-	}return legend;};var forceTrackingLegendMode=function forceTrackingLegendMode(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
-	//	var _y = y - graph.options.paddingTop;
-	var pref=graph.options.dblclick;checkMouseActions(graph,e,[x,y,e],'onDblClick');/*
-	      if ( !pref ||  !pref.type ) {
+	    }
+	  }, {
+	    key: 'show',
+	    value: function show() {
+	      if (this.dom.style.display == "none") {
+	        this.dom.style.display = "initial";
+	      }
+	    }
+
+	    /**
+	     * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
+	     * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
+	     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
+	     * @return {Boolean} if the redraw has been successful
+	     */
+
+	  }, {
+	    key: 'redraw',
+	    value: function redraw(onlyIfAxesHaveChanged) {
+
+	      if (!this.width || !this.height) {
 	        return;
 	      }
 
-	      switch ( pref.type ) {
+	      if (!this.sizeSet) {
+	        this._resize();
+	        this.executeRedrawSlaves();
+	        return true;
+	      } else {
 
-	        case 'plugin':
+	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
+	          this.executeRedrawSlaves();
+	          refreshDrawingZone(this);
+	          return true;
+	        }
+	      }
 
-	          var plugin;
+	      this.executeRedrawSlaves(true);
+	      return false;
+	    }
+	  }, {
+	    key: 'executeRedrawSlaves',
+	    value: function executeRedrawSlaves(noLegend) {
+	      this._pluginsExecute("preDraw");
+	    }
 
-	          if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+	    /**
+	     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
+	     */
 
-	            plugin.onDblClick( graph, x, y, pref.options, e );
+	  }, {
+	    key: 'draw',
+	    value: function draw(force) {
+
+	      this.drawn = true;
+	      this.updateLegend(true);
+	      this.drawSeries(this.redraw(true && !force));
+	    }
+
+	    /**
+	     *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+
+	  }, {
+	    key: 'delayUpdate',
+	    value: function delayUpdate() {
+	      this._lockUpdate = true;
+	      return this;
+	    }
+
+	    /**
+	     *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#resumeUpdate}
+	     *  @since 1.16.19
+	     */
+
+	  }, {
+	    key: 'doUpdate',
+	    value: function doUpdate() {
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      this.draw();
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	      return this;
+	    }
+
+	    /**
+	     *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+	     *  @memberof Graph
+	     *  @return {Graph} The current graph instance
+	     *  @see {@link Graph#delayUpdate}
+	     *  @see {@link Graph#doUpdate}
+	     *  @since 1.16.19
+	     */
+
+	  }, {
+	    key: 'resumeUpdate',
+	    value: function resumeUpdate() {
+	      this._lockUpdate = false;
+	      return this;
+	    }
+	  }, {
+	    key: 'isDelayedUpdate',
+	    value: function isDelayedUpdate() {
+	      return this._lockUpdate;
+	    }
+
+	    /**
+	     * Sets the total width of the graph
+	     * @param {Number} width - The new width of the graph
+	     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+	     * @see Graph#setHeight
+	     * @see Graph#resize
+	     */
+
+	  }, {
+	    key: 'setWidth',
+	    value: function setWidth(width, skipResize) {
+	      this.width = width;
+	      if (!skipResize) {
+	        this._resize();
+	      }
+	    }
+
+	    /**
+	     * Sets the total height of the graph
+	     * @param {Number} height - The new height of the graph
+	     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+	     * @see Graph#setWidth
+	     * @see Graph#resize
+	     */
+
+	  }, {
+	    key: 'setHeight',
+	    value: function setHeight(height, skipResize) {
+	      this.height = height;
+	      if (!skipResize) {
+	        this._resize();
+	      }
+	    }
+
+	    /**
+	     * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
+	     * @param {Number} [ width ] - The new width of the graph
+	     * @param {Number} [ height ] - The new height of the graph
+	     * @see Graph#setWidth
+	     * @see Graph#setHeight
+	     * @return {Graph} The current graph
+	     */
+
+	  }, {
+	    key: 'resize',
+	    value: function resize(w, h) {
+	      if (w && h) {
+	        this.setSize(w, h);
+	      }
+
+	      this._resize();
+	      return this;
+	    }
+
+	    /**
+	     * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
+	     * @param {Number} [ width ] - The new width of the graph
+	     * @param {Number} [ height ] - The new height of the graph
+	     * @see Graph#setWidth
+	     * @see Graph#setHeight
+	     * @see Graph#resize
+	     */
+
+	  }, {
+	    key: 'setSize',
+	    value: function setSize(w, h) {
+	      this.setWidth(w, true);
+	      this.setHeight(h, true);
+	      this.getDrawingHeight();
+	      this.getDrawingWidth();
+	    }
+
+	    /**
+	     * Returns the width of the graph (set by setSize, setWidth or resize methods)
+	     * @return {Number} Width of the graph
+	     */
+
+	  }, {
+	    key: 'getWidth',
+	    value: function getWidth() {
+	      return this.width;
+	    }
+
+	    /**
+	     * Returns the height of the graph (set by setSize, setHeight or resize methods)
+	     * @return {Number} Height of the graph
+	     */
+
+	  }, {
+	    key: 'getHeight',
+	    value: function getHeight() {
+	      return this.height;
+	    }
+
+	    /**
+	     * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
+	     * @return {Number} paddingTop
+	     */
+
+	  }, {
+	    key: 'getPaddingTop',
+	    value: function getPaddingTop() {
+	      return this.options.paddingTop;
+	    }
+
+	    /**
+	     * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
+	     * @return {Number} paddingTop
+	     */
+
+	  }, {
+	    key: 'getPaddingLeft',
+	    value: function getPaddingLeft() {
+	      return this.options.paddingLeft;
+	    }
+
+	    /**
+	     * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
+	     * @return {Number} paddingTop
+	     */
+
+	  }, {
+	    key: 'getPaddingBottom',
+	    value: function getPaddingBottom() {
+	      return this.options.paddingBottom;
+	    }
+
+	    /**
+	     * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
+	     * @return {Number} paddingRight
+	     */
+
+	  }, {
+	    key: 'getPaddingRight',
+	    value: function getPaddingRight() {
+	      return this.options.paddingRight;
+	    }
+
+	    /**
+	     * Returns the height of the drawable zone, including the space used by the axes
+	     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+	     * @returns {Number} Height of the graph
+	     */
+
+	  }, {
+	    key: 'getDrawingHeight',
+	    value: function getDrawingHeight(useCache) {
+	      if (useCache && this.innerHeight) {
+	        return this.innerHeight;
+	      }
+	      return this.innerHeight = this.height - this.options.paddingTop - this.options.paddingBottom;
+	    }
+
+	    /**
+	     * Returns the width of the drawable zone, including the space used by the axes
+	     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+	     * @returns {Number} Width of the graph
+	     */
+
+	  }, {
+	    key: 'getDrawingWidth',
+	    value: function getDrawingWidth(useCache) {
+	      if (useCache && this.innerWidth) {
+	        return this.innerWidth;
+	      }
+	      return this.innerWidth = this.width - this.options.paddingLeft - this.options.paddingRight;
+	    }
+
+	    /**
+	     * Caches the wrapper offset in the page.<br />
+	     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
+	     * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
+	     * @see Graph#uncacheOffset
+	     */
+
+	  }, {
+	    key: 'cacheOffset',
+	    value: function cacheOffset() {
+	      this.offsetCached = util.getOffset(this.wrapper);
+	    }
+
+	    /**
+	     * Un-caches the wrapper offset value
+	     * @see Graph#cacheOffset
+	     */
+
+	  }, {
+	    key: 'uncacheOffset',
+	    value: function uncacheOffset() {
+	      this.offsetCached = false;
+	    }
+
+	    /**
+	     * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+	     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getXAxis',
+	    value: function getXAxis(index, options) {
+	      if (this.axis.top.length > 0 && this.axis.bottom.length == 0) {
+	        return this.getTopAxis(index, options);
+	      }
+
+	      return this.getBottomAxis(index, options);
+	    }
+
+	    /**
+	     * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+	     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getYAxis',
+	    value: function getYAxis(index, options) {
+
+	      if (this.axis.right.length > 0 && this.axis.left.length == 0) {
+	        return this.getRightAxis(index, options);
+	      }
+
+	      return this.getLeftAxis(index, options);
+	    }
+
+	    /**
+	     * Returns the top axis at a certain index. Creates it if non-existant
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getTopAxis',
+	    value: function getTopAxis(index, options) {
+	      return _getAxis(this, index, options, 'top');
+	    }
+
+	    /**
+	     * Returns the bottom axis at a certain index. Creates it if non-existant
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getBottomAxis',
+	    value: function getBottomAxis(index, options) {
+	      return _getAxis(this, index, options, 'bottom');
+	    }
+
+	    /**
+	     * Returns the left axis at a certain index. Creates it if non-existant
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getLeftAxis',
+	    value: function getLeftAxis(index, options) {
+	      return _getAxis(this, index, options, 'left');
+	    }
+
+	    /**
+	     * Returns the right axis at a certain index. Creates it if non-existant
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+	     */
+
+	  }, {
+	    key: 'getRightAxis',
+	    value: function getRightAxis(index, options) {
+	      return _getAxis(this, index, options, 'right');
+	    }
+
+	    /**
+	     * Sets a bottom axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     */
+
+	  }, {
+	    key: 'setXAxis',
+	    value: function setXAxis(axis, index) {
+	      this.setBottomAxis(axis, index);
+	    }
+
+	    /**
+	     * Sets a left axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     */
+
+	  }, {
+	    key: 'setYAxis',
+	    value: function setYAxis(axis, index) {
+	      this.setLeftAxis(axis, index);
+	    }
+
+	    /**
+	     * Sets a left axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @see Graph#setBottomAxis
+	     * @see Graph#setTopAxis
+	     * @see Graph#setRightAxis
+	     * @see Graph#getLeftAxis
+	     * @see Graph#getYAxis
+	     */
+
+	  }, {
+	    key: 'setLeftAxis',
+	    value: function setLeftAxis(axis, index) {
+	      index = index || 0;
+
+	      if (this.axis.left[index]) {
+	        this.axis.left[index].kill();
+	      }
+	      this.axis.left[index] = axis;
+	    }
+
+	    /**
+	     * Sets a right axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @see Graph#setBottomAxis
+	     * @see Graph#setLeftAxis
+	     * @see Graph#setTopAxis
+	     * @see Graph#getRightAxis
+	     * @see Graph#getYAxis
+	     */
+
+	  }, {
+	    key: 'setRightAxis',
+	    value: function setRightAxis(axis, index) {
+	      index = index || 0;
+
+	      if (this.axis.right[index]) {
+	        this.axis.right[index].kill();
+	      }
+	      this.axis.right[index] = axis;
+	    }
+
+	    /**
+	     * Sets a top axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @see Graph#setBottomAxis
+	     * @see Graph#setLeftAxis
+	     * @see Graph#setRightAxis
+	     * @see Graph#getBottomAxis
+	     * @see Graph#getXAxis
+	     */
+
+	  }, {
+	    key: 'setTopAxis',
+	    value: function setTopAxis(axis, index) {
+	      index = index || 0;
+
+	      if (this.axis.top[index]) {
+	        this.axis.top[index].kill();
+	      }
+	      this.axis.top[index] = axis;
+	    }
+
+	    /**
+	     * Sets a bottom axis
+	     * @param {Axis} axis - The axis instance to set
+	     * @param {Number} [ index=0 ] - The index of the axis
+	     * @see Graph#setTopAxis
+	     * @see Graph#setLeftAxis
+	     * @see Graph#setRightAxis
+	     * @see Graph#getTopAxis
+	     * @see Graph#getXAxis
+	     */
+
+	  }, {
+	    key: 'setBottomAxis',
+	    value: function setBottomAxis(axis, index) {
+	      index = index || 0;
+
+	      if (this.axis.bottom[index]) {
+	        this.axis.bottom[index].kill();
+	      }
+	      this.axis.bottom[index] = axis;
+	    }
+	  }, {
+	    key: 'killAxis',
+	    value: function killAxis(axis) {
+	      var noRedraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+	      var noSerieKill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+
+	      var index;
+
+	      if (axis.isX()) {
+
+	        if ((index = this.axis.bottom.indexOf(axis)) > -1) {
+	          this.axis.bottom.splice(index, 1);
+	        }
+
+	        if ((index = this.axis.top.indexOf(axis)) > -1) {
+	          this.axis.top.splice(index, 1);
+	        }
+
+	        if (!noSerieKill) {
+	          this.series.map(function (serie) {
+
+	            if (serie.getXAxis() == axis) {
+	              serie.kill();
+	            }
+	          });
+	        }
+	      }
+
+	      if (axis.isY()) {
+
+	        if ((index = this.axis.left.indexOf(axis)) > -1) {
+	          this.axis.left.splice(index, 1);
+	        }
+
+	        if ((index = this.axis.right.indexOf(axis)) > -1) {
+	          this.axis.right.splice(index, 1);
+	        }
+
+	        if (!noSerieKill) {
+	          this.series.map(function (serie) {
+
+	            if (serie.getYAxis() == axis) {
+	              serie.kill();
+	            }
+	          });
+	        }
+	      }
+
+	      this.axisGroup.removeChild(axis.group); // Removes all DOM
+	      this.groupPrimaryGrids.removeChild(axis.gridPrimary);
+	      this.groupSecondaryGrids.removeChild(axis.gridSecondary);
+
+	      if (!noRedraw) {
+	        this.draw(true);
+	      }
+	    }
+
+	    /**
+	     * Determines if an x axis belongs to the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasXAxis',
+	    value: function hasXAxis(axis) {
+	      return this.hasTopAxis(axis) || this.hasBottomAxis(axis);
+	    }
+
+	    /**
+	     * Determines if an x axis belongs to the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasYAxis',
+	    value: function hasYAxis(axis) {
+	      return this.hasLeftAxis(axis) || this.hasRightAxis(axis);
+	    }
+
+	    /**
+	     * Determines if an x axis belongs to top axes list of the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasTopAxis',
+	    value: function hasTopAxis(axis) {
+	      return this.hasAxis(axis, this.axis.top);
+	    }
+
+	    /**
+	     * Determines if an x axis belongs to bottom axes list of the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasBottomAxis',
+	    value: function hasBottomAxis(axis) {
+	      return this.hasAxis(axis, this.axis.bottom);
+	    }
+
+	    /**
+	     * Determines if a y axis belongs to left axes list of the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasLeftAxis',
+	    value: function hasLeftAxis(axis) {
+	      return this.hasAxis(axis, this.axis.left);
+	    }
+
+	    /**
+	     * Determines if a y axis belongs to right axes list of the graph
+	     * @param {Axis} axis - The axis instance to check
+	     */
+
+	  }, {
+	    key: 'hasRightAxis',
+	    value: function hasRightAxis(axis) {
+	      return this.hasAxis(axis, this.axis.right);
+	    }
+
+	    /**
+	     * Determines if an axis belongs to a list of axes
+	     * @param {Axis} axis - The axis instance to check
+	     * @param {Array} axisList - The list of axes to check
+	     * @private
+	     */
+
+	  }, {
+	    key: 'hasAxis',
+	    value: function hasAxis(axis, axisList) {
+	      for (var i = 0, l = axisList.length; i < l; i++) {
+	        if (axisList[i] == axis) {
+	          return true;
+	        }
+
+	        if (axisList[i].hasAxis(axis)) {
+	          return true;
+	        }
+	      }
+
+	      return false;
+	    }
+
+	    /**
+	     * Autoscales the x and y axes of the graph.
+	     * Does not repaint the canvas
+	     * @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'autoscaleAxes',
+	    value: function autoscaleAxes() {
+
+	      this._applyToAxes("setMinMaxToFitSeries", null, true, true);
+
+	      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+	      // X is not always ascending...
+	      return this;
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoscale',
+	    value: function autoscale() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoScale',
+	    value: function autoScale() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  @alias Graph#autoscaleAxes
+	     */
+
+	  }, {
+	    key: 'autoScaleAxes',
+	    value: function autoScaleAxes() {
+	      return this.autoscaleAxes.apply(this, arguments);
+	    }
+
+	    // See #138
+	    /**
+	     *  Autoscales a particular axis
+	     *  @param {Axis} The axis to rescale
+	     *  @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'autoScaleAxis',
+	    value: function autoScaleAxis(axis) {
+	      if (!axis) {
+	        return this;
+	      }
+
+	      axis.setMinMaxToFitSeries();
+	      return this;
+	    }
+
+	    /**
+	     * Sets the background color
+	     * @param {String} color - An SVG accepted color for the background
+	     * @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'setBackgroundColor',
+	    value: function setBackgroundColor(color) {
+
+	      this.rectEvent.setAttribute('fill', color);
+	      return this;
+	    }
+	  }, {
+	    key: 'getAxisState',
+	    value: function getAxisState() {
+
+	      var state = {};
+	      for (var i in this.axis) {
+	        state[i] = this.axis[i].map(function (axis) {
+	          return [axis.getCurrentMin(), axis.getCurrentMax()];
+	        });
+	      }
+	      return state;
+	    }
+	  }, {
+	    key: 'setAxisState',
+	    value: function setAxisState(state) {
+
+	      var j, l;
+	      for (var i in state) {
+
+	        if (!this.axis[i]) {
+	          continue;
+	        }
+
+	        for (j = 0, l = state[i].length; j < l; j++) {
+
+	          if (!this.axis[i][j]) {
+	            continue;
 	          }
 
+	          this.axis[i][j].setCurrentMin(state[i][j][0]);
+	          this.axis[i][j].setCurrentMax(state[i][j][1]);
+	        }
+	      }
+
+	      this.draw();
+	    }
+	  }, {
+	    key: 'saveAxisState',
+	    value: function saveAxisState(savedName) {
+	      this.savedAxisState = this.savedAxisState || {};
+	      this.savedAxisState[savedName] = this.getAxisState();
+	      return this;
+	    }
+	  }, {
+	    key: 'recallAxisState',
+	    value: function recallAxisState(stateName) {
+	      if (this.savedAxisState[savedName]) {
+	        this.recallAxisState(this.savedAxisState[savedName]);
+	      }
+	      return this;
+	    }
+	  }, {
+	    key: '_applyToAxis',
+	    value: function _applyToAxis(type) {
+
+	      switch (type) {
+
+	        case 'string':
+	          return function (type, func, params) {
+	            //    params.splice(1, 0, type);
+
+	            for (var i = 0; i < this.axis[type].length; i++) {
+	              this.axis[type][i][func].apply(this.axis[type][i], params);
+	            }
+	          };
 	          break;
-	      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
-	checkMouseActions(graph,e,[x,y,e],'onClick');if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if((typeof num==='undefined'?'undefined':_typeof(num))=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
-	Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();Graph.ns='http://www.w3.org/2000/svg';Graph.nsxlink="http://www.w3.org/1999/xlink";exports.default=Graph;
+
+	        case 'function':
+	          return function (type, func, params) {
+	            for (var i = 0; i < this.axis[type].length; i++) {
+	              func.call(this, this.axis[type][i], type, params);
+	            }
+	          };
+	          break;
+	      }
+	    }
+
+	    /**
+	     * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
+	     */
+
+	  }, {
+	    key: 'getBoundaryAxis',
+	    value: function getBoundaryAxis(axis, minmax, usingZValues) {
+
+	      var valSeries = this.getBoundaryAxisFromSeries(axis, minmax, usingZValues);
+	      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+	      return valSeries;
+	      //return Math[ minmax ]( valSeries, valShapes );
+	    }
+
+	    /**
+	     * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
+	     * @memberof Graph.prototype
+	     * @param {Axis} axis - The axis for which the value should be computed
+	     * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
+	     * @returns {Number} The minimimum or maximum of the axis based on its series
+	     */
+
+	  }, {
+	    key: 'getBoundaryAxisFromSeries',
+	    value: function getBoundaryAxisFromSeries(axis, minmax, usingZValues) {
+
+	      var min = minmax == 'min',
+	          val,
+	          func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
+	          func2use = func[min ? 0 : 1],
+	          infinity2use = min ? +Infinity : -Infinity,
+	          currentSerie,
+	          serie,
+	          series,
+	          serieValue,
+	          i,
+	          l;
+
+	      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+	      series = this.getSeriesFromAxis(axis, true);
+
+	      for (i = 0, l = series.length; i < l; i++) {
+
+	        serie = series[i];
+
+	        if (!serie.isShown()) {
+	          continue;
+	        }
+
+	        serieValue = serie[func2use](usingZValues);
+	        val = Math[minmax](isNaN(val) ? infinity2use : val, isNaN(serieValue) ? infinity2use : serieValue);
+	      }
+
+	      return val;
+	    }
+
+	    /**
+	     *  Returns all the series associated to an axis
+	     *  @param {Axis} axis - The axis to which the series belong
+	     *  @returns {Serie[]} An array containing the list of series that belong to the axis
+	     */
+
+	  }, {
+	    key: 'getSeriesFromAxis',
+	    value: function getSeriesFromAxis(axis) {
+	      var series = [],
+	          i = this.series.length - 1;
+	      for (; i >= 0; i--) {
+	        if (this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis) {
+	          series.push(this.series[i]);
+	        }
+	      }
+
+	      return series;
+	    }
+
+	    /**
+	     * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
+	     * @see Graph#getBoundaryAxis
+	     */
+
+	  }, {
+	    key: 'updateDataMinMaxAxes',
+	    value: function updateDataMinMaxAxes(usingZValues) {
+
+	      var axisvars = ['bottom', 'top', 'left', 'right'],
+	          axis,
+	          j,
+	          l,
+	          i,
+	          xy;
+
+	      for (j = 0, l = axisvars.length; j < l; j++) {
+
+	        for (i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
+
+	          axis = this.axis[axisvars[j]][i];
+	          xy = j < 2 ? 'x' : 'y';
+
+	          if (axis.disabled) {
+	            continue;
+	          }
+
+	          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
+	          axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues));
+	          axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues));
+	        }
+	      }
+	    }
+
+	    /**
+	     * Function that is called from {@link Graph#_applyToAxes}
+	     * @function
+	     * @name AxisCallbackFunction
+	     * @param {Axis} axis - The axis of the function
+	     * @param {String} type - The type of the axis (left,right,top,bottom)
+	     * @param params - The params passed in the _applyToAxis function.
+	     * @see Graph#_applyToAxes
+	     */
+
+	    /**
+	     * Applies a function to axes. The function will be executed once for every axis.
+	     * If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
+	     * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
+	     * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
+	     * @param params - Extra parameters to pass to the function
+	     * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
+	     * @param {Boolean} leftright=false - True to apply to function to left and right axes
+	     */
+
+	  }, {
+	    key: '_applyToAxes',
+	    value: function _applyToAxes(func, params, tb, lr) {
+
+	      var ax = [],
+	          i = 0,
+	          l;
+
+	      if (tb || tb == undefined) {
+	        ax.push('top');
+	        ax.push('bottom');
+	      }
+	      if (lr || lr == undefined) {
+	        ax.push('left');
+	        ax.push('right');
+	      }
+
+	      for (l = ax.length; i < l; i++) {
+	        this._applyToAxis(typeof func === 'undefined' ? 'undefined' : _typeof(func)).call(this, ax[i], func, params);
+	      }
+	    }
+
+	    /**
+	     * Axes can be dependant of one another (for instance for unit conversions)
+	     * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
+	     * @param {Axis} axis - The axis that links one or multiple other dependant axes
+	     * @returns {Axis[]} The list of axes linked to the axis passed as parameter
+	     */
+
+	  }, {
+	    key: 'findAxesLinkedTo',
+	    value: function findAxesLinkedTo(axis) {
+
+	      var axes = [];
+	      this._applyToAxes(function (a) {
+
+	        if (a.linkedToAxis && a.linkedToAxis.axis == axis) {
+	          axes.push(a);
+	        }
+	      }, {}, axis instanceof this.getConstructor("graph.axis.x"), axis instanceof this.getConstructor("graph.axis.y"));
+
+	      return axes;
+	    }
+	  }, {
+	    key: '_axisHasChanged',
+	    value: function _axisHasChanged(axis) {
+	      this._axesHaveChanged = true;
+	    }
+
+	    /**
+	     * Creates a new serie.
+	     * If the a serie with the same name exists, returns this serie with update options.
+	     * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
+	     * Built-in series types are "line", "contour", "zone" and "scatter".
+	     * @param {String} name - The name of the serie (unique)
+	     * @param {Object} options - The serie options
+	     * @param {Type} type - The type of the serie.
+	     * @returns {Serie} The newly created serie
+	     */
+
+	  }, {
+	    key: 'newSerie',
+	    value: function newSerie(name, options, type) {
+
+	      var serie = void 0;
+
+	      if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== "object" && !type) {
+	        type = options;
+	        options = {};
+	      }
+
+	      if (!type) {
+	        type = Graph.SERIE_LINE;
+	      }
+
+	      if (serie = this.getSerie(name)) {
+	        return serie;
+	      }
+
+	      if (!(serie = makeSerie(this, name, options, type))) {
+	        return;
+	      }
+
+	      this.series.push(serie);
+	      this.emit("newSerie", serie);
+	      return serie;
+	    }
+
+	    /**
+	     * Looks for an existing serie by name or by index and returns it.
+	     * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
+	     * @param {(String|Number)} name - The name or the index of the serie
+	     * @returns {Serie}
+	     */
+
+	  }, {
+	    key: 'getSerie',
+	    value: function getSerie(name) {
+
+	      if (typeof name == 'number') {
+	        return this.series[name] || false;
+	      }
+
+	      if (typeof name == 'function') {
+	        name = name();
+	      }
+
+	      var i = 0,
+	          l = this.series.length;
+
+	      for (; i < l; i++) {
+
+	        if (this.series[i].getName() == name || this.series[i] == name) {
+
+	          return this.series[i];
+	        }
+	      }
+
+	      return false;
+	    }
+
+	    /**
+	     * Returns all the series
+	     * @returns {Serie[]} An array of all the series
+	     */
+
+	  }, {
+	    key: 'getSeries',
+	    value: function getSeries() {
+	      return this.series;
+	    }
+
+	    /**
+	     * Returns all the series that correspond to one or multiple types
+	     * @param {...Symbol} type - The serie types to select
+	     * @returns {Serie[]} An array of all the series
+	     * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
+	     */
+
+	  }, {
+	    key: 'allSeries',
+	    value: function allSeries() {
+	      for (var _len = arguments.length, types = Array(_len), _key = 0; _key < _len; _key++) {
+	        types[_key] = arguments[_key];
+	      }
+
+	      return this.series.filter(function (serie) {
+	        return types.include(serie.getType());
+	      });
+	    }
+
+	    /**
+	     * Draws a specific serie
+	     * @param {Serie} serie - The serie to redraw
+	     * @param {Boolean} force - Forces redraw even if no data has changed
+	     */
+
+	  }, {
+	    key: 'drawSerie',
+	    value: function drawSerie(serie, force) {
+
+	      if (!serie.draw) {
+	        throw "Serie has no method draw";
+	      }
+
+	      serie.draw(force);
+	    }
+
+	    /**
+	     * Redraws all visible series
+	     * @param {Boolean} force - Forces redraw even if no data has changed
+	     */
+
+	  }, {
+	    key: 'drawSeries',
+	    value: function drawSeries(force) {
+
+	      if (!this.width || !this.height) {
+	        return;
+	      }
+
+	      var i = this.series.length - 1;
+	      for (; i >= 0; i--) {
+	        if (this.series[i].isShown()) {
+	          this.drawSerie(this.series[i], force);
+	        }
+	      }
+	    }
+
+	    /**
+	     * @alias Graph#removeSeries
+	     */
+
+	  }, {
+	    key: 'resetSeries',
+	    value: function resetSeries() {
+	      this.removeSeries();
+	    }
+
+	    /**
+	     * @alias Graph#removeSeries
+	     */
+
+	  }, {
+	    key: 'killSeries',
+	    value: function killSeries() {
+	      this.resetSeries();
+	    }
+
+	    /**
+	     * Removes all series from the graph
+	     */
+
+	  }, {
+	    key: 'removeSeries',
+	    value: function removeSeries() {
+	      while (this.series[0]) {
+	        this.series[0].kill(true);
+	      }
+	      this.series = [];
+
+	      if (this.legend) {
+	        this.legend.update();
+	      }
+	    }
+
+	    /**
+	     * Selects a serie. Only one serie per graph can be selected.
+	     * @param {Serie} serie - The serie to select
+	     * @param {String} selectName="selected" - The name of the selection
+	     */
+
+	  }, {
+	    key: 'selectSerie',
+	    value: function selectSerie(serie, selectName) {
+
+	      if (!((typeof serie === 'undefined' ? 'undefined' : _typeof(serie)) == "object")) {
+	        serie = this.getSerie(serie);
+	      }
+
+	      if (this.selectedSerie == serie && this.selectedSerie.selectionType == selectName) {
+	        return;
+	      }
+
+	      if (this.selectedSerie !== serie && this.selectedSerie) {
+	        this.unselectSerie(this.selectedSerie);
+	      }
+
+	      this.selectedSerie = serie;
+	      this.triggerEvent('onSelectSerie', serie);
+
+	      serie.select(selectName || "selected");
+	    }
+
+	    /**
+	     * Returns the selected serie
+	     * @returns {(Serie|undefined)} The selected serie
+	     */
+
+	  }, {
+	    key: 'getSelectedSerie',
+	    value: function getSelectedSerie() {
+	      return this.selectedSerie;
+	    }
+
+	    /**
+	     * Unselects a serie
+	     * @param {Serie} serie - The serie to unselect
+	     */
+
+	  }, {
+	    key: 'unselectSerie',
+	    value: function unselectSerie(serie) {
+
+	      if (!serie.unselect) {
+	        return;
+	      }
+
+	      serie.unselect();
+	      this.selectedSerie = false;
+	      this.triggerEvent('onUnselectSerie', serie);
+	    }
+
+	    /**
+	     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
+	     * @param {Serie} serie - The serie containing the shapes
+	     * @returns {Shape[]} An array containing a list of shapes associated to the serie
+	     */
+
+	  }, {
+	    key: 'getShapesOfSerie',
+	    value: function getShapesOfSerie(serie) {
+
+	      var shapes = [];
+	      var i = this.shapes.length - 1;
+
+	      for (; i >= 0; i--) {
+
+	        if (this.shapes[i].getSerie() == serie) {
+	          shapes.push(this.shapes[i]);
+	        }
+	      }
+
+	      return shapes;
+	    }
+	  }, {
+	    key: 'makeToolbar',
+	    value: function makeToolbar(toolbarData) {
+
+	      var constructor = this.getConstructor("graph.toolbar");
+	      if (constructor) {
+	        return this.toolbar = new constructor(this, toolbarData);
+	      } else {
+	        return util.throwError("No constructor exists for toolbar");
+	      }
+	    }
+
+	    /**
+	     *  Returns all shapes from the graph
+	     */
+
+	  }, {
+	    key: 'getShapes',
+	    value: function getShapes() {
+	      return this.shapes || [];
+	    }
+
+	    /**
+	     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
+	     * @param {String} shapeType - The type of the shape
+	     * @param {Object} [shapeData] - The options passed to the shape creator
+	     * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+	     * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
+	     * @returns {Shape} The created shape
+	     * @see Graph#getConstructor
+	     */
+
+	  }, {
+	    key: 'newShape',
+	    value: function newShape(shapeType, shapeData, mute, shapeProperties) {
+
+	      var self = this,
+	          response;
+
+	      this.prevent(false);
+
+	      if (!mute) {
+
+	        this.emit('beforeNewShape', shapeData);
+
+	        if (this.prevent(false)) {
+	          return false;
+	        }
+	      }
+
+	      // Backward compatibility
+	      if ((typeof shapeType === 'undefined' ? 'undefined' : _typeof(shapeType)) == "object") {
+	        mute = shapeData;
+	        shapeData = shapeType;
+	        shapeType = shapeData.type;
+	      }
+
+	      shapeData = shapeData || {};
+	      shapeData._id = util.guid();
+
+	      var constructor;
+	      if (typeof shapeType == "function") {
+	        constructor = shapeType;
+	      } else {
+	        constructor = this.getConstructor("graph.shape." + shapeType);
+	      }
+
+	      if (!constructor) {
+	        return util.throwError("No constructor for this shape");
+	      }
+
+	      var shape = new constructor(this, shapeData);
+
+	      if (!shape) {
+	        return util.throwError("Failed to construct shape.");
+	      }
+
+	      shape.type = shapeType;
+	      shape.graph = this;
+	      shape._data = shapeData;
+
+	      if (shapeData.properties !== undefined) {
+	        shape.setProperties(shapeData.properties);
+	      }
+
+	      shape.init(this, shapeProperties);
+
+	      if (shapeData.position) {
+
+	        for (var i = 0, l = shapeData.position.length; i < l; i++) {
+	          shape.setPosition(new _graph2.default(shapeData.position[i]), i);
+	        }
+	      }
+
+	      /* Setting shape properties */
+	      if (shapeData.fillColor !== undefined) {
+	        shape.setFillColor(shapeData.fillColor);
+	      }
+
+	      if (shapeData.fillOpacity !== undefined) {
+	        shape.setFillOpacity(shapeData.fillOpacity);
+	      }
+
+	      if (shapeData.strokeColor !== undefined) {
+	        shape.setStrokeColor(shapeData.strokeColor);
+	      }
+
+	      if (shapeData.strokeWidth !== undefined) {
+	        shape.setStrokeWidth(shapeData.strokeWidth);
+	      }
+
+	      if (shapeData.layer !== undefined) {
+	        shape.setLayer(shapeData.layer);
+	      }
+
+	      if (shapeData.locked == true) {
+	        shape.lock();
+	      }
+
+	      if (shapeData.movable == true) {
+	        shape.movable();
+	      }
+
+	      if (shapeData.selectable == true) {
+	        shape.selectable();
+	      }
+
+	      if (shapeData.resizable == true) {
+	        shape.resizable();
+	      }
+
+	      if (shapeData.attributes !== undefined) {
+	        shape.setProp("attributes", shapeData.attributes);
+	      }
+
+	      if (shapeData.handles !== undefined) {
+	        shape.setProp('handles', shapeData.handles);
+	      }
+
+	      if (shapeData.selectOnMouseDown !== undefined) {
+	        shape.setProp("selectOnMouseDown", true);
+	      }
+
+	      if (shapeData.selectOnClick !== undefined) {
+	        shape.setProp("selectOnClick", true);
+	      }
+
+	      if (shapeData.highlightOnMouseOver !== undefined) {
+	        shape.setProp("highlightOnMouseOver", true);
+	      }
+
+	      if (shapeData.labelEditable) {
+	        shape.setProp("labelEditable", shapeData.labelEditable);
+	      }
+
+	      if (shapeData.labels && !shapeData.label) {
+	        shapeData.label = shapeData.labels;
+	      }
+
+	      if (shapeData.label !== undefined) {
+
+	        if (!Array.isArray(shapeData.label)) {
+	          shapeData.label = [shapeData.label];
+	        }
+
+	        for (var i = 0, l = shapeData.label.length; i < l; i++) {
+
+	          shape.showLabel(i);
+	          shape.setLabelText(shapeData.label[i].text, i);
+	          shape.setLabelPosition(shapeData.label[i].position, i);
+	          shape.setLabelColor(shapeData.label[i].color || 'black', i);
+	          shape.setLabelSize(shapeData.label[i].size, i);
+	          shape.setLabelAngle(shapeData.label[i].angle || 0, i);
+	          shape.setLabelBaseline(shapeData.label[i].baseline || 'no-change', i);
+	          shape.setLabelAnchor(shapeData.label[i].anchor || 'start', i);
+	          shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor || 'transparent', i);
+	          shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity || 1, i);
+	        }
+	      }
+
+	      if (shapeData.serie) {
+	        shape.setSerie(this.getSerie(shapeData.serie));
+	      }
+	      shape.createHandles();
+
+	      this.shapes.push(shape);
+
+	      if (!mute) {
+	        this.emit('newShape', shape, shapeData);
+	      }
+
+	      return shape;
+	    }
+
+	    /**
+	     * Creates a new position. Arguments are passed to the position constructor
+	     * @param {...*} var_args
+	     * @see Position
+	     */
+
+	  }, {
+	    key: 'newPosition',
+	    value: function newPosition(var_args) {
+
+	      return new (Function.prototype.bind.apply(_graph2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+
+	      // 18 September 2016 Norman: What is that ?
+	      Array.prototype.unshift.call(arguments, null);
+	      return new (Function.prototype.bind.apply(_graph2.default, arguments))();
+	    }
+
+	    /**
+	     *  Redraws all shapes. To be called if their definitions have changed
+	     */
+
+	  }, {
+	    key: 'redrawShapes',
+	    value: function redrawShapes() {
+
+	      //this.graphingZone.removeChild(this.shapeZone);
+	      for (var i = 0, l = this.shapes.length; i < l; i++) {
+	        this.shapes[i].redraw();
+	      }
+	      //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
+	    }
+
+	    /**
+	     *  Removes all shapes from the graph
+	     */
+
+	  }, {
+	    key: 'removeShapes',
+	    value: function removeShapes() {
+	      for (var i = 0, l = this.shapes.length; i < l; i++) {
+	        if (this.shapes[i] && this.shapes[i].kill) {
+	          this.shapes[i].kill(true);
+	        }
+	      }
+	      this.shapes = [];
+	    }
+
+	    /**
+	     * Selects a shape
+	     * @param {Shape} shape - The shape to select
+	     * @param {Boolean} mute - Select the shape quietly
+	     */
+
+	  }, {
+	    key: 'selectShape',
+	    value: function selectShape(shape, mute) {
+
+	      // Already selected. Returns false
+
+	      if (!shape) {
+	        return;
+	      }
+
+	      if (this.selectedShapes.indexOf(shape) > -1) {
+	        return false;
+	      }
+
+	      if (!shape.isSelectable()) {
+	        return false;
+	      }
+
+	      if (!mute) {
+	        this.emit("beforeShapeSelect", shape);
+	      }
+
+	      if (this.prevent(false)) {
+	        return;
+	      }
+
+	      if (this.selectedShapes.length > 0 && this.options.shapesUniqueSelection) {
+	        // Only one selected shape at the time
+
+	        this.unselectShapes(mute);
+	      }
+
+	      shape._select(mute);
+	      this.selectedShapes.push(shape);
+
+	      if (!mute) {
+	        this.emit("shapeSelect", shape);
+	      }
+	    }
+	  }, {
+	    key: 'getSelectedShapes',
+	    value: function getSelectedShapes() {
+	      return this.selectedShapes;
+	    }
+
+	    /**
+	     * Unselects a shape
+	     * @param {Shape} shape - The shape to unselect
+	     * @param {Boolean} mute - Unselect the shape quietly
+	     */
+
+	  }, {
+	    key: 'unselectShape',
+	    value: function unselectShape(shape, mute) {
+
+	      if (this.selectedShapes.indexOf(shape) == -1) {
+	        return;
+	      }
+
+	      if (!mute) {
+	        this.emit("beforeShapeUnselect", shape);
+	      }
+
+	      if (this.cancelUnselectShape) {
+	        this.cancelUnselectShape = false;
+	        return;
+	      }
+
+	      shape._unselect();
+
+	      this.selectedShapes.splice(this.selectedShapes.indexOf(shape), 1);
+
+	      if (!mute) {
+	        this.emit("shapeUnselect", shape);
+	      }
+	    }
+
+	    /**
+	     * Unselects all shapes
+	     * @param {Boolean} [ mute = false ] - Mutes all unselection events
+	     * @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'unselectShapes',
+	    value: function unselectShapes(mute) {
+
+	      while (this.selectedShapes[0]) {
+	        this.unselectShape(this.selectedShapes[0], mute);
+	      }
+
+	      return this;
+	    }
+	  }, {
+	    key: '_removeShape',
+	    value: function _removeShape(shape) {
+	      this.shapes.splice(this.shapes.indexOf(shape), 1);
+	    }
+	  }, {
+	    key: 'appendShapeToDom',
+	    value: function appendShapeToDom(shape) {
+
+	      if (shape.isHTML()) {
+	        this.wrapper.insertBefore(shape._dom, this.dom);
+	      }
+
+	      this.getLayer(shape.getLayer(), 'shape').appendChild(shape.group);
+	    }
+	  }, {
+	    key: 'removeShapeFromDom',
+	    value: function removeShapeFromDom(shape) {
+
+	      if (shape.isHTML()) {
+	        this.wrapper.removeChild(shape._dom);
+	      }
+
+	      this.getLayer(shape.getLayer(), 'shape').removeChild(shape.group);
+	    }
+	  }, {
+	    key: 'appendSerieToDom',
+	    value: function appendSerieToDom(serie) {
+	      this.getLayer(serie.getLayer(), 'serie').appendChild(serie.groupMain);
+	    }
+	  }, {
+	    key: 'removeSerieFromDom',
+	    value: function removeSerieFromDom(serie) {
+	      this.getLayer(serie.getLayer(), 'serie').removeChild(serie.groupMain);
+	    }
+	  }, {
+	    key: 'getLayer',
+	    value: function getLayer(layer, mode) {
+
+	      if (!this.layers[layer]) {
+
+	        this.layers[layer] = [];
+
+	        this.layers[layer][0] = document.createElementNS(Graph.ns, 'g');
+	        this.layers[layer][0].setAttribute('data-layer', layer);
+	        this.layers[layer][1] = document.createElementNS(Graph.ns, 'g');
+	        this.layers[layer][2] = document.createElementNS(Graph.ns, 'g');
+
+	        this.layers[layer][0].appendChild(this.layers[layer][1]);
+	        this.layers[layer][0].appendChild(this.layers[layer][2]);
+
+	        var i = 1,
+	            prevLayer;
+
+	        while (!(prevLayer = this.layers[layer - i]) && layer - i >= 0) {
+	          i++;
+	        }
+
+	        if (!prevLayer) {
+
+	          this.plotGroup.insertBefore(this.layers[layer][0], this.plotGroup.firstChild);
+	        } else if (prevLayer.nextSibling) {
+
+	          this.plotGroup.insertBefore(this.layers[layer][0], prevLayer.nextSibling);
+	        } else {
+
+	          this.plotGroup.appendChild(this.layers[layer][0]);
+	        }
+	      }
+
+	      return this.layers[layer][mode == 'shape' ? 2 : 1];
+	    }
+	  }, {
+	    key: 'focus',
+	    value: function focus() {
+	      this.wrapper.focus();
+	    }
+	  }, {
+	    key: 'elementMoving',
+	    value: function elementMoving(movingElement) {
+	      this.bypassHandleMouse = movingElement;
+	    }
+	  }, {
+	    key: 'stopElementMoving',
+	    value: function stopElementMoving(element) {
+
+	      if (element && element == this.bypassHandleMouse) {
+	        this.bypassHandleMouse = false;
+	      } else if (!element) {
+	        this.bypassHandleMouse = false;
+	      }
+	    }
+	  }, {
+	    key: '_makeClosingLines',
+	    value: function _makeClosingLines() {
+
+	      this.closingLines = {};
+	      var els = ['top', 'bottom', 'left', 'right'],
+	          i = 0,
+	          l = 4;
+	      for (; i < l; i++) {
+	        var line = document.createElementNS(Graph.ns, 'line');
+	        line.setAttribute('stroke', this.options.closeColor);
+	        line.setAttribute('shape-rendering', 'crispEdges');
+	        line.setAttribute('stroke-linecap', 'square');
+	        line.setAttribute('display', 'none');
+	        this.closingLines[els[i]] = line;
+	        this.graphingZone.appendChild(line);
+	      }
+	    }
+	  }, {
+	    key: 'isActionAllowed',
+	    value: function isActionAllowed(e, action) {
+
+	      if (action.type !== e.type && (action.type !== undefined || e.type !== "mousedown") && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
+	        return;
+	      }
+
+	      if (action.enabled && (typeof action.enabled == "function" ? !action.enabled(this) : !actions.enabled)) {
+	        return;
+	      }
+
+	      if (action.key) {
+
+	        if (action.key !== e.keyCode) {
+
+	          var keyCheck = {
+	            'backspace': 8,
+	            'enter': 13,
+	            'tab': 9,
+	            'shift': 16,
+	            'ctrl': 17,
+	            'alt': 18,
+	            'pause': 19,
+	            'escape': 27,
+	            'up': 33,
+	            'down': 34,
+	            'left': 37,
+	            'right': 39
+	          };
+
+	          if (keyCheck[action.key] !== e.keyCode) {
+	            return;
+	          }
+	        }
+	      }
+
+	      if (action.shift === undefined) {
+	        action.shift = false;
+	      }
+
+	      if (action.ctrl === undefined) {
+	        action.ctrl = false;
+	      }
+
+	      if (action.meta === undefined) {
+	        action.meta = false;
+	      }
+
+	      if (action.alt === undefined) {
+	        action.alt = false;
+	      }
+
+	      return e.shiftKey == action.shift && e.ctrlKey == action.ctrl && e.metaKey == action.meta && e.altKey == action.alt;
+	    }
+	  }, {
+	    key: 'forcePlugin',
+	    value: function forcePlugin(plugin) {
+	      this.forcedPlugin = plugin;
+	    }
+	  }, {
+	    key: 'unforcePlugin',
+	    value: function unforcePlugin() {
+	      this.forcedPlugin = false;
+	    }
+	  }, {
+	    key: '_pluginsExecute',
+	    value: function _pluginsExecute(funcName, args) {
+
+	      //			Array.prototype.splice.apply(args, [0, 0, this]);
+
+	      for (var i in this.plugins) {
+
+	        if (this.plugins[i] && this.plugins[i][funcName]) {
+
+	          this.plugins[i][funcName].apply(this.plugins[i], args);
+	        }
+	      }
+	    }
+	  }, {
+	    key: '_pluginExecute',
+	    value: function _pluginExecute(which, func, args) {
+
+	      //Array.prototype.splice.apply( args, [ 0, 0, this ] );
+	      if (!which) {
+	        return;
+	      }
+
+	      if (this.plugins[which] && this.plugins[which][func]) {
+
+	        this.plugins[which][func].apply(this.plugins[which], args);
+	        return true;
+	      }
+	    }
+	  }, {
+	    key: 'pluginYieldActiveState',
+	    value: function pluginYieldActiveState() {
+	      this.activePlugin = false;
+	    }
+	  }, {
+	    key: '_serieExecute',
+	    value: function _serieExecute(which, func, args) {
+
+	      if ((typeof serie === 'undefined' ? 'undefined' : _typeof(serie)) !== 'object') {
+	        serie = this.getSerie(serie);
+	      }
+
+	      if (typeof serie[func] == 'function') {
+	        serie.apply(serie, args);
+	      }
+	    }
+	  }, {
+	    key: '_pluginsInit',
+	    value: function _pluginsInit() {
+
+	      var constructor, pluginName, pluginOptions;
+
+	      for (var i in this.options.plugins) {
+
+	        pluginName = i;
+	        pluginOptions = this.options.plugins[i];
+
+	        constructor = this.getConstructor("graph.plugin." + pluginName);
+
+	        if (constructor) {
+
+	          var options = util.extend(true, {}, constructor.defaults(), pluginOptions);
+	          this.plugins[pluginName] = new constructor(options);
+
+	          util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
+	          this.plugins[pluginName].init(this, pluginOptions);
+	        } else {
+	          util.throwError("Plugin \"" + pluginName + "\" has not been registered");
+	        }
+	      }
+	    }
+
+	    /**
+	     * Returns an initialized plugin
+	     * @param {String} pluginName
+	     * @returns {Plugin} The plugin which name is <pluginName>
+	     */
+
+	  }, {
+	    key: 'getPlugin',
+	    value: function getPlugin(pluginName) {
+	      var plugin = this.plugins[pluginName];
+
+	      if (!plugin) {
+	        return util.throwError("Plugin \"" + pluginName + "\" has not been loaded or properly registered");
+	      }
+
+	      return plugin;
+	    }
+	  }, {
+	    key: 'triggerEvent',
+	    value: function triggerEvent() {
+	      var func = arguments[0],
+	          args = Array.prototype.splice.apply(arguments, [0, 1]);
+
+	      if (typeof this.options[func] == "function") {
+	        return this.options[func].apply(this, arguments);
+	      }
+
+	      return;
+	    }
+
+	    /**
+	     * Creates a legend. Only one legend is allowed per graph
+	     * @param {Object} options - The legend options
+	     */
+
+	  }, {
+	    key: 'makeLegend',
+	    value: function makeLegend(options) {
+
+	      if (this.legend) {
+	        return this.legend;
+	      }
+
+	      var constructor = this.getConstructor("graph.legend");
+	      if (constructor) {
+	        this.legend = new constructor(this, options);
+	      } else {
+	        return util.throwError("Graph legend is not available as it has not been registered");
+	      }
+
+	      //    this.legend.update();
+
+	      return this.legend;
+	    }
+
+	    /**
+	     * Redraws the legend if it exists
+	     * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+	     * @return {Graph} The graph instance
+	     */
+
+	  }, {
+	    key: 'updateLegend',
+	    value: function updateLegend() {
+	      var onlyIfRequired = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+
+	      if (!this.legend) {
+	        return;
+	      }
+
+	      this.legend.update(onlyIfRequired);
+	      return this;
+	    }
+
+	    /**
+	     * @returns {Legend} The legend item
+	     */
+
+	  }, {
+	    key: 'getLegend',
+	    value: function getLegend() {
+	      if (!this.legend) {
+	        return;
+	      }
+
+	      return this.legend;
+	    }
+	  }, {
+	    key: 'requireLegendUpdate',
+	    value: function requireLegendUpdate() {
+
+	      if (!this.legend) {
+	        return;
+	      }
+
+	      this.legend.requireDelayedUpdate();
+	    }
+	  }, {
+	    key: 'orthogonalProjectionSetup',
+	    value: function orthogonalProjectionSetup(options) {
+
+	      this.options.zAxis = util.extend(true, {
+	        maxZ: 10,
+	        minZ: 0,
+	        shiftX: -25,
+	        shiftY: -15,
+	        xAxis: this.getXAxis(),
+	        yAxis: this.getYAxis()
+	      });
+	    }
+	  }, {
+	    key: 'orthogonalProjectionUpdate',
+	    value: function orthogonalProjectionUpdate() {
+	      var _this2 = this;
+
+	      if (!this.zAxis) {
+	        this.zAxis = {
+	          g: document.createElementNS(Graph.ns, "g"),
+	          l: document.createElementNS(Graph.ns, "line")
+	        };
+
+	        this.zAxis.g.appendChild(this.zAxis.l);
+	        this.groupGrids.appendChild(this.zAxis.g);
+	      }
+
+	      var refAxisX = this.options.zAxis.xAxis;
+	      var refAxisY = this.options.zAxis.yAxis;
+
+	      var x0 = refAxisX.getMinPx();
+	      var y0 = refAxisY.getMinPx();
+
+	      var dx = refAxisX.getZProj(this.options.zAxis.maxZ);
+	      var dy = refAxisY.getZProj(this.options.zAxis.maxZ);
+
+	      this.zAxis.l.setAttribute('stroke', 'black');
+	      this.zAxis.l.setAttribute('x1', x0);
+	      this.zAxis.l.setAttribute('x2', x0 + dx);
+	      this.zAxis.l.setAttribute('y1', y0);
+	      this.zAxis.l.setAttribute('y2', y0 + dy);
+
+	      this.updateDataMinMaxAxes(true);
+
+	      var sort = this.series.map(function (serie) {
+	        return [serie.getZPos(), serie];
+	      });
+
+	      sort.sort(function (sa, sb) {
+	        return sb[0] - sa[0];
+	      });
+
+	      var i = 0;
+	      sort.forEach(function (s) {
+	        s[1].setLayer(i);
+	        _this2.appendSerieToDom(s[1]);
+	        i++;
+	      });
+
+	      this.drawSeries(true);
+	    }
+
+	    /**
+	     * Kills the graph
+	     **/
+
+	  }, {
+	    key: 'kill',
+	    value: function kill() {
+	      this.wrapper.removeChild(this.dom);
+	    }
+	  }, {
+	    key: '_removeSerie',
+	    value: function _removeSerie(serie) {
+	      this.series.splice(this.series.indexOf(serie), 1);
+	    }
+	  }, {
+	    key: 'contextListen',
+	    value: function contextListen(target, menuElements, callback) {
+
+	      var self = this;
+
+	      if (this.options.onContextMenuListen) {
+	        return this.options.onContextMenuListen(target, menuElements, callback);
+	      }
+	    }
+	  }, {
+	    key: 'lockShapes',
+	    value: function lockShapes() {
+	      this.shapesLocked = true;
+
+	      // Removes the current actions of the shapes
+	      for (var i = 0, l = this.shapes.length; i < l; i++) {
+	        this.shapes[i].moving = false;
+	        this.shapes[i].resizing = false;
+	      }
+	    }
+	  }, {
+	    key: 'unlockShapes',
+	    value: function unlockShapes() {
+	      //		console.log('unlock');
+	      this.shapesLocked = false;
+	    }
+	  }, {
+	    key: 'prevent',
+	    value: function prevent(arg) {
+	      var curr = this.prevented;
+	      if (arg != -1) {
+	        this.prevented = arg == undefined || arg;
+	      }
+	      return curr;
+	    }
+	  }, {
+	    key: '_getXY',
+	    value: function _getXY(e) {
+
+	      var x = e.pageX,
+	          y = e.pageY;
+
+	      var pos = this.offsetCached || util.getOffset(this.wrapper);
+
+	      x -= pos.left /* - window.scrollX*/;
+	      y -= pos.top /* - window.scrollY*/;
+
+	      return {
+	        x: x,
+	        y: y
+	      };
+	    }
+	  }, {
+	    key: '_resize',
+	    value: function _resize() {
+
+	      if (!this.width || !this.height) {
+	        return;
+	      }
+
+	      this.getDrawingWidth();
+	      this.getDrawingHeight();
+
+	      this.sizeSet = true;
+	      this.dom.setAttribute('width', this.width);
+	      this.dom.setAttribute('height', this.height);
+	      this.domTitle.setAttribute('x', this.width / 2);
+
+	      this._sizeChanged = true;
+
+	      if (this.drawn) {
+	        this.requireLegendUpdate();
+	        this.draw(true);
+	      }
+	    }
+	  }, {
+	    key: 'updateGraphingZone',
+	    value: function updateGraphingZone() {
+	      util.setAttributeTo(this.graphingZone, {
+	        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+	      });
+
+	      this._sizeChanged = true;
+	    }
+
+	    // We have to proxy the methods in case they are called anonymously
+
+	  }, {
+	    key: 'getDrawingSpaceWidth',
+	    value: function getDrawingSpaceWidth() {
+	      var _this3 = this;
+
+	      return function () {
+	        return _this3.drawingSpaceWidth;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceHeight',
+	    value: function getDrawingSpaceHeight() {
+	      var _this4 = this;
+
+	      return function () {
+	        return _this4.drawingSpaceHeight;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMinX',
+	    value: function getDrawingSpaceMinX() {
+	      var _this5 = this;
+
+	      return function () {
+	        return _this5.drawingSpaceMinX;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMinY',
+	    value: function getDrawingSpaceMinY() {
+	      var _this6 = this;
+
+	      return function () {
+	        return _this6.drawingSpaceMinY;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMaxX',
+	    value: function getDrawingSpaceMaxX() {
+	      var _this7 = this;
+
+	      return function () {
+	        return _this7.drawingSpaceMaxX;
+	      };
+	    }
+	  }, {
+	    key: 'getDrawingSpaceMaxY',
+	    value: function getDrawingSpaceMaxY() {
+	      var _this8 = this;
+
+	      return function () {
+	        return _this8.drawingSpaceMaxY;
+	      };
+	    }
+
+	    /**
+	     *  Enables the line tracking
+	     *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
+	     */
+
+	  }, {
+	    key: 'trackingLine',
+	    value: function trackingLine(options) {
+	      var _this9 = this;
+
+	      var self = this;
+
+	      if (typeof options === 'boolean') {
+
+	        if (this.options.trackingLine) {
+	          this.options.trackingLine.enable = options;
+	        }
+	        return;
+	      }
+
+	      if (options) {
+	        this.options.trackingLine = options;
+	      }
+
+	      options.series = options.series || [];
+	      options.enable = options.enable === undefined ? true : !!options.enable;
+
+	      // Individual tracking
+	      if (options.mode == "individual") {
+
+	        if (options.series) {
+
+	          if (!Array.isArray(options.series)) {
+
+	            if (options.series == "all") {
+
+	              options.series = this.series.map(function (serie) {
+	                serie: serie;
+	              });
+	            } else {
+
+	              options.series = [options.series];
+	            }
+	          }
+
+	          options.series.forEach(function (sOptions) {
+
+	            if (_typeof(sOptions.serie) !== "object") {
+
+	              if ((typeof sOptions === 'undefined' ? 'undefined' : _typeof(sOptions)) !== "object") {
+	                throw "Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";
+	              }
+
+	              sOptions.serie = _this9.getSerie(sOptions.serie);
+	            }
+
+	            if (!sOptions.serie) {
+	              return;
+	            }
+
+	            self.addSerieToTrackingLine(sOptions.serie, sOptions);
+	          });
+	        }
+	      } else {
+
+	        options.series.map(function (serie) {
+	          serie.serie.disableTracking();
+	        });
+	      }
+
+	      if (options.noLine) {
+	        return;
+	      }
+
+	      if (!this.trackingObject) {
+	        // Avoid multiple creation of tracking lines
+
+	        // Creates a new shape called trackingLine, in the first layer (below everything)
+	        this.trackingObject = this.newShape('line', util.extend(true, {
+	          position: [{
+	            y: 'min'
+	          }, {
+	            y: 'max'
+	          }],
+	          stroke: 'black',
+	          layer: -1
+	        }, options.trackingLineShapeOptions));
+	      }
+
+	      this.trackingObject.draw();
+
+	      return this.trackingObject;
+	    }
+	  }, {
+	    key: 'addSerieToTrackingLine',
+	    value: function addSerieToTrackingLine(serie, options) {
+	      var _this10 = this;
+
+	      if (!this.options.trackingLine) {
+
+	        this.trackingLine({
+	          mode: 'individual'
+	        });
+	      }
+
+	      // TODO: Check if not already existing
+	      this.options.trackingLine.series.push(Object.assign({
+	        serie: serie
+	      }, options));
+
+	      serie.enableTracking(function (serie, index, x, y) {
+
+	        if (_this10.options.trackingLine.enable) {
+
+	          if (index) {
+
+	            if (_this10.trackingObject) {
+	              _this10.trackingObject.show();
+	              _this10.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+	              _this10.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+	              _this10.trackingObject.redraw();
+	            }
+
+	            serie._trackingLegend = _trackingLegendSerie(_this10, {
+	              serie: serie
+	            }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function (output) {
+
+	              for (var i in output) {
+
+	                return output[i].serie.serie.getName() + ": " + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
+	                break;
+	              }
+	            }, index.trueX);
+
+	            if (serie._trackingLegend) {
+	              serie._trackingLegend.style.display = "block";
+	            }
+	          }
+	        }
+	      }, function (serie) {
+
+	        if (_this10.trackingObject) {
+	          _this10.trackingObject.hide();
+	        }
+
+	        if (serie.trackingShape) {
+	          serie.trackingShape.hide();
+	        }
+
+	        if (serie._trackingLegend) {
+	          serie._trackingLegend.style.display = "none";
+	        }
+
+	        serie._trackingLegend = _trackingLegendSerie(_this10, {
+
+	          serie: serie
+
+	        }, false, false, serie._trackingLegend, false, false);
+	      });
+	    }
+
+	    /**
+	     *  Pass here the katex.render method to be used later
+	     *   @param {Function} renderer -  katexRendered - renderer
+	     *   @return {Graph} The current graph instance
+	     */
+
+	  }, {
+	    key: 'setKatexRenderer',
+	    value: function setKatexRenderer(renderer) {
+	      this._katexRenderer = renderer;
+	    }
+	  }, {
+	    key: 'hasKatexRenderer',
+	    value: function hasKatexRenderer() {
+	      return !!this._katexRenderer;
+	    }
+	  }, {
+	    key: 'renderWithKatex',
+	    value: function renderWithKatex(katexValue, katexElement) {
+
+	      if (this._katexRenderer) {
+
+	        if (katexElement) {
+	          katexElement.removeChild(katexElement.firstChild);
+	        } else {
+	          katexElement = document.createElementNS(Graph.ns, 'foreignObject');
+	        }
+
+	        var div = document.createElement("div");
+
+	        katexElement.appendChild(div);
+	        this._katexRenderer(katexValue, div);
+
+	        return katexElement;
+	      }
+
+	      return false;
+	    }
+
+	    /**
+	     * Returns a graph created from a schema
+	     * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+	     * @param {HTMLElement} wrapper - The wrapping element
+	     * @returns {Graph} Newly created graph
+	     */
+
+	  }, {
+	    key: 'exportToSchema',
+	    value: function exportToSchema() {
+	      var _this11 = this;
+
+	      var schema = {};
+
+	      schema.title = this.options.title;
+
+	      schema.width = this.getWidth();
+	      schema.height = this.getHeight();
+
+	      var axesPositions = ['top', 'bottom', 'left', 'right'];
+	      var axesExport = [];
+	      var allaxes = {
+	        x: [],
+	        y: []
+	      };
+
+	      axesPositions.map(function (axisPosition) {
+
+	        if (!_this11.axis[axisPosition]) {
+	          return;
+	        }
+
+	        axesExport = axesExport.concat(_this11.axis[axisPosition].map(function (axis) {
+	          return {
+
+	            type: axisPosition,
+	            label: axis.options.label,
+	            unit: axis.options.unit,
+	            min: axis.options.forcedMin,
+	            max: axis.options.forcedMax,
+	            flip: axis.options.flipped
+
+	          };
+	        }));
+
+	        if (axisPosition == 'top' || axisPosition == 'bottom') {
+	          allaxes.x = allaxes.x.concat(_this11.axis[axisPosition]);
+	        } else {
+	          allaxes.y = allaxes.y.concat(_this11.axis[axisPosition]);
+	        }
+	      });
+
+	      schema.axis = axesExport;
+
+	      var seriesExport = [];
+
+	      var toType = function toType(type) {
+	        switch (type) {
+
+	          case Graph.SERIE_LINE:
+	            return 'line';
+	            break;
+
+	          case Graph.SERIE_BAR:
+	            return 'bar';
+	            break;
+
+	          case Graph.SERIE_SCATTER:
+	            return 'scatter';
+	            break;
+	        }
+	      };
+
+	      var exportData = function exportData(serie, x) {
+
+	        var data = [];
+
+	        switch (serie.getType()) {
+
+	          case Graph.SERIE_LINE:
+
+	            for (var i = 0; i < serie.data.length; i++) {
+
+	              for (var j = 0; j < serie.data[i].length - 1; j += 2) {
+
+	                data.push(serie.data[i][j + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+	              }
+	            }
+	            break;
+
+	          case Graph.SERIE_SCATTER:
+
+	            for (var j = 0; j < serie.data.length - 1; j += 2) {
+
+	              data.push(serie.data[i + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+	            }
+
+	            break;
+	        }
+
+	        return data;
+	      };
+
+	      schema.data = seriesExport.concat(this.series.map(function (serie) {
+
+	        var style = [];
+	        var linestyle = [];
+
+	        if (serie.getType() == Graph.SERIE_LINE) {
+
+	          for (var stylename in serie.styles) {
+	            linestyle.push({
+	              styleName: stylename,
+	              color: serie.styles[stylename].lineColor,
+	              lineWidth: serie.styles[stylename].lineWidth,
+	              lineStyle: serie.styles[stylename].lineStyle
+	            });
+
+	            var styleObj = {
+	              styleName: stylename,
+	              styles: []
+	            };
+	            style.push(styleObj);
+
+	            styleObj.styles = styleObj.styles.concat((serie.styles[stylename].markers || []).map(function (markers) {
+	              return {
+	                shape: markers.type,
+	                zoom: markers.zoom,
+	                lineWidth: markers.strokeWidth,
+	                lineColor: markers.strokeColor,
+	                color: markers.fillColor,
+	                points: markers.points
+	              };
+	            }));
+	          }
+	        }
+
+	        return {
+	          label: serie.getLabel(),
+	          id: serie.getName(),
+	          type: toType(serie.getType()),
+	          x: exportData(serie, true),
+	          y: exportData(serie, false),
+	          xAxis: allaxes.x.indexOf(serie.getXAxis()),
+	          yAxis: allaxes.y.indexOf(serie.getYAxis()),
+	          style: style,
+	          lineStyle: linestyle
+	        };
+	      }));
+
+	      return schema;
+	    }
+
+	    /**
+	     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+	     * @param {String} constructorName - The name of the constructor
+	     * @param {Function} constructor - The constructor method
+	     * @see Graph.getConstructor
+	     * @static
+	     */
+
+	  }], [{
+	    key: 'fromSchema',
+	    value: function fromSchema(schema, wrapper) {
+
+	      var graph;
+	      var options = {};
+	      var axes = {
+	        left: [],
+	        top: [],
+	        right: [],
+	        bottom: []
+	      };
+	      var axesIndices = [];
+
+	      if (schema.title) {
+	        options.title = schema.title;
+	      }
+
+	      if (schema.axis) {
+
+	        schema.axis.map(function (schemaAxis) {
+
+	          if (!schemaAxis.type) {
+	            util.throwError("Axis type is required (top, bottom, left or right)");
+	          }
+
+	          var axisOptions = {};
+	          if (schemaAxis.label) {
+	            axisOptions.labelValue = schemaAxis.label;
+	          }
+
+	          if (schemaAxis.unit !== undefined) {
+	            axisOptions.unit = schemaAxis.unit;
+	          }
+
+	          if (schemaAxis.unitWrapperAfter !== undefined) {
+	            axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
+	          }
+
+	          if (schemaAxis.unitWrapperBefore !== undefined) {
+	            axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
+	          }
+
+	          if (schemaAxis.min !== undefined) {
+	            axisOptions.forcedMin = schemaAxis.min;
+	          }
+
+	          if (schemaAxis.max !== undefined) {
+	            axisOptions.forcedMax = schemaAxis.max;
+	          }
+
+	          if (schemaAxis.flip !== undefined) {
+	            axisOptions.flipped = schemaAxis.flip;
+	          }
+
+	          axes[schemaAxis.type].push(axisOptions);
+	          schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
+	        });
+	      }
+
+	      graph = new Graph(wrapper, options, axes);
+
+	      if (schema.width) {
+	        graph.setWidth(schema.width);
+	      }
+
+	      if (schema.height) {
+	        graph.setHeight(schema.width);
+	      }
+
+	      graph._resize();
+
+	      if (schema.data) {
+
+	        schema.data.map(function (schemaSerie) {
+
+	          var serieType = schemaSerie.type,
+	              serie,
+	              serieOptions = {},
+	              serieAxis;
+
+	          switch (schemaSerie.type) {
+
+	            case 'bar':
+	              util.throwError("Bar charts not supported");
+	              serieType = false;
+	              break;
+
+	            case 'scatter':
+	              serieType = Graph.SERIE_SCATTER;
+	              break;
+
+	            case 'box':
+	              serieType = Graph.SERIE_BOX;
+
+	              if (schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y') {
+	                serieOptions.orientation = schemaSerie.orientation;
+	              }
+	              break;
+
+	            default:
+	              serieType = Graph.SERIE_LINE;
+	              break;
+	          }
+
+	          if (!serieType) {
+	            util.throwError("No valid serie type was found");
+	            return;
+	          }
+
+	          serie = graph.newSerie(schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType);
+
+	          if (schemaSerie.lineStyle) {
+
+	            schemaSerie.lineStyle.map(function (style) {
+
+	              var styleSerie = {};
+	              style.styleName = style.styleName || "unselected";
+
+	              switch (serieType) {
+
+	                case Graph.SERIE_LINE:
+	                  if (style.lineWidth !== undefined) {
+	                    styleSerie.lineWidth = style.lineWidth;
+	                  }
+
+	                  if (style.color !== undefined) {
+	                    styleSerie.lineColor = style.color;
+	                  }
+
+	                  if (style.lineStyle) {
+	                    styleSerie.lineStyle = style.lineStyle;
+	                  }
+
+	                  serie.setStyle(styleSerie, style.styleName);
+	                  break;
+	              }
+	            });
+	          }
+
+	          if (schemaSerie.style) {
+
+	            schemaSerie.style.map(function (style) {
+
+	              var styleSerie = {};
+	              style.styleName = style.styleName || "unselected";
+
+	              if (!Array.isArray(style.styles)) {
+	                style.styles = [style.styles];
+	              }
+
+	              var styles = style.styles.map(function (style) {
+
+	                switch (serieType) {
+
+	                  case Graph.SERIE_LINE:
+
+	                    return {
+	                      type: style.shape,
+	                      zoom: style.zoom,
+	                      strokeWidth: style.lineWidth,
+	                      strokeColor: style.lineColor,
+	                      fillColor: style.color,
+	                      points: style.points
+	                    };
+
+	                    break;
+
+	                  case Graph.SERIE_BOX:
+
+	                    return style;
+
+	                    break;
+
+	                  case Graph.SERIE_SCATTER:
+
+	                    break;
+	                }
+	              });
+
+	              switch (serieType) {
+
+	                case Graph.SERIE_LINE:
+
+	                  serie.setMarkers(styles, style.styleName);
+	                  break;
+
+	                case Graph.SERIE_SCATTER:
+
+	                  serie.setStyle(styles, {}, style.styleName);
+	                  break;
+
+	                case Graph.SERIE_BOX:
+
+	                  serie.setStyle(styles[0], style.stylename);
+	                  break;
+	              }
+	            });
+	          }
+
+	          if (schemaSerie.errorX || schemaSerie.errorY) {
+	            var errors = [];
+	            if (schemaSerie.errorX) {
+
+	              for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+
+	                errors[i] = errors[i] || [[], []];
+
+	                errors[i][0][0] = schemaSerie.errorX[i];
+	              }
+	            }
+
+	            if (schemaSerie.errorY) {
+
+	              for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
+
+	                errors[i] = errors[i] || [[]];
+	                errors[i][1][0] = schemaSerie.errorY[i];
+	              }
+	            }
+
+	            serie.setDataError(errors) // Adds the error data
+	            .setErrorStyle([{
+	              type: 'bar',
+	              x: {},
+	              y: {}
+	            }]); // Display bar errors
+	          }
+
+	          if (schema.axis) {
+	            serieAxis = schema.axis[schemaSerie.xAxis];
+
+	            if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
+	              util.warn("No x axis found. Setting automatically");
+	              serie.setXAxis(graph.getXAxis(0));
+	            } else {
+	              if (serieAxis.type == 'top') {
+	                serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
+	              } else if (serieAxis.type == 'bottom') {
+	                serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
+	              }
+	            }
+
+	            serieAxis = schema.axis[schemaSerie.yAxis];
+
+	            if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
+	              util.warn("No y axis found. Setting automatically");
+	              serie.setYAxis(graph.getYAxis(0));
+	            } else {
+	              if (serieAxis.type == 'left') {
+	                serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
+	              } else if (serieAxis.type == 'right') {
+	                serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
+	              }
+	            }
+	          } else {
+	            util.warn("No axes found. Setting automatically");
+	            serie.autoAxis();
+	          }
+
+	          switch (serieType) {
+
+	            case Graph.SERIE_BOX:
+	              serie.setData(schemaSerie.boxes);
+
+	              break;
+
+	            default:
+	            case Graph.SERIE_SCATTER:
+	            case Graph.SERIE_LINE:
+
+	              serie.setData([{
+	                x: schemaSerie.x,
+	                y: schemaSerie.y
+	              }]);
+
+	              break;
+	          }
+	        });
+	      }
+
+	      graph.autoscaleAxes();
+	      graph.draw();
+
+	      return graph;
+	    }
+	  }, {
+	    key: 'registerConstructor',
+	    value: function registerConstructor(constructorName, constructor) {
+
+	      if (_constructors.has(constructorName)) {
+	        return util.throwError("Constructor " + constructor + " already exists.");
+	      }
+
+	      _constructors.set(constructorName, constructor);
+	    }
+
+	    /**
+	     * Returns a registered constructor
+	     * @param {String} constructorName - The constructor name to look for
+	     * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
+	     * @returns {Function} The registered constructor
+	     * @throws Error
+	     * @see Graph.registerConstructor
+	     * @static
+	     */
+
+	  }, {
+	    key: 'getConstructor',
+	    value: function getConstructor(constructorName) {
+	      var softFail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+	      if (!_constructors.has(constructorName)) {
+
+	        if (softFail) {
+	          return false;
+	        }
+
+	        return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
+	      }
+
+	      return _constructors.get(constructorName);
+	    }
+	  }, {
+	    key: 'newWaveform',
+	    value: function newWaveform() {
+	      return new (Function.prototype.bind.apply(_waveform2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+	    }
+	  }, {
+	    key: 'waveform',
+	    value: function waveform() {
+	      return new (Function.prototype.bind.apply(_waveform2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+	    }
+	  }]);
+
+	  return Graph;
+	}(_EventEmitter3.default);
+
+	// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+
+
+	Graph.prototype.getConstructor = Graph.getConstructor;
+
+	function makeSerie(graph, name, options, type) {
+
+	  var constructor = graph.getConstructor(type, true);
+	  if (!constructor && typeof type == "string") {
+	    constructor = graph.getConstructor("graph.serie." + type, true);
+	  }
+
+	  if (constructor) {
+
+	    var serie = new constructor(graph, name, options);
+	    //serie.init( graph, name, options );
+	    graph.appendSerieToDom(serie);
+	  } else {
+
+	    return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");
+	  }
+
+	  return serie;
+	};
+
+	function getAxisLevelFromSpan(span, level) {
+
+	  for (var i = 0, l = level.length; i < l; i++) {
+
+	    var possible = true;
+	    for (var k = 0, m = level[i].length; k < m; k++) {
+
+	      if (!(span[0] < level[i][k][0] && span[1] < level[i][k][0] || span[0] > level[i][k][1] && span[1] > level[i][k][1])) {
+	        possible = false;
+	      }
+	    }
+
+	    if (possible) {
+
+	      level[i].push(span);
+	      return i;
+	    }
+	  }
+
+	  level.push([span]);
+	  return level.length - 1;
+	}
+
+	function refreshDrawingZone(graph) {
+
+	  var i, j, l, xy, min, max, axis;
+	  var shift = {
+	    top: [],
+	    bottom: [],
+	    left: [],
+	    right: []
+	  };
+
+	  var levels = {
+	    top: [],
+	    bottom: [],
+	    left: [],
+	    right: []
+	  };
+
+	  graph._painted = true;
+	  // Apply to top and bottom
+	  graph._applyToAxes(function (axis, position) {
+	    if (axis.disabled || axis.floating) {
+	      return;
+	    }
+
+	    var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+	    axis.setLevel(level);
+
+	    shift[position][level] = Math.max(axis.getAxisPosition(), shift[position][level] || 0);
+	  }, false, true, false);
+
+	  var shiftTop = shift.top.reduce(function (prev, curr) {
+	    return prev + curr;
+	  }, 0);
+
+	  var shiftBottom = shift.bottom.reduce(function (prev, curr) {
+	    return prev + curr;
+	  }, 0);
+
+	  [shift.top, shift.bottom].map(function (arr) {
+	    arr.reduce(function (prev, current, index) {
+	      arr[index] = prev + current;
+	      return prev + current;
+	    }, 0);
+	  });
+
+	  // Apply to top and bottom
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled || axis.floating) {
+	      return;
+	    }
+
+	    axis.setShift(shift[position][axis.getLevel()]);
+	  }, false, true, false);
+
+	  // Applied to left and right
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled) {
+	      return;
+	    }
+
+	    axis.setMinPx(shiftTop);
+	    axis.setMaxPx(graph.getDrawingHeight(true) - shiftBottom);
+
+	    if (axis.floating) {
+	      return;
+	    }
+
+	    // First we need to draw it in order to determine the width to allocate
+	    // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+
+	    // Let's not draw dependant axes yet
+	    var drawn = !axis.linkedToAxis ? axis.draw() : 0;
+
+	    // Get axis position gives the extra shift that is common
+	    var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+	    axis.setLevel(level);
+	    shift[position][level] = Math.max(drawn, shift[position][level] || 0);
+	  }, false, false, true);
+
+	  var shift2 = util.extend(true, {}, shift);
+
+	  // Applied to left and right
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled) {
+	      return;
+	    }
+
+	    if (axis.floating) {
+	      return;
+	    }
+
+	    shift2[position][axis.getLevel()] = Math.max(shift[position][axis.getLevel()], axis.equalizePosition(shift[position][axis.getLevel()]));
+	  }, false, false, true);
+
+	  shift = shift2;
+
+	  var shiftLeft = shift.left.reduce(function (prev, curr) {
+	    return prev + curr;
+	  }, 0);
+
+	  var shiftRight = shift.right.reduce(function (prev, curr) {
+	    return prev + curr;
+	  }, 0);
+
+	  [shift.left, shift.right].map(function (arr) {
+	    arr.reduce(function (prev, current, index) {
+	      arr[index] = prev + current;
+	      return prev + current;
+	    }, 0);
+	  });
+
+	  // Apply to left and right
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled || axis.floating) {
+	      return;
+	    }
+	    axis.setShift(shift[position][axis.getLevel()]);
+	  }, false, false, true);
+
+	  // Apply to top and bottom
+	  graph._applyToAxes(function (axis, position) {
+
+	    if (axis.disabled) {
+	      return;
+	    }
+
+	    axis.setMinPx(shiftLeft);
+	    axis.setMaxPx(graph.getDrawingWidth(true) - shiftRight);
+
+	    if (axis.floating) {
+	      return;
+	    }
+
+	    if (!axis.linkedToAxis) {
+	      axis.draw();
+	    }
+	  }, false, true, false);
+
+	  // Floating axes
+	  graph._applyToAxes(function (axis) {
+
+	    if (!axis.floating) {
+	      return;
+	    }
+
+	    var floatingAxis = axis.getFloatingAxis();
+	    var floatingValue = axis.getFloatingValue();
+	    var floatingPx = floatingAxis.getPx(floatingValue);
+
+	    axis.setShift(floatingPx);
+
+	    if (!axis.linkedToAxis) {
+	      axis.draw();
+	    }
+	  }, false, true, true);
+
+	  _closeLine(graph, 'right', graph.getDrawingWidth(true), graph.getDrawingWidth(true), shiftTop, graph.getDrawingHeight(true) - shiftBottom);
+	  _closeLine(graph, 'left', 0, 0, shiftTop, graph.getDrawingHeight(true) - shiftBottom);
+	  _closeLine(graph, 'top', shiftLeft, graph.getDrawingWidth(true) - shiftRight, 0, 0);
+	  _closeLine(graph, 'bottom', shiftLeft, graph.getDrawingWidth(true) - shiftRight, graph.getDrawingHeight(true) - shiftBottom, graph.getDrawingHeight(true) - shiftBottom);
+
+	  graph.clipRect.setAttribute('y', shiftTop);
+	  graph.clipRect.setAttribute('x', shiftLeft);
+	  graph.clipRect.setAttribute('width', graph.getDrawingWidth() - shiftLeft - shiftRight);
+	  graph.clipRect.setAttribute('height', graph.getDrawingHeight() - shiftTop - shiftBottom);
+
+	  graph.rectEvent.setAttribute('y', shiftTop + graph.getPaddingTop());
+	  graph.rectEvent.setAttribute('x', shiftLeft + graph.getPaddingLeft());
+
+	  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
+	  graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
+	  graph.rectEvent.setAttribute('width', graph.drawingSpaceWidth);
+	  graph.rectEvent.setAttribute('height', graph.drawingSpaceHeight);
+
+	  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft(); // + "px";
+	  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
+	  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
+	  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
+	  /*
+	  graph.shapeZoneRect.setAttribute('x', shift[1]);
+	  graph.shapeZoneRect.setAttribute('y', shift[2]);
+	  graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+	  graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+	  */
+	  graph.shift = shift;
+	  graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
+	}
+
+	function _handleKey(graph, event, type) {
+
+	  var self = graph;
+
+	  if (graph.forcedPlugin) {
+
+	    graph.activePlugin = graph.forcedPlugin;
+	    graph._pluginExecute(graph.activePlugin, type, [graph, e]);
+	    return;
+	  }
+
+	  checkKeyActions(graph, event, [graph, event], type);
+	}
+
+	// Similar to checkMouseActions
+	function checkKeyActions(graph, e, parameters, methodName) {
+
+	  var keyComb = graph.options.keyActions,
+	      i,
+	      l;
+
+	  for (i = 0, l = keyComb.length; i < l; i++) {
+
+	    if (keyComb[i].plugin) {
+	      // Is it a plugin ?
+
+	      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
+
+	        if (keyComb[i].options) {
+	          parameters.push(keyComb[i].options);
+	        }
+
+	        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+	        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+
+	        e.preventDefault();
+	        e.stopPropagation();
+
+	        return true;
+	      }
+	    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
+
+	      if (keyComb[i].options) {
+	        parameters.push(keyComb[i].options);
+	      }
+
+	      e.preventDefault();
+	      e.stopPropagation();
+
+	      keyComb[i].callback.apply(graph, parameters);
+	      return true;
+	    }
+
+	    if (keyComb[i].removeSelectedShape && graph.isActionAllowed(e, keyComb[i])) {
+
+	      e.preventDefault();
+	      e.stopPropagation();
+
+	      graph.selectedShapes.map(function (shape) {
+	        shape.kill();
+	      });
+	    }
+
+	    /* else if ( keyComb[ i ].series ) {
+	       var series;
+	      if ( keyComb[ i ].series === 'all' ) {
+	        series = graph.series;
+	      }
+	       if ( !Array.isArray( keyComb[ i ].series ) ) {
+	        series = [  series ];
+	      }
+	       if ( keyComb[ i ].options ) {
+	        parameters.push( keyComb[ i ].options );
+	      }
+	       for ( var j = 0; j < series.length; i++ ) {
+	        graph._serieExecute( series[  i ], methodName, parameters );
+	      }
+	      return true;
+	    }*/
+	  }
+
+	  return false;
+	};
+
+	function doDom() {
+
+	  // Create SVG element, set the NS
+	  this.dom = document.createElementNS(Graph.ns, 'svg');
+	  this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	  //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
+	  util.setAttributeTo(this.dom, {
+	    'xmlns': Graph.ns,
+	    'font-family': this.options.fontFamily,
+	    'font-size': this.options.fontSize,
+	    'data-jsgraph-version': 'v2.0.15'
+	  });
+
+	  this.defs = document.createElementNS(Graph.ns, 'defs');
+	  this.dom.appendChild(this.defs);
+
+	  this.groupEvent = document.createElementNS(Graph.ns, 'g');
+
+	  this.rectEvent = document.createElementNS(Graph.ns, 'rect');
+	  util.setAttributeTo(this.rectEvent, {
+	    'pointer-events': 'fill',
+	    'fill': 'transparent'
+	  });
+	  this.groupEvent.appendChild(this.rectEvent);
+
+	  this.dom.appendChild(this.groupEvent);
+
+	  // Handling graph title
+	  this.domTitle = document.createElementNS(Graph.ns, 'text');
+	  this.setTitle(this.options.title);
+	  util.setAttributeTo(this.domTitle, {
+	    'text-anchor': 'middle',
+	    'y': 20
+	  });
+	  this.groupEvent.appendChild(this.domTitle);
+	  //
+
+	  this.graphingZone = document.createElementNS(Graph.ns, 'g');
+	  this.updateGraphingZone();
+
+	  this.groupEvent.appendChild(this.graphingZone);
+
+	  /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+	  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+	  this.shapeZoneRect.setAttribute('fill', 'transparent');
+	  this.shapeZone.appendChild(this.shapeZoneRect);
+	  */
+	  this.axisGroup = document.createElementNS(Graph.ns, 'g');
+	  this.graphingZone.appendChild(this.axisGroup);
+
+	  this.groupGrids = document.createElementNS(Graph.ns, 'g');
+
+	  // With the z stacking, this should probably be removed
+	  //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+	  this.groupPrimaryGrids = document.createElementNS(Graph.ns, 'g');
+	  this.groupSecondaryGrids = document.createElementNS(Graph.ns, 'g');
+
+	  this.axisGroup.appendChild(this.groupGrids);
+
+	  this.groupGrids.appendChild(this.groupSecondaryGrids);
+	  this.groupGrids.appendChild(this.groupPrimaryGrids);
+
+	  this.plotGroup = document.createElementNS(Graph.ns, 'g');
+	  this.graphingZone.appendChild(this.plotGroup);
+
+	  // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+	  /*this.shapeZone = document.createElementNS( this.ns, 'g' );
+	  this.graphingZone.appendChild( this.shapeZone );
+	  */
+
+	  this.layers = [];
+
+	  this._makeClosingLines();
+
+	  this.clip = document.createElementNS(Graph.ns, 'clipPath');
+	  this.clip.setAttribute('id', '_clipplot' + this._creation);
+	  this.defs.appendChild(this.clip);
+
+	  this.clipRect = document.createElementNS(Graph.ns, 'rect');
+	  this.clip.appendChild(this.clipRect);
+	  this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+	  this.markerArrow = document.createElementNS(this.ns, 'marker');
+	  this.markerArrow.setAttribute('viewBox', '0 0 10 10');
+	  this.markerArrow.setAttribute('id', 'arrow' + this._creation);
+	  this.markerArrow.setAttribute('refX', '6');
+	  this.markerArrow.setAttribute('refY', '5');
+	  this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
+	  this.markerArrow.setAttribute('markerWidth', '8');
+	  this.markerArrow.setAttribute('markerHeight', '6');
+	  this.markerArrow.setAttribute('orient', 'auto');
+	  //this.markerArrow.setAttribute('fill', 'context-stroke');
+	  //this.markerArrow.setAttribute('stroke', 'context-stroke');
+
+	  var pathArrow = document.createElementNS(Graph.ns, 'path');
+	  pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+	  //pathArrow.setAttribute( 'fill', 'context-stroke' );
+	  this.markerArrow.appendChild(pathArrow);
+
+	  this.defs.appendChild(this.markerArrow);
+
+	  // Horionzal split marker for axis
+	  this.markerHorizontalSplit = document.createElementNS(Graph.ns, 'marker');
+	  this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
+	  this.markerHorizontalSplit.setAttribute('id', 'horionzalsplit_' + this.getId());
+	  this.markerHorizontalSplit.setAttribute('refX', '3');
+	  this.markerHorizontalSplit.setAttribute('refY', '4');
+	  this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
+	  this.markerHorizontalSplit.setAttribute('markerWidth', '6');
+	  this.markerHorizontalSplit.setAttribute('markerHeight', '8');
+
+	  var path = document.createElementNS(Graph.ns, 'line');
+	  path.setAttribute('x1', '0');
+	  path.setAttribute('y1', '8');
+
+	  path.setAttribute('x2', '6');
+	  path.setAttribute('y2', '0');
+
+	  path.setAttribute('stroke', 'black');
+	  this.markerHorizontalSplit.appendChild(path);
+
+	  this.defs.appendChild(this.markerHorizontalSplit);
+
+	  // Vertical split marker for axis
+	  this.markerVerticalSplit = document.createElementNS(Graph.ns, 'marker');
+	  this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
+	  this.markerVerticalSplit.setAttribute('id', 'verticalsplit_' + this.getId());
+	  this.markerVerticalSplit.setAttribute('refX', '4');
+	  this.markerVerticalSplit.setAttribute('refY', '3');
+	  this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
+	  this.markerVerticalSplit.setAttribute('markerWidth', '8');
+	  this.markerVerticalSplit.setAttribute('markerHeight', '6');
+
+	  var path = document.createElementNS(Graph.ns, 'line');
+
+	  path.setAttribute('x1', '0');
+	  path.setAttribute('y1', '0');
+
+	  path.setAttribute('x2', '8');
+	  path.setAttribute('y2', '6');
+
+	  path.setAttribute('stroke', 'black');
+	  this.markerVerticalSplit.appendChild(path);
+	  this.defs.appendChild(this.markerVerticalSplit);
+
+	  this.vertLineArrow = document.createElementNS(Graph.ns, 'marker');
+	  this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
+	  this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
+	  this.vertLineArrow.setAttribute('refX', '0');
+	  this.vertLineArrow.setAttribute('refY', '5');
+	  this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
+	  this.vertLineArrow.setAttribute('markerWidth', '20');
+	  this.vertLineArrow.setAttribute('markerHeight', '10');
+	  this.vertLineArrow.setAttribute('orient', 'auto');
+	  //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+	  //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+	  this.vertLineArrow.setAttribute('stroke-width', '1px');
+
+	  var pathVertLine = document.createElementNS(Graph.ns, 'path');
+	  pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
+	  pathVertLine.setAttribute('stroke', 'black');
+
+	  this.vertLineArrow.appendChild(pathVertLine);
+
+	  this.defs.appendChild(this.vertLineArrow);
+
+	  // Removed with z stacking ?
+	  //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+	  this.bypassHandleMouse = false;
+	}
+
+	function _registerEvents(graph) {
+	  var self = graph;
+
+	  if (!graph.wrapper) {
+	    throw "No wrapper exists. Cannot register the events.";
+	  }
+
+	  graph.wrapper.addEventListener('keydown', function (e) {
+
+	    _handleKey(graph, e, 'keydown');
+	  });
+
+	  graph.wrapper.addEventListener('keypress', function (e) {
+
+	    _handleKey(graph, e, 'keypress');
+	  });
+
+	  graph.wrapper.addEventListener('keyup', function (e) {
+
+	    _handleKey(graph, e, 'keyup');
+	  });
+	  // Not sure this has to be prevented
+
+	  graph.groupEvent.addEventListener('mousemove', function (e) {
+	    //e.preventDefault();
+	    var coords = graph._getXY(e);
+
+	    _handleMouseMove(graph, coords.x, coords.y, e);
+	  });
+
+	  graph.dom.addEventListener('mouseleave', function (e) {
+
+	    _handleMouseLeave(graph);
+	  });
+
+	  graph.groupEvent.addEventListener('mousedown', function (e) {
+
+	    graph.focus();
+
+	    //   e.preventDefault();
+	    if (e.which == 3 || e.ctrlKey) {
+	      return;
+	    }
+
+	    var coords = graph._getXY(e);
+	    _handleMouseDown(graph, coords.x, coords.y, e);
+	  });
+
+	  graph.dom.addEventListener('mouseup', function (e) {
+
+	    graph.emit("mouseUp", e);
+	    var coords = graph._getXY(e);
+	    e.stopPropagation();
+
+	    _handleMouseUp(graph, coords.x, coords.y, e);
+	  });
+
+	  graph.dom.addEventListener('dblclick', function (e) {
+
+	    graph.emit("dblClick", e);
+	    var coords = graph._getXY(e);
+
+	    _handleDblClick(graph, coords.x, coords.y, e);
+	  });
+
+	  graph.groupEvent.addEventListener('click', function (e) {
+
+	    // Cancel right click or Command+Click
+	    if (e.which == 3 || e.ctrlKey) {
+	      return;
+	    }
+
+	    //   e.preventDefault();
+	    var coords = graph._getXY(e);
+
+	    if (!graph.prevent(false)) {
+	      _handleClick(graph, coords.x, coords.y, e);
+	    }
+
+	    //}, 200 );
+	  });
+
+	  graph.groupEvent.addEventListener('mousewheel', function (e) {
+
+	    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+	    _handleMouseWheel(graph, deltaY, e);
+
+	    return false;
+	  });
+
+	  graph.groupEvent.addEventListener('wheel', function (e) {
+
+	    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+	    _handleMouseWheel(graph, deltaY, e);
+
+	    return false;
+	  });
+	}
+
+	function _handleMouseDown(graph, x, y, e) {
+
+	  var self = graph;
+
+	  if (graph.forcedPlugin) {
+
+	    graph.activePlugin = graph.forcedPlugin;
+	    graph._pluginExecute(graph.activePlugin, 'onMouseDown', [graph, x, y, e]);
+	    return;
+	  }
+
+	  checkMouseActions(graph, e, [graph, x, y, e], 'onMouseDown');
+	}
+
+	function _handleMouseMove(graph, x, y, e) {
+
+	  if (graph.bypassHandleMouse) {
+	    graph.bypassHandleMouse.handleMouseMove(e);
+	    return;
+	  }
+
+	  if (graph.activePlugin && graph._pluginExecute(graph.activePlugin, 'onMouseMove', [graph, x, y, e])) {
+	    return;
+	  };
+
+	  //			return;
+
+	  graph._applyToAxes('handleMouseMove', [x - graph.options.paddingLeft, e], true, false);
+	  graph._applyToAxes('handleMouseMove', [y - graph.options.paddingTop, e], false, true);
+
+	  if (!graph.activePlugin) {
+	    var index;
+
+	    // Takes care of the tracking line
+	    if (graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie) {
+
+	      if (graph.options.trackingLine.mode == "common") {
+
+	        var snapToSerie = graph.options.trackingLine.snapToSerie;
+	        index = snapToSerie.handleMouseMove(false, true);
+
+	        if (this.trackingObject) {
+
+	          if (!index) {
+
+	            graph.trackingObject.hide();
+	          } else {
+
+	            graph.trackingObject.show();
+
+	            graph.trackingObject.getPosition(0).x = index.xClosest;
+	            graph.trackingObject.getPosition(1).x = index.xClosest;
+	            graph.trackingObject.redraw();
+
+	            var x = snapToSerie.getXAxis().getPx(index.xClosest) + graph.options.paddingLeft;
+	          }
+	        }
+
+	        var series = graph.options.trackingLine.series;
+
+	        // Gets a default value
+	        if (!series) {
+
+	          series = graph.getSeries().map(function (serie) {
+	            return {
+	              serie: serie,
+	              withinPx: 20,
+	              withinVal: -1
+	            };
+	          });
+	        }
+
+	        graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest);
+	      }
+	    }
+	  }
+	  // End takes care of the tracking line
+
+	  if (graph.options.onMouseMoveData) {
+	    var results = {};
+
+	    for (var i = 0; i < graph.series.length; i++) {
+
+	      results[graph.series[i].getName()] = graph.series[i].handleMouseMove(false, true);
+	    }
+
+	    graph.options.onMouseMoveData.call(graph, e, results);
+	  }
+
+	  checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
+
+	  return;
+	}
+
+	function checkMouseActions(graph, e, parameters, methodName) {
+
+	  var keyComb = graph.options.mouseActions,
+	      i,
+	      l,
+	      executed = false;
+
+	  for (i = 0, l = keyComb.length; i < l; i++) {
+
+	    if (keyComb[i].plugin) {
+	      // Is it a plugin ?
+
+	      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
+
+	        if (keyComb[i].options) {
+	          parameters.push(keyComb[i].options);
+	        }
+
+	        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+	        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+	        executed = true;
+	        continue;
+	      }
+	    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
+
+	      if (keyComb[i].options) {
+	        parameters.push(keyComb[i].options);
+	      }
+
+	      keyComb[i].callback.apply(graph, parameters);
+	      executed = true;
+	      continue;
+	    } else if (keyComb[i].series) {
+
+	      var series;
+	      if (keyComb[i].series === 'all') {
+	        series = graph.series;
+	      }
+
+	      if (!Array.isArray(keyComb[i].series)) {
+	        series = [series];
+	      }
+
+	      if (keyComb[i].options) {
+	        parameters.push(keyComb[i].options);
+	      }
+
+	      for (var j = 0; j < series.length; i++) {
+	        graph._serieExecute(series[i], methodName, parameters);
+	      }
+	      executed = true;
+	      continue;
+	    }
+	  }
+
+	  return executed;
+	};
+
+	var _trackingLegendSerie = function _trackingLegendSerie(graph, serie, x, y, legend, textMethod, xValue) {
+
+	  var justCreated = false;
+
+	  if (!Array.isArray(serie)) {
+	    serie = [serie];
+	  }
+
+	  var output = [];
+
+	  if (!legend && graph.options.trackingLine.legend) {
+	    justCreated = true;
+	    legend = _makeTrackingLegend(graph);
+	  }
+
+	  serie.map(function (serie) {
+
+	    var index = serie.serie.handleMouseMove(xValue, false);
+
+	    if (!index || !textMethod) {
+
+	      if (serie.serie.trackingShape) {
+	        serie.serie.trackingShape.hide();
+	      }
+
+	      return legend;
+	    }
+
+	    // Should we display the dot ?
+	    if (serie.withinPx > 0 && Math.abs(x - graph.options.paddingLeft - serie.serie.getXAxis().getPx(index.xClosest)) - serie.withinPx > 1e-14 || serie.withinVal > 0 && Math.abs(serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) - index.xClosest) - serie.withinVal > serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) / 100000) {
+
+	      if (serie.serie.trackingShape) {
+	        serie.serie.trackingShape.hide();
+	      }
+	    } else {
+
+	      output[serie.serie.getName()] = {
+
+	        yValue: index.xClosest,
+	        xValue: index.yClosest,
+	        serie: serie,
+	        index: index
+
+	      };
+
+	      if (!serie.serie.trackingShape) {
+
+	        serie.serie.trackingShape = graph.newShape(graph.options.trackingLine.serieShape.shape || 'ellipse', {
+	          fillColor: serie.serie.getLineColor(),
+	          strokeColor: "White",
+	          strokeWidth: serie.serie.getLineWidth()
+	        }, true, graph.options.trackingLine.serieShape.properties || {
+	          rx: [serie.serie.getLineWidth() * 3],
+	          ry: [serie.serie.getLineWidth() * 3]
+	        }).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();
+
+	        graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);
+
+	        serie.serie.trackingShape.on("changed", function () {
+
+	          graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);
+	        });
+	      }
+
+	      serie.serie.trackingShape.show();
+	      serie.serie.trackingShape.getPosition(0).x = index.xClosest;
+
+	      if (graph.options.trackingLine.serieShape.magnet) {
+
+	        var magnetOptions = graph.options.trackingLine.serieShape.magnet,
+	            val = magnetOptions.within,
+	            minmaxpos = void 0;
+
+	        if (magnetOptions.withinPx) {
+	          val = serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);
+	        }
+
+	        if (minmaxpos = serie.serie.findLocalMinMax(index.xClosest, val, magnetOptions.mode)) {
+
+	          serie.serie.trackingShape.getPosition(0).x = minmaxpos;
+	        }
+	      }
+
+	      serie.serie.trackingShape.redraw();
+	    }
+	  }); // End map
+
+	  if (!graph.options.trackingLine.legend) {
+	    return;
+	  }
+
+	  if (Object.keys(output).length == 0 || !textMethod) {
+	    legend.style.display = "none";
+	  } else {
+
+	    if (legend.style.display == "none" || justCreated) {
+
+	      forceTrackingLegendMode(graph, legend, x, y, true);
+	    } else {
+	      _trackingLegendMove(graph, legend, x, y);
+	    }
+
+	    legend.style.display = "block";
+	    var txt = textMethod(output, xValue, x, y);
+
+	    legend.innerHTML = txt;
+
+	    //legend.innerHTML = textMethod( output, xValue, x, y );
+	  }
+
+	  return legend;
+	};
+
+	var forceTrackingLegendMode = function forceTrackingLegendMode(graph, legend, toX, toY, skip) {
+
+	  var ratio = 0,
+	      start = Date.now(),
+	      h = legend.offsetHeight,
+	      startX = parseInt(legend.style.marginLeft.replace("px", "") || 0),
+	      startY = parseInt(legend.style.marginTop.replace("px", "") || 0);
+
+	  toX = toX > graph.getWidth() / 2 ? toX - toX % 10 - 20 - legend.offsetWidth : toX - toX % 10 + 30;
+	  toY = toY - toY % 10 + h / 2;
+
+	  if (skip) {
+	    legend.style.marginLeft = toX + "px";
+	    legend.style.marginTop = toY + "px";
+	    return;
+	  }
+
+	  function next() {
+
+	    var progress = (Date.now() - start) / 200;
+	    if (progress > 1) {
+	      progress = 1;
+	    }
+
+	    legend.style.marginLeft = (toX - startX) * progress + startX + "px";
+	    legend.style.marginTop = (toY - startY) * progress + startY + "px";
+
+	    if (progress < 1) {
+	      window.requestAnimationFrame(next);
+	    }
+	  }
+
+	  window.requestAnimationFrame(next);
+	};
+
+	var _trackingLegendMove = util.debounce(forceTrackingLegendMode, 50);
+
+	function _makeTrackingLegend(graph) {
+
+	  var group = document.createElement('div');
+	  group.setAttribute('class', 'trackingLegend');
+	  group.style.position = 'absolute';
+	  group.style.borderRadius = '4px';
+	  group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
+	  group.style.border = "2px solid #333333";
+	  group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
+	  group.style.pointerEvents = "none";
+	  group.style.paddingTop = "5px";
+	  group.style.paddingBottom = "5px";
+	  group.style.paddingLeft = "10px";
+	  group.style.paddingRight = "10px";
+
+	  graph.getWrapper().insertBefore(group, graph.getDom());
+
+	  return group;
+	}
+
+	function _handleDblClick(graph, x, y, e) {
+	  //	var _x = x - graph.options.paddingLeft;
+	  //	var _y = y - graph.options.paddingTop;
+	  var pref = graph.options.dblclick;
+	  checkMouseActions(graph, e, [x, y, e], 'onDblClick');
+	  /*
+	      if ( !pref ||  !pref.type ) {
+	        return;
+	      }
+	       switch ( pref.type ) {
+	         case 'plugin':
+	           var plugin;
+	           if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+	             plugin.onDblClick( graph, x, y, pref.options, e );
+	          }
+	           break;
+	      }*/
+	}
+
+	function _handleMouseUp(graph, x, y, e) {
+
+	  if (graph.bypassHandleMouse) {
+	    graph.bypassHandleMouse.handleMouseUp(e);
+	    graph.activePlugin = false;
+	    return;
+	  }
+
+	  graph._pluginExecute(graph.activePlugin, 'onMouseUp', [graph, x, y, e]);
+	  graph.activePlugin = false;
+	}
+
+	function _handleClick(graph, x, y, e) {
+
+	  graph.emit('click', [graph, x, y, e]);
+	  // Not on a shape
+	  checkMouseActions(graph, e, [x, y, e], 'onClick');
+
+	  if (!e.target.jsGraphIsShape && !graph.prevent(false) && graph.options.shapesUnselectOnClick) {
+
+	    graph.unselectShapes();
+	  }
+	}
+
+	function _getAxis(graph, num, options, pos) {
+
+	  var options = options || {};
+	  var inst;
+
+	  var _availableAxes = {
+
+	    def: {
+	      x: graph.getConstructor("graph.axis.x"),
+	      y: graph.getConstructor("graph.axis.y")
+	    },
+
+	    time: {
+	      x: graph.getConstructor("graph.axis.x.time")
+	    },
+
+	    bar: {
+	      x: graph.getConstructor("graph.axis.x.bar")
+	    }
+	  };
+
+	  switch (options.type) {
+
+	    case 'time':
+	      var axisInstance = _availableAxes.time;
+	      break;
+
+	    case 'bar':
+	      var axisInstance = _availableAxes.bar;
+	      break;
+
+	    case 'broken':
+	      var axisInstance = _availableAxes.broken;
+	      break;
+
+	    default:
+	      var axisInstance = _availableAxes.def;
+	      break;
+	  }
+
+	  switch (pos) {
+
+	    case 'top':
+	    case 'bottom':
+	      inst = axisInstance.x;
+	      break;
+
+	    case 'left':
+	    case 'right':
+	      inst = axisInstance.y;
+	      break;
+	  }
+
+	  num = num || 0;
+
+	  if ((typeof num === 'undefined' ? 'undefined' : _typeof(num)) == "object") {
+	    options = num;
+	    num = 0;
+	  }
+
+	  if (!graph.axis[pos][num]) {
+	    graph.axis[pos][num] = new inst(graph, pos, options);
+	    graph.axis[pos][num].init(graph, options);
+	  }
+
+	  return graph.axis[pos][num];
+	}
+
+	function _closeLine(graph, mode, x1, x2, y1, y2) {
+
+	  if (graph.options.close === false) {
+	    return;
+	  }
+
+	  var l = 0;
+
+	  graph.axis[mode].map(function (g) {
+
+	    if (g.isDisplayed() && !g.floating) {
+	      l++;
+	    }
+	  });
+
+	  if ((graph.options.close === true || graph.options.close[mode]) && l == 0) {
+
+	    graph.closingLines[mode].setAttribute('display', 'block');
+	    graph.closingLines[mode].setAttribute('x1', x1);
+	    graph.closingLines[mode].setAttribute('x2', x2);
+	    graph.closingLines[mode].setAttribute('y1', y1);
+	    graph.closingLines[mode].setAttribute('y2', y2);
+	  } else {
+
+	    graph.closingLines[mode].setAttribute('display', 'none');
+	  }
+	}
+
+	function _handleMouseWheel(graph, delta, e) {
+	  if (checkMouseActions(graph, e, [delta, e], 'onMouseWheel')) {
+	    e.preventDefault();
+	    e.stopPropagation();
+	  }
+	}
+
+	function _handleMouseLeave(graph) {
+	  if (graph.options.handleMouseLeave) {
+	    graph.options.handleMouseLeave.call(graph);
+	  }
+	}
+
+	function haveAxesChanged(graph) {
+	  var temp = graph._axesHaveChanged;
+	  graph._axesHaveChanged = false;
+	  return temp;
+	}
+
+	function hasSizeChanged(graph) {
+	  var temp = graph._sizeChanged;
+	  graph._sizeChanged = false;
+	  return temp;
+	}
+
+	// Constants
+	Graph.SERIE_LINE = Symbol();
+	Graph.SERIE_SCATTER = Symbol();
+	Graph.SERIE_CONTOUR = Symbol();
+	Graph.SERIE_BAR = Symbol();
+	Graph.SERIE_BOX = Symbol();
+	Graph.SERIE_ZONE = Symbol();
+	Graph.SERIE_LINE_COLORED = Symbol();
+	Graph.SERIE_ZONE = Symbol();
+	Graph.SERIE_DENSITYMAP = Symbol();
+	Graph.SERIE_LINE_3D = Symbol();
+	Graph.SERIE_ZONE_3D = Symbol();
+
+	Graph.TICKS_OUTSIDE = Symbol();
+	Graph.TICKS_INSIDE = Symbol();
+	Graph.TICKS_CENTERED = Symbol();
+
+	Graph.ns = 'http://www.w3.org/2000/svg';
+	Graph.nsxlink = "http://www.w3.org/1999/xlink";
+
+	exports.default = Graph;
 
 /***/ },
 /* 300 */
@@ -10296,24 +14081,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _createClass(Waveform, [{
 	    key: 'setData',
 	    value: function setData(data) {
-	      var _this = this;
-
 	      var dataX = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 
 	      /* First, we must treat the case of the array of array for backward compatibility */
 	      if (Array.isArray(data[0])) {
-	        (function () {
-	          var x = [];
-	          var y = [];
-	          data.forEach(function (el) {
-	            x.push(el[0]);
-	            y.push(el[1]);
-	          });
+	        var x = [];
+	        var y = [];
+	        data.forEach(function (el) {
+	          x.push(el[0]);
+	          y.push(el[1]);
+	        });
 
-	          _this.setXWaveform(x);
-	          data = y;
-	        })();
+	        this.setXWaveform(x);
+	        data = y;
 	      }
 
 	      var newData = this._makeArray(data.length),
@@ -11379,7 +15160,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'aggregate',
 	    value: function aggregate() {
-	      var _this2 = this;
+	      var _this = this;
 
 	      var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'x';
 
@@ -11405,8 +15186,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      }).then(function (event) {
 
-	        _this2._dataAggregated = event.aggregates;
-	        _this2._dataAggregating = false;
+	        _this._dataAggregated = event.aggregates;
+	        _this._dataAggregating = false;
 	      });
 	    }
 	  }, {
@@ -11759,7 +15540,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          total = void 0,
 	          minValue = void 0,
 	          maxValue = void 0,
-	          ratio = void 0;
+	          ratio = void 0,
+	          i = void 0;
 
 	      if (mode == 'max1' || mode == 'max100') {
 
@@ -11816,6 +15598,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.data[i] = (this.data[i] - minValue) * ratio;
 	        }
 	      }
+
+	      this.setData(this.data);
 	    }
 	  }]);
 
@@ -12178,22 +15962,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'buildFit',
 	    value: function buildFit(parms, length) {
-	      var _this4 = this;
-
 	      var x = void 0;
 
 	      if (!length) {
 	        x = this.arrX;
 	      } else {
-	        (function () {
 
-	          var xmin = _this4.dataX.getMin(_this4._from, _this4._to);
-	          var xmax = _this4.dataX.getMax(_this4._from, _this4._to);
+	        var xmin = this.dataX.getMin(this._from, this._to);
+	        var xmax = this.dataX.getMax(this._from, this._to);
 
-	          x = new Array(length).fill(0).map(function (el, index) {
-	            return index * (xmax - xmin) / (length - 1) + xmin;
-	          });
-	        })();
+	        x = new Array(length).fill(0).map(function (el, index) {
+	          return index * (xmax - xmin) / (length - 1) + xmin;
+	        });
 	      }
 
 	      var fit = new Array(x.length);
@@ -12214,7 +15994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var LM = function () {
 	  function LM(gH, gnadj, gnpnts, hook) {
-	    var _this5 = this;
+	    var _this4 = this;
 
 	    _classCallCheck(this, LM);
 
@@ -12251,10 +16031,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.amatrix = new Array(this.nadj).fill(0);
 
 	    this.alpha = this.alpha.map(function () {
-	      return new Array(_this5.nadj);
+	      return new Array(_this4.nadj);
 	    });
 	    this.amatrix = this.amatrix.map(function () {
-	      return new Array(_this5.nadj);
+	      return new Array(_this4.nadj);
 	    });
 
 	    this.lambda = this.LAMBDAZERO;

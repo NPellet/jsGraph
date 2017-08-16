@@ -3383,7 +3383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.14'
+	      'data-jsgraph-version': 'v2.0.15'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
