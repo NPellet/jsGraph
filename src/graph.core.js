@@ -184,47 +184,47 @@ class Graph extends EventEmitter {
 
   setWrapper( wrapper ) {
 
-      if ( !wrapper ) {
-        throw "The wrapper DOM element was not found.";
-      }
-
-      if ( !wrapper.appendChild ) {
-        throw "The wrapper appears to be an invalid HTMLElement";
-      }
-
-      wrapper.style[ '-webkit-user-select' ] = 'none';
-      wrapper.style[ '-moz-user-select' ] = 'none';
-      wrapper.style[ '-o-user-select' ] = 'none';
-      wrapper.style[ '-ms-user-select' ] = 'none';
-      wrapper.style[ 'user-select' ] = 'none';
-
-      wrapper.style.position = 'relative';
-      wrapper.style.outline = "none";
-
-      wrapper.setAttribute( 'tabindex', 1 );
-
-      this.wrapper = wrapper;
-
-      // DOM
-
-      if ( !this.height ||  !this.width ) {
-        var wrapperStyle = getComputedStyle( wrapper );
-        var w = parseInt( wrapperStyle.width );
-        var h = parseInt( wrapperStyle.height );
-        this.setSize( w, h );
-        this._resize();
-      }
-
-      wrapper.appendChild( this.dom );
-
-      _registerEvents( this );
-
+    if ( !wrapper ) {
+      throw "The wrapper DOM element was not found.";
     }
-    /**
-     * Returns the graph SVG wrapper element
-     * @public
-     * @return {SVGElement} The DOM element wrapping the graph
-     */
+
+    if ( !wrapper.appendChild ) {
+      throw "The wrapper appears to be an invalid HTMLElement";
+    }
+
+    wrapper.style[ '-webkit-user-select' ] = 'none';
+    wrapper.style[ '-moz-user-select' ] = 'none';
+    wrapper.style[ '-o-user-select' ] = 'none';
+    wrapper.style[ '-ms-user-select' ] = 'none';
+    wrapper.style[ 'user-select' ] = 'none';
+
+    wrapper.style.position = 'relative';
+    wrapper.style.outline = "none";
+
+    wrapper.setAttribute( 'tabindex', 1 );
+
+    this.wrapper = wrapper;
+
+    // DOM
+
+    if ( !this.height ||  !this.width ) {
+      var wrapperStyle = getComputedStyle( wrapper );
+      var w = parseInt( wrapperStyle.width );
+      var h = parseInt( wrapperStyle.height );
+      this.setSize( w, h );
+      this._resize();
+    }
+
+    wrapper.appendChild( this.dom );
+
+    _registerEvents( this );
+
+  }
+  /**
+   * Returns the graph SVG wrapper element
+   * @public
+   * @return {SVGElement} The DOM element wrapping the graph
+   */
   getDom() {
     return this.dom;
   }
@@ -1822,7 +1822,9 @@ class Graph extends EventEmitter {
     if ( this.plugins[ which ] && this.plugins[ which ][ func ] ) {
 
       this.plugins[ which ][ func ].apply( this.plugins[ which ], args );
+      return true;
     }
+
   }
 
   pluginYieldActiveState() {
@@ -3148,7 +3150,8 @@ function doDom() {
   util.setAttributeTo( this.dom, {
     'xmlns': Graph.ns,
     'font-family': this.options.fontFamily,
-    'font-size': this.options.fontSize
+    'font-size': this.options.fontSize,
+    'data-jsgraph-version': __VERSION__
   } );
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );
@@ -3337,6 +3340,7 @@ function _registerEvents( graph ) {
   graph.groupEvent.addEventListener( 'mousemove', function( e ) {
     //e.preventDefault();
     var coords = graph._getXY( e );
+
     _handleMouseMove( graph, coords.x, coords.y, e );
   } );
 
@@ -3363,6 +3367,7 @@ function _registerEvents( graph ) {
 
     graph.emit( "mouseUp", e );
     var coords = graph._getXY( e );
+    e.stopPropagation();
 
     _handleMouseUp( graph, coords.x, coords.y, e );
 

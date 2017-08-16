@@ -156,14 +156,14 @@ class AxisX extends Axis {
   }
 
   draw() {
-      var tickWidth = super.draw( ...arguments );
-      this.drawSpecifics();
+    var tickWidth = super.draw( ...arguments );
+    this.drawSpecifics();
 
-      return tickWidth;
-    }
-    /**
-     *  Paints the label, the axis line and anything else specific to x axes
-     */
+    return tickWidth;
+  }
+  /**
+   *  Paints the label, the axis line and anything else specific to x axes
+   */
   drawSpecifics() {
 
     // Adjusts group shift

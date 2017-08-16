@@ -1278,78 +1278,78 @@ class SerieLine extends Serie {
 
   handleMouseMove( xValue, doMarker ) {
 
-      var valX = xValue || this.getXAxis().getMouseVal(),
-        xMinIndex,
-        xMin,
-        yMin,
-        xMax,
-        yMax;
+    var valX = xValue || this.getXAxis().getMouseVal(),
+      xMinIndex,
+      xMin,
+      yMin,
+      xMax,
+      yMax;
 
-      var value = this.searchClosestValue( valX );
+    var value = this.searchClosestValue( valX );
 
-      if ( !value )
-        return;
+    if ( !value )
+      return;
 
-      var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-      var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+    var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+    var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
 
-      if ( doMarker && this.options.trackMouse ) {
+    if ( doMarker && this.options.trackMouse ) {
 
-        if ( value.xMin == undefined ) {
+      if ( value.xMin == undefined ) {
 
-          return false;
+        return false;
 
-        } else {
+      } else {
 
-          var x = this.getX( this.getFlip() ? intY : valX );
-          var y = this.getY( this.getFlip() ? valX : intY );
+        var x = this.getX( this.getFlip() ? intY : valX );
+        var y = this.getY( this.getFlip() ? valX : intY );
 
-          this.marker.setAttribute( 'display', 'block' );
-          this.marker.setAttribute( 'cx', x );
-          this.marker.setAttribute( 'cy', y );
+        this.marker.setAttribute( 'display', 'block' );
+        this.marker.setAttribute( 'cx', x );
+        this.marker.setAttribute( 'cy', y );
 
-          this.markerLabel.setAttribute( 'display', 'block' );
-          this.markerLabelSquare.setAttribute( 'display', 'block' );
-          switch ( this.options.trackMouseLabel ) {
-            case false:
-              break;
+        this.markerLabel.setAttribute( 'display', 'block' );
+        this.markerLabelSquare.setAttribute( 'display', 'block' );
+        switch ( this.options.trackMouseLabel ) {
+          case false:
+            break;
 
-            default:
-              this.markerLabel.textContent = this.options.trackMouseLabel
-                .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
-                .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
-              break;
-          }
-
-          this.markerLabel.setAttribute( 'x', x + 5 );
-          this.markerLabel.setAttribute( 'y', y - 5 );
-
-          this.markerLabelSquare.setAttribute( 'x', x + 5 );
-          this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
-          this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
-          this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
+          default:
+            this.markerLabel.textContent = this.options.trackMouseLabel
+              .replace( '<x>', valX.toFixed( this.options.trackMouseLabelRouding ) )
+              .replace( '<y>', intY.toFixed( this.options.trackMouseLabelRouding ) );
+            break;
         }
+
+        this.markerLabel.setAttribute( 'x', x + 5 );
+        this.markerLabel.setAttribute( 'y', y - 5 );
+
+        this.markerLabelSquare.setAttribute( 'x', x + 5 );
+        this.markerLabelSquare.setAttribute( 'y', y - 5 - this.graph.options.fontSize );
+        this.markerLabelSquare.setAttribute( 'width', this.markerLabel.getComputedTextLength() + 2 );
+        this.markerLabelSquare.setAttribute( 'height', this.graph.options.fontSize + 2 );
       }
-
-      return {
-        xBefore: value.xMin,
-        xAfter: value.xMax,
-        yBefore: value.yMin,
-        yAfter: value.yMax,
-        trueX: valX,
-        interpolatedY: intY,
-
-        xClosest: value.xClosest,
-        yClosest: value.yClosest
-      };
     }
-    /**
-     * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
-     * @param {Number} startX - The start of the x values
-     * @param {Number} endX - The end of the x values
-     * @returns {Number} Maximal y value in between startX and endX
-     * @memberof SerieLine
-     */
+
+    return {
+      xBefore: value.xMin,
+      xAfter: value.xMax,
+      yBefore: value.yMin,
+      yAfter: value.yMax,
+      trueX: valX,
+      interpolatedY: intY,
+
+      xClosest: value.xClosest,
+      yClosest: value.yClosest
+    };
+  }
+  /**
+   * Gets the maximum value of the y values between two x values. The x values must be monotoneously increasing
+   * @param {Number} startX - The start of the x values
+   * @param {Number} endX - The end of the x values
+   * @returns {Number} Maximal y value in between startX and endX
+   * @memberof SerieLine
+   */
   getMax( start, end ) {
 
     var start2 = Math.min( start, end ),

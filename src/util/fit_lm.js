@@ -323,11 +323,11 @@ class LM {
 
     for ( var k = 0; k < this.nadj; k++ ) // get curvature matrix alpha
       for ( var j = 0; j < this.nadj; j++ ) {
-      this.alpha[ j ][ k ] = 0.0;
-      for ( var i = 0; i < this.npts; i++ ) {
-        this.alpha[ j ][ k ] += this.myH.getJacobianElement( i, j ) * this.myH.getJacobianElement( i, k );
+        this.alpha[ j ][ k ] = 0.0;
+        for ( var i = 0; i < this.npts; i++ ) {
+          this.alpha[ j ][ k ] += this.myH.getJacobianElement( i, j ) * this.myH.getJacobianElement( i, k );
+        }
       }
-    }
     var rrise = 0;
     do // inner damping loop searches for one downhill step
     {
@@ -391,11 +391,11 @@ class LM {
       i = ik[ k ];
       if ( i > k )
         for ( j = 0; j < N; j++ ) // exchange rows
-        {
-          save = a[ k ][ j ];
-          a[ k ][ j ] = a[ i ][ j ];
-          a[ i ][ j ] = -save;
-        }
+      {
+        save = a[ k ][ j ];
+        a[ k ][ j ] = a[ i ][ j ];
+        a[ i ][ j ] = -save;
+      }
       j = jk[ k ];
       if ( j > k )
         for ( i = 0; i < N; i++ ) {

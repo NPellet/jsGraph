@@ -1390,7 +1390,8 @@ class Waveform {
       total,
       minValue,
       maxValue,
-      ratio;
+      ratio,
+      i;
 
     if ( mode == 'max1' || mode == 'max100' ) {
 
@@ -1449,10 +1450,12 @@ class Waveform {
 
       for ( i = 0; i < this.getLength(); i++ ) {
 
-        this.data[  i ] = ( this.data[ i ] - minValue ) * ratio;
+        this.data[ i ] = ( this.data[ i ] - minValue ) * ratio;
       }
 
     }
+
+    this.setData( this.data );
   }
 
 };

@@ -111,7 +111,13 @@ module.exports = function(grunt) {
                               'babel-preset-es2015',
                               'babel-preset-stage-1',
                               'babel-polyfill'
-                              ].map(require.resolve)
+                              ].map(require.resolve),
+
+                              plugins: [
+                                ['inline-replace-variables', {
+                                  "__VERSION__": "v<%= pkg.version %>"
+                                }]
+                              ]
                           }
                      }]
                  }
@@ -139,7 +145,12 @@ module.exports = function(grunt) {
                          exclude: /node_modules/,
                          loader: 'babel',
                          query: {
-                            plugins: [ 'transform-es2015-modules-umd' ]
+                            plugins: [ 
+                              'transform-es2015-modules-umd',
+                                ['inline-replace-variables', {
+                                  "__VERSION__": "v<%= pkg.version %>"
+                                }]
+                            ]
                          }
                      }]
                  }
