@@ -2310,13 +2310,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    _getXY(e) {
 
-	      var x = e.pageX,
-	          y = e.pageY;
+	      var x = e.clientX,
+	          y = e.clientY;
 
 	      var pos = this.offsetCached || util.getOffset(this.wrapper);
 
-	      x -= pos.left + window.scrollX;
-	      y -= pos.top + window.scrollY;
+	      x -= pos.left /* - document.body.scrollLeft*/;
+	      y -= pos.top /* - document.body.scrollTop*/;
 
 	      return {
 	        x: x,
@@ -3383,7 +3383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.16'
+	      'data-jsgraph-version': 'v2.0.18'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -4786,8 +4786,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function getOffset(el) {
 	    var rect = el.getBoundingClientRect();
 	    return {
-	      top: rect.top + document.body.scrollTop,
-	      left: rect.left + document.body.scrollLeft
+	      top: rect.top,
+	      left: rect.left
 	    };
 	  };
 
