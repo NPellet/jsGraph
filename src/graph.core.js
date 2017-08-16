@@ -2052,8 +2052,8 @@ class Graph extends EventEmitter {
 
     var pos = this.offsetCached || util.getOffset( this.wrapper );
 
-    x -= pos.left /* - window.scrollX*/ ;
-    y -= pos.top /* - window.scrollY*/ ;
+    x -= pos.left + window.scrollX;
+    y -= pos.top + window.scrollY;
 
     return {
       x: x,

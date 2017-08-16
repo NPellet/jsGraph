@@ -2315,8 +2315,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var pos = this.offsetCached || util.getOffset(this.wrapper);
 
-	      x -= pos.left /* - window.scrollX*/;
-	      y -= pos.top /* - window.scrollY*/;
+	      x -= pos.left + window.scrollX;
+	      y -= pos.top + window.scrollY;
 
 	      return {
 	        x: x,
@@ -3383,7 +3383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.15'
+	      'data-jsgraph-version': 'v2.0.16'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
