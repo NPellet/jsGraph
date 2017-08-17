@@ -12013,7 +12013,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    'xmlns': Graph.ns,
 	    'font-family': this.options.fontFamily,
 	    'font-size': this.options.fontSize,
-	    'data-jsgraph-version': 'v2.0.18'
+	    'data-jsgraph-version': 'v2.0.19'
 	  });
 
 	  this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -12199,7 +12199,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  });
 	  // Not sure this has to be prevented
 
-	  graph.groupEvent.addEventListener('mousemove', function (e) {
+	  // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
+	  // intuitive. Let us see if it breaks another example...
+	  graph.dom.addEventListener('mousemove', function (e) {
 	    //e.preventDefault();
 	    var coords = graph._getXY(e);
 
