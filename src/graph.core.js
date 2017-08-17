@@ -3337,7 +3337,9 @@ function _registerEvents( graph ) {
   } );
   // Not sure this has to be prevented
 
-  graph.groupEvent.addEventListener( 'mousemove', function( e ) {
+  // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
+  // intuitive. Let us see if it breaks another example...
+  graph.dom.addEventListener( 'mousemove', function( e ) {
     //e.preventDefault();
     var coords = graph._getXY( e );
 
