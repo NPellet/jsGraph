@@ -3383,7 +3383,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.19'
+	      'data-jsgraph-version': 'v2.0.20'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -17958,7 +17958,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (; j < this.waveform.getLength(); j++) {
 
 	          if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
+
+	            if (this.shapes[j]) {
+	              this.shapes[j].setAttribute('display', 'none');
+	            }
 	            continue;
+	          }
+
+	          if (this.shapes[j]) {
+	            this.shapes[j].setAttribute('display', 'initial');
 	          }
 
 	          xpx = this.getX(this.waveform.getX(j));

@@ -273,7 +273,15 @@ class SerieScatter extends Serie {
           this.waveform.getY( j ) < this.getYAxis().getCurrentMin() ||
           this.waveform.getY( j ) > this.getYAxis().getCurrentMax()
         ) {
+
+          if ( this.shapes[ j ] ) {
+            this.shapes[ j ].setAttribute( 'display', 'none' );
+          }
           continue;
+        }
+
+        if ( this.shapes[ j ] ) {
+          this.shapes[ j ].setAttribute( 'display', 'initial' );
         }
 
         xpx = this.getX( this.waveform.getX( j ) );
