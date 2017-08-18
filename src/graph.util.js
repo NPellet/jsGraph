@@ -352,6 +352,8 @@ export function extend() {
   return target;
 };
 
+export default {}
+
 export {
   isArray
 };

@@ -1,5 +1,5 @@
-import * as util from '../graph.util'
-import Plugin from './graph.plugin'
+import * as util from '../graph.util.js'
+import Plugin from './graph.plugin.js'
 
 /**
  * The intent of this plugin is to provide methods for the user to make the traces on the graph automatically different

@@ -1,5 +1,3 @@
-import * as util from '../graph.util'
-
 var aggregatorWorker;
 var queue = {};
 
@@ -190,7 +188,12 @@ let string = function() {
 string = string.split( "\n" );
 string.pop();
 string.shift();
+/*
+if ( typeof URL == "undefined" ) {
+  module.exports = function() {};
 
+} else {
+*/
 var workerUrl = URL.createObjectURL( new Blob(
   [ string.join( "\n" ) ], {
     type: 'application/javascript'
@@ -208,7 +211,7 @@ aggregatorWorker.onmessage = function( e ) {
 
 export default function( toOptimize ) {
 
-  var requestId = util.guid();
+  var requestId = Date.now();
   toOptimize._queueId = requestId;
 
   var prom = new Promise( ( resolver ) => {
@@ -217,4 +220,4 @@ export default function( toOptimize ) {
 
   aggregatorWorker.postMessage( toOptimize );
   return prom;
-}
+};

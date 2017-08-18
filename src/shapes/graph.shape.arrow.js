@@ -1,4 +1,4 @@
-import ShapeLine from './graph.shape.line'
+import ShapeLine from './graph.shape.line.js'
 
 /**
  *  Displays an arrow

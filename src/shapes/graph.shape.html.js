@@ -1,7 +1,7 @@
 import { 
   isNumeric 
-} from '../graph.util'
-import GraphShape from './graph.shape'
+} from '../graph.util.js'
+import GraphShape from './graph.shape.js'
 
 /**
  * Represents a line

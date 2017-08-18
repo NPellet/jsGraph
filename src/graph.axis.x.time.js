@@ -1,5 +1,5 @@
-import Axis from './graph.axis'
-import * as util from './graph.util'
+import Axis from './graph.axis.js'
+import * as util from './graph.util.js'
 
 var axisFormat = [
 

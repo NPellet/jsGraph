@@ -1,7 +1,7 @@
-import Graph from '../graph.core'
-import LRU from '../graph.lru'
-import Plugin from './graph.plugin'
-import * as util from '../graph.util'
+import Graph from '../graph.core.js'
+import LRU from '../graph.lru.js'
+import Plugin from './graph.plugin.js'
+import * as util from '../graph.util.js'
 
 /**
  * @class PluginTimeSerieManager

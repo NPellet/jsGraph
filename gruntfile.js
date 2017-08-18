@@ -114,7 +114,10 @@ module.exports = function(grunt) {
                               ].map(require.resolve),
 
                               plugins: [
-                                ['inline-replace-variables', {
+                                'add-module-exports',
+                                'transform-es2015-modules-umd',
+                                [
+                                'inline-replace-variables', {
                                   "__VERSION__": "v<%= pkg.version %>"
                                 }]
                               ]
@@ -146,6 +149,7 @@ module.exports = function(grunt) {
                          loader: 'babel',
                          query: {
                             plugins: [ 
+                              'add-module-exports',
                               'transform-es2015-modules-umd',
                                 ['inline-replace-variables', {
                                   "__VERSION__": "v<%= pkg.version %>"

@@ -1,7 +1,7 @@
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
-import * as util from '../graph.util'
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
+import * as util from '../graph.util.js'
 
-import Waveform from '../util/waveform'
+import Waveform from '../util/waveform.js'
 
 /**
  * Serie class to be extended
@@ -955,6 +955,13 @@ class Serie extends EventEmitter {
     this.nbCategories = nb;
   }
 
+  hasErrors() {
+    if ( !this.waveform ) {
+      return false;
+    }
+
+    return this.waveform.hasErrorBars();
+  }
 }
 
 export default Serie;

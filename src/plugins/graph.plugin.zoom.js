@@ -1,5 +1,5 @@
-import * as util from '../graph.util'
-import Plugin from './graph.plugin'
+import * as util from '../graph.util.js'
+import Plugin from './graph.plugin.js'
 
 /**
  * @class PluginZoom

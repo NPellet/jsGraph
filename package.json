@@ -1,7 +1,7 @@
 {
   "name": "node-jsgraph",
   "description": "library that can be used to render scientific data in the form of graphs and charts",
-  "version": "2.0.20",
+  "version": "2.0.21",
   "scripts": {
     "build": "grunt webpack",
     "doc": "git subtree push --prefix doc origin gh-pages",
@@ -49,6 +49,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "babel-plugin-add-module-exports": "^0.2.1"
   },
   "repository": "NPellet/jsGraph",
   "license": "MIT"

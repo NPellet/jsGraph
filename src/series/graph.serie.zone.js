@@ -1,9 +1,9 @@
-import Serie from './graph.serie'
-import Waveform from '../util/waveform'
+import Serie from './graph.serie.js'
+import Waveform from '../util/waveform.js'
 import {
   extend,
   guid
-} from '../graph.util'
+} from '../graph.util.js'
 
 /**
  * @static

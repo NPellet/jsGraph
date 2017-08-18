@@ -1,9 +1,5 @@
-import FitLM from './fit_lm'
-import {
-  extend
-} from '../graph.util'
-
-import aggregator from './data_aggregator'
+import FitLM from './fit_lm.js'
+import aggregator from './data_aggregator.js'
 
 class Waveform {
 
@@ -11,7 +7,32 @@ class Waveform {
 
     this.xOffset = xOffset;
     this.xScale = xScale;
-    this.setData( data );
+
+    // Error bar handling
+    this.errors = {
+
+      nb: 0,
+
+      bars: {
+        above: null,
+        below: null
+      },
+
+      boxes: {
+        above: null,
+        below: null
+      } 
+    };
+
+    if ( data.length > 0 ) {
+      this.setData( data );
+    }
+
+    this.BELOW = Waveform.BELOW;
+    this.ABOVE = Waveform.ABOVE;
+    this.BOX = Waveform.BOX;
+    this.BAR = Waveform.BAR;
+
   }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -126,10 +147,15 @@ class Waveform {
       return this.xdata;
     }
 
-    var wave = new Waveform();
+    let wave = new Waveform(),
+      xs = [];
     for ( var i = 0; i < this.getLength(); i += 1 ) {
-      wave.append( this.getX( i ) );
+      xs.push( this.getX( i ) );
     }
+
+    wave.setData( xs );
+
+    this.xdata = wave;
     return wave;
   }
 
@@ -277,7 +303,8 @@ class Waveform {
     return new Array( length );
   }
 
-  _setData( dataY ) {
+  _setData( dataY = this.data ) {
+
     const l = dataY.length;
     let i = 1,
       monoDir = dataY[ 1 ] > dataY[ 0 ],
@@ -301,8 +328,24 @@ class Waveform {
       this._monotoneousAscending = dataY[ 1 ] > dataY[ 0 ];
     }
 
-    this.minY = minY;
-    this.maxY = maxY;
+    if ( this.hasErrorBars() ) { // If prefer to loop again here
+
+      for ( i = 0; i < l; i++ ) {
+
+        if ( dataY[ i ] === dataY[ i ] ) { // NaN support
+
+          minY = Math.min( minY, dataY[ i ] - this.getMaxError( i, 'below' ) );
+          maxY = Math.max( maxY, dataY[ i ] + this.getMaxError( i, 'above' ) );
+        }
+      }
+
+      this.minY = minY;
+      this.maxY = maxY;
+
+    } else {
+      this.minY = minY;
+      this.maxY = maxY;
+    }
 
     this.data = dataY;
 
@@ -319,8 +362,7 @@ class Waveform {
 
     if ( this.xdata ) {
 
-      this.minX = this.xdata.getMin();
-      this.maxX = this.xdata.getMax();
+      return;
 
     } else {
 
@@ -330,6 +372,7 @@ class Waveform {
       this.minX = Math.min( b1, b2 );
       this.maxX = Math.max( b1, b2 );
     }
+
   }
 
   getDataInUse() {
@@ -403,11 +446,11 @@ class Waveform {
   }
 
   getXMin() {
-    return this.minX * this.getXScale() + this.getXShift();
+    return ( this.xdata ? this.xdata.getMin() : this.minX ) * this.getXScale() + this.getXShift();
   }
 
   getXMax() {
-    return this.maxX * this.getXScale() + this.getXShift();
+    return ( this.xdata ? this.xdata.getMax() : this.maxX ) * this.getXScale() + this.getXShift();
   }
 
   getYMin() {
@@ -427,12 +470,11 @@ class Waveform {
   }
 
   getMinX() {
-
-    return this.minX * this.getXScale() + this.getXShift();
+    return this.getXMin();
   }
 
   getMaxX() {
-    return this.maxX * this.getXScale() + this.getXShift();
+    return this.getXMax();
   }
 
   getMinY() {
@@ -561,7 +603,7 @@ class Waveform {
 
     return new Promise( function( resolver, rejector ) {
 
-      var fit = new FitLM( extend( {}, {
+      var fit = new FitLM( Object.assign( {}, {
 
         dataY: self,
         dataX: self.getXWaveform(),
@@ -1229,7 +1271,7 @@ class Waveform {
 
   findLevels( level, options ) {
 
-    options = extend( {
+    options = Object.assign( {
 
       box: 1,
       edge: 'both',
@@ -1243,7 +1285,7 @@ class Waveform {
     var indices = [];
     var i = 0;
 
-    while ( lvlIndex = this.findLevel( level, extend( true, {}, options, {
+    while ( lvlIndex = this.findLevel( level, Object.assign( {}, options, {
         rangeP: [ lastLvlIndex, options.rangeP[ 1 ] ]
       } ) ) ) {
       indices.push( lvlIndex );
@@ -1261,7 +1303,7 @@ class Waveform {
   // Find the first level in the specified range
   findLevel( level, options ) {
 
-    options = extend( {
+    options = Object.assign( {
 
       box: 1,
       edge: 'both',
@@ -1325,7 +1367,7 @@ class Waveform {
         continue;
       }
       // Crossing up
-      if ( value > level && below ) {
+      if ( value >= level && below ) {
 
         below = false;
 
@@ -1334,7 +1376,7 @@ class Waveform {
 
           for ( j = i + ( box - 1 ) / 2; j >= i - ( box - 1 ) / 2; j-- ) {
 
-            if ( this.data[ j ] > level && this.data[ j - 1 ] <= level ) { // Find a crossing
+            if ( this.data[ j ] >= level && this.data[ j - 1 ] < level ) { // Find a crossing
 
               switch ( options.rounding ) {
                 case 'before':
@@ -1353,7 +1395,7 @@ class Waveform {
           }
         }
 
-      } else if ( value < level && !below ) {
+      } else if ( value <= level && !below ) {
 
         below = true;
 
@@ -1361,7 +1403,7 @@ class Waveform {
 
           for ( j = i + ( box - 1 ) / 2; j >= i - ( box - 1 ) / 2; j-- ) {
 
-            if ( this.data[ j ] < level && this.data[ j - 1 ] >= level ) { // Find a crossing
+            if ( this.data[ j ] <= level && this.data[ j - 1 ] > level ) { // Find a crossing
 
               switch ( options.rounding ) {
                 case 'before':
@@ -1458,13 +1500,262 @@ class Waveform {
     this.setData( this.data );
   }
 
+  ////////////////////////////////////////////////////////////
+  ///// HANDLING ERRORS   ////////////////////////////////////
+  ////////////////////////////////////////////////////////////
+
+  setErrorBarX( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+    xWave.setErrorBar( waveform );
+    return this;
+  }
+
+  setErrorBarXBelow( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+    xWave.setErrorBarBelow( waveform );
+    return this;
+  }
+
+  setErrorBarXAbove( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+    xWave.setErrorBarAbove( waveform );
+    return this;
+  }
+
+  setErrorBoxX( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+    xWave.setErrorBoxAbove( waveform );
+    xWave.setErrorBoxBelow( waveform );
+    return this;
+  }
+
+  setErrorBoxXBelow( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+
+    xWave.setErrorBoxBelow( waveform );
+    return this;
+  }
+
+  setErrorBoxXAbove( waveform ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    var xWave = this.getXWaveform();
+    xWave.setErrorBoxAbove( waveform );
+    return this;
+  }
+
+  setErrorBar( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+    this.errors.nb++;
+    this.errors.nb++;
+    this.errors.bars.bottom = waveform;
+    this.errors.bars.top = waveform;
+
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  setErrorBarBelow( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+    this.errors.nb++;
+    this.errors.bars.below = waveform;
+
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  setErrorBarAbove( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    this.errors.nb++;
+    this.errors.bars.above = waveform;
+
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  setErrorBox( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+    this.errors.nb++;
+    this.errors.nb++;
+    this.errors.boxes.above = waveform;
+    this.errors.boxes.below = waveform;
+
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  setErrorBoxBelow( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+    this.errors.nb++;
+    this.errors.boxes.below = waveform;
+
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  setErrorBoxAbove( waveform, checkMinMax = true ) {
+
+    if ( Array.isArray( waveform ) ) {
+      waveform = new Waveform( waveform );
+    }
+
+    this.errors.boxes.above = waveform;
+    if ( checkMinMax ) {
+      this._setData();
+    }
+  }
+
+  getMaxError( i, side = Waveform.ABOVE ) {
+
+    return Math.max( this.getMaxErrorType( i, side, Waveform.BOX ), this.getMaxErrorType( i, side, Waveform.BAR ) );
+  }
+
+  getMaxErrorType( i, side = Waveform.ABOVE, type = Waveform.BOX ) {
+
+    let stack;
+    if ( type == Waveform.BOX ) {
+      stack = this.errors.boxes
+    } else if ( type == Waveform.BAR ) {
+      stack = this.errors.bars;
+    } else {
+      throw "Unknown type of error";
+    }
+
+    let waveform;
+    if ( !( waveform = stack[ side ] ) ) {
+      if ( side == Waveform.ABOVE ) {
+        if ( stack[ side ] == Waveform.BELOW ) {
+          waveform = stack.below;
+        }
+      } else {
+        if ( stack[ side ] == Waveform.ABOVE ) {
+          waveform = stack.above;
+        }
+      }
+    }
+
+    if ( !waveform ) {
+      return 0;
+    }
+
+    return waveform.getY( i );
+  }
+
+  getErrorBarXBelow( index ) {
+    return this.getErrorX( index, Waveform.BELOW, Waveform.BAR );
+  }
+  getErrorBarXAbove( index ) {
+    return this.getErrorX( index, Waveform.ABOVE, Waveform.BAR );
+  }
+  getErrorBoxXBelow( index ) {
+    return this.getErrorX( index, Waveform.BELOW, Waveform.BOX );
+  }
+  getErrorBoxXAbove( index ) {
+    return this.getErrorX( index, Waveform.ABOVE, Waveform.BOX );
+  }
+
+  getErrorBarYBelow( index ) {
+    return this.getError( index, Waveform.BELOW, Waveform.BAR );
+  }
+  getErrorBarYAbove( index ) {
+    return this.getError( index, Waveform.ABOVE, Waveform.BAR );
+  }
+  getErrorBoxYBelow( index ) {
+    return this.getError( index, Waveform.BELOW, Waveform.BOX );
+  }
+  getErrorBoxYAbove( index ) {
+    return this.getError( index, Waveform.ABOVE, Waveform.BOX );
+  }
+
+  getErrorX( index, side = Waveform.ABOVE, type = Waveform.BAR ) {
+
+    if ( !this.hasXWaveform() ) {
+      return false;
+    }
+
+    return this.xdata.getError( index, side, type );
+  }
+
+  getError( index, side = Waveform.ABOVE, type = Waveform.BAR ) {
+
+    let errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
+
+    if ( !errors ) {
+      return false;
+    }
+
+    let wave;
+    if ( wave = ( side == Waveform.ABOVE ? errors.above : errors.below ) ) {
+
+      if ( wave == Waveform.ABOVE && side == Waveform.BELOW ) {
+        wave = errors.above;
+      } else if ( wave == Waveform.BELOW && side == Waveform.ABOVE ) {
+        wave = errors.below;
+      }
+
+      if ( !wave ) {
+        return false;
+      }
+
+      return wave.getY( index );
+    }
+  }
+
+  hasErrorBars() {
+
+    return this.errors.nb > 0 || ( this.hasXWaveform() && this.xdata.errors.nb > 0 );
+  }
+
 };
-
-const MULTIPLY = Symbol();
-const ADD = Symbol();
-const SUBTRACT = Symbol();
-const DIVIDE = Symbol();
-
 // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
 function pow2ceil( v ) {
   v--;
@@ -1556,4 +1847,18 @@ function binarySearch( target, haystack, reverse ) {
   }
 }
 
+Waveform.BELOW = Symbol();
+Waveform.ABOVE = Symbol();
+
+Waveform.BOX = Symbol();
+Waveform.BAR = Symbol();
+
+const MULTIPLY = Symbol();
+const ADD = Symbol();
+const SUBTRACT = Symbol();
+const DIVIDE = Symbol();
+
+//module.exports = Waveform;
+
 export default Waveform
+//export default Waveform

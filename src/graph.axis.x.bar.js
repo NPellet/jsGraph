@@ -1,4 +1,4 @@
-import AxisX from './graph.axis.x'
+import AxisX from './graph.axis.x.js'
 
 /**
  * Generic constructor of a y axis

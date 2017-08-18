@@ -1,4 +1,4 @@
-import Shape from './graph.shape'
+import Shape from './graph.shape.js'
 
 /**
  *  Displays a surface under a line serie

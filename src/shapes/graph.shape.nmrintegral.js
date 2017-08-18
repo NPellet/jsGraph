@@ -1,5 +1,5 @@
-import Shape from './graph.shape'
-import GraphPosition from '../graph.position'
+import Shape from './graph.shape.js'
+import GraphPosition from '../graph.position.js'
 
 /**
  * Displays an integral with NMR style

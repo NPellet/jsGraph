@@ -1,5 +1,5 @@
-import * as util from '../graph.util'
-import Shape from './graph.shape'
+import * as util from '../graph.util.js'
+import Shape from './graph.shape.js'
 
 /**
  * Displays an ellipse

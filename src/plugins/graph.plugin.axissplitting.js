@@ -1,11 +1,11 @@
-import Graph from "../graph.core"
-import AxisX from "../graph.axis.x"
-import AxisY from "../graph.axis.y"
-import * as util from "../graph.util"
-import SerieLine from '../series/graph.serie.line'
-import SerieScatter from '../series/graph.serie.scatter'
-import Plugin from './graph.plugin'
-import Axis from "../graph.axis"
+import Graph from "../graph.core.js"
+import AxisX from "../graph.axis.x.js"
+import AxisY from "../graph.axis.y.js"
+import * as util from "../graph.util.js"
+import SerieLine from '../series/graph.serie.line.js'
+import SerieScatter from '../series/graph.serie.scatter.js'
+import Plugin from './graph.plugin.js'
+import Axis from "../graph.axis.js"
 
 class SerieLineExtended extends SerieLine {
 

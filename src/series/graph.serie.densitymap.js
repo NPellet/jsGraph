@@ -1,5 +1,5 @@
-import Serie from './graph.serie'
-import * as util from '../graph.util'
+import Serie from './graph.serie.js'
+import * as util from '../graph.util.js'
 
 /**
  * Density map serie

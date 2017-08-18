@@ -1,4 +1,4 @@
-import Plugin from './graph.plugin'
+import Plugin from './graph.plugin.js'
 
 /**
  * Constructor for the drag plugin. Do not use this constructor directly.

@@ -1,5 +1,11 @@
 [
 
+
+{
+	"file": "20-errors",
+	"title": "Using error bars and boxes"
+}
+
 {
 	"file": "30-axisspan",
 	"title": "Axis spanning",

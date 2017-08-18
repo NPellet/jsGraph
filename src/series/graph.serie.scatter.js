@@ -1,6 +1,6 @@
-import Serie from './graph.serie'
-import * as util from '../graph.util'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
+import Serie from './graph.serie.js'
+import * as util from '../graph.util.js'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
 
 const defaults = {};
 
@@ -168,16 +168,13 @@ class SerieScatter extends Serie {
    * @param {String} [ selectionMode="unselected" ] - The selection mode to which this style corresponds. Default is unselected
    *
    */
-  setStyle( all, modifiers, mode ) {
+  setStyle( all, modifiers, mode = "unselected" ) {
 
     if ( typeof modifiers == "string" ) {
       mode = modifiers;
       modifiers = false;
     }
 
-    if ( mode === undefined ) {
-      mode = "unselected"
-    }
     /*
     if( ! this.styles[ mode ] ) {
 
@@ -187,6 +184,7 @@ class SerieScatter extends Serie {
       throw "Style mode is not correct. Should be selected or unselected";
     }
 */
+
     this.styles[ mode ] = this.styles[ mode ] ||  {};
     this.styles[ mode ].all = all;
     this.styles[ mode ].modifiers = modifiers;
@@ -230,7 +228,7 @@ class SerieScatter extends Serie {
     j = 0;
     k = 0;
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorDrawInit();
     }
 
@@ -287,7 +285,7 @@ class SerieScatter extends Serie {
         xpx = this.getX( this.waveform.getX( j ) );
         ypx = this.getY( this.waveform.getY( j ) );
 
-        if ( this.error ) {
+        if ( this.hasErrors() ) {
           this.errorAddPoint( j, this.waveform.getX( j ), this.waveform.getY( j ), xpx, ypx );
         }
 
@@ -300,7 +298,7 @@ class SerieScatter extends Serie {
       }
     }
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorDraw();
     }
 
@@ -390,8 +388,7 @@ class SerieScatter extends Serie {
 
         }
 
-        var tmp = util.extend( {}, styleAll, style );
-        style = util.extend( style, tmp );
+        Object.assign( style, styleAll, style );
 
       } else if ( styleAll !== undefined ) {
 

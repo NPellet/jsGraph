@@ -1,5 +1,5 @@
-import GraphShape from './graph.shape'
-import * as util from '../graph.util'
+import GraphShape from './graph.shape.js'
+import * as util from '../graph.util.js'
 
 /**
  * Represents a rectangle that extends the Shape class

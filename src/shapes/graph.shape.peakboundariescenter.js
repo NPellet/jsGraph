@@ -1,4 +1,4 @@
-import ShapeLine from './graph.shape.line'
+import ShapeLine from './graph.shape.line.js'
 
 /**
  *  Shows a horizontal line with three little vertical bars. Very useful to demonstrate a peak start, end and middle value

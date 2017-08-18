@@ -1,6 +1,6 @@
-import GraphPosition from '../graph.position'
-import * as util from '../graph.util'
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
+import GraphPosition from '../graph.position.js'
+import * as util from '../graph.util.js'
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
 
 /**
  * Shape class that should be extended

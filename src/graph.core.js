@@ -1,7 +1,11 @@
-import GraphPosition from './graph.position'
-import * as util from './graph.util'
-import EventEmitter from './dependencies/eventEmitter/EventEmitter'
-import Waveform from './util/waveform'
+import GraphPosition from './graph.position.js'
+import * as util from './graph.util.js'
+import EventEmitter from './dependencies/eventEmitter/EventEmitter.js'
+import Waveform from './util/waveform.js'
+
+if ( !__VERSION__ ) {
+  var __VERSION__ = "head";
+}
 
 /**
  * Default graph parameters
@@ -83,7 +87,7 @@ class Graph extends EventEmitter {
   constructor( wrapper, options, axis ) {
 
     super();
-
+    console.log( 'new' );
     /*
       The unique ID of the graph
       @name Graph#uniqueid
@@ -331,7 +335,6 @@ class Graph extends EventEmitter {
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
    */
   draw( force ) {
-
     this.drawn = true;
     this.updateLegend( true );
     this.drawSeries( this.redraw( true && !force ) );
@@ -2315,17 +2318,18 @@ class Graph extends EventEmitter {
    * @param {HTMLElement} wrapper - The wrapping element
    * @returns {Graph} Newly created graph
    */
-  static fromSchema( schema, wrapper ) {
+  static fromJSON( schema, wrapper ) {
 
-    var graph;
-    var options = {};
-    var axes = {
-      left: [],
-      top: [],
-      right: [],
-      bottom: []
-    };
-    var axesIndices = [];
+    let graph,
+      options = {},
+      axes = {
+        left: [],
+        top: [],
+        right: [],
+        bottom: []
+      },
+      axesIndices = [],
+      style;
 
     if ( schema.title ) {
       options.title = schema.title;
@@ -2393,13 +2397,18 @@ class Graph extends EventEmitter {
         var serieType = schemaSerie.type,
           serie,
           serieOptions = {},
-          serieAxis;
+          serieAxis,
+          waveform = Graph.newWaveform();
 
         switch ( schemaSerie.type ) {
 
           case 'bar':
             util.throwError( "Bar charts not supported" );
             serieType = false;
+            break;
+
+          case 'color':
+            serieType = Graph.SERIE_LINE_COLORED;
             break;
 
           case 'scatter':
@@ -2431,6 +2440,7 @@ class Graph extends EventEmitter {
           schemaSerie.lineStyle.map( function( style ) {
 
             var styleSerie = {};
+            style = {};
             style.styleName = style.styleName || "unselected";
 
             switch ( serieType ) {
@@ -2455,9 +2465,9 @@ class Graph extends EventEmitter {
           } );
         }
 
-        if ( schemaSerie.style ) {
+        if ( schemaSerie.styles ) {
 
-          schemaSerie.style.map( function( style ) {
+          schemaSerie.styles.map( function( style ) {
 
             var styleSerie = {};
             style.styleName = style.styleName || "unselected";
@@ -2466,30 +2476,31 @@ class Graph extends EventEmitter {
               style.styles = [ style.styles ];
             }
 
-            var styles = style.styles.map( function( style ) {
+            var styles = style.styles.map( function( eachStyleElement ) {
 
               switch ( serieType ) {
 
                 case Graph.SERIE_LINE:
 
                   return {
-                    type: style.shape,
-                    zoom: style.zoom,
-                    strokeWidth: style.lineWidth,
-                    strokeColor: style.lineColor,
-                    fillColor: style.color,
-                    points: style.points
+                    type: eachStyleElement.shape,
+                    zoom: eachStyleElement.zoom,
+                    strokeWidth: eachStyleElement.lineWidth,
+                    strokeColor: eachStyleElement.lineColor,
+                    fillColor: eachStyleElement.color,
+                    points: eachStyleElement.points
                   };
 
                   break;
 
                 case Graph.SERIE_BOX:
 
-                  return style;
+                  return eachStyleElement;
 
                   break;
 
                 case Graph.SERIE_SCATTER:
+                  return eachStyleElement;
 
                   break;
               }
@@ -2504,51 +2515,170 @@ class Graph extends EventEmitter {
 
               case Graph.SERIE_SCATTER:
 
-                serie.setStyle( styles, {}, style.styleName );
+                serie.setStyle( {}, styles, style.styleName );
                 break;
 
               case Graph.SERIE_BOX:
 
-                serie.setStyle( styles[ 0 ], style.stylename );
+                serie.setStyle( styles[ 0 ], style.stylename ||  "unselected" );
                 break;
             }
 
           } );
         }
-
-        if ( schemaSerie.errorX ||  schemaSerie.errorY ) {
-          var errors = [];
-          if ( schemaSerie.errorX ) {
-
-            for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
-
-              errors[ i ] = errors[ i ] || [
-                [],
-                []
-              ];
-
-              errors[ i ][ 0 ][ 0 ] = schemaSerie.errorX[ i ];
-            }
-          }
-
-          if ( schemaSerie.errorY ) {
-
-            for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
-
-              errors[ i ] = errors[ i ] || [
-                []
-              ];
-              errors[ i ][ 1 ][ 0 ] = schemaSerie.errorY[ i ];
-            }
-          }
-
-          serie.setDataError( errors ) // Adds the error data
-            .setErrorStyle( [ {
-              type: 'bar',
-              x: {},
-              y: {}
-            } ] ); // Display bar errors
+        console.log( schemaSerie );
+        if ( schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED ) {
+          serie.setColors( schemaSerie.color );
         }
+
+        waveform.setData( schemaSerie.y, schemaSerie.x );
+
+        if ( !serie ) {
+          return;
+        }
+
+        let errorBarsXAbove = [],
+          errorBarsXBelow = [],
+          errorBarsYAbove = [],
+          errorBarsYBelow = [],
+
+          errorBoxesXAbove = [],
+          errorBoxesXBelow = [],
+          errorBoxesYAbove = [],
+          errorBoxesYBelow = [];
+
+        var errors = [];
+        if ( schemaSerie.errorX ) {
+
+          for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
+
+            if ( Array.isArray( schemaSerie.errorX[ i ] ) ) {
+
+              errorBarsXAbove.push( schemaSerie.errorX[ i ][ 0 ] );
+              errorBarsXBelow.push( schemaSerie.errorX[ i ][ 1 ] );
+            } else {
+              errorBarsXAbove.push( schemaSerie.errorX[ i ] );
+              errorBarsXBelow.push( schemaSerie.errorX[ i ] );
+            }
+          }
+
+        } else if ( schemaSerie.errorBarX ||  schemaSerie.errorBoxX ) {
+
+          if ( schemaSerie.errorBarX ) {
+
+            for ( var i = 0, l = schemaSerie.errorBarX.length; i < l; i++ ) {
+
+              if ( Array.isArray( schemaSerie.errorBarX[ i ] ) ) {
+
+                errorBarsXAbove.push( schemaSerie.errorBarX[ i ][ 0 ] );
+                errorBarsXBelow.push( schemaSerie.errorBarX[ i ][ 1 ] );
+              } else {
+                errorBarsXAbove.push( schemaSerie.errorBarX[ i ] );
+                errorBarsXBelow.push( schemaSerie.errorBarX[ i ] );
+              }
+            }
+          }
+
+          if ( schemaSerie.errorBoxX ) {
+
+            for ( var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++ ) {
+
+              if ( Array.isArray( schemaSerie.errorBoxX[ i ] ) ) {
+
+                errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ][ 0 ] );
+                errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ][ 1 ] );
+              } else {
+                errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ] );
+                errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ] );
+              }
+            }
+          }
+        }
+
+        if ( schemaSerie.errorY ) {
+
+          for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
+
+            if ( Array.isArray( schemaSerie.errorY[ i ] ) ) {
+
+              errorBarsYAbove.push( schemaSerie.errorY[ i ][ 0 ] );
+              errorBarsYBelow.push( schemaSerie.errorY[ i ][ 1 ] );
+            } else {
+              errorBarsYAbove.push( schemaSerie.errorY[ i ] );
+              errorBarsYBelow.push( schemaSerie.errorY[ i ] );
+            }
+          }
+        } else if ( schemaSerie.errorBarY ||  schemaSerie.errorBoxY ) {
+
+          if ( schemaSerie.errorBarY ) {
+
+            for ( var i = 0, l = schemaSerie.errorBarY.length; i < l; i++ ) {
+
+              if ( Array.isArray( schemaSerie.errorBarY[ i ] ) ) {
+
+                errorBarsYAbove.push( schemaSerie.errorBarY[ i ][ 0 ] );
+                errorBarsYBelow.push( schemaSerie.errorBarY[ i ][ 1 ] );
+              } else {
+                errorBarsYAbove.push( schemaSerie.errorBarY[ i ] );
+                errorBarsYBelow.push( schemaSerie.errorBarY[ i ] );
+              }
+            }
+          }
+
+          if ( schemaSerie.errorBoxY ) {
+
+            for ( var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++ ) {
+
+              if ( Array.isArray( schemaSerie.errorBoxY[ i ] ) ) {
+
+                errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ][ 0 ] );
+                errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ][ 1 ] );
+              } else {
+                errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ] );
+                errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ] );
+              }
+            }
+          }
+        }
+
+        style = {};
+        if ( errorBarsXAbove.length > 0 ) {
+          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
+          style.right = {};
+        }
+        if ( errorBarsXBelow.length > 0 ) {
+          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
+          style.left = {};
+        }
+        if ( errorBarsYAbove.length > 0 ) {
+          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
+          style.top = {};
+        }
+        if ( errorBarsYBelow.length > 0 ) {
+          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
+          style.bottom = {};
+        }
+
+        serie.setErrorBarStyle( style );
+
+        style = {};
+        if ( errorBoxesXAbove.length > 0 ) {
+          waveform.setErrorBoxXAbove( Graph.newWaveform( errorBoxesXAbove ) );
+          style.right = {};
+        }
+        if ( errorBoxesXBelow.length > 0 ) {
+          waveform.setErrorBoxXBelow( Graph.newWaveform( errorBoxesXBelow ) );
+          style.left = {};
+        }
+        if ( errorBoxesYAbove.length > 0 ) {
+          waveform.setErrorBoxAbove( Graph.newWaveform( errorBoxesYAbove ) );
+          style.top = {};
+        }
+        if ( errorBoxesYBelow.length > 0 ) {
+          waveform.setErrorBoxBelow( Graph.newWaveform( errorBoxesYBelow ) );
+          style.bottom = {};
+        }
+        serie.setErrorBoxStyle( style );
 
         if ( schema.axis ) {
           serieAxis = schema.axis[ schemaSerie.xAxis ];
@@ -2591,12 +2721,10 @@ class Graph extends EventEmitter {
 
           default:
           case Graph.SERIE_SCATTER:
+          case Graph.SERIE_LINE_COLORED:
           case Graph.SERIE_LINE:
 
-            serie.setData( [ {
-              x: schemaSerie.x,
-              y: schemaSerie.y
-            } ] );
+            serie.setWaveform( waveform );
 
             break;
         }
@@ -2667,6 +2795,10 @@ class Graph extends EventEmitter {
           return 'bar';
           break;
 
+        case Graph.SERIE_LINE_COLORED:
+          return 'color';
+          break;
+
         case Graph.SERIE_SCATTER:
           return 'scatter';
           break;
@@ -2705,7 +2837,7 @@ class Graph extends EventEmitter {
 
     schema.data = seriesExport.concat( this.series.map( ( serie ) => {
 
-      let style = [];
+      style = [];
       let linestyle = [];
 
       if ( serie.getType() == Graph.SERIE_LINE ) {
@@ -3950,4 +4082,4 @@ Graph.TICKS_CENTERED = Symbol();
 Graph.ns = 'http://www.w3.org/2000/svg';
 Graph.nsxlink = "http://www.w3.org/1999/xlink";
 
-export default Graph;
+export default Graph

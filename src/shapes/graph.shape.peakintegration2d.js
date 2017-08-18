@@ -1,4 +1,4 @@
-import ShapeRect from './graph.shape.rect'
+import ShapeRect from './graph.shape.rect.js'
 
 class ShapePeakIntegration2D extends ShapeRect {
 

@@ -1,4 +1,4 @@
-import GraphShape from './graph.shape'
+import GraphShape from './graph.shape.js'
 
 /**
  * Blank shape used to display label

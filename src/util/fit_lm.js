@@ -1,5 +1,3 @@
-'use strict'
-
 class FitHost {
 
   constructor( options ) {
@@ -437,4 +435,5 @@ class LM {
   }
 }
 
-export default FitHost
+export default FitHost;
+//module.export = FitHost

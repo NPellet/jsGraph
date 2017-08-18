@@ -1,4 +1,4 @@
-import Plugin from './graph.plugin'
+import Plugin from './graph.plugin.js'
 
 /**
  * @class PluginSerieLineDifference

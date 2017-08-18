@@ -1,6 +1,6 @@
-import Graph from './graph.core'
-import EventEmitter from './dependencies/eventEmitter/EventEmitter'
-import * as util from './graph.util'
+import Graph from './graph.core.js'
+import EventEmitter from './dependencies/eventEmitter/EventEmitter.js'
+import * as util from './graph.util.js'
 
 /**
  * Default graph parameters

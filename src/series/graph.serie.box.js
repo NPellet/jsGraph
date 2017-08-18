@@ -1,11 +1,11 @@
-import Serie from './graph.serie'
+import Serie from './graph.serie.js'
 import {
   extend,
   guid,
   throwError,
   emptyDom
 }
-from '../graph.util'
+from '../graph.util.js'
 
 /**
  * @static

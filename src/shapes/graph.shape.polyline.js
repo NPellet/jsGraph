@@ -1,4 +1,4 @@
-import Shape from './graph.shape'
+import Shape from './graph.shape.js'
 
 /**
  * Represents a line that extends the Shape class. Used by the plugin {@link PluginSerieLineDifference}

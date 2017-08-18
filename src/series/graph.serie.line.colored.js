@@ -1,6 +1,6 @@
-import SerieLine from './graph.serie.line'
-import * as util from '../graph.util'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
+import SerieLine from './graph.serie.line.js'
+import * as util from '../graph.util.js'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
 
 /**
  * Colored serie line
@@ -20,13 +20,12 @@ class SerieLineColor extends SerieLine {
     this.colors = colors;
   }
 
-  _draw_standard() {
+  _draw() {
 
     var self = this,
       data = this._dataToUse,
       toBreak,
       i = 0,
-      l = data.length,
       j,
       k,
       m,
@@ -71,181 +70,151 @@ class SerieLineColor extends SerieLine {
       incrYFlip = 0;
     }
 
-    for ( i = 0; i < l; i++ ) {
+    this.currentLine = "";
+    m = this.waveform.getLength();
 
-      toBreak = false;
-      this.counter1 = i;
+    for ( j = 0; j < m; j += 2 ) {
 
-      this.currentLine = "";
-      j = 0;
-      k = 0;
-      m = data[ i ].length;
+      x = this.waveform.getX( j );
+      y = this.waveform.getY( j );
 
-      for ( j = 0; j < m; j += 2 ) {
+      if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
+        lastX = x;
+        lastY = y;
+        lastPointOutside = true;
+        continue;
+      }
 
-        x = data[ i ][ j + incrXFlip ];
-        y = data[ i ][ j + incrYFlip ];
+      this.counter2 = j;
 
-        if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
-          lastX = x;
-          lastY = y;
-          lastPointOutside = true;
-          continue;
-        }
+      if ( this.markersShown() ) {
+        this.getMarkerCurrentFamily( this.counter2 );
+      }
 
-        this.counter2 = j / 2;
+      xpx2 = this.getX( x );
+      ypx2 = this.getY( y );
 
-        if ( this.markersShown() ) {
-          this.getMarkerCurrentFamily( this.counter2 );
-        }
+      if ( xpx2 == xpx && ypx2 == ypx ) {
+        continue;
+      }
 
-        xpx2 = this.getX( x );
-        ypx2 = this.getY( y );
+      pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+      /*
+              if ( this.options.lineToZero ) {
+                pointOutside = ( x < xMin || x > xMax );
 
-        if ( xpx2 == xpx && ypx2 == ypx ) {
-          continue;
-        }
+                if ( pointOutside ) {
+                  continue;
+                }
+              } else {
 
-        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
-        /*
-                if ( this.options.lineToZero ) {
-                  pointOutside = ( x < xMin || x > xMax );
+                if ( pointOutside || lastPointOutside ) {
 
-                  if ( pointOutside ) {
-                    continue;
-                  }
-                } else {
-
-                  if ( pointOutside || lastPointOutside ) {
-
-                    if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
-
-                      xpx = xpx2;
-                      ypx = ypx2;
-                      lastX = x;
-                      lastY = y;
-
-                    } else {
-
-                      pointOnAxis = [];
-                      // Y crossing
-                      yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
-                      yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
-                      yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
-                      yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
-
-                      // X crossing
-                      xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
-                      xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
-                      xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
-                      xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
-
-                      if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
-                        pointOnAxis.push( [ xMin, yLeftCrossing ] );
-                      }
-
-                      if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
-                        pointOnAxis.push( [ xMax, yRightCrossing ] );
-                      }
-
-                      if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
-                        pointOnAxis.push( [ xTopCrossing, yMin ] );
-                      }
-
-                      if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
-                        pointOnAxis.push( [ xBottomCrossing, yMax ] );
-                      }
-
-                      if ( pointOnAxis.length > 0 ) {
-
-                        if ( !pointOutside ) { // We were outside and now go inside
-
-                          if ( pointOnAxis.length > 1 ) {
-                            console.error( "Programmation error. Please e-mail me." );
-                            console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                          }
-
-                          this._createLine();
-                          this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                          this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
-
-                        } else if ( !lastPointOutside ) { // We were inside and now go outside
-
-                          if ( pointOnAxis.length > 1 ) {
-                            console.error( "Programmation error. Please e-mail me." );
-                            console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                          }
-
-                          this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-
-                        } else {
-
-                          // No crossing: do nothing
-                          if ( pointOnAxis.length == 2 ) {
-                            this._createLine();
-
-                            this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                            this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                          }
-
-                        }
-                      } else if ( !pointOutside ) {
-                        this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
-                      }
-                    }
+                  if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
 
                     xpx = xpx2;
                     ypx = ypx2;
                     lastX = x;
                     lastY = y;
 
-                    lastPointOutside = pointOutside;
+                  } else {
 
-                    continue;
+                    pointOnAxis = [];
+                    // Y crossing
+                    yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+                    yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+                    yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+                    yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
+
+                    // X crossing
+                    xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+                    xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+                    xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+                    xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
+
+                    if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                      pointOnAxis.push( [ xMin, yLeftCrossing ] );
+                    }
+
+                    if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                      pointOnAxis.push( [ xMax, yRightCrossing ] );
+                    }
+
+                    if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                      pointOnAxis.push( [ xTopCrossing, yMin ] );
+                    }
+
+                    if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                      pointOnAxis.push( [ xBottomCrossing, yMax ] );
+                    }
+
+                    if ( pointOnAxis.length > 0 ) {
+
+                      if ( !pointOutside ) { // We were outside and now go inside
+
+                        if ( pointOnAxis.length > 1 ) {
+                          console.error( "Programmation error. Please e-mail me." );
+                          console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                        }
+
+                        this._createLine();
+                        this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                        this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
+
+                      } else if ( !lastPointOutside ) { // We were inside and now go outside
+
+                        if ( pointOnAxis.length > 1 ) {
+                          console.error( "Programmation error. Please e-mail me." );
+                          console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                        }
+
+                        this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+
+                      } else {
+
+                        // No crossing: do nothing
+                        if ( pointOnAxis.length == 2 ) {
+                          this._createLine();
+
+                          this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                          this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                        }
+
+                      }
+                    } else if ( !pointOutside ) {
+                      this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
+                    }
                   }
 
-                }*/
+                  xpx = xpx2;
+                  ypx = ypx2;
+                  lastX = x;
+                  lastY = y;
 
-        if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
-          if ( this.counter > 0 ) {
+                  lastPointOutside = pointOutside;
 
-            //      this._createLine();
-          }
-          continue;
+                  continue;
+                }
+
+              }*/
+
+      if ( isNaN( xpx2 ) ||  isNaN( ypx2 ) ) {
+        if ( this.counter > 0 ) {
+
+          //      this._createLine();
         }
-
-        // OPTIMIZATION START
-        if ( !this._optimize_before( xpx2, ypx2 ) ) {
-          continue;
-        }
-        // OPTIMIZATION END
-
-        var color = this.colors[ i ][ j / 2 ];
-
-        this._addPoint( xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, j, color, false, true );
-
-        this.detectPeaks( x, y );
-
-        // OPTIMIZATION START
-        if ( !this._optimize_after( xpx2, ypx2 ) ) {
-          toBreak = true;
-          break;
-        }
-        // OPTIMIZATION END
-
-        xpx = xpx2;
-        ypx = ypx2;
-
-        lastX = x;
-        lastY = y;
+        continue;
       }
 
-      // this._createLine();
+      var color = this.colors[ j ];
 
-      if ( toBreak ) {
-        break;
-      }
+      this._addPoint( xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, j, color, false, true );
 
+      xpx = xpx2;
+      ypx = ypx2;
+
+      lastX = x;
+      lastY = y;
     }
 
     this.latchLines();
@@ -292,6 +261,10 @@ class SerieLineColor extends SerieLine {
       return;
     }
 
+    if ( color._rgb ) {
+      color = 'rgba(' + color._rgb[ 0 ] + ',' + color._rgb[ 1 ] + ',' + color._rgb[ 2 ] + ',' + ( color._rgb[ 3 ] ||  1 ) + ")";
+    }
+
     var line = this.lines[ color ];
     if ( !line ) {
       line = this.lines[ color ] = {
@@ -307,7 +280,7 @@ class SerieLineColor extends SerieLine {
 
     line.path += "M " + xpxbefore + " " + ypxbefore + " L " + xpx + " " + ypx;
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorAddPoint( j, x, y, xpx, ypx );
     }
 

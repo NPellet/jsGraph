@@ -1,65 +1,67 @@
-import * as util from '../graph.util'
+import * as util from '../graph.util.js'
 
 var ErrorBarMixin = {
+  /*
+    doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
 
-  doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
-
-    if ( !( error instanceof Array ) )  {
-      error = [ error ];
-    }
-
-    var functionName = orientation == 'y' ? 'getY' : 'getX';
-    var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
-    var j;
-
-    if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
-      return;
-    }
-
-    for ( var i = 0, l = error.length; i < l; i++ ) {
-
-      if ( error[ i ] instanceof Array ) { // TOP
-
-        j = bars[ 0 ];
-        this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-        this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
-
-        j = bars[ 1 ];
-        this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-        this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
-
-      } else {
-
-        j = bars[ 0 ];
-
-        this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-        this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
-        j = bars[ 1 ];
-        this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
-        this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
+      if ( !( error instanceof Array ) )  {
+        error = [ error ];
       }
-    }
-  },
 
-  makeError: function( orientation, level, coord, origin, quadOrientation ) {
+      var functionName = orientation == 'y' ? 'getY' : 'getX';
+      var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+      var j;
 
-    var method;
-    switch ( this.errorstyles[ level ].type ) {
-      case 'bar':
-        method = "makeBar";
-        break;
+      if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+        return;
+      }
 
-      case 'box':
-        method = "makeBox";
-        break;
-    }
+      for ( var i = 0, l = error.length; i < l; i++ ) {
 
-    return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+        if ( error[ i ] instanceof Array ) { // TOP
 
-  },
+          j = bars[ 0 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
+
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
+
+        } else {
+
+          j = bars[ 0 ];
+
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
+        }
+      }
+    },
+  */
+
+  /*
+    makeError: function( orientation, type, coord, origin, quadOrientation ) {
+
+      var method;
+      switch ( this.errorstyles[ level ].type ) {
+        case 'bar':
+          method = "makeBar";
+          break;
+
+        case 'box':
+          method = "makeBox";
+          break;
+      }
+
+      return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+
+    },*/
 
   makeBarY: function( coordY, origin, style ) {
-    if ( !coordY ||  !style ) {
+    if ( !coordY || style === undefined ) {
       return;
     }
     var width = !util.isNumeric( style.width ) ? 10 : style.width;
@@ -67,14 +69,14 @@ var ErrorBarMixin = {
   },
 
   makeBoxY: function( coordY, origin, style ) {
-    if ( !coordY ||  !style ) {
+    if ( !coordY || style === undefined ) {
       return;
     }
     return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
   },
 
   makeBarX: function( coordX, origin, style ) {
-    if ( !coordX ||  !style ) {
+    if ( !coordX || style === undefined ) {
       return;
     }
     var height = !util.isNumeric( style.width ) ? 10 : style.width;
@@ -82,106 +84,89 @@ var ErrorBarMixin = {
   },
 
   makeBoxX: function( coordX, origin, style ) {
-    if ( !coordX ||  !style ) {
+    if ( !coordX || style === undefined ) {
       return;
     }
     return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
   },
+  /*
+    check: function( index, valY, valX ) {
 
-  check: function( index, valY, valX ) {
+      var dx, dy;
 
-    var dx, dy;
+      if ( ( this.getType() == Graph.SERIE_LINE ||  this.getType() == Graph.SERIE_SCATTER ) ) {
 
-    if ( ( this.getType() == Graph.SERIE_LINE ||  this.getType() == Graph.SERIE_SCATTER ) ) {
+        if ( !( dx = this.data[ index * 2 ] ) ||  !( dy = this.data[ index * 2 + 1 ] ) ) { //
+          return;
+        }
+      }
 
-      if ( !( dx = this.data[ index * 2 ] ) ||  !( dy = this.data[ index * 2 + 1 ] ) ) { //
+      if ( dx === undefined ) {
         return;
       }
-    }
 
-    if ( dx === undefined ) {
-      return;
-    }
+      for ( var i = 0, l = valY.length; i < l; i++ ) {
 
-    for ( var i = 0, l = valY.length; i < l; i++ ) {
+        if ( Array.isArray( valY[ i ] ) ) {
 
-      if ( Array.isArray( valY[ i ] ) ) {
+          if ( !isNaN( valY[ i ][ 0 ] ) ) {
+            this._checkY( dy + valY[ i ][ 0 ] );
+          }
 
-        if ( !isNaN( valY[ i ][ 0 ] ) ) {
-          this._checkY( dy + valY[ i ][ 0 ] );
-        }
+          if ( !isNaN( valY[ i ][ 1 ] ) ) {
+            this._checkY( dy - valY[ i ][ 1 ] );
+          }
 
-        if ( !isNaN( valY[ i ][ 1 ] ) ) {
-          this._checkY( dy - valY[ i ][ 1 ] );
-        }
+        } else {
 
-      } else {
-
-        if ( !isNaN( valY[ i ] ) ) {
-          this._checkY( dy + valY[ i ] );
-          this._checkY( dy - valY[ i ] );
+          if ( !isNaN( valY[ i ] ) ) {
+            this._checkY( dy + valY[ i ] );
+            this._checkY( dy - valY[ i ] );
+          }
         }
       }
-    }
 
-    for ( var i = 0, l = valX.length; i < l; i++ ) {
+      for ( var i = 0, l = valX.length; i < l; i++ ) {
 
-      if ( Array.isArray( valX[ i ] ) ) {
+        if ( Array.isArray( valX[ i ] ) ) {
 
-        if ( !isNaN( valX[ i ][ 0 ] ) ) {
-          this._checkX( dx - valX[ i ][ 0 ] );
-        }
+          if ( !isNaN( valX[ i ][ 0 ] ) ) {
+            this._checkX( dx - valX[ i ][ 0 ] );
+          }
 
-        if ( !isNaN( valX[ i ][ 1 ] ) ) {
-          this._checkX( dx + valX[ i ][ 1 ] );
-        }
+          if ( !isNaN( valX[ i ][ 1 ] ) ) {
+            this._checkX( dx + valX[ i ][ 1 ] );
+          }
 
-      } else {
+        } else {
 
-        if ( !isNaN( valY[ i ] ) ) {
-          this._checkX( dx - valX[ i ] );
-          this._checkX( dx + valX[ i ] );
-        }
-      }
-    }
-
-  },
-  /**
-   *  Sets the data error values
-   */
-  setDataError: function( error, noCheck ) {
-    this.error = error;
-
-    if ( !noCheck ) {
-      for ( let i = 0, l = this.error.length; i < l; i++ ) {
-
-        if ( this.error[ i ] ) {
-
-          this.check( i, this.error[ i ][ 0 ], this.error[ i ][ 1 ] );
-
+          if ( !isNaN( valY[ i ] ) ) {
+            this._checkX( dx - valX[ i ] );
+            this._checkX( dx + valX[ i ] );
+          }
         }
       }
-    }
 
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
-    return this;
-  },
+    },
+  */
 
   /**
    *
    *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
    */
-  setErrorStyle: function( errorstyles ) {
+  setErrorBarStyle: function( errorstyle ) {
 
-    var self = this;
+    this.errorbarStyle = this._setErrorStyle( errorstyle );
+    return this;
+  },
 
-    errorstyles = errorstyles ||  [ 'box', 'bar' ];
+  setErrorBoxStyle: function( errorstyle ) {
 
-    // Ensure array
-    if ( !Array.isArray( errorstyles ) ) {
-      errorstyles = [ errorstyles ];
-    }
+    this.errorboxStyle = this._setErrorStyle( errorstyle );
+    return this;
+  },
+
+  _setErrorStyle( errorstyles = {} ) {
 
     var styles = [];
     var pairs = [
@@ -189,123 +174,121 @@ var ErrorBarMixin = {
       [ 'x', 'left', 'right' ]
     ];
 
-    function makePath( style ) {
+    var makePath = ( style ) => {
 
-      style.dom = document.createElementNS( self.graph.ns, 'path' );
+      style.dom = document.createElementNS( this.graph.ns, 'path' );
       style.dom.setAttribute( 'fill', style.fillColor || 'none' );
       style.dom.setAttribute( 'stroke', style.strokeColor || 'black' );
       style.dom.setAttribute( 'stroke-opacity', style.strokeOpacity || 1 );
       style.dom.setAttribute( 'fill-opacity', style.fillOpacity || 1 );
       style.dom.setAttribute( 'stroke-width', style.strokeWidth || 1 );
 
-      self.groupMain.appendChild( style.dom );
+      this.groupMain.appendChild( style.dom );
+    }
+    // i is bar or box
+
+    var styles = {};
+
+    if ( typeof errorstyles == "string" ) {
+      errorstyles = {};
     }
 
-    for ( var i = 0; i < errorstyles.length; i++ ) {
-      // i is bar or box
+    for ( var j = 0, l = pairs.length; j < l; j++ ) {
 
-      styles[ i ] = {};
+      if ( errorstyles.all ) {
 
-      if ( typeof errorstyles[ i ] == "string" ) {
-
-        errorstyles[ i ] = {
-          type: errorstyles[ i ],
-          y: {}
-        };
+        errorstyles[ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles.all );
+        errorstyles[ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles.all );
 
       }
 
-      styles[ i ].type = errorstyles[ i ].type;
+      if ( errorstyles[ pairs[ j ][ 0 ] ] ) { //.x, .y
 
-      for ( var j = 0, l = pairs.length; j < l; j++ ) {
+        errorstyles[ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ pairs[ j ][ 0 ] ] );
+        errorstyles[ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ pairs[ j ][ 0 ] ] );
 
-        if ( errorstyles[ i ].all ) {
+      }
 
-          errorstyles[ i ][ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ i ].all );
-          errorstyles[ i ][ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ i ].all );
+      for ( var k = 1; k <= 2; k++ ) {
 
-        }
+        if ( errorstyles[ pairs[ j ][ k ] ] ) {
 
-        if ( errorstyles[ i ][ pairs[ j ][ 0 ] ] ) { //.x, .y
-
-          errorstyles[ i ][ pairs[ j ][ 1 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-          errorstyles[ i ][ pairs[ j ][ 2 ] ] = util.extend( true, {}, errorstyles[ i ][ pairs[ j ][ 0 ] ] );
-
-        }
-
-        for ( var k = 1; k <= 2; k++ ) {
-
-          if ( errorstyles[ i ][ pairs[ j ][ k ] ] ) {
-
-            styles[ i ][ pairs[ j ][ k ] ] = errorstyles[ i ][ pairs[ j ][ k ] ];
-            makePath( styles[ i ][ pairs[ j ][ k ] ] );
-          }
+          styles[ pairs[ j ][ k ] ] = errorstyles[ pairs[ j ][ k ] ];
+          makePath( styles[ pairs[ j ][ k ] ] );
         }
       }
     }
-    /*
-          // None is defined
-          if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
 
-            styles[ i ].top = errorstyles[ i ];
-            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-            styles[ i ].bottom = errorstyles[ i ];
-            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-
-          } else if( errrostyles[ i ].top ) {
-
-            styles[ i ].bottom = null; // No bottom displayed
-            styles[ i ].top = errrostyles[ i ].top;
-            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-
-          } else {
-
-            styles[ i ].bottom = errorstyles[ i ].bottom;
-            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-            styles[ i ].top = null;
-          }
-  */
-
-    this.errorstyles = styles;
-
-    return this;
+    return styles;
   },
 
   errorDrawInit: function() {
     var error;
     //  var pathError = "M 0 0 ";
 
-    if ( this.errorstyles ) {
+    if ( this.errorboxStyle ) {
 
-      for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+      this.errorboxStyle.paths = {
+        top: "",
+        bottom: "",
+        left: "",
+        right: ""
+      };
+    }
 
-        this.errorstyles[ i ].paths = {
-          top: "",
-          bottom: "",
-          left: "",
-          right: ""
-        };
+    if ( this.errorbarStyle ) {
 
-      }
-
+      this.errorbarStyle.paths = {
+        top: "",
+        bottom: "",
+        left: "",
+        right: ""
+      };
     }
   },
 
-  errorAddPoint: function( j, dataX, dataY, xpx, ypx ) {
+  errorAddPoint: function( index, dataX, dataY, xpx, ypx ) {
 
-    var error;
-    if ( this.error && ( error = this.error[ j / 2 ] ) ) {
+    let error;
+    if ( error = this.waveform.getErrorBarXBelow( index ) ) {
+      this.errorbarStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.left += this.makeBarX( this.getX( dataX - error ), xpx, this.errorbarStyle.left );
+    }
 
-      //    pathError += "M " + xpx + " " + ypx;
+    if ( error = this.waveform.getErrorBarXAbove( index ) ) {
+      this.errorbarStyle.paths.right += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.right += this.makeBarX( this.getX( dataX + error ), xpx, this.errorbarStyle.right );
+    }
 
-      if ( error[ 0 ] ) {
-        this.doErrorDraw( 'y', error[ 0 ], dataY, ypx, xpx, ypx );
-      }
+    if ( error = this.waveform.getErrorBarYBelow( index ) ) {
+      this.errorbarStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.bottom += this.makeBarY( this.getY( dataY - error ), ypx, this.errorbarStyle.bottom );
+    }
 
-      if ( error[ 1 ] ) {
-        this.doErrorDraw( 'x', error[ 1 ], dataX, xpx, xpx, ypx );
-      }
+    if ( error = this.waveform.getErrorBarYAbove( index ) ) {
+      this.errorbarStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.top += this.makeBarY( this.getY( dataY + error ), ypx, this.errorbarStyle.top );
+    }
 
+    if ( error = this.waveform.getErrorBoxXBelow( index ) ) {
+      this.errorboxStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.left += this.makeBoxX( this.getX( dataX - error ), xpx, this.errorboxStyle.left );
+    }
+
+    if ( error = this.waveform.getErrorBoxXAbove( index ) ) {
+      this.errorboxStyle.paths.right += " M " + xpx + " " + ypx;
+
+      this.errorboxStyle.paths.right += this.makeBoxX( this.getX( dataX + error ), xpx, this.errorboxStyle.right );
+    }
+
+    if ( error = this.waveform.getErrorBoxYBelow( index ) ) {
+      this.errorboxStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.bottom += this.makeBoxY( this.getY( dataY - error ), ypx, this.errorboxStyle.bottom );
+    }
+
+    if ( error = this.waveform.getErrorBoxYAbove( index ) ) {
+      this.errorboxStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.top += this.makeBoxY( this.getY( dataY + error ), ypx, this.errorboxStyle.top );
     }
 
   },
@@ -319,20 +302,26 @@ var ErrorBarMixin = {
 
   errorDraw: function()  {
 
-    if ( this.error && this.errorstyles ) {
+    if ( this.errorbarStyle ) {
 
-      for ( var i = 0, l = this.errorstyles.length; i < l; i++ ) {
+      for ( var j in this.errorbarStyle.paths ) {
 
-        for ( var j in this.errorstyles[ i ].paths ) {
+        if ( this.errorbarStyle[ j ] && this.errorbarStyle[ j ].dom ) {
+          this.errorbarStyle[ j ].dom.setAttribute( 'd', this.errorbarStyle.paths[ j ] );
+        }
+      }
+    }
 
-          if ( this.errorstyles[ i ][ j ] && this.errorstyles[ i ][ j ].dom ) {
-            this.errorstyles[ i ][ j ].dom.setAttribute( 'd', this.errorstyles[ i ].paths[ j ] );
-          }
+    if ( this.errorboxStyle ) {
+
+      for ( var j in this.errorboxStyle.paths ) {
+
+        if ( this.errorboxStyle[ j ] && this.errorboxStyle[ j ].dom ) {
+          this.errorboxStyle[ j ].dom.setAttribute( 'd', this.errorboxStyle.paths[ j ] );
         }
       }
     }
   }
-
 };
 
 export default ErrorBarMixin;

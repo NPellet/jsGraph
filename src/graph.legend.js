@@ -1,5 +1,5 @@
-import GraphPosition from './graph.position'
-import * as util from "./graph.util"
+import GraphPosition from './graph.position.js'
+import * as util from "./graph.util.js"
 
 /**
  * Default legend configuration

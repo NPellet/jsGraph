@@ -1,4 +1,4 @@
-import EventEmitter from '../dependencies/eventEmitter/EventEmitter'
+import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
 
 /**
  * Represents a plugin

@@ -1,9 +1,9 @@
-import Graph from '../graph.core'
-import Serie from './graph.serie'
+import Graph from '../graph.core.js'
+import Serie from './graph.serie.js'
 
-import * as util from '../graph.util'
-import ErrorBarMixin from '../mixins/graph.mixin.errorbars'
-import Waveform from '../util/waveform'
+import * as util from '../graph.util.js'
+import ErrorBarMixin from '../mixins/graph.mixin.errorbars.js'
+import Waveform from '../util/waveform.js'
 
 /**
  * Serie line
@@ -515,13 +515,13 @@ class SerieLine extends Serie {
 
       this.pos0 = this.getYAxis().getPos( 0 );
 
-      if ( this.error ) {
+      if ( this.hasErrors() ) {
         this.errorDrawInit();
       }
 
       this._draw();
 
-      if ( this.error ) {
+      if ( this.hasErrors() ) {
         this.errorDraw();
       }
 
@@ -995,7 +995,7 @@ class SerieLine extends Serie {
 
     }
 
-    if ( this.error ) {
+    if ( this.hasErrors() ) {
       this.errorAddPoint( j, x, y, xpx, ypx );
     }
 
