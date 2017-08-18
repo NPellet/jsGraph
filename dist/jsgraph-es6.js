@@ -15533,6 +15533,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _checkY(val) {
+	      console.log(val, this.maxY);
 	      this.minY = Math.min(this.minY, val);
 	      this.maxY = Math.max(this.maxY, val);
 	    }
@@ -16974,6 +16975,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.minY = data[0].y;
 	      }
 
+	      console.log(this._checkY);
+
 	      if (noRescale) {
 	        methodref = function () {};
 	        methodval = function () {};
@@ -16994,7 +16997,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (this.data[i].Q3) {
+	          console.log(this.minX, this.minY, this.maxY, this.data[i].Q3, methodval);
+
 	          methodval(this.data[i].Q3);
+	          console.log(this.minX, this.minY, this.maxY);
 	        }
 
 	        if (this.data[i].Q1) {
@@ -17026,6 +17032,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.data[i].outliers = [];
 	        }
 	      }
+
+	      console.log(this.minX, this.minY, this.maxY);
 
 	      this.dataHasChanged();
 	      this.graph.updateDataMinMaxAxes();
@@ -18204,11 +18212,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      for (let dataCategory of data) {
 
-	        if (data.y.getMaxY() > maxY) {
-	          maxY = data.y.getMaxY();
-	        } else if (data.y.getMinY() < minY) {
-	          minY = data.y.getMinY();
-	        }
+	        this._checkY(dataCategory.y.getMaxY());
+	        this._checkY(dataCategory.y.getMinY());
 	      }
 
 	      this.data = data;
@@ -18343,11 +18348,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	            //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
 	          }
 
-	          for (var n = 0, l = this.data[i].y.getLength(); n < l; n++) {
+	          for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
 
 	            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
 
-	            ypx = this.getY(this.data[i].y.getY(n));
+	            ypx = this.getY(this.data[j].y.getY(n));
 	            xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
 	            n++;
 

@@ -105,11 +105,9 @@ class SerieScatter extends Serie {
 
     for ( let dataCategory of data ) {
 
-      if ( data.y.getMaxY() > maxY ) {
-        maxY = data.y.getMaxY();
-      } else if ( data.y.getMinY() < minY ) {
-        minY = data.y.getMinY();
-      }
+      this._checkY( dataCategory.y.getMaxY() );
+      this._checkY( dataCategory.y.getMinY() );
+
     }
 
     this.data = data;
@@ -246,11 +244,11 @@ class SerieScatter extends Serie {
           //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
         }
 
-        for ( var n = 0, l = this.data[ i ].y.getLength(); n < l; n++ ) {
+        for ( var n = 0, l = this.data[ j ].y.getLength(); n < l; n++ ) {
 
           //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
 
-          ypx = this.getY( this.data[ i ].y.getY( n ) );
+          ypx = this.getY( this.data[ j ].y.getY( n ) );
           xpx = this.getX( n / ( l - 1 ) * ( 0.8 / this.nbCategories ) + this.categoryIndices[ this.data[ j ].x ] + 0.1 / this.nbCategories );
           n++;
 

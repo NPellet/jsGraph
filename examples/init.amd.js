@@ -1,23 +1,25 @@
 
-requirejs.config({
 
-	baseUrl: '../',
+requirejs.config({
 	paths: {
-		'jquery': 'src/dependencies/jquery/dist/jquery',
-		'katex': 'node_modules/katex/dist/katex'
+		'jquery': 'src/dependencies/jquery/dist/jquery'
 	}	
 });
 
-//import Graph from '../src/graph.core'
 
-require( [ 'dist/jsgraph-es6', 'katex', 'examples/series' ] , function( disted, katex, series ) {
+import Graph from '../src/graph.js'
 
-console.log( katex );
-	window.katex = katex;
-	window.contour = series.contour;
-	window.series = series.numeric;
-	window.Graph = disted;	
+var opts = {};
+var hashtag = (document.location.href.split( "#" )[ 1 ] || "").split( ';' ).map( function ( val ) {
+	val = val.split( ':' );
+	opts[ val[ 0 ] ] = val[ 1 ];
+} );
 
-	require( [ 'examples/loadexamples'] );
-	
+var example = opts.examples;
+
+var domGraph = document.getElementById("graph");
+console.log( opts.examples );
+require( [ "src/" + opts.examples ], function( method ) {
+
+	method( Graph, domGraph );
 } );
