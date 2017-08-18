@@ -2702,8 +2702,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            schemaSerie.lineStyle.map(function (style) {
 
 	              var styleSerie = {};
-	              style = {};
-	              style.styleName = style.styleName || "unselected";
+
+	              styleSerie.styleName = style.styleName || "unselected";
 
 	              switch (serieType) {
 
@@ -2786,7 +2786,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 	            });
 	          }
-	          console.log(schemaSerie);
+
 	          if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
 	            serie.setColors(schemaSerie.color);
 	          }

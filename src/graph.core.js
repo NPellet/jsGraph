@@ -2440,8 +2440,8 @@ class Graph extends EventEmitter {
           schemaSerie.lineStyle.map( function( style ) {
 
             var styleSerie = {};
-            style = {};
-            style.styleName = style.styleName || "unselected";
+
+            styleSerie.styleName = style.styleName || "unselected";
 
             switch ( serieType ) {
 
@@ -2526,7 +2526,7 @@ class Graph extends EventEmitter {
 
           } );
         }
-        console.log( schemaSerie );
+
         if ( schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED ) {
           serie.setColors( schemaSerie.color );
         }
