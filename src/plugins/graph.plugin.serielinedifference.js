@@ -10,7 +10,8 @@ class PluginSerieLineDifference extends Plugin {
     super( ...arguments );
   }
 
-  static defaults() {
+  static
+  default () {
     return {
 
       positiveStyle: {

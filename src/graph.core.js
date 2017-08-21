@@ -338,6 +338,9 @@ class Graph extends EventEmitter {
     this.drawn = true;
     this.updateLegend( true );
     this.drawSeries( this.redraw( true && !force ) );
+
+    this._pluginsExecute( "postDraw" );
+
   }
 
   /**
@@ -1857,8 +1860,8 @@ class Graph extends EventEmitter {
 
       if ( constructor ) {
 
-        var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
-        this.plugins[ pluginName ] = new constructor( options );
+        //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
+        this.plugins[ pluginName ] = new constructor( pluginOptions );
 
         util.mapEventEmission( this.plugins[ pluginName ].options, this.plugins[  pluginName ] );
         this.plugins[ pluginName ].init( this, pluginOptions );

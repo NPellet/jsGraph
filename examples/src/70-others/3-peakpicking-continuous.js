@@ -1,27 +1,15 @@
 
-define( function() {
+define([], ( ) => {
 
-	return [ function( domGraph ) {
+	return ( Graph, domGraph ) => {
 
-			var graphinstance = new Graph( domGraph, {
+		var graphinstance = new Graph( domGraph, {
 
-				dblclick: {
-					type: 'plugin',
-					plugin: 'zoom',
-					options: {
-						mode: 'total'
-					}
-				},
+			plugins: { 'peakPicking': {} }
 
-				plugins: {
-					'zoom': { zoomMode: 'x' }
-				},
+		} );
 
-				pluginAction: {
-					'zoom': { shift: false }
-				}
-
-			} );
+		graphinstance.resize( 800, 600 );
 
 // BEGIN IGNORE ON BUILD
 var serieData = [ 
@@ -16134,23 +16122,21 @@ var serieData = [
 
 // END IGNORE ON BUILD
 
-		graphinstance.newSerie("msdata", { autoPeakPicking: 'continuous' }, 'line' )
-			.autoAxis()
-			.setData( serieData )
-			.XIsMonotoneous();
+	var dataX = [], dataY = [];
 
-		graphinstance.draw();
-		
-			
-		}, 
+	for( var i = 0; i < serieData.length; i +=2 ) {
 
-		"Peak picking (continuous)", 
-		[ 
-		'Use the <code>peakPicking</code> serie parameter (for serie line) to enable a basic peak picking algorithm. For a continuous serie, the library will search for the next local minima after a selected peak before allowing any other peak to be registered.',
-		'The option <code>autoPeakPickingNb</code> (default: 4) is the maximum number of peaks to be selected. The library will select the highest from the whole set.',
-		'Use <code>autoPeakPickingMinDistance</code> (default: 10) to set the minimal distance (in px) between two neighbouring peaks.'
-		] 
-	];
+		dataX.push( serieData[ i ] );
+		dataY.push( serieData[ i + 1 ] );
+	}
 
 
-} );
+
+	graphinstance.newSerie("msdata", { autoPeakPicking: 'continuous' }, 'line' )
+		.autoAxis()
+		.setWaveform( Graph.newWaveform( ).setData( dataY, dataX ) )
+	console.log( graphinstance.getPlugin('peakPicking' ) );	
+	graphinstance.getPlugin('peakPicking' ).setSerie( graphinstance.getSerie("msdata"));
+	graphinstance.draw();
+}
+});

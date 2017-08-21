@@ -103,7 +103,7 @@ class Waveform {
     return this;
   }
 
-  getY( index, optimized ) {
+  getY( index, optimized = false ) {
 
     if ( optimized && this.dataInUse ) {
       return this.dataInUse.y[ index ] * this.getScale() + this.getShift();

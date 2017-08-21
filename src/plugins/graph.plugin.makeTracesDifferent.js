@@ -16,7 +16,8 @@ class PluginMakeTracesDifferent extends Plugin {
     super.init( graph, options );
   }
   // Load this with defaults
-  static defaults() {
+  static
+  default () {
 
     return {
 

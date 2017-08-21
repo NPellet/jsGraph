@@ -8244,17 +8244,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(299), __webpack_require__(300), __webpack_require__(306), __webpack_require__(307), __webpack_require__(309), __webpack_require__(310), __webpack_require__(311), __webpack_require__(312), __webpack_require__(315), __webpack_require__(317), __webpack_require__(318), __webpack_require__(319), __webpack_require__(320), __webpack_require__(321), __webpack_require__(322), __webpack_require__(323), __webpack_require__(324), __webpack_require__(325), __webpack_require__(326), __webpack_require__(347), __webpack_require__(327), __webpack_require__(328), __webpack_require__(329), __webpack_require__(330), __webpack_require__(331), __webpack_require__(332), __webpack_require__(333), __webpack_require__(334), __webpack_require__(335), __webpack_require__(336), __webpack_require__(337), __webpack_require__(338), __webpack_require__(339), __webpack_require__(340), __webpack_require__(341), __webpack_require__(342), __webpack_require__(344), __webpack_require__(345), __webpack_require__(346), __webpack_require__(303), __webpack_require__(304)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(299), __webpack_require__(300), __webpack_require__(306), __webpack_require__(307), __webpack_require__(309), __webpack_require__(310), __webpack_require__(311), __webpack_require__(312), __webpack_require__(315), __webpack_require__(317), __webpack_require__(318), __webpack_require__(319), __webpack_require__(320), __webpack_require__(321), __webpack_require__(322), __webpack_require__(323), __webpack_require__(324), __webpack_require__(325), __webpack_require__(326), __webpack_require__(327), __webpack_require__(348), __webpack_require__(329), __webpack_require__(330), __webpack_require__(328), __webpack_require__(331), __webpack_require__(332), __webpack_require__(333), __webpack_require__(334), __webpack_require__(335), __webpack_require__(336), __webpack_require__(337), __webpack_require__(338), __webpack_require__(339), __webpack_require__(340), __webpack_require__(341), __webpack_require__(342), __webpack_require__(344), __webpack_require__(345), __webpack_require__(346), __webpack_require__(347), __webpack_require__(303), __webpack_require__(304)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, exports, require('./graph.core.js'), require('./graph.position.js'), require('./graph.legend.js'), require('./graph.axis.x.js'), require('./graph.axis.y.js'), require('./graph.axis.x.bar.js'), require('./graph.axis.x.time.js'), require('./series/graph.serie.line.js'), require('./series/graph.serie.line.3d.js'), require('./series/graph.serie.bar.js'), require('./series/graph.serie.box.js'), require('./series/graph.serie.line.colored.js'), require('./series/graph.serie.scatter.js'), require('./series/graph.serie.zone.js'), require('./series/graph.serie.zone.3d.js'), require('./series/graph.serie.densitymap.js'), require('./series/graph.serie.contour.js'), require('./shapes/graph.shape.js'), require('./shapes/graph.shape.areaundercurve.js'), require('./shapes/graph.shape.arrow.js'), require('./shapes/graph.shape.ellipse.js'), require('./shapes/graph.shape.label.js'), require('./shapes/graph.shape.polyline.js'), require('./shapes/graph.shape.line.js'), require('./shapes/graph.shape.nmrintegral.js'), require('./shapes/graph.shape.peakintegration2d.js'), require('./shapes/graph.shape.rect.js'), require('./shapes/graph.shape.cross.js'), require('./shapes/graph.shape.peakboundariescenter.js'), require('./shapes/graph.shape.html.js'), require('./plugins/graph.plugin.js'), require('./plugins/graph.plugin.drag.js'), require('./plugins/graph.plugin.shape.js'), require('./plugins/graph.plugin.selectScatter.js'), require('./plugins/graph.plugin.zoom.js'), require('./plugins/graph.plugin.timeseriemanager.js'), require('./plugins/graph.plugin.serielinedifference.js'), require('./plugins/graph.plugin.axissplitting.js'), require('./plugins/graph.plugin.makeTracesDifferent.js'), require('./util/waveform.js'), require('./util/fit_lm.js'));
+	    factory(module, exports, require('./graph.core.js'), require('./graph.position.js'), require('./graph.legend.js'), require('./graph.axis.x.js'), require('./graph.axis.y.js'), require('./graph.axis.x.bar.js'), require('./graph.axis.x.time.js'), require('./series/graph.serie.line.js'), require('./series/graph.serie.line.3d.js'), require('./series/graph.serie.bar.js'), require('./series/graph.serie.box.js'), require('./series/graph.serie.line.colored.js'), require('./series/graph.serie.scatter.js'), require('./series/graph.serie.zone.js'), require('./series/graph.serie.zone.3d.js'), require('./series/graph.serie.densitymap.js'), require('./series/graph.serie.contour.js'), require('./shapes/graph.shape.js'), require('./shapes/graph.shape.areaundercurve.js'), require('./shapes/graph.shape.arrow.js'), require('./shapes/graph.shape.ellipse.js'), require('./shapes/graph.shape.label.js'), require('./shapes/graph.shape.polyline.js'), require('./shapes/graph.shape.line.js'), require('./shapes/graph.shape.nmrintegral.js'), require('./shapes/graph.shape.peakintegration2d.js'), require('./shapes/graph.shape.rect.js'), require('./shapes/graph.shape.cross.js'), require('./shapes/graph.shape.peakboundariescenter.js'), require('./shapes/graph.shape.html.js'), require('./plugins/graph.plugin.js'), require('./plugins/graph.plugin.drag.js'), require('./plugins/graph.plugin.shape.js'), require('./plugins/graph.plugin.selectScatter.js'), require('./plugins/graph.plugin.zoom.js'), require('./plugins/graph.plugin.timeseriemanager.js'), require('./plugins/graph.plugin.serielinedifference.js'), require('./plugins/graph.plugin.axissplitting.js'), require('./plugins/graph.plugin.makeTracesDifferent.js'), require('./plugins/graph.plugin.peakPicking.js'), require('./util/waveform.js'), require('./util/fit_lm.js'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, mod.exports, global.graphCore, global.graphPosition, global.graphLegend, global.graphAxisX, global.graphAxisY, global.graphAxisXBar, global.graphAxisXTime, global.graphSerieLine, global.graphSerieLine3d, global.graphSerieBar, global.graphSerieBox, global.graphSerieLineColored, global.graphSerieScatter, global.graphSerieZone, global.graphSerieZone3d, global.graphSerieDensitymap, global.graphSerieContour, global.graphShape, global.graphShapeAreaundercurve, global.graphShapeArrow, global.graphShapeEllipse, global.graphShapeLabel, global.graphShapePolyline, global.graphShapeLine, global.graphShapeNmrintegral, global.graphShapePeakintegration2d, global.graphShapeRect, global.graphShapeCross, global.graphShapePeakboundariescenter, global.graphShapeHtml, global.graphPlugin, global.graphPluginDrag, global.graphPluginShape, global.graphPluginSelectScatter, global.graphPluginZoom, global.graphPluginTimeseriemanager, global.graphPluginSerielinedifference, global.graphPluginAxissplitting, global.graphPluginMakeTracesDifferent, global.waveform, global.fit_lm);
+	    factory(mod, mod.exports, global.graphCore, global.graphPosition, global.graphLegend, global.graphAxisX, global.graphAxisY, global.graphAxisXBar, global.graphAxisXTime, global.graphSerieLine, global.graphSerieLine3d, global.graphSerieBar, global.graphSerieBox, global.graphSerieLineColored, global.graphSerieScatter, global.graphSerieZone, global.graphSerieZone3d, global.graphSerieDensitymap, global.graphSerieContour, global.graphShape, global.graphShapeAreaundercurve, global.graphShapeArrow, global.graphShapeEllipse, global.graphShapeLabel, global.graphShapePolyline, global.graphShapeLine, global.graphShapeNmrintegral, global.graphShapePeakintegration2d, global.graphShapeRect, global.graphShapeCross, global.graphShapePeakboundariescenter, global.graphShapeHtml, global.graphPlugin, global.graphPluginDrag, global.graphPluginShape, global.graphPluginSelectScatter, global.graphPluginZoom, global.graphPluginTimeseriemanager, global.graphPluginSerielinedifference, global.graphPluginAxissplitting, global.graphPluginMakeTracesDifferent, global.graphPluginPeakPicking, global.waveform, global.fit_lm);
 	    global.graph = mod.exports;
 	  }
-	})(this, function (module, exports, _graphCore, _graphPosition, _graphLegend, _graphAxisX, _graphAxisY, _graphAxisXBar, _graphAxisXTime, _graphSerieLine, _graphSerieLine3d, _graphSerieBar, _graphSerieBox, _graphSerieLineColored, _graphSerieScatter, _graphSerieZone, _graphSerieZone3d, _graphSerieDensitymap, _graphSerieContour, _graphShape, _graphShapeAreaundercurve, _graphShapeArrow, _graphShapeEllipse, _graphShapeLabel, _graphShapePolyline, _graphShapeLine, _graphShapeNmrintegral, _graphShapePeakintegration2d, _graphShapeRect, _graphShapeCross, _graphShapePeakboundariescenter, _graphShapeHtml, _graphPlugin, _graphPluginDrag, _graphPluginShape, _graphPluginSelectScatter, _graphPluginZoom, _graphPluginTimeseriemanager, _graphPluginSerielinedifference, _graphPluginAxissplitting, _graphPluginMakeTracesDifferent, _waveform, _fit_lm) {
+	})(this, function (module, exports, _graphCore, _graphPosition, _graphLegend, _graphAxisX, _graphAxisY, _graphAxisXBar, _graphAxisXTime, _graphSerieLine, _graphSerieLine3d, _graphSerieBar, _graphSerieBox, _graphSerieLineColored, _graphSerieScatter, _graphSerieZone, _graphSerieZone3d, _graphSerieDensitymap, _graphSerieContour, _graphShape, _graphShapeAreaundercurve, _graphShapeArrow, _graphShapeEllipse, _graphShapeLabel, _graphShapePolyline, _graphShapeLine, _graphShapeNmrintegral, _graphShapePeakintegration2d, _graphShapeRect, _graphShapeCross, _graphShapePeakboundariescenter, _graphShapeHtml, _graphPlugin, _graphPluginDrag, _graphPluginShape, _graphPluginSelectScatter, _graphPluginZoom, _graphPluginTimeseriemanager, _graphPluginSerielinedifference, _graphPluginAxissplitting, _graphPluginMakeTracesDifferent, _graphPluginPeakPicking, _waveform, _fit_lm) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
@@ -8339,6 +8339,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var _graphPluginMakeTracesDifferent2 = _interopRequireDefault(_graphPluginMakeTracesDifferent);
 
+	  var _graphPluginPeakPicking2 = _interopRequireDefault(_graphPluginPeakPicking);
+
 	  var _waveform2 = _interopRequireDefault(_waveform);
 
 	  var _fit_lm2 = _interopRequireDefault(_fit_lm);
@@ -8391,6 +8393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _graphCore2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPluginSerielinedifference2.default);
 	  _graphCore2.default.registerConstructor("graph.plugin.axissplitting", _graphPluginAxissplitting2.default);
 	  _graphCore2.default.registerConstructor("graph.plugin.makeTracesDifferent", _graphPluginMakeTracesDifferent2.default);
+	  _graphCore2.default.registerConstructor("graph.plugin.peakPicking", _graphPluginPeakPicking2.default);
 
 	  _graphCore2.default.registerConstructor("graph.shape", _graphShape2.default);
 	  _graphCore2.default.registerConstructor("graph.shape.areaundercurve", _graphShapeAreaundercurve2.default);
@@ -8841,6 +8844,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.drawn = true;
 	        this.updateLegend(true);
 	        this.drawSeries(this.redraw(true && !force));
+
+	        this._pluginsExecute("postDraw");
 	      }
 	    }, {
 	      key: 'delayUpdate',
@@ -10085,8 +10090,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (constructor) {
 
-	            var options = util.extend(true, {}, constructor.defaults(), pluginOptions);
-	            this.plugins[pluginName] = new constructor(options);
+	            //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
+	            this.plugins[pluginName] = new constructor(pluginOptions);
 
 	            util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
 	            this.plugins[pluginName].init(this, pluginOptions);
@@ -13710,7 +13715,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'getY',
-	      value: function getY(index, optimized) {
+	      value: function getY(index) {
+	        var optimized = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
 
 	        if (optimized && this.dataInUse) {
 	          return this.dataInUse.y[index] * this.getScale() + this.getShift();
@@ -29528,7 +29535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var position = this.calculatePosition(_graphPosition2.default.check(this.getProp("labelPosition", labelIndex)));
 
-	        if (isNaN(position.x) || isNaN(position.y)) {
+	        if (isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
 	          /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
 	          console.log( this, this._labels );
 	          console.trace();*/
@@ -29553,7 +29560,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        var labelData = this.getProp('labelHTMLData', labelIndex) || {};
-	        console.log(labelData);
 
 	        for (var i in labelData) {
 
@@ -30546,48 +30552,29 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(301), __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(328)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, exports, require('../graph.util.js'), require('./graph.shape.js'));
+	    factory(module, exports, require('./graph.shape.line.js'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, mod.exports, global.graphUtil, global.graphShape);
-	    global.graphShapeEllipse = mod.exports;
+	    factory(mod, mod.exports, global.graphShapeLine);
+	    global.graphShapeArrow = mod.exports;
 	  }
-	})(this, function (module, exports, _graphUtil, _graphShape) {
+	})(this, function (module, exports, _graphShapeLine) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var util = _interopRequireWildcard(_graphUtil);
-
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
+	  var _graphShapeLine2 = _interopRequireDefault(_graphShapeLine);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
 	      default: obj
 	    };
-	  }
-
-	  function _interopRequireWildcard(obj) {
-	    if (obj && obj.__esModule) {
-	      return obj;
-	    } else {
-	      var newObj = {};
-
-	      if (obj != null) {
-	        for (var key in obj) {
-	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-	        }
-	      }
-
-	      newObj.default = obj;
-	      return newObj;
-	    }
 	  }
 
 	  function _classCallCheck(instance, Constructor) {
@@ -30638,329 +30625,45 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	  }
 
-	  var ShapeEllipse = function (_Shape) {
-	    _inherits(ShapeEllipse, _Shape);
+	  var ShapeArrow = function (_ShapeLine) {
+	    _inherits(ShapeArrow, _ShapeLine);
 
-	    function ShapeEllipse(graph, options) {
-	      _classCallCheck(this, ShapeEllipse);
+	    function ShapeArrow(graph) {
+	      _classCallCheck(this, ShapeArrow);
 
-	      return _possibleConstructorReturn(this, (ShapeEllipse.__proto__ || Object.getPrototypeOf(ShapeEllipse)).call(this, graph, options));
+	      return _possibleConstructorReturn(this, (ShapeArrow.__proto__ || Object.getPrototypeOf(ShapeArrow)).call(this, graph));
 	    }
 
-	    _createClass(ShapeEllipse, [{
+	    _createClass(ShapeArrow, [{
 	      key: 'createDom',
 	      value: function createDom() {
-	        this._dom = document.createElementNS(this.graph.ns, 'ellipse');
-	      }
-	    }, {
-	      key: 'applyPosition',
-	      value: function applyPosition() {
 
-	        var pos = this.computePosition(0);
+	        this._dom = document.createElementNS(this.graph.ns, 'line');
+	        this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
 
-	        this.setDom('cx', pos.x || 0);
-	        this.setDom('cy', pos.y || 0);
+	        this.createHandles(this.nbHandles, 'rect', {
+	          transform: "translate(-3 -3)",
+	          width: 6,
+	          height: 6,
+	          stroke: "black",
+	          fill: "white",
+	          cursor: 'nwse-resize'
+	        });
 
-	        this.setDom('rx', this.getProp('rx') || 0);
-	        this.setDom('ry', this.getProp('ry') || 0);
-
-	        return true;
-	      }
-	    }, {
-	      key: 'setR',
-	      value: function setR(rx, ry) {
-	        this.setProp('rx', rx);
-	        this.setProp('ry', ry);
-	        return this;
-	      }
-	    }, {
-	      key: 'handleMouseUpImpl',
-	      value: function handleMouseUpImpl() {
-	        this.triggerChange();
-	      }
-	    }, {
-	      key: 'handleMouseMoveImpl',
-	      value: function handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
-	        return;
+	        this.setStrokeColor('black');
+	        this.setStrokeWidth(1);
 	      }
 	    }]);
 
-	    return ShapeEllipse;
-	  }(_graphShape2.default);
+	    return ShapeArrow;
+	  }(_graphShapeLine2.default);
 
-	  exports.default = ShapeEllipse;
+	  exports.default = ShapeArrow;
 	  module.exports = exports['default'];
 	});
 
 /***/ },
 /* 328 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(module, exports, require('./graph.shape.js'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod, mod.exports, global.graphShape);
-	    global.graphShapeLabel = mod.exports;
-	  }
-	})(this, function (module, exports, _graphShape) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  function _classCallCheck(instance, Constructor) {
-	    if (!(instance instanceof Constructor)) {
-	      throw new TypeError("Cannot call a class as a function");
-	    }
-	  }
-
-	  var _createClass = function () {
-	    function defineProperties(target, props) {
-	      for (var i = 0; i < props.length; i++) {
-	        var descriptor = props[i];
-	        descriptor.enumerable = descriptor.enumerable || false;
-	        descriptor.configurable = true;
-	        if ("value" in descriptor) descriptor.writable = true;
-	        Object.defineProperty(target, descriptor.key, descriptor);
-	      }
-	    }
-
-	    return function (Constructor, protoProps, staticProps) {
-	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	      if (staticProps) defineProperties(Constructor, staticProps);
-	      return Constructor;
-	    };
-	  }();
-
-	  function _possibleConstructorReturn(self, call) {
-	    if (!self) {
-	      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	    }
-
-	    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	  }
-
-	  function _inherits(subClass, superClass) {
-	    if (typeof superClass !== "function" && superClass !== null) {
-	      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	    }
-
-	    subClass.prototype = Object.create(superClass && superClass.prototype, {
-	      constructor: {
-	        value: subClass,
-	        enumerable: false,
-	        writable: true,
-	        configurable: true
-	      }
-	    });
-	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	  }
-
-	  var ShapeLabel = function (_GraphShape) {
-	    _inherits(ShapeLabel, _GraphShape);
-
-	    function ShapeLabel(graph, options) {
-	      _classCallCheck(this, ShapeLabel);
-
-	      return _possibleConstructorReturn(this, (ShapeLabel.__proto__ || Object.getPrototypeOf(ShapeLabel)).call(this, graph, options));
-	    }
-
-	    _createClass(ShapeLabel, [{
-	      key: 'createDom',
-	      value: function createDom() {
-	        return false;
-	      }
-	    }, {
-	      key: 'applyPosition',
-	      value: function applyPosition() {
-	        return true;
-	      }
-	    }]);
-
-	    return ShapeLabel;
-	  }(_graphShape2.default);
-
-	  exports.default = ShapeLabel;
-	  module.exports = exports['default'];
-	});
-
-/***/ },
-/* 329 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== "undefined") {
-	    factory(module, exports, require('./graph.shape.js'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod, mod.exports, global.graphShape);
-	    global.graphShapePolyline = mod.exports;
-	  }
-	})(this, function (module, exports, _graphShape) {
-	  'use strict';
-
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _graphShape2 = _interopRequireDefault(_graphShape);
-
-	  function _interopRequireDefault(obj) {
-	    return obj && obj.__esModule ? obj : {
-	      default: obj
-	    };
-	  }
-
-	  function _classCallCheck(instance, Constructor) {
-	    if (!(instance instanceof Constructor)) {
-	      throw new TypeError("Cannot call a class as a function");
-	    }
-	  }
-
-	  var _createClass = function () {
-	    function defineProperties(target, props) {
-	      for (var i = 0; i < props.length; i++) {
-	        var descriptor = props[i];
-	        descriptor.enumerable = descriptor.enumerable || false;
-	        descriptor.configurable = true;
-	        if ("value" in descriptor) descriptor.writable = true;
-	        Object.defineProperty(target, descriptor.key, descriptor);
-	      }
-	    }
-
-	    return function (Constructor, protoProps, staticProps) {
-	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
-	      if (staticProps) defineProperties(Constructor, staticProps);
-	      return Constructor;
-	    };
-	  }();
-
-	  function _possibleConstructorReturn(self, call) {
-	    if (!self) {
-	      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-	    }
-
-	    return call && (typeof call === "object" || typeof call === "function") ? call : self;
-	  }
-
-	  function _inherits(subClass, superClass) {
-	    if (typeof superClass !== "function" && superClass !== null) {
-	      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-	    }
-
-	    subClass.prototype = Object.create(superClass && superClass.prototype, {
-	      constructor: {
-	        value: subClass,
-	        enumerable: false,
-	        writable: true,
-	        configurable: true
-	      }
-	    });
-	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-	  }
-
-	  var ShapePolyline = function (_Shape) {
-	    _inherits(ShapePolyline, _Shape);
-
-	    function ShapePolyline(graph, options) {
-	      _classCallCheck(this, ShapePolyline);
-
-	      return _possibleConstructorReturn(this, (ShapePolyline.__proto__ || Object.getPrototypeOf(ShapePolyline)).call(this, graph, options));
-	    }
-
-	    /**
-	     * Creates the DOM
-	     * @private
-	     * @return {Shape} The current shape
-	     */
-
-
-	    _createClass(ShapePolyline, [{
-	      key: 'createDom',
-	      value: function createDom() {
-
-	        this._dom = document.createElementNS(this.graph.ns, 'path');
-
-	        if (!this.getStrokeColor()) {
-	          this.setStrokeColor('black');
-	        }
-
-	        if (this.getStrokeWidth() == undefined) {
-	          this.setStrokeWidth(1);
-	        }
-	      }
-	    }, {
-	      key: 'createHandles',
-	      value: function createHandles() {}
-	    }, {
-	      key: 'setPointsPx',
-	      value: function setPointsPx(points) {
-	        this.setProp('pxPoints', points);
-	        return this;
-	      }
-	    }, {
-	      key: 'applyPosition',
-	      value: function applyPosition() {
-
-	        var pxPoints = void 0;
-	        var pos = this.computePosition(0);
-
-	        if (pxPoints = this.getProp('pxPoints')) {
-
-	          pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
-	          this.setDom('d', pxPoints);
-	        } else if (this.points) {
-
-	          var xAxis, yAxis;
-
-	          if (this.serie) {
-
-	            xAxis = this.serie.getXAxis();
-	            yAxis = this.serie.getYAxis();
-	          } else if (this.xAxis && this.yAxis) {
-
-	            xAxis = this.xAxis;
-	            yAxis = this.yAxis;
-	          }
-
-	          this.setDom('d', 'M ' + this.points.map(function (p) {
-	            return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
-	          }).join(" L "));
-	        }
-
-	        this.changed();
-	        return true;
-	      }
-	    }]);
-
-	    return ShapePolyline;
-	  }(_graphShape2.default);
-
-	  exports.default = ShapePolyline;
-	  module.exports = exports['default'];
-	});
-
-/***/ },
-/* 330 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
@@ -31232,6 +30935,273 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }(_graphShape2.default);
 
 	  exports.default = ShapeLine;
+	  module.exports = exports['default'];
+	});
+
+/***/ },
+/* 329 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(module, exports, require('./graph.shape.js'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod, mod.exports, global.graphShape);
+	    global.graphShapeLabel = mod.exports;
+	  }
+	})(this, function (module, exports, _graphShape) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graphShape2 = _interopRequireDefault(_graphShape);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  function _classCallCheck(instance, Constructor) {
+	    if (!(instance instanceof Constructor)) {
+	      throw new TypeError("Cannot call a class as a function");
+	    }
+	  }
+
+	  var _createClass = function () {
+	    function defineProperties(target, props) {
+	      for (var i = 0; i < props.length; i++) {
+	        var descriptor = props[i];
+	        descriptor.enumerable = descriptor.enumerable || false;
+	        descriptor.configurable = true;
+	        if ("value" in descriptor) descriptor.writable = true;
+	        Object.defineProperty(target, descriptor.key, descriptor);
+	      }
+	    }
+
+	    return function (Constructor, protoProps, staticProps) {
+	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	      if (staticProps) defineProperties(Constructor, staticProps);
+	      return Constructor;
+	    };
+	  }();
+
+	  function _possibleConstructorReturn(self, call) {
+	    if (!self) {
+	      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	    }
+
+	    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	  }
+
+	  function _inherits(subClass, superClass) {
+	    if (typeof superClass !== "function" && superClass !== null) {
+	      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	    }
+
+	    subClass.prototype = Object.create(superClass && superClass.prototype, {
+	      constructor: {
+	        value: subClass,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	  }
+
+	  var ShapeLabel = function (_GraphShape) {
+	    _inherits(ShapeLabel, _GraphShape);
+
+	    function ShapeLabel(graph, options) {
+	      _classCallCheck(this, ShapeLabel);
+
+	      return _possibleConstructorReturn(this, (ShapeLabel.__proto__ || Object.getPrototypeOf(ShapeLabel)).call(this, graph, options));
+	    }
+
+	    _createClass(ShapeLabel, [{
+	      key: 'createDom',
+	      value: function createDom() {
+	        return false;
+	      }
+	    }, {
+	      key: 'applyPosition',
+	      value: function applyPosition() {
+	        return true;
+	      }
+	    }]);
+
+	    return ShapeLabel;
+	  }(_graphShape2.default);
+
+	  exports.default = ShapeLabel;
+	  module.exports = exports['default'];
+	});
+
+/***/ },
+/* 330 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(module, exports, require('./graph.shape.js'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod, mod.exports, global.graphShape);
+	    global.graphShapePolyline = mod.exports;
+	  }
+	})(this, function (module, exports, _graphShape) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var _graphShape2 = _interopRequireDefault(_graphShape);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  function _classCallCheck(instance, Constructor) {
+	    if (!(instance instanceof Constructor)) {
+	      throw new TypeError("Cannot call a class as a function");
+	    }
+	  }
+
+	  var _createClass = function () {
+	    function defineProperties(target, props) {
+	      for (var i = 0; i < props.length; i++) {
+	        var descriptor = props[i];
+	        descriptor.enumerable = descriptor.enumerable || false;
+	        descriptor.configurable = true;
+	        if ("value" in descriptor) descriptor.writable = true;
+	        Object.defineProperty(target, descriptor.key, descriptor);
+	      }
+	    }
+
+	    return function (Constructor, protoProps, staticProps) {
+	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	      if (staticProps) defineProperties(Constructor, staticProps);
+	      return Constructor;
+	    };
+	  }();
+
+	  function _possibleConstructorReturn(self, call) {
+	    if (!self) {
+	      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	    }
+
+	    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	  }
+
+	  function _inherits(subClass, superClass) {
+	    if (typeof superClass !== "function" && superClass !== null) {
+	      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	    }
+
+	    subClass.prototype = Object.create(superClass && superClass.prototype, {
+	      constructor: {
+	        value: subClass,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	  }
+
+	  var ShapePolyline = function (_Shape) {
+	    _inherits(ShapePolyline, _Shape);
+
+	    function ShapePolyline(graph, options) {
+	      _classCallCheck(this, ShapePolyline);
+
+	      return _possibleConstructorReturn(this, (ShapePolyline.__proto__ || Object.getPrototypeOf(ShapePolyline)).call(this, graph, options));
+	    }
+
+	    /**
+	     * Creates the DOM
+	     * @private
+	     * @return {Shape} The current shape
+	     */
+
+
+	    _createClass(ShapePolyline, [{
+	      key: 'createDom',
+	      value: function createDom() {
+
+	        this._dom = document.createElementNS(this.graph.ns, 'path');
+
+	        if (!this.getStrokeColor()) {
+	          this.setStrokeColor('black');
+	        }
+
+	        if (this.getStrokeWidth() == undefined) {
+	          this.setStrokeWidth(1);
+	        }
+	      }
+	    }, {
+	      key: 'createHandles',
+	      value: function createHandles() {}
+	    }, {
+	      key: 'setPointsPx',
+	      value: function setPointsPx(points) {
+	        this.setProp('pxPoints', points);
+	        return this;
+	      }
+	    }, {
+	      key: 'applyPosition',
+	      value: function applyPosition() {
+
+	        var pxPoints = void 0;
+	        var pos = this.computePosition(0);
+
+	        if (pxPoints = this.getProp('pxPoints')) {
+
+	          pxPoints = " M " + pos.x + " " + pos.y + " " + pxPoints;
+	          this.setDom('d', pxPoints);
+	        } else if (this.points) {
+
+	          var xAxis, yAxis;
+
+	          if (this.serie) {
+
+	            xAxis = this.serie.getXAxis();
+	            yAxis = this.serie.getYAxis();
+	          } else if (this.xAxis && this.yAxis) {
+
+	            xAxis = this.xAxis;
+	            yAxis = this.yAxis;
+	          }
+
+	          this.setDom('d', 'M ' + this.points.map(function (p) {
+	            return xAxis.getPx(p[0]) + ", " + yAxis.getPx(p[1]);
+	          }).join(" L "));
+	        }
+
+	        this.changed();
+	        return true;
+	      }
+	    }]);
+
+	    return ShapePolyline;
+	  }(_graphShape2.default);
+
+	  exports.default = ShapePolyline;
 	  module.exports = exports['default'];
 	});
 
@@ -32498,7 +32468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(330)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(328)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
 	    factory(module, exports, require('./graph.shape.line.js'));
 	  } else {
@@ -33092,8 +33062,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _inherits(Plugin, _EventEmitter);
 
 	    _createClass(Plugin, null, [{
-	      key: 'defaults',
-	      value: function defaults() {
+	      key: 'default',
+	      value: function _default() {
 	        return {};
 	      }
 	    }]);
@@ -33103,7 +33073,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var _this = _possibleConstructorReturn(this, (Plugin.__proto__ || Object.getPrototypeOf(Plugin)).apply(this, arguments));
 
-	      _this.options = options;
+	      _this.options = Object.assign({}, Plugin.default(), _this.constructor.default(), options);
 	      return _this;
 	    }
 
@@ -33376,8 +33346,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 	    }], [{
-	      key: "defaults",
-	      value: function defaults() {
+	      key: "default",
+	      value: function _default() {
 	        return {
 
 	          dragX: true,
@@ -33528,12 +33498,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _possibleConstructorReturn(this, (PluginShape.__proto__ || Object.getPrototypeOf(PluginShape)).apply(this, arguments));
 	    }
 
-	    /**
-	     * Init method
-	     * @private
-	     */
-
-
 	    _createClass(PluginShape, [{
 	      key: 'init',
 	      value: function init(graph, options) {
@@ -33658,6 +33622,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.currentShape = false;
 	        }
 	      }
+	    }], [{
+	      key: 'default',
+	      value: function _default() {
+	        return {};
+	      }
 	    }]);
 
 	    return PluginShape;
@@ -33774,12 +33743,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _possibleConstructorReturn(this, (PluginSelectScatter.__proto__ || Object.getPrototypeOf(PluginSelectScatter)).apply(this, arguments));
 	    }
 
-	    /**
-	     * Init method
-	     * @private
-	     */
-
-
 	    _createClass(PluginSelectScatter, [{
 	      key: 'init',
 	      value: function init(graph, options) {
@@ -33885,6 +33848,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function onMouseUp(graph, x, y, e) {
 	        this._path.setAttribute('display', 'none');
 	        this.emit("selectionEnd", this.selected);
+	      }
+	    }], [{
+	      key: 'default',
+	      value: function _default() {
+	        return {};
 	      }
 	    }]);
 
@@ -34600,8 +34568,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }], [{
-	      key: 'defaults',
-	      value: function defaults() {
+	      key: 'default',
+	      value: function _default() {
 
 	        return {
 	          "axes": "all"
@@ -35228,8 +35196,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return !!this.locked;
 	      }
 	    }], [{
-	      key: 'defaults',
-	      value: function defaults() {
+	      key: 'default',
+	      value: function _default() {
 
 	        return {
 
@@ -35795,8 +35763,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.negativePolyline;
 	      }
 	    }], [{
-	      key: 'defaults',
-	      value: function defaults() {
+	      key: 'default',
+	      value: function _default() {
 	        return {
 
 	          positiveStyle: {
@@ -37184,8 +37152,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        });
 	      }
 	    }], [{
-	      key: 'defaults',
-	      value: function defaults() {
+	      key: 'default',
+	      value: function _default() {
 
 	        return {};
 	      }
@@ -37204,29 +37172,451 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
 	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(330)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(301), __webpack_require__(337)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 	  } else if (typeof exports !== "undefined") {
-	    factory(module, exports, require('./graph.shape.line.js'));
+	    factory(module, exports, require('../graph.util.js'), require('./graph.plugin.js'));
 	  } else {
 	    var mod = {
 	      exports: {}
 	    };
-	    factory(mod, mod.exports, global.graphShapeLine);
-	    global.graphShapeArrow = mod.exports;
+	    factory(mod, mod.exports, global.graphUtil, global.graphPlugin);
+	    global.graphPluginPeakPicking = mod.exports;
 	  }
-	})(this, function (module, exports, _graphShapeLine) {
+	})(this, function (module, exports, _graphUtil, _graphPlugin) {
 	  'use strict';
 
 	  Object.defineProperty(exports, "__esModule", {
 	    value: true
 	  });
 
-	  var _graphShapeLine2 = _interopRequireDefault(_graphShapeLine);
+	  var util = _interopRequireWildcard(_graphUtil);
+
+	  var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 	  function _interopRequireDefault(obj) {
 	    return obj && obj.__esModule ? obj : {
 	      default: obj
 	    };
+	  }
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
+	  }
+
+	  function _classCallCheck(instance, Constructor) {
+	    if (!(instance instanceof Constructor)) {
+	      throw new TypeError("Cannot call a class as a function");
+	    }
+	  }
+
+	  var _createClass = function () {
+	    function defineProperties(target, props) {
+	      for (var i = 0; i < props.length; i++) {
+	        var descriptor = props[i];
+	        descriptor.enumerable = descriptor.enumerable || false;
+	        descriptor.configurable = true;
+	        if ("value" in descriptor) descriptor.writable = true;
+	        Object.defineProperty(target, descriptor.key, descriptor);
+	      }
+	    }
+
+	    return function (Constructor, protoProps, staticProps) {
+	      if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	      if (staticProps) defineProperties(Constructor, staticProps);
+	      return Constructor;
+	    };
+	  }();
+
+	  function _possibleConstructorReturn(self, call) {
+	    if (!self) {
+	      throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	    }
+
+	    return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	  }
+
+	  var _get = function get(object, property, receiver) {
+	    if (object === null) object = Function.prototype;
+	    var desc = Object.getOwnPropertyDescriptor(object, property);
+
+	    if (desc === undefined) {
+	      var parent = Object.getPrototypeOf(object);
+
+	      if (parent === null) {
+	        return undefined;
+	      } else {
+	        return get(parent, property, receiver);
+	      }
+	    } else if ("value" in desc) {
+	      return desc.value;
+	    } else {
+	      var getter = desc.get;
+
+	      if (getter === undefined) {
+	        return undefined;
+	      }
+
+	      return getter.call(receiver);
+	    }
+	  };
+
+	  function _inherits(subClass, superClass) {
+	    if (typeof superClass !== "function" && superClass !== null) {
+	      throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	    }
+
+	    subClass.prototype = Object.create(superClass && superClass.prototype, {
+	      constructor: {
+	        value: subClass,
+	        enumerable: false,
+	        writable: true,
+	        configurable: true
+	      }
+	    });
+	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	  }
+
+	  var PluginPeakPicking = function (_Plugin) {
+	    _inherits(PluginPeakPicking, _Plugin);
+
+	    function PluginPeakPicking() {
+	      _classCallCheck(this, PluginPeakPicking);
+
+	      return _possibleConstructorReturn(this, (PluginPeakPicking.__proto__ || Object.getPrototypeOf(PluginPeakPicking)).apply(this, arguments));
+	    }
+
+	    _createClass(PluginPeakPicking, [{
+	      key: 'init',
+	      value: function init(graph, options) {
+
+	        _get(PluginPeakPicking.prototype.__proto__ || Object.getPrototypeOf(PluginPeakPicking.prototype), 'init', this).call(this, graph, options);
+	        this.picks = [];
+
+	        for (var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+
+	          var shape = this.graph.newShape({
+	            type: 'label',
+	            label: {
+	              text: "",
+	              position: {
+	                x: 0
+	              },
+	              anchor: 'middle'
+
+	            },
+
+	            selectable: true,
+
+	            shapeOptions: {
+	              minPosY: 15
+	            }
+
+	          });
+
+	          shape.draw();
+
+	          this.picks.push(shape);
+	        }
+	      }
+	    }, {
+	      key: 'setSerie',
+	      value: function setSerie(serie) {
+	        this.serie = serie;
+	      }
+	    }, {
+	      key: 'preDraw',
+	      value: function preDraw() {
+
+	        if (!this.serie) {
+	          return;
+	        }
+
+	        this.detectedPeaks = [];
+	        this.lastYPeakPicking = false;
+	      }
+	    }, {
+	      key: 'postDraw',
+	      value: function postDraw() {
+
+	        if (!this.serie) {
+	          return;
+	        }
+	        var lookForMaxima = true;
+	        var lookForMinima = false;
+	        var lastYPeakPicking = void 0;
+	        var peaks = [];
+
+	        var waveform = this.serie.getWaveform();
+
+	        if (!waveform) {
+	          throw "The serie must have a waveform for the peak picking to work";
+	        }
+
+	        var length = waveform.getLength(),
+	            i = 0,
+	            y = void 0;
+
+	        for (; i < length; i++) {
+
+	          y = waveform.getY(i);
+
+	          if (this.serie.options.lineToZero) {
+	            peaks.push([waveform.getX(i), y]);
+	            continue;
+	          }
+
+	          if (!lastYPeakPicking) {
+	            lastYPeakPicking = [waveform.getX(i), y];
+	            continue;
+	          }
+
+	          if (y >= lastYPeakPicking[1] && lookForMaxima || y <= lastYPeakPicking[1] && lookForMinima) {
+
+	            lastYPeakPicking = [waveform.getX(i), y];
+	          } else if (y < lastYPeakPicking[1] && lookForMaxima || y > lastYPeakPicking[1] && lookForMinima) {
+
+	            if (lookForMinima) {
+	              lookForMinima = false;
+	              lookForMaxima = true;
+	            } else {
+
+	              lookForMinima = true;
+	              lookForMaxima = false;
+
+	              peaks.push(lastYPeakPicking);
+	              lastYPeakPicking = false;
+	            }
+
+	            lastYPeakPicking = [waveform.getX(i), y];
+	          }
+	        }
+
+	        var ys = peaks;
+	        var x,
+	            px,
+	            passed = [],
+	            px,
+	            l = ys.length,
+	            k,
+	            m,
+	            index;
+
+	        i = 0;
+
+	        var selected = this.graph.selectedShapes.map(function (shape) {
+	          return shape.getProp('xval');
+	        });
+
+	        ys.sort(function (a, b) {
+	          return b[1] - a[1];
+	        });
+
+	        m = 0;
+
+	        for (; i < l; i++) {
+
+	          x = ys[i][0];
+	          px = this.serie.getX(x);
+	          k = 0;
+	          y = this.serie.getY(ys[i][1]);
+
+	          if (px < this.serie.getXAxis().getMinPx() || px > this.serie.getXAxis().getMaxPx()) {
+	            continue;
+	          }
+
+	          if (!this.options.autoPeakPickingAllowAllY && (y > this.serie.getYAxis().getMinPx() || y < this.serie.getYAxis().getMaxPx())) {
+
+	            continue;
+	          }
+
+	          // Distance check
+	          for (; k < passed.length; k++) {
+	            if (Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
+	              break;
+	            }
+	          }
+	          if (k < passed.length) {
+	            continue;
+	          }
+
+	          // Distance check end
+
+	          // If the retained one has already been selected somewhere, continue;
+	          if ((index = selected.indexOf(x)) > -1) {
+	            passed.push(px);
+	            continue;
+	          }
+
+	          if (!this.picks[m]) {
+	            return;
+	          }
+
+	          //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
+	          //    this.picks[ m ].show();
+
+	          if (this.serie.getYAxis().getPx(ys[i][1]) - 20 < 0) {
+
+	            this.picks[m].setLabelPosition({
+	              x: x,
+	              y: "5px"
+	            });
+
+	            this.picks[m].setLabelBaseline('hanging');
+	          } else {
+
+	            this.picks[m].setLabelBaseline('no-change');
+
+	            this.picks[m].setLabelPosition({
+	              x: x,
+	              y: ys[i][1],
+	              dy: "-15px"
+	            });
+	          }
+
+	          this.picks[m].setProp('xval', x);
+
+	          if (this.options.autoPeakPickingFormat) {
+
+	            this.picks[m].setLabelText(this.options.autoPeakPickingFormat.call(this.picks[m], x, m));
+	          } else {
+	            this.picks[m].setLabelText(String(Math.round(x * 1000) / 1000));
+	          }
+
+	          this.picks[m].makeLabels();
+
+	          m++;
+	          while (this.picks[m] && this.picks[m].isSelected()) {
+	            m++;
+	          }
+
+	          if (passed.length == this.options.autoPeakPickingNb) {
+	            break;
+	          }
+	        }
+	      }
+	    }, {
+	      key: 'hidePeakPicking',
+	      value: function hidePeakPicking(lock) {
+
+	        if (!this._hidePeakPickingLocked) {
+	          this._hidePeakPickingLocked = lock;
+	        }
+
+	        if (!graph.picks) {
+	          return;
+	        }
+	        for (var i = 0; i < graph.picks.length; i++) {
+	          graph.picks[i].hide();
+	        }
+	      }
+	    }, {
+	      key: 'showPeakPicking',
+	      value: function showPeakPicking(unlock) {
+
+	        if (this._hidePeakPickingLocked && !unlock) {
+	          return;
+	        }
+
+	        if (!graph.picks) {
+	          return;
+	        }
+
+	        for (var i = 0; i < graph.picks.length; i++) {
+	          graph.picks[i].show();
+	        }
+	      }
+	    }, {
+	      key: 'killPeakPicking',
+	      value: function killPeakPicking() {
+
+	        if (this.picks) {
+	          for (var i = 0, l = this.picks.length; i < l; i++) {
+	            this.picks[i].kill();
+	          }
+	        }
+	      }
+	    }], [{
+	      key: 'default',
+	      value: function _default() {
+
+	        return {
+	          autoPeakPicking: false,
+	          autoPeakPickingNb: 4,
+	          autoPeakPickingMinDistance: 10,
+	          autoPeakPickingFormat: false,
+	          autoPeakPickingAllowAllY: false
+	        };
+	      }
+	    }]);
+
+	    return PluginPeakPicking;
+	  }(_graphPlugin2.default);
+
+	  exports.default = PluginPeakPicking;
+	  module.exports = exports['default'];
+	});
+
+/***/ },
+/* 348 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, exports, __webpack_require__(301), __webpack_require__(325)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== "undefined") {
+	    factory(module, exports, require('../graph.util.js'), require('./graph.shape.js'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod, mod.exports, global.graphUtil, global.graphShape);
+	    global.graphShapeEllipse = mod.exports;
+	  }
+	})(this, function (module, exports, _graphUtil, _graphShape) {
+	  'use strict';
+
+	  Object.defineProperty(exports, "__esModule", {
+	    value: true
+	  });
+
+	  var util = _interopRequireWildcard(_graphUtil);
+
+	  var _graphShape2 = _interopRequireDefault(_graphShape);
+
+	  function _interopRequireDefault(obj) {
+	    return obj && obj.__esModule ? obj : {
+	      default: obj
+	    };
+	  }
+
+	  function _interopRequireWildcard(obj) {
+	    if (obj && obj.__esModule) {
+	      return obj;
+	    } else {
+	      var newObj = {};
+
+	      if (obj != null) {
+	        for (var key in obj) {
+	          if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+	        }
+	      }
+
+	      newObj.default = obj;
+	      return newObj;
+	    }
 	  }
 
 	  function _classCallCheck(instance, Constructor) {
@@ -37277,40 +37667,57 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	  }
 
-	  var ShapeArrow = function (_ShapeLine) {
-	    _inherits(ShapeArrow, _ShapeLine);
+	  var ShapeEllipse = function (_Shape) {
+	    _inherits(ShapeEllipse, _Shape);
 
-	    function ShapeArrow(graph) {
-	      _classCallCheck(this, ShapeArrow);
+	    function ShapeEllipse(graph, options) {
+	      _classCallCheck(this, ShapeEllipse);
 
-	      return _possibleConstructorReturn(this, (ShapeArrow.__proto__ || Object.getPrototypeOf(ShapeArrow)).call(this, graph));
+	      return _possibleConstructorReturn(this, (ShapeEllipse.__proto__ || Object.getPrototypeOf(ShapeEllipse)).call(this, graph, options));
 	    }
 
-	    _createClass(ShapeArrow, [{
+	    _createClass(ShapeEllipse, [{
 	      key: 'createDom',
 	      value: function createDom() {
+	        this._dom = document.createElementNS(this.graph.ns, 'ellipse');
+	      }
+	    }, {
+	      key: 'applyPosition',
+	      value: function applyPosition() {
 
-	        this._dom = document.createElementNS(this.graph.ns, 'line');
-	        this._dom.setAttribute('marker-end', 'url(#arrow' + this.graph._creation + ')');
+	        var pos = this.computePosition(0);
 
-	        this.createHandles(this.nbHandles, 'rect', {
-	          transform: "translate(-3 -3)",
-	          width: 6,
-	          height: 6,
-	          stroke: "black",
-	          fill: "white",
-	          cursor: 'nwse-resize'
-	        });
+	        this.setDom('cx', pos.x || 0);
+	        this.setDom('cy', pos.y || 0);
 
-	        this.setStrokeColor('black');
-	        this.setStrokeWidth(1);
+	        this.setDom('rx', this.getProp('rx') || 0);
+	        this.setDom('ry', this.getProp('ry') || 0);
+
+	        return true;
+	      }
+	    }, {
+	      key: 'setR',
+	      value: function setR(rx, ry) {
+	        this.setProp('rx', rx);
+	        this.setProp('ry', ry);
+	        return this;
+	      }
+	    }, {
+	      key: 'handleMouseUpImpl',
+	      value: function handleMouseUpImpl() {
+	        this.triggerChange();
+	      }
+	    }, {
+	      key: 'handleMouseMoveImpl',
+	      value: function handleMouseMoveImpl(e, deltaX, deltaY, deltaXPx, deltaYPx) {
+	        return;
 	      }
 	    }]);
 
-	    return ShapeArrow;
-	  }(_graphShapeLine2.default);
+	    return ShapeEllipse;
+	  }(_graphShape2.default);
 
-	  exports.default = ShapeArrow;
+	  exports.default = ShapeEllipse;
 	  module.exports = exports['default'];
 	});
 

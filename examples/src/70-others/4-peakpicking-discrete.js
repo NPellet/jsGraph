@@ -1,39 +1,15 @@
 
-define( function() {
+define([], ( ) => {
 
-	return [ function( domGraph ) {
+	return ( Graph, domGraph ) => {
 
-			var graphinstance = new Graph( domGraph, {
+		var graphinstance = new Graph( domGraph, {
 
-				dblclick: {
-					type: 'plugin',
-					plugin: 'zoom',
-					options: {
-						mode: 'total'
-					}
-				},
+			plugins: { 'peakPicking': {} }
 
-				plugins: {
-					'zoom': { zoomMode: 'x' }
-				},
+		} );
 
-				pluginAction: {
-					'zoom': { shift: false }
-				},
-
-
-				wheel: {
-					type: 'plugin',
-					plugin: 'zoom',
-					options: {
-						direction: 'y'
-					}
-				}
-
-
-
-
-			} );
+		graphinstance.resize( 800, 600 );
 
 // BEGIN IGNORE ON BUILD
 var serieData = [ 
@@ -419,33 +395,21 @@ var serieData = [
 
 // END IGNORE ON BUILD
 
-		graphinstance.newSerie("msdata", 
-			{ 
-				autoPeakPicking: true, 
-				autoPeakPickingNb: 10,
-				autoPeakPickingFormat: function( val, index ) {  this.setProp( 'labelColor', ( index == 1 ? 'red' : 'blue') ); return val.toFixed( 1 ); },
-				autoPeakPickingAllowAllY: true,
-				lineToZero: true 
+	var dataX = [], dataY = [];
 
-			}, 'line' )
-					.autoAxis()
-					.setData( serieData )
-					.XIsMonotoneous();
+	for( var i = 0; i < serieData.length; i +=2 ) {
 
-				graphinstance.draw();
-				
-			
-			
-		}, 
-
-		"Peak picking (discrete)", 
-		[ 
-		'Use the <code>peakPicking</code> serie parameter (for serie line) to enable a basic peak picking algorithm. For a discrete serie (with the parameter <code>lineToZero: true</code>), the library will treat every data point as potential peak.',
-		
-		'The option <code>autoPeakPickingNb</code> (default: 4) is the maximum number of peaks to be selected. The library will select the highest from the whole set.',
-		'Use <code>autoPeakPickingMinDistance</code> (default: 10) to set the minimal distance (in px) between two neighbouring peaks.'
-		] 
-	];
+		dataX.push( serieData[ i ] );
+		dataY.push( serieData[ i + 1 ] );
+	}
 
 
-} );
+
+	graphinstance.newSerie("msdata", { lineToZero: true }, 'line' )
+		.autoAxis()
+		.setWaveform( Graph.newWaveform( ).setData( dataY, dataX ) )
+	
+	graphinstance.getPlugin('peakPicking' ).setSerie( graphinstance.getSerie("msdata"));
+	graphinstance.draw();
+}
+});

@@ -35,10 +35,10 @@
 			"./src/series/graph.serie.contour.js",
 			"./src/shapes/graph.shape.js",
 			"./src/shapes/graph.shape.areaundercurve.js",
-			"./src/shapes/graph.shape.ellipse.js",
+			"./src/shapes/graph.shape.arrow.js",
+			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.label.js",
 			"./src/shapes/graph.shape.polyline.js",
-			"./src/shapes/graph.shape.line.js",
 			"./src/shapes/graph.shape.nmrintegral.js",
 			"./src/shapes/graph.shape.peakintegration2d.js",
 			"./src/shapes/graph.shape.rect.js",
@@ -55,7 +55,8 @@
 			"./src/plugins/graph.plugin.serielinedifference.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
 			"./src/plugins/graph.plugin.makeTracesDifferent.js",
-			"./src/shapes/graph.shape.arrow.js"
+			"./src/plugins/graph.plugin.peakPicking.js",
+			"./src/shapes/graph.shape.ellipse.js"
 		]
 	}
 }

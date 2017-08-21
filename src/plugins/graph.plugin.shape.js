@@ -11,6 +11,11 @@ class PluginShape extends Plugin {
     super( ...arguments );
   }
 
+  static
+  default () {
+    return {}
+  }
+
   /**
    * Init method
    * @private

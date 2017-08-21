@@ -33,7 +33,8 @@ class PluginTimeSerieManager extends Plugin {
 
   }
 
-  static defaults() {
+  static
+  default () {
 
     return {
 

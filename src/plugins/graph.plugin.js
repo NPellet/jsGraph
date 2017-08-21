@@ -6,13 +6,15 @@ import EventEmitter from '../dependencies/eventEmitter/EventEmitter.js'
  */
 class Plugin extends EventEmitter {
 
-  static defaults() {
+  static
+  default () {
     return {};
   }
 
   constructor( options ) {
     super( ...arguments );
-    this.options = options;
+
+    this.options = Object.assign( {}, Plugin.default(), this.constructor.default(), options );
   }
 
   /**
