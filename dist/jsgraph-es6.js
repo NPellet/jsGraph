@@ -5707,6 +5707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getXWaveform() {
+
 	      if (this.xdata) {
 	        return this.xdata;
 	      }
@@ -6120,6 +6121,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getLength() {
+	      if (!this.data) {
+	        return 0;
+	      }
 	      return this.data.length;
 	    }
 

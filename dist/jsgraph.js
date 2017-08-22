@@ -13750,6 +13750,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'getXWaveform',
 	      value: function getXWaveform() {
+
 	        if (this.xdata) {
 	          return this.xdata;
 	        }
@@ -14223,6 +14224,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'getLength',
 	      value: function getLength() {
+	        if (!this.data) {
+	          return 0;
+	        }
 	        return this.data.length;
 	      }
 	    }, {

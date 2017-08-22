@@ -143,6 +143,7 @@ class Waveform {
   }
 
   getXWaveform() {
+
     if ( this.xdata ) {
       return this.xdata;
     }
@@ -563,6 +564,9 @@ class Waveform {
   }
 
   getLength() {
+    if ( !this.data ) {
+      return 0;
+    }
     return this.data.length;
   }
 
