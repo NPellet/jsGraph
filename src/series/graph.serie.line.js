@@ -633,7 +633,6 @@ class SerieLine extends Serie {
     for ( ; i < l; i += 1 ) {
 
       x = waveform.getX( i, true );
-
       y = data[ i ] * yscale + yshift;
 
       if ( x != x || y != y ) { // NaN checks
@@ -1259,6 +1258,7 @@ class SerieLine extends Serie {
         xMax: this.waveform.getX( indexX + 1 ),
         yMin: this.waveform.getY( indexX ),
         yMax: this.waveform.getY( indexX + 1 ),
+        xExact: valX
       };
 
       if ( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
@@ -1287,8 +1287,9 @@ class SerieLine extends Serie {
 
     var value = this.searchClosestValue( valX );
 
-    if ( !value )
+    if ( !value ) {
       return;
+    }
 
     var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
     var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
@@ -1336,7 +1337,7 @@ class SerieLine extends Serie {
       xAfter: value.xMax,
       yBefore: value.yMin,
       yAfter: value.yMax,
-      trueX: valX,
+      trueX: value.xExact,
       interpolatedY: intY,
 
       xClosest: value.xClosest,

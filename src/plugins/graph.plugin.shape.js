@@ -42,7 +42,7 @@ class PluginShape extends Plugin {
     if ( !this.shapeType && !this.options.url ) {
       return;
     }
-    console.log( 'down' );
+    
 
     var self = this,
       selfPlugin = this;

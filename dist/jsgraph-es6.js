@@ -617,6 +617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
 	     */
 	    draw(force) {
+	      console.log('drawing');
 	      this.drawn = true;
 	      this.updateLegend(true);
 	      this.drawSeries(this.redraw(true && !force));
@@ -5812,6 +5813,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    append(x, y) {
 
+	      if (!this.data) {
+	        this.data = [];
+	      }
+
 	      if (typeof x == "function") {
 	        x = x(this);
 	      }
@@ -5965,13 +5970,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (useDataToUse && this.dataInUse) {
 	        xdata = this.dataInUse.x;
 	      } else if (this.xdata) {
-	        xdata = this.xdata.getData();
+	        xdata = this.xdata.data;
 	      }
 
 	      let position;
 
 	      if (this.hasXWaveform()) {
-	        position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+	        // The x value HAS to be rescaled
+	        position = this.xdata.getIndexFromData((xval - this.getXShift()) / this.getXScale(), xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
 	      } else {
 	        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
 	      }
@@ -6004,11 +6010,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    getXMin() {
-	      return (this.xdata ? this.xdata.getMin() : this.minX) * this.getXScale() + this.getXShift();
+	      return this.xdata ? this.xdata.getMin() : this.minX;
 	    }
 
 	    getXMax() {
-	      return (this.xdata ? this.xdata.getMax() : this.maxX) * this.getXScale() + this.getXShift();
+	      return this.xdata ? this.xdata.getMax() : this.maxX;
 	    }
 
 	    getYMin() {
@@ -13831,7 +13837,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      for (; i < l; i += 1) {
 
 	        x = waveform.getX(i, true);
-
 	        y = data[i] * yscale + yshift;
 
 	        if (x != x || y != y) {
@@ -18806,7 +18811,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 
-	        this.lineZone.setAttribute('d', "M " + line + " z");
+	        if (line !== "") {
+	          this.lineZone.setAttribute('d', "M " + line + " z");
+	        }
 	        this.groupMain.appendChild(this.groupZones);
 	      }
 

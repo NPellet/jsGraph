@@ -255,6 +255,10 @@ class Waveform {
 
   append( x, y ) {
 
+    if ( !this.data ) {
+      this.data = [];
+    }
+
     if ( typeof x == "function" ) {
       x = x( this );
     }
@@ -408,13 +412,14 @@ class Waveform {
     if ( useDataToUse && this.dataInUse ) {
       xdata = this.dataInUse.x;
     } else if ( this.xdata ) {
-      xdata = this.xdata.getData();
+      xdata = this.xdata.data;
     }
 
     let position;
 
-    if ( this.hasXWaveform() ) {
+    if ( this.hasXWaveform() ) { // The x value HAS to be rescaled
       position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
+
     } else {
       position = Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
     }
@@ -447,11 +452,11 @@ class Waveform {
   }
 
   getXMin() {
-    return ( this.xdata ? this.xdata.getMin() : this.minX ) * this.getXScale() + this.getXShift();
+    return ( this.xdata ? this.xdata.getMin() : this.minX );
   }
 
   getXMax() {
-    return ( this.xdata ? this.xdata.getMax() : this.maxX ) * this.getXScale() + this.getXShift();
+    return ( this.xdata ? this.xdata.getMax() : this.maxX );
   }
 
   getYMin() {
@@ -523,7 +528,7 @@ class Waveform {
 
   setXShift( shift = 0 ) {
 
-    if ( !this.hasXWaveform ) {
+    if ( !this.hasXWaveform() ) {
       return this;
     }
 
@@ -880,6 +885,8 @@ class Waveform {
     let xIndex;
     let yData = this.getDataY();
 
+    x = ( x - this.getXShift() ) / this.getXScale();
+
     if ( this.xdata ) {
       let xData = this.xdata.getData(),
         xIndex = binarySearch( x, xData, !this.xdata.getMonotoneousAscending() );
@@ -1074,10 +1081,10 @@ class Waveform {
 
     this._dataAggregating = aggregator( {
 
-      minX: this.minX,
-      maxX: this.maxX,
-      minY: this.minY,
-      maxY: this.maxY,
+      minX: this.getMinX(),
+      maxX: this.getMaxX(),
+      minY: this.getMinY(),
+      maxY: this.getMaxY(),
       data: this.data,
       xdata: this.xdata ? this.xdata.getData() : undefined,
       xScale: this.xScale,
@@ -1088,6 +1095,7 @@ class Waveform {
     } ).then( ( event ) => {
 
       this._dataAggregated = event.aggregates;
+      console.log( this._dataAggregated );
       this._dataAggregating = false;
     } );
 

@@ -181,7 +181,9 @@ class SerieZone extends Serie {
         }
       }
 
-      this.lineZone.setAttribute( 'd', "M " + line + " z" );
+      if ( line !== "" ) {
+        this.lineZone.setAttribute( 'd', "M " + line + " z" );
+      }
       this.groupMain.appendChild( this.groupZones );
     }
 

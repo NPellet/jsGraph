@@ -87,7 +87,7 @@ class Graph extends EventEmitter {
   constructor( wrapper, options, axis ) {
 
     super();
-    console.log( 'new' );
+    
     /*
       The unique ID of the graph
       @name Graph#uniqueid
@@ -335,6 +335,7 @@ class Graph extends EventEmitter {
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
    */
   draw( force ) {
+    
     this.drawn = true;
     this.updateLegend( true );
     this.drawSeries( this.redraw( true && !force ) );
@@ -3608,7 +3609,6 @@ function _handleMouseMove( graph, x, y, e ) {
             graph.trackingObject.redraw();
 
             var x = snapToSerie.getXAxis().getPx( index.xClosest ) + graph.options.paddingLeft;
-
           }
         }
 
@@ -3623,7 +3623,7 @@ function _handleMouseMove( graph, x, y, e ) {
               withinPx: 20,
               withinVal: -1
             };
-          } );
+          });
         }
 
         graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest );

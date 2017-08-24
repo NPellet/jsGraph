@@ -1,0 +1,19 @@
+{
+  "name": "jsgraph-waveform",
+  "description": "Waveform library that represents and manipulates arrays of data",
+  "version": "0.0.2",
+  "scripts": {
+  },
+  "main": "waveform.js",
+  "files": [
+    "waveform.js",
+    "fit_lm.js",
+    "data_aggregator.js"
+  ],
+  "devDependencies": {
+  },
+  "dependencies": {
+  },
+  "repository": "NPellet/jsGraph",
+  "license": "MIT"
+}

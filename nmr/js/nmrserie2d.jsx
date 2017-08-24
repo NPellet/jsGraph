@@ -165,11 +165,10 @@ class NMRSerie2D extends React.Component {
 	}
 
 	setData() {
-
-		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
-
+		
 		this._jsGraphWaveform.setData( this.props.data[ 1 ], this.props.data[ 0 ] );
 		this._jsGraphWaveform.aggregate();
+		this._jsGraphSerie.setWaveform( this._jsGraphWaveform );
 		this.setShift( this.props.shift );		
 	}
 

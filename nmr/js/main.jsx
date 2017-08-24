@@ -45,7 +45,8 @@ Promise.all( [ fetch( "nmr1.json" ), fetch( "nmr2.json" ), fetch( "molecule.svg"
 
 	const options = {
 		minThresholdPeakToPeak: 0.01,
-		toolbar: true
+		toolbar: true,
+		legend: true
 	};
 
 	textarea.addEventListener("change", function() {
@@ -58,7 +59,7 @@ Promise.all( [ fetch( "nmr1.json" ), fetch( "nmr2.json" ), fetch( "molecule.svg"
 		});
 
 		ReactDOM.render(
-		  <NMR1D width="600" height="400" options={ options } molecule={ molecule } series={ json } onChanged={ serieChanged }></NMR1D>,
+		  <NMR1D width="800" height="600" options={ options } molecule={ molecule } series={ json } onChanged={ serieChanged }></NMR1D>,
 		  document.getElementById('root')
 		);
 
@@ -66,7 +67,7 @@ Promise.all( [ fetch( "nmr1.json" ), fetch( "nmr2.json" ), fetch( "molecule.svg"
 
 
 	ReactDOM.render(
-	  <NMR1D width="600" height="400" options={ options } series={ series } molecule={ molecule } onChanged={ serieChanged }></NMR1D>,
+	  <NMR1D width="800" height="600" options={ options } series={ series } molecule={ molecule } onChanged={ serieChanged }></NMR1D>,
 	  document.getElementById('root')
 	);
 	

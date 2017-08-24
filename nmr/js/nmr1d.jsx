@@ -170,10 +170,10 @@ class NMR1D extends React.Component {
 	
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor ) => {
 
-			if( this.checkboxAssignment.checked ) {
+			/*if( this.checkboxAssignment.checked ) {
 				
 				return this.graph.prevent( true );
-			}
+			}*/
 
 		} ).on( "createdShape", ( event, shape ) => {
 		
@@ -193,7 +193,7 @@ class NMR1D extends React.Component {
 			this.state.series.forEach( ( serie ) => {
 
 				if( serie.name == "master" ) {
-					serie.integrals.push( { id: Math.random(), from: _from.x, to: _to.x } );
+					serie.integrals.push( { id: "integral_" + _from.x + "_" + _to.x, from: _from.x, to: _to.x } );
 				}
 			} );
 
@@ -418,7 +418,7 @@ console.log( 'Mounting 1D spectrum' );
 
 			var mdown = ( e ) => {
 				
-				if( this.wrapper.classList && this.wrapper.classList.has("removable") ) {	
+				if( this.wrapper.classList && this.wrapper.classList.contains("removable") ) {	
 
 					this.wrapper.classList.add( "removing" );
 					this.assignment.enableRemoveMouseover();
@@ -658,8 +658,8 @@ console.log( 'Mounting 1D spectrum' );
 				dangerouslySetInnerHTML={ { __html: this.state.molecule } }
 			></div>
 				
-			{ this.props.options.toolbar && 
-				<div className="toolbar">
+			{  
+				<div className={ "toolbar" + ( this.props.options.toolbar ? '' : ' hidden' ) }>
 					<p><input ref={ el => { this.checkboxPeakPicking = el } } onClick={ this.togglePeakPicking } type="checkbox" name="peakpicking" /> Peak picking</p>
 					<p><input ref={ el => { this.checkboxAssignment = el } } onClick={ this.toggleAssignment } type="checkbox" name="assignment" /> Create assignment</p>
 					<p><input ref={ el => { this.checkboxRemoveAssignment = el } } onClick={ this.toggleRemoveAssignment } type="checkbox" name="assignment" /> Remove assignments</p>
@@ -679,7 +679,7 @@ console.log( 'Mounting 1D spectrum' );
 						name 		= { serie.name } 
 						data 		= { serie.data } 
 						shift 		= { serie.shift } 
-						integrals 	= {  this.props.options.slave == 'top' ? serie.integrals : [] } 
+						integrals 	= { serie.integrals } 
 						integralLabelRatio = { serie.integralLabelRatio }
 						assignement	= { serie.assignment }
 						direction = { this.props.options.slave == "left" ? 'y' : 'x' }

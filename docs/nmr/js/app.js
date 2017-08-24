@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 239);
+/******/ 	return __webpack_require__(__webpack_require__.s = 240);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -697,8 +697,8 @@ function reverseArray(array) {
 function getOffset(el) {
   var rect = el.getBoundingClientRect();
   return {
-    top: rect.top + document.body.scrollTop,
-    left: rect.left + document.body.scrollLeft
+    top: rect.top,
+    left: rect.left
   };
 };
 
@@ -817,6 +817,7 @@ function extend() {
   return target;
 };
 
+exports.default = {};
 exports.isArray = isArray;
 exports.isPlainObject = isPlainObject;
 function mix(baseClass, mixin) {
@@ -1194,7 +1195,7 @@ module.exports = ExecutionEnvironment;
 
 var _prodInvariant = __webpack_require__(21);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -1581,7 +1582,7 @@ module.exports = emptyFunction;
 var debugTool = null;
 
 if (process.env.NODE_ENV !== 'production') {
-  var ReactDebugTool = __webpack_require__(184);
+  var ReactDebugTool = __webpack_require__(185);
   debugTool = ReactDebugTool;
 }
 
@@ -1601,13 +1602,117 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(27);
+var _EventEmitter2 = __webpack_require__(26);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
 
-var _graph3 = __webpack_require__(4);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var util = _interopRequireWildcard(_graph3);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * Represents a plugin
+ * @interface
+ */
+var Plugin = function (_EventEmitter) {
+  _inherits(Plugin, _EventEmitter);
+
+  _createClass(Plugin, null, [{
+    key: 'default',
+    value: function _default() {
+      return {};
+    }
+  }]);
+
+  function Plugin(options) {
+    _classCallCheck(this, Plugin);
+
+    var _this = _possibleConstructorReturn(this, (Plugin.__proto__ || Object.getPrototypeOf(Plugin)).apply(this, arguments));
+
+    _this.options = Object.assign({}, Plugin.default(), _this.constructor.default(), options);
+    return _this;
+  }
+
+  /**
+   * Init function called by jsGraph on load
+   */
+
+
+  _createClass(Plugin, [{
+    key: 'init',
+    value: function init(graph) {
+      this.graph = graph;
+    }
+  }, {
+    key: 'onMouseDown',
+
+
+    /**
+     * Handles the mousedown event from jsGraph
+     * @param {Graph} graph - The graph instance
+     * @param {Number} x - The x position in px
+     * @param {Number} y - The y position in px
+     * @param {Event} e - The original event
+     * @param {SVGElement} target - The target element
+     */
+    value: function onMouseDown() {}
+  }, {
+    key: 'onMouseUp',
+
+
+    /**
+     * Handles the mouseup event from jsGraph
+     * @param {Graph} graph - The graph instance
+     * @param {Number} x - The x position in px
+     * @param {Number} y - The y position in px
+     * @param {Event} e - The original event
+     * @param {SVGElement} target - The target element
+     */
+    value: function onMouseUp() {}
+  }, {
+    key: 'onMouseMove',
+
+
+    /**
+     * Handles the mousemove event from jsGraph
+     * @param {Graph} graph - The graph instance
+     * @param {Number} x - The x position in px
+     * @param {Number} y - The y position in px
+     * @param {Event} e - The original event
+     * @param {SVGElement} target - The target element
+     */
+    value: function onMouseMove() {}
+  }]);
+
+  return Plugin;
+}(_EventEmitter3.default);
+
+exports.default = Plugin;
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _graphPosition = __webpack_require__(27);
+
+var _graphPosition2 = _interopRequireDefault(_graphPosition);
+
+var _graphUtil = __webpack_require__(4);
+
+var util = _interopRequireWildcard(_graphUtil);
 
 var _EventEmitter2 = __webpack_require__(26);
 
@@ -2155,7 +2260,7 @@ var Shape = function (_EventEmitter) {
       var self = this;
       for (var i = 0, l = this.properties.position.length; i < l; i++) {
 
-        var pos = _graph2.default.check(this.properties.position[i], function (relativeTo) {
+        var pos = _graphPosition2.default.check(this.properties.position[i], function (relativeTo) {
           return self.getRelativePosition(relativeTo);
         });
 
@@ -2573,7 +2678,7 @@ var Shape = function (_EventEmitter) {
     value: function setLabelPosition(position, index) {
 
       var self;
-      var pos = _graph2.default.check(position, function (relativeTo) {
+      var pos = _graphPosition2.default.check(position, function (relativeTo) {
         return self.getRelativePosition(relativeTo);
       });
 
@@ -2745,7 +2850,7 @@ var Shape = function (_EventEmitter) {
 
       var position;
 
-      position = index instanceof _graph2.default ? index : this.getPosition(index);
+      position = index instanceof _graphPosition2.default ? index : this.getPosition(index);
 
       if (!position) {
         return;
@@ -2769,7 +2874,7 @@ var Shape = function (_EventEmitter) {
     value: function getPosition(index) {
 
       var pos = this.getProp('position', index || 0);
-      this.setProp('position', pos = _graph2.default.check(pos), index);
+      this.setProp('position', pos = _graphPosition2.default.check(pos), index);
       return pos;
     }
 
@@ -2785,7 +2890,7 @@ var Shape = function (_EventEmitter) {
     value: function setPosition(position, index) {
 
       var self = this;
-      var pos = _graph2.default.check(position, function (relativeTo) {
+      var pos = _graphPosition2.default.check(position, function (relativeTo) {
         return self.getRelativePosition(relativeTo);
       });
 
@@ -2852,9 +2957,9 @@ var Shape = function (_EventEmitter) {
               transformString += p.x + ", " + p.y;
             } else {
 
-              transformString += _graph2.default.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
+              transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[1], this.getXAxis()).replace('px', '');
               transformString += ", ";
-              transformString += _graph2.default.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
+              transformString += _graphPosition2.default.getDeltaPx(transforms[i].arguments[2], this.getYAxis()).replace('px', '');
             }
 
             break;
@@ -2987,9 +3092,9 @@ var Shape = function (_EventEmitter) {
         this._labelsBackground[labelIndex].setAttribute('display', 'initial');
       }
 
-      var position = this.calculatePosition(_graph2.default.check(this.getProp("labelPosition", labelIndex)));
+      var position = this.calculatePosition(_graphPosition2.default.check(this.getProp("labelPosition", labelIndex)));
 
-      if (isNaN(position.x) || isNaN(position.y)) {
+      if (isNaN(position.x) || isNaN(position.y) || position.y === false || position.x === false) {
         /*console.warn( "Cannot compute positioning for labelIndex " + labelIndex + " with text " + this.getProp( "labelText", labelIndex ) );
         console.log( this, this._labels );
         console.trace();*/
@@ -3014,7 +3119,6 @@ var Shape = function (_EventEmitter) {
       }
 
       var labelData = this.getProp('labelHTMLData', labelIndex) || {};
-      console.log(labelData);
 
       for (var i in labelData) {
 
@@ -4059,7 +4163,7 @@ Shape.prototype.remove = Shape.prototype.kill;
 exports.default = Shape;
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4316,7 +4420,7 @@ module.exports = ReactUpdates;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4350,110 +4454,6 @@ var ReactCurrentOwner = {
 };
 
 module.exports = ReactCurrentOwner;
-
-/***/ }),
-/* 14 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _EventEmitter2 = __webpack_require__(26);
-
-var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-/**
- * Represents a plugin
- * @interface
- */
-var Plugin = function (_EventEmitter) {
-  _inherits(Plugin, _EventEmitter);
-
-  _createClass(Plugin, null, [{
-    key: 'defaults',
-    value: function defaults() {
-      return {};
-    }
-  }]);
-
-  function Plugin(options) {
-    _classCallCheck(this, Plugin);
-
-    var _this = _possibleConstructorReturn(this, (Plugin.__proto__ || Object.getPrototypeOf(Plugin)).apply(this, arguments));
-
-    _this.options = options;
-    return _this;
-  }
-
-  /**
-   * Init function called by jsGraph on load
-   */
-
-
-  _createClass(Plugin, [{
-    key: 'init',
-    value: function init(graph) {
-      this.graph = graph;
-    }
-  }, {
-    key: 'onMouseDown',
-
-
-    /**
-     * Handles the mousedown event from jsGraph
-     * @param {Graph} graph - The graph instance
-     * @param {Number} x - The x position in px
-     * @param {Number} y - The y position in px
-     * @param {Event} e - The original event
-     * @param {SVGElement} target - The target element
-     */
-    value: function onMouseDown() {}
-  }, {
-    key: 'onMouseUp',
-
-
-    /**
-     * Handles the mouseup event from jsGraph
-     * @param {Graph} graph - The graph instance
-     * @param {Number} x - The x position in px
-     * @param {Number} y - The y position in px
-     * @param {Event} e - The original event
-     * @param {SVGElement} target - The target element
-     */
-    value: function onMouseUp() {}
-  }, {
-    key: 'onMouseMove',
-
-
-    /**
-     * Handles the mousemove event from jsGraph
-     * @param {Graph} graph - The graph instance
-     * @param {Number} x - The x position in px
-     * @param {Number} y - The y position in px
-     * @param {Event} e - The original event
-     * @param {SVGElement} target - The target element
-     */
-    value: function onMouseMove() {}
-  }]);
-
-  return Plugin;
-}(_EventEmitter3.default);
-
-exports.default = Plugin;
 
 /***/ }),
 /* 15 */
@@ -4950,7 +4950,47 @@ module.exports = DOMProperty;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports,"__esModule",{value:true});var _typeof=typeof Symbol==="function"&&typeof Symbol.iterator==="symbol"?function(obj){return typeof obj;}:function(obj){return obj&&typeof Symbol==="function"&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj;};var _createClass=function(){function defineProperties(target,props){for(var i=0;i<props.length;i++){var descriptor=props[i];descriptor.enumerable=descriptor.enumerable||false;descriptor.configurable=true;if("value"in descriptor)descriptor.writable=true;Object.defineProperty(target,descriptor.key,descriptor);}}return function(Constructor,protoProps,staticProps){if(protoProps)defineProperties(Constructor.prototype,protoProps);if(staticProps)defineProperties(Constructor,staticProps);return Constructor;};}();var _graph=__webpack_require__(27);var _graph2=_interopRequireDefault(_graph);var _graph3=__webpack_require__(4);var util=_interopRequireWildcard(_graph3);var _EventEmitter2=__webpack_require__(26);var _EventEmitter3=_interopRequireDefault(_EventEmitter2);var _waveform=__webpack_require__(18);var _waveform2=_interopRequireDefault(_waveform);function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}else{var newObj={};if(obj!=null){for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key))newObj[key]=obj[key];}}newObj.default=obj;return newObj;}}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&(typeof call==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}/**
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _graphPosition = __webpack_require__(27);
+
+var _graphPosition2 = _interopRequireDefault(_graphPosition);
+
+var _graphUtil = __webpack_require__(4);
+
+var util = _interopRequireWildcard(_graphUtil);
+
+var _EventEmitter2 = __webpack_require__(26);
+
+var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
+
+var _waveform = __webpack_require__(18);
+
+var _waveform2 = _interopRequireDefault(_waveform);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+if (!__VERSION__) {
+  var __VERSION__ = "head";
+}
+
+/**
  * Default graph parameters
  * @name Graph~GraphOptionsDefault
  * @name GraphOptions
@@ -4973,11 +5013,51 @@ Object.defineProperty(exports,"__esModule",{value:true});var _typeof=typeof Symb
  * @prop {Object} dblclick - Define the double click action
  * @prop {Boolean} shapesUniqueSelection - true to allow only one shape to be selected at the time
  * @prop {Boolean} shapesUnselectOnClick - true to unselect all shapes on click
- */var GraphOptionsDefault={title:'',paddingTop:30,paddingBottom:5,paddingLeft:20,paddingRight:20,close:{left:true,right:true,top:true,bottom:true},closeColor:'black',fontSize:12,fontFamily:'Myriad Pro, Helvetica, Arial',plugins:{},pluginAction:{},mouseActions:[],keyActions:[],wheel:{},dblclick:{},shapesUnselectOnClick:true,shapesUniqueSelection:true};var _constructors=new Map();/**
+ */
+var GraphOptionsDefault = {
+
+  title: '',
+
+  paddingTop: 30,
+  paddingBottom: 5,
+  paddingLeft: 20,
+  paddingRight: 20,
+
+  close: {
+    left: true,
+    right: true,
+    top: true,
+    bottom: true
+  },
+
+  closeColor: 'black',
+
+  fontSize: 12,
+  fontFamily: 'Myriad Pro, Helvetica, Arial',
+
+  plugins: {},
+  pluginAction: {},
+  mouseActions: [],
+  keyActions: [],
+  wheel: {},
+  dblclick: {},
+
+  shapesUnselectOnClick: true,
+  shapesUniqueSelection: true
+};
+
+var _constructors = new Map();
+
+/**
  * Entry class of jsGraph that creates a new graph.
  * @extends EventEmitter
  * @tutorial basic
- */var Graph=function(_EventEmitter){_inherits(Graph,_EventEmitter);/**
+ */
+
+var Graph = function (_EventEmitter) {
+  _inherits(Graph, _EventEmitter);
+
+  /**
    * Graph constructor
    * @param {(HTMLElement|String)} [ wrapper ] - The DOM Wrapper element its ```id``` property. If you do not use the wrapper during the graph creation, use it with the @link{Graph.setWrapper} method
    * @param {GraphOptions} [ options ] - The options of the graph
@@ -4988,12 +5068,32 @@ Object.defineProperty(exports,"__esModule",{value:true});var _typeof=typeof Symb
    * @param {Array} axis.right - The list of right axes
    * @example var graph = new Graph("someDomID");
    * @example var graph = new Graph("someOtherDomID", { title: 'Graph title', paddingRight: 100 } );
-   */function Graph(wrapper,options,axis){_classCallCheck(this,Graph);/*
+   */
+  function Graph(wrapper, options, axis) {
+    _classCallCheck(this, Graph);
+
+    /*
       The unique ID of the graph
       @name Graph#uniqueid
       @type String
-    */var _this=_possibleConstructorReturn(this,(Graph.__proto__||Object.getPrototypeOf(Graph)).call(this));_this._creation=util.guid();_this._drawn=false;if(wrapper===Object(wrapper)&&!(wrapper instanceof HTMLElement)){// Wrapper is options
-axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wrapper=document.getElementById(wrapper);}else if(typeof wrapper.length=="number"){wrapper=wrapper[0];}/**
+    */
+    var _this = _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).call(this));
+
+    _this._creation = util.guid();
+    _this._drawn = false;
+
+    if (wrapper === Object(wrapper) && !(wrapper instanceof HTMLElement)) {
+      // Wrapper is options
+      axis = options;
+      options = wrapper;
+      wrapper = null;
+    } else if (typeof wrapper == "string") {
+      wrapper = document.getElementById(wrapper);
+    } else if (typeof wrapper.length == "number") {
+      wrapper = wrapper[0];
+    }
+
+    /**
      * @object
      * @memberof Graph
      * @name Graph#options
@@ -5001,524 +5101,4295 @@ axis=options;options=wrapper;wrapper=null;}else if(typeof wrapper=="string"){wra
      * @default {@link GraphOptionsDefault}
      * Access directly the options of the graph using this public object.
      * @example graph.options.mouseActions.push( {  } );
-     */_this.options=util.extend({},GraphOptionsDefault,options);// Options declaration must be placed before the doDom operation
-// doDom is a private method. We bind it to this thanks to ES6 features
-doDom.bind(_this)();if(wrapper){_this.setWrapper(wrapper);}_this.prevented=false;_this.axis={left:[],top:[],bottom:[],right:[]};_this.shapes=[];_this.shapesLocked=false;_this.plugins={};for(var i in _this.options.pluginAction){_this.options.pluginAction.plugin=i;_this.options.mouseActions.push(_this.options.pluginAction);}_this.selectedShapes=[];_this.series=[];//this._dom = wrapper;
-_this._axesHaveChanged=true;if(_this.options.hasOwnProperty('padding')&&util.isNumeric(_this.options.padding)){_this.options.paddingTop=_this.options.paddingBottom=_this.options.paddingLeft=_this.options.paddingRight=_this.options.padding;}_this.currentAction=false;_this.ns=Graph.ns;_this.nsxlink=Graph.nsxlink;// Load all axes
-if(axis){for(var i in axis){for(var j=0,l=axis[i].length;j<l;j++){switch(i){case'top':_this.getTopAxis(j,axis[i][j]);break;case'bottom':_this.getBottomAxis(j,axis[i][j]);break;case'left':_this.getLeftAxis(j,axis[i][j]);break;case'right':_this.getRightAxis(j,axis[i][j]);break;}}}}_this._pluginsInit();return _this;}_createClass(Graph,[{key:'setWrapper',value:function setWrapper(wrapper){if(!wrapper){throw"The wrapper DOM element was not found.";}if(!wrapper.appendChild){throw"The wrapper appears to be an invalid HTMLElement";}wrapper.style['-webkit-user-select']='none';wrapper.style['-moz-user-select']='none';wrapper.style['-o-user-select']='none';wrapper.style['-ms-user-select']='none';wrapper.style['user-select']='none';wrapper.style.position='relative';wrapper.style.outline="none";wrapper.setAttribute('tabindex',1);this.wrapper=wrapper;// DOM
-if(!this.height||!this.width){var wrapperStyle=getComputedStyle(wrapper);var w=parseInt(wrapperStyle.width);var h=parseInt(wrapperStyle.height);this.setSize(w,h);this._resize();}wrapper.appendChild(this.dom);_registerEvents(this);}/**
+     */
+    _this.options = util.extend({}, GraphOptionsDefault, options);
+    // Options declaration must be placed before the doDom operation
+
+    // doDom is a private method. We bind it to this thanks to ES6 features
+    doDom.bind(_this)();
+
+    if (wrapper) {
+      _this.setWrapper(wrapper);
+    }
+
+    _this.prevented = false;
+
+    _this.axis = {
+      left: [],
+      top: [],
+      bottom: [],
+      right: []
+    };
+
+    _this.shapes = [];
+    _this.shapesLocked = false;
+    _this.plugins = {};
+
+    for (var i in _this.options.pluginAction) {
+      _this.options.pluginAction.plugin = i;
+      _this.options.mouseActions.push(_this.options.pluginAction);
+    }
+
+    _this.selectedShapes = [];
+
+    _this.series = [];
+    //this._dom = wrapper;
+    _this._axesHaveChanged = true;
+
+    if (_this.options.hasOwnProperty('padding') && util.isNumeric(_this.options.padding)) {
+      _this.options.paddingTop = _this.options.paddingBottom = _this.options.paddingLeft = _this.options.paddingRight = _this.options.padding;
+    }
+
+    _this.currentAction = false;
+
+    _this.ns = Graph.ns;
+    _this.nsxlink = Graph.nsxlink;
+
+    // Load all axes
+    if (axis) {
+      for (var i in axis) {
+        for (var j = 0, l = axis[i].length; j < l; j++) {
+
+          switch (i) {
+
+            case 'top':
+              _this.getTopAxis(j, axis[i][j]);
+              break;
+            case 'bottom':
+              _this.getBottomAxis(j, axis[i][j]);
+              break;
+            case 'left':
+              _this.getLeftAxis(j, axis[i][j]);
+              break;
+            case 'right':
+              _this.getRightAxis(j, axis[i][j]);
+              break;
+          }
+        }
+      }
+    }
+
+    _this._pluginsInit();
+
+    return _this;
+  }
+
+  _createClass(Graph, [{
+    key: 'setWrapper',
+    value: function setWrapper(wrapper) {
+
+      if (!wrapper) {
+        throw "The wrapper DOM element was not found.";
+      }
+
+      if (!wrapper.appendChild) {
+        throw "The wrapper appears to be an invalid HTMLElement";
+      }
+
+      wrapper.style['-webkit-user-select'] = 'none';
+      wrapper.style['-moz-user-select'] = 'none';
+      wrapper.style['-o-user-select'] = 'none';
+      wrapper.style['-ms-user-select'] = 'none';
+      wrapper.style['user-select'] = 'none';
+
+      wrapper.style.position = 'relative';
+      wrapper.style.outline = "none";
+
+      wrapper.setAttribute('tabindex', 1);
+
+      this.wrapper = wrapper;
+
+      // DOM
+
+      if (!this.height || !this.width) {
+        var wrapperStyle = getComputedStyle(wrapper);
+        var w = parseInt(wrapperStyle.width);
+        var h = parseInt(wrapperStyle.height);
+        this.setSize(w, h);
+        this._resize();
+      }
+
+      wrapper.appendChild(this.dom);
+
+      _registerEvents(this);
+    }
+    /**
      * Returns the graph SVG wrapper element
      * @public
      * @return {SVGElement} The DOM element wrapping the graph
-     */},{key:'getDom',value:function getDom(){return this.dom;}/**
-   * Returns the unique id representing the graph
-   * @public
-   * @return {String} The unique ID of the graph
-   */},{key:'getId',value:function getId(){return this._creation;}/**
-   * Returns the graph wrapper element passed during the graph creation
-   * @public
-   * @return {HTMLElement} The DOM element wrapping the graph
-   */},{key:'getWrapper',value:function getWrapper(){return this.wrapper;}/**
-   * Sets an option of the graph
-   * @param {String} name - Option name
-   * @param value - New option value
-   * @returns {Graph} - Graph instance
-   */},{key:'setOption',value:function setOption(name,val){this.options[name]=val;return this;}/**
-   *  Sets the title of the graph
-   */},{key:'setTitle',value:function setTitle(title){this.options.title=title;this.domTitle.textContent=title;}/**
-   *  Shows the title of the graph
-   */},{key:'displayTitle',value:function displayTitle(){this.domTitle.setAttribute('display','inline');}/**
-   *  Hides the title of the graph
-   */},{key:'hideTitle',value:function hideTitle(){this.domTitle.setAttribute('display','none');}},{key:'hide',value:function hide(){if(this.dom.style.display!=="none"){this.dom.style.display="none";}}},{key:'show',value:function show(){if(this.dom.style.display=="none"){this.dom.style.display="initial";}}/**
-   * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
-   * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
-   * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
-   * @return {Boolean} if the redraw has been successful
-   */},{key:'redraw',value:function redraw(onlyIfAxesHaveChanged){if(!this.width||!this.height){return;}if(!this.sizeSet){this._resize();this.executeRedrawSlaves();return true;}else{if(!onlyIfAxesHaveChanged||haveAxesChanged(this)||hasSizeChanged(this)){this.executeRedrawSlaves();refreshDrawingZone(this);return true;}}this.executeRedrawSlaves(true);return false;}},{key:'executeRedrawSlaves',value:function executeRedrawSlaves(noLegend){this._pluginsExecute("preDraw");}/**
-   * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
-   */},{key:'draw',value:function draw(force){this.drawn=true;this.updateLegend(true);this.drawSeries(this.redraw(true&&!force));}/**
-   *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
-   *  @memberof Graph
-   *  @return {Graph} The current graph instance
-   *  @see {@link Graph#resumeUpdate}
-   *  @see {@link Graph#doUpdate}
-   *  @since 1.16.19
-   */},{key:'delayUpdate',value:function delayUpdate(){this._lockUpdate=true;return this;}/**
-   *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
-   *  @memberof Graph
-   *  @return {Graph} The current graph instance
-   *  @see {@link Graph#delayUpdate}
-   *  @see {@link Graph#resumeUpdate}
-   *  @since 1.16.19
-   */},{key:'doUpdate',value:function doUpdate(){if(this.legend){this.legend.update();}this.draw();if(this.legend){this.legend.update();}return this;}/**
-   *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
-   *  @memberof Graph
-   *  @return {Graph} The current graph instance
-   *  @see {@link Graph#delayUpdate}
-   *  @see {@link Graph#doUpdate}
-   *  @since 1.16.19
-   */},{key:'resumeUpdate',value:function resumeUpdate(){this._lockUpdate=false;return this;}},{key:'isDelayedUpdate',value:function isDelayedUpdate(){return this._lockUpdate;}/**
-   * Sets the total width of the graph
-   * @param {Number} width - The new width of the graph
-   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-   * @see Graph#setHeight
-   * @see Graph#resize
-   */},{key:'setWidth',value:function setWidth(width,skipResize){this.width=width;if(!skipResize){this._resize();}}/**
-   * Sets the total height of the graph
-   * @param {Number} height - The new height of the graph
-   * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
-   * @see Graph#setWidth
-   * @see Graph#resize
-   */},{key:'setHeight',value:function setHeight(height,skipResize){this.height=height;if(!skipResize){this._resize();}}/**
-   * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
-   * @param {Number} [ width ] - The new width of the graph
-   * @param {Number} [ height ] - The new height of the graph
-   * @see Graph#setWidth
-   * @see Graph#setHeight
-   * @return {Graph} The current graph
-   */},{key:'resize',value:function resize(w,h){if(w&&h){this.setSize(w,h);}this._resize();return this;}/**
-   * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
-   * @param {Number} [ width ] - The new width of the graph
-   * @param {Number} [ height ] - The new height of the graph
-   * @see Graph#setWidth
-   * @see Graph#setHeight
-   * @see Graph#resize
-   */},{key:'setSize',value:function setSize(w,h){this.setWidth(w,true);this.setHeight(h,true);this.getDrawingHeight();this.getDrawingWidth();}/**
-   * Returns the width of the graph (set by setSize, setWidth or resize methods)
-   * @return {Number} Width of the graph
-   */},{key:'getWidth',value:function getWidth(){return this.width;}/**
-   * Returns the height of the graph (set by setSize, setHeight or resize methods)
-   * @return {Number} Height of the graph
-   */},{key:'getHeight',value:function getHeight(){return this.height;}/**
-   * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
-   * @return {Number} paddingTop
-   */},{key:'getPaddingTop',value:function getPaddingTop(){return this.options.paddingTop;}/**
-   * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
-   * @return {Number} paddingTop
-   */},{key:'getPaddingLeft',value:function getPaddingLeft(){return this.options.paddingLeft;}/**
-   * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
-   * @return {Number} paddingTop
-   */},{key:'getPaddingBottom',value:function getPaddingBottom(){return this.options.paddingBottom;}/**
-   * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
-   * @return {Number} paddingRight
-   */},{key:'getPaddingRight',value:function getPaddingRight(){return this.options.paddingRight;}/**
-   * Returns the height of the drawable zone, including the space used by the axes
-   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-   * @returns {Number} Height of the graph
-   */},{key:'getDrawingHeight',value:function getDrawingHeight(useCache){if(useCache&&this.innerHeight){return this.innerHeight;}return this.innerHeight=this.height-this.options.paddingTop-this.options.paddingBottom;}/**
-   * Returns the width of the drawable zone, including the space used by the axes
-   * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
-   * @returns {Number} Width of the graph
-   */},{key:'getDrawingWidth',value:function getDrawingWidth(useCache){if(useCache&&this.innerWidth){return this.innerWidth;}return this.innerWidth=this.width-this.options.paddingLeft-this.options.paddingRight;}/**
-   * Caches the wrapper offset in the page.<br />
-   * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
-   * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
-   * @see Graph#uncacheOffset
-   */},{key:'cacheOffset',value:function cacheOffset(){this.offsetCached=util.getOffset(this.wrapper);}/**
-   * Un-caches the wrapper offset value
-   * @see Graph#cacheOffset
-   */},{key:'uncacheOffset',value:function uncacheOffset(){this.offsetCached=false;}/**
-   * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
-   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getXAxis',value:function getXAxis(index,options){if(this.axis.top.length>0&&this.axis.bottom.length==0){return this.getTopAxis(index,options);}return this.getBottomAxis(index,options);}/**
-   * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
-   * Caution ! The <code>options</code> parameter will only be effective if an axis is created
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getYAxis',value:function getYAxis(index,options){if(this.axis.right.length>0&&this.axis.left.length==0){return this.getRightAxis(index,options);}return this.getLeftAxis(index,options);}/**
-   * Returns the top axis at a certain index. Creates it if non-existant
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getTopAxis',value:function getTopAxis(index,options){return _getAxis(this,index,options,'top');}/**
-   * Returns the bottom axis at a certain index. Creates it if non-existant
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getBottomAxis',value:function getBottomAxis(index,options){return _getAxis(this,index,options,'bottom');}/**
-   * Returns the left axis at a certain index. Creates it if non-existant
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getLeftAxis',value:function getLeftAxis(index,options){return _getAxis(this,index,options,'left');}/**
-   * Returns the right axis at a certain index. Creates it if non-existant
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @param {Object} [ options={} ] - The options to pass to the axis constructor
-   */},{key:'getRightAxis',value:function getRightAxis(index,options){return _getAxis(this,index,options,'right');}/**
-   * Sets a bottom axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   */},{key:'setXAxis',value:function setXAxis(axis,index){this.setBottomAxis(axis,index);}/**
-   * Sets a left axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   */},{key:'setYAxis',value:function setYAxis(axis,index){this.setLeftAxis(axis,index);}/**
-   * Sets a left axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @see Graph#setBottomAxis
-   * @see Graph#setTopAxis
-   * @see Graph#setRightAxis
-   * @see Graph#getLeftAxis
-   * @see Graph#getYAxis
-   */},{key:'setLeftAxis',value:function setLeftAxis(axis,index){index=index||0;if(this.axis.left[index]){this.axis.left[index].kill();}this.axis.left[index]=axis;}/**
-   * Sets a right axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @see Graph#setBottomAxis
-   * @see Graph#setLeftAxis
-   * @see Graph#setTopAxis
-   * @see Graph#getRightAxis
-   * @see Graph#getYAxis
-   */},{key:'setRightAxis',value:function setRightAxis(axis,index){index=index||0;if(this.axis.right[index]){this.axis.right[index].kill();}this.axis.right[index]=axis;}/**
-   * Sets a top axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @see Graph#setBottomAxis
-   * @see Graph#setLeftAxis
-   * @see Graph#setRightAxis
-   * @see Graph#getBottomAxis
-   * @see Graph#getXAxis
-   */},{key:'setTopAxis',value:function setTopAxis(axis,index){index=index||0;if(this.axis.top[index]){this.axis.top[index].kill();}this.axis.top[index]=axis;}/**
-   * Sets a bottom axis
-   * @param {Axis} axis - The axis instance to set
-   * @param {Number} [ index=0 ] - The index of the axis
-   * @see Graph#setTopAxis
-   * @see Graph#setLeftAxis
-   * @see Graph#setRightAxis
-   * @see Graph#getTopAxis
-   * @see Graph#getXAxis
-   */},{key:'setBottomAxis',value:function setBottomAxis(axis,index){index=index||0;if(this.axis.bottom[index]){this.axis.bottom[index].kill();}this.axis.bottom[index]=axis;}},{key:'killAxis',value:function killAxis(axis){var noRedraw=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;var noSerieKill=arguments.length>2&&arguments[2]!==undefined?arguments[2]:false;var index;if(axis.isX()){if((index=this.axis.bottom.indexOf(axis))>-1){this.axis.bottom.splice(index,1);}if((index=this.axis.top.indexOf(axis))>-1){this.axis.top.splice(index,1);}if(!noSerieKill){this.series.map(function(serie){if(serie.getXAxis()==axis){serie.kill();}});}}if(axis.isY()){if((index=this.axis.left.indexOf(axis))>-1){this.axis.left.splice(index,1);}if((index=this.axis.right.indexOf(axis))>-1){this.axis.right.splice(index,1);}if(!noSerieKill){this.series.map(function(serie){if(serie.getYAxis()==axis){serie.kill();}});}}this.axisGroup.removeChild(axis.group);// Removes all DOM
-this.groupPrimaryGrids.removeChild(axis.gridPrimary);this.groupSecondaryGrids.removeChild(axis.gridSecondary);if(!noRedraw){this.draw(true);}}/**
-   * Determines if an x axis belongs to the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasXAxis',value:function hasXAxis(axis){return this.hasTopAxis(axis)||this.hasBottomAxis(axis);}/**
-   * Determines if an x axis belongs to the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasYAxis',value:function hasYAxis(axis){return this.hasLeftAxis(axis)||this.hasRightAxis(axis);}/**
-   * Determines if an x axis belongs to top axes list of the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasTopAxis',value:function hasTopAxis(axis){return this.hasAxis(axis,this.axis.top);}/**
-   * Determines if an x axis belongs to bottom axes list of the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasBottomAxis',value:function hasBottomAxis(axis){return this.hasAxis(axis,this.axis.bottom);}/**
-   * Determines if a y axis belongs to left axes list of the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasLeftAxis',value:function hasLeftAxis(axis){return this.hasAxis(axis,this.axis.left);}/**
-   * Determines if a y axis belongs to right axes list of the graph
-   * @param {Axis} axis - The axis instance to check
-   */},{key:'hasRightAxis',value:function hasRightAxis(axis){return this.hasAxis(axis,this.axis.right);}/**
-   * Determines if an axis belongs to a list of axes
-   * @param {Axis} axis - The axis instance to check
-   * @param {Array} axisList - The list of axes to check
-   * @private
-   */},{key:'hasAxis',value:function hasAxis(axis,axisList){for(var i=0,l=axisList.length;i<l;i++){if(axisList[i]==axis){return true;}if(axisList[i].hasAxis(axis)){return true;}}return false;}/**
-   * Autoscales the x and y axes of the graph.
-   * Does not repaint the canvas
-   * @return {Graph} The current graph instance
-   */},{key:'autoscaleAxes',value:function autoscaleAxes(){this._applyToAxes("setMinMaxToFitSeries",null,true,true);//this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
-// X is not always ascending...
-return this;}// See #138
-/**
-   *  @alias Graph#autoscaleAxes
-   */},{key:'autoscale',value:function autoscale(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-/**
-   *  @alias Graph#autoscaleAxes
-   */},{key:'autoScale',value:function autoScale(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-/**
-   *  @alias Graph#autoscaleAxes
-   */},{key:'autoScaleAxes',value:function autoScaleAxes(){return this.autoscaleAxes.apply(this,arguments);}// See #138
-/**
-   *  Autoscales a particular axis
-   *  @param {Axis} The axis to rescale
-   *  @return {Graph} The current graph instance
-   */},{key:'autoScaleAxis',value:function autoScaleAxis(axis){if(!axis){return this;}axis.setMinMaxToFitSeries();return this;}/**
-   * Sets the background color
-   * @param {String} color - An SVG accepted color for the background
-   * @return {Graph} The current graph instance
-   */},{key:'setBackgroundColor',value:function setBackgroundColor(color){this.rectEvent.setAttribute('fill',color);return this;}},{key:'getAxisState',value:function getAxisState(){var state={};for(var i in this.axis){state[i]=this.axis[i].map(function(axis){return[axis.getCurrentMin(),axis.getCurrentMax()];});}return state;}},{key:'setAxisState',value:function setAxisState(state){var j,l;for(var i in state){if(!this.axis[i]){continue;}for(j=0,l=state[i].length;j<l;j++){if(!this.axis[i][j]){continue;}this.axis[i][j].setCurrentMin(state[i][j][0]);this.axis[i][j].setCurrentMax(state[i][j][1]);}}this.draw();}},{key:'saveAxisState',value:function saveAxisState(savedName){this.savedAxisState=this.savedAxisState||{};this.savedAxisState[savedName]=this.getAxisState();return this;}},{key:'recallAxisState',value:function recallAxisState(stateName){if(this.savedAxisState[savedName]){this.recallAxisState(this.savedAxisState[savedName]);}return this;}},{key:'_applyToAxis',value:function _applyToAxis(type){switch(type){case'string':return function(type,func,params){//    params.splice(1, 0, type);
-for(var i=0;i<this.axis[type].length;i++){this.axis[type][i][func].apply(this.axis[type][i],params);}};break;case'function':return function(type,func,params){for(var i=0;i<this.axis[type].length;i++){func.call(this,this.axis[type][i],type,params);}};break;}}/**
-   * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
-   */},{key:'getBoundaryAxis',value:function getBoundaryAxis(axis,minmax,usingZValues){var valSeries=this.getBoundaryAxisFromSeries(axis,minmax,usingZValues);//  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
-return valSeries;//return Math[ minmax ]( valSeries, valShapes );
-}/**
-   * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
-   * @memberof Graph.prototype
-   * @param {Axis} axis - The axis for which the value should be computed
-   * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
-   * @returns {Number} The minimimum or maximum of the axis based on its series
-   */},{key:'getBoundaryAxisFromSeries',value:function getBoundaryAxisFromSeries(axis,minmax,usingZValues){var min=minmax=='min',val,func=axis.isX()?['getMinX','getMaxX']:['getMinY','getMaxY'],func2use=func[min?0:1],infinity2use=min?+Infinity:-Infinity,currentSerie,serie,series,serieValue,i,l;val=min?Number.MAX_SAFE_INTEGER:Number.MIN_SAFE_INTEGER;series=this.getSeriesFromAxis(axis,true);for(i=0,l=series.length;i<l;i++){serie=series[i];if(!serie.isShown()){continue;}serieValue=serie[func2use](usingZValues);val=Math[minmax](isNaN(val)?infinity2use:val,isNaN(serieValue)?infinity2use:serieValue);}return val;}/**
-   *  Returns all the series associated to an axis
-   *  @param {Axis} axis - The axis to which the series belong
-   *  @returns {Serie[]} An array containing the list of series that belong to the axis
-   */},{key:'getSeriesFromAxis',value:function getSeriesFromAxis(axis){var series=[],i=this.series.length-1;for(;i>=0;i--){if(this.series[i].getXAxis()==axis||this.series[i].getYAxis()==axis){series.push(this.series[i]);}}return series;}/**
-   * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
-   * @see Graph#getBoundaryAxis
-   */},{key:'updateDataMinMaxAxes',value:function updateDataMinMaxAxes(usingZValues){var axisvars=['bottom','top','left','right'],axis,j,l,i,xy;for(j=0,l=axisvars.length;j<l;j++){for(i=this.axis[axisvars[j]].length-1;i>=0;i--){axis=this.axis[axisvars[j]][i];xy=j<2?'x':'y';if(axis.disabled){continue;}//console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
-axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'min',usingZValues));axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i],'max',usingZValues));}}}/**
-   * Function that is called from {@link Graph#_applyToAxes}
-   * @function
-   * @name AxisCallbackFunction
-   * @param {Axis} axis - The axis of the function
-   * @param {String} type - The type of the axis (left,right,top,bottom)
-   * @param params - The params passed in the _applyToAxis function.
-   * @see Graph#_applyToAxes
-   *//**
-   * Applies a function to axes. The function will be executed once for every axis.
-   * If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
-   * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
-   * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
-   * @param params - Extra parameters to pass to the function
-   * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
-   * @param {Boolean} leftright=false - True to apply to function to left and right axes
-   */},{key:'_applyToAxes',value:function _applyToAxes(func,params,tb,lr){var ax=[],i=0,l;if(tb||tb==undefined){ax.push('top');ax.push('bottom');}if(lr||lr==undefined){ax.push('left');ax.push('right');}for(l=ax.length;i<l;i++){this._applyToAxis(typeof func==='undefined'?'undefined':_typeof(func)).call(this,ax[i],func,params);}}/**
-   * Axes can be dependant of one another (for instance for unit conversions)
-   * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
-   * @param {Axis} axis - The axis that links one or multiple other dependant axes
-   * @returns {Axis[]} The list of axes linked to the axis passed as parameter
-   */},{key:'findAxesLinkedTo',value:function findAxesLinkedTo(axis){var axes=[];this._applyToAxes(function(a){if(a.linkedToAxis&&a.linkedToAxis.axis==axis){axes.push(a);}},{},axis instanceof this.getConstructor("graph.axis.x"),axis instanceof this.getConstructor("graph.axis.y"));return axes;}},{key:'_axisHasChanged',value:function _axisHasChanged(axis){this._axesHaveChanged=true;}/**
-   * Creates a new serie.
-   * If the a serie with the same name exists, returns this serie with update options.
-   * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
-   * Built-in series types are "line", "contour", "zone" and "scatter".
-   * @param {String} name - The name of the serie (unique)
-   * @param {Object} options - The serie options
-   * @param {Type} type - The type of the serie.
-   * @returns {Serie} The newly created serie
-   */},{key:'newSerie',value:function newSerie(name,options,type){var serie=void 0;if((typeof options==='undefined'?'undefined':_typeof(options))!=="object"&&!type){type=options;options={};}if(!type){type=Graph.SERIE_LINE;}if(serie=this.getSerie(name)){return serie;}if(!(serie=makeSerie(this,name,options,type))){return;}this.series.push(serie);this.emit("newSerie",serie);return serie;}/**
-   * Looks for an existing serie by name or by index and returns it.
-   * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
-   * @param {(String|Number)} name - The name or the index of the serie
-   * @returns {Serie}
-   */},{key:'getSerie',value:function getSerie(name){if(typeof name=='number'){return this.series[name]||false;}if(typeof name=='function'){name=name();}var i=0,l=this.series.length;for(;i<l;i++){if(this.series[i].getName()==name||this.series[i]==name){return this.series[i];}}return false;}/**
-   * Returns all the series
-   * @returns {Serie[]} An array of all the series
-   */},{key:'getSeries',value:function getSeries(){return this.series;}/**
-   * Returns all the series that correspond to one or multiple types
-   * @param {...Symbol} type - The serie types to select
-   * @returns {Serie[]} An array of all the series
-   * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
-   */},{key:'allSeries',value:function allSeries(){for(var _len=arguments.length,types=Array(_len),_key=0;_key<_len;_key++){types[_key]=arguments[_key];}return this.series.filter(function(serie){return types.include(serie.getType());});}/**
-   * Draws a specific serie
-   * @param {Serie} serie - The serie to redraw
-   * @param {Boolean} force - Forces redraw even if no data has changed
-   */},{key:'drawSerie',value:function drawSerie(serie,force){if(!serie.draw){throw"Serie has no method draw";}serie.draw(force);}/**
-   * Redraws all visible series
-   * @param {Boolean} force - Forces redraw even if no data has changed
-   */},{key:'drawSeries',value:function drawSeries(force){if(!this.width||!this.height){return;}var i=this.series.length-1;for(;i>=0;i--){if(this.series[i].isShown()){this.drawSerie(this.series[i],force);}}}/**
-   * @alias Graph#removeSeries
-   */},{key:'resetSeries',value:function resetSeries(){this.removeSeries();}/**
-   * @alias Graph#removeSeries
-   */},{key:'killSeries',value:function killSeries(){this.resetSeries();}/**
-   * Removes all series from the graph
-   */},{key:'removeSeries',value:function removeSeries(){while(this.series[0]){this.series[0].kill(true);}this.series=[];if(this.legend){this.legend.update();}}/**
-   * Selects a serie. Only one serie per graph can be selected.
-   * @param {Serie} serie - The serie to select
-   * @param {String} selectName="selected" - The name of the selection
-   */},{key:'selectSerie',value:function selectSerie(serie,selectName){if(!((typeof serie==='undefined'?'undefined':_typeof(serie))=="object")){serie=this.getSerie(serie);}if(this.selectedSerie==serie&&this.selectedSerie.selectionType==selectName){return;}if(this.selectedSerie!==serie&&this.selectedSerie){this.unselectSerie(this.selectedSerie);}this.selectedSerie=serie;this.triggerEvent('onSelectSerie',serie);serie.select(selectName||"selected");}/**
-   * Returns the selected serie
-   * @returns {(Serie|undefined)} The selected serie
-   */},{key:'getSelectedSerie',value:function getSelectedSerie(){return this.selectedSerie;}/**
-   * Unselects a serie
-   * @param {Serie} serie - The serie to unselect
-   */},{key:'unselectSerie',value:function unselectSerie(serie){if(!serie.unselect){return;}serie.unselect();this.selectedSerie=false;this.triggerEvent('onUnselectSerie',serie);}/**
-   * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
-   * @param {Serie} serie - The serie containing the shapes
-   * @returns {Shape[]} An array containing a list of shapes associated to the serie
-   */},{key:'getShapesOfSerie',value:function getShapesOfSerie(serie){var shapes=[];var i=this.shapes.length-1;for(;i>=0;i--){if(this.shapes[i].getSerie()==serie){shapes.push(this.shapes[i]);}}return shapes;}},{key:'makeToolbar',value:function makeToolbar(toolbarData){var constructor=this.getConstructor("graph.toolbar");if(constructor){return this.toolbar=new constructor(this,toolbarData);}else{return util.throwError("No constructor exists for toolbar");}}/**
-   *  Returns all shapes from the graph
-   */},{key:'getShapes',value:function getShapes(){return this.shapes||[];}/**
-   * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
-   * @param {String} shapeType - The type of the shape
-   * @param {Object} [shapeData] - The options passed to the shape creator
-   * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
-   * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
-   * @returns {Shape} The created shape
-   * @see Graph#getConstructor
-   */},{key:'newShape',value:function newShape(shapeType,shapeData,mute,shapeProperties){var self=this,response;this.prevent(false);if(!mute){this.emit('beforeNewShape',shapeData);if(this.prevent(false)){return false;}}// Backward compatibility
-if((typeof shapeType==='undefined'?'undefined':_typeof(shapeType))=="object"){mute=shapeData;shapeData=shapeType;shapeType=shapeData.type;}shapeData=shapeData||{};shapeData._id=util.guid();var constructor;if(typeof shapeType=="function"){constructor=shapeType;}else{constructor=this.getConstructor("graph.shape."+shapeType);}if(!constructor){return util.throwError("No constructor for this shape");}var shape=new constructor(this,shapeData);if(!shape){return util.throwError("Failed to construct shape.");}shape.type=shapeType;shape.graph=this;shape._data=shapeData;if(shapeData.properties!==undefined){shape.setProperties(shapeData.properties);}shape.init(this,shapeProperties);if(shapeData.position){for(var i=0,l=shapeData.position.length;i<l;i++){shape.setPosition(new _graph2.default(shapeData.position[i]),i);}}/* Setting shape properties */if(shapeData.fillColor!==undefined){shape.setFillColor(shapeData.fillColor);}if(shapeData.fillOpacity!==undefined){shape.setFillOpacity(shapeData.fillOpacity);}if(shapeData.strokeColor!==undefined){shape.setStrokeColor(shapeData.strokeColor);}if(shapeData.strokeWidth!==undefined){shape.setStrokeWidth(shapeData.strokeWidth);}if(shapeData.layer!==undefined){shape.setLayer(shapeData.layer);}if(shapeData.locked==true){shape.lock();}if(shapeData.movable==true){shape.movable();}if(shapeData.selectable==true){shape.selectable();}if(shapeData.resizable==true){shape.resizable();}if(shapeData.attributes!==undefined){shape.setProp("attributes",shapeData.attributes);}if(shapeData.handles!==undefined){shape.setProp('handles',shapeData.handles);}if(shapeData.selectOnMouseDown!==undefined){shape.setProp("selectOnMouseDown",true);}if(shapeData.selectOnClick!==undefined){shape.setProp("selectOnClick",true);}if(shapeData.highlightOnMouseOver!==undefined){shape.setProp("highlightOnMouseOver",true);}if(shapeData.labelEditable){shape.setProp("labelEditable",shapeData.labelEditable);}if(shapeData.labels&&!shapeData.label){shapeData.label=shapeData.labels;}if(shapeData.label!==undefined){if(!Array.isArray(shapeData.label)){shapeData.label=[shapeData.label];}for(var i=0,l=shapeData.label.length;i<l;i++){shape.showLabel(i);shape.setLabelText(shapeData.label[i].text,i);shape.setLabelPosition(shapeData.label[i].position,i);shape.setLabelColor(shapeData.label[i].color||'black',i);shape.setLabelSize(shapeData.label[i].size,i);shape.setLabelAngle(shapeData.label[i].angle||0,i);shape.setLabelBaseline(shapeData.label[i].baseline||'no-change',i);shape.setLabelAnchor(shapeData.label[i].anchor||'start',i);shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor||'transparent',i);shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity||1,i);}}if(shapeData.serie){shape.setSerie(this.getSerie(shapeData.serie));}shape.createHandles();this.shapes.push(shape);if(!mute){this.emit('newShape',shape,shapeData);}return shape;}/**
-   * Creates a new position. Arguments are passed to the position constructor
-   * @param {...*} var_args
-   * @see Position
-   */},{key:'newPosition',value:function newPosition(var_args){return new(Function.prototype.bind.apply(_graph2.default,[null].concat(Array.prototype.slice.call(arguments))))();// 18 September 2016 Norman: What is that ?
-Array.prototype.unshift.call(arguments,null);return new(Function.prototype.bind.apply(_graph2.default,arguments))();}/**
-   *  Redraws all shapes. To be called if their definitions have changed
-   */},{key:'redrawShapes',value:function redrawShapes(){//this.graphingZone.removeChild(this.shapeZone);
-for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].redraw();}//this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
-}/**
-   *  Removes all shapes from the graph
-   */},{key:'removeShapes',value:function removeShapes(){for(var i=0,l=this.shapes.length;i<l;i++){if(this.shapes[i]&&this.shapes[i].kill){this.shapes[i].kill(true);}}this.shapes=[];}/**
-   * Selects a shape
-   * @param {Shape} shape - The shape to select
-   * @param {Boolean} mute - Select the shape quietly
-   */},{key:'selectShape',value:function selectShape(shape,mute){// Already selected. Returns false
-if(!shape){return;}if(this.selectedShapes.indexOf(shape)>-1){return false;}if(!shape.isSelectable()){return false;}if(!mute){this.emit("beforeShapeSelect",shape);}if(this.prevent(false)){return;}if(this.selectedShapes.length>0&&this.options.shapesUniqueSelection){// Only one selected shape at the time
-this.unselectShapes(mute);}shape._select(mute);this.selectedShapes.push(shape);if(!mute){this.emit("shapeSelect",shape);}}},{key:'getSelectedShapes',value:function getSelectedShapes(){return this.selectedShapes;}/**
-   * Unselects a shape
-   * @param {Shape} shape - The shape to unselect
-   * @param {Boolean} mute - Unselect the shape quietly
-   */},{key:'unselectShape',value:function unselectShape(shape,mute){if(this.selectedShapes.indexOf(shape)==-1){return;}if(!mute){this.emit("beforeShapeUnselect",shape);}if(this.cancelUnselectShape){this.cancelUnselectShape=false;return;}shape._unselect();this.selectedShapes.splice(this.selectedShapes.indexOf(shape),1);if(!mute){this.emit("shapeUnselect",shape);}}/**
-   * Unselects all shapes
-   * @param {Boolean} [ mute = false ] - Mutes all unselection events
-   * @return {Graph} The current graph instance
-   */},{key:'unselectShapes',value:function unselectShapes(mute){while(this.selectedShapes[0]){this.unselectShape(this.selectedShapes[0],mute);}return this;}},{key:'_removeShape',value:function _removeShape(shape){this.shapes.splice(this.shapes.indexOf(shape),1);}},{key:'appendShapeToDom',value:function appendShapeToDom(shape){if(shape.isHTML()){this.wrapper.insertBefore(shape._dom,this.dom);}this.getLayer(shape.getLayer(),'shape').appendChild(shape.group);}},{key:'removeShapeFromDom',value:function removeShapeFromDom(shape){if(shape.isHTML()){this.wrapper.removeChild(shape._dom);}this.getLayer(shape.getLayer(),'shape').removeChild(shape.group);}},{key:'appendSerieToDom',value:function appendSerieToDom(serie){this.getLayer(serie.getLayer(),'serie').appendChild(serie.groupMain);}},{key:'removeSerieFromDom',value:function removeSerieFromDom(serie){this.getLayer(serie.getLayer(),'serie').removeChild(serie.groupMain);}},{key:'getLayer',value:function getLayer(layer,mode){if(!this.layers[layer]){this.layers[layer]=[];this.layers[layer][0]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].setAttribute('data-layer',layer);this.layers[layer][1]=document.createElementNS(Graph.ns,'g');this.layers[layer][2]=document.createElementNS(Graph.ns,'g');this.layers[layer][0].appendChild(this.layers[layer][1]);this.layers[layer][0].appendChild(this.layers[layer][2]);var i=1,prevLayer;while(!(prevLayer=this.layers[layer-i])&&layer-i>=0){i++;}if(!prevLayer){this.plotGroup.insertBefore(this.layers[layer][0],this.plotGroup.firstChild);}else if(prevLayer.nextSibling){this.plotGroup.insertBefore(this.layers[layer][0],prevLayer.nextSibling);}else{this.plotGroup.appendChild(this.layers[layer][0]);}}return this.layers[layer][mode=='shape'?2:1];}},{key:'focus',value:function focus(){this.wrapper.focus();}},{key:'elementMoving',value:function elementMoving(movingElement){this.bypassHandleMouse=movingElement;}},{key:'stopElementMoving',value:function stopElementMoving(element){if(element&&element==this.bypassHandleMouse){this.bypassHandleMouse=false;}else if(!element){this.bypassHandleMouse=false;}}},{key:'_makeClosingLines',value:function _makeClosingLines(){this.closingLines={};var els=['top','bottom','left','right'],i=0,l=4;for(;i<l;i++){var line=document.createElementNS(Graph.ns,'line');line.setAttribute('stroke',this.options.closeColor);line.setAttribute('shape-rendering','crispEdges');line.setAttribute('stroke-linecap','square');line.setAttribute('display','none');this.closingLines[els[i]]=line;this.graphingZone.appendChild(line);}}},{key:'isActionAllowed',value:function isActionAllowed(e,action){if(action.type!==e.type&&(action.type!==undefined||e.type!=="mousedown")&&!((e.type==='wheel'||e.type==='mousewheel')&&action.type=='mousewheel')){return;}if(action.enabled&&(typeof action.enabled=="function"?!action.enabled(this):!actions.enabled)){return;}if(action.key){if(action.key!==e.keyCode){var keyCheck={'backspace':8,'enter':13,'tab':9,'shift':16,'ctrl':17,'alt':18,'pause':19,'escape':27,'up':33,'down':34,'left':37,'right':39};if(keyCheck[action.key]!==e.keyCode){return;}}}if(action.shift===undefined){action.shift=false;}if(action.ctrl===undefined){action.ctrl=false;}if(action.meta===undefined){action.meta=false;}if(action.alt===undefined){action.alt=false;}return e.shiftKey==action.shift&&e.ctrlKey==action.ctrl&&e.metaKey==action.meta&&e.altKey==action.alt;}},{key:'forcePlugin',value:function forcePlugin(plugin){this.forcedPlugin=plugin;}},{key:'unforcePlugin',value:function unforcePlugin(){this.forcedPlugin=false;}},{key:'_pluginsExecute',value:function _pluginsExecute(funcName,args){//			Array.prototype.splice.apply(args, [0, 0, this]);
-for(var i in this.plugins){if(this.plugins[i]&&this.plugins[i][funcName]){this.plugins[i][funcName].apply(this.plugins[i],args);}}}},{key:'_pluginExecute',value:function _pluginExecute(which,func,args){//Array.prototype.splice.apply( args, [ 0, 0, this ] );
-if(!which){return;}if(this.plugins[which]&&this.plugins[which][func]){this.plugins[which][func].apply(this.plugins[which],args);}}},{key:'pluginYieldActiveState',value:function pluginYieldActiveState(){this.activePlugin=false;}},{key:'_serieExecute',value:function _serieExecute(which,func,args){if((typeof serie==='undefined'?'undefined':_typeof(serie))!=='object'){serie=this.getSerie(serie);}if(typeof serie[func]=='function'){serie.apply(serie,args);}}},{key:'_pluginsInit',value:function _pluginsInit(){var constructor,pluginName,pluginOptions;for(var i in this.options.plugins){pluginName=i;pluginOptions=this.options.plugins[i];constructor=this.getConstructor("graph.plugin."+pluginName);if(constructor){var options=util.extend(true,{},constructor.defaults(),pluginOptions);this.plugins[pluginName]=new constructor(options);util.mapEventEmission(this.plugins[pluginName].options,this.plugins[pluginName]);this.plugins[pluginName].init(this,pluginOptions);}else{util.throwError("Plugin \""+pluginName+"\" has not been registered");}}}/**
-   * Returns an initialized plugin
-   * @param {String} pluginName
-   * @returns {Plugin} The plugin which name is <pluginName>
-   */},{key:'getPlugin',value:function getPlugin(pluginName){var plugin=this.plugins[pluginName];if(!plugin){return util.throwError("Plugin \""+pluginName+"\" has not been loaded or properly registered");}return plugin;}},{key:'triggerEvent',value:function triggerEvent(){var func=arguments[0],args=Array.prototype.splice.apply(arguments,[0,1]);if(typeof this.options[func]=="function"){return this.options[func].apply(this,arguments);}return;}/**
-   * Creates a legend. Only one legend is allowed per graph
-   * @param {Object} options - The legend options
-   */},{key:'makeLegend',value:function makeLegend(options){if(this.legend){return this.legend;}var constructor=this.getConstructor("graph.legend");if(constructor){this.legend=new constructor(this,options);}else{return util.throwError("Graph legend is not available as it has not been registered");}//    this.legend.update();
-return this.legend;}/**
-   * Redraws the legend if it exists
-   * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
-   * @return {Graph} The graph instance
-   */},{key:'updateLegend',value:function updateLegend(){var onlyIfRequired=arguments.length>0&&arguments[0]!==undefined?arguments[0]:false;if(!this.legend){return;}this.legend.update(onlyIfRequired);return this;}/**
-   * @returns {Legend} The legend item
-   */},{key:'getLegend',value:function getLegend(){if(!this.legend){return;}return this.legend;}},{key:'requireLegendUpdate',value:function requireLegendUpdate(){if(!this.legend){return;}this.legend.requireDelayedUpdate();}},{key:'orthogonalProjectionSetup',value:function orthogonalProjectionSetup(options){this.options.zAxis=util.extend(true,{maxZ:10,minZ:0,shiftX:-25,shiftY:-15,xAxis:this.getXAxis(),yAxis:this.getYAxis()});}},{key:'orthogonalProjectionUpdate',value:function orthogonalProjectionUpdate(){var _this2=this;if(!this.zAxis){this.zAxis={g:document.createElementNS(Graph.ns,"g"),l:document.createElementNS(Graph.ns,"line")};this.zAxis.g.appendChild(this.zAxis.l);this.groupGrids.appendChild(this.zAxis.g);}var refAxisX=this.options.zAxis.xAxis;var refAxisY=this.options.zAxis.yAxis;var x0=refAxisX.getMinPx();var y0=refAxisY.getMinPx();var dx=refAxisX.getZProj(this.options.zAxis.maxZ);var dy=refAxisY.getZProj(this.options.zAxis.maxZ);this.zAxis.l.setAttribute('stroke','black');this.zAxis.l.setAttribute('x1',x0);this.zAxis.l.setAttribute('x2',x0+dx);this.zAxis.l.setAttribute('y1',y0);this.zAxis.l.setAttribute('y2',y0+dy);this.updateDataMinMaxAxes(true);var sort=this.series.map(function(serie){return[serie.getZPos(),serie];});sort.sort(function(sa,sb){return sb[0]-sa[0];});var i=0;sort.forEach(function(s){s[1].setLayer(i);_this2.appendSerieToDom(s[1]);i++;});this.drawSeries(true);}/**
-   * Kills the graph
-   **/},{key:'kill',value:function kill(){this.wrapper.removeChild(this.dom);}},{key:'_removeSerie',value:function _removeSerie(serie){this.series.splice(this.series.indexOf(serie),1);}},{key:'contextListen',value:function contextListen(target,menuElements,callback){var self=this;if(this.options.onContextMenuListen){return this.options.onContextMenuListen(target,menuElements,callback);}}},{key:'lockShapes',value:function lockShapes(){this.shapesLocked=true;// Removes the current actions of the shapes
-for(var i=0,l=this.shapes.length;i<l;i++){this.shapes[i].moving=false;this.shapes[i].resizing=false;}}},{key:'unlockShapes',value:function unlockShapes(){//		console.log('unlock');
-this.shapesLocked=false;}},{key:'prevent',value:function prevent(arg){var curr=this.prevented;if(arg!=-1){this.prevented=arg==undefined||arg;}return curr;}},{key:'_getXY',value:function _getXY(e){var x=e.pageX,y=e.pageY;var pos=this.offsetCached||util.getOffset(this.wrapper);x-=pos.left/* - window.scrollX*/;y-=pos.top/* - window.scrollY*/;return{x:x,y:y};}},{key:'_resize',value:function _resize(){if(!this.width||!this.height){return;}this.getDrawingWidth();this.getDrawingHeight();this.sizeSet=true;this.dom.setAttribute('width',this.width);this.dom.setAttribute('height',this.height);this.domTitle.setAttribute('x',this.width/2);this._sizeChanged=true;if(this.drawn){this.requireLegendUpdate();this.draw(true);}}},{key:'updateGraphingZone',value:function updateGraphingZone(){util.setAttributeTo(this.graphingZone,{'transform':'translate('+this.options.paddingLeft+', '+this.options.paddingTop+')'});this._sizeChanged=true;}// We have to proxy the methods in case they are called anonymously
-},{key:'getDrawingSpaceWidth',value:function getDrawingSpaceWidth(){var _this3=this;return function(){return _this3.drawingSpaceWidth;};}},{key:'getDrawingSpaceHeight',value:function getDrawingSpaceHeight(){var _this4=this;return function(){return _this4.drawingSpaceHeight;};}},{key:'getDrawingSpaceMinX',value:function getDrawingSpaceMinX(){var _this5=this;return function(){return _this5.drawingSpaceMinX;};}},{key:'getDrawingSpaceMinY',value:function getDrawingSpaceMinY(){var _this6=this;return function(){return _this6.drawingSpaceMinY;};}},{key:'getDrawingSpaceMaxX',value:function getDrawingSpaceMaxX(){var _this7=this;return function(){return _this7.drawingSpaceMaxX;};}},{key:'getDrawingSpaceMaxY',value:function getDrawingSpaceMaxY(){var _this8=this;return function(){return _this8.drawingSpaceMaxY;};}/**
-   *  Enables the line tracking
-   *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
-   */},{key:'trackingLine',value:function trackingLine(options){var _this9=this;var self=this;if(typeof options==='boolean'){if(this.options.trackingLine){this.options.trackingLine.enable=options;}return;}if(options){this.options.trackingLine=options;}options.series=options.series||[];options.enable=options.enable===undefined?true:!!options.enable;// Individual tracking
-if(options.mode=="individual"){if(options.series){if(!Array.isArray(options.series)){if(options.series=="all"){options.series=this.series.map(function(serie){serie:serie;});}else{options.series=[options.series];}}options.series.forEach(function(sOptions){if(_typeof(sOptions.serie)!=="object"){if((typeof sOptions==='undefined'?'undefined':_typeof(sOptions))!=="object"){throw"Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";}sOptions.serie=_this9.getSerie(sOptions.serie);}if(!sOptions.serie){return;}self.addSerieToTrackingLine(sOptions.serie,sOptions);});}}else{options.series.map(function(serie){serie.serie.disableTracking();});}if(options.noLine){return;}if(!this.trackingObject){// Avoid multiple creation of tracking lines
-// Creates a new shape called trackingLine, in the first layer (below everything)
-this.trackingObject=this.newShape('line',util.extend(true,{position:[{y:'min'},{y:'max'}],stroke:'black',layer:-1},options.trackingLineShapeOptions));}this.trackingObject.draw();return this.trackingObject;}},{key:'addSerieToTrackingLine',value:function addSerieToTrackingLine(serie,options){var _this10=this;if(!this.options.trackingLine){this.trackingLine({mode:'individual'});}// TODO: Check if not already existing
-this.options.trackingLine.series.push(Object.assign({serie:serie},options));serie.enableTracking(function(serie,index,x,y){if(_this10.options.trackingLine.enable){if(index){if(_this10.trackingObject){_this10.trackingObject.show();_this10.trackingObject.getPosition(0).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-_this10.trackingObject.getPosition(1).x=index.trueX;//serie.getData()[ 0 ][ index.closestIndex * 2 ];
-_this10.trackingObject.redraw();}serie._trackingLegend=_trackingLegendSerie(_this10,{serie:serie},x,y,serie._trackingLegend,options.textMethod?options.textMethod:function(output){for(var i in output){return output[i].serie.serie.getName()+": "+output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);break;}},index.trueX);if(serie._trackingLegend){serie._trackingLegend.style.display="block";}}}},function(serie){if(_this10.trackingObject){_this10.trackingObject.hide();}if(serie.trackingShape){serie.trackingShape.hide();}if(serie._trackingLegend){serie._trackingLegend.style.display="none";}serie._trackingLegend=_trackingLegendSerie(_this10,{serie:serie},false,false,serie._trackingLegend,false,false);});}/**
-   *  Pass here the katex.render method to be used later
-   *   @param {Function} renderer -  katexRendered - renderer
-   *   @return {Graph} The current graph instance
-   */},{key:'setKatexRenderer',value:function setKatexRenderer(renderer){this._katexRenderer=renderer;}},{key:'hasKatexRenderer',value:function hasKatexRenderer(){return!!this._katexRenderer;}},{key:'renderWithKatex',value:function renderWithKatex(katexValue,katexElement){if(this._katexRenderer){if(katexElement){katexElement.removeChild(katexElement.firstChild);}else{katexElement=document.createElementNS(Graph.ns,'foreignObject');}var div=document.createElement("div");katexElement.appendChild(div);this._katexRenderer(katexValue,div);return katexElement;}return false;}/**
-   * Returns a graph created from a schema
-   * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
-   * @param {HTMLElement} wrapper - The wrapping element
-   * @returns {Graph} Newly created graph
-   */},{key:'exportToSchema',value:function exportToSchema(){var _this11=this;var schema={};schema.title=this.options.title;schema.width=this.getWidth();schema.height=this.getHeight();var axesPositions=['top','bottom','left','right'];var axesExport=[];var allaxes={x:[],y:[]};axesPositions.map(function(axisPosition){if(!_this11.axis[axisPosition]){return;}axesExport=axesExport.concat(_this11.axis[axisPosition].map(function(axis){return{type:axisPosition,label:axis.options.label,unit:axis.options.unit,min:axis.options.forcedMin,max:axis.options.forcedMax,flip:axis.options.flipped};}));if(axisPosition=='top'||axisPosition=='bottom'){allaxes.x=allaxes.x.concat(_this11.axis[axisPosition]);}else{allaxes.y=allaxes.y.concat(_this11.axis[axisPosition]);}});schema.axis=axesExport;var seriesExport=[];var toType=function toType(type){switch(type){case Graph.SERIE_LINE:return'line';break;case Graph.SERIE_BAR:return'bar';break;case Graph.SERIE_SCATTER:return'scatter';break;}};var exportData=function exportData(serie,x){var data=[];switch(serie.getType()){case Graph.SERIE_LINE:for(var i=0;i<serie.data.length;i++){for(var j=0;j<serie.data[i].length-1;j+=2){data.push(serie.data[i][j+(x&&serie.isFlipped()||!x&&!serie.isFlipped()?1:0)]);}}break;case Graph.SERIE_SCATTER:for(var j=0;j<serie.data.length-1;j+=2){data.push(serie.data[i+(x&&serie.isFlipped()||!x&&!serie.isFlipped()?1:0)]);}break;}return data;};schema.data=seriesExport.concat(this.series.map(function(serie){var style=[];var linestyle=[];if(serie.getType()==Graph.SERIE_LINE){for(var stylename in serie.styles){linestyle.push({styleName:stylename,color:serie.styles[stylename].lineColor,lineWidth:serie.styles[stylename].lineWidth,lineStyle:serie.styles[stylename].lineStyle});var styleObj={styleName:stylename,styles:[]};style.push(styleObj);styleObj.styles=styleObj.styles.concat((serie.styles[stylename].markers||[]).map(function(markers){return{shape:markers.type,zoom:markers.zoom,lineWidth:markers.strokeWidth,lineColor:markers.strokeColor,color:markers.fillColor,points:markers.points};}));}}return{label:serie.getLabel(),id:serie.getName(),type:toType(serie.getType()),x:exportData(serie,true),y:exportData(serie,false),xAxis:allaxes.x.indexOf(serie.getXAxis()),yAxis:allaxes.y.indexOf(serie.getYAxis()),style:style,lineStyle:linestyle};}));return schema;}/**
-   * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
-   * @param {String} constructorName - The name of the constructor
-   * @param {Function} constructor - The constructor method
-   * @see Graph.getConstructor
-   * @static
-   */}],[{key:'fromSchema',value:function fromSchema(schema,wrapper){var graph;var options={};var axes={left:[],top:[],right:[],bottom:[]};var axesIndices=[];if(schema.title){options.title=schema.title;}if(schema.axis){schema.axis.map(function(schemaAxis){if(!schemaAxis.type){util.throwError("Axis type is required (top, bottom, left or right)");}var axisOptions={};if(schemaAxis.label){axisOptions.labelValue=schemaAxis.label;}if(schemaAxis.unit!==undefined){axisOptions.unit=schemaAxis.unit;}if(schemaAxis.unitWrapperAfter!==undefined){axisOptions.unitWrapperAfter=schemaAxis.unitWrapperAfter;}if(schemaAxis.unitWrapperBefore!==undefined){axisOptions.unitWrapperBefore=schemaAxis.unitWrapperBefore;}if(schemaAxis.min!==undefined){axisOptions.forcedMin=schemaAxis.min;}if(schemaAxis.max!==undefined){axisOptions.forcedMax=schemaAxis.max;}if(schemaAxis.flip!==undefined){axisOptions.flipped=schemaAxis.flip;}axes[schemaAxis.type].push(axisOptions);schemaAxis._jsGraphIndex=axes[schemaAxis.type].length-1;});}graph=new Graph(wrapper,options,axes);if(schema.width){graph.setWidth(schema.width);}if(schema.height){graph.setHeight(schema.width);}graph._resize();if(schema.data){schema.data.map(function(schemaSerie){var serieType=schemaSerie.type,serie,serieOptions={},serieAxis;switch(schemaSerie.type){case'bar':util.throwError("Bar charts not supported");serieType=false;break;case'scatter':serieType=Graph.SERIE_SCATTER;break;case'box':serieType=Graph.SERIE_BOX;if(schemaSerie.orientation=='x'||schemaSerie.orientation=='y'){serieOptions.orientation=schemaSerie.orientation;}break;default:serieType=Graph.SERIE_LINE;break;}if(!serieType){util.throwError("No valid serie type was found");return;}serie=graph.newSerie(schemaSerie.id||schemaSerie.label||util.guid(),serieOptions,serieType);if(schemaSerie.lineStyle){schemaSerie.lineStyle.map(function(style){var styleSerie={};style.styleName=style.styleName||"unselected";switch(serieType){case Graph.SERIE_LINE:if(style.lineWidth!==undefined){styleSerie.lineWidth=style.lineWidth;}if(style.color!==undefined){styleSerie.lineColor=style.color;}if(style.lineStyle){styleSerie.lineStyle=style.lineStyle;}serie.setStyle(styleSerie,style.styleName);break;}});}if(schemaSerie.style){schemaSerie.style.map(function(style){var styleSerie={};style.styleName=style.styleName||"unselected";if(!Array.isArray(style.styles)){style.styles=[style.styles];}var styles=style.styles.map(function(style){switch(serieType){case Graph.SERIE_LINE:return{type:style.shape,zoom:style.zoom,strokeWidth:style.lineWidth,strokeColor:style.lineColor,fillColor:style.color,points:style.points};break;case Graph.SERIE_BOX:return style;break;case Graph.SERIE_SCATTER:break;}});switch(serieType){case Graph.SERIE_LINE:serie.setMarkers(styles,style.styleName);break;case Graph.SERIE_SCATTER:serie.setStyle(styles,{},style.styleName);break;case Graph.SERIE_BOX:serie.setStyle(styles[0],style.stylename);break;}});}if(schemaSerie.errorX||schemaSerie.errorY){var errors=[];if(schemaSerie.errorX){for(var i=0,l=schemaSerie.errorX.length;i<l;i++){errors[i]=errors[i]||[[],[]];errors[i][0][0]=schemaSerie.errorX[i];}}if(schemaSerie.errorY){for(var i=0,l=schemaSerie.errorY.length;i<l;i++){errors[i]=errors[i]||[[]];errors[i][1][0]=schemaSerie.errorY[i];}}serie.setDataError(errors)// Adds the error data
-.setErrorStyle([{type:'bar',x:{},y:{}}]);// Display bar errors
-}if(schema.axis){serieAxis=schema.axis[schemaSerie.xAxis];if(!serieAxis||serieAxis.type!=='top'&&serieAxis.type!=='bottom'){util.warn("No x axis found. Setting automatically");serie.setXAxis(graph.getXAxis(0));}else{if(serieAxis.type=='top'){serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='bottom'){serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));}}serieAxis=schema.axis[schemaSerie.yAxis];if(!serieAxis||serieAxis.type!=='left'&&serieAxis.type!=='right'){util.warn("No y axis found. Setting automatically");serie.setYAxis(graph.getYAxis(0));}else{if(serieAxis.type=='left'){serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));}else if(serieAxis.type=='right'){serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));}}}else{util.warn("No axes found. Setting automatically");serie.autoAxis();}switch(serieType){case Graph.SERIE_BOX:serie.setData(schemaSerie.boxes);break;default:case Graph.SERIE_SCATTER:case Graph.SERIE_LINE:serie.setData([{x:schemaSerie.x,y:schemaSerie.y}]);break;}});}graph.autoscaleAxes();graph.draw();return graph;}},{key:'registerConstructor',value:function registerConstructor(constructorName,constructor){if(_constructors.has(constructorName)){return util.throwError("Constructor "+constructor+" already exists.");}_constructors.set(constructorName,constructor);}/**
-   * Returns a registered constructor
-   * @param {String} constructorName - The constructor name to look for
-   * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
-   * @returns {Function} The registered constructor
-   * @throws Error
-   * @see Graph.registerConstructor
-   * @static
-   */},{key:'getConstructor',value:function getConstructor(constructorName){var softFail=arguments.length>1&&arguments[1]!==undefined?arguments[1]:false;if(!_constructors.has(constructorName)){if(softFail){return false;}return util.throwError("Constructor \""+constructorName+"\" doesn't exist");}return _constructors.get(constructorName);}},{key:'newWaveform',value:function newWaveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}},{key:'waveform',value:function waveform(){return new(Function.prototype.bind.apply(_waveform2.default,[null].concat(Array.prototype.slice.call(arguments))))();}}]);return Graph;}(_EventEmitter3.default);// Adds getConstructor to the prototype. Cannot do that in ES6 classes
-Graph.prototype.getConstructor=Graph.getConstructor;function makeSerie(graph,name,options,type){var constructor=graph.getConstructor(type,true);if(!constructor&&typeof type=="string"){constructor=graph.getConstructor("graph.serie."+type,true);}if(constructor){var serie=new constructor(graph,name,options);//serie.init( graph, name, options );
-graph.appendSerieToDom(serie);}else{return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");}return serie;};function getAxisLevelFromSpan(span,level){for(var i=0,l=level.length;i<l;i++){var possible=true;for(var k=0,m=level[i].length;k<m;k++){if(!(span[0]<level[i][k][0]&&span[1]<level[i][k][0]||span[0]>level[i][k][1]&&span[1]>level[i][k][1])){possible=false;}}if(possible){level[i].push(span);return i;}}level.push([span]);return level.length-1;}function refreshDrawingZone(graph){var i,j,l,xy,min,max,axis;var shift={top:[],bottom:[],left:[],right:[]};var levels={top:[],bottom:[],left:[],right:[]};graph._painted=true;// Apply to top and bottom
-graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(axis.getAxisPosition(),shift[position][level]||0);},false,true,false);var shiftTop=shift.top.reduce(function(prev,curr){return prev+curr;},0);var shiftBottom=shift.bottom.reduce(function(prev,curr){return prev+curr;},0);[shift.top,shift.bottom].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to top and bottom
-graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}axis.setShift(shift[position][axis.getLevel()]);},false,true,false);// Applied to left and right
-graph._applyToAxes(function(axis,position){if(axis.disabled){return;}axis.setMinPx(shiftTop);axis.setMaxPx(graph.getDrawingHeight(true)-shiftBottom);if(axis.floating){return;}// First we need to draw it in order to determine the width to allocate
-// graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
-// Let's not draw dependant axes yet
-var drawn=!axis.linkedToAxis?axis.draw():0;// Get axis position gives the extra shift that is common
-var level=getAxisLevelFromSpan(axis.getSpan(),levels[position]);axis.setLevel(level);shift[position][level]=Math.max(drawn,shift[position][level]||0);},false,false,true);var shift2=util.extend(true,{},shift);// Applied to left and right
-graph._applyToAxes(function(axis,position){if(axis.disabled){return;}if(axis.floating){return;}shift2[position][axis.getLevel()]=Math.max(shift[position][axis.getLevel()],axis.equalizePosition(shift[position][axis.getLevel()]));},false,false,true);shift=shift2;var shiftLeft=shift.left.reduce(function(prev,curr){return prev+curr;},0);var shiftRight=shift.right.reduce(function(prev,curr){return prev+curr;},0);[shift.left,shift.right].map(function(arr){arr.reduce(function(prev,current,index){arr[index]=prev+current;return prev+current;},0);});// Apply to left and right
-graph._applyToAxes(function(axis,position){if(axis.disabled||axis.floating){return;}axis.setShift(shift[position][axis.getLevel()]);},false,false,true);// Apply to top and bottom
-graph._applyToAxes(function(axis,position){if(axis.disabled){return;}axis.setMinPx(shiftLeft);axis.setMaxPx(graph.getDrawingWidth(true)-shiftRight);if(axis.floating){return;}if(!axis.linkedToAxis){axis.draw();}},false,true,false);// Floating axes
-graph._applyToAxes(function(axis){if(!axis.floating){return;}var floatingAxis=axis.getFloatingAxis();var floatingValue=axis.getFloatingValue();var floatingPx=floatingAxis.getPx(floatingValue);axis.setShift(floatingPx);if(!axis.linkedToAxis){axis.draw();}},false,true,true);_closeLine(graph,'right',graph.getDrawingWidth(true),graph.getDrawingWidth(true),shiftTop,graph.getDrawingHeight(true)-shiftBottom);_closeLine(graph,'left',0,0,shiftTop,graph.getDrawingHeight(true)-shiftBottom);_closeLine(graph,'top',shiftLeft,graph.getDrawingWidth(true)-shiftRight,0,0);_closeLine(graph,'bottom',shiftLeft,graph.getDrawingWidth(true)-shiftRight,graph.getDrawingHeight(true)-shiftBottom,graph.getDrawingHeight(true)-shiftBottom);graph.clipRect.setAttribute('y',shiftTop);graph.clipRect.setAttribute('x',shiftLeft);graph.clipRect.setAttribute('width',graph.getDrawingWidth()-shiftLeft-shiftRight);graph.clipRect.setAttribute('height',graph.getDrawingHeight()-shiftTop-shiftBottom);graph.rectEvent.setAttribute('y',shiftTop+graph.getPaddingTop());graph.rectEvent.setAttribute('x',shiftLeft+graph.getPaddingLeft());graph.drawingSpaceWidth=graph.getDrawingWidth()-shiftLeft-shiftRight;graph.drawingSpaceHeight=graph.getDrawingHeight()-shiftTop-shiftBottom;graph.rectEvent.setAttribute('width',graph.drawingSpaceWidth);graph.rectEvent.setAttribute('height',graph.drawingSpaceHeight);graph.drawingSpaceMinX=shiftLeft+graph.getPaddingLeft();// + "px";
-graph.drawingSpaceMinY=shiftTop+graph.getPaddingTop();// + "px";
-graph.drawingSpaceMaxX=graph.getDrawingWidth()-shiftRight+graph.getPaddingLeft();// + "px";
-graph.drawingSpaceMaxY=graph.getDrawingHeight()-shiftBottom+graph.getPaddingTop();//  + "px";
-/*
-	graph.shapeZoneRect.setAttribute('x', shift[1]);
-	graph.shapeZoneRect.setAttribute('y', shift[2]);
-	graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
-	graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
-*/graph.shift=shift;graph.redrawShapes();// Not sure this should be automatic here. The user should be clever.
-}function _handleKey(graph,event,type){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,type,[graph,e]);return;}checkKeyActions(graph,event,[graph,event],type);}// Similar to checkMouseActions
-function checkKeyActions(graph,e,parameters,methodName){var keyComb=graph.options.keyActions,i,l;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
-if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-graph._pluginExecute(keyComb[i].plugin,methodName,parameters);e.preventDefault();e.stopPropagation();return true;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}e.preventDefault();e.stopPropagation();keyComb[i].callback.apply(graph,parameters);return true;}if(keyComb[i].removeSelectedShape&&graph.isActionAllowed(e,keyComb[i])){e.preventDefault();e.stopPropagation();graph.selectedShapes.map(function(shape){shape.kill();});}/* else if ( keyComb[ i ].series ) {
+     */
 
-      var series;
-      if ( keyComb[ i ].series === 'all' ) {
-        series = graph.series;
-      }
+  }, {
+    key: 'getDom',
+    value: function getDom() {
+      return this.dom;
+    }
 
-      if ( !Array.isArray( keyComb[ i ].series ) ) {
-        series = [  series ];
-      }
+    /**
+     * Returns the unique id representing the graph
+     * @public
+     * @return {String} The unique ID of the graph
+     */
 
-      if ( keyComb[ i ].options ) {
-        parameters.push( keyComb[ i ].options );
-      }
+  }, {
+    key: 'getId',
+    value: function getId() {
+      return this._creation;
+    }
 
-      for ( var j = 0; j < series.length; i++ ) {
-        graph._serieExecute( series[  i ], methodName, parameters );
+    /**
+     * Returns the graph wrapper element passed during the graph creation
+     * @public
+     * @return {HTMLElement} The DOM element wrapping the graph
+     */
+
+  }, {
+    key: 'getWrapper',
+    value: function getWrapper() {
+      return this.wrapper;
+    }
+
+    /**
+     * Sets an option of the graph
+     * @param {String} name - Option name
+     * @param value - New option value
+     * @returns {Graph} - Graph instance
+     */
+
+  }, {
+    key: 'setOption',
+    value: function setOption(name, val) {
+      this.options[name] = val;
+      return this;
+    }
+
+    /**
+     *  Sets the title of the graph
+     */
+
+  }, {
+    key: 'setTitle',
+    value: function setTitle(title) {
+      this.options.title = title;
+      this.domTitle.textContent = title;
+    }
+
+    /**
+     *  Shows the title of the graph
+     */
+
+  }, {
+    key: 'displayTitle',
+    value: function displayTitle() {
+      this.domTitle.setAttribute('display', 'inline');
+    }
+
+    /**
+     *  Hides the title of the graph
+     */
+
+  }, {
+    key: 'hideTitle',
+    value: function hideTitle() {
+      this.domTitle.setAttribute('display', 'none');
+    }
+  }, {
+    key: 'hide',
+    value: function hide() {
+      if (this.dom.style.display !== "none") {
+        this.dom.style.display = "none";
       }
-      return true;
-    }*/}return false;};function doDom(){// Create SVG element, set the NS
-this.dom=document.createElementNS(Graph.ns,'svg');this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink");//this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
-util.setAttributeTo(this.dom,{'xmlns':Graph.ns,'font-family':this.options.fontFamily,'font-size':this.options.fontSize});this.defs=document.createElementNS(Graph.ns,'defs');this.dom.appendChild(this.defs);this.groupEvent=document.createElementNS(Graph.ns,'g');this.rectEvent=document.createElementNS(Graph.ns,'rect');util.setAttributeTo(this.rectEvent,{'pointer-events':'fill','fill':'transparent'});this.groupEvent.appendChild(this.rectEvent);this.dom.appendChild(this.groupEvent);// Handling graph title
-this.domTitle=document.createElementNS(Graph.ns,'text');this.setTitle(this.options.title);util.setAttributeTo(this.domTitle,{'text-anchor':'middle','y':20});this.groupEvent.appendChild(this.domTitle);//
-this.graphingZone=document.createElementNS(Graph.ns,'g');this.updateGraphingZone();this.groupEvent.appendChild(this.graphingZone);/*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
-  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
-  this.shapeZoneRect.setAttribute('fill', 'transparent');
-  this.shapeZone.appendChild(this.shapeZoneRect);
-*/this.axisGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.axisGroup);this.groupGrids=document.createElementNS(Graph.ns,'g');// With the z stacking, this should probably be removed
-//this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-this.groupPrimaryGrids=document.createElementNS(Graph.ns,'g');this.groupSecondaryGrids=document.createElementNS(Graph.ns,'g');this.axisGroup.appendChild(this.groupGrids);this.groupGrids.appendChild(this.groupSecondaryGrids);this.groupGrids.appendChild(this.groupPrimaryGrids);this.plotGroup=document.createElementNS(Graph.ns,'g');this.graphingZone.appendChild(this.plotGroup);// 5 September 2014. I encountered a case here shapeZone must be above plotGroup
-/*this.shapeZone = document.createElementNS( this.ns, 'g' );
-  this.graphingZone.appendChild( this.shapeZone );
-*/this.layers=[];this._makeClosingLines();this.clip=document.createElementNS(Graph.ns,'clipPath');this.clip.setAttribute('id','_clipplot'+this._creation);this.defs.appendChild(this.clip);this.clipRect=document.createElementNS(Graph.ns,'rect');this.clip.appendChild(this.clipRect);this.clip.setAttribute('clipPathUnits','userSpaceOnUse');this.markerArrow=document.createElementNS(this.ns,'marker');this.markerArrow.setAttribute('viewBox','0 0 10 10');this.markerArrow.setAttribute('id','arrow'+this._creation);this.markerArrow.setAttribute('refX','6');this.markerArrow.setAttribute('refY','5');this.markerArrow.setAttribute('markerUnits','strokeWidth');this.markerArrow.setAttribute('markerWidth','8');this.markerArrow.setAttribute('markerHeight','6');this.markerArrow.setAttribute('orient','auto');//this.markerArrow.setAttribute('fill', 'context-stroke');
-//this.markerArrow.setAttribute('stroke', 'context-stroke');
-var pathArrow=document.createElementNS(Graph.ns,'path');pathArrow.setAttribute('d','M 0 0 L 10 5 L 0 10 z');//pathArrow.setAttribute( 'fill', 'context-stroke' );
-this.markerArrow.appendChild(pathArrow);this.defs.appendChild(this.markerArrow);// Horionzal split marker for axis
-this.markerHorizontalSplit=document.createElementNS(Graph.ns,'marker');this.markerHorizontalSplit.setAttribute('viewBox','0 0 6 8');this.markerHorizontalSplit.setAttribute('id','horionzalsplit_'+this.getId());this.markerHorizontalSplit.setAttribute('refX','3');this.markerHorizontalSplit.setAttribute('refY','4');this.markerHorizontalSplit.setAttribute('markerUnits','strokeWidth');this.markerHorizontalSplit.setAttribute('markerWidth','6');this.markerHorizontalSplit.setAttribute('markerHeight','8');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','8');path.setAttribute('x2','6');path.setAttribute('y2','0');path.setAttribute('stroke','black');this.markerHorizontalSplit.appendChild(path);this.defs.appendChild(this.markerHorizontalSplit);// Vertical split marker for axis
-this.markerVerticalSplit=document.createElementNS(Graph.ns,'marker');this.markerVerticalSplit.setAttribute('viewBox','0 0 8 6');this.markerVerticalSplit.setAttribute('id','verticalsplit_'+this.getId());this.markerVerticalSplit.setAttribute('refX','4');this.markerVerticalSplit.setAttribute('refY','3');this.markerVerticalSplit.setAttribute('markerUnits','strokeWidth');this.markerVerticalSplit.setAttribute('markerWidth','8');this.markerVerticalSplit.setAttribute('markerHeight','6');var path=document.createElementNS(Graph.ns,'line');path.setAttribute('x1','0');path.setAttribute('y1','0');path.setAttribute('x2','8');path.setAttribute('y2','6');path.setAttribute('stroke','black');this.markerVerticalSplit.appendChild(path);this.defs.appendChild(this.markerVerticalSplit);this.vertLineArrow=document.createElementNS(Graph.ns,'marker');this.vertLineArrow.setAttribute('viewBox','0 0 10 10');this.vertLineArrow.setAttribute('id','verticalline'+this._creation);this.vertLineArrow.setAttribute('refX','0');this.vertLineArrow.setAttribute('refY','5');this.vertLineArrow.setAttribute('markerUnits','strokeWidth');this.vertLineArrow.setAttribute('markerWidth','20');this.vertLineArrow.setAttribute('markerHeight','10');this.vertLineArrow.setAttribute('orient','auto');//this.vertLineArrow.setAttribute('fill', 'context-stroke');
-//this.vertLineArrow.setAttribute('stroke', 'context-stroke');
-this.vertLineArrow.setAttribute('stroke-width','1px');var pathVertLine=document.createElementNS(Graph.ns,'path');pathVertLine.setAttribute('d','M 0 -10 L 0 10');pathVertLine.setAttribute('stroke','black');this.vertLineArrow.appendChild(pathVertLine);this.defs.appendChild(this.vertLineArrow);// Removed with z stacking ?
-//    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
-this.bypassHandleMouse=false;}function _registerEvents(graph){var self=graph;if(!graph.wrapper){throw"No wrapper exists. Cannot register the events.";}graph.wrapper.addEventListener('keydown',function(e){_handleKey(graph,e,'keydown');});graph.wrapper.addEventListener('keypress',function(e){_handleKey(graph,e,'keypress');});graph.wrapper.addEventListener('keyup',function(e){_handleKey(graph,e,'keyup');});// Not sure this has to be prevented
-graph.groupEvent.addEventListener('mousemove',function(e){//e.preventDefault();
-var coords=graph._getXY(e);_handleMouseMove(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseleave',function(e){_handleMouseLeave(graph);});graph.groupEvent.addEventListener('mousedown',function(e){graph.focus();//   e.preventDefault();
-if(e.which==3||e.ctrlKey){return;}var coords=graph._getXY(e);_handleMouseDown(graph,coords.x,coords.y,e);});graph.dom.addEventListener('mouseup',function(e){graph.emit("mouseUp",e);var coords=graph._getXY(e);_handleMouseUp(graph,coords.x,coords.y,e);});graph.dom.addEventListener('dblclick',function(e){graph.emit("dblClick",e);var coords=graph._getXY(e);_handleDblClick(graph,coords.x,coords.y,e);});graph.groupEvent.addEventListener('click',function(e){// Cancel right click or Command+Click
-if(e.which==3||e.ctrlKey){return;}//   e.preventDefault();
-var coords=graph._getXY(e);if(!graph.prevent(false)){_handleClick(graph,coords.x,coords.y,e);}//}, 200 );
-});graph.groupEvent.addEventListener('mousewheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});graph.groupEvent.addEventListener('wheel',function(e){var deltaY=e.wheelDeltaY||e.wheelDelta||-e.deltaY;_handleMouseWheel(graph,deltaY,e);return false;});}function _handleMouseDown(graph,x,y,e){var self=graph;if(graph.forcedPlugin){graph.activePlugin=graph.forcedPlugin;graph._pluginExecute(graph.activePlugin,'onMouseDown',[graph,x,y,e]);return;}checkMouseActions(graph,e,[graph,x,y,e],'onMouseDown');}function _handleMouseMove(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseMove(e);return;}if(graph.activePlugin&&graph._pluginExecute(graph.activePlugin,'onMouseMove',[graph,x,y,e])){return;};//			return;
-graph._applyToAxes('handleMouseMove',[x-graph.options.paddingLeft,e],true,false);graph._applyToAxes('handleMouseMove',[y-graph.options.paddingTop,e],false,true);if(!graph.activePlugin){var index;// Takes care of the tracking line
-if(graph.options.trackingLine&&graph.options.trackingLine.enable&&graph.options.trackingLine.snapToSerie){if(graph.options.trackingLine.mode=="common"){var snapToSerie=graph.options.trackingLine.snapToSerie;index=snapToSerie.handleMouseMove(false,true);if(this.trackingObject){if(!index){graph.trackingObject.hide();}else{graph.trackingObject.show();graph.trackingObject.getPosition(0).x=index.xClosest;graph.trackingObject.getPosition(1).x=index.xClosest;graph.trackingObject.redraw();var x=snapToSerie.getXAxis().getPx(index.xClosest)+graph.options.paddingLeft;}}var series=graph.options.trackingLine.series;// Gets a default value
-if(!series){series=graph.getSeries().map(function(serie){return{serie:serie,withinPx:20,withinVal:-1};});}graph._trackingLegend=_trackingLegendSerie(graph,series,x,y,graph._trackingLegend,graph.options.trackingLine.textMethod,index.xClosest);}}}// End takes care of the tracking line
-if(graph.options.onMouseMoveData){var results={};for(var i=0;i<graph.series.length;i++){results[graph.series[i].getName()]=graph.series[i].handleMouseMove(false,true);}graph.options.onMouseMoveData.call(graph,e,results);}checkMouseActions(graph,e,[graph,x,y,e],'onMouseMove');return;}function checkMouseActions(graph,e,parameters,methodName){var keyComb=graph.options.mouseActions,i,l,executed=false;for(i=0,l=keyComb.length;i<l;i++){if(keyComb[i].plugin){// Is it a plugin ?
-if(graph.forcedPlugin==keyComb[i].plugin||graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}graph.activePlugin=keyComb[i].plugin;// Lease the mouse action to the current action
-graph._pluginExecute(keyComb[i].plugin,methodName,parameters);executed=true;continue;}}else if(keyComb[i].callback&&graph.isActionAllowed(e,keyComb[i])){if(keyComb[i].options){parameters.push(keyComb[i].options);}keyComb[i].callback.apply(graph,parameters);executed=true;continue;}else if(keyComb[i].series){var series;if(keyComb[i].series==='all'){series=graph.series;}if(!Array.isArray(keyComb[i].series)){series=[series];}if(keyComb[i].options){parameters.push(keyComb[i].options);}for(var j=0;j<series.length;i++){graph._serieExecute(series[i],methodName,parameters);}executed=true;continue;}}return executed;};var _trackingLegendSerie=function _trackingLegendSerie(graph,serie,x,y,legend,textMethod,xValue){var justCreated=false;if(!Array.isArray(serie)){serie=[serie];}var output=[];if(!legend&&graph.options.trackingLine.legend){justCreated=true;legend=_makeTrackingLegend(graph);}serie.map(function(serie){var index=serie.serie.handleMouseMove(xValue,false);if(!index||!textMethod){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}return legend;}// Should we display the dot ?
-if(serie.withinPx>0&&Math.abs(x-graph.options.paddingLeft-serie.serie.getXAxis().getPx(index.xClosest))-serie.withinPx>1e-14||serie.withinVal>0&&Math.abs(serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)-index.xClosest)-serie.withinVal>serie.serie.getXAxis().getVal(x-graph.options.paddingLeft)/100000){if(serie.serie.trackingShape){serie.serie.trackingShape.hide();}}else{output[serie.serie.getName()]={yValue:index.xClosest,xValue:index.yClosest,serie:serie,index:index};if(!serie.serie.trackingShape){serie.serie.trackingShape=graph.newShape(graph.options.trackingLine.serieShape.shape||'ellipse',{fillColor:serie.serie.getLineColor(),strokeColor:"White",strokeWidth:serie.serie.getLineWidth()},true,graph.options.trackingLine.serieShape.properties||{rx:[serie.serie.getLineWidth()*3],ry:[serie.serie.getLineWidth()*3]}).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();graph.options.trackingLine.serieShape.onCreated&&graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);serie.serie.trackingShape.on("changed",function(){graph.options.trackingLine.serieShape.onChanged&&graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);});}serie.serie.trackingShape.show();serie.serie.trackingShape.getPosition(0).x=index.xClosest;if(graph.options.trackingLine.serieShape.magnet){var magnetOptions=graph.options.trackingLine.serieShape.magnet,val=magnetOptions.within,minmaxpos=void 0;if(magnetOptions.withinPx){val=serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);}if(minmaxpos=serie.serie.findLocalMinMax(index.xClosest,val,magnetOptions.mode)){serie.serie.trackingShape.getPosition(0).x=minmaxpos;}}serie.serie.trackingShape.redraw();}});// End map
-if(!graph.options.trackingLine.legend){return;}if(Object.keys(output).length==0||!textMethod){legend.style.display="none";}else{if(legend.style.display=="none"||justCreated){forceTrackingLegendMode(graph,legend,x,y,true);}else{_trackingLegendMove(graph,legend,x,y);}legend.style.display="block";var txt=textMethod(output,xValue,x,y);legend.innerHTML=txt;//legend.innerHTML = textMethod( output, xValue, x, y );
-}return legend;};var forceTrackingLegendMode=function forceTrackingLegendMode(graph,legend,toX,toY,skip){var ratio=0,start=Date.now(),h=legend.offsetHeight,startX=parseInt(legend.style.marginLeft.replace("px","")||0),startY=parseInt(legend.style.marginTop.replace("px","")||0);toX=toX>graph.getWidth()/2?toX-toX%10-20-legend.offsetWidth:toX-toX%10+30;toY=toY-toY%10+h/2;if(skip){legend.style.marginLeft=toX+"px";legend.style.marginTop=toY+"px";return;}function next(){var progress=(Date.now()-start)/200;if(progress>1){progress=1;}legend.style.marginLeft=(toX-startX)*progress+startX+"px";legend.style.marginTop=(toY-startY)*progress+startY+"px";if(progress<1){window.requestAnimationFrame(next);}}window.requestAnimationFrame(next);};var _trackingLegendMove=util.debounce(forceTrackingLegendMode,50);function _makeTrackingLegend(graph){var group=document.createElement('div');group.setAttribute('class','trackingLegend');group.style.position='absolute';group.style.borderRadius='4px';group.style.boxShadow="1px 1px 3px 0px rgba(100,100,100,0.6)";group.style.border="2px solid #333333";group.style.backgroundColor="rgba(255, 255, 255, 0.5 )";group.style.pointerEvents="none";group.style.paddingTop="5px";group.style.paddingBottom="5px";group.style.paddingLeft="10px";group.style.paddingRight="10px";graph.getWrapper().insertBefore(group,graph.getDom());return group;}function _handleDblClick(graph,x,y,e){//	var _x = x - graph.options.paddingLeft;
-//	var _y = y - graph.options.paddingTop;
-var pref=graph.options.dblclick;checkMouseActions(graph,e,[x,y,e],'onDblClick');/*
-      if ( !pref ||  !pref.type ) {
+    }
+  }, {
+    key: 'show',
+    value: function show() {
+      if (this.dom.style.display == "none") {
+        this.dom.style.display = "initial";
+      }
+    }
+
+    /**
+     * Calls a repaint of the container. Used internally when zooming on the graph, or when <code>.autoscaleAxes()</code> is called (see {@link Graph#autoscaleAxes}).<br />
+     * To be called after axes min/max are expected to have changed (e.g. after an <code>axis.zoom( from, to )</code>) has been called
+     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
+     * @return {Boolean} if the redraw has been successful
+     */
+
+  }, {
+    key: 'redraw',
+    value: function redraw(onlyIfAxesHaveChanged) {
+
+      if (!this.width || !this.height) {
         return;
       }
 
-      switch ( pref.type ) {
+      if (!this.sizeSet) {
+        this._resize();
+        this.executeRedrawSlaves();
+        return true;
+      } else {
 
-        case 'plugin':
+        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
+          this.executeRedrawSlaves();
+          refreshDrawingZone(this);
+          return true;
+        }
+      }
 
-          var plugin;
+      this.executeRedrawSlaves(true);
+      return false;
+    }
+  }, {
+    key: 'executeRedrawSlaves',
+    value: function executeRedrawSlaves(noLegend) {
+      this._pluginsExecute("preDraw");
+    }
 
-          if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+    /**
+     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
+     */
 
-            plugin.onDblClick( graph, x, y, pref.options, e );
+  }, {
+    key: 'draw',
+    value: function draw(force) {
+
+      this.drawn = true;
+      this.updateLegend(true);
+      this.drawSeries(this.redraw(true && !force));
+
+      this._pluginsExecute("postDraw");
+    }
+
+    /**
+     *  Prevents the graph, the series and the legend from redrawing automatically. Valid until {@link Graph#resumeUpdate} is called
+     *  @memberof Graph
+     *  @return {Graph} The current graph instance
+     *  @see {@link Graph#resumeUpdate}
+     *  @see {@link Graph#doUpdate}
+     *  @since 1.16.19
+     */
+
+  }, {
+    key: 'delayUpdate',
+    value: function delayUpdate() {
+      this._lockUpdate = true;
+      return this;
+    }
+
+    /**
+     *  Forces legend and graph update, even is {@link Graph#delayUpdate} has been called before.
+     *  @memberof Graph
+     *  @return {Graph} The current graph instance
+     *  @see {@link Graph#delayUpdate}
+     *  @see {@link Graph#resumeUpdate}
+     *  @since 1.16.19
+     */
+
+  }, {
+    key: 'doUpdate',
+    value: function doUpdate() {
+      if (this.legend) {
+        this.legend.update();
+      }
+      this.draw();
+      if (this.legend) {
+        this.legend.update();
+      }
+      return this;
+    }
+
+    /**
+     *  Cancels the effect of {@link Graph#delayUpdate}, but does not redraw the graph automatically
+     *  @memberof Graph
+     *  @return {Graph} The current graph instance
+     *  @see {@link Graph#delayUpdate}
+     *  @see {@link Graph#doUpdate}
+     *  @since 1.16.19
+     */
+
+  }, {
+    key: 'resumeUpdate',
+    value: function resumeUpdate() {
+      this._lockUpdate = false;
+      return this;
+    }
+  }, {
+    key: 'isDelayedUpdate',
+    value: function isDelayedUpdate() {
+      return this._lockUpdate;
+    }
+
+    /**
+     * Sets the total width of the graph
+     * @param {Number} width - The new width of the graph
+     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+     * @see Graph#setHeight
+     * @see Graph#resize
+     */
+
+  }, {
+    key: 'setWidth',
+    value: function setWidth(width, skipResize) {
+      this.width = width;
+      if (!skipResize) {
+        this._resize();
+      }
+    }
+
+    /**
+     * Sets the total height of the graph
+     * @param {Number} height - The new height of the graph
+     * @param {Boolean} skipResize - <code>true</code> to defer graph repaint. Use {@link Graph#resize} to force repain later on. (Useful if many graph sizing operations are done successively)
+     * @see Graph#setWidth
+     * @see Graph#resize
+     */
+
+  }, {
+    key: 'setHeight',
+    value: function setHeight(height, skipResize) {
+      this.height = height;
+      if (!skipResize) {
+        this._resize();
+      }
+    }
+
+    /**
+     * Sets the new dimension of the graph and repaints it. If width and height are omitted, a simple refresh is done.
+     * @param {Number} [ width ] - The new width of the graph
+     * @param {Number} [ height ] - The new height of the graph
+     * @see Graph#setWidth
+     * @see Graph#setHeight
+     * @return {Graph} The current graph
+     */
+
+  }, {
+    key: 'resize',
+    value: function resize(w, h) {
+      if (w && h) {
+        this.setSize(w, h);
+      }
+
+      this._resize();
+      return this;
+    }
+
+    /**
+     * Sets the new dimension of the graph without repainting it. Use {@link Graph#resize} to perform the actual resizing of the graph.
+     * @param {Number} [ width ] - The new width of the graph
+     * @param {Number} [ height ] - The new height of the graph
+     * @see Graph#setWidth
+     * @see Graph#setHeight
+     * @see Graph#resize
+     */
+
+  }, {
+    key: 'setSize',
+    value: function setSize(w, h) {
+      this.setWidth(w, true);
+      this.setHeight(h, true);
+      this.getDrawingHeight();
+      this.getDrawingWidth();
+    }
+
+    /**
+     * Returns the width of the graph (set by setSize, setWidth or resize methods)
+     * @return {Number} Width of the graph
+     */
+
+  }, {
+    key: 'getWidth',
+    value: function getWidth() {
+      return this.width;
+    }
+
+    /**
+     * Returns the height of the graph (set by setSize, setHeight or resize methods)
+     * @return {Number} Height of the graph
+     */
+
+  }, {
+    key: 'getHeight',
+    value: function getHeight() {
+      return this.height;
+    }
+
+    /**
+     * Returns the top padding of the graph (space between the top of the svg container and the topmost axis)
+     * @return {Number} paddingTop
+     */
+
+  }, {
+    key: 'getPaddingTop',
+    value: function getPaddingTop() {
+      return this.options.paddingTop;
+    }
+
+    /**
+     * Returns the left padding of the graph (space between the left of the svg container and the leftmost axis)
+     * @return {Number} paddingTop
+     */
+
+  }, {
+    key: 'getPaddingLeft',
+    value: function getPaddingLeft() {
+      return this.options.paddingLeft;
+    }
+
+    /**
+     * Returns the bottom padding of the graph (space between the bottom of the svg container and the bottommost axis)
+     * @return {Number} paddingTop
+     */
+
+  }, {
+    key: 'getPaddingBottom',
+    value: function getPaddingBottom() {
+      return this.options.paddingBottom;
+    }
+
+    /**
+     * Returns the right padding of the graph (space between the right of the svg container and the rightmost axis)
+     * @return {Number} paddingRight
+     */
+
+  }, {
+    key: 'getPaddingRight',
+    value: function getPaddingRight() {
+      return this.options.paddingRight;
+    }
+
+    /**
+     * Returns the height of the drawable zone, including the space used by the axes
+     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+     * @returns {Number} Height of the graph
+     */
+
+  }, {
+    key: 'getDrawingHeight',
+    value: function getDrawingHeight(useCache) {
+      if (useCache && this.innerHeight) {
+        return this.innerHeight;
+      }
+      return this.innerHeight = this.height - this.options.paddingTop - this.options.paddingBottom;
+    }
+
+    /**
+     * Returns the width of the drawable zone, including the space used by the axes
+     * @param {Boolean} useCache - Use cached value. Useful if one is sure the graph hasn't changed dimension. Automatically called after a Graph.resize();
+     * @returns {Number} Width of the graph
+     */
+
+  }, {
+    key: 'getDrawingWidth',
+    value: function getDrawingWidth(useCache) {
+      if (useCache && this.innerWidth) {
+        return this.innerWidth;
+      }
+      return this.innerWidth = this.width - this.options.paddingLeft - this.options.paddingRight;
+    }
+
+    /**
+     * Caches the wrapper offset in the page.<br />
+     * The position of the wrapper is used when processing most of mouse events and it is fetched via the jQuery function .offset().
+     * If performance becomes a critical issue in your application, <code>cacheOffset()</code> should be used to store the offset position. It should be ensured that the graph doesn't move in the page. If one can know when the graph has moved, <code>cacheOffset()</code> should be called again to update the offset position.
+     * @see Graph#uncacheOffset
+     */
+
+  }, {
+    key: 'cacheOffset',
+    value: function cacheOffset() {
+      this.offsetCached = util.getOffset(this.wrapper);
+    }
+
+    /**
+     * Un-caches the wrapper offset value
+     * @see Graph#cacheOffset
+     */
+
+  }, {
+    key: 'uncacheOffset',
+    value: function uncacheOffset() {
+      this.offsetCached = false;
+    }
+
+    /**
+     * Returns the x axis at a certain index. If any top axis exists and no bottom axis exists, returns or creates a top axis. Otherwise, creates or returns a bottom axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getXAxis',
+    value: function getXAxis(index, options) {
+      if (this.axis.top.length > 0 && this.axis.bottom.length == 0) {
+        return this.getTopAxis(index, options);
+      }
+
+      return this.getBottomAxis(index, options);
+    }
+
+    /**
+     * Returns the y axis at a certain index. If any right axis exists and no left axis exists, returns or creates a right axis. Otherwise, creates or returns a left axis
+     * Caution ! The <code>options</code> parameter will only be effective if an axis is created
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getYAxis',
+    value: function getYAxis(index, options) {
+
+      if (this.axis.right.length > 0 && this.axis.left.length == 0) {
+        return this.getRightAxis(index, options);
+      }
+
+      return this.getLeftAxis(index, options);
+    }
+
+    /**
+     * Returns the top axis at a certain index. Creates it if non-existant
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getTopAxis',
+    value: function getTopAxis(index, options) {
+      return _getAxis(this, index, options, 'top');
+    }
+
+    /**
+     * Returns the bottom axis at a certain index. Creates it if non-existant
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getBottomAxis',
+    value: function getBottomAxis(index, options) {
+      return _getAxis(this, index, options, 'bottom');
+    }
+
+    /**
+     * Returns the left axis at a certain index. Creates it if non-existant
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getLeftAxis',
+    value: function getLeftAxis(index, options) {
+      return _getAxis(this, index, options, 'left');
+    }
+
+    /**
+     * Returns the right axis at a certain index. Creates it if non-existant
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @param {Object} [ options={} ] - The options to pass to the axis constructor
+     */
+
+  }, {
+    key: 'getRightAxis',
+    value: function getRightAxis(index, options) {
+      return _getAxis(this, index, options, 'right');
+    }
+
+    /**
+     * Sets a bottom axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     */
+
+  }, {
+    key: 'setXAxis',
+    value: function setXAxis(axis, index) {
+      this.setBottomAxis(axis, index);
+    }
+
+    /**
+     * Sets a left axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     */
+
+  }, {
+    key: 'setYAxis',
+    value: function setYAxis(axis, index) {
+      this.setLeftAxis(axis, index);
+    }
+
+    /**
+     * Sets a left axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @see Graph#setBottomAxis
+     * @see Graph#setTopAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getLeftAxis
+     * @see Graph#getYAxis
+     */
+
+  }, {
+    key: 'setLeftAxis',
+    value: function setLeftAxis(axis, index) {
+      index = index || 0;
+
+      if (this.axis.left[index]) {
+        this.axis.left[index].kill();
+      }
+      this.axis.left[index] = axis;
+    }
+
+    /**
+     * Sets a right axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @see Graph#setBottomAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setTopAxis
+     * @see Graph#getRightAxis
+     * @see Graph#getYAxis
+     */
+
+  }, {
+    key: 'setRightAxis',
+    value: function setRightAxis(axis, index) {
+      index = index || 0;
+
+      if (this.axis.right[index]) {
+        this.axis.right[index].kill();
+      }
+      this.axis.right[index] = axis;
+    }
+
+    /**
+     * Sets a top axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @see Graph#setBottomAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getBottomAxis
+     * @see Graph#getXAxis
+     */
+
+  }, {
+    key: 'setTopAxis',
+    value: function setTopAxis(axis, index) {
+      index = index || 0;
+
+      if (this.axis.top[index]) {
+        this.axis.top[index].kill();
+      }
+      this.axis.top[index] = axis;
+    }
+
+    /**
+     * Sets a bottom axis
+     * @param {Axis} axis - The axis instance to set
+     * @param {Number} [ index=0 ] - The index of the axis
+     * @see Graph#setTopAxis
+     * @see Graph#setLeftAxis
+     * @see Graph#setRightAxis
+     * @see Graph#getTopAxis
+     * @see Graph#getXAxis
+     */
+
+  }, {
+    key: 'setBottomAxis',
+    value: function setBottomAxis(axis, index) {
+      index = index || 0;
+
+      if (this.axis.bottom[index]) {
+        this.axis.bottom[index].kill();
+      }
+      this.axis.bottom[index] = axis;
+    }
+  }, {
+    key: 'killAxis',
+    value: function killAxis(axis) {
+      var noRedraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var noSerieKill = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+
+      var index;
+
+      if (axis.isX()) {
+
+        if ((index = this.axis.bottom.indexOf(axis)) > -1) {
+          this.axis.bottom.splice(index, 1);
+        }
+
+        if ((index = this.axis.top.indexOf(axis)) > -1) {
+          this.axis.top.splice(index, 1);
+        }
+
+        if (!noSerieKill) {
+          this.series.map(function (serie) {
+
+            if (serie.getXAxis() == axis) {
+              serie.kill();
+            }
+          });
+        }
+      }
+
+      if (axis.isY()) {
+
+        if ((index = this.axis.left.indexOf(axis)) > -1) {
+          this.axis.left.splice(index, 1);
+        }
+
+        if ((index = this.axis.right.indexOf(axis)) > -1) {
+          this.axis.right.splice(index, 1);
+        }
+
+        if (!noSerieKill) {
+          this.series.map(function (serie) {
+
+            if (serie.getYAxis() == axis) {
+              serie.kill();
+            }
+          });
+        }
+      }
+
+      this.axisGroup.removeChild(axis.group); // Removes all DOM
+      this.groupPrimaryGrids.removeChild(axis.gridPrimary);
+      this.groupSecondaryGrids.removeChild(axis.gridSecondary);
+
+      if (!noRedraw) {
+        this.draw(true);
+      }
+    }
+
+    /**
+     * Determines if an x axis belongs to the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasXAxis',
+    value: function hasXAxis(axis) {
+      return this.hasTopAxis(axis) || this.hasBottomAxis(axis);
+    }
+
+    /**
+     * Determines if an x axis belongs to the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasYAxis',
+    value: function hasYAxis(axis) {
+      return this.hasLeftAxis(axis) || this.hasRightAxis(axis);
+    }
+
+    /**
+     * Determines if an x axis belongs to top axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasTopAxis',
+    value: function hasTopAxis(axis) {
+      return this.hasAxis(axis, this.axis.top);
+    }
+
+    /**
+     * Determines if an x axis belongs to bottom axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasBottomAxis',
+    value: function hasBottomAxis(axis) {
+      return this.hasAxis(axis, this.axis.bottom);
+    }
+
+    /**
+     * Determines if a y axis belongs to left axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasLeftAxis',
+    value: function hasLeftAxis(axis) {
+      return this.hasAxis(axis, this.axis.left);
+    }
+
+    /**
+     * Determines if a y axis belongs to right axes list of the graph
+     * @param {Axis} axis - The axis instance to check
+     */
+
+  }, {
+    key: 'hasRightAxis',
+    value: function hasRightAxis(axis) {
+      return this.hasAxis(axis, this.axis.right);
+    }
+
+    /**
+     * Determines if an axis belongs to a list of axes
+     * @param {Axis} axis - The axis instance to check
+     * @param {Array} axisList - The list of axes to check
+     * @private
+     */
+
+  }, {
+    key: 'hasAxis',
+    value: function hasAxis(axis, axisList) {
+      for (var i = 0, l = axisList.length; i < l; i++) {
+        if (axisList[i] == axis) {
+          return true;
+        }
+
+        if (axisList[i].hasAxis(axis)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * Autoscales the x and y axes of the graph.
+     * Does not repaint the canvas
+     * @return {Graph} The current graph instance
+     */
+
+  }, {
+    key: 'autoscaleAxes',
+    value: function autoscaleAxes() {
+
+      this._applyToAxes("setMinMaxToFitSeries", null, true, true);
+
+      //this._applyToAxes( "scaleToFitAxis", [ this.getYAxis() ], false, true )
+      // X is not always ascending...
+      return this;
+    }
+
+    // See #138
+    /**
+     *  @alias Graph#autoscaleAxes
+     */
+
+  }, {
+    key: 'autoscale',
+    value: function autoscale() {
+      return this.autoscaleAxes.apply(this, arguments);
+    }
+
+    // See #138
+    /**
+     *  @alias Graph#autoscaleAxes
+     */
+
+  }, {
+    key: 'autoScale',
+    value: function autoScale() {
+      return this.autoscaleAxes.apply(this, arguments);
+    }
+
+    // See #138
+    /**
+     *  @alias Graph#autoscaleAxes
+     */
+
+  }, {
+    key: 'autoScaleAxes',
+    value: function autoScaleAxes() {
+      return this.autoscaleAxes.apply(this, arguments);
+    }
+
+    // See #138
+    /**
+     *  Autoscales a particular axis
+     *  @param {Axis} The axis to rescale
+     *  @return {Graph} The current graph instance
+     */
+
+  }, {
+    key: 'autoScaleAxis',
+    value: function autoScaleAxis(axis) {
+      if (!axis) {
+        return this;
+      }
+
+      axis.setMinMaxToFitSeries();
+      return this;
+    }
+
+    /**
+     * Sets the background color
+     * @param {String} color - An SVG accepted color for the background
+     * @return {Graph} The current graph instance
+     */
+
+  }, {
+    key: 'setBackgroundColor',
+    value: function setBackgroundColor(color) {
+
+      this.rectEvent.setAttribute('fill', color);
+      return this;
+    }
+  }, {
+    key: 'getAxisState',
+    value: function getAxisState() {
+
+      var state = {};
+      for (var i in this.axis) {
+        state[i] = this.axis[i].map(function (axis) {
+          return [axis.getCurrentMin(), axis.getCurrentMax()];
+        });
+      }
+      return state;
+    }
+  }, {
+    key: 'setAxisState',
+    value: function setAxisState(state) {
+
+      var j, l;
+      for (var i in state) {
+
+        if (!this.axis[i]) {
+          continue;
+        }
+
+        for (j = 0, l = state[i].length; j < l; j++) {
+
+          if (!this.axis[i][j]) {
+            continue;
           }
 
+          this.axis[i][j].setCurrentMin(state[i][j][0]);
+          this.axis[i][j].setCurrentMax(state[i][j][1]);
+        }
+      }
+
+      this.draw();
+    }
+  }, {
+    key: 'saveAxisState',
+    value: function saveAxisState(savedName) {
+      this.savedAxisState = this.savedAxisState || {};
+      this.savedAxisState[savedName] = this.getAxisState();
+      return this;
+    }
+  }, {
+    key: 'recallAxisState',
+    value: function recallAxisState(stateName) {
+      if (this.savedAxisState[savedName]) {
+        this.recallAxisState(this.savedAxisState[savedName]);
+      }
+      return this;
+    }
+  }, {
+    key: '_applyToAxis',
+    value: function _applyToAxis(type) {
+
+      switch (type) {
+
+        case 'string':
+          return function (type, func, params) {
+            //    params.splice(1, 0, type);
+
+            for (var i = 0; i < this.axis[type].length; i++) {
+              this.axis[type][i][func].apply(this.axis[type][i], params);
+            }
+          };
           break;
-      }*/}function _handleMouseUp(graph,x,y,e){if(graph.bypassHandleMouse){graph.bypassHandleMouse.handleMouseUp(e);graph.activePlugin=false;return;}graph._pluginExecute(graph.activePlugin,'onMouseUp',[graph,x,y,e]);graph.activePlugin=false;}function _handleClick(graph,x,y,e){graph.emit('click',[graph,x,y,e]);// Not on a shape
-checkMouseActions(graph,e,[x,y,e],'onClick');if(!e.target.jsGraphIsShape&&!graph.prevent(false)&&graph.options.shapesUnselectOnClick){graph.unselectShapes();}}function _getAxis(graph,num,options,pos){var options=options||{};var inst;var _availableAxes={def:{x:graph.getConstructor("graph.axis.x"),y:graph.getConstructor("graph.axis.y")},time:{x:graph.getConstructor("graph.axis.x.time")},bar:{x:graph.getConstructor("graph.axis.x.bar")}};switch(options.type){case'time':var axisInstance=_availableAxes.time;break;case'bar':var axisInstance=_availableAxes.bar;break;case'broken':var axisInstance=_availableAxes.broken;break;default:var axisInstance=_availableAxes.def;break;}switch(pos){case'top':case'bottom':inst=axisInstance.x;break;case'left':case'right':inst=axisInstance.y;break;}num=num||0;if((typeof num==='undefined'?'undefined':_typeof(num))=="object"){options=num;num=0;}if(!graph.axis[pos][num]){graph.axis[pos][num]=new inst(graph,pos,options);graph.axis[pos][num].init(graph,options);}return graph.axis[pos][num];}function _closeLine(graph,mode,x1,x2,y1,y2){if(graph.options.close===false){return;}var l=0;graph.axis[mode].map(function(g){if(g.isDisplayed()&&!g.floating){l++;}});if((graph.options.close===true||graph.options.close[mode])&&l==0){graph.closingLines[mode].setAttribute('display','block');graph.closingLines[mode].setAttribute('x1',x1);graph.closingLines[mode].setAttribute('x2',x2);graph.closingLines[mode].setAttribute('y1',y1);graph.closingLines[mode].setAttribute('y2',y2);}else{graph.closingLines[mode].setAttribute('display','none');}}function _handleMouseWheel(graph,delta,e){if(checkMouseActions(graph,e,[delta,e],'onMouseWheel')){e.preventDefault();e.stopPropagation();}}function _handleMouseLeave(graph){if(graph.options.handleMouseLeave){graph.options.handleMouseLeave.call(graph);}}function haveAxesChanged(graph){var temp=graph._axesHaveChanged;graph._axesHaveChanged=false;return temp;}function hasSizeChanged(graph){var temp=graph._sizeChanged;graph._sizeChanged=false;return temp;}// Constants
-Graph.SERIE_LINE=Symbol();Graph.SERIE_SCATTER=Symbol();Graph.SERIE_CONTOUR=Symbol();Graph.SERIE_BAR=Symbol();Graph.SERIE_BOX=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_LINE_COLORED=Symbol();Graph.SERIE_ZONE=Symbol();Graph.SERIE_DENSITYMAP=Symbol();Graph.SERIE_LINE_3D=Symbol();Graph.SERIE_ZONE_3D=Symbol();Graph.TICKS_OUTSIDE=Symbol();Graph.TICKS_INSIDE=Symbol();Graph.TICKS_CENTERED=Symbol();Graph.ns='http://www.w3.org/2000/svg';Graph.nsxlink="http://www.w3.org/1999/xlink";exports.default=Graph;
+
+        case 'function':
+          return function (type, func, params) {
+            for (var i = 0; i < this.axis[type].length; i++) {
+              func.call(this, this.axis[type][i], type, params);
+            }
+          };
+          break;
+      }
+    }
+
+    /**
+     * Calculates the minimal or maximal value of the axis. Currently, alias of getBoudaryAxisFromSeries
+     */
+
+  }, {
+    key: 'getBoundaryAxis',
+    value: function getBoundaryAxis(axis, minmax, usingZValues) {
+
+      var valSeries = this.getBoundaryAxisFromSeries(axis, minmax, usingZValues);
+      //  var valShapes = this.getBoundaryAxisFromShapes( axis, xy, minmax );
+      return valSeries;
+      //return Math[ minmax ]( valSeries, valShapes );
+    }
+
+    /**
+     * Calculates the minimal or maximal value of the axis, based on the series that belong to it. The value is computed so that all series just fit in the value.
+     * @memberof Graph.prototype
+     * @param {Axis} axis - The axis for which the value should be computed
+     * @param {minmax} minmax - The minimum or maximum to look for. "min" for the minimum, anything else for the maximum
+     * @returns {Number} The minimimum or maximum of the axis based on its series
+     */
+
+  }, {
+    key: 'getBoundaryAxisFromSeries',
+    value: function getBoundaryAxisFromSeries(axis, minmax, usingZValues) {
+
+      var min = minmax == 'min',
+          val,
+          func = axis.isX() ? ['getMinX', 'getMaxX'] : ['getMinY', 'getMaxY'],
+          func2use = func[min ? 0 : 1],
+          infinity2use = min ? +Infinity : -Infinity,
+          currentSerie,
+          serie,
+          series,
+          serieValue,
+          i,
+          l;
+
+      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+      series = this.getSeriesFromAxis(axis, true);
+
+      for (i = 0, l = series.length; i < l; i++) {
+
+        serie = series[i];
+
+        if (!serie.isShown()) {
+          continue;
+        }
+
+        serieValue = serie[func2use](usingZValues);
+        val = Math[minmax](isNaN(val) ? infinity2use : val, isNaN(serieValue) ? infinity2use : serieValue);
+      }
+
+      return val;
+    }
+
+    /**
+     *  Returns all the series associated to an axis
+     *  @param {Axis} axis - The axis to which the series belong
+     *  @returns {Serie[]} An array containing the list of series that belong to the axis
+     */
+
+  }, {
+    key: 'getSeriesFromAxis',
+    value: function getSeriesFromAxis(axis) {
+      var series = [],
+          i = this.series.length - 1;
+      for (; i >= 0; i--) {
+        if (this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis) {
+          series.push(this.series[i]);
+        }
+      }
+
+      return series;
+    }
+
+    /**
+     * Determines the maximum and minimum of each axes, based on {@link Graph#getBoundaryAxis}. It is usually called internally, but if the data of series has changed, called this function to make sure that minimum / maximum of the axes are properly updated.
+     * @see Graph#getBoundaryAxis
+     */
+
+  }, {
+    key: 'updateDataMinMaxAxes',
+    value: function updateDataMinMaxAxes(usingZValues) {
+
+      var axisvars = ['bottom', 'top', 'left', 'right'],
+          axis,
+          j,
+          l,
+          i,
+          xy;
+
+      for (j = 0, l = axisvars.length; j < l; j++) {
+
+        for (i = this.axis[axisvars[j]].length - 1; i >= 0; i--) {
+
+          axis = this.axis[axisvars[j]][i];
+          xy = j < 2 ? 'x' : 'y';
+
+          if (axis.disabled) {
+            continue;
+          }
+
+          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
+
+          axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues));
+          axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues));
+        }
+      }
+    }
+
+    /**
+     * Function that is called from {@link Graph#_applyToAxes}
+     * @function
+     * @name AxisCallbackFunction
+     * @param {Axis} axis - The axis of the function
+     * @param {String} type - The type of the axis (left,right,top,bottom)
+     * @param params - The params passed in the _applyToAxis function.
+     * @see Graph#_applyToAxes
+     */
+
+    /**
+     * Applies a function to axes. The function will be executed once for every axis.
+     * If func is a string, the internal function belonging to <strong>the axis</strong> will be called, with the params array flattened out (in this case, params must be an array).
+     * If func is a function, the function will be called with the axis, its type and params as parameters. See {@link AxisCallbackFunction} for more details.
+     * @param {(AxisCallbackFunction|String)} func - The function or function name to execute
+     * @param params - Extra parameters to pass to the function
+     * @param {Boolean} topbottom=false - True to apply to function to top and bottom axes
+     * @param {Boolean} leftright=false - True to apply to function to left and right axes
+     */
+
+  }, {
+    key: '_applyToAxes',
+    value: function _applyToAxes(func, params, tb, lr) {
+
+      var ax = [],
+          i = 0,
+          l;
+
+      if (tb || tb == undefined) {
+        ax.push('top');
+        ax.push('bottom');
+      }
+      if (lr || lr == undefined) {
+        ax.push('left');
+        ax.push('right');
+      }
+
+      for (l = ax.length; i < l; i++) {
+        this._applyToAxis(typeof func === 'undefined' ? 'undefined' : _typeof(func)).call(this, ax[i], func, params);
+      }
+    }
+
+    /**
+     * Axes can be dependant of one another (for instance for unit conversions)
+     * Finds and returns all the axes that are linked to a specific axis. Mostly used internally.
+     * @param {Axis} axis - The axis that links one or multiple other dependant axes
+     * @returns {Axis[]} The list of axes linked to the axis passed as parameter
+     */
+
+  }, {
+    key: 'findAxesLinkedTo',
+    value: function findAxesLinkedTo(axis) {
+
+      var axes = [];
+      this._applyToAxes(function (a) {
+
+        if (a.linkedToAxis && a.linkedToAxis.axis == axis) {
+          axes.push(a);
+        }
+      }, {}, axis instanceof this.getConstructor("graph.axis.x"), axis instanceof this.getConstructor("graph.axis.y"));
+
+      return axes;
+    }
+  }, {
+    key: '_axisHasChanged',
+    value: function _axisHasChanged(axis) {
+      this._axesHaveChanged = true;
+    }
+
+    /**
+     * Creates a new serie.
+     * If the a serie with the same name exists, returns this serie with update options.
+     * The type of the serie is used to fetch the corresponding registered constructor registered with the name "graph.serie.<type>", e.g "line" will fetch the "graph.serie.line" prototype (built-in)<br />
+     * Built-in series types are "line", "contour", "zone" and "scatter".
+     * @param {String} name - The name of the serie (unique)
+     * @param {Object} options - The serie options
+     * @param {Type} type - The type of the serie.
+     * @returns {Serie} The newly created serie
+     */
+
+  }, {
+    key: 'newSerie',
+    value: function newSerie(name, options, type) {
+
+      var serie = void 0;
+
+      if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== "object" && !type) {
+        type = options;
+        options = {};
+      }
+
+      if (!type) {
+        type = Graph.SERIE_LINE;
+      }
+
+      if (serie = this.getSerie(name)) {
+        return serie;
+      }
+
+      if (!(serie = makeSerie(this, name, options, type))) {
+        return;
+      }
+
+      this.series.push(serie);
+      this.emit("newSerie", serie);
+      return serie;
+    }
+
+    /**
+     * Looks for an existing serie by name or by index and returns it.
+     * The index of the serie follows the creation sequence (0 for the first one, 1 for the second one, ...)
+     * @param {(String|Number)} name - The name or the index of the serie
+     * @returns {Serie}
+     */
+
+  }, {
+    key: 'getSerie',
+    value: function getSerie(name) {
+
+      if (typeof name == 'number') {
+        return this.series[name] || false;
+      }
+
+      if (typeof name == 'function') {
+        name = name();
+      }
+
+      var i = 0,
+          l = this.series.length;
+
+      for (; i < l; i++) {
+
+        if (this.series[i].getName() == name || this.series[i] == name) {
+
+          return this.series[i];
+        }
+      }
+
+      return false;
+    }
+
+    /**
+     * Returns all the series
+     * @returns {Serie[]} An array of all the series
+     */
+
+  }, {
+    key: 'getSeries',
+    value: function getSeries() {
+      return this.series;
+    }
+
+    /**
+     * Returns all the series that correspond to one or multiple types
+     * @param {...Symbol} type - The serie types to select
+     * @returns {Serie[]} An array of all the series
+     * @example graph.allSeries( Graph.SERIE_LINE, Graph.SERIE_ZONE );
+     */
+
+  }, {
+    key: 'allSeries',
+    value: function allSeries() {
+      for (var _len = arguments.length, types = Array(_len), _key = 0; _key < _len; _key++) {
+        types[_key] = arguments[_key];
+      }
+
+      return this.series.filter(function (serie) {
+        return types.include(serie.getType());
+      });
+    }
+
+    /**
+     * Draws a specific serie
+     * @param {Serie} serie - The serie to redraw
+     * @param {Boolean} force - Forces redraw even if no data has changed
+     */
+
+  }, {
+    key: 'drawSerie',
+    value: function drawSerie(serie, force) {
+
+      if (!serie.draw) {
+        throw "Serie has no method draw";
+      }
+
+      serie.draw(force);
+    }
+
+    /**
+     * Redraws all visible series
+     * @param {Boolean} force - Forces redraw even if no data has changed
+     */
+
+  }, {
+    key: 'drawSeries',
+    value: function drawSeries(force) {
+
+      if (!this.width || !this.height) {
+        return;
+      }
+
+      var i = this.series.length - 1;
+      for (; i >= 0; i--) {
+        if (this.series[i].isShown()) {
+          this.drawSerie(this.series[i], force);
+        }
+      }
+    }
+
+    /**
+     * @alias Graph#removeSeries
+     */
+
+  }, {
+    key: 'resetSeries',
+    value: function resetSeries() {
+      this.removeSeries();
+    }
+
+    /**
+     * @alias Graph#removeSeries
+     */
+
+  }, {
+    key: 'killSeries',
+    value: function killSeries() {
+      this.resetSeries();
+    }
+
+    /**
+     * Removes all series from the graph
+     */
+
+  }, {
+    key: 'removeSeries',
+    value: function removeSeries() {
+      while (this.series[0]) {
+        this.series[0].kill(true);
+      }
+      this.series = [];
+
+      if (this.legend) {
+        this.legend.update();
+      }
+    }
+
+    /**
+     * Selects a serie. Only one serie per graph can be selected.
+     * @param {Serie} serie - The serie to select
+     * @param {String} selectName="selected" - The name of the selection
+     */
+
+  }, {
+    key: 'selectSerie',
+    value: function selectSerie(serie, selectName) {
+
+      if (!((typeof serie === 'undefined' ? 'undefined' : _typeof(serie)) == "object")) {
+        serie = this.getSerie(serie);
+      }
+
+      if (this.selectedSerie == serie && this.selectedSerie.selectionType == selectName) {
+        return;
+      }
+
+      if (this.selectedSerie !== serie && this.selectedSerie) {
+        this.unselectSerie(this.selectedSerie);
+      }
+
+      this.selectedSerie = serie;
+      this.triggerEvent('onSelectSerie', serie);
+
+      serie.select(selectName || "selected");
+    }
+
+    /**
+     * Returns the selected serie
+     * @returns {(Serie|undefined)} The selected serie
+     */
+
+  }, {
+    key: 'getSelectedSerie',
+    value: function getSelectedSerie() {
+      return this.selectedSerie;
+    }
+
+    /**
+     * Unselects a serie
+     * @param {Serie} serie - The serie to unselect
+     */
+
+  }, {
+    key: 'unselectSerie',
+    value: function unselectSerie(serie) {
+
+      if (!serie.unselect) {
+        return;
+      }
+
+      serie.unselect();
+      this.selectedSerie = false;
+      this.triggerEvent('onUnselectSerie', serie);
+    }
+
+    /**
+     * Returns all the shapes associated to a serie. Shapes can (but don't have to) be associated to a serie. The position of the shape can then be relative to the same axes as the serie.
+     * @param {Serie} serie - The serie containing the shapes
+     * @returns {Shape[]} An array containing a list of shapes associated to the serie
+     */
+
+  }, {
+    key: 'getShapesOfSerie',
+    value: function getShapesOfSerie(serie) {
+
+      var shapes = [];
+      var i = this.shapes.length - 1;
+
+      for (; i >= 0; i--) {
+
+        if (this.shapes[i].getSerie() == serie) {
+          shapes.push(this.shapes[i]);
+        }
+      }
+
+      return shapes;
+    }
+  }, {
+    key: 'makeToolbar',
+    value: function makeToolbar(toolbarData) {
+
+      var constructor = this.getConstructor("graph.toolbar");
+      if (constructor) {
+        return this.toolbar = new constructor(this, toolbarData);
+      } else {
+        return util.throwError("No constructor exists for toolbar");
+      }
+    }
+
+    /**
+     *  Returns all shapes from the graph
+     */
+
+  }, {
+    key: 'getShapes',
+    value: function getShapes() {
+      return this.shapes || [];
+    }
+
+    /**
+     * Creates a new shape. jsGraph will look for the registered constructor "graph.shape.<shapeType>".
+     * @param {String} shapeType - The type of the shape
+     * @param {Object} [shapeData] - The options passed to the shape creator
+     * @param {Boolean} [mute=false] - <code>true</code> to create the shape quietly
+     * @param {Object} [shapeProperties] - The native object containing the shape properties in the jsGraph format (caution when using it)
+     * @returns {Shape} The created shape
+     * @see Graph#getConstructor
+     */
+
+  }, {
+    key: 'newShape',
+    value: function newShape(shapeType, shapeData, mute, shapeProperties) {
+
+      var self = this,
+          response;
+
+      this.prevent(false);
+
+      if (!mute) {
+
+        this.emit('beforeNewShape', shapeData);
+
+        if (this.prevent(false)) {
+          return false;
+        }
+      }
+
+      // Backward compatibility
+      if ((typeof shapeType === 'undefined' ? 'undefined' : _typeof(shapeType)) == "object") {
+        mute = shapeData;
+        shapeData = shapeType;
+        shapeType = shapeData.type;
+      }
+
+      shapeData = shapeData || {};
+      shapeData._id = util.guid();
+
+      var constructor;
+      if (typeof shapeType == "function") {
+        constructor = shapeType;
+      } else {
+        constructor = this.getConstructor("graph.shape." + shapeType);
+      }
+
+      if (!constructor) {
+        return util.throwError("No constructor for this shape");
+      }
+
+      var shape = new constructor(this, shapeData);
+
+      if (!shape) {
+        return util.throwError("Failed to construct shape.");
+      }
+
+      shape.type = shapeType;
+      shape.graph = this;
+      shape._data = shapeData;
+
+      if (shapeData.properties !== undefined) {
+        shape.setProperties(shapeData.properties);
+      }
+
+      shape.init(this, shapeProperties);
+
+      if (shapeData.position) {
+
+        for (var i = 0, l = shapeData.position.length; i < l; i++) {
+          shape.setPosition(new _graphPosition2.default(shapeData.position[i]), i);
+        }
+      }
+
+      /* Setting shape properties */
+      if (shapeData.fillColor !== undefined) {
+        shape.setFillColor(shapeData.fillColor);
+      }
+
+      if (shapeData.fillOpacity !== undefined) {
+        shape.setFillOpacity(shapeData.fillOpacity);
+      }
+
+      if (shapeData.strokeColor !== undefined) {
+        shape.setStrokeColor(shapeData.strokeColor);
+      }
+
+      if (shapeData.strokeWidth !== undefined) {
+        shape.setStrokeWidth(shapeData.strokeWidth);
+      }
+
+      if (shapeData.layer !== undefined) {
+        shape.setLayer(shapeData.layer);
+      }
+
+      if (shapeData.locked == true) {
+        shape.lock();
+      }
+
+      if (shapeData.movable == true) {
+        shape.movable();
+      }
+
+      if (shapeData.selectable == true) {
+        shape.selectable();
+      }
+
+      if (shapeData.resizable == true) {
+        shape.resizable();
+      }
+
+      if (shapeData.attributes !== undefined) {
+        shape.setProp("attributes", shapeData.attributes);
+      }
+
+      if (shapeData.handles !== undefined) {
+        shape.setProp('handles', shapeData.handles);
+      }
+
+      if (shapeData.selectOnMouseDown !== undefined) {
+        shape.setProp("selectOnMouseDown", true);
+      }
+
+      if (shapeData.selectOnClick !== undefined) {
+        shape.setProp("selectOnClick", true);
+      }
+
+      if (shapeData.highlightOnMouseOver !== undefined) {
+        shape.setProp("highlightOnMouseOver", true);
+      }
+
+      if (shapeData.labelEditable) {
+        shape.setProp("labelEditable", shapeData.labelEditable);
+      }
+
+      if (shapeData.labels && !shapeData.label) {
+        shapeData.label = shapeData.labels;
+      }
+
+      if (shapeData.label !== undefined) {
+
+        if (!Array.isArray(shapeData.label)) {
+          shapeData.label = [shapeData.label];
+        }
+
+        for (var i = 0, l = shapeData.label.length; i < l; i++) {
+
+          shape.showLabel(i);
+          shape.setLabelText(shapeData.label[i].text, i);
+          shape.setLabelPosition(shapeData.label[i].position, i);
+          shape.setLabelColor(shapeData.label[i].color || 'black', i);
+          shape.setLabelSize(shapeData.label[i].size, i);
+          shape.setLabelAngle(shapeData.label[i].angle || 0, i);
+          shape.setLabelBaseline(shapeData.label[i].baseline || 'no-change', i);
+          shape.setLabelAnchor(shapeData.label[i].anchor || 'start', i);
+          shape.setLabelBackgroundColor(shapeData.label[i].backgroundColor || 'transparent', i);
+          shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity || 1, i);
+        }
+      }
+
+      if (shapeData.serie) {
+        shape.setSerie(this.getSerie(shapeData.serie));
+      }
+      shape.createHandles();
+
+      this.shapes.push(shape);
+
+      if (!mute) {
+        this.emit('newShape', shape, shapeData);
+      }
+
+      return shape;
+    }
+
+    /**
+     * Creates a new position. Arguments are passed to the position constructor
+     * @param {...*} var_args
+     * @see Position
+     */
+
+  }, {
+    key: 'newPosition',
+    value: function newPosition(var_args) {
+
+      return new (Function.prototype.bind.apply(_graphPosition2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+
+      // 18 September 2016 Norman: What is that ?
+      Array.prototype.unshift.call(arguments, null);
+      return new (Function.prototype.bind.apply(_graphPosition2.default, arguments))();
+    }
+
+    /**
+     *  Redraws all shapes. To be called if their definitions have changed
+     */
+
+  }, {
+    key: 'redrawShapes',
+    value: function redrawShapes() {
+
+      //this.graphingZone.removeChild(this.shapeZone);
+      for (var i = 0, l = this.shapes.length; i < l; i++) {
+        this.shapes[i].redraw();
+      }
+      //this.graphingZone.insertBefore(this.shapeZone, this.axisGroup);
+    }
+
+    /**
+     *  Removes all shapes from the graph
+     */
+
+  }, {
+    key: 'removeShapes',
+    value: function removeShapes() {
+      for (var i = 0, l = this.shapes.length; i < l; i++) {
+        if (this.shapes[i] && this.shapes[i].kill) {
+          this.shapes[i].kill(true);
+        }
+      }
+      this.shapes = [];
+    }
+
+    /**
+     * Selects a shape
+     * @param {Shape} shape - The shape to select
+     * @param {Boolean} mute - Select the shape quietly
+     */
+
+  }, {
+    key: 'selectShape',
+    value: function selectShape(shape, mute) {
+
+      // Already selected. Returns false
+
+      if (!shape) {
+        return;
+      }
+
+      if (this.selectedShapes.indexOf(shape) > -1) {
+        return false;
+      }
+
+      if (!shape.isSelectable()) {
+        return false;
+      }
+
+      if (!mute) {
+        this.emit("beforeShapeSelect", shape);
+      }
+
+      if (this.prevent(false)) {
+        return;
+      }
+
+      if (this.selectedShapes.length > 0 && this.options.shapesUniqueSelection) {
+        // Only one selected shape at the time
+
+        this.unselectShapes(mute);
+      }
+
+      shape._select(mute);
+      this.selectedShapes.push(shape);
+
+      if (!mute) {
+        this.emit("shapeSelect", shape);
+      }
+    }
+  }, {
+    key: 'getSelectedShapes',
+    value: function getSelectedShapes() {
+      return this.selectedShapes;
+    }
+
+    /**
+     * Unselects a shape
+     * @param {Shape} shape - The shape to unselect
+     * @param {Boolean} mute - Unselect the shape quietly
+     */
+
+  }, {
+    key: 'unselectShape',
+    value: function unselectShape(shape, mute) {
+
+      if (this.selectedShapes.indexOf(shape) == -1) {
+        return;
+      }
+
+      if (!mute) {
+        this.emit("beforeShapeUnselect", shape);
+      }
+
+      if (this.cancelUnselectShape) {
+        this.cancelUnselectShape = false;
+        return;
+      }
+
+      shape._unselect();
+
+      this.selectedShapes.splice(this.selectedShapes.indexOf(shape), 1);
+
+      if (!mute) {
+        this.emit("shapeUnselect", shape);
+      }
+    }
+
+    /**
+     * Unselects all shapes
+     * @param {Boolean} [ mute = false ] - Mutes all unselection events
+     * @return {Graph} The current graph instance
+     */
+
+  }, {
+    key: 'unselectShapes',
+    value: function unselectShapes(mute) {
+
+      while (this.selectedShapes[0]) {
+        this.unselectShape(this.selectedShapes[0], mute);
+      }
+
+      return this;
+    }
+  }, {
+    key: '_removeShape',
+    value: function _removeShape(shape) {
+      this.shapes.splice(this.shapes.indexOf(shape), 1);
+    }
+  }, {
+    key: 'appendShapeToDom',
+    value: function appendShapeToDom(shape) {
+
+      if (shape.isHTML()) {
+        this.wrapper.insertBefore(shape._dom, this.dom);
+      }
+
+      this.getLayer(shape.getLayer(), 'shape').appendChild(shape.group);
+    }
+  }, {
+    key: 'removeShapeFromDom',
+    value: function removeShapeFromDom(shape) {
+
+      if (shape.isHTML()) {
+        this.wrapper.removeChild(shape._dom);
+      }
+
+      this.getLayer(shape.getLayer(), 'shape').removeChild(shape.group);
+    }
+  }, {
+    key: 'appendSerieToDom',
+    value: function appendSerieToDom(serie) {
+      this.getLayer(serie.getLayer(), 'serie').appendChild(serie.groupMain);
+    }
+  }, {
+    key: 'removeSerieFromDom',
+    value: function removeSerieFromDom(serie) {
+      this.getLayer(serie.getLayer(), 'serie').removeChild(serie.groupMain);
+    }
+  }, {
+    key: 'getLayer',
+    value: function getLayer(layer, mode) {
+
+      if (!this.layers[layer]) {
+
+        this.layers[layer] = [];
+
+        this.layers[layer][0] = document.createElementNS(Graph.ns, 'g');
+        this.layers[layer][0].setAttribute('data-layer', layer);
+        this.layers[layer][1] = document.createElementNS(Graph.ns, 'g');
+        this.layers[layer][2] = document.createElementNS(Graph.ns, 'g');
+
+        this.layers[layer][0].appendChild(this.layers[layer][1]);
+        this.layers[layer][0].appendChild(this.layers[layer][2]);
+
+        var i = 1,
+            prevLayer;
+
+        while (!(prevLayer = this.layers[layer - i]) && layer - i >= 0) {
+          i++;
+        }
+
+        if (!prevLayer) {
+
+          this.plotGroup.insertBefore(this.layers[layer][0], this.plotGroup.firstChild);
+        } else if (prevLayer.nextSibling) {
+
+          this.plotGroup.insertBefore(this.layers[layer][0], prevLayer.nextSibling);
+        } else {
+
+          this.plotGroup.appendChild(this.layers[layer][0]);
+        }
+      }
+
+      return this.layers[layer][mode == 'shape' ? 2 : 1];
+    }
+  }, {
+    key: 'focus',
+    value: function focus() {
+      this.wrapper.focus();
+    }
+  }, {
+    key: 'elementMoving',
+    value: function elementMoving(movingElement) {
+      this.bypassHandleMouse = movingElement;
+    }
+  }, {
+    key: 'stopElementMoving',
+    value: function stopElementMoving(element) {
+
+      if (element && element == this.bypassHandleMouse) {
+        this.bypassHandleMouse = false;
+      } else if (!element) {
+        this.bypassHandleMouse = false;
+      }
+    }
+  }, {
+    key: '_makeClosingLines',
+    value: function _makeClosingLines() {
+
+      this.closingLines = {};
+      var els = ['top', 'bottom', 'left', 'right'],
+          i = 0,
+          l = 4;
+      for (; i < l; i++) {
+        var line = document.createElementNS(Graph.ns, 'line');
+        line.setAttribute('stroke', this.options.closeColor);
+        line.setAttribute('shape-rendering', 'crispEdges');
+        line.setAttribute('stroke-linecap', 'square');
+        line.setAttribute('display', 'none');
+        this.closingLines[els[i]] = line;
+        this.graphingZone.appendChild(line);
+      }
+    }
+  }, {
+    key: 'isActionAllowed',
+    value: function isActionAllowed(e, action) {
+
+      if (action.type !== e.type && (action.type !== undefined || e.type !== "mousedown") && !((e.type === 'wheel' || e.type === 'mousewheel') && action.type == 'mousewheel')) {
+        return;
+      }
+
+      if (action.enabled && (typeof action.enabled == "function" ? !action.enabled(this) : !actions.enabled)) {
+        return;
+      }
+
+      if (action.key) {
+
+        if (action.key !== e.keyCode) {
+
+          var keyCheck = {
+            'backspace': 8,
+            'enter': 13,
+            'tab': 9,
+            'shift': 16,
+            'ctrl': 17,
+            'alt': 18,
+            'pause': 19,
+            'escape': 27,
+            'up': 33,
+            'down': 34,
+            'left': 37,
+            'right': 39
+          };
+
+          if (keyCheck[action.key] !== e.keyCode) {
+            return;
+          }
+        }
+      }
+
+      if (action.shift === undefined) {
+        action.shift = false;
+      }
+
+      if (action.ctrl === undefined) {
+        action.ctrl = false;
+      }
+
+      if (action.meta === undefined) {
+        action.meta = false;
+      }
+
+      if (action.alt === undefined) {
+        action.alt = false;
+      }
+
+      return e.shiftKey == action.shift && e.ctrlKey == action.ctrl && e.metaKey == action.meta && e.altKey == action.alt;
+    }
+  }, {
+    key: 'forcePlugin',
+    value: function forcePlugin(plugin) {
+      this.forcedPlugin = plugin;
+    }
+  }, {
+    key: 'unforcePlugin',
+    value: function unforcePlugin() {
+      this.forcedPlugin = false;
+    }
+  }, {
+    key: '_pluginsExecute',
+    value: function _pluginsExecute(funcName, args) {
+
+      //			Array.prototype.splice.apply(args, [0, 0, this]);
+
+      for (var i in this.plugins) {
+
+        if (this.plugins[i] && this.plugins[i][funcName]) {
+
+          this.plugins[i][funcName].apply(this.plugins[i], args);
+        }
+      }
+    }
+  }, {
+    key: '_pluginExecute',
+    value: function _pluginExecute(which, func, args) {
+
+      //Array.prototype.splice.apply( args, [ 0, 0, this ] );
+      if (!which) {
+        return;
+      }
+
+      if (this.plugins[which] && this.plugins[which][func]) {
+
+        this.plugins[which][func].apply(this.plugins[which], args);
+        return true;
+      }
+    }
+  }, {
+    key: 'pluginYieldActiveState',
+    value: function pluginYieldActiveState() {
+      this.activePlugin = false;
+    }
+  }, {
+    key: '_serieExecute',
+    value: function _serieExecute(which, func, args) {
+
+      if ((typeof serie === 'undefined' ? 'undefined' : _typeof(serie)) !== 'object') {
+        serie = this.getSerie(serie);
+      }
+
+      if (typeof serie[func] == 'function') {
+        serie.apply(serie, args);
+      }
+    }
+  }, {
+    key: '_pluginsInit',
+    value: function _pluginsInit() {
+
+      var constructor, pluginName, pluginOptions;
+
+      for (var i in this.options.plugins) {
+
+        pluginName = i;
+        pluginOptions = this.options.plugins[i];
+
+        constructor = this.getConstructor("graph.plugin." + pluginName);
+
+        if (constructor) {
+
+          //var options = util.extend( true, {}, constructor.defaults(), pluginOptions );
+          this.plugins[pluginName] = new constructor(pluginOptions);
+
+          util.mapEventEmission(this.plugins[pluginName].options, this.plugins[pluginName]);
+          this.plugins[pluginName].init(this, pluginOptions);
+        } else {
+          util.throwError("Plugin \"" + pluginName + "\" has not been registered");
+        }
+      }
+    }
+
+    /**
+     * Returns an initialized plugin
+     * @param {String} pluginName
+     * @returns {Plugin} The plugin which name is <pluginName>
+     */
+
+  }, {
+    key: 'getPlugin',
+    value: function getPlugin(pluginName) {
+      var plugin = this.plugins[pluginName];
+
+      if (!plugin) {
+        return util.throwError("Plugin \"" + pluginName + "\" has not been loaded or properly registered");
+      }
+
+      return plugin;
+    }
+  }, {
+    key: 'triggerEvent',
+    value: function triggerEvent() {
+      var func = arguments[0],
+          args = Array.prototype.splice.apply(arguments, [0, 1]);
+
+      if (typeof this.options[func] == "function") {
+        return this.options[func].apply(this, arguments);
+      }
+
+      return;
+    }
+
+    /**
+     * Creates a legend. Only one legend is allowed per graph
+     * @param {Object} options - The legend options
+     */
+
+  }, {
+    key: 'makeLegend',
+    value: function makeLegend(options) {
+
+      if (this.legend) {
+        return this.legend;
+      }
+
+      var constructor = this.getConstructor("graph.legend");
+      if (constructor) {
+        this.legend = new constructor(this, options);
+      } else {
+        return util.throwError("Graph legend is not available as it has not been registered");
+      }
+
+      //    this.legend.update();
+
+      return this.legend;
+    }
+
+    /**
+     * Redraws the legend if it exists
+     * @param {Boolean} [ onlyIfRequired = false ] ```true``` to redraw the legend only when it actually needs to be updated
+     * @return {Graph} The graph instance
+     */
+
+  }, {
+    key: 'updateLegend',
+    value: function updateLegend() {
+      var onlyIfRequired = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+
+      if (!this.legend) {
+        return;
+      }
+
+      this.legend.update(onlyIfRequired);
+      return this;
+    }
+
+    /**
+     * @returns {Legend} The legend item
+     */
+
+  }, {
+    key: 'getLegend',
+    value: function getLegend() {
+      if (!this.legend) {
+        return;
+      }
+
+      return this.legend;
+    }
+  }, {
+    key: 'requireLegendUpdate',
+    value: function requireLegendUpdate() {
+
+      if (!this.legend) {
+        return;
+      }
+
+      this.legend.requireDelayedUpdate();
+    }
+  }, {
+    key: 'orthogonalProjectionSetup',
+    value: function orthogonalProjectionSetup(options) {
+
+      this.options.zAxis = util.extend(true, {
+        maxZ: 10,
+        minZ: 0,
+        shiftX: -25,
+        shiftY: -15,
+        xAxis: this.getXAxis(),
+        yAxis: this.getYAxis()
+      });
+    }
+  }, {
+    key: 'orthogonalProjectionUpdate',
+    value: function orthogonalProjectionUpdate() {
+      var _this2 = this;
+
+      if (!this.zAxis) {
+        this.zAxis = {
+          g: document.createElementNS(Graph.ns, "g"),
+          l: document.createElementNS(Graph.ns, "line")
+        };
+
+        this.zAxis.g.appendChild(this.zAxis.l);
+        this.groupGrids.appendChild(this.zAxis.g);
+      }
+
+      var refAxisX = this.options.zAxis.xAxis;
+      var refAxisY = this.options.zAxis.yAxis;
+
+      var x0 = refAxisX.getMinPx();
+      var y0 = refAxisY.getMinPx();
+
+      var dx = refAxisX.getZProj(this.options.zAxis.maxZ);
+      var dy = refAxisY.getZProj(this.options.zAxis.maxZ);
+
+      this.zAxis.l.setAttribute('stroke', 'black');
+      this.zAxis.l.setAttribute('x1', x0);
+      this.zAxis.l.setAttribute('x2', x0 + dx);
+      this.zAxis.l.setAttribute('y1', y0);
+      this.zAxis.l.setAttribute('y2', y0 + dy);
+
+      this.updateDataMinMaxAxes(true);
+
+      var sort = this.series.map(function (serie) {
+        return [serie.getZPos(), serie];
+      });
+
+      sort.sort(function (sa, sb) {
+        return sb[0] - sa[0];
+      });
+
+      var i = 0;
+      sort.forEach(function (s) {
+        s[1].setLayer(i);
+        _this2.appendSerieToDom(s[1]);
+        i++;
+      });
+
+      this.drawSeries(true);
+    }
+
+    /**
+     * Kills the graph
+     **/
+
+  }, {
+    key: 'kill',
+    value: function kill() {
+      this.wrapper.removeChild(this.dom);
+    }
+  }, {
+    key: '_removeSerie',
+    value: function _removeSerie(serie) {
+      this.series.splice(this.series.indexOf(serie), 1);
+    }
+  }, {
+    key: 'contextListen',
+    value: function contextListen(target, menuElements, callback) {
+
+      var self = this;
+
+      if (this.options.onContextMenuListen) {
+        return this.options.onContextMenuListen(target, menuElements, callback);
+      }
+    }
+  }, {
+    key: 'lockShapes',
+    value: function lockShapes() {
+      this.shapesLocked = true;
+
+      // Removes the current actions of the shapes
+      for (var i = 0, l = this.shapes.length; i < l; i++) {
+        this.shapes[i].moving = false;
+        this.shapes[i].resizing = false;
+      }
+    }
+  }, {
+    key: 'unlockShapes',
+    value: function unlockShapes() {
+      //		console.log('unlock');
+      this.shapesLocked = false;
+    }
+  }, {
+    key: 'prevent',
+    value: function prevent(arg) {
+      var curr = this.prevented;
+      if (arg != -1) {
+        this.prevented = arg == undefined || arg;
+      }
+      return curr;
+    }
+  }, {
+    key: '_getXY',
+    value: function _getXY(e) {
+
+      var x = e.clientX,
+          y = e.clientY;
+
+      var pos = this.offsetCached || util.getOffset(this.wrapper);
+
+      x -= pos.left /* - document.body.scrollLeft*/;
+      y -= pos.top /* - document.body.scrollTop*/;
+
+      return {
+        x: x,
+        y: y
+      };
+    }
+  }, {
+    key: '_resize',
+    value: function _resize() {
+
+      if (!this.width || !this.height) {
+        return;
+      }
+
+      this.getDrawingWidth();
+      this.getDrawingHeight();
+
+      this.sizeSet = true;
+      this.dom.setAttribute('width', this.width);
+      this.dom.setAttribute('height', this.height);
+      this.domTitle.setAttribute('x', this.width / 2);
+
+      this._sizeChanged = true;
+
+      if (this.drawn) {
+        this.requireLegendUpdate();
+        this.draw(true);
+      }
+    }
+  }, {
+    key: 'updateGraphingZone',
+    value: function updateGraphingZone() {
+      util.setAttributeTo(this.graphingZone, {
+        'transform': 'translate(' + this.options.paddingLeft + ', ' + this.options.paddingTop + ')'
+      });
+
+      this._sizeChanged = true;
+    }
+
+    // We have to proxy the methods in case they are called anonymously
+
+  }, {
+    key: 'getDrawingSpaceWidth',
+    value: function getDrawingSpaceWidth() {
+      var _this3 = this;
+
+      return function () {
+        return _this3.drawingSpaceWidth;
+      };
+    }
+  }, {
+    key: 'getDrawingSpaceHeight',
+    value: function getDrawingSpaceHeight() {
+      var _this4 = this;
+
+      return function () {
+        return _this4.drawingSpaceHeight;
+      };
+    }
+  }, {
+    key: 'getDrawingSpaceMinX',
+    value: function getDrawingSpaceMinX() {
+      var _this5 = this;
+
+      return function () {
+        return _this5.drawingSpaceMinX;
+      };
+    }
+  }, {
+    key: 'getDrawingSpaceMinY',
+    value: function getDrawingSpaceMinY() {
+      var _this6 = this;
+
+      return function () {
+        return _this6.drawingSpaceMinY;
+      };
+    }
+  }, {
+    key: 'getDrawingSpaceMaxX',
+    value: function getDrawingSpaceMaxX() {
+      var _this7 = this;
+
+      return function () {
+        return _this7.drawingSpaceMaxX;
+      };
+    }
+  }, {
+    key: 'getDrawingSpaceMaxY',
+    value: function getDrawingSpaceMaxY() {
+      var _this8 = this;
+
+      return function () {
+        return _this8.drawingSpaceMaxY;
+      };
+    }
+
+    /**
+     *  Enables the line tracking
+     *  @param {Object|Boolean} options - Defines the tracking behavior. If a boolean, simply enables or disables the existing tracking.
+     */
+
+  }, {
+    key: 'trackingLine',
+    value: function trackingLine(options) {
+      var _this9 = this;
+
+      var self = this;
+
+      if (typeof options === 'boolean') {
+
+        if (this.options.trackingLine) {
+          this.options.trackingLine.enable = options;
+        }
+        return;
+      }
+
+      if (options) {
+        this.options.trackingLine = options;
+      }
+
+      options.series = options.series || [];
+      options.enable = options.enable === undefined ? true : !!options.enable;
+
+      // Individual tracking
+      if (options.mode == "individual") {
+
+        if (options.series) {
+
+          if (!Array.isArray(options.series)) {
+
+            if (options.series == "all") {
+
+              options.series = this.series.map(function (serie) {
+                serie: serie;
+              });
+            } else {
+
+              options.series = [options.series];
+            }
+          }
+
+          options.series.forEach(function (sOptions) {
+
+            if (_typeof(sOptions.serie) !== "object") {
+
+              if ((typeof sOptions === 'undefined' ? 'undefined' : _typeof(sOptions)) !== "object") {
+                throw "Misuse of the trackingLine() method. Each serie must be an object with the serie property: { series: [ { serie: jsGraphSerie, options: { ... someOptions } } ] }";
+              }
+
+              sOptions.serie = _this9.getSerie(sOptions.serie);
+            }
+
+            if (!sOptions.serie) {
+              return;
+            }
+
+            self.addSerieToTrackingLine(sOptions.serie, sOptions);
+          });
+        }
+      } else {
+
+        options.series.map(function (serie) {
+          serie.serie.disableTracking();
+        });
+      }
+
+      if (options.noLine) {
+        return;
+      }
+
+      if (!this.trackingObject) {
+        // Avoid multiple creation of tracking lines
+
+        // Creates a new shape called trackingLine, in the first layer (below everything)
+        this.trackingObject = this.newShape('line', util.extend(true, {
+          position: [{
+            y: 'min'
+          }, {
+            y: 'max'
+          }],
+          stroke: 'black',
+          layer: -1
+        }, options.trackingLineShapeOptions));
+      }
+
+      this.trackingObject.draw();
+
+      return this.trackingObject;
+    }
+  }, {
+    key: 'addSerieToTrackingLine',
+    value: function addSerieToTrackingLine(serie, options) {
+      var _this10 = this;
+
+      if (!this.options.trackingLine) {
+
+        this.trackingLine({
+          mode: 'individual'
+        });
+      }
+
+      // TODO: Check if not already existing
+      this.options.trackingLine.series.push(Object.assign({
+        serie: serie
+      }, options));
+
+      serie.enableTracking(function (serie, index, x, y) {
+
+        if (_this10.options.trackingLine.enable) {
+
+          if (index) {
+
+            if (_this10.trackingObject) {
+              _this10.trackingObject.show();
+              _this10.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+              _this10.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
+              _this10.trackingObject.redraw();
+            }
+
+            serie._trackingLegend = _trackingLegendSerie(_this10, {
+              serie: serie
+            }, x, y, serie._trackingLegend, options.textMethod ? options.textMethod : function (output) {
+
+              for (var i in output) {
+
+                return output[i].serie.serie.getName() + ": " + output[i].serie.serie.getYAxis().valueToHtml(output[i].yValue);
+                break;
+              }
+            }, index.trueX);
+
+            if (serie._trackingLegend) {
+              serie._trackingLegend.style.display = "block";
+            }
+          }
+        }
+      }, function (serie) {
+
+        if (_this10.trackingObject) {
+          _this10.trackingObject.hide();
+        }
+
+        if (serie.trackingShape) {
+          serie.trackingShape.hide();
+        }
+
+        if (serie._trackingLegend) {
+          serie._trackingLegend.style.display = "none";
+        }
+
+        serie._trackingLegend = _trackingLegendSerie(_this10, {
+
+          serie: serie
+
+        }, false, false, serie._trackingLegend, false, false);
+      });
+    }
+
+    /**
+     *  Pass here the katex.render method to be used later
+     *   @param {Function} renderer -  katexRendered - renderer
+     *   @return {Graph} The current graph instance
+     */
+
+  }, {
+    key: 'setKatexRenderer',
+    value: function setKatexRenderer(renderer) {
+      this._katexRenderer = renderer;
+    }
+  }, {
+    key: 'hasKatexRenderer',
+    value: function hasKatexRenderer() {
+      return !!this._katexRenderer;
+    }
+  }, {
+    key: 'renderWithKatex',
+    value: function renderWithKatex(katexValue, katexElement) {
+
+      if (this._katexRenderer) {
+
+        if (katexElement) {
+          katexElement.removeChild(katexElement.firstChild);
+        } else {
+          katexElement = document.createElementNS(Graph.ns, 'foreignObject');
+        }
+
+        var div = document.createElement("div");
+
+        katexElement.appendChild(div);
+        this._katexRenderer(katexValue, div);
+
+        return katexElement;
+      }
+
+      return false;
+    }
+
+    /**
+     * Returns a graph created from a schema
+     * @param {Object} schema - The schema (see https://github.com/cheminfo/json-chart/blob/master/chart-schema.json)
+     * @param {HTMLElement} wrapper - The wrapping element
+     * @returns {Graph} Newly created graph
+     */
+
+  }, {
+    key: 'exportToSchema',
+    value: function exportToSchema() {
+      var _this11 = this;
+
+      var schema = {};
+
+      schema.title = this.options.title;
+
+      schema.width = this.getWidth();
+      schema.height = this.getHeight();
+
+      var axesPositions = ['top', 'bottom', 'left', 'right'];
+      var axesExport = [];
+      var allaxes = {
+        x: [],
+        y: []
+      };
+
+      axesPositions.map(function (axisPosition) {
+
+        if (!_this11.axis[axisPosition]) {
+          return;
+        }
+
+        axesExport = axesExport.concat(_this11.axis[axisPosition].map(function (axis) {
+          return {
+
+            type: axisPosition,
+            label: axis.options.label,
+            unit: axis.options.unit,
+            min: axis.options.forcedMin,
+            max: axis.options.forcedMax,
+            flip: axis.options.flipped
+
+          };
+        }));
+
+        if (axisPosition == 'top' || axisPosition == 'bottom') {
+          allaxes.x = allaxes.x.concat(_this11.axis[axisPosition]);
+        } else {
+          allaxes.y = allaxes.y.concat(_this11.axis[axisPosition]);
+        }
+      });
+
+      schema.axis = axesExport;
+
+      var seriesExport = [];
+
+      var toType = function toType(type) {
+        switch (type) {
+
+          case Graph.SERIE_LINE:
+            return 'line';
+            break;
+
+          case Graph.SERIE_BAR:
+            return 'bar';
+            break;
+
+          case Graph.SERIE_LINE_COLORED:
+            return 'color';
+            break;
+
+          case Graph.SERIE_SCATTER:
+            return 'scatter';
+            break;
+        }
+      };
+
+      var exportData = function exportData(serie, x) {
+
+        var data = [];
+
+        switch (serie.getType()) {
+
+          case Graph.SERIE_LINE:
+
+            for (var i = 0; i < serie.data.length; i++) {
+
+              for (var j = 0; j < serie.data[i].length - 1; j += 2) {
+
+                data.push(serie.data[i][j + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+              }
+            }
+            break;
+
+          case Graph.SERIE_SCATTER:
+
+            for (var j = 0; j < serie.data.length - 1; j += 2) {
+
+              data.push(serie.data[i + (x && serie.isFlipped() || !x && !serie.isFlipped() ? 1 : 0)]);
+            }
+
+            break;
+        }
+
+        return data;
+      };
+
+      schema.data = seriesExport.concat(this.series.map(function (serie) {
+
+        style = [];
+        var linestyle = [];
+
+        if (serie.getType() == Graph.SERIE_LINE) {
+
+          for (var stylename in serie.styles) {
+            linestyle.push({
+              styleName: stylename,
+              color: serie.styles[stylename].lineColor,
+              lineWidth: serie.styles[stylename].lineWidth,
+              lineStyle: serie.styles[stylename].lineStyle
+            });
+
+            var styleObj = {
+              styleName: stylename,
+              styles: []
+            };
+            style.push(styleObj);
+
+            styleObj.styles = styleObj.styles.concat((serie.styles[stylename].markers || []).map(function (markers) {
+              return {
+                shape: markers.type,
+                zoom: markers.zoom,
+                lineWidth: markers.strokeWidth,
+                lineColor: markers.strokeColor,
+                color: markers.fillColor,
+                points: markers.points
+              };
+            }));
+          }
+        }
+
+        return {
+          label: serie.getLabel(),
+          id: serie.getName(),
+          type: toType(serie.getType()),
+          x: exportData(serie, true),
+          y: exportData(serie, false),
+          xAxis: allaxes.x.indexOf(serie.getXAxis()),
+          yAxis: allaxes.y.indexOf(serie.getYAxis()),
+          style: style,
+          lineStyle: linestyle
+        };
+      }));
+
+      return schema;
+    }
+
+    /**
+     * Registers a constructor to jsGraph. Constructors are used on a later basis by jsGraph to create series, shapes or plugins
+     * @param {String} constructorName - The name of the constructor
+     * @param {Function} constructor - The constructor method
+     * @see Graph.getConstructor
+     * @static
+     */
+
+  }], [{
+    key: 'fromJSON',
+    value: function fromJSON(schema, wrapper) {
+
+      var graph = void 0,
+          options = {},
+          axes = {
+        left: [],
+        top: [],
+        right: [],
+        bottom: []
+      },
+          axesIndices = [],
+          style = void 0;
+
+      if (schema.title) {
+        options.title = schema.title;
+      }
+
+      if (schema.axis) {
+
+        schema.axis.map(function (schemaAxis) {
+
+          if (!schemaAxis.type) {
+            util.throwError("Axis type is required (top, bottom, left or right)");
+          }
+
+          var axisOptions = {};
+          if (schemaAxis.label) {
+            axisOptions.labelValue = schemaAxis.label;
+          }
+
+          if (schemaAxis.unit !== undefined) {
+            axisOptions.unit = schemaAxis.unit;
+          }
+
+          if (schemaAxis.unitWrapperAfter !== undefined) {
+            axisOptions.unitWrapperAfter = schemaAxis.unitWrapperAfter;
+          }
+
+          if (schemaAxis.unitWrapperBefore !== undefined) {
+            axisOptions.unitWrapperBefore = schemaAxis.unitWrapperBefore;
+          }
+
+          if (schemaAxis.min !== undefined) {
+            axisOptions.forcedMin = schemaAxis.min;
+          }
+
+          if (schemaAxis.max !== undefined) {
+            axisOptions.forcedMax = schemaAxis.max;
+          }
+
+          if (schemaAxis.flip !== undefined) {
+            axisOptions.flipped = schemaAxis.flip;
+          }
+
+          axes[schemaAxis.type].push(axisOptions);
+          schemaAxis._jsGraphIndex = axes[schemaAxis.type].length - 1;
+        });
+      }
+
+      graph = new Graph(wrapper, options, axes);
+
+      if (schema.width) {
+        graph.setWidth(schema.width);
+      }
+
+      if (schema.height) {
+        graph.setHeight(schema.width);
+      }
+
+      graph._resize();
+
+      if (schema.data) {
+
+        schema.data.map(function (schemaSerie) {
+
+          var serieType = schemaSerie.type,
+              serie,
+              serieOptions = {},
+              serieAxis,
+              waveform = Graph.newWaveform();
+
+          switch (schemaSerie.type) {
+
+            case 'bar':
+              util.throwError("Bar charts not supported");
+              serieType = false;
+              break;
+
+            case 'color':
+              serieType = Graph.SERIE_LINE_COLORED;
+              break;
+
+            case 'scatter':
+              serieType = Graph.SERIE_SCATTER;
+              break;
+
+            case 'box':
+              serieType = Graph.SERIE_BOX;
+
+              if (schemaSerie.orientation == 'x' || schemaSerie.orientation == 'y') {
+                serieOptions.orientation = schemaSerie.orientation;
+              }
+              break;
+
+            default:
+              serieType = Graph.SERIE_LINE;
+              break;
+          }
+
+          if (!serieType) {
+            util.throwError("No valid serie type was found");
+            return;
+          }
+
+          serie = graph.newSerie(schemaSerie.id || schemaSerie.label || util.guid(), serieOptions, serieType);
+
+          if (schemaSerie.lineStyle) {
+
+            schemaSerie.lineStyle.map(function (style) {
+
+              var styleSerie = {};
+
+              styleSerie.styleName = style.styleName || "unselected";
+
+              switch (serieType) {
+
+                case Graph.SERIE_LINE:
+                  if (style.lineWidth !== undefined) {
+                    styleSerie.lineWidth = style.lineWidth;
+                  }
+
+                  if (style.color !== undefined) {
+                    styleSerie.lineColor = style.color;
+                  }
+
+                  if (style.lineStyle) {
+                    styleSerie.lineStyle = style.lineStyle;
+                  }
+
+                  serie.setStyle(styleSerie, style.styleName);
+                  break;
+              }
+            });
+          }
+
+          if (schemaSerie.styles) {
+
+            schemaSerie.styles.map(function (style) {
+
+              var styleSerie = {};
+              style.styleName = style.styleName || "unselected";
+
+              if (!Array.isArray(style.styles)) {
+                style.styles = [style.styles];
+              }
+
+              var styles = style.styles.map(function (eachStyleElement) {
+
+                switch (serieType) {
+
+                  case Graph.SERIE_LINE:
+
+                    return {
+                      type: eachStyleElement.shape,
+                      zoom: eachStyleElement.zoom,
+                      strokeWidth: eachStyleElement.lineWidth,
+                      strokeColor: eachStyleElement.lineColor,
+                      fillColor: eachStyleElement.color,
+                      points: eachStyleElement.points
+                    };
+
+                    break;
+
+                  case Graph.SERIE_BOX:
+
+                    return eachStyleElement;
+
+                    break;
+
+                  case Graph.SERIE_SCATTER:
+                    return eachStyleElement;
+
+                    break;
+                }
+              });
+
+              switch (serieType) {
+
+                case Graph.SERIE_LINE:
+
+                  serie.setMarkers(styles, style.styleName);
+                  break;
+
+                case Graph.SERIE_SCATTER:
+
+                  serie.setStyle({}, styles, style.styleName);
+                  break;
+
+                case Graph.SERIE_BOX:
+
+                  serie.setStyle(styles[0], style.stylename || "unselected");
+                  break;
+              }
+            });
+          }
+
+          if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
+            serie.setColors(schemaSerie.color);
+          }
+
+          waveform.setData(schemaSerie.y, schemaSerie.x);
+
+          if (!serie) {
+            return;
+          }
+
+          var errorBarsXAbove = [],
+              errorBarsXBelow = [],
+              errorBarsYAbove = [],
+              errorBarsYBelow = [],
+              errorBoxesXAbove = [],
+              errorBoxesXBelow = [],
+              errorBoxesYAbove = [],
+              errorBoxesYBelow = [];
+
+          var errors = [];
+          if (schemaSerie.errorX) {
+
+            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+
+              if (Array.isArray(schemaSerie.errorX[i])) {
+
+                errorBarsXAbove.push(schemaSerie.errorX[i][0]);
+                errorBarsXBelow.push(schemaSerie.errorX[i][1]);
+              } else {
+                errorBarsXAbove.push(schemaSerie.errorX[i]);
+                errorBarsXBelow.push(schemaSerie.errorX[i]);
+              }
+            }
+          } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
+
+            if (schemaSerie.errorBarX) {
+
+              for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
+
+                if (Array.isArray(schemaSerie.errorBarX[i])) {
+
+                  errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
+                  errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
+                } else {
+                  errorBarsXAbove.push(schemaSerie.errorBarX[i]);
+                  errorBarsXBelow.push(schemaSerie.errorBarX[i]);
+                }
+              }
+            }
+
+            if (schemaSerie.errorBoxX) {
+
+              for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
+
+                if (Array.isArray(schemaSerie.errorBoxX[i])) {
+
+                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
+                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
+                } else {
+                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
+                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
+                }
+              }
+            }
+          }
+
+          if (schemaSerie.errorY) {
+
+            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
+
+              if (Array.isArray(schemaSerie.errorY[i])) {
+
+                errorBarsYAbove.push(schemaSerie.errorY[i][0]);
+                errorBarsYBelow.push(schemaSerie.errorY[i][1]);
+              } else {
+                errorBarsYAbove.push(schemaSerie.errorY[i]);
+                errorBarsYBelow.push(schemaSerie.errorY[i]);
+              }
+            }
+          } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
+
+            if (schemaSerie.errorBarY) {
+
+              for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
+
+                if (Array.isArray(schemaSerie.errorBarY[i])) {
+
+                  errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
+                  errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
+                } else {
+                  errorBarsYAbove.push(schemaSerie.errorBarY[i]);
+                  errorBarsYBelow.push(schemaSerie.errorBarY[i]);
+                }
+              }
+            }
+
+            if (schemaSerie.errorBoxY) {
+
+              for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
+
+                if (Array.isArray(schemaSerie.errorBoxY[i])) {
+
+                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
+                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
+                } else {
+                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
+                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
+                }
+              }
+            }
+          }
+
+          style = {};
+          if (errorBarsXAbove.length > 0) {
+            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+            style.right = {};
+          }
+          if (errorBarsXBelow.length > 0) {
+            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+            style.left = {};
+          }
+          if (errorBarsYAbove.length > 0) {
+            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+            style.top = {};
+          }
+          if (errorBarsYBelow.length > 0) {
+            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+            style.bottom = {};
+          }
+
+          serie.setErrorBarStyle(style);
+
+          style = {};
+          if (errorBoxesXAbove.length > 0) {
+            waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
+            style.right = {};
+          }
+          if (errorBoxesXBelow.length > 0) {
+            waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
+            style.left = {};
+          }
+          if (errorBoxesYAbove.length > 0) {
+            waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
+            style.top = {};
+          }
+          if (errorBoxesYBelow.length > 0) {
+            waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
+            style.bottom = {};
+          }
+          serie.setErrorBoxStyle(style);
+
+          if (schema.axis) {
+            serieAxis = schema.axis[schemaSerie.xAxis];
+
+            if (!serieAxis || serieAxis.type !== 'top' && serieAxis.type !== 'bottom') {
+              util.warn("No x axis found. Setting automatically");
+              serie.setXAxis(graph.getXAxis(0));
+            } else {
+              if (serieAxis.type == 'top') {
+                serie.setXAxis(graph.getTopAxis(serieAxis._jsGraphIndex));
+              } else if (serieAxis.type == 'bottom') {
+                serie.setXAxis(graph.getBottomAxis(serieAxis._jsGraphIndex));
+              }
+            }
+
+            serieAxis = schema.axis[schemaSerie.yAxis];
+
+            if (!serieAxis || serieAxis.type !== 'left' && serieAxis.type !== 'right') {
+              util.warn("No y axis found. Setting automatically");
+              serie.setYAxis(graph.getYAxis(0));
+            } else {
+              if (serieAxis.type == 'left') {
+                serie.setYAxis(graph.getLeftAxis(serieAxis._jsGraphIndex));
+              } else if (serieAxis.type == 'right') {
+                serie.setYAxis(graph.getRightAxis(serieAxis._jsGraphIndex));
+              }
+            }
+          } else {
+            util.warn("No axes found. Setting automatically");
+            serie.autoAxis();
+          }
+
+          switch (serieType) {
+
+            case Graph.SERIE_BOX:
+              serie.setData(schemaSerie.boxes);
+
+              break;
+
+            default:
+            case Graph.SERIE_SCATTER:
+            case Graph.SERIE_LINE_COLORED:
+            case Graph.SERIE_LINE:
+
+              serie.setWaveform(waveform);
+
+              break;
+          }
+        });
+      }
+
+      graph.autoscaleAxes();
+      graph.draw();
+
+      return graph;
+    }
+  }, {
+    key: 'registerConstructor',
+    value: function registerConstructor(constructorName, constructor) {
+
+      if (_constructors.has(constructorName)) {
+        return util.throwError("Constructor " + constructor + " already exists.");
+      }
+
+      _constructors.set(constructorName, constructor);
+    }
+
+    /**
+     * Returns a registered constructor
+     * @param {String} constructorName - The constructor name to look for
+     * @param {Boolean} [ softFail = false ] - Fails silently if the constructor doesn't exist, and returns false
+     * @returns {Function} The registered constructor
+     * @throws Error
+     * @see Graph.registerConstructor
+     * @static
+     */
+
+  }, {
+    key: 'getConstructor',
+    value: function getConstructor(constructorName) {
+      var softFail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+
+      if (!_constructors.has(constructorName)) {
+
+        if (softFail) {
+          return false;
+        }
+
+        return util.throwError("Constructor \"" + constructorName + "\" doesn't exist");
+      }
+
+      return _constructors.get(constructorName);
+    }
+  }, {
+    key: 'newWaveform',
+    value: function newWaveform() {
+      return new (Function.prototype.bind.apply(_waveform2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+    }
+  }, {
+    key: 'waveform',
+    value: function waveform() {
+      return new (Function.prototype.bind.apply(_waveform2.default, [null].concat(Array.prototype.slice.call(arguments))))();
+    }
+  }]);
+
+  return Graph;
+}(_EventEmitter3.default);
+
+// Adds getConstructor to the prototype. Cannot do that in ES6 classes
+
+
+Graph.prototype.getConstructor = Graph.getConstructor;
+
+function makeSerie(graph, name, options, type) {
+
+  var constructor = graph.getConstructor(type, true);
+  if (!constructor && typeof type == "string") {
+    constructor = graph.getConstructor("graph.serie." + type, true);
+  }
+
+  if (constructor) {
+
+    var serie = new constructor(graph, name, options);
+    //serie.init( graph, name, options );
+    graph.appendSerieToDom(serie);
+  } else {
+
+    return util.throwError("No constructor exists for the serie type provided. Use Graph.registerConstructor( name, constructor ) first is you use your own series");
+  }
+
+  return serie;
+};
+
+function getAxisLevelFromSpan(span, level) {
+
+  for (var i = 0, l = level.length; i < l; i++) {
+
+    var possible = true;
+    for (var k = 0, m = level[i].length; k < m; k++) {
+
+      if (!(span[0] < level[i][k][0] && span[1] < level[i][k][0] || span[0] > level[i][k][1] && span[1] > level[i][k][1])) {
+        possible = false;
+      }
+    }
+
+    if (possible) {
+
+      level[i].push(span);
+      return i;
+    }
+  }
+
+  level.push([span]);
+  return level.length - 1;
+}
+
+function refreshDrawingZone(graph) {
+
+  var i, j, l, xy, min, max, axis;
+  var shift = {
+    top: [],
+    bottom: [],
+    left: [],
+    right: []
+  };
+
+  var levels = {
+    top: [],
+    bottom: [],
+    left: [],
+    right: []
+  };
+
+  graph._painted = true;
+  // Apply to top and bottom
+  graph._applyToAxes(function (axis, position) {
+    if (axis.disabled || axis.floating) {
+      return;
+    }
+
+    var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+    axis.setLevel(level);
+
+    shift[position][level] = Math.max(axis.getAxisPosition(), shift[position][level] || 0);
+  }, false, true, false);
+
+  var shiftTop = shift.top.reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+
+  var shiftBottom = shift.bottom.reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+
+  [shift.top, shift.bottom].map(function (arr) {
+    arr.reduce(function (prev, current, index) {
+      arr[index] = prev + current;
+      return prev + current;
+    }, 0);
+  });
+
+  // Apply to top and bottom
+  graph._applyToAxes(function (axis, position) {
+
+    if (axis.disabled || axis.floating) {
+      return;
+    }
+
+    axis.setShift(shift[position][axis.getLevel()]);
+  }, false, true, false);
+
+  // Applied to left and right
+  graph._applyToAxes(function (axis, position) {
+
+    if (axis.disabled) {
+      return;
+    }
+
+    axis.setMinPx(shiftTop);
+    axis.setMaxPx(graph.getDrawingHeight(true) - shiftBottom);
+
+    if (axis.floating) {
+      return;
+    }
+
+    // First we need to draw it in order to determine the width to allocate
+    // graph is done to accomodate 0 and 100000 without overlapping any element in the DOM (label, ...)
+
+    // Let's not draw dependant axes yet
+    var drawn = !axis.linkedToAxis ? axis.draw() : 0;
+
+    // Get axis position gives the extra shift that is common
+    var level = getAxisLevelFromSpan(axis.getSpan(), levels[position]);
+    axis.setLevel(level);
+    shift[position][level] = Math.max(drawn, shift[position][level] || 0);
+  }, false, false, true);
+
+  var shift2 = util.extend(true, {}, shift);
+
+  // Applied to left and right
+  graph._applyToAxes(function (axis, position) {
+
+    if (axis.disabled) {
+      return;
+    }
+
+    if (axis.floating) {
+      return;
+    }
+
+    shift2[position][axis.getLevel()] = Math.max(shift[position][axis.getLevel()], axis.equalizePosition(shift[position][axis.getLevel()]));
+  }, false, false, true);
+
+  shift = shift2;
+
+  var shiftLeft = shift.left.reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+
+  var shiftRight = shift.right.reduce(function (prev, curr) {
+    return prev + curr;
+  }, 0);
+
+  [shift.left, shift.right].map(function (arr) {
+    arr.reduce(function (prev, current, index) {
+      arr[index] = prev + current;
+      return prev + current;
+    }, 0);
+  });
+
+  // Apply to left and right
+  graph._applyToAxes(function (axis, position) {
+
+    if (axis.disabled || axis.floating) {
+      return;
+    }
+    axis.setShift(shift[position][axis.getLevel()]);
+  }, false, false, true);
+
+  // Apply to top and bottom
+  graph._applyToAxes(function (axis, position) {
+
+    if (axis.disabled) {
+      return;
+    }
+
+    axis.setMinPx(shiftLeft);
+    axis.setMaxPx(graph.getDrawingWidth(true) - shiftRight);
+
+    if (axis.floating) {
+      return;
+    }
+
+    if (!axis.linkedToAxis) {
+      axis.draw();
+    }
+  }, false, true, false);
+
+  // Floating axes
+  graph._applyToAxes(function (axis) {
+
+    if (!axis.floating) {
+      return;
+    }
+
+    var floatingAxis = axis.getFloatingAxis();
+    var floatingValue = axis.getFloatingValue();
+    var floatingPx = floatingAxis.getPx(floatingValue);
+
+    axis.setShift(floatingPx);
+
+    if (!axis.linkedToAxis) {
+      axis.draw();
+    }
+  }, false, true, true);
+
+  _closeLine(graph, 'right', graph.getDrawingWidth(true), graph.getDrawingWidth(true), shiftTop, graph.getDrawingHeight(true) - shiftBottom);
+  _closeLine(graph, 'left', 0, 0, shiftTop, graph.getDrawingHeight(true) - shiftBottom);
+  _closeLine(graph, 'top', shiftLeft, graph.getDrawingWidth(true) - shiftRight, 0, 0);
+  _closeLine(graph, 'bottom', shiftLeft, graph.getDrawingWidth(true) - shiftRight, graph.getDrawingHeight(true) - shiftBottom, graph.getDrawingHeight(true) - shiftBottom);
+
+  graph.clipRect.setAttribute('y', shiftTop);
+  graph.clipRect.setAttribute('x', shiftLeft);
+  graph.clipRect.setAttribute('width', graph.getDrawingWidth() - shiftLeft - shiftRight);
+  graph.clipRect.setAttribute('height', graph.getDrawingHeight() - shiftTop - shiftBottom);
+
+  graph.rectEvent.setAttribute('y', shiftTop + graph.getPaddingTop());
+  graph.rectEvent.setAttribute('x', shiftLeft + graph.getPaddingLeft());
+
+  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
+  graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
+  graph.rectEvent.setAttribute('width', graph.drawingSpaceWidth);
+  graph.rectEvent.setAttribute('height', graph.drawingSpaceHeight);
+
+  graph.drawingSpaceMinX = shiftLeft + graph.getPaddingLeft(); // + "px";
+  graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
+  graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
+  graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
+  /*
+  graph.shapeZoneRect.setAttribute('x', shift[1]);
+  graph.shapeZoneRect.setAttribute('y', shift[2]);
+  graph.shapeZoneRect.setAttribute('width', graph.getDrawingWidth() - shift[2] - shift[3]);
+  graph.shapeZoneRect.setAttribute('height', graph.getDrawingHeight() - shift[1] - shift[0]);
+  */
+  graph.shift = shift;
+  graph.redrawShapes(); // Not sure this should be automatic here. The user should be clever.
+}
+
+function _handleKey(graph, event, type) {
+
+  var self = graph;
+
+  if (graph.forcedPlugin) {
+
+    graph.activePlugin = graph.forcedPlugin;
+    graph._pluginExecute(graph.activePlugin, type, [graph, e]);
+    return;
+  }
+
+  checkKeyActions(graph, event, [graph, event], type);
+}
+
+// Similar to checkMouseActions
+function checkKeyActions(graph, e, parameters, methodName) {
+
+  var keyComb = graph.options.keyActions,
+      i,
+      l;
+
+  for (i = 0, l = keyComb.length; i < l; i++) {
+
+    if (keyComb[i].plugin) {
+      // Is it a plugin ?
+
+      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
+
+        if (keyComb[i].options) {
+          parameters.push(keyComb[i].options);
+        }
+
+        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        return true;
+      }
+    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
+
+      if (keyComb[i].options) {
+        parameters.push(keyComb[i].options);
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      keyComb[i].callback.apply(graph, parameters);
+      return true;
+    }
+
+    if (keyComb[i].removeSelectedShape && graph.isActionAllowed(e, keyComb[i])) {
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      graph.selectedShapes.map(function (shape) {
+        shape.kill();
+      });
+    }
+
+    /* else if ( keyComb[ i ].series ) {
+       var series;
+      if ( keyComb[ i ].series === 'all' ) {
+        series = graph.series;
+      }
+       if ( !Array.isArray( keyComb[ i ].series ) ) {
+        series = [  series ];
+      }
+       if ( keyComb[ i ].options ) {
+        parameters.push( keyComb[ i ].options );
+      }
+       for ( var j = 0; j < series.length; i++ ) {
+        graph._serieExecute( series[  i ], methodName, parameters );
+      }
+      return true;
+    }*/
+  }
+
+  return false;
+};
+
+function doDom() {
+
+  // Create SVG element, set the NS
+  this.dom = document.createElementNS(Graph.ns, 'svg');
+  this.dom.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
+  //this.dom.setAttributeNS(this.ns, 'xmlns:xlink', this.nsxml);
+  util.setAttributeTo(this.dom, {
+    'xmlns': Graph.ns,
+    'font-family': this.options.fontFamily,
+    'font-size': this.options.fontSize,
+    'data-jsgraph-version': __VERSION__
+  });
+
+  this.defs = document.createElementNS(Graph.ns, 'defs');
+  this.dom.appendChild(this.defs);
+
+  this.groupEvent = document.createElementNS(Graph.ns, 'g');
+
+  this.rectEvent = document.createElementNS(Graph.ns, 'rect');
+  util.setAttributeTo(this.rectEvent, {
+    'pointer-events': 'fill',
+    'fill': 'transparent'
+  });
+  this.groupEvent.appendChild(this.rectEvent);
+
+  this.dom.appendChild(this.groupEvent);
+
+  // Handling graph title
+  this.domTitle = document.createElementNS(Graph.ns, 'text');
+  this.setTitle(this.options.title);
+  util.setAttributeTo(this.domTitle, {
+    'text-anchor': 'middle',
+    'y': 20
+  });
+  this.groupEvent.appendChild(this.domTitle);
+  //
+
+  this.graphingZone = document.createElementNS(Graph.ns, 'g');
+  this.updateGraphingZone();
+
+  this.groupEvent.appendChild(this.graphingZone);
+
+  /*  this.shapeZoneRect = document.createElementNS(this.ns, 'rect');
+  //this.shapeZoneRect.setAttribute('pointer-events', 'fill');
+  this.shapeZoneRect.setAttribute('fill', 'transparent');
+  this.shapeZone.appendChild(this.shapeZoneRect);
+  */
+  this.axisGroup = document.createElementNS(Graph.ns, 'g');
+  this.graphingZone.appendChild(this.axisGroup);
+
+  this.groupGrids = document.createElementNS(Graph.ns, 'g');
+
+  // With the z stacking, this should probably be removed
+  //this.groupGrids.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+  this.groupPrimaryGrids = document.createElementNS(Graph.ns, 'g');
+  this.groupSecondaryGrids = document.createElementNS(Graph.ns, 'g');
+
+  this.axisGroup.appendChild(this.groupGrids);
+
+  this.groupGrids.appendChild(this.groupSecondaryGrids);
+  this.groupGrids.appendChild(this.groupPrimaryGrids);
+
+  this.plotGroup = document.createElementNS(Graph.ns, 'g');
+  this.graphingZone.appendChild(this.plotGroup);
+
+  // 5 September 2014. I encountered a case here shapeZone must be above plotGroup
+  /*this.shapeZone = document.createElementNS( this.ns, 'g' );
+  this.graphingZone.appendChild( this.shapeZone );
+  */
+
+  this.layers = [];
+
+  this._makeClosingLines();
+
+  this.clip = document.createElementNS(Graph.ns, 'clipPath');
+  this.clip.setAttribute('id', '_clipplot' + this._creation);
+  this.defs.appendChild(this.clip);
+
+  this.clipRect = document.createElementNS(Graph.ns, 'rect');
+  this.clip.appendChild(this.clipRect);
+  this.clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+
+  this.markerArrow = document.createElementNS(this.ns, 'marker');
+  this.markerArrow.setAttribute('viewBox', '0 0 10 10');
+  this.markerArrow.setAttribute('id', 'arrow' + this._creation);
+  this.markerArrow.setAttribute('refX', '6');
+  this.markerArrow.setAttribute('refY', '5');
+  this.markerArrow.setAttribute('markerUnits', 'strokeWidth');
+  this.markerArrow.setAttribute('markerWidth', '8');
+  this.markerArrow.setAttribute('markerHeight', '6');
+  this.markerArrow.setAttribute('orient', 'auto');
+  //this.markerArrow.setAttribute('fill', 'context-stroke');
+  //this.markerArrow.setAttribute('stroke', 'context-stroke');
+
+  var pathArrow = document.createElementNS(Graph.ns, 'path');
+  pathArrow.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+  //pathArrow.setAttribute( 'fill', 'context-stroke' );
+  this.markerArrow.appendChild(pathArrow);
+
+  this.defs.appendChild(this.markerArrow);
+
+  // Horionzal split marker for axis
+  this.markerHorizontalSplit = document.createElementNS(Graph.ns, 'marker');
+  this.markerHorizontalSplit.setAttribute('viewBox', '0 0 6 8');
+  this.markerHorizontalSplit.setAttribute('id', 'horionzalsplit_' + this.getId());
+  this.markerHorizontalSplit.setAttribute('refX', '3');
+  this.markerHorizontalSplit.setAttribute('refY', '4');
+  this.markerHorizontalSplit.setAttribute('markerUnits', 'strokeWidth');
+  this.markerHorizontalSplit.setAttribute('markerWidth', '6');
+  this.markerHorizontalSplit.setAttribute('markerHeight', '8');
+
+  var path = document.createElementNS(Graph.ns, 'line');
+  path.setAttribute('x1', '0');
+  path.setAttribute('y1', '8');
+
+  path.setAttribute('x2', '6');
+  path.setAttribute('y2', '0');
+
+  path.setAttribute('stroke', 'black');
+  this.markerHorizontalSplit.appendChild(path);
+
+  this.defs.appendChild(this.markerHorizontalSplit);
+
+  // Vertical split marker for axis
+  this.markerVerticalSplit = document.createElementNS(Graph.ns, 'marker');
+  this.markerVerticalSplit.setAttribute('viewBox', '0 0 8 6');
+  this.markerVerticalSplit.setAttribute('id', 'verticalsplit_' + this.getId());
+  this.markerVerticalSplit.setAttribute('refX', '4');
+  this.markerVerticalSplit.setAttribute('refY', '3');
+  this.markerVerticalSplit.setAttribute('markerUnits', 'strokeWidth');
+  this.markerVerticalSplit.setAttribute('markerWidth', '8');
+  this.markerVerticalSplit.setAttribute('markerHeight', '6');
+
+  var path = document.createElementNS(Graph.ns, 'line');
+
+  path.setAttribute('x1', '0');
+  path.setAttribute('y1', '0');
+
+  path.setAttribute('x2', '8');
+  path.setAttribute('y2', '6');
+
+  path.setAttribute('stroke', 'black');
+  this.markerVerticalSplit.appendChild(path);
+  this.defs.appendChild(this.markerVerticalSplit);
+
+  this.vertLineArrow = document.createElementNS(Graph.ns, 'marker');
+  this.vertLineArrow.setAttribute('viewBox', '0 0 10 10');
+  this.vertLineArrow.setAttribute('id', 'verticalline' + this._creation);
+  this.vertLineArrow.setAttribute('refX', '0');
+  this.vertLineArrow.setAttribute('refY', '5');
+  this.vertLineArrow.setAttribute('markerUnits', 'strokeWidth');
+  this.vertLineArrow.setAttribute('markerWidth', '20');
+  this.vertLineArrow.setAttribute('markerHeight', '10');
+  this.vertLineArrow.setAttribute('orient', 'auto');
+  //this.vertLineArrow.setAttribute('fill', 'context-stroke');
+  //this.vertLineArrow.setAttribute('stroke', 'context-stroke');
+  this.vertLineArrow.setAttribute('stroke-width', '1px');
+
+  var pathVertLine = document.createElementNS(Graph.ns, 'path');
+  pathVertLine.setAttribute('d', 'M 0 -10 L 0 10');
+  pathVertLine.setAttribute('stroke', 'black');
+
+  this.vertLineArrow.appendChild(pathVertLine);
+
+  this.defs.appendChild(this.vertLineArrow);
+
+  // Removed with z stacking ?
+  //    this.plotGroup.setAttribute( 'clip-path', 'url(#_clipplot' + this._creation + ')' );
+
+  this.bypassHandleMouse = false;
+}
+
+function _registerEvents(graph) {
+  var self = graph;
+
+  if (!graph.wrapper) {
+    throw "No wrapper exists. Cannot register the events.";
+  }
+
+  graph.wrapper.addEventListener('keydown', function (e) {
+
+    _handleKey(graph, e, 'keydown');
+  });
+
+  graph.wrapper.addEventListener('keypress', function (e) {
+
+    _handleKey(graph, e, 'keypress');
+  });
+
+  graph.wrapper.addEventListener('keyup', function (e) {
+
+    _handleKey(graph, e, 'keyup');
+  });
+  // Not sure this has to be prevented
+
+  // August 17th, 2017: I extended the graph.groupEvent to the more general graph.dom to make the zoom plugin more
+  // intuitive. Let us see if it breaks another example...
+  graph.dom.addEventListener('mousemove', function (e) {
+    //e.preventDefault();
+    var coords = graph._getXY(e);
+
+    _handleMouseMove(graph, coords.x, coords.y, e);
+  });
+
+  graph.dom.addEventListener('mouseleave', function (e) {
+
+    _handleMouseLeave(graph);
+  });
+
+  graph.groupEvent.addEventListener('mousedown', function (e) {
+
+    graph.focus();
+
+    //   e.preventDefault();
+    if (e.which == 3 || e.ctrlKey) {
+      return;
+    }
+
+    var coords = graph._getXY(e);
+    _handleMouseDown(graph, coords.x, coords.y, e);
+  });
+
+  graph.dom.addEventListener('mouseup', function (e) {
+
+    graph.emit("mouseUp", e);
+    var coords = graph._getXY(e);
+    e.stopPropagation();
+
+    _handleMouseUp(graph, coords.x, coords.y, e);
+  });
+
+  graph.dom.addEventListener('dblclick', function (e) {
+
+    graph.emit("dblClick", e);
+    var coords = graph._getXY(e);
+
+    _handleDblClick(graph, coords.x, coords.y, e);
+  });
+
+  graph.groupEvent.addEventListener('click', function (e) {
+
+    // Cancel right click or Command+Click
+    if (e.which == 3 || e.ctrlKey) {
+      return;
+    }
+
+    //   e.preventDefault();
+    var coords = graph._getXY(e);
+
+    if (!graph.prevent(false)) {
+      _handleClick(graph, coords.x, coords.y, e);
+    }
+
+    //}, 200 );
+  });
+
+  graph.groupEvent.addEventListener('mousewheel', function (e) {
+
+    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+    _handleMouseWheel(graph, deltaY, e);
+
+    return false;
+  });
+
+  graph.groupEvent.addEventListener('wheel', function (e) {
+
+    var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
+    _handleMouseWheel(graph, deltaY, e);
+
+    return false;
+  });
+}
+
+function _handleMouseDown(graph, x, y, e) {
+
+  var self = graph;
+
+  if (graph.forcedPlugin) {
+
+    graph.activePlugin = graph.forcedPlugin;
+    graph._pluginExecute(graph.activePlugin, 'onMouseDown', [graph, x, y, e]);
+    return;
+  }
+
+  checkMouseActions(graph, e, [graph, x, y, e], 'onMouseDown');
+}
+
+function _handleMouseMove(graph, x, y, e) {
+
+  if (graph.bypassHandleMouse) {
+    graph.bypassHandleMouse.handleMouseMove(e);
+    return;
+  }
+
+  if (graph.activePlugin && graph._pluginExecute(graph.activePlugin, 'onMouseMove', [graph, x, y, e])) {
+    return;
+  };
+
+  //			return;
+
+  graph._applyToAxes('handleMouseMove', [x - graph.options.paddingLeft, e], true, false);
+  graph._applyToAxes('handleMouseMove', [y - graph.options.paddingTop, e], false, true);
+
+  if (!graph.activePlugin) {
+    var index;
+
+    // Takes care of the tracking line
+    if (graph.options.trackingLine && graph.options.trackingLine.enable && graph.options.trackingLine.snapToSerie) {
+
+      if (graph.options.trackingLine.mode == "common") {
+
+        var snapToSerie = graph.options.trackingLine.snapToSerie;
+        index = snapToSerie.handleMouseMove(false, true);
+
+        if (this.trackingObject) {
+
+          if (!index) {
+
+            graph.trackingObject.hide();
+          } else {
+
+            graph.trackingObject.show();
+
+            graph.trackingObject.getPosition(0).x = index.xClosest;
+            graph.trackingObject.getPosition(1).x = index.xClosest;
+            graph.trackingObject.redraw();
+
+            var x = snapToSerie.getXAxis().getPx(index.xClosest) + graph.options.paddingLeft;
+          }
+        }
+
+        var series = graph.options.trackingLine.series;
+
+        // Gets a default value
+        if (!series) {
+
+          series = graph.getSeries().map(function (serie) {
+            return {
+              serie: serie,
+              withinPx: 20,
+              withinVal: -1
+            };
+          });
+        }
+
+        graph._trackingLegend = _trackingLegendSerie(graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest);
+      }
+    }
+  }
+  // End takes care of the tracking line
+
+  if (graph.options.onMouseMoveData) {
+    var results = {};
+
+    for (var i = 0; i < graph.series.length; i++) {
+
+      results[graph.series[i].getName()] = graph.series[i].handleMouseMove(false, true);
+    }
+
+    graph.options.onMouseMoveData.call(graph, e, results);
+  }
+
+  checkMouseActions(graph, e, [graph, x, y, e], 'onMouseMove');
+
+  return;
+}
+
+function checkMouseActions(graph, e, parameters, methodName) {
+
+  var keyComb = graph.options.mouseActions,
+      i,
+      l,
+      executed = false;
+
+  for (i = 0, l = keyComb.length; i < l; i++) {
+
+    if (keyComb[i].plugin) {
+      // Is it a plugin ?
+
+      if (graph.forcedPlugin == keyComb[i].plugin || graph.isActionAllowed(e, keyComb[i])) {
+
+        if (keyComb[i].options) {
+          parameters.push(keyComb[i].options);
+        }
+
+        graph.activePlugin = keyComb[i].plugin; // Lease the mouse action to the current action
+        graph._pluginExecute(keyComb[i].plugin, methodName, parameters);
+        executed = true;
+        continue;
+      }
+    } else if (keyComb[i].callback && graph.isActionAllowed(e, keyComb[i])) {
+
+      if (keyComb[i].options) {
+        parameters.push(keyComb[i].options);
+      }
+
+      keyComb[i].callback.apply(graph, parameters);
+      executed = true;
+      continue;
+    } else if (keyComb[i].series) {
+
+      var series;
+      if (keyComb[i].series === 'all') {
+        series = graph.series;
+      }
+
+      if (!Array.isArray(keyComb[i].series)) {
+        series = [series];
+      }
+
+      if (keyComb[i].options) {
+        parameters.push(keyComb[i].options);
+      }
+
+      for (var j = 0; j < series.length; i++) {
+        graph._serieExecute(series[i], methodName, parameters);
+      }
+      executed = true;
+      continue;
+    }
+  }
+
+  return executed;
+};
+
+var _trackingLegendSerie = function _trackingLegendSerie(graph, serie, x, y, legend, textMethod, xValue) {
+
+  var justCreated = false;
+
+  if (!Array.isArray(serie)) {
+    serie = [serie];
+  }
+
+  var output = [];
+
+  if (!legend && graph.options.trackingLine.legend) {
+    justCreated = true;
+    legend = _makeTrackingLegend(graph);
+  }
+
+  serie.map(function (serie) {
+
+    var index = serie.serie.handleMouseMove(xValue, false);
+
+    if (!index || !textMethod) {
+
+      if (serie.serie.trackingShape) {
+        serie.serie.trackingShape.hide();
+      }
+
+      return legend;
+    }
+
+    // Should we display the dot ?
+    if (serie.withinPx > 0 && Math.abs(x - graph.options.paddingLeft - serie.serie.getXAxis().getPx(index.xClosest)) - serie.withinPx > 1e-14 || serie.withinVal > 0 && Math.abs(serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) - index.xClosest) - serie.withinVal > serie.serie.getXAxis().getVal(x - graph.options.paddingLeft) / 100000) {
+
+      if (serie.serie.trackingShape) {
+        serie.serie.trackingShape.hide();
+      }
+    } else {
+
+      output[serie.serie.getName()] = {
+
+        yValue: index.xClosest,
+        xValue: index.yClosest,
+        serie: serie,
+        index: index
+
+      };
+
+      if (!serie.serie.trackingShape) {
+
+        serie.serie.trackingShape = graph.newShape(graph.options.trackingLine.serieShape.shape || 'ellipse', {
+          fillColor: serie.serie.getLineColor(),
+          strokeColor: "White",
+          strokeWidth: serie.serie.getLineWidth()
+        }, true, graph.options.trackingLine.serieShape.properties || {
+          rx: [serie.serie.getLineWidth() * 3],
+          ry: [serie.serie.getLineWidth() * 3]
+        }).setSerie(serie.serie).forceParentDom(serie.serie.groupMain).draw();
+
+        graph.options.trackingLine.serieShape.onCreated && graph.options.trackingLine.serieShape.onCreated(serie.serie.trackingShape);
+
+        serie.serie.trackingShape.on("changed", function () {
+
+          graph.options.trackingLine.serieShape.onChanged && graph.options.trackingLine.serieShape.onChanged(serie.serie.trackingShape);
+        });
+      }
+
+      serie.serie.trackingShape.show();
+      serie.serie.trackingShape.getPosition(0).x = index.xClosest;
+
+      if (graph.options.trackingLine.serieShape.magnet) {
+
+        var magnetOptions = graph.options.trackingLine.serieShape.magnet,
+            val = magnetOptions.within,
+            minmaxpos = void 0;
+
+        if (magnetOptions.withinPx) {
+          val = serie.serie.getXAxis().getRelVal(magnetOptions.withinPx);
+        }
+
+        if (minmaxpos = serie.serie.findLocalMinMax(index.xClosest, val, magnetOptions.mode)) {
+
+          serie.serie.trackingShape.getPosition(0).x = minmaxpos;
+        }
+      }
+
+      serie.serie.trackingShape.redraw();
+    }
+  }); // End map
+
+  if (!graph.options.trackingLine.legend) {
+    return;
+  }
+
+  if (Object.keys(output).length == 0 || !textMethod) {
+    legend.style.display = "none";
+  } else {
+
+    if (legend.style.display == "none" || justCreated) {
+
+      forceTrackingLegendMode(graph, legend, x, y, true);
+    } else {
+      _trackingLegendMove(graph, legend, x, y);
+    }
+
+    legend.style.display = "block";
+    var txt = textMethod(output, xValue, x, y);
+
+    legend.innerHTML = txt;
+
+    //legend.innerHTML = textMethod( output, xValue, x, y );
+  }
+
+  return legend;
+};
+
+var forceTrackingLegendMode = function forceTrackingLegendMode(graph, legend, toX, toY, skip) {
+
+  var ratio = 0,
+      start = Date.now(),
+      h = legend.offsetHeight,
+      startX = parseInt(legend.style.marginLeft.replace("px", "") || 0),
+      startY = parseInt(legend.style.marginTop.replace("px", "") || 0);
+
+  toX = toX > graph.getWidth() / 2 ? toX - toX % 10 - 20 - legend.offsetWidth : toX - toX % 10 + 30;
+  toY = toY - toY % 10 + h / 2;
+
+  if (skip) {
+    legend.style.marginLeft = toX + "px";
+    legend.style.marginTop = toY + "px";
+    return;
+  }
+
+  function next() {
+
+    var progress = (Date.now() - start) / 200;
+    if (progress > 1) {
+      progress = 1;
+    }
+
+    legend.style.marginLeft = (toX - startX) * progress + startX + "px";
+    legend.style.marginTop = (toY - startY) * progress + startY + "px";
+
+    if (progress < 1) {
+      window.requestAnimationFrame(next);
+    }
+  }
+
+  window.requestAnimationFrame(next);
+};
+
+var _trackingLegendMove = util.debounce(forceTrackingLegendMode, 50);
+
+function _makeTrackingLegend(graph) {
+
+  var group = document.createElement('div');
+  group.setAttribute('class', 'trackingLegend');
+  group.style.position = 'absolute';
+  group.style.borderRadius = '4px';
+  group.style.boxShadow = "1px 1px 3px 0px rgba(100,100,100,0.6)";
+  group.style.border = "2px solid #333333";
+  group.style.backgroundColor = "rgba(255, 255, 255, 0.5 )";
+  group.style.pointerEvents = "none";
+  group.style.paddingTop = "5px";
+  group.style.paddingBottom = "5px";
+  group.style.paddingLeft = "10px";
+  group.style.paddingRight = "10px";
+
+  graph.getWrapper().insertBefore(group, graph.getDom());
+
+  return group;
+}
+
+function _handleDblClick(graph, x, y, e) {
+  //	var _x = x - graph.options.paddingLeft;
+  //	var _y = y - graph.options.paddingTop;
+  var pref = graph.options.dblclick;
+  checkMouseActions(graph, e, [x, y, e], 'onDblClick');
+  /*
+      if ( !pref ||  !pref.type ) {
+        return;
+      }
+       switch ( pref.type ) {
+         case 'plugin':
+           var plugin;
+           if ( ( plugin = graph.plugins[ pref.plugin ] ) ) {
+             plugin.onDblClick( graph, x, y, pref.options, e );
+          }
+           break;
+      }*/
+}
+
+function _handleMouseUp(graph, x, y, e) {
+
+  if (graph.bypassHandleMouse) {
+    graph.bypassHandleMouse.handleMouseUp(e);
+    graph.activePlugin = false;
+    return;
+  }
+
+  graph._pluginExecute(graph.activePlugin, 'onMouseUp', [graph, x, y, e]);
+  graph.activePlugin = false;
+}
+
+function _handleClick(graph, x, y, e) {
+
+  graph.emit('click', [graph, x, y, e]);
+  // Not on a shape
+  checkMouseActions(graph, e, [x, y, e], 'onClick');
+
+  if (!e.target.jsGraphIsShape && !graph.prevent(false) && graph.options.shapesUnselectOnClick) {
+
+    graph.unselectShapes();
+  }
+}
+
+function _getAxis(graph, num, options, pos) {
+
+  var options = options || {};
+  var inst;
+
+  var _availableAxes = {
+
+    def: {
+      x: graph.getConstructor("graph.axis.x"),
+      y: graph.getConstructor("graph.axis.y")
+    },
+
+    time: {
+      x: graph.getConstructor("graph.axis.x.time")
+    },
+
+    bar: {
+      x: graph.getConstructor("graph.axis.x.bar")
+    }
+  };
+
+  switch (options.type) {
+
+    case 'time':
+      var axisInstance = _availableAxes.time;
+      break;
+
+    case 'bar':
+      var axisInstance = _availableAxes.bar;
+      break;
+
+    case 'broken':
+      var axisInstance = _availableAxes.broken;
+      break;
+
+    default:
+      var axisInstance = _availableAxes.def;
+      break;
+  }
+
+  switch (pos) {
+
+    case 'top':
+    case 'bottom':
+      inst = axisInstance.x;
+      break;
+
+    case 'left':
+    case 'right':
+      inst = axisInstance.y;
+      break;
+  }
+
+  num = num || 0;
+
+  if ((typeof num === 'undefined' ? 'undefined' : _typeof(num)) == "object") {
+    options = num;
+    num = 0;
+  }
+
+  if (!graph.axis[pos][num]) {
+    graph.axis[pos][num] = new inst(graph, pos, options);
+    graph.axis[pos][num].init(graph, options);
+  }
+
+  return graph.axis[pos][num];
+}
+
+function _closeLine(graph, mode, x1, x2, y1, y2) {
+
+  if (graph.options.close === false) {
+    return;
+  }
+
+  var l = 0;
+
+  graph.axis[mode].map(function (g) {
+
+    if (g.isDisplayed() && !g.floating) {
+      l++;
+    }
+  });
+
+  if ((graph.options.close === true || graph.options.close[mode]) && l == 0) {
+
+    graph.closingLines[mode].setAttribute('display', 'block');
+    graph.closingLines[mode].setAttribute('x1', x1);
+    graph.closingLines[mode].setAttribute('x2', x2);
+    graph.closingLines[mode].setAttribute('y1', y1);
+    graph.closingLines[mode].setAttribute('y2', y2);
+  } else {
+
+    graph.closingLines[mode].setAttribute('display', 'none');
+  }
+}
+
+function _handleMouseWheel(graph, delta, e) {
+  if (checkMouseActions(graph, e, [delta, e], 'onMouseWheel')) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+}
+
+function _handleMouseLeave(graph) {
+  if (graph.options.handleMouseLeave) {
+    graph.options.handleMouseLeave.call(graph);
+  }
+}
+
+function haveAxesChanged(graph) {
+  var temp = graph._axesHaveChanged;
+  graph._axesHaveChanged = false;
+  return temp;
+}
+
+function hasSizeChanged(graph) {
+  var temp = graph._sizeChanged;
+  graph._sizeChanged = false;
+  return temp;
+}
+
+// Constants
+Graph.SERIE_LINE = Symbol();
+Graph.SERIE_SCATTER = Symbol();
+Graph.SERIE_CONTOUR = Symbol();
+Graph.SERIE_BAR = Symbol();
+Graph.SERIE_BOX = Symbol();
+Graph.SERIE_ZONE = Symbol();
+Graph.SERIE_LINE_COLORED = Symbol();
+Graph.SERIE_ZONE = Symbol();
+Graph.SERIE_DENSITYMAP = Symbol();
+Graph.SERIE_LINE_3D = Symbol();
+Graph.SERIE_ZONE_3D = Symbol();
+
+Graph.TICKS_OUTSIDE = Symbol();
+Graph.TICKS_INSIDE = Symbol();
+Graph.TICKS_CENTERED = Symbol();
+
+Graph.ns = 'http://www.w3.org/2000/svg';
+Graph.nsxlink = "http://www.w3.org/1999/xlink";
+
+exports.default = Graph;
 
 /***/ }),
 /* 18 */
@@ -5537,9 +9408,7 @@ var _fit_lm = __webpack_require__(72);
 
 var _fit_lm2 = _interopRequireDefault(_fit_lm);
 
-var _graph = __webpack_require__(4);
-
-var _data_aggregator = __webpack_require__(134);
+var _data_aggregator = __webpack_require__(135);
 
 var _data_aggregator2 = _interopRequireDefault(_data_aggregator);
 
@@ -5557,7 +9426,31 @@ var Waveform = function () {
 
     this.xOffset = xOffset;
     this.xScale = xScale;
-    this.setData(data);
+
+    // Error bar handling
+    this.errors = {
+
+      nb: 0,
+
+      bars: {
+        above: null,
+        below: null
+      },
+
+      boxes: {
+        above: null,
+        below: null
+      }
+    };
+
+    if (data.length > 0) {
+      this.setData(data);
+    }
+
+    this.BELOW = Waveform.BELOW;
+    this.ABOVE = Waveform.ABOVE;
+    this.BOX = Waveform.BOX;
+    this.BAR = Waveform.BAR;
   }
 
   /** [ [ x1, y1 ], [ x2, y2 ] ] */
@@ -5586,24 +9479,20 @@ var Waveform = function () {
   _createClass(Waveform, [{
     key: 'setData',
     value: function setData(data) {
-      var _this = this;
-
       var dataX = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 
       /* First, we must treat the case of the array of array for backward compatibility */
       if (Array.isArray(data[0])) {
-        (function () {
-          var x = [];
-          var y = [];
-          data.forEach(function (el) {
-            x.push(el[0]);
-            y.push(el[1]);
-          });
+        var x = [];
+        var y = [];
+        data.forEach(function (el) {
+          x.push(el[0]);
+          y.push(el[1]);
+        });
 
-          _this.setXWaveform(x);
-          data = y;
-        })();
+        this.setXWaveform(x);
+        data = y;
       }
 
       var newData = this._makeArray(data.length),
@@ -5633,7 +9522,9 @@ var Waveform = function () {
     }
   }, {
     key: 'getY',
-    value: function getY(index, optimized) {
+    value: function getY(index) {
+      var optimized = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
 
       if (optimized && this.dataInUse) {
         return this.dataInUse.y[index] * this.getScale() + this.getShift();
@@ -5676,14 +9567,20 @@ var Waveform = function () {
   }, {
     key: 'getXWaveform',
     value: function getXWaveform() {
+
       if (this.xdata) {
         return this.xdata;
       }
 
-      var wave = new Waveform();
+      var wave = new Waveform(),
+          xs = [];
       for (var i = 0; i < this.getLength(); i += 1) {
-        wave.append(this.getX(i));
+        xs.push(this.getX(i));
       }
+
+      wave.setData(xs);
+
+      this.xdata = wave;
       return wave;
     }
   }, {
@@ -5787,6 +9684,10 @@ var Waveform = function () {
     key: 'append',
     value: function append(x, y) {
 
+      if (!this.data) {
+        this.data = [];
+      }
+
       if (typeof x == "function") {
         x = x(this);
       }
@@ -5838,7 +9739,10 @@ var Waveform = function () {
     }
   }, {
     key: '_setData',
-    value: function _setData(dataY) {
+    value: function _setData() {
+      var dataY = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.data;
+
+
       var l = dataY.length;
       var i = 1,
           monoDir = dataY[1] > dataY[0],
@@ -5863,8 +9767,25 @@ var Waveform = function () {
         this._monotoneousAscending = dataY[1] > dataY[0];
       }
 
-      this.minY = minY;
-      this.maxY = maxY;
+      if (this.hasErrorBars()) {
+        // If prefer to loop again here
+
+        for (i = 0; i < l; i++) {
+
+          if (dataY[i] === dataY[i]) {
+            // NaN support
+
+            minY = Math.min(minY, dataY[i] - this.getMaxError(i, 'below'));
+            maxY = Math.max(maxY, dataY[i] + this.getMaxError(i, 'above'));
+          }
+        }
+
+        this.minY = minY;
+        this.maxY = maxY;
+      } else {
+        this.minY = minY;
+        this.maxY = maxY;
+      }
 
       this.data = dataY;
 
@@ -5881,8 +9802,7 @@ var Waveform = function () {
 
       if (this.xdata) {
 
-        this.minX = this.xdata.getMin();
-        this.maxX = this.xdata.getMax();
+        return;
       } else {
 
         var b1 = this.xOffset + this.xScale * this.getLength(),
@@ -5913,6 +9833,7 @@ var Waveform = function () {
       }
 
       var position = void 0;
+
       position = this.getIndexFromData(val, data, this.data.getMonotoneousAscending(), roundingMethod);
 
       if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateY") {
@@ -5934,12 +9855,13 @@ var Waveform = function () {
       if (useDataToUse && this.dataInUse) {
         xdata = this.dataInUse.x;
       } else if (this.xdata) {
-        xdata = this.xdata.getData();
+        xdata = this.xdata.data;
       }
 
       var position = void 0;
 
       if (this.hasXWaveform()) {
+        // The x value HAS to be rescaled
         position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
       } else {
         position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
@@ -5977,12 +9899,12 @@ var Waveform = function () {
   }, {
     key: 'getXMin',
     value: function getXMin() {
-      return this.minX * this.getXScale() + this.getXShift();
+      return this.xdata ? this.xdata.getMin() : this.minX;
     }
   }, {
     key: 'getXMax',
     value: function getXMax() {
-      return this.maxX * this.getXScale() + this.getXShift();
+      return this.xdata ? this.xdata.getMax() : this.maxX;
     }
   }, {
     key: 'getYMin',
@@ -6007,13 +9929,12 @@ var Waveform = function () {
   }, {
     key: 'getMinX',
     value: function getMinX() {
-
-      return this.minX * this.getXScale() + this.getXShift();
+      return this.getXMin();
     }
   }, {
     key: 'getMaxX',
     value: function getMaxX() {
-      return this.maxX * this.getXScale() + this.getXShift();
+      return this.getXMax();
     }
   }, {
     key: 'getMinY',
@@ -6076,7 +9997,7 @@ var Waveform = function () {
       var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 
-      if (!this.hasXWaveform) {
+      if (!this.hasXWaveform()) {
         return this;
       }
 
@@ -6125,6 +10046,9 @@ var Waveform = function () {
   }, {
     key: 'getLength',
     value: function getLength() {
+      if (!this.data) {
+        return 0;
+      }
       return this.data.length;
     }
   }, {
@@ -6166,7 +10090,7 @@ var Waveform = function () {
 
       return new Promise(function (resolver, rejector) {
 
-        var fit = new _fit_lm2.default((0, _graph.extend)({}, {
+        var fit = new _fit_lm2.default(Object.assign({}, {
 
           dataY: self,
           dataX: self.getXWaveform(),
@@ -6467,6 +10391,8 @@ var Waveform = function () {
       var xIndex = void 0;
       var yData = this.getDataY();
 
+      x = (x - this.getXShift()) / this.getXScale();
+
       if (this.xdata) {
         var xData = this.xdata.getData(),
             _xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
@@ -6668,7 +10594,7 @@ var Waveform = function () {
   }, {
     key: 'aggregate',
     value: function aggregate() {
-      var _this2 = this;
+      var _this = this;
 
       var direction = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'x';
 
@@ -6681,10 +10607,10 @@ var Waveform = function () {
 
       this._dataAggregating = (0, _data_aggregator2.default)({
 
-        minX: this.minX,
-        maxX: this.maxX,
-        minY: this.minY,
-        maxY: this.maxY,
+        minX: this.getMinX(),
+        maxX: this.getMaxX(),
+        minY: this.getMinY(),
+        maxY: this.getMaxY(),
         data: this.data,
         xdata: this.xdata ? this.xdata.getData() : undefined,
         xScale: this.xScale,
@@ -6694,8 +10620,9 @@ var Waveform = function () {
 
       }).then(function (event) {
 
-        _this2._dataAggregated = event.aggregates;
-        _this2._dataAggregating = false;
+        _this._dataAggregated = event.aggregates;
+        console.log(_this._dataAggregated);
+        _this._dataAggregating = false;
       });
     }
   }, {
@@ -6712,8 +10639,7 @@ var Waveform = function () {
       }
       /*
       console.log( direction, this._dataAggregationDirection );
-      
-          if( direction !== this._dataAggregationDirection ) {
+           if( direction !== this._dataAggregationDirection ) {
             throw "The data is not aggregated in that direction";
           }
       */
@@ -6893,7 +10819,7 @@ var Waveform = function () {
     key: 'findLevels',
     value: function findLevels(level, options) {
 
-      options = (0, _graph.extend)({
+      options = Object.assign({
 
         box: 1,
         edge: 'both',
@@ -6907,7 +10833,7 @@ var Waveform = function () {
       var indices = [];
       var i = 0;
 
-      while (lvlIndex = this.findLevel(level, (0, _graph.extend)(true, {}, options, {
+      while (lvlIndex = this.findLevel(level, Object.assign({}, options, {
         rangeP: [lastLvlIndex, options.rangeP[1]]
       }))) {
         indices.push(lvlIndex);
@@ -6928,7 +10854,7 @@ var Waveform = function () {
     key: 'findLevel',
     value: function findLevel(level, options) {
 
-      options = (0, _graph.extend)({
+      options = Object.assign({
 
         box: 1,
         edge: 'both',
@@ -6983,7 +10909,7 @@ var Waveform = function () {
           continue;
         }
         // Crossing up
-        if (value > level && below) {
+        if (value >= level && below) {
 
           below = false;
 
@@ -6992,7 +10918,7 @@ var Waveform = function () {
 
             for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
 
-              if (this.data[j] > level && this.data[j - 1] <= level) {
+              if (this.data[j] >= level && this.data[j - 1] < level) {
                 // Find a crossing
 
                 switch (options.rounding) {
@@ -7011,7 +10937,7 @@ var Waveform = function () {
               }
             }
           }
-        } else if (value < level && !below) {
+        } else if (value <= level && !below) {
 
           below = true;
 
@@ -7019,7 +10945,7 @@ var Waveform = function () {
 
             for (j = i + (box - 1) / 2; j >= i - (box - 1) / 2; j--) {
 
-              if (this.data[j] < level && this.data[j - 1] >= level) {
+              if (this.data[j] <= level && this.data[j - 1] > level) {
                 // Find a crossing
 
                 switch (options.rounding) {
@@ -7041,18 +10967,391 @@ var Waveform = function () {
         }
       }
     }
+  }, {
+    key: 'normalize',
+    value: function normalize(mode) {
+
+      var factor = void 0,
+          total = void 0,
+          minValue = void 0,
+          maxValue = void 0,
+          ratio = void 0,
+          i = void 0;
+
+      if (mode == 'max1' || mode == 'max100') {
+
+        factor = 1;
+
+        if (mode == 'max100') {
+          factor = 100;
+        }
+
+        maxValue = this.data[0];
+
+        for (i = 1; i < this.getLength(); i++) {
+
+          if (this.data[i] > maxValue) {
+
+            maxValue = this.data[i];
+          }
+        }
+
+        for (i = 0; i < this.getLength(); i++) {
+
+          this.data[i] /= maxValue / factor;
+        }
+      } else if (mode == 'sum1') {
+
+        total = 0;
+
+        for (i = 0; i < this.getLength(); i++) {
+          total += this.data[i];
+        }
+
+        for (i = 0; i < this.getLength(); i++) {
+
+          this.data[i] /= total;
+        }
+      } else if (mode == 'max1min0') {
+
+        maxValue = this.data[0], minValue = this.data[0];
+
+        for (i = 1; i < this.getLength(); i++) {
+          if (this.data[i] > maxValue) {
+
+            maxValue = this.data[i];
+          } else if (this.data[i] < minValue) {
+
+            minValue = this.data[i];
+          }
+        }
+
+        ratio = 1 / (maxValue - minValue);
+
+        for (i = 0; i < this.getLength(); i++) {
+
+          this.data[i] = (this.data[i] - minValue) * ratio;
+        }
+      }
+
+      this.setData(this.data);
+    }
+
+    ////////////////////////////////////////////////////////////
+    ///// HANDLING ERRORS   ////////////////////////////////////
+    ////////////////////////////////////////////////////////////
+
+  }, {
+    key: 'setErrorBarX',
+    value: function setErrorBarX(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBar(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBarXBelow',
+    value: function setErrorBarXBelow(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBarBelow(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBarXAbove',
+    value: function setErrorBarXAbove(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBarAbove(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBoxX',
+    value: function setErrorBoxX(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBoxAbove(waveform);
+      xWave.setErrorBoxBelow(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBoxXBelow',
+    value: function setErrorBoxXBelow(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+
+      xWave.setErrorBoxBelow(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBoxXAbove',
+    value: function setErrorBoxXAbove(waveform) {
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      var xWave = this.getXWaveform();
+      xWave.setErrorBoxAbove(waveform);
+      return this;
+    }
+  }, {
+    key: 'setErrorBar',
+    value: function setErrorBar(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.nb++;
+      this.errors.bars.bottom = waveform;
+      this.errors.bars.top = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'setErrorBarBelow',
+    value: function setErrorBarBelow(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.bars.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'setErrorBarAbove',
+    value: function setErrorBarAbove(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      this.errors.nb++;
+      this.errors.bars.above = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'setErrorBox',
+    value: function setErrorBox(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.nb++;
+      this.errors.boxes.above = waveform;
+      this.errors.boxes.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'setErrorBoxBelow',
+    value: function setErrorBoxBelow(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+      this.errors.nb++;
+      this.errors.boxes.below = waveform;
+
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'setErrorBoxAbove',
+    value: function setErrorBoxAbove(waveform) {
+      var checkMinMax = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+
+      if (Array.isArray(waveform)) {
+        waveform = new Waveform(waveform);
+      }
+
+      this.errors.boxes.above = waveform;
+      if (checkMinMax) {
+        this._setData();
+      }
+    }
+  }, {
+    key: 'getMaxError',
+    value: function getMaxError(i) {
+      var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+
+
+      return Math.max(this.getMaxErrorType(i, side, Waveform.BOX), this.getMaxErrorType(i, side, Waveform.BAR));
+    }
+  }, {
+    key: 'getMaxErrorType',
+    value: function getMaxErrorType(i) {
+      var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BOX;
+
+
+      var stack = void 0;
+      if (type == Waveform.BOX) {
+        stack = this.errors.boxes;
+      } else if (type == Waveform.BAR) {
+        stack = this.errors.bars;
+      } else {
+        throw "Unknown type of error";
+      }
+
+      var waveform = void 0;
+      if (!(waveform = stack[side])) {
+        if (side == Waveform.ABOVE) {
+          if (stack[side] == Waveform.BELOW) {
+            waveform = stack.below;
+          }
+        } else {
+          if (stack[side] == Waveform.ABOVE) {
+            waveform = stack.above;
+          }
+        }
+      }
+
+      if (!waveform) {
+        return 0;
+      }
+
+      return waveform.getY(i);
+    }
+  }, {
+    key: 'getErrorBarXBelow',
+    value: function getErrorBarXBelow(index) {
+      return this.getErrorX(index, Waveform.BELOW, Waveform.BAR);
+    }
+  }, {
+    key: 'getErrorBarXAbove',
+    value: function getErrorBarXAbove(index) {
+      return this.getErrorX(index, Waveform.ABOVE, Waveform.BAR);
+    }
+  }, {
+    key: 'getErrorBoxXBelow',
+    value: function getErrorBoxXBelow(index) {
+      return this.getErrorX(index, Waveform.BELOW, Waveform.BOX);
+    }
+  }, {
+    key: 'getErrorBoxXAbove',
+    value: function getErrorBoxXAbove(index) {
+      return this.getErrorX(index, Waveform.ABOVE, Waveform.BOX);
+    }
+  }, {
+    key: 'getErrorBarYBelow',
+    value: function getErrorBarYBelow(index) {
+      return this.getError(index, Waveform.BELOW, Waveform.BAR);
+    }
+  }, {
+    key: 'getErrorBarYAbove',
+    value: function getErrorBarYAbove(index) {
+      return this.getError(index, Waveform.ABOVE, Waveform.BAR);
+    }
+  }, {
+    key: 'getErrorBoxYBelow',
+    value: function getErrorBoxYBelow(index) {
+      return this.getError(index, Waveform.BELOW, Waveform.BOX);
+    }
+  }, {
+    key: 'getErrorBoxYAbove',
+    value: function getErrorBoxYAbove(index) {
+      return this.getError(index, Waveform.ABOVE, Waveform.BOX);
+    }
+  }, {
+    key: 'getErrorX',
+    value: function getErrorX(index) {
+      var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
+
+
+      if (!this.hasXWaveform()) {
+        return false;
+      }
+
+      return this.xdata.getError(index, side, type);
+    }
+  }, {
+    key: 'getError',
+    value: function getError(index) {
+      var side = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : Waveform.ABOVE;
+      var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : Waveform.BAR;
+
+
+      var errors = type == Waveform.BAR ? this.errors.bars : this.errors.boxes;
+
+      if (!errors) {
+        return false;
+      }
+
+      var wave = void 0;
+      if (wave = side == Waveform.ABOVE ? errors.above : errors.below) {
+
+        if (wave == Waveform.ABOVE && side == Waveform.BELOW) {
+          wave = errors.above;
+        } else if (wave == Waveform.BELOW && side == Waveform.ABOVE) {
+          wave = errors.below;
+        }
+
+        if (!wave) {
+          return false;
+        }
+
+        return wave.getY(index);
+      }
+    }
+  }, {
+    key: 'hasErrorBars',
+    value: function hasErrorBars() {
+
+      return this.errors.nb > 0 || this.hasXWaveform() && this.xdata.errors.nb > 0;
+    }
   }]);
 
   return Waveform;
 }();
 
 ;
-
-var MULTIPLY = Symbol();
-var ADD = Symbol();
-var SUBTRACT = Symbol();
-var DIVIDE = Symbol();
-
 // http://stackoverflow.com/questions/26965171/fast-nearest-power-of-2-in-javascript
 function pow2ceil(v) {
   v--;
@@ -7105,6 +11404,15 @@ function binarySearch(target, haystack, reverse) {
     //  seedInt -= seedInt % 2; // Always looks for an x.
 
     while (isNaN(haystack[seedInt])) {
+
+      if (seedInt >= haystack.length - 1) {
+
+        return haystack.length - 1;
+      } else if (seedInt <= 0) {
+
+        return 0;
+      }
+
       seedInt += nanDirection;
     }
 
@@ -7133,7 +11441,21 @@ function binarySearch(target, haystack, reverse) {
   }
 }
 
+Waveform.BELOW = Symbol();
+Waveform.ABOVE = Symbol();
+
+Waveform.BOX = Symbol();
+Waveform.BAR = Symbol();
+
+var MULTIPLY = Symbol();
+var ADD = Symbol();
+var SUBTRACT = Symbol();
+var DIVIDE = Symbol();
+
+//module.exports = Waveform;
+
 exports.default = Waveform;
+//export default Waveform
 
 /***/ }),
 /* 19 */
@@ -7272,7 +11594,7 @@ module.exports = PooledClass;
 
 var _assign = __webpack_require__(5);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 
 var warning = __webpack_require__(2);
 var canDefineProperty = __webpack_require__(42);
@@ -7661,21 +11983,21 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graph3 = __webpack_require__(28);
+var _graphSerie = __webpack_require__(28);
 
-var _graph4 = _interopRequireDefault(_graph3);
+var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-var _graph5 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph5);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graphMixin = __webpack_require__(35);
+var _graphMixinErrorbars = __webpack_require__(35);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
 
 var _waveform = __webpack_require__(18);
 
@@ -7843,12 +12165,12 @@ var SerieLine = function (_Serie) {
         throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
       }
 
-      this._waveform = waveform;
+      this.waveform = waveform;
 
-      this.minX = this._waveform.getXMin();
-      this.maxX = this._waveform.getXMax();
-      this.minY = this._waveform.getMin();
-      this.maxY = this._waveform.getMax();
+      this.minX = this.waveform.getXMin();
+      this.maxX = this.waveform.getXMax();
+      this.minY = this.waveform.getMin();
+      this.maxY = this.waveform.getMax();
 
       this.graph.updateDataMinMaxAxes();
       this.dataHasChanged();
@@ -7883,17 +12205,19 @@ var SerieLine = function (_Serie) {
     value: function onMouseOverMarker(e, index) {
 
       var toggledOn = this.toggleMarker(index, true, true);
+
       if (this.options.onMouseOverMarker) {
 
-        this.options.onMouseOverMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+        this.options.onMouseOverMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
       }
     }
   }, {
     key: 'onMouseOutMarker',
     value: function onMouseOutMarker(e, index) {
       this.markersOffHover();
+
       if (this.options.onMouseOutMarker) {
-        this.options.onMouseOutMarker(index, this.infos ? this.infos[index[0]] || false : false, [this.data[index[1]][index[0] * 2], this.data[index[1]][index[0] * 2 + 1]]);
+        this.options.onMouseOutMarker(index, this.infos ? this.infos[index] || false : false, [this.waveform.getX(index), this.waveform.getY(index)]);
       }
     }
 
@@ -7910,9 +12234,7 @@ var SerieLine = function (_Serie) {
     key: 'toggleMarker',
     value: function toggleMarker(index, force, hover) {
 
-      var i = index[0];
-
-      index = index.join();
+      var i = index;
 
       var _on;
       if (typeof force === 'undefined') {
@@ -7933,18 +12255,8 @@ var SerieLine = function (_Serie) {
           dom = el[index];
         }
 
-        var x, y;
-
-        if (this.mode == 'x_equally_separated') {
-          x = this._xDataToUse.x + i * this._xDataToUse.dx;
-          y = this.data[i];
-        } else {
-          x = this.data[i * 2];
-          y = this.data[i * 2 + 1];
-        }
-
-        x = this.getX(x);
-        y = this.getY(y);
+        var x = this.getX(this.waveform.getX(i)),
+            y = this.getY(this.waveform.getY(i));
 
         dom.setAttribute('d', "M " + x + " " + y + " " + this.getMarkerPath(this.markerFamilies[this.selectionType][this.getMarkerCurrentFamily(i)], 1));
 
@@ -8126,11 +12438,11 @@ var SerieLine = function (_Serie) {
 
       // Degradation
 
-      if (this._waveform) {
+      if (this.waveform) {
 
         if (this.degradationPx) {
 
-          this._waveform.resampleForDisplay({
+          this.waveform.resampleForDisplay({
 
             resampleToPx: this.degradationPx,
             xPosition: this.getXAxis().getPx.bind(this.getXAxis()),
@@ -8139,12 +12451,12 @@ var SerieLine = function (_Serie) {
 
           });
 
-          this._dataToUse = [this._waveform.getDataToUseFlat()];
-        } else if (this._waveform.hasAggregation()) {
+          this._dataToUse = [this.waveform.getDataToUseFlat()];
+        } else if (this.waveform.hasAggregation()) {
 
           var xaxis = this.getXAxis(),
               numberOfPointsInTotal = this.graph.getDrawingWidth() * (xaxis.getDataMax() - xaxis.getDataMin()) / (xaxis.getCurrentMax() - xaxis.getCurrentMin()),
-              promise = this._waveform.selectAggregatedData(numberOfPointsInTotal);
+              promise = this.waveform.selectAggregatedData(numberOfPointsInTotal);
 
           if (promise instanceof Promise) {
 
@@ -8159,11 +12471,11 @@ var SerieLine = function (_Serie) {
             return false;
           } else {
 
-            this._dataToUse = this._waveform.getDataToUseFlat();
+            this._dataToUse = this.waveform.getDataToUseFlat();
           }
         }
 
-        //    this._dataToUse = this._waveform.getDataToUseFlat();
+        //    this._dataToUse = this.waveform.getDataToUseFlat();
       } else {
 
         this._dataToUse = this.data;
@@ -8240,13 +12552,13 @@ var SerieLine = function (_Serie) {
 
         this.pos0 = this.getYAxis().getPos(0);
 
-        if (this.error) {
+        if (this.hasErrors()) {
           this.errorDrawInit();
         }
 
         this._draw();
 
-        if (this.error) {
+        if (this.hasErrors()) {
           this.errorDraw();
         }
 
@@ -8280,7 +12592,7 @@ var SerieLine = function (_Serie) {
       var _this3 = this;
 
       var self = this,
-          waveform = this._waveform,
+          waveform = this.waveform,
           data = void 0,
           x = void 0,
           y = void 0,
@@ -8329,7 +12641,6 @@ var SerieLine = function (_Serie) {
       var i = 0,
           l = waveform.getLength();
 
-      this.counter1 = 0;
       this.currentLine = "";
 
       if (waveform.isXMonotoneous()) {
@@ -8348,7 +12659,7 @@ var SerieLine = function (_Serie) {
           l = waveform.getIndexFromX(xMin, true);
 
           if (l === false) {
-            l = data.length;
+            l = waveform.getLength();
           }
         }
 
@@ -8361,7 +12672,6 @@ var SerieLine = function (_Serie) {
       for (; i < l; i += 1) {
 
         x = waveform.getX(i, true);
-
         y = data[i] * yscale + yshift;
 
         if (x != x || y != y) {
@@ -8727,11 +13037,11 @@ var SerieLine = function (_Serie) {
         this.currentLine += "L ";
         this.currentLine += xpx;
         this.currentLine += " ";
-        this.currentLine += pos;
+        this.currentLine += this.pos0;
         this.currentLine += " ";
       }
 
-      if (this.error) {
+      if (this.hasErrors()) {
         this.errorAddPoint(j, x, y, xpx, ypx);
       }
 
@@ -8924,11 +13234,9 @@ var SerieLine = function (_Serie) {
     // In case markers are not grouped in families but independant
 
   }, {
-    key: 'getMarkerDomIndependant',
-    value: function getMarkerDomIndependant(index1, index2, family) {
-
-      var self = this;
-      var index = index1 + "," + index2;
+    key: 'getMarkerDomIndependent',
+    value: function getMarkerDomIndependent(index, family) {
+      var _this4 = this;
 
       if (!this.independantMarkers[index]) {
 
@@ -8937,16 +13245,17 @@ var SerieLine = function (_Serie) {
 
         dom.addEventListener('mouseover', function (e) {
 
-          self.onMouseOverMarker(e, [index2, index1]);
+          _this4.onMouseOverMarker(e, index);
         });
 
         dom.addEventListener('mouseout', function (e) {
 
-          self.onMouseOutMarker(e, [index2, index1]);
+          _this4.onMouseOutMarker(e, index);
         });
 
         dom.addEventListener('click', function (e) {
-          self.onClickOnMarker(e, [index2, index1]);
+
+          _this4.onClickOnMarker(e, index);
         });
 
         this.independantMarkers[index] = dom;
@@ -8977,35 +13286,17 @@ var SerieLine = function (_Serie) {
           p_x,
           p_y;
 
-      if (this.mode == "x_equally_separated") {
+      for (var k = 0, m = this.waveform.getLength(); k < m; k += 1) {
 
-        for (var i = 0, l = this.data.length; i < l; i++) {
-          for (var k = 0, m = this.data[i].length; k < m; k += 1) {
+        p_x = this.waveform.getX(k);
+        p_y = this.waveform.getY(k);
 
-            p_x = xData[i].x + k * xData[i].dx;
-            p_y = this.data[i][k];
-            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-            //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
+        dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
+        //console.log(x, y, dist, this.data[i][k], this.data[i][k + 1]);
 
-            if (!oldDist || dist < oldDist) {
-              oldDist = dist;
-              xyindex = [k, i];
-            }
-          }
-        }
-      } else {
-
-        for (var i = 0, l = this.data.length; i < l; i++) {
-          for (var k = 0, m = this.data[i].length; k < m; k += 2) {
-
-            p_x = this.data[i][k];
-            p_y = this.data[i][k + 1];
-            dist = Math.pow(this.getX(p_x) - x, 2) + Math.pow(this.getY(p_y) - y, 2);
-            if (!oldDist || dist < oldDist) {
-              oldDist = dist;
-              xyindex = [k / 2, i];
-            }
-          }
+        if (!oldDist || dist < oldDist) {
+          oldDist = dist;
+          xyindex = k;
         }
       }
 
@@ -9023,13 +13314,14 @@ var SerieLine = function (_Serie) {
     key: 'searchClosestValue',
     value: function searchClosestValue(valX, data) {
 
-      if (this._waveform) {
-        var indexX = this._waveform.getIndexFromX(valX);
+      if (this.waveform) {
+        var indexX = this.waveform.getIndexFromX(valX);
         var returnObj = {
-          xMin: this._waveform.getX(indexX),
-          xMax: this._waveform.getX(indexX + 1),
-          yMin: this._waveform.getY(indexX),
-          yMax: this._waveform.getY(indexX + 1)
+          xMin: this.waveform.getX(indexX),
+          xMax: this.waveform.getX(indexX + 1),
+          yMin: this.waveform.getY(indexX),
+          yMax: this.waveform.getY(indexX + 1),
+          xExact: valX
         };
 
         if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
@@ -9058,7 +13350,9 @@ var SerieLine = function (_Serie) {
 
       var value = this.searchClosestValue(valX);
 
-      if (!value) return;
+      if (!value) {
+        return;
+      }
 
       var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
       var intY = (1 - ratio) * value.yMin + ratio * value.yMax;
@@ -9103,7 +13397,7 @@ var SerieLine = function (_Serie) {
         xAfter: value.xMax,
         yBefore: value.yMin,
         yAfter: value.yMax,
-        trueX: valX,
+        trueX: value.xExact,
         interpolatedY: intY,
 
         xClosest: value.xClosest,
@@ -9663,8 +13957,8 @@ var SerieLine = function (_Serie) {
   }, {
     key: 'isMonotoneous',
     value: function isMonotoneous() {
-      if (this._waveform) {
-        return this._waveform.isMonotoneous();
+      if (this.waveform) {
+        return this.waveform.isMonotoneous();
       }
 
       return !!this.xmonotoneous;
@@ -9673,18 +13967,37 @@ var SerieLine = function (_Serie) {
     key: 'findLocalMinMax',
     value: function findLocalMinMax(xRef, xWithin, type) {
 
-      if (!this._waveform) {
+      if (!this.waveform) {
         return false;
       }
 
-      return this._waveform.findLocalMinMax(xRef, xWithin, type);
+      return this.waveform.findLocalMinMax(xRef, xWithin, type);
     }
   }]);
 
   return SerieLine;
-}(_graph4.default);
+}(_graphSerie2.default);
 
-util.mix(SerieLine, _graphMixin2.default);
+function drawMarkerXY(graph, family, x, y, markerDom) {
+
+  if (!family) {
+    return;
+  }
+
+  if (graph.options.markersIndependant) {
+    var dom = graph.getMarkerDomIndependent(graph.counter2, family);
+    var p = 'M ' + x + ' ' + y + ' ';
+    p += family.markerPath + ' ';
+
+    dom.setAttribute('d', p);
+  }
+
+  markerDom.path = markerDom.path || "";
+  markerDom.path += 'M ' + x + ' ' + y + ' ';
+  markerDom.path += family.markerPath + ' ';
+}
+
+util.mix(SerieLine, _graphMixinErrorbars2.default);
 
 exports.default = SerieLine;
 
@@ -9828,7 +14141,7 @@ module.exports = DOMLazyTree;
 
 
 
-var ReactRef = __webpack_require__(198);
+var ReactRef = __webpack_require__(199);
 var ReactInstrumentation = __webpack_require__(10);
 
 var warning = __webpack_require__(2);
@@ -10004,16 +14317,16 @@ module.exports = ReactReconciler;
 
 var _assign = __webpack_require__(5);
 
-var ReactChildren = __webpack_require__(228);
+var ReactChildren = __webpack_require__(229);
 var ReactComponent = __webpack_require__(64);
-var ReactPureComponent = __webpack_require__(233);
-var ReactClass = __webpack_require__(229);
-var ReactDOMFactories = __webpack_require__(230);
+var ReactPureComponent = __webpack_require__(234);
+var ReactClass = __webpack_require__(230);
+var ReactDOMFactories = __webpack_require__(231);
 var ReactElement = __webpack_require__(20);
-var ReactPropTypes = __webpack_require__(231);
-var ReactVersion = __webpack_require__(234);
+var ReactPropTypes = __webpack_require__(232);
+var ReactVersion = __webpack_require__(235);
 
-var onlyChild = __webpack_require__(237);
+var onlyChild = __webpack_require__(238);
 var warning = __webpack_require__(2);
 
 var createElement = ReactElement.createElement;
@@ -10100,10 +14413,6 @@ module.exports = React;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 /*!
  * EventEmitter v4.2.9 - git.io/ee
  * Oliver Caldwell
@@ -10111,444 +14420,447 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
  * @preserve
  */
 
-!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-  'use strict';
 
-  /**
-   * Class for managing events.
-   * Can be extended to provide event functionality in other classes.
-   *
-   * @class EventEmitter Manages event registering and emitting.
-   */
 
-  function EventEmitter() {}
+/**
+ * Class for managing events.
+ * Can be extended to provide event functionality in other classes.
+ *
+ * @class EventEmitter Manages event registering and emitting.
+ */
 
-  // Shortcuts to improve speed and size
-  var proto = EventEmitter.prototype;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-  /**
-   * Finds the index of the listener for the event in its storage array.
-   *
-   * @param {Function[]} listeners Array of listeners to search through.
-   * @param {Function} listener Method to look for.
-   * @return {Number} Index of the specified listener, -1 if not found
-   * @api private
-   */
-  function indexOfListener(listeners, listener) {
-    var i = listeners.length;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function EventEmitter() {}
+
+// Shortcuts to improve speed and size
+var proto = EventEmitter.prototype;
+
+/**
+ * Finds the index of the listener for the event in its storage array.
+ *
+ * @param {Function[]} listeners Array of listeners to search through.
+ * @param {Function} listener Method to look for.
+ * @return {Number} Index of the specified listener, -1 if not found
+ * @api private
+ */
+function indexOfListener(listeners, listener) {
+  var i = listeners.length;
+  while (i--) {
+    if (listeners[i].listener === listener) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+/**
+ * Alias a method while keeping the context correct, to allow for overwriting of target method.
+ *
+ * @param {String} name The name of the target method.
+ * @return {Function} The aliased method
+ * @api private
+ */
+function alias(name) {
+  return function aliasClosure() {
+    return this[name].apply(this, arguments);
+  };
+}
+
+/**
+ * Returns the listener array for the specified event.
+ * Will initialise the event object and listener arrays if required.
+ * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+ * Each property in the object response is an array of listener functions.
+ *
+ * @param {String|RegExp} evt Name of the event to return the listeners from.
+ * @return {Function[]|Object} All listener functions for the event.
+ */
+proto.getListeners = function getListeners(evt) {
+  var events = this._getEvents();
+  var response;
+  var key;
+
+  // Return a concatenated array of all matching events if
+  // the selector is a regular expression.
+  if (evt instanceof RegExp) {
+    response = {};
+    for (key in events) {
+      if (events.hasOwnProperty(key) && evt.test(key)) {
+        response[key] = events[key];
+      }
+    }
+  } else {
+    response = events[evt] || (events[evt] = []);
+  }
+
+  return response;
+};
+
+/**
+ * Takes a list of listener objects and flattens it into a list of listener functions.
+ *
+ * @param {Object[]} listeners Raw listener objects.
+ * @return {Function[]} Just the listener functions.
+ */
+proto.flattenListeners = function flattenListeners(listeners) {
+  var flatListeners = [];
+  var i;
+
+  for (i = 0; i < listeners.length; i += 1) {
+    flatListeners.push(listeners[i].listener);
+  }
+
+  return flatListeners;
+};
+
+/**
+ * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+ *
+ * @param {String|RegExp} evt Name of the event to return the listeners from.
+ * @return {Object} All listener functions for an event in an object.
+ */
+proto.getListenersAsObject = function getListenersAsObject(evt) {
+  var listeners = this.getListeners(evt);
+  var response;
+
+  if (listeners instanceof Array) {
+    response = {};
+    response[evt] = listeners;
+  }
+
+  return response || listeners;
+};
+
+/**
+ * Adds a listener function to the specified event.
+ * The listener will not be added if it is a duplicate.
+ * If the listener returns true then it will be removed after it is called.
+ * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+ *
+ * @param {String|RegExp} evt Name of the event to attach the listener to.
+ * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.addListener = function addListener(evt, listener) {
+  var listeners = this.getListenersAsObject(evt);
+  var listenerIsWrapped = (typeof listener === 'undefined' ? 'undefined' : _typeof(listener)) === 'object';
+  var key;
+
+  for (key in listeners) {
+    if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+      listeners[key].push(listenerIsWrapped ? listener : {
+        listener: listener,
+        once: false
+      });
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Alias of addListener
+ */
+proto.on = alias('addListener');
+
+/**
+ * Semi-alias of addListener. It will add a listener that will be
+ * automatically removed after its first execution.
+ *
+ * @param {String|RegExp} evt Name of the event to attach the listener to.
+ * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.addOnceListener = function addOnceListener(evt, listener) {
+  return this.addListener(evt, {
+    listener: listener,
+    once: true
+  });
+};
+
+/**
+ * Alias of addOnceListener.
+ */
+proto.once = alias('addOnceListener');
+
+/**
+ * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+ * You need to tell it what event names should be matched by a regex.
+ *
+ * @param {String} evt Name of the event to create.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.defineEvent = function defineEvent(evt) {
+  this.getListeners(evt);
+  return this;
+};
+
+/**
+ * Uses defineEvent to define multiple events.
+ *
+ * @param {String[]} evts An array of event names to define.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.defineEvents = function defineEvents(evts) {
+  for (var i = 0; i < evts.length; i += 1) {
+    this.defineEvent(evts[i]);
+  }
+  return this;
+};
+
+/**
+ * Removes a listener function from the specified event.
+ * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+ *
+ * @param {String|RegExp} evt Name of the event to remove the listener from.
+ * @param {Function} listener Method to remove from the event.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.removeListener = function removeListener(evt, listener) {
+  var listeners = this.getListenersAsObject(evt);
+  var index;
+  var key;
+
+  for (key in listeners) {
+    if (listeners.hasOwnProperty(key)) {
+      index = indexOfListener(listeners[key], listener);
+
+      if (index !== -1) {
+        listeners[key].splice(index, 1);
+      }
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Alias of removeListener
+ */
+proto.off = alias('removeListener');
+
+/**
+ * Adds listeners in bulk using the manipulateListeners method.
+ * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+ * You can also pass it a regular expression to add the array of listeners to all events that match it.
+ * Yeah, this function does quite a bit. That's probably a bad thing.
+ *
+ * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+ * @param {Function[]} [listeners] An optional array of listener functions to add.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.addListeners = function addListeners(evt, listeners) {
+  // Pass through to manipulateListeners
+  return this.manipulateListeners(false, evt, listeners);
+};
+
+/**
+ * Removes listeners in bulk using the manipulateListeners method.
+ * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+ * You can also pass it an event name and an array of listeners to be removed.
+ * You can also pass it a regular expression to remove the listeners from all events that match it.
+ *
+ * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+ * @param {Function[]} [listeners] An optional array of listener functions to remove.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.removeListeners = function removeListeners(evt, listeners) {
+  // Pass through to manipulateListeners
+  return this.manipulateListeners(true, evt, listeners);
+};
+
+/**
+ * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+ * The first argument will determine if the listeners are removed (true) or added (false).
+ * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+ * You can also pass it an event name and an array of listeners to be added/removed.
+ * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+ *
+ * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+ * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+ * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+  var i;
+  var value;
+  var single = remove ? this.removeListener : this.addListener;
+  var multiple = remove ? this.removeListeners : this.addListeners;
+
+  // If evt is an object then pass each of its properties to this method
+  if ((typeof evt === 'undefined' ? 'undefined' : _typeof(evt)) === 'object' && !(evt instanceof RegExp)) {
+    for (i in evt) {
+      if (evt.hasOwnProperty(i) && (value = evt[i])) {
+        // Pass the single listener straight through to the singular method
+        if (typeof value === 'function') {
+          single.call(this, i, value);
+        } else {
+          // Otherwise pass back to the multiple function
+          multiple.call(this, i, value);
+        }
+      }
+    }
+  } else {
+    // So evt must be a string
+    // And listeners must be an array of listeners
+    // Loop over it and pass each one to the multiple method
+    i = listeners.length;
     while (i--) {
-      if (listeners[i].listener === listener) {
-        return i;
-      }
+      single.call(this, evt, listeners[i]);
     }
-
-    return -1;
   }
 
-  /**
-   * Alias a method while keeping the context correct, to allow for overwriting of target method.
-   *
-   * @param {String} name The name of the target method.
-   * @return {Function} The aliased method
-   * @api private
-   */
-  function alias(name) {
-    return function aliasClosure() {
-      return this[name].apply(this, arguments);
-    };
+  return this;
+};
+
+/**
+ * Removes all listeners from a specified event.
+ * If you do not specify an event then all listeners will be removed.
+ * That means every event will be emptied.
+ * You can also pass a regex to remove all events that match it.
+ *
+ * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.removeEvent = function removeEvent(evt) {
+  var type = typeof evt === 'undefined' ? 'undefined' : _typeof(evt);
+  var events = this._getEvents();
+  var key;
+
+  // Remove different things depending on the state of evt
+  if (type === 'string') {
+    // Remove all listeners for the specified event
+    delete events[evt];
+  } else if (evt instanceof RegExp) {
+    // Remove all events matching the regex.
+    for (key in events) {
+      if (events.hasOwnProperty(key) && evt.test(key)) {
+        delete events[key];
+      }
+    }
+  } else {
+    // Remove all listeners in all events
+    delete this._events;
   }
 
-  /**
-   * Returns the listener array for the specified event.
-   * Will initialise the event object and listener arrays if required.
-   * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
-   * Each property in the object response is an array of listener functions.
-   *
-   * @param {String|RegExp} evt Name of the event to return the listeners from.
-   * @return {Function[]|Object} All listener functions for the event.
-   */
-  proto.getListeners = function getListeners(evt) {
-    var events = this._getEvents();
-    var response;
-    var key;
+  return this;
+};
 
-    // Return a concatenated array of all matching events if
-    // the selector is a regular expression.
-    if (evt instanceof RegExp) {
-      response = {};
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          response[key] = events[key];
-        }
-      }
-    } else {
-      response = events[evt] || (events[evt] = []);
-    }
+/**
+ * Alias of removeEvent.
+ *
+ * Added to mirror the node API.
+ */
+proto.removeAllListeners = alias('removeEvent');
 
-    return response;
-  };
+/**
+ * Emits an event of your choice.
+ * When emitted, every listener attached to that event will be executed.
+ * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+ * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+ * So they will not arrive within the array on the other side, they will be separate.
+ * You can also pass a regular expression to emit to all events that match it.
+ *
+ * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+ * @param {Array} [args] Optional array of arguments to be passed to each listener.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.emitEvent = function emitEvent(evt, args) {
+  var listeners = this.getListenersAsObject(evt);
+  var listener;
+  var i;
+  var key;
+  var response;
 
-  /**
-   * Takes a list of listener objects and flattens it into a list of listener functions.
-   *
-   * @param {Object[]} listeners Raw listener objects.
-   * @return {Function[]} Just the listener functions.
-   */
-  proto.flattenListeners = function flattenListeners(listeners) {
-    var flatListeners = [];
-    var i;
+  for (key in listeners) {
+    if (listeners.hasOwnProperty(key)) {
+      i = listeners[key].length;
 
-    for (i = 0; i < listeners.length; i += 1) {
-      flatListeners.push(listeners[i].listener);
-    }
-
-    return flatListeners;
-  };
-
-  /**
-   * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
-   *
-   * @param {String|RegExp} evt Name of the event to return the listeners from.
-   * @return {Object} All listener functions for an event in an object.
-   */
-  proto.getListenersAsObject = function getListenersAsObject(evt) {
-    var listeners = this.getListeners(evt);
-    var response;
-
-    if (listeners instanceof Array) {
-      response = {};
-      response[evt] = listeners;
-    }
-
-    return response || listeners;
-  };
-
-  /**
-   * Adds a listener function to the specified event.
-   * The listener will not be added if it is a duplicate.
-   * If the listener returns true then it will be removed after it is called.
-   * If you pass a regular expression as the event name then the listener will be added to all events that match it.
-   *
-   * @param {String|RegExp} evt Name of the event to attach the listener to.
-   * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.addListener = function addListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var listenerIsWrapped = (typeof listener === 'undefined' ? 'undefined' : _typeof(listener)) === 'object';
-    var key;
-
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-        listeners[key].push(listenerIsWrapped ? listener : {
-          listener: listener,
-          once: false
-        });
-      }
-    }
-
-    return this;
-  };
-
-  /**
-   * Alias of addListener
-   */
-  proto.on = alias('addListener');
-
-  /**
-   * Semi-alias of addListener. It will add a listener that will be
-   * automatically removed after its first execution.
-   *
-   * @param {String|RegExp} evt Name of the event to attach the listener to.
-   * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.addOnceListener = function addOnceListener(evt, listener) {
-    return this.addListener(evt, {
-      listener: listener,
-      once: true
-    });
-  };
-
-  /**
-   * Alias of addOnceListener.
-   */
-  proto.once = alias('addOnceListener');
-
-  /**
-   * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
-   * You need to tell it what event names should be matched by a regex.
-   *
-   * @param {String} evt Name of the event to create.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.defineEvent = function defineEvent(evt) {
-    this.getListeners(evt);
-    return this;
-  };
-
-  /**
-   * Uses defineEvent to define multiple events.
-   *
-   * @param {String[]} evts An array of event names to define.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.defineEvents = function defineEvents(evts) {
-    for (var i = 0; i < evts.length; i += 1) {
-      this.defineEvent(evts[i]);
-    }
-    return this;
-  };
-
-  /**
-   * Removes a listener function from the specified event.
-   * When passed a regular expression as the event name, it will remove the listener from all events that match it.
-   *
-   * @param {String|RegExp} evt Name of the event to remove the listener from.
-   * @param {Function} listener Method to remove from the event.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.removeListener = function removeListener(evt, listener) {
-    var listeners = this.getListenersAsObject(evt);
-    var index;
-    var key;
-
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        index = indexOfListener(listeners[key], listener);
-
-        if (index !== -1) {
-          listeners[key].splice(index, 1);
-        }
-      }
-    }
-
-    return this;
-  };
-
-  /**
-   * Alias of removeListener
-   */
-  proto.off = alias('removeListener');
-
-  /**
-   * Adds listeners in bulk using the manipulateListeners method.
-   * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
-   * You can also pass it a regular expression to add the array of listeners to all events that match it.
-   * Yeah, this function does quite a bit. That's probably a bad thing.
-   *
-   * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
-   * @param {Function[]} [listeners] An optional array of listener functions to add.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.addListeners = function addListeners(evt, listeners) {
-    // Pass through to manipulateListeners
-    return this.manipulateListeners(false, evt, listeners);
-  };
-
-  /**
-   * Removes listeners in bulk using the manipulateListeners method.
-   * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-   * You can also pass it an event name and an array of listeners to be removed.
-   * You can also pass it a regular expression to remove the listeners from all events that match it.
-   *
-   * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
-   * @param {Function[]} [listeners] An optional array of listener functions to remove.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.removeListeners = function removeListeners(evt, listeners) {
-    // Pass through to manipulateListeners
-    return this.manipulateListeners(true, evt, listeners);
-  };
-
-  /**
-   * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
-   * The first argument will determine if the listeners are removed (true) or added (false).
-   * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-   * You can also pass it an event name and an array of listeners to be added/removed.
-   * You can also pass it a regular expression to manipulate the listeners of all events that match it.
-   *
-   * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
-   * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
-   * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-    var i;
-    var value;
-    var single = remove ? this.removeListener : this.addListener;
-    var multiple = remove ? this.removeListeners : this.addListeners;
-
-    // If evt is an object then pass each of its properties to this method
-    if ((typeof evt === 'undefined' ? 'undefined' : _typeof(evt)) === 'object' && !(evt instanceof RegExp)) {
-      for (i in evt) {
-        if (evt.hasOwnProperty(i) && (value = evt[i])) {
-          // Pass the single listener straight through to the singular method
-          if (typeof value === 'function') {
-            single.call(this, i, value);
-          } else {
-            // Otherwise pass back to the multiple function
-            multiple.call(this, i, value);
-          }
-        }
-      }
-    } else {
-      // So evt must be a string
-      // And listeners must be an array of listeners
-      // Loop over it and pass each one to the multiple method
-      i = listeners.length;
       while (i--) {
-        single.call(this, evt, listeners[i]);
-      }
-    }
+        // If the listener returns true then it shall be removed from the event
+        // The function is executed either with a basic call or an apply if there is an args array
+        listener = listeners[key][i];
 
-    return this;
-  };
-
-  /**
-   * Removes all listeners from a specified event.
-   * If you do not specify an event then all listeners will be removed.
-   * That means every event will be emptied.
-   * You can also pass a regex to remove all events that match it.
-   *
-   * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.removeEvent = function removeEvent(evt) {
-    var type = typeof evt === 'undefined' ? 'undefined' : _typeof(evt);
-    var events = this._getEvents();
-    var key;
-
-    // Remove different things depending on the state of evt
-    if (type === 'string') {
-      // Remove all listeners for the specified event
-      delete events[evt];
-    } else if (evt instanceof RegExp) {
-      // Remove all events matching the regex.
-      for (key in events) {
-        if (events.hasOwnProperty(key) && evt.test(key)) {
-          delete events[key];
+        if (listener.once === true) {
+          this.removeListener(evt, listener.listener);
         }
-      }
-    } else {
-      // Remove all listeners in all events
-      delete this._events;
-    }
 
-    return this;
-  };
+        response = listener.listener.apply(this, args || []);
 
-  /**
-   * Alias of removeEvent.
-   *
-   * Added to mirror the node API.
-   */
-  proto.removeAllListeners = alias('removeEvent');
-
-  /**
-   * Emits an event of your choice.
-   * When emitted, every listener attached to that event will be executed.
-   * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
-   * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
-   * So they will not arrive within the array on the other side, they will be separate.
-   * You can also pass a regular expression to emit to all events that match it.
-   *
-   * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-   * @param {Array} [args] Optional array of arguments to be passed to each listener.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.emitEvent = function emitEvent(evt, args) {
-    var listeners = this.getListenersAsObject(evt);
-    var listener;
-    var i;
-    var key;
-    var response;
-
-    for (key in listeners) {
-      if (listeners.hasOwnProperty(key)) {
-        i = listeners[key].length;
-
-        while (i--) {
-          // If the listener returns true then it shall be removed from the event
-          // The function is executed either with a basic call or an apply if there is an args array
-          listener = listeners[key][i];
-
-          if (listener.once === true) {
-            this.removeListener(evt, listener.listener);
-          }
-
-          response = listener.listener.apply(this, args || []);
-
-          if (response === this._getOnceReturnValue()) {
-            this.removeListener(evt, listener.listener);
-          }
+        if (response === this._getOnceReturnValue()) {
+          this.removeListener(evt, listener.listener);
         }
       }
     }
+  }
 
-    return this;
-  };
+  return this;
+};
 
-  /**
-   * Alias of emitEvent
-   */
-  proto.trigger = alias('emitEvent');
+/**
+ * Alias of emitEvent
+ */
+proto.trigger = alias('emitEvent');
 
-  /**
-   * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
-   * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
-   *
-   * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-   * @param {...*} Optional additional arguments to be passed to each listener.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.emit = function emit(evt) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    return this.emitEvent(evt, args);
-  };
+/**
+ * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+ * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+ *
+ * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+ * @param {...*} Optional additional arguments to be passed to each listener.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.emit = function emit(evt) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return this.emitEvent(evt, args);
+};
 
-  /**
-   * Sets the current value to check against when executing listeners. If a
-   * listeners return value matches the one set here then it will be removed
-   * after execution. This value defaults to true.
-   *
-   * @param {*} value The new value to check for when executing listeners.
-   * @return {Object} Current instance of EventEmitter for chaining.
-   */
-  proto.setOnceReturnValue = function setOnceReturnValue(value) {
-    this._onceReturnValue = value;
-    return this;
-  };
+/**
+ * Sets the current value to check against when executing listeners. If a
+ * listeners return value matches the one set here then it will be removed
+ * after execution. This value defaults to true.
+ *
+ * @param {*} value The new value to check for when executing listeners.
+ * @return {Object} Current instance of EventEmitter for chaining.
+ */
+proto.setOnceReturnValue = function setOnceReturnValue(value) {
+  this._onceReturnValue = value;
+  return this;
+};
 
-  /**
-   * Fetches the current value to check against when executing listeners. If
-   * the listeners return value matches this one then it should be removed
-   * automatically. It will return true by default.
-   *
-   * @return {*|Boolean} The current value to check for or the default, true.
-   * @api private
-   */
-  proto._getOnceReturnValue = function _getOnceReturnValue() {
-    if (this.hasOwnProperty('_onceReturnValue')) {
-      return this._onceReturnValue;
-    } else {
-      return true;
-    }
-  };
+/**
+ * Fetches the current value to check against when executing listeners. If
+ * the listeners return value matches this one then it should be removed
+ * automatically. It will return true by default.
+ *
+ * @return {*|Boolean} The current value to check for or the default, true.
+ * @api private
+ */
+proto._getOnceReturnValue = function _getOnceReturnValue() {
+  if (this.hasOwnProperty('_onceReturnValue')) {
+    return this._onceReturnValue;
+  } else {
+    return true;
+  }
+};
 
-  /**
-   * Fetches the events object and creates one if required.
-   *
-   * @return {Object} The events storage object.
-   * @api private
-   */
-  proto._getEvents = function _getEvents() {
-    return this._events || (this._events = {});
-  };
+/**
+ * Fetches the events object and creates one if required.
+ *
+ * @return {Object} The events storage object.
+ * @api private
+ */
+proto._getEvents = function _getEvents() {
+  return this._events || (this._events = {});
+};
 
-  return EventEmitter;
-}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+exports.default = EventEmitter;
 
 /***/ }),
 /* 27 */
@@ -10951,9 +15263,9 @@ var _EventEmitter2 = __webpack_require__(26);
 
 var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
 var _waveform = __webpack_require__(18);
 
@@ -11452,6 +15764,7 @@ var Serie = function (_EventEmitter) {
   }, {
     key: '_checkY',
     value: function _checkY(val) {
+      console.log(val, this.maxY);
       this.minY = Math.min(this.minY, val);
       this.maxY = Math.max(this.maxY, val);
     }
@@ -11637,12 +15950,32 @@ var Serie = function (_EventEmitter) {
   }, {
     key: 'getWaveform',
     value: function getWaveform() {
-      return this._waveform;
+      return this.waveform;
     }
   }, {
     key: 'getWaveforms',
     value: function getWaveforms() {
-      return [this._waveform];
+      return [this.waveform];
+    }
+  }, {
+    key: 'setWaveform',
+    value: function setWaveform(waveform) {
+
+      if (!(waveform instanceof _waveform2.default)) {
+        throw "Cannot assign waveform to serie. Waveform is not of the proper Waveform instance";
+      }
+
+      this.waveform = waveform;
+
+      this.minX = this.waveform.getXMin();
+      this.maxX = this.waveform.getXMax();
+      this.minY = this.waveform.getMin();
+      this.maxY = this.waveform.getMax();
+
+      this.graph.updateDataMinMaxAxes();
+      this.dataHasChanged();
+
+      return this;
     }
 
     /**
@@ -12058,6 +16391,15 @@ var Serie = function (_EventEmitter) {
     value: function setDataIndices(categories, nb) {
       this.categoryIndices = categories;
       this.nbCategories = nb;
+    }
+  }, {
+    key: 'hasErrors',
+    value: function hasErrors() {
+      if (!this.waveform) {
+        return false;
+      }
+
+      return this.waveform.hasErrorBars();
     }
   }, {
     key: 'type',
@@ -12661,17 +17003,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
 var _EventEmitter2 = __webpack_require__(26);
 
 var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -14725,20 +19067,20 @@ var Axis = function (_EventEmitter) {
       switch (pos) {
         case 3:
         case 'outside':
-        case _graph2.default.TICKS_OUTSIDE:
+        case _graphCore2.default.TICKS_OUTSIDE:
           pos = 3;
           break;
 
         case 2:
         case 'centered':
-        case _graph2.default.TICKS_CENTERED:
+        case _graphCore2.default.TICKS_CENTERED:
           pos = 2;
           break;
 
         default:
         case 1:
         case 'inside':
-        case _graph2.default.TICKS_INSIDE:
+        case _graphCore2.default.TICKS_INSIDE:
           pos = 1;
           break;
       }
@@ -15506,71 +19848,60 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var ErrorBarMixin = {
-
-  doErrorDraw: function doErrorDraw(orientation, error, originVal, originPx, xpx, ypx) {
-
-    if (!(error instanceof Array)) {
-      error = [error];
-    }
-
-    var functionName = orientation == 'y' ? 'getY' : 'getX';
-    var bars = orientation == 'y' ? ['top', 'bottom'] : ['left', 'right'];
-    var j;
-
-    if (isNaN(xpx) || isNaN(ypx)) {
-      return;
-    }
-
-    for (var i = 0, l = error.length; i < l; i++) {
-
-      if (error[i] instanceof Array) {
-        // TOP
-
-        j = bars[0];
-        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i][0]), originPx, j);
-
-        j = bars[1];
-        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i][1]), originPx, j);
-      } else {
-
-        j = bars[0];
-
-        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal + error[i]), originPx, j);
-        j = bars[1];
-        this.errorstyles[i].paths[j] += " M " + xpx + " " + ypx;
-        this.errorstyles[i].paths[j] += this.makeError(orientation, i, this[functionName](originVal - error[i]), originPx, j);
+  /*
+    doErrorDraw: function( orientation, error, originVal, originPx, xpx, ypx ) {
+       if ( !( error instanceof Array ) )  {
+        error = [ error ];
       }
-    }
-  },
+       var functionName = orientation == 'y' ? 'getY' : 'getX';
+      var bars = orientation == 'y' ? [ 'top', 'bottom' ] : [ 'left', 'right' ];
+      var j;
+       if ( isNaN( xpx ) ||  isNaN( ypx ) ) {
+        return;
+      }
+       for ( var i = 0, l = error.length; i < l; i++ ) {
+         if ( error[ i ] instanceof Array ) { // TOP
+           j = bars[ 0 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ][ 0 ] ), originPx, j );
+           j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ][ 1 ] ), originPx, j );
+         } else {
+           j = bars[ 0 ];
+           this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal + error[ i ] ), originPx, j );
+          j = bars[ 1 ];
+          this.errorstyles[ i ].paths[ j ] += " M " + xpx + " " + ypx;
+          this.errorstyles[ i ].paths[ j ] += this.makeError( orientation, i, this[ functionName ]( originVal - error[ i ] ), originPx, j );
+        }
+      }
+    },
+  */
 
-  makeError: function makeError(orientation, level, coord, origin, quadOrientation) {
-
-    var method;
-    switch (this.errorstyles[level].type) {
-      case 'bar':
-        method = "makeBar";
-        break;
-
-      case 'box':
-        method = "makeBox";
-        break;
-    }
-
-    return this[method + orientation.toUpperCase()](coord, origin, this.errorstyles[level][quadOrientation]);
-  },
+  /*
+    makeError: function( orientation, type, coord, origin, quadOrientation ) {
+       var method;
+      switch ( this.errorstyles[ level ].type ) {
+        case 'bar':
+          method = "makeBar";
+          break;
+         case 'box':
+          method = "makeBox";
+          break;
+      }
+       return this[ method + orientation.toUpperCase() ]( coord, origin, this.errorstyles[ level ][ quadOrientation ] );
+     },*/
 
   makeBarY: function makeBarY(coordY, origin, style) {
-    if (!coordY || !style) {
+    if (!coordY || style === undefined) {
       return;
     }
     var width = !util.isNumeric(style.width) ? 10 : style.width;
@@ -15578,14 +19909,14 @@ var ErrorBarMixin = {
   },
 
   makeBoxY: function makeBoxY(coordY, origin, style) {
-    if (!coordY || !style) {
+    if (!coordY || style === undefined) {
       return;
     }
     return " m 5 0 V " + coordY + " h -10 V " + origin + " m 5 0 ";
   },
 
   makeBarX: function makeBarX(coordX, origin, style) {
-    if (!coordX || !style) {
+    if (!coordX || style === undefined) {
       return;
     }
     var height = !util.isNumeric(style.width) ? 10 : style.width;
@@ -15593,214 +19924,195 @@ var ErrorBarMixin = {
   },
 
   makeBoxX: function makeBoxX(coordX, origin, style) {
-    if (!coordX || !style) {
+    if (!coordX || style === undefined) {
       return;
     }
     return " v 5 H " + coordX + " v -10 H " + origin + " v 5 ";
   },
-
-  check: function check(index, valY, valX) {
-
-    var dx, dy;
-
-    if (this.getType() == Graph.SERIE_LINE || this.getType() == Graph.SERIE_SCATTER) {
-
-      if (!(dx = this.data[index * 2]) || !(dy = this.data[index * 2 + 1])) {
-        //
+  /*
+    check: function( index, valY, valX ) {
+       var dx, dy;
+       if ( ( this.getType() == Graph.SERIE_LINE ||  this.getType() == Graph.SERIE_SCATTER ) ) {
+         if ( !( dx = this.data[ index * 2 ] ) ||  !( dy = this.data[ index * 2 + 1 ] ) ) { //
+          return;
+        }
+      }
+       if ( dx === undefined ) {
         return;
       }
-    }
-
-    if (dx === undefined) {
-      return;
-    }
-
-    for (var i = 0, l = valY.length; i < l; i++) {
-
-      if (Array.isArray(valY[i])) {
-
-        if (!isNaN(valY[i][0])) {
-          this._checkY(dy + valY[i][0]);
-        }
-
-        if (!isNaN(valY[i][1])) {
-          this._checkY(dy - valY[i][1]);
-        }
-      } else {
-
-        if (!isNaN(valY[i])) {
-          this._checkY(dy + valY[i]);
-          this._checkY(dy - valY[i]);
+       for ( var i = 0, l = valY.length; i < l; i++ ) {
+         if ( Array.isArray( valY[ i ] ) ) {
+           if ( !isNaN( valY[ i ][ 0 ] ) ) {
+            this._checkY( dy + valY[ i ][ 0 ] );
+          }
+           if ( !isNaN( valY[ i ][ 1 ] ) ) {
+            this._checkY( dy - valY[ i ][ 1 ] );
+          }
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
+            this._checkY( dy + valY[ i ] );
+            this._checkY( dy - valY[ i ] );
+          }
         }
       }
-    }
-
-    for (var i = 0, l = valX.length; i < l; i++) {
-
-      if (Array.isArray(valX[i])) {
-
-        if (!isNaN(valX[i][0])) {
-          this._checkX(dx - valX[i][0]);
-        }
-
-        if (!isNaN(valX[i][1])) {
-          this._checkX(dx + valX[i][1]);
-        }
-      } else {
-
-        if (!isNaN(valY[i])) {
-          this._checkX(dx - valX[i]);
-          this._checkX(dx + valX[i]);
+       for ( var i = 0, l = valX.length; i < l; i++ ) {
+         if ( Array.isArray( valX[ i ] ) ) {
+           if ( !isNaN( valX[ i ][ 0 ] ) ) {
+            this._checkX( dx - valX[ i ][ 0 ] );
+          }
+           if ( !isNaN( valX[ i ][ 1 ] ) ) {
+            this._checkX( dx + valX[ i ][ 1 ] );
+          }
+         } else {
+           if ( !isNaN( valY[ i ] ) ) {
+            this._checkX( dx - valX[ i ] );
+            this._checkX( dx + valX[ i ] );
+          }
         }
       }
-    }
-  },
-  /**
-   *  Sets the data error values
-   */
-  setDataError: function setDataError(error, noCheck) {
-    this.error = error;
-
-    if (!noCheck) {
-      for (var i = 0, l = this.error.length; i < l; i++) {
-
-        if (this.error[i]) {
-
-          this.check(i, this.error[i][0], this.error[i][1]);
-        }
-      }
-    }
-
-    this.dataHasChanged();
-    this.graph.updateDataMinMaxAxes();
-    return this;
-  },
+     },
+  */
 
   /**
    *
    *  @example serie.setErrorStyle( [ { type: 'bar', x: {} }, { type: 'box', top: { strokeColor: 'green', fillColor: 'olive' }, bottom: { strokeColor: 'red', fillColor: "#800000" }  } ] );
    */
-  setErrorStyle: function setErrorStyle(errorstyles) {
+  setErrorBarStyle: function setErrorBarStyle(errorstyle) {
 
-    var self = this;
+    this.errorbarStyle = this._setErrorStyle(errorstyle);
+    return this;
+  },
 
-    errorstyles = errorstyles || ['box', 'bar'];
+  setErrorBoxStyle: function setErrorBoxStyle(errorstyle) {
 
-    // Ensure array
-    if (!Array.isArray(errorstyles)) {
-      errorstyles = [errorstyles];
-    }
+    this.errorboxStyle = this._setErrorStyle(errorstyle);
+    return this;
+  },
+
+  _setErrorStyle: function _setErrorStyle() {
+    var _this = this;
+
+    var errorstyles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
 
     var styles = [];
     var pairs = [['y', 'top', 'bottom'], ['x', 'left', 'right']];
 
-    function makePath(style) {
+    var makePath = function makePath(style) {
 
-      style.dom = document.createElementNS(self.graph.ns, 'path');
+      style.dom = document.createElementNS(_this.graph.ns, 'path');
       style.dom.setAttribute('fill', style.fillColor || 'none');
       style.dom.setAttribute('stroke', style.strokeColor || 'black');
       style.dom.setAttribute('stroke-opacity', style.strokeOpacity || 1);
       style.dom.setAttribute('fill-opacity', style.fillOpacity || 1);
       style.dom.setAttribute('stroke-width', style.strokeWidth || 1);
 
-      self.groupMain.appendChild(style.dom);
+      _this.groupMain.appendChild(style.dom);
+    };
+    // i is bar or box
+
+    var styles = {};
+
+    if (typeof errorstyles == "string") {
+      errorstyles = {};
     }
 
-    for (var i = 0; i < errorstyles.length; i++) {
-      // i is bar or box
+    for (var j = 0, l = pairs.length; j < l; j++) {
 
-      styles[i] = {};
+      if (errorstyles.all) {
 
-      if (typeof errorstyles[i] == "string") {
-
-        errorstyles[i] = {
-          type: errorstyles[i],
-          y: {}
-        };
+        errorstyles[pairs[j][1]] = util.extend(true, {}, errorstyles.all);
+        errorstyles[pairs[j][2]] = util.extend(true, {}, errorstyles.all);
       }
 
-      styles[i].type = errorstyles[i].type;
+      if (errorstyles[pairs[j][0]]) {
+        //.x, .y
 
-      for (var j = 0, l = pairs.length; j < l; j++) {
+        errorstyles[pairs[j][1]] = util.extend(true, {}, errorstyles[pairs[j][0]]);
+        errorstyles[pairs[j][2]] = util.extend(true, {}, errorstyles[pairs[j][0]]);
+      }
 
-        if (errorstyles[i].all) {
+      for (var k = 1; k <= 2; k++) {
 
-          errorstyles[i][pairs[j][1]] = util.extend(true, {}, errorstyles[i].all);
-          errorstyles[i][pairs[j][2]] = util.extend(true, {}, errorstyles[i].all);
-        }
+        if (errorstyles[pairs[j][k]]) {
 
-        if (errorstyles[i][pairs[j][0]]) {
-          //.x, .y
-
-          errorstyles[i][pairs[j][1]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
-          errorstyles[i][pairs[j][2]] = util.extend(true, {}, errorstyles[i][pairs[j][0]]);
-        }
-
-        for (var k = 1; k <= 2; k++) {
-
-          if (errorstyles[i][pairs[j][k]]) {
-
-            styles[i][pairs[j][k]] = errorstyles[i][pairs[j][k]];
-            makePath(styles[i][pairs[j][k]]);
-          }
+          styles[pairs[j][k]] = errorstyles[pairs[j][k]];
+          makePath(styles[pairs[j][k]]);
         }
       }
     }
-    /*
-          // None is defined
-          if( ! errorstyles[ i ].top && ! errorstyles[ i ].bottom ) {
-             styles[ i ].top = errorstyles[ i ];
-            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-            styles[ i ].bottom = errorstyles[ i ];
-            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-           } else if( errrostyles[ i ].top ) {
-             styles[ i ].bottom = null; // No bottom displayed
-            styles[ i ].top = errrostyles[ i ].top;
-            styles[ i ].top.dom = document.createElementNS( this.graph.ns, 'path' );
-           } else {
-             styles[ i ].bottom = errorstyles[ i ].bottom;
-            styles[ i ].bottom.dom = document.createElementNS( this.graph.ns, 'path' );
-            styles[ i ].top = null;
-          }
-    */
 
-    this.errorstyles = styles;
-
-    return this;
+    return styles;
   },
+
 
   errorDrawInit: function errorDrawInit() {
     var error;
     //  var pathError = "M 0 0 ";
 
-    if (this.errorstyles) {
+    if (this.errorboxStyle) {
 
-      for (var i = 0, l = this.errorstyles.length; i < l; i++) {
+      this.errorboxStyle.paths = {
+        top: "",
+        bottom: "",
+        left: "",
+        right: ""
+      };
+    }
 
-        this.errorstyles[i].paths = {
-          top: "",
-          bottom: "",
-          left: "",
-          right: ""
-        };
-      }
+    if (this.errorbarStyle) {
+
+      this.errorbarStyle.paths = {
+        top: "",
+        bottom: "",
+        left: "",
+        right: ""
+      };
     }
   },
 
-  errorAddPoint: function errorAddPoint(j, dataX, dataY, xpx, ypx) {
+  errorAddPoint: function errorAddPoint(index, dataX, dataY, xpx, ypx) {
 
-    var error;
-    if (this.error && (error = this.error[j / 2])) {
+    var error = void 0;
+    if (error = this.waveform.getErrorBarXBelow(index)) {
+      this.errorbarStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.left += this.makeBarX(this.getX(dataX - error), xpx, this.errorbarStyle.left);
+    }
 
-      //    pathError += "M " + xpx + " " + ypx;
+    if (error = this.waveform.getErrorBarXAbove(index)) {
+      this.errorbarStyle.paths.right += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.right += this.makeBarX(this.getX(dataX + error), xpx, this.errorbarStyle.right);
+    }
 
-      if (error[0]) {
-        this.doErrorDraw('y', error[0], dataY, ypx, xpx, ypx);
-      }
+    if (error = this.waveform.getErrorBarYBelow(index)) {
+      this.errorbarStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.bottom += this.makeBarY(this.getY(dataY - error), ypx, this.errorbarStyle.bottom);
+    }
 
-      if (error[1]) {
-        this.doErrorDraw('x', error[1], dataX, xpx, xpx, ypx);
-      }
+    if (error = this.waveform.getErrorBarYAbove(index)) {
+      this.errorbarStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorbarStyle.paths.top += this.makeBarY(this.getY(dataY + error), ypx, this.errorbarStyle.top);
+    }
+
+    if (error = this.waveform.getErrorBoxXBelow(index)) {
+      this.errorboxStyle.paths.left += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.left += this.makeBoxX(this.getX(dataX - error), xpx, this.errorboxStyle.left);
+    }
+
+    if (error = this.waveform.getErrorBoxXAbove(index)) {
+      this.errorboxStyle.paths.right += " M " + xpx + " " + ypx;
+
+      this.errorboxStyle.paths.right += this.makeBoxX(this.getX(dataX + error), xpx, this.errorboxStyle.right);
+    }
+
+    if (error = this.waveform.getErrorBoxYBelow(index)) {
+      this.errorboxStyle.paths.bottom += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.bottom += this.makeBoxY(this.getY(dataY - error), ypx, this.errorboxStyle.bottom);
+    }
+
+    if (error = this.waveform.getErrorBoxYAbove(index)) {
+      this.errorboxStyle.paths.top += " M " + xpx + " " + ypx;
+      this.errorboxStyle.paths.top += this.makeBoxY(this.getY(dataY + error), ypx, this.errorboxStyle.top);
     }
   },
 
@@ -15813,20 +20125,26 @@ var ErrorBarMixin = {
 
   errorDraw: function errorDraw() {
 
-    if (this.error && this.errorstyles) {
+    if (this.errorbarStyle) {
 
-      for (var i = 0, l = this.errorstyles.length; i < l; i++) {
+      for (var j in this.errorbarStyle.paths) {
 
-        for (var j in this.errorstyles[i].paths) {
+        if (this.errorbarStyle[j] && this.errorbarStyle[j].dom) {
+          this.errorbarStyle[j].dom.setAttribute('d', this.errorbarStyle.paths[j]);
+        }
+      }
+    }
 
-          if (this.errorstyles[i][j] && this.errorstyles[i][j].dom) {
-            this.errorstyles[i][j].dom.setAttribute('d', this.errorstyles[i].paths[j]);
-          }
+    if (this.errorboxStyle) {
+
+      for (var j in this.errorboxStyle.paths) {
+
+        if (this.errorboxStyle[j] && this.errorboxStyle[j].dom) {
+          this.errorboxStyle[j].dom.setAttribute('d', this.errorboxStyle.paths[j]);
         }
       }
     }
   }
-
 };
 
 exports.default = ErrorBarMixin;
@@ -16112,10 +20430,10 @@ module.exports = EventPluginRegistry;
 var _assign = __webpack_require__(5);
 
 var EventPluginRegistry = __webpack_require__(36);
-var ReactEventEmitterMixin = __webpack_require__(188);
+var ReactEventEmitterMixin = __webpack_require__(189);
 var ViewportMetrics = __webpack_require__(91);
 
-var getVendorPrefixedEventName = __webpack_require__(223);
+var getVendorPrefixedEventName = __webpack_require__(224);
 var isEventSupported = __webpack_require__(61);
 
 /**
@@ -17021,9 +21339,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(34);
+var _graphAxis = __webpack_require__(34);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17312,7 +21630,7 @@ var AxisX = function (_Axis) {
   }]);
 
   return AxisX;
-}(_graph2.default);
+}(_graphAxis2.default);
 
 exports.default = AxisX;
 
@@ -17323,161 +21641,169 @@ exports.default = AxisX;
 "use strict";
 
 
-var _graph = __webpack_require__(17);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore = __webpack_require__(17);
 
-var _graph3 = __webpack_require__(27);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graph4 = _interopRequireDefault(_graph3);
+var _graphPosition = __webpack_require__(27);
 
-var _graph5 = __webpack_require__(107);
+var _graphPosition2 = _interopRequireDefault(_graphPosition);
 
-var _graph6 = _interopRequireDefault(_graph5);
+var _graphLegend = __webpack_require__(107);
 
-var _graphAxis = __webpack_require__(44);
+var _graphLegend2 = _interopRequireDefault(_graphLegend);
 
-var _graphAxis2 = _interopRequireDefault(_graphAxis);
-
-var _graphAxis3 = __webpack_require__(67);
-
-var _graphAxis4 = _interopRequireDefault(_graphAxis3);
-
-var _graphAxisX = __webpack_require__(105);
+var _graphAxisX = __webpack_require__(44);
 
 var _graphAxisX2 = _interopRequireDefault(_graphAxisX);
 
-var _graphAxisX3 = __webpack_require__(106);
+var _graphAxisY = __webpack_require__(67);
 
-var _graphAxisX4 = _interopRequireDefault(_graphAxisX3);
+var _graphAxisY2 = _interopRequireDefault(_graphAxisY);
 
-var _graphSerie = __webpack_require__(22);
+var _graphAxisXBar = __webpack_require__(105);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphAxisXBar2 = _interopRequireDefault(_graphAxisXBar);
 
-var _graphSerieLine = __webpack_require__(121);
+var _graphAxisXTime = __webpack_require__(106);
+
+var _graphAxisXTime2 = _interopRequireDefault(_graphAxisXTime);
+
+var _graphSerieLine = __webpack_require__(22);
 
 var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-var _graphSerie3 = __webpack_require__(117);
+var _graphSerieLine3d = __webpack_require__(122);
 
-var _graphSerie4 = _interopRequireDefault(_graphSerie3);
+var _graphSerieLine3d2 = _interopRequireDefault(_graphSerieLine3d);
 
-var _graphSerie5 = __webpack_require__(118);
+var _graphSerieBar = __webpack_require__(118);
 
-var _graphSerie6 = _interopRequireDefault(_graphSerie5);
+var _graphSerieBar2 = _interopRequireDefault(_graphSerieBar);
 
-var _graphSerieLine3 = __webpack_require__(122);
+var _graphSerieBox = __webpack_require__(119);
 
-var _graphSerieLine4 = _interopRequireDefault(_graphSerieLine3);
+var _graphSerieBox2 = _interopRequireDefault(_graphSerieBox);
 
-var _graphSerie7 = __webpack_require__(69);
+var _graphSerieLineColored = __webpack_require__(123);
 
-var _graphSerie8 = _interopRequireDefault(_graphSerie7);
+var _graphSerieLineColored2 = _interopRequireDefault(_graphSerieLineColored);
 
-var _graphSerie9 = __webpack_require__(70);
+var _graphSerieScatter = __webpack_require__(69);
 
-var _graphSerie10 = _interopRequireDefault(_graphSerie9);
+var _graphSerieScatter2 = _interopRequireDefault(_graphSerieScatter);
 
-var _graphSerieZone = __webpack_require__(123);
+var _graphSerieZone = __webpack_require__(70);
 
 var _graphSerieZone2 = _interopRequireDefault(_graphSerieZone);
 
-var _graphSerie11 = __webpack_require__(120);
+var _graphSerieZone3d = __webpack_require__(124);
 
-var _graphSerie12 = _interopRequireDefault(_graphSerie11);
+var _graphSerieZone3d2 = _interopRequireDefault(_graphSerieZone3d);
 
-var _graphSerie13 = __webpack_require__(119);
+var _graphSerieDensitymap = __webpack_require__(121);
 
-var _graphSerie14 = _interopRequireDefault(_graphSerie13);
+var _graphSerieDensitymap2 = _interopRequireDefault(_graphSerieDensitymap);
 
-var _graph7 = __webpack_require__(11);
+var _graphSerieContour = __webpack_require__(120);
 
-var _graph8 = _interopRequireDefault(_graph7);
+var _graphSerieContour2 = _interopRequireDefault(_graphSerieContour);
 
-var _graphShape = __webpack_require__(124);
+var _graphShape = __webpack_require__(12);
 
 var _graphShape2 = _interopRequireDefault(_graphShape);
 
-var _graphShape3 = __webpack_require__(125);
+var _graphShapeAreaundercurve = __webpack_require__(125);
 
-var _graphShape4 = _interopRequireDefault(_graphShape3);
+var _graphShapeAreaundercurve2 = _interopRequireDefault(_graphShapeAreaundercurve);
 
-var _graphShape5 = __webpack_require__(127);
+var _graphShapeArrow = __webpack_require__(126);
 
-var _graphShape6 = _interopRequireDefault(_graphShape5);
+var _graphShapeArrow2 = _interopRequireDefault(_graphShapeArrow);
 
-var _graphShape7 = __webpack_require__(129);
+var _graphShapeEllipse = __webpack_require__(128);
 
-var _graphShape8 = _interopRequireDefault(_graphShape7);
+var _graphShapeEllipse2 = _interopRequireDefault(_graphShapeEllipse);
 
-var _graphShape9 = __webpack_require__(133);
+var _graphShapeLabel = __webpack_require__(130);
 
-var _graphShape10 = _interopRequireDefault(_graphShape9);
+var _graphShapeLabel2 = _interopRequireDefault(_graphShapeLabel);
 
-var _graphShape11 = __webpack_require__(46);
+var _graphShapePolyline = __webpack_require__(134);
 
-var _graphShape12 = _interopRequireDefault(_graphShape11);
+var _graphShapePolyline2 = _interopRequireDefault(_graphShapePolyline);
 
-var _graphShape13 = __webpack_require__(130);
+var _graphShapeLine = __webpack_require__(46);
 
-var _graphShape14 = _interopRequireDefault(_graphShape13);
+var _graphShapeLine2 = _interopRequireDefault(_graphShapeLine);
 
-var _graphShape15 = __webpack_require__(132);
+var _graphShapeNmrintegral = __webpack_require__(131);
 
-var _graphShape16 = _interopRequireDefault(_graphShape15);
+var _graphShapeNmrintegral2 = _interopRequireDefault(_graphShapeNmrintegral);
 
-var _graphShape17 = __webpack_require__(71);
+var _graphShapePeakintegration2d = __webpack_require__(133);
 
-var _graphShape18 = _interopRequireDefault(_graphShape17);
+var _graphShapePeakintegration2d2 = _interopRequireDefault(_graphShapePeakintegration2d);
 
-var _graphShape19 = __webpack_require__(126);
+var _graphShapeRect = __webpack_require__(71);
 
-var _graphShape20 = _interopRequireDefault(_graphShape19);
+var _graphShapeRect2 = _interopRequireDefault(_graphShapeRect);
 
-var _graphShape21 = __webpack_require__(131);
+var _graphShapeCross = __webpack_require__(127);
 
-var _graphShape22 = _interopRequireDefault(_graphShape21);
+var _graphShapeCross2 = _interopRequireDefault(_graphShapeCross);
 
-var _graphShape23 = __webpack_require__(128);
+var _graphShapePeakboundariescenter = __webpack_require__(132);
 
-var _graphShape24 = _interopRequireDefault(_graphShape23);
+var _graphShapePeakboundariescenter2 = _interopRequireDefault(_graphShapePeakboundariescenter);
 
-var _graph9 = __webpack_require__(14);
+var _graphShapeHtml = __webpack_require__(129);
 
-var _graph10 = _interopRequireDefault(_graph9);
+var _graphShapeHtml2 = _interopRequireDefault(_graphShapeHtml);
 
-var _graphPlugin = __webpack_require__(110);
+var _graphPlugin = __webpack_require__(11);
 
 var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-var _graphPlugin3 = __webpack_require__(114);
+var _graphPluginDrag = __webpack_require__(110);
 
-var _graphPlugin4 = _interopRequireDefault(_graphPlugin3);
+var _graphPluginDrag2 = _interopRequireDefault(_graphPluginDrag);
 
-var _graphPlugin5 = __webpack_require__(112);
+var _graphPluginShape = __webpack_require__(115);
 
-var _graphPlugin6 = _interopRequireDefault(_graphPlugin5);
+var _graphPluginShape2 = _interopRequireDefault(_graphPluginShape);
 
-var _graphPlugin7 = __webpack_require__(116);
+var _graphPluginSelectScatter = __webpack_require__(113);
 
-var _graphPlugin8 = _interopRequireDefault(_graphPlugin7);
+var _graphPluginSelectScatter2 = _interopRequireDefault(_graphPluginSelectScatter);
 
-var _graphPlugin9 = __webpack_require__(115);
+var _graphPluginZoom = __webpack_require__(117);
 
-var _graphPlugin10 = _interopRequireDefault(_graphPlugin9);
+var _graphPluginZoom2 = _interopRequireDefault(_graphPluginZoom);
 
-var _graphPlugin11 = __webpack_require__(113);
+var _graphPluginTimeseriemanager = __webpack_require__(116);
 
-var _graphPlugin12 = _interopRequireDefault(_graphPlugin11);
+var _graphPluginTimeseriemanager2 = _interopRequireDefault(_graphPluginTimeseriemanager);
 
-var _graphPlugin13 = __webpack_require__(109);
+var _graphPluginSerielinedifference = __webpack_require__(114);
 
-var _graphPlugin14 = _interopRequireDefault(_graphPlugin13);
+var _graphPluginSerielinedifference2 = _interopRequireDefault(_graphPluginSerielinedifference);
 
-var _graphPlugin15 = __webpack_require__(111);
+var _graphPluginAxissplitting = __webpack_require__(109);
 
-var _graphPlugin16 = _interopRequireDefault(_graphPlugin15);
+var _graphPluginAxissplitting2 = _interopRequireDefault(_graphPluginAxissplitting);
+
+var _graphPluginMakeTracesDifferent = __webpack_require__(111);
+
+var _graphPluginMakeTracesDifferent2 = _interopRequireDefault(_graphPluginMakeTracesDifferent);
+
+var _graphPluginPeakPicking = __webpack_require__(112);
+
+var _graphPluginPeakPicking2 = _interopRequireDefault(_graphPluginPeakPicking);
 
 var _waveform = __webpack_require__(18);
 
@@ -17491,71 +21817,72 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 // Corrent naming is important here !
 
-_graph2.default.registerConstructor("graph.position", _graph4.default);
+_graphCore2.default.registerConstructor("graph.position", _graphPosition2.default);
 
-_graph2.default.registerConstructor("graph.axis.x", _graphAxis2.default);
-_graph2.default.registerConstructor("graph.axis.y", _graphAxis4.default);
-_graph2.default.registerConstructor("graph.axis.x.bar", _graphAxisX2.default);
-_graph2.default.registerConstructor("graph.axis.x.time", _graphAxisX4.default);
+_graphCore2.default.registerConstructor("graph.axis.x", _graphAxisX2.default);
+_graphCore2.default.registerConstructor("graph.axis.y", _graphAxisY2.default);
+_graphCore2.default.registerConstructor("graph.axis.x.bar", _graphAxisXBar2.default);
+_graphCore2.default.registerConstructor("graph.axis.x.time", _graphAxisXTime2.default);
 
-_graph2.default.registerConstructor("graph.serie.line", _graphSerie2.default);
-_graph2.default.registerConstructor("graph.serie.line.3d", _graphSerieLine2.default);
-_graph2.default.registerConstructor("graph.serie.line.color", _graphSerieLine4.default);
-_graph2.default.registerConstructor("graph.serie.contour", _graphSerie14.default);
-_graph2.default.registerConstructor("graph.serie.bar", _graphSerie4.default);
-_graph2.default.registerConstructor("graph.serie.box", _graphSerie6.default);
-_graph2.default.registerConstructor("graph.serie.scatter", _graphSerie8.default);
-_graph2.default.registerConstructor("graph.serie.zone", _graphSerie10.default);
-_graph2.default.registerConstructor("graph.serie.zone.3d", _graphSerieZone2.default);
-_graph2.default.registerConstructor("graph.serie.densitymap", _graphSerie12.default);
+_graphCore2.default.registerConstructor("graph.serie.line", _graphSerieLine2.default);
+_graphCore2.default.registerConstructor("graph.serie.line.3d", _graphSerieLine3d2.default);
+_graphCore2.default.registerConstructor("graph.serie.line.color", _graphSerieLineColored2.default);
+_graphCore2.default.registerConstructor("graph.serie.contour", _graphSerieContour2.default);
+_graphCore2.default.registerConstructor("graph.serie.bar", _graphSerieBar2.default);
+_graphCore2.default.registerConstructor("graph.serie.box", _graphSerieBox2.default);
+_graphCore2.default.registerConstructor("graph.serie.scatter", _graphSerieScatter2.default);
+_graphCore2.default.registerConstructor("graph.serie.zone", _graphSerieZone2.default);
+_graphCore2.default.registerConstructor("graph.serie.zone.3d", _graphSerieZone3d2.default);
+_graphCore2.default.registerConstructor("graph.serie.densitymap", _graphSerieDensitymap2.default);
 
-_graph2.default.registerConstructor(_graph2.default.SERIE_LINE, _graphSerie2.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_LINE_3D, _graphSerieLine2.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_LINE_COLORED, _graphSerieLine4.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_CONTOUR, _graphSerie14.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_BAR, _graphSerie4.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_BOX, _graphSerie6.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_SCATTER, _graphSerie8.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_ZONE, _graphSerie10.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_ZONE_3D, _graphSerieZone2.default);
-_graph2.default.registerConstructor(_graph2.default.SERIE_DENSITYMAP, _graphSerie12.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_LINE, _graphSerieLine2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_LINE_3D, _graphSerieLine3d2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_LINE_COLORED, _graphSerieLineColored2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_CONTOUR, _graphSerieContour2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_BAR, _graphSerieBar2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_BOX, _graphSerieBox2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_SCATTER, _graphSerieScatter2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_ZONE, _graphSerieZone2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_ZONE_3D, _graphSerieZone3d2.default);
+_graphCore2.default.registerConstructor(_graphCore2.default.SERIE_DENSITYMAP, _graphSerieDensitymap2.default);
 
 //Graph.registerConstructor( "graph.serie.line.broken", GraphSerieLineBroken );
 
-_graph2.default.registerConstructor("graph.plugin.shape", _graphPlugin4.default);
-_graph2.default.registerConstructor("graph.plugin.drag", _graphPlugin2.default);
-_graph2.default.registerConstructor("graph.plugin.zoom", _graphPlugin8.default);
-_graph2.default.registerConstructor("graph.plugin.selectScatter", _graphPlugin6.default);
-_graph2.default.registerConstructor("graph.plugin.timeSerieManager", _graphPlugin10.default);
-_graph2.default.registerConstructor("graph.plugin.serielinedifference", _graphPlugin12.default);
-_graph2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPlugin12.default);
-_graph2.default.registerConstructor("graph.plugin.axissplitting", _graphPlugin14.default);
-_graph2.default.registerConstructor("graph.plugin.makeTracesDifferent", _graphPlugin16.default);
+_graphCore2.default.registerConstructor("graph.plugin.shape", _graphPluginShape2.default);
+_graphCore2.default.registerConstructor("graph.plugin.drag", _graphPluginDrag2.default);
+_graphCore2.default.registerConstructor("graph.plugin.zoom", _graphPluginZoom2.default);
+_graphCore2.default.registerConstructor("graph.plugin.selectScatter", _graphPluginSelectScatter2.default);
+_graphCore2.default.registerConstructor("graph.plugin.timeSerieManager", _graphPluginTimeseriemanager2.default);
+_graphCore2.default.registerConstructor("graph.plugin.serielinedifference", _graphPluginSerielinedifference2.default);
+_graphCore2.default.registerConstructor("graph.plugin.serieLineDifference", _graphPluginSerielinedifference2.default);
+_graphCore2.default.registerConstructor("graph.plugin.axissplitting", _graphPluginAxissplitting2.default);
+_graphCore2.default.registerConstructor("graph.plugin.makeTracesDifferent", _graphPluginMakeTracesDifferent2.default);
+_graphCore2.default.registerConstructor("graph.plugin.peakPicking", _graphPluginPeakPicking2.default);
 
-_graph2.default.registerConstructor("graph.shape", _graph8.default);
-_graph2.default.registerConstructor("graph.shape.areaundercurve", _graphShape2.default);
-_graph2.default.registerConstructor("graph.shape.arrow", _graphShape4.default);
-_graph2.default.registerConstructor("graph.shape.ellipse", _graphShape6.default);
-_graph2.default.registerConstructor("graph.shape.label", _graphShape8.default);
-_graph2.default.registerConstructor("graph.shape.polyline", _graphShape10.default);
-_graph2.default.registerConstructor("graph.shape.line", _graphShape12.default);
-_graph2.default.registerConstructor("graph.shape.nmrintegral", _graphShape14.default);
-_graph2.default.registerConstructor("graph.shape.html", _graphShape24.default);
-_graph2.default.registerConstructor("graph.shape.peakintegration2d", _graphShape16.default);
+_graphCore2.default.registerConstructor("graph.shape", _graphShape2.default);
+_graphCore2.default.registerConstructor("graph.shape.areaundercurve", _graphShapeAreaundercurve2.default);
+_graphCore2.default.registerConstructor("graph.shape.arrow", _graphShapeArrow2.default);
+_graphCore2.default.registerConstructor("graph.shape.ellipse", _graphShapeEllipse2.default);
+_graphCore2.default.registerConstructor("graph.shape.label", _graphShapeLabel2.default);
+_graphCore2.default.registerConstructor("graph.shape.polyline", _graphShapePolyline2.default);
+_graphCore2.default.registerConstructor("graph.shape.line", _graphShapeLine2.default);
+_graphCore2.default.registerConstructor("graph.shape.nmrintegral", _graphShapeNmrintegral2.default);
+_graphCore2.default.registerConstructor("graph.shape.html", _graphShapeHtml2.default);
+_graphCore2.default.registerConstructor("graph.shape.peakintegration2d", _graphShapePeakintegration2d2.default);
 //  Graph.registerConstructor( "graph.shape.peakinterval", GraphShapePeakInterval );
 //  Graph.registerConstructor( "graph.shape.peakinterval2", GraphShapePeakInterval2 );
 //  Graph.registerConstructor( "graph.shape.rangex", GraphShapeRangeX );
-_graph2.default.registerConstructor("graph.shape.rect", _graphShape18.default);
-_graph2.default.registerConstructor("graph.shape.rectangle", _graphShape18.default);
-_graph2.default.registerConstructor("graph.shape.cross", _graphShape20.default);
+_graphCore2.default.registerConstructor("graph.shape.rect", _graphShapeRect2.default);
+_graphCore2.default.registerConstructor("graph.shape.rectangle", _graphShapeRect2.default);
+_graphCore2.default.registerConstructor("graph.shape.cross", _graphShapeCross2.default);
 //Graph.registerConstructor( "graph.shape.zoom2d", GraphShapeZoom2D );
-_graph2.default.registerConstructor("graph.shape.peakboundariescenter", _graphShape22.default);
+_graphCore2.default.registerConstructor("graph.shape.peakboundariescenter", _graphShapePeakboundariescenter2.default);
 
 //   Graph.registerConstructor( "graph.toolbar", GraphToolbar );
-_graph2.default.registerConstructor("graph.legend", _graph6.default);
-_graph2.default.registerConstructor("graph.waveform", _waveform2.default);
+_graphCore2.default.registerConstructor("graph.legend", _graphLegend2.default);
+_graphCore2.default.registerConstructor("graph.waveform", _waveform2.default);
 
-module.exports = _graph2.default;
+exports.default = _graphCore2.default;
 
 /***/ }),
 /* 46 */
@@ -17570,9 +21897,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17810,7 +22137,7 @@ var ShapeLine = function (_GraphShape) {
   }]);
 
   return ShapeLine;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeLine;
 
@@ -17919,7 +22246,7 @@ if (process.env.NODE_ENV !== 'production') {
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
-  module.exports = __webpack_require__(154)();
+  module.exports = __webpack_require__(155)();
 }
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
@@ -17942,7 +22269,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 var DOMLazyTree = __webpack_require__(23);
-var Danger = __webpack_require__(161);
+var Danger = __webpack_require__(162);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(10);
 
@@ -18773,10 +23100,10 @@ module.exports = ReactErrorUtils;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -20825,9 +25152,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(34);
+var _graphAxis = __webpack_require__(34);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21258,7 +25585,7 @@ var AxisY = function (_Axis) {
   }]);
 
   return AxisY;
-}(_graph2.default);
+}(_graphAxis2.default);
 
 exports.default = AxisY;
 
@@ -21425,17 +25752,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(28);
+var _graphSerie = __webpack_require__(28);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graphMixin = __webpack_require__(35);
+var _graphMixinErrorbars = __webpack_require__(35);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -21499,12 +25826,12 @@ var SerieScatter = function (_Serie) {
 
     _this.groupPoints.addEventListener('mouseover', function (e) {
       var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      _this.emit("mouseover", id, _this.data[id * 2], _this.data[id * 2 + 1]);
+      _this.emit("mouseover", id, _this.waveform.getX(id), _this.waveform.getY(id));
     });
 
     _this.groupPoints.addEventListener('mouseout', function (e) {
       var id = parseInt(e.target.parentElement.getAttribute('data-shapeid'));
-      _this.emit("mouseout", id, _this.data[id * 2], _this.data[id * 2 + 1]);
+      _this.emit("mouseout", id, _this.waveform.getX(id), _this.waveform.getY(id));
     });
 
     _this.minX = Number.MAX_VALUE;
@@ -21545,116 +25872,48 @@ var SerieScatter = function (_Serie) {
   }
 
   /**
-   * Sets data to the serie. The data serie is the same one than for a line serie, however the object definition is not available here
-   * @see GraphSerie#setData
+   * Applies for x as the category axis
+   * @example serie.setDataCategory( { x: "someName", y: Waveform } );
    */
 
 
   _createClass(SerieScatter, [{
-    key: 'setData',
-    value: function setData(data, oneDimensional, type) {
-
-      var z = 0,
-          x,
-          dx,
-          oneDimensional = oneDimensional || "2D",
-          type = type || 'float',
-          arr,
-          total = 0,
-          continuous;
-
-      this.empty();
-      this.shapesDetails = [];
-      this.shapes = [];
-
-      if (!data instanceof Array) {
-        return this;
-      }
-
-      if (data instanceof Array && !(data[0] instanceof Array) && _typeof(data[0]) !== "object") {
-        // [100, 103, 102, 2143, ...]
-        oneDimensional = "1D";
-      }
-
-      var _2d = oneDimensional == "2D";
-
-      arr = this._addData(type, _2d ? data.length * 2 : data.length);
-
-      z = 0;
-
-      for (var j = 0, l = data.length; j < l; j++) {
-
-        if (_2d) {
-          arr[z] = data[j][0];
-          this._checkX(arr[z]);
-          z++;
-          arr[z] = data[j][1];
-          this._checkY(arr[z]);
-          z++;
-          total++;
-        } else {
-          // 1D Array
-          arr[z] = data[j];
-          this[j % 2 == 0 ? '_checkX' : '_checkY'](arr[z]);
-          z++;
-          total += j % 2 ? 1 : 0;
-        }
-      }
-
-      this.dataHasChanged();
-      this.graph.updateDataMinMaxAxes();
-
-      this.data = arr;
-
-      return this;
-    }
-
-    /**
-     * Applies for x as the category axis
-     * @example serie.setData( { x: "someName", y: [ ...values ] } );
-     */
-
-  }, {
     key: 'setDataCategory',
     value: function setDataCategory(data) {
 
-      for (var i in data) {
+      var minY = +Infinity;
+      var maxY = -Infinity;
 
-        if (Array.isArray(data[i].y)) {
-          var _iteratorNormalCompletion = true;
-          var _didIteratorError = false;
-          var _iteratorError = undefined;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-          try {
-
-            for (var _iterator = data[i].y[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-              var j = _step.value;
+      try {
+        for (var _iterator = data[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var dataCategory = _step.value;
 
 
-              this._checkY(j);
-            }
-          } catch (err) {
-            _didIteratorError = true;
-            _iteratorError = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion && _iterator.return) {
-                _iterator.return();
-              }
-            } finally {
-              if (_didIteratorError) {
-                throw _iteratorError;
-              }
-            }
+          this._checkY(dataCategory.y.getMaxY());
+          this._checkY(dataCategory.y.getMinY());
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
           }
         }
       }
 
+      this.data = data;
       this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
-
-      this.data = data;
-
       return this;
     }
 
@@ -21714,16 +25973,15 @@ var SerieScatter = function (_Serie) {
 
   }, {
     key: 'setStyle',
-    value: function setStyle(all, modifiers, mode) {
+    value: function setStyle(all, modifiers) {
+      var mode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "unselected";
+
 
       if (typeof modifiers == "string") {
         mode = modifiers;
         modifiers = false;
       }
 
-      if (mode === undefined) {
-        mode = "unselected";
-      }
       /*
       if( ! this.styles[ mode ] ) {
        }
@@ -21731,6 +25989,7 @@ var SerieScatter = function (_Serie) {
         throw "Style mode is not correct. Should be selected or unselected";
       }
       */
+
       this.styles[mode] = this.styles[mode] || {};
       this.styles[mode].all = all;
       this.styles[mode].modifiers = modifiers;
@@ -21771,25 +26030,14 @@ var SerieScatter = function (_Serie) {
 
       this.dataHasChanged(false);
       this.styleHasChanged(false);
-
       this.groupMain.removeChild(this.groupPoints);
 
-      var incrXFlip = 0;
-      var incrYFlip = 1;
-
-      if (this.getFlip()) {
-        incrXFlip = 1;
-        incrYFlip = 0;
-      }
-
-      var totalLength = this.data.length / 2;
       var keys = [];
 
       j = 0;
       k = 0;
-      m = this.data.length;
 
-      if (this.error) {
+      if (this.hasErrors()) {
         this.errorDrawInit();
       }
 
@@ -21797,85 +26045,64 @@ var SerieScatter = function (_Serie) {
 
         var _k = 0;
 
-        for (; j < m; j += 1) {
+        for (; j < this.data.length; j++) {
 
           if (!this.categoryIndices.hasOwnProperty(this.data[j].x)) {
             continue;
           }
 
-          //     let position = calculatePosition( categoryNumber, this.order, this.nbSeries, this.categories.length );
-
-          //xpx = this.getX( categoryNumber );
-
-          var ys = this.data[j].y,
-              l = ys.length,
-              i = 0;
-
           if (this.error) {
             //   this.errorAddPoint( j, position[ 0 ] + position[ 1 ] / 2, 0, this.getX( position[ 0 ] + position[ 1 ] / 2 ), ypx );
           }
 
-          var _iteratorNormalCompletion2 = true;
-          var _didIteratorError2 = false;
-          var _iteratorError2 = undefined;
+          for (var n = 0, l = this.data[j].y.getLength(); n < l; n++) {
 
-          try {
-            for (var _iterator2 = this.data[j].y[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-              var _y = _step2.value;
+            //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
 
+            ypx = this.getY(this.data[j].y.getY(n));
+            xpx = this.getX(n / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories);
+            n++;
 
-              //let xpos = i / ( l - 1 ) * ( position[ 1 ] ) + position[ 0 ];
-              var xpos = i / (l - 1) * (0.8 / this.nbCategories) + this.categoryIndices[this.data[j].x] + 0.1 / this.nbCategories;
-
-              ypx = this.getY(_y);
-              xpx = this.getX(xpos);
-              i++;
-
-              this.shapesDetails[_k] = this.shapesDetails[_k] || [];
-              this.shapesDetails[_k][0] = xpx;
-              this.shapesDetails[_k][1] = ypx;
-              keys.push(_k);
-              _k++;
-            }
-          } catch (err) {
-            _didIteratorError2 = true;
-            _iteratorError2 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                _iterator2.return();
-              }
-            } finally {
-              if (_didIteratorError2) {
-                throw _iteratorError2;
-              }
-            }
+            this.shapesDetails[_k] = this.shapesDetails[_k] || [];
+            this.shapesDetails[_k][0] = xpx;
+            this.shapesDetails[_k][1] = ypx;
+            keys.push(_k);
+            _k++;
           }
         }
       } else {
-        for (; j < m; j += 2) {
 
-          if (this.data[j + incrXFlip] < this.getXAxis().getCurrentMin() || this.data[j + incrXFlip] > this.getXAxis().getCurrentMax() || this.data[j + incrYFlip] < this.getYAxis().getCurrentMin() || this.data[j + incrYFlip] > this.getYAxis().getCurrentMax()) {
+        for (; j < this.waveform.getLength(); j++) {
+
+          if (this.waveform.getX(j) < this.getXAxis().getCurrentMin() || this.waveform.getX(j) > this.getXAxis().getCurrentMax() || this.waveform.getY(j) < this.getYAxis().getCurrentMin() || this.waveform.getY(j) > this.getYAxis().getCurrentMax()) {
+
+            if (this.shapes[j]) {
+              this.shapes[j].setAttribute('display', 'none');
+            }
             continue;
           }
 
-          xpx = this.getX(this.data[j + incrXFlip]);
-          ypx = this.getY(this.data[j + incrYFlip]);
-
-          if (this.error) {
-            this.errorAddPoint(j, this.data[j + incrXFlip], this.data[j + incrYFlip], xpx, ypx);
+          if (this.shapes[j]) {
+            this.shapes[j].setAttribute('display', 'initial');
           }
 
-          this.shapesDetails[j / 2] = this.shapesDetails[j / 2] || [];
-          this.shapesDetails[j / 2][0] = xpx;
-          this.shapesDetails[j / 2][1] = ypx;
-          keys.push(j / 2);
+          xpx = this.getX(this.waveform.getX(j));
+          ypx = this.getY(this.waveform.getY(j));
+
+          if (this.hasErrors()) {
+            this.errorAddPoint(j, this.waveform.getX(j), this.waveform.getY(j), xpx, ypx);
+          }
+
+          this.shapesDetails[j] = this.shapesDetails[j] || [];
+          this.shapesDetails[j][0] = xpx;
+          this.shapesDetails[j][1] = ypx;
+          keys.push(j);
 
           //this.shapes[ j / 2 ] = this.shapes[ j / 2 ] ||  undefined;
         }
       }
 
-      if (this.error) {
+      if (this.hasErrors()) {
         this.errorDraw();
       }
 
@@ -21962,8 +26189,7 @@ var SerieScatter = function (_Serie) {
             style = modifier[index];
           }
 
-          var tmp = util.extend({}, styleAll, style);
-          style = util.extend(style, tmp);
+          Object.assign(style, styleAll, style);
         } else if (styleAll !== undefined) {
 
           style = styleAll;
@@ -22074,9 +26300,9 @@ var SerieScatter = function (_Serie) {
   }]);
 
   return SerieScatter;
-}(_graph2.default);
+}(_graphSerie2.default);
 
-util.mix(SerieScatter, _graphMixin2.default);
+util.mix(SerieScatter, _graphMixinErrorbars2.default);
 
 exports.default = SerieScatter;
 
@@ -22093,15 +26319,15 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(28);
+var _graphSerie = __webpack_require__(28);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
 var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22137,7 +26363,7 @@ var SerieZone = function (_Serie) {
     var _this = _possibleConstructorReturn(this, (SerieZone.__proto__ || Object.getPrototypeOf(SerieZone)).apply(this, arguments));
 
     _this.selectionType = "unselected";
-    _this.id = (0, _graph3.guid)();
+    _this.id = (0, _graphUtil.guid)();
 
     _this.groupZones = document.createElementNS(_this.graph.ns, 'g');
     _this.groupMain = document.createElementNS(_this.graph.ns, 'g');
@@ -22152,7 +26378,7 @@ var SerieZone = function (_Serie) {
     _this.styleHasChanged();
 
     _this.clip = document.createElementNS(_this.graph.ns, 'clipPath');
-    _this.clipId = (0, _graph3.guid)();
+    _this.clipId = (0, _graphUtil.guid)();
     _this.clip.setAttribute('id', _this.clipId);
 
     _this.graph.defs.appendChild(_this.clip);
@@ -22334,7 +26560,9 @@ var SerieZone = function (_Serie) {
           }
         }
 
-        this.lineZone.setAttribute('d', "M " + line + " z");
+        if (line !== "") {
+          this.lineZone.setAttribute('d', "M " + line + " z");
+        }
         this.groupMain.appendChild(this.groupZones);
       }
 
@@ -22499,7 +26727,7 @@ var SerieZone = function (_Serie) {
   }]);
 
   return SerieZone;
-}(_graph2.default);
+}(_graphSerie2.default);
 
 exports.default = SerieZone;
 
@@ -22518,13 +26746,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -22885,7 +27113,7 @@ var ShapeRectangle = function (_GraphShape) {
   }]);
 
   return ShapeRectangle;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeRectangle;
 
@@ -22936,25 +27164,25 @@ var FitHost = function () {
 
 
   _createClass(FitHost, [{
-    key: 'setYData',
+    key: "setYData",
     value: function setYData(data) {
       // Waveform instance
       this.data = data;
     }
   }, {
-    key: 'setXData',
+    key: "setXData",
     value: function setXData(data) {
       // Waveform instance
       this.dataX = data;
     }
   }, {
-    key: 'setWeight',
+    key: "setWeight",
     value: function setWeight(weight) {
       // Waveform instance
       this.weight = weight;
     }
   }, {
-    key: 'setInitialParams',
+    key: "setInitialParams",
     value: function setInitialParams(params) {
       var _this = this;
 
@@ -22970,7 +27198,7 @@ var FitHost = function () {
       this.NPARMS = params.length;
     }
   }, {
-    key: 'setSubset',
+    key: "setSubset",
     value: function setSubset(fromIndex, toIndex) {
       if (fromIndex !== undefined && toIndex !== undefined) {
         this._from = fromIndex;
@@ -22978,7 +27206,7 @@ var FitHost = function () {
       }
     }
   }, {
-    key: 'hookIteration',
+    key: "hookIteration",
     value: function hookIteration(f) {
       var _this2 = this;
 
@@ -22988,12 +27216,12 @@ var FitHost = function () {
       };
     }
   }, {
-    key: 'setFunction',
+    key: "setFunction",
     value: function setFunction(func) {
       this._func = func;
     }
   }, {
-    key: 'init',
+    key: "init",
     value: function init() {
       var _this3 = this;
 
@@ -23039,7 +27267,7 @@ var FitHost = function () {
       });
     }
   }, {
-    key: 'fit',
+    key: "fit",
     value: function fit() {
 
       this.log("Starting the fit with initial parameter list {" + this.parms.join() + "};");
@@ -23055,12 +27283,12 @@ var FitHost = function () {
       return this._result;
     }
   }, {
-    key: 'func',
+    key: "func",
     value: function func(x, param) {
       return this._func(x, param);
     }
   }, {
-    key: 'computeResiduals',
+    key: "computeResiduals",
     value: function computeResiduals() {
       var sumsq = 0;
       for (var i = 0; i < this.NPTS; i++) {
@@ -23071,7 +27299,7 @@ var FitHost = function () {
       return sumsq;
     }
   }, {
-    key: 'log',
+    key: "log",
     value: function log(message) {
       console.log(message);
     }
@@ -23079,7 +27307,7 @@ var FitHost = function () {
     //------the four mandated interface methods------------
 
   }, {
-    key: 'nudge',
+    key: "nudge",
     value: function nudge(dp) {
 
       for (var j = 0; j < this.NPARMS; j++) {
@@ -23088,7 +27316,7 @@ var FitHost = function () {
       return this.computeResiduals();
     }
   }, {
-    key: 'buildJacobian',
+    key: "buildJacobian",
     value: function buildJacobian() {
       // Allows LM to compute a new Jacobian.
       // Uses current parms[] and two-sided finite difference.
@@ -23134,36 +27362,32 @@ var FitHost = function () {
       return true;
     }
   }, {
-    key: 'getResidualElement',
+    key: "getResidualElement",
     value: function getResidualElement(i) {
       // Allows LM to see one element of the resid[] vector.
       return this.resid[i];
     }
   }, {
-    key: 'getJacobianElement',
+    key: "getJacobianElement",
     value: function getJacobianElement(i, j) {
       // Allows LM to see one element of the Jacobian matrix.
       return this.jac[i][j];
     }
   }, {
-    key: 'buildFit',
+    key: "buildFit",
     value: function buildFit(parms, length) {
-      var _this4 = this;
-
       var x = void 0;
 
       if (!length) {
         x = this.arrX;
       } else {
-        (function () {
 
-          var xmin = _this4.dataX.getMin(_this4._from, _this4._to);
-          var xmax = _this4.dataX.getMax(_this4._from, _this4._to);
+        var xmin = this.dataX.getMin(this._from, this._to);
+        var xmax = this.dataX.getMax(this._from, this._to);
 
-          x = new Array(length).fill(0).map(function (el, index) {
-            return index * (xmax - xmin) / (length - 1) + xmin;
-          });
-        })();
+        x = new Array(length).fill(0).map(function (el, index) {
+          return index * (xmax - xmin) / (length - 1) + xmin;
+        });
       }
 
       var fit = new Array(x.length);
@@ -23184,7 +27408,7 @@ var FitHost = function () {
 
 var LM = function () {
   function LM(gH, gnadj, gnpnts, hook) {
-    var _this5 = this;
+    var _this4 = this;
 
     _classCallCheck(this, LM);
 
@@ -23221,10 +27445,10 @@ var LM = function () {
     this.amatrix = new Array(this.nadj).fill(0);
 
     this.alpha = this.alpha.map(function () {
-      return new Array(_this5.nadj);
+      return new Array(_this4.nadj);
     });
     this.amatrix = this.amatrix.map(function () {
-      return new Array(_this5.nadj);
+      return new Array(_this4.nadj);
     });
 
     this.lambda = this.LAMBDAZERO;
@@ -23243,7 +27467,7 @@ var LM = function () {
   }
 
   _createClass(LM, [{
-    key: 'bLMiter',
+    key: "bLMiter",
     value: function bLMiter() {
       // Each call performs one LM iteration.
       // Returns true if done with iterations; false=wants more.
@@ -23324,7 +27548,7 @@ var LM = function () {
       return rrise > -this.LMTOL || this.lambda > this.LAMBDAMAX;
     }
   }, {
-    key: 'gaussj',
+    key: "gaussj",
     value: function gaussj(a, N) {
       // Inverts the double array a[N][N] by Gauss-Jordan method
       // M.Lampton UCB SSL (c)2003, 2005
@@ -23396,6 +27620,7 @@ var LM = function () {
 }();
 
 exports.default = FitHost;
+//module.export = FitHost
 
 /***/ }),
 /* 73 */
@@ -23612,7 +27837,7 @@ var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
 var ReactPropTypesSecret = __webpack_require__(78);
-var checkPropTypes = __webpack_require__(153);
+var checkPropTypes = __webpack_require__(154);
 
 module.exports = function(isValidElement, throwOnDirectAccess) {
   /* global Symbol */
@@ -24397,7 +28622,7 @@ var DOMProperty = __webpack_require__(16);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(10);
 
-var quoteAttributeValueForBrowser = __webpack_require__(224);
+var quoteAttributeValueForBrowser = __webpack_require__(225);
 var warning = __webpack_require__(2);
 
 var VALID_ATTRIBUTE_NAME_REGEX = new RegExp('^[' + DOMProperty.ATTRIBUTE_NAME_START_CHAR + '][' + DOMProperty.ATTRIBUTE_NAME_CHAR + ']*$');
@@ -24663,7 +28888,7 @@ var _assign = __webpack_require__(5);
 
 var LinkedValueUtils = __webpack_require__(53);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var warning = __webpack_require__(2);
 
@@ -25001,9 +29226,9 @@ module.exports = ReactHostComponent;
 
 
 
-var ReactDOMSelection = __webpack_require__(179);
+var ReactDOMSelection = __webpack_require__(180);
 
-var containsNode = __webpack_require__(141);
+var containsNode = __webpack_require__(142);
 var focusNode = __webpack_require__(74);
 var getActiveElement = __webpack_require__(75);
 
@@ -25136,17 +29361,17 @@ var DOMLazyTree = __webpack_require__(23);
 var DOMProperty = __webpack_require__(16);
 var React = __webpack_require__(25);
 var ReactBrowserEventEmitter = __webpack_require__(37);
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMContainerInfo = __webpack_require__(171);
-var ReactDOMFeatureFlags = __webpack_require__(173);
+var ReactDOMContainerInfo = __webpack_require__(172);
+var ReactDOMFeatureFlags = __webpack_require__(174);
 var ReactFeatureFlags = __webpack_require__(85);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactMarkupChecksum = __webpack_require__(193);
+var ReactMarkupChecksum = __webpack_require__(194);
 var ReactReconciler = __webpack_require__(24);
 var ReactUpdateQueue = __webpack_require__(56);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var emptyObject = __webpack_require__(29);
 var instantiateReactComponent = __webpack_require__(96);
@@ -25950,11 +30175,11 @@ module.exports = getTextContentAccessor;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var ReactCompositeComponent = __webpack_require__(168);
+var ReactCompositeComponent = __webpack_require__(169);
 var ReactEmptyComponent = __webpack_require__(84);
 var ReactHostComponent = __webpack_require__(86);
 
-var getNextDebugID = __webpack_require__(236);
+var getNextDebugID = __webpack_require__(237);
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
 
@@ -26197,10 +30422,10 @@ module.exports = setTextContent;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(13);
-var REACT_ELEMENT_TYPE = __webpack_require__(187);
+var ReactCurrentOwner = __webpack_require__(14);
+var REACT_ELEMENT_TYPE = __webpack_require__(188);
 
-var getIteratorFn = __webpack_require__(221);
+var getIteratorFn = __webpack_require__(222);
 var invariant = __webpack_require__(1);
 var KeyEscapeUtils = __webpack_require__(52);
 var warning = __webpack_require__(2);
@@ -26409,11 +30634,11 @@ module.exports = REACT_ELEMENT_TYPE;
 
 
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactComponentTreeHook = __webpack_require__(8);
 var ReactElement = __webpack_require__(20);
 
-var checkReactTypeSpec = __webpack_require__(235);
+var checkReactTypeSpec = __webpack_require__(236);
 
 var canDefineProperty = __webpack_require__(42);
 var getIteratorFn = __webpack_require__(103);
@@ -26729,10 +30954,10 @@ module.exports = getIteratorFn;
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(155);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(156);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__ = __webpack_require__(135);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_extend__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_extend__ = __webpack_require__(139);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_extend___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_extend__);
 
 
@@ -26777,7 +31002,8 @@ Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg")]).the
 
 	const options = {
 		minThresholdPeakToPeak: 0.01,
-		toolbar: true
+		toolbar: true,
+		legend: true
 	};
 
 	textarea.addEventListener("change", function () {
@@ -26789,10 +31015,10 @@ Promise.all([fetch("nmr1.json"), fetch("nmr2.json"), fetch("molecule.svg")]).the
 			return serie;
 		});
 
-		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', options: options, molecule: molecule, series: json, onChanged: serieChanged }), document.getElementById('root'));
+		__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '800', height: '600', options: options, molecule: molecule, series: json, onChanged: serieChanged }), document.getElementById('root'));
 	});
 
-	__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '600', height: '400', options: options, series: series, molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
+	__WEBPACK_IMPORTED_MODULE_1_react_dom___default.a.render(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__nmr1d_jsx__["a" /* default */], { width: '800', height: '600', options: options, series: series, molecule: molecule, onChanged: serieChanged }), document.getElementById('root'));
 });
 
 /***/ }),
@@ -26810,9 +31036,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphAxis = __webpack_require__(44);
+var _graphAxisX = __webpack_require__(44);
 
-var _graphAxis2 = _interopRequireDefault(_graphAxis);
+var _graphAxisX2 = _interopRequireDefault(_graphAxisX);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27047,7 +31273,7 @@ var AxisXBar = function (_AxisX) {
   }]);
 
   return AxisXBar;
-}(_graphAxis2.default);
+}(_graphAxisX2.default);
 
 exports.default = AxisXBar;
 
@@ -27066,13 +31292,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(34);
+var _graphAxis = __webpack_require__(34);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphAxis2 = _interopRequireDefault(_graphAxis);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -28029,7 +32255,7 @@ var GraphXAxis = function (_Axis) {
   }]);
 
   return GraphXAxis;
-}(_graph2.default);
+}(_graphAxis2.default);
 
 exports.default = GraphXAxis;
 
@@ -28046,13 +32272,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(27);
+var _graphPosition = __webpack_require__(27);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphPosition2 = _interopRequireDefault(_graphPosition);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -28351,7 +32577,7 @@ var Legend = function () {
     key: 'calculatePosition',
     value: function calculatePosition() {
 
-      var pos = _graph2.default.check(this.position);
+      var pos = _graphPosition2.default.check(this.position);
       var poscoords = pos.compute(this.graph, this.graph.getXAxis(), this.graph.getYAxis());
 
       if (!poscoords) {
@@ -28894,37 +33120,37 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graphAxis = __webpack_require__(44);
+var _graphAxisX = __webpack_require__(44);
+
+var _graphAxisX2 = _interopRequireDefault(_graphAxisX);
+
+var _graphAxisY = __webpack_require__(67);
+
+var _graphAxisY2 = _interopRequireDefault(_graphAxisY);
+
+var _graphUtil = __webpack_require__(4);
+
+var util = _interopRequireWildcard(_graphUtil);
+
+var _graphSerieLine = __webpack_require__(22);
+
+var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
+
+var _graphSerieScatter = __webpack_require__(69);
+
+var _graphSerieScatter2 = _interopRequireDefault(_graphSerieScatter);
+
+var _graphPlugin = __webpack_require__(11);
+
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
+
+var _graphAxis = __webpack_require__(34);
 
 var _graphAxis2 = _interopRequireDefault(_graphAxis);
-
-var _graphAxis3 = __webpack_require__(67);
-
-var _graphAxis4 = _interopRequireDefault(_graphAxis3);
-
-var _graph3 = __webpack_require__(4);
-
-var util = _interopRequireWildcard(_graph3);
-
-var _graphSerie = __webpack_require__(22);
-
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
-
-var _graphSerie3 = __webpack_require__(69);
-
-var _graphSerie4 = _interopRequireDefault(_graphSerie3);
-
-var _graph4 = __webpack_require__(14);
-
-var _graph5 = _interopRequireDefault(_graph4);
-
-var _graph6 = __webpack_require__(34);
-
-var _graph7 = _interopRequireDefault(_graph6);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -28988,7 +33214,7 @@ var SerieLineExtended = function (_SerieLine) {
   }]);
 
   return SerieLineExtended;
-}(_graphSerie2.default);
+}(_graphSerieLine2.default);
 
 var SerieScatterExtended = function (_SerieScatter) {
   _inherits(SerieScatterExtended, _SerieScatter);
@@ -29039,12 +33265,12 @@ var SerieScatterExtended = function (_SerieScatter) {
   }]);
 
   return SerieScatterExtended;
-}(_graphSerie4.default);
+}(_graphSerieScatter2.default);
 
 var excludingMethods = ['constructor', 'init', 'draw', 'setLineColor', 'setLineWidth', 'setLineStyle', 'getLineColor', 'getLineWidth', 'getLineStyle', 'setMarkers', 'showMarkers', 'hideMarkers', 'getMarkerDom', 'getMarkerDomIndependant', 'getMarkerPath', 'eraseMarkers', '_recalculateMarkerPoints'];
 var addMethods = [];
 
-Object.getOwnPropertyNames(_graphSerie2.default.prototype).concat(addMethods).map(function (i) {
+Object.getOwnPropertyNames(_graphSerieLine2.default.prototype).concat(addMethods).map(function (i) {
 
   if (excludingMethods.indexOf(i) > -1) {
     return;
@@ -29198,13 +33424,13 @@ var PluginAxisSplitting = function (_Plugin) {
 
           var name = serie.getName() + "_" + serie.subSeries.length;
 
-          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graph2.default.SERIE_LINE);
+          var s = _this6.graph.newSerie(name, {}, serie.getType() || _graphCore2.default.SERIE_LINE);
 
           s.excludedFromLegend = true;
           s.styles = serie.styles;
           s.data = serie.data; // Copy data
 
-          if (serie.getType() == _graph2.default.SERIE_LINE) {
+          if (serie.getType() == _graphCore2.default.SERIE_LINE) {
             s.markerPoints = serie.markerPoints;
             s.markerFamilies = serie.markerFamilies;
           }
@@ -29346,7 +33572,7 @@ var PluginAxisSplitting = function (_Plugin) {
   }]);
 
   return PluginAxisSplitting;
-}(_graph5.default);
+}(_graphPlugin2.default);
 
 var defaultAxisConstructorOptions = {
   splitMarks: true
@@ -29870,7 +34096,7 @@ var SplitXAxis = function (_SplitAxis) {
   _createClass(SplitXAxis, [{
     key: "getConstructor",
     value: function getConstructor() {
-      return _graphAxis2.default;
+      return _graphAxisX2.default;
     }
   }, {
     key: "getAxisPosition",
@@ -29901,7 +34127,7 @@ var SplitXAxis = function (_SplitAxis) {
   }]);
 
   return SplitXAxis;
-}(SplitAxis(_graphAxis2.default));
+}(SplitAxis(_graphAxisX2.default));
 
 var SplitYAxis = function (_SplitAxis2) {
   _inherits(SplitYAxis, _SplitAxis2);
@@ -29916,7 +34142,7 @@ var SplitYAxis = function (_SplitAxis2) {
   _createClass(SplitYAxis, [{
     key: "getConstructor",
     value: function getConstructor() {
-      return _graphAxis4.default;
+      return _graphAxisY2.default;
     }
     /*
       draw() {
@@ -29956,10 +34182,10 @@ var SplitYAxis = function (_SplitAxis2) {
   }]);
 
   return SplitYAxis;
-}(SplitAxis(_graphAxis4.default));
+}(SplitAxis(_graphAxisY2.default));
 
-util.mix(SplitXAxis, new _graphAxis2.default());
-util.mix(SplitYAxis, new _graphAxis4.default());
+util.mix(SplitXAxis, new _graphAxisX2.default());
+util.mix(SplitYAxis, new _graphAxisY2.default());
 
 exports.default = PluginAxisSplitting;
 
@@ -29976,9 +34202,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30171,8 +34397,8 @@ var PluginDrag = function (_Plugin) {
       });
     }
   }], [{
-    key: "defaults",
-    value: function defaults() {
+    key: "default",
+    value: function _default() {
       return {
 
         dragX: true,
@@ -30185,7 +34411,7 @@ var PluginDrag = function (_Plugin) {
   }]);
 
   return PluginDrag;
-}(_graph2.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginDrag;
 
@@ -30204,13 +34430,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph2 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph2);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graph3 = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph4 = _interopRequireDefault(_graph3);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30394,15 +34620,15 @@ var PluginMakeTracesDifferent = function (_Plugin) {
       });
     }
   }], [{
-    key: 'defaults',
-    value: function defaults() {
+    key: 'default',
+    value: function _default() {
 
       return {};
     }
   }]);
 
   return PluginMakeTracesDifferent;
-}(_graph4.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginMakeTracesDifferent;
 
@@ -30419,13 +34645,339 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(4);
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var util = _interopRequireWildcard(_graph);
+var _graphUtil = __webpack_require__(4);
 
-var _graph2 = __webpack_require__(14);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graph3 = _interopRequireDefault(_graph2);
+var _graphPlugin = __webpack_require__(11);
+
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+/**
+ * @extends Plugin
+ */
+var PluginPeakPicking = function (_Plugin) {
+  _inherits(PluginPeakPicking, _Plugin);
+
+  function PluginPeakPicking() {
+    _classCallCheck(this, PluginPeakPicking);
+
+    return _possibleConstructorReturn(this, (PluginPeakPicking.__proto__ || Object.getPrototypeOf(PluginPeakPicking)).apply(this, arguments));
+  }
+
+  _createClass(PluginPeakPicking, [{
+    key: 'init',
+    value: function init(graph, options) {
+
+      _get(PluginPeakPicking.prototype.__proto__ || Object.getPrototypeOf(PluginPeakPicking.prototype), 'init', this).call(this, graph, options);
+      this.picks = [];
+
+      for (var n = 0, m = this.options.autoPeakPickingNb; n < m; n++) {
+
+        var shape = this.graph.newShape({
+          type: 'label',
+          label: {
+            text: "",
+            position: {
+              x: 0
+            },
+            anchor: 'middle'
+
+          },
+
+          selectable: true,
+
+          shapeOptions: {
+            minPosY: 15
+          }
+
+        });
+
+        shape.draw();
+
+        this.picks.push(shape);
+      }
+    }
+  }, {
+    key: 'setSerie',
+    value: function setSerie(serie) {
+      this.serie = serie;
+    }
+  }, {
+    key: 'preDraw',
+    value: function preDraw() {
+
+      if (!this.serie) {
+        return;
+      }
+
+      this.detectedPeaks = [];
+      this.lastYPeakPicking = false;
+    }
+  }, {
+    key: 'postDraw',
+    value: function postDraw() {
+
+      if (!this.serie) {
+        return;
+      }
+      var lookForMaxima = true;
+      var lookForMinima = false;
+      var lastYPeakPicking = void 0;
+      var peaks = [];
+
+      var waveform = this.serie.getWaveform();
+
+      if (!waveform) {
+        throw "The serie must have a waveform for the peak picking to work";
+      }
+
+      var length = waveform.getLength(),
+          i = 0,
+          y = void 0;
+
+      for (; i < length; i++) {
+
+        y = waveform.getY(i);
+
+        if (this.serie.options.lineToZero) {
+          peaks.push([waveform.getX(i), y]);
+          continue;
+        }
+
+        if (!lastYPeakPicking) {
+          lastYPeakPicking = [waveform.getX(i), y];
+          continue;
+        }
+
+        if (y >= lastYPeakPicking[1] && lookForMaxima || y <= lastYPeakPicking[1] && lookForMinima) {
+
+          lastYPeakPicking = [waveform.getX(i), y];
+        } else if (y < lastYPeakPicking[1] && lookForMaxima || y > lastYPeakPicking[1] && lookForMinima) {
+
+          if (lookForMinima) {
+            lookForMinima = false;
+            lookForMaxima = true;
+          } else {
+
+            lookForMinima = true;
+            lookForMaxima = false;
+
+            peaks.push(lastYPeakPicking);
+            lastYPeakPicking = false;
+          }
+
+          lastYPeakPicking = [waveform.getX(i), y];
+        }
+      }
+
+      var ys = peaks;
+      var x,
+          px,
+          passed = [],
+          px,
+          l = ys.length,
+          k,
+          m,
+          index;
+
+      i = 0;
+
+      var selected = this.graph.selectedShapes.map(function (shape) {
+        return shape.getProp('xval');
+      });
+
+      ys.sort(function (a, b) {
+        return b[1] - a[1];
+      });
+
+      m = 0;
+
+      for (; i < l; i++) {
+
+        x = ys[i][0];
+        px = this.serie.getX(x);
+        k = 0;
+        y = this.serie.getY(ys[i][1]);
+
+        if (px < this.serie.getXAxis().getMinPx() || px > this.serie.getXAxis().getMaxPx()) {
+          continue;
+        }
+
+        if (!this.options.autoPeakPickingAllowAllY && (y > this.serie.getYAxis().getMinPx() || y < this.serie.getYAxis().getMaxPx())) {
+
+          continue;
+        }
+
+        // Distance check
+        for (; k < passed.length; k++) {
+          if (Math.abs(passed[k] - px) < this.options.autoPeakPickingMinDistance) {
+            break;
+          }
+        }
+        if (k < passed.length) {
+          continue;
+        }
+
+        // Distance check end
+
+        // If the retained one has already been selected somewhere, continue;
+        if ((index = selected.indexOf(x)) > -1) {
+          passed.push(px);
+          continue;
+        }
+
+        if (!this.picks[m]) {
+          return;
+        }
+
+        //console.log( this.getYAxis().getDataMax(), this.getYAxis().getCurrentMin(), y );
+        //    this.picks[ m ].show();
+
+        if (this.serie.getYAxis().getPx(ys[i][1]) - 20 < 0) {
+
+          this.picks[m].setLabelPosition({
+            x: x,
+            y: "5px"
+          });
+
+          this.picks[m].setLabelBaseline('hanging');
+        } else {
+
+          this.picks[m].setLabelBaseline('no-change');
+
+          this.picks[m].setLabelPosition({
+            x: x,
+            y: ys[i][1],
+            dy: "-15px"
+          });
+        }
+
+        this.picks[m].setProp('xval', x);
+
+        if (this.options.autoPeakPickingFormat) {
+
+          this.picks[m].setLabelText(this.options.autoPeakPickingFormat.call(this.picks[m], x, m));
+        } else {
+          this.picks[m].setLabelText(String(Math.round(x * 1000) / 1000));
+        }
+
+        this.picks[m].makeLabels();
+
+        m++;
+        while (this.picks[m] && this.picks[m].isSelected()) {
+          m++;
+        }
+
+        if (passed.length == this.options.autoPeakPickingNb) {
+          break;
+        }
+      }
+    }
+
+    /**
+     * Hides the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine
+     */
+
+  }, {
+    key: 'hidePeakPicking',
+    value: function hidePeakPicking(lock) {
+
+      if (!this._hidePeakPickingLocked) {
+        this._hidePeakPickingLocked = lock;
+      }
+
+      if (!graph.picks) {
+        return;
+      }
+      for (var i = 0; i < graph.picks.length; i++) {
+        graph.picks[i].hide();
+      }
+    }
+
+    /**
+     * Shows the automatic peak picking (see the autoPeakPicking option)
+     * @memberof SerieLine
+     */
+
+  }, {
+    key: 'showPeakPicking',
+    value: function showPeakPicking(unlock) {
+
+      if (this._hidePeakPickingLocked && !unlock) {
+        return;
+      }
+
+      if (!graph.picks) {
+        return;
+      }
+
+      for (var i = 0; i < graph.picks.length; i++) {
+        graph.picks[i].show();
+      }
+    }
+  }, {
+    key: 'killPeakPicking',
+    value: function killPeakPicking() {
+
+      if (this.picks) {
+        for (var i = 0, l = this.picks.length; i < l; i++) {
+          this.picks[i].kill();
+        }
+      }
+    }
+  }], [{
+    key: 'default',
+    value: function _default() {
+
+      return {
+        autoPeakPicking: false,
+        autoPeakPickingNb: 4,
+        autoPeakPickingMinDistance: 10,
+        autoPeakPickingFormat: false,
+        autoPeakPickingAllowAllY: false
+      };
+    }
+  }]);
+
+  return PluginPeakPicking;
+}(_graphPlugin2.default);
+
+exports.default = PluginPeakPicking;
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _graphUtil = __webpack_require__(4);
+
+var util = _interopRequireWildcard(_graphUtil);
+
+var _graphPlugin = __webpack_require__(11);
+
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30449,14 +35001,13 @@ var PluginSelectScatter = function (_Plugin) {
     return _possibleConstructorReturn(this, (PluginSelectScatter.__proto__ || Object.getPrototypeOf(PluginSelectScatter)).apply(this, arguments));
   }
 
-  /**
-   * Init method
-   * @private
-   */
-
-
   _createClass(PluginSelectScatter, [{
     key: 'init',
+
+    /**
+     * Init method
+     * @private
+     */
     value: function init(graph, options) {
 
       this._path = document.createElementNS(graph.ns, 'path');
@@ -30543,11 +35094,11 @@ var PluginSelectScatter = function (_Plugin) {
     key: 'findPoints',
     value: function findPoints() {
 
-      var data = this.serie.data;
+      var data = this.serie.waveform;
       var selected = [];
       var counter = 0,
           j2;
-      for (var i = 0, l = data.length; i < l; i += 2) {
+      for (var i = 0, l = data.getLength(); i < l; i += 1) {
 
         counter = 0;
         for (var j = 0, k = this.xs.length; j < k; j += 1) {
@@ -30558,19 +35109,19 @@ var PluginSelectScatter = function (_Plugin) {
             j2 = j + 1;
           }
 
-          if (this.ys[j] < data[i + 1] && this.ys[j2] > data[i + 1] || this.ys[j] > data[i + 1] && this.ys[j2] < data[i + 1]) {
+          if (this.ys[j] < data.getY(i) && this.ys[j2] > data.getY(i) || this.ys[j] > data.getY(i) && this.ys[j2] < data.getY(i)) {
 
-            if (data[i] > (data[i + 1] - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
+            if (data.getX(i) > (data.getY(i) - this.ys[j]) / (this.ys[j2] - this.ys[j]) * (this.xs[j2] - this.xs[j]) + this.xs[j]) {
               counter++;
             }
           }
         }
 
         if (counter % 2 == 1) {
-          selected.push(i / 2);
-          this.serie.selectPoint(i / 2, true, "selected");
+          selected.push(i);
+          this.serie.selectPoint(i, true, "selected");
         } else {
-          this.serie.unselectPoint(i / 2);
+          this.serie.unselectPoint(i);
         }
       }
 
@@ -30588,15 +35139,20 @@ var PluginSelectScatter = function (_Plugin) {
       this._path.setAttribute('display', 'none');
       this.emit("selectionEnd", this.selected);
     }
+  }], [{
+    key: 'default',
+    value: function _default() {
+      return {};
+    }
   }]);
 
   return PluginSelectScatter;
-}(_graph3.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginSelectScatter;
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30608,9 +35164,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31020,8 +35576,8 @@ var PluginSerieLineDifference = function (_Plugin) {
       return this.negativePolyline;
     }
   }], [{
-    key: 'defaults',
-    value: function defaults() {
+    key: 'default',
+    value: function _default() {
       return {
 
         positiveStyle: {
@@ -31044,12 +35600,12 @@ var PluginSerieLineDifference = function (_Plugin) {
   }]);
 
   return PluginSerieLineDifference;
-}(_graph2.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginSerieLineDifference;
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31063,13 +35619,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -31094,14 +35650,14 @@ var PluginShape = function (_Plugin) {
     return _possibleConstructorReturn(this, (PluginShape.__proto__ || Object.getPrototypeOf(PluginShape)).apply(this, arguments));
   }
 
-  /**
-   * Init method
-   * @private
-   */
-
-
   _createClass(PluginShape, [{
     key: 'init',
+
+
+    /**
+     * Init method
+     * @private
+     */
     value: function init(graph, options) {
 
       _get(PluginShape.prototype.__proto__ || Object.getPrototypeOf(PluginShape.prototype), 'init', this).call(this, graph, options);
@@ -31131,7 +35687,6 @@ var PluginShape = function (_Plugin) {
       if (!this.shapeType && !this.options.url) {
         return;
       }
-      console.log('down');
 
       var self = this,
           selfPlugin = this;
@@ -31245,15 +35800,20 @@ var PluginShape = function (_Plugin) {
         this.currentShape = false;
       }
     }
+  }], [{
+    key: 'default',
+    value: function _default() {
+      return {};
+    }
   }]);
 
   return PluginShape;
-}(_graph2.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginShape;
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31265,21 +35825,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graph3 = __webpack_require__(108);
+var _graphLru = __webpack_require__(108);
 
-var _graph4 = _interopRequireDefault(_graph3);
+var _graphLru2 = _interopRequireDefault(_graphLru);
 
-var _graph5 = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph6 = _interopRequireDefault(_graph5);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
-var _graph7 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph7);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -31334,7 +35894,7 @@ var PluginTimeSerieManager = function (_Plugin) {
      */
     value: function init(graph, options) {
       this.graph = graph;
-      _graph4.default.create(this.options.LRUName, 200);
+      _graphLru2.default.create(this.options.LRUName, 200);
       this.requestsRunning = 0;
     }
   }, {
@@ -31377,7 +35937,7 @@ var PluginTimeSerieManager = function (_Plugin) {
       s.setInfo("timeSerieManagerDBElements", dbElements);
 
       if (!noZoneSerie) {
-        s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, _graph2.default.SERIE_ZONE);
+        s._zoneSerie = this.graph.newSerie(serieName + "_zone", {}, _graphCore2.default.SERIE_ZONE);
       }
 
       this.series.push(s);
@@ -31467,7 +36027,7 @@ var PluginTimeSerieManager = function (_Plugin) {
 
       var id = this.computeUniqueID(serie, slotId, interval);
 
-      var data = _graph4.default.get(this.options.LRUName, id);
+      var data = _graphLru2.default.get(this.options.LRUName, id);
 
       if (!data || this.computeTimeMax(slotId, interval) > Date.now() && data.timeout < Date.now() - (noRecalculate ? 5000 : 100000) && priority == 1) {
 
@@ -31566,7 +36126,7 @@ var PluginTimeSerieManager = function (_Plugin) {
 
           delete self.requestLevels[currentLevelChecking][i];
 
-          _graph4.default.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
+          _graphLru2.default.store(self.options.LRUName, requestToMake[1], data.data); // Element 1 is the unique ID
           self.processRequests();
 
           if (requestToMake[5] == 1 && Object.keys(self.requestLevels[1]).length == 0) {
@@ -31721,7 +36281,7 @@ var PluginTimeSerieManager = function (_Plugin) {
 
       while (slotId <= endSlotId) {
 
-        var lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval));
+        var lruData = _graphLru2.default.get(this.options.LRUName, this.computeUniqueID(serie, slotId, interval));
         if (lruData) {
 
           data = data.concat(lruData.data.mean);
@@ -31773,7 +36333,7 @@ var PluginTimeSerieManager = function (_Plugin) {
       var newSlotId = this.computeSlotID(newSlotTime, nextInterval),
           start = false;
 
-      var lruData = _graph4.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval));
+      var lruData = _graphLru2.default.get(this.options.LRUName, this.computeUniqueID(serie, newSlotId, nextInterval));
       if (lruData) {
 
         for (var i = 0, l = lruData.data.mean.length; i < l; i += 2) {
@@ -31812,8 +36372,8 @@ var PluginTimeSerieManager = function (_Plugin) {
       return !!this.locked;
     }
   }], [{
-    key: 'defaults',
-    value: function defaults() {
+    key: 'default',
+    value: function _default() {
 
       return {
 
@@ -31828,12 +36388,12 @@ var PluginTimeSerieManager = function (_Plugin) {
   }]);
 
   return PluginTimeSerieManager;
-}(_graph6.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginTimeSerieManager;
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31845,13 +36405,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graph2 = __webpack_require__(14);
+var _graphPlugin = __webpack_require__(11);
 
-var _graph3 = _interopRequireDefault(_graph2);
+var _graphPlugin2 = _interopRequireDefault(_graphPlugin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32510,8 +37070,8 @@ var PluginZoom = function (_Plugin) {
       }
     }
   }], [{
-    key: 'defaults',
-    value: function defaults() {
+    key: 'default',
+    value: function _default() {
 
       return {
         "axes": "all"
@@ -32520,12 +37080,12 @@ var PluginZoom = function (_Plugin) {
   }]);
 
   return PluginZoom;
-}(_graph3.default);
+}(_graphPlugin2.default);
 
 exports.default = PluginZoom;
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32537,17 +37097,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graphSerie = __webpack_require__(22);
+var _graphSerieLine = __webpack_require__(22);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-var _graphMixin = __webpack_require__(35);
+var _graphMixinErrorbars = __webpack_require__(35);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32750,12 +37310,12 @@ var SerieBar = function (_Serie) {
   }]);
 
   return SerieBar;
-}(_graphSerie2.default);
+}(_graphSerieLine2.default);
 
 exports.default = SerieBar;
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32767,11 +37327,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(28);
+var _graphSerie = __webpack_require__(28);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32892,13 +37452,15 @@ var SerieBox = function (_Serie) {
         this.minY = data[0].y;
       }
 
+      console.log(this._checkY);
+
       if (noRescale) {
         methodref = function methodref() {};
         methodval = function methodval() {};
       }
 
       if (!axisref || !axisval) {
-        (0, _graph3.throwError)("Error in setting data of the box serie. The X and Y axes must be set beforehand");
+        (0, _graphUtil.throwError)("Error in setting data of the box serie. The X and Y axes must be set beforehand");
       }
 
       for (var i in this.data) {
@@ -32912,7 +37474,10 @@ var SerieBox = function (_Serie) {
         }
 
         if (this.data[i].Q3) {
+          console.log(this.minX, this.minY, this.maxY, this.data[i].Q3, methodval);
+
           methodval(this.data[i].Q3);
+          console.log(this.minX, this.minY, this.maxY);
         }
 
         if (this.data[i].Q1) {
@@ -32946,6 +37511,8 @@ var SerieBox = function (_Serie) {
           this.data[i].outliers = [];
         }
       }
+
+      console.log(this.minX, this.minY, this.maxY);
 
       this.dataHasChanged();
       this.graph.updateDataMinMaxAxes();
@@ -33017,7 +37584,7 @@ var SerieBox = function (_Serie) {
       var selectionType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "unselected";
 
       //console.log( style, selectionType );
-      this.styles[selectionType] = (0, _graph3.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
+      this.styles[selectionType] = (0, _graphUtil.extend)({}, defaults.defaultStyle, this.styles.unselected, style);
       this.styleHasChanged(selectionType);
     }
 
@@ -33462,7 +38029,7 @@ var SerieBox = function (_Serie) {
           posBelow = void 0;
       var categoryNumber = void 0;
 
-      (0, _graph3.emptyDom)(this.groupMain);
+      (0, _graphUtil.emptyDom)(this.groupMain);
 
       if (axis2.getType() == 'category') {
 
@@ -33799,12 +38366,12 @@ var SerieBox = function (_Serie) {
   }]);
 
   return SerieBox;
-}(_graph2.default);
+}(_graphSerie2.default);
 
 exports.default = SerieBox;
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33818,13 +38385,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphSerie = __webpack_require__(22);
+var _graphSerieLine = __webpack_require__(22);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -34234,12 +38801,12 @@ var SerieContour = function (_SerieLine) {
   }]);
 
   return SerieContour;
-}(_graphSerie2.default);
+}(_graphSerieLine2.default);
 
 exports.default = SerieContour;
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34251,13 +38818,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(28);
+var _graphSerie = __webpack_require__(28);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphSerie2 = _interopRequireDefault(_graphSerie);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -34948,12 +39515,12 @@ var SerieDensityMap = function (_Serie) {
   }]);
 
   return SerieDensityMap;
-}(_graph2.default);
+}(_graphSerie2.default);
 
 exports.default = SerieDensityMap;
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34965,25 +39532,25 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graphSerie = __webpack_require__(22);
+var _graphSerieLine = __webpack_require__(22);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
 var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _graphMixin = __webpack_require__(68);
+var _graphMixinSerie3d = __webpack_require__(68);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinSerie3d2 = _interopRequireDefault(_graphMixinSerie3d);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -35040,13 +39607,13 @@ var SerieLine3D = function (_Serie) {
   }]);
 
   return SerieLine3D;
-}(_graphSerie2.default);
+}(_graphSerieLine2.default);
 
-util.mix(SerieLine3D, _graphMixin2.default);
+util.mix(SerieLine3D, _graphMixinSerie3d2.default);
 exports.default = SerieLine3D;
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35058,17 +39625,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphSerie = __webpack_require__(22);
+var _graphSerieLine = __webpack_require__(22);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphSerieLine2 = _interopRequireDefault(_graphSerieLine);
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graphMixin = __webpack_require__(35);
+var _graphMixinErrorbars = __webpack_require__(35);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinErrorbars2 = _interopRequireDefault(_graphMixinErrorbars);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -35104,14 +39671,13 @@ var SerieLineColor = function (_SerieLine) {
       this.colors = colors;
     }
   }, {
-    key: '_draw_standard',
-    value: function _draw_standard() {
+    key: '_draw',
+    value: function _draw() {
 
       var self = this,
           data = this._dataToUse,
           toBreak,
           i = 0,
-          l = data.length,
           j,
           k,
           m,
@@ -35149,154 +39715,125 @@ var SerieLineColor = function (_SerieLine) {
         incrYFlip = 0;
       }
 
-      for (i = 0; i < l; i++) {
+      this.currentLine = "";
+      m = this.waveform.getLength();
 
-        toBreak = false;
-        this.counter1 = i;
+      for (j = 0; j < m; j += 2) {
 
-        this.currentLine = "";
-        j = 0;
-        k = 0;
-        m = data[i].length;
+        x = this.waveform.getX(j);
+        y = this.waveform.getY(j);
 
-        for (j = 0; j < m; j += 2) {
+        if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
+          lastX = x;
+          lastY = y;
+          lastPointOutside = true;
+          continue;
+        }
 
-          x = data[i][j + incrXFlip];
-          y = data[i][j + incrYFlip];
+        this.counter2 = j;
 
-          if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
-            lastX = x;
-            lastY = y;
-            lastPointOutside = true;
-            continue;
-          }
+        if (this.markersShown()) {
+          this.getMarkerCurrentFamily(this.counter2);
+        }
 
-          this.counter2 = j / 2;
+        xpx2 = this.getX(x);
+        ypx2 = this.getY(y);
 
-          if (this.markersShown()) {
-            this.getMarkerCurrentFamily(this.counter2);
-          }
+        if (xpx2 == xpx && ypx2 == ypx) {
+          continue;
+        }
 
-          xpx2 = this.getX(x);
-          ypx2 = this.getY(y);
-
-          if (xpx2 == xpx && ypx2 == ypx) {
-            continue;
-          }
-
-          pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
-          /*
-                  if ( this.options.lineToZero ) {
-                    pointOutside = ( x < xMin || x > xMax );
-                     if ( pointOutside ) {
-                      continue;
-                    }
-                  } else {
-                     if ( pointOutside || lastPointOutside ) {
-                       if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
-                         xpx = xpx2;
-                        ypx = ypx2;
-                        lastX = x;
-                        lastY = y;
-                       } else {
-                         pointOnAxis = [];
-                        // Y crossing
-                        yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
-                        yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
-                        yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
-                        yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
-                         // X crossing
-                        xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
-                        xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
-                        xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
-                        xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
-                         if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
-                          pointOnAxis.push( [ xMin, yLeftCrossing ] );
-                        }
-                         if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
-                          pointOnAxis.push( [ xMax, yRightCrossing ] );
-                        }
-                         if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
-                          pointOnAxis.push( [ xTopCrossing, yMin ] );
-                        }
-                         if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
-                          pointOnAxis.push( [ xBottomCrossing, yMax ] );
-                        }
-                         if ( pointOnAxis.length > 0 ) {
-                           if ( !pointOutside ) { // We were outside and now go inside
-                             if ( pointOnAxis.length > 1 ) {
-                              console.error( "Programmation error. Please e-mail me." );
-                              console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                            }
-                             this._createLine();
-                            this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                            this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
-                           } else if ( !lastPointOutside ) { // We were inside and now go outside
-                             if ( pointOnAxis.length > 1 ) {
-                              console.error( "Programmation error. Please e-mail me." );
-                              console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
-                            }
-                             this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                           } else {
-                             // No crossing: do nothing
-                            if ( pointOnAxis.length == 2 ) {
-                              this._createLine();
-                               this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                              this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
-                            }
-                           }
-                        } else if ( !pointOutside ) {
-                          this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
-                        }
-                      }
+        pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
+        /*
+                if ( this.options.lineToZero ) {
+                  pointOutside = ( x < xMin || x > xMax );
+                   if ( pointOutside ) {
+                    continue;
+                  }
+                } else {
+                   if ( pointOutside || lastPointOutside ) {
+                     if ( ( lastX === false || lastY === false ) && !lastPointOutside ) {
                        xpx = xpx2;
                       ypx = ypx2;
                       lastX = x;
                       lastY = y;
-                       lastPointOutside = pointOutside;
-                       continue;
+                     } else {
+                       pointOnAxis = [];
+                      // Y crossing
+                      yLeftCrossingRatio = ( x - xMin ) / ( x - lastX );
+                      yLeftCrossing = y - yLeftCrossingRatio * ( y - lastY );
+                      yRightCrossingRatio = ( x - xMax ) / ( x - lastX );
+                      yRightCrossing = y - yRightCrossingRatio * ( y - lastY );
+                       // X crossing
+                      xTopCrossingRatio = ( y - yMin ) / ( y - lastY );
+                      xTopCrossing = x - xTopCrossingRatio * ( x - lastX );
+                      xBottomCrossingRatio = ( y - yMax ) / ( y - lastY );
+                      xBottomCrossing = x - xBottomCrossingRatio * ( x - lastX );
+                       if ( yLeftCrossingRatio < 1 && yLeftCrossingRatio > 0 && yLeftCrossing !== false && yLeftCrossing < yMax && yLeftCrossing > yMin ) {
+                        pointOnAxis.push( [ xMin, yLeftCrossing ] );
+                      }
+                       if ( yRightCrossingRatio < 1 && yRightCrossingRatio > 0 && yRightCrossing !== false && yRightCrossing < yMax && yRightCrossing > yMin ) {
+                        pointOnAxis.push( [ xMax, yRightCrossing ] );
+                      }
+                       if ( xTopCrossingRatio < 1 && xTopCrossingRatio > 0 && xTopCrossing !== false && xTopCrossing < xMax && xTopCrossing > xMin ) {
+                        pointOnAxis.push( [ xTopCrossing, yMin ] );
+                      }
+                       if ( xBottomCrossingRatio < 1 && xBottomCrossingRatio > 0 && xBottomCrossing !== false && xBottomCrossing < xMax && xBottomCrossing > xMin ) {
+                        pointOnAxis.push( [ xBottomCrossing, yMax ] );
+                      }
+                       if ( pointOnAxis.length > 0 ) {
+                         if ( !pointOutside ) { // We were outside and now go inside
+                           if ( pointOnAxis.length > 1 ) {
+                            console.error( "Programmation error. Please e-mail me." );
+                            console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                          }
+                           this._createLine();
+                          this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                          this._addPoint( xpx2, ypx2, lastX, lastY, false, false, true );
+                         } else if ( !lastPointOutside ) { // We were inside and now go outside
+                           if ( pointOnAxis.length > 1 ) {
+                            console.error( "Programmation error. Please e-mail me." );
+                            console.log( pointOnAxis, xBottomCrossing, xTopCrossing, yRightCrossing, yLeftCrossing, y, yMin, yMax, lastY );
+                          }
+                           this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                         } else {
+                           // No crossing: do nothing
+                          if ( pointOnAxis.length == 2 ) {
+                            this._createLine();
+                             this._addPoint( this.getX( pointOnAxis[ 0 ][ 0 ] ), this.getY( pointOnAxis[ 0 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                            this._addPoint( this.getX( pointOnAxis[ 1 ][ 0 ] ), this.getY( pointOnAxis[ 1 ][ 1 ] ), pointOnAxis[ 0 ][ 0 ], pointOnAxis[ 0 ][ 1 ], false, false, false );
+                          }
+                         }
+                      } else if ( !pointOutside ) {
+                        this._addPoint( xpx2, ypx2, lastX, lastY, j, false, false );
+                      }
                     }
-                   }*/
+                     xpx = xpx2;
+                    ypx = ypx2;
+                    lastX = x;
+                    lastY = y;
+                     lastPointOutside = pointOutside;
+                     continue;
+                  }
+                 }*/
 
-          if (isNaN(xpx2) || isNaN(ypx2)) {
-            if (this.counter > 0) {
+        if (isNaN(xpx2) || isNaN(ypx2)) {
+          if (this.counter > 0) {
 
-              //      this._createLine();
-            }
-            continue;
+            //      this._createLine();
           }
-
-          // OPTIMIZATION START
-          if (!this._optimize_before(xpx2, ypx2)) {
-            continue;
-          }
-          // OPTIMIZATION END
-
-          var color = this.colors[i][j / 2];
-
-          this._addPoint(xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, j, color, false, true);
-
-          this.detectPeaks(x, y);
-
-          // OPTIMIZATION START
-          if (!this._optimize_after(xpx2, ypx2)) {
-            toBreak = true;
-            break;
-          }
-          // OPTIMIZATION END
-
-          xpx = xpx2;
-          ypx = ypx2;
-
-          lastX = x;
-          lastY = y;
+          continue;
         }
 
-        // this._createLine();
+        var color = this.colors[j];
 
-        if (toBreak) {
-          break;
-        }
+        this._addPoint(xpx2, ypx2, x, y, xpx, ypx, lastX, lastY, j, color, false, true);
+
+        xpx = xpx2;
+        ypx = ypx2;
+
+        lastX = x;
+        lastY = y;
       }
 
       this.latchLines();
@@ -35343,6 +39880,10 @@ var SerieLineColor = function (_SerieLine) {
         return;
       }
 
+      if (color._rgb) {
+        color = 'rgba(' + color._rgb[0] + ',' + color._rgb[1] + ',' + color._rgb[2] + ',' + (color._rgb[3] || 1) + ")";
+      }
+
       var line = this.lines[color];
       if (!line) {
         line = this.lines[color] = {
@@ -35358,7 +39899,7 @@ var SerieLineColor = function (_SerieLine) {
 
       line.path += "M " + xpxbefore + " " + ypxbefore + " L " + xpx + " " + ypx;
 
-      if (this.error) {
+      if (this.hasErrors()) {
         this.errorAddPoint(j, x, y, xpx, ypx);
       }
 
@@ -35415,12 +39956,12 @@ var SerieLineColor = function (_SerieLine) {
   }]);
 
   return SerieLineColor;
-}(_graphSerie2.default);
+}(_graphSerieLine2.default);
 
 exports.default = SerieLineColor;
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35432,25 +39973,25 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(17);
+var _graphCore = __webpack_require__(17);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphCore2 = _interopRequireDefault(_graphCore);
 
-var _graphSerie = __webpack_require__(70);
+var _graphSerieZone = __webpack_require__(70);
 
-var _graphSerie2 = _interopRequireDefault(_graphSerie);
+var _graphSerieZone2 = _interopRequireDefault(_graphSerieZone);
 
 var _waveform = __webpack_require__(18);
 
 var _waveform2 = _interopRequireDefault(_waveform);
 
-var _graphMixin = __webpack_require__(68);
+var _graphMixinSerie3d = __webpack_require__(68);
 
-var _graphMixin2 = _interopRequireDefault(_graphMixin);
+var _graphMixinSerie3d2 = _interopRequireDefault(_graphMixinSerie3d);
 
-var _graph3 = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph3);
+var util = _interopRequireWildcard(_graphUtil);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -35507,13 +40048,13 @@ var SerieZone3D = function (_Serie) {
   }]);
 
   return SerieZone3D;
-}(_graphSerie2.default);
+}(_graphSerieZone2.default);
 
-util.mix(SerieZone3D, _graphMixin2.default);
+util.mix(SerieZone3D, _graphMixinSerie3d2.default);
 exports.default = SerieZone3D;
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35525,9 +40066,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35748,12 +40289,12 @@ var ShapeSurfaceUnderCurve = function (_Shape) {
   }]);
 
   return ShapeSurfaceUnderCurve;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeSurfaceUnderCurve;
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35765,9 +40306,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphShape = __webpack_require__(46);
+var _graphShapeLine = __webpack_require__(46);
 
-var _graphShape2 = _interopRequireDefault(_graphShape);
+var _graphShapeLine2 = _interopRequireDefault(_graphShapeLine);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35812,12 +40353,12 @@ var ShapeArrow = function (_ShapeLine) {
   }]);
 
   return ShapeArrow;
-}(_graphShape2.default);
+}(_graphShapeLine2.default);
 
 exports.default = ShapeArrow;
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35829,9 +40370,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35993,12 +40534,12 @@ var ShapeCross = function (_Shape) {
   }]);
 
   return ShapeCross;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeCross;
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36010,13 +40551,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var util = _interopRequireWildcard(_graph);
+var util = _interopRequireWildcard(_graphUtil);
 
-var _graph2 = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph3 = _interopRequireDefault(_graph2);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36080,12 +40621,12 @@ var ShapeEllipse = function (_Shape) {
   }]);
 
   return ShapeEllipse;
-}(_graph3.default);
+}(_graphShape2.default);
 
 exports.default = ShapeEllipse;
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36099,11 +40640,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _graph = __webpack_require__(4);
+var _graphUtil = __webpack_require__(4);
 
-var _graph2 = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph3 = _interopRequireDefault(_graph2);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36201,7 +40742,7 @@ var ShapeHTML = function (_GraphShape) {
 
       var position = this.calculatePosition(0);
 
-      if (!position || !(0, _graph.isNumeric)(position.x) || !(0, _graph.isNumeric)(position.y)) {
+      if (!position || !(0, _graphUtil.isNumeric)(position.x) || !(0, _graphUtil.isNumeric)(position.y)) {
         return;
       }
       this._dom.style.left = position.x + "px";
@@ -36250,12 +40791,12 @@ var ShapeHTML = function (_GraphShape) {
   }]);
 
   return ShapeHTML;
-}(_graph3.default);
+}(_graphShape2.default);
 
 exports.default = ShapeHTML;
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36267,9 +40808,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36306,12 +40847,12 @@ var ShapeLabel = function (_GraphShape) {
   }]);
 
   return ShapeLabel;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeLabel;
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36323,13 +40864,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
-var _graph3 = __webpack_require__(27);
+var _graphPosition = __webpack_require__(27);
 
-var _graph4 = _interopRequireDefault(_graph3);
+var _graphPosition2 = _interopRequireDefault(_graphPosition);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36745,12 +41286,12 @@ var ShapeNMRIntegral = function (_Shape) {
   }]);
 
   return ShapeNMRIntegral;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapeNMRIntegral;
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -36762,9 +41303,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphShape = __webpack_require__(46);
+var _graphShapeLine = __webpack_require__(46);
 
-var _graphShape2 = _interopRequireDefault(_graphShape);
+var _graphShapeLine2 = _interopRequireDefault(_graphShapeLine);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37025,12 +41566,12 @@ var ShapePeakBoundaries = function (_ShapeLine) {
   }]);
 
   return ShapePeakBoundaries;
-}(_graphShape2.default);
+}(_graphShapeLine2.default);
 
 exports.default = ShapePeakBoundaries;
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37042,9 +41583,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graphShape = __webpack_require__(71);
+var _graphShapeRect = __webpack_require__(71);
 
-var _graphShape2 = _interopRequireDefault(_graphShape);
+var _graphShapeRect2 = _interopRequireDefault(_graphShapeRect);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37093,12 +41634,12 @@ var ShapePeakIntegration2D = function (_ShapeRect) {
   }]);
 
   return ShapePeakIntegration2D;
-}(_graphShape2.default);
+}(_graphShapeRect2.default);
 
 exports.default = ShapePeakIntegration2D;
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37110,9 +41651,9 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _graph = __webpack_require__(11);
+var _graphShape = __webpack_require__(12);
 
-var _graph2 = _interopRequireDefault(_graph);
+var _graphShape2 = _interopRequireDefault(_graphShape);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37223,12 +41764,12 @@ var ShapePolyline = function (_Shape) {
   }]);
 
   return ShapePolyline;
-}(_graph2.default);
+}(_graphShape2.default);
 
 exports.default = ShapePolyline;
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37240,7 +41781,7 @@ Object.defineProperty(exports, "__esModule", {
 
 exports.default = function (toOptimize) {
 
-  var requestId = util.guid();
+  var requestId = Date.now();
   toOptimize._queueId = requestId;
 
   var prom = new Promise(function (resolver) {
@@ -37250,12 +41791,6 @@ exports.default = function (toOptimize) {
   aggregatorWorker.postMessage(toOptimize);
   return prom;
 };
-
-var _graph = __webpack_require__(4);
-
-var util = _interopRequireWildcard(_graph);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var aggregatorWorker;
 var queue = {};
@@ -37296,7 +41831,7 @@ var string = function () {
     var aggregations = {};
 
     // Direction x
-
+    console.log(direction);
     if (direction == 'x') {
 
       var dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
@@ -37386,7 +41921,7 @@ var string = function () {
 
       if (direction == 'x') {
 
-        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+        for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
 
           newAggregationX[k] = (lastAggregationX[i] + lastAggregationX[i + 4]) / 2;
           newAggregationX[k + 1] = newAggregationX[k];
@@ -37404,7 +41939,7 @@ var string = function () {
         }
       } else {
 
-        for (i = 0, l = lastAggregation.length; i < l; i += 8) {
+        for (i = 0, l = lastAggregation.length - 8; i < l; i += 8) {
 
           newAggregation[k] = (lastAggregation[i] + lastAggregation[i + 4]) / 2;
           newAggregation[k + 1] = newAggregation[k];
@@ -37445,7 +41980,12 @@ var string = function () {
 string = string.split("\n");
 string.pop();
 string.shift();
+/*
+if ( typeof URL == "undefined" ) {
+  module.exports = function() {};
 
+} else {
+*/
 var workerUrl = URL.createObjectURL(new Blob([string.join("\n")], {
   type: 'application/javascript'
 }));
@@ -37460,8 +42000,10 @@ aggregatorWorker.onmessage = function (e) {
   delete queue[id];
 };
 
+;
+
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -37471,7 +42013,7 @@ aggregatorWorker.onmessage = function (e) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_graph___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__src_graph__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__ = __webpack_require__(137);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrserie_jsx__ = __webpack_require__(138);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assignment_js__);
 
@@ -37620,10 +42162,11 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 		this.graph.getPlugin('shape').on("beforeNewShape", (event, shapeDescriptor) => {
 
-			if (this.checkboxAssignment.checked) {
+			/*if( this.checkboxAssignment.checked ) {
+   	
+   	return this.graph.prevent( true );
+   }*/
 
-				return this.graph.prevent(true);
-			}
 		}).on("createdShape", (event, shape) => {
 
 			let masterSerie = this.graph.getSerie("master");
@@ -37641,7 +42184,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 			this.state.series.forEach(serie => {
 
 				if (serie.name == "master") {
-					serie.integrals.push({ id: Math.random(), from: _from.x, to: _to.x });
+					serie.integrals.push({ id: "integral_" + _from.x + "_" + _to.x, from: _from.x, to: _to.x });
 				}
 			});
 
@@ -37856,7 +42399,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 
 			var mdown = e => {
 
-				if (this.wrapper.classList && this.wrapper.classList.has("removable")) {
+				if (this.wrapper.classList && this.wrapper.classList.contains("removable")) {
 
 					this.wrapper.classList.add("removing");
 					this.assignment.enableRemoveMouseover();
@@ -38082,9 +42625,9 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 				ref: el => this.domMolecule = el,
 				dangerouslySetInnerHTML: { __html: this.state.molecule }
 			}),
-			this.props.options.toolbar && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+			__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 				"div",
-				{ className: "toolbar" },
+				{ className: "toolbar" + (this.props.options.toolbar ? '' : ' hidden') },
 				__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 					"p",
 					null,
@@ -38134,7 +42677,7 @@ class NMR1D extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 					name: serie.name,
 					data: serie.data,
 					shift: serie.shift,
-
+					integrals: serie.integrals,
 					integralLabelRatio: serie.integralLabelRatio,
 					assignement: serie.assignment,
 					direction: this.props.options.slave == "left" ? 'y' : 'x'
@@ -38153,7 +42696,7 @@ NMR1D.childContextTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (NMR1D);
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38261,7 +42804,7 @@ NMRIntegral.contextTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (NMRIntegral);
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -38271,7 +42814,7 @@ NMRIntegral.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__src_graph___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__src_graph__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types__ = __webpack_require__(48);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__nmrintegral_jsx__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js__ = __webpack_require__(66);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__assignment_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__assignment_js__);
 
@@ -38474,7 +43017,7 @@ class NMRSerie extends __WEBPACK_IMPORTED_MODULE_0_react___default.a.Component {
 		this.loadedState = false;
 
 		this._jsGraphSerie.setLineColor(this.props.color, "unselected", true);
-
+		console.log(this.props.integrals);
 		return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
 			"span",
 			null,
@@ -38508,7 +43051,7 @@ NMRSerie.childContextTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (NMRSerie);
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38601,7 +43144,7 @@ module.exports = function extend() {
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38638,7 +43181,7 @@ function camelize(string) {
 module.exports = camelize;
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38655,7 +43198,7 @@ module.exports = camelize;
 
 
 
-var camelize = __webpack_require__(139);
+var camelize = __webpack_require__(140);
 
 var msPattern = /^-ms-/;
 
@@ -38683,7 +43226,7 @@ function camelizeStyleName(string) {
 module.exports = camelizeStyleName;
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38700,7 +43243,7 @@ module.exports = camelizeStyleName;
  * 
  */
 
-var isTextNode = __webpack_require__(149);
+var isTextNode = __webpack_require__(150);
 
 /*eslint-disable no-bitwise */
 
@@ -38728,7 +43271,7 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38861,7 +43404,7 @@ module.exports = createArrayFromMixed;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38882,8 +43425,8 @@ module.exports = createArrayFromMixed;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createArrayFromMixed = __webpack_require__(142);
-var getMarkupWrap = __webpack_require__(144);
+var createArrayFromMixed = __webpack_require__(143);
+var getMarkupWrap = __webpack_require__(145);
 var invariant = __webpack_require__(1);
 
 /**
@@ -38951,7 +43494,7 @@ module.exports = createNodesFromMarkup;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39052,7 +43595,7 @@ module.exports = getMarkupWrap;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39096,7 +43639,7 @@ function getUnboundedScrollPosition(scrollable) {
 module.exports = getUnboundedScrollPosition;
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39134,7 +43677,7 @@ function hyphenate(string) {
 module.exports = hyphenate;
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39151,7 +43694,7 @@ module.exports = hyphenate;
 
 
 
-var hyphenate = __webpack_require__(146);
+var hyphenate = __webpack_require__(147);
 
 var msPattern = /^ms-/;
 
@@ -39178,7 +43721,7 @@ function hyphenateStyleName(string) {
 module.exports = hyphenateStyleName;
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39208,7 +43751,7 @@ function isNode(object) {
 module.exports = isNode;
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39225,7 +43768,7 @@ module.exports = isNode;
  * @typechecks
  */
 
-var isNode = __webpack_require__(148);
+var isNode = __webpack_require__(149);
 
 /**
  * @param {*} object The object to check.
@@ -39238,7 +43781,7 @@ function isTextNode(object) {
 module.exports = isTextNode;
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39273,7 +43816,7 @@ function memoizeStringOnly(callback) {
 module.exports = memoizeStringOnly;
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39301,7 +43844,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = performance || {};
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39318,7 +43861,7 @@ module.exports = performance || {};
  * @typechecks
  */
 
-var performance = __webpack_require__(151);
+var performance = __webpack_require__(152);
 
 var performanceNow;
 
@@ -39340,7 +43883,7 @@ if (performance.now) {
 module.exports = performanceNow;
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39409,7 +43952,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39470,17 +44013,17 @@ module.exports = function() {
 
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(169);
+module.exports = __webpack_require__(170);
 
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39559,7 +44102,7 @@ var ARIADOMPropertyConfig = {
 module.exports = ARIADOMPropertyConfig;
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39588,7 +44131,7 @@ var AutoFocusUtils = {
 module.exports = AutoFocusUtils;
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39606,9 +44149,9 @@ module.exports = AutoFocusUtils;
 
 var EventPropagators = __webpack_require__(31);
 var ExecutionEnvironment = __webpack_require__(7);
-var FallbackCompositionState = __webpack_require__(164);
-var SyntheticCompositionEvent = __webpack_require__(207);
-var SyntheticInputEvent = __webpack_require__(210);
+var FallbackCompositionState = __webpack_require__(165);
+var SyntheticCompositionEvent = __webpack_require__(208);
+var SyntheticInputEvent = __webpack_require__(211);
 
 var END_KEYCODES = [9, 13, 27, 32]; // Tab, Return, Esc, Space
 var START_KEYCODE = 229;
@@ -39978,7 +44521,7 @@ var BeforeInputEventPlugin = {
 module.exports = BeforeInputEventPlugin;
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39998,10 +44541,10 @@ var CSSProperty = __webpack_require__(79);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactInstrumentation = __webpack_require__(10);
 
-var camelizeStyleName = __webpack_require__(140);
-var dangerousStyleValue = __webpack_require__(217);
-var hyphenateStyleName = __webpack_require__(147);
-var memoizeStringOnly = __webpack_require__(150);
+var camelizeStyleName = __webpack_require__(141);
+var dangerousStyleValue = __webpack_require__(218);
+var hyphenateStyleName = __webpack_require__(148);
+var memoizeStringOnly = __webpack_require__(151);
 var warning = __webpack_require__(2);
 
 var processStyleName = memoizeStringOnly(function (styleName) {
@@ -40193,7 +44736,7 @@ module.exports = CSSPropertyOperations;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40213,7 +44756,7 @@ var EventPluginHub = __webpack_require__(30);
 var EventPropagators = __webpack_require__(31);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 var SyntheticEvent = __webpack_require__(15);
 
 var getEventTarget = __webpack_require__(60);
@@ -40544,7 +45087,7 @@ var ChangeEventPlugin = {
 module.exports = ChangeEventPlugin;
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40565,7 +45108,7 @@ var _prodInvariant = __webpack_require__(3);
 var DOMLazyTree = __webpack_require__(23);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var createNodesFromMarkup = __webpack_require__(143);
+var createNodesFromMarkup = __webpack_require__(144);
 var emptyFunction = __webpack_require__(9);
 var invariant = __webpack_require__(1);
 
@@ -40598,7 +45141,7 @@ module.exports = Danger;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40629,7 +45172,7 @@ var DefaultEventPluginOrder = ['ResponderEventPlugin', 'SimpleEventPlugin', 'Tap
 module.exports = DefaultEventPluginOrder;
 
 /***/ }),
-/* 163 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40734,7 +45277,7 @@ var EnterLeaveEventPlugin = {
 module.exports = EnterLeaveEventPlugin;
 
 /***/ }),
-/* 164 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -40834,7 +45377,7 @@ PooledClass.addPoolingTo(FallbackCompositionState);
 module.exports = FallbackCompositionState;
 
 /***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41075,7 +45618,7 @@ var HTMLDOMPropertyConfig = {
 module.exports = HTMLDOMPropertyConfig;
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41235,7 +45778,7 @@ module.exports = ReactChildReconciler;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41252,7 +45795,7 @@ module.exports = ReactChildReconciler;
 
 
 var DOMChildrenOperations = __webpack_require__(49);
-var ReactDOMIDOperations = __webpack_require__(174);
+var ReactDOMIDOperations = __webpack_require__(175);
 
 /**
  * Abstracts away all functionality of the reconciler that requires knowledge of
@@ -41270,7 +45813,7 @@ var ReactComponentBrowserEnvironment = {
 module.exports = ReactComponentBrowserEnvironment;
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41291,7 +45834,7 @@ var _prodInvariant = __webpack_require__(3),
 
 var React = __webpack_require__(25);
 var ReactComponentEnvironment = __webpack_require__(54);
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactErrorUtils = __webpack_require__(55);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
@@ -41299,7 +45842,7 @@ var ReactNodeTypes = __webpack_require__(89);
 var ReactReconciler = __webpack_require__(24);
 
 if (process.env.NODE_ENV !== 'production') {
-  var checkReactTypeSpec = __webpack_require__(216);
+  var checkReactTypeSpec = __webpack_require__(217);
 }
 
 var emptyObject = __webpack_require__(29);
@@ -42178,7 +46721,7 @@ module.exports = ReactCompositeComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 169 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42197,15 +46740,15 @@ module.exports = ReactCompositeComponent;
 
 
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDefaultInjection = __webpack_require__(186);
+var ReactDefaultInjection = __webpack_require__(187);
 var ReactMount = __webpack_require__(88);
 var ReactReconciler = __webpack_require__(24);
-var ReactUpdates = __webpack_require__(12);
-var ReactVersion = __webpack_require__(201);
+var ReactUpdates = __webpack_require__(13);
+var ReactVersion = __webpack_require__(202);
 
-var findDOMNode = __webpack_require__(218);
+var findDOMNode = __webpack_require__(219);
 var getHostComponentFromComposite = __webpack_require__(94);
-var renderSubtreeIntoContainer = __webpack_require__(225);
+var renderSubtreeIntoContainer = __webpack_require__(226);
 var warning = __webpack_require__(2);
 
 ReactDefaultInjection.inject();
@@ -42282,9 +46825,9 @@ if (process.env.NODE_ENV !== 'production') {
 
 if (process.env.NODE_ENV !== 'production') {
   var ReactInstrumentation = __webpack_require__(10);
-  var ReactDOMUnknownPropertyHook = __webpack_require__(183);
-  var ReactDOMNullInputValuePropHook = __webpack_require__(177);
-  var ReactDOMInvalidARIAHook = __webpack_require__(176);
+  var ReactDOMUnknownPropertyHook = __webpack_require__(184);
+  var ReactDOMNullInputValuePropHook = __webpack_require__(178);
+  var ReactDOMInvalidARIAHook = __webpack_require__(177);
 
   ReactInstrumentation.debugTool.addHook(ReactDOMUnknownPropertyHook);
   ReactInstrumentation.debugTool.addHook(ReactDOMNullInputValuePropHook);
@@ -42295,7 +46838,7 @@ module.exports = ReactDOM;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 170 */
+/* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42316,8 +46859,8 @@ module.exports = ReactDOM;
 var _prodInvariant = __webpack_require__(3),
     _assign = __webpack_require__(5);
 
-var AutoFocusUtils = __webpack_require__(157);
-var CSSPropertyOperations = __webpack_require__(159);
+var AutoFocusUtils = __webpack_require__(158);
+var CSSPropertyOperations = __webpack_require__(160);
 var DOMLazyTree = __webpack_require__(23);
 var DOMNamespaces = __webpack_require__(50);
 var DOMProperty = __webpack_require__(16);
@@ -42327,13 +46870,13 @@ var EventPluginRegistry = __webpack_require__(36);
 var ReactBrowserEventEmitter = __webpack_require__(37);
 var ReactDOMComponentFlags = __webpack_require__(82);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMInput = __webpack_require__(175);
-var ReactDOMOption = __webpack_require__(178);
+var ReactDOMInput = __webpack_require__(176);
+var ReactDOMOption = __webpack_require__(179);
 var ReactDOMSelect = __webpack_require__(83);
-var ReactDOMTextarea = __webpack_require__(181);
+var ReactDOMTextarea = __webpack_require__(182);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactMultiChild = __webpack_require__(194);
-var ReactServerRenderingTransaction = __webpack_require__(199);
+var ReactMultiChild = __webpack_require__(195);
+var ReactServerRenderingTransaction = __webpack_require__(200);
 
 var emptyFunction = __webpack_require__(9);
 var escapeTextContentForBrowser = __webpack_require__(40);
@@ -43302,7 +47845,7 @@ module.exports = ReactDOMComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43341,7 +47884,7 @@ module.exports = ReactDOMContainerInfo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43406,7 +47949,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 module.exports = ReactDOMEmptyComponent;
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43430,7 +47973,7 @@ var ReactDOMFeatureFlags = {
 module.exports = ReactDOMFeatureFlags;
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43469,7 +48012,7 @@ var ReactDOMIDOperations = {
 module.exports = ReactDOMIDOperations;
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43491,7 +48034,7 @@ var _prodInvariant = __webpack_require__(3),
 var DOMPropertyOperations = __webpack_require__(81);
 var LinkedValueUtils = __webpack_require__(53);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -43760,7 +48303,7 @@ module.exports = ReactDOMInput;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43859,7 +48402,7 @@ module.exports = ReactDOMInvalidARIAHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43908,7 +48451,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44037,7 +48580,7 @@ module.exports = ReactDOMOption;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44055,7 +48598,7 @@ module.exports = ReactDOMOption;
 
 var ExecutionEnvironment = __webpack_require__(7);
 
-var getNodeForCharacterOffset = __webpack_require__(222);
+var getNodeForCharacterOffset = __webpack_require__(223);
 var getTextContentAccessor = __webpack_require__(95);
 
 /**
@@ -44254,7 +48797,7 @@ var ReactDOMSelection = {
 module.exports = ReactDOMSelection;
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44424,7 +48967,7 @@ module.exports = ReactDOMTextComponent;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44445,7 +48988,7 @@ var _prodInvariant = __webpack_require__(3),
 
 var LinkedValueUtils = __webpack_require__(53);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -44590,7 +49133,7 @@ module.exports = ReactDOMTextarea;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44732,7 +49275,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44850,7 +49393,7 @@ module.exports = ReactDOMUnknownPropertyHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44867,12 +49410,12 @@ module.exports = ReactDOMUnknownPropertyHook;
 
 
 
-var ReactInvalidSetStateWarningHook = __webpack_require__(192);
-var ReactHostOperationHistoryHook = __webpack_require__(190);
+var ReactInvalidSetStateWarningHook = __webpack_require__(193);
+var ReactHostOperationHistoryHook = __webpack_require__(191);
 var ReactComponentTreeHook = __webpack_require__(8);
 var ExecutionEnvironment = __webpack_require__(7);
 
-var performanceNow = __webpack_require__(152);
+var performanceNow = __webpack_require__(153);
 var warning = __webpack_require__(2);
 
 var hooks = [];
@@ -45215,7 +49758,7 @@ module.exports = ReactDebugTool;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45233,7 +49776,7 @@ module.exports = ReactDebugTool;
 
 var _assign = __webpack_require__(5);
 
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 var Transaction = __webpack_require__(39);
 
 var emptyFunction = __webpack_require__(9);
@@ -45288,7 +49831,7 @@ var ReactDefaultBatchingStrategy = {
 module.exports = ReactDefaultBatchingStrategy;
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45304,25 +49847,25 @@ module.exports = ReactDefaultBatchingStrategy;
 
 
 
-var ARIADOMPropertyConfig = __webpack_require__(156);
-var BeforeInputEventPlugin = __webpack_require__(158);
-var ChangeEventPlugin = __webpack_require__(160);
-var DefaultEventPluginOrder = __webpack_require__(162);
-var EnterLeaveEventPlugin = __webpack_require__(163);
-var HTMLDOMPropertyConfig = __webpack_require__(165);
-var ReactComponentBrowserEnvironment = __webpack_require__(167);
-var ReactDOMComponent = __webpack_require__(170);
+var ARIADOMPropertyConfig = __webpack_require__(157);
+var BeforeInputEventPlugin = __webpack_require__(159);
+var ChangeEventPlugin = __webpack_require__(161);
+var DefaultEventPluginOrder = __webpack_require__(163);
+var EnterLeaveEventPlugin = __webpack_require__(164);
+var HTMLDOMPropertyConfig = __webpack_require__(166);
+var ReactComponentBrowserEnvironment = __webpack_require__(168);
+var ReactDOMComponent = __webpack_require__(171);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactDOMEmptyComponent = __webpack_require__(172);
-var ReactDOMTreeTraversal = __webpack_require__(182);
-var ReactDOMTextComponent = __webpack_require__(180);
-var ReactDefaultBatchingStrategy = __webpack_require__(185);
-var ReactEventListener = __webpack_require__(189);
-var ReactInjection = __webpack_require__(191);
-var ReactReconcileTransaction = __webpack_require__(197);
-var SVGDOMPropertyConfig = __webpack_require__(202);
-var SelectEventPlugin = __webpack_require__(203);
-var SimpleEventPlugin = __webpack_require__(204);
+var ReactDOMEmptyComponent = __webpack_require__(173);
+var ReactDOMTreeTraversal = __webpack_require__(183);
+var ReactDOMTextComponent = __webpack_require__(181);
+var ReactDefaultBatchingStrategy = __webpack_require__(186);
+var ReactEventListener = __webpack_require__(190);
+var ReactInjection = __webpack_require__(192);
+var ReactReconcileTransaction = __webpack_require__(198);
+var SVGDOMPropertyConfig = __webpack_require__(203);
+var SelectEventPlugin = __webpack_require__(204);
+var SimpleEventPlugin = __webpack_require__(205);
 
 var alreadyInjected = false;
 
@@ -45379,7 +49922,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45404,7 +49947,7 @@ var REACT_ELEMENT_TYPE = typeof Symbol === 'function' && Symbol['for'] && Symbol
 module.exports = REACT_ELEMENT_TYPE;
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45442,7 +49985,7 @@ var ReactEventEmitterMixin = {
 module.exports = ReactEventEmitterMixin;
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45464,10 +50007,10 @@ var EventListener = __webpack_require__(73);
 var ExecutionEnvironment = __webpack_require__(7);
 var PooledClass = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(6);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var getEventTarget = __webpack_require__(60);
-var getUnboundedScrollPosition = __webpack_require__(145);
+var getUnboundedScrollPosition = __webpack_require__(146);
 
 /**
  * Find the deepest React component completely containing the root of the
@@ -45602,7 +50145,7 @@ var ReactEventListener = {
 module.exports = ReactEventListener;
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45641,7 +50184,7 @@ var ReactHostOperationHistoryHook = {
 module.exports = ReactHostOperationHistoryHook;
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45664,7 +50207,7 @@ var ReactComponentEnvironment = __webpack_require__(54);
 var ReactEmptyComponent = __webpack_require__(84);
 var ReactBrowserEventEmitter = __webpack_require__(37);
 var ReactHostComponent = __webpack_require__(86);
-var ReactUpdates = __webpack_require__(12);
+var ReactUpdates = __webpack_require__(13);
 
 var ReactInjection = {
   Component: ReactComponentEnvironment.injection,
@@ -45680,7 +50223,7 @@ var ReactInjection = {
 module.exports = ReactInjection;
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45723,7 +50266,7 @@ module.exports = ReactInvalidSetStateWarningHook;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45739,7 +50282,7 @@ module.exports = ReactInvalidSetStateWarningHook;
 
 
 
-var adler32 = __webpack_require__(215);
+var adler32 = __webpack_require__(216);
 
 var TAG_END = /\/?>/;
 var COMMENT_START = /^<\!\-\-/;
@@ -45778,7 +50321,7 @@ var ReactMarkupChecksum = {
 module.exports = ReactMarkupChecksum;
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45800,12 +50343,12 @@ var ReactComponentEnvironment = __webpack_require__(54);
 var ReactInstanceMap = __webpack_require__(32);
 var ReactInstrumentation = __webpack_require__(10);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactReconciler = __webpack_require__(24);
-var ReactChildReconciler = __webpack_require__(166);
+var ReactChildReconciler = __webpack_require__(167);
 
 var emptyFunction = __webpack_require__(9);
-var flattenChildren = __webpack_require__(219);
+var flattenChildren = __webpack_require__(220);
 var invariant = __webpack_require__(1);
 
 /**
@@ -46234,7 +50777,7 @@ module.exports = ReactMultiChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46334,7 +50877,7 @@ module.exports = ReactOwner;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46365,7 +50908,7 @@ module.exports = ReactPropTypeLocationNames;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46549,7 +51092,7 @@ module.exports = ReactReconcileTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46566,7 +51109,7 @@ module.exports = ReactReconcileTransaction;
 
 
 
-var ReactOwner = __webpack_require__(195);
+var ReactOwner = __webpack_require__(196);
 
 var ReactRef = {};
 
@@ -46643,7 +51186,7 @@ ReactRef.detachRefs = function (instance, element) {
 module.exports = ReactRef;
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46664,7 +51207,7 @@ var _assign = __webpack_require__(5);
 var PooledClass = __webpack_require__(19);
 var Transaction = __webpack_require__(39);
 var ReactInstrumentation = __webpack_require__(10);
-var ReactServerUpdateQueue = __webpack_require__(200);
+var ReactServerUpdateQueue = __webpack_require__(201);
 
 /**
  * Executed within the scope of the `Transaction` instance. Consider these as
@@ -46739,7 +51282,7 @@ module.exports = ReactServerRenderingTransaction;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46884,7 +51427,7 @@ module.exports = ReactServerUpdateQueue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -46903,7 +51446,7 @@ module.exports = ReactServerUpdateQueue;
 module.exports = '15.5.4';
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47210,7 +51753,7 @@ Object.keys(ATTRS).forEach(function (key) {
 module.exports = SVGDOMPropertyConfig;
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47406,7 +51949,7 @@ var SelectEventPlugin = {
 module.exports = SelectEventPlugin;
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47428,17 +51971,17 @@ var _prodInvariant = __webpack_require__(3);
 var EventListener = __webpack_require__(73);
 var EventPropagators = __webpack_require__(31);
 var ReactDOMComponentTree = __webpack_require__(6);
-var SyntheticAnimationEvent = __webpack_require__(205);
-var SyntheticClipboardEvent = __webpack_require__(206);
+var SyntheticAnimationEvent = __webpack_require__(206);
+var SyntheticClipboardEvent = __webpack_require__(207);
 var SyntheticEvent = __webpack_require__(15);
-var SyntheticFocusEvent = __webpack_require__(209);
-var SyntheticKeyboardEvent = __webpack_require__(211);
+var SyntheticFocusEvent = __webpack_require__(210);
+var SyntheticKeyboardEvent = __webpack_require__(212);
 var SyntheticMouseEvent = __webpack_require__(38);
-var SyntheticDragEvent = __webpack_require__(208);
-var SyntheticTouchEvent = __webpack_require__(212);
-var SyntheticTransitionEvent = __webpack_require__(213);
+var SyntheticDragEvent = __webpack_require__(209);
+var SyntheticTouchEvent = __webpack_require__(213);
+var SyntheticTransitionEvent = __webpack_require__(214);
 var SyntheticUIEvent = __webpack_require__(33);
-var SyntheticWheelEvent = __webpack_require__(214);
+var SyntheticWheelEvent = __webpack_require__(215);
 
 var emptyFunction = __webpack_require__(9);
 var getEventCharCode = __webpack_require__(58);
@@ -47640,7 +52183,7 @@ module.exports = SimpleEventPlugin;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47684,7 +52227,7 @@ SyntheticEvent.augmentClass(SyntheticAnimationEvent, AnimationEventInterface);
 module.exports = SyntheticAnimationEvent;
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47727,7 +52270,7 @@ SyntheticEvent.augmentClass(SyntheticClipboardEvent, ClipboardEventInterface);
 module.exports = SyntheticClipboardEvent;
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47768,7 +52311,7 @@ SyntheticEvent.augmentClass(SyntheticCompositionEvent, CompositionEventInterface
 module.exports = SyntheticCompositionEvent;
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47809,7 +52352,7 @@ SyntheticMouseEvent.augmentClass(SyntheticDragEvent, DragEventInterface);
 module.exports = SyntheticDragEvent;
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47850,7 +52393,7 @@ SyntheticUIEvent.augmentClass(SyntheticFocusEvent, FocusEventInterface);
 module.exports = SyntheticFocusEvent;
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47892,7 +52435,7 @@ SyntheticEvent.augmentClass(SyntheticInputEvent, InputEventInterface);
 module.exports = SyntheticInputEvent;
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -47911,7 +52454,7 @@ module.exports = SyntheticInputEvent;
 var SyntheticUIEvent = __webpack_require__(33);
 
 var getEventCharCode = __webpack_require__(58);
-var getEventKey = __webpack_require__(220);
+var getEventKey = __webpack_require__(221);
 var getEventModifierState = __webpack_require__(59);
 
 /**
@@ -47981,7 +52524,7 @@ SyntheticUIEvent.augmentClass(SyntheticKeyboardEvent, KeyboardEventInterface);
 module.exports = SyntheticKeyboardEvent;
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48031,7 +52574,7 @@ SyntheticUIEvent.augmentClass(SyntheticTouchEvent, TouchEventInterface);
 module.exports = SyntheticTouchEvent;
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48075,7 +52618,7 @@ SyntheticEvent.augmentClass(SyntheticTransitionEvent, TransitionEventInterface);
 module.exports = SyntheticTransitionEvent;
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48134,7 +52677,7 @@ SyntheticMouseEvent.augmentClass(SyntheticWheelEvent, WheelEventInterface);
 module.exports = SyntheticWheelEvent;
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48183,7 +52726,7 @@ function adler32(data) {
 module.exports = adler32;
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48201,7 +52744,7 @@ module.exports = adler32;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactPropTypeLocationNames = __webpack_require__(196);
+var ReactPropTypeLocationNames = __webpack_require__(197);
 var ReactPropTypesSecret = __webpack_require__(90);
 
 var invariant = __webpack_require__(1);
@@ -48276,7 +52819,7 @@ module.exports = checkReactTypeSpec;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48361,7 +52904,7 @@ module.exports = dangerousStyleValue;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48379,7 +52922,7 @@ module.exports = dangerousStyleValue;
 
 var _prodInvariant = __webpack_require__(3);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstanceMap = __webpack_require__(32);
 
@@ -48427,7 +52970,7 @@ module.exports = findDOMNode;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48509,7 +53052,7 @@ module.exports = flattenChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48616,7 +53159,7 @@ function getEventKey(nativeEvent) {
 module.exports = getEventKey;
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48662,7 +53205,7 @@ function getIteratorFn(maybeIterable) {
 module.exports = getIteratorFn;
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48741,7 +53284,7 @@ function getNodeForCharacterOffset(root, offset) {
 module.exports = getNodeForCharacterOffset;
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48847,7 +53390,7 @@ function getVendorPrefixedEventName(eventName) {
 module.exports = getVendorPrefixedEventName;
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48878,7 +53421,7 @@ function quoteAttributeValueForBrowser(value) {
 module.exports = quoteAttributeValueForBrowser;
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48899,7 +53442,7 @@ var ReactMount = __webpack_require__(88);
 module.exports = ReactMount.renderSubtreeIntoContainer;
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -48963,7 +53506,7 @@ var KeyEscapeUtils = {
 module.exports = KeyEscapeUtils;
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49081,7 +53624,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49097,11 +53640,11 @@ module.exports = PooledClass;
 
 
 
-var PooledClass = __webpack_require__(227);
+var PooledClass = __webpack_require__(228);
 var ReactElement = __webpack_require__(20);
 
 var emptyFunction = __webpack_require__(9);
-var traverseAllChildren = __webpack_require__(238);
+var traverseAllChildren = __webpack_require__(239);
 
 var twoArgumentPooler = PooledClass.twoArgumentPooler;
 var fourArgumentPooler = PooledClass.fourArgumentPooler;
@@ -49277,7 +53820,7 @@ var ReactChildren = {
 module.exports = ReactChildren;
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50006,7 +54549,7 @@ module.exports = ReactClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50182,7 +54725,7 @@ module.exports = ReactDOMFactories;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50206,7 +54749,7 @@ var factory = __webpack_require__(76);
 module.exports = factory(isValidElement);
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50228,7 +54771,7 @@ var ReactPropTypesSecret = 'SECRET_DO_NOT_PASS_THIS_OR_YOU_WILL_BE_FIRED';
 module.exports = ReactPropTypesSecret;
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50275,7 +54818,7 @@ ReactPureComponent.prototype.isPureReactComponent = true;
 module.exports = ReactPureComponent;
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50294,7 +54837,7 @@ module.exports = ReactPureComponent;
 module.exports = '15.5.4';
 
 /***/ }),
-/* 235 */
+/* 236 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50313,7 +54856,7 @@ module.exports = '15.5.4';
 var _prodInvariant = __webpack_require__(21);
 
 var ReactPropTypeLocationNames = __webpack_require__(102);
-var ReactPropTypesSecret = __webpack_require__(232);
+var ReactPropTypesSecret = __webpack_require__(233);
 
 var invariant = __webpack_require__(1);
 var warning = __webpack_require__(2);
@@ -50387,7 +54930,7 @@ module.exports = checkReactTypeSpec;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 236 */
+/* 237 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50413,7 +54956,7 @@ function getNextDebugID() {
 module.exports = getNextDebugID;
 
 /***/ }),
-/* 237 */
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50457,7 +55000,7 @@ module.exports = onlyChild;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -50475,12 +55018,12 @@ module.exports = onlyChild;
 
 var _prodInvariant = __webpack_require__(21);
 
-var ReactCurrentOwner = __webpack_require__(13);
+var ReactCurrentOwner = __webpack_require__(14);
 var REACT_ELEMENT_TYPE = __webpack_require__(100);
 
 var getIteratorFn = __webpack_require__(103);
 var invariant = __webpack_require__(1);
-var KeyEscapeUtils = __webpack_require__(226);
+var KeyEscapeUtils = __webpack_require__(227);
 var warning = __webpack_require__(2);
 
 var SEPARATOR = '.';
@@ -50639,7 +55182,7 @@ module.exports = traverseAllChildren;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(104);

@@ -207,7 +207,7 @@ class NMRSerie extends React.Component {
 		this.loadedState = false;
 
 		this._jsGraphSerie.setLineColor( this.props.color, "unselected", true );
-
+console.log( this.props.integrals );
 		return (
 			<span>
 				{ 
