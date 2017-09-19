@@ -198,19 +198,33 @@ class AxisX extends Axis {
   /**
    *  @private
    */
-  _draw0Line( px ) {
+  _drawLine( pos, line ) {
 
-    if ( !this._0line ) {
-      this._0line = document.createElementNS( this.graph.ns, 'line' );
+    let px = this.getPx( pos );
+
+    if ( !line ) {
+      line = document.createElementNS( this.graph.ns, 'line' );
+    } else {
+      line.setAttribute( 'display', 'initial' );
     }
-    this._0line.setAttribute( 'x1', px );
-    this._0line.setAttribute( 'x2', px );
 
-    this._0line.setAttribute( 'y1', 0 );
-    this._0line.setAttribute( 'y2', this.getMaxPx() );
+    line.setAttribute( 'x1', px );
+    line.setAttribute( 'x2', px );
 
-    this._0line.setAttribute( 'stroke', 'black' );
-    this.groupGrids.appendChild( this._0line );
+    line.setAttribute( 'y1', 0 );
+    line.setAttribute( 'y2', this.graph.drawingSpaceHeight );
+
+    line.setAttribute( 'stroke', 'black' );
+    this.group.appendChild( line );
+
+    return line;
+  }
+
+  _hideLine( line ) {
+    if ( !line ) {
+      return;
+    }
+    line.setAttribute( 'display', 'none' );
   }
 
   /**

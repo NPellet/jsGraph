@@ -26,7 +26,7 @@ import * as util from './graph.util.js'
  * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
  */
 const defaults = {
-  lineAt0: false,
+  lineAt: false,
   display: true,
   flipped: false,
   axisDataSpacing: {
@@ -43,6 +43,7 @@ const defaults = {
   primaryGridWidth: 1,
   secondaryGridWidth: 1,
 
+  hideWhenNoSeriesShown: false,
   shiftToZero: false,
   tickPosition: 1,
   nbTicksPrimary: 3,
@@ -82,6 +83,7 @@ const defaults = {
 class Axis extends EventEmitter {
 
   constructor() {
+
     super();
   }
 
@@ -106,6 +108,9 @@ class Axis extends EventEmitter {
     this.group.appendChild( this.rectEvent );
 
     this.graph.axisGroup.appendChild( this.group ); // Adds to the main axiszone
+
+    // Lines at a certain value
+    this._lines = [];
 
     this.line = document.createElementNS( this.graph.ns, 'line' );
     this.line.setAttribute( 'stroke', 'black' );
@@ -246,11 +251,35 @@ class Axis extends EventEmitter {
    * @return {Boolean} A boolean indicating the displayed state of the axis
    */
   isDisplayed() {
-    return this.options.display;
+
+    if ( !this.options.hideWhenNoSeriesShown ) {
+      return this.options.display;
+    }
+
+    return this.graph.getSeriesFromAxis( this ).reduce( ( accumulator, serie ) => {
+      return accumulator || serie.isShown()
+    }, false );
   }
 
   isShown() {
+
     return this.isDisplayed( ...arguments );
+  }
+
+  hideGroup() {
+    if ( this._hidden ) {
+      return;
+    }
+    this._hidden = true;
+    this.group.setAttribute( 'display', 'none' );
+  }
+
+  showGroup() {
+    if ( !this._hidden ) {
+      return;
+    }
+    this._hidden = false;
+    this.group.setAttribute( 'display', 'initial' );
   }
 
   kill( noRedraw, noSerieKill ) {
@@ -258,12 +287,13 @@ class Axis extends EventEmitter {
   }
   /**
    * Forces the appearence of a straight perpendicular line at value 0
-   * @param {Boolean} lineAt0 - true to display the line, false not to.
+   * @param {Array<Number>} atValues - An array of x or y values where the lines are displayed
    * @memberof Axis
    * @return {Axis} The current axis
    */
-  setLineAt0( bool ) {
-    this.options.lineAt0 = !!bool;
+  setLineAt( atValues ) {
+    this.options.lineAt = atValues;
+    return this;
   }
 
   // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
@@ -1008,7 +1038,7 @@ class Axis extends EventEmitter {
 			/*			0 - 0.00005 => 20'000'000
 			*/
 
-    if ( !this.options.display ) {
+    if ( !this.isShown() ) {
       this.line.setAttribute( 'display', 'none' );
       return 0;
     }
@@ -1150,11 +1180,27 @@ class Axis extends EventEmitter {
     /************************************/
 
     //   this.drawSpecifics();
-    if ( this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0 ) {
-      this._draw0Line( this.getPx( 0 ) );
-    }
 
     return widthHeight;
+  }
+
+  drawLines() {
+
+    if ( this.options.lineAt && Array.isArray( this.options.lineAt ) ) {
+
+      this.options.lineAt.forEach( ( val, index ) => {
+
+        if ( !isNaN( val ) && this.getCurrentMin() < val && this.getCurrentMax() > val ) {
+
+          this._lines[ index ] = this._drawLine( val, this._lines[ index ] );
+
+        } else  {
+          this._hideLine( this._lines[ index ] );
+        }
+
+      } );
+    }
+
   }
 
   writeUnit() {
@@ -1261,6 +1307,10 @@ class Axis extends EventEmitter {
 
   setTickLabelRatio( tickRatio ) {
     this.options.ticklabelratio = tickRatio;
+  }
+
+  doesHideWhenNoSeriesShown() {
+    return this.options.hideWhenNoSeriesShown;
   }
 
   draw() {

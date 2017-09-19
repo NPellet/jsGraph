@@ -8618,7 +8618,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var _this = _possibleConstructorReturn(this, (Graph.__proto__ || Object.getPrototypeOf(Graph)).call(this));
 
-	      console.log('new');
 	      /*
 	        The unique ID of the graph
 	        @name Graph#uniqueid
@@ -8811,7 +8810,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'redraw',
-	      value: function redraw(onlyIfAxesHaveChanged) {
+	      value: function redraw(onlyIfAxesHaveChanged, force) {
 
 	        if (!this.width || !this.height) {
 	          return;
@@ -8823,7 +8822,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return true;
 	        } else {
 
-	          if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
+	          if (!onlyIfAxesHaveChanged || force || haveAxesChanged(this) || hasSizeChanged(this)) {
 	            this.executeRedrawSlaves();
 	            refreshDrawingZone(this);
 	            return true;
@@ -8841,9 +8840,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'draw',
 	      value: function draw(force) {
+
 	        this.drawn = true;
 	        this.updateLegend(true);
-	        this.drawSeries(this.redraw(true && !force));
+	        this.drawSeries(this.redraw(true, force));
 
 	        this._pluginsExecute("postDraw");
 	      }
@@ -9301,7 +9301,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            l;
 
 	        val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
-	        series = this.getSeriesFromAxis(axis, true);
+	        series = this.getSeriesFromAxis(axis);
 
 	        for (i = 0, l = series.length; i < l; i++) {
 
@@ -9322,6 +9322,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function getSeriesFromAxis(axis) {
 	        var series = [],
 	            i = this.series.length - 1;
+
 	        for (; i >= 0; i--) {
 	          if (this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis) {
 	            series.push(this.series[i]);
@@ -9348,7 +9349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            axis = this.axis[axisvars[j]][i];
 	            xy = j < 2 ? 'x' : 'y';
 
-	            if (axis.disabled) {
+	            if (!axis.isShown()) {
 	              continue;
 	            }
 
@@ -11243,7 +11244,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph._painted = true;
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
-	      if (axis.disabled || axis.floating) {
+
+	      if (!axis.isShown()) {
+	        axis.hideGroup();
+	        return;
+	      } else {
+	        axis.showGroup();
+	      }
+
+	      if (axis.floating) {
 	        return;
 	      }
 
@@ -11261,6 +11270,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return prev + curr;
 	    }, 0);
 
+	    graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
 	    [shift.top, shift.bottom].map(function (arr) {
 	      arr.reduce(function (prev, current, index) {
 	        arr[index] = prev + current;
@@ -11271,7 +11282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled || axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 
@@ -11281,8 +11292,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Applied to left and right
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
+	      if (!axis.isShown()) {
+	        axis.hideGroup();
 	        return;
+	      } else {
+	        axis.showGroup();
 	      }
 
 	      axis.setMinPx(shiftTop);
@@ -11309,11 +11323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Applied to left and right
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
-	        return;
-	      }
-
-	      if (axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 
@@ -11330,6 +11340,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return prev + curr;
 	    }, 0);
 
+	    graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
+
 	    [shift.left, shift.right].map(function (arr) {
 	      arr.reduce(function (prev, current, index) {
 	        arr[index] = prev + current;
@@ -11340,7 +11352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to left and right
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled || axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 	      axis.setShift(shift[position][axis.getLevel()]);
@@ -11349,7 +11361,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
+	      if (!axis.isShown()) {
 	        return;
 	      }
 
@@ -11396,9 +11408,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph.rectEvent.setAttribute('y', shiftTop + graph.getPaddingTop());
 	    graph.rectEvent.setAttribute('x', shiftLeft + graph.getPaddingLeft());
 
-	    graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
-	    graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
-
 	    graph.rectEvent.setAttribute('width', graph.drawingSpaceWidth);
 	    graph.rectEvent.setAttribute('height', graph.drawingSpaceHeight);
 
@@ -11406,6 +11415,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
 	    graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
 	    graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
+	    // Apply to top and bottom
+	    graph._applyToAxes(function (axis, position) {
+
+	      if (!axis.isShown()) {
+	        return;
+	      }
+
+	      axis.drawLines();
+	    }, false, true, true);
 
 	    /*
 	    graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -13816,7 +13835,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var constructor = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._typedArrayClass;
 
 
-	        // The following types accept NaNs
+	        // The following types accept unsigned numbers
 	        return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
 	      }
 	    }, {
@@ -13866,6 +13885,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'append',
 	      value: function append(x, y) {
+
+	        if (!this.data) {
+	          this.data = [];
+	        }
 
 	        if (typeof x == "function") {
 	          x = x(this);
@@ -14034,12 +14057,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (useDataToUse && this.dataInUse) {
 	          xdata = this.dataInUse.x;
 	        } else if (this.xdata) {
-	          xdata = this.xdata.getData();
+	          xdata = this.xdata.data;
 	        }
 
 	        var position = void 0;
 
 	        if (this.hasXWaveform()) {
+	          // The x value HAS to be rescaled
 	          position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
 	        } else {
 	          position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
@@ -14077,12 +14101,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'getXMin',
 	      value: function getXMin() {
-	        return (this.xdata ? this.xdata.getMin() : this.minX) * this.getXScale() + this.getXShift();
+	        return this.xdata ? this.xdata.getMin() : this.minX;
 	      }
 	    }, {
 	      key: 'getXMax',
 	      value: function getXMax() {
-	        return (this.xdata ? this.xdata.getMax() : this.maxX) * this.getXScale() + this.getXShift();
+	        return this.xdata ? this.xdata.getMax() : this.maxX;
 	      }
 	    }, {
 	      key: 'getYMin',
@@ -14175,7 +14199,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 
-	        if (!this.hasXWaveform) {
+	        if (!this.hasXWaveform()) {
 	          return this;
 	        }
 
@@ -14569,6 +14593,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var xIndex = void 0;
 	        var yData = this.getDataY();
 
+	        x = (x - this.getXShift()) / this.getXScale();
+
 	        if (this.xdata) {
 	          var xData = this.xdata.getData(),
 	              _xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
@@ -14783,10 +14809,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this._dataAggregating = (0, _data_aggregator2.default)({
 
-	          minX: this.minX,
-	          maxX: this.maxX,
-	          minY: this.minY,
-	          maxY: this.maxY,
+	          minX: this.getMinX(),
+	          maxX: this.getMaxX(),
+	          minY: this.getMinY(),
+	          maxY: this.getMaxY(),
 	          data: this.data,
 	          xdata: this.xdata ? this.xdata.getData() : undefined,
 	          xScale: this.xScale,
@@ -14797,6 +14823,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }).then(function (event) {
 
 	          _this._dataAggregated = event.aggregates;
+	          console.log(_this._dataAggregated);
 	          _this._dataAggregating = false;
 	        });
 	      }
@@ -15691,7 +15718,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.DELTAP = 1e-6;
 	      this.BIGVAL = 9e99;
 	      this.WEIGHT = 1.0;
-	      console.log(options);
+
 	      this.setYData(options.dataY);
 	      this.setXData(options.dataX);
 	      this.setWeight(options.weight);
@@ -15851,7 +15878,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: "log",
 	      value: function log(message) {
-	        console.log(message);
+	        if (this.options.log) {
+	          console.log(message);
+	        }
 	      }
 	    }, {
 	      key: "nudge",
@@ -16029,7 +16058,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	        this.sosprev = this.sos;
 
-	        console.log("  bLMiter..SumOfSquares= " + this.sos);
+	        this.myH.log("  bLMiter..SumOfSquares= " + this.sos);
 	        if (!this.myH.buildJacobian()) {
 	          console.error("  bLMiter finds buildJacobian()=false");
 	          return false;
@@ -16245,7 +16274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var aggregations = {};
 
 	      // Direction x
-
+	      console.log(direction);
 	      if (direction == 'x') {
 
 	        var dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
@@ -17433,20 +17462,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.line.setAttribute('marker-end', !this.options.splitMarks || span[1] == 1 ? "" : "url(#horionzalsplit_" + this.graph.getId() + ")");
 	      }
 	    }, {
-	      key: '_draw0Line',
-	      value: function _draw0Line(px) {
+	      key: '_drawLine',
+	      value: function _drawLine(pos, line) {
 
-	        if (!this._0line) {
-	          this._0line = document.createElementNS(this.graph.ns, 'line');
+	        var px = this.getPx(pos);
+
+	        if (!line) {
+	          line = document.createElementNS(this.graph.ns, 'line');
+	        } else {
+	          line.setAttribute('display', 'initial');
 	        }
-	        this._0line.setAttribute('x1', px);
-	        this._0line.setAttribute('x2', px);
 
-	        this._0line.setAttribute('y1', 0);
-	        this._0line.setAttribute('y2', this.getMaxPx());
+	        line.setAttribute('x1', px);
+	        line.setAttribute('x2', px);
 
-	        this._0line.setAttribute('stroke', 'black');
-	        this.groupGrids.appendChild(this._0line);
+	        line.setAttribute('y1', 0);
+	        line.setAttribute('y2', this.graph.drawingSpaceHeight);
+
+	        line.setAttribute('stroke', 'black');
+	        this.group.appendChild(line);
+
+	        return line;
+	      }
+	    }, {
+	      key: '_hideLine',
+	      value: function _hideLine(line) {
+	        if (!line) {
+	          return;
+	        }
+	        line.setAttribute('display', 'none');
 	      }
 	    }, {
 	      key: 'handleMouseMoveLocal',
@@ -17608,7 +17652,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
 	   */
 	  var defaults = {
-	    lineAt0: false,
+	    lineAt: false,
 	    display: true,
 	    flipped: false,
 	    axisDataSpacing: {
@@ -17625,6 +17669,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    primaryGridWidth: 1,
 	    secondaryGridWidth: 1,
 
+	    hideWhenNoSeriesShown: false,
 	    shiftToZero: false,
 	    tickPosition: 1,
 	    nbTicksPrimary: 3,
@@ -17690,6 +17735,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.group.appendChild(this.rectEvent);
 
 	        this.graph.axisGroup.appendChild(this.group); // Adds to the main axiszone
+
+	        // Lines at a certain value
+	        this._lines = [];
 
 	        this.line = document.createElementNS(this.graph.ns, 'line');
 	        this.line.setAttribute('stroke', 'black');
@@ -17815,12 +17863,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'isDisplayed',
 	      value: function isDisplayed() {
-	        return this.options.display;
+
+	        if (!this.options.hideWhenNoSeriesShown) {
+	          return this.options.display;
+	        }
+
+	        return this.graph.getSeriesFromAxis(this).reduce(function (accumulator, serie) {
+	          return accumulator || serie.isShown();
+	        }, false);
 	      }
 	    }, {
 	      key: 'isShown',
 	      value: function isShown() {
+
 	        return this.isDisplayed.apply(this, arguments);
+	      }
+	    }, {
+	      key: 'hideGroup',
+	      value: function hideGroup() {
+	        if (this._hidden) {
+	          return;
+	        }
+	        this._hidden = true;
+	        this.group.setAttribute('display', 'none');
+	      }
+	    }, {
+	      key: 'showGroup',
+	      value: function showGroup() {
+	        if (!this._hidden) {
+	          return;
+	        }
+	        this._hidden = false;
+	        this.group.setAttribute('display', 'initial');
 	      }
 	    }, {
 	      key: 'kill',
@@ -17828,9 +17902,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.graph.killAxis(this, noRedraw, noSerieKill);
 	      }
 	    }, {
-	      key: 'setLineAt0',
-	      value: function setLineAt0(bool) {
-	        this.options.lineAt0 = !!bool;
+	      key: 'setLineAt',
+	      value: function setLineAt(atValues) {
+	        this.options.lineAt = atValues;
+	        return this;
 	      }
 	    }, {
 	      key: 'adaptTo',
@@ -18408,7 +18483,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /*			0 - 0.00005 => 20'000'000
 	        */
 
-	        if (!this.options.display) {
+	        if (!this.isShown()) {
 	          this.line.setAttribute('display', 'none');
 	          return 0;
 	        }
@@ -18542,11 +18617,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /************************************/
 
 	        //   this.drawSpecifics();
-	        if (this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0) {
-	          this._draw0Line(this.getPx(0));
-	        }
 
 	        return widthHeight;
+	      }
+	    }, {
+	      key: 'drawLines',
+	      value: function drawLines() {
+	        var _this3 = this;
+
+	        if (this.options.lineAt && Array.isArray(this.options.lineAt)) {
+
+	          this.options.lineAt.forEach(function (val, index) {
+
+	            if (!isNaN(val) && _this3.getCurrentMin() < val && _this3.getCurrentMax() > val) {
+
+	              _this3._lines[index] = _this3._drawLine(val, _this3._lines[index]);
+	            } else {
+	              _this3._hideLine(_this3._lines[index]);
+	            }
+	          });
+	        }
 	      }
 	    }, {
 	      key: 'writeUnit',
@@ -18656,6 +18746,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setTickLabelRatio',
 	      value: function setTickLabelRatio(tickRatio) {
 	        this.options.ticklabelratio = tickRatio;
+	      }
+	    }, {
+	      key: 'doesHideWhenNoSeriesShown',
+	      value: function doesHideWhenNoSeriesShown() {
+	        return this.options.hideWhenNoSeriesShown;
 	      }
 	    }, {
 	      key: 'draw',
@@ -19938,21 +20033,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return !this.options.flipped;
 	      }
 	    }, {
-	      key: '_draw0Line',
-	      value: function _draw0Line(px) {
+	      key: '_drawLine',
+	      value: function _drawLine(pos, line) {
 
-	        if (!this._0line) {
-	          this._0line = document.createElementNS(this.graph.ns, 'line');
+	        var px = this.getPx(pos);
+
+	        if (!line) {
+	          line = document.createElementNS(this.graph.ns, 'line');
+	        } else {
+	          line.setAttribute('display', 'initial');
 	        }
 
-	        this._0line.setAttribute('y1', px);
-	        this._0line.setAttribute('y2', px);
+	        line.setAttribute('y1', px);
+	        line.setAttribute('y2', px);
 
-	        this._0line.setAttribute('x1', 0);
-	        this._0line.setAttribute('x2', this.graph.getDrawingWidth());
+	        line.setAttribute('x1', 0);
+	        line.setAttribute('x2', this.graph.drawingSpaceWidth);
 
-	        this._0line.setAttribute('stroke', 'black');
-	        this.groupGrids.appendChild(this._0line);
+	        line.setAttribute('stroke', 'black');
+	        this.group.appendChild(line);
+
+	        return line;
+	      }
+	    }, {
+	      key: '_hideLine',
+	      value: function _hideLine(line) {
+	        if (!line) {
+	          return;
+	        }
+
+	        line.setAttribute('display', 'none');
 	      }
 	    }, {
 	      key: 'handleMouseMoveLocal',
@@ -22149,7 +22259,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (; i < l; i += 1) {
 
 	          x = waveform.getX(i, true);
-
 	          y = data[i] * yscale + yshift;
 
 	          if (x != x || y != y) {
@@ -22734,7 +22843,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            xMin: this.waveform.getX(indexX),
 	            xMax: this.waveform.getX(indexX + 1),
 	            yMin: this.waveform.getY(indexX),
-	            yMax: this.waveform.getY(indexX + 1)
+	            yMax: this.waveform.getY(indexX + 1),
+	            xExact: valX
 	          };
 
 	          if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
@@ -22763,7 +22873,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        var value = this.searchClosestValue(valX);
 
-	        if (!value) return;
+	        if (!value) {
+	          return;
+	        }
 
 	        var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
 	        var intY = (1 - ratio) * value.yMin + ratio * value.yMax;
@@ -22808,7 +22920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xAfter: value.xMax,
 	          yBefore: value.yMin,
 	          yAfter: value.yMax,
-	          trueX: valX,
+	          trueX: value.xExact,
 	          interpolatedY: intY,
 
 	          xClosest: value.xClosest,
@@ -23784,11 +23896,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.emit("hide");
 
+	        if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+	          console.log('rehide');
+	          this.graph.draw(true);
+	        }
+
 	        return this;
 	      }
 	    }, {
 	      key: 'show',
 	      value: function show(showShapes) {
+
 	        this.hidden = false;
 	        this.groupMain.setAttribute('display', 'block');
 
@@ -23808,6 +23926,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.emit("show");
 
+	        if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+	          this.graph.draw(true);
+	        }
 	        return this;
 	      }
 	    }, {
@@ -27292,7 +27413,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 
-	          this.lineZone.setAttribute('d', "M " + line + " z");
+	          if (line !== "") {
+	            this.lineZone.setAttribute('d', "M " + line + " z");
+	          }
 	          this.groupMain.appendChild(this.groupZones);
 	        }
 
@@ -33522,7 +33645,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!this.shapeType && !this.options.url) {
 	          return;
 	        }
-	        console.log('down');
 
 	        var self = this,
 	            selfPlugin = this;

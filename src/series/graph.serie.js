@@ -336,6 +336,11 @@ class Serie extends EventEmitter {
 
     this.emit( "hide" );
 
+    if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
+      console.log( 'rehide' );
+      this.graph.draw( true );
+    }
+
     return this;
   }
 
@@ -346,6 +351,7 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   show( showShapes ) {
+
     this.hidden = false;
     this.groupMain.setAttribute( 'display', 'block' );
 
@@ -365,6 +371,9 @@ class Serie extends EventEmitter {
 
     this.emit( "show" );
 
+    if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
+      this.graph.draw( true );
+    }
     return this;
   }
 

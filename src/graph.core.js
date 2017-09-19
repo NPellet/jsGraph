@@ -87,7 +87,7 @@ class Graph extends EventEmitter {
   constructor( wrapper, options, axis ) {
 
     super();
-    
+
     /*
       The unique ID of the graph
       @name Graph#uniqueid
@@ -302,7 +302,7 @@ class Graph extends EventEmitter {
    * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
    * @return {Boolean} if the redraw has been successful
    */
-  redraw( onlyIfAxesHaveChanged ) {
+  redraw( onlyIfAxesHaveChanged, force ) {
 
     if ( !this.width || !this.height ) {
       return;
@@ -315,7 +315,7 @@ class Graph extends EventEmitter {
 
     } else {
 
-      if ( !onlyIfAxesHaveChanged || haveAxesChanged( this ) || hasSizeChanged( this ) ) {
+      if ( !onlyIfAxesHaveChanged || force || haveAxesChanged( this ) || hasSizeChanged( this ) ) {
         this.executeRedrawSlaves();
         refreshDrawingZone( this );
         return true;
@@ -335,10 +335,10 @@ class Graph extends EventEmitter {
    * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
    */
   draw( force ) {
-    
+
     this.drawn = true;
     this.updateLegend( true );
-    this.drawSeries( this.redraw( true && !force ) );
+    this.drawSeries( this.redraw( true, force ) );
 
     this._pluginsExecute( "postDraw" );
 
@@ -988,7 +988,7 @@ class Graph extends EventEmitter {
       l;
 
     val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
-    series = this.getSeriesFromAxis( axis, true );
+    series = this.getSeriesFromAxis( axis );
 
     for ( i = 0, l = series.length; i < l; i++ ) {
 
@@ -1013,6 +1013,7 @@ class Graph extends EventEmitter {
   getSeriesFromAxis( axis ) {
     var series = [],
       i = this.series.length - 1;
+
     for ( ; i >= 0; i-- ) {
       if ( this.series[ i ].getXAxis() == axis || this.series[ i ].getYAxis() == axis ) {
         series.push( this.series[ i ] );
@@ -1042,7 +1043,7 @@ class Graph extends EventEmitter {
         axis = this.axis[ axisvars[ j ] ][ i ];
         xy = j < 2 ? 'x' : 'y';
 
-        if ( axis.disabled ) {
+        if ( !axis.isShown() ) {
           continue;
         }
 
@@ -3006,7 +3007,15 @@ function refreshDrawingZone( graph ) {
   graph._painted = true;
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
-    if ( axis.disabled ||  axis.floating ) {
+
+    if ( !axis.isShown() ) {
+      axis.hideGroup();
+      return;
+    } else {
+      axis.showGroup();
+    }
+
+    if ( axis.floating ) {
       return;
     }
 
@@ -3025,6 +3034,8 @@ function refreshDrawingZone( graph ) {
     return prev + curr;
   }, 0 );
 
+  graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
   [ shift.top, shift.bottom ].map( function( arr ) {
     arr.reduce( function( prev, current, index ) {
       arr[ index ] = prev + current;
@@ -3035,7 +3046,7 @@ function refreshDrawingZone( graph ) {
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
 
-    if ( axis.disabled ||  axis.floating ) {
+    if ( !axis.isShown() ||  axis.floating ) {
       return;
     }
 
@@ -3046,8 +3057,11 @@ function refreshDrawingZone( graph ) {
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
-    if ( axis.disabled ) {
+    if ( !axis.isShown() ) {
+      axis.hideGroup();
       return;
+    } else {
+      axis.showGroup();
     }
 
     axis.setMinPx( shiftTop );
@@ -3075,11 +3089,7 @@ function refreshDrawingZone( graph ) {
   // Applied to left and right
   graph._applyToAxes( function( axis, position ) {
 
-    if ( axis.disabled ) {
-      return;
-    }
-
-    if ( axis.floating ) {
+    if ( !axis.isShown() ||  axis.floating ) {
       return;
     }
 
@@ -3097,6 +3107,8 @@ function refreshDrawingZone( graph ) {
     return prev + curr;
   }, 0 );
 
+  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
+
   [ shift.left, shift.right ].map( function( arr ) {
     arr.reduce( function( prev, current, index ) {
       arr[ index ] = prev + current;
@@ -3107,7 +3119,7 @@ function refreshDrawingZone( graph ) {
   // Apply to left and right
   graph._applyToAxes( ( axis, position ) => {
 
-    if ( axis.disabled ||  axis.floating ) {
+    if ( !axis.isShown() ||  axis.floating ) {
       return;
     }
     axis.setShift( shift[ position ][ axis.getLevel() ] );
@@ -3117,7 +3129,7 @@ function refreshDrawingZone( graph ) {
   // Apply to top and bottom
   graph._applyToAxes( function( axis, position ) {
 
-    if ( axis.disabled ) {
+    if ( !axis.isShown() ) {
       return;
     }
 
@@ -3166,9 +3178,6 @@ function refreshDrawingZone( graph ) {
   graph.rectEvent.setAttribute( 'y', shiftTop + graph.getPaddingTop() );
   graph.rectEvent.setAttribute( 'x', shiftLeft + graph.getPaddingLeft() );
 
-  graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
-  graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
-
   graph.rectEvent.setAttribute( 'width', graph.drawingSpaceWidth );
   graph.rectEvent.setAttribute( 'height', graph.drawingSpaceHeight );
 
@@ -3176,6 +3185,17 @@ function refreshDrawingZone( graph ) {
   graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
   graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
   graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
+  // Apply to top and bottom
+  graph._applyToAxes( function( axis, position ) {
+
+    if ( !axis.isShown() ) {
+      return;
+    }
+
+    axis.drawLines();
+
+  }, false, true, true );
 
   /*
 	graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -3623,7 +3643,7 @@ function _handleMouseMove( graph, x, y, e ) {
               withinPx: 20,
               withinVal: -1
             };
-          });
+          } );
         }
 
         graph._trackingLegend = _trackingLegendSerie( graph, series, x, y, graph._trackingLegend, graph.options.trackingLine.textMethod, index.xClosest );

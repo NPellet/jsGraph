@@ -36,7 +36,7 @@ let string = function() {
     let aggregations = {};
 
     // Direction x
-console.log( direction );
+    console.log( direction );
     if ( direction == 'x' ) {
 
       const dataPerSlot = numPoints / ( maxX - minX ); // Computed number of aggregation per slot

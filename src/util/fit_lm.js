@@ -5,7 +5,7 @@ class FitHost {
     this.DELTAP = 1e-6;
     this.BIGVAL = 9e99;
     this.WEIGHT = 1.0;
-    console.log( options );
+
     this.setYData( options.dataY );
     this.setXData( options.dataX );
     this.setWeight( options.weight );
@@ -141,7 +141,9 @@ class FitHost {
   }
 
   log( message ) {
-    console.log( message );
+    if ( this.options.log ) {
+      console.log( message );
+    }
   }
 
   //------the four mandated interface methods------------
@@ -305,7 +307,7 @@ class LM {
     }
     this.sosprev = this.sos;
 
-    console.log( "  bLMiter..SumOfSquares= " + this.sos );
+    this.myH.log( "  bLMiter..SumOfSquares= " + this.sos );
     if ( !this.myH.buildJacobian() ) {
       console.error( "  bLMiter finds buildJacobian()=false" );
       return false;

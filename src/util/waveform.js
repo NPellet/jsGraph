@@ -203,7 +203,7 @@ class Waveform {
 
   isUnsigned( constructor = this._typedArrayClass ) {
 
-    // The following types accept NaNs
+    // The following types accept unsigned numbers
     return constructor == Uint8Array ||
       constructor == Uint8ClampedArray ||
       constructor == Uint16Array ||
