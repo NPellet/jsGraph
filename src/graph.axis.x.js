@@ -132,26 +132,15 @@ class AxisX extends Axis {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }
 
-    if ( this.katexElement ) {
-
-      this.label.setAttribute( 'style', 'display: none;' );
-
-      this.katexElement.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
-      this.katexElement.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
-      this.group.appendChild( this.katexElement );
-
-    } else {
-
-      if ( this.options.labelFont ) {
-        this.label.setAttribute( 'font-family', this.options.labelFont );
-      }
-
-      this.label.setAttribute( 'text-anchor', 'middle' );
-      this.label.setAttribute( 'style', 'display: initial;' );
-      this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
-      this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
-      this.labelTspan.textContent = this.getLabel();
+    if ( this.options.labelFont ) {
+      this.label.setAttribute( 'font-family', this.options.labelFont );
     }
+
+    this.label.setAttribute( 'text-anchor', 'middle' );
+    this.label.setAttribute( 'style', 'display: initial;' );
+    this.label.setAttribute( 'x', Math.abs( this.getMaxPx() + this.getMinPx() ) / 2 );
+    this.label.setAttribute( 'y', ( this.top ? -1 : 1 ) * ( ( this.options.tickPosition == 1 ? 10 : 25 ) + this.graph.options.fontSize ) );
+    this.labelTspan.textContent = this.getLabel();
 
   }
 

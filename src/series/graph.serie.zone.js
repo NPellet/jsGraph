@@ -128,7 +128,8 @@ class SerieZone extends Serie {
         ypx = 0,
         j = 0,
         line = "",
-        buffer;
+        buffer,
+        move = false;
 
       const xminpx = this.getXAxis().getMinPx(),
         xmaxpx = this.getXAxis().getMaxPx(),
@@ -149,11 +150,35 @@ class SerieZone extends Serie {
 
       for ( let waveform of this.waveforms ) {
 
-        dataY = waveform.getData( true );
-        for ( j = 0; j < dataY.length; j += 1 ) {
+        for ( j = 0; j < waveform.getLength(); j += 1 ) {
           dataX = waveform.getX( j, true );
+          dataY = waveform.getY( j, true );
+          console.log( dataX, dataY );
 
-          ypx = this.getY( dataY[ j ] );
+          // The y axis in screen coordinate is inverted vs cartesians
+          if ( dataY[ j ] < ymin ) {
+            ypx = this.getY( ymin );
+          } else if ( dataY[ j ] > ymax ) {
+            ypx = this.getY( ymax );
+          }
+
+          if ( dataX !== dataX ) {
+            continue;
+          }
+
+          if ( dataY !== dataY ) {
+            // Let's make a new line
+
+            if ( line.length == 0 ) {
+              continue;
+            }
+
+            line += "L " + xpx + ", " + this.getY( waveform.getMinY() );
+            move = true;
+            continue;
+          }
+
+          ypx = this.getY( dataY );
           xpx = this.getX( dataX );
 
           if ( dataX < xmin || dataX > xmax ) {
@@ -161,11 +186,9 @@ class SerieZone extends Serie {
             continue;
           }
 
-          // The y axis in screen coordinate is inverted vs cartesians
-          if ( dataY[ j ] < ymin ) {
-            ypx = this.getY( ymin );
-          } else if ( dataY[ j ] > ymax ) {
-            ypx = this.getY( ymax );
+          if ( move ) {
+            line += " M " + xpx + ", " + this.getY( waveform.getMinY() ) + " ";
+            move = false;
           }
 
           if ( line.length > 0 ) {

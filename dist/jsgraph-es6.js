@@ -490,7 +490,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrapper.style.position = 'relative';
 	      wrapper.style.outline = "none";
 
-	      wrapper.setAttribute('tabindex', 1);
+	      // Why would that be necessary ?
+	      // wrapper.setAttribute( 'tabindex', 1 );
 
 	      this.wrapper = wrapper;
 
@@ -5616,9 +5617,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 
-	      if (data.length > 0) {
-	        this.setData(data);
-	      }
+	      this.setData(data);
 
 	      this.BELOW = Waveform.BELOW;
 	      this.ABOVE = Waveform.ABOVE;
@@ -8401,7 +8400,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        case 'bottom':
 	          this.position.y = this.graph.getHeight() + "px";
-	          this.position.x = (this.graph.getWidth() - this.width) / 2 + "px";
+	          // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
+	          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + "px";
 	          this.alignToY = "bottom";
 	          this.alignToX = false;
 	          break;
@@ -8421,7 +8421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 
 	        case 'top':
-	          this.position.x = (this.graph.getWidth() - this.width) / 2 + "px";
+	          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + "px";
 	          this.position.y = "10px";
 	          this.alignToY = "top";
 	          this.alignToX = false;
@@ -8994,25 +8994,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      if (this.katexElement) {
-
-	        this.label.setAttribute('style', 'display: none;');
-
-	        this.katexElement.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
-	        this.katexElement.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
-	        this.group.appendChild(this.katexElement);
-	      } else {
-
-	        if (this.options.labelFont) {
-	          this.label.setAttribute('font-family', this.options.labelFont);
-	        }
-
-	        this.label.setAttribute('text-anchor', 'middle');
-	        this.label.setAttribute('style', 'display: initial;');
-	        this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
-	        this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
-	        this.labelTspan.textContent = this.getLabel();
+	      if (this.options.labelFont) {
+	        this.label.setAttribute('font-family', this.options.labelFont);
 	      }
+
+	      this.label.setAttribute('text-anchor', 'middle');
+	      this.label.setAttribute('style', 'display: initial;');
+	      this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
+	      this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
+	      this.labelTspan.textContent = this.getLabel();
 	    }
 
 	    draw() {
@@ -11770,7 +11760,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    draw() {
 
-	      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 5 + this.tickPx1 * this.tickScaling[1];
+	      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 2 - this.tickPx1 * this.tickScaling[1];
 	      var tickWidth = super.draw(...arguments);
 	      tickWidth += this.getAdditionalWidth();
 	      this.drawSpecifics(tickWidth);
@@ -11857,7 +11847,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      this.label.setAttribute('dominant-baseline', !this.left ? 'hanging' : 'auto');
+	      this.label.setAttribute('dominant-baseline', !this.left ? 'auto' : 'auto');
 	      this.labelTspan.textContent = this.getLabel();
 	    }
 
@@ -18869,7 +18859,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ypx = 0,
 	            j = 0,
 	            line = "",
-	            buffer;
+	            buffer,
+	            move = false;
 
 	        const xminpx = this.getXAxis().getMinPx(),
 	              xmaxpx = this.getXAxis().getMaxPx(),
@@ -18890,11 +18881,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        for (let waveform of this.waveforms) {
 
-	          dataY = waveform.getData(true);
-	          for (j = 0; j < dataY.length; j += 1) {
+	          for (j = 0; j < waveform.getLength(); j += 1) {
 	            dataX = waveform.getX(j, true);
+	            dataY = waveform.getY(j, true);
+	            console.log(dataX, dataY);
 
-	            ypx = this.getY(dataY[j]);
+	            // The y axis in screen coordinate is inverted vs cartesians
+	            if (dataY[j] < ymin) {
+	              ypx = this.getY(ymin);
+	            } else if (dataY[j] > ymax) {
+	              ypx = this.getY(ymax);
+	            }
+
+	            if (dataX !== dataX) {
+	              continue;
+	            }
+
+	            if (dataY !== dataY) {
+	              // Let's make a new line
+
+	              if (line.length == 0) {
+	                continue;
+	              }
+
+	              line += "L " + xpx + ", " + this.getY(waveform.getMinY());
+	              move = true;
+	              continue;
+	            }
+
+	            ypx = this.getY(dataY);
 	            xpx = this.getX(dataX);
 
 	            if (dataX < xmin || dataX > xmax) {
@@ -18902,11 +18917,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	              continue;
 	            }
 
-	            // The y axis in screen coordinate is inverted vs cartesians
-	            if (dataY[j] < ymin) {
-	              ypx = this.getY(ymin);
-	            } else if (dataY[j] > ymax) {
-	              ypx = this.getY(ymax);
+	            if (move) {
+	              line += " M " + xpx + ", " + this.getY(waveform.getMinY()) + " ";
+	              move = false;
 	            }
 
 	            if (line.length > 0) {

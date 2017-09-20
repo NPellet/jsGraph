@@ -24,9 +24,7 @@ class Waveform {
       } 
     };
 
-    if ( data.length > 0 ) {
-      this.setData( data );
-    }
+    this.setData( data );
 
     this.BELOW = Waveform.BELOW;
     this.ABOVE = Waveform.ABOVE;

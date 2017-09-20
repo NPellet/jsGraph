@@ -67,7 +67,7 @@ class AxisY extends Axis {
 
   draw() {
 
-    this.tickMargin = ( this.left ? -5 - this.tickPx1 * this.tickScaling[ 1 ] : 5 + this.tickPx1 * this.tickScaling[ 1 ] );
+    this.tickMargin = ( this.left ? -5 - this.tickPx1 * this.tickScaling[ 1 ] : 2 - this.tickPx1 * this.tickScaling[ 1 ] );
     var tickWidth = super.draw( ...arguments );
     tickWidth += this.getAdditionalWidth();
     this.drawSpecifics( tickWidth );
@@ -157,7 +157,7 @@ class AxisY extends Axis {
       this.label.setAttribute( 'fill', this.getLabelColor() );
     }
 
-    this.label.setAttribute( 'dominant-baseline', !this.left ? 'hanging' : 'auto' );
+    this.label.setAttribute( 'dominant-baseline', !this.left ? 'auto' : 'auto' );
     this.labelTspan.textContent = this.getLabel();
   }
 

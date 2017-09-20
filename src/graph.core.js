@@ -205,7 +205,8 @@ class Graph extends EventEmitter {
     wrapper.style.position = 'relative';
     wrapper.style.outline = "none";
 
-    wrapper.setAttribute( 'tabindex', 1 );
+    // Why would that be necessary ?
+    // wrapper.setAttribute( 'tabindex', 1 );
 
     this.wrapper = wrapper;
 
