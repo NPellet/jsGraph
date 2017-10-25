@@ -61,198 +61,11 @@ class Serie extends EventEmitter {
       return this.setWaveform( data );
     }
 
-    function isArray( arr ) {
-      var stringed = Object.prototype.toString.call( arr );
-      return stringed === '[object Array]' || stringed === '[object Int16Array]' || stringed === '[object Int32Array]' || stringed === '[object Float32Array]' ||  stringed === '[object Float64Array]' ||  stringed === '[object Uint8Array]' || stringed === '[object Uint16Array]' || stringed === '[object Uint32Array]' || stringed === '[object Int8Array]';
-    }
-
-    var z = 0,
-      x,
-      dx,
-      oneDimensional = oneDimensional || false,
-      type = type || 'float',
-      arr,
-      total = 0,
-      continuous;
-
-    // In its current form, empty is a performance hindering method because it forces all the DOM to be cleared.
-    // We shouldn't need that for the lines
-    //this.empty();
-
-    this.minX = Number.MAX_SAFE_INTEGER;
-    this.maxX = Number.MIN_SAFE_INTEGER;
-    this.minY = Number.MAX_SAFE_INTEGER;
-    this.maxY = Number.MIN_SAFE_INTEGER;
-
-    let datas = [];
-
-    var isDataArray = isArray( data );
-
-    if ( !isDataArray && typeof data == 'object' ) {
-      data = [ data ];
-    } else if ( isDataArray && !isArray( data[ 0 ] ) && typeof data[ 0 ] !== 'object' ) { // [100, 103, 102, 2143, ...]
-      data = [  data ];
-      oneDimensional = true;
-    } else if ( isDataArray && isArray( data[ 0 ] ) && data[ 0 ].length > 2 ) {
-      oneDimensional = true;
-    } else if ( !isDataArray ) {
-      util.throwError( "Data is not an array" );
-      return;
-    }
-
-    // [[100, 0.145], [101, 0.152], [102, 0.153], [...]] ==> [[[100, 0.145], [101, 0.152], [102, 0.153], [...]]]
-    var isData0Array = isArray( data[ 0 ] );
-
-    var isData00Array = isArray( data[ 0 ][ 0 ] );
-
-    if ( isData0Array && !oneDimensional && !isData00Array ) {
-      data = [ data ];
-    }
-    if ( isData0Array ) {
-
-      for ( var i = 0, k = data.length; i < k; i++ ) {
-
-        arr = this._addData( type, !oneDimensional ? data.length * 2 : data.length );
-        datas.push( arr );
-        z = 0;
-
-        for ( var j = 0, l = data[ i ].length; j < l; j++ ) {
-
-          if ( !oneDimensional ) {
-            arr[ z ] = [ data[ i ][ j ][ 0 ], data[ i ][ j ][ 1 ] ];
-            total++;
-            z++;
-          } else { // 1D Array
-            arr[ z ] = [ data[ i ][ j ], data[ i ][ j + 1 ] ];
-            z++;
-            total += j % 2 ? 1 : 0;
-
-          }
-
-        }
-      }
-    } else if ( typeof data[ 0 ] == 'object' ) {
-
-      if ( data[ 0 ].x ) {
-
-        for ( var i = 0, l = data.length; i < l; i++ ) {
-
-          var arr = this._addData( type, data[ i ].x.length * 2 );
-          datas.push( arr );
-
-          z = 0;
-          for ( var j = 0, m = data[ 0 ].x.length; j < m; j++ ) { // Several piece of data together
-            arr[ z ] = [ data[ i ].x[ j ], data[ i ].y[ j ] ];
-            total++;
-            z++;
-          }
-        }
-
-      } else {
-
-        this.mode = 'x_equally_separated';
-
-        var number = 0,
-          numbers = [],
-          k = 0,
-          o;
-
-        if ( !data[ 0 ].y ) {
-          console.log( data );
-          util.throwError( "No y data" );
-          return;
-        }
-
-        for ( var i = 0, l = data.length; i < l; i++ ) { // Several piece of data together
-          number += data[ i ].y.length;
-          continuous = ( i != 0 ) && ( !data[ i + 1 ] || data[ i ].x + data[ i ].dx * ( data[ i ].y.length ) == data[ i + 1 ].x );
-          if ( !continuous ) {
-            datas.push( this._addData( type, number ) );
-            numbers.push( number );
-            number = 0;
-          }
-        }
-
-        this.xData = [];
-
-        number = 0;
-        k = 0;
-        z = 0;
-
-        for ( var i = 0, l = data.length; i < l; i++ ) {
-          x = data[ i ].x;
-          dx = data[ i ].dx;
-
-          for ( var j = 0; j < o; j++ ) {
-
-            datas[ k ][ z ] = [ ( x + j * dx ), data[ i ].y[ j ] ];
-            z++;
-            total++;
-          }
-
-          number += data[ i ].y.length;
-
-          if ( numbers[ k ] == number ) {
-            k++;
-            number = 0;
-            z = 0;
-          }
-        }
-      }
-    }
-
-    // Determination of slots for low res spectrum
-    var w = ( this.maxX - this.minX ) / this.graph.getDrawingWidth(),
-      ws = [];
-
-    var min = this.graph.getDrawingWidth() * 4;
-    var max = total / 4;
-
-    var min = this.graph.getDrawingWidth();
-    var max = total;
-
-    // Temporary reduction
-    datas = datas.reduce( function( a, b, index ) {
-      if ( index > 0 ) {
-        a.push( [ NaN, NaN ] );
-      }
-      //console.log( a, b );
-      return a.concat( b );
-    }, [] );
-
-    var wave = new Waveform();
-    wave.setData( datas );
-    this.setWaveform( wave );
-
-    return this;
+    throw "Setting data other than waveforms in not supported by default. You must implemented this method in the inherited class."
   }
 
   _addData( type, howmany ) {
-
     return [];
-    /*
-    switch ( type ) {
-      case 'int':
-        var size = howmany * 4; // 4 byte per number (32 bits)
-        break;
-      case 'float':
-        var size = howmany * 8; // 4 byte per number (64 bits)
-        break;
-    }
-
-    var arr = new ArrayBuffer( size );
-
-    switch ( type ) {
-      case 'int':
-        return new Int32Array( arr );
-        break;
-
-      default:
-      case 'float':
-        return new Float64Array( arr );
-        break;
-    }
-    */
   }
 
   /**
@@ -260,7 +73,7 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   clearData() {
-    this.setData( [] );
+    this.setData( new Waveform() );
     return this;
   }
 
@@ -319,6 +132,7 @@ class Serie extends EventEmitter {
    * @returns {Serie} The current serie
    */
   hide( hideShapes ) {
+
     this.hidden = true;
     this.groupMain.setAttribute( 'display', 'none' );
 
@@ -405,6 +219,25 @@ class Serie extends EventEmitter {
     return !this.hidden;
   }
 
+  /**
+   * Checks that axes assigned to the serie have been defined and have proper values
+   * @memberof Serie
+   */
+  axisCheck() {
+
+    if ( !this.getXAxis() ||  !this.getYAxis() ) {
+      throw "No axis exist for this serie. Check that they were properly assigned";
+    }
+
+    if (
+      isNaN( this.getXAxis().getCurrentMin() ) ||
+      isNaN( this.getXAxis().getCurrentMax() ) ||
+      isNaN( this.getYAxis().getCurrentMin() ) ||
+      isNaN( this.getYAxis().getCurrentMax() )
+    ) {
+      throw "Axis min and max values are not defined. Try autoscaling"
+    }
+  }
   /**
    * Returns the x position of a certain value in pixels position, based on the serie's axis
    * @memberof Serie
@@ -533,6 +366,8 @@ class Serie extends EventEmitter {
         this[ ( arguments[ i ].isX() ? 'setXAxis' : 'setYAxis' ) ]( arguments[ i ] );
       }
     }
+
+    this.graph.updateDataMinMaxAxes();
 
     return this;
   }

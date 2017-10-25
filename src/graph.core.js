@@ -1044,8 +1044,11 @@ class Graph extends EventEmitter {
         axis = this.axis[ axisvars[ j ] ][ i ];
         xy = j < 2 ? 'x' : 'y';
 
+        // 25.10.2017. Wait a second, this cannot be real. Even hidden axes must have min max values.
+        // The data can be displayed while the axis is hidden
+        // I assume this was added to cover another bug, but another approach must be chosen
         if ( !axis.isShown() ) {
-          continue;
+          //          continue;
         }
 
         //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
@@ -3069,7 +3072,8 @@ function refreshDrawingZone( graph ) {
 
     if ( !axis.isShown() ) {
       axis.hideGroup();
-      return;
+      // Don't return here. We need to go through the draw method as the axis must be assigned minPx and maxPx values.
+      // This is because some series can still be visible although the axis isn't.
     } else {
       axis.showGroup();
     }
@@ -3087,6 +3091,9 @@ function refreshDrawingZone( graph ) {
     // Let's not draw dependant axes yet
     let drawn = ( !axis.linkedToAxis ) ? axis.draw() : 0;
 
+    if ( !axis.isShown() ) {
+      return;
+    }
     // Get axis position gives the extra shift that is common
     var level = getAxisLevelFromSpan( axis.getSpan(), levels[ position ] );
     axis.setLevel( level );
@@ -3699,7 +3706,12 @@ function checkMouseActions( graph, e, parameters, methodName ) {
           parameters.push( keyComb[ i ].options );
         }
 
-        graph.activePlugin = keyComb[ i ].plugin; // Lease the mouse action to the current action
+        // Lease the mouse action to the current action
+        // 25.10.2017: Except for mousewheel. See #111
+        if ( e.type !== "wheel" && e.type !== "mousewheel" ) {
+          graph.activePlugin = keyComb[ i ].plugin;
+        }
+
         graph._pluginExecute( keyComb[ i ].plugin, methodName, parameters );
         executed = true;
         continue;

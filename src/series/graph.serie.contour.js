@@ -18,6 +18,8 @@ class SerieContour extends SerieLine {
 
     this.negativeThreshold = 0;
     this.positiveThreshold = 0;
+
+    this.groupMain.setAttribute( 'clip-path', 'url(#_clipplot' + graph._creation + ')' );
   }
 
   /**

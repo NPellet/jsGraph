@@ -271,6 +271,8 @@ module.exports = function(grunt) {
 
     grunt.registerTask( 'build', [ 'webpack:dist', 'webpack:dist_es6' ] );
 
+    grunt.registerTask( 'visualizer', [ 'webpack:dist_es6', 'copy:visualizer' ] );
+
 
     function WebpackBeautifier(options) {
         this._options = options;

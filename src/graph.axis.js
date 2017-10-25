@@ -518,10 +518,24 @@ class Axis extends EventEmitter {
 
   setMinValueData( min ) {
     this.dataMin = min;
+
+    // 25.10.2017. This is to help in the case there's no autoscaling
+    if ( isNaN( this.getCurrentMin() ) ) {
+      this.setCurrentMin( this.dataMin );
+      this.cache();
+
+    }
   }
 
   setMaxValueData( max ) {
     this.dataMax = max;
+
+    // 25.10.2017. This is to help in the case there's no autoscaling
+    if ( isNaN( this.getCurrentMax() ) ) {
+      this.setCurrentMax( this.dataMax );
+      this.cache();
+
+    }
   }
 
   /**
@@ -864,9 +878,7 @@ class Axis extends EventEmitter {
       this.currentAxisMin = undefined;
     }
 
-    this.cacheCurrentMin();
-    this.cacheCurrentMax();
-    this.cacheInterval();
+    this.cache();
 
     this._zoomed = false;
 
@@ -935,6 +947,12 @@ class Axis extends EventEmitter {
    */
   cacheInterval() {
     this.cachedInterval = this.cachedCurrentMax - this.cachedCurrentMin;
+  }
+
+  cache() {
+    this.cacheCurrentMin();
+    this.cacheCurrentMax();
+    this.cacheInterval();
   }
 
   /**
@@ -1018,10 +1036,7 @@ class Axis extends EventEmitter {
     var visible;
 
     //    this.drawInit();
-
-    this.cacheCurrentMax();
-    this.cacheCurrentMin();
-    this.cacheInterval();
+    this.cache();
 
     if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
       this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
@@ -1657,7 +1672,6 @@ class Axis extends EventEmitter {
 
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
     if ( !this.options.logScale ) {
-
       return ( value - this.getCurrentMin() ) / ( this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
     } else {
       // 0 if value = min

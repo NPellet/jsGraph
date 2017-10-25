@@ -30,6 +30,8 @@ class Shape extends EventEmitter {
 
     this.group = document.createElementNS( this.graph.ns, 'g' );
 
+    this.group.setAttribute( 'clip-path', 'url(#_clipplot' + graph._creation + ')' );
+
     this._selected = false;
     this.createDom();
 

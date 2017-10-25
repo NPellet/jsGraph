@@ -395,6 +395,13 @@ class SerieLine extends Serie {
 
     var data, xData;
 
+    try {
+      this.axisCheck();
+    } catch ( e ) {
+      console.warn( e );
+      return false;
+    }
+
     this.currentLineId = 0;
     this.counter = 0;
     this._drawn = true;
@@ -662,6 +669,14 @@ class SerieLine extends Serie {
         continue;
       }
 
+      if ( xpx2 != xpx2 || ypx2 != ypx2 ) { // NaN checks
+        if ( this.counter > 0 ) {
+
+          this._createLine();
+        }
+        continue;
+      }
+
       if ( !_monotoneous ) {
         pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
       } else {
@@ -750,6 +765,7 @@ class SerieLine extends Serie {
 
               }
             } else if ( !pointOutside ) {
+
               this._addPoint( xpx2, ypx2, lastX, lastY, i, false, false );
             } // else {
             // Norman:
@@ -781,14 +797,6 @@ class SerieLine extends Serie {
           continue;
         }
 
-      }
-
-      if ( xpx2 != xpx2 || ypx2 != ypx2 ) { // NaN checks
-        if ( this.counter > 0 ) {
-
-          this._createLine();
-        }
-        continue;
       }
 
       this._addPoint( xpx2, ypx2, x, y, i, false, true );
@@ -870,69 +878,6 @@ class SerieLine extends Serie {
     }
     this.getMarkerDom( family );
     return this.markerCurrentFamily;
-  }
-
-  drawSlot( slotToUse, y ) {
-
-    var k = 0;
-    var i = 0,
-      xpx, ypx, max;
-    var j;
-
-    if ( this.isFlipped() ) {
-
-      var dataPerSlot = this.slots[ y ] / ( this.maxY - this.minY );
-
-      var slotInit = Math.floor( ( this.getYAxis().getCurrentMin() - this.minY ) * dataPerSlot );
-      var slotFinal = Math.ceil( ( this.getYAxis().getCurrentMax() - this.minY ) * dataPerSlot );
-
-    } else {
-
-      var dataPerSlot = this.slots[ y ] / ( this.maxX - this.minX );
-
-      var slotInit = Math.floor( ( this.getXAxis().getCurrentMin() - this.minX ) * dataPerSlot );
-      var slotFinal = Math.ceil( ( this.getXAxis().getCurrentMax() - this.minX ) * dataPerSlot );
-    }
-
-    for ( j = slotInit; j <= slotFinal; j++ ) {
-
-      if ( !slotToUse[ j ] ) {
-        continue;
-      }
-
-      if ( this.isFlipped() ) {
-
-        ypx = Math.floor( this.getY( slotToUse[ j ].x ) );
-        max = this.getX( slotToUse[ j ].max );
-
-        /*if ( this.options.autoPeakPicking ) {
-            allY.push( [ slotToUse[ j ].max, slotToUse[ j ].x ] );
-          }
-* @memberof SerieLine
-*/
-        this._addPoint( this.getX( slotToUse[ j ].start ), ypx, false, false, false, false, false );
-        this._addPoint( max, ypx, false, false, false, true, false );
-        this._addPoint( this.getX( slotToUse[ j ].min ), ypx, false, false, false, false, false );
-        this._addPoint( this.getX( slotToUse[ j ].stop ), ypx, false, false, false, true, false );
-
-        //    k++;
-      } else {
-
-        xpx = Math.floor( this.getX( slotToUse[ j ].x ) );
-        max = this.getY( slotToUse[ j ].max );
-
-        this._addPoint( xpx, this.getY( slotToUse[ j ].start ), false, false, false, false, false );
-        this._addPoint( xpx, max, false, false, false, true, false );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].min ), false, false, false, false, false );
-        this._addPoint( xpx, this.getY( slotToUse[ j ].stop ), false, false, false, true, false );
-
-        //this.counter ++;
-      }
-
-    }
-
-    this._createLine();
-    i++;
   }
 
   setMarkerStyleTo( dom, family ) {
