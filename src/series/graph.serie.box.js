@@ -107,8 +107,6 @@ class SerieBox extends Serie {
 
     }
 
-    console.log( this._checkY );
-
     if ( noRescale ) {
       methodref = function() {};
       methodval = function() {};
@@ -129,10 +127,8 @@ class SerieBox extends Serie {
       }
 
       if ( this.data[ i ].Q3 ) {
-        console.log( this.minX, this.minY, this.maxY, this.data[ i ].Q3, methodval );
 
         methodval( this.data[ i ].Q3 );
-        console.log( this.minX, this.minY, this.maxY );
 
       }
 
@@ -167,8 +163,6 @@ class SerieBox extends Serie {
         this.data[ i ].outliers = [];
       }
     }
-
-    console.log( this.minX, this.minY, this.maxY );
 
     this.dataHasChanged();
     this.graph.updateDataMinMaxAxes();

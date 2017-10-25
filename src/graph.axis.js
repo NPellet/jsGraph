@@ -617,6 +617,11 @@ class Axis extends EventEmitter {
     return this.options.nbTicksSecondary;
   }
 
+  setNbTicksSecondary( nb ) {
+    this.options.nbTicksSecondary = nb;
+    return this;
+  }
+
   handleMouseMove( px, e ) {
     this.mouseVal = this.getVal( px );
   }

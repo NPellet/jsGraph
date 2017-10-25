@@ -151,17 +151,20 @@ class PluginMakeTracesDifferent extends Plugin {
       options.endingColorHSL = Object.assign( {}, options.startingColorHSL, options.endingColorHSL );
     }
 
-    series.map( ( serie, index ) => {
+    return series.map( ( serie, index ) => {
 
       if ( !serie.setLineColor ) {
         throw "The serie " + serie.getName() + " does not implement the method `startingColor`"
       }
 
-      serie.setLineColor( this.buildHSLString( {
+      const colorString = this.buildHSLString( {
         h: options.startingColorHSL.h + index / ( seriesLength - 1 ) * ( options.endingColorHSL.h - options.startingColorHSL.h ),
         s: options.startingColorHSL.s + index / ( seriesLength - 1 ) * ( options.endingColorHSL.s - options.startingColorHSL.s ),
         l: options.startingColorHSL.l + index / ( seriesLength - 1 ) * ( options.endingColorHSL.l - options.startingColorHSL.l )
-      } ) );
+      } );
+
+      serie.setLineColor( colorString );
+      return colorString;
     } );
   }
 }

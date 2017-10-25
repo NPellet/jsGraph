@@ -386,15 +386,15 @@ class SerieScatter extends Serie {
 
         }
 
-        Object.assign( style, styleAll, style );
+        styles[ index ] = Object.assign( {}, styleAll, style );
 
       } else if ( styleAll !== undefined ) {
 
-        style = styleAll;
+        styles[ index ] = styleAll;
 
       } else {
 
-        style = this.styles[ selection ].default;
+        styles[ index ] = this.styles[ selection ].default;
 
       }
 
@@ -411,7 +411,6 @@ class SerieScatter extends Serie {
         shape.parentNode.setAttribute( 'transform', 'translate(' + this.shapesDetails[ index ][ 0 ] + ', ' + this.shapesDetails[ index ][ 1 ] + ')' );
       }
 
-      styles[ index ] = style;
     }
 
     return styles;

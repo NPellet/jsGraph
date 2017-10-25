@@ -337,7 +337,6 @@ class Serie extends EventEmitter {
     this.emit( "hide" );
 
     if ( this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown() ) {
-      console.log( 'rehide' );
       this.graph.draw( true );
     }
 
@@ -441,7 +440,6 @@ class Serie extends EventEmitter {
   }
 
   _checkY( val ) {
-    console.log( val, this.maxY );
     this.minY = Math.min( this.minY, val );
     this.maxY = Math.max( this.maxY, val );
   }
@@ -772,7 +770,6 @@ class Serie extends EventEmitter {
   }
 
   setStyle( style, selectionType = "unselected" ) {
-    //console.log( style, selectionType );
     this.styles[ selectionType ] = style;
     this.styleHasChanged( selectionType );
 

@@ -2403,8 +2403,9 @@ class Graph extends EventEmitter {
         var serieType = schemaSerie.type,
           serie,
           serieOptions = {},
-          serieAxis,
-          waveform = Graph.newWaveform();
+          serieAxis;
+
+        let waveform;
 
         switch ( schemaSerie.type ) {
 
@@ -2432,6 +2433,10 @@ class Graph extends EventEmitter {
           default:
             serieType = Graph.SERIE_LINE;
             break;
+        }
+
+        if ( serieType !== Graph.SERIE_BOX ) {
+          waveform = Graph.newWaveform();
         }
 
         if ( !serieType ) {
@@ -2529,7 +2534,6 @@ class Graph extends EventEmitter {
                 serie.setStyle( styles[ 0 ], style.stylename ||  "unselected" );
                 break;
             }
-
           } );
         }
 
@@ -2537,7 +2541,9 @@ class Graph extends EventEmitter {
           serie.setColors( schemaSerie.color );
         }
 
-        waveform.setData( schemaSerie.y, schemaSerie.x );
+        if ( serieType !== Graph.SERIE_BOX ) {
+          waveform.setData( schemaSerie.y, schemaSerie.x );
+        }
 
         if ( !serie ) {
           return;
@@ -2553,138 +2559,140 @@ class Graph extends EventEmitter {
           errorBoxesYAbove = [],
           errorBoxesYBelow = [];
 
-        var errors = [];
-        if ( schemaSerie.errorX ) {
+        if ( waveform !== undefined ) {
+          var errors = [];
+          if ( schemaSerie.errorX ) {
 
-          for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
+            for ( var i = 0, l = schemaSerie.errorX.length; i < l; i++ ) {
 
-            if ( Array.isArray( schemaSerie.errorX[ i ] ) ) {
+              if ( Array.isArray( schemaSerie.errorX[ i ] ) ) {
 
-              errorBarsXAbove.push( schemaSerie.errorX[ i ][ 0 ] );
-              errorBarsXBelow.push( schemaSerie.errorX[ i ][ 1 ] );
-            } else {
-              errorBarsXAbove.push( schemaSerie.errorX[ i ] );
-              errorBarsXBelow.push( schemaSerie.errorX[ i ] );
-            }
-          }
-
-        } else if ( schemaSerie.errorBarX ||  schemaSerie.errorBoxX ) {
-
-          if ( schemaSerie.errorBarX ) {
-
-            for ( var i = 0, l = schemaSerie.errorBarX.length; i < l; i++ ) {
-
-              if ( Array.isArray( schemaSerie.errorBarX[ i ] ) ) {
-
-                errorBarsXAbove.push( schemaSerie.errorBarX[ i ][ 0 ] );
-                errorBarsXBelow.push( schemaSerie.errorBarX[ i ][ 1 ] );
+                errorBarsXAbove.push( schemaSerie.errorX[ i ][ 0 ] );
+                errorBarsXBelow.push( schemaSerie.errorX[ i ][ 1 ] );
               } else {
-                errorBarsXAbove.push( schemaSerie.errorBarX[ i ] );
-                errorBarsXBelow.push( schemaSerie.errorBarX[ i ] );
+                errorBarsXAbove.push( schemaSerie.errorX[ i ] );
+                errorBarsXBelow.push( schemaSerie.errorX[ i ] );
+              }
+            }
+
+          } else if ( schemaSerie.errorBarX ||  schemaSerie.errorBoxX ) {
+
+            if ( schemaSerie.errorBarX ) {
+
+              for ( var i = 0, l = schemaSerie.errorBarX.length; i < l; i++ ) {
+
+                if ( Array.isArray( schemaSerie.errorBarX[ i ] ) ) {
+
+                  errorBarsXAbove.push( schemaSerie.errorBarX[ i ][ 0 ] );
+                  errorBarsXBelow.push( schemaSerie.errorBarX[ i ][ 1 ] );
+                } else {
+                  errorBarsXAbove.push( schemaSerie.errorBarX[ i ] );
+                  errorBarsXBelow.push( schemaSerie.errorBarX[ i ] );
+                }
+              }
+            }
+
+            if ( schemaSerie.errorBoxX ) {
+
+              for ( var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++ ) {
+
+                if ( Array.isArray( schemaSerie.errorBoxX[ i ] ) ) {
+
+                  errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ][ 0 ] );
+                  errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ][ 1 ] );
+                } else {
+                  errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ] );
+                  errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ] );
+                }
               }
             }
           }
 
-          if ( schemaSerie.errorBoxX ) {
+          if ( schemaSerie.errorY ) {
 
-            for ( var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++ ) {
+            for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
 
-              if ( Array.isArray( schemaSerie.errorBoxX[ i ] ) ) {
+              if ( Array.isArray( schemaSerie.errorY[ i ] ) ) {
 
-                errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ][ 0 ] );
-                errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ][ 1 ] );
+                errorBarsYAbove.push( schemaSerie.errorY[ i ][ 0 ] );
+                errorBarsYBelow.push( schemaSerie.errorY[ i ][ 1 ] );
               } else {
-                errorBoxesXAbove.push( schemaSerie.errorBoxX[ i ] );
-                errorBoxesXBelow.push( schemaSerie.errorBoxX[ i ] );
+                errorBarsYAbove.push( schemaSerie.errorY[ i ] );
+                errorBarsYBelow.push( schemaSerie.errorY[ i ] );
+              }
+            }
+          } else if ( schemaSerie.errorBarY ||  schemaSerie.errorBoxY ) {
+
+            if ( schemaSerie.errorBarY ) {
+
+              for ( var i = 0, l = schemaSerie.errorBarY.length; i < l; i++ ) {
+
+                if ( Array.isArray( schemaSerie.errorBarY[ i ] ) ) {
+
+                  errorBarsYAbove.push( schemaSerie.errorBarY[ i ][ 0 ] );
+                  errorBarsYBelow.push( schemaSerie.errorBarY[ i ][ 1 ] );
+                } else {
+                  errorBarsYAbove.push( schemaSerie.errorBarY[ i ] );
+                  errorBarsYBelow.push( schemaSerie.errorBarY[ i ] );
+                }
+              }
+            }
+
+            if ( schemaSerie.errorBoxY ) {
+
+              for ( var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++ ) {
+
+                if ( Array.isArray( schemaSerie.errorBoxY[ i ] ) ) {
+
+                  errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ][ 0 ] );
+                  errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ][ 1 ] );
+                } else {
+                  errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ] );
+                  errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ] );
+                }
               }
             }
           }
-        }
 
-        if ( schemaSerie.errorY ) {
-
-          for ( var i = 0, l = schemaSerie.errorY.length; i < l; i++ ) {
-
-            if ( Array.isArray( schemaSerie.errorY[ i ] ) ) {
-
-              errorBarsYAbove.push( schemaSerie.errorY[ i ][ 0 ] );
-              errorBarsYBelow.push( schemaSerie.errorY[ i ][ 1 ] );
-            } else {
-              errorBarsYAbove.push( schemaSerie.errorY[ i ] );
-              errorBarsYBelow.push( schemaSerie.errorY[ i ] );
-            }
+          style = {};
+          if ( errorBarsXAbove.length > 0 ) {
+            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
+            style.right = {};
           }
-        } else if ( schemaSerie.errorBarY ||  schemaSerie.errorBoxY ) {
-
-          if ( schemaSerie.errorBarY ) {
-
-            for ( var i = 0, l = schemaSerie.errorBarY.length; i < l; i++ ) {
-
-              if ( Array.isArray( schemaSerie.errorBarY[ i ] ) ) {
-
-                errorBarsYAbove.push( schemaSerie.errorBarY[ i ][ 0 ] );
-                errorBarsYBelow.push( schemaSerie.errorBarY[ i ][ 1 ] );
-              } else {
-                errorBarsYAbove.push( schemaSerie.errorBarY[ i ] );
-                errorBarsYBelow.push( schemaSerie.errorBarY[ i ] );
-              }
-            }
+          if ( errorBarsXBelow.length > 0 ) {
+            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
+            style.left = {};
+          }
+          if ( errorBarsYAbove.length > 0 ) {
+            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
+            style.top = {};
+          }
+          if ( errorBarsYBelow.length > 0 ) {
+            waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
+            style.bottom = {};
           }
 
-          if ( schemaSerie.errorBoxY ) {
+          serie.setErrorBarStyle( style );
 
-            for ( var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++ ) {
-
-              if ( Array.isArray( schemaSerie.errorBoxY[ i ] ) ) {
-
-                errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ][ 0 ] );
-                errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ][ 1 ] );
-              } else {
-                errorBoxesYAbove.push( schemaSerie.errorBoxY[ i ] );
-                errorBoxesYBelow.push( schemaSerie.errorBoxY[ i ] );
-              }
-            }
+          style = {};
+          if ( errorBoxesXAbove.length > 0 ) {
+            waveform.setErrorBoxXAbove( Graph.newWaveform( errorBoxesXAbove ) );
+            style.right = {};
           }
+          if ( errorBoxesXBelow.length > 0 ) {
+            waveform.setErrorBoxXBelow( Graph.newWaveform( errorBoxesXBelow ) );
+            style.left = {};
+          }
+          if ( errorBoxesYAbove.length > 0 ) {
+            waveform.setErrorBoxAbove( Graph.newWaveform( errorBoxesYAbove ) );
+            style.top = {};
+          }
+          if ( errorBoxesYBelow.length > 0 ) {
+            waveform.setErrorBoxBelow( Graph.newWaveform( errorBoxesYBelow ) );
+            style.bottom = {};
+          }
+          serie.setErrorBoxStyle( style );
         }
-
-        style = {};
-        if ( errorBarsXAbove.length > 0 ) {
-          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
-          style.right = {};
-        }
-        if ( errorBarsXBelow.length > 0 ) {
-          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsXAbove ) );
-          style.left = {};
-        }
-        if ( errorBarsYAbove.length > 0 ) {
-          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
-          style.top = {};
-        }
-        if ( errorBarsYBelow.length > 0 ) {
-          waveform.setErrorBarXAbove( Graph.newWaveform( errorBarsYAbove ) );
-          style.bottom = {};
-        }
-
-        serie.setErrorBarStyle( style );
-
-        style = {};
-        if ( errorBoxesXAbove.length > 0 ) {
-          waveform.setErrorBoxXAbove( Graph.newWaveform( errorBoxesXAbove ) );
-          style.right = {};
-        }
-        if ( errorBoxesXBelow.length > 0 ) {
-          waveform.setErrorBoxXBelow( Graph.newWaveform( errorBoxesXBelow ) );
-          style.left = {};
-        }
-        if ( errorBoxesYAbove.length > 0 ) {
-          waveform.setErrorBoxAbove( Graph.newWaveform( errorBoxesYAbove ) );
-          style.top = {};
-        }
-        if ( errorBoxesYBelow.length > 0 ) {
-          waveform.setErrorBoxBelow( Graph.newWaveform( errorBoxesYBelow ) );
-          style.bottom = {};
-        }
-        serie.setErrorBoxStyle( style );
 
         if ( schema.axis ) {
           serieAxis = schema.axis[ schemaSerie.xAxis ];
@@ -2721,6 +2729,7 @@ class Graph extends EventEmitter {
         switch ( serieType ) {
 
           case Graph.SERIE_BOX:
+
             serie.setData( schemaSerie.boxes );
 
             break;
@@ -3583,6 +3592,10 @@ function _handleMouseDown( graph, x, y, e ) {
     graph.activePlugin = graph.forcedPlugin;
     graph._pluginExecute( graph.activePlugin, 'onMouseDown', [ graph, x, y, e ] );
     return;
+  }
+
+  if ( graph.activePlugin ) {
+    graph.activePlugin = false;
   }
 
   checkMouseActions( graph, e, [ graph, x, y, e ], 'onMouseDown' );

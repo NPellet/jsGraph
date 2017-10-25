@@ -153,7 +153,6 @@ class SerieZone extends Serie {
         for ( j = 0; j < waveform.getLength(); j += 1 ) {
           dataX = waveform.getX( j, true );
           dataY = waveform.getY( j, true );
-          console.log( dataX, dataY );
 
           // The y axis in screen coordinate is inverted vs cartesians
           if ( dataY[ j ] < ymin ) {
@@ -206,6 +205,8 @@ class SerieZone extends Serie {
 
       if ( line !== "" ) {
         this.lineZone.setAttribute( 'd', "M " + line + " z" );
+      } else {
+        this.lineZone.setAttribute( 'd', "" );
       }
       this.groupMain.appendChild( this.groupZones );
     }

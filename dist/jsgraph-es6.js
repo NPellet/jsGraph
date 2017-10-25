@@ -2667,8 +2667,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var serieType = schemaSerie.type,
 	              serie,
 	              serieOptions = {},
-	              serieAxis,
-	              waveform = Graph.newWaveform();
+	              serieAxis;
+
+	          let waveform;
 
 	          switch (schemaSerie.type) {
 
@@ -2696,6 +2697,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            default:
 	              serieType = Graph.SERIE_LINE;
 	              break;
+	          }
+
+	          if (serieType !== Graph.SERIE_BOX) {
+	            waveform = Graph.newWaveform();
 	          }
 
 	          if (!serieType) {
@@ -2799,7 +2804,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            serie.setColors(schemaSerie.color);
 	          }
 
-	          waveform.setData(schemaSerie.y, schemaSerie.x);
+	          if (serieType !== Graph.SERIE_BOX) {
+	            waveform.setData(schemaSerie.y, schemaSerie.x);
+	          }
 
 	          if (!serie) {
 	            return;
@@ -2814,137 +2821,139 @@ return /******/ (function(modules) { // webpackBootstrap
 	              errorBoxesYAbove = [],
 	              errorBoxesYBelow = [];
 
-	          var errors = [];
-	          if (schemaSerie.errorX) {
+	          if (waveform !== undefined) {
+	            var errors = [];
+	            if (schemaSerie.errorX) {
 
-	            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
 
-	              if (Array.isArray(schemaSerie.errorX[i])) {
+	                if (Array.isArray(schemaSerie.errorX[i])) {
 
-	                errorBarsXAbove.push(schemaSerie.errorX[i][0]);
-	                errorBarsXBelow.push(schemaSerie.errorX[i][1]);
-	              } else {
-	                errorBarsXAbove.push(schemaSerie.errorX[i]);
-	                errorBarsXBelow.push(schemaSerie.errorX[i]);
-	              }
-	            }
-	          } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
-
-	            if (schemaSerie.errorBarX) {
-
-	              for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBarX[i])) {
-
-	                  errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
-	                  errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
+	                  errorBarsXAbove.push(schemaSerie.errorX[i][0]);
+	                  errorBarsXBelow.push(schemaSerie.errorX[i][1]);
 	                } else {
-	                  errorBarsXAbove.push(schemaSerie.errorBarX[i]);
-	                  errorBarsXBelow.push(schemaSerie.errorBarX[i]);
+	                  errorBarsXAbove.push(schemaSerie.errorX[i]);
+	                  errorBarsXBelow.push(schemaSerie.errorX[i]);
+	                }
+	              }
+	            } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
+
+	              if (schemaSerie.errorBarX) {
+
+	                for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBarX[i])) {
+
+	                    errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
+	                    errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
+	                  } else {
+	                    errorBarsXAbove.push(schemaSerie.errorBarX[i]);
+	                    errorBarsXBelow.push(schemaSerie.errorBarX[i]);
+	                  }
+	                }
+	              }
+
+	              if (schemaSerie.errorBoxX) {
+
+	                for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBoxX[i])) {
+
+	                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
+	                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
+	                  } else {
+	                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
+	                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
+	                  }
 	                }
 	              }
 	            }
 
-	            if (schemaSerie.errorBoxX) {
+	            if (schemaSerie.errorY) {
 
-	              for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
 
-	                if (Array.isArray(schemaSerie.errorBoxX[i])) {
+	                if (Array.isArray(schemaSerie.errorY[i])) {
 
-	                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
-	                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
+	                  errorBarsYAbove.push(schemaSerie.errorY[i][0]);
+	                  errorBarsYBelow.push(schemaSerie.errorY[i][1]);
 	                } else {
-	                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
-	                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
+	                  errorBarsYAbove.push(schemaSerie.errorY[i]);
+	                  errorBarsYBelow.push(schemaSerie.errorY[i]);
+	                }
+	              }
+	            } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
+
+	              if (schemaSerie.errorBarY) {
+
+	                for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBarY[i])) {
+
+	                    errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
+	                    errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
+	                  } else {
+	                    errorBarsYAbove.push(schemaSerie.errorBarY[i]);
+	                    errorBarsYBelow.push(schemaSerie.errorBarY[i]);
+	                  }
+	                }
+	              }
+
+	              if (schemaSerie.errorBoxY) {
+
+	                for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBoxY[i])) {
+
+	                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
+	                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
+	                  } else {
+	                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
+	                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
+	                  }
 	                }
 	              }
 	            }
-	          }
 
-	          if (schemaSerie.errorY) {
-
-	            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
-
-	              if (Array.isArray(schemaSerie.errorY[i])) {
-
-	                errorBarsYAbove.push(schemaSerie.errorY[i][0]);
-	                errorBarsYBelow.push(schemaSerie.errorY[i][1]);
-	              } else {
-	                errorBarsYAbove.push(schemaSerie.errorY[i]);
-	                errorBarsYBelow.push(schemaSerie.errorY[i]);
-	              }
+	            style = {};
+	            if (errorBarsXAbove.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+	              style.right = {};
 	            }
-	          } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
-
-	            if (schemaSerie.errorBarY) {
-
-	              for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBarY[i])) {
-
-	                  errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
-	                  errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
-	                } else {
-	                  errorBarsYAbove.push(schemaSerie.errorBarY[i]);
-	                  errorBarsYBelow.push(schemaSerie.errorBarY[i]);
-	                }
-	              }
+	            if (errorBarsXBelow.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+	              style.left = {};
+	            }
+	            if (errorBarsYAbove.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+	              style.top = {};
+	            }
+	            if (errorBarsYBelow.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+	              style.bottom = {};
 	            }
 
-	            if (schemaSerie.errorBoxY) {
+	            serie.setErrorBarStyle(style);
 
-	              for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBoxY[i])) {
-
-	                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
-	                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
-	                } else {
-	                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
-	                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
-	                }
-	              }
+	            style = {};
+	            if (errorBoxesXAbove.length > 0) {
+	              waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
+	              style.right = {};
 	            }
+	            if (errorBoxesXBelow.length > 0) {
+	              waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
+	              style.left = {};
+	            }
+	            if (errorBoxesYAbove.length > 0) {
+	              waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
+	              style.top = {};
+	            }
+	            if (errorBoxesYBelow.length > 0) {
+	              waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
+	              style.bottom = {};
+	            }
+	            serie.setErrorBoxStyle(style);
 	          }
-
-	          style = {};
-	          if (errorBarsXAbove.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-	            style.right = {};
-	          }
-	          if (errorBarsXBelow.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-	            style.left = {};
-	          }
-	          if (errorBarsYAbove.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-	            style.top = {};
-	          }
-	          if (errorBarsYBelow.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-	            style.bottom = {};
-	          }
-
-	          serie.setErrorBarStyle(style);
-
-	          style = {};
-	          if (errorBoxesXAbove.length > 0) {
-	            waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
-	            style.right = {};
-	          }
-	          if (errorBoxesXBelow.length > 0) {
-	            waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
-	            style.left = {};
-	          }
-	          if (errorBoxesYAbove.length > 0) {
-	            waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
-	            style.top = {};
-	          }
-	          if (errorBoxesYBelow.length > 0) {
-	            waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
-	            style.bottom = {};
-	          }
-	          serie.setErrorBoxStyle(style);
 
 	          if (schema.axis) {
 	            serieAxis = schema.axis[schemaSerie.xAxis];
@@ -2980,6 +2989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          switch (serieType) {
 
 	            case Graph.SERIE_BOX:
+
 	              serie.setData(schemaSerie.boxes);
 
 	              break;
@@ -3822,6 +3832,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      graph.activePlugin = graph.forcedPlugin;
 	      graph._pluginExecute(graph.activePlugin, 'onMouseDown', [graph, x, y, e]);
 	      return;
+	    }
+
+	    if (graph.activePlugin) {
+	      graph.activePlugin = false;
 	    }
 
 	    checkMouseActions(graph, e, [graph, x, y, e], 'onMouseDown');
@@ -9771,6 +9785,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.nbTicksSecondary;
 	    }
 
+	    setNbTicksSecondary(nb) {
+	      this.options.nbTicksSecondary = nb;
+	      return this;
+	    }
+
 	    handleMouseMove(px, e) {
 	      this.mouseVal = this.getVal(px);
 	    }
@@ -15544,7 +15563,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.emit("hide");
 
 	      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
-	        console.log('rehide');
 	        this.graph.draw(true);
 	      }
 
@@ -15648,7 +15666,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _checkY(val) {
-	      console.log(val, this.maxY);
 	      this.minY = Math.min(this.minY, val);
 	      this.maxY = Math.max(this.maxY, val);
 	    }
@@ -15978,7 +15995,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    setStyle(style, selectionType = "unselected") {
-	      //console.log( style, selectionType );
 	      this.styles[selectionType] = style;
 	      this.styleHasChanged(selectionType);
 	    }
@@ -17090,8 +17106,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.minY = data[0].y;
 	      }
 
-	      console.log(this._checkY);
-
 	      if (noRescale) {
 	        methodref = function () {};
 	        methodval = function () {};
@@ -17112,10 +17126,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (this.data[i].Q3) {
-	          console.log(this.minX, this.minY, this.maxY, this.data[i].Q3, methodval);
 
 	          methodval(this.data[i].Q3);
-	          console.log(this.minX, this.minY, this.maxY);
 	        }
 
 	        if (this.data[i].Q1) {
@@ -17147,8 +17159,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.data[i].outliers = [];
 	        }
 	      }
-
-	      console.log(this.minX, this.minY, this.maxY);
 
 	      this.dataHasChanged();
 	      this.graph.updateDataMinMaxAxes();
@@ -18594,13 +18604,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            style = modifier[index];
 	          }
 
-	          Object.assign(style, styleAll, style);
+	          styles[index] = Object.assign({}, styleAll, style);
 	        } else if (styleAll !== undefined) {
 
-	          style = styleAll;
+	          styles[index] = styleAll;
 	        } else {
 
-	          style = this.styles[selection].default;
+	          styles[index] = this.styles[selection].default;
 	        }
 
 	        if (!shape) {
@@ -18616,8 +18626,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!noSetPosition) {
 	          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
 	        }
-
-	        styles[index] = style;
 	      }
 
 	      return styles;
@@ -18884,7 +18892,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          for (j = 0; j < waveform.getLength(); j += 1) {
 	            dataX = waveform.getX(j, true);
 	            dataY = waveform.getY(j, true);
-	            console.log(dataX, dataY);
 
 	            // The y axis in screen coordinate is inverted vs cartesians
 	            if (dataY[j] < ymin) {
@@ -18937,6 +18944,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (line !== "") {
 	          this.lineZone.setAttribute('d', "M " + line + " z");
+	        } else {
+	          this.lineZone.setAttribute('d', "");
 	        }
 	        this.groupMain.appendChild(this.groupZones);
 	      }
@@ -27994,17 +28003,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        options.endingColorHSL = Object.assign({}, options.startingColorHSL, options.endingColorHSL);
 	      }
 
-	      series.map((serie, index) => {
+	      return series.map((serie, index) => {
 
 	        if (!serie.setLineColor) {
 	          throw "The serie " + serie.getName() + " does not implement the method `startingColor`";
 	        }
 
-	        serie.setLineColor(this.buildHSLString({
+	        const colorString = this.buildHSLString({
 	          h: options.startingColorHSL.h + index / (seriesLength - 1) * (options.endingColorHSL.h - options.startingColorHSL.h),
 	          s: options.startingColorHSL.s + index / (seriesLength - 1) * (options.endingColorHSL.s - options.startingColorHSL.s),
 	          l: options.startingColorHSL.l + index / (seriesLength - 1) * (options.endingColorHSL.l - options.startingColorHSL.l)
-	        }));
+	        });
+
+	        serie.setLineColor(colorString);
+	        return colorString;
 	      });
 	    }
 	  }

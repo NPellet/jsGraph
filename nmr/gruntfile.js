@@ -23,10 +23,10 @@ module.exports = function(grunt) {
         webpack: {
             nmr1d: {
 
-                 entry: [ './js/main.jsx' ],
+                 entry: [ './js/nmr1d.jsx' ],
 
                  output: {
-                     filename: '../docs/nmr/js/app.js'
+                     filename: '../docs/nmr/js/1d/app_1d.js'
                  },
                 
                  module: {

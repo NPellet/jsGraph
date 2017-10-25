@@ -372,7 +372,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    constructor(wrapper, options, axis) {
 
 	      super();
-	      console.log('new');
+
 	      /*
 	        The unique ID of the graph
 	        @name Graph#uniqueid
@@ -490,7 +490,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      wrapper.style.position = 'relative';
 	      wrapper.style.outline = "none";
 
-	      wrapper.setAttribute('tabindex', 1);
+	      // Why would that be necessary ?
+	      // wrapper.setAttribute( 'tabindex', 1 );
 
 	      this.wrapper = wrapper;
 
@@ -586,7 +587,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Boolean} onlyIfAxesHaveChanged - Triggers a redraw only if min/max values of the axes have changed.
 	     * @return {Boolean} if the redraw has been successful
 	     */
-	    redraw(onlyIfAxesHaveChanged) {
+	    redraw(onlyIfAxesHaveChanged, force) {
 
 	      if (!this.width || !this.height) {
 	        return;
@@ -598,7 +599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return true;
 	      } else {
 
-	        if (!onlyIfAxesHaveChanged || haveAxesChanged(this) || hasSizeChanged(this)) {
+	        if (!onlyIfAxesHaveChanged || force || haveAxesChanged(this) || hasSizeChanged(this)) {
 	          this.executeRedrawSlaves();
 	          refreshDrawingZone(this);
 	          return true;
@@ -617,10 +618,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Draw the graph and the series. This method will only redraw what is necessary. You may trust its use when you have set new data to series, changed serie styles or called for a zoom on an axis.
 	     */
 	    draw(force) {
-	      console.log('drawing');
+
 	      this.drawn = true;
 	      this.updateLegend(true);
-	      this.drawSeries(this.redraw(true && !force));
+	      this.drawSeries(this.redraw(true, force));
 
 	      this._pluginsExecute("postDraw");
 	    }
@@ -1268,7 +1269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          l;
 
 	      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
-	      series = this.getSeriesFromAxis(axis, true);
+	      series = this.getSeriesFromAxis(axis);
 
 	      for (i = 0, l = series.length; i < l; i++) {
 
@@ -1293,6 +1294,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getSeriesFromAxis(axis) {
 	      var series = [],
 	          i = this.series.length - 1;
+
 	      for (; i >= 0; i--) {
 	        if (this.series[i].getXAxis() == axis || this.series[i].getYAxis() == axis) {
 	          series.push(this.series[i]);
@@ -1322,7 +1324,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          axis = this.axis[axisvars[j]][i];
 	          xy = j < 2 ? 'x' : 'y';
 
-	          if (axis.disabled) {
+	          if (!axis.isShown()) {
 	            continue;
 	          }
 
@@ -2665,8 +2667,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          var serieType = schemaSerie.type,
 	              serie,
 	              serieOptions = {},
-	              serieAxis,
-	              waveform = Graph.newWaveform();
+	              serieAxis;
+
+	          let waveform;
 
 	          switch (schemaSerie.type) {
 
@@ -2694,6 +2697,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            default:
 	              serieType = Graph.SERIE_LINE;
 	              break;
+	          }
+
+	          if (serieType !== Graph.SERIE_BOX) {
+	            waveform = Graph.newWaveform();
 	          }
 
 	          if (!serieType) {
@@ -2797,7 +2804,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            serie.setColors(schemaSerie.color);
 	          }
 
-	          waveform.setData(schemaSerie.y, schemaSerie.x);
+	          if (serieType !== Graph.SERIE_BOX) {
+	            waveform.setData(schemaSerie.y, schemaSerie.x);
+	          }
 
 	          if (!serie) {
 	            return;
@@ -2812,137 +2821,139 @@ return /******/ (function(modules) { // webpackBootstrap
 	              errorBoxesYAbove = [],
 	              errorBoxesYBelow = [];
 
-	          var errors = [];
-	          if (schemaSerie.errorX) {
+	          if (waveform !== undefined) {
+	            var errors = [];
+	            if (schemaSerie.errorX) {
 
-	            for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorX.length; i < l; i++) {
 
-	              if (Array.isArray(schemaSerie.errorX[i])) {
+	                if (Array.isArray(schemaSerie.errorX[i])) {
 
-	                errorBarsXAbove.push(schemaSerie.errorX[i][0]);
-	                errorBarsXBelow.push(schemaSerie.errorX[i][1]);
-	              } else {
-	                errorBarsXAbove.push(schemaSerie.errorX[i]);
-	                errorBarsXBelow.push(schemaSerie.errorX[i]);
-	              }
-	            }
-	          } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
-
-	            if (schemaSerie.errorBarX) {
-
-	              for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBarX[i])) {
-
-	                  errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
-	                  errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
+	                  errorBarsXAbove.push(schemaSerie.errorX[i][0]);
+	                  errorBarsXBelow.push(schemaSerie.errorX[i][1]);
 	                } else {
-	                  errorBarsXAbove.push(schemaSerie.errorBarX[i]);
-	                  errorBarsXBelow.push(schemaSerie.errorBarX[i]);
+	                  errorBarsXAbove.push(schemaSerie.errorX[i]);
+	                  errorBarsXBelow.push(schemaSerie.errorX[i]);
+	                }
+	              }
+	            } else if (schemaSerie.errorBarX || schemaSerie.errorBoxX) {
+
+	              if (schemaSerie.errorBarX) {
+
+	                for (var i = 0, l = schemaSerie.errorBarX.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBarX[i])) {
+
+	                    errorBarsXAbove.push(schemaSerie.errorBarX[i][0]);
+	                    errorBarsXBelow.push(schemaSerie.errorBarX[i][1]);
+	                  } else {
+	                    errorBarsXAbove.push(schemaSerie.errorBarX[i]);
+	                    errorBarsXBelow.push(schemaSerie.errorBarX[i]);
+	                  }
+	                }
+	              }
+
+	              if (schemaSerie.errorBoxX) {
+
+	                for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBoxX[i])) {
+
+	                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
+	                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
+	                  } else {
+	                    errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
+	                    errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
+	                  }
 	                }
 	              }
 	            }
 
-	            if (schemaSerie.errorBoxX) {
+	            if (schemaSerie.errorY) {
 
-	              for (var i = 0, l = schemaSerie.errorBoxX.length; i < l; i++) {
+	              for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
 
-	                if (Array.isArray(schemaSerie.errorBoxX[i])) {
+	                if (Array.isArray(schemaSerie.errorY[i])) {
 
-	                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i][0]);
-	                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i][1]);
+	                  errorBarsYAbove.push(schemaSerie.errorY[i][0]);
+	                  errorBarsYBelow.push(schemaSerie.errorY[i][1]);
 	                } else {
-	                  errorBoxesXAbove.push(schemaSerie.errorBoxX[i]);
-	                  errorBoxesXBelow.push(schemaSerie.errorBoxX[i]);
+	                  errorBarsYAbove.push(schemaSerie.errorY[i]);
+	                  errorBarsYBelow.push(schemaSerie.errorY[i]);
+	                }
+	              }
+	            } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
+
+	              if (schemaSerie.errorBarY) {
+
+	                for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBarY[i])) {
+
+	                    errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
+	                    errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
+	                  } else {
+	                    errorBarsYAbove.push(schemaSerie.errorBarY[i]);
+	                    errorBarsYBelow.push(schemaSerie.errorBarY[i]);
+	                  }
+	                }
+	              }
+
+	              if (schemaSerie.errorBoxY) {
+
+	                for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
+
+	                  if (Array.isArray(schemaSerie.errorBoxY[i])) {
+
+	                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
+	                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
+	                  } else {
+	                    errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
+	                    errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
+	                  }
 	                }
 	              }
 	            }
-	          }
 
-	          if (schemaSerie.errorY) {
-
-	            for (var i = 0, l = schemaSerie.errorY.length; i < l; i++) {
-
-	              if (Array.isArray(schemaSerie.errorY[i])) {
-
-	                errorBarsYAbove.push(schemaSerie.errorY[i][0]);
-	                errorBarsYBelow.push(schemaSerie.errorY[i][1]);
-	              } else {
-	                errorBarsYAbove.push(schemaSerie.errorY[i]);
-	                errorBarsYBelow.push(schemaSerie.errorY[i]);
-	              }
+	            style = {};
+	            if (errorBarsXAbove.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+	              style.right = {};
 	            }
-	          } else if (schemaSerie.errorBarY || schemaSerie.errorBoxY) {
-
-	            if (schemaSerie.errorBarY) {
-
-	              for (var i = 0, l = schemaSerie.errorBarY.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBarY[i])) {
-
-	                  errorBarsYAbove.push(schemaSerie.errorBarY[i][0]);
-	                  errorBarsYBelow.push(schemaSerie.errorBarY[i][1]);
-	                } else {
-	                  errorBarsYAbove.push(schemaSerie.errorBarY[i]);
-	                  errorBarsYBelow.push(schemaSerie.errorBarY[i]);
-	                }
-	              }
+	            if (errorBarsXBelow.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
+	              style.left = {};
+	            }
+	            if (errorBarsYAbove.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+	              style.top = {};
+	            }
+	            if (errorBarsYBelow.length > 0) {
+	              waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
+	              style.bottom = {};
 	            }
 
-	            if (schemaSerie.errorBoxY) {
+	            serie.setErrorBarStyle(style);
 
-	              for (var i = 0, l = schemaSerie.errorBoxY.length; i < l; i++) {
-
-	                if (Array.isArray(schemaSerie.errorBoxY[i])) {
-
-	                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i][0]);
-	                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i][1]);
-	                } else {
-	                  errorBoxesYAbove.push(schemaSerie.errorBoxY[i]);
-	                  errorBoxesYBelow.push(schemaSerie.errorBoxY[i]);
-	                }
-	              }
+	            style = {};
+	            if (errorBoxesXAbove.length > 0) {
+	              waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
+	              style.right = {};
 	            }
+	            if (errorBoxesXBelow.length > 0) {
+	              waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
+	              style.left = {};
+	            }
+	            if (errorBoxesYAbove.length > 0) {
+	              waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
+	              style.top = {};
+	            }
+	            if (errorBoxesYBelow.length > 0) {
+	              waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
+	              style.bottom = {};
+	            }
+	            serie.setErrorBoxStyle(style);
 	          }
-
-	          style = {};
-	          if (errorBarsXAbove.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-	            style.right = {};
-	          }
-	          if (errorBarsXBelow.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsXAbove));
-	            style.left = {};
-	          }
-	          if (errorBarsYAbove.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-	            style.top = {};
-	          }
-	          if (errorBarsYBelow.length > 0) {
-	            waveform.setErrorBarXAbove(Graph.newWaveform(errorBarsYAbove));
-	            style.bottom = {};
-	          }
-
-	          serie.setErrorBarStyle(style);
-
-	          style = {};
-	          if (errorBoxesXAbove.length > 0) {
-	            waveform.setErrorBoxXAbove(Graph.newWaveform(errorBoxesXAbove));
-	            style.right = {};
-	          }
-	          if (errorBoxesXBelow.length > 0) {
-	            waveform.setErrorBoxXBelow(Graph.newWaveform(errorBoxesXBelow));
-	            style.left = {};
-	          }
-	          if (errorBoxesYAbove.length > 0) {
-	            waveform.setErrorBoxAbove(Graph.newWaveform(errorBoxesYAbove));
-	            style.top = {};
-	          }
-	          if (errorBoxesYBelow.length > 0) {
-	            waveform.setErrorBoxBelow(Graph.newWaveform(errorBoxesYBelow));
-	            style.bottom = {};
-	          }
-	          serie.setErrorBoxStyle(style);
 
 	          if (schema.axis) {
 	            serieAxis = schema.axis[schemaSerie.xAxis];
@@ -2978,6 +2989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          switch (serieType) {
 
 	            case Graph.SERIE_BOX:
+
 	              serie.setData(schemaSerie.boxes);
 
 	              break;
@@ -3261,7 +3273,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph._painted = true;
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
-	      if (axis.disabled || axis.floating) {
+
+	      if (!axis.isShown()) {
+	        axis.hideGroup();
+	        return;
+	      } else {
+	        axis.showGroup();
+	      }
+
+	      if (axis.floating) {
 	        return;
 	      }
 
@@ -3279,6 +3299,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return prev + curr;
 	    }, 0);
 
+	    graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
+
 	    [shift.top, shift.bottom].map(function (arr) {
 	      arr.reduce(function (prev, current, index) {
 	        arr[index] = prev + current;
@@ -3289,7 +3311,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled || axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 
@@ -3299,8 +3321,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Applied to left and right
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
+	      if (!axis.isShown()) {
+	        axis.hideGroup();
 	        return;
+	      } else {
+	        axis.showGroup();
 	      }
 
 	      axis.setMinPx(shiftTop);
@@ -3327,11 +3352,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Applied to left and right
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
-	        return;
-	      }
-
-	      if (axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 
@@ -3348,6 +3369,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return prev + curr;
 	    }, 0);
 
+	    graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
+
 	    [shift.left, shift.right].map(function (arr) {
 	      arr.reduce(function (prev, current, index) {
 	        arr[index] = prev + current;
@@ -3358,7 +3381,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to left and right
 	    graph._applyToAxes((axis, position) => {
 
-	      if (axis.disabled || axis.floating) {
+	      if (!axis.isShown() || axis.floating) {
 	        return;
 	      }
 	      axis.setShift(shift[position][axis.getLevel()]);
@@ -3367,7 +3390,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // Apply to top and bottom
 	    graph._applyToAxes(function (axis, position) {
 
-	      if (axis.disabled) {
+	      if (!axis.isShown()) {
 	        return;
 	      }
 
@@ -3414,9 +3437,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph.rectEvent.setAttribute('y', shiftTop + graph.getPaddingTop());
 	    graph.rectEvent.setAttribute('x', shiftLeft + graph.getPaddingLeft());
 
-	    graph.drawingSpaceWidth = graph.getDrawingWidth() - shiftLeft - shiftRight;
-	    graph.drawingSpaceHeight = graph.getDrawingHeight() - shiftTop - shiftBottom;
-
 	    graph.rectEvent.setAttribute('width', graph.drawingSpaceWidth);
 	    graph.rectEvent.setAttribute('height', graph.drawingSpaceHeight);
 
@@ -3424,6 +3444,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph.drawingSpaceMinY = shiftTop + graph.getPaddingTop(); // + "px";
 	    graph.drawingSpaceMaxX = graph.getDrawingWidth() - shiftRight + graph.getPaddingLeft(); // + "px";
 	    graph.drawingSpaceMaxY = graph.getDrawingHeight() - shiftBottom + graph.getPaddingTop(); //  + "px";
+
+	    // Apply to top and bottom
+	    graph._applyToAxes(function (axis, position) {
+
+	      if (!axis.isShown()) {
+	        return;
+	      }
+
+	      axis.drawLines();
+	    }, false, true, true);
 
 	    /*
 	    graph.shapeZoneRect.setAttribute('x', shift[1]);
@@ -5597,9 +5627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      };
 
-	      if (data.length > 0) {
-	        this.setData(data);
-	      }
+	      this.setData(data);
 
 	      this.BELOW = Waveform.BELOW;
 	      this.ABOVE = Waveform.ABOVE;
@@ -5765,7 +5793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    isUnsigned(constructor = this._typedArrayClass) {
 
-	      // The following types accept NaNs
+	      // The following types accept unsigned numbers
 	      return constructor == Uint8Array || constructor == Uint8ClampedArray || constructor == Uint16Array || constructor == Uint32Array;
 	    }
 
@@ -5977,7 +6005,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (this.hasXWaveform()) {
 	        // The x value HAS to be rescaled
-	        position = this.xdata.getIndexFromData((xval - this.getXShift()) / this.getXScale(), xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+	        position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
 	      } else {
 	        position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
 	      }
@@ -6086,7 +6114,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    setXShift(shift = 0) {
 
-	      if (!this.hasXWaveform) {
+	      if (!this.hasXWaveform()) {
 	        return this;
 	      }
 
@@ -6447,6 +6475,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let xIndex;
 	      let yData = this.getDataY();
 
+	      x = (x - this.getXShift()) / this.getXScale();
+
 	      if (this.xdata) {
 	        let xData = this.xdata.getData(),
 	            xIndex = binarySearch(x, xData, !this.xdata.getMonotoneousAscending());
@@ -6638,10 +6668,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this._dataAggregating = (0, _data_aggregator2.default)({
 
-	        minX: this.minX,
-	        maxX: this.maxX,
-	        minY: this.minY,
-	        maxY: this.maxY,
+	        minX: this.getMinX(),
+	        maxX: this.getMaxX(),
+	        minY: this.getMinY(),
+	        maxY: this.getMaxY(),
 	        data: this.data,
 	        xdata: this.xdata ? this.xdata.getData() : undefined,
 	        xScale: this.xScale,
@@ -6652,6 +6682,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }).then(event => {
 
 	        this._dataAggregated = event.aggregates;
+	        console.log(this._dataAggregated);
 	        this._dataAggregating = false;
 	      });
 	    }
@@ -7434,7 +7465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.DELTAP = 1e-6;
 	      this.BIGVAL = 9e99;
 	      this.WEIGHT = 1.0;
-	      console.log(options);
+
 	      this.setYData(options.dataY);
 	      this.setXData(options.dataX);
 	      this.setWeight(options.weight);
@@ -7572,7 +7603,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    log(message) {
-	      console.log(message);
+	      if (this.options.log) {
+	        console.log(message);
+	      }
 	    }
 
 	    //------the four mandated interface methods------------
@@ -7730,7 +7763,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      this.sosprev = this.sos;
 
-	      console.log("  bLMiter..SumOfSquares= " + this.sos);
+	      this.myH.log("  bLMiter..SumOfSquares= " + this.sos);
 	      if (!this.myH.buildJacobian()) {
 	        console.error("  bLMiter finds buildJacobian()=false");
 	        return false;
@@ -7931,7 +7964,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      let aggregations = {};
 
 	      // Direction x
-
+	      console.log(direction);
 	      if (direction == 'x') {
 
 	        const dataPerSlot = numPoints / (maxX - minX); // Computed number of aggregation per slot
@@ -8377,7 +8410,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        case 'bottom':
 	          this.position.y = this.graph.getHeight() + "px";
-	          this.position.x = (this.graph.getWidth() - this.width) / 2 + "px";
+	          // Try to center with respect to the drawing space, not the full graph. It's useful when the graph is fairly asymmetric (i.e. multiple axes on 1 side)
+	          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + "px";
 	          this.alignToY = "bottom";
 	          this.alignToX = false;
 	          break;
@@ -8397,7 +8431,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          break;
 
 	        case 'top':
-	          this.position.x = (this.graph.getWidth() - this.width) / 2 + "px";
+	          this.position.x = (this.graph.drawingSpaceWidth - this.width) / 2 + this.graph.drawingSpaceMinX + "px";
 	          this.position.y = "10px";
 	          this.alignToY = "top";
 	          this.alignToX = false;
@@ -8970,25 +9004,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      if (this.katexElement) {
-
-	        this.label.setAttribute('style', 'display: none;');
-
-	        this.katexElement.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
-	        this.katexElement.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
-	        this.group.appendChild(this.katexElement);
-	      } else {
-
-	        if (this.options.labelFont) {
-	          this.label.setAttribute('font-family', this.options.labelFont);
-	        }
-
-	        this.label.setAttribute('text-anchor', 'middle');
-	        this.label.setAttribute('style', 'display: initial;');
-	        this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
-	        this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
-	        this.labelTspan.textContent = this.getLabel();
+	      if (this.options.labelFont) {
+	        this.label.setAttribute('font-family', this.options.labelFont);
 	      }
+
+	      this.label.setAttribute('text-anchor', 'middle');
+	      this.label.setAttribute('style', 'display: initial;');
+	      this.label.setAttribute('x', Math.abs(this.getMaxPx() + this.getMinPx()) / 2);
+	      this.label.setAttribute('y', (this.top ? -1 : 1) * ((this.options.tickPosition == 1 ? 10 : 25) + this.graph.options.fontSize));
+	      this.labelTspan.textContent = this.getLabel();
 	    }
 
 	    draw() {
@@ -9032,19 +9056,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     *  @private
 	     */
-	    _draw0Line(px) {
+	    _drawLine(pos, line) {
 
-	      if (!this._0line) {
-	        this._0line = document.createElementNS(this.graph.ns, 'line');
+	      let px = this.getPx(pos);
+
+	      if (!line) {
+	        line = document.createElementNS(this.graph.ns, 'line');
+	      } else {
+	        line.setAttribute('display', 'initial');
 	      }
-	      this._0line.setAttribute('x1', px);
-	      this._0line.setAttribute('x2', px);
 
-	      this._0line.setAttribute('y1', 0);
-	      this._0line.setAttribute('y2', this.getMaxPx());
+	      line.setAttribute('x1', px);
+	      line.setAttribute('x2', px);
 
-	      this._0line.setAttribute('stroke', 'black');
-	      this.groupGrids.appendChild(this._0line);
+	      line.setAttribute('y1', 0);
+	      line.setAttribute('y2', this.graph.drawingSpaceHeight);
+
+	      line.setAttribute('stroke', 'black');
+	      this.group.appendChild(line);
+
+	      return line;
+	    }
+
+	    _hideLine(line) {
+	      if (!line) {
+	        return;
+	      }
+	      line.setAttribute('display', 'none');
 	    }
 
 	    /**
@@ -9159,7 +9197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @prop {(Number|Boolean)} forcedMax - Use a number to force the maximum value of the axis (becomes independant of its series)
 	   */
 	  const defaults = {
-	    lineAt0: false,
+	    lineAt: false,
 	    display: true,
 	    flipped: false,
 	    axisDataSpacing: {
@@ -9176,6 +9214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    primaryGridWidth: 1,
 	    secondaryGridWidth: 1,
 
+	    hideWhenNoSeriesShown: false,
 	    shiftToZero: false,
 	    tickPosition: 1,
 	    nbTicksPrimary: 3,
@@ -9215,6 +9254,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  class Axis extends _EventEmitter2.default {
 
 	    constructor() {
+
 	      super();
 	    }
 
@@ -9234,6 +9274,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.group.appendChild(this.rectEvent);
 
 	      this.graph.axisGroup.appendChild(this.group); // Adds to the main axiszone
+
+	      // Lines at a certain value
+	      this._lines = [];
 
 	      this.line = document.createElementNS(this.graph.ns, 'line');
 	      this.line.setAttribute('stroke', 'black');
@@ -9374,11 +9417,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {Boolean} A boolean indicating the displayed state of the axis
 	     */
 	    isDisplayed() {
-	      return this.options.display;
+
+	      if (!this.options.hideWhenNoSeriesShown) {
+	        return this.options.display;
+	      }
+
+	      return this.graph.getSeriesFromAxis(this).reduce((accumulator, serie) => {
+	        return accumulator || serie.isShown();
+	      }, false);
 	    }
 
 	    isShown() {
+
 	      return this.isDisplayed(...arguments);
+	    }
+
+	    hideGroup() {
+	      if (this._hidden) {
+	        return;
+	      }
+	      this._hidden = true;
+	      this.group.setAttribute('display', 'none');
+	    }
+
+	    showGroup() {
+	      if (!this._hidden) {
+	        return;
+	      }
+	      this._hidden = false;
+	      this.group.setAttribute('display', 'initial');
 	    }
 
 	    kill(noRedraw, noSerieKill) {
@@ -9386,12 +9453,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    /**
 	     * Forces the appearence of a straight perpendicular line at value 0
-	     * @param {Boolean} lineAt0 - true to display the line, false not to.
+	     * @param {Array<Number>} atValues - An array of x or y values where the lines are displayed
 	     * @memberof Axis
 	     * @return {Axis} The current axis
 	     */
-	    setLineAt0(bool) {
-	      this.options.lineAt0 = !!bool;
+	    setLineAt(atValues) {
+	      this.options.lineAt = atValues;
+	      return this;
 	    }
 
 	    // Used to adapt the 0 of the axis to the zero of another axis that has the same direction
@@ -10124,7 +10192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      /*			0 - 0.00005 => 20'000'000
 	      */
 
-	      if (!this.options.display) {
+	      if (!this.isShown()) {
 	        this.line.setAttribute('display', 'none');
 	        return 0;
 	      }
@@ -10258,11 +10326,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      /************************************/
 
 	      //   this.drawSpecifics();
-	      if (this.options.lineAt0 && this.getCurrentMin() < 0 && this.getCurrentMax() > 0) {
-	        this._draw0Line(this.getPx(0));
-	      }
 
 	      return widthHeight;
+	    }
+
+	    drawLines() {
+
+	      if (this.options.lineAt && Array.isArray(this.options.lineAt)) {
+
+	        this.options.lineAt.forEach((val, index) => {
+
+	          if (!isNaN(val) && this.getCurrentMin() < val && this.getCurrentMax() > val) {
+
+	            this._lines[index] = this._drawLine(val, this._lines[index]);
+	          } else {
+	            this._hideLine(this._lines[index]);
+	          }
+	        });
+	      }
 	    }
 
 	    writeUnit() {
@@ -10364,6 +10445,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    setTickLabelRatio(tickRatio) {
 	      this.options.ticklabelratio = tickRatio;
+	    }
+
+	    doesHideWhenNoSeriesShown() {
+	      return this.options.hideWhenNoSeriesShown;
 	    }
 
 	    draw() {
@@ -11685,7 +11770,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    draw() {
 
-	      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 5 + this.tickPx1 * this.tickScaling[1];
+	      this.tickMargin = this.left ? -5 - this.tickPx1 * this.tickScaling[1] : 2 - this.tickPx1 * this.tickScaling[1];
 	      var tickWidth = super.draw(...arguments);
 	      tickWidth += this.getAdditionalWidth();
 	      this.drawSpecifics(tickWidth);
@@ -11772,7 +11857,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.label.setAttribute('fill', this.getLabelColor());
 	      }
 
-	      this.label.setAttribute('dominant-baseline', !this.left ? 'hanging' : 'auto');
+	      this.label.setAttribute('dominant-baseline', !this.left ? 'auto' : 'auto');
 	      this.labelTspan.textContent = this.getLabel();
 	    }
 
@@ -11848,20 +11933,34 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     *  @private
 	     */
-	    _draw0Line(px) {
+	    _drawLine(pos, line) {
 
-	      if (!this._0line) {
-	        this._0line = document.createElementNS(this.graph.ns, 'line');
+	      let px = this.getPx(pos);
+
+	      if (!line) {
+	        line = document.createElementNS(this.graph.ns, 'line');
+	      } else {
+	        line.setAttribute('display', 'initial');
 	      }
 
-	      this._0line.setAttribute('y1', px);
-	      this._0line.setAttribute('y2', px);
+	      line.setAttribute('y1', px);
+	      line.setAttribute('y2', px);
 
-	      this._0line.setAttribute('x1', 0);
-	      this._0line.setAttribute('x2', this.graph.getDrawingWidth());
+	      line.setAttribute('x1', 0);
+	      line.setAttribute('x2', this.graph.drawingSpaceWidth);
 
-	      this._0line.setAttribute('stroke', 'black');
-	      this.groupGrids.appendChild(this._0line);
+	      line.setAttribute('stroke', 'black');
+	      this.group.appendChild(line);
+
+	      return line;
+	    }
+
+	    _hideLine(line) {
+	      if (!line) {
+	        return;
+	      }
+
+	      line.setAttribute('display', 'none');
 	    }
 
 	    /**
@@ -14447,7 +14546,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xMin: this.waveform.getX(indexX),
 	          xMax: this.waveform.getX(indexX + 1),
 	          yMin: this.waveform.getY(indexX),
-	          yMax: this.waveform.getY(indexX + 1)
+	          yMax: this.waveform.getY(indexX + 1),
+	          xExact: valX
 	        };
 
 	        if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
@@ -14475,7 +14575,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var value = this.searchClosestValue(valX);
 
-	      if (!value) return;
+	      if (!value) {
+	        return;
+	      }
 
 	      var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
 	      var intY = (1 - ratio) * value.yMin + ratio * value.yMax;
@@ -14520,7 +14622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        xAfter: value.xMax,
 	        yBefore: value.yMin,
 	        yAfter: value.yMax,
-	        trueX: valX,
+	        trueX: value.xExact,
 	        interpolatedY: intY,
 
 	        xClosest: value.xClosest,
@@ -15451,6 +15553,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.emit("hide");
 
+	      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+	        this.graph.draw(true);
+	      }
+
 	      return this;
 	    }
 
@@ -15461,6 +15567,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {Serie} The current serie
 	     */
 	    show(showShapes) {
+
 	      this.hidden = false;
 	      this.groupMain.setAttribute('display', 'block');
 
@@ -15480,6 +15587,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.emit("show");
 
+	      if (this.getXAxis().doesHideWhenNoSeriesShown() || this.getYAxis().doesHideWhenNoSeriesShown()) {
+	        this.graph.draw(true);
+	      }
 	      return this;
 	    }
 
@@ -15547,7 +15657,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    _checkY(val) {
-	      console.log(val, this.maxY);
 	      this.minY = Math.min(this.minY, val);
 	      this.maxY = Math.max(this.maxY, val);
 	    }
@@ -15877,7 +15986,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    setStyle(style, selectionType = "unselected") {
-	      //console.log( style, selectionType );
 	      this.styles[selectionType] = style;
 	      this.styleHasChanged(selectionType);
 	    }
@@ -16989,8 +17097,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.minY = data[0].y;
 	      }
 
-	      console.log(this._checkY);
-
 	      if (noRescale) {
 	        methodref = function () {};
 	        methodval = function () {};
@@ -17011,10 +17117,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (this.data[i].Q3) {
-	          console.log(this.minX, this.minY, this.maxY, this.data[i].Q3, methodval);
 
 	          methodval(this.data[i].Q3);
-	          console.log(this.minX, this.minY, this.maxY);
 	        }
 
 	        if (this.data[i].Q1) {
@@ -17046,8 +17150,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.data[i].outliers = [];
 	        }
 	      }
-
-	      console.log(this.minX, this.minY, this.maxY);
 
 	      this.dataHasChanged();
 	      this.graph.updateDataMinMaxAxes();
@@ -18493,13 +18595,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            style = modifier[index];
 	          }
 
-	          Object.assign(style, styleAll, style);
+	          styles[index] = Object.assign({}, styleAll, style);
 	        } else if (styleAll !== undefined) {
 
-	          style = styleAll;
+	          styles[index] = styleAll;
 	        } else {
 
-	          style = this.styles[selection].default;
+	          styles[index] = this.styles[selection].default;
 	        }
 
 	        if (!shape) {
@@ -18515,8 +18617,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!noSetPosition) {
 	          shape.parentNode.setAttribute('transform', 'translate(' + this.shapesDetails[index][0] + ', ' + this.shapesDetails[index][1] + ')');
 	        }
-
-	        styles[index] = style;
 	      }
 
 	      return styles;
@@ -18758,7 +18858,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            ypx = 0,
 	            j = 0,
 	            line = "",
-	            buffer;
+	            buffer,
+	            move = false;
 
 	        const xminpx = this.getXAxis().getMinPx(),
 	              xmaxpx = this.getXAxis().getMaxPx(),
@@ -18779,11 +18880,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        for (let waveform of this.waveforms) {
 
-	          dataY = waveform.getData(true);
-	          for (j = 0; j < dataY.length; j += 1) {
+	          for (j = 0; j < waveform.getLength(); j += 1) {
 	            dataX = waveform.getX(j, true);
+	            dataY = waveform.getY(j, true);
+	            console.log(dataX, dataY);
 
-	            ypx = this.getY(dataY[j]);
+	            // The y axis in screen coordinate is inverted vs cartesians
+	            if (dataY[j] < ymin) {
+	              ypx = this.getY(ymin);
+	            } else if (dataY[j] > ymax) {
+	              ypx = this.getY(ymax);
+	            }
+
+	            if (dataX !== dataX) {
+	              continue;
+	            }
+
+	            if (dataY !== dataY) {
+	              // Let's make a new line
+
+	              if (line.length == 0) {
+	                continue;
+	              }
+
+	              line += "L " + xpx + ", " + this.getY(waveform.getMinY());
+	              move = true;
+	              continue;
+	            }
+
+	            ypx = this.getY(dataY);
 	            xpx = this.getX(dataX);
 
 	            if (dataX < xmin || dataX > xmax) {
@@ -18791,11 +18916,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	              continue;
 	            }
 
-	            // The y axis in screen coordinate is inverted vs cartesians
-	            if (dataY[j] < ymin) {
-	              ypx = this.getY(ymin);
-	            } else if (dataY[j] > ymax) {
-	              ypx = this.getY(ymax);
+	            if (move) {
+	              line += " M " + xpx + ", " + this.getY(waveform.getMinY()) + " ";
+	              move = false;
 	            }
 
 	            if (line.length > 0) {
@@ -24787,7 +24910,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this.shapeType && !this.options.url) {
 	        return;
 	      }
-	      console.log('down');
 
 	      var self = this,
 	          selfPlugin = this;
