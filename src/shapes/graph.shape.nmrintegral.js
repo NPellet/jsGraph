@@ -132,8 +132,6 @@ class ShapeNMRIntegral extends Shape {
       incrementation = 1;
     }
 
-    console.log( index1, index2 );
-
     for ( ; condition ? j >= index1 : j <= index2; j += incrementation ) {
 
       xVal = waveform.getX( j, true );

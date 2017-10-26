@@ -1786,7 +1786,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity || 1, i);
 	        }
 	      }
-
+	      console.log(shapeData.serie, this.getSerie(shapeData.serie));
 	      if (shapeData.serie) {
 	        shape.setSerie(this.getSerie(shapeData.serie));
 	      }
@@ -18414,12 +18414,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	          styles[index] = this.styles[selection].default;
 	        }
 
+	        if (!styles[index]) {
+	          styles[index] = styleAll;
+	        }
+
 	        if (!shape) {
 	          // Shape doesn't exist, let's create it
 
+	          if (!styles[index].shape) {
+	            console.error(style);
+	            throw "No shape was defined with this style.";
+	          }
+
 	          var g = document.createElementNS(this.graph.ns, 'g');
 	          g.setAttribute('data-shapeid', index);
-	          this.shapes[index] = this.doShape(g, style);
+	          this.shapes[index] = this.doShape(g, styles[index]);
 	          this.groupPoints.appendChild(g);
 	          shape = this.shapes[index];
 	        }
@@ -20423,7 +20432,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {Shape} The current shape
 	     */
 	    setSerie(serie) {
+
+	      if (!serie) {
+	        return;
+	      }
+
 	      this.serie = serie;
+
+	      if (!serie.getXAxis || !serie.getYAxis) {
+	        console.error(serie);
+	        throw "Serie does not implement the getXAxis or getYAxis method";
+	      }
 	      this.xAxis = serie.getXAxis();
 	      this.yAxis = serie.getYAxis();
 	      return this;
@@ -23060,8 +23079,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        condition = false;
 	        incrementation = 1;
 	      }
-
-	      console.log(index1, index2);
 
 	      for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 

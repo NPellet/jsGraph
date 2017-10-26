@@ -287,7 +287,17 @@ class Shape extends EventEmitter {
    * @return {Shape} The current shape
    */
   setSerie( serie ) {
+
+    if ( !serie ) {
+      return;
+    }
+
     this.serie = serie;
+
+    if ( !serie.getXAxis ||  !serie.getYAxis ) {
+      console.error( serie );
+      throw "Serie does not implement the getXAxis or getYAxis method";
+    }
     this.xAxis = serie.getXAxis();
     this.yAxis = serie.getYAxis();
     return this;

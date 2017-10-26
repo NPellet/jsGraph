@@ -398,11 +398,20 @@ class SerieScatter extends Serie {
 
       }
 
+      if ( !styles[ index ] ) {
+        styles[ index ] = styleAll;
+      }
+
       if ( !shape ) { // Shape doesn't exist, let's create it
+
+        if ( !styles[ index ].shape ) {
+          console.error( style );
+          throw "No shape was defined with this style."
+        }
 
         var g = document.createElementNS( this.graph.ns, 'g' );
         g.setAttribute( 'data-shapeid', index );
-        this.shapes[ index ] = this.doShape( g, style );
+        this.shapes[ index ] = this.doShape( g, styles[ index ] );
         this.groupPoints.appendChild( g );
         shape = this.shapes[ index ];
       }

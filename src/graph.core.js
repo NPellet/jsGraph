@@ -1508,7 +1508,7 @@ class Graph extends EventEmitter {
         shape.setLabelBackgroundOpacity( shapeData.label[ i ].backgroundOpacity || 1, i );
       }
     }
-
+    console.log( shapeData.serie, this.getSerie( shapeData.serie ) )
     if ( shapeData.serie ) {
       shape.setSerie( this.getSerie( shapeData.serie ) );
     }

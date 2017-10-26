@@ -26,7 +26,8 @@ module.exports = function(grunt) {
                  entry: [ './js/nmr1d.jsx' ],
 
                  output: {
-                     filename: '../docs/nmr/js/1d/app_1d.js'
+                    filename: '../../visualizer/src/modules/types/science/spectra/nmr/1dnmr_2/app_1d.js',
+                    libraryTarget: 'umd'
                  },
                 
                  module: {
