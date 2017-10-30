@@ -784,7 +784,7 @@ class Serie extends EventEmitter {
     return this._type;
   }
 
-  set excludedFromLegend( bln = true ) {
+  set excludedFromLegend( bln ) {
     this._excludedFromLegend = bln;
   }
 
