@@ -65,7 +65,7 @@ module.exports = function(grunt) {
               visualizer: {
 
                 files: {
-                    '../visualizer/src/components/jsgraph/dist/jsgraph.js': 'dist/jsgraph-es6.js'
+                    '../visualizer/src/components/jsgraph/dist/jsgraph-es6.js': 'dist/jsgraph-es6.js'
                 }
             }
 

@@ -8624,6 +8624,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    shapesUniqueSelection: true
 	  };
 
+	  var defaultScatterStyle = {
+	    shape: 'circle',
+	    r: 4
+	  };
+
 	  var _constructors = new Map();
 
 	  /**
@@ -10919,58 +10924,75 @@ return /******/ (function(modules) { // webpackBootstrap
 	              });
 	            }
 
+	            var defaultStyle = {};
+	            var defaultStyles = {};
+
+	            if (schemaSerie.defaultStyle) {
+	              defaultStyle = schemaSerie.defaultStyle;
+	            }
+
+	            if (schemaSerie.defaultStyles) {
+	              defaultStyles = schemaSerie.defaultStyles;
+	            }
+
 	            if (schemaSerie.styles) {
 
-	              var styles = void 0;
+	              var individualStyles = void 0;
 
 	              if (Array.isArray(schemaSerie.styles)) {
-	                styles = {
+	                individualStyles = {
 	                  unselected: schemaSerie.styles
 	                };
 	              } else {
-	                styles = schemaSerie.styles;
+	                individualStyles = schemaSerie.styles;
 	              }
 
-	              Object.entries(styles).forEach(function (_ref3) {
-	                var _ref4 = _slicedToArray(_ref3, 2),
-	                    styleName = _ref4[0],
-	                    style = _ref4[1];
+	              var styleNames = new Set(Object.keys(defaultStyles).concat(Object.keys(individualStyles)));
+
+	              styleNames.forEach(function (styleName) {
 
 	                var styleSerie = {};
+	                var style = [],
+	                    styles = void 0;
 
-	                if (!Array.isArray(style)) {
-	                  style = [style];
-	                }
+	                if (individualStyles && individualStyles[styleName]) {
 
-	                var styles = style.map(function (eachStyleElement) {
+	                  style = individualStyles[styleName];
 
-	                  switch (serieType) {
-
-	                    case Graph.SERIE_LINE:
-
-	                      return {
-	                        type: eachStyleElement.shape,
-	                        zoom: eachStyleElement.zoom,
-	                        strokeWidth: eachStyleElement.lineWidth,
-	                        strokeColor: eachStyleElement.lineColor,
-	                        fillColor: eachStyleElement.color,
-	                        points: eachStyleElement.points
-	                      };
-
-	                      break;
-
-	                    case Graph.SERIE_BOX:
-
-	                      return eachStyleElement;
-
-	                      break;
-
-	                    case Graph.SERIE_SCATTER:
-	                      return eachStyleElement;
-
-	                      break;
+	                  if (!Array.isArray(style)) {
+	                    style = [style];
 	                  }
-	                });
+
+	                  styles = style.map(function (eachStyleElement) {
+
+	                    switch (serieType) {
+
+	                      case Graph.SERIE_LINE:
+
+	                        return {
+	                          type: eachStyleElement.shape,
+	                          zoom: eachStyleElement.zoom,
+	                          strokeWidth: eachStyleElement.lineWidth,
+	                          strokeColor: eachStyleElement.lineColor,
+	                          fillColor: eachStyleElement.color,
+	                          points: eachStyleElement.points
+	                        };
+
+	                        break;
+
+	                      case Graph.SERIE_BOX:
+
+	                        return eachStyleElement;
+
+	                        break;
+
+	                      case Graph.SERIE_SCATTER:
+	                        return eachStyleElement;
+
+	                        break;
+	                    }
+	                  });
+	                }
 
 	                switch (serieType) {
 
@@ -10980,8 +11002,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    break;
 
 	                  case Graph.SERIE_SCATTER:
-
-	                    serie.setStyle({}, styles, styleName);
+	                    serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[styleName] || {}), styles, styleName);
 	                    break;
 
 	                  case Graph.SERIE_BOX:
@@ -11601,7 +11622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.38' || 'head'
+	      'data-jsgraph-version': 'v2.0.39' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
