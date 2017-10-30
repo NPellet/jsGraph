@@ -2715,11 +2715,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (schemaSerie.lineStyle) {
 
-	            schemaSerie.lineStyle.map(function (style) {
+	            if (Array.isArray(lineStyle)) {
+	              lineStyle = {
+	                unselected: lineStyle
+	              };
+	            }
+
+	            for (let [styleName, style] of lineStyle) {
 
 	              var styleSerie = {};
-
-	              styleSerie.styleName = style.styleName || "unselected";
 
 	              switch (serieType) {
 
@@ -2736,24 +2740,33 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    styleSerie.lineStyle = style.lineStyle;
 	                  }
 
-	                  serie.setStyle(styleSerie, style.styleName);
+	                  serie.setStyle(styleSerie, styleName);
 	                  break;
 	              }
-	            });
+	            }
 	          }
 
 	          if (schemaSerie.styles) {
 
-	            schemaSerie.styles.map(function (style) {
+	            let syles;
+
+	            if (Array.isArray(schemaSerie.styles)) {
+	              styles = {
+	                unselected: schemaSerie.styles
+	              };
+	            } else {
+	              styles = schemaSerie.styles;
+	            }
+
+	            for (let [styleName, style] of styles) {
 
 	              var styleSerie = {};
-	              style.styleName = style.styleName || "unselected";
 
-	              if (!Array.isArray(style.styles)) {
-	                style.styles = [style.styles];
+	              if (!Array.isArray(style)) {
+	                style = [style];
 	              }
 
-	              var styles = style.styles.map(function (eachStyleElement) {
+	              var styles = style.map(function (eachStyleElement) {
 
 	                switch (serieType) {
 
@@ -2787,20 +2800,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                case Graph.SERIE_LINE:
 
-	                  serie.setMarkers(styles, style.styleName);
+	                  serie.setMarkers(styles, styleName);
 	                  break;
 
 	                case Graph.SERIE_SCATTER:
 
-	                  serie.setStyle({}, styles, style.styleName);
+	                  serie.setStyle({}, styles, styleName);
 	                  break;
 
 	                case Graph.SERIE_BOX:
 
-	                  serie.setStyle(styles[0], style.stylename || "unselected");
+	                  serie.setStyle(styles[0], styleName || "unselected");
 	                  break;
 	              }
-	            });
+	            }
 	          }
 
 	          if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
@@ -13386,7 +13399,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        trackMouseLabelRouding: 1,
 	        lineToZero: false,
 	        selectableOnClick: false,
-	        markersIndependant: false
+	        markersIndependant: false,
+	        overflowX: false,
+	        overflowY: false
 	      };
 	    }
 
@@ -14016,7 +14031,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (!_monotoneous) {
-	          pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
+
+	          pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
 	        } else {
 	          pointOutside = y < yMin || y > yMax;
 	        }
@@ -15973,7 +15989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._type;
 	    }
 
-	    set excludedFromLegend(bln = true) {
+	    set excludedFromLegend(bln) {
 	      this._excludedFromLegend = bln;
 	    }
 

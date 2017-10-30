@@ -2451,11 +2451,15 @@ class Graph extends EventEmitter {
 
         if ( schemaSerie.lineStyle ) {
 
-          schemaSerie.lineStyle.map( function( style ) {
+          if ( Array.isArray( lineStyle ) ) {
+            lineStyle = {
+              unselected: lineStyle
+            };
+          }
+
+          for ( let [ styleName, style ] of lineStyle ) {
 
             var styleSerie = {};
-
-            styleSerie.styleName = style.styleName || "unselected";
 
             switch ( serieType ) {
 
@@ -2472,28 +2476,28 @@ class Graph extends EventEmitter {
                   styleSerie.lineStyle = style.lineStyle;
                 }
 
-                serie.setStyle( styleSerie, style.styleName );
+                serie.setStyle( styleSerie, styleName );
                 break;
             }
-
-          } );
+          }
         }
 
         if ( schemaSerie.styles ) {
 
           let syles;
 
-          if( Array.isArray( schemaSerie.styles ) ) {
-            styles = { unselected: schemaSerie.styles };
+          if ( Array.isArray( schemaSerie.styles ) ) {
+            styles = {
+              unselected: schemaSerie.styles
+            };
           } else {
             styles = schemaSerie.styles;
           }
 
-
-          for( let [ styleName, style ] of styles ) {
+          for ( let [ styleName, style ] of styles ) {
 
             var styleSerie = {};
-            
+
             if ( !Array.isArray( style ) ) {
               style = [ style ];
             }
@@ -2545,7 +2549,7 @@ class Graph extends EventEmitter {
                 serie.setStyle( styles[ 0 ], styleName ||  "unselected" );
                 break;
             }
-          } );
+          }
         }
 
         if ( schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED ) {

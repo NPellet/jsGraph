@@ -8476,6 +8476,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
+	  var _slicedToArray = function () {
+	    function sliceIterator(arr, i) {
+	      var _arr = [];
+	      var _n = true;
+	      var _d = false;
+	      var _e = undefined;
+
+	      try {
+	        for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+	          _arr.push(_s.value);
+
+	          if (i && _arr.length === i) break;
+	        }
+	      } catch (err) {
+	        _d = true;
+	        _e = err;
+	      } finally {
+	        try {
+	          if (!_n && _i["return"]) _i["return"]();
+	        } finally {
+	          if (_d) throw _e;
+	        }
+	      }
+
+	      return _arr;
+	    }
+
+	    return function (arr, i) {
+	      if (Array.isArray(arr)) {
+	        return arr;
+	      } else if (Symbol.iterator in Object(arr)) {
+	        return sliceIterator(arr, i);
+	      } else {
+	        throw new TypeError("Invalid attempt to destructure non-iterable instance");
+	      }
+	    };
+	  }();
+
 	  var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
 	    return typeof obj;
 	  } : function (obj) {
@@ -10851,92 +10889,147 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (schemaSerie.lineStyle) {
 
-	              schemaSerie.lineStyle.map(function (style) {
+	              if (Array.isArray(lineStyle)) {
+	                lineStyle = { unselected: lineStyle };
+	              }
 
-	                var styleSerie = {};
+	              var _iteratorNormalCompletion = true;
+	              var _didIteratorError = false;
+	              var _iteratorError = undefined;
 
-	                styleSerie.styleName = style.styleName || "unselected";
+	              try {
+	                for (var _iterator = lineStyle[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                  var _step$value = _slicedToArray(_step.value, 2),
+	                      styleName = _step$value[0],
+	                      _style = _step$value[1];
 
-	                switch (serieType) {
+	                  var styleSerie = {};
 
-	                  case Graph.SERIE_LINE:
-	                    if (style.lineWidth !== undefined) {
-	                      styleSerie.lineWidth = style.lineWidth;
-	                    }
+	                  switch (serieType) {
 
-	                    if (style.color !== undefined) {
-	                      styleSerie.lineColor = style.color;
-	                    }
+	                    case Graph.SERIE_LINE:
+	                      if (_style.lineWidth !== undefined) {
+	                        styleSerie.lineWidth = _style.lineWidth;
+	                      }
 
-	                    if (style.lineStyle) {
-	                      styleSerie.lineStyle = style.lineStyle;
-	                    }
+	                      if (_style.color !== undefined) {
+	                        styleSerie.lineColor = _style.color;
+	                      }
 
-	                    serie.setStyle(styleSerie, style.styleName);
-	                    break;
+	                      if (_style.lineStyle) {
+	                        styleSerie.lineStyle = _style.lineStyle;
+	                      }
+
+	                      serie.setStyle(styleSerie, styleName);
+	                      break;
+	                  }
 	                }
-	              });
+	              } catch (err) {
+	                _didIteratorError = true;
+	                _iteratorError = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion && _iterator.return) {
+	                    _iterator.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError) {
+	                    throw _iteratorError;
+	                  }
+	                }
+	              }
 	            }
 
 	            if (schemaSerie.styles) {
 
-	              schemaSerie.styles.map(function (style) {
+	              var syles = void 0;
 
-	                var styleSerie = {};
-	                style.styleName = style.styleName || "unselected";
+	              if (Array.isArray(schemaSerie.styles)) {
+	                styles = {
+	                  unselected: schemaSerie.styles
+	                };
+	              } else {
+	                styles = schemaSerie.styles;
+	              }
 
-	                if (!Array.isArray(style.styles)) {
-	                  style.styles = [style.styles];
-	                }
+	              var _iteratorNormalCompletion2 = true;
+	              var _didIteratorError2 = false;
+	              var _iteratorError2 = undefined;
 
-	                var styles = style.styles.map(function (eachStyleElement) {
+	              try {
+	                for (var _iterator2 = styles[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+	                  var _step2$value = _slicedToArray(_step2.value, 2),
+	                      styleName = _step2$value[0],
+	                      _style2 = _step2$value[1];
+
+	                  var styleSerie = {};
+
+	                  if (!Array.isArray(_style2)) {
+	                    _style2 = [_style2];
+	                  }
+
+	                  var styles = _style2.map(function (eachStyleElement) {
+
+	                    switch (serieType) {
+
+	                      case Graph.SERIE_LINE:
+
+	                        return {
+	                          type: eachStyleElement.shape,
+	                          zoom: eachStyleElement.zoom,
+	                          strokeWidth: eachStyleElement.lineWidth,
+	                          strokeColor: eachStyleElement.lineColor,
+	                          fillColor: eachStyleElement.color,
+	                          points: eachStyleElement.points
+	                        };
+
+	                        break;
+
+	                      case Graph.SERIE_BOX:
+
+	                        return eachStyleElement;
+
+	                        break;
+
+	                      case Graph.SERIE_SCATTER:
+	                        return eachStyleElement;
+
+	                        break;
+	                    }
+	                  });
 
 	                  switch (serieType) {
 
 	                    case Graph.SERIE_LINE:
 
-	                      return {
-	                        type: eachStyleElement.shape,
-	                        zoom: eachStyleElement.zoom,
-	                        strokeWidth: eachStyleElement.lineWidth,
-	                        strokeColor: eachStyleElement.lineColor,
-	                        fillColor: eachStyleElement.color,
-	                        points: eachStyleElement.points
-	                      };
+	                      serie.setMarkers(styles, styleName);
+	                      break;
 
+	                    case Graph.SERIE_SCATTER:
+
+	                      serie.setStyle({}, styles, styleName);
 	                      break;
 
 	                    case Graph.SERIE_BOX:
 
-	                      return eachStyleElement;
-
-	                      break;
-
-	                    case Graph.SERIE_SCATTER:
-	                      return eachStyleElement;
-
+	                      serie.setStyle(styles[0], styleName || "unselected");
 	                      break;
 	                  }
-	                });
-
-	                switch (serieType) {
-
-	                  case Graph.SERIE_LINE:
-
-	                    serie.setMarkers(styles, style.styleName);
-	                    break;
-
-	                  case Graph.SERIE_SCATTER:
-
-	                    serie.setStyle({}, styles, style.styleName);
-	                    break;
-
-	                  case Graph.SERIE_BOX:
-
-	                    serie.setStyle(styles[0], style.stylename || "unselected");
-	                    break;
 	                }
-	              });
+	              } catch (err) {
+	                _didIteratorError2 = true;
+	                _iteratorError2 = err;
+	              } finally {
+	                try {
+	                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
+	                    _iterator2.return();
+	                  }
+	                } finally {
+	                  if (_didIteratorError2) {
+	                    throw _iteratorError2;
+	                  }
+	                }
+	              }
 	            }
 
 	            if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
@@ -21740,7 +21833,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          trackMouseLabelRouding: 1,
 	          lineToZero: false,
 	          selectableOnClick: false,
-	          markersIndependant: false
+	          markersIndependant: false,
+	          overflowX: false,
+	          overflowY: false
 	        };
 	      }
 	    }]);
@@ -22341,7 +22436,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 
 	          if (!_monotoneous) {
-	            pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
+
+	            pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
 	          } else {
 	            pointOutside = y < yMin || y > yMax;
 	          }
@@ -24150,9 +24246,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'excludedFromLegend',
-	      set: function set() {
-	        var bln = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
-
+	      set: function set(bln) {
 	        this._excludedFromLegend = bln;
 	      },
 	      get: function get() {
