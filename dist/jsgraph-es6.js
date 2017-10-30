@@ -3575,7 +3575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.37' || 'head'
+	      'data-jsgraph-version': 'v2.0.38' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -23842,7 +23842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.width || 10;
 	    }
 
-	    set width(l = 10) {
+	    set width(l) {
 	      this.options.width = l;
 	    }
 
