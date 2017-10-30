@@ -19,7 +19,7 @@ class ShapeCross extends Shape {
     return this.options.width || 10;
   }
 
-  set width( l = 10 ) {
+  set width( l ) {
     this.options.width = l;
   }
 
