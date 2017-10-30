@@ -3,10 +3,6 @@ import * as util from './graph.util.js'
 import EventEmitter from './dependencies/eventEmitter/EventEmitter.js'
 import Waveform from './util/waveform.js'
 
-if ( !__VERSION__ ) {
-  var __VERSION__ = "head";
-}
-
 /**
  * Default graph parameters
  * @name Graph~GraphOptionsDefault
@@ -2457,7 +2453,7 @@ class Graph extends EventEmitter {
             };
           }
 
-          for ( let [ styleName, style ] of lineStyle ) {
+          lineStyle.entries().forEach( ( [ styleName, style ] ) => {
 
             var styleSerie = {};
 
@@ -2479,7 +2475,7 @@ class Graph extends EventEmitter {
                 serie.setStyle( styleSerie, styleName );
                 break;
             }
-          }
+          } );
         }
 
         if ( schemaSerie.styles ) {
@@ -2494,7 +2490,7 @@ class Graph extends EventEmitter {
             styles = schemaSerie.styles;
           }
 
-          for ( let [ styleName, style ] of styles ) {
+          styles.entries().forEach( ( [ styleName, style ] ) => {
 
             var styleSerie = {};
 
@@ -2549,7 +2545,7 @@ class Graph extends EventEmitter {
                 serie.setStyle( styles[ 0 ], styleName ||  "unselected" );
                 break;
             }
-          }
+          } );
         }
 
         if ( schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED ) {
@@ -3336,7 +3332,7 @@ function doDom() {
     'xmlns': Graph.ns,
     'font-family': this.options.fontFamily,
     'font-size': this.options.fontSize,
-    'data-jsgraph-version': __VERSION__
+    'data-jsgraph-version': __VERSION__ ||  'head'
   } );
 
   this.defs = document.createElementNS( Graph.ns, 'defs' );

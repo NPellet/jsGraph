@@ -8568,10 +8568,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 	  }
 
-	  if (!__VERSION__) {
-	    var __VERSION__ = "head";
-	  }
-
 	  /**
 	   * Default graph parameters
 	   * @name Graph~GraphOptionsDefault
@@ -10895,51 +10891,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	                };
 	              }
 
-	              var _iteratorNormalCompletion = true;
-	              var _didIteratorError = false;
-	              var _iteratorError = undefined;
+	              lineStyle.entries().forEach(function (_ref) {
+	                var _ref2 = _slicedToArray(_ref, 2),
+	                    styleName = _ref2[0],
+	                    style = _ref2[1];
 
-	              try {
-	                for (var _iterator = lineStyle[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                  var _step$value = _slicedToArray(_step.value, 2),
-	                      styleName = _step$value[0],
-	                      _style = _step$value[1];
+	                var styleSerie = {};
 
-	                  var styleSerie = {};
+	                switch (serieType) {
 
-	                  switch (serieType) {
+	                  case Graph.SERIE_LINE:
+	                    if (style.lineWidth !== undefined) {
+	                      styleSerie.lineWidth = style.lineWidth;
+	                    }
 
-	                    case Graph.SERIE_LINE:
-	                      if (_style.lineWidth !== undefined) {
-	                        styleSerie.lineWidth = _style.lineWidth;
-	                      }
+	                    if (style.color !== undefined) {
+	                      styleSerie.lineColor = style.color;
+	                    }
 
-	                      if (_style.color !== undefined) {
-	                        styleSerie.lineColor = _style.color;
-	                      }
+	                    if (style.lineStyle) {
+	                      styleSerie.lineStyle = style.lineStyle;
+	                    }
 
-	                      if (_style.lineStyle) {
-	                        styleSerie.lineStyle = _style.lineStyle;
-	                      }
-
-	                      serie.setStyle(styleSerie, styleName);
-	                      break;
-	                  }
+	                    serie.setStyle(styleSerie, styleName);
+	                    break;
 	                }
-	              } catch (err) {
-	                _didIteratorError = true;
-	                _iteratorError = err;
-	              } finally {
-	                try {
-	                  if (!_iteratorNormalCompletion && _iterator.return) {
-	                    _iterator.return();
-	                  }
-	                } finally {
-	                  if (_didIteratorError) {
-	                    throw _iteratorError;
-	                  }
-	                }
-	              }
+	              });
 	            }
 
 	            if (schemaSerie.styles) {
@@ -10954,84 +10931,65 @@ return /******/ (function(modules) { // webpackBootstrap
 	                styles = schemaSerie.styles;
 	              }
 
-	              var _iteratorNormalCompletion2 = true;
-	              var _didIteratorError2 = false;
-	              var _iteratorError2 = undefined;
+	              styles.entries().forEach(function (_ref3) {
+	                var _ref4 = _slicedToArray(_ref3, 2),
+	                    styleName = _ref4[0],
+	                    style = _ref4[1];
 
-	              try {
-	                for (var _iterator2 = styles[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-	                  var _step2$value = _slicedToArray(_step2.value, 2),
-	                      styleName = _step2$value[0],
-	                      _style2 = _step2$value[1];
+	                var styleSerie = {};
 
-	                  var styleSerie = {};
+	                if (!Array.isArray(style)) {
+	                  style = [style];
+	                }
 
-	                  if (!Array.isArray(_style2)) {
-	                    _style2 = [_style2];
-	                  }
-
-	                  var styles = _style2.map(function (eachStyleElement) {
-
-	                    switch (serieType) {
-
-	                      case Graph.SERIE_LINE:
-
-	                        return {
-	                          type: eachStyleElement.shape,
-	                          zoom: eachStyleElement.zoom,
-	                          strokeWidth: eachStyleElement.lineWidth,
-	                          strokeColor: eachStyleElement.lineColor,
-	                          fillColor: eachStyleElement.color,
-	                          points: eachStyleElement.points
-	                        };
-
-	                        break;
-
-	                      case Graph.SERIE_BOX:
-
-	                        return eachStyleElement;
-
-	                        break;
-
-	                      case Graph.SERIE_SCATTER:
-	                        return eachStyleElement;
-
-	                        break;
-	                    }
-	                  });
+	                var styles = style.map(function (eachStyleElement) {
 
 	                  switch (serieType) {
 
 	                    case Graph.SERIE_LINE:
 
-	                      serie.setMarkers(styles, styleName);
-	                      break;
+	                      return {
+	                        type: eachStyleElement.shape,
+	                        zoom: eachStyleElement.zoom,
+	                        strokeWidth: eachStyleElement.lineWidth,
+	                        strokeColor: eachStyleElement.lineColor,
+	                        fillColor: eachStyleElement.color,
+	                        points: eachStyleElement.points
+	                      };
 
-	                    case Graph.SERIE_SCATTER:
-
-	                      serie.setStyle({}, styles, styleName);
 	                      break;
 
 	                    case Graph.SERIE_BOX:
 
-	                      serie.setStyle(styles[0], styleName || "unselected");
+	                      return eachStyleElement;
+
+	                      break;
+
+	                    case Graph.SERIE_SCATTER:
+	                      return eachStyleElement;
+
 	                      break;
 	                  }
+	                });
+
+	                switch (serieType) {
+
+	                  case Graph.SERIE_LINE:
+
+	                    serie.setMarkers(styles, styleName);
+	                    break;
+
+	                  case Graph.SERIE_SCATTER:
+
+	                    serie.setStyle({}, styles, styleName);
+	                    break;
+
+	                  case Graph.SERIE_BOX:
+
+	                    serie.setStyle(styles[0], styleName || "unselected");
+	                    break;
 	                }
-	              } catch (err) {
-	                _didIteratorError2 = true;
-	                _iteratorError2 = err;
-	              } finally {
-	                try {
-	                  if (!_iteratorNormalCompletion2 && _iterator2.return) {
-	                    _iterator2.return();
-	                  }
-	                } finally {
-	                  if (_didIteratorError2) {
-	                    throw _iteratorError2;
-	                  }
-	                }
-	              }
+	              });
 	            }
 
 	            if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
@@ -11643,7 +11601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': __VERSION__
+	      'data-jsgraph-version': 'v2.0.35' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');

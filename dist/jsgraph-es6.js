@@ -288,10 +288,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  if (!__VERSION__) {
-	    var __VERSION__ = "head";
-	  }
-
 	  /**
 	   * Default graph parameters
 	   * @name Graph~GraphOptionsDefault
@@ -2721,7 +2717,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              };
 	            }
 
-	            for (let [styleName, style] of lineStyle) {
+	            lineStyle.entries().forEach(([styleName, style]) => {
 
 	              var styleSerie = {};
 
@@ -2743,7 +2739,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  serie.setStyle(styleSerie, styleName);
 	                  break;
 	              }
-	            }
+	            });
 	          }
 
 	          if (schemaSerie.styles) {
@@ -2758,7 +2754,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              styles = schemaSerie.styles;
 	            }
 
-	            for (let [styleName, style] of styles) {
+	            styles.entries().forEach(([styleName, style]) => {
 
 	              var styleSerie = {};
 
@@ -2813,7 +2809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  serie.setStyle(styles[0], styleName || "unselected");
 	                  break;
 	              }
-	            }
+	            });
 	          }
 
 	          if (schemaSerie.color && serieType == Graph.SERIE_LINE_COLORED) {
@@ -3579,7 +3575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': __VERSION__
+	      'data-jsgraph-version': 'v2.0.35' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
