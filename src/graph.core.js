@@ -2480,7 +2480,7 @@ class Graph extends EventEmitter {
 
         if ( schemaSerie.styles ) {
 
-          let syles;
+          let styles;
 
           if ( Array.isArray( schemaSerie.styles ) ) {
             styles = {

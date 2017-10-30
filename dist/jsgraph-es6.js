@@ -2744,7 +2744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (schemaSerie.styles) {
 
-	            let syles;
+	            let styles;
 
 	            if (Array.isArray(schemaSerie.styles)) {
 	              styles = {
@@ -3575,7 +3575,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.35' || 'head'
+	      'data-jsgraph-version': 'v2.0.36' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
