@@ -1036,12 +1036,12 @@ class Axis extends EventEmitter {
     var visible;
 
     //    this.drawInit();
-    this.cache();
 
     if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
       this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
-
     }
+
+    // this.cache();
 
     //   this.setSlaveAxesBoundaries();
 

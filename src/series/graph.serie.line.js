@@ -579,6 +579,8 @@ class SerieLine extends Serie {
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
 
+    console.log( xMin, yMin, xMax, yMax );
+
     if ( !waveform ) {
       return;
     }

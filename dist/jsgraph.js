@@ -9340,7 +9340,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            i,
 	            l;
 
-	        val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+	        val = infinity2use;
 	        series = this.getSeriesFromAxis(axis);
 
 	        for (i = 0, l = series.length; i < l; i++) {
@@ -9398,8 +9398,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
-	            axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues));
-	            axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues));
+	            var min = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues);
+	            var max = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues);
+
+	            if (isFinite(min)) {
+	              axis.setMinValueData(min);
+	            }
+
+	            if (isFinite(max)) {
+	              axis.setMaxValueData(max);
+	            }
 	          }
 	        }
 	      }
@@ -9775,7 +9783,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            shape.setLabelBackgroundOpacity(shapeData.label[i].backgroundOpacity || 1, i);
 	          }
 	        }
-	        console.log(shapeData.serie, this.getSerie(shapeData.serie));
+
 	        if (shapeData.serie) {
 	          shape.setSerie(this.getSerie(shapeData.serie));
 	        }
@@ -11331,6 +11339,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    graph._painted = true;
 	    // Apply to top and bottom
+
 	    graph._applyToAxes(function (axis, position) {
 
 	      if (!axis.isShown()) {
@@ -11622,7 +11631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.40' || 'head'
+	      'data-jsgraph-version': 'v2.0.41' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -18572,11 +18581,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var visible;
 
 	        //    this.drawInit();
-	        this.cache();
 
 	        if (this.currentAxisMin == undefined || this.currentAxisMax == undefined) {
 	          this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
 	        }
+
+	        // this.cache();
 
 	        //   this.setSlaveAxesBoundaries();
 
@@ -22314,6 +22324,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            xMax = xAxis.getCurrentMax(),
 	            yMax = yAxis.getCurrentMax();
 
+	        console.log(xMin, yMin, xMax, yMax);
+
 	        if (!waveform) {
 	          return;
 	        }
@@ -23868,9 +23880,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function autoAxis() {
 
 	        if (this.isFlipped()) {
+
 	          this.setXAxis(this.graph.getYAxis());
 	          this.setYAxis(this.graph.getXAxis());
 	        } else {
+
 	          this.setXAxis(this.graph.getXAxis());
 	          this.setYAxis(this.graph.getYAxis());
 	        }
@@ -29944,7 +29958,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (this.getProp('selectOnClick')) {
-	          console.log('sel');
+
 	          this.graph.selectShape(this);
 	        }
 	      }

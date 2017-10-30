@@ -989,7 +989,7 @@ class Graph extends EventEmitter {
       i,
       l;
 
-    val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+    val = infinity2use;
     series = this.getSeriesFromAxis( axis );
 
     for ( i = 0, l = series.length; i < l; i++ ) {
@@ -1054,8 +1054,16 @@ class Graph extends EventEmitter {
 
         //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
-        axis.setMinValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues ) );
-        axis.setMaxValueData( this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues ) );
+        let min = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'min', usingZValues );
+        let max = this.getBoundaryAxis( this.axis[ axisvars[ j ] ][ i ], 'max', usingZValues );
+
+        if ( isFinite( min ) ) {
+          axis.setMinValueData( min );
+        }
+
+        if ( isFinite( max ) ) {
+          axis.setMaxValueData( max );
+        }
       }
     }
 
@@ -1509,7 +1517,7 @@ class Graph extends EventEmitter {
         shape.setLabelBackgroundOpacity( shapeData.label[ i ].backgroundOpacity || 1, i );
       }
     }
-    console.log( shapeData.serie, this.getSerie( shapeData.serie ) )
+
     if ( shapeData.serie ) {
       shape.setSerie( this.getSerie( shapeData.serie ) );
     }
@@ -3051,6 +3059,7 @@ function refreshDrawingZone( graph ) {
 
   graph._painted = true;
   // Apply to top and bottom
+
   graph._applyToAxes( function( axis, position ) {
 
     if ( !axis.isShown() ) {

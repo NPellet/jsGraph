@@ -1624,7 +1624,7 @@ class Shape extends EventEmitter {
     }
 
     if ( this.getProp( 'selectOnClick' ) ) {
-      console.log( 'sel' );
+
       this.graph.selectShape( this );
     }
   }

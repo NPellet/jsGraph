@@ -18,6 +18,7 @@ class Serie extends EventEmitter {
   }
 
   constructor( graph, name, options ) {
+
     super( ...arguments );
     this.graph = graph;
     this.name = name;
@@ -296,9 +297,12 @@ class Serie extends EventEmitter {
   autoAxis() {
 
     if ( this.isFlipped() ) {
+
       this.setXAxis( this.graph.getYAxis() );
       this.setYAxis( this.graph.getXAxis() );
+
     } else {
+
       this.setXAxis( this.graph.getXAxis() );
       this.setYAxis( this.graph.getYAxis() );
     }
