@@ -1,0 +1,19 @@
+{
+  "name": "nmr1d",
+  "description": "library that can be used to render 1D NMR",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "grunt webpack"
+  },
+  "main": "dist/jsgraph.js",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+   
+  },
+  "dependencies": {
+    
+  },
+  "license": "MIT"
+}

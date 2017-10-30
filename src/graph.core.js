@@ -2481,16 +2481,24 @@ class Graph extends EventEmitter {
 
         if ( schemaSerie.styles ) {
 
-          schemaSerie.styles.map( function( style ) {
+          let syles;
+
+          if( Array.isArray( schemaSerie.styles ) ) {
+            styles = { unselected: schemaSerie.styles };
+          } else {
+            styles = schemaSerie.styles;
+          }
+
+
+          for( let [ styleName, style ] of styles ) {
 
             var styleSerie = {};
-            style.styleName = style.styleName || "unselected";
-
-            if ( !Array.isArray( style.styles ) ) {
-              style.styles = [ style.styles ];
+            
+            if ( !Array.isArray( style ) ) {
+              style = [ style ];
             }
 
-            var styles = style.styles.map( function( eachStyleElement ) {
+            var styles = style.map( function( eachStyleElement ) {
 
               switch ( serieType ) {
 
@@ -2524,17 +2532,17 @@ class Graph extends EventEmitter {
 
               case Graph.SERIE_LINE:
 
-                serie.setMarkers( styles, style.styleName );
+                serie.setMarkers( styles, styleName );
                 break;
 
               case Graph.SERIE_SCATTER:
 
-                serie.setStyle( {}, styles, style.styleName );
+                serie.setStyle( {}, styles, styleName );
                 break;
 
               case Graph.SERIE_BOX:
 
-                serie.setStyle( styles[ 0 ], style.stylename ||  "unselected" );
+                serie.setStyle( styles[ 0 ], styleName ||  "unselected" );
                 break;
             }
           } );

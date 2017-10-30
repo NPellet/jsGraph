@@ -34,7 +34,9 @@ class SerieLine extends Serie {
       trackMouseLabelRouding: 1,
       lineToZero: false,
       selectableOnClick: false,
-      markersIndependant: false
+      markersIndependant: false,
+      overflowX: false,
+      overflowY: false
     };
   }
 
@@ -678,7 +680,13 @@ class SerieLine extends Serie {
       }
 
       if ( !_monotoneous ) {
-        pointOutside = ( x < xMin || y < yMin || x > xMax ||  y > yMax );
+        
+        pointOutside = ( 
+           ! this.options.overflowX && ( x < xMin || x > xMax )
+        ) && (
+           ! this.options.overflowY && ( y < yMin || y > yMax )
+        );
+
       } else {
         pointOutside = ( y < yMin ||  y > yMax );
       }
