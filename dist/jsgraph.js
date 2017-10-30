@@ -10891,7 +10891,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                };
 	              }
 
-	              lineStyle.entries().forEach(function (_ref) {
+	              Object.entries(lineStyle).forEach(function (_ref) {
 	                var _ref2 = _slicedToArray(_ref, 2),
 	                    styleName = _ref2[0],
 	                    style = _ref2[1];
@@ -10931,7 +10931,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                styles = schemaSerie.styles;
 	              }
 
-	              styles.entries().forEach(function (_ref3) {
+	              Object.entries(styles).forEach(function (_ref3) {
 	                var _ref4 = _slicedToArray(_ref3, 2),
 	                    styleName = _ref4[0],
 	                    style = _ref4[1];
@@ -11601,7 +11601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.36' || 'head'
+	      'data-jsgraph-version': 'v2.0.37' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');

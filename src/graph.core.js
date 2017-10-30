@@ -2453,7 +2453,7 @@ class Graph extends EventEmitter {
             };
           }
 
-          lineStyle.entries().forEach( ( [ styleName, style ] ) => {
+          Object.entries( lineStyle ).forEach( ( [ styleName, style ] ) => {
 
             var styleSerie = {};
 
@@ -2490,7 +2490,7 @@ class Graph extends EventEmitter {
             styles = schemaSerie.styles;
           }
 
-          styles.entries().forEach( ( [ styleName, style ] ) => {
+          Object.entries( styles ).forEach( ( [ styleName, style ] ) => {
 
             var styleSerie = {};
 
