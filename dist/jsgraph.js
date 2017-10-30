@@ -11622,7 +11622,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.39' || 'head'
+	      'data-jsgraph-version': 'v2.0.40' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -34334,18 +34334,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	            modeY = true;
 	          }
 
+	          var _x2 = void 0,
+	              _y2 = void 0;
+
 	          if (pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
 
-	            var x = false,
-	                y = false;
+	            _x2 = false, _y2 = false;
 
 	            if (pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
-	              x = true;
+	              _x2 = true;
 	              modeX = true;
 	            }
 
 	            if (pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
-	              y = true;
+	              _y2 = true;
 	              modeY = true;
 	            }
 
@@ -34356,7 +34358,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              axis._pluginZoomMinFinal = axis.getCurrentMin() - (axis.getCurrentMax() - axis.getCurrentMin());
 	              axis._pluginZoomMaxFinal = axis.getCurrentMax() + (axis.getCurrentMax() - axis.getCurrentMin());
-	            }, false, x, y);
+	            }, false, _x2, _y2);
 	          }
 
 	          this.transition(modeX, modeY, "dblClick");
@@ -34404,8 +34406,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
 
 	            var ratio = (xActual - xMin) / (xMax - xMin);
-	            xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-	            xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+	            xMin = Math.max(xAxis.getMinValue() - xAxis.getInterval() * xAxis.options.axisDataSpacing.min, xMin - diffX * ratio);
+	            xMax = Math.min(xAxis.getMaxValue() + xAxis.getInterval() * xAxis.options.axisDataSpacing.max, xMax + diffX * (1 - ratio));
 	            xAxis.setCurrentMin(xMin);
 	            xAxis.setCurrentMax(xMax);
 
@@ -34421,8 +34423,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
 
 	            var ratio = (yActual - yMin) / (yMax - yMin);
-	            yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-	            yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+	            yMin = Math.max(yAxis.getMinValue() - yAxis.getInterval() * yAxis.options.axisDataSpacing.min, yMin - diffY * ratio);
+	            yMax = Math.min(yAxis.getMaxValue() + yAxis.getInterval() * yAxis.options.axisDataSpacing.max, yMax + diffY * (1 - ratio));
 	            yAxis.setCurrentMin(yMin);
 	            yAxis.setCurrentMax(yMax);
 

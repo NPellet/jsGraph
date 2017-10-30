@@ -3599,7 +3599,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.39' || 'head'
+	      'data-jsgraph-version': 'v2.0.40' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -25490,10 +25490,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          modeY = true;
 	        }
 
+	        let x, y;
+
 	        if (pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
 
-	          var x = false,
-	              y = false;
+	          x = false, y = false;
 
 	          if (pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
 	            x = true;
@@ -25560,8 +25561,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
 
 	          var ratio = (xActual - xMin) / (xMax - xMin);
-	          xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-	          xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+	          xMin = Math.max(xAxis.getMinValue() - xAxis.getInterval() * xAxis.options.axisDataSpacing.min, xMin - diffX * ratio);
+	          xMax = Math.min(xAxis.getMaxValue() + xAxis.getInterval() * xAxis.options.axisDataSpacing.max, xMax + diffX * (1 - ratio));
 	          xAxis.setCurrentMin(xMin);
 	          xAxis.setCurrentMax(xMax);
 
@@ -25577,8 +25578,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
 
 	          var ratio = (yActual - yMin) / (yMax - yMin);
-	          yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-	          yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+	          yMin = Math.max(yAxis.getMinValue() - yAxis.getInterval() * yAxis.options.axisDataSpacing.min, yMin - diffY * ratio);
+	          yMax = Math.min(yAxis.getMaxValue() + yAxis.getInterval() * yAxis.options.axisDataSpacing.max, yMax + diffY * (1 - ratio));
 	          yAxis.setCurrentMin(yMin);
 	          yAxis.setCurrentMax(yMax);
 
