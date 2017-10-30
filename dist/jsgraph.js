@@ -10890,7 +10890,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (schemaSerie.lineStyle) {
 
 	              if (Array.isArray(lineStyle)) {
-	                lineStyle = { unselected: lineStyle };
+	                lineStyle = {
+	                  unselected: lineStyle
+	                };
 	              }
 
 	              var _iteratorNormalCompletion = true;
