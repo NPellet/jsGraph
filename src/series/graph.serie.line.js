@@ -686,7 +686,7 @@ class SerieLine extends Serie {
         pointOutside = ( !this.options.overflowX && ( x < xMin || x > xMax ) ) && ( !this.options.overflowY && ( y < yMin || y > yMax ) );
 
       } else {
-        pointOutside = ( y < yMin ||  y > yMax );
+        pointOutside = !this.options.overflowY && ( y < yMin ||  y > yMax );
       }
 
       if ( this.options.lineToZero ) {

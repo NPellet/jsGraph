@@ -11631,7 +11631,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.42' || 'head'
+	      'data-jsgraph-version': 'v2.0.43' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -22432,7 +22432,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
 	          } else {
-	            pointOutside = y < yMin || y > yMax;
+	            pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
 	          }
 
 	          if (this.options.lineToZero) {
