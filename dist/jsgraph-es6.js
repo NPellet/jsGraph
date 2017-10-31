@@ -3608,7 +3608,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.43' || 'head'
+	      'data-jsgraph-version': 'v2.0.44' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -13958,8 +13958,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          xMax = xAxis.getCurrentMax(),
 	          yMax = yAxis.getCurrentMax();
 
-	      console.log(xMin, yMin, xMax, yMax);
-
 	      if (!waveform) {
 	        return;
 	      }
@@ -14031,7 +14029,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          continue;
 	        }
 
-	        if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
+	        if (!this.options.overflowX && x < xMin && lastX < xMin || !this.options.overflowX && x > xMax && lastX > xMax || (!this.options.overflowY && y < yMin && lastY < yMin || !this.options.overflowY && y > yMax && lastY > yMax) && !this.options.lineToZero) {
 	          lastX = x;
 	          lastY = y;
 	          lastPointOutside = true;

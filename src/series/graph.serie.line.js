@@ -579,8 +579,6 @@ class SerieLine extends Serie {
       xMax = xAxis.getCurrentMax(),
       yMax = yAxis.getCurrentMax();
 
-    console.log( xMin, yMin, xMax, yMax );
-
     if ( !waveform ) {
       return;
     }
@@ -651,7 +649,7 @@ class SerieLine extends Serie {
         continue;
       }
 
-      if ( ( x < xMin && lastX < xMin ) || ( x > xMax && lastX > xMax ) || ( ( ( y < yMin && lastY < yMin ) || ( y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
+      if ( ( !this.options.overflowX && x < xMin && lastX < xMin ) || ( !this.options.overflowX && x > xMax && lastX > xMax ) || ( ( ( !this.options.overflowY && y < yMin && lastY < yMin ) || ( !this.options.overflowY && y > yMax && lastY > yMax ) ) && !this.options.lineToZero ) ) {
         lastX = x;
         lastY = y;
         lastPointOutside = true;
