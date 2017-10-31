@@ -156,7 +156,6 @@ class PluginZoom extends Plugin {
    * @private
    */
   onMouseUp( graph, x, y, e, mute ) {
-    console.log( 'inplugin' );
     var self = this;
     this.removeZone();
 
