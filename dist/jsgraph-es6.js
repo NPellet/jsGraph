@@ -3627,7 +3627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.45' || 'head'
+	      'data-jsgraph-version': 'v2.0.46' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -25323,7 +25323,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @private
 	     */
 	    onMouseUp(graph, x, y, e, mute) {
-	      console.log('inplugin');
 	      var self = this;
 	      this.removeZone();
 
