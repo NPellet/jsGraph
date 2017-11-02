@@ -1026,7 +1026,7 @@ class Shape extends EventEmitter {
           transformString += ", ";
 
           if ( transforms[ i ].arguments.length == 1 ) {
-            var p = this.getPosition( 0 );
+            var p = this.computePosition( 0 );
             transformString += p.x + ", " + p.y;
 
           } else {

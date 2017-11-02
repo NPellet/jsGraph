@@ -11648,7 +11648,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.46' || 'head'
+	      'data-jsgraph-version': 'v2.0.47' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -29505,7 +29505,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              transformString += ", ";
 
 	              if (transforms[i].arguments.length == 1) {
-	                var p = this.getPosition(0);
+	                var p = this.computePosition(0);
 	                transformString += p.x + ", " + p.y;
 	              } else {
 
