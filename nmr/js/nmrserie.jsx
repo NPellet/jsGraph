@@ -24,6 +24,8 @@ class NMRSerie extends React.Component {
 			this.loaded();
 		});
 
+		this._assignment = context.assignment;
+
 
 	/*	this._jsGraphGraph.getPlugin('shape').on( "createdShape", ( event, shape ) => {
 			console.log('created2', shape.getSerie() );
@@ -71,7 +73,8 @@ class NMRSerie extends React.Component {
 	
 	getChildContext() {
 	 	return {
-	   		serie: this._jsGraphSerie
+	   		serie: this._jsGraphSerie,
+	   		assignment: this._assignment
 	    };
 	}
 
@@ -207,23 +210,32 @@ class NMRSerie extends React.Component {
 		this.loadedState = false;
 
 		this._jsGraphSerie.setLineColor( this.props.color, "unselected", true );
-console.log( this.props.integrals );
+
 		return (
 			<span>
 				{ 
 					( this.props.integrals || [] ).map( 
-						( el ) => <NMRIntegral 
-							id 		= { el.id } 
-							key 	= { el.id } 
-							labelRatio 	= { this.state.labelRatio } 
-							ratio 	= { this.state.ratio } 
-							from 	= { el.from } 
-							to 		= { el.to } 
-							onSumChanged 	= { this.sumChanged } 
-							onChanged 		= { this.integralChanged } 
-							onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
-							onRemoved 		= { this.integralRemoved } 
-						/> 
+						( el ) => {
+
+							if( ! el.key ) {
+								el.key = Math.random();
+							}
+
+							console.log( el.id );
+
+							return <NMRIntegral 
+								id 		= { el.id } 
+								key 	= { el.key } 
+								labelRatio 	= { this.state.labelRatio } 
+								ratio 	= { this.state.ratio } 
+								from 	= { el.from } 
+								to 		= { el.to } 
+								onSumChanged 	= { this.sumChanged } 
+								onChanged 		= { this.integralChanged } 
+								onValueChanged 	= { ( value ) => { this.scaleIntegralText( el.id, value ); } } 
+								onRemoved 		= { this.integralRemoved } 
+							/> 
+						}
 					) 
 				}
 			</span> 
@@ -232,11 +244,12 @@ console.log( this.props.integrals );
 }
 
 NMRSerie.contextTypes = {
-  assignement: PropTypes.instanceOf( Assignment ),
+  assignment: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph )
 };
 
 NMRSerie.childContextTypes = {
+  assignment: PropTypes.instanceOf( Assignment ),
   serie: PropTypes.instanceOf( Graph.getConstructor( Graph.SERIE_LINE ) )
 };
 

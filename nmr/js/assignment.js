@@ -278,50 +278,6 @@ var ns = 'http://www.w3.org/2000/svg';
 			this.options.removeEnableOver = false;
 		}
 
-		mousedown( event, type ) {
-
-			if( event.shiftKey ) {
-			
-				this.graph.lockShapes();					
-				
-				this.binding = true;
-
-				if( type ) { // Graph element
-
-					this.currentTargetGraph = event.target;
-				
-				} else {
-				
-					this.currentTargetMolecule = event.target;
-				}
-
-				event.preventDefault();
-				event.stopPropagation();
-
-				let bb = event.target.getBBox();
-				let pos = event.target.getBoundingClientRect();
-
-				
-				let x = pos.left,
-					y = pos.top;
-
-				if( ! type ) {
-					 y += bb.height / 2;
-					 x += bb.width / 2;
-				}
-
-				this.bindingLine.setAttribute('display', 'block');
-				this.bindingLine.setAttribute('x1', x + window.scrollX );
-				this.bindingLine.setAttribute('x2', x + window.scrollX );
-				this.bindingLine.setAttribute('y1', y + window.scrollY );
-				this.bindingLine.setAttribute('y2', y + window.scrollY );
-				this.bindingLine.setAttribute('pointer-events', 'none');
-
-
-				// Look for targettable (bindable) elements of the other type and highlight them
-				this.highlight( ! type, this.findTargettableElements( ! type ), 'binding' );
-			}
-		}
 
 		highlight( type, targetEls, highlightType ) {
 
@@ -375,6 +331,54 @@ var ns = 'http://www.w3.org/2000/svg';
 			return this.getDom( type ).querySelectorAll( this.getOptions( type ).bindableFilter );
 		}
 
+
+		mousedown( event, type ) {
+
+			if( event.shiftKey ) {
+			
+				this.graph.lockShapes();					
+				
+				this.binding = true;
+
+				if( type ) { // Graph element
+
+					this.currentTargetGraph = event.target;
+				
+				} else {
+				
+					this.currentTargetMolecule = event.target;
+				}
+
+				event.preventDefault();
+				event.stopPropagation();
+
+				let bb = event.target.getBBox();
+				let pos = event.target.getBoundingClientRect();
+				
+				let pos2 = this.graph.getWrapper().getBoundingClientRect();
+
+				let x = pos.left - pos2.left,
+					y = pos.top - pos2.top;
+
+
+				if( ! type ) {
+					 y += bb.height / 2;
+					 x += bb.width / 2;
+				}
+
+
+				this.bindingLine.setAttribute('display', 'block');
+				this.bindingLine.setAttribute('x1', x + window.scrollX );
+				this.bindingLine.setAttribute('x2', x + window.scrollX );
+				this.bindingLine.setAttribute('y1', y + window.scrollY );
+				this.bindingLine.setAttribute('y2', y + window.scrollY );
+				this.bindingLine.setAttribute('pointer-events', 'none');
+
+
+				// Look for targettable (bindable) elements of the other type and highlight them
+				this.highlight( ! type, this.findTargettableElements( ! type ), 'binding' );
+			}
+		}
 
 		mouseup( event, type ) {
 
@@ -784,11 +788,22 @@ var ns = 'http://www.w3.org/2000/svg';
 					return undefined;
 				}
 
-				var attrA = pair.graph.getAttribute( this.getOptions( true ).equivalentAttribute );
-				var attrB = pair.molecule.getAttribute( self.getOptions( true ).equivalentAttribute );
-
-				return [ attrA, attrB ];
+				return [ pair.graphUnique, pair.moleculeUnique ];
 			} );
+		}
+
+		renameAssignementElement( fromName, toName ) {
+
+			this.pairs.map( ( pair ) => {
+
+				if( pair.graphUnique == fromName ) {
+					pair.graphUnique = toName;
+				}
+
+				if( pair.moleculeUnique == fromName ) {
+					pair.moleculeUnique = toName;
+				}
+			})
 		}
 
 		removeGraphShape( uniqueID ) {

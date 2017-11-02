@@ -288,10 +288,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  }
 
-	  if (!__VERSION__) {
-	    var __VERSION__ = "head";
-	  }
-
 	  /**
 	   * Default graph parameters
 	   * @name Graph~GraphOptionsDefault
@@ -346,6 +342,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    shapesUnselectOnClick: true,
 	    shapesUniqueSelection: true
+	  };
+
+	  const defaultScatterStyle = {
+	    shape: 'circle',
+	    r: 4
 	  };
 
 	  var _constructors = new Map();
@@ -1268,7 +1269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          i,
 	          l;
 
-	      val = min ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER;
+	      val = infinity2use;
 	      series = this.getSeriesFromAxis(axis);
 
 	      for (i = 0, l = series.length; i < l; i++) {
@@ -1333,8 +1334,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          //console.log( axisvars[ j ], this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'min'), this.getBoundaryAxisFromSeries( this.axis[ axisvars[ j ] ][ i ], xy, 'max') );
 
-	          axis.setMinValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues));
-	          axis.setMaxValueData(this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues));
+	          let min = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'min', usingZValues);
+	          let max = this.getBoundaryAxis(this.axis[axisvars[j]][i], 'max', usingZValues);
+
+	          if (isFinite(min)) {
+	            axis.setMinValueData(min);
+	          }
+
+	          if (isFinite(max)) {
+	            axis.setMaxValueData(max);
+	          }
 	        }
 	      }
 	    }
@@ -2715,11 +2724,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (schemaSerie.lineStyle) {
 
-	            schemaSerie.lineStyle.map(function (style) {
+	            if (Array.isArray(lineStyle)) {
+	              lineStyle = {
+	                unselected: lineStyle
+	              };
+	            }
+
+	            Object.entries(lineStyle).forEach(([styleName, style]) => {
 
 	              var styleSerie = {};
-
-	              styleSerie.styleName = style.styleName || "unselected";
 
 	              switch (serieType) {
 
@@ -2736,68 +2749,96 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    styleSerie.lineStyle = style.lineStyle;
 	                  }
 
-	                  serie.setStyle(styleSerie, style.styleName);
+	                  serie.setStyle(styleSerie, styleName);
 	                  break;
 	              }
 	            });
 	          }
 
+	          let defaultStyle = {};
+	          let defaultStyles = {};
+
+	          if (schemaSerie.defaultStyle) {
+	            defaultStyle = schemaSerie.defaultStyle;
+	          }
+
+	          if (schemaSerie.defaultStyles) {
+	            defaultStyles = schemaSerie.defaultStyles;
+	          }
+
 	          if (schemaSerie.styles) {
 
-	            schemaSerie.styles.map(function (style) {
+	            let individualStyles;
+
+	            if (Array.isArray(schemaSerie.styles)) {
+	              individualStyles = {
+	                unselected: schemaSerie.styles
+	              };
+	            } else {
+	              individualStyles = schemaSerie.styles;
+	            }
+
+	            let styleNames = new Set(Object.keys(defaultStyles).concat(Object.keys(individualStyles)));
+
+	            styleNames.forEach(styleName => {
 
 	              var styleSerie = {};
-	              style.styleName = style.styleName || "unselected";
+	              let style = [],
+	                  styles;
 
-	              if (!Array.isArray(style.styles)) {
-	                style.styles = [style.styles];
-	              }
+	              if (individualStyles && individualStyles[styleName]) {
 
-	              var styles = style.styles.map(function (eachStyleElement) {
+	                style = individualStyles[styleName];
 
-	                switch (serieType) {
-
-	                  case Graph.SERIE_LINE:
-
-	                    return {
-	                      type: eachStyleElement.shape,
-	                      zoom: eachStyleElement.zoom,
-	                      strokeWidth: eachStyleElement.lineWidth,
-	                      strokeColor: eachStyleElement.lineColor,
-	                      fillColor: eachStyleElement.color,
-	                      points: eachStyleElement.points
-	                    };
-
-	                    break;
-
-	                  case Graph.SERIE_BOX:
-
-	                    return eachStyleElement;
-
-	                    break;
-
-	                  case Graph.SERIE_SCATTER:
-	                    return eachStyleElement;
-
-	                    break;
+	                if (!Array.isArray(style)) {
+	                  style = [style];
 	                }
-	              });
+
+	                styles = style.map(function (eachStyleElement) {
+
+	                  switch (serieType) {
+
+	                    case Graph.SERIE_LINE:
+
+	                      return {
+	                        type: eachStyleElement.shape,
+	                        zoom: eachStyleElement.zoom,
+	                        strokeWidth: eachStyleElement.lineWidth,
+	                        strokeColor: eachStyleElement.lineColor,
+	                        fillColor: eachStyleElement.color,
+	                        points: eachStyleElement.points
+	                      };
+
+	                      break;
+
+	                    case Graph.SERIE_BOX:
+
+	                      return eachStyleElement;
+
+	                      break;
+
+	                    case Graph.SERIE_SCATTER:
+	                      return eachStyleElement;
+
+	                      break;
+	                  }
+	                });
+	              }
 
 	              switch (serieType) {
 
 	                case Graph.SERIE_LINE:
 
-	                  serie.setMarkers(styles, style.styleName);
+	                  serie.setMarkers(styles, styleName);
 	                  break;
 
 	                case Graph.SERIE_SCATTER:
-
-	                  serie.setStyle({}, styles, style.styleName);
+	                  serie.setStyle(Object.assign({}, defaultScatterStyle, defaultStyle, defaultStyles[styleName] || {}), styles, styleName);
 	                  break;
 
 	                case Graph.SERIE_BOX:
 
-	                  serie.setStyle(styles[0], style.stylename || "unselected");
+	                  serie.setStyle(styles[0], styleName || "unselected");
 	                  break;
 	              }
 	            });
@@ -3275,6 +3316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    graph._painted = true;
 	    // Apply to top and bottom
+
 	    graph._applyToAxes(function (axis, position) {
 
 	      if (!axis.isShown()) {
@@ -3566,7 +3608,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': __VERSION__
+	      'data-jsgraph-version': 'v2.0.44' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -9701,7 +9743,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 25.10.2017. This is to help in the case there's no autoscaling
 	      if (isNaN(this.getCurrentMin())) {
-	        this.setCurrentMin(this.dataMin);
+	        this.setCurrentMin(this.getMinValue());
 	        this.cache();
 	      }
 	    }
@@ -9711,7 +9753,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 25.10.2017. This is to help in the case there's no autoscaling
 	      if (isNaN(this.getCurrentMax())) {
-	        this.setCurrentMax(this.dataMax);
+	        this.setCurrentMax(this.getMaxValue());
 	        this.cache();
 	      }
 	    }
@@ -10205,11 +10247,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var visible;
 
 	      //    this.drawInit();
-	      this.cache();
 
 	      if (this.currentAxisMin == undefined || this.currentAxisMax == undefined) {
 	        this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
 	      }
+
+	      // this.cache();
 
 	      //   this.setSlaveAxesBoundaries();
 
@@ -10370,7 +10413,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.options.lineAt.forEach((val, index) => {
 
-	          if (!isNaN(val) && this.getCurrentMin() < val && this.getCurrentMax() > val) {
+	          if (!isNaN(val) && this.getCurrentMin() <= val && this.getCurrentMax() >= val) {
 
 	            this._lines[index] = this._drawLine(val, this._lines[index]);
 	          } else {
@@ -13386,7 +13429,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        trackMouseLabelRouding: 1,
 	        lineToZero: false,
 	        selectableOnClick: false,
-	        markersIndependant: false
+	        markersIndependant: false,
+	        overflowX: false,
+	        overflowY: false
 	      };
 	    }
 
@@ -13984,7 +14029,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          continue;
 	        }
 
-	        if (x < xMin && lastX < xMin || x > xMax && lastX > xMax || (y < yMin && lastY < yMin || y > yMax && lastY > yMax) && !this.options.lineToZero) {
+	        if (!this.options.overflowX && x < xMin && lastX < xMin || !this.options.overflowX && x > xMax && lastX > xMax || (!this.options.overflowY && y < yMin && lastY < yMin || !this.options.overflowY && y > yMax && lastY > yMax) && !this.options.lineToZero) {
 	          lastX = x;
 	          lastY = y;
 	          lastPointOutside = true;
@@ -14016,9 +14061,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (!_monotoneous) {
-	          pointOutside = x < xMin || y < yMin || x > xMax || y > yMax;
+
+	          pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
 	        } else {
-	          pointOutside = y < yMin || y > yMax;
+	          pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
 	        }
 
 	        if (this.options.lineToZero) {
@@ -15216,6 +15262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    constructor(graph, name, options) {
+
 	      super(...arguments);
 	      this.graph = graph;
 	      this.name = name;
@@ -15488,9 +15535,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    autoAxis() {
 
 	      if (this.isFlipped()) {
+
 	        this.setXAxis(this.graph.getYAxis());
 	        this.setYAxis(this.graph.getXAxis());
 	      } else {
+
 	        this.setXAxis(this.graph.getXAxis());
 	        this.setYAxis(this.graph.getYAxis());
 	      }
@@ -15973,7 +16022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this._type;
 	    }
 
-	    set excludedFromLegend(bln = true) {
+	    set excludedFromLegend(bln) {
 	      this._excludedFromLegend = bln;
 	    }
 
@@ -18414,12 +18463,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	          styles[index] = this.styles[selection].default;
 	        }
 
+	        if (!styles[index]) {
+	          styles[index] = styleAll;
+	        }
+
 	        if (!shape) {
 	          // Shape doesn't exist, let's create it
 
+	          if (!styles[index].shape) {
+	            console.error(style);
+	            throw "No shape was defined with this style.";
+	          }
+
 	          var g = document.createElementNS(this.graph.ns, 'g');
 	          g.setAttribute('data-shapeid', index);
-	          this.shapes[index] = this.doShape(g, style);
+	          this.shapes[index] = this.doShape(g, styles[index]);
 	          this.groupPoints.appendChild(g);
 	          shape = this.shapes[index];
 	        }
@@ -20423,7 +20481,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @return {Shape} The current shape
 	     */
 	    setSerie(serie) {
+
+	      if (!serie) {
+	        return;
+	      }
+
 	      this.serie = serie;
+
+	      if (!serie.getXAxis || !serie.getYAxis) {
+	        console.error(serie);
+	        throw "Serie does not implement the getXAxis or getYAxis method";
+	      }
 	      this.xAxis = serie.getXAxis();
 	      this.yAxis = serie.getYAxis();
 	      return this;
@@ -21738,7 +21806,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (this.getProp('selectOnClick')) {
-	        console.log('sel');
+
 	        this.graph.selectShape(this);
 	      }
 	    }
@@ -23061,8 +23129,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        incrementation = 1;
 	      }
 
-	      console.log(index1, index2);
-
 	      for (; condition ? j >= index1 : j <= index2; j += incrementation) {
 
 	        xVal = waveform.getX(j, true);
@@ -23813,7 +23879,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.width || 10;
 	    }
 
-	    set width(l = 10) {
+	    set width(l) {
 	      this.options.width = l;
 	    }
 
@@ -25437,10 +25503,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          modeY = true;
 	        }
 
+	        let x, y;
+
 	        if (pref.mode == 'gradualX' || pref.mode == 'gradualY' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
 
-	          var x = false,
-	              y = false;
+	          x = false, y = false;
 
 	          if (pref.mode == 'gradualX' || pref.mode == 'gradual' || pref.mode == 'gradualXY') {
 	            x = true;
@@ -25507,8 +25574,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualX') {
 
 	          var ratio = (xActual - xMin) / (xMax - xMin);
-	          xMin = Math.max(xAxis.getMinValue(), xMin - diffX * ratio);
-	          xMax = Math.min(xAxis.getMaxValue(), xMax + diffX * (1 - ratio));
+	          xMin = Math.max(xAxis.getMinValue() - xAxis.getInterval() * xAxis.options.axisDataSpacing.min, xMin - diffX * ratio);
+	          xMax = Math.min(xAxis.getMaxValue() + xAxis.getInterval() * xAxis.options.axisDataSpacing.max, xMax + diffX * (1 - ratio));
 	          xAxis.setCurrentMin(xMin);
 	          xAxis.setCurrentMax(xMax);
 
@@ -25524,8 +25591,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (pref.mode == 'gradualXY' || pref.mode == 'gradualY') {
 
 	          var ratio = (yActual - yMin) / (yMax - yMin);
-	          yMin = Math.max(yAxis.getMinValue(), yMin - diffY * ratio);
-	          yMax = Math.min(yAxis.getMaxValue(), yMax + diffY * (1 - ratio));
+	          yMin = Math.max(yAxis.getMinValue() - yAxis.getInterval() * yAxis.options.axisDataSpacing.min, yMin - diffY * ratio);
+	          yMax = Math.min(yAxis.getMaxValue() + yAxis.getInterval() * yAxis.options.axisDataSpacing.max, yMax + diffY * (1 - ratio));
 	          yAxis.setCurrentMin(yMin);
 	          yAxis.setCurrentMax(yMax);
 

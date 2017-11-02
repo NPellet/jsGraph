@@ -18,7 +18,7 @@ class ShapeEllipse extends Shape {
   applyPosition() {
 
     var pos = this.computePosition( 0 );
-
+    console.log( pos, this.getProp( 'rx' ), this.getProp( 'ry' ) )
     this.setDom( 'cx', pos.x ||  0 );
     this.setDom( 'cy', pos.y ||  0 );
 

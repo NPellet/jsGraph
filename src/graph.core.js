@@ -1425,6 +1425,12 @@ class Graph extends EventEmitter {
 
     shape.init( this, shapeProperties );
 
+    if ( shapeData.props !== undefined ) {
+      for ( var i in shapeData.props ) {
+        shape.setProp( i, shapeData.props[ i ] );
+      }
+    }
+
     if ( shapeData.position ) {
 
       for ( var i = 0, l = shapeData.position.length; i < l; i++ ) {
@@ -1485,6 +1491,20 @@ class Graph extends EventEmitter {
       shape.setProp( "selectOnClick", true );
     }
 
+    if ( shapeData.transforms !== undefined && Array.isArray( shapeData.transforms ) ) {
+
+      shapeData.transforms.forEach( ( {
+
+        type,
+        value
+
+      }, index ) => {
+
+        shape.addTransform( type, value );
+
+      } );
+    }
+
     if ( shapeData.highlightOnMouseOver !== undefined ) {
       shape.setProp( "highlightOnMouseOver", true );
     }
@@ -1515,6 +1535,7 @@ class Graph extends EventEmitter {
         shape.setLabelAnchor( shapeData.label[ i ].anchor || 'start', i );
         shape.setLabelBackgroundColor( shapeData.label[ i ].backgroundColor || 'transparent', i );
         shape.setLabelBackgroundOpacity( shapeData.label[ i ].backgroundOpacity || 1, i );
+
       }
     }
 
@@ -3583,10 +3604,13 @@ function _registerEvents( graph ) {
 
     graph.emit( "mouseUp", e );
     var coords = graph._getXY( e );
-    e.stopPropagation();
 
     _handleMouseUp( graph, coords.x, coords.y, e );
 
+  } );
+
+  graph.wrapper.addEventListener( 'mouseup', ( e ) => {
+    e.stopPropagation();
   } );
 
   graph.dom.addEventListener( 'dblclick', function( e ) {

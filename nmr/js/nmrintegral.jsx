@@ -1,6 +1,7 @@
 import React from "react";
 import Graph from "../../src/graph";
 import PropTypes from 'prop-types';
+import Assignment from './assignment.js'
 
 class NMRIntegral extends React.Component {
 	
@@ -21,7 +22,8 @@ class NMRIntegral extends React.Component {
 			}, 
 			false,
 			{ 'labelEditable': [ true ], layer: [ 3 ], strokeWidth: [ 2 ]  }
-		);
+		);console.log()
+		this.assignment = context.assignment;
 
 		this.annotation.addClass('integral');
 		this.annotation.setProp('baseLine', context.integralBaseline );
@@ -70,23 +72,32 @@ class NMRIntegral extends React.Component {
 		this.updateAnnotation();
 	}
 
-	updateAnnotation() {
+	updateAnnotation( props = this.props ) {
 
-		this.annotation.ratio = this.props.ratio;
+		this.annotation.ratio = props.ratio;
 
-		this.annotation.setPosition( { x: this.props.from }, 0 );
-		this.annotation.setPosition( { x: this.props.to }, 1 );
+		this.annotation.setPosition( { x: props.from }, 0 );
+		this.annotation.setPosition( { x: props.to }, 1 );
 		this.annotation.setSerie( this.context.serie );
-		this.annotation.setDom( 'data-integral-id', this.props.id );
-		this.annotation.setProp( 'labelHTMLData', { 'data-integral-id': this.props.id } );
-		this.annotation.updateIntegralValue( this.props.labelRatio );
+		this.annotation.setDom( 'data-integral-id', props.id );
+		this.annotation.setProp( 'labelHTMLData', { 'data-integral-id': props.id } );
+		this.annotation.updateIntegralValue( props.labelRatio );
+
+		if( props.id !== this.props.id ) {
+
+			if( ! this.assignment ) {
+				throw "No assignment object. Cannot rename integral";
+			}
+
+			this.assignment.renameAssignementElement( this.props.id, props.id );
+		}
+
 		this.annotation.redraw( );
 	}
 
-	componentWillUpdate() {
+	componentWillUpdate( nextProps ) {
 
-
-		this.updateAnnotation();
+		this.updateAnnotation( nextProps );
 	}
 
 	render() {
@@ -98,6 +109,7 @@ class NMRIntegral extends React.Component {
 
 
 NMRIntegral.contextTypes = {
+  assignment: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),
   serie: PropTypes.instanceOf( Graph.getConstructor( Graph.SERIE_LINE ) ),
   integralBaseline: PropTypes.number

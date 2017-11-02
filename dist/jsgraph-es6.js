@@ -1703,6 +1703,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      shape.init(this, shapeProperties);
 
+	      if (shapeData.props !== undefined) {
+	        for (var i in shapeData.props) {
+	          shape.setProp(i, shapeData.props[i]);
+	        }
+	      }
+
 	      if (shapeData.position) {
 
 	        for (var i = 0, l = shapeData.position.length; i < l; i++) {
@@ -1761,6 +1767,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      if (shapeData.selectOnClick !== undefined) {
 	        shape.setProp("selectOnClick", true);
+	      }
+
+	      if (shapeData.transforms !== undefined && Array.isArray(shapeData.transforms)) {
+
+	        shapeData.transforms.forEach(({
+
+	          type,
+	          value
+
+	        }, index) => {
+
+	          shape.addTransform(type, value);
+	        });
 	      }
 
 	      if (shapeData.highlightOnMouseOver !== undefined) {
@@ -3608,7 +3627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.44' || 'head'
+	      'data-jsgraph-version': 'v2.0.45' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -3825,9 +3844,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      graph.emit("mouseUp", e);
 	      var coords = graph._getXY(e);
-	      e.stopPropagation();
 
 	      _handleMouseUp(graph, coords.x, coords.y, e);
+	    });
+
+	    graph.wrapper.addEventListener('mouseup', e => {
+	      e.stopPropagation();
 	    });
 
 	    graph.dom.addEventListener('dblclick', function (e) {
@@ -9743,7 +9765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 25.10.2017. This is to help in the case there's no autoscaling
 	      if (isNaN(this.getCurrentMin())) {
-	        this.setCurrentMin(this.dataMin);
+	        this.setCurrentMin(this.getMinValue());
 	        this.cache();
 	      }
 	    }
@@ -9753,7 +9775,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      // 25.10.2017. This is to help in the case there's no autoscaling
 	      if (isNaN(this.getCurrentMax())) {
-	        this.setCurrentMax(this.dataMax);
+	        this.setCurrentMax(this.getMaxValue());
 	        this.cache();
 	      }
 	    }
@@ -9780,12 +9802,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * Forces the minimum value of the axis (no more dependant on the serie values)
 	     * @memberof Axis
 	     * @param {Number} min - The minimum value of the axis
-	     * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value
+	     * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value. Defaults to ```false```
 	     * @return {Axis} The current axis
 	     */
-	    forceMin(min, noRescale) {
+	    forceMin(min, noRescale = false) {
 	      this.options.forcedMin = min;
-
 	      this.setCurrentMin(noRescale ? this.getCurrentMin() : undefined);
 	      this.graph._axisHasChanged(this);
 	      return this;
@@ -9798,9 +9819,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value
 	     * @return {Axis} The current axis
 	     */
-	    forceMax(max, noRescale) {
+	    forceMax(max, noRescale = false) {
 	      this.options.forcedMax = max;
-
 	      this.setCurrentMax(noRescale ? this.getCurrentMax() : undefined);
 	      this.graph._axisHasChanged(this);
 	      return this;
@@ -10176,7 +10196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setCurrentMin(val) {
 
-	      if (val === undefined || this.getForcedMin() !== false && val < this.getForcedMin()) {
+	      if (val === undefined || this.getForcedMin() !== false && (val < this.getForcedMin() || val === undefined)) {
 	        val = this.getMinValue();
 	      }
 
@@ -10184,6 +10204,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.logScale) {
 	        this.currentAxisMin = Math.max(1e-50, val);
 	      }
+
+	      this.cacheCurrentMin();
+	      this.cacheInterval();
 
 	      this.graph._axisHasChanged(this);
 	      return this;
@@ -10197,7 +10220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setCurrentMax(val) {
 
-	      if (val === undefined || this.getForcedMax() !== false && val > this.getForcedMax()) {
+	      if (val === undefined || this.getForcedMax() !== false && (val > this.getForcedMax() || val === undefined)) {
 	        val = this.getMaxValue();
 	      }
 
@@ -10206,6 +10229,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.options.logScale) {
 	        this.currentAxisMax = Math.max(1e-50, val);
 	      }
+
+	      this.cacheCurrentMax();
+	      this.cacheInterval();
 
 	      this.graph._axisHasChanged(this);
 	    }
@@ -10248,7 +10274,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      //    this.drawInit();
 
-	      if (this.currentAxisMin == undefined || this.currentAxisMax == undefined) {
+	      if (this.currentAxisMin === undefined || this.currentAxisMax === undefined) {
 	        this.setMinMaxToFitSeries(true); // We reset the min max as a function of the series
 	      }
 
@@ -10413,7 +10439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.options.lineAt.forEach((val, index) => {
 
-	          if (!isNaN(val) && this.getCurrentMin() < val && this.getCurrentMax() > val) {
+	          if (!isNaN(val) && this.getCurrentMin() <= val && this.getCurrentMax() >= val) {
 
 	            this._lines[index] = this._drawLine(val, this._lines[index]);
 	          } else {
@@ -21217,7 +21243,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            transformString += transforms[i].arguments[0];
 	            transformString += ", ";
 
-	            if (this.transforms[i].arguments.length == 1) {
+	            if (transforms[i].arguments.length == 1) {
 	              var p = this.getPosition(0);
 	              transformString += p.x + ", " + p.y;
 	            } else {
@@ -28290,7 +28316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    applyPosition() {
 
 	      var pos = this.computePosition(0);
-
+	      console.log(pos, this.getProp('rx'), this.getProp('ry'));
 	      this.setDom('cx', pos.x || 0);
 	      this.setDom('cy', pos.y || 0);
 

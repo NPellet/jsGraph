@@ -193,7 +193,12 @@ class NMR1D extends React.Component {
 			this.state.series.forEach( ( serie ) => {
 
 				if( serie.name == "master" ) {
-					serie.integrals.push( { id: "integral_" + _from.x + "_" + _to.x, from: _from.x, to: _to.x } );
+					serie.integrals.push( { 
+						key: Math.random(), // Generate an unique ID for React only
+						id: this.getIntegralId( _from.x, _to.x ), 
+						from: _from.x, 
+						to: _to.x 
+					} );
 				}
 			} );
 
@@ -219,9 +224,14 @@ class NMR1D extends React.Component {
 	 getChildContext() {
 	 	
 	 	return {
+	 		assignment: this.assignment,
 	   		graph: this.graph,
 	   		integralBaseline: integralBaseline
 	    };
+	 }
+
+	 getIntegralId( _from, _to ) {
+		return "integral_" + _from + "_" + _to;
 	 }
 
 	 fullOut() {
@@ -387,16 +397,33 @@ class NMR1D extends React.Component {
 		
 	}
 
+	attributeIntegralIds( series ) {
+
+		series.map( ( serie ) => {
+
+			if( serie.integrals ) {
+
+				serie.integrals.map( ( integral ) => {
+
+					if( ! integral.id ) {
+						integral.id = this.getIntegralId( integral.from, integral.to );
+					}
+
+				} );
+			}
+		} );
+	}
+
 	componentDidMount() {
 
 		// Binds the graph to the DOM element
 		this.graph.setWrapper( this.dom );
 		this.graph.resize( this.props.width, this.props.height );
-			
+		
+		this.attributeIntegralIds( this.props.series );
+
 		// Reassigns some properties to the state (because it can potentially change)	
 		this.setState( { series: this.props.series, molecule: this.props.molecule } );
-
-console.log( 'Mounting 1D spectrum' );
 
 		this.updateMainData();
 
@@ -499,17 +526,14 @@ console.log( 'Mounting 1D spectrum' );
 			},
 
 			enabled: true
-
 		};
 
-
 		this.assignment = new Assignment( this.graph, this.domMolecule, assignmentOptions );
-
 		this.assignment.onChange( ( pairs ) => {
 
 			this.getSerieState( 'master' ).assignment = pairs;
 			this.serieChanged();
-		});
+		} );
 	}
 
 	updateOutput() {
@@ -517,8 +541,10 @@ console.log( 'Mounting 1D spectrum' );
 	}
 
 	componentWillReceiveProps( nextProps ) {
+
+		this.attributeIntegralIds( nextProps.series );
+
 		this.setState( { series: nextProps.series, molecule: nextProps.molecule } );
-		
 		
 		if( nextProps.width !== this.props.width || nextProps.heigth !== this.props.height ) {
 			this.graph.resize( nextProps.width, nextProps.height );	
@@ -582,6 +608,7 @@ console.log( 'Mounting 1D spectrum' );
 
 						integral.from = integralFrom;
 						integral.to = integralTo;
+						integral.id = this.getIntegralId( integralFrom, integralTo );
 						update = true;
 
 						break;
@@ -692,7 +719,7 @@ console.log( 'Mounting 1D spectrum' );
 }
 
 NMR1D.childContextTypes = {
-  assignement: PropTypes.instanceOf( Assignment ),
+  assignment: PropTypes.instanceOf( Assignment ),
   graph: PropTypes.instanceOf( Graph ),
   integralBaseline: PropTypes.number
 };

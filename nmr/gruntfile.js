@@ -38,7 +38,11 @@ module.exports = function(grunt) {
                           query: {
                             presets: [
                               'babel-preset-es2015',
-                              'babel-preset-stage-1'
+                              'babel-preset-stage-1',
+                              ],
+
+                              plugins: [
+                                [ 'inline-replace-variables', { "__VERSION__": "v<%= pkg.version %>" } ]
                               ]
                           }
                      },
@@ -93,5 +97,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-webpack');
     grunt.loadNpmTasks('grunt-contrib-copy');
 
-    grunt.registerTask('default', ['copy', 'webpack']);
+    grunt.registerTask('default', ['copy', 'webpack:nmr1d']);
+
 };

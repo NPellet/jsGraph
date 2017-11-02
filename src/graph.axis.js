@@ -521,7 +521,7 @@ class Axis extends EventEmitter {
 
     // 25.10.2017. This is to help in the case there's no autoscaling
     if ( isNaN( this.getCurrentMin() ) ) {
-      this.setCurrentMin( this.dataMin );
+      this.setCurrentMin( this.getMinValue() );
       this.cache();
 
     }
@@ -532,7 +532,7 @@ class Axis extends EventEmitter {
 
     // 25.10.2017. This is to help in the case there's no autoscaling
     if ( isNaN( this.getCurrentMax() ) ) {
-      this.setCurrentMax( this.dataMax );
+      this.setCurrentMax( this.getMaxValue() );
       this.cache();
 
     }
@@ -560,12 +560,11 @@ class Axis extends EventEmitter {
    * Forces the minimum value of the axis (no more dependant on the serie values)
    * @memberof Axis
    * @param {Number} min - The minimum value of the axis
-   * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value
+   * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this minimum. Rescales anyway if current min is lower than the value. Defaults to ```false```
    * @return {Axis} The current axis
    */
-  forceMin( min, noRescale ) {
+  forceMin( min, noRescale = false ) {
     this.options.forcedMin = min;
-
     this.setCurrentMin( noRescale ? this.getCurrentMin() : undefined );
     this.graph._axisHasChanged( this );
     return this;
@@ -578,9 +577,8 @@ class Axis extends EventEmitter {
    * @param {Boolean} noRescale - ```true``` to prevent the axis to rescale to set this maximum. Rescales anyway if current max is higher than the value
    * @return {Axis} The current axis
    */
-  forceMax( max, noRescale ) {
+  forceMax( max, noRescale = false ) {
     this.options.forcedMax = max;
-
     this.setCurrentMax( noRescale ? this.getCurrentMax() : undefined );
     this.graph._axisHasChanged( this );
     return this;
@@ -963,7 +961,7 @@ class Axis extends EventEmitter {
    */
   setCurrentMin( val ) {
 
-    if ( val === undefined || ( this.getForcedMin() !== false && val < this.getForcedMin() ) ) {
+    if ( val === undefined || ( this.getForcedMin() !== false && ( val < this.getForcedMin() ||  val === undefined ) ) ) {
       val = this.getMinValue();
     }
 
@@ -971,6 +969,9 @@ class Axis extends EventEmitter {
     if ( this.options.logScale ) {
       this.currentAxisMin = Math.max( 1e-50, val );
     }
+
+    this.cacheCurrentMin();
+    this.cacheInterval();
 
     this.graph._axisHasChanged( this );
     return this;
@@ -984,7 +985,7 @@ class Axis extends EventEmitter {
    */
   setCurrentMax( val ) {
 
-    if ( val === undefined || ( this.getForcedMax() !== false && val > this.getForcedMax() ) ) {
+    if ( val === undefined || ( this.getForcedMax() !== false && ( val > this.getForcedMax() ||  val === undefined ) ) ) {
       val = this.getMaxValue();
     }
 
@@ -993,6 +994,9 @@ class Axis extends EventEmitter {
     if ( this.options.logScale ) {
       this.currentAxisMax = Math.max( 1e-50, val );
     }
+
+    this.cacheCurrentMax();
+    this.cacheInterval();
 
     this.graph._axisHasChanged( this );
   }
@@ -1037,7 +1041,7 @@ class Axis extends EventEmitter {
 
     //    this.drawInit();
 
-    if ( this.currentAxisMin == undefined || this.currentAxisMax == undefined ) {
+    if ( this.currentAxisMin === undefined || this.currentAxisMax === undefined ) {
       this.setMinMaxToFitSeries( true ); // We reset the min max as a function of the series
     }
 
@@ -1210,7 +1214,7 @@ class Axis extends EventEmitter {
 
       this.options.lineAt.forEach( ( val, index ) => {
 
-        if ( !isNaN( val ) && this.getCurrentMin() < val && this.getCurrentMax() > val ) {
+        if ( !isNaN( val ) && this.getCurrentMin() <= val && this.getCurrentMax() >= val ) {
 
           this._lines[ index ] = this._drawLine( val, this._lines[ index ] );
 
