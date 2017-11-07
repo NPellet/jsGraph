@@ -28,6 +28,7 @@ var legendDefaults = {
   paddingLeft: 10,
   paddingBottom: 10,
   paddingRight: 10,
+  color: 'black',
   frameRounding: 0,
 
   movable: false,
@@ -295,19 +296,29 @@ class Legend {
       return;
     }
 
+    if ( pos.y == 'max' ) {
+      poscoords.y += this.graph.getPaddingTop();
+    }
+
+    if ( pos.x == 'max' ) {
+      poscoords.x -= this.graph.getPaddingRight();
+    }
+
     if ( this.alignToX == "right" ) {
       poscoords.x -= this.width;
-      poscoords.x += this.bbox.x;
+      poscoords.x -= this.bbox.x;
+
     } else {
       //poscoords.x -= this.bbox.x;
     }
 
     if ( this.alignToY == "bottom" ) {
       poscoords.y -= this.height;
-      poscoords.y += this.bbox.y;
+      poscoords.y -= this.bbox.y;
 
     } else {
-      poscoords.y += this.bbox.y;
+
+      poscoords.y -= this.bbox.y;
     }
 
     this.pos.transformX = poscoords.x;
@@ -411,6 +422,8 @@ class Legend {
         }
 
         text.setAttribute( 'transform', 'translate(' + dx + ', 3)' );
+
+        text.setAttribute( 'color', this.options.color );
 
         if ( line ) {
           g.appendChild( line );

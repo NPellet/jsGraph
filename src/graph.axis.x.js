@@ -22,7 +22,14 @@ class AxisX extends Axis {
       return 0;
     }
 
-    var size = ( this.options.tickPosition == 1 ? 8 : 20 ) + this.graph.options.fontSize * 1;
+    let size;
+
+    if ( this.options.tickLabelOffset == 0 ) { // Normal mode, no offset
+      size = ( this.options.tickPosition == 1 ? 8 : 20 );
+      size += this.graph.options.fontSize * 1;
+    } else { // With an offset, and ticks inside, axis position is actually 0. Otherwise, it's the heights of the ticks
+      size = ( this.options.tickPosition == 1 ? 0 : 12 );
+    }
 
     if ( this.getLabel() ) {
       size += this.graph.options.fontSize;
@@ -106,9 +113,9 @@ class AxisX extends Axis {
 
     //  this.groupTicks.appendChild( tick );
     if ( level == 1 ) {
-      var tickLabel = this.nextTickLabel( function( tickLabel ) {
+      var tickLabel = this.nextTickLabel( ( tickLabel ) => {
 
-        tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) );
+        tickLabel.setAttribute( 'y', ( self.top ? -1 : 1 ) * ( ( self.options.tickPosition == 1 ? 8 : 20 ) + ( self.top ? 10 : 0 ) ) + this.options.tickLabelOffset );
         tickLabel.setAttribute( 'text-anchor', 'middle' );
         if ( self.getTicksLabelColor() !== 'black' ) {
           tickLabel.setAttribute( 'fill', self.getTicksLabelColor() );

@@ -126,7 +126,7 @@ class AxisY extends Axis {
     if ( level == 1 ) {
       var tickLabel = this.nextTickLabel( ( tickLabel ) => {
 
-        tickLabel.setAttribute( 'x', this.tickMargin );
+        tickLabel.setAttribute( 'x', this.tickMargin + this.options.tickLabelOffset );
         if ( this.getTicksLabelColor() !== 'black' ) {
           tickLabel.setAttribute( 'fill', this.getTicksLabelColor() );
         }

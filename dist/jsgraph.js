@@ -10566,6 +10566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            if (index) {
 
 	              if (_this10.trackingObject) {
+
 	                _this10.trackingObject.show();
 	                _this10.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
 	                _this10.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -11480,7 +11481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph._applyToAxes(function (axis, position) {
 
 	      if (!axis.isShown()) {
-	        return;
+	        //      return;
 	      }
 
 	      axis.setMinPx(shiftLeft);
@@ -11648,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.47' || 'head'
+	      'data-jsgraph-version': 'v2.0.48' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -14034,9 +14035,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (this.monotoneous) {
-	          if (y > this.data[this.data.y] && this.getMonotoneousAscending() === false) {
+	          if (y >= this.data[this.data.y] && this.getMonotoneousAscending() === false) {
 	            this.monotoneous = false;
-	          } else if (y < this.data[this.data.y] && this.getMonotoneousAscending() === true) {
+	          } else if (y <= this.data[this.data.y] && this.getMonotoneousAscending() === true) {
 	            this.monotoneous = false;
 	          }
 	        }
@@ -16676,6 +16677,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    paddingLeft: 10,
 	    paddingBottom: 10,
 	    paddingRight: 10,
+	    color: 'black',
 	    frameRounding: 0,
 
 	    movable: false,
@@ -16948,18 +16950,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return;
 	        }
 
+	        if (pos.y == 'max') {
+	          poscoords.y += this.graph.getPaddingTop();
+	        }
+
+	        if (pos.x == 'max') {
+	          poscoords.x -= this.graph.getPaddingRight();
+	        }
+
 	        if (this.alignToX == "right") {
 	          poscoords.x -= this.width;
-	          poscoords.x += this.bbox.x;
+	          poscoords.x -= this.bbox.x;
 	        } else {
 	          //poscoords.x -= this.bbox.x;
 	        }
 
 	        if (this.alignToY == "bottom") {
 	          poscoords.y -= this.height;
-	          poscoords.y += this.bbox.y;
+	          poscoords.y -= this.bbox.y;
 	        } else {
-	          poscoords.y += this.bbox.y;
+
+	          poscoords.y -= this.bbox.y;
 	        }
 
 	        this.pos.transformX = poscoords.x;
@@ -17061,6 +17072,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            text.setAttribute('transform', 'translate(' + dx + ', 3)');
+
+	            text.setAttribute('color', this.options.color);
 
 	            if (line) {
 	              g.appendChild(line);
@@ -17439,7 +17452,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return 0;
 	        }
 
-	        var size = (this.options.tickPosition == 1 ? 8 : 20) + this.graph.options.fontSize * 1;
+	        var size = void 0;
+
+	        if (this.options.tickLabelOffset == 0) {
+	          // Normal mode, no offset
+	          size = this.options.tickPosition == 1 ? 8 : 20;
+	          size += this.graph.options.fontSize * 1;
+	        } else {
+	          // With an offset, and ticks inside, axis position is actually 0. Otherwise, it's the heights of the ticks
+	          size = this.options.tickPosition == 1 ? 0 : 12;
+	        }
 
 	        if (this.getLabel()) {
 	          size += this.graph.options.fontSize;
@@ -17476,6 +17498,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'drawTick',
 	      value: function drawTick(value, level, options, forcedPos) {
+	        var _this2 = this;
 
 	        var self = this,
 	            val;
@@ -17508,7 +17531,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (level == 1) {
 	          var tickLabel = this.nextTickLabel(function (tickLabel) {
 
-	            tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)));
+	            tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + _this2.options.tickLabelOffset);
 	            tickLabel.setAttribute('text-anchor', 'middle');
 	            if (self.getTicksLabelColor() !== 'black') {
 	              tickLabel.setAttribute('fill', self.getTicksLabelColor());
@@ -17807,11 +17830,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scientificScale: false,
 	    scientificScaleExponent: false,
 	    engineeringScale: false,
+
+	    unitInTicks: false,
 	    unit: false,
 	    unitWrapperBefore: '',
 	    unitWrapperAfter: '',
 
 	    splitMarks: false,
+
+	    tickLabelOffset: true,
 
 	    useKatexForLabel: false
 	  };
@@ -19296,10 +19323,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 
 	          if (dec > 0) {
-	            return value.toFixed(dec);
+	            value = value.toFixed(dec);
+	          } else {
+	            value = value.toFixed(0);
 	          }
 
-	          return value.toFixed(0);
+	          if (this.options.unitInTicks && this.options.unit) {
+	            value += " " + this.options.unit;
+	          }
+
+	          return value;
 	        }
 	      }
 	    }, {
@@ -19579,6 +19612,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.options.axisColor || 'black';
 	      }
 	    }, {
+	      key: 'setTickLabelOffset',
+	      value: function setTickLabelOffset(offsetValue) {
+	        this.options.tickLabelOffset = offsetValue;
+	        return this;
+	      }
+	    }, {
 	      key: 'setPrimaryTicksColor',
 	      value: function setPrimaryTicksColor(color) {
 	        this.options.primaryTicksColor = color;
@@ -19620,6 +19659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setPrimaryGridColor',
 	      value: function setPrimaryGridColor(color) {
 	        this.options.primaryGridColor = color;
+	        this.setGridLinesStyle();
 	        return this;
 	      }
 	    }, {
@@ -19631,6 +19671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setSecondaryGridColor',
 	      value: function setSecondaryGridColor(color) {
 	        this.options.secondaryGridColor = color;
+	        this.setGridLinesStyle();
 	        return this;
 	      }
 	    }, {
@@ -19642,6 +19683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setPrimaryGridWidth',
 	      value: function setPrimaryGridWidth(width) {
 	        this.options.primaryGridWidth = width;
+	        this.setGridLinesStyle();
 	        return this;
 	      }
 	    }, {
@@ -19653,6 +19695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setSecondaryGridWidth',
 	      value: function setSecondaryGridWidth(width) {
 	        this.options.secondaryGridWidth = width;
+	        this.setGridLinesStyle();
 	        return this;
 	      }
 	    }, {
@@ -19753,6 +19796,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'setUnit',
 	      value: function setUnit(unit) {
 	        this.options.unit = unit;
+	        return this;
+	      }
+	    }, {
+	      key: 'setUnitInTicks',
+	      value: function setUnitInTicks(bool) {
+	        this.options.unitInTicks = bool;
 	        return this;
 	      }
 	    }, {
@@ -20086,7 +20135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (level == 1) {
 	          var tickLabel = this.nextTickLabel(function (tickLabel) {
 
-	            tickLabel.setAttribute('x', _this2.tickMargin);
+	            tickLabel.setAttribute('x', _this2.tickMargin + _this2.options.tickLabelOffset);
 	            if (_this2.getTicksLabelColor() !== 'black') {
 	              tickLabel.setAttribute('fill', _this2.getTicksLabelColor());
 	            }
@@ -37766,7 +37815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function applyPosition() {
 
 	        var pos = this.computePosition(0);
-	        console.log(pos, this.getProp('rx'), this.getProp('ry'));
+
 	        this.setDom('cx', pos.x || 0);
 	        this.setDom('cy', pos.y || 0);
 

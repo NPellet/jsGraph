@@ -273,9 +273,9 @@ class Waveform {
     }
 
     if ( this.monotoneous ) {
-      if ( y > this.data[ this.data.y ] && this.getMonotoneousAscending() === false ) {
+      if ( y >= this.data[ this.data.y ] && this.getMonotoneousAscending() === false ) {
         this.monotoneous = false;
-      } else if ( y < this.data[ this.data.y ] && this.getMonotoneousAscending() === true ) {
+      } else if ( y <= this.data[ this.data.y ] && this.getMonotoneousAscending() === true ) {
         this.monotoneous = false;
       }
     }

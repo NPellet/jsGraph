@@ -1169,6 +1169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.rectEvent.setAttribute('fill', color);
 	      return this;
 	    }
+
 	    getAxisState() {
 
 	      var state = {};
@@ -1179,6 +1180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return state;
 	    }
+
 	    setAxisState(state) {
 
 	      var j, l;
@@ -2536,6 +2538,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          if (index) {
 
 	            if (this.trackingObject) {
+
 	              this.trackingObject.show();
 	              this.trackingObject.getPosition(0).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
 	              this.trackingObject.getPosition(1).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -3459,7 +3462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph._applyToAxes(function (axis, position) {
 
 	      if (!axis.isShown()) {
-	        return;
+	        //      return;
 	      }
 
 	      axis.setMinPx(shiftLeft);
@@ -3627,7 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.47' || 'head'
+	      'data-jsgraph-version': 'v2.0.48' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -5941,9 +5944,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (this.monotoneous) {
-	        if (y > this.data[this.data.y] && this.getMonotoneousAscending() === false) {
+	        if (y >= this.data[this.data.y] && this.getMonotoneousAscending() === false) {
 	          this.monotoneous = false;
-	        } else if (y < this.data[this.data.y] && this.getMonotoneousAscending() === true) {
+	        } else if (y <= this.data[this.data.y] && this.getMonotoneousAscending() === true) {
 	          this.monotoneous = false;
 	        }
 	      }
@@ -8294,6 +8297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    paddingLeft: 10,
 	    paddingBottom: 10,
 	    paddingRight: 10,
+	    color: 'black',
 	    frameRounding: 0,
 
 	    movable: false,
@@ -8556,18 +8560,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return;
 	      }
 
+	      if (pos.y == 'max') {
+	        poscoords.y += this.graph.getPaddingTop();
+	      }
+
+	      if (pos.x == 'max') {
+	        poscoords.x -= this.graph.getPaddingRight();
+	      }
+
 	      if (this.alignToX == "right") {
 	        poscoords.x -= this.width;
-	        poscoords.x += this.bbox.x;
+	        poscoords.x -= this.bbox.x;
 	      } else {
 	        //poscoords.x -= this.bbox.x;
 	      }
 
 	      if (this.alignToY == "bottom") {
 	        poscoords.y -= this.height;
-	        poscoords.y += this.bbox.y;
+	        poscoords.y -= this.bbox.y;
 	      } else {
-	        poscoords.y += this.bbox.y;
+
+	        poscoords.y -= this.bbox.y;
 	      }
 
 	      this.pos.transformX = poscoords.x;
@@ -8671,6 +8684,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 
 	          text.setAttribute('transform', 'translate(' + dx + ', 3)');
+
+	          text.setAttribute('color', this.options.color);
 
 	          if (line) {
 	            g.appendChild(line);
@@ -8976,7 +8991,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return 0;
 	      }
 
-	      var size = (this.options.tickPosition == 1 ? 8 : 20) + this.graph.options.fontSize * 1;
+	      let size;
+
+	      if (this.options.tickLabelOffset == 0) {
+	        // Normal mode, no offset
+	        size = this.options.tickPosition == 1 ? 8 : 20;
+	        size += this.graph.options.fontSize * 1;
+	      } else {
+	        // With an offset, and ticks inside, axis position is actually 0. Otherwise, it's the heights of the ticks
+	        size = this.options.tickPosition == 1 ? 0 : 12;
+	      }
 
 	      if (this.getLabel()) {
 	        size += this.graph.options.fontSize;
@@ -9059,9 +9083,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      //  this.groupTicks.appendChild( tick );
 	      if (level == 1) {
-	        var tickLabel = this.nextTickLabel(function (tickLabel) {
+	        var tickLabel = this.nextTickLabel(tickLabel => {
 
-	          tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)));
+	          tickLabel.setAttribute('y', (self.top ? -1 : 1) * ((self.options.tickPosition == 1 ? 8 : 20) + (self.top ? 10 : 0)) + this.options.tickLabelOffset);
 	          tickLabel.setAttribute('text-anchor', 'middle');
 	          if (self.getTicksLabelColor() !== 'black') {
 	            tickLabel.setAttribute('fill', self.getTicksLabelColor());
@@ -9313,11 +9337,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    scientificScale: false,
 	    scientificScaleExponent: false,
 	    engineeringScale: false,
+
+	    unitInTicks: false,
 	    unit: false,
 	    unitWrapperBefore: '',
 	    unitWrapperAfter: '',
 
 	    splitMarks: false,
+
+	    tickLabelOffset: true,
 
 	    useKatexForLabel: false
 	  };
@@ -10979,10 +11007,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 
 	        if (dec > 0) {
-	          return value.toFixed(dec);
+	          value = value.toFixed(dec);
+	        } else {
+	          value = value.toFixed(0);
 	        }
 
-	        return value.toFixed(0);
+	        if (this.options.unitInTicks && this.options.unit) {
+	          value += " " + this.options.unit;
+	        }
+
+	        return value;
 	      }
 	    }
 
@@ -11323,6 +11357,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.options.axisColor || 'black';
 	    }
 
+	    setTickLabelOffset(offsetValue) {
+	      this.options.tickLabelOffset = offsetValue;
+	      return this;
+	    }
+
 	    /**
 	     * Sets the color of the main ticks
 	     * @memberof Axis
@@ -11403,6 +11442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setPrimaryGridColor(color) {
 	      this.options.primaryGridColor = color;
+	      this.setGridLinesStyle();
 	      return this;
 	    }
 
@@ -11425,6 +11465,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setSecondaryGridColor(color) {
 	      this.options.secondaryGridColor = color;
+	      this.setGridLinesStyle();
 	      return this;
 	    }
 
@@ -11447,6 +11488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setPrimaryGridWidth(width) {
 	      this.options.primaryGridWidth = width;
+	      this.setGridLinesStyle();
 	      return this;
 	    }
 
@@ -11469,6 +11511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setSecondaryGridWidth(width) {
 	      this.options.secondaryGridWidth = width;
+	      this.setGridLinesStyle();
 	      return this;
 	    }
 
@@ -11640,6 +11683,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	     */
 	    setUnit(unit) {
 	      this.options.unit = unit;
+	      return this;
+	    }
+
+	    /**
+	     * Places the unit in every tick
+	     * @param {Boolean} bool - ```true``` to place the unit, ```false``` otherwise
+	     * @return {Axis} The current axis
+	     * @memberof Axis
+	     * @since 2.0.44
+	     */
+	    setUnitInTicks(bool) {
+	      this.options.unitInTicks = bool;
 	      return this;
 	    }
 
@@ -11930,7 +11985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (level == 1) {
 	        var tickLabel = this.nextTickLabel(tickLabel => {
 
-	          tickLabel.setAttribute('x', this.tickMargin);
+	          tickLabel.setAttribute('x', this.tickMargin + this.options.tickLabelOffset);
 	          if (this.getTicksLabelColor() !== 'black') {
 	            tickLabel.setAttribute('fill', this.getTicksLabelColor());
 	          }
@@ -28315,7 +28370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    applyPosition() {
 
 	      var pos = this.computePosition(0);
-	      console.log(pos, this.getProp('rx'), this.getProp('ry'));
+
 	      this.setDom('cx', pos.x || 0);
 	      this.setDom('cy', pos.y || 0);
 

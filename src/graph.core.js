@@ -888,6 +888,7 @@ class Graph extends EventEmitter {
     this.rectEvent.setAttribute( 'fill', color );
     return this;
   }
+
   getAxisState() {
 
     var state = {};
@@ -898,6 +899,7 @@ class Graph extends EventEmitter {
     }
     return state;
   }
+
   setAxisState( state ) {
 
     var j, l;
@@ -2270,6 +2272,7 @@ class Graph extends EventEmitter {
         if ( index ) {
 
           if ( this.trackingObject ) {
+
             this.trackingObject.show();
             this.trackingObject.getPosition( 0 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
             this.trackingObject.getPosition( 1 ).x = index.trueX; //serie.getData()[ 0 ][ index.closestIndex * 2 ];
@@ -3209,7 +3212,7 @@ function refreshDrawingZone( graph ) {
   graph._applyToAxes( function( axis, position ) {
 
     if ( !axis.isShown() ) {
-      return;
+      //      return;
     }
 
     axis.setMinPx( shiftLeft );

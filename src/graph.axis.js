@@ -62,11 +62,15 @@ const defaults = {
   scientificScale: false,
   scientificScaleExponent: false,
   engineeringScale: false,
+
+  unitInTicks: false,
   unit: false,
   unitWrapperBefore: '',
   unitWrapperAfter: '',
 
   splitMarks: false,
+
+  tickLabelOffset: true,
 
   useKatexForLabel: false
 };
@@ -1771,10 +1775,16 @@ class Axis extends EventEmitter {
       }
 
       if ( dec > 0 ) {
-        return value.toFixed( dec );
+        value = value.toFixed( dec );
+      } else {
+        value = value.toFixed( 0 );
       }
 
-      return value.toFixed( 0 );
+      if ( this.options.unitInTicks && this.options.unit ) {
+        value += " " + this.options.unit;
+      }
+
+      return value;
     }
   };
 
@@ -2118,6 +2128,11 @@ class Axis extends EventEmitter {
     return this.options.axisColor || 'black';
   }
 
+  setTickLabelOffset( offsetValue ) {
+    this.options.tickLabelOffset = offsetValue;
+    return this;
+  }
+
   /**
    * Sets the color of the main ticks
    * @memberof Axis
@@ -2198,6 +2213,7 @@ class Axis extends EventEmitter {
    */
   setPrimaryGridColor( color ) {
     this.options.primaryGridColor = color;
+    this.setGridLinesStyle();
     return this;
   }
 
@@ -2220,6 +2236,7 @@ class Axis extends EventEmitter {
    */
   setSecondaryGridColor( color ) {
     this.options.secondaryGridColor = color;
+    this.setGridLinesStyle();
     return this;
   }
 
@@ -2242,6 +2259,7 @@ class Axis extends EventEmitter {
    */
   setPrimaryGridWidth( width ) {
     this.options.primaryGridWidth = width;
+    this.setGridLinesStyle();
     return this;
   }
 
@@ -2264,6 +2282,7 @@ class Axis extends EventEmitter {
    */
   setSecondaryGridWidth( width ) {
     this.options.secondaryGridWidth = width;
+    this.setGridLinesStyle();
     return this;
   }
 
@@ -2436,6 +2455,18 @@ class Axis extends EventEmitter {
    */
   setUnit( unit ) {
     this.options.unit = unit;
+    return this;
+  }
+
+  /**
+   * Places the unit in every tick
+   * @param {Boolean} bool - ```true``` to place the unit, ```false``` otherwise
+   * @return {Axis} The current axis
+   * @memberof Axis
+   * @since 2.0.44
+   */
+  setUnitInTicks( bool ) {
+    this.options.unitInTicks = bool;
     return this;
   }
 
