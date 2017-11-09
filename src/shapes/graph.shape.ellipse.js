@@ -22,8 +22,17 @@ class ShapeEllipse extends Shape {
     this.setDom( 'cx', pos.x ||  0 );
     this.setDom( 'cy', pos.y ||  0 );
 
-    this.setDom( 'rx', this.getProp( 'rx' ) || 0 );
-    this.setDom( 'ry', this.getProp( 'ry' ) || 0 );
+    let posR = this.graph.newPosition( {
+
+      dx: this.getProp( 'rx' ),
+      dy: this.getProp( 'ry' ) ||  this.getProp( 'rx' )
+
+    } );
+
+    let posComputed = this.calculatePosition( posR );
+
+    this.setDom( 'rx', Math.abs( posComputed.x ) || 0 );
+    this.setDom( 'ry', Math.abs( posComputed.y ) || 0 );
 
     return true;
   }

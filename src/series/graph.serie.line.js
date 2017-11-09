@@ -681,7 +681,7 @@ class SerieLine extends Serie {
 
       if ( !_monotoneous ) {
 
-        pointOutside = ( !this.options.overflowX && ( x < xMin || x > xMax ) ) && ( !this.options.overflowY && ( y < yMin || y > yMax ) );
+        pointOutside = ( !this.options.overflowX && ( x < xMin || x > xMax ) ) || ( !this.options.overflowY && ( y < yMin || y > yMax ) );
 
       } else {
         pointOutside = !this.options.overflowY && ( y < yMin ||  y > yMax );
@@ -1198,10 +1198,10 @@ class SerieLine extends Serie {
    * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
    * @memberof SerieLine
    */
-  searchClosestValue( valX, data ) {
+  searchClosestValue( valX, valY ) {
 
     if ( this.waveform ) {
-      const indexX = this.waveform.getIndexFromX( valX );
+      const indexX = this.waveform.getIndexFromX( valX, valY );
       let returnObj = {
         xMin: this.waveform.getX( indexX ),
         xMax: this.waveform.getX( indexX + 1 ),
@@ -1225,16 +1225,17 @@ class SerieLine extends Serie {
 
   }
 
-  handleMouseMove( xValue, doMarker ) {
+  handleMouseMove( xValue, doMarker, yValue ) {
 
     var valX = xValue || this.getXAxis().getMouseVal(),
+      valY = yValue || this.getYAxis().getMouseVal(),
       xMinIndex,
       xMin,
       yMin,
       xMax,
       yMax;
 
-    var value = this.searchClosestValue( valX );
+    var value = this.searchClosestValue( valX, valY );
 
     if ( !value ) {
       return;

@@ -116,6 +116,7 @@ module.exports = function(grunt) {
                               plugins: [
                                 'add-module-exports',
                                 'transform-es2015-modules-umd',
+                                'transform-exponentiation-operator',
                                 [
                                 'inline-replace-variables', {
                                   "__VERSION__": "v<%= pkg.version %>"
@@ -151,6 +152,7 @@ module.exports = function(grunt) {
                             plugins: [ 
                               'add-module-exports',
                               'transform-es2015-modules-umd',
+                              'transform-exponentiation-operator',
                                 ['inline-replace-variables', {
                                   "__VERSION__": "v<%= pkg.version %>"
                                 }]

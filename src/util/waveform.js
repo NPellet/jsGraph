@@ -429,20 +429,71 @@ class Waveform {
     return position;
   }
 
-  getIndexFromData( val, valCollection, isAscending, roundingMethod ) {
+  getIndexFromXY( xval, yval, useDataToUse = false, roundingMethod = Math.round ) {
 
-    if ( !this.isMonotoneous() ) {
-      console.trace();
-      throw "Impossible to get the index from a non-monotoneous wave !"
+    let xdata, ydata;
+
+    if ( useDataToUse && this.dataInUse ) {
+
+      xdata = this.dataInUse.x;
+      ydata = this.dataInUse.y;
+
+    } else if ( this.xdata ) {
+
+      xdata = this.xdata.data;
+      ydata = this.data;
     }
+
+    let positionX, positionY;
+
+    if ( !yval &&  this.isXMonotoneous() ) { // X lookup only
+
+      if ( this.hasXWaveform() ) { // The x value HAS to be rescaled
+        position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
+
+      } else {
+        position = Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
+      }
+    } else if ( yval ) {
+
+      position = this.getIndexFromDataXY( xval, xdata, yval, ydata );
+
+    }
+
+    if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX" ) { // In case of aggregation, round to the closest element of 4.
+      return position - ( position % 4 );
+    }
+
+    return position;
+  }
+
+  getIndexFromData( val, valCollection, isAscending, roundingMethod ) {
 
     let data, position;
 
     val -= this.getShift();
     val /= this.getScale();
 
+    if ( !this.isMonotoneous() ) {
+      console.trace();
+      throw "Impossible to get the index from a non-monotoneous wave !"
+    }
+
     return binarySearch( val, valCollection, !isAscending );
 
+  }
+
+  getIndexFromDataXY( valX, dataX, valY, dataY ) {
+
+    let data, position;
+
+    valX -= this.getXShift();
+    valX /= this.getXScale();
+
+    valY -= this.getShift();
+    valY /= this.getScale();
+
+    return euclidianSearch( valX, valY, dataX, dataY );
   }
 
   getReductionType() {
@@ -538,7 +589,7 @@ class Waveform {
     return this;
   }
 
-  getXShift( shift = 0 ) {
+  getXShift( shift ) {
 
     if ( !this.hasXWaveform ) {
       return 0;
@@ -1789,6 +1840,26 @@ function pow2floor( v ) {
 
 function getIndexInterpolate( value, valueBefore, valueAfter, indexBefore, indexAfter ) {
   return ( value - valueBefore ) / ( valueAfter - valueBefore ) * ( indexAfter - indexBefore ) + indexBefore;
+}
+
+function euclidianSearch( targetX, targetY, haystackX, haystackY ) {
+
+  let distance = Number.MAX_VALUE,
+    distance_i;
+
+  let index = -1;
+
+  for ( var i = 0, l = haystack.length; i < l; i++ ) {
+
+    distance_i = ( ( ( targetX - haystackX[ i ] ) ** 2 + ( targetY - haystackY[ i ] ) ** 2 ) ) ** 0.5;
+    if ( distance_i < distance ) {
+
+      index = i;
+      distance = distance_i;
+    }
+  }
+
+  return index;
 }
 
 function binarySearch( target, haystack, reverse ) {

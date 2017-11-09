@@ -70,7 +70,7 @@ const defaults = {
 
   splitMarks: false,
 
-  tickLabelOffset: true,
+  tickLabelOffset: 0,
 
   useKatexForLabel: false
 };
@@ -1680,6 +1680,7 @@ class Axis extends EventEmitter {
 
     //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
     if ( !this.options.logScale ) {
+
       return ( value - this.getCurrentMin() ) / ( this.getCurrentInterval() ) * ( this.getMaxPx() - this.getMinPx() ) + this.getMinPx();
     } else {
       // 0 if value = min

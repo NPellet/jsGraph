@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.49' || 'head'
+	      'data-jsgraph-version': 'v2.0.50' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -12600,6 +12600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 	            }
 	          } else if (val !== undefined) {
+
 	            pos[i] = this.getPx(val, axis);
 	          }
 
@@ -12620,6 +12621,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	              }
 
 	              //console.log( relativeTo.x, closest, serie.getY( closest.yMin ), def );
+	            }
+
+	            if (!def) {
+	              def = 0;
 	            }
 
 	            if ((parsed = _parsePx(dval)) !== false) {
@@ -14206,13 +14211,52 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return position;
 	      }
 	    }, {
+	      key: 'getIndexFromXY',
+	      value: function getIndexFromXY(xval, yval) {
+	        var useDataToUse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+	        var roundingMethod = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Math.round;
+
+
+	        var xdata = void 0,
+	            ydata = void 0;
+
+	        if (useDataToUse && this.dataInUse) {
+
+	          xdata = this.dataInUse.x;
+	          ydata = this.dataInUse.y;
+	        } else if (this.xdata) {
+
+	          xdata = this.xdata.data;
+	          ydata = this.data;
+	        }
+
+	        var positionX = void 0,
+	            positionY = void 0;
+
+	        if (!yval && this.isXMonotoneous()) {
+	          // X lookup only
+
+	          if (this.hasXWaveform()) {
+	            // The x value HAS to be rescaled
+	            position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+	          } else {
+	            position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+	          }
+	        } else if (yval) {
+
+	          position = this.getIndexFromDataXY(xval, xdata, yval, ydata);
+	        }
+
+	        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
+	          // In case of aggregation, round to the closest element of 4.
+	          return position - position % 4;
+	        }
+
+	        return position;
+	      }
+	    }, {
 	      key: 'getIndexFromData',
 	      value: function getIndexFromData(val, valCollection, isAscending, roundingMethod) {
-
-	        if (!this.isMonotoneous()) {
-	          console.trace();
-	          throw "Impossible to get the index from a non-monotoneous wave !";
-	        }
 
 	        var data = void 0,
 	            position = void 0;
@@ -14220,7 +14264,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        val -= this.getShift();
 	        val /= this.getScale();
 
+	        if (!this.isMonotoneous()) {
+	          console.trace();
+	          throw "Impossible to get the index from a non-monotoneous wave !";
+	        }
+
 	        return binarySearch(val, valCollection, !isAscending);
+	      }
+	    }, {
+	      key: 'getIndexFromDataXY',
+	      value: function getIndexFromDataXY(valX, dataX, valY, dataY) {
+
+	        var data = void 0,
+	            position = void 0;
+
+	        valX -= this.getXShift();
+	        valX /= this.getXScale();
+
+	        valY -= this.getShift();
+	        valY /= this.getScale();
+
+	        return euclidianSearch(valX, valY, dataX, dataY);
 	      }
 	    }, {
 	      key: 'getReductionType',
@@ -14341,9 +14405,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'getXShift',
-	      value: function getXShift() {
-	        var shift = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-
+	      value: function getXShift(shift) {
 
 	        if (!this.hasXWaveform) {
 	          return 0;
@@ -15697,6 +15759,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
 	    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
+	  }
+
+	  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
+
+	    var distance = Number.MAX_VALUE,
+	        distance_i = void 0;
+
+	    var index = -1;
+
+	    for (var i = 0, l = haystack.length; i < l; i++) {
+
+	      distance_i = Math.pow(Math.pow(targetX - haystackX[i], 2) + Math.pow(targetY - haystackY[i], 2), 0.5);
+	      if (distance_i < distance) {
+
+	        index = i;
+	        distance = distance_i;
+	      }
+	    }
+
+	    return index;
 	  }
 
 	  function binarySearch(target, haystack, reverse) {
@@ -17838,7 +17920,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    splitMarks: false,
 
-	    tickLabelOffset: true,
+	    tickLabelOffset: 0,
 
 	    useKatexForLabel: false
 	  };
@@ -19248,6 +19330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
 	        if (!this.options.logScale) {
+
 	          return (value - this.getCurrentMin()) / this.getCurrentInterval() * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 	        } else {
 	          // 0 if value = min
@@ -22505,7 +22588,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          if (!_monotoneous) {
 
-	            pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
+	            pointOutside = !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
 	          } else {
 	            pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
 	          }
@@ -22978,10 +23061,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'searchClosestValue',
-	      value: function searchClosestValue(valX, data) {
+	      value: function searchClosestValue(valX, valY) {
 
 	        if (this.waveform) {
-	          var indexX = this.waveform.getIndexFromX(valX);
+	          var indexX = this.waveform.getIndexFromX(valX, valY);
 	          var returnObj = {
 	            xMin: this.waveform.getX(indexX),
 	            xMax: this.waveform.getX(indexX + 1),
@@ -23005,16 +23088,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'handleMouseMove',
-	      value: function handleMouseMove(xValue, doMarker) {
+	      value: function handleMouseMove(xValue, doMarker, yValue) {
 
 	        var valX = xValue || this.getXAxis().getMouseVal(),
+	            valY = yValue || this.getYAxis().getMouseVal(),
 	            xMinIndex,
 	            xMin,
 	            yMin,
 	            xMax,
 	            yMax;
 
-	        var value = this.searchClosestValue(valX);
+	        var value = this.searchClosestValue(valX, valY);
 
 	        if (!value) {
 	          return;
@@ -29555,6 +29639,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	              if (transforms[i].arguments.length == 1) {
 	                var p = this.computePosition(0);
+	                console.log(p, this.getPosition(0), this.computePosition(0));
 	                transformString += p.x + ", " + p.y;
 	              } else {
 
@@ -37819,8 +37904,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        this.setDom('cx', pos.x || 0);
 	        this.setDom('cy', pos.y || 0);
 
-	        this.setDom('rx', this.getProp('rx') || 0);
-	        this.setDom('ry', this.getProp('ry') || 0);
+	        var posR = this.graph.newPosition({
+
+	          dx: this.getProp('rx'),
+	          dy: this.getProp('ry') || this.getProp('rx')
+
+	        });
+
+	        var posComputed = this.calculatePosition(posR);
+
+	        this.setDom('rx', Math.abs(posComputed.x) || 0);
+	        this.setDom('ry', Math.abs(posComputed.y) || 0);
 
 	        return true;
 	      }

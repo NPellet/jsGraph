@@ -115,6 +115,7 @@ class Position {
         }
 
       } else if ( val !== undefined ) {
+
         pos[ i ] = this.getPx( val, axis );
       }
 
@@ -135,6 +136,10 @@ class Position {
           }
 
           //console.log( relativeTo.x, closest, serie.getY( closest.yMin ), def );
+        }
+
+        if ( !def ) {
+          def = 0;
         }
 
         if ( ( parsed = _parsePx( dval ) ) !== false ) { // dx in px => val + 10px

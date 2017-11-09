@@ -3630,7 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.49' || 'head'
+	      'data-jsgraph-version': 'v2.0.50' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -4553,6 +4553,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 	          }
 	        } else if (val !== undefined) {
+
 	          pos[i] = this.getPx(val, axis);
 	        }
 
@@ -4573,6 +4574,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	            }
 
 	            //console.log( relativeTo.x, closest, serie.getY( closest.yMin ), def );
+	          }
+
+	          if (!def) {
+	            def = 0;
 	          }
 
 	          if ((parsed = _parsePx(dval)) !== false) {
@@ -6101,19 +6106,70 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return position;
 	    }
 
-	    getIndexFromData(val, valCollection, isAscending, roundingMethod) {
+	    getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round) {
 
-	      if (!this.isMonotoneous()) {
-	        console.trace();
-	        throw "Impossible to get the index from a non-monotoneous wave !";
+	      let xdata, ydata;
+
+	      if (useDataToUse && this.dataInUse) {
+
+	        xdata = this.dataInUse.x;
+	        ydata = this.dataInUse.y;
+	      } else if (this.xdata) {
+
+	        xdata = this.xdata.data;
+	        ydata = this.data;
 	      }
+
+	      let positionX, positionY;
+
+	      if (!yval && this.isXMonotoneous()) {
+	        // X lookup only
+
+	        if (this.hasXWaveform()) {
+	          // The x value HAS to be rescaled
+	          position = this.xdata.getIndexFromData(xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod);
+	        } else {
+	          position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
+	        }
+	      } else if (yval) {
+
+	        position = this.getIndexFromDataXY(xval, xdata, yval, ydata);
+	      }
+
+	      if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
+	        // In case of aggregation, round to the closest element of 4.
+	        return position - position % 4;
+	      }
+
+	      return position;
+	    }
+
+	    getIndexFromData(val, valCollection, isAscending, roundingMethod) {
 
 	      let data, position;
 
 	      val -= this.getShift();
 	      val /= this.getScale();
 
+	      if (!this.isMonotoneous()) {
+	        console.trace();
+	        throw "Impossible to get the index from a non-monotoneous wave !";
+	      }
+
 	      return binarySearch(val, valCollection, !isAscending);
+	    }
+
+	    getIndexFromDataXY(valX, dataX, valY, dataY) {
+
+	      let data, position;
+
+	      valX -= this.getXShift();
+	      valX /= this.getXScale();
+
+	      valY -= this.getShift();
+	      valY /= this.getScale();
+
+	      return euclidianSearch(valX, valY, dataX, dataY);
 	    }
 
 	    getReductionType() {
@@ -6209,7 +6265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this;
 	    }
 
-	    getXShift(shift = 0) {
+	    getXShift(shift) {
 
 	      if (!this.hasXWaveform) {
 	        return 0;
@@ -7435,6 +7491,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  function getIndexInterpolate(value, valueBefore, valueAfter, indexBefore, indexAfter) {
 	    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
+	  }
+
+	  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
+
+	    let distance = Number.MAX_VALUE,
+	        distance_i;
+
+	    let index = -1;
+
+	    for (var i = 0, l = haystack.length; i < l; i++) {
+
+	      distance_i = Math.pow(Math.pow(targetX - haystackX[i], 2) + Math.pow(targetY - haystackY[i], 2), 0.5);
+	      if (distance_i < distance) {
+
+	        index = i;
+	        distance = distance_i;
+	      }
+	    }
+
+	    return index;
 	  }
 
 	  function binarySearch(target, haystack, reverse) {
@@ -9345,7 +9421,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    splitMarks: false,
 
-	    tickLabelOffset: true,
+	    tickLabelOffset: 0,
 
 	    useKatexForLabel: false
 	  };
@@ -10915,6 +10991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      //console.log( value, this.getCurrentMin(), this.getMaxPx(), this.getMinPx(), this.getCurrentInterval() );
 	      if (!this.options.logScale) {
+
 	        return (value - this.getCurrentMin()) / this.getCurrentInterval() * (this.getMaxPx() - this.getMinPx()) + this.getMinPx();
 	      } else {
 	        // 0 if value = min
@@ -14143,7 +14220,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (!_monotoneous) {
 
-	          pointOutside = !this.options.overflowX && (x < xMin || x > xMax) && !this.options.overflowY && (y < yMin || y > yMax);
+	          pointOutside = !this.options.overflowX && (x < xMin || x > xMax) || !this.options.overflowY && (y < yMin || y > yMax);
 	        } else {
 	          pointOutside = !this.options.overflowY && (y < yMin || y > yMax);
 	        }
@@ -14643,10 +14720,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @returns {Object} Index in the data array of the closest (x,y) pair to the pixel position passed in parameters
 	     * @memberof SerieLine
 	     */
-	    searchClosestValue(valX, data) {
+	    searchClosestValue(valX, valY) {
 
 	      if (this.waveform) {
-	        const indexX = this.waveform.getIndexFromX(valX);
+	        const indexX = this.waveform.getIndexFromX(valX, valY);
 	        let returnObj = {
 	          xMin: this.waveform.getX(indexX),
 	          xMax: this.waveform.getX(indexX + 1),
@@ -14669,16 +14746,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 
-	    handleMouseMove(xValue, doMarker) {
+	    handleMouseMove(xValue, doMarker, yValue) {
 
 	      var valX = xValue || this.getXAxis().getMouseVal(),
+	          valY = yValue || this.getYAxis().getMouseVal(),
 	          xMinIndex,
 	          xMin,
 	          yMin,
 	          xMax,
 	          yMax;
 
-	      var value = this.searchClosestValue(valX);
+	      var value = this.searchClosestValue(valX, valY);
 
 	      if (!value) {
 	        return;
@@ -21300,6 +21378,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            if (transforms[i].arguments.length == 1) {
 	              var p = this.computePosition(0);
+	              console.log(p, this.getPosition(0), this.computePosition(0));
 	              transformString += p.x + ", " + p.y;
 	            } else {
 
@@ -28374,8 +28453,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.setDom('cx', pos.x || 0);
 	      this.setDom('cy', pos.y || 0);
 
-	      this.setDom('rx', this.getProp('rx') || 0);
-	      this.setDom('ry', this.getProp('ry') || 0);
+	      let posR = this.graph.newPosition({
+
+	        dx: this.getProp('rx'),
+	        dy: this.getProp('ry') || this.getProp('rx')
+
+	      });
+
+	      let posComputed = this.calculatePosition(posR);
+
+	      this.setDom('rx', Math.abs(posComputed.x) || 0);
+	      this.setDom('ry', Math.abs(posComputed.y) || 0);
 
 	      return true;
 	    }
