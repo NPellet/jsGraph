@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.52' || 'head'
+	      'data-jsgraph-version': 'v2.0.53' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -14215,6 +14215,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function getIndexFromXY(xval, yval) {
 	        var useDataToUse = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 	        var roundingMethod = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : Math.round;
+	        var scaleX = arguments[4];
+	        var scaleY = arguments[5];
 
 
 	        var xdata = void 0,
@@ -14243,7 +14245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        } else if (!isNaN(yval)) {
 
-	          position = this.getIndexFromDataXY(xval, xdata, yval, ydata);
+	          position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
 	        } else {
 	          return;
 	        }
@@ -14275,6 +14277,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, {
 	      key: 'getIndexFromDataXY',
 	      value: function getIndexFromDataXY(valX, dataX, valY, dataY) {
+	        var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+	        var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+
 
 	        var data = void 0,
 	            position = void 0;
@@ -14285,7 +14290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        valY -= this.getShift();
 	        valY /= this.getScale();
 
-	        return euclidianSearch(valX, valY, dataX, dataY);
+	        return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
 	      }
 	    }, {
 	      key: 'getReductionType',
@@ -15763,6 +15768,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
+	    var scaleX = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
+	    var scaleY = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 1;
+
 
 	    var distance = Number.MAX_VALUE,
 	        distance_i = void 0;
@@ -15771,7 +15779,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    for (var i = 0, l = haystackX.length; i < l; i++) {
 
-	      distance_i = Math.pow(Math.pow(targetX - haystackX[i], 2) + Math.pow(targetY - haystackY[i], 2), 0.5);
+	      distance_i = Math.pow(Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2), 0.5);
 
 	      if (distance_i < distance) {
 
@@ -23066,7 +23074,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function searchClosestValue(valX, valY) {
 
 	        if (this.waveform) {
-	          var indexX = this.waveform.getIndexFromXY(valX, valY);
+	          var indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
 	          var returnObj = void 0;
 
 	          if (this.waveform.isXMonotoneous()) {
@@ -23146,8 +23154,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            this.markerLabel.setAttribute('display', 'block');
 	            this.markerLabelSquare.setAttribute('display', 'block');
+
 	            switch (this.options.trackMouseLabel) {
+
 	              case false:
+
 	                break;
 
 	              default:

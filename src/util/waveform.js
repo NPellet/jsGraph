@@ -429,7 +429,7 @@ class Waveform {
     return position;
   }
 
-  getIndexFromXY( xval, yval, useDataToUse = false, roundingMethod = Math.round ) {
+  getIndexFromXY( xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX, scaleY ) {
 
     let xdata, ydata;
 
@@ -456,7 +456,7 @@ class Waveform {
       }
     } else if ( !isNaN( yval ) ) {
 
-      position = this.getIndexFromDataXY( xval, xdata, yval, ydata );
+      position = this.getIndexFromDataXY( xval, xdata, yval, ydata, scaleX, scaleY );
 
     } else {
       return;
@@ -485,7 +485,7 @@ class Waveform {
 
   }
 
-  getIndexFromDataXY( valX, dataX, valY, dataY ) {
+  getIndexFromDataXY( valX, dataX, valY, dataY, scaleX = 1, scaleY = 1 ) {
 
     let data, position;
 
@@ -495,7 +495,7 @@ class Waveform {
     valY -= this.getShift();
     valY /= this.getScale();
 
-    return euclidianSearch( valX, valY, dataX, dataY );
+    return euclidianSearch( valX, valY, dataX, dataY, scaleX, scaleY );
   }
 
   getReductionType() {
@@ -1844,7 +1844,7 @@ function getIndexInterpolate( value, valueBefore, valueAfter, indexBefore, index
   return ( value - valueBefore ) / ( valueAfter - valueBefore ) * ( indexAfter - indexBefore ) + indexBefore;
 }
 
-function euclidianSearch( targetX, targetY, haystackX, haystackY ) {
+function euclidianSearch( targetX, targetY, haystackX, haystackY, scaleX = 1, scaleY = 1 ) {
 
   let distance = Number.MAX_VALUE,
     distance_i;
@@ -1853,7 +1853,7 @@ function euclidianSearch( targetX, targetY, haystackX, haystackY ) {
 
   for ( var i = 0, l = haystackX.length; i < l; i++ ) {
 
-    distance_i = ( ( ( targetX - haystackX[ i ] ) ** 2 + ( targetY - haystackY[ i ] ) ** 2 ) ) ** 0.5;
+    distance_i = ( ( ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 + ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2 ) ) ** 0.5;
 
     if ( distance_i < distance ) {
 

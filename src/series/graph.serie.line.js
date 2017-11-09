@@ -1201,7 +1201,7 @@ class SerieLine extends Serie {
   searchClosestValue( valX, valY ) {
 
     if ( this.waveform ) {
-      const indexX = this.waveform.getIndexFromXY( valX, valY );
+      const indexX = this.waveform.getIndexFromXY( valX, valY, undefined, undefined, this.getXAxis().getRelPx( 1 ), this.getYAxis().getRelPx( 1 ) );
       let returnObj;
 
       if ( this.waveform.isXMonotoneous() ) {
@@ -1282,8 +1282,11 @@ class SerieLine extends Serie {
 
         this.markerLabel.setAttribute( 'display', 'block' );
         this.markerLabelSquare.setAttribute( 'display', 'block' );
+
         switch ( this.options.trackMouseLabel ) {
+
           case false:
+
             break;
 
           default:

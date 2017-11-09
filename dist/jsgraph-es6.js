@@ -3630,7 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.52' || 'head'
+	      'data-jsgraph-version': 'v2.0.53' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -6106,7 +6106,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return position;
 	    }
 
-	    getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round) {
+	    getIndexFromXY(xval, yval, useDataToUse = false, roundingMethod = Math.round, scaleX, scaleY) {
 
 	      let xdata, ydata;
 
@@ -6133,7 +6133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      } else if (!isNaN(yval)) {
 
-	        position = this.getIndexFromDataXY(xval, xdata, yval, ydata);
+	        position = this.getIndexFromDataXY(xval, xdata, yval, ydata, scaleX, scaleY);
 	      } else {
 	        return;
 	      }
@@ -6161,7 +6161,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return binarySearch(val, valCollection, !isAscending);
 	    }
 
-	    getIndexFromDataXY(valX, dataX, valY, dataY) {
+	    getIndexFromDataXY(valX, dataX, valY, dataY, scaleX = 1, scaleY = 1) {
 
 	      let data, position;
 
@@ -6171,7 +6171,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      valY -= this.getShift();
 	      valY /= this.getScale();
 
-	      return euclidianSearch(valX, valY, dataX, dataY);
+	      return euclidianSearch(valX, valY, dataX, dataY, scaleX, scaleY);
 	    }
 
 	    getReductionType() {
@@ -7495,7 +7495,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return (value - valueBefore) / (valueAfter - valueBefore) * (indexAfter - indexBefore) + indexBefore;
 	  }
 
-	  function euclidianSearch(targetX, targetY, haystackX, haystackY) {
+	  function euclidianSearch(targetX, targetY, haystackX, haystackY, scaleX = 1, scaleY = 1) {
 
 	    let distance = Number.MAX_VALUE,
 	        distance_i;
@@ -7504,7 +7504,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    for (var i = 0, l = haystackX.length; i < l; i++) {
 
-	      distance_i = Math.pow(Math.pow(targetX - haystackX[i], 2) + Math.pow(targetY - haystackY[i], 2), 0.5);
+	      distance_i = Math.pow(Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2), 0.5);
 
 	      if (distance_i < distance) {
 
@@ -14726,7 +14726,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    searchClosestValue(valX, valY) {
 
 	      if (this.waveform) {
-	        const indexX = this.waveform.getIndexFromXY(valX, valY);
+	        const indexX = this.waveform.getIndexFromXY(valX, valY, undefined, undefined, this.getXAxis().getRelPx(1), this.getYAxis().getRelPx(1));
 	        let returnObj;
 
 	        if (this.waveform.isXMonotoneous()) {
@@ -14805,8 +14805,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          this.markerLabel.setAttribute('display', 'block');
 	          this.markerLabelSquare.setAttribute('display', 'block');
+
 	          switch (this.options.trackMouseLabel) {
+
 	            case false:
+
 	              break;
 
 	            default:
