@@ -1199,9 +1199,14 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   searchClosestValue( valX, valY ) {
-
+    let indexX;
     if ( this.waveform ) {
-      const indexX = this.waveform.getIndexFromX( valX, valY );
+      if(this.waveform.isMonotoneous()) {
+        indexX = this.waveform.getIndexFromX(valX, valY);
+      } else {
+        indexX = this.waveform.getIndexFromXY(valX, valY);
+      }
+      
       let returnObj = {
         xMin: this.waveform.getX( indexX ),
         xMax: this.waveform.getX( indexX + 1 ),

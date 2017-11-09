@@ -444,7 +444,7 @@ class Waveform {
       ydata = this.data;
     }
 
-    let positionX, positionY;
+    let position;
 
     if ( !yval &&  this.isXMonotoneous() ) { // X lookup only
 
@@ -1849,7 +1849,7 @@ function euclidianSearch( targetX, targetY, haystackX, haystackY ) {
 
   let index = -1;
 
-  for ( var i = 0, l = haystack.length; i < l; i++ ) {
+  for ( var i = 0, l = haystackX.length; i < l; i++ ) {
 
     distance_i = ( ( ( targetX - haystackX[ i ] ) ** 2 + ( targetY - haystackY[ i ] ) ** 2 ) ) ** 0.5;
     if ( distance_i < distance ) {
