@@ -1201,21 +1201,35 @@ class SerieLine extends Serie {
   searchClosestValue( valX, valY ) {
 
     if ( this.waveform ) {
-      const indexX = this.waveform.getIndexFromX( valX, valY );
-      let returnObj = {
-        xMin: this.waveform.getX( indexX ),
-        xMax: this.waveform.getX( indexX + 1 ),
-        yMin: this.waveform.getY( indexX ),
-        yMax: this.waveform.getY( indexX + 1 ),
-        xExact: valX
-      };
+      const indexX = this.waveform.getIndexFromXY( valX, valY );
+      let returnObj;
 
-      if ( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
-        returnObj.xClosest = returnObj.xMin;
-        returnObj.yClosest = returnObj.yMin;
+      if ( this.waveform.isXMonotoneous() ) {
+
+        returnObj = {
+          xMin: this.waveform.getX( indexX ),
+          xMax: this.waveform.getX( indexX + 1 ),
+          yMin: this.waveform.getY( indexX ),
+          yMax: this.waveform.getY( indexX + 1 ),
+          xExact: valX
+        };
+
+        if ( Math.abs( returnObj.xMin - valX ) < Math.abs( returnObj.xMax - valX ) ) {
+          returnObj.xClosest = returnObj.xMin;
+          returnObj.yClosest = returnObj.yMin;
+        } else {
+          returnObj.xClosest = returnObj.xMax;
+          returnObj.yClosest = returnObj.yMax;
+        }
       } else {
-        returnObj.xClosest = returnObj.xMax;
-        returnObj.yClosest = returnObj.yMax;
+
+        returnObj = {
+          xExact: this.waveform.getX( indexX ),
+          xMin: this.waveform.getX( indexX ),
+          xMax: this.waveform.getX( indexX ),
+          yMin: this.waveform.getY( indexX ),
+          yMax: this.waveform.getY( indexX )
+        }
       }
 
       return returnObj;
@@ -1241,8 +1255,15 @@ class SerieLine extends Serie {
       return;
     }
 
-    var ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
-    var intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+    var ratio, intY;
+
+    if ( value.xMax == value.xMin ) {
+      intY = value.yMin;
+    } else {
+
+      ratio = ( valX - value.xMin ) / ( value.xMax - value.xMin );
+      intY = ( ( 1 - ratio ) * value.yMin + ratio * value.yMax );
+    }
 
     if ( doMarker && this.options.trackMouse ) {
 
@@ -1252,8 +1273,8 @@ class SerieLine extends Serie {
 
       } else {
 
-        var x = this.getX( this.getFlip() ? intY : valX );
-        var y = this.getY( this.getFlip() ? valX : intY );
+        var x = this.getX( this.getFlip() ? intY : value.xExact );
+        var y = this.getY( this.getFlip() ? value.xExact : intY );
 
         this.marker.setAttribute( 'display', 'block' );
         this.marker.setAttribute( 'cx', x );

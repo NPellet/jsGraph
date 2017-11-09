@@ -444,9 +444,9 @@ class Waveform {
       ydata = this.data;
     }
 
-    let positionX, positionY;
+    let position;
 
-    if ( !yval &&  this.isXMonotoneous() ) { // X lookup only
+    if ( this.isXMonotoneous() ) { // X lookup only
 
       if ( this.hasXWaveform() ) { // The x value HAS to be rescaled
         position = this.xdata.getIndexFromData( xval, xdata, this.xdata.getMonotoneousAscending(), roundingMethod );
@@ -454,10 +454,12 @@ class Waveform {
       } else {
         position = Math.max( 0, Math.min( this.getLength() - 1, roundingMethod( ( xval - this.xOffset ) / ( this.xScale ) ) ) );
       }
-    } else if ( yval ) {
+    } else if ( !isNaN( yval ) ) {
 
       position = this.getIndexFromDataXY( xval, xdata, yval, ydata );
 
+    } else {
+      return;
     }
 
     if ( useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX" ) { // In case of aggregation, round to the closest element of 4.
@@ -1849,9 +1851,10 @@ function euclidianSearch( targetX, targetY, haystackX, haystackY ) {
 
   let index = -1;
 
-  for ( var i = 0, l = haystack.length; i < l; i++ ) {
+  for ( var i = 0, l = haystackX.length; i < l; i++ ) {
 
     distance_i = ( ( ( targetX - haystackX[ i ] ) ** 2 + ( targetY - haystackY[ i ] ) ** 2 ) ) ** 0.5;
+
     if ( distance_i < distance ) {
 
       index = i;

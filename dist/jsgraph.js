@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.50' || 'head'
+	      'data-jsgraph-version': 'v2.0.51' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -14230,10 +14230,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          ydata = this.data;
 	        }
 
-	        var positionX = void 0,
-	            positionY = void 0;
+	        var position = void 0;
 
-	        if (!yval && this.isXMonotoneous()) {
+	        if (this.isXMonotoneous()) {
 	          // X lookup only
 
 	          if (this.hasXWaveform()) {
@@ -14242,9 +14241,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	          } else {
 	            position = Math.max(0, Math.min(this.getLength() - 1, roundingMethod((xval - this.xOffset) / this.xScale)));
 	          }
-	        } else if (yval) {
+	        } else if (!isNaN(yval)) {
 
 	          position = this.getIndexFromDataXY(xval, xdata, yval, ydata);
+	        } else {
+	          return;
 	        }
 
 	        if (useDataToUse && this.dataInUse && this.dataInUseType == "aggregateX") {
@@ -15768,9 +15769,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var index = -1;
 
-	    for (var i = 0, l = haystack.length; i < l; i++) {
+	    for (var i = 0, l = haystackX.length; i < l; i++) {
 
 	      distance_i = Math.pow(Math.pow(targetX - haystackX[i], 2) + Math.pow(targetY - haystackY[i], 2), 0.5);
+
 	      if (distance_i < distance) {
 
 	        index = i;
@@ -23064,21 +23066,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: function searchClosestValue(valX, valY) {
 
 	        if (this.waveform) {
-	          var indexX = this.waveform.getIndexFromX(valX, valY);
-	          var returnObj = {
-	            xMin: this.waveform.getX(indexX),
-	            xMax: this.waveform.getX(indexX + 1),
-	            yMin: this.waveform.getY(indexX),
-	            yMax: this.waveform.getY(indexX + 1),
-	            xExact: valX
-	          };
+	          var indexX = this.waveform.getIndexFromXY(valX, valY);
+	          var returnObj = void 0;
 
-	          if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
-	            returnObj.xClosest = returnObj.xMin;
-	            returnObj.yClosest = returnObj.yMin;
+	          if (this.waveform.isXMonotoneous()) {
+
+	            returnObj = {
+	              xMin: this.waveform.getX(indexX),
+	              xMax: this.waveform.getX(indexX + 1),
+	              yMin: this.waveform.getY(indexX),
+	              yMax: this.waveform.getY(indexX + 1),
+	              xExact: valX
+	            };
+
+	            if (Math.abs(returnObj.xMin - valX) < Math.abs(returnObj.xMax - valX)) {
+	              returnObj.xClosest = returnObj.xMin;
+	              returnObj.yClosest = returnObj.yMin;
+	            } else {
+	              returnObj.xClosest = returnObj.xMax;
+	              returnObj.yClosest = returnObj.yMax;
+	            }
 	          } else {
-	            returnObj.xClosest = returnObj.xMax;
-	            returnObj.yClosest = returnObj.yMax;
+
+	            returnObj = {
+	              xExact: this.waveform.getX(indexX),
+	              xMin: this.waveform.getX(indexX),
+	              xMax: this.waveform.getX(indexX),
+	              yMin: this.waveform.getY(indexX),
+	              yMax: this.waveform.getY(indexX)
+	            };
 	          }
 
 	          return returnObj;
@@ -23104,8 +23120,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return;
 	        }
 
-	        var ratio = (valX - value.xMin) / (value.xMax - value.xMin);
-	        var intY = (1 - ratio) * value.yMin + ratio * value.yMax;
+	        var ratio, intY;
+
+	        if (value.xMax == value.xMin) {
+	          intY = value.yMin;
+	        } else {
+
+	          ratio = (valX - value.xMin) / (value.xMax - value.xMin);
+	          intY = (1 - ratio) * value.yMin + ratio * value.yMax;
+	        }
 
 	        if (doMarker && this.options.trackMouse) {
 
@@ -23114,8 +23137,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return false;
 	          } else {
 
-	            var x = this.getX(this.getFlip() ? intY : valX);
-	            var y = this.getY(this.getFlip() ? valX : intY);
+	            var x = this.getX(this.getFlip() ? intY : value.xExact);
+	            var y = this.getY(this.getFlip() ? value.xExact : intY);
 
 	            this.marker.setAttribute('display', 'block');
 	            this.marker.setAttribute('cx', x);
