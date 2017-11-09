@@ -14,7 +14,7 @@ import Waveform from '../util/waveform.js'
 class SerieLine extends Serie {
 
   static
-  default () {
+  default() {
     /**
      * @name SerieLineDefaultOptions
      * @object
@@ -1199,14 +1199,9 @@ class SerieLine extends Serie {
    * @memberof SerieLine
    */
   searchClosestValue( valX, valY ) {
-    let indexX;
+
     if ( this.waveform ) {
-      if(this.waveform.isMonotoneous()) {
-        indexX = this.waveform.getIndexFromX(valX, valY);
-      } else {
-        indexX = this.waveform.getIndexFromXY(valX, valY);
-      }
-      
+      let indexX = this.waveform.getIndexFromXY( valX, valY );
       let returnObj = {
         xMin: this.waveform.getX( indexX ),
         xMax: this.waveform.getX( indexX + 1 ),
