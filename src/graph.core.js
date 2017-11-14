@@ -3644,15 +3644,17 @@ function _registerEvents( graph ) {
   graph.groupEvent.addEventListener( 'mousewheel', function( e ) {
 
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-    _handleMouseWheel( graph, deltaY, e );
+    var coords = graph._getXY( e );
+    _handleMouseWheel( graph, deltaY, coords.x, coords.y, e );
 
     return false;
   } );
 
   graph.groupEvent.addEventListener( 'wheel', function( e ) {
 
+    var coords = graph._getXY( e );
     var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-    _handleMouseWheel( graph, deltaY, e );
+    _handleMouseWheel( graph, deltaY, coords.x, coords.y, e );
 
     return false;
   } );
@@ -4154,8 +4156,8 @@ function _closeLine( graph, mode, x1, x2, y1, y2 ) {
   }
 }
 
-function _handleMouseWheel( graph, delta, e ) {
-  if ( checkMouseActions( graph, e, [ delta, e ], 'onMouseWheel' ) ) {
+function _handleMouseWheel( graph, delta, coordX, coordY, e ) {
+  if ( checkMouseActions( graph, e, [ delta, e, coordX, coordY ], 'onMouseWheel' ) ) {
     e.preventDefault();
     e.stopPropagation();
   }

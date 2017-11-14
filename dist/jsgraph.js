@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.53' || 'head'
+	      'data-jsgraph-version': 'v2.0.54' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -11902,15 +11902,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	    graph.groupEvent.addEventListener('mousewheel', function (e) {
 
 	      var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-	      _handleMouseWheel(graph, deltaY, e);
+	      var coords = graph._getXY(e);
+	      _handleMouseWheel(graph, deltaY, coords.x, coords.y, e);
 
 	      return false;
 	    });
 
 	    graph.groupEvent.addEventListener('wheel', function (e) {
 
+	      var coords = graph._getXY(e);
 	      var deltaY = e.wheelDeltaY || e.wheelDelta || -e.deltaY;
-	      _handleMouseWheel(graph, deltaY, e);
+	      _handleMouseWheel(graph, deltaY, coords.x, coords.y, e);
 
 	      return false;
 	    });
@@ -12386,8 +12388,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  function _handleMouseWheel(graph, delta, e) {
-	    if (checkMouseActions(graph, e, [delta, e], 'onMouseWheel')) {
+	  function _handleMouseWheel(graph, delta, coordX, coordY, e) {
+	    if (checkMouseActions(graph, e, [delta, e, coordX, coordY], 'onMouseWheel')) {
 	      e.preventDefault();
 	      e.stopPropagation();
 	    }
@@ -12581,7 +12583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                continue;
 	              }
 
-	              pos[i] = relativeTo ? relativeTo[i] : axis.getPos(0);
+	              pos[i] = relativeTo ? relativeTo[i] : 0;
 	            } else if (this.x !== undefined && serie) {
 
 	              if (_parsePx(this.x) !== false) {
@@ -15779,7 +15781,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    for (var i = 0, l = haystackX.length; i < l; i++) {
 
-	      distance_i = Math.pow(Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2), 0.5);
+	      distance_i = Math.pow((targetX - haystackX[i]) * scaleX, 2) + Math.pow((targetY - haystackY[i]) * scaleY, 2);
 
 	      if (distance_i < distance) {
 
@@ -34467,7 +34469,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }, {
 	      key: 'onMouseWheel',
-	      value: function onMouseWheel(delta, e, options) {
+	      value: function onMouseWheel(delta, e, coordX, coordY, options) {
 
 	        if (!options) {
 	          options = {};
@@ -34475,6 +34477,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        if (!options.baseline) {
 	          options.baseline = 0;
+	        }
+
+	        var baseline = options.baseline;
+
+	        if (options.baseline == 'mousePosition') {
+	          baseline = this.graph.getYAxis().getVal(coordY);
+	          console.log(baseline);
 	        }
 
 	        /*var serie;
@@ -34487,7 +34496,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var doX = options.direction == 'x';
 	        var doY = !(options.direction !== 'y');
 
-	        this.toAxes('handleMouseWheel', [delta, e, options.baseline], doX, doY);
+	        this.toAxes('handleMouseWheel', [delta, e, baseline], doX, doY);
 
 	        this.graph.drawSeries();
 	      }
@@ -37949,7 +37958,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        this.setDom('rx', Math.abs(posComputed.x) || 0);
 	        this.setDom('ry', Math.abs(posComputed.y) || 0);
-
 	        return true;
 	      }
 	    }, {

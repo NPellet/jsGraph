@@ -33,7 +33,6 @@ class ShapeEllipse extends Shape {
 
     this.setDom( 'rx', Math.abs( posComputed.x ) || 0 );
     this.setDom( 'ry', Math.abs( posComputed.y ) || 0 );
-
     return true;
   }
 

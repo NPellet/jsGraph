@@ -291,7 +291,7 @@ class PluginZoom extends Plugin {
   /**
    * @private
    */
-  onMouseWheel( delta, e, options ) {
+  onMouseWheel( delta, e, coordX, coordY, options ) {
 
     if ( !options ) {
       options = {};
@@ -299,6 +299,13 @@ class PluginZoom extends Plugin {
 
     if ( !options.baseline ) {
       options.baseline = 0;
+    }
+
+    let baseline = options.baseline;
+
+    if ( options.baseline == 'mousePosition' ) {
+      baseline = this.graph.getYAxis().getVal( coordY );
+      console.log( baseline );
     }
 
     /*var serie;
@@ -312,7 +319,7 @@ class PluginZoom extends Plugin {
     var doX = ( options.direction == 'x' );
     var doY = !( options.direction !== 'y' );
 
-    this.toAxes( 'handleMouseWheel', [ delta, e, options.baseline ], doX, doY );
+    this.toAxes( 'handleMouseWheel', [ delta, e, baseline ], doX, doY );
 
     this.graph.drawSeries();
 

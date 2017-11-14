@@ -1853,7 +1853,7 @@ function euclidianSearch( targetX, targetY, haystackX, haystackY, scaleX = 1, sc
 
   for ( var i = 0, l = haystackX.length; i < l; i++ ) {
 
-    distance_i = ( ( ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 + ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2 ) ) ** 0.5;
+    distance_i = ( ( ( ( targetX - haystackX[ i ] ) * scaleX ) ** 2 + ( ( targetY - haystackY[ i ] ) * scaleY ) ** 2 ) );
 
     if ( distance_i < distance ) {
 

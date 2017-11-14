@@ -94,7 +94,7 @@ class Position {
             continue;
           }
 
-          pos[ i ] = relativeTo ? relativeTo[ i ] : axis.getPos( 0 );
+          pos[ i ] = relativeTo ? relativeTo[ i ] : 0;
 
         } else if ( this.x !== undefined && serie ) {
 
