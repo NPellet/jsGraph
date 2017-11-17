@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.58' || 'head'
+	      'data-jsgraph-version': 'v2.0.59' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -30146,6 +30146,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      key: 'handleClick',
 	      value: function handleClick(e) {
 
+	        this.graph.emit("shapeClicked", this);
+	        this.emit("shapeClicked");
+
 	        if (!this.isSelectable()) {
 	          return false;
 	        }
@@ -30153,9 +30156,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!e.shiftKey) {
 	          this.graph.unselectShapes();
 	        }
-
-	        this.graph.emit("shapeClicked", this);
-	        this.emit("shapeClicked");
 
 	        if (this.getProp('selectOnClick')) {
 

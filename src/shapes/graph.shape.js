@@ -1616,6 +1616,9 @@ class Shape extends EventEmitter {
    */
   handleClick( e ) {
 
+    this.graph.emit( "shapeClicked", this );
+    this.emit( "shapeClicked" );
+
     if ( !this.isSelectable() ) {
       return false;
     }
@@ -1623,9 +1626,6 @@ class Shape extends EventEmitter {
     if ( !e.shiftKey ) {
       this.graph.unselectShapes();
     }
-
-    this.graph.emit( "shapeClicked", this );
-    this.emit( "shapeClicked" );
 
     if ( this.getProp( 'selectOnClick' ) ) {
 
