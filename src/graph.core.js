@@ -4120,6 +4120,7 @@ function _getAxis( graph, num, options, pos ) {
   }
 
   if ( !graph.axis[ pos ][ num ] ) {
+
     graph.axis[ pos ][ num ] = new inst( graph, pos, options );
     graph.axis[ pos ][ num ].init( graph, options );
   }

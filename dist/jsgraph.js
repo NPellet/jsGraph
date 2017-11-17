@@ -11649,7 +11649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.56' || 'head'
+	      'data-jsgraph-version': 'v2.0.58' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -12353,6 +12353,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (!graph.axis[pos][num]) {
+
 	      graph.axis[pos][num] = new inst(graph, pos, options);
 	      graph.axis[pos][num].init(graph, options);
 	    }
@@ -21660,20 +21661,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  var GraphXAxis = function (_Axis) {
-	    _inherits(GraphXAxis, _Axis);
+	  var GraphTimeAxis = function (_Axis) {
+	    _inherits(GraphTimeAxis, _Axis);
 
-	    function GraphXAxis(graph, topbottom, options) {
-	      _classCallCheck(this, GraphXAxis);
+	    function GraphTimeAxis(graph, topbottom, options) {
+	      _classCallCheck(this, GraphTimeAxis);
 
-	      return _possibleConstructorReturn(this, (GraphXAxis.__proto__ || Object.getPrototypeOf(GraphXAxis)).apply(this, arguments));
+	      return _possibleConstructorReturn(this, (GraphTimeAxis.__proto__ || Object.getPrototypeOf(GraphTimeAxis)).apply(this, arguments));
 	    }
 
-	    _createClass(GraphXAxis, [{
+	    _createClass(GraphTimeAxis, [{
 	      key: 'init',
 	      value: function init(graph, options) {
 
-	        _get(GraphXAxis.prototype.__proto__ || Object.getPrototypeOf(GraphXAxis.prototype), 'init', this).call(this, graph, options);
+	        _get(GraphTimeAxis.prototype.__proto__ || Object.getPrototypeOf(GraphTimeAxis.prototype), 'init', this).call(this, graph, options);
 
 	        this.wrapper = {
 	          1: document.createElementNS(graph.ns, 'g'),
@@ -21829,10 +21830,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }]);
 
-	    return GraphXAxis;
+	    return GraphTimeAxis;
 	  }(_graphAxis2.default);
 
-	  exports.default = GraphXAxis;
+	  exports.default = GraphTimeAxis;
 	  module.exports = exports['default'];
 	});
 
@@ -30152,6 +30153,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        if (!e.shiftKey) {
 	          this.graph.unselectShapes();
 	        }
+
+	        this.graph.emit("shapeClicked", this);
+	        this.emit("shapeClicked");
 
 	        if (this.getProp('selectOnClick')) {
 

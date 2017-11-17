@@ -822,7 +822,7 @@ function renderGroup( level, group, text, minPx, maxPx, x1, x2 ) {
 
 }
 
-class GraphXAxis extends Axis {
+class GraphTimeAxis extends Axis {
 
   constructor( graph, topbottom, options ) {
 
@@ -984,4 +984,4 @@ class GraphXAxis extends Axis {
 
 }
 
-export default GraphXAxis;
+export default GraphTimeAxis;

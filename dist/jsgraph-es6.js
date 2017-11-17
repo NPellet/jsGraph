@@ -3630,7 +3630,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'xmlns': Graph.ns,
 	      'font-family': this.options.fontFamily,
 	      'font-size': this.options.fontSize,
-	      'data-jsgraph-version': 'v2.0.56' || 'head'
+	      'data-jsgraph-version': 'v2.0.58' || 'head'
 	    });
 
 	    this.defs = document.createElementNS(Graph.ns, 'defs');
@@ -4334,6 +4334,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (!graph.axis[pos][num]) {
+
 	      graph.axis[pos][num] = new inst(graph, pos, options);
 	      graph.axis[pos][num].init(graph, options);
 	    }
@@ -13344,7 +13345,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  class GraphXAxis extends _graphAxis2.default {
+	  class GraphTimeAxis extends _graphAxis2.default {
 
 	    constructor(graph, topbottom, options) {
 
@@ -13504,7 +13505,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  }
 
-	  exports.default = GraphXAxis;
+	  exports.default = GraphTimeAxis;
 	  module.exports = exports['default'];
 	});
 
@@ -21993,6 +21994,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!e.shiftKey) {
 	        this.graph.unselectShapes();
 	      }
+
+	      this.graph.emit("shapeClicked", this);
+	      this.emit("shapeClicked");
 
 	      if (this.getProp('selectOnClick')) {
 

@@ -1624,6 +1624,9 @@ class Shape extends EventEmitter {
       this.graph.unselectShapes();
     }
 
+    this.graph.emit( "shapeClicked", this );
+    this.emit( "shapeClicked" );
+
     if ( this.getProp( 'selectOnClick' ) ) {
 
       this.graph.selectShape( this );
