@@ -55,7 +55,7 @@
 			"./src/plugins/graph.plugin.serielinedifference.js",
 			"./src/plugins/graph.plugin.axissplitting.js",
 			"./src/plugins/graph.plugin.makeTracesDifferent.js",
-			"./src/plugins/graph.plugin.peakPicking.js",
+			"./src/plugins/graph.plugin.peakpicking.js",
 			"./src/shapes/graph.shape.ellipse.js"
 		]
 	}
